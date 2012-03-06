@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://s-ramp.org/xmlns/2010/s-ramp"
+	version="1.0" xmlns:tns="http://s-ramp.org/xmlns/2010/s-ramp"
+	xmlns:s-ramp="http://s-ramp.org/xmlns/2010/s-ramp" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<!--
+		(c) 2010 Hewlett-Packard Company (HP), International Business Machines
+		Corporation (IBM), Software AG (SAG) and TIBCO Software Inc. All
+		rights reserved. Permission to copy and display the SOA Repository
+		Artifact Model and Protocol (the “Specification”), in any medium
+		without fee or royalty is hereby granted by Hewlett-Packard Company
+		(HP), International Business Machines Corporation (IBM), Software AG
+		(SAG) and TIBCO Software Inc. (collectively, the "Authors"), provided
+		that you include the following on ALL copies of this document or
+		portions thereof, that you make: 1. A link or URL to this document at
+		this location:
+		http://s-ramp.org/2010/s-ramp/specification/documents/{this document
+		name} 2. The copyright notice as shown in the Specification. The
+		Authors each agree to grant you a royalty-free license, under
+		reasonable, non-discriminatory terms and conditions to their
+		respective patents that they deem necessary to implement the "SOA
+		Repository Artifact Model and Protocol” Specification, including all
+		its constituent documents. THIS DOCUMENT IS PROVIDED "AS IS," AND THE
+		AUTHORS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED,
+		INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS
+		FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE
+		CONTENTS OF THIS DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE
+		IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY
+		PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS. THE AUTHORS WILL NOT
+		BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR
+		CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY USE OR
+		DISTRIBUTION OF THIS DOCUMENT.
+	-->
+	<!-- xsd:import namespace="http://www.w3.org/1999/xlink"
+		schemaLocation="http://www.w3.org/1999/xlink.xsd" /
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"
+		schemaLocation="http://www.w3.org/2009/01/xml.xsd" />
+		-->
+
+	<!--                  Core data types:                      -->
+
+	<!--
+		Base type for almost all Artifacts in S-RAMP. Most other types in
+		S-RAMP extend this one. Extensions of BaseArtifactType are limited to
+		attributes.
+	-->
+	<xsd:complexType abstract="true" name="BaseArtifactType">
+		<xsd:sequence>
+			<xsd:element ref="tns:classifiedBy" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="tns:relationship" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xsd:element ref="tns:property" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="description" type="xsd:string" use="optional" />
+		<xsd:attribute name="createdBy" type="xsd:string" use="required" />
+		<xsd:attribute name="version" type="xsd:string" use="optional" />
+		<xsd:attribute name="uuid" type="xsd:string" use="required" />
+		<xsd:attribute name="createdTimestamp" type="xsd:dateTime"
+			use="required" />
+		<xsd:attribute name="lastModifiedTimestamp" type="xsd:dateTime"
+			use="required" />
+		<xsd:attribute name="lastModifiedBy" type="xsd:string"
+			use="required" />
+		<xsd:anyAttribute namespace="##any" />
+	</xsd:complexType>
+
+	<!-- Base type for all Derived Artifacts in S-RAMP -->
+	<xsd:complexType abstract="true" name="DerivedArtifactType">
+		<xsd:complexContent>
+			<xsd:extension base="s-ramp:BaseArtifactType">
+				<xsd:sequence>
+					<xsd:element name="relatedDocument" type="tns:target"
+						minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- Base type for all Documents in S-RAMP -->
+	<xsd:complexType abstract="true" name="DocumentArtifactType">
+		<xsd:complexContent>
+			<xsd:extension base="s-ramp:BaseArtifactType">
+				<xsd:attribute name="contentType" type="xsd:string" />
+				<xsd:attribute name="contentSize" type="xsd:long" />
+				<xsd:anyAttribute namespace="##any" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!--
+		Base Type for all XML documents. Specific document types extend
+		XmlDocument
+	-->
+	<xsd:complexType name="XmlDocument">
+		<xsd:complexContent>
+			<xsd:extension base="s-ramp:DocumentArtifactType">
+				<xsd:attribute name="contentEncoding" type="xsd:string" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- Base type for all User Defined Artifacts in S-RAMP -->
+	<xsd:complexType name="UserDefinedArtifactType">
+		<xsd:complexContent>
+			<xsd:extension base="s-ramp:BaseArtifactType">
+				<xsd:attribute name="userType" type="xsd:string" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!--
+		Relationship target artifact's UUID. Used by all types of
+		relationships
+	-->
+	<xsd:complexType name="target">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:anyAttribute namespace="##any" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+	<!--
+		Global Element Declarations
+	-->
+
+	<!--
+		Relationship element used for all GENERIC (user-defined) Relationships
+	-->
+	<xsd:element name="relationship">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="tns:relationshipType" minOccurs="1"
+					maxOccurs="1" />
+				<xsd:element name="relationshipTarget" type="tns:target"
+					minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>
+			<xsd:anyAttribute namespace="##any" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<!-- Stored Queries Artifact element -->
+	<xsd:element name="StoredQuery">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="tns:propertyName" minOccurs="0"
+					maxOccurs="unbounded" />
+				<xsd:element ref="tns:queryExpression" />
+			</xsd:sequence>
+			<xsd:attribute name="queryName" type="xsd:string" />
+			<xsd:anyAttribute namespace="##any" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<!--  Property -->
+	<xsd:element name="property">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="tns:propertyName" minOccurs="1"
+					maxOccurs="1" />
+				<xsd:element ref="tns:propertyValue" minOccurs="1"
+					maxOccurs="1" />
+			</xsd:sequence>
+			<xsd:anyAttribute namespace="##any" />
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="relationshipType" type="xsd:string" />
+	<xsd:element name="classifiedBy" type="xsd:anyURI" />
+	<xsd:element name="propertyName" type="xsd:string" />
+	<xsd:element name="propertyValue" type="xsd:string" />
+	<xsd:element name="queryExpression" type="xsd:string" />
+	<!--
+		The sourceId and targetId contain the UUID's corresponding to a
+		relationship's source and target
+	-->
+	<xsd:element name="sourceId" type="xsd:string" />
+	<xsd:element name="targetId" type="xsd:string" />
+
+</xsd:schema>
