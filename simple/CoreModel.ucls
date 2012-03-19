@@ -1,0 +1,30 @@
+<class-diagram version="1.0.7" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true">  
+  <class id="1" corner="BOTTOM_RIGHT" language="java" name="org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType" 
+    project="s-ramp-simple" file="/s-ramp-simple/src/main/java/org/s_ramp/xmlns/_2010/s_ramp/BaseArtifactType.java" 
+    binary="false">    
+    <position x="619" y="70" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" name="org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType" 
+    project="s-ramp-simple" file="/s-ramp-simple/src/main/java/org/s_ramp/xmlns/_2010/s_ramp/DerivedArtifactType.java" 
+    binary="false">    
+    <position x="326" y="64" width="-1" height="-1"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <generalization id="3">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
+  <classifier-display autosize="true" package="true" initial-value="false" signature="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="false" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
