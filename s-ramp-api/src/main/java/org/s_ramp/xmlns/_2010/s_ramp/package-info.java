@@ -20,5 +20,10 @@
 // Generated on: 2012.03.06 at 02:36:46 PM EST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://s-ramp.org/xmlns/2010/s-ramp", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://s-ramp.org/xmlns/2010/s-ramp", 
+    xmlns = {   
+        @javax.xml.bind.annotation.XmlNs(namespaceURI = "http://s-ramp.org/xmlns/2010/s-ramp", prefix = "s-ramp"),
+        @javax.xml.bind.annotation.XmlNs(namespaceURI = "http://www.w3.org/1999/xlink", prefix="xlink")
+    },
+        elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.s_ramp.xmlns._2010.s_ramp;
