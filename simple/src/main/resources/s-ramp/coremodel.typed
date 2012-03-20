@@ -48,6 +48,7 @@
       <xsd:restriction base="xsd:string">
         <xsd:enumeration value="BaseArtifactType" />
         <xsd:enumeration value="DocumentArtifactType" />
+        <xsd:enumeration value="DerivedArtifactType" />
     </xsd:restriction>
   </xsd:simpleType>
   <xsd:simpleType name="documentArtifactEnum">
@@ -67,7 +68,7 @@
     <xsd:complexContent>
       <xsd:extension base="s-ramp:BaseArtifactType">
         <xsd:sequence>
-          <xsd:element name="relatedDocument" type="tns:relatedDocumentTarget"
+          <xsd:element name="relatedDocument" type="tns:documentArtifactTarget"
             minOccurs="1" maxOccurs="1" />
         </xsd:sequence>
       </xsd:extension>
@@ -103,7 +104,7 @@
   -->
  
     
-  <xsd:complexType name="relatedDocumentTarget">
+  <xsd:complexType name="documentArtifactTarget">
     <xsd:simpleContent>
          <xsd:extension base="xsd:string" >
                 <xsd:attribute name="artifactType" type="s-ramp:documentArtifactEnum" />
