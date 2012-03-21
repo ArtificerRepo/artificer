@@ -44,7 +44,7 @@ done < "tmpOutputFile"
 rm tmpOutputFile
 
 echo Building ...
-mvn clean package
+mvn clean package -DskipTests=true
 
 index=0
 for className in "${classList[@]}"

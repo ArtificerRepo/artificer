@@ -121,6 +121,7 @@
 	<xsd:complexType name="target">
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:string">
+			  <xsd:attribute name="href" type="xlink:hrefType" />
 				<xsd:anyAttribute namespace="##any" />
 			</xsd:extension>
 		</xsd:simpleContent>
