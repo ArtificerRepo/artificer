@@ -37,14 +37,20 @@
 		CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY USE OR
 		DISTRIBUTION OF THIS DOCUMENT.
 	-->
+	<xsd:simpleType name="policyExpressionEnum">
+    <xsd:restriction base="s-ramp:derivedArtifactEnum">
+      <xsd:enumeration value="PolicyExpression" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
 	<xsd:complexType name="PolicyAttachment">
 		<xsd:complexContent>
 			<xsd:extension base="s-ramp:DerivedArtifactType">
 				<xsd:sequence>
 					<!-- Derived Relationship to any other artifact (BaseArtifactType): -->
-					<xsd:element name="appliesTo" type="s-ramp:target" minOccurs="1" maxOccurs="unbounded" />
+					<xsd:element name="appliesTo" type="s-ramp:baseArtifactTarget" minOccurs="1" maxOccurs="unbounded" />
 					<!-- Derived Relationship to a Policy Expression artifact: -->
-					<xsd:element name="policies" type="s-ramp:target" minOccurs="1" maxOccurs="unbounded" />
+					<xsd:element name="policies" type="s-ramp:policyExpressionTarget" minOccurs="1" maxOccurs="unbounded" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -59,4 +65,17 @@
 			<xsd:extension base="s-ramp:XmlDocument"/>
 		</xsd:complexContent>
 	</xsd:complexType>
+	
+	<!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="policyExpressionTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:policyExpressionEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+	
 </xsd:schema>

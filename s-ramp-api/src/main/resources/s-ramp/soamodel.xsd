@@ -35,12 +35,78 @@
 	<xsd:include schemaLocation="coremodel.xsd" />
 	<xsd:include schemaLocation="serviceimplementationmodel.xsd" />
 
+  <xsd:simpleType name="informationTypeEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="InformationType" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="serviceEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="Service" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="serviceContractEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="ServiceContract" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="serviceInterfaceEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="ServiceInterface" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="policySubjectEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="PolicySubject" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="taskEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="Task" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="policyEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="Policy" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="elementEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="Element" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="orchestrationEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="Orchestration" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="orchestrationProcessEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="OrchestrationProcess" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="eventEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="Event" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="actorEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="Actor" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="effectEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="Effect" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
 	<xsd:complexType abstract="true" name="SoaModelType">
 		<xsd:complexContent>
 			<xsd:extension base="s-ramp:BaseArtifactType">
 				<xsd:sequence>
 					<!-- Modeled Relationship to abstract DocumentArtifactType-->
-					<xsd:element minOccurs="0" name="documentation" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="documentation" type="s-ramp:documentArtifactTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 				</xsd:sequence>
@@ -52,23 +118,23 @@
 		<xsd:complexContent>
 			<xsd:extension base="tns:SoaModelType">
 				<xsd:sequence>
-					<!-- Modeled Relationship to abstract DocumentArtifactType: -->
+					<!-- Modeled Relationship to abstract DerivedArtifactType: -->
 					<xsd:element minOccurs="0" maxOccurs="1"
 						name="interfaceDefinedBy" type="s-ramp:DerivedArtifactType">
 					</xsd:element>
 					<!-- Modeled Relationship to ServiceOperation: -->
-					<xsd:element minOccurs="0" name="hasOperation" type="s-ramp:target">
+					<xsd:element minOccurs="0" name="hasOperation" type="s-ramp:serviceOperationTarget">
 					</xsd:element>
 					<!-- Modeled Relationship to InformationType: -->
-					<xsd:element minOccurs="0" name="hasOutput" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="hasOutput" type="s-ramp:informationTypeTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 					<!-- Modeled Relationship to InformationType: -->
-					<xsd:element minOccurs="0" name="hasInput" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="hasInput" type="s-ramp:informationTypeTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 					<!-- Modeled Relationship to Service: -->
-					<xsd:element minOccurs="0" name="isInterfaceOf" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="isInterfaceOf" type="s-ramp:serviceTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 				</xsd:sequence>
@@ -81,16 +147,15 @@
 			<xsd:extension base="tns:Element">
 				<xsd:sequence>
 					<!-- Modeled Relationship to ServiceContract: -->
-					<xsd:element minOccurs="0" name="hasContract" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="hasContract" type="s-ramp:serviceContractTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 					<!-- Modeled Relationship to ServiceInterface: -->
-					<xsd:element minOccurs="1" name="hasInterface" type="s-ramp:target"
+					<xsd:element minOccurs="1" name="hasInterface" type="s-ramp:serviceInterfaceTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 					<!-- Modeled Relationship to ServiceInstance: -->
-					<xsd:element minOccurs="0" maxOccurs="1" name="hasInstance"
-						type="s-ramp:target">
+					<xsd:element minOccurs="0" maxOccurs="1" name="hasInstance" type="s-ramp:serviceInstanceTarget">
 					</xsd:element>
 				</xsd:sequence>
 			</xsd:extension>
@@ -123,7 +188,7 @@
 			<xsd:extension base="tns:SoaModelType">
 				<xsd:sequence>
 					<!-- Modeled Relationship to PolicySubject: -->
-					<xsd:element minOccurs="0" name="appliesTo" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="appliesTo" type="s-ramp:policySubjectTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 				</xsd:sequence>
@@ -143,11 +208,11 @@
 			<xsd:extension base="tns:Element">
 				<xsd:sequence>
 					<!-- Modeled Relationship to Task: -->
-					<xsd:element minOccurs="0" name="does" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="does" type="s-ramp:taskTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 					<!-- Modeled Relationship to Policy: -->
-					<xsd:element minOccurs="0" name="setsPolicy" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="setsPolicy" type="s-ramp:policyTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 				</xsd:sequence>
@@ -160,30 +225,30 @@
 			<xsd:extension base="tns:PolicySubject">
 				<xsd:sequence>
 					<!-- Modeled Relationship to Element: -->
-					<xsd:element minOccurs="0" name="represents" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="represents" type="s-ramp:elementTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 					<!-- Modeled Relationship to Element: -->
-					<xsd:element minOccurs="0" name="uses" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="uses" type="s-ramp:elementTarget"
 						maxOccurs="unbounded">
 					</xsd:element><!-- Modeled Relationship to Service: -->
-					<xsd:element minOccurs="0" name="performs" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="performs" type="s-ramp:serviceTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 					<!-- Modeled Relationship to Orchestration: -->
-					<xsd:element minOccurs="0" name="directsOrchestration"
-						type="s-ramp:target" maxOccurs="1">
+					<xsd:element minOccurs="0" name="directsOrchestration" type="s-ramp:orchestrationTarget" 
+					 maxOccurs="1">
 					</xsd:element>
 					<!-- Modeled Relationship to OrchestrationProcess: -->
-					<xsd:element minOccurs="0" name="directsOrchestrationProcess"
-						type="s-ramp:target" maxOccurs="1">
+					<xsd:element minOccurs="0" name="directsOrchestrationProcess" type="s-ramp:orchestrationTarget" 
+					 maxOccurs="1">
 					</xsd:element>
 					<!-- Modeled Relationship to Event: -->
-					<xsd:element minOccurs="0" name="generates" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="generates" type="s-ramp:eventTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 					<!-- Modeled Relationship to Event: -->
-					<xsd:element minOccurs="0" name="respondsTo" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="respondsTo" type="s-ramp:eventTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 				</xsd:sequence>
@@ -196,11 +261,11 @@
 			<xsd:extension base="s-ramp:PolicySubject">
 				<xsd:sequence>
 					<!-- Modeled Relationship to Actor: -->
-					<xsd:element minOccurs="0" name="involvesParty" type="s-ramp:target"
+					<xsd:element minOccurs="0" name="involvesParty" type="s-ramp:actorTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 					<!-- Modeled Relationship to Effect: -->
-					<xsd:element minOccurs="1" name="specifies" type="s-ramp:target"
+					<xsd:element minOccurs="1" name="specifies" type="s-ramp:effectTarget"
 						maxOccurs="unbounded">
 					</xsd:element>
 				</xsd:sequence>
@@ -283,4 +348,148 @@
 			<xsd:extension base="tns:Composition"></xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+	
+	<!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="informationTypeTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:informationTypeEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="serviceTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:serviceEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+    <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="serviceContractTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:serviceContractEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="serviceInterfaceTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:serviceInterfaceEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="policySubjectTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:policySubjectEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="taskTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:taskEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="policyTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:policyEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="elementTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:elementEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="orchestrationTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:orchestrationEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="orchestrationProcessTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:orchestrationProcessEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="eventTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:eventEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="actorTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:actorEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="effectTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:effectEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
 </xsd:schema>

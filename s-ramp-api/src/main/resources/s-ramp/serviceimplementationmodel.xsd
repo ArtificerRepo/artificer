@@ -39,6 +39,24 @@
 	<xsd:include schemaLocation="coremodel.xsd"/>
 	<xsd:include schemaLocation="soamodel.xsd"/>
 	
+  <xsd:simpleType name="serviceImplementationModelEnum" >
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="ServiceInstance" />
+      <xsd:enumeration value="ServiceOperation" />
+      <xsd:enumeration value="ServiceEndpoint" />
+      <xsd:enumeration value="ServiceOperation" />
+    </xsd:restriction>
+  </xsd:simpleType>
+    <xsd:simpleType name="serviceInstanceEnum" >
+    <xsd:restriction base="s-ramp:serviceImplementationModelEnum">
+      <xsd:enumeration value="ServiceInstance" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="serviceOperationEnum" >
+    <xsd:restriction base="s-ramp:serviceImplementationModelEnum">
+      <xsd:enumeration value="ServiceOperation" />
+    </xsd:restriction>
+  </xsd:simpleType>
 	<!--  All Service Implementation Model artifacts inherit from ServiceImplementationModelType. Service Implementation Model Artifacts 
   		can have associated documents. Service Implementation Model Artifacts can have dependencies upon other Service 
   		Implementation Model Artifacts.  -->
@@ -48,7 +66,7 @@
 			<xsd:extension base="s-ramp:BaseArtifactType">
 				<xsd:sequence>
 					<!-- Modeled Relationship(s) to documentArtifactType: -->
-					<xsd:element name="documentation" type="s-ramp:target" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="documentation" type="s-ramp:documentArtifactTarget" minOccurs="0" maxOccurs="unbounded" />
 				</xsd:sequence>
 				<xsd:anyAttribute namespace="##any"/>
 			</xsd:extension>
@@ -61,7 +79,7 @@
 			<xsd:extension base="s-ramp:Actor">
 				<xsd:sequence>
 					<!-- Modeled Relationship(s) to ServiceImplementationModelType: -->
-					<xsd:element name="provides" type="s-ramp:target" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="provides" type="s-ramp:serviceImplementationModelTarget" minOccurs="0" maxOccurs="unbounded" />
 					<xsd:element name="extension" type="tns:ExtensionType" minOccurs="0"/>
 					<xsd:element name="end" type="xsd:string" minOccurs="1" maxOccurs="1"/>
 					<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
@@ -76,9 +94,9 @@
 			<xsd:extension base="tns:ServiceImplementationModelType">
 				<xsd:sequence>
 					<!-- Modeled Relationship(s) to ServiceInstance(s): -->
-					<xsd:element name="uses" type="s-ramp:target" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="uses" type="s-ramp:serviceInstanceTarget" minOccurs="0" maxOccurs="unbounded" />
 					<!-- Modeled Relationship(s) to ServiceEndpoint(s): -->
-					<xsd:element name="describedBy" type="s-ramp:target" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="describedBy" type="s-ramp:serviceInstanceTarget" minOccurs="0" maxOccurs="unbounded" />
 					<xsd:element name="extension" type="tns:ExtensionType" minOccurs="0"/>
 					<xsd:element name="end" type="xsd:string" minOccurs="1" maxOccurs="1"/>
 					<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
@@ -93,7 +111,7 @@
 			<xsd:extension base="tns:ServiceImplementationModelType">
 				<xsd:sequence>
 					<!-- Modeled Relationship to the DerivedArtifactType that defines this ServiceOperation: -->
-					<xsd:element name="operationDefinedBy" type="s-ramp:target" minOccurs="0" maxOccurs="1" />
+					<xsd:element name="operationDefinedBy" type="s-ramp:derivedArtifactTarget" minOccurs="0" maxOccurs="1" />
 					<xsd:element name="extension" type="tns:ExtensionType" minOccurs="0"/>
 					<xsd:element name="end" type="xsd:string" minOccurs="1" maxOccurs="1"/>
 					<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -108,7 +126,7 @@
 			<xsd:extension base="tns:ServiceImplementationModelType">
 				<xsd:sequence>
 					<!-- Modeled Relationship with DerivedArtifactType which defines this ServiceEndpoint: -->
-					<xsd:element name="endpointDefinedBy" type="s-ramp:target" minOccurs="0" maxOccurs="1" />
+					<xsd:element name="endpointDefinedBy" type="s-ramp:derivedArtifactTarget" minOccurs="0" maxOccurs="1" />
 					<xsd:element name="extension" type="tns:ExtensionType" minOccurs="0"/>
 					<xsd:element name="end" type="xsd:string" minOccurs="1" maxOccurs="1"/>
 					<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
@@ -127,5 +145,38 @@
     </xsd:sequence>
     <xsd:anyAttribute namespace="##any"/>
   </xsd:complexType>
-    
+  
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="serviceImplementationModelTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:serviceImplementationModelEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="serviceInstanceTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:serviceInstanceEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
+  <!--
+    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
+    from a DerivedArtifactType to a DocumentArtifactType
+  -->
+  <xsd:complexType name="serviceOperationTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:serviceOperationEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
  </xsd:schema>	
