@@ -311,6 +311,9 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 	
+	<!--
+    Relationship referencing the artifact's UUID, to reference a WSDLDocument.
+  -->
 	<xsd:complexType name="wsdlDocumentTarget">
       <xsd:complexContent>
          <xsd:extension base="s-ramp:target" >
@@ -318,6 +321,9 @@
          </xsd:extension>
       </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a WSDLExtention.
+  -->
   <xsd:complexType name="wsdlExtensionTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -325,6 +331,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a Port.
+  -->
   <xsd:complexType name="portTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -332,6 +341,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a Binding.
+  -->
   <xsd:complexType name="bindingTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -339,6 +351,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a BindingOperation.
+  -->
   <xsd:complexType name="bindingOperationTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -346,6 +361,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a PortType.
+  -->
   <xsd:complexType name="portTypeTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -353,6 +371,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference an Operation.
+  -->
   <xsd:complexType name="operationTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -360,6 +381,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a BindingOperationFault.
+  -->
   <xsd:complexType name="bindingOperationFaultTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -367,6 +391,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a BindingOperationInputTarget.
+  -->
   <xsd:complexType name="bindingOperationInputTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -374,6 +401,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a BindingOperationOutput.
+  -->
   <xsd:complexType name="bindingOperationOutputTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -381,6 +411,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference an OperationInput.
+  -->
   <xsd:complexType name="operationInputTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -388,6 +421,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference an OperationOutput.
+  -->
   <xsd:complexType name="operationOutputTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -395,6 +431,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a Fault.
+  -->
   <xsd:complexType name="faultTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -402,6 +441,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a Message.
+  -->
   <xsd:complexType name="messageTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -409,6 +451,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference a Part.
+  -->
   <xsd:complexType name="partTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >
@@ -416,6 +461,9 @@
        </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <!--
+    Relationship referencing the artifact's UUID, to reference any XsdType.
+  -->
   <xsd:complexType name="xsdTypeTarget">
     <xsd:complexContent>
        <xsd:extension base="s-ramp:target" >

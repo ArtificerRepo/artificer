@@ -93,9 +93,8 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 	
-	  <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+<!--
+    Relationship referencing the artifact's UUID, to reference an XsdDocument.
   -->
   <xsd:complexType name="xsdDocumentTarget">
     <xsd:complexContent>

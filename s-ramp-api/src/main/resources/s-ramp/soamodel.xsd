@@ -349,9 +349,8 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 	
-	<!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+  <!--
+    Relationship referencing the artifact's UUID, to reference an InformationType.
   -->
   <xsd:complexType name="informationTypeTarget">
     <xsd:complexContent>
@@ -361,8 +360,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference a Service.
   -->
   <xsd:complexType name="serviceTarget">
     <xsd:complexContent>
@@ -371,9 +369,8 @@
          </xsd:extension>
    </xsd:complexContent>
   </xsd:complexType>
-    <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+  <!--
+    Relationship referencing the artifact's UUID, to reference a ServiceContract.
   -->
   <xsd:complexType name="serviceContractTarget">
     <xsd:complexContent>
@@ -383,8 +380,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference a ServiceInterface.
   -->
   <xsd:complexType name="serviceInterfaceTarget">
     <xsd:complexContent>
@@ -394,8 +390,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference a PolicySubject.
   -->
   <xsd:complexType name="policySubjectTarget">
     <xsd:complexContent>
@@ -405,8 +400,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference a Task.
   -->
   <xsd:complexType name="taskTarget">
     <xsd:complexContent>
@@ -416,8 +410,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference a Policy.
   -->
   <xsd:complexType name="policyTarget">
     <xsd:complexContent>
@@ -427,8 +420,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference an Element.
   -->
   <xsd:complexType name="elementTarget">
     <xsd:complexContent>
@@ -438,8 +430,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference an Orchestration.
   -->
   <xsd:complexType name="orchestrationTarget">
     <xsd:complexContent>
@@ -449,8 +440,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference an OrchestrationProcess.
   -->
   <xsd:complexType name="orchestrationProcessTarget">
     <xsd:complexContent>
@@ -460,8 +450,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference an Event.
   -->
   <xsd:complexType name="eventTarget">
     <xsd:complexContent>
@@ -471,8 +460,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference an Actor.
   -->
   <xsd:complexType name="actorTarget">
     <xsd:complexContent>
@@ -482,8 +470,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference an Effect.
   -->
   <xsd:complexType name="effectTarget">
     <xsd:complexContent>

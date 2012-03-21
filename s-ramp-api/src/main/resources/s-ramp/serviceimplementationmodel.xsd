@@ -147,8 +147,7 @@
   </xsd:complexType>
   
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference a ServiceImplementationModel.
   -->
   <xsd:complexType name="serviceImplementationModelTarget">
     <xsd:complexContent>
@@ -158,8 +157,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference a ServiceInstance.
   -->
   <xsd:complexType name="serviceInstanceTarget">
     <xsd:complexContent>
@@ -169,8 +167,7 @@
    </xsd:complexContent>
   </xsd:complexType>
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference a ServiceOperation.
   -->
   <xsd:complexType name="serviceOperationTarget">
     <xsd:complexContent>

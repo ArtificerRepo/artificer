@@ -253,9 +253,8 @@
    </xsd:simpleContent>
   </xsd:complexType>
   
- <!--
-    Relationship relatedBaseRef artifact's UUID. Used by the documentRelationship
-    from a PolicyAttachment to any other Artifact
+  <!--
+    Relationship referencing the artifact's UUID, to reference any BaseArtifact.
   -->
   <xsd:complexType name="baseArtifactTarget">
     <xsd:complexContent>
@@ -266,8 +265,7 @@
   </xsd:complexType>
 
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference any DerivedArtifact.
   -->
   <xsd:complexType name="derivedArtifactTarget">
     <xsd:complexContent>
@@ -278,8 +276,7 @@
   </xsd:complexType>
   
   <!--
-    Relationship relatedDocumentRef artifact's UUID. Used by the documentRelationship
-    from a DerivedArtifactType to a DocumentArtifactType
+    Relationship referencing the artifact's UUID, to reference any DocumentArtifact.
   -->
   <xsd:complexType name="documentArtifactTarget">
     <xsd:complexContent>
