@@ -55,6 +55,10 @@
 			<xsd:element ref="tns:relationship" minOccurs="0"
 				maxOccurs="unbounded" />
 			<xsd:element ref="tns:property" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element ref="tns:modifiedTimestamp" minOccurs="0" 
+			  maxOccurs="unbounded" />
+			<xsd:element ref="tns:modifiedBy" minOccurs="0" 
+        maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="description" type="xsd:string" use="optional" />
@@ -64,9 +68,9 @@
 		<xsd:attribute name="createdTimestamp" type="xsd:dateTime"
 			use="required" />
 		<xsd:attribute name="lastModifiedTimestamp" type="xsd:dateTime"
-			use="required" />
-		<xsd:attribute name="lastModifiedBy" type="xsd:string"
-			use="required" />
+      use="required" />
+    <xsd:attribute name="lastModifiedBy" type="xsd:string"
+      use="required" />
 		<xsd:anyAttribute namespace="##any" />
 	</xsd:complexType>
 
@@ -173,6 +177,8 @@
 
 	<xsd:element name="relationshipType" type="xsd:string" />
 	<xsd:element name="classifiedBy" type="xsd:anyURI" />
+	<xsd:element name="modifiedTimestamp" type="xsd:dateTime" />
+	<xsd:element name="modifiedBy" type="xsd:string" />
 	<xsd:element name="propertyName" type="xsd:string" />
 	<xsd:element name="propertyValue" type="xsd:string" />
 	<xsd:element name="queryExpression" type="xsd:string" />
