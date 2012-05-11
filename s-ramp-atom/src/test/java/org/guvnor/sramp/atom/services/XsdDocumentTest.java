@@ -19,6 +19,7 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.app.AppService;
 import org.jboss.resteasy.plugins.providers.atom.app.AppWorkspace;
 import org.jboss.resteasy.test.BaseResourceTest;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
@@ -39,7 +40,7 @@ public class XsdDocumentTest extends BaseResourceTest {
     //Making a client call to the actual XsdDocument implementation running in
     //an embedded container.
     @Test
-    public void testPost() throws Exception
+    public void testPostingPurchaseOrderXSD() throws Exception
     {
        ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument"));
        
@@ -55,10 +56,10 @@ public class XsdDocumentTest extends BaseResourceTest {
        ClientResponse<Entry> response = request.post(Entry.class);
        
        Entry entry = response.getEntity();
-       Artifact artifact = entry.getContent().getJAXBObject(Artifact.class);
-       System.out.println(entry.getId());
+       Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
+       Assert.assertEquals(Long.valueOf(2376), artifact.getXsdDocument().getContentSize());
        
-       //to XML
+       //Serializing to XML so we can check that it looks good.
        JAXBContext jaxbContext=JAXBContext.newInstance(Entry.class);
        Marshaller marshaller = jaxbContext.createMarshaller();
        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -66,10 +67,11 @@ public class XsdDocumentTest extends BaseResourceTest {
        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
        
        StringWriter writer = new StringWriter();
-       JAXBElement<Entry> element = new JAXBElement<Entry>(new QName("","atom:entry","atom"),Entry.class,entry);
+       JAXBElement<Entry> element = new JAXBElement<Entry>(new QName("http://www.w3.org/2005/Atom","atom:entry","atom"),Entry.class,entry);
        
        marshaller.marshal(element,writer);
        String actualXml=writer.toString();
+       System.out.println(actualXml);
     }
     
     public String convertStreamToString(java.io.InputStream is) {

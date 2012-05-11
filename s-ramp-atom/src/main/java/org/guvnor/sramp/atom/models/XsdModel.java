@@ -24,12 +24,12 @@ public class XsdModel {
         entry.getAuthors().add(new Person(xsdDocument.getCreatedBy()));
         entry.setSummary(xsdDocument.getDescription());
         
-        Link contentLink = new Link();
-        contentLink.setType(MediaType.APPLICATION_ATOM_XML_UTF8_TYPE);
+        Content content = new Content();
+        content.setType(MediaType.APPLICATION_ATOM_XML_UTF8_TYPE);
         //TODO create URL Helper, obtain base URL from server
-        contentLink.setHref(new URI("http://localhost:8080/changeit/s-ramp/xsd/XsdDocument/" 
+        content.setSrc(new URI("http://localhost:8080/changeit/s-ramp/xsd/XsdDocument/" 
                 + xsdDocument.getUuid() + "/media"));
-        entry.getLinks().add(contentLink);
+        entry.setContent(content);
         
         //link to self
         Link linkToSelf = new Link();
@@ -65,9 +65,7 @@ public class XsdModel {
         //artifact
         Artifact artifact = new Artifact();
         artifact.setXsdDocument(xsdDocument);
-        Content content = new Content();
-        content.setJAXBObject(artifact);
-        entry.setContent(content);
+        entry.setAnyOtherJAXBObject(artifact);
         
         return entry;
     }
