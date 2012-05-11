@@ -9,4 +9,6 @@ public interface PersistenceManager {
     public String persistArtifact(String name, InputStream artifact) throws UnsupportedFiletypeException;
     
     public String persistDerivedArtifact(BaseArtifactType baseArtifactType);
+    
+    public void printArtifactGraph(String uuid);
 }

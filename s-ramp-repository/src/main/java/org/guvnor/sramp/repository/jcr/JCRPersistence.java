@@ -113,5 +113,28 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         //When using modeshape it is already persisted
         return baseArtifactType.getUuid();
     }
+    
+    @Override
+    public void printArtifactGraph(String uuid) {
+        Session session = null;
+        
+        try {
+            session = JCRRepository.getSession();
+            Node derivedNode = session.getNodeByIdentifier(uuid);
+            JcrTools tools = new JcrTools();
+            tools.printSubgraph(derivedNode);
+        } catch (LoginException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NoSuchWorkspaceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (RepositoryException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            session.logout();
+        }
+    }
 
 }
