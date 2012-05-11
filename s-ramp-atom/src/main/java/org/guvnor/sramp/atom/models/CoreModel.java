@@ -29,7 +29,7 @@ public class CoreModel {
         AppCollection xmlDocCollection = new AppCollection(
                 (hrefBase + "/s-ramp/core/XmlDocument").replaceAll("//s-ramp","/s-ramp"),
                 "XML Documents");
-        xmlDocCollection.getAccept().add(new AppAccept(APPLICATION_XML));
+        xmlDocCollection.getAccept().add(new AppAccept(APPLICATION_ATOM_XML_ENTRY));
         
         AppCategories xmlDocCategories = new AppCategories();
         xmlDocCategories.setFixed(true);

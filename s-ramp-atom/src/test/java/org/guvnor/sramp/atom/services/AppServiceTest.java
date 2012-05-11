@@ -1,19 +1,67 @@
 package org.guvnor.sramp.atom.services;
 
+import static org.jboss.resteasy.test.TestPortProvider.generateURL;
+
 import java.io.StringReader;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.plugins.providers.atom.app.AppCollection;
 import org.jboss.resteasy.plugins.providers.atom.app.AppService;
+import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  * @version $Revision: 1 $
  */
-public class AppServiceTest {
+public class AppServiceTest extends BaseResourceTest {
+    
+    @Before
+    public void setUp() throws Exception
+    {
+        //bring up the embedded container with the serviceDocument resource deployed.
+       dispatcher.getRegistry().addPerRequestResource(ServiceDocumentResource.class);
+    }
+    
+    @Test
+    public void unmarshallAppService() throws Exception {
+        JAXBContext ctx = JAXBContext.newInstance(AppService.class);
+        Unmarshaller unmarshaller = ctx.createUnmarshaller();
+        AppService service = (AppService) unmarshaller
+                .unmarshal(new StringReader(XML));
+        Assert.assertTrue(service.getWorkspace().size()==8);
+    }
+    
+    //Making a client call to the actual serviceDocument implementation running in
+    //an embedded container.
+    @Test
+    public void testAppService() throws Exception
+    {
+       ClientRequest request = new ClientRequest(generateURL("/s-ramp/servicedocument"));
+       
+       ClientResponse<AppService> response = request.get(AppService.class);
+       AppService appService = response.getEntity();
+       
+       //Assertions on the service and the workspace
+       Assert.assertTrue(appService.getWorkspace().size()==1);
+       Assert.assertEquals("Core Model", appService.getWorkspace().get(0).getTitle());
+       
+       //Assertions on the collections, 
+       //at the moment we only implemented the xmlDocument Collection
+       AppCollection appCollection = appService.getWorkspace().get(0).getCollection().get(0);
+       Assert.assertEquals("/s-ramp/core/XmlDocument",appCollection.getHref());
+       Assert.assertEquals("XML Documents",appCollection.getTitle());
+       Assert.assertEquals("application/atom+xml;type=entry", appCollection.getAccept().get(0).getContent());
+       //TODO Add more assertions as we implement more workspaces
+       System.out.println(appService);
+    }
+    
     /**
      * Taken from the S-RAMP Atom Binding Document Appendix E.
      */
@@ -692,12 +740,5 @@ public class AppServiceTest {
     		"</service>\n" + 
     		"";
 
-    @Test
-    public void unmarshallAppService() throws Exception {
-        JAXBContext ctx = JAXBContext.newInstance(AppService.class);
-        Unmarshaller unmarshaller = ctx.createUnmarshaller();
-        AppService service = (AppService) unmarshaller
-                .unmarshal(new StringReader(XML));
-        Assert.assertTrue(service.getWorkspace().size()==8);
-    }
+
 }
