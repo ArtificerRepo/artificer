@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.guvnor.sramp</groupId>
+		<groupId>org.overlord.sramp</groupId>
 		<artifactId>s-ramp-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>s-ramp-parent/pom.xml</relativePath>

@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.guvnor.sramp</groupId>
+		<groupId>org.overlord.sramp</groupId>
 		<artifactId>s-ramp</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
@@ -58,13 +58,13 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.guvnor.sramp</groupId>
+			<groupId>org.overlord.sramp</groupId>
 			<artifactId>s-ramp-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>org.guvnor.sramp</groupId>
+			<groupId>org.overlord.sramp</groupId>
 			<artifactId>s-ramp-repository</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<type>jar</type>

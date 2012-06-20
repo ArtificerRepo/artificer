@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.guvnor.sramp</groupId>
+	<groupId>org.overlord.sramp</groupId>
 	<artifactId>s-ramp-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>S-RAMP Common Parent</name>
 
-	<url>http://www.jboss.org/guvnor/sramp.html</url>
+	<url>http://www.jboss.org/overlord</url>
 	<packaging>pom</packaging>
 	<description>S-RAMP is a SOA Repository Artifact Model and Protocol (S-RAMP) implementation.</description>
 	<inceptionYear>2011</inceptionYear>
