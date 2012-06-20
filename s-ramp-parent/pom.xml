@@ -81,7 +81,7 @@
 		<maven.source.plugin.version>2.1.2</maven.source.plugin.version>
 		<maven.deploy.plugin.version>2.5</maven.deploy.plugin.version>
     <!-- from other modules -->
-    <org.jboss.resteasy.version>2.3.3.Final</org.jboss.resteasy.version>
+    <org.jboss.resteasy.version>2.3.4.Final</org.jboss.resteasy.version>
     <org.modeshape.version>3.0-SNAPSHOT</org.modeshape.version>
 	</properties>
 

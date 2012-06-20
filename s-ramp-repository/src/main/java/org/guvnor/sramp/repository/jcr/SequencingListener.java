@@ -23,27 +23,25 @@ public class SequencingListener implements EventListener {
         while (events.hasNext()) {
             try {
                 Event event = (Event)events.nextEvent();
-                String nodePath = event.getPath();
-                System.out.println("Received created sequenced node event at: " + nodePath);
-                waitingLatches.get(nodePath).countDown();
+                String derivedArtifactPath = event.getPath();
+                System.out.println("Received created sequenced node event for: " + derivedArtifactPath);
+                waitingLatches.get(derivedArtifactPath).countDown();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
     }
     
-    public void addWaitingLatch(String artifactFileName) throws UnsupportedFiletypeException {
-        String derivedNodePath = MapToJCRPath.getDerivedArtifactPath(artifactFileName);
-        waitingLatches.putIfAbsent(derivedNodePath, new CountDownLatch(1));
+    public void addWaitingLatch(String path) throws UnsupportedFiletypeException {
+        waitingLatches.putIfAbsent(path, new CountDownLatch(1));
     }
     
-    public void waitForLatch(String artifactFileName) throws InterruptedException, UnsupportedFiletypeException {
-        String derivedNodePath = MapToJCRPath.getDerivedArtifactPath(artifactFileName);
-        waitingLatches.get(derivedNodePath).await(60, TimeUnit.SECONDS);
+    public void waitForLatch(String path) throws InterruptedException, UnsupportedFiletypeException {
+        waitingLatches.get(path).await(60, TimeUnit.SECONDS);
     }
     
-    public Node getDerivedNode(String artifactFileName, JcrSession session) throws PathNotFoundException, RepositoryException, UnsupportedFiletypeException {
-        String derivedNodePath = MapToJCRPath.getDerivedArtifactPath(artifactFileName);
+    public Node getDerivedNode(String path, JcrSession session) throws PathNotFoundException, RepositoryException, UnsupportedFiletypeException {
+        String derivedNodePath = MapToJCRPath.getDerivedArtifactPath(path);
         Node derivedNode = session.getNode(derivedNodePath);
         
         return derivedNode;

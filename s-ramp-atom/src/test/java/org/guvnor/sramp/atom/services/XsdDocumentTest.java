@@ -10,14 +10,10 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-
 import org.guvnor.sramp.atom.MediaType;
-import org.guvnor.sramp.atom.models.CoreModel;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.app.AppService;
-import org.jboss.resteasy.plugins.providers.atom.app.AppWorkspace;
 import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
 import org.junit.Before;

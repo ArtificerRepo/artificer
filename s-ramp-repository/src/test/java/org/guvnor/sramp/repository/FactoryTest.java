@@ -11,8 +11,6 @@ import org.junit.Test;
  */
 public class FactoryTest {
     
-    
-    
     @Test
     public void testFindServiceConfig() {
         URL url = this.getClass().getClassLoader().getResource("META-INF/services/org.guvnor.sramp.repository.DerivedArtifacts");

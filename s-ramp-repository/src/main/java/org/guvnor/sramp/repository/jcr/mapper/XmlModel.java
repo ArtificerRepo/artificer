@@ -35,7 +35,7 @@ public class XmlModel {
             XMLGregorianCalendar modifiedTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(derivedNode.getProperty("jcr:lastModified").getString());
             xmlDocument.setLastModifiedTimestamp(modifiedTS);
             xmlDocument.setName(derivedNode.getName());
-            xmlDocument.setUuid(derivedNode.getIdentifier());
+            xmlDocument.setUuid(derivedNode.getProperty("uuid").getString());
             xmlDocument.setVersion(derivedNode.getProperty("version").getString());
             
             

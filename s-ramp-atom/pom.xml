@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-atom-provider</artifactId>
-			<version>3.0-alpha-1-SNAPSHOT</version>
+			<version>${org.jboss.resteasy.version}</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>

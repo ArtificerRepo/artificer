@@ -14,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MultivaluedMap;
 
+import static org.guvnor.sramp.atom.Constants.XSD;
 import org.guvnor.sramp.atom.MediaType;
 import org.guvnor.sramp.atom.models.XsdModel;
 import org.guvnor.sramp.repository.DerivedArtifacts;
@@ -40,7 +41,7 @@ public class XsdDocumentResource
             PersistenceManager persistanceManager = PersistenceFactory.newInstance();
             //store the content
             InputStream is = new ByteArrayInputStream(body.getBytes("UTF-8"));
-            persistanceManager.persistArtifact(fileName, is);
+            persistanceManager.persistArtifact(fileName, XSD, is);
             is.close();
             
             //create the derivedArtifacts
@@ -50,6 +51,7 @@ public class XsdDocumentResource
             //persist the derivedArtifacts
             persistanceManager.persistDerivedArtifact(xsdDocument);
             
+            //return the entry containing an artifact which contains the Derived XSD Document Model
             entry = XsdModel.toEntry(xsdDocument);
         } catch (Exception e) {
             //TODO
@@ -77,7 +79,7 @@ public class XsdDocumentResource
             
             PersistenceManager persistanceManager = PersistenceFactory.newInstance();
             //store the content
-            persistanceManager.persistArtifact(fileName, is);
+            persistanceManager.persistArtifact(fileName, XSD,is);
             is.close();
             
             //create the derivedArtifacts

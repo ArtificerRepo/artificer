@@ -10,6 +10,9 @@ public class Constants {
     
     public static final String XML_DOCUMENT_TERM = "XmlDocument";
     
+    public static final String XSD = "xsd";
+    public static final String XML = "xml";
+    
     
     private static class URIHelper {
         static URI create(String uriStr) {

@@ -1,42 +1,36 @@
 package org.guvnor.sramp.repository.jcr;
 
-import org.guvnor.sramp.repository.UnsupportedFiletypeException;
-
 public class MapToJCRPath {
 
+    private static int folderDepth     = 3;
+    private static String PATH         = "/artifact/%1$s/";
     /**
-     * "/artifact/<fileExtension>/<fileName>"
+     * "/artifact/<fileExtension>/[btree]"
+     * 
+     * @param uuid - Universally Unique ID
+     * @param type - fileType (xsd, xml etc)
+     * @return path: "/artifact/<type>/[btree]"
+     */
+    public static String getArtifactPath(String uuid, String type) {
+        return String.format(PATH, type) + bTreePath(uuid, type);
+    }
+    /**
+     *  * "/s-ramp/<fileExtension>/[btree]"
      * 
      * @param artifactFileName
-     * @return
-     * @throws UnsupportedFiletypeException 
+     * @return path: "/s-ramp/<type>/[btree]"
      */
-    public static String getArtifactPath(String artifactFileName) throws UnsupportedFiletypeException {
-        String fileExtension = getFileExtension(artifactFileName);
-        String path = "/artifact/" + fileExtension + "/"+ artifactFileName;
-        return path;
-    }
-    /**
-     * "/s-ramp/<model>/<artifactType>/<fileName>"
-     * 
-     * @param artifactFileName
-     * @return
-     * @throws UnsupportedFiletypeException 
-     */
-    protected static String getDerivedArtifactPath(String artifactFileName) throws UnsupportedFiletypeException {
-        String fileExtention = getFileExtension(artifactFileName);
-        String[] pathElements = getModel(fileExtention);
-        String path = "/s-ramp/" + pathElements[0] + "/" + pathElements[1] + "/"+ artifactFileName;
-        return path;
+    public static String getDerivedArtifactPath(String path) {
+        return path.replace("artifact", "s-ramp");
     }
     
-    protected static String getFileExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".")+1, fileName.length()).toLowerCase();
+    private static String bTreePath (String uuid, String type) {
+        String bTreePath = "";
+        for (int i=0; i < folderDepth; i++) {
+            bTreePath += uuid.substring(2*i, 2*i+2) + "/";
+        }
+        bTreePath += uuid.substring(folderDepth * 2);
+        return bTreePath;
     }
     
-    protected static String[] getModel(String fileExtention) throws UnsupportedFiletypeException {
-        if ("xsd".equals(fileExtention)) return new String[] {"xsd","XsdDocument"};
-        else if ("xml".equals(fileExtention)) return new String[] {"xml","XmlDocument"};
-        else throw new UnsupportedFiletypeException("File extention '" + fileExtention + "' is not yet supported.");
-    }
 }

@@ -42,23 +42,26 @@ public class JCRPersistenceTest {
     public void testSavePO_XSD() throws Exception {
         
         String artifactFileName = "PO.xsd";
+        String type = "xsd";
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
         
         JCRPersistence persistence = new JCRPersistence();
-        String uuid = persistence.persistArtifact(artifactFileName, POXsd);
+        String id = persistence.persistArtifact(artifactFileName, type, POXsd);
         POXsd.close();
-        log.info("persisted PO.xsd to JCR, returned UUID=" + uuid);
-        Assert.assertNotNull(uuid);
-        XsdDocument xsdDocument = persistence.createDerivedArtifact(XsdDocument.class, artifactFileName);
-        String derivedUuid = persistence.persistDerivedArtifact(xsdDocument);
+        log.info("persisted PO.xsd to JCR, returned ID=" + id);
+        Assert.assertNotNull(id);
+        Node artifactNode = session.getNodeByIdentifier(id);
+        String derivedArtifactPath = MapToJCRPath.getDerivedArtifactPath(artifactNode.getPath());
+        XsdDocument xsdDocument = persistence.createDerivedArtifact(XsdDocument.class, id);
+        String derivedId = persistence.persistDerivedArtifact(xsdDocument);
         
         //print out the derived node
-        Node derivedNode = session.getNodeByIdentifier(derivedUuid);
+        Node derivedNode = session.getNodeByIdentifier(derivedId);
         JcrTools tools = new JcrTools();
         tools.printSubgraph(derivedNode);
         
         Assert.assertEquals(new Long(2376l), xsdDocument.getContentSize());
-        Assert.assertEquals("/s-ramp/xsd/XsdDocument/PO.xsd",derivedNode.getPath());
+        Assert.assertEquals(derivedArtifactPath,derivedNode.getPath());
         
         System.out.println("XsdDocument = " + xsdDocument);
     }
@@ -72,23 +75,26 @@ public class JCRPersistenceTest {
     public void testSavePO_XML() throws Exception {
         
         String artifactFileName = "PO.xml";
+        String type = "xml";
         InputStream POXml = this.getClass().getResourceAsStream("/sample-files/xml/" + artifactFileName);
         
         JCRPersistence persistence = new JCRPersistence();
-        String uuid = persistence.persistArtifact(artifactFileName, POXml);
+        String id = persistence.persistArtifact(artifactFileName, type, POXml);
         POXml.close();
-        log.info("persisted PO.xml to JCR, returned UUID=" + uuid);
-        Assert.assertNotNull(uuid);
-        XmlDocument xmlDocument = persistence.createDerivedArtifact(XmlDocument.class, artifactFileName);
-        String derivedUuid = persistence.persistDerivedArtifact(xmlDocument);
+        log.info("persisted PO.xml to JCR, returned ID=" + id);
+        Assert.assertNotNull(id);
+        Node artifactNode = session.getNodeByIdentifier(id);
+        String derivedArtifactPath = MapToJCRPath.getDerivedArtifactPath(artifactNode.getPath());
+        XmlDocument xmlDocument = persistence.createDerivedArtifact(XmlDocument.class, id);
+        String derivedId = persistence.persistDerivedArtifact(xmlDocument);
         
         //print out the derived node
-        Node derivedNode = session.getNodeByIdentifier(derivedUuid);
+        Node derivedNode = session.getNodeByIdentifier(derivedId);
         JcrTools tools = new JcrTools();
         tools.printSubgraph(derivedNode);
         
         Assert.assertEquals(new Long(2376l), xmlDocument.getContentSize());
-        Assert.assertEquals("/s-ramp/xml/XmlDocument/PO.xml",derivedNode.getPath());
+        Assert.assertEquals(derivedArtifactPath,derivedNode.getPath());
         
         System.out.println("XmlDocument = " + xmlDocument);
     }

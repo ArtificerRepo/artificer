@@ -4,6 +4,7 @@ import java.io.InputStream;
 
 import junit.framework.Assert;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
@@ -17,23 +18,30 @@ public class PersistenceTest {
     
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
+    private static PersistenceManager persistenceManager = null;
+    
+    @BeforeClass
+    public static void setup() {
+        persistenceManager = PersistenceFactory.newInstance();
+    }
+    
     @Test
     public void testSavePO_XSD() throws Exception {
         
         String artifactFileName = "PO.xsd";
+        String type = "xsd";
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
         
-        PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-        String uuid = persistenceManager.persistArtifact(artifactFileName, POXsd);
+        String identifier = persistenceManager.persistArtifact(artifactFileName, type, POXsd);
         POXsd.close();
-        log.info("persisted PO.xsd to JCR, returned UUID=" + uuid);
-        Assert.assertNotNull(uuid);
-        DerivedArtifacts derivedArtifactsManager = new DerivedArtifactsFactory().newInstance();
-        XsdDocument xsdDocument = derivedArtifactsManager.createDerivedArtifact(XsdDocument.class, artifactFileName);
-        String derivedUuid = persistenceManager.persistDerivedArtifact(xsdDocument);
+        log.info("persisted PO.xsd to JCR, returned ID=" + identifier);
+        Assert.assertNotNull(identifier);
+        DerivedArtifacts derivedArtifactsManager = DerivedArtifactsFactory.newInstance();
+        XsdDocument xsdDocument = derivedArtifactsManager.createDerivedArtifact(XsdDocument.class, identifier);
+        String derivedIdentifier = persistenceManager.persistDerivedArtifact(xsdDocument);
         
         //print out the derived node
-        persistenceManager.printArtifactGraph(derivedUuid);
+        persistenceManager.printArtifactGraph(derivedIdentifier);
         
         Assert.assertEquals(new Long(2376l), xsdDocument.getContentSize());
         System.out.println("XsdDocument = " + xsdDocument);
@@ -48,19 +56,19 @@ public class PersistenceTest {
     public void testSavePO_XML() throws Exception {
         
         String artifactFileName = "PO.xml";
+        String type = "xml";
         InputStream POXml = this.getClass().getResourceAsStream("/sample-files/xml/" + artifactFileName);
         
-        PersistenceManager persistenceManager = new PersistenceFactory().newInstance();
-        String uuid = persistenceManager.persistArtifact(artifactFileName, POXml);
+        String identifier = persistenceManager.persistArtifact(artifactFileName, type, POXml);
         POXml.close();
-        log.info("persisted PO.xml to JCR, returned UUID=" + uuid);
-        Assert.assertNotNull(uuid);
-        DerivedArtifacts derivedArtifactsManager = new DerivedArtifactsFactory().newInstance();
-        XmlDocument xmlDocument = derivedArtifactsManager.createDerivedArtifact(XmlDocument.class, artifactFileName);
-        String derivedUuid = persistenceManager.persistDerivedArtifact(xmlDocument);
+        log.info("persisted PO.xml to JCR, returned ID=" + identifier);
+        Assert.assertNotNull(identifier);
+        DerivedArtifacts derivedArtifactsManager = DerivedArtifactsFactory.newInstance();
+        XmlDocument xmlDocument = derivedArtifactsManager.createDerivedArtifact(XmlDocument.class, identifier);
+        String derivedIdentifier = persistenceManager.persistDerivedArtifact(xmlDocument);
         
       //print out the derived node
-        persistenceManager.printArtifactGraph(derivedUuid);
+        persistenceManager.printArtifactGraph(derivedIdentifier);
         
         Assert.assertEquals(new Long(2376l), xmlDocument.getContentSize());
         

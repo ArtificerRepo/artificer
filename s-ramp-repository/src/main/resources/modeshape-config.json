@@ -17,12 +17,12 @@
             {
                 "description" : "XSD sequencer",
                 "type" : "xsdsequencer",
-                "pathExpressions" : [ "default://(*.xsd)/jcr:content[@jcr:data] => /s-ramp/xsd/XsdDocument/" ]
+                "pathExpressions" : [ "default:/artifact/xsd/(*)/(*)/(*)/*/jcr:content[@jcr:data] => default:/s-ramp/xsd/$1/$2/$3" ]
              },
              {
                 "description" : "XML sequencer",
                 "type" : "xmlsequencer",
-                "pathExpressions" : [ "default://(*.xml)/jcr:content[@jcr:data] => /s-ramp/xml/XmlDocument/" ]
+                "pathExpressions" : [ "default:/artifact/xml/(*)/(*)/(*)/*/jcr:content[@jcr:data] => default:/s-ramp/xml/$1/$2/$3" ]
             }
         ]
     }

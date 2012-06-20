@@ -35,7 +35,7 @@ public class XsdModel {
             XMLGregorianCalendar modifiedTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(derivedNode.getProperty("jcr:lastModified").getString());
             xsdDocument.setLastModifiedTimestamp(modifiedTS);
             xsdDocument.setName(derivedNode.getName());
-            xsdDocument.setUuid(derivedNode.getIdentifier());
+            xsdDocument.setUuid(derivedNode.getProperty("sramp:uuid").getString());
             xsdDocument.setVersion(derivedNode.getProperty("version").getString());
             
             //TODO
