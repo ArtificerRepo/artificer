@@ -1,0 +1,6 @@
+<overlord = 'http://www.jboss.org/overlord/1.0'>
+<sramp = 'http://www.jboss.org/s-ramp/1.0'>
+
+[overlord:artifact] mixin
+ - overlord:filename (STRING)
+ - sramp:uuid (STRING)
