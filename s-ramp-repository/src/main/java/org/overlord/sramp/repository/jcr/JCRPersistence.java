@@ -58,6 +58,11 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
             session.setNamespacePrefix(OVERLORD, "http://www.jboss.org/overlord/1.0");
             
+            if (! manager.hasNodeType(SRAMP_UUID)) {
+                // Register the ModeShape S-RAMP node types ...
+                is = this.getClass().getResourceAsStream("/org/modeshape/sequencer/sramp/sramp.cnd");
+                manager.registerNodeTypes(is,true);
+            }
             if (! manager.hasNodeType(OVERLORD_ARTIFACT)) {
                 is = this.getClass().getResourceAsStream("/org/overlord/s-ramp/overlord.cnd");
                 manager.registerNodeTypes(is,true);
