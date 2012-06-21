@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import static org.modeshape.jcr.api.observation.Event.NODE_SEQUENCED;
+import static org.modeshape.jcr.api.observation.Event.Sequencing.NODE_SEQUENCED;
 
 import java.util.HashMap;
 import java.util.Map;
