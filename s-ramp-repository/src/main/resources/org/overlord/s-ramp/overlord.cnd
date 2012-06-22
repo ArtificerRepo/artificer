@@ -1,5 +1,5 @@
 <overlord = 'http://www.jboss.org/overlord/1.0'>
-<sramp = 'http://www.jboss.org/s-ramp/1.0'>
+<sramp = 'http://s-ramp.org/xmlns/2010/s-ramp'>
 
 [overlord:artifact] mixin
  - overlord:filename (STRING)

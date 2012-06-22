@@ -57,12 +57,12 @@ public class XsdDocumentResource
             PersistenceManager persistanceManager = PersistenceFactory.newInstance();
             //store the content
             InputStream is = new ByteArrayInputStream(body.getBytes("UTF-8"));
-            persistanceManager.persistArtifact(fileName, XSD, is);
+            String identifier = persistanceManager.persistArtifact(fileName, XSD, is);
             is.close();
             
             //create the derivedArtifacts
             DerivedArtifacts derivedArtifacts = DerivedArtifactsFactory.newInstance();
-            XsdDocument xsdDocument = derivedArtifacts.createDerivedArtifact(XsdDocument.class, fileName);
+            XsdDocument xsdDocument = derivedArtifacts.createDerivedArtifact(XsdDocument.class, identifier);
             
             //persist the derivedArtifacts
             persistanceManager.persistDerivedArtifact(xsdDocument);
