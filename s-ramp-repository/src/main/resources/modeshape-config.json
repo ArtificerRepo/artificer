@@ -13,17 +13,16 @@
     },
     "sequencing" : {
         "removeDerivedContentWithOriginal" : true,
-        "sequencers" : [
-            {
-                "description" : "XSD sequencer",
-                "type" : "xsdsequencer",
+        "sequencers" : {
+            "XSD Sequencer" : {
+                "classname" : "xsdsequencer",
                 "pathExpressions" : [ "default:/artifact/xsd/(*)/(*)/(*)/*/jcr:content[@jcr:data] => default:/s-ramp/xsd/$1/$2/$3" ]
-             },
-             {
+            },
+            "XML Sequencer" : {
                 "description" : "XML sequencer",
-                "type" : "xmlsequencer",
+                "classname" : "xmlsequencer",
                 "pathExpressions" : [ "default:/artifact/xml/(*)/(*)/(*)/*/jcr:content[@jcr:data] => default:/s-ramp/xml/$1/$2/$3" ]
             }
-        ]
+        }
     }
 }

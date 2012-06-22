@@ -50,7 +50,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
     
-    public JCRPersistence() {
+    public JCRPersistence() throws RepositoryException, IOException {
         Session session = null;
         InputStream is = null;
         try {
@@ -58,22 +58,26 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
             session.setNamespacePrefix(OVERLORD, "http://www.jboss.org/overlord/1.0");
             
+            if (! manager.hasNodeType(SRAMP_UUID)) {
+                // Register the ModeShape S-RAMP node types ...
+                is = this.getClass().getResourceAsStream("/org/modeshape/sequencer/sramp/sramp.cnd");
+                manager.registerNodeTypes(is,true);
+            }
             if (! manager.hasNodeType(OVERLORD_ARTIFACT)) {
+                // Register the Overlord node types ...
                 is = this.getClass().getResourceAsStream("/org/overlord/s-ramp/overlord.cnd");
                 manager.registerNodeTypes(is,true);
             }
         } catch (LoginException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw e;
         } catch (NoSuchWorkspaceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw e;
         } catch (RepositoryException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw e;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw e;
+        } catch (RuntimeException e) {
+            throw e;
         } finally {
             if (is !=null)
                 try {
@@ -82,7 +86,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-            session.logout();
+            if ( session != null ) session.logout();
         }
     }
     @Override
