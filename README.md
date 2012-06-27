@@ -2,9 +2,9 @@
 
 ## Summary
 
-This is the official Git repository for the Governance S-RAMP project, which is intended to be a part of the JBoss Overlord project (http://www.jboss.org/overlord).
+This is the official Git repository for the Governance S-RAMP project, which is intended to be a part of the [JBoss Overlord](http://www.jboss.org/overlord).
 
-The S-RAMP project is an implementation of the SOA Repository Artifact Model and Protocol (S-RAMP: https://www.oasis-open.org/committees/s-ramp/). 
+The S-RAMP project is an implementation of the SOA Repository Artifact Model and Protocol ([S-RAMP](https://www.oasis-open.org/committees/s-ramp/). 
 
 ## Get the code
 
