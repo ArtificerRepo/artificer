@@ -54,10 +54,10 @@ public class XsdDocumentResource
     public Entry saveXsdDocument(@HeaderParam("Slug") String fileName, String body) {
         Entry entry = new Entry();
         try {
-            PersistenceManager persistanceManager = PersistenceFactory.newInstance();
+            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             //store the content
             InputStream is = new ByteArrayInputStream(body.getBytes("UTF-8"));
-            String identifier = persistanceManager.persistArtifact(fileName, XSD, is);
+            String identifier = persistenceManager.persistArtifact(fileName, XSD, is);
             is.close();
             
             //create the derivedArtifacts
@@ -65,7 +65,7 @@ public class XsdDocumentResource
             XsdDocument xsdDocument = derivedArtifacts.createDerivedArtifact(XsdDocument.class, identifier);
             
             //persist the derivedArtifacts
-            persistanceManager.persistDerivedArtifact(xsdDocument);
+            persistenceManager.persistDerivedArtifact(xsdDocument);
             
             //return the entry containing an artifact which contains the Derived XSD Document Model
             entry = XsdModel.toEntry(xsdDocument);

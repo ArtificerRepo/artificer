@@ -8,7 +8,6 @@
 	</parent>
 
 	<artifactId>s-ramp-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>S-RAMP API</name>
 	<description>S-RAMP API is generated from the OASIS S-RAMP Specification v1.0.</description>
 

@@ -98,7 +98,7 @@ public class CoreModelTest {
         long expectedSize = expectedCoreModelWorkspace.getCollection().get(0).getAccept().size();
         long acceptSize   = coreModelWorkspace.getCollection().get(0).getAccept().size();
         Assert.assertTrue(expectedSize==acceptSize);
-        String expectedContent = expectedCoreModelWorkspace.getCollection().get(0).getAccept().get(0).getContent();
+        /*String expectedContent = */expectedCoreModelWorkspace.getCollection().get(0).getAccept().get(0).getContent();
         //String acceptContent   = coreModelWorkspace.getCollection().get(0).getAccept().get(0).getContent();
         //Assert.assertEquals(expectedContent, acceptContent);
     }

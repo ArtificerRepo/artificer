@@ -10,7 +10,6 @@
 
 	<artifactId>s-ramp-repository</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>S-RAMP JCR Repository</name>
 	<description>S-RAMP Repository module.</description>
 

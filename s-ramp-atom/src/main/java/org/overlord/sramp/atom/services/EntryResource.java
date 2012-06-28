@@ -19,6 +19,7 @@ package org.overlord.sramp.atom.services;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -30,7 +31,7 @@ public class EntryResource
 {
     @GET
     @Path("entry")
-    @Produces("application/atom+xml")
+    @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getEntry() {
  
         Entry entry = new Entry();
