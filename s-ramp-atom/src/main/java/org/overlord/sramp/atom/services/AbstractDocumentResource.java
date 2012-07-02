@@ -17,8 +17,10 @@ package org.overlord.sramp.atom.services;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.ArtifactVisitorHelper;
@@ -28,6 +30,8 @@ import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all document resources in the S-RAMP Atom API binding.
@@ -35,7 +39,9 @@ import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
  * @author eric.wittmann@redhat.com
  */
 public abstract class AbstractDocumentResource {
-	
+
+    protected Logger log = LoggerFactory.getLogger(this.getClass());
+
 	/**
 	 * Default constructor.
 	 */
@@ -61,13 +67,27 @@ public abstract class AbstractDocumentResource {
      * @param contentEncoding the encoding of the artifact content
 	 */
     protected Entry saveArtifact(String artifactName, String artifactBody, ArtifactType artifactType, String contentEncoding) {
-        Entry entry = new Entry();
+        try {
+			InputStream artifactInputStream = new ByteArrayInputStream(artifactBody.getBytes(contentEncoding));
+			return saveArtifact(artifactName, artifactInputStream, artifactType);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+	/**
+	 * Saves a document in the repository using the persistence manager.
+     * @param artifactName the name of the artifact being saved
+     * @param artifactBody the content of the artifact being saved
+     * @param artifactType the type of the artifact being saved
+     * @return an Atom entry representing the persisted artifact
+	 */
+    protected Entry saveArtifact(String artifactName, InputStream artifactBody, ArtifactType artifactType) {
+        InputStream is = artifactBody;
         try {
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             //store the content
-            InputStream is = new ByteArrayInputStream(artifactBody.getBytes(contentEncoding));
             BaseArtifactType artifact = persistenceManager.persistArtifact(artifactName, artifactType, is);
-            is.close();
             
             //create the derivedArtifacts
             Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().createDerivedArtifacts(artifactType, artifact);
@@ -79,12 +99,50 @@ public abstract class AbstractDocumentResource {
             //return the entry containing the s-ramp artifact
             ArtifactToAtomEntryVisitor visitor = new ArtifactToAtomEntryVisitor();
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
-            entry = visitor.getAtomEntry();
+            return visitor.getAtomEntry();
         } catch (Exception e) {
-            //TODO
-            e.printStackTrace();
+        	// TODO need better error handling
+			throw new RuntimeException(e);
+        } finally {
+        	IOUtils.closeQuietly(is);
         }
-        return entry;
     }
+
+	/**
+	 * Gets a single artifact (by UUID) as an Atom Entry.
+	 * @param uuid the UUID of the s-ramp artifact
+	 * @param artifactType the type of artifact we are expecting
+	 * @return an s-ramp extended Atom entry
+	 */
+    protected Entry getArtifact(String uuid, ArtifactType artifactType) {
+        try {
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			// Get the artifact by UUID
+			BaseArtifactType artifact = persistenceManager.getArtifact(uuid, artifactType);
+
+			//return the entry containing the s-ramp artifact
+			ArtifactToAtomEntryVisitor visitor = new ArtifactToAtomEntryVisitor();
+			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+			return visitor.getAtomEntry();
+		} catch (Exception e) {
+        	// TODO need better error handling
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Updates an artifact in the s-ramp repository.
+	 * @param artifact the s-ramp artifact to update
+	 * @param type the type of the artifact
+	 */
+	protected void updateArtifact(BaseArtifactType artifact, ArtifactType type) {
+        try {
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			persistenceManager.updateArtifact(artifact, type);
+		} catch (Exception e) {
+        	// TODO need better error handling
+			throw new RuntimeException(e);
+		}
+	}
 
 }

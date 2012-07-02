@@ -40,6 +40,22 @@ public interface PersistenceManager {
      * @param artifact the derived artifact to persist
      */
     public String persistDerivedArtifact(DerivedArtifactType artifact);
+
+	/**
+	 * Gets a previously persisted artifact by its UUID.
+	 * @param uuid the UUID of the s-ramp artifact
+	 * @param artifactType the type of the artifact
+	 * @return and instance of an {@link ArtifactType}
+	 */
+	public BaseArtifactType getArtifact(String uuid, ArtifactType type);
+
+	/**
+	 * Updates a previously persisted artifact.  Note that this method only updates the meta data
+	 * of the artifact, not the content.  This will not create or delete any derived artifacts.
+	 * @param artifact the s-ramp artifact being updated
+	 * @param type the type of the artifact
+	 */
+	public void updateArtifact(BaseArtifactType artifact, ArtifactType type);
     
     public void printArtifactGraph(String uuid, ArtifactType type);
 }

@@ -17,8 +17,7 @@
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
 			<artifactId>s-ramp-api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<type>jar</type>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- Testing (note the scope) -->
 		<dependency>

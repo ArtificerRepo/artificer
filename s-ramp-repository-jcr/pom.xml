@@ -2,10 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>s-ramp-parent</artifactId>
 		<groupId>org.overlord.sramp</groupId>
+		<artifactId>s-ramp</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>s-ramp-repository-jcr</artifactId>
@@ -42,6 +41,11 @@
 			<groupId>org.modeshape</groupId>
 			<artifactId>modeshape-sequencer-xml</artifactId>
 			<version>${org.modeshape.version}</version>
+		</dependency>
+		<!-- Common libraries -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
 		</dependency>
 		<!-- Testing (note the scope) -->
 		<dependency>

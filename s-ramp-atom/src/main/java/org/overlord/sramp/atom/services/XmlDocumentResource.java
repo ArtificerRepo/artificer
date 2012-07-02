@@ -52,54 +52,5 @@ public class XmlDocumentResource extends AbstractDocumentResource
     public Entry saveXmlDocument(@HeaderParam("Slug") String fileName, String body) {
     	return super.saveArtifact(fileName, body, ArtifactType.XmlDocument);
     }
-
-    /*
-    @POST
-    @Consumes(MultipartConstants.MULTIPART_RELATED)
-    @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Entry saveXsdDocument(MultipartRelatedInput input) {
-        Entry entry = new Entry();
-        try {
-            
-            List<InputPart> list = input.getParts();
-            // Expecting 1 part. 
-            if (list.size()!=1) ; //throw error
-            InputPart firstPart = list.get(0);
-           
-            // First part being the Entry.
-            MultivaluedMap<String, String> headers = firstPart.getHeaders();
-            String fileName = headers.getFirst("Slug");
-            InputStream is = firstPart.getBody(new GenericType<InputStream>() { });
-            
-            PersistenceManager persistanceManager = PersistenceFactory.newInstance();
-            //store the content
-            persistanceManager.persistArtifact(fileName, XSD,is);
-            is.close();
-            
-            //create the derivedArtifacts
-            DerivedArtifacts derivedArtifacts = DerivedArtifactsFactory.newInstance();
-            XsdDocument xsdDocument = derivedArtifacts.createDerivedArtifact(XsdDocument.class, fileName);
-            
-            //persist the derivedArtifacts
-            persistanceManager.persistDerivedArtifact(xsdDocument);
-            
-            entry = XsdModel.toEntry(xsdDocument);
-            
-        } catch (Exception e) {
-            //TODO
-            e.printStackTrace();
-        }
-        
-        return entry;
-    }
-
-    @GET
-    @Path("{id}")
-    public XmlDocument getXmlDocument(@PathParam("id") int id) {
-        //Entry entry = firstPart.getBody(Entry.class, null);
-        return null;
-    }
-    */
-    
   
 }

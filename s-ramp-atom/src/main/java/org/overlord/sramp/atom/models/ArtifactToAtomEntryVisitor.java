@@ -24,15 +24,10 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.ArtifactVisitor;
+import org.overlord.sramp.ArtifactVisitorAdapter;
 import org.overlord.sramp.atom.MediaType;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
-import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
@@ -41,7 +36,7 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
  * 
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactToAtomEntryVisitor implements ArtifactVisitor {
+public class ArtifactToAtomEntryVisitor extends ArtifactVisitorAdapter {
 	
 	private Entry atomEntry;
 	private Exception failure;
@@ -58,6 +53,8 @@ public class ArtifactToAtomEntryVisitor implements ArtifactVisitor {
 	public Entry getAtomEntry() throws Exception {
 		if (this.failure != null)
 			throw this.failure;
+		if (this.atomEntry == null)
+			throw new Exception("Could not convert from artifact to Atom entry:  missing implementation in ArtifactToAtomEntryVisitor");
 		return atomEntry;
 	}
 
@@ -76,6 +73,7 @@ public class ArtifactToAtomEntryVisitor implements ArtifactVisitor {
         entry.getAuthors().add(new Person(artifact.getCreatedBy()));
         entry.setSummary(artifact.getDescription());
         
+        // Original content can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
         Content content = new Content();
         content.setType(MediaType.APPLICATION_ATOM_XML_UTF8_TYPE);
         //TODO create URL Helper, obtain base URL from server
@@ -84,7 +82,7 @@ public class ArtifactToAtomEntryVisitor implements ArtifactVisitor {
 				+ artifact.getUuid() + "/media"));
         entry.setContent(content);
         
-        //link to self
+        // Self can be accessed at /s-ramp/{model}/{artifact-type}/{uid}
         Link linkToSelf = new Link();
         linkToSelf.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
         linkToSelf.setRel("self");
@@ -93,7 +91,7 @@ public class ArtifactToAtomEntryVisitor implements ArtifactVisitor {
 				+ artifact.getUuid()));
         entry.getLinks().add(linkToSelf);
         
-        //link to edit-media
+        // Link to edit-media can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/edit-media
         Link linkToEditMedia = new Link();
         linkToEditMedia.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
         linkToEditMedia.setRel("edit-media");
@@ -102,13 +100,13 @@ public class ArtifactToAtomEntryVisitor implements ArtifactVisitor {
 				+ artifact.getUuid() + "/edit-media"));
         entry.getLinks().add(linkToEditMedia);
         
-         //link to edit
+        // Link to edit can be accessed at /s-ramp/{model}/{artifact-type}/{uid}
         Link linkToEdit = new Link();
         linkToEdit.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
         linkToEdit.setRel("edit");
         linkToEdit.setHref(new URI("http://localhost:8080/changeit/s-ramp/"
 				+ artifactType.getModel() + "/" + artifactType.name() + "/"
-                + artifact.getUuid() + "/edit"));
+                + artifact.getUuid()));
         entry.getLinks().add(linkToEdit);
         
         //category
@@ -119,15 +117,6 @@ public class ArtifactToAtomEntryVisitor implements ArtifactVisitor {
         entry.getCategories().add(category);
         
         return entry;
-	}
-
-	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType)
-	 */
-	@Override
-	public void visit(DocumentArtifactType artifact) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**
@@ -160,42 +149,6 @@ public class ArtifactToAtomEntryVisitor implements ArtifactVisitor {
 		} catch (URISyntaxException e) {
 			this.failure = e;
 		}
-	}
-
-	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration)
-	 */
-	@Override
-	public void visit(AttributeDeclaration artifact) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration)
-	 */
-	@Override
-	public void visit(ElementDeclaration artifact) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration)
-	 */
-	@Override
-	public void visit(SimpleTypeDeclaration artifact) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration)
-	 */
-	@Override
-	public void visit(ComplexTypeDeclaration artifact) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
