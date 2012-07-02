@@ -17,13 +17,45 @@ package org.overlord.sramp.repository;
 
 import java.io.InputStream;
 
+import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
+/**
+ * Service used to persist artifacts to some (permanent?) storage.
+ */
 public interface PersistenceManager {
 
-    public String persistArtifact(String name, String type, InputStream artifact) throws UnsupportedFiletypeException;
+	/**
+	 * Persists a single artifact.
+	 * @param name the name of the artifact
+	 * @param type the artifact type
+	 * @param content the artifact content
+	 * @throws UnsupportedFiletypeException
+	 */
+    public BaseArtifactType persistArtifact(String name, ArtifactType type, InputStream content) throws UnsupportedFiletypeException;
     
-    public String persistDerivedArtifact(BaseArtifactType baseArtifactType);
+    /**
+     * Persists a single derived artifact.
+     * @param artifact the derived artifact to persist
+     */
+    public String persistDerivedArtifact(DerivedArtifactType artifact);
+
+	/**
+	 * Gets a previously persisted artifact by its UUID.
+	 * @param uuid the UUID of the s-ramp artifact
+	 * @param artifactType the type of the artifact
+	 * @return and instance of an {@link ArtifactType}
+	 */
+	public BaseArtifactType getArtifact(String uuid, ArtifactType type);
+
+	/**
+	 * Updates a previously persisted artifact.  Note that this method only updates the meta data
+	 * of the artifact, not the content.  This will not create or delete any derived artifacts.
+	 * @param artifact the s-ramp artifact being updated
+	 * @param type the type of the artifact
+	 */
+	public void updateArtifact(BaseArtifactType artifact, ArtifactType type);
     
-    public void printArtifactGraph(String uuid);
+    public void printArtifactGraph(String uuid, ArtifactType type);
 }
