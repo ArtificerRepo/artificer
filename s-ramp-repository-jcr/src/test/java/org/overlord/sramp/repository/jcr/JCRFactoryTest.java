@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository;
+package org.overlord.sramp.repository.jcr;
 
 import java.net.URL;
 
@@ -28,7 +28,7 @@ import org.overlord.sramp.repository.jcr.JCRPersistence;
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  */
-public class FactoryTest {
+public class JCRFactoryTest {
     
     @Test
     public void testFindServiceConfig() {

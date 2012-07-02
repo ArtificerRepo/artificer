@@ -28,8 +28,12 @@ import javax.jcr.observation.EventListener;
 
 import org.modeshape.jcr.JcrSession;
 import org.overlord.sramp.repository.UnsupportedFiletypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SequencingListener implements EventListener {
+
+    private Logger log = LoggerFactory.getLogger(this.getClass());
 
     private ConcurrentHashMap<String, CountDownLatch> waitingLatches = new ConcurrentHashMap<String, CountDownLatch>();
   
@@ -38,26 +42,26 @@ public class SequencingListener implements EventListener {
         while (events.hasNext()) {
             try {
                 Event event = (Event)events.nextEvent();
-                String derivedArtifactPath = event.getPath();
-                System.out.println("Received created sequenced node event for: " + derivedArtifactPath);
-                waitingLatches.get(derivedArtifactPath).countDown();
+                String sequencedArtifactPath = event.getPath();
+                log.debug("Received created sequenced node event for: " + sequencedArtifactPath);
+                waitingLatches.get(sequencedArtifactPath).countDown();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
     }
     
-    public void addWaitingLatch(String path) throws UnsupportedFiletypeException {
-        waitingLatches.putIfAbsent(path, new CountDownLatch(1));
+    public void addWaitingLatch(String sequencedArtifactPath) throws UnsupportedFiletypeException {
+        waitingLatches.putIfAbsent(sequencedArtifactPath, new CountDownLatch(1));
     }
     
-    public void waitForLatch(String path) throws InterruptedException, UnsupportedFiletypeException {
-        waitingLatches.get(path).await(60, TimeUnit.SECONDS);
+    public void waitForLatch(String sequencedArtifactPath) throws InterruptedException, UnsupportedFiletypeException {
+        waitingLatches.get(sequencedArtifactPath).await(60, TimeUnit.SECONDS);
     }
     
-    public Node getDerivedNode(String path, JcrSession session) throws PathNotFoundException, RepositoryException, UnsupportedFiletypeException {
-        String derivedNodePath = MapToJCRPath.getDerivedArtifactPath(path);
-        Node derivedNode = session.getNode(derivedNodePath);
+    public Node getDerivedNode(String artifactPath, JcrSession session) throws PathNotFoundException, RepositoryException, UnsupportedFiletypeException {
+        String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactPath);
+        Node derivedNode = session.getNode(sequencedArtifactPath);
         
         return derivedNode;
     }

@@ -17,13 +17,29 @@ package org.overlord.sramp.repository;
 
 import java.io.InputStream;
 
+import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
+/**
+ * Service used to persist artifacts to some (permanent?) storage.
+ */
 public interface PersistenceManager {
 
-    public String persistArtifact(String name, String type, InputStream artifact) throws UnsupportedFiletypeException;
+	/**
+	 * Persists a single artifact.
+	 * @param name the name of the artifact
+	 * @param type the artifact type
+	 * @param content the artifact content
+	 * @throws UnsupportedFiletypeException
+	 */
+    public BaseArtifactType persistArtifact(String name, ArtifactType type, InputStream content) throws UnsupportedFiletypeException;
     
-    public String persistDerivedArtifact(BaseArtifactType baseArtifactType);
+    /**
+     * Persists a single derived artifact.
+     * @param artifact the derived artifact to persist
+     */
+    public String persistDerivedArtifact(DerivedArtifactType artifact);
     
-    public void printArtifactGraph(String uuid);
+    public void printArtifactGraph(String uuid, ArtifactType type);
 }
