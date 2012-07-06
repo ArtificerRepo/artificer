@@ -22,6 +22,7 @@
 		<module>s-ramp-parent</module>
 		<module>s-ramp-repository</module>
 		<module>s-ramp-repository-jcr</module>
+		<module>s-ramp-mvn-repo</module>
 	</modules>
 </project>
 

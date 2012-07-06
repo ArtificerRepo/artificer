@@ -1,17 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.overlord.sramp</groupId>
 		<artifactId>s-ramp</artifactId>
+		<groupId>org.overlord.sramp</groupId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
-
-	<artifactId>s-ramp-atom</artifactId>
+	<artifactId>s-ramp-mvn-repo</artifactId>
 	<packaging>war</packaging>
-	<name>S-RAMP ATOM Binding</name>
-	<description>S-RAMP Atom binding module.</description>
+	<name>S-RAMP Maven Repository</name>
+	<description>S-RAMP Maven Repository facade (makes the S-RAMP repository available as a Maven repository).</description>
 
 	<dependencies>
 		<dependency>
@@ -23,32 +22,25 @@
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-atom-provider</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxb-provider</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-multipart-provider</artifactId>
-			<version>${org.jboss.resteasy.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>servlet-api</artifactId>
-					<groupId>javax.servlet</groupId>
-				</exclusion>
-			</exclusions>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>jaxrs-api</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
@@ -60,23 +52,27 @@
 			<groupId>org.overlord.sramp</groupId>
 			<artifactId>s-ramp-api</artifactId>
 			<version>${project.version}</version>
+			<type>jar</type>
 		</dependency>
 		<dependency>
-			<groupId>org.overlord.sramp</groupId>
-			<artifactId>s-ramp-repository</artifactId>
-			<version>${project.version}</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
 		</dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
 
-        <!-- Common libraries -->
+		<!-- Common libraries -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
 		</dependency>
 
 		<!-- Testing (note the scope) -->
@@ -113,5 +109,4 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
-
 </project>
