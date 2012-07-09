@@ -79,13 +79,15 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 
-		<!-- Testing (note the scope) -->
+		<!-- S-RAMP Provider (only JCR for now: runtime scope for Tomcat deployment and unit testing) -->
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
 			<artifactId>s-ramp-repository-jcr</artifactId>
 			<version>${project.version}</version>
-			<scope>test</scope>
+			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Testing (note the scope) -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

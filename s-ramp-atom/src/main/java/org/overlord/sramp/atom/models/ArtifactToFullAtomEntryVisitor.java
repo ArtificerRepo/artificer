@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp;
+package org.overlord.sramp.atom.models;
 
 import org.s_ramp.xmlns._2010.s_ramp.Actor;
+import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Binding;
@@ -71,33 +72,29 @@ import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
- * A base class for visitors that are only interested in implementing a subset
- * of the methods in the interface.
+ * Visitor used to convert an artifact to an Atom entry.
  * 
  * @author eric.wittmann@redhat.com
  */
-public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
+public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVisitor {
+	
+	/**
+	 * Constructor.
+	 */
+	public ArtifactToFullAtomEntryVisitor() {
+	}
 
-	/**
-	 * Default constructor.
-	 */
-	public ArtifactVisitorAdapter() {
-	}
-	
-	/**
-	 * Common visit method for all artifacts.
-	 * @param artifact
-	 */
-	protected void visitBase(BaseArtifactType artifact) {
-		// Subclasses can do common visit logic here
-	}
-	
 	/**
 	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
 	 */
 	@Override
 	public void visit(XmlDocument artifact) {
-		visitBase(artifact);
+		super.visit(artifact);
+        if (this.atomEntry != null) {
+            Artifact srampArty = new Artifact();
+            srampArty.setXmlDocument(artifact);
+        	this.atomEntry.setAnyOtherJAXBObject(srampArty);
+        }
 	}
 
 	/**
@@ -105,7 +102,12 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(XsdDocument artifact) {
-		visitBase(artifact);
+		super.visit(artifact);
+        if (this.atomEntry != null) {
+            Artifact srampArty = new Artifact();
+            srampArty.setXsdDocument(artifact);
+        	this.atomEntry.setAnyOtherJAXBObject(srampArty);
+        }
 	}
 
 	/**
@@ -113,7 +115,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(AttributeDeclaration artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -121,7 +123,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(ElementDeclaration artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -129,7 +131,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(SimpleTypeDeclaration artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -137,7 +139,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(ComplexTypeDeclaration artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -145,7 +147,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(PolicyDocument artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -153,7 +155,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(PolicyExpression artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -161,7 +163,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(PolicyAttachment artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -169,7 +171,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(SoapAddress artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -177,7 +179,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(SoapBinding artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -185,7 +187,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(WsdlDocument artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -193,7 +195,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(WsdlService artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -201,7 +203,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Port artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -209,7 +211,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(WsdlExtension artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -217,7 +219,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Part artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -225,7 +227,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Message artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -233,7 +235,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Fault artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -241,7 +243,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(PortType artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -249,7 +251,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Operation artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -257,7 +259,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(OperationInput artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -265,7 +267,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(OperationOutput artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -273,7 +275,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Binding artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -281,7 +283,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(BindingOperation artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -289,7 +291,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(BindingOperationInput artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -297,7 +299,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(BindingOperationOutput artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -305,7 +307,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(BindingOperationFault artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -313,7 +315,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Organization artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -321,7 +323,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(ServiceEndpoint artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -329,7 +331,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(ServiceInstance artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -337,7 +339,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(ServiceOperation artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -345,7 +347,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(UserDefinedArtifactType artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -353,7 +355,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Actor artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -361,7 +363,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Choreography artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -369,7 +371,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(ChoreographyProcess artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -377,7 +379,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Collaboration artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -385,7 +387,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(CollaborationProcess artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -393,7 +395,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Composition artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -401,7 +403,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Effect artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -409,7 +411,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Element artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -417,7 +419,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Event artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -425,7 +427,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(InformationType artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -433,7 +435,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Orchestration artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -441,7 +443,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(OrchestrationProcess artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -449,7 +451,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Policy artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -457,7 +459,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(PolicySubject artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -465,7 +467,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Process artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -473,7 +475,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Service artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -481,7 +483,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(ServiceContract artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -489,7 +491,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(ServiceComposition artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -497,7 +499,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(ServiceInterface artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -505,7 +507,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(System artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
 	}
 
 	/**
@@ -513,7 +515,19 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	@Override
 	public void visit(Task artifact) {
-		visitBase(artifact);
+		throwMissingImplException(artifact);
+	}
+
+	/**
+	 * This should go away once all of the implementations are done.
+	 * @param artifact
+	 */
+	private void throwMissingImplException(BaseArtifactType artifact) {
+		try {
+			throw new Exception("Missing implementation in " + this.getClass().getSimpleName() + " for artifact type: " + artifact.getClass().getSimpleName());
+		} catch (Exception e) {
+			this.failure = e;
+		}
 	}
 
 }

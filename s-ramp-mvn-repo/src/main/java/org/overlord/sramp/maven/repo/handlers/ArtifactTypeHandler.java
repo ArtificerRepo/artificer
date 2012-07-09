@@ -15,7 +15,12 @@
  */
 package org.overlord.sramp.maven.repo.handlers;
 
+import java.util.List;
+
+import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.maven.repo.MavenRepositoryPath;
+import org.overlord.sramp.maven.repo.atom.SRAMPAtomApiClient;
 import org.overlord.sramp.maven.repo.models.DirectoryListing;
 
 /**
@@ -39,8 +44,12 @@ public class ArtifactTypeHandler extends AbstractDirectoryListingHandler {
 	 * @see org.overlord.sramp.maven.repo.handlers.AbstractDirectoryListingHandler#generateDirectoryListing(org.overlord.sramp.maven.repo.models.DirectoryListing)
 	 */
 	@Override
-	protected void generateDirectoryListing(DirectoryListing directoryListing) {
-//		SRAMPAtomFeed feed = SRAMPAtomApiClient.getInstance().getFeed(repositoryPath.getArtifactModel(), repositoryPath.getArtifactType());
+	protected void generateDirectoryListing(DirectoryListing directoryListing) throws Exception {
+		Feed feed = SRAMPAtomApiClient.getInstance().getFeed(repositoryPath.getArtifactModel(), repositoryPath.getArtifactType());
+		List<Entry> entries = feed.getEntries();
+		for (Entry entry : entries) {
+			directoryListing.addDirectoryEntry(entry.getId().toString(), entry.getUpdated());
+		}
 	}
 
 }

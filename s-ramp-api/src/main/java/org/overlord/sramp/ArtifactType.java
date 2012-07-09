@@ -15,7 +15,10 @@
  */
 package org.overlord.sramp;
 
+import java.lang.reflect.Method;
+
 import org.s_ramp.xmlns._2010.s_ramp.Actor;
+import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Binding;
@@ -29,7 +32,6 @@ import org.s_ramp.xmlns._2010.s_ramp.Collaboration;
 import org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Composition;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Effect;
 import org.s_ramp.xmlns._2010.s_ramp.Element;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
@@ -77,7 +79,6 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 public enum ArtifactType {
 
 	// Core
-	Document("core", "Document", DocumentArtifactType.class), 
 	XmlDocument("core", "XML Document", XmlDocument.class),
 	// XSD
 	XsdDocument("xsd", "XML Schema", XsdDocument.class),
@@ -171,6 +172,20 @@ public enum ArtifactType {
 	}
 
 	/**
+	 * Called to unwrap the S-RAMP artifact from its wrapper.
+	 * @param artifactWrapper the S-RAMP artifact wrapper
+	 * @return the specific artifact based on type
+	 */
+	public BaseArtifactType unwrap(Artifact artifactWrapper) {
+		try {
+			Method method = Artifact.class.getMethod("get" + this.name());
+			return (BaseArtifactType) method.invoke(artifactWrapper);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to unwrap artifact for type: " + this.name(), e);
+		}
+	}
+
+	/**
 	 * @return the typeClass
 	 */
 	public Class<? extends BaseArtifactType> getTypeClass() {
@@ -190,6 +205,5 @@ public enum ArtifactType {
 		}
 		throw new RuntimeException("Could not determine Artifact Type from artifact class: " + artifact.getClass());
 	}
-	
 
 }

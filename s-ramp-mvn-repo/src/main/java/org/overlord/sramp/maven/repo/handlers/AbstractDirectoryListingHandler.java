@@ -48,14 +48,18 @@ public abstract class AbstractDirectoryListingHandler implements MavenRepository
 			throws IOException, ServletException {
 		String urlPath = request.getContextPath() + request.getServletPath();
 		String mavenPath = request.getPathInfo();
-		if (mavenPath == null) {
+		if (mavenPath == null)
 			mavenPath = "/";
-		}
+
 		urlPath += mavenPath;
 		if (!urlPath.endsWith("/"))
 			urlPath += "/";
 		DirectoryListing directoryListing = new DirectoryListing(mavenPath, urlPath);
-		generateDirectoryListing(directoryListing);
+		try {
+			generateDirectoryListing(directoryListing);
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
 		
 		request.setAttribute("model", directoryListing);
 		
@@ -65,7 +69,8 @@ public abstract class AbstractDirectoryListingHandler implements MavenRepository
 	/**
 	 * Method that subclasses must implement in order to populate the directory listing.
 	 * @param directoryListing the directory listing to populate
+	 * @throws Exception 
 	 */
-	protected abstract void generateDirectoryListing(DirectoryListing directoryListing);
+	protected abstract void generateDirectoryListing(DirectoryListing directoryListing) throws Exception;
 
 }

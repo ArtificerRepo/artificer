@@ -18,13 +18,18 @@ package org.overlord.sramp.atom.services;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.ArtifactVisitorHelper;
-import org.overlord.sramp.atom.models.ArtifactToAtomEntryVisitor;
+import org.overlord.sramp.atom.models.ArtifactToFullAtomEntryVisitor;
+import org.overlord.sramp.atom.models.ArtifactToSummaryAtomEntryVisitor;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
@@ -97,7 +102,7 @@ public abstract class AbstractDocumentResource {
                 persistenceManager.persistDerivedArtifact(dartifact);
             
             //return the entry containing the s-ramp artifact
-            ArtifactToAtomEntryVisitor visitor = new ArtifactToAtomEntryVisitor();
+            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
             return visitor.getAtomEntry();
         } catch (Exception e) {
@@ -119,9 +124,11 @@ public abstract class AbstractDocumentResource {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			// Get the artifact by UUID
 			BaseArtifactType artifact = persistenceManager.getArtifact(uuid, artifactType);
+			if (artifact == null)
+				return null;
 
 			//return the entry containing the s-ramp artifact
-			ArtifactToAtomEntryVisitor visitor = new ArtifactToAtomEntryVisitor();
+			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return visitor.getAtomEntry();
 		} catch (Exception e) {
@@ -145,4 +152,36 @@ public abstract class AbstractDocumentResource {
 		}
 	}
 
+	/**
+	 * Gets a {@link Feed} of {@link Entry}s for the given S-RAMP artifact type.
+	 * @param type the S-RAMP artifact type
+	 * @return an Atom {@link Feed}
+	 */
+	protected Feed getFeed(ArtifactType type) {
+        try {
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			List<BaseArtifactType> artifacts = persistenceManager.getArtifacts(type);
+
+			Feed feed = new Feed();
+			feed.setId(new URI("urn:sramp:feed:/" + type.getModel() + "/" + type.name()));
+			feed.setTitle("S-RAMP Artifact Feed");
+			feed.setSubtitle("A feed of S-RAMP artifacts of type '" + type + "'.");
+			feed.setUpdated(new Date());
+			// TODO implement pagination by providing next/previous Atom feed links
+//			feed.getLinks().add(new Link("","http://example.com"));
+
+            ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor();
+			for (BaseArtifactType artifact : artifacts) {
+	            ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+	            Entry entry = visitor.getAtomEntry();
+				feed.getEntries().add(entry);
+			}
+
+			return feed;
+		} catch (Exception e) {
+        	// TODO need better error handling
+			throw new RuntimeException(e);
+		}
+	}
+	
 }

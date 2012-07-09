@@ -32,6 +32,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.bind.JAXBException;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedInput;
@@ -119,5 +120,15 @@ public class XsdDocumentResource extends AbstractDocumentResource
     @Path("{uuid}")
     public void deleteXsdDocument(@PathParam("uuid") String uuid) {
     	// TODO implement DELETE
+    }
+
+    /**
+     * Returns a feed of summary documents for all XsdDocument artifacts.
+     * @return an Atom {@link Feed}
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_ATOM_XML_FEED)
+    public Feed getFeed() {
+    	return super.getFeed(ArtifactType.XsdDocument);
     }
 }

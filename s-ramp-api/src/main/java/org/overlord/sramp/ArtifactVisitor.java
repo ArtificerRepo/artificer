@@ -28,7 +28,6 @@ import org.s_ramp.xmlns._2010.s_ramp.Collaboration;
 import org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Composition;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Effect;
 import org.s_ramp.xmlns._2010.s_ramp.Element;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
@@ -77,7 +76,6 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 public interface ArtifactVisitor {
 
 	// Core
-	public void visit(DocumentArtifactType artifact);
 	public void visit(XmlDocument artifact);
 
 	// XSD

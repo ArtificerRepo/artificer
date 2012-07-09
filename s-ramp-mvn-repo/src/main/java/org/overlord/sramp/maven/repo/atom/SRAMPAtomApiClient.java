@@ -16,6 +16,10 @@
 package org.overlord.sramp.maven.repo.atom;
 
 import org.apache.commons.configuration.Configuration;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
 
 /**
  * The class used whenever an Atom API request for data needs to be made.
@@ -44,7 +48,7 @@ public class SRAMPAtomApiClient {
 	}
 
 	private String endpoint;
-	
+
 	/**
 	 * Private singleton constructor.
 	 * @param config 
@@ -53,7 +57,35 @@ public class SRAMPAtomApiClient {
 		this.endpoint = (String) config.getProperty("s-ramp.atom-api.endpoint");
 	}
 
-//	ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
-//	ClientResponse<Entry> response = request.get(Entry.class);
+	/**
+	 * Gets a {@link Feed} of Atom {@link Entry} objects for the given Artifact Model
+	 * and Artifact Type.
+	 * @param artifactModel the S-RAMP artifact model
+	 * @param artifactType the S-RAMP artifact type
+	 * @return an Atom Feed
+	 * @throws Exception
+	 */
+	public Feed getFeed(String artifactModel, String artifactType) throws Exception {
+		String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, artifactModel, artifactType);
+		ClientRequest request = new ClientRequest(atomUrl);
+		ClientResponse<Feed> response = request.get(Feed.class);
+		return response.getEntity();
+	}
+
+	/**
+	 * Gets an Atom {@link Entry} for the given S-RAMP artifact by UUID.
+	 * @param artifactModel the artifact model (core, xsd, wsdl, etc)
+	 * @param artifactType the artifact type (XmlDocument, XsdDocument, etc)
+	 * @param artifactUuid the S-RAMP uuid of the artifact
+	 * @return an Atom {@link Entry}
+	 * @throws Exception 
+	 */
+	public Entry getFullArtifactEntry(String artifactModel, String artifactType, String artifactUuid) throws Exception {
+		String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
+		ClientRequest request = new ClientRequest(atomUrl);
+		ClientResponse<Entry> response = request.get(Entry.class);
+		return response.getEntity();
+	}
+
 
 }

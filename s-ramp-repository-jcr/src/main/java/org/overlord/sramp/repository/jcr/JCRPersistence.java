@@ -22,16 +22,21 @@ import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_UUID;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import javax.jcr.LoginException;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.IOUtils;
 import org.modeshape.jcr.api.JcrTools;
@@ -168,6 +173,8 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             sequencedNode.setProperty(SRAMP_UUID, uuid);
             sequencedNode.setProperty(OVERLORD_FILENAME, filename);
             session.save();
+            
+            log.info("Created artifact of type " + type.name() + " with UUID " + uuid);
 
             // Create an artifact from the sequenced node
             return JCRNodeToArtifactFactory.createArtifact(sequencedNode, type);
@@ -274,8 +281,78 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             session.logout();
         }
     }
+
+    /**
+     * @see org.overlord.sramp.repository.PersistenceManager#getArtifacts(org.overlord.sramp.ArtifactType)
+     */
+    @Override
+    public List<BaseArtifactType> getArtifacts(ArtifactType type) {
+    	List<BaseArtifactType> artifacts = new ArrayList<BaseArtifactType>();
+        Session session = null;
+        String artifactTypePath = MapToJCRPath.getArtifactTypePath(type);
+        String sequencedArtifactTypePath = MapToJCRPath.getSequencedArtifactPath(artifactTypePath);
+
+        try {
+            session = JCRRepository.getSession();
+            Node sequencedNode = session.getNode(sequencedArtifactTypePath);
+            List<Node> collectedNodes = new ArrayList<Node>();
+            getNodes(sequencedNode, collectedNodes);
+            for (Node node : collectedNodes) {
+                BaseArtifactType artifact = JCRNodeToArtifactFactory.createArtifact(node, type);
+                artifacts.add(artifact);
+			}
+        } catch (LoginException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NoSuchWorkspaceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (PathNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (RepositoryException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            session.logout();
+        }
+        return artifacts;
+    }
     
     /**
+     * Recursive method for traversing the tree of nodes looking for nodes of a
+     * particular type.
+	 * @param node the parent {@link Node} to navigate
+	 * @return {@link List} of nodes matching the type
+     * @throws RepositoryException 
+	 */
+	private void getNodes(Node node, List<Node> collectedNodes) throws RepositoryException {
+        NodeIterator nodeIter = node.getNodes();
+        while (nodeIter.hasNext()) {
+        	Node nextNode = nodeIter.nextNode();
+        	if (isArtifactNode(nextNode))
+        		collectedNodes.add(nextNode);
+        	if (nextNode.hasNodes())
+        		getNodes(nextNode, collectedNodes);
+        }
+	}
+
+	/**
+	 * Returns true if the given node is an S-RAMP artifact.
+	 * @param node a JCR node
+	 * @return boolean indicating if the node is an artifact
+	 * @throws RepositoryException 
+	 */
+	private boolean isArtifactNode(Node node) throws RepositoryException {
+    	for (NodeType nodeType : node.getMixinNodeTypes()) {
+    		if (nodeType.getName().equals(OVERLORD_ARTIFACT)) {
+    			return true;
+    		}
+		}
+		return false;
+	}
+
+	/**
      * @see org.overlord.sramp.repository.PersistenceManager#printArtifactGraph(java.lang.String, org.overlord.sramp.ArtifactType)
      */
     @Override

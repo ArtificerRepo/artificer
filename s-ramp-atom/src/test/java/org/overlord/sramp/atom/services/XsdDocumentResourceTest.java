@@ -20,6 +20,7 @@ import static org.jboss.resteasy.test.TestPortProvider.generateURL;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -31,6 +32,7 @@ import javax.xml.namespace.QName;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,7 +46,7 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  * @version $Revision: 1 $
  */
-public class XsdDocumentTest extends BaseResourceTest {
+public class XsdDocumentResourceTest extends BaseResourceTest {
 
 	@Before
 	public void setUp() throws Exception {
@@ -85,13 +87,24 @@ public class XsdDocumentTest extends BaseResourceTest {
 
 	@Test
 	public void testFullPurchaseOrderXSD() throws Exception {
+		// Add
 		Entry entry = doAddXsd();
 		URI entryId = entry.getId();
+		
+		// Get
 		entry = doGetXsdEntry(entryId);
+
+		// Feed
+		Feed feed = doGetXsdFeed();
+		verifyXsdFeedContains(feed, entryId);
+		
+		// Update
 		doUpdateXsdEntry(entry);
 		entry = doGetXsdEntry(entryId);
 		// TODO re-enable once update is fully implemented (see UpdateJCRNodeFromArtifactVisitor)
 //		verifyEntryUpdated(entry);
+		
+		
 		// TODO implement delete functionality
 //		deleteXsdEntry(entryId);
 //		verifyEntryDeleted();
@@ -145,6 +158,31 @@ public class XsdDocumentTest extends BaseResourceTest {
 		Assert.assertEquals(Long.valueOf(2376), artifact.getXsdDocument().getContentSize());
 
 		return entry;
+	}
+
+	/**
+	 * GETs a {@link Feed} of the XsdDocument artifacts.
+	 * @throws Exception 
+	 */
+	private Feed doGetXsdFeed() throws Exception {
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument"));
+		ClientResponse<Feed> response = request.get(Feed.class);
+		return response.getEntity();
+	}
+
+	/**
+	 * Verifies that the 
+	 * @param feed
+	 * @param entryId 
+	 */
+	private void verifyXsdFeedContains(Feed feed, URI entryId) {
+		boolean hasEntryId = false;
+		List<Entry> entries = feed.getEntries();
+		for (Entry entry : entries) {
+			if (entry.getId().equals(entryId))
+				hasEntryId = true;
+		}
+		Assert.assertTrue("Feed did not contain entry with ID: " + entryId, hasEntryId);
 	}
 
 	/**

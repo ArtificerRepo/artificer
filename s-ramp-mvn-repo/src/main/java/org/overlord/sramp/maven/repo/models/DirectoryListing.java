@@ -51,7 +51,7 @@ public class DirectoryListing {
 	public void addDirectoryEntry(String name) {
 		addDirectoryEntry(name, new Date());
 	}
-
+	
 	/**
 	 * Adds a directory entry to the listing.
 	 * @param name the directory name
@@ -64,6 +64,23 @@ public class DirectoryListing {
 		entry.setName(name);
 		entry.setSize(-1);
 		entry.setType(DirectoryEntryType.directory);
+		
+		getEntries().add(entry);
+	}
+
+	/**
+	 * Adds a file entry to the listing.
+	 * @param name the file name
+	 * @param description a description of the file
+	 * @param lastModified when the file was last modified
+	 */
+	public void addFileEntry(String name, String description, Date lastModified, long size) {
+		DirectoryEntry entry = new DirectoryEntry();
+		entry.setName(name);
+		entry.setDescription(description);
+		entry.setLastModified(lastModified);
+		entry.setSize(size);
+		entry.setType(DirectoryEntryType.file);
 		
 		getEntries().add(entry);
 	}

@@ -34,24 +34,24 @@ public class XsdModel {
      * @throws PathNotFoundException 
      * @throws ValueFormatException 
      */
-    public static  XsdDocument getXsdDocument(Node derivedNode) throws DerivedArtifactsCreationException {
+    public static XsdDocument getXsdDocument(Node derivedNode) throws DerivedArtifactsCreationException {
         XsdDocument xsdDocument = new XsdDocument();
         
         try {
-            xsdDocument.setContentEncoding(derivedNode.getProperty("sramp:contentEncoding").getString());
-            xsdDocument.setContentSize(Long.valueOf(derivedNode.getProperty("sramp:contentSize").getString()));
-            xsdDocument.setContentType(derivedNode.getProperty("sramp:contentType").getString());
-            xsdDocument.setCreatedBy(derivedNode.getProperty("jcr:createdBy").getString());
+            xsdDocument.setContentEncoding(getProperty(derivedNode, "sramp:contentEncoding"));
+            xsdDocument.setContentSize(Long.valueOf(getProperty(derivedNode, "sramp:contentSize")));
+            xsdDocument.setContentType(getProperty(derivedNode, "sramp:contentType"));
+            xsdDocument.setCreatedBy(getProperty(derivedNode, "jcr:createdBy"));
             XMLGregorianCalendar createdTS;
-            createdTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(derivedNode.getProperty("jcr:created").getString());
+            createdTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(getProperty(derivedNode, "jcr:created"));
             xsdDocument.setCreatedTimestamp(createdTS);
-            xsdDocument.setDescription(derivedNode.getProperty("sramp:description").getString());
-            xsdDocument.setLastModifiedBy(derivedNode.getProperty("jcr:lastModifiedBy").getString());
-            XMLGregorianCalendar modifiedTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(derivedNode.getProperty("jcr:lastModified").getString());
+            xsdDocument.setDescription(getProperty(derivedNode, "sramp:description"));
+            xsdDocument.setLastModifiedBy(getProperty(derivedNode, "jcr:lastModifiedBy"));
+            XMLGregorianCalendar modifiedTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(getProperty(derivedNode, "jcr:lastModified"));
             xsdDocument.setLastModifiedTimestamp(modifiedTS);
             xsdDocument.setName(derivedNode.getName());
-            xsdDocument.setUuid(derivedNode.getProperty("sramp:uuid").getString());
-            xsdDocument.setVersion(derivedNode.getProperty("version").getString());
+            xsdDocument.setUuid(getProperty(derivedNode, "sramp:uuid"));
+            xsdDocument.setVersion(getProperty(derivedNode, "version"));
             
             //TODO
             //xsdDocument.getImportedXsds()
@@ -69,5 +69,34 @@ public class XsdModel {
         return xsdDocument;
     }
 
+    /**
+     * Gets a single property from the given JCR node.  This returns null
+     * if the property does not exist.
+     * @param node the JCR node
+     * @param propertyName the name of the property
+     * @return the String value of the property
+     */
+    static final String getProperty(Node node, String propertyName) {
+    	return getProperty(node, propertyName, null);
+    }
+   
+
+    /**
+     * Gets a single property from the given JCR node.  This returns a default value if
+     * the property does not exist.
+     * @param node the JCR node
+     * @param propertyName the name of the property
+     * @param defaultValue a default value if the property does not exist on the node
+     * @return the String value of the property
+     */
+    static final String getProperty(Node node, String propertyName, String defaultValue) {
+    	try {
+			return node.getProperty(propertyName).getString();
+		} catch (ValueFormatException e) {
+		} catch (PathNotFoundException e) {
+		} catch (RepositoryException e) {
+		}
+		return defaultValue;
+    }
    
 }

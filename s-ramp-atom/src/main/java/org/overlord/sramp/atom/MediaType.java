@@ -26,6 +26,10 @@ public class MediaType extends javax.ws.rs.core.MediaType {
     public final static String APPLICATION_ATOM_XML_ENTRY = "application/atom+xml;type=entry";
     public final static MediaType APPLICATION_ATOM_XML_ENTRY_TYPE = new MediaType("application", "atom+xml;type=entry");
 
+    /** "application/atom+xml;type=feed" */
+    public final static String APPLICATION_ATOM_XML_FEED = "application/atom+xml;type=feed";
+    public final static MediaType APPLICATION_ATOM_XML_FEED_TYPE = new MediaType("application", "atom+xml;type=feed");
+
     /** "application/atom+xml;charset=utf-8" */
     public final static String APPLICATION_ATOM_XML_UTF8 = "application/atom+xml;charset=utf-8";
     public final static MediaType APPLICATION_ATOM_XML_UTF8_TYPE = new MediaType("application", "atom+xml;charset=utf-8");

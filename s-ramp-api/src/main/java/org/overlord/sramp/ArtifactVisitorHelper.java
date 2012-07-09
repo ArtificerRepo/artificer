@@ -18,7 +18,6 @@ package org.overlord.sramp;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
@@ -56,8 +55,6 @@ public final class ArtifactVisitorHelper {
 		// WARNING:  the core types must be last due to artifact type hierarchy
 		else if (artifact instanceof XmlDocument)
 			visitor.visit((XmlDocument) artifact);
-		else if (artifact instanceof DocumentArtifactType)
-			visitor.visit((DocumentArtifactType) artifact);
 	}
 	
 }

@@ -16,6 +16,7 @@
 package org.overlord.sramp.repository;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -56,6 +57,13 @@ public interface PersistenceManager {
 	 * @param type the type of the artifact
 	 */
 	public void updateArtifact(BaseArtifactType artifact, ArtifactType type);
+
+	/**
+	 * Gets a list of S-RAMP artifacts of the given type.
+	 * @param type the S-RAMP artifact type
+	 * @return a {@link List} of S-RAMP artifacts
+	 */
+	public List<BaseArtifactType> getArtifacts(ArtifactType type);
     
     public void printArtifactGraph(String uuid, ArtifactType type);
 }

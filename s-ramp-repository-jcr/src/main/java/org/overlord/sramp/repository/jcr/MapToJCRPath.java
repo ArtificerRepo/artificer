@@ -20,17 +20,29 @@ import org.overlord.sramp.ArtifactType;
 public class MapToJCRPath {
 
     private static int folderDepth     = 3;
-    private static String PATH         = "/artifact/%1$s/%2$s/";
+    private static String PATH         = "/artifact/%1$s/%2$s";
+    
     /**
-     * "/artifact/<fileExtension>/[btree]"
+     * "/artifact/<model>/<type>"
+     * 
+     * @param type - artifact type
+     * @return path: "/artifact/<model>/<type>"
+     */
+    public static String getArtifactTypePath(ArtifactType type) {
+        return String.format(PATH, type.getModel(), type.name());
+    }
+    
+    /**
+     * "/artifact/<model>/<type>/[btree]"
      * 
      * @param uuid - Universally Unique ID
      * @param type - artifact type
-     * @return path: "/artifact/<type>/[btree]"
+     * @return path: "/artifact/<model>/<type>/[btree]"
      */
     public static String getArtifactPath(String uuid, ArtifactType type) {
-        return String.format(PATH, type.getModel(), type.name()) + bTreePath(uuid);
+        return getArtifactTypePath(type) + "/" + bTreePath(uuid);
     }
+    
     /**
      *  * "/s-ramp/<fileExtension>/[btree]"
      * 
