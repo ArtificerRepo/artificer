@@ -45,6 +45,7 @@ public class ArtifactTypeHandler extends AbstractDirectoryListingHandler {
 	 */
 	@Override
 	protected void generateDirectoryListing(DirectoryListing directoryListing) throws Exception {
+		directoryListing.addDirectoryEntry("..");
 		Feed feed = SRAMPAtomApiClient.getInstance().getFeed(repositoryPath.getArtifactModel(), repositoryPath.getArtifactType());
 		List<Entry> entries = feed.getEntries();
 		for (Entry entry : entries) {

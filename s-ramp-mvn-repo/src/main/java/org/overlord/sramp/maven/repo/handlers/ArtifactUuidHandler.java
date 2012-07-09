@@ -62,7 +62,8 @@ public class ArtifactUuidHandler extends AbstractDirectoryListingHandler {
 		XMLGregorianCalendar lastModifiedXML = artifact.getLastModifiedTimestamp();
 		if (lastModifiedXML != null)
 			lastModified = lastModifiedXML.toGregorianCalendar().getTime();
-			
+
+		directoryListing.addDirectoryEntry("..");
 		directoryListing.addDirectoryEntry(version, lastModified);
 	}
 
