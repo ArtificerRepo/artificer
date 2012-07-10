@@ -84,6 +84,29 @@ public class JCRPersistenceTest {
         Assert.assertEquals(new Long(2376l), ((XmlDocument) artifact).getContentSize());
     }
 
+    @Test
+    public void testGetArtifact_XSD() throws Exception {
+        String artifactFileName = "PO.xsd";
+        InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        
+        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        
+        Assert.assertNotNull(artifact);
+        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
+        
+        Assert.assertEquals(XsdDocument.class, artifact.getClass());
+        Assert.assertEquals(new Long(2376l), ((XsdDocument) artifact).getContentSize());
+        
+        BaseArtifactType artifact2 = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        Assert.assertEquals(artifact.getUuid(), artifact2.getUuid());
+        Assert.assertEquals(artifact.getCreatedBy(), artifact2.getCreatedBy());
+        Assert.assertEquals(artifact.getDescription(), artifact2.getDescription());
+        Assert.assertEquals(artifact.getLastModifiedBy(), artifact2.getLastModifiedBy());
+        Assert.assertEquals(artifact.getName(), artifact2.getName());
+        Assert.assertEquals(artifact.getVersion(), artifact2.getVersion());
+        Assert.assertEquals(artifact.getLastModifiedTimestamp(), artifact2.getLastModifiedTimestamp());
+    }
+    
     /**
      * Tests the getArtifacts method on the persistence manager.
      * @throws Exception
