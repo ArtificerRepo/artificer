@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.atom.models;
+package org.overlord.sramp.visitors;
 
 import org.s_ramp.xmlns._2010.s_ramp.Actor;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Binding;
@@ -30,6 +29,8 @@ import org.s_ramp.xmlns._2010.s_ramp.Collaboration;
 import org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Composition;
+import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Effect;
 import org.s_ramp.xmlns._2010.s_ramp.Element;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
@@ -56,45 +57,112 @@ import org.s_ramp.xmlns._2010.s_ramp.Service;
 import org.s_ramp.xmlns._2010.s_ramp.ServiceComposition;
 import org.s_ramp.xmlns._2010.s_ramp.ServiceContract;
 import org.s_ramp.xmlns._2010.s_ramp.ServiceEndpoint;
+import org.s_ramp.xmlns._2010.s_ramp.ServiceImplementationModelType;
 import org.s_ramp.xmlns._2010.s_ramp.ServiceInstance;
 import org.s_ramp.xmlns._2010.s_ramp.ServiceInterface;
 import org.s_ramp.xmlns._2010.s_ramp.ServiceOperation;
 import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
+import org.s_ramp.xmlns._2010.s_ramp.SoaModelType;
 import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
 import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
 import org.s_ramp.xmlns._2010.s_ramp.System;
 import org.s_ramp.xmlns._2010.s_ramp.Task;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlExtension;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
+import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 
 /**
- * Visitor used to convert an artifact to an Atom entry.
+ * A base class for visitors that are interested in specific sections of the
+ * S-RAMP class hierarchy.  This class provides methods for the various 
+ * shared (abstract) base classes within the hierachy.
  * 
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVisitor {
+public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisitor {
+
+	/**
+	 * Default constructor.
+	 */
+	public HierarchicalArtifactVisitorAdapter() {
+	}
 	
 	/**
-	 * Constructor.
+	 * Common visit method for all artifacts.
+	 * @param artifact
 	 */
-	public ArtifactToFullAtomEntryVisitor() {
+	protected void visitBase(BaseArtifactType artifact) {
+		// Subclasses can do common visit logic here
+	}
+	
+	/**
+	 * Common visit method for derived artifacts.
+	 * @param artifact
+	 */
+	protected void visitDerived(DerivedArtifactType artifact) {
+		// Subclasses can do common visit logic here
+	}
+	
+	/**
+	 * Common visit method for WSDL derived artifacts.
+	 * @param artifact
+	 */
+	protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
+		// Subclasses can do common visit logic here
 	}
 
+	/**
+	 * Common visit method for XSD derived artifacts.
+	 * @param artifact
+	 */
+	protected void visitXsdDervied(XsdType artifact) {
+		// Subclasses can do common visit logic here
+	}
+	
+	/**
+	 * Common visit method for document artifacts.
+	 * @param artifact
+	 */
+	protected void visitDocument(DocumentArtifactType artifact) {
+		// Subclasses can do common visit logic here
+	}
+	
+	/**
+	 * Common visit method for XML document artifacts.
+	 * @param artifact
+	 */
+	protected void visitXmlDocument(XmlDocument artifact) {
+		// Subclasses can do common visit logic here
+	}
+	
+	/**
+	 * Common visit method for service implementation artifacts.
+	 * @param artifact
+	 */
+	protected void visitServiceImplementation(ServiceImplementationModelType artifact) {
+		// Subclasses can do common visit logic here
+	}
+	
+	/**
+	 * Common visit method for SOA model artifacts.
+	 * @param artifact
+	 */
+	protected void visitSoa(SoaModelType artifact) {
+		// Subclasses can do common visit logic here
+	}
+	
 	/**
 	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
 	 */
 	@Override
 	public void visit(XmlDocument artifact) {
-		super.visit(artifact);
-        if (this.atomEntry != null) {
-            Artifact srampArty = new Artifact();
-            srampArty.setXmlDocument(artifact);
-        	this.atomEntry.setAnyOtherJAXBObject(srampArty);
-        }
+		visitBase(artifact);
+		visitDocument(artifact);
+		visitXmlDocument(artifact);
 	}
 
 	/**
@@ -102,12 +170,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(XsdDocument artifact) {
-		super.visit(artifact);
-        if (this.atomEntry != null) {
-            Artifact srampArty = new Artifact();
-            srampArty.setXsdDocument(artifact);
-        	this.atomEntry.setAnyOtherJAXBObject(srampArty);
-        }
+		visitBase(artifact);
+		visitDocument(artifact);
+		visitXmlDocument(artifact);
 	}
 
 	/**
@@ -115,7 +180,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(AttributeDeclaration artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
 	}
 
 	/**
@@ -123,7 +189,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(ElementDeclaration artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
 	}
 
 	/**
@@ -131,7 +198,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(SimpleTypeDeclaration artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitXsdDervied(artifact);
 	}
 
 	/**
@@ -139,7 +208,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(ComplexTypeDeclaration artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitXsdDervied(artifact);
 	}
 
 	/**
@@ -147,7 +218,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(PolicyDocument artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDocument(artifact);
+		visitXmlDocument(artifact);
 	}
 
 	/**
@@ -155,7 +228,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(PolicyExpression artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
 	}
 
 	/**
@@ -163,7 +237,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(PolicyAttachment artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
 	}
 
 	/**
@@ -171,7 +246,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(SoapAddress artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
 	}
 
 	/**
@@ -179,7 +255,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(SoapBinding artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
 	}
 
 	/**
@@ -187,7 +264,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(WsdlDocument artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDocument(artifact);
+		visitXmlDocument(artifact);
 	}
 
 	/**
@@ -195,7 +274,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(WsdlService artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -203,7 +284,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Port artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -211,7 +294,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(WsdlExtension artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
 	}
 
 	/**
@@ -219,7 +303,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Part artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -227,7 +313,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Message artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -235,7 +323,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Fault artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -243,7 +333,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(PortType artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -251,7 +343,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Operation artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -259,7 +353,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(OperationInput artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -267,7 +363,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(OperationOutput artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -275,7 +373,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Binding artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -283,7 +383,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(BindingOperation artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -291,7 +393,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(BindingOperationInput artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -299,7 +403,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(BindingOperationOutput artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -307,7 +413,9 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(BindingOperationFault artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitDerived(artifact);
+		visitWsdlDerived(artifact);
 	}
 
 	/**
@@ -315,7 +423,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Organization artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -323,7 +432,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(ServiceEndpoint artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitServiceImplementation(artifact);
 	}
 
 	/**
@@ -331,7 +441,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(ServiceInstance artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitServiceImplementation(artifact);
 	}
 
 	/**
@@ -339,7 +450,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(ServiceOperation artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitServiceImplementation(artifact);
 	}
 
 	/**
@@ -347,7 +459,7 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(UserDefinedArtifactType artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
 	}
 
 	/**
@@ -355,7 +467,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Actor artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -363,7 +476,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Choreography artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -371,7 +485,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(ChoreographyProcess artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -379,7 +494,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Collaboration artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -387,7 +503,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(CollaborationProcess artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -395,7 +512,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Composition artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -403,7 +521,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Effect artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -411,7 +530,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Element artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -419,7 +539,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Event artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -427,7 +548,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(InformationType artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -435,7 +557,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Orchestration artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -443,7 +566,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(OrchestrationProcess artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -451,7 +575,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Policy artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -459,7 +584,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(PolicySubject artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -467,7 +593,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Process artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -475,7 +602,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Service artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -483,7 +611,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(ServiceContract artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -491,7 +620,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(ServiceComposition artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -499,7 +629,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(ServiceInterface artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -507,7 +638,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(System artifact) {
-		throwMissingImplException(artifact);
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 	/**
@@ -515,19 +647,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	 */
 	@Override
 	public void visit(Task artifact) {
-		throwMissingImplException(artifact);
-	}
-
-	/**
-	 * This should go away once all of the implementations are done.
-	 * @param artifact
-	 */
-	private void throwMissingImplException(BaseArtifactType artifact) {
-		try {
-			throw new Exception("Missing implementation in " + this.getClass().getSimpleName() + " for artifact type: " + artifact.getClass().getSimpleName());
-		} catch (Exception e) {
-			this.failure = e;
-		}
+		visitBase(artifact);
+		visitSoa(artifact);
 	}
 
 }

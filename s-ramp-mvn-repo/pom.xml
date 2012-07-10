@@ -22,38 +22,36 @@
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-atom-provider</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxb-provider</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>jaxrs-api</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
-			<type>jar</type>
 		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>tjws</artifactId>
-			<version>${org.jboss.resteasy.version}</version>
-			<scope>test</scope>
-		</dependency>
+		
+		<!-- S-RAMP project dependencies -->
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
 			<artifactId>s-ramp-api</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>org.overlord.sramp</groupId>
+			<artifactId>s-ramp-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- Provided libraries -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -90,6 +88,12 @@
 		<dependency>
 			<groupId>xmlunit</groupId>
 			<artifactId>xmlunit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>tjws</artifactId>
+			<version>${org.jboss.resteasy.version}</version>
 			<scope>test</scope>
 		</dependency>
 

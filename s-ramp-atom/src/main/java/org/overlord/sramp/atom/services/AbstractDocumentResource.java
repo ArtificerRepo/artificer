@@ -27,12 +27,12 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.ArtifactVisitorHelper;
 import org.overlord.sramp.atom.models.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.atom.models.ArtifactToSummaryAtomEntryVisitor;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
+import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.slf4j.Logger;
@@ -131,6 +131,22 @@ public abstract class AbstractDocumentResource {
 			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return visitor.getAtomEntry();
+		} catch (Exception e) {
+        	// TODO need better error handling
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Gets the content of the artifact.
+	 * @param uuid the UUID of the s-ramp artifact
+	 * @param artifactType the type of artifact we are expecting
+	 * @return the artifact content
+	 */
+	protected InputStream getArtifactContent(String uuid, ArtifactType artifactType) {
+        try {
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			return persistenceManager.getArtifactContent(uuid, artifactType);
 		} catch (Exception e) {
         	// TODO need better error handling
 			throw new RuntimeException(e);

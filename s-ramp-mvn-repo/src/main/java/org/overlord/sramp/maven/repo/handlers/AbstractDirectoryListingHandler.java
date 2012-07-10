@@ -57,6 +57,9 @@ public abstract class AbstractDirectoryListingHandler implements MavenRepository
 		DirectoryListing directoryListing = new DirectoryListing(mavenPath, urlPath);
 		try {
 			generateDirectoryListing(directoryListing);
+		} catch (IllegalArgumentException e) {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp;
+package org.overlord.sramp.visitors;
 
 import org.s_ramp.xmlns._2010.s_ramp.Actor;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;

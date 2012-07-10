@@ -81,6 +81,27 @@ public class MavenRepositoryPathParserTest {
 			"/core/XsdDocument/0cbafbd0-c528-11e1-9b21-0800200c9a66/1.0.7/0cbafbd0-c528-11e1-9b21-0800200c9a66.pom",
 			"core", "XsdDocument", "0cbafbd0-c528-11e1-9b21-0800200c9a66", "1.0.7", "0cbafbd0-c528-11e1-9b21-0800200c9a66", "pom",
 			"/core/XsdDocument/0cbafbd0-c528-11e1-9b21-0800200c9a66/1.0.7/0cbafbd0-c528-11e1-9b21-0800200c9a66.pom"
+		},
+		{
+			"/core/XsdDocument/0cbafbd0-c528-11e1-9b21-0800200c9a66/1.0.7/0cbafbd0-c528-11e1-9b21-0800200c9a66-1.0.pom",
+			"core", "XsdDocument", "0cbafbd0-c528-11e1-9b21-0800200c9a66", "1.0.7", "0cbafbd0-c528-11e1-9b21-0800200c9a66-1.0", "pom",
+			"/core/XsdDocument/0cbafbd0-c528-11e1-9b21-0800200c9a66/1.0.7/0cbafbd0-c528-11e1-9b21-0800200c9a66-1.0.pom"
+		},
+		/** NOW SOME BADLY FORMATTED CASES **/
+		{
+			"/core/XsdDocument/0cbafbd0-c528-11e1-9b21-0800200c9a66/1.0.7/0cbafbd0-c528-11e1-9b21-0800200c9a66-1.0.",
+			"core", "XsdDocument", "0cbafbd0-c528-11e1-9b21-0800200c9a66", "1.0.7", "0cbafbd0-c528-11e1-9b21-0800200c9a66-1.0", "",
+			"/core/XsdDocument/0cbafbd0-c528-11e1-9b21-0800200c9a66/1.0.7/0cbafbd0-c528-11e1-9b21-0800200c9a66-1.0."
+		},
+		{
+			"/core/XsdDocument/0cbafbd0-c528-11e1-9b21-0800200c9a66/1.0.7/uuid",
+			"core", "XsdDocument", "0cbafbd0-c528-11e1-9b21-0800200c9a66", "1.0.7", "uuid", null,
+			"/core/XsdDocument/0cbafbd0-c528-11e1-9b21-0800200c9a66/1.0.7/uuid"
+		},
+		{
+			"/core/XsdDocument/0cbafbd0-c528-11e1-9b21-0800200c9a66/1.0.7/uuid/crap/at/the/end",
+			"core", "XsdDocument", "0cbafbd0-c528-11e1-9b21-0800200c9a66", "1.0.7", "uuid", null,
+			"/core/XsdDocument/0cbafbd0-c528-11e1-9b21-0800200c9a66/1.0.7/uuid"
 		}
 
 	};

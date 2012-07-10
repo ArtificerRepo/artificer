@@ -47,11 +47,17 @@ public class MavenRepositoryPathParser {
 				repoPath.setArtifactVersion(pathSegments[4]);
 			if (pathSegments.length >= 6) {
 				String file = pathSegments[5];
-				String[] fileSegments = file.split("\\.");
-				String fname = fileSegments[0];
+				String fname = null;
 				String fext = null;
-				if (fileSegments.length >= 2)
-					fext = fileSegments[1];
+				
+				int idx = file.lastIndexOf('.');
+				if (idx > 0) {
+					fname = file.substring(0, idx);
+					fext = file.substring(idx+1);
+				} else {
+					fname = file;
+				}
+				
 				repoPath.setArtifactFileName(fname);
 				repoPath.setArtifactExtension(fext);
 			}

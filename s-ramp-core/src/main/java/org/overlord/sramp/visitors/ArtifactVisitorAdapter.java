@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp;
+package org.overlord.sramp.visitors;
 
 import org.s_ramp.xmlns._2010.s_ramp.Actor;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
@@ -93,7 +93,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 	
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
 	 */
 	@Override
 	public void visit(XmlDocument artifact) {
@@ -101,7 +101,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.XsdDocument)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.XsdDocument)
 	 */
 	@Override
 	public void visit(XsdDocument artifact) {
@@ -109,7 +109,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration)
 	 */
 	@Override
 	public void visit(AttributeDeclaration artifact) {
@@ -117,7 +117,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration)
 	 */
 	@Override
 	public void visit(ElementDeclaration artifact) {
@@ -125,7 +125,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration)
 	 */
 	@Override
 	public void visit(SimpleTypeDeclaration artifact) {
@@ -133,7 +133,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration)
 	 */
 	@Override
 	public void visit(ComplexTypeDeclaration artifact) {
@@ -141,7 +141,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicyDocument)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicyDocument)
 	 */
 	@Override
 	public void visit(PolicyDocument artifact) {
@@ -149,7 +149,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicyExpression)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicyExpression)
 	 */
 	@Override
 	public void visit(PolicyExpression artifact) {
@@ -157,7 +157,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicyAttachment)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicyAttachment)
 	 */
 	@Override
 	public void visit(PolicyAttachment artifact) {
@@ -165,7 +165,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.SoapAddress)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.SoapAddress)
 	 */
 	@Override
 	public void visit(SoapAddress artifact) {
@@ -173,7 +173,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.SoapBinding)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.SoapBinding)
 	 */
 	@Override
 	public void visit(SoapBinding artifact) {
@@ -181,7 +181,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlDocument)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlDocument)
 	 */
 	@Override
 	public void visit(WsdlDocument artifact) {
@@ -189,7 +189,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlService)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlService)
 	 */
 	@Override
 	public void visit(WsdlService artifact) {
@@ -197,7 +197,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Port)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Port)
 	 */
 	@Override
 	public void visit(Port artifact) {
@@ -205,7 +205,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlExtension)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlExtension)
 	 */
 	@Override
 	public void visit(WsdlExtension artifact) {
@@ -213,7 +213,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Part)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Part)
 	 */
 	@Override
 	public void visit(Part artifact) {
@@ -221,7 +221,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Message)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Message)
 	 */
 	@Override
 	public void visit(Message artifact) {
@@ -229,7 +229,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Fault)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Fault)
 	 */
 	@Override
 	public void visit(Fault artifact) {
@@ -237,7 +237,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PortType)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PortType)
 	 */
 	@Override
 	public void visit(PortType artifact) {
@@ -245,7 +245,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Operation)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Operation)
 	 */
 	@Override
 	public void visit(Operation artifact) {
@@ -253,7 +253,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.OperationInput)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.OperationInput)
 	 */
 	@Override
 	public void visit(OperationInput artifact) {
@@ -261,7 +261,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.OperationOutput)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.OperationOutput)
 	 */
 	@Override
 	public void visit(OperationOutput artifact) {
@@ -269,7 +269,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Binding)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Binding)
 	 */
 	@Override
 	public void visit(Binding artifact) {
@@ -277,7 +277,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperation)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperation)
 	 */
 	@Override
 	public void visit(BindingOperation artifact) {
@@ -285,7 +285,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperationInput)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperationInput)
 	 */
 	@Override
 	public void visit(BindingOperationInput artifact) {
@@ -293,7 +293,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutput)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutput)
 	 */
 	@Override
 	public void visit(BindingOperationOutput artifact) {
@@ -301,7 +301,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperationFault)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperationFault)
 	 */
 	@Override
 	public void visit(BindingOperationFault artifact) {
@@ -309,7 +309,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Organization)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Organization)
 	 */
 	@Override
 	public void visit(Organization artifact) {
@@ -317,7 +317,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceEndpoint)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceEndpoint)
 	 */
 	@Override
 	public void visit(ServiceEndpoint artifact) {
@@ -325,7 +325,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceInstance)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceInstance)
 	 */
 	@Override
 	public void visit(ServiceInstance artifact) {
@@ -333,7 +333,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceOperation)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceOperation)
 	 */
 	@Override
 	public void visit(ServiceOperation artifact) {
@@ -341,7 +341,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
 	 */
 	@Override
 	public void visit(UserDefinedArtifactType artifact) {
@@ -349,7 +349,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Actor)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Actor)
 	 */
 	@Override
 	public void visit(Actor artifact) {
@@ -357,7 +357,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Choreography)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Choreography)
 	 */
 	@Override
 	public void visit(Choreography artifact) {
@@ -365,7 +365,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ChoreographyProcess)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ChoreographyProcess)
 	 */
 	@Override
 	public void visit(ChoreographyProcess artifact) {
@@ -373,7 +373,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Collaboration)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Collaboration)
 	 */
 	@Override
 	public void visit(Collaboration artifact) {
@@ -381,7 +381,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess)
 	 */
 	@Override
 	public void visit(CollaborationProcess artifact) {
@@ -389,7 +389,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Composition)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Composition)
 	 */
 	@Override
 	public void visit(Composition artifact) {
@@ -397,7 +397,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Effect)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Effect)
 	 */
 	@Override
 	public void visit(Effect artifact) {
@@ -405,7 +405,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Element)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Element)
 	 */
 	@Override
 	public void visit(Element artifact) {
@@ -413,7 +413,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Event)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Event)
 	 */
 	@Override
 	public void visit(Event artifact) {
@@ -421,7 +421,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.InformationType)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.InformationType)
 	 */
 	@Override
 	public void visit(InformationType artifact) {
@@ -429,7 +429,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Orchestration)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Orchestration)
 	 */
 	@Override
 	public void visit(Orchestration artifact) {
@@ -437,7 +437,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.OrchestrationProcess)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.OrchestrationProcess)
 	 */
 	@Override
 	public void visit(OrchestrationProcess artifact) {
@@ -445,7 +445,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Policy)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Policy)
 	 */
 	@Override
 	public void visit(Policy artifact) {
@@ -453,7 +453,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicySubject)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicySubject)
 	 */
 	@Override
 	public void visit(PolicySubject artifact) {
@@ -461,7 +461,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Process)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Process)
 	 */
 	@Override
 	public void visit(Process artifact) {
@@ -469,7 +469,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Service)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Service)
 	 */
 	@Override
 	public void visit(Service artifact) {
@@ -477,7 +477,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceContract)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceContract)
 	 */
 	@Override
 	public void visit(ServiceContract artifact) {
@@ -485,7 +485,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceComposition)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceComposition)
 	 */
 	@Override
 	public void visit(ServiceComposition artifact) {
@@ -493,7 +493,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceInterface)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceInterface)
 	 */
 	@Override
 	public void visit(ServiceInterface artifact) {
@@ -501,7 +501,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.System)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.System)
 	 */
 	@Override
 	public void visit(System artifact) {
@@ -509,7 +509,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Task)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Task)
 	 */
 	@Override
 	public void visit(Task artifact) {

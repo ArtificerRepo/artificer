@@ -39,12 +39,14 @@
 				}
 				String formattedDate = format.format(entry.getLastModified());
 				String size = "-";
+				String description = entry.getDescription();
 		%>
 		<tr>
 			<td valign="top">[<%= type %>]</td>
 			<td><a href="<%= href %>"><%= label %></a></td>
 			<td align="right"><%= formattedDate %></td>
 			<td align="right"><%= size %></td>
+			<td align="right"><%= description %></td>
 		</tr>
 		<%  }  %>
 		<tr>

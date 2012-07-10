@@ -28,11 +28,22 @@ import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
- * A handler that lists all of the Artifact instances for a given specific Artifact Type.
+ * A handler that lists all of the generated Maven files for the specific artifact
+ * version selected.  This handler should, at a minimum, show a directory listing
+ * with a file for the artifact content (*.xsd, *.wsdl, etc) and a file for the
+ * generated artifact pom.xml.
+ * 
+ * The filenames are in the following format:
+ * 
+ * {uuid}-{version}.{type}
+ * {uuid}-{version}.pom
+ * 
+ * The former will allow the artifact content to be downloaded, while the latter will
+ * download a generated Maven compatible pom.xml for the artifact.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactUuidHandler extends AbstractDirectoryListingHandler {
+public class ArtifactVersionHandler extends AbstractDirectoryListingHandler {
 
 	private MavenRepositoryPath repositoryPath;
 
@@ -40,7 +51,7 @@ public class ArtifactUuidHandler extends AbstractDirectoryListingHandler {
 	 * Constructor.
 	 * @param repositoryPath
 	 */
-	public ArtifactUuidHandler(MavenRepositoryPath repositoryPath) {
+	public ArtifactVersionHandler(MavenRepositoryPath repositoryPath) {
 		this.repositoryPath = repositoryPath;
 	}
 
@@ -51,22 +62,28 @@ public class ArtifactUuidHandler extends AbstractDirectoryListingHandler {
 	protected void generateDirectoryListing(DirectoryListing directoryListing) throws Exception {
 		Entry fullEntry = SRAMPAtomApiClient.getInstance().getFullArtifactEntry(repositoryPath.getArtifactModel(), 
 				repositoryPath.getArtifactType(), repositoryPath.getArtifactUuid());
-		if (fullEntry == null)
-			throw new IllegalArgumentException("No S-RAMP artifact found for UUID: " + repositoryPath.getArtifactUuid());
+		if (fullEntry == null) {
+			throw new IllegalArgumentException("No S-RAMP artifact found with UUID: " + repositoryPath.getArtifactUuid());
+		}
 		ArtifactType type = ArtifactType.valueOf(repositoryPath.getArtifactType());
 		Artifact srampArty = fullEntry.getAnyOtherJAXBObject(Artifact.class);
 		BaseArtifactType artifact = type.unwrap(srampArty);
-		String version = artifact.getVersion();
-		if (version == null || version.trim().length() == 0) {
-			version = "1.0";
-		}
+		String uuid = this.repositoryPath.getArtifactUuid();
+		String name = artifact.getName();
+		String version = this.repositoryPath.getArtifactVersion();
+		String fileExtension = type.getModel();
+		
+		String artifactFile = String.format("%1$s-%2$s.%3$s", uuid, version, fileExtension);
+		String pomFile = String.format("%1$s-%2$s.pom", uuid, version);
+
 		Date lastModified = new Date();
 		XMLGregorianCalendar lastModifiedXML = artifact.getLastModifiedTimestamp();
 		if (lastModifiedXML != null)
 			lastModified = lastModifiedXML.toGregorianCalendar().getTime();
 
 		directoryListing.addDirectoryEntry("..");
-		directoryListing.addDirectoryEntry(version, lastModified);
+		directoryListing.addFileEntry(artifactFile, name, lastModified, -1L);
+		directoryListing.addFileEntry(pomFile, "Generated POM for " + name, lastModified, -1L);
 	}
 
 }

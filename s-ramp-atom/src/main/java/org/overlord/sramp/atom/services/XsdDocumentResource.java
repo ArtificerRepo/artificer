@@ -113,6 +113,17 @@ public class XsdDocumentResource extends AbstractDocumentResource
     }
 
     /**
+     * Returns a feed of summary documents for all XsdDocument artifacts.
+     * @return artifact content stream
+     */
+    @GET
+    @Path("{uuid}/media")
+    @Produces(MediaType.TEXT_XML)
+    public InputStream getContent(@PathParam("uuid") String uuid) {
+    	return super.getArtifactContent(uuid, ArtifactType.XsdDocument);
+    }
+    
+    /**
      * Called to delete an {@link XsdDocument} with the supplied uuid.
      * @param uuid the UUID of the s-ramp artifact
      */
@@ -131,4 +142,5 @@ public class XsdDocumentResource extends AbstractDocumentResource
     public Feed getFeed() {
     	return super.getFeed(ArtifactType.XsdDocument);
     }
+
 }

@@ -16,9 +16,12 @@
 package org.overlord.sramp.maven.repo.servlets;
 
 import org.overlord.sramp.maven.repo.MavenRepositoryPath;
+import org.overlord.sramp.maven.repo.handlers.ArtifactContentHandler;
 import org.overlord.sramp.maven.repo.handlers.ArtifactModelHandler;
+import org.overlord.sramp.maven.repo.handlers.ArtifactPomHandler;
 import org.overlord.sramp.maven.repo.handlers.ArtifactTypeHandler;
 import org.overlord.sramp.maven.repo.handlers.ArtifactUuidHandler;
+import org.overlord.sramp.maven.repo.handlers.ArtifactVersionHandler;
 import org.overlord.sramp.maven.repo.handlers.Error404Handler;
 import org.overlord.sramp.maven.repo.handlers.RootHandler;
 
@@ -96,8 +99,15 @@ public class MavenRepositoryHandlerFactory {
 			return new ArtifactTypeHandler(repositoryPath);
 		} else if (repositoryPath.getArtifactVersion() == null) {
 			return new ArtifactUuidHandler(repositoryPath);
+		} else if (repositoryPath.getArtifactFileName() == null) {
+			return new ArtifactVersionHandler(repositoryPath);
+		} else if (repositoryPath.getArtifactExtension() == null) {
+			return ERROR_404_HANDLER;
+		} else if ("pom".equals(repositoryPath.getArtifactExtension())) {
+			return new ArtifactPomHandler(repositoryPath);
+		} else {
+			return new ArtifactContentHandler(repositoryPath);
 		}
-		return ERROR_404_HANDLER;
 	}
 	
 }

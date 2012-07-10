@@ -15,6 +15,9 @@
  */
 package org.overlord.sramp.maven.repo.atom;
 
+import java.io.InputStream;
+import java.net.URL;
+
 import org.apache.commons.configuration.Configuration;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
@@ -85,6 +88,20 @@ public class SRAMPAtomApiClient {
 		ClientRequest request = new ClientRequest(atomUrl);
 		ClientResponse<Entry> response = request.get(Entry.class);
 		return response.getEntity();
+	}
+
+	/**
+	 * Gets the content for an artifact as an input stream.
+	 * @param artifactModel the artifact model (core, xsd, wsdl, etc)
+	 * @param artifactType the artifact type (XmlDocument, XsdDocument, etc)
+	 * @param artifactUuid the S-RAMP uuid of the artifact
+	 * @return an {@link InputStream} to the S-RAMP artifact content
+	 * @throws Exception 
+	 */
+	public InputStream getArtifactContent(String artifactModel, String artifactType, String artifactUuid) throws Exception {
+		String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
+		URL url = new URL(atomUrl);
+		return url.openStream();
 	}
 
 

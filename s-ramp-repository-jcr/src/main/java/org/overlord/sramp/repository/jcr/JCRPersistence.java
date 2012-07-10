@@ -20,14 +20,19 @@ import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD_ARTIFACT;
 import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD_FILENAME;
 import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_UUID;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import javax.jcr.Binary;
 import javax.jcr.LoginException;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Node;
@@ -36,17 +41,19 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.ValueFormatException;
 import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.IOUtils;
 import org.modeshape.jcr.api.JcrTools;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.DerivedArtifactsCreationException;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.UnsupportedFiletypeException;
+import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
+import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.slf4j.Logger;
@@ -254,6 +261,38 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     }
     
     /**
+     * @see org.overlord.sramp.repository.PersistenceManager#getArtifactContent(java.lang.String, org.overlord.sramp.ArtifactType)
+     */
+    @Override
+    public InputStream getArtifactContent(String uuid, ArtifactType type) {
+        Session session = null;
+        String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
+        
+        try {
+            session = JCRRepository.getSession();
+            Node artifactNode = session.getNode(artifactPath);
+            Node artifactContentNode = artifactNode.getNode("jcr:content");
+			File tempFile = saveToTempFile(artifactContentNode);
+			return new DeleteOnCloseFileInputStream(tempFile);
+        } catch (LoginException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NoSuchWorkspaceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (RepositoryException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            session.logout();
+        }
+        return null;
+    }
+    
+    /**
      * @see org.overlord.sramp.repository.PersistenceManager#updateArtifact(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.overlord.sramp.ArtifactType)
      */
     @Override
@@ -379,5 +418,38 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             session.logout();
         }
     }
+
+	/**
+	 * Saves binary content from the given JCR content (jcr:content) node to a temporary
+	 * file.
+	 * @param jcrContentNode
+	 * @param tempFile
+	 * @throws ValueFormatException
+	 * @throws RepositoryException
+	 * @throws PathNotFoundException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private File saveToTempFile(Node jcrContentNode) throws ValueFormatException,
+			RepositoryException, PathNotFoundException, FileNotFoundException, IOException {
+		File file = File.createTempFile("sramp", ".jcr");
+		Binary binary = null;
+		InputStream content = null;
+		OutputStream tempFileOS = null;
+
+		try {
+			binary = jcrContentNode.getProperty("jcr:data").getBinary();
+			content = binary.getStream();
+			tempFileOS = new FileOutputStream(file);
+			IOUtils.copy(content, tempFileOS);
+		} finally {
+			IOUtils.closeQuietly(content);
+			IOUtils.closeQuietly(tempFileOS);
+			if (binary != null)
+				binary.dispose();
+		}
+		
+		return file;
+	}
 
 }

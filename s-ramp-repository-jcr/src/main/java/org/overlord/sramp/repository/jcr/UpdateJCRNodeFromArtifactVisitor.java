@@ -17,7 +17,7 @@ package org.overlord.sramp.repository.jcr;
 
 import javax.jcr.Node;
 
-import org.overlord.sramp.ArtifactVisitorAdapter;
+import org.overlord.sramp.visitors.ArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
@@ -50,7 +50,7 @@ public class UpdateJCRNodeFromArtifactVisitor extends ArtifactVisitorAdapter {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.XsdDocument)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.XsdDocument)
 	 */
 	@Override
 	public void visit(XsdDocument artifact) {

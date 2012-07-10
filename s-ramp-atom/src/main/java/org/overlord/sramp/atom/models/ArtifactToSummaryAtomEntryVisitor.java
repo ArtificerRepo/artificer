@@ -24,8 +24,8 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.ArtifactVisitorAdapter;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.visitors.ArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -73,7 +73,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 
 	/**
 	 * Creates the base Atom Entry, doing the stuff that's common to all types of artifacts.
-	 * @see org.overlord.sramp.ArtifactVisitorAdapter#visitBase(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
+	 * @see org.overlord.sramp.visitors.ArtifactVisitorAdapter#visitBase(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
 	 */
 	@Override
 	protected void visitBase(BaseArtifactType artifact) {

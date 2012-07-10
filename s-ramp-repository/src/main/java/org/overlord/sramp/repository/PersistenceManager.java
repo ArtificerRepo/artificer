@@ -46,9 +46,20 @@ public interface PersistenceManager {
 	 * Gets a previously persisted artifact by its UUID.
 	 * @param uuid the UUID of the s-ramp artifact
 	 * @param artifactType the type of the artifact
-	 * @return and instance of an {@link ArtifactType}
+	 * @return an instance of a {@link BaseArtifactType}
 	 */
 	public BaseArtifactType getArtifact(String uuid, ArtifactType type);
+
+	/**
+	 * Gets the content (media) for a previously persisted artifact by its UUID.  
+	 * <br/><br/>
+	 * <b><i>Note: it is the responsibility of the calling method to close the 
+	 * resulting {@link InputStream}.</i></b>
+	 * @param uuid the S-RAMP uuid of the artifact.
+	 * @param artifactType the type of the artifact
+	 * @return an {@link InputStream} over the artifact content
+	 */
+	public InputStream getArtifactContent(String uuid, ArtifactType artifactType);
 
 	/**
 	 * Updates a previously persisted artifact.  Note that this method only updates the meta data

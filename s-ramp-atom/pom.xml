@@ -56,6 +56,8 @@
 			<version>${org.jboss.resteasy.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- S-RAMP project dependencies -->
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
 			<artifactId>s-ramp-api</artifactId>
@@ -63,9 +65,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
+			<artifactId>s-ramp-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.overlord.sramp</groupId>
 			<artifactId>s-ramp-repository</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<!-- Provided libraries -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
