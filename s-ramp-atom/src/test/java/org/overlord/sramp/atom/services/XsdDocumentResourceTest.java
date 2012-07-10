@@ -17,6 +17,7 @@ package org.overlord.sramp.atom.services;
 
 import static org.jboss.resteasy.test.TestPortProvider.generateURL;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
@@ -93,6 +94,10 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 		
 		// Get
 		entry = doGetXsdEntry(entryId);
+		
+		// Get artifact content
+		String content = doGetXsdContent(entryId);
+		verifyXsdContent(content);
 
 		// Feed
 		Feed feed = doGetXsdFeed();
@@ -144,6 +149,7 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 	/**
 	 * GETs the Atom entry from the repository (to ensure we have the latest).
 	 * @param entryId
+	 * @throws Exception
 	 */
 	private Entry doGetXsdEntry(URI entryId) throws Exception {
 		// TODO I think the entryId should be of the format urn:{uuid} and we'll need to parse it - this isn't happening right now though
@@ -160,6 +166,36 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 		return entry;
 	}
 
+	/**
+	 * Gets the content for the artifact from the repo.
+	 * @param entryId
+	 * @throws Exception 
+	 */
+	private String doGetXsdContent(URI entryId) throws Exception {
+		String uuid = entryId.toString();
+
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid + "/media"));
+		ClientResponse<String> response = request.get(String.class);
+
+		return response.getEntity();
+	}
+
+	/**
+	 * Verify that the content returned from the repo is right.
+	 * @param content
+	 * @throws IOException 
+	 */
+	private void verifyXsdContent(String content) throws IOException {
+		Assert.assertNotNull(content);
+		
+		String artifactFileName = "PO.xsd";
+		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String expectedContent = convertStreamToString(POXsd);
+		POXsd.close();
+		
+		Assert.assertEquals(expectedContent, content);
+	}
+	
 	/**
 	 * GETs a {@link Feed} of the XsdDocument artifacts.
 	 * @throws Exception 
