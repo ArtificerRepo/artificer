@@ -191,6 +191,7 @@ public abstract class AbstractDocumentResource {
 	            ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 	            Entry entry = visitor.getAtomEntry();
 				feed.getEntries().add(entry);
+				visitor.reset();
 			}
 
 			return feed;

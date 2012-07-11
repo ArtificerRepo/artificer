@@ -15,13 +15,9 @@
  */
 package org.overlord.sramp.visitors;
 
-import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
+import java.lang.reflect.Method;
+
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
  * Helper class used to visit S-RAMP artifacts.  This should be replaced by "accept" methods implemented
@@ -39,22 +35,13 @@ public final class ArtifactVisitorHelper {
 	 * @param artifact
 	 */
 	public static void visitArtifact(ArtifactVisitor visitor, BaseArtifactType artifact) {
-		// XSD Artifact Types
-		if (artifact instanceof XsdDocument)
-			visitor.visit((XsdDocument) artifact);
-		else if (artifact instanceof AttributeDeclaration)
-			visitor.visit((AttributeDeclaration) artifact);
-		else if (artifact instanceof ElementDeclaration)
-			visitor.visit((ElementDeclaration) artifact);
-		else if (artifact instanceof SimpleTypeDeclaration)
-			visitor.visit((SimpleTypeDeclaration) artifact);
-		else if (artifact instanceof ComplexTypeDeclaration)
-			visitor.visit((ComplexTypeDeclaration) artifact);
-
-		// Core Artifact Types
-		// WARNING:  the core types must be last due to artifact type hierarchy
-		else if (artifact instanceof XmlDocument)
-			visitor.visit((XmlDocument) artifact);
+		try {
+			Method method = visitor.getClass().getMethod("visit", artifact.getClass());
+			method.invoke(visitor, artifact);
+		} catch (Exception e) {
+			// This shouldn't happen unless we've programmed something wrong in the visitor interface.
+			throw new RuntimeException("Error: failed to find proper visit() method.  Visitor class=" + visitor.getClass() + ",  Artifact class=" + artifact.getClass());
+		}
 	}
 	
 }

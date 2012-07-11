@@ -26,6 +26,7 @@ import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.visitors.ArtifactVisitorAdapter;
+import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -86,41 +87,39 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			entry.setPublished(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
 			entry.getAuthors().add(new Person(artifact.getCreatedBy()));
 			entry.setSummary(artifact.getDescription());
-			
-			// Original content can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
-			Content content = new Content();
-			content.setType(MediaType.APPLICATION_ATOM_XML_UTF8_TYPE);
+
 			//TODO create URL Helper, obtain base URL from server
-			content.setSrc(new URI("http://localhost:8080/changeit/s-ramp/"
-					+ artifactType.getModel() + "/" + artifactType.name() + "/"
-					+ artifact.getUuid() + "/media"));
+			String atomLink = "http://localhost:8080/changeit/s-ramp/" + artifactType.getModel() + "/"
+					+ artifactType.name() + "/" + artifact.getUuid();
+			String mediaLink = atomLink + "/media";
+
+			// Original content can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
+			ArtifactContentTypeVisitor ctVisitor = new ArtifactContentTypeVisitor();
+			ArtifactVisitorHelper.visitArtifact(ctVisitor, artifact);
+			Content content = new Content();
+			content.setType(ctVisitor.getContentType());
+			content.setSrc(new URI(mediaLink));
 			entry.setContent(content);
 			
 			// Self can be accessed at /s-ramp/{model}/{artifact-type}/{uid}
 			Link linkToSelf = new Link();
 			linkToSelf.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
 			linkToSelf.setRel("self");
-			linkToSelf.setHref(new URI("http://localhost:8080/changeit/s-ramp/"
-					+ artifactType.getModel() + "/" + artifactType.name() + "/"
-					+ artifact.getUuid()));
+			linkToSelf.setHref(new URI(atomLink));
 			entry.getLinks().add(linkToSelf);
 			
 			// Link to edit-media can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/edit-media
 			Link linkToEditMedia = new Link();
 			linkToEditMedia.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
 			linkToEditMedia.setRel("edit-media");
-			linkToEditMedia.setHref(new URI("http://localhost:8080/changeit/s-ramp/"
-					+ artifactType.getModel() + "/" + artifactType.name() + "/"
-					+ artifact.getUuid() + "/edit-media"));
+			linkToEditMedia.setHref(new URI(mediaLink));
 			entry.getLinks().add(linkToEditMedia);
 			
 			// Link to edit can be accessed at /s-ramp/{model}/{artifact-type}/{uid}
 			Link linkToEdit = new Link();
 			linkToEdit.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
 			linkToEdit.setRel("edit");
-			linkToEdit.setHref(new URI("http://localhost:8080/changeit/s-ramp/"
-					+ artifactType.getModel() + "/" + artifactType.name() + "/"
-			        + artifact.getUuid()));
+			linkToEdit.setHref(new URI(atomLink));
 			entry.getLinks().add(linkToEdit);
 			
 			//category
