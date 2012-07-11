@@ -19,8 +19,11 @@
 	<modules>
 		<module>s-ramp-api</module>
 		<module>s-ramp-atom</module>
+		<module>s-ramp-core</module>
+		<module>s-ramp-mvn-repo</module>
 		<module>s-ramp-parent</module>
 		<module>s-ramp-repository</module>
+		<module>s-ramp-repository-jcr</module>
 	</modules>
 </project>
 

@@ -25,6 +25,6 @@ public class PersistenceFactory {
         for (PersistenceManager manager : ServiceLoader.load(PersistenceManager.class)) {
             return manager;
         }
-        return null;
+        throw new RuntimeException("Failed to find a PersistenceManager provider.");
     }
 }

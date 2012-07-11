@@ -34,7 +34,6 @@ import junit.framework.Assert;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLAssert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

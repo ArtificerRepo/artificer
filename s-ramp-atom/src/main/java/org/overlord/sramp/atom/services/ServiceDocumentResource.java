@@ -20,6 +20,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.plugins.providers.atom.app.AppService;
@@ -58,7 +59,7 @@ public class ServiceDocumentResource
      */
     @GET
     @Path("servicedocument")
-    @Produces("application/atom+xml")
+    @Produces(MediaType.APPLICATION_ATOM_XML)
     public AppService getService() {
  
         AppService appService = new AppService();
