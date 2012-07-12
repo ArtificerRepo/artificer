@@ -1,0 +1,28 @@
+{
+    "name" : "S-RAMP Repository",
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    },
+    "sequencing" : {
+        "removeDerivedContentWithOriginal" : true,
+        "sequencers" : {
+            "XSD Sequencer" : {
+                "classname" : "xsdsequencer",
+                "pathExpressions" : [ "default:/artifact/xsd/XsdDocument/(*)/(*)/(*)/*/jcr:content[@jcr:data] => default:/s-ramp/xsd/XsdDocument/$1/$2/$3" ]
+            },
+            "XML Sequencer" : {
+                "description" : "XML sequencer",
+                "classname" : "xmlsequencer",
+                "pathExpressions" : [ "default:/artifact/core/XmlDocument/(*)/(*)/(*)/*/jcr:content[@jcr:data] => default:/s-ramp/core/XmlDocument/$1/$2/$3" ]
+            }
+        }
+    }
+}
