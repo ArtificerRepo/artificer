@@ -10,7 +10,7 @@
 
 	<artifactId>s-ramp-core</artifactId>
 	<name>S-RAMP Core</name>
-	<description>S-RAMP Core contains classes that are core to S-RAMP concepts but are not S-RAMP spec generated.</description>
+	<description>S-RAMP Core contains functionality that is core to S-RAMP concepts as described in the S-RAMP functional specification.</description>
 
 	<dependencies>
 		<dependency>
