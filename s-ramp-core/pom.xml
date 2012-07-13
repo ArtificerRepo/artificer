@@ -18,6 +18,14 @@
 			<artifactId>s-ramp-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<!-- Third party libraries -->
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-common</artifactId>
+			<version>${org.modeshape.version}</version>
+		</dependency>
+
 		<!-- Testing (note the scope) -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -27,6 +35,11 @@
 		<dependency>
 			<groupId>xmlunit</groupId>
 			<artifactId>xmlunit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
