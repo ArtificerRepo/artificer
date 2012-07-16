@@ -68,10 +68,10 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(AndExpr node) {
-		visit(node.getLeft());
+		node.getLeft().accept(this);
 		if (node.getRight() != null) {
 			this.builder.append(" and ");
-			visit(node.getRight());
+			node.getRight().accept(this);
 		}
 	}
 
@@ -80,7 +80,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Argument node) {
-		visit(node.getExpr());
+		node.getExpr().accept(this);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(ArtifactSet node) {
-		visit(node.getLocationPath());
+		node.getLocationPath().accept(this);
 	}
 
 	/**
@@ -98,15 +98,15 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	public void visit(EqualityExpr node) {
 		if (node.getExpr() != null) {
 			this.builder.append("(");
-			visit(node.getExpr());
+			node.getExpr().accept(this);
 			this.builder.append(")");
 		} else {
-			visit(node.getLeft());
+			node.getLeft().accept(this);
 			if (node.getOperator() != null) {
 				this.builder.append(' ');
 				this.builder.append(node.getOperator().symbol());
 				this.builder.append(' ');
-				visit(node.getRight());
+				node.getRight().accept(this);
 			}
 		}
 	}
@@ -116,7 +116,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Expr node) {
-		visit(node.getAndExpr());
+		node.getAndExpr().accept(this);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	@Override
 	public void visit(ForwardPropertyStep node) {
 		if (node.getSubartifactSet() != null) {
-			visit(node.getSubartifactSet());
+			node.getSubartifactSet().accept(this);
 			if (node.getPropertyQName() != null)
 				this.builder.append('/');
 		}
@@ -149,7 +149,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 		this.builder.append('(');
 		Iterator<Argument> iterator = node.getArguments().iterator();
 		while (iterator.hasNext()) {
-			visit(iterator.next());
+			iterator.next().accept(this);
 			if (iterator.hasNext())
 				this.builder.append(", ");
 		}
@@ -178,10 +178,10 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(OrExpr node) {
-		visit(node.getLeft());
+		node.getLeft().accept(this);
 		if (node.getRight() != null) {
 			this.builder.append(" or ");
-			visit(node.getRight());
+			node.getRight().accept(this);
 		}
 	}
 
@@ -190,7 +190,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Predicate node) {
-		visit(node.getExpr());
+		node.getExpr().accept(this);
 	}
 
 	/**
@@ -227,15 +227,15 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Query node) {
-		visit(node.getArtifactSet());
+		node.getArtifactSet().accept(this);
 		if (node.getPredicate() != null) {
 			this.builder.append('[');
-			visit(node.getPredicate());
+			node.getPredicate().accept(this);
 			this.builder.append(']');
 		}
 		if (node.getSubartifactSet() != null) {
 			this.builder.append('/');
-			visit(node.getSubartifactSet());
+			node.getSubartifactSet().accept(this);
 		}
 	}
 
@@ -256,17 +256,17 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	@Override
 	public void visit(SubartifactSet node) {
 		if (node.getFunctionCall() != null) {
-			visit(node.getFunctionCall());
+			node.getFunctionCall().accept(this);
 		} else {
-			visit(node.getRelationshipPath());
+			node.getRelationshipPath().accept(this);
 			if (node.getPredicate() != null) {
 				this.builder.append('[');
-				visit(node.getPredicate());
+				node.getPredicate().accept(this);
 				this.builder.append(']');
 			}
 			if (node.getSubartifactSet() != null) {
 				this.builder.append('/');
-				visit(node.getSubartifactSet());
+				node.getSubartifactSet().accept(this);
 			}
 		}
 	}
