@@ -15,11 +15,32 @@
  */
 package org.overlord.sramp.query.xpath.ast;
 
+import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
+
 /**
- * Base class for all S-RAMP XPath Query AST models.
+ * An X-Path AND expression.
+ * 
+ * <pre>
+ *   OrExpr ::= EqualityExpr
+ *            | OrExpr 'or' EqualityExpr
+ * </pre>
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractSrampXPathNode {
+public class OrExpr extends AbstractBinaryExpr<OrExpr, EqualityExpr> {
+	
+	/**
+	 * Default constructor.
+	 */
+	public OrExpr() {
+	}
+	
+	/**
+	 * @see org.overlord.sramp.query.xpath.ast.AbstractXPathNode#accept(org.overlord.sramp.query.xpath.visitors.XPathVisitor)
+	 */
+	@Override
+	public void accept(XPathVisitor visitor) {
+		visitor.visit(this);
+	}
 
 }

@@ -26,7 +26,8 @@ import org.modeshape.common.xml.XmlCharacters;
 /**
  * An extension of the ModeShape tokenizer for XPath queries.  Thanks to the ModeShape project
  * for this class.  Please see org.modeshape.jcr.query.xpath.XPathParser.XPathTokenizer in
- * the ModeShape project for the original class. 
+ * the ModeShape project for the original class.  The original class was copied here in case
+ * it needs to be altered separately from the ModeShape implementation.
  */
 public class XPathTokenizer implements TokenStream.Tokenizer {
     /**

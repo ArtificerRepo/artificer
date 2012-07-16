@@ -15,37 +15,57 @@
  */
 package org.overlord.sramp.query.xpath.ast;
 
+import javax.xml.namespace.QName;
+
 import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 
 /**
- * Models the artifact-set portion of an S-RAMP Query.  Note that in the grammar found in the
- * S-RAMP specification, the artifact-set is exactly a location-path.  I chose to collapse the 
- * two into a single model.
+ * Models a forward property step.
+ * 
+ * <pre>
+ *   ForwardPropertyStep ::= subartifact-set '/' '@' PropertyQName
+ *                         | '@' PropertyQName
+ * </pre>
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactSet extends AbstractXPathNode {
-
-	private LocationPath locationPath;
+public class ForwardPropertyStep extends AbstractXPathNode {
 	
+	private SubartifactSet subartifactSet;
+	private QName propertyQName;
+
 	/**
 	 * Default constructor.
 	 */
-	public ArtifactSet() {
+	public ForwardPropertyStep() {
 	}
 
 	/**
-	 * @return the locationPath
+	 * @return the subartifactSet
 	 */
-	public LocationPath getLocationPath() {
-		return locationPath;
+	public SubartifactSet getSubartifactSet() {
+		return subartifactSet;
 	}
 
 	/**
-	 * @param locationPath the locationPath to set
+	 * @param subartifactSet the subartifactSet to set
 	 */
-	public void setLocationPath(LocationPath locationPath) {
-		this.locationPath = locationPath;
+	public void setSubartifactSet(SubartifactSet subartifactSet) {
+		this.subartifactSet = subartifactSet;
+	}
+
+	/**
+	 * @return the propertyQName
+	 */
+	public QName getPropertyQName() {
+		return propertyQName;
+	}
+
+	/**
+	 * @param propertyQName the propertyQName to set
+	 */
+	public void setPropertyQName(QName propertyQName) {
+		this.propertyQName = propertyQName;
 	}
 	
 	/**

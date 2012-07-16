@@ -15,37 +15,58 @@
  */
 package org.overlord.sramp.query.xpath.ast;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 
 /**
- * Models the artifact-set portion of an S-RAMP Query.  Note that in the grammar found in the
- * S-RAMP specification, the artifact-set is exactly a location-path.  I chose to collapse the 
- * two into a single model.
+ * Models a function call
+ * 
+ * <pre>
+ *   FunctionCall ::= FunctionName '(' ( Argument ( ',' Argument )* )? ')'
+ * </pre>
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactSet extends AbstractXPathNode {
+public class FunctionCall extends AbstractXPathNode {
 
-	private LocationPath locationPath;
+	private QName functionName;
+	private List<Argument> arguments;
 	
 	/**
 	 * Default constructor.
 	 */
-	public ArtifactSet() {
+	public FunctionCall() {
 	}
 
 	/**
-	 * @return the locationPath
+	 * @return the functionName
 	 */
-	public LocationPath getLocationPath() {
-		return locationPath;
+	public QName getFunctionName() {
+		return functionName;
 	}
 
 	/**
-	 * @param locationPath the locationPath to set
+	 * @param functionName the functionName to set
 	 */
-	public void setLocationPath(LocationPath locationPath) {
-		this.locationPath = locationPath;
+	public void setFunctionName(QName functionName) {
+		this.functionName = functionName;
+	}
+
+	/**
+	 * @return the arguments
+	 */
+	public List<Argument> getArguments() {
+		return arguments;
+	}
+
+	/**
+	 * @param arguments the arguments to set
+	 */
+	public void setArguments(List<Argument> arguments) {
+		this.arguments = arguments;
 	}
 	
 	/**

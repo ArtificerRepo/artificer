@@ -15,37 +15,73 @@
  */
 package org.overlord.sramp.query.xpath.ast;
 
+import javax.xml.namespace.QName;
+
 import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 
 /**
- * Models the artifact-set portion of an S-RAMP Query.  Note that in the grammar found in the
- * S-RAMP specification, the artifact-set is exactly a location-path.  I chose to collapse the 
- * two into a single model.
+ * Models a primary expression.
+ * 
+ * <pre>
+ *   PrimaryExpr ::= Literal
+ *                 | Number
+ *                 | '$' PropertyQName
+ * </pre>
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactSet extends AbstractXPathNode {
+public class PrimaryExpr extends AbstractXPathNode {
 
-	private LocationPath locationPath;
+	private String literal;
+	private Number number;
+	private QName propertyQName;
 	
 	/**
 	 * Default constructor.
 	 */
-	public ArtifactSet() {
+	public PrimaryExpr() {
 	}
 
 	/**
-	 * @return the locationPath
+	 * @return the literal
 	 */
-	public LocationPath getLocationPath() {
-		return locationPath;
+	public String getLiteral() {
+		return literal;
 	}
 
 	/**
-	 * @param locationPath the locationPath to set
+	 * @param literal the literal to set
 	 */
-	public void setLocationPath(LocationPath locationPath) {
-		this.locationPath = locationPath;
+	public void setLiteral(String literal) {
+		this.literal = literal;
+	}
+
+	/**
+	 * @return the number
+	 */
+	public Number getNumber() {
+		return number;
+	}
+
+	/**
+	 * @param number the number to set
+	 */
+	public void setNumber(Number number) {
+		this.number = number;
+	}
+
+	/**
+	 * @return the propertyQName
+	 */
+	public QName getPropertyQName() {
+		return propertyQName;
+	}
+
+	/**
+	 * @param propertyQName the propertyQName to set
+	 */
+	public void setPropertyQName(QName propertyQName) {
+		this.propertyQName = propertyQName;
 	}
 	
 	/**

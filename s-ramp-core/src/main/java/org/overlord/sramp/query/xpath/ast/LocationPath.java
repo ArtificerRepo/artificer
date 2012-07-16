@@ -24,28 +24,43 @@ import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactSet extends AbstractXPathNode {
+public class LocationPath extends AbstractXPathNode {
 
-	private LocationPath locationPath;
+	private String artifactModel;
+	private String artifactType;
 	
 	/**
 	 * Default constructor.
 	 */
-	public ArtifactSet() {
+	public LocationPath() {
 	}
 
 	/**
-	 * @return the locationPath
+	 * @return the artifactModel
 	 */
-	public LocationPath getLocationPath() {
-		return locationPath;
+	public String getArtifactModel() {
+		return artifactModel;
 	}
 
 	/**
-	 * @param locationPath the locationPath to set
+	 * @param artifactModel the artifactModel to set
 	 */
-	public void setLocationPath(LocationPath locationPath) {
-		this.locationPath = locationPath;
+	public void setArtifactModel(String artifactModel) {
+		this.artifactModel = artifactModel;
+	}
+
+	/**
+	 * @return the artifactType
+	 */
+	public String getArtifactType() {
+		return artifactType;
+	}
+
+	/**
+	 * @param artifactType the artifactType to set
+	 */
+	public void setArtifactType(String artifactType) {
+		this.artifactType = artifactType;
 	}
 	
 	/**

@@ -27,7 +27,10 @@ import org.modeshape.common.text.TokenStream;
 import org.modeshape.common.text.TokenStream.Tokenizer;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.query.xpath.ast.ArtifactSet;
-import org.overlord.sramp.query.xpath.ast.SrampQuery;
+import org.overlord.sramp.query.xpath.ast.LocationPath;
+import org.overlord.sramp.query.xpath.ast.Predicate;
+import org.overlord.sramp.query.xpath.ast.Query;
+import org.overlord.sramp.query.xpath.ast.SubartifactSet;
 
 /**
  * Parses an XPath query string and creates an abstract syntax tree representation. The supported grammar is
@@ -46,33 +49,59 @@ public class XPathParser {
      * @param xpath the S-RAMP Query being parsed
      * @return an S-RAMP XPath AST
      */
-	public SrampQuery parseXPath(String xpath) {
+	public Query parseXPath(String xpath) {
 		Tokenizer tokenizer = new XPathTokenizer(false); // skip comments
 		TokenStream tokens = new TokenStream(xpath, tokenizer, true).start(); // case sensitive!!
 		return parseSrampQuery(tokens);
 	}
 
 	/**
-	 * Parses an {@link SrampQuery} from the given token stream.
+	 * Parses an {@link Query} from the given token stream.
 	 * @param tokens the X-Path token stream
-	 * @return an {@link SrampQuery}
+	 * @return an {@link Query}
 	 */
-	protected SrampQuery parseSrampQuery(TokenStream tokens) {
-		SrampQuery query = new SrampQuery();
-		
+	protected Query parseSrampQuery(TokenStream tokens) {
+		Query query = new Query();
+
 		ArtifactSet artifactSet = parseArtifactSet(tokens);
-		
 		query.setArtifactSet(artifactSet);
+
+		if (tokens.canConsume('[')) {
+			Predicate predicate = parsePredicate(tokens);
+			query.setPredicate(predicate);
+			if (!tokens.canConsume(']'))
+				throw new XPathParserException("Artifact-set predicate not terminated.");
+		}
+
+		if (tokens.canConsume('/')) {
+			SubartifactSet subartifactSet = parseSubartifactSet(tokens);
+			query.setSubartifactSet(subartifactSet);
+		}
+
+		if (tokens.hasNext())
+			throw new XPathParserException("Query string improperly terminated (found extra data)");
 		
 		return query;
 	}
 
-    /**
+	/**
      * Parses an artifact-set from the token stream.
 	 * @param tokens the X-Path token stream
 	 * @return an artifact-set
 	 */
 	private ArtifactSet parseArtifactSet(TokenStream tokens) {
+		ArtifactSet artifactSet = new ArtifactSet();
+		LocationPath locationPath = parseLocationPath(tokens);
+		artifactSet.setLocationPath(locationPath);
+		return artifactSet;
+	}
+
+	/**
+	 * Parses a location path from the token stream.
+	 * @param tokens the X-Path token stream
+	 * @return a location-path
+	 */
+	private LocationPath parseLocationPath(TokenStream tokens) {
 		String artifactModel = null;
 		String artifactType = null;
 		
@@ -112,10 +141,28 @@ public class XPathParser {
 			}
 		}
 		
-		ArtifactSet artifactSet = new ArtifactSet();
-		artifactSet.setArtifactModel(artifactModel);
-		artifactSet.setArtifactType(artifactType);
-		return artifactSet;
+		LocationPath locationPath = new LocationPath();
+		locationPath.setArtifactModel(artifactModel);
+		locationPath.setArtifactType(artifactType);
+		return locationPath;
+	}
+
+    /**
+	 * @param tokens
+	 * @return
+	 */
+	private Predicate parsePredicate(TokenStream tokens) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param tokens
+	 * @return
+	 */
+	private SubartifactSet parseSubartifactSet(TokenStream tokens) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**

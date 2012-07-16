@@ -18,34 +18,36 @@ package org.overlord.sramp.query.xpath.ast;
 import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 
 /**
- * Models the artifact-set portion of an S-RAMP Query.  Note that in the grammar found in the
- * S-RAMP specification, the artifact-set is exactly a location-path.  I chose to collapse the 
- * two into a single model.
+ * Models an argument (to a function call).
+ * 
+ * <pre>
+ *   Argument ::= Expr
+ * </pre>
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactSet extends AbstractXPathNode {
+public class Argument extends AbstractXPathNode {
 
-	private LocationPath locationPath;
+	private Expr expr;
 	
 	/**
 	 * Default constructor.
 	 */
-	public ArtifactSet() {
+	public Argument() {
 	}
 
 	/**
-	 * @return the locationPath
+	 * @return the expr
 	 */
-	public LocationPath getLocationPath() {
-		return locationPath;
+	public Expr getExpr() {
+		return expr;
 	}
 
 	/**
-	 * @param locationPath the locationPath to set
+	 * @param expr the expr to set
 	 */
-	public void setLocationPath(LocationPath locationPath) {
-		this.locationPath = locationPath;
+	public void setExpr(Expr expr) {
+		this.expr = expr;
 	}
 	
 	/**

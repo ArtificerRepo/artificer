@@ -28,7 +28,8 @@ import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.overlord.sramp.query.xpath.ast.SrampQuery;
+import org.overlord.sramp.query.xpath.ast.Query;
+import org.overlord.sramp.query.xpath.visitors.XPathSerializationVisitor;
 
 /**
  * Unit test for the {@link XPathParser} class.  This test case loads a number of test cases 
@@ -37,7 +38,8 @@ import org.overlord.sramp.query.xpath.ast.SrampQuery;
  * <pre>src/test/java/org/overlord/sramp/query/xpath/parser-test-cases</pre>
  * <br/>
  * These test case files are loaded as {@link Properties} objects and then are processed
- * sequentially.  All assertions should indicate which test case failed.
+ * sequentially.  All assertions should indicate which test case failed so any error message
+ * can be correlated back to the proper .properties file.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -45,23 +47,24 @@ public class XPathParserTest {
 	
 	@Test
 	public void testArtifactSet() throws Exception {
-		Collection<Properties> testCases = getTestCases("artifact-set");
+		Collection<Properties> testCases = getTestCases();
 		
 		XPathParser parser = new XPathParser();
+		XPathSerializationVisitor visitor = new XPathSerializationVisitor();
 		for (Properties properties : testCases) {
 			String testCaseName = properties.getProperty("testcase.name");
 			System.out.println("Executing test case: " + testCaseName);
 			String xpath = properties.getProperty("xpath");
-			String expectedModel = properties.getProperty("expected.artifactModel");
-			String expectedType = properties.getProperty("expected.artifactType");
+			String expectedXpath = properties.getProperty("expected.xpath");
 			String expectedErrorMessage = properties.getProperty("expected.errorMessage");
 			
 			try {
-				SrampQuery query = parser.parseXPath(xpath);
+				Query query = parser.parseXPath(xpath);
+				visitor.reset();
+				query.accept(visitor);
+				String actualXpath = visitor.getXPath();
 				Assert.assertNotNull("Case [" + testCaseName + "]", query);
-				Assert.assertNotNull("Case [" + testCaseName + "]", query.getArtifactSet());
-				Assert.assertEquals("Case [" + testCaseName + "]", expectedModel, query.getArtifactSet().getArtifactModel());
-				Assert.assertEquals("Case [" + testCaseName + "]", expectedType, query.getArtifactSet().getArtifactType());
+				Assert.assertEquals("Case [" + testCaseName + "]", expectedXpath, actualXpath);
 			} catch (XPathParserException e) {
 				Assert.assertNotNull("Got unexpected parse error: " + e.getMessage(), expectedErrorMessage);
 				Assert.assertEquals("Case [" + testCaseName + "]", expectedErrorMessage, e.getMessage());
@@ -70,17 +73,17 @@ public class XPathParserTest {
 	}
 
 	/**
-	 * Gets the test cases from the given test case folder.
+	 * Gets the test cases.
 	 * @throws Exception
 	 */
-	private Collection<Properties> getTestCases(String testCaseFolder) throws Exception {
-		URL testCaseDirUrl = XPathParserTest.class.getResource("parser-test-cases/" + testCaseFolder);
+	private Collection<Properties> getTestCases() throws Exception {
+		URL testCaseDirUrl = XPathParserTest.class.getResource("parser-test-cases");
 		File testCaseDir = new File(testCaseDirUrl.toURI());
 		if (!testCaseDir.isDirectory())
 			throw new Exception("Failed to find test case directory: " + testCaseDirUrl);
 		
 		@SuppressWarnings("unchecked")
-		Collection<File> testCaseFiles = (Collection<File>) FileUtils.listFiles(testCaseDir, new String[] { "properties" }, false);
+		Collection<File> testCaseFiles = (Collection<File>) FileUtils.listFiles(testCaseDir, new String[] { "properties" }, true);
 		testCaseFiles = new TreeSet<File>(testCaseFiles);
 		Collection<Properties> testCases = new ArrayList<Properties>(testCaseFiles.size());
 		for (File testCaseFile : testCaseFiles) {
@@ -91,7 +94,7 @@ public class XPathParserTest {
 			} finally {
 				IOUtils.closeQuietly(reader);
 			}
-			props.setProperty("testcase.name", testCaseFolder + "/" + testCaseFile.getName());
+			props.setProperty("testcase.name", testCaseFile.getName());
 			testCases.add(props);
 		}
 		return testCases;

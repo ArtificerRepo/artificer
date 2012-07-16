@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.query.xpath.ast;
 
+import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
+
 
 /**
  * The top level S-RAMP Query.  This is what you get when you successfully parse a valid
@@ -22,16 +24,16 @@ package org.overlord.sramp.query.xpath.ast;
  *
  * @author eric.wittmann@redhat.com
  */
-public class SrampQuery extends AbstractSrampXPathNode {
+public class Query extends AbstractXPathNode {
 
 	private ArtifactSet artifactSet;
 	private Predicate predicate;
-//	private SubartifactSet subartifactSet;
+	private SubartifactSet subartifactSet;
 	
 	/**
 	 * Constructor.
 	 */
-	public SrampQuery() {
+	public Query() {
 	}
 
 	/**
@@ -60,6 +62,28 @@ public class SrampQuery extends AbstractSrampXPathNode {
 	 */
 	public void setPredicate(Predicate predicate) {
 		this.predicate = predicate;
+	}
+
+	/**
+	 * @return the subartifactSet
+	 */
+	public SubartifactSet getSubartifactSet() {
+		return subartifactSet;
+	}
+
+	/**
+	 * @param subartifactSet the subartifactSet to set
+	 */
+	public void setSubartifactSet(SubartifactSet subartifactSet) {
+		this.subartifactSet = subartifactSet;
+	}
+	
+	/**
+	 * @see org.overlord.sramp.query.xpath.ast.AbstractXPathNode#accept(org.overlord.sramp.query.xpath.visitors.XPathVisitor)
+	 */
+	@Override
+	public void accept(XPathVisitor visitor) {
+		visitor.visit(this);
 	}
 	
 }

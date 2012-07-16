@@ -15,46 +15,49 @@
  */
 package org.overlord.sramp.query.xpath.ast;
 
-import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
-
 /**
- * Models a predicate.
- * 
- * <pre>
- *   predicate ::= Expr
+ * Base class for binary expressions.
  *
  * @author eric.wittmann@redhat.com
  */
-public class Predicate extends AbstractXPathNode {
+public abstract class AbstractBinaryExpr<L extends AbstractXPathNode, R extends AbstractXPathNode>
+		extends AbstractXPathNode {
 
-	private Expr expr;
+	private L left;
+	private R right;
 	
 	/**
 	 * Default constructor.
 	 */
-	public Predicate() {
+	public AbstractBinaryExpr() {
 	}
 
 	/**
-	 * @return the expr
+	 * @return the left
 	 */
-	public Expr getExpr() {
-		return expr;
+	public L getLeft() {
+		return left;
 	}
 
 	/**
-	 * @param expr the expr to set
+	 * @param left the left to set
 	 */
-	public void setExpr(Expr expr) {
-		this.expr = expr;
+	public void setLeft(L left) {
+		this.left = left;
 	}
-	
+
 	/**
-	 * @see org.overlord.sramp.query.xpath.ast.AbstractXPathNode#accept(org.overlord.sramp.query.xpath.visitors.XPathVisitor)
+	 * @return the right
 	 */
-	@Override
-	public void accept(XPathVisitor visitor) {
-		visitor.visit(this);
+	public R getRight() {
+		return right;
+	}
+
+	/**
+	 * @param right the right to set
+	 */
+	public void setRight(R right) {
+		this.right = right;
 	}
 	
 }

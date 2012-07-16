@@ -18,34 +18,42 @@ package org.overlord.sramp.query.xpath.ast;
 import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 
 /**
- * Models the artifact-set portion of an S-RAMP Query.  Note that in the grammar found in the
- * S-RAMP specification, the artifact-set is exactly a location-path.  I chose to collapse the 
- * two into a single model.
+ * Models a comparison expression.
+ * 
+ * <pre>
+ *   ComparisonExpr ::= ForwardPropertyStep
+ *                    | ForwardPropertyStep '=' PrimaryExpr
+ *                    | ForwardPropertyStep '!=' PrimaryExpr
+ *                    | ForwardPropertyStep '<' PrimaryExpr
+ *                    | ForwardPropertyStep '>' PrimaryExpr
+ *                    | ForwardPropertyStep '<=' PrimaryExpr
+ *                    | ForwardPropertyStep '>=' PrimaryExpr
+ * </pre>
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactSet extends AbstractXPathNode {
-
-	private LocationPath locationPath;
+public class ComparisonExpr extends AbstractBinaryExpr<ForwardPropertyStep, PrimaryExpr>{
+	
+	private Operator operator;
 	
 	/**
 	 * Default constructor.
 	 */
-	public ArtifactSet() {
+	public ComparisonExpr() {
 	}
 
 	/**
-	 * @return the locationPath
+	 * @return the operator
 	 */
-	public LocationPath getLocationPath() {
-		return locationPath;
+	public Operator getOperator() {
+		return operator;
 	}
 
 	/**
-	 * @param locationPath the locationPath to set
+	 * @param operator the operator to set
 	 */
-	public void setLocationPath(LocationPath locationPath) {
-		this.locationPath = locationPath;
+	public void setOperator(Operator operator) {
+		this.operator = operator;
 	}
 	
 	/**
@@ -54,6 +62,13 @@ public class ArtifactSet extends AbstractXPathNode {
 	@Override
 	public void accept(XPathVisitor visitor) {
 		visitor.visit(this);
+	}
+
+	/**
+	 * Models the comparison expression's operator.
+	 */
+	public static enum Operator {
+		EQ, NE, LT, GT, LTE, GTE;
 	}
 	
 }

@@ -18,34 +18,47 @@ package org.overlord.sramp.query.xpath.ast;
 import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 
 /**
- * Models the artifact-set portion of an S-RAMP Query.  Note that in the grammar found in the
- * S-RAMP specification, the artifact-set is exactly a location-path.  I chose to collapse the 
- * two into a single model.
+ * Models a relationship path.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactSet extends AbstractXPathNode {
+public class RelationshipPath extends AbstractXPathNode {
 
-	private LocationPath locationPath;
-	
+	private boolean anyOutgoingRelationship;
+	private String relationshipType;
+
 	/**
 	 * Default constructor.
 	 */
-	public ArtifactSet() {
+	public RelationshipPath() {
 	}
 
 	/**
-	 * @return the locationPath
+	 * @return the anyOutgoingRelationship
 	 */
-	public LocationPath getLocationPath() {
-		return locationPath;
+	public boolean isAnyOutgoingRelationship() {
+		return anyOutgoingRelationship;
 	}
 
 	/**
-	 * @param locationPath the locationPath to set
+	 * @param anyOutgoingRelationship the anyOutgoingRelationship to set
 	 */
-	public void setLocationPath(LocationPath locationPath) {
-		this.locationPath = locationPath;
+	public void setAnyOutgoingRelationship(boolean anyOutgoingRelationship) {
+		this.anyOutgoingRelationship = anyOutgoingRelationship;
+	}
+
+	/**
+	 * @return the relationshipType
+	 */
+	public String getRelationshipType() {
+		return relationshipType;
+	}
+
+	/**
+	 * @param relationshipType the relationshipType to set
+	 */
+	public void setRelationshipType(String relationshipType) {
+		this.relationshipType = relationshipType;
 	}
 	
 	/**

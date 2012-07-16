@@ -18,21 +18,58 @@ package org.overlord.sramp.query.xpath.ast;
 import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 
 /**
- * Models a predicate.
+ * Models an equality expression.
  * 
  * <pre>
- *   predicate ::= Expr
+ *   EqualityExpr ::= subartifact-set
+ *                  | ComparisonExpr
+ *                  | '(' Expr ')'
+ * </pre>
+ * 
+ * Note that the grammar does not define a ComparisonExpr, but for convenience we do.
  *
  * @author eric.wittmann@redhat.com
  */
-public class Predicate extends AbstractXPathNode {
-
-	private Expr expr;
+public class EqualityExpr extends AbstractXPathNode {
 	
+	// Note: the following three are mutually exclusive.
+	
+	private SubartifactSet subartifactSet;
+	private ComparisonExpr comparisonExpr;
+	private Expr expr;
+
 	/**
 	 * Default constructor.
 	 */
-	public Predicate() {
+	public EqualityExpr() {
+	}
+
+	/**
+	 * @return the subartifactSet
+	 */
+	public SubartifactSet getSubartifactSet() {
+		return subartifactSet;
+	}
+
+	/**
+	 * @param subartifactSet the subartifactSet to set
+	 */
+	public void setSubartifactSet(SubartifactSet subartifactSet) {
+		this.subartifactSet = subartifactSet;
+	}
+
+	/**
+	 * @return the comparisonExpr
+	 */
+	public ComparisonExpr getComparisonExpr() {
+		return comparisonExpr;
+	}
+
+	/**
+	 * @param comparisonExpr the comparisonExpr to set
+	 */
+	public void setComparisonExpr(ComparisonExpr comparisonExpr) {
+		this.comparisonExpr = comparisonExpr;
 	}
 
 	/**
@@ -56,5 +93,5 @@ public class Predicate extends AbstractXPathNode {
 	public void accept(XPathVisitor visitor) {
 		visitor.visit(this);
 	}
-	
+
 }
