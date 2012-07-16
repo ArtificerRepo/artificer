@@ -24,6 +24,8 @@
 package org.overlord.sramp.query.xpath;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -32,16 +34,19 @@ import org.modeshape.common.text.TokenStream;
 import org.modeshape.common.text.TokenStream.Tokenizer;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.query.xpath.ast.AndExpr;
+import org.overlord.sramp.query.xpath.ast.Argument;
 import org.overlord.sramp.query.xpath.ast.ArtifactSet;
 import org.overlord.sramp.query.xpath.ast.EqualityExpr;
 import org.overlord.sramp.query.xpath.ast.EqualityExpr.Operator;
 import org.overlord.sramp.query.xpath.ast.Expr;
 import org.overlord.sramp.query.xpath.ast.ForwardPropertyStep;
+import org.overlord.sramp.query.xpath.ast.FunctionCall;
 import org.overlord.sramp.query.xpath.ast.LocationPath;
 import org.overlord.sramp.query.xpath.ast.OrExpr;
 import org.overlord.sramp.query.xpath.ast.Predicate;
 import org.overlord.sramp.query.xpath.ast.PrimaryExpr;
 import org.overlord.sramp.query.xpath.ast.Query;
+import org.overlord.sramp.query.xpath.ast.RelationshipPath;
 import org.overlord.sramp.query.xpath.ast.SubartifactSet;
 
 /**
@@ -306,9 +311,6 @@ public class XPathParser {
 			}
 		}
 		
-		if (subartifactSet == null && propertyQName == null)
-			throw new XPathParserException("Expression expected.");
-		
 		forwardPropertyStep.setSubartifactSet(subartifactSet);
 		forwardPropertyStep.setPropertyQName(propertyQName);
 		return forwardPropertyStep;
@@ -321,7 +323,7 @@ public class XPathParser {
 	 * @return a {@link QName}
 	 */
 	private QName parseQName(TokenStream tokens, String defaultPrefix) {
-		// TODO Perhaps this should be default namespace to better work with custom namespace contexts
+		// TODO Perhaps instead of 'defaultPrefix' this should be 'defaultNamespace' to better work with custom namespace contexts
 		String prefix = null;
 		String localPart = null;
 		String namespace = null;
@@ -377,11 +379,96 @@ public class XPathParser {
 	 * @return a {@link SubartifactSet}
 	 */
 	private SubartifactSet parseSubartifactSet(TokenStream tokens) {
-		// TODO Auto-generated method stub
-		return null;
+		if (!tokens.matches(XPathTokenizer.NAME))
+			throw new XPathParserException("Expression expected.");
+		
+		SubartifactSet subartifactSet = new SubartifactSet();
+		String relationshipOrFunction = tokens.consume();
+		
+		// If the next token is a [ then we have a relationship
+		// If the next token is a : or a ( then we have a (qualified or unqualified) function call
+		// If none of the above, then we have a relationship
+		
+		if (tokens.canConsume('[')) {
+			RelationshipPath relationshipPath = new RelationshipPath(relationshipOrFunction);
+			Predicate predicate = parsePredicate(tokens);
+			if (!tokens.canConsume(']'))
+				throw new XPathParserException("Unterminated predicate in subartifact-set.");
+
+			subartifactSet.setRelationshipPath(relationshipPath);
+			subartifactSet.setPredicate(predicate);
+			
+			if (tokens.canConsume('/')) {
+				SubartifactSet sub_subartifactSet = parseSubartifactSet(tokens);
+				subartifactSet.setSubartifactSet(sub_subartifactSet);
+			}
+		} else if (tokens.canConsume(':')) {
+			String prefix = relationshipOrFunction;
+			if (!tokens.matches(XPathTokenizer.NAME))
+				throw new XPathParserException("Expected function name.");
+			String localName = tokens.consume();
+			String namespace = getNamespaceContext().getNamespaceURI(prefix);
+			QName functionName = new QName(namespace, localName, prefix);
+			if (!tokens.matches('('))
+				throw new XPathParserException("Expected function arguments.");
+			List<Argument> arguments = parseFunctionArguments(tokens);
+
+			FunctionCall functionCall = new FunctionCall();
+			functionCall.setFunctionName(functionName);
+			functionCall.setArguments(arguments);
+			subartifactSet.setFunctionCall(functionCall);
+		} else if (tokens.matches('(')) {
+			String prefix = getDefaultPrefix();
+			String localName = relationshipOrFunction;
+			String namespace = getNamespaceContext().getNamespaceURI(prefix);
+			QName functionName = new QName(namespace, localName, prefix);
+			List<Argument> arguments = parseFunctionArguments(tokens);
+
+			FunctionCall functionCall = new FunctionCall();
+			functionCall.setFunctionName(functionName);
+			functionCall.setArguments(arguments);
+			subartifactSet.setFunctionCall(functionCall);
+		} else {
+			RelationshipPath relationshipPath = new RelationshipPath(relationshipOrFunction);
+			subartifactSet.setRelationshipPath(relationshipPath);
+		}
+		return subartifactSet;
 	}
 
     /**
+     * Parses a list of {@link Argument}s from the token stream.
+	 * @param tokens the token stream
+	 * @return a list of {@link Argument}s
+	 */
+	private List<Argument> parseFunctionArguments(TokenStream tokens) {
+		tokens.consume(); // Consume the open paren
+		List<Argument> arguments = new ArrayList<Argument>();
+		if (!tokens.matches(')')) {
+			boolean hasMoreArguments = true;
+			while (hasMoreArguments) {
+				Argument argument = parseArgument(tokens);
+				arguments.add(argument);
+				hasMoreArguments = tokens.canConsume(',');
+			}
+		}
+		if (!tokens.canConsume(')')) // Consume the close paren
+			throw new XPathParserException("Unterminated argument list.");
+		return arguments;
+	}
+
+	/**
+	 * Parses a single {@link Argument} from the token stream.
+	 * @param tokens the token stream
+	 * @return an {@link Argument}
+	 */
+	private Argument parseArgument(TokenStream tokens) {
+		Argument argument = new Argument();
+		Expr expr = parseExpr(tokens);
+		argument.setExpr(expr);
+		return argument;
+	}
+
+	/**
      * Remove any leading and trailing single-quotes or double-quotes from the supplied text.  Also
      * unescape any possibly escaped quote characters.  The result of calling this method will be
      * the real value of a quoted string from the query.

@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.query.xpath.visitors;
 
+import java.util.Iterator;
+
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.query.xpath.ast.AndExpr;
@@ -78,7 +80,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Argument node) {
-
+		visit(node.getExpr());
 	}
 
 	/**
@@ -138,7 +140,20 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(FunctionCall node) {
-
+		QName functionName = node.getFunctionName();
+		if (functionName.getPrefix() != null && functionName.getPrefix().trim().length() > 0 && !"s-ramp".equals(functionName.getPrefix())) {
+			this.builder.append(functionName.getPrefix());
+			this.builder.append(':');
+		}
+		this.builder.append(functionName.getLocalPart());
+		this.builder.append('(');
+		Iterator<Argument> iterator = node.getArguments().iterator();
+		while (iterator.hasNext()) {
+			visit(iterator.next());
+			if (iterator.hasNext())
+				this.builder.append(", ");
+		}
+		this.builder.append(')');
 	}
 
 	/**
@@ -229,7 +244,10 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(RelationshipPath node) {
-
+		if (node.isAnyOutgoingRelationship())
+			this.builder.append("outgoing");
+		else
+			this.builder.append(node.getRelationshipType());
 	}
 
 	/**
@@ -237,6 +255,19 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(SubartifactSet node) {
-
+		if (node.getFunctionCall() != null) {
+			visit(node.getFunctionCall());
+		} else {
+			visit(node.getRelationshipPath());
+			if (node.getPredicate() != null) {
+				this.builder.append('[');
+				visit(node.getPredicate());
+				this.builder.append(']');
+			}
+			if (node.getSubartifactSet() != null) {
+				this.builder.append('/');
+				visit(node.getSubartifactSet());
+			}
+		}
 	}
 }

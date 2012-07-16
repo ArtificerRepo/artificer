@@ -34,6 +34,18 @@ public class RelationshipPath extends AbstractXPathNode {
 	}
 
 	/**
+	 * Constructor.
+	 * @param relationshipOrFunction
+	 */
+	public RelationshipPath(String relationshipType) {
+		if ("outgoing".equals(relationshipType)) {
+			setAnyOutgoingRelationship(true);
+		} else {
+			setRelationshipType(relationshipType);
+		}
+	}
+
+	/**
 	 * @return the anyOutgoingRelationship
 	 */
 	public boolean isAnyOutgoingRelationship() {
