@@ -13,34 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.query.xpath.ast;
+package org.overlord.sramp.query.xpath;
 
-import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 
 /**
- * An X-Path AND expression.
- * 
- * <pre>
- *   AndExpr ::= OrExpr
- *             | OrExpr 'and' AndExpr
- * </pre>
+ * A default namespace context for resolving prefixes to namespaces in an S-RAMP
+ * X-Path formatted Query.
  *
  * @author eric.wittmann@redhat.com
  */
-public class AndExpr extends AbstractBinaryExpr<OrExpr, AndExpr> {
-
+public class DefaultNamespaceContext extends StaticNamespaceContext {
+	
 	/**
 	 * Default constructor.
 	 */
-	public AndExpr() {
+	public DefaultNamespaceContext() {
+		addMapping("s-ramp", "http://s-ramp.org/xmlns/2010/s-ramp");
+		addMapping("xs", "http://www.w3.org/2001/XMLSchema");
+		addMapping("fn", "http://www.w3.org/2005/xpath-functions");
+		addMapping("err", "http://www.w3.org/2005/xqt-errors");
 	}
-	
-	/**
-	 * @see org.overlord.sramp.query.xpath.ast.AbstractXPathNode#accept(org.overlord.sramp.query.xpath.visitors.XPathVisitor)
-	 */
-	@Override
-	public void accept(XPathVisitor visitor) {
-		visitor.visit(this);
-	}
-	
+
 }

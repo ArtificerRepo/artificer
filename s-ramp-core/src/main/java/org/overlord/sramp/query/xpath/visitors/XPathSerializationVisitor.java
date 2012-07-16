@@ -15,10 +15,11 @@
  */
 package org.overlord.sramp.query.xpath.visitors;
 
+import javax.xml.namespace.QName;
+
 import org.overlord.sramp.query.xpath.ast.AndExpr;
 import org.overlord.sramp.query.xpath.ast.Argument;
 import org.overlord.sramp.query.xpath.ast.ArtifactSet;
-import org.overlord.sramp.query.xpath.ast.ComparisonExpr;
 import org.overlord.sramp.query.xpath.ast.EqualityExpr;
 import org.overlord.sramp.query.xpath.ast.Expr;
 import org.overlord.sramp.query.xpath.ast.ForwardPropertyStep;
@@ -65,7 +66,11 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(AndExpr node) {
-
+		visit(node.getLeft());
+		if (node.getRight() != null) {
+			this.builder.append(" and ");
+			visit(node.getRight());
+		}
 	}
 
 	/**
@@ -85,19 +90,23 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.ComparisonExpr)
-	 */
-	@Override
-	public void visit(ComparisonExpr node) {
-
-	}
-
-	/**
 	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.EqualityExpr)
 	 */
 	@Override
 	public void visit(EqualityExpr node) {
-
+		if (node.getExpr() != null) {
+			this.builder.append("(");
+			visit(node.getExpr());
+			this.builder.append(")");
+		} else {
+			visit(node.getLeft());
+			if (node.getOperator() != null) {
+				this.builder.append(' ');
+				this.builder.append(node.getOperator().symbol());
+				this.builder.append(' ');
+				visit(node.getRight());
+			}
+		}
 	}
 
 	/**
@@ -105,7 +114,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Expr node) {
-
+		visit(node.getAndExpr());
 	}
 
 	/**
@@ -113,7 +122,15 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(ForwardPropertyStep node) {
-
+		if (node.getSubartifactSet() != null) {
+			visit(node.getSubartifactSet());
+			if (node.getPropertyQName() != null)
+				this.builder.append('/');
+		}
+		if (node.getPropertyQName() != null) {
+			this.builder.append('@');
+			appendQName(node.getPropertyQName());
+		}
 	}
 
 	/**
@@ -146,7 +163,11 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(OrExpr node) {
-
+		visit(node.getLeft());
+		if (node.getRight() != null) {
+			this.builder.append(" or ");
+			visit(node.getRight());
+		}
 	}
 
 	/**
@@ -154,7 +175,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Predicate node) {
-
+		visit(node.getExpr());
 	}
 
 	/**
@@ -162,7 +183,28 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(PrimaryExpr node) {
+		if (node.getLiteral() != null) {
+			this.builder.append("'");
+			this.builder.append(node.getLiteral().replace("'", "\\'"));
+			this.builder.append("'");
+		} else if (node.getNumber() != null) {
+			this.builder.append(node.getNumber().toString());
+		} else if (node.getPropertyQName() != null) {
+			this.builder.append("$");
+			appendQName(node.getPropertyQName());
+		}
+	}
 
+	/**
+	 * Appends a {@link QName}.
+	 * @param qname a {@link QName}
+	 */
+	private void appendQName(QName qname) {
+		if (qname.getPrefix() != null && qname.getPrefix().trim().length() > 0) {
+			this.builder.append(qname.getPrefix());
+			this.builder.append(":");
+		}
+		this.builder.append(qname.getLocalPart());
 	}
 
 	/**
@@ -174,7 +216,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 		if (node.getPredicate() != null) {
 			this.builder.append('[');
 			visit(node.getPredicate());
-			this.builder.append('[');
+			this.builder.append(']');
 		}
 		if (node.getSubartifactSet() != null) {
 			this.builder.append('/');

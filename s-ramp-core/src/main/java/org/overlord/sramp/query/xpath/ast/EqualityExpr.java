@@ -21,21 +21,22 @@ import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
  * Models an equality expression.
  * 
  * <pre>
- *   EqualityExpr ::= subartifact-set
- *                  | ComparisonExpr
+ *   EqualityExpr ::= ForwardPropertyStep
+ *                  | ForwardPropertyStep '=' PrimaryExpr
+ *                  | ForwardPropertyStep '!=' PrimaryExpr
+ *                  | ForwardPropertyStep '<' PrimaryExpr
+ *                  | ForwardPropertyStep '>' PrimaryExpr
+ *                  | ForwardPropertyStep '<=' PrimaryExpr
+ *                  | ForwardPropertyStep '>=' PrimaryExpr
  *                  | '(' Expr ')'
  * </pre>
- * 
- * Note that the grammar does not define a ComparisonExpr, but for convenience we do.
  *
  * @author eric.wittmann@redhat.com
  */
-public class EqualityExpr extends AbstractXPathNode {
+public class EqualityExpr extends AbstractBinaryExpr<ForwardPropertyStep, PrimaryExpr> {
 	
 	// Note: the following three are mutually exclusive.
-	
-	private SubartifactSet subartifactSet;
-	private ComparisonExpr comparisonExpr;
+	private Operator operator;
 	private Expr expr;
 
 	/**
@@ -45,31 +46,17 @@ public class EqualityExpr extends AbstractXPathNode {
 	}
 
 	/**
-	 * @return the subartifactSet
+	 * @return the operator
 	 */
-	public SubartifactSet getSubartifactSet() {
-		return subartifactSet;
+	public Operator getOperator() {
+		return operator;
 	}
 
 	/**
-	 * @param subartifactSet the subartifactSet to set
+	 * @param operator the operator to set
 	 */
-	public void setSubartifactSet(SubartifactSet subartifactSet) {
-		this.subartifactSet = subartifactSet;
-	}
-
-	/**
-	 * @return the comparisonExpr
-	 */
-	public ComparisonExpr getComparisonExpr() {
-		return comparisonExpr;
-	}
-
-	/**
-	 * @param comparisonExpr the comparisonExpr to set
-	 */
-	public void setComparisonExpr(ComparisonExpr comparisonExpr) {
-		this.comparisonExpr = comparisonExpr;
+	public void setOperator(Operator operator) {
+		this.operator = operator;
 	}
 
 	/**
@@ -92,6 +79,41 @@ public class EqualityExpr extends AbstractXPathNode {
 	@Override
 	public void accept(XPathVisitor visitor) {
 		visitor.visit(this);
+	}
+
+	/**
+	 * Models the comparison expression's operator.
+	 */
+	public static enum Operator {
+		EQ("="), NE("!="), LT("<"), GT(">"), LTE("<="), GTE(">=");
+		
+		private String symbol;
+		
+		/**
+		 * Constructor.
+		 */
+		private Operator(String symbol) {
+			this.symbol = symbol;
+		}
+		
+		/**
+		 * Gets the symbol;
+		 */
+		public String symbol() {
+			return this.symbol;
+		}
+
+		/**
+		 * Looks up the proper {@link Operator} from a symbol. 
+		 * @param symbol the symbol (e.g. =, !=, >, etc)
+		 * @return an {@link Operator} or null if not found
+		 */
+		public static Operator valueOfSymbol(String symbol) {
+			for (Operator operator : values())
+				if (operator.symbol().equals(symbol))
+					return operator;
+			return null;
+		}
 	}
 
 }

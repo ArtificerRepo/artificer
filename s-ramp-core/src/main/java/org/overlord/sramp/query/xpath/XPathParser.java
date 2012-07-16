@@ -23,12 +23,24 @@
  */
 package org.overlord.sramp.query.xpath;
 
+import java.math.BigInteger;
+
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
+
 import org.modeshape.common.text.TokenStream;
 import org.modeshape.common.text.TokenStream.Tokenizer;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.query.xpath.ast.AndExpr;
 import org.overlord.sramp.query.xpath.ast.ArtifactSet;
+import org.overlord.sramp.query.xpath.ast.EqualityExpr;
+import org.overlord.sramp.query.xpath.ast.EqualityExpr.Operator;
+import org.overlord.sramp.query.xpath.ast.Expr;
+import org.overlord.sramp.query.xpath.ast.ForwardPropertyStep;
 import org.overlord.sramp.query.xpath.ast.LocationPath;
+import org.overlord.sramp.query.xpath.ast.OrExpr;
 import org.overlord.sramp.query.xpath.ast.Predicate;
+import org.overlord.sramp.query.xpath.ast.PrimaryExpr;
 import org.overlord.sramp.query.xpath.ast.Query;
 import org.overlord.sramp.query.xpath.ast.SubartifactSet;
 
@@ -37,12 +49,45 @@ import org.overlord.sramp.query.xpath.ast.SubartifactSet;
  * defined by the S-RAMP specification and is a subset of the XPath 2.0 grammar.
  */
 public class XPathParser {
+	
+	private NamespaceContext namespaceContext;
+	private String defaultPrefix;
 
     /**
      * Default constructor.
      */
     public XPathParser() {
+    	setNamespaceContext(new DefaultNamespaceContext());
+    	setDefaultPrefix("s-ramp");
     }
+
+	/**
+	 * @return the namespaceContext
+	 */
+	public NamespaceContext getNamespaceContext() {
+		return namespaceContext;
+	}
+
+	/**
+	 * @param namespaceContext the namespaceContext to set
+	 */
+	public void setNamespaceContext(NamespaceContext namespaceContext) {
+		this.namespaceContext = namespaceContext;
+	}
+
+	/**
+	 * @return the defaultPrefix
+	 */
+	public String getDefaultPrefix() {
+		return defaultPrefix;
+	}
+
+	/**
+	 * @param defaultPrefix the defaultPrefix to set
+	 */
+	public void setDefaultPrefix(String defaultPrefix) {
+		this.defaultPrefix = defaultPrefix;
+	}
 
     /**
      * Called to parse the XPath query into an S-RAMP XPath AST.
@@ -52,15 +97,15 @@ public class XPathParser {
 	public Query parseXPath(String xpath) {
 		Tokenizer tokenizer = new XPathTokenizer(false); // skip comments
 		TokenStream tokens = new TokenStream(xpath, tokenizer, true).start(); // case sensitive!!
-		return parseSrampQuery(tokens);
+		return parseQuery(tokens);
 	}
 
 	/**
-	 * Parses an {@link Query} from the given token stream.
+	 * Parses a {@link Query} from the given token stream.
 	 * @param tokens the X-Path token stream
-	 * @return an {@link Query}
+	 * @return a {@link Query}
 	 */
-	protected Query parseSrampQuery(TokenStream tokens) {
+	protected Query parseQuery(TokenStream tokens) {
 		Query query = new Query();
 
 		ArtifactSet artifactSet = parseArtifactSet(tokens);
@@ -148,21 +193,215 @@ public class XPathParser {
 	}
 
     /**
-	 * @param tokens
-	 * @return
+     * Parses a predicate from the token stream.
+	 * @param tokens the token stream
+	 * @return a {@link Predicate}
 	 */
 	private Predicate parsePredicate(TokenStream tokens) {
-		// TODO Auto-generated method stub
-		return null;
+		Expr expr = parseExpr(tokens);
+		Predicate predicate = new Predicate();
+		predicate.setExpr(expr);
+		return predicate;
 	}
 
 	/**
-	 * @param tokens
-	 * @return
+	 * Parses an {@link Expr} from the token stream.
+	 * @param tokens the token stream
+	 * @return an {@link Expr}
+	 */
+	private Expr parseExpr(TokenStream tokens) {
+		AndExpr andExpr = parseAndExpr(tokens);
+		Expr expr = new Expr();
+		expr.setAndExpr(andExpr);
+		return expr;
+	}
+
+	/**
+	 * Parses an {@link AndExpr} from the token stream.
+	 * @param tokens the token stream
+	 * @return an {@link AndExpr}
+	 */
+	private AndExpr parseAndExpr(TokenStream tokens) {
+		AndExpr andExpr = new AndExpr();
+		OrExpr left = parseOrExpr(tokens);
+		andExpr.setLeft(left);
+		if (tokens.canConsume("and")) {
+			AndExpr right = parseAndExpr(tokens);
+			andExpr.setRight(right);
+		}
+		return andExpr;
+	}
+
+	/**
+	 * Parses an {@link OrExpr} from the token stream.
+	 * @param tokens the token stream
+	 * @return an {@link OrExpr}
+	 */
+	private OrExpr parseOrExpr(TokenStream tokens) {
+		OrExpr orExpr = new OrExpr();
+		EqualityExpr left = parseEqualityExpr(tokens);
+		orExpr.setLeft(left);
+		if (tokens.canConsume("or")) {
+			OrExpr right = parseOrExpr(tokens);
+			orExpr.setRight(right);
+		}
+		return orExpr;
+	}
+
+	/**
+	 * Parses an {@link EqualityExpr} from the token stream.
+	 * @param tokens the token stream
+	 * @return an {@link EqualityExpr}
+	 */
+	private EqualityExpr parseEqualityExpr(TokenStream tokens) {
+		EqualityExpr equalityExpr = new EqualityExpr();
+		if (tokens.canConsume('(')) {
+			Expr expr = parseExpr(tokens);
+			equalityExpr.setExpr(expr);
+			if (!tokens.canConsume(')'))
+				throw new XPathParserException("Missing close-paren ')' in expression.");
+		} else {
+			ForwardPropertyStep forwardPropertyStep = parseForwardPropertyStep(tokens);
+			PrimaryExpr primaryExpr = null;
+			if (tokens.canConsume("!", "=")) {
+				equalityExpr.setOperator(Operator.NE);
+				primaryExpr = parsePrimaryExpr(tokens);
+			} else if (tokens.canConsume("<", "=")) {
+				equalityExpr.setOperator(Operator.LTE);
+				primaryExpr = parsePrimaryExpr(tokens);
+			} else if (tokens.canConsume(">", "=")) {
+				equalityExpr.setOperator(Operator.GTE);
+				primaryExpr = parsePrimaryExpr(tokens);
+			} else if (tokens.matchesAnyOf("=", "<", ">")) {
+				String symbol = tokens.consume();
+				Operator operator = Operator.valueOfSymbol(symbol);
+				equalityExpr.setOperator(operator);
+				primaryExpr = parsePrimaryExpr(tokens);
+			}
+
+			equalityExpr.setLeft(forwardPropertyStep);
+			equalityExpr.setRight(primaryExpr);
+		}
+		return equalityExpr;
+	}
+
+	/**
+	 * Parses a {@link ForwardPropertyStep} from the token stream.
+	 * @param tokens the token stream
+	 * @return a {@link ForwardPropertyStep}
+	 */
+	private ForwardPropertyStep parseForwardPropertyStep(TokenStream tokens) {
+		ForwardPropertyStep forwardPropertyStep = new ForwardPropertyStep();
+		QName propertyQName = null;
+		SubartifactSet subartifactSet = null;
+		
+		if (tokens.canConsume('@')) {
+			propertyQName = parseQName(tokens, null);
+		} else {
+			subartifactSet = parseSubartifactSet(tokens);
+			if (tokens.canConsume('/')) {
+				if (!tokens.canConsume('@'))
+					throw new XPathParserException("Missing '@' from forward property step.");
+				propertyQName = parseQName(tokens, null);
+			}
+		}
+		
+		if (subartifactSet == null && propertyQName == null)
+			throw new XPathParserException("Expression expected.");
+		
+		forwardPropertyStep.setSubartifactSet(subartifactSet);
+		forwardPropertyStep.setPropertyQName(propertyQName);
+		return forwardPropertyStep;
+	}
+
+	/**
+	 * Parses a QName from the token stream.
+	 * @param tokens the token stream
+	 * @param defaultPrefix the prefix to use if none is provided
+	 * @return a {@link QName}
+	 */
+	private QName parseQName(TokenStream tokens, String defaultPrefix) {
+		// TODO Perhaps this should be default namespace to better work with custom namespace contexts
+		String prefix = null;
+		String localPart = null;
+		String namespace = null;
+		
+		if (!tokens.matches(XPathTokenizer.NAME))
+			throw new XPathParserException("Expected NAME type token.");
+		String ncname1 = tokens.consume();
+		if (tokens.canConsume(":")) {
+			if (!tokens.matches(XPathTokenizer.NAME))
+				throw new XPathParserException("Expected NAME type token.");
+			String ncname2 = tokens.consume();
+			prefix = ncname1;
+			localPart = ncname2;
+		} else {
+			prefix = defaultPrefix;
+			localPart = ncname1;
+		}
+		namespace = getNamespaceContext().getNamespaceURI(prefix);
+		if (prefix == null)
+			prefix = "";
+		return new QName(namespace, localPart, prefix);
+	}
+
+	/**
+	 * Parses a {@link PrimaryExpr} from the token stream.
+	 * @param tokens the token stream
+	 * @return a {@link PrimaryExpr}
+	 */
+	private PrimaryExpr parsePrimaryExpr(TokenStream tokens) {
+		PrimaryExpr primaryExpr = new PrimaryExpr();
+		if (tokens.canConsume('$')) {
+			QName propertyQName = parseQName(tokens, null);
+			primaryExpr.setPropertyQName(propertyQName);
+		} else if (tokens.matches(XPathTokenizer.QUOTED_STRING)) {
+			String literal = tokens.consume();
+			primaryExpr.setLiteral(removeQuotes(literal));
+		} else {
+			String numberStr = tokens.consume();
+			Number number = null;
+			if (numberStr.contains(".")) {
+				number = new Double(numberStr);
+			} else {
+				number = new BigInteger(numberStr);
+			}
+			primaryExpr.setNumber(number);
+		}
+		return primaryExpr;
+	}
+
+	/**
+	 * Parses a {@link SubartifactSet} from the token stream.
+	 * @param tokens the token stream
+	 * @return a {@link SubartifactSet}
 	 */
 	private SubartifactSet parseSubartifactSet(TokenStream tokens) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+    /**
+     * Remove any leading and trailing single-quotes or double-quotes from the supplied text.  Also
+     * unescape any possibly escaped quote characters.  The result of calling this method will be
+     * the real value of a quoted string from the query.
+     * 
+     * @param text the input text
+     * @return the text without leading and trailing quotes
+     */
+	protected String removeQuotes(String text) {
+		char first = text.charAt(0);
+		if (first == '"' || first == '\'') {
+			int indexOfLast = text.length() - 1;
+			char last = text.charAt(indexOfLast);
+			if (last == first) {
+				text = text.substring(1, indexOfLast);
+				String unescapeFrom = "\\" + first;
+				String unescapeTo = String.valueOf(first);
+				text = text.replace(unescapeFrom, unescapeTo);
+			}
+		}
+		return text;
 	}
 
 	/**

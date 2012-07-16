@@ -107,7 +107,7 @@ public class XPathTokenizer implements TokenStream.Tokenizer {
                     boolean foundClosingQuote = false;
                     while (input.hasNext()) {
                         c = input.next();
-                        if (c == closingChar && input.isNext(closingChar)) {
+                        if (c == '\\' && input.isNext(closingChar)) {
                             c = input.next(); // consume the next closeChar since it is escaped
                         } else if (c == closingChar) {
                             foundClosingQuote = true;

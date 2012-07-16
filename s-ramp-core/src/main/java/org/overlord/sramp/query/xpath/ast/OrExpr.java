@@ -22,12 +22,12 @@ import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
  * 
  * <pre>
  *   OrExpr ::= EqualityExpr
- *            | OrExpr 'or' EqualityExpr
+ *            | EqualityExpr 'or' OrExpr 
  * </pre>
  *
  * @author eric.wittmann@redhat.com
  */
-public class OrExpr extends AbstractBinaryExpr<OrExpr, EqualityExpr> {
+public class OrExpr extends AbstractBinaryExpr<EqualityExpr, OrExpr> {
 	
 	/**
 	 * Default constructor.

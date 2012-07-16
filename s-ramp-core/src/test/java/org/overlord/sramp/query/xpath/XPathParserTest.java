@@ -70,6 +70,7 @@ public class XPathParserTest {
 				Assert.assertEquals("Case [" + testCaseName + "]", expectedErrorMessage, e.getMessage());
 			}
 		}
+		System.out.println("All " + testCases.size() + " XPath parser test cases passed.");
 	}
 
 	/**

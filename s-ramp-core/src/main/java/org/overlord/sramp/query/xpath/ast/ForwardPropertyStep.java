@@ -23,7 +23,8 @@ import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
  * Models a forward property step.
  * 
  * <pre>
- *   ForwardPropertyStep ::= subartifact-set '/' '@' PropertyQName
+ *   ForwardPropertyStep ::= subartifact-set
+ *                         | subartifact-set '/' '@' PropertyQName
  *                         | '@' PropertyQName
  * </pre>
  *

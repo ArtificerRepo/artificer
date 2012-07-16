@@ -18,7 +18,6 @@ package org.overlord.sramp.query.xpath.visitors;
 import org.overlord.sramp.query.xpath.ast.AndExpr;
 import org.overlord.sramp.query.xpath.ast.Argument;
 import org.overlord.sramp.query.xpath.ast.ArtifactSet;
-import org.overlord.sramp.query.xpath.ast.ComparisonExpr;
 import org.overlord.sramp.query.xpath.ast.EqualityExpr;
 import org.overlord.sramp.query.xpath.ast.Expr;
 import org.overlord.sramp.query.xpath.ast.ForwardPropertyStep;
@@ -55,12 +54,6 @@ public interface XPathVisitor {
 	 * @param node
 	 */
 	public void visit(ArtifactSet node);
-	
-	/**
-	 * Visits a specific x-path node.
-	 * @param node
-	 */
-	public void visit(ComparisonExpr node);
 
 	/**
 	 * Visits a specific x-path node.
