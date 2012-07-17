@@ -31,6 +31,7 @@ public class DefaultNamespaceContext extends StaticNamespaceContext {
 		addMapping("s-ramp", "http://s-ramp.org/xmlns/2010/s-ramp");
 		addMapping("xs", "http://www.w3.org/2001/XMLSchema");
 		addMapping("fn", "http://www.w3.org/2005/xpath-functions");
+		addMapping("xp2", "http://www.w3.org/2005/xpath-functions");
 		addMapping("err", "http://www.w3.org/2005/xqt-errors");
 	}
 

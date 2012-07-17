@@ -53,7 +53,6 @@ public class XPathParserTest {
 		XPathSerializationVisitor visitor = new XPathSerializationVisitor();
 		for (Properties properties : testCases) {
 			String testCaseName = properties.getProperty("testcase.name");
-			System.out.println("Executing test case: " + testCaseName);
 			String xpath = properties.getProperty("xpath");
 			String expectedXpath = properties.getProperty("expected.xpath");
 			String expectedErrorMessage = properties.getProperty("expected.errorMessage");
@@ -66,8 +65,12 @@ public class XPathParserTest {
 				Assert.assertNotNull("Case [" + testCaseName + "]", query);
 				Assert.assertEquals("Case [" + testCaseName + "]", expectedXpath, actualXpath);
 			} catch (XPathParserException e) {
-				Assert.assertNotNull("Got unexpected parse error: " + e.getMessage(), expectedErrorMessage);
+				Assert.assertNotNull("Case [" + testCaseName + "] Got unexpected parse error: " + e.getMessage(), expectedErrorMessage);
 				Assert.assertEquals("Case [" + testCaseName + "]", expectedErrorMessage, e.getMessage());
+			} catch (AssertionError e) {
+				throw e;
+			} catch (Throwable t) {
+				Assert.fail("Case [" + testCaseName + "] Got unexpected error: " + t.getMessage());
 			}
 		}
 		System.out.println("All " + testCases.size() + " XPath parser test cases passed.");

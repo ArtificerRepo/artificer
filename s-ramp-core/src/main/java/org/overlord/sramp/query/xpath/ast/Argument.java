@@ -21,13 +21,15 @@ import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
  * Models an argument (to a function call).
  * 
  * <pre>
- *   Argument ::= Expr
+ *   Argument ::= PrimaryExpr
+ *              | Expr
  * </pre>
  *
  * @author eric.wittmann@redhat.com
  */
 public class Argument extends AbstractXPathNode {
 
+	private PrimaryExpr primaryExpr;
 	private Expr expr;
 	
 	/**
@@ -49,6 +51,20 @@ public class Argument extends AbstractXPathNode {
 	public void setExpr(Expr expr) {
 		this.expr = expr;
 	}
+
+	/**
+	 * @return the primaryExpr
+	 */
+	public PrimaryExpr getPrimaryExpr() {
+		return primaryExpr;
+	}
+
+	/**
+	 * @param primaryExpr the primaryExpr to set
+	 */
+	public void setPrimaryExpr(PrimaryExpr primaryExpr) {
+		this.primaryExpr = primaryExpr;
+	}
 	
 	/**
 	 * @see org.overlord.sramp.query.xpath.ast.AbstractXPathNode#accept(org.overlord.sramp.query.xpath.visitors.XPathVisitor)
@@ -57,5 +73,5 @@ public class Argument extends AbstractXPathNode {
 	public void accept(XPathVisitor visitor) {
 		visitor.visit(this);
 	}
-	
+
 }

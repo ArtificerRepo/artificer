@@ -80,7 +80,10 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Argument node) {
-		node.getExpr().accept(this);
+		if (node.getPrimaryExpr() != null)
+			visit(node.getPrimaryExpr());
+		else if (node.getExpr() != null)
+			node.getExpr().accept(this);
 	}
 
 	/**
@@ -200,7 +203,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	public void visit(PrimaryExpr node) {
 		if (node.getLiteral() != null) {
 			this.builder.append("'");
-			this.builder.append(node.getLiteral().replace("'", "\\'"));
+			this.builder.append(node.getLiteral().replace("'", "''"));
 			this.builder.append("'");
 		} else if (node.getNumber() != null) {
 			this.builder.append(node.getNumber().toString());

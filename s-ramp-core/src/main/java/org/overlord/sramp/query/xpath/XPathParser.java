@@ -30,6 +30,7 @@ import java.util.List;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import org.modeshape.common.text.ParsingException;
 import org.modeshape.common.text.TokenStream;
 import org.modeshape.common.text.TokenStream.Tokenizer;
 import org.overlord.sramp.ArtifactType;
@@ -101,8 +102,12 @@ public class XPathParser {
      */
 	public Query parseXPath(String xpath) {
 		Tokenizer tokenizer = new XPathTokenizer(false); // skip comments
-		TokenStream tokens = new TokenStream(xpath, tokenizer, true).start(); // case sensitive!!
-		return parseQuery(tokens);
+		try {
+			TokenStream tokens = new TokenStream(xpath, tokenizer, true).start(); // case sensitive!!
+			return parseQuery(tokens);
+		} catch (ParsingException e) {
+			throw new XPathParserException(e.getMessage());
+		}
 	}
 
 	/**
@@ -359,16 +364,24 @@ public class XPathParser {
 			primaryExpr.setPropertyQName(propertyQName);
 		} else if (tokens.matches(XPathTokenizer.QUOTED_STRING)) {
 			String literal = tokens.consume();
-			primaryExpr.setLiteral(removeQuotes(literal));
-		} else {
+			literal = removeQuotes(literal);
+			primaryExpr.setLiteral(literal);
+		} else if (tokens.matches(XPathTokenizer.NUMERIC)) {
 			String numberStr = tokens.consume();
 			Number number = null;
-			if (numberStr.contains(".")) {
-				number = new Double(numberStr);
-			} else {
-				number = new BigInteger(numberStr);
+			try {
+				if (numberStr.contains(".")) {
+					number = new Double(numberStr);
+				} else {
+					number = new BigInteger(numberStr);
+				}
+			} catch (NumberFormatException e) {
+				// This wasn't a number after all.
+				throw new XPathParserException("Invalid numeric literal.");
 			}
 			primaryExpr.setNumber(number);
+		} else {
+			throw new XPathParserException("Expected a primary expression (string literal, number, etc).");
 		}
 		return primaryExpr;
 	}
@@ -379,7 +392,7 @@ public class XPathParser {
 	 * @return a {@link SubartifactSet}
 	 */
 	private SubartifactSet parseSubartifactSet(TokenStream tokens) {
-		if (!tokens.matches(XPathTokenizer.NAME))
+		if (!tokens.matches(XPathTokenizer.NAME) && !tokens.matches('.'))
 			throw new XPathParserException("Expression expected.");
 		
 		SubartifactSet subartifactSet = new SubartifactSet();
@@ -463,8 +476,13 @@ public class XPathParser {
 	 */
 	private Argument parseArgument(TokenStream tokens) {
 		Argument argument = new Argument();
-		Expr expr = parseExpr(tokens);
-		argument.setExpr(expr);
+		if (tokens.matchesAnyOf(XPathTokenizer.QUOTED_STRING, XPathTokenizer.NUMERIC) || tokens.matches('$')) {
+			PrimaryExpr primaryExpr = parsePrimaryExpr(tokens);
+			argument.setPrimaryExpr(primaryExpr);
+		} else {
+			Expr expr = parseExpr(tokens);
+			argument.setExpr(expr);
+		}
 		return argument;
 	}
 
@@ -478,16 +496,10 @@ public class XPathParser {
      */
 	protected String removeQuotes(String text) {
 		char first = text.charAt(0);
-		if (first == '"' || first == '\'') {
-			int indexOfLast = text.length() - 1;
-			char last = text.charAt(indexOfLast);
-			if (last == first) {
-				text = text.substring(1, indexOfLast);
-				String unescapeFrom = "\\" + first;
-				String unescapeTo = String.valueOf(first);
-				text = text.replace(unescapeFrom, unescapeTo);
-			}
-		}
+		text = text.substring(1, text.length() - 1);
+		String unescapeFrom = String.valueOf(first) + String.valueOf(first);
+		String unescapeTo = String.valueOf(first);
+		text = text.replace(unescapeFrom, unescapeTo);
 		return text;
 	}
 
