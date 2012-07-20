@@ -41,9 +41,9 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.PomGenerator;
-import org.overlord.sramp.wagon.util.SrampAtomApiClient;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.w3c.dom.Document;
@@ -92,7 +92,6 @@ public class SrampWagon extends StreamWagon {
 		try {
 			MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
 			logger.debug("GAV: " + gavInfo);
-			// TODO get the endpoint from the pom
 			String endpoint = getRepository().getUrl().replace("sramp:", "http:").replace("sramps:", "https:");
 		
 			// Query the artifact meta data using universal/uuid form
