@@ -16,6 +16,7 @@
 package org.overlord.sramp.repository.jcr;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.repository.DerivedArtifactsCreationException;
@@ -34,6 +35,21 @@ public final class JCRNodeToArtifactFactory {
 	 * Private constructor.
 	 */
 	private JCRNodeToArtifactFactory() {
+	}
+
+	/**
+	 * Creates a S-RAMP artifact from the given JCR node.
+	 * @param jcrNode a JCR node
+	 */
+	public static BaseArtifactType createArtifact(Node jcrNode) {
+        try {
+			String artifactType = jcrNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getValue().getString();
+			return createArtifact(jcrNode, ArtifactType.valueOf(artifactType));
+		} catch (PathNotFoundException e) {
+			throw new RuntimeException("JCR Node does not seem to be an s-ramp artifact node.", e);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
@@ -56,5 +72,5 @@ public final class JCRNodeToArtifactFactory {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 }

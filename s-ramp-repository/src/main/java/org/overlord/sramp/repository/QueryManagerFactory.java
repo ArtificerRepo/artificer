@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.query;
+package org.overlord.sramp.repository;
 
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import java.util.ServiceLoader;
+
 
 /**
- * A set of s-ramp artifacts returned by 
+ * Factory for creating a {@link QueryManager}.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface ArtifactSet extends Iterable<BaseArtifactType> {
+public class QueryManagerFactory {
 
-	/**
-	 * Returns the size of the artifact set.
-	 */
-	public long size();
-
-	/**
-	 * Called to close the artifact set when the caller is done with it.
-	 */
-	public void close();
+    public static QueryManager newInstance() {
+        for (QueryManager manager : ServiceLoader.load(QueryManager.class)) {
+            return manager;
+        }
+        throw new RuntimeException("Failed to find a QueryManager provider.");
+    }
 }
