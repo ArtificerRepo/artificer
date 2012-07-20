@@ -40,7 +40,7 @@ public interface PersistenceManager {
      * Persists a single derived artifact.
      * @param artifact the derived artifact to persist
      */
-    public String persistDerivedArtifact(DerivedArtifactType artifact);
+    public void persistDerivedArtifact(DerivedArtifactType artifact);
 
 	/**
 	 * Gets a previously persisted artifact by its UUID.
