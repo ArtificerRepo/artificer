@@ -19,6 +19,7 @@
 	<modules>
 		<module>s-ramp-api</module>
 		<module>s-ramp-atom</module>
+		<module>s-ramp-client</module>
 		<module>s-ramp-core</module>
 		<module>s-ramp-parent</module>
 		<module>s-ramp-repository</module>
