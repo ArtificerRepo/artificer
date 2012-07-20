@@ -174,5 +174,5 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	 * @param queryModel the s-ramp query model
 	 * @return a set of s-ramp artifacts
 	 */
-	protected abstract ArtifactSet executeQuery(Query queryModel);
+	protected abstract ArtifactSet executeQuery(Query queryModel) throws QueryExecutionException;
 }

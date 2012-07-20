@@ -13,24 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.query;
+package org.overlord.sramp.repository.jcr;
 
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.overlord.sramp.repository.QueryManager;
+import org.overlord.sramp.repository.jcr.query.JCRSrampQuery;
+import org.overlord.sramp.repository.query.SrampQuery;
 
 /**
- * A set of s-ramp artifacts returned by 
+ * An implementation of the {@link QueryManager} using JCR.  Works along with the
+ * JCR PersistenceManager implementation ({@link JCRPersistence}).
  *
  * @author eric.wittmann@redhat.com
  */
-public interface ArtifactSet extends Iterable<BaseArtifactType> {
+public class JCRQueryManager implements QueryManager {
 
 	/**
-	 * Returns the size of the artifact set.
+	 * Default constructor.
 	 */
-	public long size();
+	public JCRQueryManager() {
+	}
 
 	/**
-	 * Called to close the artifact set when the caller is done with it.
+	 * @see org.overlord.sramp.repository.QueryManager#createQuery(java.lang.String)
 	 */
-	public void close();
+	@Override
+	public SrampQuery createQuery(String xpathTemplate) {
+		return new JCRSrampQuery(xpathTemplate);
+	}
+	
 }

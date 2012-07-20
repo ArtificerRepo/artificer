@@ -15,11 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD;
-import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD_ARTIFACT;
-import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD_FILENAME;
-import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_UUID;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -46,7 +41,6 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.IOUtils;
 import org.modeshape.jcr.api.JcrTools;
-import org.modeshape.jcr.api.nodetype.NodeTypeManager;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.DerivedArtifactsCreationException;
@@ -77,37 +71,6 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
      * @throws IOException
      */
     public JCRPersistence() throws RepositoryException, IOException {
-        Session session = null;
-        InputStream is = null;
-        try {
-            session = JCRRepository.getSession();
-            NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
-            session.setNamespacePrefix(OVERLORD, "http://www.jboss.org/overlord/1.0");
-            
-            if (! manager.hasNodeType(SRAMP_UUID)) {
-                // Register the ModeShape S-RAMP node types ...
-                is = this.getClass().getResourceAsStream("/org/modeshape/sequencer/sramp/sramp.cnd");
-                manager.registerNodeTypes(is,true);
-            }
-            if (! manager.hasNodeType(OVERLORD_ARTIFACT)) {
-                // Register the Overlord node types ...
-                is = this.getClass().getResourceAsStream("/org/overlord/s-ramp/overlord.cnd");
-                manager.registerNodeTypes(is,true);
-            }
-        } catch (LoginException e) {
-            throw e;
-        } catch (NoSuchWorkspaceException e) {
-            throw e;
-        } catch (RepositoryException e) {
-            throw e;
-        } catch (IOException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            throw e;
-        } finally {
-        	IOUtils.closeQuietly(is);
-            if ( session != null ) session.logout();
-        }
     }
     
     /**
@@ -126,10 +89,10 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             log.debug("Uploading file {} to JCR.",name);
             Node artifactNode = tools.uploadFile(session, artifactPath, content);
             identifier = artifactNode.getIdentifier();
-            artifactNode.addMixin(OVERLORD_ARTIFACT);
+            artifactNode.addMixin(JCRConstants.OVERLORD_ARTIFACT_CONTENT);
             
-            artifactNode.setProperty(SRAMP_UUID, uuid);
-            artifactNode.setProperty(OVERLORD_FILENAME, name);
+            artifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
+            artifactNode.setProperty(JCRConstants.OVERLORD_FILENAME, name);
             log.debug("Successfully saved {} to node={}",name, uuid);
             String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactPath);
 			JCRRepository.getListener().addWaitingLatch(sequencedArtifactPath);
@@ -155,7 +118,10 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     }
 
     /**
-     * Creates an artifact given a JCR identifier of a persisted artifact.
+     * Creates an artifact given a JCR identifier of a persisted artifact.  This method
+     * is called after the ModeShape sequencer has completed sequencing the content.  The
+     * result of sequencing is a new node tree under /sramp/{model}/{type}/{uuid}.  The root
+     * of this new tree must be udpated to include some additional information.
 	 * @param identifier the unique JCR identifier
 	 * @param type the artifact type
 	 * @return an instance of a {@link BaseArtifactType}
@@ -166,19 +132,21 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             session = JCRRepository.getSession();
             
             // Get the artifact node
-            Node artifactNode = session.getNodeByIdentifier(identifier);
-            String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactNode.getPath());
+            Node artifactContentNode = session.getNodeByIdentifier(identifier);
+            String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactContentNode.getPath());
             // Wait for sequencing
             JCRRepository.getListener().waitForLatch(sequencedArtifactPath);
             // Get the sequenced node
             Node sequencedNode = session.getNode(sequencedArtifactPath);
 
             // Update the sequenced node with some additional meta data
-            sequencedNode.addMixin(OVERLORD_ARTIFACT);
-            String uuid = artifactNode.getProperty(SRAMP_UUID).getValue().getString();
-            String filename = artifactNode.getProperty(OVERLORD_FILENAME).getValue().getString();
-            sequencedNode.setProperty(SRAMP_UUID, uuid);
-            sequencedNode.setProperty(OVERLORD_FILENAME, filename);
+            sequencedNode.addMixin(JCRConstants.OVERLORD_ARTIFACT);
+            String uuid = artifactContentNode.getProperty(JCRConstants.SRAMP_UUID).getValue().getString();
+            String filename = artifactContentNode.getProperty(JCRConstants.OVERLORD_FILENAME).getValue().getString();
+            sequencedNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
+            sequencedNode.setProperty(JCRConstants.OVERLORD_FILENAME, filename);
+            sequencedNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, type.getModel());
+            sequencedNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, type.name());
             session.save();
             
             log.info("Created artifact of type " + type.name() + " with UUID " + uuid);
@@ -226,9 +194,8 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
      * @see org.overlord.sramp.repository.PersistenceManager#persistDerivedArtifact(org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType)
      */
     @Override
-    public String persistDerivedArtifact(DerivedArtifactType artifact) {
-    	// TODO Auto-generated method stub
-    	return null;
+    public void persistDerivedArtifact(DerivedArtifactType artifact) {
+    	// TODO update the derived artifact with any additional properties
     }
     
     /**
@@ -384,7 +351,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 	 */
 	private boolean isArtifactNode(Node node) throws RepositoryException {
     	for (NodeType nodeType : node.getMixinNodeTypes()) {
-    		if (nodeType.getName().equals(OVERLORD_ARTIFACT)) {
+    		if (nodeType.getName().equals(JCRConstants.OVERLORD_ARTIFACT)) {
     			return true;
     		}
 		}
