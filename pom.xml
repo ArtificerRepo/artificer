@@ -24,6 +24,7 @@
 		<module>s-ramp-parent</module>
 		<module>s-ramp-repository</module>
 		<module>s-ramp-repository-jcr</module>
+		<module>s-ramp-wagon</module>
 	</modules>
 </project>
 

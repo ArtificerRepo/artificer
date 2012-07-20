@@ -28,10 +28,6 @@ We use Maven 3.x to build our software. The following command compiles all the c
 
 	$ mvn clean install
 
-**NOTE** **Currently S-RAMP references version 3.0-SNAPSHOT of ModeShape, so you may need to build/install that first (or otherwise download and install 
-it in your local Maven repo).  In the future this will not be a problem, once ModeShape 3 settles down and we can reference released versions.
-
-
 ## Contribute fixes and features
 
 S-RAMP is open source, and we welcome anybody who wants to participate and contribute!
