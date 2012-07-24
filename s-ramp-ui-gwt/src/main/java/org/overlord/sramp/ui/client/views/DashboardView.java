@@ -17,6 +17,7 @@ package org.overlord.sramp.ui.client.views;
 
 import org.overlord.sramp.ui.client.activities.IDashboardActivity;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -35,9 +36,12 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 	 * Constructor.
 	 */
 	public DashboardView() {
+		ILocalizationService i18n = getService(ILocalizationService.class);
+
 		VerticalPanel vpanel = new VerticalPanel();
-		vpanel.add(new Label("-- Dashboard --"));
-		Anchor link = new Anchor("Go to 'Browse'");
+		vpanel.add(new Label(i18n.translate("dashboard.label")));
+		vpanel.add(new Label(i18n.translate("dashboard.greeting")));
+		Anchor link = new Anchor(i18n.translate("dashboard.link_to_browse"));
 		link.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

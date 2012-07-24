@@ -16,6 +16,9 @@
 package org.overlord.sramp.ui.client.views;
 
 import org.overlord.sramp.ui.client.activities.IActivity;
+import org.overlord.sramp.ui.client.services.IService;
+import org.overlord.sramp.ui.client.services.ServiceNotFoundException;
+import org.overlord.sramp.ui.client.services.Services;
 
 import com.google.gwt.user.client.ui.Composite;
 
@@ -48,6 +51,16 @@ public class AbstractView<A extends IActivity> extends Composite implements IVie
 	@Override
 	public void setActivity(A activity) {
 		this.activity = activity;
+	}
+	
+	/**
+	 * Gets a service.
+	 * @param serviceType the type of service desired
+	 * @return the service
+	 * @throws ServiceNotFoundException
+	 */
+	protected <T extends IService> T getService(Class<T> serviceType) throws ServiceNotFoundException {
+		return Services.getServices().getService(serviceType);
 	}
 
 }
