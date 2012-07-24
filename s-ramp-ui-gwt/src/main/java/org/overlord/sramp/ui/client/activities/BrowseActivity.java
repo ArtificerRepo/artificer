@@ -16,24 +16,23 @@
 package org.overlord.sramp.ui.client.activities;
 
 import org.overlord.sramp.ui.client.IClientFactory;
-import org.overlord.sramp.ui.client.places.HelloPlace;
-import org.overlord.sramp.ui.client.views.IHelloView;
-import org.overlord.sramp.ui.client.views.IHelloView.IHelloActivity;
+import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.views.IBrowseView;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 /**
- * 
+ * Concrete implementation of the browse activity.
  *
  * @author eric.wittmann@redhat.com
  */
-public class HelloActivity extends AbstractActivity<HelloPlace, IHelloView> implements IHelloActivity {
+public class BrowseActivity extends AbstractActivity<BrowsePlace, IBrowseView> implements IBrowseActivity {
 
 	/**
 	 * Constructor.
 	 */
-	public HelloActivity(HelloPlace place, IClientFactory clientFactory) {
+	public BrowseActivity(BrowsePlace place, IClientFactory clientFactory) {
 		super(place, clientFactory);
 	}
 	
@@ -41,8 +40,10 @@ public class HelloActivity extends AbstractActivity<HelloPlace, IHelloView> impl
 	 * @see org.overlord.sramp.ui.client.activities.AbstractActivity#createView(com.google.gwt.event.shared.EventBus)
 	 */
 	@Override
-	protected IHelloView createView(EventBus eventBus) {
-		return getClientFactory().getHelloView();
+	protected IBrowseView createView(EventBus eventBus) {
+		IBrowseView view = getClientFactory().createBrowseView();
+		view.setActivity(this);
+		return view;
 	}
 	
 	/**
@@ -50,7 +51,6 @@ public class HelloActivity extends AbstractActivity<HelloPlace, IHelloView> impl
 	 */
 	@Override
 	protected void doStart(AcceptsOneWidget panel, EventBus eventBus) {
-		getView().setMessage("Hello MVP World!");
 	}
 	
 }

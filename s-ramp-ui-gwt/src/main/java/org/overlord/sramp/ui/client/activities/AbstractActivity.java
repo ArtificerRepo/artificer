@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractActivity<P extends Place, V extends IView> extends com.google.gwt.activity.shared.AbstractActivity implements IActivity {
+public abstract class AbstractActivity<P extends Place, V extends IView<?>> extends com.google.gwt.activity.shared.AbstractActivity implements IActivity {
 
 	private P place;
 	private V view;

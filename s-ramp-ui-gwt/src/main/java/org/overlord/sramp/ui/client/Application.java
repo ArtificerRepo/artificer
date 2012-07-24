@@ -1,6 +1,6 @@
 package org.overlord.sramp.ui.client;
 
-import org.overlord.sramp.ui.client.places.HelloPlace;
+import org.overlord.sramp.ui.client.places.DashboardPlace;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -18,7 +18,7 @@ import com.google.web.bindery.event.shared.EventBus;
  */
 public class Application implements EntryPoint {
 
-	private Place defaultPlace = new HelloPlace();
+	private Place defaultPlace = new DashboardPlace();
 	private SimplePanel appWidget = new SimplePanel();
 
 	/**

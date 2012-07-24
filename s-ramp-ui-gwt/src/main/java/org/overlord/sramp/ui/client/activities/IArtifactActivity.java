@@ -13,28 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.views;
-
-import org.overlord.sramp.ui.client.activities.IActivity;
-
-import com.google.gwt.user.client.ui.IsWidget;
+package org.overlord.sramp.ui.client.activities;
 
 /**
- * Base View interface - all specific view interfaces must extend this one.
+ * The artifact activity interface.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IView<A extends IActivity> extends IsWidget {
+public interface IArtifactActivity extends IActivity {
 
-	/**
-	 * Gets the activity for this view.
-	 */
-	public A getActivity();
-
-	/**
-	 * Sets the activity for this view.
-	 * @param activity
-	 */
-	public void setActivity(A activity);
-	
 }

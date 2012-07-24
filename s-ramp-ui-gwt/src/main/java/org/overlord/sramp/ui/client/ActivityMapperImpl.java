@@ -15,15 +15,19 @@
  */
 package org.overlord.sramp.ui.client;
 
-import org.overlord.sramp.ui.client.activities.HelloActivity;
-import org.overlord.sramp.ui.client.places.HelloPlace;
+import org.overlord.sramp.ui.client.activities.ArtifactActivity;
+import org.overlord.sramp.ui.client.activities.BrowseActivity;
+import org.overlord.sramp.ui.client.activities.DashboardActivity;
+import org.overlord.sramp.ui.client.places.ArtifactPlace;
+import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.places.DashboardPlace;
 
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 
 /**
- * 
+ * Simple activity mapper - maps incoming places to their appropriate activities.
  * 
  * @author eric.wittmann@redhat.com
  */
@@ -45,8 +49,12 @@ public class ActivityMapperImpl implements ActivityMapper {
 	 */
 	@Override
 	public Activity getActivity(Place place) {
-		if (place instanceof HelloPlace)
-			return new HelloActivity((HelloPlace) place, clientFactory);
+		if (place instanceof DashboardPlace)
+			return new DashboardActivity((DashboardPlace) place, clientFactory);
+		if (place instanceof BrowsePlace)
+			return new BrowseActivity((BrowsePlace) place, clientFactory);
+		if (place instanceof ArtifactPlace)
+			return new ArtifactActivity((ArtifactPlace) place, clientFactory);
 		return null;
 	}
 }

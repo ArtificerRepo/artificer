@@ -15,20 +15,35 @@
  */
 package org.overlord.sramp.ui.client;
 
-import org.overlord.sramp.ui.client.views.IHelloView;
+import org.overlord.sramp.ui.client.views.IArtifactView;
+import org.overlord.sramp.ui.client.views.IBrowseView;
+import org.overlord.sramp.ui.client.views.IDashboardView;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
 
 /**
- * 
+ * Client factory interface.
  *
  * @author eric.wittmann@redhat.com
  */
 public interface IClientFactory {
 	
+	/*
+	 * Event Bus
+	 */
 	public EventBus getEventBus();
+	
+	/*
+	 * Place controller
+	 */
 	public PlaceController getPlaceController();
-	public IHelloView getHelloView();
+	
+	/*
+	 * Views
+	 */
+	public IDashboardView createDashboardView();
+	public IBrowseView createBrowseView();
+	public IArtifactView createArtifactView();
 	
 }
