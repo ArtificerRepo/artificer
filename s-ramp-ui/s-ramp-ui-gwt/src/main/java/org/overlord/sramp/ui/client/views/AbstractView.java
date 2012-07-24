@@ -17,16 +17,37 @@ package org.overlord.sramp.ui.client.views;
 
 import org.overlord.sramp.ui.client.activities.IActivity;
 
+import com.google.gwt.user.client.ui.Composite;
+
 /**
- * 
+ * Base class for all view implementations.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IHelloView extends IView {
+public class AbstractView<A extends IActivity> extends Composite implements IView<A> {
 	
-	public void setMessage(String message);
-	public void setActivity(IHelloActivity activity);
+	private A activity;
 	
-	public interface IHelloActivity extends IActivity {
-    }
+	/**
+	 * Constructor.
+	 */
+	public AbstractView() {
+	}
+	
+	/**
+	 * @see org.overlord.sramp.ui.client.views.IView#getActivity()
+	 */
+	@Override
+	public A getActivity() {
+		return activity;
+	}
+
+	/**
+	 * @see org.overlord.sramp.ui.client.views.IView#setActivity(org.overlord.sramp.ui.client.activities.IActivity)
+	 */
+	@Override
+	public void setActivity(A activity) {
+		this.activity = activity;
+	}
+
 }

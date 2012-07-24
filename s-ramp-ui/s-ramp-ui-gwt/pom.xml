@@ -21,6 +21,11 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -52,7 +57,7 @@
 					<outputFileNameMapping>@{artifactId}@.@{extension}@</outputFileNameMapping>
 					<warSourceIncludes>*.html,resources/**,WEB-INF/**</warSourceIncludes>
 					<packagingExcludes>**/ui/client/**</packagingExcludes>
-<!-- 					<webXml>src/main/webapp/WEB-INF/web-container.xml</webXml> -->
+					<!-- <webXml>src/main/webapp/WEB-INF/web-container.xml</webXml> -->
 					<attachClasses>true</attachClasses>
 				</configuration>
 			</plugin>

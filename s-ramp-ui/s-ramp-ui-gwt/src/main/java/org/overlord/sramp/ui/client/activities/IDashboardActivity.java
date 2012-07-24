@@ -13,30 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.places;
-
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceTokenizer;
+package org.overlord.sramp.ui.client.activities;
 
 /**
- * 
- * 
+ * The dashboard activity interface.
+ *
  * @author eric.wittmann@redhat.com
  */
-public class HelloPlace extends Place {
+public interface IDashboardActivity extends IActivity {
 
-	public HelloPlace() {
-	}
-
-	public static class Tokenizer implements PlaceTokenizer<HelloPlace> {
-		@Override
-		public String getToken(HelloPlace place) {
-			return "/hello";
-		}
-
-		@Override
-		public HelloPlace getPlace(String token) {
-			return new HelloPlace();
-		}
-	}
 }

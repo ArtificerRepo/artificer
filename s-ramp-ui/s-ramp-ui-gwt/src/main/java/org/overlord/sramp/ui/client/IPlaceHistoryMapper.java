@@ -15,17 +15,20 @@
  */
 package org.overlord.sramp.ui.client;
 
-import org.overlord.sramp.ui.client.places.HelloPlace;
+import org.overlord.sramp.ui.client.places.ArtifactPlace;
+import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.places.DashboardPlace;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
 
 /**
- * 
+ * A simple place history mapper using the {@link WithTokenizers} annotation to
+ * supply the tokenizers for the known places in the application.
  *
  * @author eric.wittmann@redhat.com
  */
-@WithTokenizers({HelloPlace.Tokenizer.class})
+@WithTokenizers({DashboardPlace.Tokenizer.class, BrowsePlace.Tokenizer.class, ArtifactPlace.Tokenizer.class})
 public interface IPlaceHistoryMapper extends PlaceHistoryMapper {
 
 }

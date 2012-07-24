@@ -15,15 +15,19 @@
  */
 package org.overlord.sramp.ui.client;
 
-import org.overlord.sramp.ui.client.views.HelloView;
-import org.overlord.sramp.ui.client.views.IHelloView;
+import org.overlord.sramp.ui.client.views.ArtifactView;
+import org.overlord.sramp.ui.client.views.BrowseView;
+import org.overlord.sramp.ui.client.views.DashboardView;
+import org.overlord.sramp.ui.client.views.IArtifactView;
+import org.overlord.sramp.ui.client.views.IBrowseView;
+import org.overlord.sramp.ui.client.views.IDashboardView;
 
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
 /**
- * 
+ * A factory for creating/getting a variety of services and UI components.
  * 
  * @author eric.wittmann@redhat.com
  */
@@ -31,7 +35,6 @@ public class ClientFactory implements IClientFactory {
 
 	private final EventBus eventBus = new SimpleEventBus();
 	private final PlaceController placeController = new PlaceController(eventBus);
-	private final IHelloView helloView = new HelloView();
 
 	/**
 	 * Constructor.
@@ -56,11 +59,27 @@ public class ClientFactory implements IClientFactory {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ui.client.IClientFactory#getHelloView()
+	 * @see org.overlord.sramp.ui.client.IClientFactory#createDashboardView()
 	 */
 	@Override
-	public IHelloView getHelloView() {
-		return helloView;
+	public IDashboardView createDashboardView() {
+		return new DashboardView();
+	}
+
+	/**
+	 * @see org.overlord.sramp.ui.client.IClientFactory#createBrowseView()
+	 */
+	@Override
+	public IBrowseView createBrowseView() {
+		return new BrowseView();
+	}
+
+	/**
+	 * @see org.overlord.sramp.ui.client.IClientFactory#createArtifactView()
+	 */
+	@Override
+	public IArtifactView createArtifactView() {
+		return new ArtifactView();
 	}
 
 }
