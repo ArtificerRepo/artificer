@@ -16,6 +16,9 @@
 package org.overlord.sramp.ui.client.activities;
 
 import org.overlord.sramp.ui.client.IClientFactory;
+import org.overlord.sramp.ui.client.services.IService;
+import org.overlord.sramp.ui.client.services.ServiceNotFoundException;
+import org.overlord.sramp.ui.client.services.Services;
 import org.overlord.sramp.ui.client.views.IView;
 
 import com.google.gwt.event.shared.EventBus;
@@ -117,6 +120,16 @@ public abstract class AbstractActivity<P extends Place, V extends IView<?>> exte
 	 * @param eventBus
 	 */
 	protected void doStart(AcceptsOneWidget panel, EventBus eventBus) {
+	}
+	
+	/**
+	 * Gets a service.
+	 * @param serviceType the type of service desired
+	 * @return the service
+	 * @throws ServiceNotFoundException
+	 */
+	protected <T extends IService> T getService(Class<T> serviceType) throws ServiceNotFoundException {
+		return Services.getServices().getService(serviceType);
 	}
 
 }
