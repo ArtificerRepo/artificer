@@ -13,47 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.server;
+package org.overlord.sramp.ui.server.rsvcs;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
+import org.overlord.sramp.ui.shared.rsvcs.ILocalizationRemoteService;
+import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
+
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
- * Provides the data used by the {@link ILocalizationService}.
+ * Implementation of the localization remote service.
+ * 
+ * TODO cache the messages in memory - no need to read them from the properties file every time
  *
  * @author eric.wittmann@redhat.com
  */
-public class LocalizationServiceServlet extends HttpServlet {
+public class LocalizationRemoteService extends RemoteServiceServlet implements ILocalizationRemoteService {
 
-	private static final long serialVersionUID = LocalizationServiceServlet.class.hashCode();
+	private static final long serialVersionUID = LocalizationRemoteService.class.hashCode();
 
 	/**
 	 * Constructor.
 	 */
-	public LocalizationServiceServlet() {
+	public LocalizationRemoteService() {
 	}
 
 	/**
-	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see org.overlord.sramp.ui.shared.rsvcs.ILocalizationRemoteService#getMessages()
 	 */
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-			IOException {
-		Locale locale = req.getLocale();
-		Properties messages = getMessages(locale);
-		writeMessageToResponse(messages, resp);
+	public Map<String, String> getMessages() throws RemoteServiceException {
+		try {
+			Locale locale = this.getThreadLocalRequest().getLocale();
+			Properties messages = getMessages(locale);
+			HashMap<String, String> map = new HashMap<String, String>();
+			for (Entry<Object, Object> entry : messages.entrySet())
+				map.put((String) entry.getKey(), (String) entry.getValue());
+			return map;
+		} catch (IOException e) {
+			throw new RemoteServiceException(e);
+		}
 	}
 
 	/**
@@ -105,38 +112,4 @@ public class LocalizationServiceServlet extends HttpServlet {
 		}
 	}
 
-	/**
-	 * Writes the messages in the {@link Properties} object to the response as a JSON object.
-	 * @param messages the localized messages
-	 * @param response the http response
-	 * @throws IOException 
-	 */
-	private void writeMessageToResponse(Properties messages, HttpServletResponse response) throws IOException {
-		response.setContentType("application/json; charset=UTF-8");
-		StringBuilder builder = new StringBuilder();
-		
-		builder.append("({");
-		Set<Entry<Object,Object>> entrySet = messages.entrySet();
-		boolean first = true;
-		for (Entry<Object, Object> entry : entrySet) {
-			String key = (String) entry.getKey();
-			String val = (String) entry.getValue();
-			if (first)
-				first = false;
-			else
-				builder.append(",");
-			builder.append("\r\n\t\"");
-			builder.append(key);
-			builder.append("\": \"");
-			builder.append(val.replace("\"", "\\\""));
-			builder.append("\"");
-		}
-		builder.append("\r\n})");
-		
-		String content = builder.toString();
-		byte [] contentBytes = content.getBytes("UTF-8");
-		response.setContentLength(contentBytes.length);
-		response.getOutputStream().write(contentBytes);
-	}
-	
 }

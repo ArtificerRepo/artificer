@@ -15,15 +15,15 @@
  */
 package org.overlord.sramp.ui.client.services.i18n;
 
+import java.util.Map;
+
 import org.overlord.sramp.ui.client.services.AbstractService;
 import org.overlord.sramp.ui.client.services.IServiceLifecycleListener;
+import org.overlord.sramp.ui.shared.rsvcs.ILocalizationRemoteService;
+import org.overlord.sramp.ui.shared.rsvcs.ILocalizationRemoteServiceAsync;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * A concrete implementation of an {@link ILocalizationService}.
@@ -31,6 +31,8 @@ import com.google.gwt.http.client.Response;
  * @author eric.wittmann@redhat.com
  */
 public class LocalizationService extends AbstractService implements ILocalizationService {
+
+	private final ILocalizationRemoteServiceAsync localizationRemoteService = GWT.create(ILocalizationRemoteService.class);
 
 	private LocalizationDictionary messages;
 	
@@ -45,32 +47,25 @@ public class LocalizationService extends AbstractService implements ILocalizatio
 	 */
 	@Override
 	public void start(final IServiceLifecycleListener serviceListener) {
-		String url = GWT.getHostPageBaseURL() + "i18n";
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-		try {
-			builder.sendRequest(null, new RequestCallback() {
-				@Override
-				public void onResponseReceived(Request request, Response response) {
-					String jsonData = response.getText();
-					initDictionary(jsonData);
-					serviceListener.onStarted();
-				}
-				@Override
-				public void onError(Request request, Throwable exception) {
-					serviceListener.onError(exception);
-				}
-			});
-		} catch (RequestException e) {
-			serviceListener.onError(e);
-		}
+		localizationRemoteService.getMessages(new AsyncCallback<Map<String, String>>() {
+			@Override
+			public void onSuccess(Map<String, String> result) {
+				initDictionary(result);
+				serviceListener.onStarted();
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				serviceListener.onError(caught);
+			}
+		});
 	}
-	
+
 	/**
 	 * Initializes the localization dictionary.
-	 * @param jsonData
+	 * @param messages
 	 */
-	protected void initDictionary(String jsonData) {
-		this.messages = LocalizationDictionary.create(jsonData);
+	protected void initDictionary(Map<String, String> messages) {
+		this.messages = LocalizationDictionary.create(messages);
 	}
 
 	/**
