@@ -1,0 +1,11 @@
+.dashColumn {
+	width: 100%;
+}
+
+.dashColumn tr td {
+	padding: 5px;
+}
+
+.dashColumn tr td table tr td {
+	padding: 0px;
+}
