@@ -15,60 +15,46 @@
  */
 package org.overlord.sramp.ui.client.services.i18n;
 
-import java.util.MissingResourceException;
-
-import com.google.gwt.core.client.JavaScriptObject;
+import java.util.Map;
 
 /**
- * A localizatoin dictionary. The data comes from JSON data downloaded from the server.
+ * A localizatoin dictionary.
  * 
  * @author eric.wittmann@redhat.com
  */
 public class LocalizationDictionary {
 
-	private JavaScriptObject dict;
+	private Map<String, String> dict;
 
 	/**
 	 * Constructor.
+	 * @param messageData 
 	 */
-	private LocalizationDictionary() {
+	private LocalizationDictionary(Map<String, String> messageData) {
+		this.dict = messageData;
 	}
 
 	/**
-	 * Creates a localization dictionary from json data.
+	 * Creates a localization dictionary from message data.
 	 * 
-	 * @param jsonData
+	 * @param messageData
 	 */
-	public static LocalizationDictionary create(String jsonData) {
-		LocalizationDictionary dict = new LocalizationDictionary();
-		dict.attach(jsonData);
+	public static LocalizationDictionary create(Map<String, String> messageData) {
+		LocalizationDictionary dict = new LocalizationDictionary(messageData);
 		return dict;
 	}
-
-	/**
-	 * Evaluate and attach the given
-	 * 
-	 * @param json
-	 */
-	private final native void attach(String json) /*-{
-		this.@org.overlord.sramp.ui.client.services.i18n.LocalizationDictionary::dict = eval(json);
-	}-*/;
 
 	/**
 	 * Get the value associated with the given key.
 	 * 
 	 * @param key to lookup
 	 * @return the value
-	 * @throws MissingResourceException if the value is not found
 	 */
-	public native String get(String key) /*-{
-		key = String(key);
-		var map = this.@org.overlord.sramp.ui.client.services.i18n.LocalizationDictionary::dict;
-		var value = map[key];
-		if (value == null)
-			return null;
-		else
-			return String(value);
-	}-*/;
+	public String get(String key) {
+		String val = this.dict.get(key);
+		if (val == null)
+			val = "**" + key + "**";
+		return val;
+	}
 
 }

@@ -2,7 +2,6 @@
 <module rename-to="srampui">
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="com.google.gwt.activity.Activity" />
-	<inherits name="com.google.gwt.http.HTTP" />
 	
 	<entry-point class="org.overlord.sramp.ui.client.Application" />
 
