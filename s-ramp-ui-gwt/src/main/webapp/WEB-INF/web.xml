@@ -6,16 +6,24 @@
 	<display-name>GWT Web Application</display-name>
 	
 	<servlet>
+		<servlet-name>HostPage</servlet-name>
+		<servlet-class>org.overlord.sramp.ui.server.HostPageServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>LocalizationServlet</servlet-name>
 		<servlet-class>org.overlord.sramp.ui.server.LocalizationServiceServlet</servlet-class>
 	</servlet>
-	
+
+	<servlet-mapping>
+		<servlet-name>HostPage</servlet-name>
+		<url-pattern>u</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>LocalizationServlet</servlet-name>
 		<url-pattern>i18n</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>
-		<welcome-file>application.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 </web-app>

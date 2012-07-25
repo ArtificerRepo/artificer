@@ -1,0 +1,62 @@
+body {
+	background-color: #F0F0F0;
+}
+
+div {
+}
+
+div#main {
+	width: auto;
+}
+
+div#header {
+	height: 69px;
+	width: auto;
+	background-image: url("../images/banner.png");
+	background-position: top left;
+	background-color: #ba0001;
+	background-repeat: no-repeat;
+}
+
+div#header h1 {
+	color: #eee;
+	text-shadow: 0.1em 0.1em 0.2em black;
+	font-size: 32px;
+	font-weight: bold;
+	font-family: Verdana, serif;
+	padding-top: 15px;
+	padding-left: 20px;
+}
+
+div#content-wrapper {
+	width: auto;
+	padding: 10px;
+}
+
+div#content {
+	border: 1px solid grey;
+	padding: 10px;
+	background-color: white;
+	-moz-border-radius: 5px 5px 5px 5px;
+	-ms-border-radius: 5px 5px 5px 5px;
+	-o-border-radius: 5px 5px 5px 5px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+}
+
+div#app-loading {
+	margin: 80px 0px 80px 80px;
+	padding: 8px 8px 8px 42px;
+	background-image: url("../images/app-spinner.gif");
+	background-repeat: no-repeat;
+	background-position: top left;
+}
+div#app-loading h1 {
+	font-size: 18px;
+}
+
+div#footer {
+	width: auto;
+	font-size: 11px;
+	padding: 10px;
+}
