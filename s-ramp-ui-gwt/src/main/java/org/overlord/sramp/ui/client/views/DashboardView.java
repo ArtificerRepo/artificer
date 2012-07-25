@@ -18,11 +18,13 @@ package org.overlord.sramp.ui.client.views;
 import org.overlord.sramp.ui.client.activities.IDashboardActivity;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
 import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
+import org.overlord.sramp.ui.client.widgets.TitlePanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -38,18 +40,44 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 	public DashboardView() {
 		ILocalizationService i18n = getService(ILocalizationService.class);
 
-		VerticalPanel vpanel = new VerticalPanel();
-		vpanel.add(new Label(i18n.translate("dashboard.label")));
-		vpanel.add(new Label(i18n.translate("dashboard.greeting")));
-		Anchor link = new Anchor(i18n.translate("dashboard.link_to_browse"));
+		// Create the dashboard
+		HorizontalPanel dashboardPanel = new HorizontalPanel();
+		dashboardPanel.getElement().setId("dashboard");
+		dashboardPanel.getElement().setAttribute("style", "width: 100%");
+		
+		// Create two columns
+		VerticalPanel leftColumn = new VerticalPanel();
+		leftColumn.getElement().setClassName("dashColumn");
+		leftColumn.getElement().addClassName("left");
+		VerticalPanel rightColumn = new VerticalPanel();
+		rightColumn.getElement().setClassName("dashColumn");
+		rightColumn.getElement().addClassName("right");
+		dashboardPanel.add(leftColumn);
+		dashboardPanel.add(rightColumn);
+		
+		// Create the Activities panel
+		TitlePanel activitiesPanel = new TitlePanel(i18n.translate("dashboard.activities-panel.title"));
+		Anchor link = new Anchor(i18n.translate("dashboard.activities-panel.link_to_browse"));
 		link.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				getActivity().goTo(new BrowsePlace());
 			}
 		});
-		vpanel.add(link);
-		this.initWidget(vpanel);
+		activitiesPanel.setWidget(link);
+		leftColumn.add(activitiesPanel);
+		
+		// Create the Help panel
+		TitlePanel helpPanel = new TitlePanel(i18n.translate("dashboard.help-panel.title"));
+		HTMLPanel helpText = new HTMLPanel(i18n.translate("dashboard.help-panel.help-text"));
+		helpPanel.setWidget(helpText);
+		rightColumn.add(helpPanel);
+		
+		// Now size the columns properly
+		dashboardPanel.setCellWidth(leftColumn, "50%");
+		dashboardPanel.setCellWidth(rightColumn, "50%");
+
+		this.initWidget(dashboardPanel);
 	}
 
 }

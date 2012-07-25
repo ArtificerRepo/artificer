@@ -17,7 +17,6 @@ div#header {
 	background-color: #ba0001;
 	background-repeat: no-repeat;
 }
-
 div#header h1 {
 	color: #eee;
 	text-shadow: 0.1em 0.1em 0.2em black;
@@ -42,6 +41,7 @@ div#content {
 	-o-border-radius: 5px 5px 5px 5px;
 	-webkit-border-radius: 5px 5px 5px 5px;
 	border-radius: 5px 5px 5px 5px;
+	min-width: 900px;
 }
 
 div#app-loading {
