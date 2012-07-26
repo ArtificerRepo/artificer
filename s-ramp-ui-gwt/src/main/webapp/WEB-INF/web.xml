@@ -10,6 +10,10 @@
 		<servlet-class>org.overlord.sramp.ui.server.HostPageServlet</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>ArtifactUpload</servlet-name>
+		<servlet-class>org.overlord.sramp.ui.server.ArtifactUploadServlet</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>LocalizationRemoteService</servlet-name>
 		<servlet-class>org.overlord.sramp.ui.server.rsvcs.LocalizationRemoteService</servlet-class>
 	</servlet>
@@ -17,6 +21,10 @@
 	<servlet-mapping>
 		<servlet-name>HostPage</servlet-name>
 		<url-pattern>u</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ArtifactUpload</servlet-name>
+		<url-pattern>/srampui/services/artifactUpload</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>LocalizationRemoteService</servlet-name>

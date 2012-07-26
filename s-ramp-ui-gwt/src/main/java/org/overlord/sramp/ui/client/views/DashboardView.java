@@ -20,15 +20,20 @@ import java.util.List;
 
 import org.overlord.sramp.ui.client.activities.IDashboardActivity;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.widgets.ArtifactUploadForm;
 import org.overlord.sramp.ui.client.widgets.PlaceHyperlink;
 import org.overlord.sramp.ui.client.widgets.TitlePanel;
 import org.overlord.sramp.ui.client.widgets.UnorderedListPanel;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Implementation of the dashboard view.
@@ -68,7 +73,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		// Create the Upload Artifact panel
 		TitlePanel uploadPanel = new TitlePanel(i18n().translate("dashboard.upload-panel.title"));
 		uploadPanel.getElement().setId("dash-uploadPanel");
-		uploadPanel.setWidget(new Label("TBD"));
+		uploadPanel.setWidget(createUploadForm());
 		
 		// Create the Help panel
 		TitlePanel helpPanel = new TitlePanel(i18n().translate("dashboard.help-panel.title"));
@@ -86,6 +91,28 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		rightColumn.add(helpPanel);
 
 		this.initWidget(dashboardPanel);
+	}
+
+	/**
+	 * Creates the artifact upload form.
+	 */
+	private Widget createUploadForm() {
+		// Create a FormPanel and point it at a service.
+		String url = GWT.getModuleBaseURL() + "services/artifactUpload";
+		final ArtifactUploadForm form = new ArtifactUploadForm(url);
+		
+		form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
+			public void onSubmitComplete(SubmitCompleteEvent event) {
+				String resultStr = event.getResults();
+				int startIdx = resultStr.indexOf('(');
+				int endIdx = resultStr.lastIndexOf(')') + 1;
+				String jsonData = resultStr.substring(startIdx, endIdx);
+				Window.alert("JSON response:  " + jsonData);
+				form.reset();
+			}
+		});
+
+		return form;
 	}
 
 	/**

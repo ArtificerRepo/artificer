@@ -54,6 +54,7 @@
 		<commons.io.version>1.3.2</commons.io.version>
 		<commons.lang3.version>3.1</commons.lang3.version>
 		<commons.config.version>1.8</commons.config.version>
+		<commons.fileupload.version>1.2.2</commons.fileupload.version>
 	</properties>
 
 	<scm>
@@ -189,6 +190,11 @@
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
 				<version>${commons.config.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${commons.fileupload.version}</version>
 			</dependency>
 			<!-- Logging -->
 			<dependency>
