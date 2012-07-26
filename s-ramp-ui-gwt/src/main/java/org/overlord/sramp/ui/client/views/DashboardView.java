@@ -19,13 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.overlord.sramp.ui.client.activities.IDashboardActivity;
+import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.widgets.PlaceHyperlink;
 import org.overlord.sramp.ui.client.widgets.TitlePanel;
 import org.overlord.sramp.ui.client.widgets.UnorderedListPanel;
 
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.InlineHyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -92,10 +93,12 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 	 */
 	private List<Hyperlink> createActivityLinks() {
 		List<Hyperlink> links = new ArrayList<Hyperlink>();
-		Hyperlink browseLink = new InlineHyperlink(i18n().translate("dashboard.activities-panel.activities.browse.label"), "/dashboard/browse:");
+		Hyperlink browseLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.browse.label"), new BrowsePlace());
 		links.add(browseLink);
-		Hyperlink ontologyLink = new InlineHyperlink(i18n().translate("dashboard.activities-panel.activities.ontologies.label"), "/dashboard/ontologies:");
+		Hyperlink ontologyLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.ontologies.label"), null);
 		links.add(ontologyLink);
+		Hyperlink savedQueriesLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.saved-queries.label"), null);
+		links.add(savedQueriesLink);
 		return links;
 	}
 

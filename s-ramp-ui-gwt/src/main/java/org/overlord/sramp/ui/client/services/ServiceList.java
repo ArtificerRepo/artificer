@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
 import org.overlord.sramp.ui.client.services.i18n.LocalizationService;
+import org.overlord.sramp.ui.client.services.place.IPlaceService;
+import org.overlord.sramp.ui.client.services.place.PlaceService;
 
 /**
  * The centralized list of all {@link IService}s.
@@ -28,12 +30,24 @@ import org.overlord.sramp.ui.client.services.i18n.LocalizationService;
  */
 public class ServiceList {
 
+	private static final Object[][] SERVICES = {
+		
+		{ ILocalizationService.class, new LocalizationService() },
+		{ IPlaceService.class, new PlaceService() },
+		
+	};
+	
 	/**
 	 * Gets the map of registered services.
 	 */
+	@SuppressWarnings("unchecked")
 	public static final Map<Class<? extends IService>, IService> getRegisteredServices() {
 		Map<Class<? extends IService>, IService> services = new HashMap<Class<? extends IService>, IService>();
-		services.put(ILocalizationService.class, new LocalizationService());
+		for (Object[] serviceSpec : SERVICES) {
+			Class<? extends IService> svcClass = (Class<? extends IService>) serviceSpec[0];
+			IService svc = (IService) serviceSpec[1];
+			services.put(svcClass, svc);
+		}
 		return services;
 	}
 	
