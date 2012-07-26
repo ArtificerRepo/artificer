@@ -1,8 +1,22 @@
 body {
 	background-color: #F0F0F0;
+	font-family: arial, sans-serif;
+	font-size: 12px;
+	line-height: 130%;
 }
 
 div {
+}
+
+a {
+	color: #3B48D4;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+a:visited {
+	color: #3B48D4;
 }
 
 div#main {

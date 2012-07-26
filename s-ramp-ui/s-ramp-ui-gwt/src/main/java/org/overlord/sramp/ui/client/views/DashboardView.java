@@ -15,16 +15,18 @@
  */
 package org.overlord.sramp.ui.client.views;
 
-import org.overlord.sramp.ui.client.activities.IDashboardActivity;
-import org.overlord.sramp.ui.client.places.BrowsePlace;
-import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
-import org.overlord.sramp.ui.client.widgets.TitlePanel;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
+import org.overlord.sramp.ui.client.activities.IDashboardActivity;
+import org.overlord.sramp.ui.client.widgets.TitlePanel;
+import org.overlord.sramp.ui.client.widgets.UnorderedListPanel;
+
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.InlineHyperlink;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -38,8 +40,6 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 	 * Constructor.
 	 */
 	public DashboardView() {
-		ILocalizationService i18n = getService(ILocalizationService.class);
-
 		// Create the dashboard
 		HorizontalPanel dashboardPanel = new HorizontalPanel();
 		dashboardPanel.getElement().setId("dashboard");
@@ -56,28 +56,47 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		dashboardPanel.add(rightColumn);
 		
 		// Create the Activities panel
-		TitlePanel activitiesPanel = new TitlePanel(i18n.translate("dashboard.activities-panel.title"));
-		Anchor link = new Anchor(i18n.translate("dashboard.activities-panel.link_to_browse"));
-		link.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				getActivity().goTo(new BrowsePlace());
-			}
-		});
-		activitiesPanel.setWidget(link);
-		leftColumn.add(activitiesPanel);
+		TitlePanel activitiesPanel = new TitlePanel(i18n().translate("dashboard.activities-panel.title"));
+		activitiesPanel.getElement().setId("dash-activitiesPanel");
+		UnorderedListPanel ulPanel = new UnorderedListPanel();
+		List<Hyperlink> activityLinks = createActivityLinks();
+		for (Hyperlink link : activityLinks)
+			ulPanel.add(link);
+		activitiesPanel.setWidget(ulPanel);
+		
+		// Create the Upload Artifact panel
+		TitlePanel uploadPanel = new TitlePanel(i18n().translate("dashboard.upload-panel.title"));
+		uploadPanel.getElement().setId("dash-uploadPanel");
+		uploadPanel.setWidget(new Label("TBD"));
 		
 		// Create the Help panel
-		TitlePanel helpPanel = new TitlePanel(i18n.translate("dashboard.help-panel.title"));
-		HTMLPanel helpText = new HTMLPanel(i18n.translate("dashboard.help-panel.help-text"));
+		TitlePanel helpPanel = new TitlePanel(i18n().translate("dashboard.help-panel.title"));
+		helpPanel.getElement().setId("dash-helpPanel");
+		HTMLPanel helpText = new HTMLPanel(i18n().translate("dashboard.help-panel.help-text"));
 		helpPanel.setWidget(helpText);
-		rightColumn.add(helpPanel);
 		
 		// Now size the columns properly
 		dashboardPanel.setCellWidth(leftColumn, "50%");
 		dashboardPanel.setCellWidth(rightColumn, "50%");
 
+		// Add the panels to the dashboard
+		leftColumn.add(activitiesPanel);
+		leftColumn.add(uploadPanel);
+		rightColumn.add(helpPanel);
+
 		this.initWidget(dashboardPanel);
+	}
+
+	/**
+	 * Create all of the activity links.
+	 */
+	private List<Hyperlink> createActivityLinks() {
+		List<Hyperlink> links = new ArrayList<Hyperlink>();
+		Hyperlink browseLink = new InlineHyperlink(i18n().translate("dashboard.activities-panel.activities.browse.label"), "/dashboard/browse:");
+		links.add(browseLink);
+		Hyperlink ontologyLink = new InlineHyperlink(i18n().translate("dashboard.activities-panel.activities.ontologies.label"), "/dashboard/ontologies:");
+		links.add(ontologyLink);
+		return links;
 	}
 
 }
