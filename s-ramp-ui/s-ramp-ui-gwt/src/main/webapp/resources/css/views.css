@@ -14,3 +14,7 @@
 	list-style-position: inside;
 	list-style-type: disc;
 }
+
+#dash-uploadPanel form td {
+	padding: 3px;
+}
