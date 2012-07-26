@@ -15,6 +15,10 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.overlord.sramp</groupId>
+			<artifactId>s-ramp-client</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
@@ -35,6 +39,10 @@
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
 		</dependency>
 	</dependencies>
 

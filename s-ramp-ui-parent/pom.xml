@@ -32,6 +32,8 @@
 		<log4j.version>1.2.16</log4j.version>
 		<slf4j.api.version>1.5.11</slf4j.api.version>
 		<slf4j.log4j.version>1.5.11</slf4j.log4j.version>
+		<!-- S-RAMP versions -->
+		<sramp.client.version>0.0.1-SNAPSHOT</sramp.client.version>
 		<!-- Maven plugin versions -->
 		<maven.surefire.report.plugin.version>2.4.3</maven.surefire.report.plugin.version>
 		<maven.surefire.plugin.version>2.7.1</maven.surefire.plugin.version>
@@ -153,6 +155,12 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<!-- S-RAMP -->
+			<dependency>
+				<groupId>org.overlord.sramp</groupId>
+				<artifactId>s-ramp-client</artifactId>
+				<version>${sramp.client.version}</version>
+			</dependency>
 			<!-- Vaadin -->
 			<dependency>
 				<groupId>com.vaadin</groupId>
