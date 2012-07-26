@@ -18,6 +18,11 @@ a:hover {
 a:visited {
 	color: #3B48D4;
 }
+a.disabled {
+	color: grey;
+	font-style: italic;
+	text-decoration: none;
+}
 
 div#main {
 	width: auto;

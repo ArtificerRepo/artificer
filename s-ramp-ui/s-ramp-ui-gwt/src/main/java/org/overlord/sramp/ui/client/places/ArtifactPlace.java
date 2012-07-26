@@ -19,7 +19,6 @@ import java.util.Map;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
-import com.google.gwt.place.shared.Prefix;
 
 /**
  * Place:  /dashboard/browse/artifact
@@ -58,7 +57,6 @@ public class ArtifactPlace extends Place {
 	/*
 	 * Tokenizer.
 	 */
-	@Prefix("/dashboard/browse/artifact")
 	public static class Tokenizer implements PlaceTokenizer<ArtifactPlace> {
 		/**
 		 * @see com.google.gwt.place.shared.PlaceTokenizer#getToken(com.google.gwt.place.shared.Place)

@@ -17,7 +17,6 @@ package org.overlord.sramp.ui.client.places;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
-import com.google.gwt.place.shared.Prefix;
 
 /**
  * Place:  /dashboard
@@ -37,7 +36,6 @@ public class DashboardPlace extends Place {
 	/*
 	 * Tokenizer.
 	 */
-	@Prefix("/dashboard")
 	public static class Tokenizer implements PlaceTokenizer<DashboardPlace> {
 		/**
 		 * @see com.google.gwt.place.shared.PlaceTokenizer#getToken(com.google.gwt.place.shared.Place)

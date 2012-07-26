@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client;
+package org.overlord.sramp.ui.client.services.place;
 
-import org.overlord.sramp.ui.client.places.ArtifactPlace;
-import org.overlord.sramp.ui.client.places.BrowsePlace;
-import org.overlord.sramp.ui.client.places.DashboardPlace;
+import org.overlord.sramp.ui.client.services.IService;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
-import com.google.gwt.place.shared.WithTokenizers;
 
 /**
- * A simple place history mapper using the {@link WithTokenizers} annotation to
- * supply the tokenizers for the known places in the application.
+ * The place service is responsible for doing place related stuff.  For example,
+ * it can provide a place token for a given place.
  *
  * @author eric.wittmann@redhat.com
  */
-@WithTokenizers({DashboardPlace.Tokenizer.class, BrowsePlace.Tokenizer.class, ArtifactPlace.Tokenizer.class})
-public interface IPlaceHistoryMapper extends PlaceHistoryMapper {
+public interface IPlaceService extends IService {
 
+	/**
+	 * Gets the place history mapper.
+	 */
+	public PlaceHistoryMapper getPlaceHistoryMapper();
+	
+	/**
+	 * Generates a place token (suitable for use in hyperlinks, for example).
+	 * @param place the place to tokenize
+	 * @return a place token
+	 */
+	public String generatePlaceToken(Place place);
+	
 }

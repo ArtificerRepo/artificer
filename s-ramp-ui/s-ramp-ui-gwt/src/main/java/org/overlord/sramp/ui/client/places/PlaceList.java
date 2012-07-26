@@ -13,13 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.services;
+package org.overlord.sramp.ui.client.places;
+
+
 
 /**
- * Accesses the {@link IServices} singleton.
+ * Lists of all the places in the application.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ServicesAccessor {
+public class PlaceList {
+
+	public static final Object [][] PLACES = {
+		// Prefix, Tokenizer instance, Place class
+		{ "/dashboard", new DashboardPlace.Tokenizer(), DashboardPlace.class }, 
+		{ "/dashboard/browse", new BrowsePlace.Tokenizer(), BrowsePlace.class }, 
+		{ "/dashboard/browse/artifact", new ArtifactPlace.Tokenizer(), ArtifactPlace.class },
+	};
 	
 }

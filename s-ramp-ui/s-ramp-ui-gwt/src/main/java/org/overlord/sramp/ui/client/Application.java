@@ -4,6 +4,7 @@ import org.overlord.sramp.ui.client.places.DashboardPlace;
 import org.overlord.sramp.ui.client.services.IServicesListener;
 import org.overlord.sramp.ui.client.services.ServiceList;
 import org.overlord.sramp.ui.client.services.Services;
+import org.overlord.sramp.ui.client.services.place.IPlaceService;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -14,6 +15,7 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -39,13 +41,15 @@ public class Application implements EntryPoint {
 		Services.init(ServiceList.getRegisteredServices(), new IServicesListener() {
 			@Override
 			public void onAllServicesStarted() {
+				IPlaceService placeService = Services.getServices().getService(IPlaceService.class);
+				
 				// Start ActivityManager for the main widget with our ActivityMapper
 				ActivityMapper activityMapper = new ActivityMapperImpl(clientFactory);
 				ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
 				activityManager.setDisplay(appWidget);
 
 				// Start PlaceHistoryHandler with our PlaceHistoryMapper
-				IPlaceHistoryMapper historyMapper = GWT.create(IPlaceHistoryMapper.class);
+				PlaceHistoryMapper historyMapper = placeService.getPlaceHistoryMapper();
 				PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 				historyHandler.register(placeController, eventBus, defaultPlace);
 
