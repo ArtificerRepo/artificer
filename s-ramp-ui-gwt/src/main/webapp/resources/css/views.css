@@ -9,3 +9,8 @@
 .dashColumn tr td table tr td {
 	padding: 0px;
 }
+
+#dash-activitiesPanel ul {
+	list-style-position: inside;
+	list-style-type: disc;
+}
