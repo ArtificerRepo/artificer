@@ -1,0 +1,20 @@
+.dashColumn {
+	width: 100%;
+}
+
+.dashColumn tr td {
+	padding: 5px;
+}
+
+.dashColumn tr td table tr td {
+	padding: 0px;
+}
+
+#dash-activitiesPanel ul {
+	list-style-position: inside;
+	list-style-type: disc;
+}
+
+#dash-uploadPanel form td {
+	padding: 3px;
+}

@@ -15,7 +15,9 @@
 	<name>S-RAMP UI</name>
 	<description>Builds the S-RAMP UI distribution.</description>
 	<modules>
+		<module>s-ramp-ui-gwt</module>
 		<module>s-ramp-ui-parent</module>
+		<module>s-ramp-ui-vaadin</module>
 	</modules>
 </project>
 

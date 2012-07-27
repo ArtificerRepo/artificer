@@ -1,0 +1,15 @@
+.titlePanel {
+	width: 100%;
+	border: 1px solid grey;
+}
+.titlePanel .title {
+	font-size: 14px;
+	font-weight: bold;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #eee;
+	background-color: #E87676;
+	padding: 5px;
+}
+.titlePanel .titlePanelContent {
+	padding: 5px;
+}
