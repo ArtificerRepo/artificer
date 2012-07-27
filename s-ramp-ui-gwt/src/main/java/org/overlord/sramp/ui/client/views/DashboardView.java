@@ -103,10 +103,13 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		
 		form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 			public void onSubmitComplete(SubmitCompleteEvent event) {
-				String resultStr = event.getResults();
-				int startIdx = resultStr.indexOf('(');
-				int endIdx = resultStr.lastIndexOf(')') + 1;
-				String jsonData = resultStr.substring(startIdx, endIdx);
+				String jsonData = event.getResults();
+				int startIdx = jsonData.indexOf('(');
+				int endIdx = jsonData.lastIndexOf(')') + 1;
+				if (jsonData.endsWith(")"))
+					jsonData = jsonData.substring(startIdx);
+				else
+					jsonData = jsonData.substring(startIdx, endIdx);
 				Window.alert("JSON response:  " + jsonData);
 				form.reset();
 			}
