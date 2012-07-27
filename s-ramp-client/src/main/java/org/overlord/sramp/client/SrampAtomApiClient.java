@@ -18,10 +18,13 @@ package org.overlord.sramp.client;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.ws.rs.core.MediaType;
+
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.overlord.sramp.ArtifactType;
 
 /**
  * Class used to communicate with the S-RAMP server.
@@ -63,9 +66,17 @@ public class SrampAtomApiClient {
 			Thread.currentThread().setContextClassLoader(oldCtxCL);
 		}
 	}
+	
+	/**
+	 * Please see javadoc in {@link SrampAtomApiClient#getFullArtifactEntry(String, String, String)}.
+	 */
+	public Entry getFullArtifactEntry(ArtifactType artifactType, String artifactUuid) throws Exception {
+		return getFullArtifactEntry(artifactType.getModel(), artifactType.name(), artifactUuid);
+	}
 
 	/**
-	 * Gets the content for an artifact as an input stream.
+	 * Gets the content for an artifact as an input stream.  The caller must close the resulting
+	 * {@link InputStream} when done.
 	 * @param artifactModel the artifact model (core, xsd, wsdl, etc)
 	 * @param artifactType the artifact type (XmlDocument, XsdDocument, etc)
 	 * @param artifactUuid the S-RAMP uuid of the artifact
@@ -73,15 +84,49 @@ public class SrampAtomApiClient {
 	 * @throws Exception 
 	 */
 	public InputStream getArtifactContent(String artifactModel, String artifactType, String artifactUuid) throws Exception {
+		String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
+		URL url = new URL(atomUrl);
+		return url.openStream();
+	}
+	
+	/**
+	 * Please see javadoc in {@link SrampAtomApiClient#getArtifactContent(String, String, String)}.
+	 */
+	public InputStream getArtifactContent(ArtifactType artifactType, String artifactUuid) throws Exception {
+		return getArtifactContent(artifactType.getModel(), artifactType.name(), artifactUuid);
+	}
+
+	/**
+	 * Uploads an artifact to the s-ramp repository.
+	 * @param artifactModel the new artifact's model
+	 * @param artifactType the new artifact's type
+	 * @param content the byte content of the artifact
+	 * @param artifactFileName the file name of the artifact (optional, can be null)
+	 * @return an Atom entry representing the new artifact in the s-ramp repository
+	 * @throws Exception
+	 */
+	public Entry uploadArtifact(String artifactModel, String artifactType, InputStream content, String artifactFileName) throws Exception {
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(ApacheHttpClient4Executor.class.getClassLoader());
 		try {
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
-			URL url = new URL(atomUrl);
-			return url.openStream();
+			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, artifactModel, artifactType);
+			ClientRequest request = new ClientRequest(atomUrl);
+			if (artifactFileName != null)
+				request.header("Slug", artifactFileName);
+			request.body(MediaType.APPLICATION_XML, content);
+
+			ClientResponse<Entry> response = request.post(Entry.class);
+			return response.getEntity();
 		} finally {
 			Thread.currentThread().setContextClassLoader(oldCtxCL);
 		}
 	}
-
+	
+	/**
+	 * Please refer to javadoc in  {@link SrampAtomApiClient#uploadArtifact(String, String, InputStream, String)}
+	 */
+	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName) throws Exception {
+		return uploadArtifact(artifactType.getModel(), artifactType.name(), content, artifactFileName);
+	}
+	
 }
