@@ -15,6 +15,9 @@
  */
 package org.overlord.sramp.client;
 
+import javax.xml.bind.JAXBException;
+
+import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -53,5 +56,33 @@ public final class SrampClientUtils {
 	public static BaseArtifactType unwrapSrampArtifact(ArtifactType artifactType, Artifact artifact) {
 		return artifactType.unwrap(artifact);
 	}
+
+	/**
+	 * Unwraps a specific {@link BaseArtifactType} from the Atom {@link Entry} containing it.  This
+	 * method grabs the {@link Artifact} child from the Atom {@link Entry} and then unwraps the
+	 * {@link BaseArtifactType} from that.
+	 * @param artifactType the s-ramp artifact type
+	 * @param entry an Atom {@link Entry}
+	 * @return a {@link BaseArtifactType}
+	 * @throws JAXBException 
+	 */
+	public static BaseArtifactType unwrapSrampArtifact(String artifactType, Entry entry) throws JAXBException {
+		return unwrapSrampArtifact(ArtifactType.valueOf(artifactType), entry);
+	}
+
+	/**
+	 * Unwraps a specific {@link BaseArtifactType} from the Atom {@link Entry} containing it.  This
+	 * method grabs the {@link Artifact} child from the Atom {@link Entry} and then unwraps the
+	 * {@link BaseArtifactType} from that.
+	 * @param artifactType the s-ramp artifact type
+	 * @param entry an Atom {@link Entry}
+	 * @return a {@link BaseArtifactType}
+	 * @throws JAXBException 
+	 */
+	public static BaseArtifactType unwrapSrampArtifact(ArtifactType artifactType, Entry entry) throws JAXBException {
+		Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
+		return unwrapSrampArtifact(artifactType, artifact);
+	}
+	
 
 }
