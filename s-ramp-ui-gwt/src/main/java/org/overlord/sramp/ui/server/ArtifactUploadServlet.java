@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,13 +31,20 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.client.SrampClientUtils;
+import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
- * 
+ * A standard servlet that artifact content is POSTed to in order to add new artifacts
+ * to the s-ramp repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactUploadServlet  extends HttpServlet {
+public class ArtifactUploadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = ArtifactUploadServlet.class.hashCode();
 
@@ -47,7 +53,7 @@ public class ArtifactUploadServlet  extends HttpServlet {
 	 */
 	public ArtifactUploadServlet() {
 	}
-	
+
 	/**
 	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -56,16 +62,15 @@ public class ArtifactUploadServlet  extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String artifactType = null;
-		String fileName = null;
-		InputStream artifactContent = null;
-
 		// Extract the relevant content from the POST'd form
 		if (ServletFileUpload.isMultipartContent(req)) {
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
 			
 			// Parse the request
+			String artifactType = null;
+			String fileName = null;
+			InputStream artifactContent = null;
 			try {
 				List<FileItem> items = upload.parseRequest(req);
 				for (FileItem item : items) {
@@ -81,43 +86,47 @@ public class ArtifactUploadServlet  extends HttpServlet {
 					}
 				}
 				
-				System.out.println("Uploaded: " + fileName);
-				System.out.println("Type: " + artifactType);
-				System.out.println("Stream: " + artifactContent);
+				// Now that the content has been extracted, process it (upload the artifact to the s-ramp repo).
+				Map<String, String> responseMap = uploadArtifact(artifactType, fileName, artifactContent);
+				writeToResponse(responseMap, response);
 			} catch (Exception e) {
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 						"An error occurred while creating the file : " + e.getMessage());
 				return;
+			} finally {
+				IOUtils.closeQuietly(artifactContent);
 			}
 		} else {
 			response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
 					"Request contents type is not supported by the servlet.");
 			return;
 		}
-		
-		// Now that the content has been extracted, process it (upload the artifact to the s-ramp repo).
-		Map<String, String> responseMap = uploadArtifact(artifactType, fileName, artifactContent);
-		writeToResponse(responseMap, response);
 	}
 
 	/**
 	 * Upload the artifact to the S-RAMP repository.
-	 * @param artifactType
-	 * @param fileName
-	 * @param artifactContent
+	 * @param artifactType the type of s-ramp artifact
+	 * @param fileName the file name of the artifact being uploaded
+	 * @param artifactContent the content of the artifact
+	 * @throws Exception 
 	 */
-	private Map<String, String> uploadArtifact(String artifactType, String fileName, InputStream artifactContent) {
+	private Map<String, String> uploadArtifact(String artifactType, String fileName, InputStream artifactContent) throws Exception {
+		SrampAtomApiClient client = SrampAtomApiClient.getInstance();
+		
+		ArtifactType at = ArtifactType.valueOf(artifactType);
+		Entry entry = client.uploadArtifact(at, artifactContent, fileName);
+		BaseArtifactType artifact = SrampClientUtils.unwrapSrampArtifact(at, entry);
+
 		Map<String, String> responseParams = new HashMap<String, String>();
-		responseParams.put("key1", "val1");
-		responseParams.put("key2", "val2");
+		responseParams.put("uuid", artifact.getUuid());
 		return responseParams;
 	}
 
 	/**
 	 * Writes the response values back to the http response.  This allows the calling code to
 	 * parse the response values for display to the user.
-	 * @param responseMap
-	 * @param response
+	 * @param responseMap the response params to write to the http response
+	 * @param response the http response
 	 * @throws IOException 
 	 */
 	private void writeToResponse(Map<String, String> responseMap, HttpServletResponse response) throws IOException {
@@ -125,7 +134,7 @@ public class ArtifactUploadServlet  extends HttpServlet {
 		StringBuilder builder = new StringBuilder();
 		builder.append("({");
 		boolean first = true;
-		for (Entry<String, String> entry : responseMap.entrySet()) {
+		for (java.util.Map.Entry<String, String> entry : responseMap.entrySet()) {
 			String key = entry.getKey();
 			String val = entry.getValue();
 			if (first)
