@@ -19,7 +19,10 @@ import org.overlord.sramp.ui.client.IClientFactory;
 import org.overlord.sramp.ui.client.services.IService;
 import org.overlord.sramp.ui.client.services.ServiceNotFoundException;
 import org.overlord.sramp.ui.client.services.Services;
+import org.overlord.sramp.ui.client.services.breadcrumb.IBreadcrumbService;
+import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
 import org.overlord.sramp.ui.client.views.IView;
+import org.overlord.sramp.ui.client.widgets.BreadcrumbPanel;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
@@ -106,7 +109,17 @@ public abstract class AbstractActivity<P extends Place, V extends IView<?>> exte
 		setView(view);
 		panel.setWidget(view.asWidget());
 		doStart(panel, eventBus);
+		
+		BreadcrumbPanel breadcrumbPanel = getService(IBreadcrumbService.class).getBreadcrumbPanel();
+		breadcrumbPanel.clear();
+		updateBreadcrumb(breadcrumbPanel);
 	}
+
+	/**
+	 * Called to update the breadcrumb panel.  Must be implemented by subclasses.
+	 * @param breadcrumbPanel the breadcrumb panel
+	 */
+	protected abstract void updateBreadcrumb(BreadcrumbPanel breadcrumbPanel);
 
 	/**
 	 * Called to create/get the view.
@@ -130,6 +143,13 @@ public abstract class AbstractActivity<P extends Place, V extends IView<?>> exte
 	 */
 	protected <T extends IService> T getService(Class<T> serviceType) throws ServiceNotFoundException {
 		return Services.getServices().getService(serviceType);
+	}
+
+	/**
+	 * Convenience method for getting the localization service.
+	 */
+	protected ILocalizationService i18n() {
+		return getService(ILocalizationService.class);
 	}
 
 }

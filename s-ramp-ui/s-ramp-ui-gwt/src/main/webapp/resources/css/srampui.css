@@ -46,6 +46,27 @@ div#header h1 {
 	padding-left: 20px;
 }
 
+div#breadcrumb-wrapper {
+	padding-top: 10px;
+	padding-left: 20px;
+}
+#breadcrumbs {
+	margin: 0;
+	padding: 0;
+}
+#breadcrumbs li {
+	display: inline;
+}
+#breadcrumbs li a, #breadcrumbs li span {
+	padding-left: 16px;
+	background: url("../images/breadcrumb-sep.png") no-repeat;
+	background-position: 4px center;
+}
+#breadcrumbs li .first {
+	background: none;
+	padding-left: 0px;
+}
+
 div#content-wrapper {
 	width: auto;
 	padding: 10px;

@@ -24,6 +24,7 @@ import java.util.Map;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -32,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eric.wittmann@redhat.com
  */
-public class UnorderedListPanel extends Panel {
+public class UnorderedListPanel extends Panel implements IndexedPanel {
 	
 	private List<Widget> children = new ArrayList<Widget>();
 	private Map<Widget, Element> wrapperMap = new HashMap<Widget, Element>();
@@ -92,6 +93,42 @@ public class UnorderedListPanel extends Panel {
 		this.children.remove(w);
 		this.wrapperMap.remove(w);
 		return true;
+	}
+
+	/**
+	 * @see com.google.gwt.user.client.ui.IndexedPanel#getWidget(int)
+	 */
+	@Override
+	public Widget getWidget(int index) {
+		return this.children.get(index);
+	}
+
+	/**
+	 * @see com.google.gwt.user.client.ui.IndexedPanel#getWidgetCount()
+	 */
+	@Override
+	public int getWidgetCount() {
+		return this.children.size();
+	}
+
+	/**
+	 * @see com.google.gwt.user.client.ui.IndexedPanel#getWidgetIndex(com.google.gwt.user.client.ui.Widget)
+	 */
+	@Override
+	public int getWidgetIndex(Widget child) {
+		for (int i=0; i < this.children.size(); i++) {
+			if (this.children.get(i) == child)
+				return i;
+		}
+		return -1;
+	}
+
+	/**
+	 * @see com.google.gwt.user.client.ui.IndexedPanel#remove(int)
+	 */
+	@Override
+	public boolean remove(int index) {
+		return remove(this.children.get(index));
 	}
 	
 }

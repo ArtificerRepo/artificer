@@ -17,7 +17,9 @@ package org.overlord.sramp.ui.client.activities;
 
 import org.overlord.sramp.ui.client.IClientFactory;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.places.DashboardPlace;
 import org.overlord.sramp.ui.client.views.IBrowseView;
+import org.overlord.sramp.ui.client.widgets.BreadcrumbPanel;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -53,4 +55,13 @@ public class BrowseActivity extends AbstractActivity<BrowsePlace, IBrowseView> i
 	protected void doStart(AcceptsOneWidget panel, EventBus eventBus) {
 	}
 	
+	/**
+	 * @see org.overlord.sramp.ui.client.activities.AbstractActivity#updateBreadcrumb(org.overlord.sramp.ui.client.widgets.BreadcrumbPanel)
+	 */
+	@Override
+	protected void updateBreadcrumb(BreadcrumbPanel breadcrumbPanel) {
+		breadcrumbPanel.addCrumb(i18n().translate("breadcrumb.dashboard"), new DashboardPlace());
+		breadcrumbPanel.addCrumb(i18n().translate("breadcrumb.browse"), null);
+	}
+
 }
