@@ -21,6 +21,8 @@
 			<div id="header">
 				<h1>S-RAMP Explorer</h1>
 			</div>
+			<div id="breadcrumb-wrapper">
+			</div>
 			<div id="content-wrapper">
 				<div id="content">
 					<div id="app-loading">

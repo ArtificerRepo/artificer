@@ -18,6 +18,8 @@ package org.overlord.sramp.ui.client.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.overlord.sramp.ui.client.services.breadcrumb.BreadcrumbService;
+import org.overlord.sramp.ui.client.services.breadcrumb.IBreadcrumbService;
 import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
 import org.overlord.sramp.ui.client.services.i18n.LocalizationService;
 import org.overlord.sramp.ui.client.services.place.IPlaceService;
@@ -34,6 +36,7 @@ public class ServiceList {
 		
 		{ ILocalizationService.class, new LocalizationService() },
 		{ IPlaceService.class, new PlaceService() },
+		{ IBreadcrumbService.class, new BreadcrumbService() },
 		
 	};
 	

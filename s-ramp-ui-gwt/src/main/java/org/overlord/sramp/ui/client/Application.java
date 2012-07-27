@@ -4,6 +4,7 @@ import org.overlord.sramp.ui.client.places.DashboardPlace;
 import org.overlord.sramp.ui.client.services.IServicesListener;
 import org.overlord.sramp.ui.client.services.ServiceList;
 import org.overlord.sramp.ui.client.services.Services;
+import org.overlord.sramp.ui.client.services.breadcrumb.IBreadcrumbService;
 import org.overlord.sramp.ui.client.services.place.IPlaceService;
 
 import com.google.gwt.activity.shared.ActivityManager;
@@ -42,6 +43,7 @@ public class Application implements EntryPoint {
 			@Override
 			public void onAllServicesStarted() {
 				IPlaceService placeService = Services.getServices().getService(IPlaceService.class);
+				IBreadcrumbService breadcrumbService = Services.getServices().getService(IBreadcrumbService.class);
 				
 				// Start ActivityManager for the main widget with our ActivityMapper
 				ActivityMapper activityMapper = new ActivityMapperImpl(clientFactory);
@@ -52,6 +54,10 @@ public class Application implements EntryPoint {
 				PlaceHistoryMapper historyMapper = placeService.getPlaceHistoryMapper();
 				PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 				historyHandler.register(placeController, eventBus, defaultPlace);
+				
+				// Add the global breadcrumb panel to the page
+				RootPanel breadcrumbWrapperDiv = RootPanel.get("breadcrumb-wrapper");
+				breadcrumbWrapperDiv.add(breadcrumbService.getBreadcrumbPanel());
 
 				// Replace the contents of div#content with our application widget
 				RootPanel contentDiv = RootPanel.get("content");
