@@ -20,9 +20,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.LoadingStateChangeEvent.LoadingState;
-import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.Range;
 
 /**
  * Extends the GWT {@link CellTable} to provide a custom look and feel.
@@ -69,56 +67,5 @@ public class DataTable<T> extends CellTable<T> {
     	};
         Scheduler.get().scheduleFinally(command);
     }
-
-    /**
-     * A pager to go along with the {@link DataTable}.
-     *
-     * @author eric.wittmann@redhat.com
-     */
-	public static class CustomSimplePager extends SimplePager {
-		/**
-		 * Constructor.
-		 */
-		public CustomSimplePager() {
-			super();
-		}
-
-		/**
-		 * Constructor.
-		 * 
-		 * @param location
-		 * @param resources
-		 * @param showFastForwardButton
-		 * @param fastForwardRows
-		 * @param showLastPageButton
-		 */
-		public CustomSimplePager(TextLocation location, Resources resources, boolean showFastForwardButton,
-				int fastForwardRows, boolean showLastPageButton) {
-			super(location, resources, showFastForwardButton, fastForwardRows, showLastPageButton);
-		}
-
-		/**
-		 * @param location
-		 */
-		public CustomSimplePager(TextLocation location) {
-			super(location);
-		}
-
-		/**
-		 * @see com.google.gwt.user.cellview.client.SimplePager#setPageStart(int)
-		 */
-		@Override
-		public void setPageStart(int index) {
-			if (getDisplay() != null) {
-				Range range = getDisplay().getVisibleRange();
-				int pageSize = range.getLength();
-				index = Math.max(0, index);
-				if (index != range.getStart()) {
-					getDisplay().setVisibleRange(index, pageSize);
-				}
-			}
-		}
-
-	}
 
 }

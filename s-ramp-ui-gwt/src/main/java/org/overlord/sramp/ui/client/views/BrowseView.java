@@ -18,20 +18,16 @@ package org.overlord.sramp.ui.client.views;
 import java.util.List;
 
 import org.overlord.sramp.ui.client.activities.IBrowseActivity;
+import org.overlord.sramp.ui.client.places.AbstractPagedPlace;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
 import org.overlord.sramp.ui.client.widgets.DataTable;
-import org.overlord.sramp.ui.client.widgets.PlacePager;
-import org.overlord.sramp.ui.client.widgets.PleaseWait;
+import org.overlord.sramp.ui.client.widgets.DataTableWithPager;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -43,10 +39,9 @@ import com.google.gwt.view.client.SingleSelectionModel;
  */
 public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowseView {
 
-	private static final int DEFAULT_PAGE_SIZE = 15;
+	private static final int DEFAULT_PAGE_SIZE = 20;
 
-	private DataTable<ArtifactSummary> artifactTable;
-	private PlacePager pager;
+	private ArtifactDataTable artifacts;
 
 	/**
 	 * Constructor.
@@ -54,18 +49,14 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	public BrowseView() {
 		Label filtersPanel = new Label("Filters Go Here (TBD)");
 		Label summaryPanel = new Label("Artifact Summary Goes Here (TBD)");
-		pager = new PlacePager();
+		artifacts = createArtifactTable();
 
 		HorizontalPanel hpanel = new HorizontalPanel();
 		hpanel.setWidth("100%");
 		hpanel.add(filtersPanel);
-		FlowPanel centerPanel = new FlowPanel();
-		artifactTable = createArtifactTable();
-		centerPanel.add(artifactTable);
-		centerPanel.add(pager);
-		hpanel.add(centerPanel);
+		hpanel.add(artifacts);
 		hpanel.add(summaryPanel);
-		
+
 		hpanel.setCellWidth(filtersPanel, "200px");
 		hpanel.setCellWidth(summaryPanel, "300px");
 
@@ -83,12 +74,11 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	/**
 	 * Creates the table in which our list of artifacts will be displayed.
 	 */
-	private DataTable<ArtifactSummary> createArtifactTable() {
+	private ArtifactDataTable createArtifactTable() {
 		ArtifactDataTable table = new ArtifactDataTable();
 		table.setWidth("100%");
-		table.setPageSize(40);
-		table.setLoadingIndicator(new PleaseWait("Querying, please wait..."));
-		table.setEmptyTableWidget(new InlineLabel("No artifacts found."));
+		table.setEmptyTableMessage(i18n().translate("browse.artifacts.no-artifacts"));
+		table.setLoadingMessage(i18n().translate("browse.artifacts.loading-artifacts"));
 		SingleSelectionModel<ArtifactSummary> selectionModel = new SingleSelectionModel<ArtifactSummary>();
 		selectionModel.addSelectionChangeHandler(new Handler() {
 			@Override
@@ -96,7 +86,6 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			}
 		});
 		table.setSelectionModel(selectionModel);
-
 		return table;
 	}
 
@@ -105,29 +94,15 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	 */
 	@Override
 	public void onQueryStarting() {
-		this.artifactTable.reset();
-		this.pager.setVisible(false);
+		this.artifacts.reset();
 	}
 
 	/**
 	 * @see org.overlord.sramp.ui.client.views.IBrowseView#onQueryComplete(java.util.List, int, boolean)
 	 */
 	@Override
-	public void onQueryComplete(List<ArtifactSummary> artifacts, BrowsePlace place, boolean hasMore) {
-		this.artifactTable.setRowData(artifacts);
-		Place prevPlace = null;
-		Place nextPlace = null;
-		if (place.getPage(0) > 0) {
-			prevPlace = new BrowsePlace(place.getPage(0) - 1, place.getPageSize(), place.getTypeFilter());
-		}
-		if (hasMore) {
-			nextPlace = new BrowsePlace(place.getPage(0) + 1, place.getPageSize(), place.getTypeFilter());
-		}
-		int start = (place.getPage(0) * place.getPageSize(getDefaultPageSize())) + 1;
-		int end = start + artifacts.size();
-		String pagerMsg = i18n().translate("browse.artifacts.pager.label", place.getPage(0)+1, start, end);
-		this.pager.init(prevPlace, nextPlace, pagerMsg);
-		this.pager.setVisible(true);
+	public void onQueryComplete(List<ArtifactSummary> artifacts, BrowsePlace place, boolean hasMoreRows) {
+		this.artifacts.setRowData(artifacts, place, getDefaultPageSize(), hasMoreRows);
 	}
 
 	/**
@@ -137,31 +112,33 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	public void onQueryFailed(RemoteServiceException error) {
 		// TODO do something interesting with the error
 	}
-
-	/**
-	 * The Artifact {@link DataTable}.
-	 *
-	 * @author eric.wittmann@redhat.com
+	
+	/*
+	 * Impl class for the artifact data table.
 	 */
-	private static class ArtifactDataTable extends DataTable<ArtifactSummary> {
+	private static class ArtifactDataTable extends DataTableWithPager<ArtifactSummary> {
+
 		/**
 		 * Constructor.
 		 */
 		public ArtifactDataTable() {
-			super(new ProvidesKey<ArtifactSummary>() {
-				@Override
-				public Object getKey(ArtifactSummary item) {
-					return item;
-				}
-			});
-			getElement().setClassName("dataTable");
-			createColumns();
+		}
+		
+		/**
+		 * @see org.overlord.sramp.ui.client.widgets.DataTableWithPager#createPagerPlace(org.overlord.sramp.ui.client.places.AbstractPagedPlace)
+		 */
+		@Override
+		protected AbstractPagedPlace createPagerPlace(AbstractPagedPlace currentPlace) {
+			BrowsePlace place = new BrowsePlace();
+			place.setTypeFilter(((BrowsePlace)currentPlace).getTypeFilter());
+			return place;
 		}
 
 		/**
-		 * Creates the table columns.
+		 * @see org.overlord.sramp.ui.client.widgets.DataTableWithPager#createColumns(org.overlord.sramp.ui.client.widgets.DataTable)
 		 */
-		private void createColumns() {
+		@Override
+		protected void createColumns(DataTable<ArtifactSummary> table) {
 			TextColumn<ArtifactSummary> name = new TextColumn<ArtifactSummary>() {
 				@Override
 				public String getValue(ArtifactSummary artifact) {
@@ -169,7 +146,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 				}
 			};
 			name.setSortable(true);
-			addColumn(name, "Artifact Name");
+			table.addColumn(name, "Artifact Name");
 //			setColumnWidth(name, 15.0, Unit.PCT);
 			
 			TextColumn<ArtifactSummary> uuid = new TextColumn<ArtifactSummary>() {
@@ -179,9 +156,8 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 				}
 			};
 			uuid.setSortable(false);
-			addColumn(uuid, "UUID");
+			table.addColumn(uuid, "UUID");
 //			setColumnWidth(uuid, 20.0, Unit.PCT);
 		}
-		
 	}
 }
