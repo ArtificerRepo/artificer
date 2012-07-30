@@ -28,6 +28,11 @@
 	<properties>
 		<!-- Instruct the build to use only UTF-8 encoding for source code -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<!-- Distribution URLs -->
+		<jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+		<jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+
 		<junit.version>4.8.2</junit.version>
 		<log4j.version>1.2.16</log4j.version>
 		<slf4j.api.version>1.5.11</slf4j.api.version>
@@ -287,8 +292,13 @@
 		<repository>
 			<id>jboss-releases-repository</id>
 			<name>JBoss Releases Repository</name>
-			<url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+			<url>${jboss.releases.repo.url}</url>
 		</repository>
+		<snapshotRepository>
+			<id>jboss-snapshots-repository</id>
+			<name>JBoss Snapshots Repository</name>
+			<url>${jboss.snapshots.repo.url}</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 </project>
