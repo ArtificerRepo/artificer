@@ -15,13 +15,19 @@
  */
 package org.overlord.sramp.ui.client.activities;
 
+import java.util.List;
+
 import org.overlord.sramp.ui.client.IClientFactory;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
 import org.overlord.sramp.ui.client.places.DashboardPlace;
+import org.overlord.sramp.ui.client.services.query.IQueryService;
 import org.overlord.sramp.ui.client.views.IBrowseView;
 import org.overlord.sramp.ui.client.widgets.BreadcrumbPanel;
+import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
+import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 /**
@@ -30,7 +36,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
  * @author eric.wittmann@redhat.com
  */
 public class BrowseActivity extends AbstractActivity<BrowsePlace, IBrowseView> implements IBrowseActivity {
-
+	
 	/**
 	 * Constructor.
 	 */
@@ -53,6 +59,19 @@ public class BrowseActivity extends AbstractActivity<BrowsePlace, IBrowseView> i
 	 */
 	@Override
 	protected void doStart(AcceptsOneWidget panel, EventBus eventBus) {
+		getView().onQueryStarting();
+		final int page = getPlace().getPage(0);
+		final int pageSize = getPlace().getPageSize(getView().getDefaultPageSize());
+		getService(IQueryService.class).findArtifactsAsync(page, pageSize, new AsyncCallback<List<ArtifactSummary>>() {
+			@Override
+			public void onSuccess(List<ArtifactSummary> result) {
+				getView().onQueryComplete(result, getPlace(), result.size() == pageSize);
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				getView().onQueryFailed((RemoteServiceException) caught);
+			}
+		});
 	}
 	
 	/**

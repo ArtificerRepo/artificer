@@ -71,12 +71,12 @@ public class PlaceUtils {
 	 * @param params param/value pairs
 	 * @return place token string
 	 */
-	public static String createPlaceToken(String... params) {
+	public static String createPlaceToken(Object ... params) {
 		StringBuilder builder = new StringBuilder();
     	boolean first = true;
 		for (int i = 0; i < params.length; i += 2) {
-			String key = params[i];
-			String val = params[i + 1];
+			String key = (String) params[i];
+			Object val = params[i + 1];
 			String encodedValue = "";
 			if (val != null) {
 	    		if (first) {
@@ -84,7 +84,7 @@ public class PlaceUtils {
 	    		} else {
 		        	builder.append("&");
 	    		}
-				encodedValue = URL.encodeQueryString(val);
+				encodedValue = URL.encodeQueryString(val.toString());
 				builder.append(key).append("=").append(encodedValue);
 			}
 		}

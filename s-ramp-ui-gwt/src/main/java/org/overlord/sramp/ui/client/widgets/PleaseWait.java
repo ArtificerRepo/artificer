@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.services.i18n;
+package org.overlord.sramp.ui.client.widgets;
 
-import org.overlord.sramp.ui.client.services.IService;
+import com.google.gwt.user.client.ui.InlineLabel;
 
 /**
- * A simple localization service.  This service is responsible for providing localized translations
- * of strings that are shown to the user.
+ * A simple div that shows an ajax spinner icon next to some text.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface ILocalizationService extends IService {
-
-	/**
-	 * Called to translate a message using whatever the current locale might be.
-	 * @param key the message key
-	 * @return the translated message
-	 */
-	public String translate(String key, Object ... args);
+public class PleaseWait extends InlineLabel {
 	
+	/**
+	 * Constructor.
+	 */
+	public PleaseWait(String message) {
+		super(message);
+		getElement().setClassName("pleaseWait");
+	}
+
 }

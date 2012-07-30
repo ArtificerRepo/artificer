@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.services.i18n;
+package org.overlord.sramp.ui.shared.rsvcs;
 
-import org.overlord.sramp.ui.client.services.IService;
+import java.util.List;
+
+import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * A simple localization service.  This service is responsible for providing localized translations
- * of strings that are shown to the user.
+ * Async version of {@link IQueryRemoteService}.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface ILocalizationService extends IService {
+public interface IQueryRemoteServiceAsync {
 
 	/**
-	 * Called to translate a message using whatever the current locale might be.
-	 * @param key the message key
-	 * @return the translated message
+	 * Async version of {@link IQueryRemoteService#findArtifacts(int, int)}
 	 */
-	public String translate(String key, Object ... args);
-	
+	public void findArtifacts(int page, int pageSize, AsyncCallback<List<ArtifactSummary>> callback);
+
 }

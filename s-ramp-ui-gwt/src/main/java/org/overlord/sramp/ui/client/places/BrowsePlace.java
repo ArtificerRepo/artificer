@@ -28,20 +28,26 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 public class BrowsePlace extends Place {
 	
 	private String typeFilter;
+	private int page;
+	private int pageSize;
 
 	/**
 	 * Constructor.
 	 */
 	public BrowsePlace() {
-		this(null);
+		this(-1, -1, null);
 	}
 	
 	/**
 	 * Constructor.
+	 * @param page
+	 * @param pageSize
 	 * @param typeFilter
 	 */
-	public BrowsePlace(String typeFilter) {
+	public BrowsePlace(int page, int pageSize, String typeFilter) {
 		setTypeFilter(typeFilter);
+		setPage(page);
+		setPageSize(pageSize);
 	}
 
 	/**
@@ -58,6 +64,52 @@ public class BrowsePlace extends Place {
 		this.typeFilter = typeFilter;
 	}
 
+	/**
+	 * @return the page
+	 */
+	public int getPage() {
+		return page;
+	}
+
+	/**
+	 * @return the page
+	 */
+	public int getPage(int defaultPage) {
+		if (page == -1)
+			return defaultPage;
+		return page;
+	}
+
+	/**
+	 * @param page the page to set
+	 */
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	/**
+	 * @return the pageSize
+	 */
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	/**
+	 * @return the pageSize
+	 */
+	public int getPageSize(int defaultPageSize) {
+		if (pageSize == -1)
+			return defaultPageSize;
+		return pageSize;
+	}
+
+	/**
+	 * @param pageSize the pageSize to set
+	 */
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
 	/*
 	 * Tokenizer.
 	 */
@@ -67,7 +119,16 @@ public class BrowsePlace extends Place {
 		 */
 		@Override
 		public String getToken(BrowsePlace place) {
-			return PlaceUtils.createPlaceToken("tf", place.getTypeFilter());
+			Integer page = null;
+			Integer pageSize = null;
+			if (place.getPage() != -1)
+				page = place.getPage();
+			if (place.getPageSize() != -1)
+				pageSize = place.getPageSize();
+			return PlaceUtils.createPlaceToken(
+					"tf", place.getTypeFilter(),
+					"p", page,
+					"ps", pageSize );
 		}
 
 		/**
@@ -76,8 +137,16 @@ public class BrowsePlace extends Place {
 		@Override
 		public BrowsePlace getPlace(String token) {
 			Map<String, String> params = PlaceUtils.parsePlaceToken(token);
-			String tf = params.get("tf");
-			return new BrowsePlace(tf);
+			String typeFilter = params.get("tf");
+			String p = params.get("p");
+			String ps = params.get("ps");
+			Integer page = -1, pageSize = -1;
+			if (p != null)
+				page = new Integer(p);
+			if (ps != null)
+				pageSize = new Integer(ps);
+			
+			return new BrowsePlace(page, pageSize, typeFilter);
 		}
 	}
 }
