@@ -30,9 +30,26 @@ import com.google.gwt.user.client.ui.InlineHyperlink;
 public class PlaceHyperlink extends InlineHyperlink {
 
 	private Place targetPlace;
-	
+
 	/**
 	 * Constructor.
+	 */
+	public PlaceHyperlink() {
+		super();
+	}
+
+	/**
+	 * Constructor.
+	 * @param text
+	 */
+	public PlaceHyperlink(String text) {
+		this(text, null);
+	}
+
+	/**
+	 * Constructor.
+	 * @param text
+	 * @param place
 	 */
 	public PlaceHyperlink(String text, Place place) {
 		super(text, toHistoryToken(place));

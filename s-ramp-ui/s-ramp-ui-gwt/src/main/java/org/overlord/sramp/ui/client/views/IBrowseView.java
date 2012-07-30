@@ -15,7 +15,12 @@
  */
 package org.overlord.sramp.ui.client.views;
 
+import java.util.List;
+
 import org.overlord.sramp.ui.client.activities.IBrowseActivity;
+import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
+import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 /**
  * Browse view interface.
@@ -23,5 +28,28 @@ import org.overlord.sramp.ui.client.activities.IBrowseActivity;
  * @author eric.wittmann@redhat.com
  */
 public interface IBrowseView extends IView<IBrowseActivity> {
+
+	/**
+	 * Gets the default page size for the list of artifacts.
+	 */
+	public int getDefaultPageSize();
+
+	/**
+	 * Called by the activity when it kicks off the async query for artifacts.
+	 */
+	public void onQueryStarting();
 	
+	/**
+	 * Called by the activity when the async query completes successfully with data.
+	 * @param artifacts
+	 * @param place
+	 * @param hasMore
+	 */
+	public void onQueryComplete(List<ArtifactSummary> artifacts, BrowsePlace place, boolean hasMore);
+	
+	/**
+	 * Called by the activity when the async query completes with an error.
+	 */
+	public void onQueryFailed(RemoteServiceException error);
+
 }

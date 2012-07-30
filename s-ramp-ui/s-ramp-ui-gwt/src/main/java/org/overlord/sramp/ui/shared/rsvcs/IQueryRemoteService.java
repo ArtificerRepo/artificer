@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.services.i18n;
+package org.overlord.sramp.ui.shared.rsvcs;
 
-import org.overlord.sramp.ui.client.services.IService;
+import java.util.List;
+
+import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
+
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
- * A simple localization service.  This service is responsible for providing localized translations
- * of strings that are shown to the user.
+ * Remote service that allows the s-ramp UI to perform queries against the
+ * s-ramp server.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface ILocalizationService extends IService {
+@RemoteServiceRelativePath("services/query")
+public interface IQueryRemoteService extends RemoteService {
 
 	/**
-	 * Called to translate a message using whatever the current locale might be.
-	 * @param key the message key
-	 * @return the translated message
+	 * Finds artfiacts.
+	 * @throws RemoteServiceException
 	 */
-	public String translate(String key, Object ... args);
+	public List<ArtifactSummary> findArtifacts(int page, int pageSize) throws RemoteServiceException;
 	
 }

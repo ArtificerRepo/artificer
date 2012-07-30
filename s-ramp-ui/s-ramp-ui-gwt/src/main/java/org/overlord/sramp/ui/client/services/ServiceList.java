@@ -24,6 +24,8 @@ import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
 import org.overlord.sramp.ui.client.services.i18n.LocalizationService;
 import org.overlord.sramp.ui.client.services.place.IPlaceService;
 import org.overlord.sramp.ui.client.services.place.PlaceService;
+import org.overlord.sramp.ui.client.services.query.IQueryService;
+import org.overlord.sramp.ui.client.services.query.QueryService;
 
 /**
  * The centralized list of all {@link IService}s.
@@ -37,6 +39,7 @@ public class ServiceList {
 		{ ILocalizationService.class, new LocalizationService() },
 		{ IPlaceService.class, new PlaceService() },
 		{ IBreadcrumbService.class, new BreadcrumbService() },
+		{ IQueryService.class, new QueryService() },
 		
 	};
 	
