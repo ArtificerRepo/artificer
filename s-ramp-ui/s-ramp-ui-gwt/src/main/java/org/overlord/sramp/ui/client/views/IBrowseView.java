@@ -43,9 +43,9 @@ public interface IBrowseView extends IView<IBrowseActivity> {
 	 * Called by the activity when the async query completes successfully with data.
 	 * @param artifacts
 	 * @param place
-	 * @param hasMore
+	 * @param hasMoreRows
 	 */
-	public void onQueryComplete(List<ArtifactSummary> artifacts, BrowsePlace place, boolean hasMore);
+	public void onQueryComplete(List<ArtifactSummary> artifacts, BrowsePlace place, boolean hasMoreRows);
 	
 	/**
 	 * Called by the activity when the async query completes with an error.

@@ -17,7 +17,6 @@ package org.overlord.sramp.ui.client.places;
 
 import java.util.Map;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
@@ -25,17 +24,15 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  * 
  * @author eric.wittmann@redhat.com
  */
-public class BrowsePlace extends Place {
+public class BrowsePlace extends AbstractPagedPlace {
 	
 	private String typeFilter;
-	private int page;
-	private int pageSize;
 
 	/**
 	 * Constructor.
 	 */
 	public BrowsePlace() {
-		this(-1, -1, null);
+		this(null, null, null);
 	}
 	
 	/**
@@ -44,10 +41,9 @@ public class BrowsePlace extends Place {
 	 * @param pageSize
 	 * @param typeFilter
 	 */
-	public BrowsePlace(int page, int pageSize, String typeFilter) {
+	public BrowsePlace(Integer page, Integer pageSize, String typeFilter) {
+		super(page, pageSize);
 		setTypeFilter(typeFilter);
-		setPage(page);
-		setPageSize(pageSize);
 	}
 
 	/**
@@ -64,52 +60,6 @@ public class BrowsePlace extends Place {
 		this.typeFilter = typeFilter;
 	}
 
-	/**
-	 * @return the page
-	 */
-	public int getPage() {
-		return page;
-	}
-
-	/**
-	 * @return the page
-	 */
-	public int getPage(int defaultPage) {
-		if (page == -1)
-			return defaultPage;
-		return page;
-	}
-
-	/**
-	 * @param page the page to set
-	 */
-	public void setPage(int page) {
-		this.page = page;
-	}
-
-	/**
-	 * @return the pageSize
-	 */
-	public int getPageSize() {
-		return pageSize;
-	}
-
-	/**
-	 * @return the pageSize
-	 */
-	public int getPageSize(int defaultPageSize) {
-		if (pageSize == -1)
-			return defaultPageSize;
-		return pageSize;
-	}
-
-	/**
-	 * @param pageSize the pageSize to set
-	 */
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
-
 	/*
 	 * Tokenizer.
 	 */
@@ -119,16 +69,10 @@ public class BrowsePlace extends Place {
 		 */
 		@Override
 		public String getToken(BrowsePlace place) {
-			Integer page = null;
-			Integer pageSize = null;
-			if (place.getPage() != -1)
-				page = place.getPage();
-			if (place.getPageSize() != -1)
-				pageSize = place.getPageSize();
 			return PlaceUtils.createPlaceToken(
 					"tf", place.getTypeFilter(),
-					"p", page,
-					"ps", pageSize );
+					"p", place.getPage(),
+					"ps", place.getPageSize() );
 		}
 
 		/**
@@ -140,7 +84,7 @@ public class BrowsePlace extends Place {
 			String typeFilter = params.get("tf");
 			String p = params.get("p");
 			String ps = params.get("ps");
-			Integer page = -1, pageSize = -1;
+			Integer page = null, pageSize = null;
 			if (p != null)
 				page = new Integer(p);
 			if (ps != null)
