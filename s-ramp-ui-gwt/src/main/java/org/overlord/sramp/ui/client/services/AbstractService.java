@@ -29,10 +29,10 @@ public abstract class AbstractService implements IService {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ui.client.services.IService#start(org.overlord.sramp.ui.client.services.IServiceLifecycleListener)
+	 * @see org.overlord.sramp.ui.client.services.IService#start(org.overlord.sramp.ui.client.services.ServiceLifecycleContext, org.overlord.sramp.ui.client.services.IServiceLifecycleListener)
 	 */
 	@Override
-	public void start(IServiceLifecycleListener serviceListener) {
+	public void start(ServiceLifecycleContext context, IServiceLifecycleListener serviceListener) {
 		serviceListener.onStarted();
 	}
 

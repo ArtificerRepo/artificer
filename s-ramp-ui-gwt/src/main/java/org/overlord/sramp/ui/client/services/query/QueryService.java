@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.overlord.sramp.ui.client.services.AbstractService;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
+import org.overlord.sramp.ui.shared.beans.PageInfo;
 import org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteServiceAsync;
 
@@ -41,11 +42,11 @@ public class QueryService extends AbstractService implements IQueryService {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ui.client.services.query.IQueryService#findArtifactsAsync(com.google.gwt.user.client.rpc.AsyncCallback)
+	 * @see org.overlord.sramp.ui.client.services.query.IQueryService#findArtifactsAsync(org.overlord.sramp.ui.shared.beans.PageInfo, com.google.gwt.user.client.rpc.AsyncCallback)
 	 */
 	@Override
-	public void findArtifactsAsync(int page, int pageSize, AsyncCallback<List<ArtifactSummary>> callback) {
-		queryRemoteService.findArtifacts(page, pageSize, callback);
+	public void findArtifactsAsync(PageInfo page, AsyncCallback<List<ArtifactSummary>> callback) {
+		queryRemoteService.findArtifacts(page, callback);
 	}
 	
 }

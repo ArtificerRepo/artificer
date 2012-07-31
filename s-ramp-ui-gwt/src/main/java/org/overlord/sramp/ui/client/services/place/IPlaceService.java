@@ -18,6 +18,7 @@ package org.overlord.sramp.ui.client.services.place;
 import org.overlord.sramp.ui.client.services.IService;
 
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 
 /**
@@ -27,6 +28,17 @@ import com.google.gwt.place.shared.PlaceHistoryMapper;
  * @author eric.wittmann@redhat.com
  */
 public interface IPlaceService extends IService {
+	
+	/**
+	 * Navigates to the given place.
+	 * @param place
+	 */
+	public void goTo(Place place);
+	
+	/**
+	 * Gets the place controller.
+	 */
+	public PlaceController getPlaceController();
 
 	/**
 	 * Gets the place history mapper.

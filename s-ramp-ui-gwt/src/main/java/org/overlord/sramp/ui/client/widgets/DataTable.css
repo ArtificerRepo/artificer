@@ -16,12 +16,16 @@
 .cellTableSortableHeader {
 	color: #0F4D92;
 	cursor: pointer;
-	cursor: hand;
-	cursor: pointer;
 }
 
 .cellTableSortableHeader:hover {
 	text-decoration: underline;
+}
+
+.cellTableSortedHeaderAscending {
+}
+
+.cellTableSortedHeaderDescending {
 }
 
 .cellTableCell {

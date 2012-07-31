@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.shared.rsvcs;
+package org.overlord.sramp.ui.client.views;
 
-import java.util.List;
-
-import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
-import org.overlord.sramp.ui.shared.beans.PageInfo;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.overlord.sramp.ui.client.activities.IActivity;
 
 /**
- * Async version of {@link IQueryRemoteService}.
+ * Views that show a paged result set should implement this interface.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IQueryRemoteServiceAsync {
+public interface IPagedResultView<A extends IActivity> extends IView<A> {
 
 	/**
-	 * Async version of {@link IQueryRemoteService#findArtifacts(int, int)}
+	 * Gets the default page size for the list of artifacts.
 	 */
-	public void findArtifacts(PageInfo page, AsyncCallback<List<ArtifactSummary>> callback);
+	public int getDefaultPageSize();
+	
+	/**
+	 * Gets the default column name to order the results by (when no order-by is specified).
+	 */
+	public String getDefaultOrderBy();
 
 }

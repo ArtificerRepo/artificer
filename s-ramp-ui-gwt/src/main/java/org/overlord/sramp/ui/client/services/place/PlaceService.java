@@ -18,8 +18,10 @@ package org.overlord.sramp.ui.client.services.place;
 import org.overlord.sramp.ui.client.PlaceHistoryMapperImpl;
 import org.overlord.sramp.ui.client.services.AbstractService;
 import org.overlord.sramp.ui.client.services.IServiceLifecycleListener;
+import org.overlord.sramp.ui.client.services.ServiceLifecycleContext;
 
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 
 /**
@@ -30,6 +32,7 @@ import com.google.gwt.place.shared.PlaceHistoryMapper;
 public class PlaceService extends AbstractService implements IPlaceService {
 
 	private PlaceHistoryMapper placeHistoryMapper;
+	private PlaceController placeController;
 
 	/**
 	 * Constructor.
@@ -38,12 +41,21 @@ public class PlaceService extends AbstractService implements IPlaceService {
 	}
 	
 	/**
-	 * @see org.overlord.sramp.ui.client.services.AbstractService#start(org.overlord.sramp.ui.client.services.IServiceLifecycleListener)
+	 * @see org.overlord.sramp.ui.client.services.place.IPlaceService#goTo(com.google.gwt.place.shared.Place)
 	 */
 	@Override
-	public void start(IServiceLifecycleListener serviceListener) {
+	public void goTo(Place place) {
+		getPlaceController().goTo(place);
+	}
+
+	/**
+	 * @see org.overlord.sramp.ui.client.services.IService#start(org.overlord.sramp.ui.client.services.ServiceLifecycleContext, org.overlord.sramp.ui.client.services.IServiceLifecycleListener)
+	 */
+	@Override
+	public void start(ServiceLifecycleContext context, IServiceLifecycleListener serviceListener) {
 		placeHistoryMapper = new PlaceHistoryMapperImpl();
-		super.start(serviceListener);
+		placeController = context.getClientFactory().getPlaceController();
+		super.start(context, serviceListener);
 	}
 
 	/**
@@ -62,4 +74,11 @@ public class PlaceService extends AbstractService implements IPlaceService {
 		return placeHistoryMapper.getToken(place);
 	}
 	
+	/**
+	 * @see org.overlord.sramp.ui.client.services.place.IPlaceService#getPlaceController()
+	 */
+	@Override
+	public PlaceController getPlaceController() {
+		return placeController;
+	}
 }

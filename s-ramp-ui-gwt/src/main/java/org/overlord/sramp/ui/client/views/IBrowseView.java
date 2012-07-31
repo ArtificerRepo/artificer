@@ -27,12 +27,7 @@ import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IBrowseView extends IView<IBrowseActivity> {
-
-	/**
-	 * Gets the default page size for the list of artifacts.
-	 */
-	public int getDefaultPageSize();
+public interface IBrowseView extends IPagedResultView<IBrowseActivity> {
 
 	/**
 	 * Called by the activity when it kicks off the async query for artifacts.

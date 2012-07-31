@@ -90,5 +90,51 @@ public class PlaceUtils {
 		}
 		return builder.toString();
 	}
+	
+	/**
+	 * Common place token creation for places that support pagination.
+	 * @param place
+	 * @param extraParams
+	 */
+	public static String createPlaceToken(AbstractPagedPlace place, Object ... extraParams) {
+		Object[] params = new Object[8 + extraParams.length];
+		params[0] = "p";
+		params[1] = place.getPage();
+		params[2] = "ps";
+		params[3] = place.getPageSize();
+		params[4] = "ob";
+		params[5] = place.getOrderBy();
+		params[6] = "od";
+		params[7] = (place.isAscending() == null) ? null : (place.isAscending() ? "a" : "d");
+		for (int idx=0; idx < extraParams.length; idx++) {
+			params[idx + 8] = extraParams[idx];
+		}
+		return createPlaceToken(params);
+	}
+
+	/**
+	 * Fills in the paged place with params found in the map.
+	 * @param place
+	 * @param params
+	 */
+	public static void fillPagedPlace(AbstractPagedPlace place, Map<String, String> params) {
+		String p = params.get("p");
+		String ps = params.get("ps");
+		String ob = params.get("ob");
+		String od = params.get("od");
+		Integer page = null, pageSize = null;
+		if (p != null)
+			page = new Integer(p);
+		if (ps != null)
+			pageSize = new Integer(ps);
+		Boolean asc = null;
+		if (od != null) {
+			asc = "a".equals(od);
+		}
+		place.setPage(page);
+		place.setPageSize(pageSize);
+		place.setOrderBy(ob);
+		place.setAscending(asc);
+	}
 
 }

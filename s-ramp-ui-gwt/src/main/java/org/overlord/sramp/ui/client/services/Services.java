@@ -39,10 +39,11 @@ public class Services implements IServices {
 	/**
 	 * Initializes the Services infrastructure.
 	 * @param registeredServices
-	 * @param iServicesListener
+	 * @param context 
+	 * @param servicesListener
 	 */
 	public static void init(final Map<Class<? extends IService>, IService> registeredServices,
-			final IServicesListener servicesListener) {
+			ServiceLifecycleContext context, final IServicesListener servicesListener) {
 		services = new Services(registeredServices);
 		IServiceLifecycleListener lifecycleListener = new ServiceLifecycleListener() {
 			@Override
@@ -56,7 +57,7 @@ public class Services implements IServices {
 				servicesListener.onError(error);
 			}
 		};
-		services.startAll(lifecycleListener);
+		services.startAll(context, lifecycleListener);
 	}
 
 	private Map<Class<? extends IService>, IService> serviceMap;
@@ -71,11 +72,12 @@ public class Services implements IServices {
 
 	/**
 	 * Starts all of the services.
+	 * @param context 
 	 * @param lifecycleListener
 	 */
-	private void startAll(IServiceLifecycleListener lifecycleListener) {
+	private void startAll(ServiceLifecycleContext context, IServiceLifecycleListener lifecycleListener) {
 		for (IService service : this.serviceMap.values()) {
-			service.start(lifecycleListener);
+			service.start(context, lifecycleListener);
 		}
 	}
 	

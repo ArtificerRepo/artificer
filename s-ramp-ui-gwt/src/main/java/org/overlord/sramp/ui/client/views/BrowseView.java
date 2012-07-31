@@ -40,6 +40,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowseView {
 
 	private static final int DEFAULT_PAGE_SIZE = 20;
+	private static final String DEFAULT_ORDER_BY = "name";
 
 	private ArtifactDataTable artifacts;
 
@@ -64,11 +65,19 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	}
 	
 	/**
-	 * @see org.overlord.sramp.ui.client.views.IBrowseView#getDefaultPageSize()
+	 * @see org.overlord.sramp.ui.client.views.IPagedResultView#getDefaultPageSize()
 	 */
 	@Override
 	public int getDefaultPageSize() {
 		return DEFAULT_PAGE_SIZE;
+	}
+	
+	/**
+	 * @see org.overlord.sramp.ui.client.views.IPagedResultView#getDefaultOrderBy()
+	 */
+	@Override
+	public String getDefaultOrderBy() {
+		return DEFAULT_ORDER_BY;
 	}
 
 	/**
@@ -146,6 +155,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 				}
 			};
 			name.setSortable(true);
+			name.setDataStoreName("name");
 			table.addColumn(name, "Artifact Name");
 //			setColumnWidth(name, 15.0, Unit.PCT);
 			
@@ -158,6 +168,14 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			uuid.setSortable(false);
 			table.addColumn(uuid, "UUID");
 //			setColumnWidth(uuid, 20.0, Unit.PCT);
+		}
+		
+		/**
+		 * @see org.overlord.sramp.ui.client.widgets.DataTableWithPager#getDefaultOrderBy()
+		 */
+		@Override
+		protected String getDefaultOrderBy() {
+			return DEFAULT_ORDER_BY;
 		}
 	}
 }
