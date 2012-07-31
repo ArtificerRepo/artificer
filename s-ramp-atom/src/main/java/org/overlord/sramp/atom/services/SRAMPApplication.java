@@ -31,6 +31,7 @@ public class SRAMPApplication extends Application
       singletons.add(new ServiceDocumentResource());
       singletons.add(new FeedResource());
       singletons.add(new XsdDocumentResource());
+      singletons.add(new AdHocQueryResource());
    }
 
    @Override
