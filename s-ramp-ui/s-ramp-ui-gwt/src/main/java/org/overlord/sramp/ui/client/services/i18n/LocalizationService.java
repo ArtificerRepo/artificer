@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.overlord.sramp.ui.client.services.AbstractService;
 import org.overlord.sramp.ui.client.services.IServiceLifecycleListener;
+import org.overlord.sramp.ui.client.services.ServiceLifecycleContext;
 import org.overlord.sramp.ui.shared.rsvcs.ILocalizationRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.ILocalizationRemoteServiceAsync;
 
@@ -41,12 +42,12 @@ public class LocalizationService extends AbstractService implements ILocalizatio
 	 */
 	public LocalizationService() {
 	}
-	
+
 	/**
-	 * @see org.overlord.sramp.ui.client.services.AbstractService#start(org.overlord.sramp.ui.client.services.IServiceLifecycleListener)
+	 * @see org.overlord.sramp.ui.client.services.AbstractService#start(org.overlord.sramp.ui.client.services.ServiceLifecycleContext, org.overlord.sramp.ui.client.services.IServiceLifecycleListener)
 	 */
 	@Override
-	public void start(final IServiceLifecycleListener serviceListener) {
+	public void start(ServiceLifecycleContext context, final IServiceLifecycleListener serviceListener) {
 		localizationRemoteService.getMessages(new AsyncCallback<Map<String, String>>() {
 			@Override
 			public void onSuccess(Map<String, String> result) {

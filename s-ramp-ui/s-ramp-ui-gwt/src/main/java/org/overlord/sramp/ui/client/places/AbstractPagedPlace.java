@@ -25,22 +25,28 @@ import com.google.gwt.place.shared.Place;
 public abstract class AbstractPagedPlace extends Place {
 	private Integer page;
 	private Integer pageSize;
+	private String orderBy;
+	private Boolean ascending;
 
 	/**
 	 * Constructor.
 	 */
 	public AbstractPagedPlace() {
-		this(null, null);
+		this(null, null, null, null);
 	}
 	
 	/**
 	 * Constructor.
 	 * @param page
 	 * @param pageSize
+	 * @param orderBy
+	 * @param ascending
 	 */
-	public AbstractPagedPlace(Integer page, Integer pageSize) {
+	public AbstractPagedPlace(Integer page, Integer pageSize, String orderBy, Boolean ascending) {
 		setPage(page);
 		setPageSize(pageSize);
+		setOrderBy(orderBy);
+		setAscending(ascending);
 	}
 
 	/**
@@ -89,4 +95,49 @@ public abstract class AbstractPagedPlace extends Place {
 		this.pageSize = pageSize;
 	}
 
+	/**
+	 * @return the orderBy
+	 */
+	public String getOrderBy() {
+		return orderBy;
+	}
+
+	/**
+	 * @return the orderBy
+	 */
+	public String getOrderBy(String defaultOrderBy) {
+		if (orderBy == null)
+			return defaultOrderBy;
+		return orderBy;
+	}
+
+	/**
+	 * @param orderBy the orderBy to set
+	 */
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
+	}
+
+	/**
+	 * @return the ascending
+	 */
+	public Boolean isAscending() {
+		return ascending;
+	}
+
+	/**
+	 * @return the ascending
+	 */
+	public Boolean isAscending(Boolean defaultAscending) {
+		if (ascending == null)
+			return defaultAscending;
+		return ascending;
+	}
+
+	/**
+	 * @param ascending the ascending to set
+	 */
+	public void setAscending(Boolean ascending) {
+		this.ascending = ascending;
+	}
 }

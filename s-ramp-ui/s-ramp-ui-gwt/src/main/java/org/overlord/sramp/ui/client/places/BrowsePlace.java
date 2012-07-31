@@ -32,17 +32,19 @@ public class BrowsePlace extends AbstractPagedPlace {
 	 * Constructor.
 	 */
 	public BrowsePlace() {
-		this(null, null, null);
+		this(null, null, null, null, null);
 	}
 	
 	/**
 	 * Constructor.
 	 * @param page
 	 * @param pageSize
+	 * @param orderBy
+	 * @param ascending
 	 * @param typeFilter
 	 */
-	public BrowsePlace(Integer page, Integer pageSize, String typeFilter) {
-		super(page, pageSize);
+	public BrowsePlace(Integer page, Integer pageSize, String orderBy, Boolean ascending, String typeFilter) {
+		super(page, pageSize, orderBy, ascending);
 		setTypeFilter(typeFilter);
 	}
 
@@ -69,10 +71,7 @@ public class BrowsePlace extends AbstractPagedPlace {
 		 */
 		@Override
 		public String getToken(BrowsePlace place) {
-			return PlaceUtils.createPlaceToken(
-					"tf", place.getTypeFilter(),
-					"p", place.getPage(),
-					"ps", place.getPageSize() );
+			return PlaceUtils.createPlaceToken(place, "tf", place.getTypeFilter());
 		}
 
 		/**
@@ -82,15 +81,10 @@ public class BrowsePlace extends AbstractPagedPlace {
 		public BrowsePlace getPlace(String token) {
 			Map<String, String> params = PlaceUtils.parsePlaceToken(token);
 			String typeFilter = params.get("tf");
-			String p = params.get("p");
-			String ps = params.get("ps");
-			Integer page = null, pageSize = null;
-			if (p != null)
-				page = new Integer(p);
-			if (ps != null)
-				pageSize = new Integer(ps);
-			
-			return new BrowsePlace(page, pageSize, typeFilter);
+			BrowsePlace place = new BrowsePlace();
+			place.setTypeFilter(typeFilter);
+			PlaceUtils.fillPagedPlace(place, params);
+			return place;
 		}
 	}
 }

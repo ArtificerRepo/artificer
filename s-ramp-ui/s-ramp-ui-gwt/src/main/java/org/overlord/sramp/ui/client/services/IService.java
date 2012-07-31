@@ -26,7 +26,9 @@ public interface IService {
 	 * Called to start the service.  The service *must* call the IServiceListener back when it
 	 * is done starting.  This provides the Service with an opportunity to do asynchronous
 	 * start logic.
+	 * @param context
+	 * @param serviceListener
 	 */
-	public void start(IServiceLifecycleListener serviceListener);
+	public void start(ServiceLifecycleContext context, IServiceLifecycleListener serviceListener);
 	
 }

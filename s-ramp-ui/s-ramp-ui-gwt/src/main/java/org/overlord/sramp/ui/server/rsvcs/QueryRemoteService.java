@@ -16,11 +16,14 @@
 package org.overlord.sramp.ui.server.rsvcs;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
+import org.overlord.sramp.ui.shared.beans.PageInfo;
 import org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
@@ -48,13 +51,22 @@ public class QueryRemoteService extends RemoteServiceServlet implements IQueryRe
 	}
 
 	/**
-	 * @see org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService#findArtifacts(int, int)
+	 * @see org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService#findArtifacts(org.overlord.sramp.ui.shared.beans.PageInfo)
 	 */
 	@Override
-	public List<ArtifactSummary> findArtifacts(int page, int pageSize) throws RemoteServiceException {
+	public List<ArtifactSummary> findArtifacts(final PageInfo page) throws RemoteServiceException {
+		Collections.sort(artifacts, new Comparator<ArtifactSummary>() {
+			@Override
+			public int compare(ArtifactSummary as1, ArtifactSummary as2) {
+				int rval = as1.getName().compareTo(as2.getName());
+				if (!page.isAscending())
+					rval *= -1;
+				return rval;
+			}
+		});
 		List<ArtifactSummary> rval = new ArrayList<ArtifactSummary>();
-		int startIdx = page * pageSize;
-		int endIdx = startIdx + pageSize - 1;
+		int startIdx = page.getPage() * page.getPageSize();
+		int endIdx = startIdx + page.getPageSize() - 1;
 		for (int idx = startIdx; idx <= endIdx; idx++) {
 			if (idx < artifacts.size()) {
 				rval.add(artifacts.get(idx));

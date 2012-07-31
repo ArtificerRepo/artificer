@@ -20,7 +20,13 @@ import java.util.List;
 import org.overlord.sramp.ui.client.places.AbstractPagedPlace;
 import org.overlord.sramp.ui.client.services.Services;
 import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
+import org.overlord.sramp.ui.client.services.place.IPlaceService;
 
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.Handler;
+import com.google.gwt.user.cellview.client.ColumnSortList;
+import com.google.gwt.user.cellview.client.ColumnSortList.ColumnSortInfo;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.view.client.ProvidesKey;
@@ -35,6 +41,7 @@ public abstract class DataTableWithPager<T> extends FlowPanel {
 
 	private DataTable<T> table;
 	private PlacePager pager;
+	private AbstractPagedPlace currentPlace;
 
 	/**
 	 * Constructor.
@@ -42,6 +49,7 @@ public abstract class DataTableWithPager<T> extends FlowPanel {
 	public DataTableWithPager() {
 		table = new DataTable<T>(createKeyProvider());
 		pager = new PlacePager();
+		currentPlace = null;
 		createColumns(table);
 		configureTable(table);
 		getElement().setClassName("dataTableWrapper");
@@ -57,6 +65,28 @@ public abstract class DataTableWithPager<T> extends FlowPanel {
 	protected void configureTable(DataTable<T> table) {
 		table.getElement().setClassName("dataTable");
 		table.setWidth("100%");
+    	table.addColumnSortHandler(new Handler() {
+			@Override
+			public void onColumnSort(ColumnSortEvent event) {
+				ColumnSortList columnSortList = event.getColumnSortList();
+				ColumnSortInfo sortInfo = columnSortList.get(0);
+				onSort(sortInfo.getColumn().getDataStoreName(), sortInfo.isAscending());
+			}
+		});
+	}
+
+	/**
+	 * Called when the user clicks on a column header to sort by it.
+	 * @param dataStoreName
+	 * @param ascending
+	 */
+	protected void onSort(String dataStoreName, boolean ascending) {
+		AbstractPagedPlace place = createPagerPlace(currentPlace);
+		place.setPage(currentPlace.getPage());
+		place.setPageSize(currentPlace.getPageSize());
+		place.setOrderBy(dataStoreName);
+		place.setAscending(ascending);
+		Services.getServices().getService(IPlaceService.class).goTo(place);
 	}
 
 	/**
@@ -121,21 +151,56 @@ public abstract class DataTableWithPager<T> extends FlowPanel {
 			prevPlace = createPagerPlace(currentPlace);
 			prevPlace.setPage(currentPlace.getPage(0) - 1);
 			prevPlace.setPageSize(currentPlace.getPageSize());
+			prevPlace.setOrderBy(currentPlace.getOrderBy());
+			prevPlace.setAscending(currentPlace.isAscending());
 		}
 		if (hasMoreRows) {
 			nextPlace = createPagerPlace(currentPlace);
 			nextPlace.setPage(currentPlace.getPage(0) + 1);
 			nextPlace.setPageSize(currentPlace.getPageSize());
+			nextPlace.setOrderBy(currentPlace.getOrderBy());
+			nextPlace.setAscending(currentPlace.isAscending());
 		}
 		int start = (currentPlace.getPage(0) * currentPlace.getPageSize(defaultPageSize)) + 1;
 		int end = start + rowData.size();
 		ILocalizationService i18n = Services.getServices().getService(ILocalizationService.class);
 		String pagerMsg = i18n.translate("dataTable.pager.label", currentPlace.getPage(0) + 1, start, end);
 		
+		updateColumnSort(currentPlace);
+		
+		this.currentPlace = currentPlace;
 		this.pager.init(prevPlace, nextPlace, pagerMsg);
 		this.pager.setVisible(true);
 		this.table.setRowData(rowData);
 	}
+
+	/**
+	 * Called to update thet able's column sort info.
+	 * @param currentPlace
+	 */
+	private void updateColumnSort(AbstractPagedPlace currentPlace) {
+		String orderBy = currentPlace.getOrderBy();
+		Boolean asc = currentPlace.isAscending();
+		if (orderBy == null)
+			orderBy = getDefaultOrderBy();
+		if (orderBy == null)
+			return;
+		if (asc == null)
+			asc = true;
+		for (int idx = 0; idx < this.table.getColumnCount(); idx++) {
+			Column<T, ?> column = this.table.getColumn(idx);
+			if (column.isSortable() && orderBy.equals(column.getDataStoreName())) {
+				ColumnSortInfo sortInfo = new ColumnSortInfo(column, asc);
+				this.table.getColumnSortList().push(sortInfo);
+			}
+		}
+	}
+
+	/**
+	 * Returns the default order by.  This string must match up to the 'data store name' of one
+	 * of the previously created columns.
+	 */
+	protected abstract String getDefaultOrderBy();
 
 	/**
 	 * Factory method for creating a place.

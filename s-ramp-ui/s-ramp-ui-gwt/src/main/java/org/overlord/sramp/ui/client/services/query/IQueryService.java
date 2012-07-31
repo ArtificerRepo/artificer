@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.overlord.sramp.ui.client.services.IService;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
+import org.overlord.sramp.ui.shared.beans.PageInfo;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -30,10 +31,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface IQueryService extends IService {
 
 	/**
+	 * Finds artifacts using the remote query service.
 	 * @param page
-	 * @param pageSize
 	 * @param callback
 	 */
-	public void findArtifactsAsync(int page, int pageSize, AsyncCallback<List<ArtifactSummary>> callback);
+	public void findArtifactsAsync(PageInfo page, AsyncCallback<List<ArtifactSummary>> callback);
 	
 }
