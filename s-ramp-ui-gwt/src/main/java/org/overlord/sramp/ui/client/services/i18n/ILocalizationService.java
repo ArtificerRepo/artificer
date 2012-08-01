@@ -30,6 +30,6 @@ public interface ILocalizationService extends IService {
 	 * @param key the message key
 	 * @return the translated message
 	 */
-	public String translate(String key);
+	public String translate(String key, Object ... args);
 	
 }

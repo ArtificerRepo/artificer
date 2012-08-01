@@ -13,3 +13,23 @@
 .titlePanel .titlePanelContent {
 	padding: 5px;
 }
+
+.pleaseWait {
+	padding-left: 20px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	background: url("../images/please-wait.gif") no-repeat;
+	background-position: 1px center;
+}
+
+.pager {
+	margin-top: 5px;
+}
+.pager span {
+	padding: 5px;
+	font-style: italic;
+}
+.pager a {
+	font-weight: bold;
+	font-size: 14px;
+}

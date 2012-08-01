@@ -17,6 +17,7 @@ package org.overlord.sramp.ui.client.services.breadcrumb;
 
 import org.overlord.sramp.ui.client.services.AbstractService;
 import org.overlord.sramp.ui.client.services.IServiceLifecycleListener;
+import org.overlord.sramp.ui.client.services.ServiceLifecycleContext;
 import org.overlord.sramp.ui.client.widgets.BreadcrumbPanel;
 
 /**
@@ -35,12 +36,12 @@ public class BreadcrumbService extends AbstractService implements IBreadcrumbSer
 	}
 	
 	/**
-	 * @see org.overlord.sramp.ui.client.services.AbstractService#start(org.overlord.sramp.ui.client.services.IServiceLifecycleListener)
+	 * @see org.overlord.sramp.ui.client.services.AbstractService#start(org.overlord.sramp.ui.client.services.ServiceLifecycleContext, org.overlord.sramp.ui.client.services.IServiceLifecycleListener)
 	 */
 	@Override
-	public void start(IServiceLifecycleListener serviceListener) {
+	public void start(ServiceLifecycleContext context, IServiceLifecycleListener serviceListener) {
 		this.breadcrumbPanel = new BreadcrumbPanel();
-		super.start(serviceListener);
+		super.start(context, serviceListener);
 	}
 	
 	/**

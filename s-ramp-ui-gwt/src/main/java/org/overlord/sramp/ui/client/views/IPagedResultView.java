@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.services;
+package org.overlord.sramp.ui.client.views;
+
+import org.overlord.sramp.ui.client.activities.IActivity;
 
 /**
- * All client-side services should implement this interface.
+ * Views that show a paged result set should implement this interface.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IService {
+public interface IPagedResultView<A extends IActivity> extends IView<A> {
 
 	/**
-	 * Called to start the service.  The service *must* call the IServiceListener back when it
-	 * is done starting.  This provides the Service with an opportunity to do asynchronous
-	 * start logic.
-	 * @param context
-	 * @param serviceListener
+	 * Gets the default page size for the list of artifacts.
 	 */
-	public void start(ServiceLifecycleContext context, IServiceLifecycleListener serviceListener);
+	public int getDefaultPageSize();
 	
+	/**
+	 * Gets the default column name to order the results by (when no order-by is specified).
+	 */
+	public String getDefaultOrderBy();
+
 }

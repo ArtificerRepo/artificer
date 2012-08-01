@@ -2,6 +2,7 @@ package org.overlord.sramp.ui.client;
 
 import org.overlord.sramp.ui.client.places.DashboardPlace;
 import org.overlord.sramp.ui.client.services.IServicesListener;
+import org.overlord.sramp.ui.client.services.ServiceLifecycleContext;
 import org.overlord.sramp.ui.client.services.ServiceList;
 import org.overlord.sramp.ui.client.services.Services;
 import org.overlord.sramp.ui.client.services.breadcrumb.IBreadcrumbService;
@@ -38,8 +39,11 @@ public class Application implements EntryPoint {
 		final IClientFactory clientFactory = GWT.create(IClientFactory.class);
 		final EventBus eventBus = clientFactory.getEventBus();
 		final PlaceController placeController = clientFactory.getPlaceController();
+		ServiceLifecycleContext context = new ServiceLifecycleContext();
+		context.setClientFactory(clientFactory);
+		context.setEventBus(eventBus);
 
-		Services.init(ServiceList.getRegisteredServices(), new IServicesListener() {
+		Services.init(ServiceList.getRegisteredServices(), context, new IServicesListener() {
 			@Override
 			public void onAllServicesStarted() {
 				IPlaceService placeService = Services.getServices().getService(IPlaceService.class);

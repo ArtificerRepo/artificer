@@ -21,10 +21,14 @@
 		<servlet-name>LocalizationRemoteService</servlet-name>
 		<servlet-class>org.overlord.sramp.ui.server.rsvcs.LocalizationRemoteService</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>QueryRemoteService</servlet-name>
+		<servlet-class>org.overlord.sramp.ui.server.rsvcs.QueryRemoteService</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>HostPage</servlet-name>
-		<url-pattern>u</url-pattern>
+		<url-pattern>/u</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ArtifactUpload</servlet-name>
@@ -33,6 +37,10 @@
 	<servlet-mapping>
 		<servlet-name>LocalizationRemoteService</servlet-name>
 		<url-pattern>/srampui/services/i18n</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>QueryRemoteService</servlet-name>
+		<url-pattern>/srampui/services/query</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>

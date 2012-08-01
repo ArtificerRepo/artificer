@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.services;
+package org.overlord.sramp.ui.shared.rsvcs;
+
+import java.util.List;
+
+import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
+import org.overlord.sramp.ui.shared.beans.PageInfo;
+
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
- * All client-side services should implement this interface.
+ * Remote service that allows the s-ramp UI to perform queries against the
+ * s-ramp server.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IService {
+@RemoteServiceRelativePath("services/query")
+public interface IQueryRemoteService extends RemoteService {
 
 	/**
-	 * Called to start the service.  The service *must* call the IServiceListener back when it
-	 * is done starting.  This provides the Service with an opportunity to do asynchronous
-	 * start logic.
-	 * @param context
-	 * @param serviceListener
+	 * Finds artfiacts.
+	 * @throws RemoteServiceException
 	 */
-	public void start(ServiceLifecycleContext context, IServiceLifecycleListener serviceListener);
+	public List<ArtifactSummary> findArtifacts(PageInfo page) throws RemoteServiceException;
 	
 }

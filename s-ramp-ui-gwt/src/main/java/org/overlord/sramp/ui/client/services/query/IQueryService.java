@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.services;
+package org.overlord.sramp.ui.client.services.query;
+
+import java.util.List;
+
+import org.overlord.sramp.ui.client.services.IService;
+import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
+import org.overlord.sramp.ui.shared.beans.PageInfo;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * All client-side services should implement this interface.
+ * A service that provides a way to query the s-ramp repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IService {
+public interface IQueryService extends IService {
 
 	/**
-	 * Called to start the service.  The service *must* call the IServiceListener back when it
-	 * is done starting.  This provides the Service with an opportunity to do asynchronous
-	 * start logic.
-	 * @param context
-	 * @param serviceListener
+	 * Finds artifacts using the remote query service.
+	 * @param page
+	 * @param callback
 	 */
-	public void start(ServiceLifecycleContext context, IServiceLifecycleListener serviceListener);
+	public void findArtifactsAsync(PageInfo page, AsyncCallback<List<ArtifactSummary>> callback);
 	
 }

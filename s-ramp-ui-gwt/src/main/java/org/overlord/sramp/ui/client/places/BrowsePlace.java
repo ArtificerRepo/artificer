@@ -17,7 +17,6 @@ package org.overlord.sramp.ui.client.places;
 
 import java.util.Map;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
@@ -25,7 +24,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  * 
  * @author eric.wittmann@redhat.com
  */
-public class BrowsePlace extends Place {
+public class BrowsePlace extends AbstractPagedPlace {
 	
 	private String typeFilter;
 
@@ -33,14 +32,19 @@ public class BrowsePlace extends Place {
 	 * Constructor.
 	 */
 	public BrowsePlace() {
-		this(null);
+		this(null, null, null, null, null);
 	}
 	
 	/**
 	 * Constructor.
+	 * @param page
+	 * @param pageSize
+	 * @param orderBy
+	 * @param ascending
 	 * @param typeFilter
 	 */
-	public BrowsePlace(String typeFilter) {
+	public BrowsePlace(Integer page, Integer pageSize, String orderBy, Boolean ascending, String typeFilter) {
+		super(page, pageSize, orderBy, ascending);
 		setTypeFilter(typeFilter);
 	}
 
@@ -67,7 +71,7 @@ public class BrowsePlace extends Place {
 		 */
 		@Override
 		public String getToken(BrowsePlace place) {
-			return PlaceUtils.createPlaceToken("tf", place.getTypeFilter());
+			return PlaceUtils.createPlaceToken(place, "tf", place.getTypeFilter());
 		}
 
 		/**
@@ -76,8 +80,11 @@ public class BrowsePlace extends Place {
 		@Override
 		public BrowsePlace getPlace(String token) {
 			Map<String, String> params = PlaceUtils.parsePlaceToken(token);
-			String tf = params.get("tf");
-			return new BrowsePlace(tf);
+			String typeFilter = params.get("tf");
+			BrowsePlace place = new BrowsePlace();
+			place.setTypeFilter(typeFilter);
+			PlaceUtils.fillPagedPlace(place, params);
+			return place;
 		}
 	}
 }

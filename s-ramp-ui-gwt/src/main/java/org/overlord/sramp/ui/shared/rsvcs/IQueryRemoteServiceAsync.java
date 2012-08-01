@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.services;
+package org.overlord.sramp.ui.shared.rsvcs;
+
+import java.util.List;
+
+import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
+import org.overlord.sramp.ui.shared.beans.PageInfo;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * All client-side services should implement this interface.
+ * Async version of {@link IQueryRemoteService}.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IService {
+public interface IQueryRemoteServiceAsync {
 
 	/**
-	 * Called to start the service.  The service *must* call the IServiceListener back when it
-	 * is done starting.  This provides the Service with an opportunity to do asynchronous
-	 * start logic.
-	 * @param context
-	 * @param serviceListener
+	 * Async version of {@link IQueryRemoteService#findArtifacts(int, int)}
 	 */
-	public void start(ServiceLifecycleContext context, IServiceLifecycleListener serviceListener);
-	
+	public void findArtifacts(PageInfo page, AsyncCallback<List<ArtifactSummary>> callback);
+
 }
