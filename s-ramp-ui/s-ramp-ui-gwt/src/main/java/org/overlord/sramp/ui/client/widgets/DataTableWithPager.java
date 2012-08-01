@@ -162,7 +162,7 @@ public abstract class DataTableWithPager<T> extends FlowPanel {
 			nextPlace.setAscending(currentPlace.isAscending());
 		}
 		int start = (currentPlace.getPage(0) * currentPlace.getPageSize(defaultPageSize)) + 1;
-		int end = start + rowData.size();
+		int end = start + rowData.size() - 1;
 		ILocalizationService i18n = Services.getServices().getService(ILocalizationService.class);
 		String pagerMsg = i18n.translate("dataTable.pager.label", currentPlace.getPage(0) + 1, start, end);
 		
@@ -170,7 +170,7 @@ public abstract class DataTableWithPager<T> extends FlowPanel {
 		
 		this.currentPlace = currentPlace;
 		this.pager.init(prevPlace, nextPlace, pagerMsg);
-		this.pager.setVisible(true);
+		this.pager.setVisible(rowData.size() > 0 || currentPlace.getPage(0) > 0);
 		this.table.setRowData(rowData);
 	}
 

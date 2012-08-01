@@ -28,7 +28,7 @@
 
 	<servlet-mapping>
 		<servlet-name>HostPage</servlet-name>
-		<url-pattern>u</url-pattern>
+		<url-pattern>/u</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ArtifactUpload</servlet-name>
