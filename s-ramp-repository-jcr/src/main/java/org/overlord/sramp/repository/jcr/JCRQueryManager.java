@@ -34,11 +34,19 @@ public class JCRQueryManager implements QueryManager {
 	}
 
 	/**
+	 * @see org.overlord.sramp.repository.QueryManager#createQuery(java.lang.String, java.lang.String, boolean)
+	 */
+	@Override
+	public SrampQuery createQuery(String xpathTemplate, String orderByProperty, boolean orderAscending) {
+		return new JCRSrampQuery(xpathTemplate, orderByProperty, orderAscending);
+	}
+
+	/**
 	 * @see org.overlord.sramp.repository.QueryManager#createQuery(java.lang.String)
 	 */
 	@Override
 	public SrampQuery createQuery(String xpathTemplate) {
-		return new JCRSrampQuery(xpathTemplate);
+		return createQuery(xpathTemplate, null, false);
 	}
 	
 }

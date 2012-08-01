@@ -43,6 +43,8 @@ import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
+import test.org.overlord.sramp.atom.TestUtils;
+
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  * @version $Revision: 1 $
@@ -76,14 +78,6 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 
 		marshaller.marshal(element, writer);
 		return writer.toString();
-	}
-
-	private String convertStreamToString(java.io.InputStream is) {
-		try {
-			return new java.util.Scanner(is).useDelimiter("\\A").next();
-		} catch (java.util.NoSuchElementException e) {
-			return "";
-		}
 	}
 
 	@Test
@@ -126,7 +120,7 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 		// read the XsdDocument from file
 		String artifactFileName = "PO.xsd";
 		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-		String xmltext = convertStreamToString(POXsd);
+		String xmltext = TestUtils.convertStreamToString(POXsd);
 		POXsd.close();
 
 		request.header("Slug", artifactFileName);
@@ -190,7 +184,7 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 		
 		String artifactFileName = "PO.xsd";
 		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-		String expectedContent = convertStreamToString(POXsd);
+		String expectedContent = TestUtils.convertStreamToString(POXsd);
 		POXsd.close();
 		
 		Assert.assertEquals(expectedContent, content);

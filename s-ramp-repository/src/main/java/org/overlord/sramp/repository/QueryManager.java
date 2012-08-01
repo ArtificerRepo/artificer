@@ -42,9 +42,19 @@ public interface QueryManager {
 	 *   query.setString("value1");
 	 *   ArtifactSet results = query.executeQuery();
 	 * </pre>
-	 * @param xpathTemplate the teplatized xpath
+	 * @param xpathTemplate the templatized xpath
+	 * @param orderByProperty property name to use when sorting
+	 * @param orderAscending whether to sort ascending
+	 * @return a new {@link SrampQuery} object
+	 */
+	public SrampQuery createQuery(String xpathTemplate, String orderByProperty, boolean orderAscending);
+
+	/**
+	 * Create an s-ramp query from the given xpath template.  No order-by hints are given,
+	 * so the s-ramp repository is free to return the artifacts in any arbitrary order.
+	 * @param xpathTemplate the templatized xpath
 	 * @return a new {@link SrampQuery} object
 	 */
 	public SrampQuery createQuery(String xpathTemplate);
-	
+
 }
