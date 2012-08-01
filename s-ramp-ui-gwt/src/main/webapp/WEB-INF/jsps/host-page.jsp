@@ -2,10 +2,10 @@
 <html>
 	<head>
 	    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
-	    <link href="../resources/css/reset.css" media="all" type="text/css" rel="stylesheet"></link>
-	    <link href="../resources/css/widgets.css" media="all" type="text/css" rel="stylesheet"></link>
-	    <link href="../resources/css/views.css" media="all" type="text/css" rel="stylesheet"></link>
-	    <link href="../resources/css/srampui.css" media="all" type="text/css" rel="stylesheet"></link>
+	    <link href="resources/css/reset.css" media="all" type="text/css" rel="stylesheet"></link>
+	    <link href="resources/css/widgets.css" media="all" type="text/css" rel="stylesheet"></link>
+	    <link href="resources/css/views.css" media="all" type="text/css" rel="stylesheet"></link>
+	    <link href="resources/css/srampui.css" media="all" type="text/css" rel="stylesheet"></link>
 		<title>JBoss Overlord - S-RAMP Explorer (GWT)</title>
 	    <script type="text/javascript" src="srampui/srampui.nocache.js"></script>
 	</head>
@@ -31,7 +31,7 @@
 				</div>
 			</div>
 			<div id="footer">
-				&copy; 2012, <a href="http://www.jboss.org">JBoss Inc</a>, a division of <a href="http://www.redhat.com">Red Hat</a>
+				&copy; 2012 - <a href="http://www.jboss.org">JBoss</a> <a href="http://www.jboss.org/overlord">Overlord</a>
 			</div>
 		</div>
 	</body>

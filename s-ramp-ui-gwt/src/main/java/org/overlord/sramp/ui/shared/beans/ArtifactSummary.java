@@ -17,6 +17,8 @@ package org.overlord.sramp.ui.shared.beans;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple data bean for returning summary information for an artifact.
@@ -33,6 +35,7 @@ public class ArtifactSummary implements Serializable {
 	private String createdBy;
 	private Date createdOn;
 	private Date updatedOn;
+	private Map<String, String> properties = new HashMap<String, String>();
 	
 	/**
 	 * Constructor.
@@ -122,6 +125,23 @@ public class ArtifactSummary implements Serializable {
 	 */
 	public void setUpdatedOn(Date updatedOn) {
 		this.updatedOn = updatedOn;
+	}
+	
+	/**
+	 * Gets a property by name.
+	 * @param propName
+	 */
+	public void getProperty(String propName) {
+		this.properties.get(propName);
+	}
+	
+	/**
+	 * Sets a property.
+	 * @param propName
+	 * @param propVal
+	 */
+	public void setProperty(String propName, String propVal) {
+		this.properties.put(propName, propVal);
 	}
 
 	/**

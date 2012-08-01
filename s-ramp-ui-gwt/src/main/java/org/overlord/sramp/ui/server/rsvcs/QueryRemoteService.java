@@ -16,12 +16,11 @@
 package org.overlord.sramp.ui.server.rsvcs;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
+import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.beans.PageInfo;
 import org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService;
@@ -37,12 +36,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class QueryRemoteService extends RemoteServiceServlet implements IQueryRemoteService {
 
 	private static final long serialVersionUID = QueryRemoteService.class.hashCode();
-	
-	private static final List<ArtifactSummary> artifacts = new ArrayList<ArtifactSummary>();
-	static {
-		for (int i=0; i < 100; i++)
-			artifacts.add(createArtifact("artifact-"+i+".xsd"));
-	}
 
 	/**
 	 * Constructor.
@@ -55,39 +48,26 @@ public class QueryRemoteService extends RemoteServiceServlet implements IQueryRe
 	 */
 	@Override
 	public List<ArtifactSummary> findArtifacts(final PageInfo page) throws RemoteServiceException {
-		Collections.sort(artifacts, new Comparator<ArtifactSummary>() {
-			@Override
-			public int compare(ArtifactSummary as1, ArtifactSummary as2) {
-				int rval = as1.getName().compareTo(as2.getName());
-				if (!page.isAscending())
-					rval *= -1;
-				return rval;
+		try {
+			Feed feed = SrampAtomApiClient.getInstance().query("/s-ramp/xsd/XsdDocument", page.getPage(), page.getPageSize(), page.getOrderBy(), page.isAscending());
+			List<ArtifactSummary> rval = new ArrayList<ArtifactSummary>();
+			for (Entry entry : feed.getEntries()) {
+				String author = null;
+				if (entry.getAuthors() != null && entry.getAuthors().size() > 0)
+					author = entry.getAuthors().get(0).getName();
+				ArtifactSummary arty = new ArtifactSummary();
+				arty.setUuid(entry.getId().toString());
+				arty.setName(entry.getTitle());
+				arty.setDescription(entry.getSummary());
+				arty.setCreatedBy(author);
+				arty.setCreatedOn(entry.getPublished());
+				arty.setUpdatedOn(entry.getUpdated());
+				rval.add(arty);
 			}
-		});
-		List<ArtifactSummary> rval = new ArrayList<ArtifactSummary>();
-		int startIdx = page.getPage() * page.getPageSize();
-		int endIdx = startIdx + page.getPageSize() - 1;
-		for (int idx = startIdx; idx <= endIdx; idx++) {
-			if (idx < artifacts.size()) {
-				rval.add(artifacts.get(idx));
-			}
+			return rval;
+		} catch (Throwable t) {
+			throw new RemoteServiceException(t);
 		}
-		return rval;
-	}
-
-	/**
-	 * TODO REMOVE THIS - SAMPLE DATA ONLY.
-	 */
-	private static ArtifactSummary createArtifact(String name) {
-		ArtifactSummary arty = new ArtifactSummary();
-		String uuid = UUID.randomUUID().toString();
-		arty.setUuid(uuid);
-		arty.setName(name);
-		arty.setDescription("This is the description of the artifact currently know as: " + name + " and UUID: " + uuid);
-		arty.setCreatedBy("anonymous");
-		arty.setCreatedOn(new Date());
-		arty.setUpdatedOn(new Date());
-		return arty;
 	}
 
 }
