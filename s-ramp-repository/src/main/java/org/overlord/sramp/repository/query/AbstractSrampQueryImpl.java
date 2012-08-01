@@ -35,13 +35,19 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	
 	private String xpathTemplate;
 	private List<QueryReplacementParam<?>> replacementParams = new ArrayList<QueryReplacementParam<?>>();
-	
+	private String orderByProperty;
+	private boolean orderAscending;
+
 	/**
 	 * Constructor.
 	 * @param xpathTemplate
+	 * @param orderByProperty
+	 * @param orderAscending
 	 */
-	public AbstractSrampQueryImpl(String xpathTemplate) {
+	public AbstractSrampQueryImpl(String xpathTemplate, String orderByProperty, boolean orderAscending) {
 		setXpathTemplate(xpathTemplate);
+		setOrderByProperty(orderByProperty);
+		setOrderAscending(orderAscending);
 	}
 
 	/**
@@ -56,6 +62,34 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	 */
 	protected void setXpathTemplate(String xpathTemplate) {
 		this.xpathTemplate = xpathTemplate;
+	}
+
+	/**
+	 * @return the orderByProperty
+	 */
+	protected String getOrderByProperty() {
+		return orderByProperty;
+	}
+
+	/**
+	 * @param orderByProperty the orderByProperty to set
+	 */
+	protected void setOrderByProperty(String orderByProperty) {
+		this.orderByProperty = orderByProperty;
+	}
+
+	/**
+	 * @return the orderAscending
+	 */
+	protected boolean isOrderAscending() {
+		return orderAscending;
+	}
+
+	/**
+	 * @param orderAscending the orderAscending to set
+	 */
+	protected void setOrderAscending(boolean orderAscending) {
+		this.orderAscending = orderAscending;
 	}
 
 	/**

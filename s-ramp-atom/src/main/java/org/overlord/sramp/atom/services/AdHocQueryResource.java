@@ -15,9 +15,12 @@
  */
 package org.overlord.sramp.atom.services;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.UUID;
 
 import javax.ws.rs.Consumes;
@@ -31,6 +34,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.util.GenericType;
@@ -49,10 +53,25 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 public class AdHocQueryResource {
 	@GET
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
-	public Feed queryFromGet(@QueryParam("query") String query, @Context UriInfo uri) throws Exception {
+	public Feed queryFromGet(
+			@Context UriInfo uri,
+			@QueryParam("query") String query,
+			@QueryParam("page") Integer page,
+			@QueryParam("pageSize") Integer pageSize,
+			@QueryParam("orderBy") String orderBy,
+			@QueryParam("ascending") Boolean asc
+			) throws Exception {
 //		MultivaluedMap<String,String> queryParameters = uri.getQueryParameters();
 //		System.out.println(queryParameters);
-		return query(query);
+    	if (page == null)
+    		page = 0;
+    	if (pageSize == null)
+    		pageSize = 20;
+    	if (orderBy == null)
+    		orderBy = "name";
+    	if (asc == null)
+    		asc = true;
+		return query(query, page, pageSize, orderBy, asc);
 	}
 
 	/**
@@ -66,19 +85,36 @@ public class AdHocQueryResource {
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
 	public Feed queryFromPost(MultipartFormDataInput input) throws Exception {
     	String query = input.getFormDataPart("query", new GenericType<String>() { });
-    	return query(query);
+    	Integer page = input.getFormDataPart("page", new GenericType<Integer>() { });
+    	if (page == null)
+    		page = 0;
+    	Integer pageSize = input.getFormDataPart("pageSize", new GenericType<Integer>() { });
+    	if (pageSize == null)
+    		pageSize = 20;
+    	String orderBy = input.getFormDataPart("orderBy", new GenericType<String>() { });
+    	if (orderBy == null)
+    		orderBy = "name";
+    	Boolean asc = input.getFormDataPart("ascending", new GenericType<Boolean>() { });
+    	if (asc == null)
+    		asc = true;
+    	return query(query, page, pageSize, orderBy, asc);
     }
 
     /**
      * Common method that performs the query and returns the atom {@link Feed}.
-     * @param query the query
+     * @param query the x-path formatted s-ramp query
+     * @param page which page in the results should be returned
+     * @param pageSize the size of each page of results
+     * @param orderBy the property to sort the results by
+     * @param ascending the sort direction
      * @return an Atom {@link Feed}
      * @throws Exception
      */
-    protected Feed query(String query) throws Exception {
+    protected Feed query(String query, int page, int pageSize, String orderBy, boolean ascending) throws Exception {
 		if (query == null)
 			throw new IllegalArgumentException("Missing S-RAMP query (param with name 'query').");
 
+		// Add on the "/s-ramp/" if it's missing
 		String xpath = query;
 		if (!xpath.startsWith("/s-ramp")) {
 			if (query.startsWith("/"))
@@ -88,12 +124,15 @@ public class AdHocQueryResource {
 		}
 
 		QueryManager queryManager = QueryManagerFactory.newInstance();
-		SrampQuery srampQuery = queryManager.createQuery(xpath);
+		SrampQuery srampQuery = queryManager.createQuery(xpath, orderBy, ascending);
 		ArtifactSet artifactSet = null;
 		
 		try {
 			artifactSet = srampQuery.executeQuery();
-			Feed feed = createFeed(artifactSet);
+			int startIdx = page * pageSize;
+			int endIdx = startIdx + pageSize - 1;
+			Feed feed = createFeed(artifactSet, startIdx, endIdx);
+			addPaginationLinks(feed, artifactSet, query, page, pageSize, orderBy, ascending);
 			return feed;
 		} finally {
 			if (artifactSet != null)
@@ -103,11 +142,23 @@ public class AdHocQueryResource {
     
 	/**
 	 * Creates the Atom {@link Feed} from the given artifact set (query result set).
+	 * 
+	 * Note: the Atom feed format allows pagination via the following links:
+	 * 
+	 * <pre>
+	 *   <link rel="first" href="http://www.example.org/feed"/>
+	 *   <link rel="next" href="http://www.example.org/feed?page=4"/>
+	 *   <link rel="previous" href="http://www.example.org/feed?page=2"/>
+	 *   <link rel="last" href="http://www.example.org/feed?page=147"/>
+	 * </pre>
+	 * 
 	 * @param artifactSet the set of artifacts that matched the query
+	 * @param fromRow return rows starting at this index (inclusive)
+	 * @param toRow return rows ending at this index (inclusive)
 	 * @return an Atom {@link Feed}
-	 * @throws URISyntaxException 
+	 * @throws URISyntaxException
 	 */
-	private Feed createFeed(ArtifactSet artifactSet) throws URISyntaxException {
+	private Feed createFeed(ArtifactSet artifactSet, int fromRow, int toRow) throws URISyntaxException {
 		Feed feed = new Feed();
 		feed.setId(new URI(UUID.randomUUID().toString()));
 		feed.setTitle("S-RAMP Feed");
@@ -115,16 +166,69 @@ public class AdHocQueryResource {
 		feed.setUpdated(new Date());
 		feed.getAuthors().add(new Person("anonymous"));
 
-		for (BaseArtifactType artifact : artifactSet) {
+		Iterator<BaseArtifactType> iterator = artifactSet.iterator();
+		// Skip any initial rows
+		for (int i = 0; i < fromRow; i++) {
+			if (!iterator.hasNext())
+				break;
+			iterator.next();
+		}
+		// Now get only the rows we're interested in.
+		for (int i = fromRow; i <= toRow; i++) {
+			if (!iterator.hasNext())
+				break;
+			BaseArtifactType artifact = iterator.next();
 			Entry entry = new Entry();
 			entry.setId(new URI(artifact.getUuid()));
 			entry.setTitle(artifact.getName());
 			entry.setUpdated(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
 			entry.setPublished(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
+			entry.getAuthors().add(new Person(artifact.getCreatedBy()));
 			feed.getEntries().add(entry);
 		}
-
+		
 		return feed;
+	}
+
+	/**
+	 * Add pagination links to the feed.
+	 * 
+	 * TODO use real URLs rather than hard-coded localhost:8080 values
+	 * 
+	 * @param feed
+	 * @param query
+	 * @param artifactSet
+	 * @param page
+	 * @param pageSize
+	 * @param orderBy
+	 * @param ascending
+	 * @throws UnsupportedEncodingException 
+	 */
+	private void addPaginationLinks(Feed feed, ArtifactSet artifactSet, String query, int page, int pageSize,
+			String orderBy, boolean ascending) throws UnsupportedEncodingException {
+		String endpoint = "http://localhost:8080/s-ramp-atom/s-ramp";
+		
+		String hrefPattern = "%1$s?query=%2$s&page=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s";
+		String encodedQuery = URLEncoder.encode(query, "UTF-8");
+		String firstHref = String.format(hrefPattern, endpoint, encodedQuery, 0, String.valueOf(pageSize),
+				String.valueOf(orderBy), String.valueOf(ascending));
+		String prevHref = String.format(hrefPattern, endpoint, encodedQuery, page - 1, String.valueOf(pageSize),
+				String.valueOf(orderBy), String.valueOf(ascending));
+		String nextHref = String.format(hrefPattern, endpoint, encodedQuery, page + 1, String.valueOf(pageSize),
+				String.valueOf(orderBy), String.valueOf(ascending));
+
+		Link first = new Link("first", firstHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
+		Link prev = new Link("prev", prevHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
+		Link next = new Link("next", nextHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
+
+		if (page > 0) {
+			feed.getLinks().add(first);
+			feed.getLinks().add(prev);
+		}
+		if (artifactSet.iterator().hasNext()) {
+			feed.getLinks().add(next);
+		}
+		
 	}
 
 }

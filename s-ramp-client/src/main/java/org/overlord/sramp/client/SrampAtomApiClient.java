@@ -24,6 +24,8 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.overlord.sramp.ArtifactType;
 
 /**
@@ -127,6 +129,39 @@ public class SrampAtomApiClient {
 	 */
 	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName) throws Exception {
 		return uploadArtifact(artifactType.getModel(), artifactType.name(), content, artifactFileName);
+	}
+
+	/**
+	 * Executes the given s-ramp query xpath and returns a Feed of the matching artifacts.
+	 * @param srampQuery the s-ramp query (xpath formatted)
+	 * @return an Atom {@link Feed}
+	 * @throws Exception
+	 */
+	public Feed query(String srampQuery, int page, int pageSize, String orderBy, boolean ascending) throws Exception {
+		String xpath = srampQuery;
+		if (xpath == null)
+			throw new Exception("Please supply an S-RAMP x-path formatted query.");
+		// Remove the leading /s-ramp/ prior to POSTing to the atom endpoint
+		if (xpath.startsWith("/s-ramp/"))
+			xpath = xpath.substring(8);
+		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(ApacheHttpClient4Executor.class.getClassLoader());
+		try {
+			String atomUrl = this.endpoint;
+			ClientRequest request = new ClientRequest(atomUrl);
+			MultipartFormDataOutput formData = new MultipartFormDataOutput();
+			formData.addFormData("query", srampQuery, MediaType.TEXT_PLAIN_TYPE);
+			formData.addFormData("page", String.valueOf(page), MediaType.TEXT_PLAIN_TYPE);
+			formData.addFormData("pageSize", String.valueOf(pageSize), MediaType.TEXT_PLAIN_TYPE);
+			formData.addFormData("orderBy", orderBy, MediaType.TEXT_PLAIN_TYPE);
+			formData.addFormData("ascending", String.valueOf(ascending), MediaType.TEXT_PLAIN_TYPE);
+			
+			request.body(MediaType.MULTIPART_FORM_DATA_TYPE, formData);
+			ClientResponse<Feed> response = request.post(Feed.class);
+			return response.getEntity();
+		} finally {
+			Thread.currentThread().setContextClassLoader(oldCtxCL);
+		}
 	}
 	
 }
