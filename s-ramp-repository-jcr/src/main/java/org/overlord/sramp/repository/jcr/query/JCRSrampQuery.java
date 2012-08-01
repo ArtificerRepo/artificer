@@ -15,6 +15,9 @@
  */
 package org.overlord.sramp.repository.jcr.query;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.query.QueryResult;
@@ -33,13 +36,26 @@ import org.overlord.sramp.repository.query.SrampQuery;
  * @author eric.wittmann@redhat.com
  */
 public class JCRSrampQuery extends AbstractSrampQueryImpl {
+	
+	private static Map<String, String> sOrderByMappings = new HashMap<String, String>();
+	static {
+		sOrderByMappings.put("createdBy", "jcr:createdBy");
+		sOrderByMappings.put("version", "version");
+		sOrderByMappings.put("uuid", "sramp:uuid");
+		sOrderByMappings.put("createdTimestamp", "jcr:created");
+		sOrderByMappings.put("lastModifiedTimestamp", "jcr:lastModified");
+		sOrderByMappings.put("lastModifiedBy", "jcr:lastModifiedBy");
+		sOrderByMappings.put("name", "jcr:name");
+	}
 
 	/**
 	 * Constructor.
 	 * @param xpathTemplate
+	 * @param orderByProperty
+	 * @param orderAscending
 	 */
-	public JCRSrampQuery(String xpathTemplate) {
-		super(xpathTemplate);
+	public JCRSrampQuery(String xpathTemplate, String orderByProperty, boolean orderAscending) {
+		super(xpathTemplate, orderByProperty, orderAscending);
 	}
 
 	/**
@@ -67,9 +83,20 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 	 * @param queryModel the s-ramp query
 	 */
 	private String createSql2Query(Query queryModel) {
+		String jcrOrderBy = null;
+		if (getOrderByProperty() != null) {
+			String jcrPropName = sOrderByMappings.get(getOrderByProperty());
+			if (jcrPropName != null) {
+				jcrOrderBy = jcrPropName;
+			}
+		}
 		SrampToJcrSql2QueryVisitor visitor = new SrampToJcrSql2QueryVisitor();
 		queryModel.accept(visitor);
-		return visitor.getSql2Query();
+		String sql2Query = visitor.getSql2Query();
+		if (jcrOrderBy != null) {
+			sql2Query += " ORDER BY [" + jcrOrderBy + "] " + (isOrderAscending() ? "ASC" : "DESC");
+		}
+		return sql2Query;
 	}
 	
 }

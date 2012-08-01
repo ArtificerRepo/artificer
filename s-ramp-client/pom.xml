@@ -51,6 +51,17 @@
 			<artifactId>jaxrs-api</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-multipart-provider</artifactId>
+			<version>${org.jboss.resteasy.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<!-- Test dependencies -->
 		<dependency>
