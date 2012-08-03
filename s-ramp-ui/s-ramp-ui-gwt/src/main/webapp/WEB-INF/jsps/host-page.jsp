@@ -4,6 +4,7 @@
 	    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
 	    <link href="resources/css/reset.css" media="all" type="text/css" rel="stylesheet"></link>
 	    <link href="resources/css/widgets.css" media="all" type="text/css" rel="stylesheet"></link>
+	    <link href="resources/css/dialogs.css" media="all" type="text/css" rel="stylesheet"></link>
 	    <link href="resources/css/views.css" media="all" type="text/css" rel="stylesheet"></link>
 	    <link href="resources/css/srampui.css" media="all" type="text/css" rel="stylesheet"></link>
 		<title>JBoss Overlord - S-RAMP Explorer (GWT)</title>

@@ -1,0 +1,110 @@
+/* ------------------------------------------------
+ * Stylesheet for UI Dialogs
+ * ------------------------------------------------ */
+
+
+/* Common Dialog Styles */
+.dialogGlass {
+  background-color: #000000;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  z-index: 49;
+}
+.dialog {
+  text-align: left;
+  z-index: 50;
+}
+.dialog .Caption {
+  cursor: move;
+  color: #E0ECFF;
+  font-weight: bold;
+  text-shadow: 0 1px 0 #283B4E;
+  font-size: 12px;
+  padding: 12px 5px 5px 10px;
+}
+.dialog .dialogMiddleCenter {
+  background-color: #fafafa;
+}
+.dialog .dialogTopCenterInner {
+  padding-top: 7px;
+}
+.dialog .dialogTop {
+  height: 42px;
+}
+.dialog .dialogTopLeft {
+  width: 9px;
+  background-image: url(../images/dialog/dlg_tl.png);
+  background-repeat: no-repeat;
+}
+.dialog .dialogTopCenter {
+  background-image: url(../images/dialog/dlg_top.png);
+  background-repeat: repeat-x;
+}
+.dialog .dialogTopRight {
+  width: 9px;
+  background-image: url(../images/dialog/dlg_tr.png);
+  background-repeat: no-repeat;
+}
+.dialog .dialogMiddleLeft {
+  width: 9px;
+  background-image: url(../images/dialog/dlg_left.png);
+  background-repeat: repeat-y;
+}
+.dialog .dialogMiddleRight {
+  width: 9px;
+  background-image: url(../images/dialog/dlg_right.png);
+  background-repeat: repeat-y;
+}
+.dialog .dialogBottom {
+  height: 9px;
+}
+.dialog .dialogBottomLeft {
+  width: 9px;
+  background-image: url(../images/dialog/dlg_bl.png);
+  background-repeat: no-repeat;
+}
+.dialog .dialogBottomCenter {
+  background-image: url(../images/dialog/dlg_bottom.png);
+  background-repeat: repeat-x;
+}
+.dialog .dialogBottomRight {
+  width: 9px;
+  background-image: url(../images/dialog/dlg_br.png);
+  background-repeat: no-repeat;
+}
+.dialogContent {
+  padding-top: 5px;
+}
+.dialog .form  {
+  padding: 5px;
+}
+.dialog .buttons {
+  border-top: 1px solid #d5d2d0;
+  text-align: right;
+  margin-top: 15px;
+}
+.dialog .buttons .form_button {
+  float: none;
+  margin: 10px 5px 5px 0;
+}
+
+.okCancelDialog {
+	
+}
+.okCancelDialog .okCancelDialogContent {
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-bottom: 5px;
+	max-width: 600px;
+	border-bottom: 1px dotted grey;
+}
+.okCancelDialog .okCancelButtonPanel {
+	text-align: right;
+	float: right;
+}
+.okCancelDialog .okCancelButtonPanel td {
+	padding: 3px;
+}
+.okCancelDialog .okCancelButtonPanel .button {
+	width: 110px;
+}
