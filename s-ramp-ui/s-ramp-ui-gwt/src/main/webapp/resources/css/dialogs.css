@@ -110,10 +110,10 @@ S
 }
 
 .errorDialog .Caption {
-	padding: 10px 5px 5px 30px;
-	background-image: url("../images/dialog/err_icon.png");
+	padding: 10px 5px 5px 26px;
+	background-image: url("../images/dialog/err_ico.png");
 	background-repeat: no-repeat;
-	background-position: 2px 5px;
+	background-position: 5px 9px;
 }
 .errorDialog .errorButtonPanel {
 	text-align: right;
