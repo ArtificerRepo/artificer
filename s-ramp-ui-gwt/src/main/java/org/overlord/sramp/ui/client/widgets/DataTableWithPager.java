@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.ui.client.widgets;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.overlord.sramp.ui.client.places.AbstractPagedPlace;
@@ -144,7 +145,12 @@ public abstract class DataTableWithPager<T> extends FlowPanel {
 	 * @param defaultPageSize
 	 * @param hasMoreRows
 	 */
+	@SuppressWarnings("unchecked")
 	public void setRowData(List<T> rowData, AbstractPagedPlace currentPlace, int defaultPageSize, boolean hasMoreRows) {
+		if (rowData == null) {
+			this.table.setRowData(Collections.EMPTY_LIST);
+			return;
+		}
 		AbstractPagedPlace prevPlace = null;
 		AbstractPagedPlace nextPlace = null;
 		if (currentPlace.getPage(0) > 0) {
