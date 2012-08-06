@@ -81,7 +81,7 @@ public class LocalizationService extends AbstractService implements ILocalizatio
 			return val;
 
 		// Format the string and replace arguments with the supplied values.
-		// TODO GWT can do this with their static i18n approach, but I couldn't find anything obvious 
+		// Note: GWT can do this with their static i18n approach, but I couldn't find anything obvious 
 		// for dynamic formatting - though there probably is something I should be using 
 		try {
 			StringBuilder builder = new StringBuilder();

@@ -1,7 +1,7 @@
 /* ------------------------------------------------
  * Stylesheet for UI Dialogs
  * ------------------------------------------------ */
-
+S
 
 /* Common Dialog Styles */
 .dialogGlass {
@@ -16,11 +16,11 @@
 }
 .dialog .Caption {
   cursor: move;
-  color: #E0ECFF;
+  color: #E0ECE3;
   font-weight: bold;
-  text-shadow: 0 1px 0 #283B4E;
+  text-shadow: 1px 1px 0 #283B4E;
   font-size: 12px;
-  padding: 12px 5px 5px 10px;
+  padding: 10px 5px 5px 10px;
 }
 .dialog .dialogMiddleCenter {
   background-color: #fafafa;
@@ -107,4 +107,28 @@
 }
 .okCancelDialog .okCancelButtonPanel .button {
 	width: 110px;
+}
+
+.errorDialog .Caption {
+	padding: 10px 5px 5px 26px;
+	background-image: url("../images/dialog/err_ico.png");
+	background-repeat: no-repeat;
+	background-position: 5px 9px;
+}
+.errorDialog .errorButtonPanel {
+	text-align: right;
+	float: right;
+}
+.errorDialog .errorButtonPanel td {
+	padding: 3px;
+}
+.errorDialog .errorButtonPanel .button {
+	width: 110px;
+}
+.errorDialog .errorDialogContent {
+	padding-left: 8px;
+	padding-right: 8px;
+	padding-bottom: 5px;
+	max-width: 600px;
+	border-bottom: 1px dotted grey;
 }
