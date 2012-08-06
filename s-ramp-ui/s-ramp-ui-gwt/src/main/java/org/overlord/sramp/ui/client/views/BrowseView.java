@@ -22,6 +22,7 @@ import org.overlord.sramp.ui.client.places.AbstractPagedPlace;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
 import org.overlord.sramp.ui.client.widgets.DataTable;
 import org.overlord.sramp.ui.client.widgets.DataTableWithPager;
+import org.overlord.sramp.ui.client.widgets.dialogs.ErrorDialog;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
@@ -119,7 +120,10 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	 */
 	@Override
 	public void onQueryFailed(RemoteServiceException error) {
-		// TODO do something interesting with the error
+		this.artifacts.setRowData(null, null, -1, false);
+		ErrorDialog dialog = new ErrorDialog(error);
+		dialog.center();
+		dialog.show();
 	}
 	
 	/*
