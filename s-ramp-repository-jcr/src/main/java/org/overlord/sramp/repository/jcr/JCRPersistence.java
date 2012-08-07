@@ -144,6 +144,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             String uuid = artifactContentNode.getProperty(JCRConstants.SRAMP_UUID).getValue().getString();
             String filename = artifactContentNode.getProperty(JCRConstants.OVERLORD_FILENAME).getValue().getString();
             sequencedNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
+            sequencedNode.setProperty(JCRConstants.SRAMP_NAME, filename);
             sequencedNode.setProperty(JCRConstants.OVERLORD_FILENAME, filename);
             sequencedNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, type.getModel());
             sequencedNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, type.name());
