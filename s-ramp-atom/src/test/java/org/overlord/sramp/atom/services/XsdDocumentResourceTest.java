@@ -129,8 +129,10 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 		ClientResponse<Entry> response = request.post(Entry.class);
 
 		Entry entry = response.getEntity();
+		Assert.assertEquals(artifactFileName, entry.getTitle());
 		Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
 		Assert.assertEquals(Long.valueOf(2376), artifact.getXsdDocument().getContentSize());
+		Assert.assertEquals(artifactFileName, artifact.getXsdDocument().getName());
 
 		// Serializing to XML so we can check that it looks good.
 		String actualXml = serializeAtomEntry(entry);
