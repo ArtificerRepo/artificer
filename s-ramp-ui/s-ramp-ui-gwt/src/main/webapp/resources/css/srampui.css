@@ -20,7 +20,6 @@ a:visited {
 }
 a.disabled {
 	color: grey;
-	font-style: italic;
 	text-decoration: none;
 }
 

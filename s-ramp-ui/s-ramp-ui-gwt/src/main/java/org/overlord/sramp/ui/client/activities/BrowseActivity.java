@@ -26,6 +26,7 @@ import org.overlord.sramp.ui.client.widgets.BreadcrumbPanel;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.beans.PageInfo;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
+import org.overlord.sramp.ui.shared.types.ArtifactFilter;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -60,16 +61,22 @@ public class BrowseActivity extends AbstractActivity<BrowsePlace, IBrowseView> i
 	 */
 	@Override
 	protected void doStart(AcceptsOneWidget panel, EventBus eventBus) {
-		getView().onQueryStarting();
+		getView().onQueryStarting(getPlace());
 		final PageInfo page = new PageInfo();
 		page.setPage(getPlace().getPage(0));
 		page.setPageSize(getPlace().getPageSize(getView().getDefaultPageSize()));
 		page.setOrderBy(getPlace().getOrderBy(getView().getDefaultOrderBy()));
 		page.setAscending(getPlace().isAscending(Boolean.TRUE));
-		getService(IQueryService.class).findArtifactsAsync(page, new AsyncCallback<List<ArtifactSummary>>() {
+		ArtifactFilter filter = null;
+		if (getPlace().getTypeFilter() == null)
+			filter = ArtifactFilter.all;
+		else
+			filter = ArtifactFilter.valueOf(getPlace().getTypeFilter());
+		
+		getService(IQueryService.class).findArtifactsAsync(page, filter, new AsyncCallback<List<ArtifactSummary>>() {
 			@Override
 			public void onSuccess(List<ArtifactSummary> result) {
-				getView().onQueryComplete(result, getPlace(), result.size() == page.getPageSize());
+				getView().onQueryComplete(result, result.size() == page.getPageSize());
 			}
 			@Override
 			public void onFailure(Throwable caught) {

@@ -25,6 +25,7 @@ import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.beans.PageInfo;
 import org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
+import org.overlord.sramp.ui.shared.types.ArtifactFilter;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -42,14 +43,15 @@ public class QueryRemoteService extends RemoteServiceServlet implements IQueryRe
 	 */
 	public QueryRemoteService() {
 	}
-
+	
 	/**
-	 * @see org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService#findArtifacts(org.overlord.sramp.ui.shared.beans.PageInfo)
+	 * @see org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService#findArtifacts(PageInfo, ArtifactFilter)
 	 */
 	@Override
-	public List<ArtifactSummary> findArtifacts(final PageInfo page) throws RemoteServiceException {
+	public List<ArtifactSummary> findArtifacts(final PageInfo page, ArtifactFilter filter) throws RemoteServiceException {
 		try {
-			Feed feed = SrampAtomApiClient.getInstance().query("/s-ramp/xsd/XsdDocument", page.getPage(), page.getPageSize(), page.getOrderBy(), page.isAscending());
+			Feed feed = SrampAtomApiClient.getInstance().query(filter.getQueryBase(), page.getPage(), 
+					page.getPageSize(), page.getOrderBy(), page.isAscending());
 			List<ArtifactSummary> rval = new ArrayList<ArtifactSummary>();
 			for (Entry entry : feed.getEntries()) {
 				String author = null;

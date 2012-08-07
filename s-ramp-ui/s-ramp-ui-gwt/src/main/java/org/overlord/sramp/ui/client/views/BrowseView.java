@@ -22,9 +22,11 @@ import org.overlord.sramp.ui.client.places.AbstractPagedPlace;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
 import org.overlord.sramp.ui.client.widgets.DataTable;
 import org.overlord.sramp.ui.client.widgets.DataTableWithPager;
+import org.overlord.sramp.ui.client.widgets.PlaceFilterPanel;
 import org.overlord.sramp.ui.client.widgets.dialogs.ErrorDialog;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
+import org.overlord.sramp.ui.shared.types.ArtifactFilter;
 
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -44,27 +46,55 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	private static final String DEFAULT_ORDER_BY = "name";
 
 	private ArtifactDataTable artifacts;
+	private PlaceFilterPanel<BrowsePlace> filterPanel;
+	private BrowsePlace currentPlace;
 
 	/**
 	 * Constructor.
 	 */
 	public BrowseView() {
-		Label filtersPanel = new Label("Filters Go Here (TBD)");
+		filterPanel = new PlaceFilterPanel<BrowsePlace>(i18n().translate("browse.filter-panel.label")) {
+			@Override
+			protected boolean matches(BrowsePlace currentPlace, BrowsePlace targetPlace) {
+				String currentTypeFilter = currentPlace.getTypeFilter();
+				String targetTypeFilter = targetPlace.getTypeFilter();
+				if (currentTypeFilter == targetTypeFilter)
+					return true;
+				else if (currentTypeFilter != null && currentTypeFilter.equals(targetTypeFilter))
+					return true;
+				return false;
+			}
+		};
 		Label summaryPanel = new Label("Artifact Summary Goes Here (TBD)");
 		artifacts = createArtifactTable();
 
 		HorizontalPanel hpanel = new HorizontalPanel();
 		hpanel.setWidth("100%");
-		hpanel.add(filtersPanel);
+		hpanel.add(filterPanel);
 		hpanel.add(artifacts);
 		hpanel.add(summaryPanel);
 
-		hpanel.setCellWidth(filtersPanel, "200px");
+		hpanel.setCellWidth(filterPanel, "200px");
 		hpanel.setCellWidth(summaryPanel, "300px");
 
 		this.initWidget(hpanel);
 	}
-	
+
+	/**
+	 * Called to configure the filters.
+	 * @param currentPlace
+	 */
+	private void configureFilters(BrowsePlace currentPlace) {
+		for (ArtifactFilter filter : ArtifactFilter.values()) {
+			BrowsePlace p = currentPlace.clone();
+			p.setPage(null);
+			p.setTypeFilter(filter.getCode());
+			this.filterPanel.addFilterOption(i18n().translate(filter.getI18nKey()), p);
+		}
+		
+		this.filterPanel.setCurrentPlace(currentPlace);
+	}
+
 	/**
 	 * @see org.overlord.sramp.ui.client.views.IPagedResultView#getDefaultPageSize()
 	 */
@@ -100,19 +130,21 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	}
 
 	/**
-	 * @see org.overlord.sramp.ui.client.views.IBrowseView#onQueryStarting()
+	 * @see org.overlord.sramp.ui.client.views.IBrowseView#onQueryStarting(BrowsePlace)
 	 */
 	@Override
-	public void onQueryStarting() {
+	public void onQueryStarting(BrowsePlace currentPlace) {
+		configureFilters(currentPlace);
+		this.currentPlace = currentPlace;
 		this.artifacts.reset();
 	}
 
 	/**
-	 * @see org.overlord.sramp.ui.client.views.IBrowseView#onQueryComplete(java.util.List, int, boolean)
+	 * @see org.overlord.sramp.ui.client.views.IBrowseView#onQueryComplete(java.util.List, boolean)
 	 */
 	@Override
-	public void onQueryComplete(List<ArtifactSummary> artifacts, BrowsePlace place, boolean hasMoreRows) {
-		this.artifacts.setRowData(artifacts, place, getDefaultPageSize(), hasMoreRows);
+	public void onQueryComplete(List<ArtifactSummary> artifacts, boolean hasMoreRows) {
+		this.artifacts.setRowData(artifacts, this.currentPlace, getDefaultPageSize(), hasMoreRows);
 	}
 
 	/**

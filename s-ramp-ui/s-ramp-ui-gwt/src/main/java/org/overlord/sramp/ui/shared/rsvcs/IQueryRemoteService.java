@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.beans.PageInfo;
+import org.overlord.sramp.ui.shared.types.ArtifactFilter;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -34,8 +35,10 @@ public interface IQueryRemoteService extends RemoteService {
 
 	/**
 	 * Finds artfiacts.
+	 * @param page
+	 * @param filter
 	 * @throws RemoteServiceException
 	 */
-	public List<ArtifactSummary> findArtifacts(PageInfo page) throws RemoteServiceException;
+	public List<ArtifactSummary> findArtifacts(PageInfo page, ArtifactFilter filter) throws RemoteServiceException;
 	
 }

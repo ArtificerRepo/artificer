@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.shared.rsvcs;
+package org.overlord.sramp.ui.client.places;
 
-import java.util.List;
-
-import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
-import org.overlord.sramp.ui.shared.beans.PageInfo;
-import org.overlord.sramp.ui.shared.types.ArtifactFilter;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.place.shared.Place;
 
 /**
- * Async version of {@link IQueryRemoteService}.
- *
+ * Base class for all places in the s-ramp ui.
+ * 
  * @author eric.wittmann@redhat.com
  */
-public interface IQueryRemoteServiceAsync {
-
+public abstract class AbstractPlace extends Place {
+	
 	/**
-	 * Async version of {@link IQueryRemoteService#findArtifacts(int, int)}
+	 * Constructor.
 	 */
-	public void findArtifacts(PageInfo page, ArtifactFilter filter, AsyncCallback<List<ArtifactSummary>> callback);
+	public AbstractPlace() {
+	}
+	
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public abstract boolean equals(Object obj);
 
 }
