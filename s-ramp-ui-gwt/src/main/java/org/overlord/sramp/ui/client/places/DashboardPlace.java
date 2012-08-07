@@ -15,7 +15,6 @@
  */
 package org.overlord.sramp.ui.client.places;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
@@ -25,12 +24,20 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  * 
  * @author eric.wittmann@redhat.com
  */
-public class DashboardPlace extends Place {
+public class DashboardPlace extends AbstractPlace {
 
 	/**
 	 * Constructor.
 	 */
 	public DashboardPlace() {
+	}
+
+	/**
+	 * @see org.overlord.sramp.ui.client.places.AbstractPlace#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof DashboardPlace;
 	}
 
 	/*

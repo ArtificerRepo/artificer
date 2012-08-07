@@ -24,7 +24,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  * 
  * @author eric.wittmann@redhat.com
  */
-public class BrowsePlace extends AbstractPagedPlace {
+public class BrowsePlace extends AbstractPagedPlace implements Cloneable {
 	
 	private String typeFilter;
 
@@ -60,6 +60,38 @@ public class BrowsePlace extends AbstractPagedPlace {
 	 */
 	public void setTypeFilter(String typeFilter) {
 		this.typeFilter = typeFilter;
+	}
+	
+	/**
+	 * Creates a new copy of this place.
+	 * @see java.lang.Object#clone()
+	 */
+	public BrowsePlace clone() {
+		BrowsePlace copy = new BrowsePlace();
+		copy.setAscending(isAscending());
+		copy.setOrderBy(getOrderBy());
+		copy.setPage(getPage());
+		copy.setPageSize(getPageSize());
+		copy.setTypeFilter(getTypeFilter());
+		return copy;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof BrowsePlace))
+			return false;
+		if (!super.equals(obj))
+			return false;
+		BrowsePlace other = (BrowsePlace) obj;
+		if (typeFilter == null) {
+			if (other.typeFilter != null)
+				return false;
+		} else if (!typeFilter.equals(other.typeFilter))
+			return false;
+		return true;
 	}
 
 	/*
