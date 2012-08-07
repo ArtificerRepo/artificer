@@ -8,5 +8,6 @@
 [overlord:artifact] mixin
  - overlord:filename (STRING)
  - sramp:uuid (STRING)
+ - sramp:name (STRING)
  - sramp:artifactModel (STRING)
  - sramp:artifactType (STRING)

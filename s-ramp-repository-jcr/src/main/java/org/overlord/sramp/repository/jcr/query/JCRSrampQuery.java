@@ -45,7 +45,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 		sOrderByMappings.put("createdTimestamp", "jcr:created");
 		sOrderByMappings.put("lastModifiedTimestamp", "jcr:lastModified");
 		sOrderByMappings.put("lastModifiedBy", "jcr:lastModifiedBy");
-		sOrderByMappings.put("name", "jcr:name");
+		sOrderByMappings.put("name", "sramp:name");
 	}
 
 	/**

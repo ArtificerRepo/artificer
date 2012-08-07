@@ -25,6 +25,7 @@ public class JCRConstants {
     public static final String OVERLORD_ARTIFACT         = OVERLORD + ":artifact";
     public static final String OVERLORD_FILENAME         = OVERLORD + ":filename";
     public static final String SRAMP_UUID                = SRAMP + ":uuid";
+    public static final String SRAMP_NAME                = SRAMP + ":name";
     public static final String SRAMP_ARTIFACT_MODEL      = SRAMP + ":artifactModel";
     public static final String SRAMP_ARTIFACT_TYPE       = SRAMP + ":artifactType";
    
