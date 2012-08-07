@@ -19,6 +19,8 @@ import org.overlord.sramp.ui.client.services.Services;
 import org.overlord.sramp.ui.client.services.place.IPlaceService;
 
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.InlineHyperlink;
 
 /**
@@ -30,13 +32,7 @@ import com.google.gwt.user.client.ui.InlineHyperlink;
 public class PlaceHyperlink extends InlineHyperlink {
 
 	private Place targetPlace;
-
-	/**
-	 * Constructor.
-	 */
-	public PlaceHyperlink() {
-		super();
-	}
+	private boolean enabled = true;
 
 	/**
 	 * Constructor.
@@ -54,8 +50,8 @@ public class PlaceHyperlink extends InlineHyperlink {
 	public PlaceHyperlink(String text, Place place) {
 		super(text, toHistoryToken(place));
 		this.targetPlace = place;
-		if (place == null)
-			getElement().setClassName("disabled");
+		getElement().setClassName("placeLink");
+		setTargetPlace(place);
 	}
 
 	/**
@@ -69,12 +65,40 @@ public class PlaceHyperlink extends InlineHyperlink {
 	 * @param place the place to set
 	 */
 	public void setTargetPlace(Place place) {
-		if (place == null)
-			getElement().setClassName("disabled");
-		else
-			getElement().removeClassName("disabled");
 		setTargetHistoryToken(toHistoryToken(place));
 		this.targetPlace = place;
+		setEnabled(place != null);
+	}
+
+	/**
+	 * Call to enable or disable the link.
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		if (enabled) {
+			getElement().removeClassName("disabled");
+		} else {
+			getElement().addClassName("disabled");
+		}
+	}
+	
+	/**
+	 * Returns true if this link is enabled.
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
+	/**
+	 * @see com.google.gwt.user.client.ui.Hyperlink#onBrowserEvent(com.google.gwt.user.client.Event)
+	 */
+	@Override
+	public void onBrowserEvent(Event event) {
+		if (!isEnabled())
+			DOM.eventPreventDefault(event);
+		else
+			super.onBrowserEvent(event);
 	}
 
 	/**

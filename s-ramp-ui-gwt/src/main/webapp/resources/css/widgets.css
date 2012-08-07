@@ -33,3 +33,35 @@
 	font-weight: bold;
 	font-size: 14px;
 }
+
+.filterPanel .label {
+	font-weight: bold;
+}
+.filterPanel .filterOptions {
+	padding-left: 10px;
+}
+.filterPanel .filterOptions a.disabled {
+	color: white;
+	cursor: default;
+}
+.filterPanel .filterOptions li {
+	padding: 2px;
+	padding-right: 30px;
+	padding-left: 8px;
+	height: 16px;
+}
+.filterPanel .filterOptions li:hover {
+	background-color: #e6e6e6;
+	background-image: url("../images/filt_h_bg.png");
+	background-position: center right;
+	background-repeat: no-repeat;
+}
+.filterPanel .filterOptions li.selected {
+	background-color: #9C1919;
+	background-image: url("../images/filt_bg.png");
+	background-position: center right;
+	background-repeat: no-repeat;
+}
+.filterPanel .filterOptions li a {
+	height: 16px;
+}

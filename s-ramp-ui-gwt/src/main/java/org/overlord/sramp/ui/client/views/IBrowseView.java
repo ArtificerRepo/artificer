@@ -32,15 +32,14 @@ public interface IBrowseView extends IPagedResultView<IBrowseActivity> {
 	/**
 	 * Called by the activity when it kicks off the async query for artifacts.
 	 */
-	public void onQueryStarting();
+	public void onQueryStarting(BrowsePlace currentPlace);
 	
 	/**
 	 * Called by the activity when the async query completes successfully with data.
 	 * @param artifacts
-	 * @param place
 	 * @param hasMoreRows
 	 */
-	public void onQueryComplete(List<ArtifactSummary> artifacts, BrowsePlace place, boolean hasMoreRows);
+	public void onQueryComplete(List<ArtifactSummary> artifacts, boolean hasMoreRows);
 	
 	/**
 	 * Called by the activity when the async query completes with an error.

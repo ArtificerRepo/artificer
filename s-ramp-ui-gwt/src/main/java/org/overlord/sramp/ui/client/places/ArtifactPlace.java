@@ -17,7 +17,6 @@ package org.overlord.sramp.ui.client.places;
 
 import java.util.Map;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
@@ -28,7 +27,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  * 
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactPlace extends Place {
+public class ArtifactPlace extends AbstractPlace {
 	
 	private String uuid;
 
@@ -53,6 +52,24 @@ public class ArtifactPlace extends Place {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
+	
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ArtifactPlace))
+			return false;
+		ArtifactPlace other = (ArtifactPlace) obj;
+		if (uuid == null) {
+			if (other.uuid != null)
+				return false;
+		} else if (!uuid.equals(other.uuid))
+			return false;
+		return true;
+	}
+
+
 
 	/*
 	 * Tokenizer.

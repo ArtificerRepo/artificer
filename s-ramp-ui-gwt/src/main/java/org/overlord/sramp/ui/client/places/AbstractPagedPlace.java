@@ -22,7 +22,7 @@ import com.google.gwt.place.shared.Place;
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractPagedPlace extends Place {
+public abstract class AbstractPagedPlace extends AbstractPlace {
 	private Integer page;
 	private Integer pageSize;
 	private String orderBy;
@@ -140,4 +140,36 @@ public abstract class AbstractPagedPlace extends Place {
 	public void setAscending(Boolean ascending) {
 		this.ascending = ascending;
 	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof AbstractPagedPlace))
+			return false;
+		AbstractPagedPlace other = (AbstractPagedPlace) obj;
+		if (ascending == null) {
+			if (other.ascending != null)
+				return false;
+		} else if (!ascending.equals(other.ascending))
+			return false;
+		if (orderBy == null) {
+			if (other.orderBy != null)
+				return false;
+		} else if (!orderBy.equals(other.orderBy))
+			return false;
+		if (page == null) {
+			if (other.page != null)
+				return false;
+		} else if (!page.equals(other.page))
+			return false;
+		if (pageSize == null) {
+			if (other.pageSize != null)
+				return false;
+		} else if (!pageSize.equals(other.pageSize))
+			return false;
+		return true;
+	}
+
 }

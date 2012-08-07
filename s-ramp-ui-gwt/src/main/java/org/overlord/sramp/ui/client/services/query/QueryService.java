@@ -22,6 +22,7 @@ import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.beans.PageInfo;
 import org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteServiceAsync;
+import org.overlord.sramp.ui.shared.types.ArtifactFilter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -42,11 +43,12 @@ public class QueryService extends AbstractService implements IQueryService {
 	}
 
 	/**
-	 * @see org.overlord.sramp.ui.client.services.query.IQueryService#findArtifactsAsync(org.overlord.sramp.ui.shared.beans.PageInfo, com.google.gwt.user.client.rpc.AsyncCallback)
+	 * @see org.overlord.sramp.ui.client.services.query.IQueryService#findArtifactsAsync(org.overlord.sramp.ui.shared.beans.PageInfo, org.overlord.sramp.ui.shared.types.ArtifactFilter, com.google.gwt.user.client.rpc.AsyncCallback)
 	 */
 	@Override
-	public void findArtifactsAsync(PageInfo page, AsyncCallback<List<ArtifactSummary>> callback) {
-		queryRemoteService.findArtifacts(page, callback);
+	public void findArtifactsAsync(PageInfo page, ArtifactFilter filter,
+			AsyncCallback<List<ArtifactSummary>> callback) {
+		queryRemoteService.findArtifacts(page, filter, callback);
 	}
 	
 }
