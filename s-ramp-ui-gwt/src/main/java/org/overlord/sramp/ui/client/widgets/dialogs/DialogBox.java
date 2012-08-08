@@ -15,6 +15,10 @@
  */
 package org.overlord.sramp.ui.client.widgets.dialogs;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+
 
 /**
  * Base class for all dialog boxes.
@@ -45,4 +49,21 @@ public class DialogBox extends com.google.gwt.user.client.ui.DialogBox {
 		this(title, false, true);
 	}
 	
+	/**
+	 * @see com.google.gwt.user.client.ui.DialogBox#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+	 */
+	@Override
+	protected void onPreviewNativeEvent(NativePreviewEvent event) {
+	    super.onPreviewNativeEvent(event);
+	    if (event.getTypeInt() == Event.ONKEYDOWN && event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
+	    	handleEscapePressed();
+	    }
+	}
+
+	/**
+	 * Subclasses may choose to do something (like close the dialog) when ESC is pressed.
+	 */
+	protected void handleEscapePressed() {
+	}
+
 }
