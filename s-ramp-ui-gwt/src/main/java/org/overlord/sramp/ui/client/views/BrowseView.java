@@ -193,16 +193,26 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			name.setSortable(true);
 			name.setDataStoreName("name");
 			table.addColumn(name, "Artifact Name");
-//			setColumnWidth(name, 15.0, Unit.PCT);
 			
-			TextColumn<ArtifactSummary> uuid = new TextColumn<ArtifactSummary>() {
+			TextColumn<ArtifactSummary> createdOn = new TextColumn<ArtifactSummary>() {
 				@Override
 				public String getValue(ArtifactSummary artifact) {
-					return artifact.getUuid();
+					return artifact.getCreatedOn().toString();
 				}
 			};
-			uuid.setSortable(false);
-			table.addColumn(uuid, "UUID");
+			createdOn.setSortable(true);
+			createdOn.setDataStoreName("createdOn");
+			table.addColumn(createdOn, "Created On");
+			
+			TextColumn<ArtifactSummary> createdBy = new TextColumn<ArtifactSummary>() {
+				@Override
+				public String getValue(ArtifactSummary artifact) {
+					return artifact.getCreatedBy();
+				}
+			};
+			createdBy.setSortable(true);
+			createdBy.setDataStoreName("createdBy");
+			table.addColumn(createdBy, "Created By");
 //			setColumnWidth(uuid, 20.0, Unit.PCT);
 		}
 		
