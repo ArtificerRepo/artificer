@@ -137,7 +137,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 					dialog.onUploadComplete(uuid);
 				} else if (error != null) {
 					dialog.hide();
-					ErrorDialog errorDialog = new ErrorDialog("Error Uploading Artifact", error);
+					ErrorDialog errorDialog = new ErrorDialog(i18n().translate("dashboard.upload-dialog.error.title"), error);
 					errorDialog.center();
 					errorDialog.show();
 				}
@@ -169,6 +169,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 	private class ArtifactUploadDialogBox extends DialogBox {
 		
 		private VerticalPanel content;
+		private boolean closeable;
 		
 		/**
 		 * Constructor.
@@ -190,6 +191,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 			content.add(new PleaseWait(i18n().translate("dashboard.upload-dialog.please-wait", fileName)));
 			center();
 			show();
+			this.closeable = false;
 		}
 		
 		/**
@@ -232,6 +234,16 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 	    	content.add(buttonPanel);
 	    	
 	    	center();
+	    	this.closeable = true;
+		}
+		
+		/**
+		 * @see org.overlord.sramp.ui.client.widgets.dialogs.DialogBox#handleEscapePressed()
+		 */
+		@Override
+		protected void handleEscapePressed() {
+			if (closeable)
+				hide();
 		}
 		
 	}

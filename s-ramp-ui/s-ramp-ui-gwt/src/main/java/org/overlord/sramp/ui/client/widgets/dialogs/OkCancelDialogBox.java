@@ -24,10 +24,7 @@ import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -122,16 +119,13 @@ public class OkCancelDialogBox extends DialogBox implements HasOkCancelHandlers 
     public HandlerRegistration addOkCancelHandler(Handler handler) {
         return addHandler(handler, OkCancelEvent.getType());
     }
-    
+
 	/**
-	 * @see com.google.gwt.user.client.ui.DialogBox#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+	 * @see org.overlord.sramp.ui.client.widgets.dialogs.DialogBox#handleEscapePressed()
 	 */
 	@Override
-	protected void onPreviewNativeEvent(NativePreviewEvent event) {
-	    super.onPreviewNativeEvent(event);
-	    if (event.getTypeInt() == Event.ONKEYDOWN && event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
-	    	fireCancel();
-	    }
+	protected void handleEscapePressed() {
+    	fireCancel();
 	}
 
     /**

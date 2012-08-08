@@ -21,9 +21,6 @@ import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -83,15 +80,12 @@ public class ErrorDialog extends DialogBox {
 			}
 		});
 	}
-	
+
 	/**
-	 * @see com.google.gwt.user.client.ui.DialogBox#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+	 * @see org.overlord.sramp.ui.client.widgets.dialogs.DialogBox#handleEscapePressed()
 	 */
 	@Override
-	protected void onPreviewNativeEvent(NativePreviewEvent event) {
-	    super.onPreviewNativeEvent(event);
-	    if (event.getTypeInt() == Event.ONKEYDOWN && event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ESCAPE) {
-	    	hide();
-	    }
+	protected void handleEscapePressed() {
+    	hide();
 	}
 }
