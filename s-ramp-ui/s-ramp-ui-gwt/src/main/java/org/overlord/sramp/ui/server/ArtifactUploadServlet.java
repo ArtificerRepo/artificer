@@ -61,9 +61,9 @@ public class ArtifactUploadServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse response)
 			throws ServletException, IOException {
-		
 		// Extract the relevant content from the POST'd form
 		if (ServletFileUpload.isMultipartContent(req)) {
+			Map<String, String> responseMap;
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
 			
@@ -87,15 +87,14 @@ public class ArtifactUploadServlet extends HttpServlet {
 				}
 				
 				// Now that the content has been extracted, process it (upload the artifact to the s-ramp repo).
-				Map<String, String> responseMap = uploadArtifact(artifactType, fileName, artifactContent);
-				writeToResponse(responseMap, response);
-			} catch (Exception e) {
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						"An error occurred while creating the file : " + e.getMessage());
-				return;
+				responseMap = uploadArtifact(artifactType, fileName, artifactContent);
+			} catch (Throwable e) {
+				responseMap = new HashMap<String, String>();
+				responseMap.put("error", e.getMessage());
 			} finally {
 				IOUtils.closeQuietly(artifactContent);
 			}
+			writeToResponse(responseMap, response);
 		} else {
 			response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
 					"Request contents type is not supported by the servlet.");
