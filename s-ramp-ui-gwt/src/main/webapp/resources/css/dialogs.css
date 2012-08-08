@@ -75,17 +75,15 @@ S
 .dialogContent {
   padding-top: 5px;
 }
-.dialog .form  {
-  padding: 5px;
+.dialog .buttonPanel {
+	text-align: right;
+	float: right;
 }
-.dialog .buttons {
-  border-top: 1px solid #d5d2d0;
-  text-align: right;
-  margin-top: 15px;
+.dialog .buttonPanel td {
+	padding: 3px;
 }
-.dialog .buttons .form_button {
-  float: none;
-  margin: 10px 5px 5px 0;
+.dialog .buttonPanel .button {
+	width: 110px;
 }
 
 .okCancelDialog {
@@ -98,16 +96,6 @@ S
 	max-width: 600px;
 	border-bottom: 1px dotted grey;
 }
-.okCancelDialog .okCancelButtonPanel {
-	text-align: right;
-	float: right;
-}
-.okCancelDialog .okCancelButtonPanel td {
-	padding: 3px;
-}
-.okCancelDialog .okCancelButtonPanel .button {
-	width: 110px;
-}
 
 .errorDialog .Caption {
 	padding: 10px 5px 5px 26px;
@@ -115,20 +103,23 @@ S
 	background-repeat: no-repeat;
 	background-position: 5px 9px;
 }
-.errorDialog .errorButtonPanel {
-	text-align: right;
-	float: right;
-}
-.errorDialog .errorButtonPanel td {
-	padding: 3px;
-}
-.errorDialog .errorButtonPanel .button {
-	width: 110px;
-}
 .errorDialog .errorDialogContent {
 	padding-left: 8px;
 	padding-right: 8px;
 	padding-bottom: 5px;
 	max-width: 600px;
 	border-bottom: 1px dotted grey;
+}
+
+.artifactUploadDialog .artifactUploadDialogContent {
+	max-width: 450px;
+}
+.artifactUploadDialog .message {
+	padding: 5px;
+}
+.artifactUploadDialog .linkWrapper {
+	padding: 10px 0px 10px 20px;
+}
+.artifactUploadDialog .pleaseWait {
+	margin: 15px;
 }
