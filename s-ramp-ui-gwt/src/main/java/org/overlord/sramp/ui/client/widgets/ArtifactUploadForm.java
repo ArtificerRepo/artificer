@@ -74,8 +74,8 @@ public class ArtifactUploadForm extends FormPanel {
 		submitButton.setEnabled(false);
 		
 		// Add all the widgets to the form.
-		vpanel.add(artifactType);
 		vpanel.add(upload);
+		vpanel.add(artifactType);
 		vpanel.add(submitButton);
 		
 		// Create a change handler that will enable/disable the Submit button.
@@ -88,6 +88,21 @@ public class ArtifactUploadForm extends FormPanel {
 			}
 		};
 		upload.addChangeHandler(changeHandler);
+		upload.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				if (artifactType.getSelectedIndex() != 0)
+					return;
+				String filename = upload.getFilename();
+				if (filename.endsWith(".xml")) {
+					artifactType.setSelectedIndex(1);
+					submitButton.setEnabled(true);
+				} else if (filename.endsWith(".xsd")) {
+					artifactType.setSelectedIndex(2);
+					submitButton.setEnabled(true);
+				}
+			}
+		});
 		artifactType.addChangeHandler(changeHandler);
 		
 		setWidget(vpanel);
