@@ -196,7 +196,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 				
 				FlowPanel linkWrapper = new FlowPanel();
 				linkWrapper.setStyleName("linkWrapper");
-				PlaceHyperlink link = new PlaceHyperlink("Click here to view/edit the new artifact");
+				PlaceHyperlink link = new PlaceHyperlink(i18n().translate("dashboard.upload-dialog.success.link-label"));
 				link.setTargetPlace(new ArtifactPlace(uuid));
 				link.addClickHandler(new ClickHandler() {
 					@Override
