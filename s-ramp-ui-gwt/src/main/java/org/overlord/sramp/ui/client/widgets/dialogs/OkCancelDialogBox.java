@@ -58,13 +58,14 @@ public class OkCancelDialogBox extends DialogBox implements HasOkCancelHandlers 
 
     	contentWrapper = new FlowPanel();
     	contentWrapper.setStyleName("okCancelDialogContent");
-    	okButton = new Button(i18n.translate("dialogs.okCancel.ok"));
-    	cancelButton = new Button(i18n.translate("dialogs.okCancel.cancel"));
+    	okButton = new Button(i18n.translate("dialogs.ok"));
+    	cancelButton = new Button(i18n.translate("dialogs.cancel"));
 
 		VerticalPanel vpanel = new VerticalPanel();
     	vpanel.add(contentWrapper);
     	HorizontalPanel buttonPanel = new HorizontalPanel();
-    	buttonPanel.setStyleName("okCancelButtonPanel");
+    	buttonPanel.setStyleName("buttonPanel");
+    	buttonPanel.addStyleName("okCancelButtonPanel");
     	buttonPanel.add(okButton);
     	buttonPanel.add(cancelButton);
     	vpanel.add(buttonPanel);
