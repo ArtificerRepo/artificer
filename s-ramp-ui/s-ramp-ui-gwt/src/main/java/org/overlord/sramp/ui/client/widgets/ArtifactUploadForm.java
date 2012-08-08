@@ -34,6 +34,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author eric.wittmann@redhat.com
  */
 public class ArtifactUploadForm extends FormPanel {
+
+	final FileUpload upload = new FileUpload();
 	
 	/**
 	 * Constructor.
@@ -50,7 +52,6 @@ public class ArtifactUploadForm extends FormPanel {
 		VerticalPanel vpanel = new VerticalPanel();
 
 		final ListBox artifactType = new ListBox();
-		final FileUpload upload = new FileUpload();
 		final Button submitButton = new Button(i18n.translate("artifact-upload.submit"));
 		
 		// Populate the type list box with options
@@ -90,6 +91,13 @@ public class ArtifactUploadForm extends FormPanel {
 		artifactType.addChangeHandler(changeHandler);
 		
 		setWidget(vpanel);
+	}
+
+	/**
+	 * Returns the filename chosen by the user.
+	 */
+	public String getFilename() {
+		return this.upload.getFilename();
 	}
 	
 }

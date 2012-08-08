@@ -59,7 +59,7 @@ public class ErrorDialog extends DialogBox {
 
     	FlowPanel contentWrapper = new FlowPanel();
     	contentWrapper.setStyleName("errorDialogContent");
-    	Button closeButton = new Button(i18n.translate("dialogs.error.close"));
+    	Button closeButton = new Button(i18n.translate("dialogs.close"));
     	
     	contentWrapper.add(new InlineLabel(message));
 

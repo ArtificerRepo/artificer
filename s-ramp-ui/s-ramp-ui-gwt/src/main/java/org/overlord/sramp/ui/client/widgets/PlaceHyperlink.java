@@ -21,7 +21,9 @@ import org.overlord.sramp.ui.client.services.place.IPlaceService;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.InlineHyperlink;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.impl.HyperlinkImpl;
 
 /**
  * A hyperlink that can be easily created from a {@link Place}.  Requires the {@link IPlaceService}
@@ -29,7 +31,9 @@ import com.google.gwt.user.client.ui.InlineHyperlink;
  *
  * @author eric.wittmann@redhat.com
  */
-public class PlaceHyperlink extends InlineHyperlink {
+public class PlaceHyperlink extends Anchor {
+	
+	private static HyperlinkImpl impl = new HyperlinkImpl();
 
 	private Place targetPlace;
 	private boolean enabled = true;
@@ -48,7 +52,7 @@ public class PlaceHyperlink extends InlineHyperlink {
 	 * @param place
 	 */
 	public PlaceHyperlink(String text, Place place) {
-		super(text, toHistoryToken(place));
+		super(text);
 		this.targetPlace = place;
 		getElement().setClassName("placeLink");
 		setTargetPlace(place);
@@ -65,7 +69,7 @@ public class PlaceHyperlink extends InlineHyperlink {
 	 * @param place the place to set
 	 */
 	public void setTargetPlace(Place place) {
-		setTargetHistoryToken(toHistoryToken(place));
+		this.setHref("#" + toHistoryToken(place));
 		this.targetPlace = place;
 		setEnabled(place != null);
 	}
@@ -95,10 +99,15 @@ public class PlaceHyperlink extends InlineHyperlink {
 	 */
 	@Override
 	public void onBrowserEvent(Event event) {
-		if (!isEnabled())
+		if (!isEnabled()) {
 			DOM.eventPreventDefault(event);
-		else
+		} else {
 			super.onBrowserEvent(event);
+			if (DOM.eventGetType(event) == Event.ONCLICK && impl.handleAsClick(event)) {
+				History.newItem(toHistoryToken(getTargetPlace()));
+				DOM.eventPreventDefault(event);
+			}
+		}
 	}
 
 	/**

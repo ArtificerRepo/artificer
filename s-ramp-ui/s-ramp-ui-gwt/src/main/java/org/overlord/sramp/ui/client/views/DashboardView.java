@@ -19,19 +19,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.overlord.sramp.ui.client.activities.IDashboardActivity;
+import org.overlord.sramp.ui.client.places.ArtifactPlace;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.util.JsonMap;
 import org.overlord.sramp.ui.client.widgets.ArtifactUploadForm;
 import org.overlord.sramp.ui.client.widgets.PlaceHyperlink;
+import org.overlord.sramp.ui.client.widgets.PleaseWait;
 import org.overlord.sramp.ui.client.widgets.TitlePanel;
 import org.overlord.sramp.ui.client.widgets.UnorderedListPanel;
+import org.overlord.sramp.ui.client.widgets.dialogs.DialogBox;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -65,8 +74,8 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		TitlePanel activitiesPanel = new TitlePanel(i18n().translate("dashboard.activities-panel.title"));
 		activitiesPanel.getElement().setId("dash-activitiesPanel");
 		UnorderedListPanel ulPanel = new UnorderedListPanel();
-		List<Hyperlink> activityLinks = createActivityLinks();
-		for (Hyperlink link : activityLinks)
+		List<Widget> activityLinks = createActivityLinks();
+		for (Widget link : activityLinks)
 			ulPanel.add(link);
 		activitiesPanel.setWidget(ulPanel);
 		
@@ -100,18 +109,26 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		// Create a FormPanel and point it at a service.
 		String url = GWT.getModuleBaseURL() + "services/artifactUpload";
 		final ArtifactUploadForm form = new ArtifactUploadForm(url);
+		final ArtifactUploadDialogBox dialog = new ArtifactUploadDialogBox();
 		
+		form.addSubmitHandler(new SubmitHandler() {
+			@Override
+			public void onSubmit(SubmitEvent event) {
+				dialog.onUploadStart(form.getFilename());
+			}
+		});
 		form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 			public void onSubmitComplete(SubmitCompleteEvent event) {
 				String jsonData = event.getResults();
+				// TODO handle error conditions in some way
 				int startIdx = jsonData.indexOf('(');
 				int endIdx = jsonData.lastIndexOf(')') + 1;
 				if (jsonData.endsWith(")"))
 					jsonData = jsonData.substring(startIdx);
 				else
 					jsonData = jsonData.substring(startIdx, endIdx);
-				Window.alert("JSON response:  " + jsonData);
 				form.reset();
+				dialog.onUploadComplete(jsonData);
 			}
 		});
 
@@ -121,15 +138,93 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 	/**
 	 * Create all of the activity links.
 	 */
-	private List<Hyperlink> createActivityLinks() {
-		List<Hyperlink> links = new ArrayList<Hyperlink>();
-		Hyperlink browseLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.browse.label"), new BrowsePlace());
+	private List<Widget> createActivityLinks() {
+		List<Widget> links = new ArrayList<Widget>();
+		PlaceHyperlink browseLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.browse.label"), new BrowsePlace());
 		links.add(browseLink);
-		Hyperlink ontologyLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.ontologies.label"), null);
+		PlaceHyperlink ontologyLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.ontologies.label"), null);
 		links.add(ontologyLink);
-		Hyperlink savedQueriesLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.saved-queries.label"), null);
+		PlaceHyperlink savedQueriesLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.saved-queries.label"), null);
 		links.add(savedQueriesLink);
 		return links;
 	}
 
+	/**
+	 * A dialog box that is displayed during and after an artifact is uploaded to the repository
+	 * from the dashboard.
+	 * @author eric.wittmann@redhat.com
+	 */
+	private class ArtifactUploadDialogBox extends DialogBox {
+		
+		private VerticalPanel content;
+		
+		/**
+		 * Constructor.
+		 */
+		public ArtifactUploadDialogBox() {
+			super(i18n().translate("dashboard.upload-dialog.title-1"));
+			content = new VerticalPanel();
+			content.setStyleName("artifactUploadDialogContent");
+			setWidget(content);
+			getElement().addClassName("artifactUploadDialog");
+		}
+
+		/**
+		 * Called when the artifact upload begins.
+		 * @param fileName
+		 */
+		public void onUploadStart(String fileName) {
+			content.clear();
+			content.add(new PleaseWait(i18n().translate("dashboard.upload-dialog.please-wait", fileName)));
+			center();
+			show();
+		}
+		
+		/**
+		 * Called after the artifact has been successfully uploaded.
+		 * @param jsonData
+		 */
+		public void onUploadComplete(String jsonData) {
+			JsonMap jsonMap = JsonMap.fromJSON(jsonData);
+			String uuid = jsonMap.get("uuid");
+			if (uuid != null) {
+				setText(i18n().translate("dashboard.upload-dialog.title-2"));
+				content.clear();
+				InlineLabel msg = new InlineLabel(i18n().translate("dashboard.upload-dialog.success.message", uuid));
+				msg.setStyleName("message");
+				content.add(msg);
+				
+				FlowPanel linkWrapper = new FlowPanel();
+				linkWrapper.setStyleName("linkWrapper");
+				PlaceHyperlink link = new PlaceHyperlink("Click here to view/edit the new artifact");
+				link.setTargetPlace(new ArtifactPlace(uuid));
+				link.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						hide();
+					}
+				});
+				linkWrapper.add(link);
+				content.add(linkWrapper);
+				
+		    	HorizontalPanel buttonPanel = new HorizontalPanel();
+		    	buttonPanel.setStyleName("buttonPanel");
+		    	buttonPanel.addStyleName("artifactUploadButtonPanel");
+		    	Button closeButton = new Button(i18n().translate("dialogs.close"));
+		    	closeButton.setStyleName("closeButton");
+		    	closeButton.addStyleName("button");
+		    	closeButton.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						hide();
+					}
+				});
+		    	buttonPanel.add(closeButton);
+		    	content.add(buttonPanel);
+		    	
+		    	center();
+			}
+		}
+		
+	}
 }
