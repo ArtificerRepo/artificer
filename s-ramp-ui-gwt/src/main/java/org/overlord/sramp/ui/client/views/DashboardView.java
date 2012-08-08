@@ -28,6 +28,7 @@ import org.overlord.sramp.ui.client.widgets.PleaseWait;
 import org.overlord.sramp.ui.client.widgets.TitlePanel;
 import org.overlord.sramp.ui.client.widgets.UnorderedListPanel;
 import org.overlord.sramp.ui.client.widgets.dialogs.DialogBox;
+import org.overlord.sramp.ui.client.widgets.dialogs.ErrorDialog;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -128,7 +129,18 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 				else
 					jsonData = jsonData.substring(startIdx, endIdx);
 				form.reset();
-				dialog.onUploadComplete(jsonData);
+
+				JsonMap jsonMap = JsonMap.fromJSON(jsonData);
+				String uuid = jsonMap.get("uuid");
+				String error = jsonMap.get("error");
+				if (uuid != null) {
+					dialog.onUploadComplete(uuid);
+				} else if (error != null) {
+					dialog.hide();
+					ErrorDialog errorDialog = new ErrorDialog("Error Uploading Artifact", error);
+					errorDialog.center();
+					errorDialog.show();
+				}
 			}
 		});
 
@@ -182,48 +194,44 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		
 		/**
 		 * Called after the artifact has been successfully uploaded.
-		 * @param jsonData
+		 * @param uuid
 		 */
-		public void onUploadComplete(String jsonData) {
-			JsonMap jsonMap = JsonMap.fromJSON(jsonData);
-			String uuid = jsonMap.get("uuid");
-			if (uuid != null) {
-				setText(i18n().translate("dashboard.upload-dialog.title-2"));
-				content.clear();
-				InlineLabel msg = new InlineLabel(i18n().translate("dashboard.upload-dialog.success.message", uuid));
-				msg.setStyleName("message");
-				content.add(msg);
-				
-				FlowPanel linkWrapper = new FlowPanel();
-				linkWrapper.setStyleName("linkWrapper");
-				PlaceHyperlink link = new PlaceHyperlink(i18n().translate("dashboard.upload-dialog.success.link-label"));
-				link.setTargetPlace(new ArtifactPlace(uuid));
-				link.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						hide();
-					}
-				});
-				linkWrapper.add(link);
-				content.add(linkWrapper);
-				
-		    	HorizontalPanel buttonPanel = new HorizontalPanel();
-		    	buttonPanel.setStyleName("buttonPanel");
-		    	buttonPanel.addStyleName("artifactUploadButtonPanel");
-		    	Button closeButton = new Button(i18n().translate("dialogs.close"));
-		    	closeButton.setStyleName("closeButton");
-		    	closeButton.addStyleName("button");
-		    	closeButton.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						hide();
-					}
-				});
-		    	buttonPanel.add(closeButton);
-		    	content.add(buttonPanel);
-		    	
-		    	center();
-			}
+		public void onUploadComplete(String uuid) {
+			setText(i18n().translate("dashboard.upload-dialog.title-2"));
+			content.clear();
+			InlineLabel msg = new InlineLabel(i18n().translate("dashboard.upload-dialog.success.message", uuid));
+			msg.setStyleName("message");
+			content.add(msg);
+			
+			FlowPanel linkWrapper = new FlowPanel();
+			linkWrapper.setStyleName("linkWrapper");
+			PlaceHyperlink link = new PlaceHyperlink(i18n().translate("dashboard.upload-dialog.success.link-label"));
+			link.setTargetPlace(new ArtifactPlace(uuid));
+			link.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					hide();
+				}
+			});
+			linkWrapper.add(link);
+			content.add(linkWrapper);
+			
+	    	HorizontalPanel buttonPanel = new HorizontalPanel();
+	    	buttonPanel.setStyleName("buttonPanel");
+	    	buttonPanel.addStyleName("artifactUploadButtonPanel");
+	    	Button closeButton = new Button(i18n().translate("dialogs.close"));
+	    	closeButton.setStyleName("closeButton");
+	    	closeButton.addStyleName("button");
+	    	closeButton.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					hide();
+				}
+			});
+	    	buttonPanel.add(closeButton);
+	    	content.add(buttonPanel);
+	    	
+	    	center();
 		}
 		
 	}
