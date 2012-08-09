@@ -121,7 +121,6 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
 			public void onSubmitComplete(SubmitCompleteEvent event) {
 				String jsonData = event.getResults();
-				// TODO handle error conditions in some way
 				int startIdx = jsonData.indexOf('(');
 				int endIdx = jsonData.lastIndexOf(')') + 1;
 				if (jsonData.endsWith(")"))
