@@ -18,3 +18,16 @@
 #dash-uploadPanel form td {
 	padding: 3px;
 }
+
+.artifactSummaryPanel {
+	padding: 5px;
+	border: 1px solid #E5E2E0;
+}
+.artifactSummaryPanel .simpleFormPanel span.label {
+	padding-right: 5px;
+	font-weight: bold;
+}
+.artifactSummaryPanel .simpleFormPanel input {
+	width: 190px;
+	border: none;
+}

@@ -33,6 +33,7 @@
 	overflow: hidden;
 	border-right: 1px solid #E5E2E0;
 	border-bottom: 1px solid #E5E2E0;
+	cursor: pointer;
 }
 
 .cellTableEvenRow {
