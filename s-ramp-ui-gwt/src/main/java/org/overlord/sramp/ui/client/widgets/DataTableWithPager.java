@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.ui.client.widgets;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,7 +32,7 @@ import com.google.gwt.user.cellview.client.ColumnSortList.ColumnSortInfo;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.SelectionModel;
 
 /**
  * A single widget that models a data table with a pager.
@@ -126,8 +127,16 @@ public abstract class DataTableWithPager<T> extends FlowPanel {
 	 * Sets the selection model on the table.
 	 * @param selectionModel
 	 */
-	public void setSelectionModel(SingleSelectionModel<T> selectionModel) {
+	public void setSelectionModel(SelectionModel<T> selectionModel) {
 		this.table.setSelectionModel(selectionModel);
+	}
+	
+	/**
+	 * Gets the configured selection model from the table.
+	 */
+	@SuppressWarnings("unchecked")
+	public SelectionModel<T> getSelectionModel() {
+		return (SelectionModel<T>) this.table.getSelectionModel();
 	}
 
 	/**
@@ -213,5 +222,15 @@ public abstract class DataTableWithPager<T> extends FlowPanel {
 	 * @param currentPlace
 	 */
 	protected abstract AbstractPagedPlace createPagerPlace(AbstractPagedPlace currentPlace);
+	
+	/**
+	 * Returns a list of the selected items in the table.  If nothing is currently selected 
+	 * then an empty list is returned.
+	 */
+	public List<T> getCurrentSelection() {
+		List<T> rval = new ArrayList<T>();
+		this.table.getSelectionModel();
+		return rval;
+	}
 
 }

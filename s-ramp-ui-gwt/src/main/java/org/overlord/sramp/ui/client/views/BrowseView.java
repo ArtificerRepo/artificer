@@ -20,6 +20,7 @@ import java.util.List;
 import org.overlord.sramp.ui.client.activities.IBrowseActivity;
 import org.overlord.sramp.ui.client.places.AbstractPagedPlace;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.widgets.ArtifactSummaryPanel;
 import org.overlord.sramp.ui.client.widgets.DataTable;
 import org.overlord.sramp.ui.client.widgets.DataTableWithPager;
 import org.overlord.sramp.ui.client.widgets.PlaceFilterPanel;
@@ -30,7 +31,6 @@ import org.overlord.sramp.ui.shared.types.ArtifactFilter;
 
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -47,6 +47,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 
 	private ArtifactDataTable artifacts;
 	private PlaceFilterPanel<BrowsePlace> filterPanel;
+	private ArtifactSummaryPanel summaryPanel;
 	private BrowsePlace currentPlace;
 
 	/**
@@ -65,8 +66,8 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 				return false;
 			}
 		};
-		Label summaryPanel = new Label("Artifact Summary Goes Here (TBD)");
 		artifacts = createArtifactTable();
+		summaryPanel = new ArtifactSummaryPanel();
 
 		HorizontalPanel hpanel = new HorizontalPanel();
 		hpanel.setWidth("100%");
@@ -74,7 +75,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 		hpanel.add(artifacts);
 		hpanel.add(summaryPanel);
 
-		hpanel.setCellWidth(filterPanel, "200px");
+		hpanel.setCellWidth(filterPanel, "175px");
 		hpanel.setCellWidth(summaryPanel, "300px");
 
 		this.initWidget(hpanel);
@@ -115,14 +116,19 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	 * Creates the table in which our list of artifacts will be displayed.
 	 */
 	private ArtifactDataTable createArtifactTable() {
-		ArtifactDataTable table = new ArtifactDataTable();
+		final ArtifactDataTable table = new ArtifactDataTable();
 		table.setWidth("100%");
 		table.setEmptyTableMessage(i18n().translate("browse.artifacts.no-artifacts"));
 		table.setLoadingMessage(i18n().translate("browse.artifacts.loading-artifacts"));
-		SingleSelectionModel<ArtifactSummary> selectionModel = new SingleSelectionModel<ArtifactSummary>();
+		final SingleSelectionModel<ArtifactSummary> selectionModel = new SingleSelectionModel<ArtifactSummary>();
 		selectionModel.addSelectionChangeHandler(new Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
+				ArtifactSummary artifact = selectionModel.getSelectedObject();
+				if (artifact == null)
+					summaryPanel.reset();
+				else
+					summaryPanel.setValue(artifact);
 			}
 		});
 		table.setSelectionModel(selectionModel);
@@ -193,16 +199,26 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			name.setSortable(true);
 			name.setDataStoreName("name");
 			table.addColumn(name, "Artifact Name");
-//			setColumnWidth(name, 15.0, Unit.PCT);
 			
-			TextColumn<ArtifactSummary> uuid = new TextColumn<ArtifactSummary>() {
+			TextColumn<ArtifactSummary> createdOn = new TextColumn<ArtifactSummary>() {
 				@Override
 				public String getValue(ArtifactSummary artifact) {
-					return artifact.getUuid();
+					return artifact.getCreatedOn().toString();
 				}
 			};
-			uuid.setSortable(false);
-			table.addColumn(uuid, "UUID");
+			createdOn.setSortable(true);
+			createdOn.setDataStoreName("createdOn");
+			table.addColumn(createdOn, "Created On");
+			
+			TextColumn<ArtifactSummary> createdBy = new TextColumn<ArtifactSummary>() {
+				@Override
+				public String getValue(ArtifactSummary artifact) {
+					return artifact.getCreatedBy();
+				}
+			};
+			createdBy.setSortable(true);
+			createdBy.setDataStoreName("createdBy");
+			table.addColumn(createdBy, "Created By");
 //			setColumnWidth(uuid, 20.0, Unit.PCT);
 		}
 		
