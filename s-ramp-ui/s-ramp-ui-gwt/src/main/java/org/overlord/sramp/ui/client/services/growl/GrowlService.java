@@ -18,6 +18,7 @@ package org.overlord.sramp.ui.client.services.growl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.overlord.sramp.ui.client.animation.FadeOutAnimation;
 import org.overlord.sramp.ui.client.services.AbstractService;
 import org.overlord.sramp.ui.client.widgets.dialogs.GrowlDialog;
 
@@ -60,13 +61,12 @@ public class GrowlService extends AbstractService implements IGrowlService {
 			@Override
 			protected void onMouseIn() {
 				super.onMouseIn();
-				System.out.println("Canceling timer for growl: " + growl.getId());
 				growl.getAliveTimer().cancel();
+				growl.getAutoCloseAnimation().cancel();
 			}
 			@Override
 			protected void onMouseOut() {
 				super.onMouseOut();
-				System.out.println("Rescheduling timer for growl: " + growl.getId());
 				growl.getAliveTimer().schedule(5000);
 			}
 		};
@@ -79,29 +79,31 @@ public class GrowlService extends AbstractService implements IGrowlService {
 				onGrowlClosed(growl);
 			}
 		});
-		
-		Timer aliveTimer = createAliveTimer(growl, dialog);
-		growl.setAliveTimer(aliveTimer);
-		
-		positionAndShowGrowlDialog(dialog, growlIndex);
-	}
 
-	/**
-	 * Creates the alive timer for the growl.  When the alive timer fires, the growl will
-	 * automatically close.
-	 * @param growl
-	 * @param dialog
-	 */
-	protected Timer createAliveTimer(final Growl growl, final GrowlDialog dialog) {
+		// Create the timer that will control when the growl automatically goes away.
 		Timer aliveTimer = new Timer() {
 			@Override
 			public void run() {
+				growl.getAutoCloseAnimation().run(1000);
+			}
+		};
+
+		growl.setAliveTimer(aliveTimer);
+
+		// Create the animation used to make the growl go away (when the time comes)
+		FadeOutAnimation fadeOut = new FadeOutAnimation(dialog) {
+			@Override
+			protected void doOnComplete() {
 				dialog.hide();
 				onGrowlClosed(growl);
 			}
 		};
+		growl.setAutoCloseAnimation(fadeOut);
+		
+		positionAndShowGrowlDialog(dialog, growlIndex);
+		
+		// Schedule the growl to go away automatically.
 		aliveTimer.schedule(5000);
-		return aliveTimer;
 	}
 
 	/**
