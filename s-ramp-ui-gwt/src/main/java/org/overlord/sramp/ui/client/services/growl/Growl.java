@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.overlord.sramp.ui.client.widgets.dialogs.GrowlDialog;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.user.client.Timer;
 
 /**
@@ -35,6 +36,7 @@ public class Growl {
 	private Timer aliveTimer;
 	private Timer fadeTimer;
 	private GrowlDialog dialog;
+	private Animation autoCloseAnimation;
 
 	/**
 	 * Constructor.
@@ -144,6 +146,20 @@ public class Growl {
 	 */
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the autoCloseAnimation
+	 */
+	public Animation getAutoCloseAnimation() {
+		return autoCloseAnimation;
+	}
+
+	/**
+	 * @param autoCloseAnimation the autoCloseAnimation to set
+	 */
+	public void setAutoCloseAnimation(Animation autoCloseAnimation) {
+		this.autoCloseAnimation = autoCloseAnimation;
 	}
 
 }

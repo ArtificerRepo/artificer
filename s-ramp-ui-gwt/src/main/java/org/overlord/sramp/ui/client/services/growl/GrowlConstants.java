@@ -23,6 +23,6 @@ public class GrowlConstants {
 	
 	public static final int GROWL_WIDTH = 400;
 	public static final int GROWL_HEIGHT = 75;
-	public static final int GROWL_MARGIN = 10;
+	public static final int GROWL_MARGIN = 5;
 
 }
