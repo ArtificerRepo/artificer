@@ -15,8 +15,13 @@
  */
 package org.overlord.sramp.ui.client.widgets.dialogs;
 
+import org.overlord.sramp.ui.client.services.growl.GrowlConstants;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -34,6 +39,7 @@ public class GrowlDialog extends com.google.gwt.user.client.ui.DialogBox {
 	private Label title;
 	private Anchor closeButton;
 	private Label message;
+	private boolean mouseIn = false;
 
 	/**
 	 * Constructor.
@@ -83,4 +89,71 @@ public class GrowlDialog extends com.google.gwt.user.client.ui.DialogBox {
 		this.closeButton.addClickHandler(closeHandler);
 	}
 	
+	/**
+	 * @see com.google.gwt.user.client.ui.DialogBox#onPreviewNativeEvent(com.google.gwt.user.client.Event.NativePreviewEvent)
+	 */
+	@Override
+	protected void onPreviewNativeEvent(NativePreviewEvent event) {
+	    super.onPreviewNativeEvent(event);
+	    if (event.getTypeInt() == Event.ONMOUSEMOVE) {
+	    	int x = event.getNativeEvent().getClientX();
+	    	int y = event.getNativeEvent().getClientY();
+	    	handleMouseMove(x, y);
+	    }
+	}
+
+	/**
+	 * Called every time the mouse moves.  This method tries to determine proper mouse-in and
+	 * mouse-out events.
+	 * @param clientX
+	 * @param clientY
+	 */
+	private void handleMouseMove(int clientX, int clientY) {
+		if (isMouseInMe(clientX, clientY)) {
+			if (this.mouseIn) {
+				// do nothing
+			} else {
+				this.mouseIn = true;
+				onMouseIn();
+			}
+		} else {
+			if (this.mouseIn) {
+				onMouseOut();
+				this.mouseIn = false;
+			}
+		}
+	}
+
+	/**
+	 * Returns true if the given screen coordinates lie within the boundary of the growl dialog.
+	 * @param clientX
+	 * @param clientY
+	 */
+	private boolean isMouseInMe(int clientX, int clientY) {
+		try {
+			String topStyle = getElement().getStyle().getTop();
+			int top = new Integer(topStyle.split("px")[0]).intValue();
+			int bottom = top + GrowlConstants.GROWL_HEIGHT;
+			int left = Window.getClientWidth() - GrowlConstants.GROWL_WIDTH - GrowlConstants.GROWL_MARGIN;
+			int right = left + GrowlConstants.GROWL_WIDTH;
+			return clientX >= left && clientX <= right && clientY >= top && clientY <= bottom;
+		} catch (Throwable t) {
+			return false;
+		}
+	}
+
+	/**
+	 * Called when the mouse enters the dialog.
+	 */
+	protected void onMouseIn() {
+		addStyleName("growlDialog-hover");
+	}
+
+	/**
+	 * Called when the mouse leaves the dialog.
+	 */
+	protected void onMouseOut() {
+		removeStyleName("growlDialog-hover");
+	}
+
 }

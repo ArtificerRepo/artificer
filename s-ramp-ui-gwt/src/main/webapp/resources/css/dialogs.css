@@ -131,6 +131,9 @@ S
 	width: 400px;
 	height: 75px;
 }
+.growlDialog-hover {
+	border: 1px solid #ED5C5C;
+}
 .growlDialog .Caption {
 	height: 8px;
 }
