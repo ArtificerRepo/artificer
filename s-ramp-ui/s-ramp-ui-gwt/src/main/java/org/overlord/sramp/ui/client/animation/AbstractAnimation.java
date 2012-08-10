@@ -16,6 +16,7 @@
 package org.overlord.sramp.ui.client.animation;
 
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Base class for animations.
@@ -26,11 +27,14 @@ public abstract class AbstractAnimation extends Animation {
 	
 	private boolean cancelled = false;
 	private boolean running = false;
+	private Widget targetWidget;
 
 	/**
 	 * Constructor.
+	 * @param targetWidget
 	 */
-	public AbstractAnimation() {
+	public AbstractAnimation(Widget targetWidget) {
+		setTargetWidget(targetWidget);
 	}
 
 	/**
@@ -103,6 +107,20 @@ public abstract class AbstractAnimation extends Animation {
 	 */
 	public void setRunning(boolean running) {
 		this.running = running;
+	}
+
+	/**
+	 * @return the targetWidget
+	 */
+	public Widget getTargetWidget() {
+		return targetWidget;
+	}
+
+	/**
+	 * @param targetWidget the targetWidget to set
+	 */
+	public void setTargetWidget(Widget targetWidget) {
+		this.targetWidget = targetWidget;
 	}
 
 }

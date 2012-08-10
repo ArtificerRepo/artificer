@@ -30,6 +30,7 @@ import com.google.gwt.user.client.Timer;
 public class Growl {
 	
 	private int id;
+	private int growlIndex;
 	private Date timestamp;
 	private String title;
 	private String message;
@@ -160,6 +161,20 @@ public class Growl {
 	 */
 	public void setAutoCloseAnimation(Animation autoCloseAnimation) {
 		this.autoCloseAnimation = autoCloseAnimation;
+	}
+
+	/**
+	 * @return the growlIndex
+	 */
+	public int getGrowlIndex() {
+		return growlIndex;
+	}
+
+	/**
+	 * @param growlIndex the growlIndex to set
+	 */
+	public void setGrowlIndex(int growlIndex) {
+		this.growlIndex = growlIndex;
 	}
 
 }
