@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.overlord.sramp.ui.client.services.breadcrumb.BreadcrumbService;
 import org.overlord.sramp.ui.client.services.breadcrumb.IBreadcrumbService;
+import org.overlord.sramp.ui.client.services.growl.GrowlService;
+import org.overlord.sramp.ui.client.services.growl.IGrowlService;
 import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
 import org.overlord.sramp.ui.client.services.i18n.LocalizationService;
 import org.overlord.sramp.ui.client.services.place.IPlaceService;
@@ -40,6 +42,7 @@ public class ServiceList {
 		{ IPlaceService.class, new PlaceService() },
 		{ IBreadcrumbService.class, new BreadcrumbService() },
 		{ IQueryService.class, new QueryService() },
+		{ IGrowlService.class, new GrowlService() },
 		
 	};
 	

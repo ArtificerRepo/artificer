@@ -19,6 +19,7 @@ import org.overlord.sramp.ui.client.activities.IActivity;
 import org.overlord.sramp.ui.client.services.IService;
 import org.overlord.sramp.ui.client.services.ServiceNotFoundException;
 import org.overlord.sramp.ui.client.services.Services;
+import org.overlord.sramp.ui.client.services.growl.IGrowlService;
 import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -69,6 +70,13 @@ public class AbstractView<A extends IActivity> extends Composite implements IVie
 	 */
 	protected ILocalizationService i18n() {
 		return getService(ILocalizationService.class);
+	}
+	
+	/**
+	 * Convenience method for getting the growl service.
+	 */
+	protected IGrowlService growl() {
+		return getService(IGrowlService.class);
 	}
 
 }
