@@ -19,17 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.overlord.sramp.ui.client.services.AbstractService;
-import org.overlord.sramp.ui.client.services.IServiceLifecycleListener;
-import org.overlord.sramp.ui.client.services.ServiceLifecycleContext;
 import org.overlord.sramp.ui.client.widgets.dialogs.GrowlDialog;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
@@ -38,40 +35,16 @@ import com.google.gwt.user.client.Window;
  *
  * @author eric.wittmann@redhat.com
  */
-public class GrowlService extends AbstractService implements IGrowlService, ResizeHandler {
-
-	private static final int GROWL_WIDTH = 400;
-	private static final int GROWL_HEIGHT = 75;
-	private static final int GROWL_MARGIN = 10;
+public class GrowlService extends AbstractService implements IGrowlService {
 
 	private List<Growl> activeGrowls = new ArrayList<Growl>();
 	private List<Growl> completedGrowls = new ArrayList<Growl>();
 	private int growlCounter = 0;
-	private int windowWidth;
-	private int windowHeight;
 
 	/**
 	 * Constructor.
 	 */
 	public GrowlService() {
-	}
-	
-	/**
-	 * @see org.overlord.sramp.ui.client.services.AbstractService#start(org.overlord.sramp.ui.client.services.ServiceLifecycleContext, org.overlord.sramp.ui.client.services.IServiceLifecycleListener)
-	 */
-	@Override
-	public void start(ServiceLifecycleContext context, IServiceLifecycleListener serviceListener) {
-		saveCurrentWindowDims();
-		Window.addResizeHandler(this);
-		super.start(context, serviceListener);
-	}
-
-	/**
-	 * Called to get the current width and height of the browser window.
-	 */
-	private void saveCurrentWindowDims() {
-		windowWidth = Window.getClientWidth();
-		windowHeight = Window.getClientHeight();
 	}
 
 	/**
@@ -83,8 +56,22 @@ public class GrowlService extends AbstractService implements IGrowlService, Resi
 		this.activeGrowls.add(growl);
 		int growlIndex = this.activeGrowls.size() - 1;
 		
-		final GrowlDialog dialog = new GrowlDialog(title, message);
+		final GrowlDialog dialog = new GrowlDialog(title, message) {
+			@Override
+			protected void onMouseIn() {
+				super.onMouseIn();
+				System.out.println("Canceling timer for growl: " + growl.getId());
+				growl.getAliveTimer().cancel();
+			}
+			@Override
+			protected void onMouseOut() {
+				super.onMouseOut();
+				System.out.println("Rescheduling timer for growl: " + growl.getId());
+				growl.getAliveTimer().schedule(5000);
+			}
+		};
 		growl.setDialog(dialog);
+		// Close handler (user closed the notification)
 		dialog.addCloseHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -92,6 +79,20 @@ public class GrowlService extends AbstractService implements IGrowlService, Resi
 				onGrowlClosed(growl);
 			}
 		});
+		
+		Timer aliveTimer = createAliveTimer(growl, dialog);
+		growl.setAliveTimer(aliveTimer);
+		
+		positionAndShowGrowlDialog(dialog, growlIndex);
+	}
+
+	/**
+	 * Creates the alive timer for the growl.  When the alive timer fires, the growl will
+	 * automatically close.
+	 * @param growl
+	 * @param dialog
+	 */
+	protected Timer createAliveTimer(final Growl growl, final GrowlDialog dialog) {
 		Timer aliveTimer = new Timer() {
 			@Override
 			public void run() {
@@ -100,9 +101,7 @@ public class GrowlService extends AbstractService implements IGrowlService, Resi
 			}
 		};
 		aliveTimer.schedule(5000);
-		growl.setAliveTimer(aliveTimer);
-		
-		positionAndShowGrowlDialog(dialog, growlIndex);
+		return aliveTimer;
 	}
 
 	/**
@@ -133,20 +132,21 @@ public class GrowlService extends AbstractService implements IGrowlService, Resi
 	 * @param growlIndex the growl's position relative to other growls (position in the queue of growls)
 	 */
 	private void positionAndShowGrowlDialog(GrowlDialog dialog, int growlIndex) {
-		// Calculate the growl dialog's position (based on its size and growl index)
-		int top = this.windowHeight - ((GROWL_HEIGHT + GROWL_MARGIN) * (growlIndex+1));
-		int left = this.windowWidth - GROWL_WIDTH - GROWL_MARGIN;
-	    left -= Document.get().getBodyOffsetLeft();
-	    top -= Document.get().getBodyOffsetTop();
-	    // Position the popup - GWT will use absolute CSS positioning
-	    dialog.setPopupPosition(left, top);
-	    // Show the dialog (uses the aforementioned absolute CSS positioning)
+		// Show the dialog first, but make it invisible (so GWT can do its absolute positioning mojo)
+		dialog.getElement().getStyle().setVisibility(Visibility.HIDDEN);
 	    dialog.show();
+
+	    // Calculate the growl dialog's position (based on its size and growl index)
+		int top = Window.getClientHeight() - ((GrowlConstants.GROWL_HEIGHT + GrowlConstants.GROWL_MARGIN) * (growlIndex+1));
+	    top -= Document.get().getBodyOffsetTop();
+		int right = GrowlConstants.GROWL_MARGIN;
+
 	    // Now pin the growl to the right using fixed positioning
-		int right = GROWL_MARGIN;
 		dialog.getElement().getStyle().setPosition(Position.FIXED);
+		dialog.getElement().getStyle().setTop(top, Unit.PX);
 		dialog.getElement().getStyle().setRight(right, Unit.PX);
 		dialog.getElement().getStyle().setProperty("left", null);
+	    dialog.getElement().getStyle().setVisibility(Visibility.VISIBLE);
 	}
 
 	/**
@@ -156,14 +156,6 @@ public class GrowlService extends AbstractService implements IGrowlService, Resi
 	 */
 	private Growl createGrowl(String title, String message) {
 		return new Growl(growlCounter++, title, message);
-	}
-
-	/**
-	 * @see com.google.gwt.event.logical.shared.ResizeHandler#onResize(com.google.gwt.event.logical.shared.ResizeEvent)
-	 */
-	@Override
-	public void onResize(ResizeEvent event) {
-		saveCurrentWindowDims();
 	}
 
 }
