@@ -52,6 +52,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DashboardView extends AbstractView<IDashboardActivity> implements IDashboardView {
 	
+	private int growlCounter = 1;
+	
 	/**
 	 * Constructor.
 	 */
@@ -90,6 +92,31 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		helpPanel.getElement().setId("dash-helpPanel");
 		HTMLPanel helpText = new HTMLPanel(i18n().translate("dashboard.help-panel.help-text"));
 		helpPanel.setWidget(helpText);
+
+		// Create the Help panel2
+		TitlePanel helpPanel2 = new TitlePanel(i18n().translate("dashboard.help-panel.title"));
+		helpPanel2.getElement().setId("dash-helpPanel2");
+		HTMLPanel helpText2 = new HTMLPanel(i18n().translate("dashboard.help-panel.help-text"));
+		helpPanel2.setWidget(helpText2);
+		// Create the Help panel3
+		TitlePanel helpPanel3 = new TitlePanel(i18n().translate("dashboard.help-panel.title"));
+		helpPanel3.getElement().setId("dash-helpPanel3");
+		HTMLPanel helpText3 = new HTMLPanel(i18n().translate("dashboard.help-panel.help-text"));
+		helpPanel3.setWidget(helpText3);
+
+		
+		// Create the TEST GROWL panel
+		TitlePanel growlPanel = new TitlePanel("Growl Test");
+		growlPanel.getElement().setId("dash-growlPanel");
+		Button testGrowlButton = new Button("Test Growl");
+		testGrowlButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				growl().growl("Testing Growl Service: " + growlCounter++, "This is only a test of the emergency growling system.  If this had been a real growl, something more interesting would be said.");
+			}
+		});
+		growlPanel.setWidget(testGrowlButton);
+
 		
 		// Now size the columns properly
 		dashboardPanel.setCellWidth(leftColumn, "50%");
@@ -98,7 +125,10 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		// Add the panels to the dashboard
 		leftColumn.add(activitiesPanel);
 		leftColumn.add(uploadPanel);
+		leftColumn.add(helpPanel2);
+		leftColumn.add(helpPanel3);
 		rightColumn.add(helpPanel);
+		rightColumn.add(growlPanel);
 
 		this.initWidget(dashboardPanel);
 	}
