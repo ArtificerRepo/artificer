@@ -24,28 +24,13 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 public class FadeOutAnimation extends AbstractAnimation {
-
-	private Widget targetWidget;
 	
 	/**
 	 * Constructor.
+	 * @param targetWidget
 	 */
 	public FadeOutAnimation(Widget targetWidget) {
-		setTargetWidget(targetWidget);
-	}
-
-	/**
-	 * @return the targetWidget
-	 */
-	public Widget getTargetWidget() {
-		return targetWidget;
-	}
-
-	/**
-	 * @param targetWidget the targetWidget to set
-	 */
-	public void setTargetWidget(Widget targetWidget) {
-		this.targetWidget = targetWidget;
+		super(targetWidget);
 	}
 
 	/**

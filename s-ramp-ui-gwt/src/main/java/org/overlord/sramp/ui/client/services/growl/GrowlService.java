@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.overlord.sramp.ui.client.animation.FadeOutAnimation;
+import org.overlord.sramp.ui.client.animation.MoveAnimation;
 import org.overlord.sramp.ui.client.services.AbstractService;
 import org.overlord.sramp.ui.client.widgets.dialogs.GrowlDialog;
 
@@ -99,7 +100,8 @@ public class GrowlService extends AbstractService implements IGrowlService {
 			}
 		};
 		growl.setAutoCloseAnimation(fadeOut);
-		
+
+		growl.setGrowlIndex(growlIndex);
 		positionAndShowGrowlDialog(dialog, growlIndex);
 		
 		// Schedule the growl to go away automatically.
@@ -124,8 +126,29 @@ public class GrowlService extends AbstractService implements IGrowlService {
 	private void repositionGrowls() {
 		for (int growlIndex = 0; growlIndex < activeGrowls.size(); growlIndex++) {
 			Growl growl = activeGrowls.get(growlIndex);
-			positionAndShowGrowlDialog(growl.getDialog(), growlIndex);
+			if (growl.getGrowlIndex() != growlIndex) {
+				moveGrowl(growl, growl.getGrowlIndex(), growlIndex);
+			}
 		}
+	}
+
+	/**
+	 * Moves a growl from one position to another in the stack of growls.
+	 * @param growl
+	 * @param fromGrowlIndex
+	 * @param toGrowlIndex
+	 */
+	private void moveGrowl(Growl growl, int fromGrowlIndex, int toGrowlIndex) {
+		int fromTop = -1;
+		try {
+			fromTop = new Integer(growl.getDialog().getElement().getStyle().getTop().split("px")[0]).intValue();
+		} catch (Throwable t) {
+			fromTop = Window.getClientHeight() - ((GrowlConstants.GROWL_HEIGHT + GrowlConstants.GROWL_MARGIN) * (fromGrowlIndex+1));
+		}
+		int toTop = Window.getClientHeight() - ((GrowlConstants.GROWL_HEIGHT + GrowlConstants.GROWL_MARGIN) * (toGrowlIndex+1));
+		MoveAnimation animation = new MoveAnimation(growl.getDialog(), "top", fromTop, toTop);
+		animation.run(200);
+		growl.setGrowlIndex(toGrowlIndex);
 	}
 
 	/**
