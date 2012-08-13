@@ -29,6 +29,7 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Implements the lightweight notification service.
@@ -75,19 +76,66 @@ public class GrowlService extends AbstractService implements IGrowlService {
 	}
 	
 	/**
-	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#onProgressComplete(int, java.lang.String)
+	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#onProgressComplete(int, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void onProgressComplete(int growlId, String message) {
+	public void onProgressComplete(int growlId, String title, String message) {
+		Growl growl = getGrowl(growlId);
+		if (growl != null) {
+			growl.getDialog().setTitle(title);
+			growl.getDialog().setMessage(message, GrowlType.notification);
+			growl.getAliveTimer().schedule(5000);
+		}
+	}
+	
+	/**
+	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#onProgressComplete(int, java.lang.String, com.google.gwt.user.client.ui.Widget)
+	 */
+	@Override
+	public void onProgressComplete(int growlId, String title, Widget message) {
+		Growl growl = getGrowl(growlId);
+		if (growl != null) {
+			growl.getDialog().setTitle(title);
+			growl.getDialog().setMessage(message, GrowlType.notification);
+			growl.getAliveTimer().schedule(5000);
+		}
+	}
+	
+	/**
+	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#onProgressError(int, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void onProgressError(int growlId, String title, String message) {
+		Growl growl = getGrowl(growlId);
+		if (growl != null) {
+			growl.getDialog().setTitle(title);
+			growl.getDialog().setMessage(message, GrowlType.error);
+		}
+	}
+	
+	/**
+	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#onProgressError(int, java.lang.String, com.google.gwt.user.client.ui.Widget)
+	 */
+	@Override
+	public void onProgressError(int growlId, String title, Widget message) {
+		Growl growl = getGrowl(growlId);
+		if (growl != null) {
+			growl.getDialog().setTitle(title);
+			growl.getDialog().setMessage(message, GrowlType.error);
+		}
+	}
+	
+	/**
+	 * Gets a growl by growlId.
+	 * @param growlId
+	 */
+	private Growl getGrowl(int growlId) {
 		Growl growl = null;
 		for (Growl g : this.activeGrowls) {
 			if (g.getId() == growlId)
 				growl = g;
 		}
-		if (growl == null)
-			return;
-		growl.getDialog().setMessage(message, GrowlType.notification);
-		growl.getAliveTimer().schedule(5000);
+		return growl;
 	}
 
 	/**
@@ -189,8 +237,9 @@ public class GrowlService extends AbstractService implements IGrowlService {
 			@Override
 			protected void onMouseOut() {
 				super.onMouseOut();
-				if (getGrowlType() == GrowlType.notification)
+				if (getGrowlType() == GrowlType.notification) {
 					growl.getAliveTimer().schedule(5000);
+				}
 			}
 		};
 		growl.setDialog(dialog);

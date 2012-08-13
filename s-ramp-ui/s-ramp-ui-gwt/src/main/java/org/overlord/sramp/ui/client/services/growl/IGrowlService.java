@@ -17,6 +17,8 @@ package org.overlord.sramp.ui.client.services.growl;
 
 import org.overlord.sramp.ui.client.services.IService;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * A lightweight notification service.
  *
@@ -43,9 +45,38 @@ public interface IGrowlService extends IService {
 
 	/**
 	 * Called by clients to inform the growl service that a progress style growl has 
-	 * completed.
-	 * @param growlId
+	 * completed successfully.
+	 * @param growlId the ID of the growl to update - returned by a previous call to growl()
+	 * @param title the new title for the growl dialog
+	 * @param message the new message for the growl dialog
 	 */
-	public void onProgressComplete(int growlId, String message);
+	public void onProgressComplete(int growlId, String title, String message);
+
+	/**
+	 * Called by clients to inform the growl service that a progress style growl has 
+	 * completed successfully.
+	 * @param growlId the ID of the growl to update - returned by a previous call to growl()
+	 * @param title the new title for the growl dialog
+	 * @param message the new message for the growl dialog
+	 */
+	public void onProgressComplete(int growlId, String title, Widget message);
+
+	/**
+	 * Called by clients to inform the growl service that a progress style growl has
+	 * completed with an error.
+	 * @param growlId the ID of the growl to update - returned by a previous call to growl()
+	 * @param title the new title for the growl dialog
+	 * @param message the new message for the growl dialog
+	 */
+	public void onProgressError(int growlId, String title, String message);
+
+	/**
+	 * Called by clients to inform the growl service that a progress style growl has
+	 * completed with an error.
+	 * @param growlId the ID of the growl to update - returned by a previous call to growl()
+	 * @param title the new title for the growl dialog
+	 * @param message the new message for the growl dialog
+	 */
+	public void onProgressError(int growlId, String title, Widget message);
 
 }
