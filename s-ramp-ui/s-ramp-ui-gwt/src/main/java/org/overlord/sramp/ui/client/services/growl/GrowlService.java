@@ -46,20 +46,47 @@ public class GrowlService extends AbstractService implements IGrowlService {
 	 */
 	public GrowlService() {
 	}
-
+	
 	/**
 	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#growl(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void growl(String title, String message) {
+	public int growl(String title, String message) {
+		return growl(title, message, GrowlType.notification);
+	}
+
+	/**
+	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#growl(java.lang.String, java.lang.String, org.overlord.sramp.ui.client.services.growl.GrowlType)
+	 */
+	@Override
+	public int growl(String title, String message, GrowlType type) {
 		final Growl growl = createGrowl(title, message);
-		createGrowlDialog(growl, title, message);
+		createGrowlDialog(growl, title, message, type);
 		createGrowlTimers(growl);
 		createGrowlAnimations(growl);
 
 		positionAndShowGrowlDialog(growl);
 		
 		// Schedule the growl to go away automatically.
+		if (type == GrowlType.notification)
+			growl.getAliveTimer().schedule(5000);
+		
+		return growl.getId();
+	}
+	
+	/**
+	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#onProgressComplete(int, java.lang.String)
+	 */
+	@Override
+	public void onProgressComplete(int growlId, String message) {
+		Growl growl = null;
+		for (Growl g : this.activeGrowls) {
+			if (g.getId() == growlId)
+				growl = g;
+		}
+		if (growl == null)
+			return;
+		growl.getDialog().setMessage(message, GrowlType.notification);
 		growl.getAliveTimer().schedule(5000);
 	}
 
@@ -149,9 +176,10 @@ public class GrowlService extends AbstractService implements IGrowlService {
 	 * @param growl
 	 * @param title
 	 * @param message
+	 * @param type 
 	 */
-	private void createGrowlDialog(final Growl growl, String title, String message) {
-		final GrowlDialog dialog = new GrowlDialog(title, message) {
+	private void createGrowlDialog(final Growl growl, String title, String message, GrowlType type) {
+		final GrowlDialog dialog = new GrowlDialog(title, message, type) {
 			@Override
 			protected void onMouseIn() {
 				super.onMouseIn();
@@ -161,7 +189,8 @@ public class GrowlService extends AbstractService implements IGrowlService {
 			@Override
 			protected void onMouseOut() {
 				super.onMouseOut();
-				growl.getAliveTimer().schedule(5000);
+				if (getGrowlType() == GrowlType.notification)
+					growl.getAliveTimer().schedule(5000);
 			}
 		};
 		growl.setDialog(dialog);

@@ -21,6 +21,7 @@ import java.util.List;
 import org.overlord.sramp.ui.client.activities.IDashboardActivity;
 import org.overlord.sramp.ui.client.places.ArtifactPlace;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.services.growl.GrowlType;
 import org.overlord.sramp.ui.client.util.JsonMap;
 import org.overlord.sramp.ui.client.widgets.ArtifactUploadForm;
 import org.overlord.sramp.ui.client.widgets.PlaceHyperlink;
@@ -33,6 +34,7 @@ import org.overlord.sramp.ui.client.widgets.dialogs.ErrorDialog;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -108,14 +110,32 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		// Create the TEST GROWL panel
 		TitlePanel growlPanel = new TitlePanel("Growl Test");
 		growlPanel.getElement().setId("dash-growlPanel");
-		Button testGrowlButton = new Button("Test Growl");
-		testGrowlButton.addClickHandler(new ClickHandler() {
+		Button testGrowlButton1 = new Button("Test Notification Growl");
+		testGrowlButton1.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				growl().growl("Testing Growl Service: " + growlCounter++, "This is only a test of the emergency growling system.  If this had been a real growl, something more interesting would be said.");
+				growl().growl("Testing Notification: " + growlCounter++, "This is only a test of the emergency growling system.  If this had been a real growl, something more interesting would be said.");
 			}
 		});
-		growlPanel.setWidget(testGrowlButton);
+		Button testGrowlButton2 = new Button("Test Progress Growl");
+		testGrowlButton2.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				final int growlId = growl().growl("Testing Progress: " + growlCounter++, "Please wait for the test...", GrowlType.progress);
+				Timer timer = new Timer() {
+					@Override
+					public void run() {
+						growl().onProgressComplete(growlId, "The test has ended!");
+					}
+				};
+				timer.schedule(4000);
+			}
+		});
+		
+		FlowPanel fp = new FlowPanel();
+		fp.add(testGrowlButton1);
+		fp.add(testGrowlButton2);
+		growlPanel.setWidget(fp);
 
 		
 		// Now size the columns properly
