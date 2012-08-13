@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -87,25 +88,55 @@ public class GrowlDialog extends com.google.gwt.user.client.ui.DialogBox {
 	}
 
 	/**
+	 * @see com.google.gwt.user.client.ui.PopupPanel#setTitle(java.lang.String)
+	 */
+	@Override
+	public void setTitle(String title) {
+		this.title.setText(title);
+	}
+
+	/**
 	 * Sets the dialog's message.
 	 * @param message
 	 * @param type
 	 */
 	public void setMessage(String message, GrowlType type) {
+		if (type == GrowlType.notification || type == GrowlType.error) {
+			setMessage(new InlineLabel(message), type);
+		} else if (type == GrowlType.progress) {
+			PleaseWait wait = new PleaseWait(message);
+			setMessage(wait, type);
+		}
+	}
+	
+	/**
+	 * Sets the dialog's message (directly as a {@link Widget}).  This variant allows clients
+	 * to set rich HTML as the growl content, complete with behavior (event handlers).
+	 * @param message
+	 */
+	public void setMessage(Widget message, GrowlType type) {
 		if (this.message != null) {
 			main.remove(this.message);
 		}
-
-		if (type == GrowlType.notification) {
-			this.message = new Label(message);
-		} else if (type == GrowlType.progress) {
-			FlowPanel wrapper = new FlowPanel();
-			PleaseWait wait = new PleaseWait(message);
-			wrapper.add(wait);
-			this.message = wrapper;
+		FlowPanel messageWrapper = new FlowPanel();
+		messageWrapper.setStyleName("growlMessage");
+		if (type == GrowlType.error) {
+			HorizontalPanel errorPanel = new HorizontalPanel();
+			Widget icon = new InlineLabel(" ");
+			icon.setStyleName("errorMessage");
+			
+			errorPanel.add(icon);
+			errorPanel.add(message);
+			
+			errorPanel.setCellWidth(icon, "1%");
+			errorPanel.setCellVerticalAlignment(icon, HasVerticalAlignment.ALIGN_MIDDLE);
+			
+			messageWrapper.add(errorPanel);
+		} else {
+			messageWrapper.add(message);
 		}
-		this.message.setStyleName("growlMessage");
-		main.add(this.message);
+		this.message = messageWrapper;
+		main.add(messageWrapper);
 		setGrowlType(type);
 	}
 

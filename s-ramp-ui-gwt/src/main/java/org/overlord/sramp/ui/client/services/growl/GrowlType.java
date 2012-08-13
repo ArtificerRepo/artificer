@@ -21,5 +21,5 @@ package org.overlord.sramp.ui.client.services.growl;
  * @author eric.wittmann@redhat.com
  */
 public enum GrowlType {
-	notification, progress;
+	notification, error, progress;
 }
