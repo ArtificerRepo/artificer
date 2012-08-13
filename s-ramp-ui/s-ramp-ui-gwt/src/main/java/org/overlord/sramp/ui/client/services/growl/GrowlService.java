@@ -23,14 +23,12 @@ import org.overlord.sramp.ui.client.animation.MoveAnimation;
 import org.overlord.sramp.ui.client.services.AbstractService;
 import org.overlord.sramp.ui.client.widgets.dialogs.GrowlDialog;
 
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 
 /**
  * Implements the lightweight notification service.
@@ -139,14 +137,14 @@ public class GrowlService extends AbstractService implements IGrowlService {
 	 * @param toGrowlIndex
 	 */
 	private void moveGrowl(Growl growl, int fromGrowlIndex, int toGrowlIndex) {
-		int fromTop = -1;
+		int fromBottom = -1;
 		try {
-			fromTop = new Integer(growl.getDialog().getElement().getStyle().getTop().split("px")[0]).intValue();
+			fromBottom = new Integer(growl.getDialog().getElement().getStyle().getBottom().split("px")[0]).intValue();
 		} catch (Throwable t) {
-			fromTop = Window.getClientHeight() - ((GrowlConstants.GROWL_HEIGHT + GrowlConstants.GROWL_MARGIN) * (fromGrowlIndex+1));
+			fromBottom = ((GrowlConstants.GROWL_HEIGHT + GrowlConstants.GROWL_MARGIN) * fromGrowlIndex) + GrowlConstants.GROWL_MARGIN;
 		}
-		int toTop = Window.getClientHeight() - ((GrowlConstants.GROWL_HEIGHT + GrowlConstants.GROWL_MARGIN) * (toGrowlIndex+1));
-		MoveAnimation animation = new MoveAnimation(growl.getDialog(), "top", fromTop, toTop);
+		int toBottom = ((GrowlConstants.GROWL_HEIGHT + GrowlConstants.GROWL_MARGIN) * toGrowlIndex) + GrowlConstants.GROWL_MARGIN;
+		MoveAnimation animation = new MoveAnimation(growl.getDialog(), "bottom", fromBottom, toBottom);
 		animation.run(200);
 		growl.setGrowlIndex(toGrowlIndex);
 	}
@@ -162,15 +160,15 @@ public class GrowlService extends AbstractService implements IGrowlService {
 	    dialog.show();
 
 	    // Calculate the growl dialog's position (based on its size and growl index)
-		int top = Window.getClientHeight() - ((GrowlConstants.GROWL_HEIGHT + GrowlConstants.GROWL_MARGIN) * (growlIndex+1));
-	    top -= Document.get().getBodyOffsetTop();
+	    int bottom = ((GrowlConstants.GROWL_HEIGHT + GrowlConstants.GROWL_MARGIN) * growlIndex) + GrowlConstants.GROWL_MARGIN;
 		int right = GrowlConstants.GROWL_MARGIN;
 
 	    // Now pin the growl to the right using fixed positioning
 		dialog.getElement().getStyle().setPosition(Position.FIXED);
-		dialog.getElement().getStyle().setTop(top, Unit.PX);
+		dialog.getElement().getStyle().setBottom(bottom, Unit.PX);
 		dialog.getElement().getStyle().setRight(right, Unit.PX);
 		dialog.getElement().getStyle().setProperty("left", null);
+		dialog.getElement().getStyle().setProperty("top", null);
 	    dialog.getElement().getStyle().setVisibility(Visibility.VISIBLE);
 	}
 

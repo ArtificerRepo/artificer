@@ -131,9 +131,11 @@ public class GrowlDialog extends com.google.gwt.user.client.ui.DialogBox {
 	 */
 	private boolean isMouseInMe(int clientX, int clientY) {
 		try {
-			String topStyle = getElement().getStyle().getTop();
-			int top = new Integer(topStyle.split("px")[0]).intValue();
-			int bottom = top + GrowlConstants.GROWL_HEIGHT;
+			String bottomStyle = getElement().getStyle().getBottom();
+			int bottom = new Integer(bottomStyle.split("px")[0]).intValue();
+			bottom = Window.getClientHeight() - bottom;
+			
+			int top = bottom - GrowlConstants.GROWL_HEIGHT;
 			int left = Window.getClientWidth() - GrowlConstants.GROWL_WIDTH - GrowlConstants.GROWL_MARGIN;
 			int right = left + GrowlConstants.GROWL_WIDTH;
 			return clientX >= left && clientX <= right && clientY >= top && clientY <= bottom;
