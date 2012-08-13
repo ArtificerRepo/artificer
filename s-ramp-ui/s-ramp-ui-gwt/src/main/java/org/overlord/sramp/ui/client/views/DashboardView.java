@@ -29,11 +29,7 @@ import org.overlord.sramp.ui.client.widgets.TitlePanel;
 import org.overlord.sramp.ui.client.widgets.UnorderedListPanel;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
@@ -51,8 +47,6 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 public class DashboardView extends AbstractView<IDashboardActivity> implements IDashboardView {
-	
-	private int growlCounter = 1;
 	
 	/**
 	 * Constructor.
@@ -93,64 +87,6 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		HTMLPanel helpText = new HTMLPanel(i18n().translate("dashboard.help-panel.help-text"));
 		helpPanel.setWidget(helpText);
 
-		// Create the Help panel2
-		TitlePanel helpPanel2 = new TitlePanel(i18n().translate("dashboard.help-panel.title"));
-		helpPanel2.getElement().setId("dash-helpPanel2");
-		HTMLPanel helpText2 = new HTMLPanel(i18n().translate("dashboard.help-panel.help-text"));
-		helpPanel2.setWidget(helpText2);
-		// Create the Help panel3
-		TitlePanel helpPanel3 = new TitlePanel(i18n().translate("dashboard.help-panel.title"));
-		helpPanel3.getElement().setId("dash-helpPanel3");
-		HTMLPanel helpText3 = new HTMLPanel(i18n().translate("dashboard.help-panel.help-text"));
-		helpPanel3.setWidget(helpText3);
-
-		
-		// Create the TEST GROWL panel
-		TitlePanel growlPanel = new TitlePanel("Growl Test");
-		growlPanel.getElement().setId("dash-growlPanel");
-		Button testGrowlButton1 = new Button("Test Notification Growl");
-		testGrowlButton1.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				growl().growl("Testing Notification: " + growlCounter++, "This is only a test of the emergency growling system.  If this had been a real growl, something more interesting would be said.");
-			}
-		});
-		Button testGrowlButton2 = new Button("Test Progress Growl");
-		testGrowlButton2.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				final int growlId = growl().growl("Testing Progress: " + growlCounter++, "Please wait for the test...", GrowlType.progress);
-				Timer timer = new Timer() {
-					@Override
-					public void run() {
-						growl().onProgressComplete(growlId, "Test Complete", "The test has ended!");
-					}
-				};
-				timer.schedule(4000);
-			}
-		});
-		Button testGrowlButton3 = new Button("Test Progress Growl (err)");
-		testGrowlButton3.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				final int growlId = growl().growl("Testing Progress: " + growlCounter++, "Please wait for the test...", GrowlType.progress);
-				Timer timer = new Timer() {
-					@Override
-					public void run() {
-						growl().onProgressError(growlId, "Test Error", "The test resulted in an error! (as expected) Here is some additional text about the error that should cause the text to wrap around the icon.");
-					}
-				};
-				timer.schedule(4000);
-			}
-		});
-		
-		FlowPanel fp = new FlowPanel();
-		fp.add(testGrowlButton1);
-		fp.add(testGrowlButton2);
-		fp.add(testGrowlButton3);
-		growlPanel.setWidget(fp);
-
-		
 		// Now size the columns properly
 		dashboardPanel.setCellWidth(leftColumn, "50%");
 		dashboardPanel.setCellWidth(rightColumn, "50%");
@@ -158,10 +94,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		// Add the panels to the dashboard
 		leftColumn.add(activitiesPanel);
 		leftColumn.add(uploadPanel);
-		leftColumn.add(helpPanel2);
-		leftColumn.add(helpPanel3);
 		rightColumn.add(helpPanel);
-		rightColumn.add(growlPanel);
 
 		this.initWidget(dashboardPanel);
 	}
