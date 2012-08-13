@@ -1,7 +1,6 @@
 /* ------------------------------------------------
  * Stylesheet for UI Dialogs
  * ------------------------------------------------ */
-S
 
 /* Common Dialog Styles */
 .dialogGlass {
@@ -72,7 +71,7 @@ S
   background-image: url(../images/dialog/dlg_br.png);
   background-repeat: no-repeat;
 }
-.dialogContent {
+.dialog .dialogContent {
   padding-top: 5px;
 }
 .dialog .buttonPanel {
@@ -122,4 +121,41 @@ S
 }
 .artifactUploadDialog .pleaseWait {
 	margin: 15px;
+}
+
+.growlDialog {
+	border: 1px solid #fd8080;
+	background: url("../images/dialog/growl_bg.png") repeat-x;
+	font-size: 11px;
+	width: 400px;
+	height: 75px;
+	overflow: hidden;
+}
+.growlDialog .growlContent {
+	width: 398px;
+}
+.growlDialog-hover {
+	border: 1px solid #ED5C5C;
+}
+.growlDialog .Caption {
+	height: 8px;
+}
+.growlDialog .growlTitleBar .close {
+	margin-right: 5px;
+	color: #a74b4b;
+	text-decoration: none;
+}
+.growlDialog .growlTitle {
+	padding-top: 5px;
+	padding-left: 5px;
+	font-weight: bold;
+}
+.growlDialog .growlMessage {
+	padding-left: 15px;
+	padding-right: 5px;
+	padding-top: 4px;
+	line-height: 12px;
+}
+.growlDialog .pleaseWait {
+	background: url("../images/growl_prog.gif") no-repeat;
 }
