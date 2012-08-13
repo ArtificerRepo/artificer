@@ -1,7 +1,6 @@
 /* ------------------------------------------------
  * Stylesheet for UI Dialogs
  * ------------------------------------------------ */
-S
 
 /* Common Dialog Styles */
 .dialogGlass {
@@ -131,6 +130,9 @@ S
 	width: 400px;
 	height: 75px;
 }
+.growlDialog .growlContent {
+	width: 398px;
+}
 .growlDialog-hover {
 	border: 1px solid #ED5C5C;
 }
@@ -152,4 +154,7 @@ S
 	padding-right: 5px;
 	padding-top: 4px;
 	line-height: 12px;
+}
+.growlDialog .pleaseWait {
+	background: url("../images/growl_prog.gif") no-repeat;
 }

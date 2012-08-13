@@ -28,7 +28,24 @@ public interface IGrowlService extends IService {
 	 * Growls a simple message at the user.
 	 * @param title
 	 * @param message
+	 * @return the unique ID of the growl
 	 */
-	public void growl(String title, String message);
-	
+	public int growl(String title, String message);
+
+	/**
+	 * Growls at the user.
+	 * @param title
+	 * @param message
+	 * @param type
+	 * @return the unique ID of the growl
+	 */
+	public int growl(String title, String message, GrowlType type);
+
+	/**
+	 * Called by clients to inform the growl service that a progress style growl has 
+	 * completed.
+	 * @param growlId
+	 */
+	public void onProgressComplete(int growlId, String message);
+
 }

@@ -45,8 +45,8 @@ public class Initializer implements ServletContextListener {
 		try {
 			CompositeConfiguration config = new CompositeConfiguration();
 			config.addConfiguration(new SystemConfiguration());
-			config.addConfiguration(new PropertiesConfiguration(Initializer.class.getResource("/META-INF/config/org.overlord.sramp.ui.server.api.properties")));
 			config.addConfiguration(new JNDIConfiguration("java:comp/env/overlord/s-ramp-ui"));
+			config.addConfiguration(new PropertiesConfiguration(Initializer.class.getResource("/META-INF/config/org.overlord.sramp.ui.server.api.properties")));
 			System.out.println("S-RAMP user interface configuration loaded.  S-RAMP Atom API endpoint: " + config.getString("s-ramp.atom-api.endpoint"));
 			
 			// Now initialize the S-RAMP Atom API Client singleton

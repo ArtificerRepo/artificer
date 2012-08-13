@@ -16,6 +16,8 @@
 package org.overlord.sramp.ui.client.widgets.dialogs;
 
 import org.overlord.sramp.ui.client.services.growl.GrowlConstants;
+import org.overlord.sramp.ui.client.services.growl.GrowlType;
+import org.overlord.sramp.ui.client.widgets.PleaseWait;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -23,11 +25,13 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Dialog implementation used for async notifications (growls).
@@ -36,25 +40,26 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class GrowlDialog extends com.google.gwt.user.client.ui.DialogBox {
 	
+	private VerticalPanel main;
 	private Label title;
 	private Anchor closeButton;
-	private Label message;
+	private Widget message;
+	private GrowlType growlType;
 	private boolean mouseIn = false;
 
 	/**
 	 * Constructor.
 	 * @param title
 	 * @param message
+	 * @param type
 	 */
-	public GrowlDialog(String title, String message) {
+	public GrowlDialog(String title, String message, GrowlType type) {
 		super(false, false);  // auto-hide=false, modal=false
 		
 		this.title = new Label(title);
 		this.title.setStyleName("growlTitle");
 		closeButton = new Anchor("X");
 		closeButton.setStyleName("close");
-		this.message = new Label(message);
-		this.message.setStyleName("growlMessage");
 		
 		HorizontalPanel titlePanel = new HorizontalPanel();
 		titlePanel.setWidth("100%");
@@ -64,10 +69,11 @@ public class GrowlDialog extends com.google.gwt.user.client.ui.DialogBox {
 		titlePanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
 		titlePanel.setCellVerticalAlignment(closeButton, HasVerticalAlignment.ALIGN_MIDDLE);
 		
-		VerticalPanel main = new VerticalPanel();
+		main = new VerticalPanel();
 		main.setStyleName("growlContent");
 		main.add(titlePanel);
-		main.add(this.message);
+		
+		setMessage(message, type);
 		
 		setWidget(main);
 		setStyleName("growlDialog");
@@ -79,7 +85,30 @@ public class GrowlDialog extends com.google.gwt.user.client.ui.DialogBox {
 			}
 		});
 	}
-	
+
+	/**
+	 * Sets the dialog's message.
+	 * @param message
+	 * @param type
+	 */
+	public void setMessage(String message, GrowlType type) {
+		if (this.message != null) {
+			main.remove(this.message);
+		}
+
+		if (type == GrowlType.notification) {
+			this.message = new Label(message);
+		} else if (type == GrowlType.progress) {
+			FlowPanel wrapper = new FlowPanel();
+			PleaseWait wait = new PleaseWait(message);
+			wrapper.add(wait);
+			this.message = wrapper;
+		}
+		this.message.setStyleName("growlMessage");
+		main.add(this.message);
+		setGrowlType(type);
+	}
+
 	/**
 	 * Adds a handler that will get called back when the user clicks the close 
 	 * button.
@@ -156,6 +185,20 @@ public class GrowlDialog extends com.google.gwt.user.client.ui.DialogBox {
 	 */
 	protected void onMouseOut() {
 		removeStyleName("growlDialog-hover");
+	}
+
+	/**
+	 * @return the growlType
+	 */
+	public GrowlType getGrowlType() {
+		return growlType;
+	}
+
+	/**
+	 * @param growlType the growlType to set
+	 */
+	public void setGrowlType(GrowlType growlType) {
+		this.growlType = growlType;
 	}
 
 }
