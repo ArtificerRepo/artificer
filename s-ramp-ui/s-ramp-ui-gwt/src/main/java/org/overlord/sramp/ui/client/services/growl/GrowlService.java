@@ -53,57 +53,14 @@ public class GrowlService extends AbstractService implements IGrowlService {
 	@Override
 	public void growl(String title, String message) {
 		final Growl growl = createGrowl(title, message);
-		this.activeGrowls.add(growl);
-		int growlIndex = this.activeGrowls.size() - 1;
-		
-		final GrowlDialog dialog = new GrowlDialog(title, message) {
-			@Override
-			protected void onMouseIn() {
-				super.onMouseIn();
-				growl.getAliveTimer().cancel();
-				growl.getAutoCloseAnimation().cancel();
-			}
-			@Override
-			protected void onMouseOut() {
-				super.onMouseOut();
-				growl.getAliveTimer().schedule(5000);
-			}
-		};
-		growl.setDialog(dialog);
-		// Close handler (user closed the notification)
-		dialog.addCloseHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				growl.getAliveTimer().cancel();
-				onGrowlClosed(growl);
-			}
-		});
+		createGrowlDialog(growl, title, message);
+		createGrowlTimers(growl);
+		createGrowlAnimations(growl);
 
-		// Create the timer that will control when the growl automatically goes away.
-		Timer aliveTimer = new Timer() {
-			@Override
-			public void run() {
-				growl.getAutoCloseAnimation().run(1000);
-			}
-		};
-
-		growl.setAliveTimer(aliveTimer);
-
-		// Create the animation used to make the growl go away (when the time comes)
-		FadeOutAnimation fadeOut = new FadeOutAnimation(dialog) {
-			@Override
-			protected void doOnComplete() {
-				dialog.hide();
-				onGrowlClosed(growl);
-			}
-		};
-		growl.setAutoCloseAnimation(fadeOut);
-
-		growl.setGrowlIndex(growlIndex);
-		positionAndShowGrowlDialog(dialog, growlIndex);
+		positionAndShowGrowlDialog(growl);
 		
 		// Schedule the growl to go away automatically.
-		aliveTimer.schedule(5000);
+		growl.getAliveTimer().schedule(5000);
 	}
 
 	/**
@@ -151,10 +108,12 @@ public class GrowlService extends AbstractService implements IGrowlService {
 
 	/**
 	 * Positions the growl dialog.
-	 * @param dialog the growl dialog/popup
-	 * @param growlIndex the growl's position relative to other growls (position in the queue of growls)
+	 * @param growl
 	 */
-	private void positionAndShowGrowlDialog(GrowlDialog dialog, int growlIndex) {
+	private void positionAndShowGrowlDialog(Growl growl) {
+		GrowlDialog dialog = growl.getDialog();
+		int growlIndex = growl.getGrowlIndex();
+		
 		// Show the dialog first, but make it invisible (so GWT can do its absolute positioning mojo)
 		dialog.getElement().getStyle().setVisibility(Visibility.HIDDEN);
 	    dialog.show();
@@ -178,7 +137,73 @@ public class GrowlService extends AbstractService implements IGrowlService {
 	 * @param message
 	 */
 	private Growl createGrowl(String title, String message) {
-		return new Growl(growlCounter++, title, message);
+		Growl growl = new Growl(growlCounter++, title, message);
+		int growlIndex = this.activeGrowls.size();
+		growl.setGrowlIndex(growlIndex);
+		this.activeGrowls.add(growl);
+		return growl;
+	}
+
+	/**
+	 * Creates the dialog for the growl (notification window).
+	 * @param growl
+	 * @param title
+	 * @param message
+	 */
+	private void createGrowlDialog(final Growl growl, String title, String message) {
+		final GrowlDialog dialog = new GrowlDialog(title, message) {
+			@Override
+			protected void onMouseIn() {
+				super.onMouseIn();
+				growl.getAliveTimer().cancel();
+				growl.getAutoCloseAnimation().cancel();
+			}
+			@Override
+			protected void onMouseOut() {
+				super.onMouseOut();
+				growl.getAliveTimer().schedule(5000);
+			}
+		};
+		growl.setDialog(dialog);
+		// Close handler (user closed the notification)
+		dialog.addCloseHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				growl.getAliveTimer().cancel();
+				onGrowlClosed(growl);
+			}
+		});
+	}
+
+	/**
+	 * Creates any timers needed to control the growl.
+	 * @param growl
+	 */
+	private void createGrowlTimers(final Growl growl) {
+		// Create the timer that will control when the growl automatically goes away.
+		Timer aliveTimer = new Timer() {
+			@Override
+			public void run() {
+				growl.getAutoCloseAnimation().run(1000);
+			}
+		};
+		growl.setAliveTimer(aliveTimer);
+	}
+
+	/**
+	 * Creates any animations needed by the growl.
+	 * @param growl
+	 */
+	private void createGrowlAnimations(final Growl growl) {
+		// Create the animation used to make the growl go away (when the time comes)
+		FadeOutAnimation fadeOut = new FadeOutAnimation(growl.getDialog()) {
+			@Override
+			protected void doOnComplete() {
+				growl.getDialog().hide();
+				onGrowlClosed(growl);
+			}
+		};
+		growl.setAutoCloseAnimation(fadeOut);
 	}
 
 }
