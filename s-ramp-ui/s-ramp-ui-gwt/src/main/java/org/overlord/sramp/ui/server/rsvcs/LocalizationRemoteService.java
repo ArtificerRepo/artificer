@@ -101,7 +101,7 @@ public class LocalizationRemoteService extends RemoteServiceServlet implements I
 	private Properties load(String messagesFileName) throws IOException {
 		InputStream is = null;
 		try {
-			is = getClass().getClassLoader().getResourceAsStream("/i18n/" + messagesFileName);
+			is = getClass().getClassLoader().getResourceAsStream("/META-INF/i18n/" + messagesFileName);
 			if (is == null)
 				return null;
 			Properties props = new Properties();
