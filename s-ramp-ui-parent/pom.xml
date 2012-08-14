@@ -28,7 +28,7 @@
 	<properties>
 		<!-- Instruct the build to use only UTF-8 encoding for source code -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
+
 		<!-- Distribution URLs -->
 		<jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
 		<jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
@@ -39,6 +39,8 @@
 		<slf4j.log4j.version>1.5.11</slf4j.log4j.version>
 		<!-- S-RAMP versions -->
 		<sramp.client.version>0.0.1-SNAPSHOT</sramp.client.version>
+		<srampui.build.date>${maven.build.timestamp}</srampui.build.date>
+
 		<!-- Maven plugin versions -->
 		<maven.surefire.report.plugin.version>2.4.3</maven.surefire.report.plugin.version>
 		<maven.surefire.plugin.version>2.7.1</maven.surefire.plugin.version>

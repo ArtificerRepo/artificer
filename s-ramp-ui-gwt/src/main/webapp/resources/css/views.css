@@ -25,9 +25,16 @@
 }
 .artifactSummaryPanel .simpleFormPanel span.label {
 	padding-right: 5px;
-	font-weight: bold;
+	font-style: italic;
+	font-size: 14px;
 }
 .artifactSummaryPanel .simpleFormPanel input {
 	width: 190px;
-	border: none;
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+.artifactSummaryPanel .simpleFormPanel .placeLinkWrapper {
+	padding-top: 10px;
+	text-align: right;
 }
