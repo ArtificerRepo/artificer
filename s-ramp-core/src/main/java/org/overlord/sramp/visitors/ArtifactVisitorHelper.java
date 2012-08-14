@@ -40,7 +40,9 @@ public final class ArtifactVisitorHelper {
 			method.invoke(visitor, artifact);
 		} catch (Exception e) {
 			// This shouldn't happen unless we've programmed something wrong in the visitor interface.
-			throw new RuntimeException("Error: failed to find proper visit() method.  Visitor class=" + visitor.getClass() + ",  Artifact class=" + artifact.getClass());
+			throw new RuntimeException(
+					"Error: failed to find proper visit() method.  Visitor class=" + visitor.getClass() + ",  Artifact class=" + artifact.getClass(), 
+					e);
 		}
 	}
 	
