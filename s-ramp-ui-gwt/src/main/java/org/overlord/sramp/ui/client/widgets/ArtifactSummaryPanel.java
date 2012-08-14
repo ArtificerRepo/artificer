@@ -91,11 +91,14 @@ public class ArtifactSummaryPanel extends FlowPanel {
 	 * @param artifact
 	 */
 	public void setValue(ArtifactSummary artifact) {
+		String createdOn = Services.getServices().getService(ILocalizationService.class).formatDateTime(artifact.getCreatedOn());
+		String updatedOn = Services.getServices().getService(ILocalizationService.class).formatDateTime(artifact.getUpdatedOn());
+		
 		uuidField.setValue(artifact.getUuid());
 		nameField.setValue(artifact.getName());
-		createdOnField.setValue(artifact.getCreatedOn().toString());
+		createdOnField.setValue(createdOn);
 		createdByField.setValue(artifact.getCreatedBy());
-		updatedOnField.setValue(artifact.getUpdatedOn().toString());
+		updatedOnField.setValue(updatedOn);
 		descriptionField.setText(artifact.getDescription());
 
 		ArtifactPlace artifactDetailsPlace = new ArtifactPlace(artifact.getUuid());

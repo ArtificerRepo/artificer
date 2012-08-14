@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.ui.client.services.i18n;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.overlord.sramp.ui.client.services.AbstractService;
@@ -24,6 +25,7 @@ import org.overlord.sramp.ui.shared.rsvcs.ILocalizationRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.ILocalizationRemoteServiceAsync;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -36,6 +38,8 @@ public class LocalizationService extends AbstractService implements ILocalizatio
 	private final ILocalizationRemoteServiceAsync localizationRemoteService = GWT.create(ILocalizationRemoteService.class);
 
 	private LocalizationDictionary messages;
+	private DateTimeFormat dateFormat;
+	private DateTimeFormat dateTimeFormat;
 	
 	/**
 	 * Constructor.
@@ -67,6 +71,14 @@ public class LocalizationService extends AbstractService implements ILocalizatio
 	 */
 	protected void initDictionary(Map<String, String> messages) {
 		this.messages = LocalizationDictionary.create(messages);
+		String dFormat = this.messages.get("formats.date");
+		String dtFormat = this.messages.get("formats.datetime");
+		if (dFormat == null)
+			dFormat = "yyyy-MM-dd";
+		if (dtFormat == null)
+			dtFormat = "yyyy-MM-dd HH.mm.ss vvv";
+		this.dateFormat = DateTimeFormat.getFormat(dFormat);
+		this.dateTimeFormat = DateTimeFormat.getFormat(dtFormat);
 	}
 
 	/**
@@ -103,6 +115,10 @@ public class LocalizationService extends AbstractService implements ILocalizatio
 					argFormat = split[2];
 				if ("string".equals(argType)) {
 					formattedArgValue = String.valueOf(argValue);
+				} else if ("date".equals(argType)) {
+					formattedArgValue = this.dateFormat.format((Date) argValue);
+				} else if ("datetime".equals(argType)) {
+					formattedArgValue = this.dateTimeFormat.format((Date) argValue);
 				} else {
 					// TODO create a formatter of the right type and use it!
 					formattedArgValue = "TBD:"+argFormat;
@@ -114,6 +130,22 @@ public class LocalizationService extends AbstractService implements ILocalizatio
 		} catch (Throwable t) {
 			return "!!" + key + "!!";
 		}
+	}
+	
+	/**
+	 * @see org.overlord.sramp.ui.client.services.i18n.ILocalizationService#formatDate(java.util.Date)
+	 */
+	@Override
+	public String formatDate(Date date) {
+		return this.dateFormat.format(date);
+	}
+	
+	/**
+	 * @see org.overlord.sramp.ui.client.services.i18n.ILocalizationService#formatDateTime(java.util.Date)
+	 */
+	@Override
+	public String formatDateTime(Date dateTime) {
+		return this.dateTimeFormat.format(dateTime);
 	}
 	
 }
