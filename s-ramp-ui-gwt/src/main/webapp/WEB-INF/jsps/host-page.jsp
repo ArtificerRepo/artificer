@@ -1,7 +1,7 @@
 <%@page import="java.text.DateFormat"%>
 <%@page import="org.overlord.sramp.ui.shared.beans.Version"%>
 <%
-	Version version = (Version) request.getAttribute("version");
+	Version version = Version.getCurrentVersion();
 	String buildDate = DateFormat.getDateTimeInstance().format(version.getDate());
 %>
 <!doctype html>

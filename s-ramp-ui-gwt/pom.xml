@@ -78,7 +78,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<outputFileNameMapping>@{artifactId}@.@{extension}@</outputFileNameMapping>
-					<warSourceIncludes>*.html,resources/**,WEB-INF/**</warSourceIncludes>
+					<warSourceIncludes>*.jsp,resources/**,WEB-INF/**</warSourceIncludes>
 					<packagingExcludes>**/ui/client/**</packagingExcludes>
 					<!-- <webXml>src/main/webapp/WEB-INF/web-container.xml</webXml> -->
 					<attachClasses>true</attachClasses>

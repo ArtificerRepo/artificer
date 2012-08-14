@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.overlord.sramp.ui.shared.beans.Version;
-
 /**
  * Serves up the "dynamic" host page for the GWT app.  This servlet allows us to add some
  * dynamic elements to the structure of the initial host page if necessary.
@@ -46,7 +44,6 @@ public class HostPageServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
-		request.setAttribute("version", Version.getCurrentVersion());
 		getServletContext().getRequestDispatcher("/WEB-INF/jsps/host-page.jsp").forward(request, response);
 	}
 	
