@@ -167,7 +167,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	/*
 	 * Impl class for the artifact data table.
 	 */
-	private static class ArtifactDataTable extends DataTableWithPager<ArtifactSummary> {
+	private class ArtifactDataTable extends DataTableWithPager<ArtifactSummary> {
 
 		/**
 		 * Constructor.
@@ -203,7 +203,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			TextColumn<ArtifactSummary> createdOn = new TextColumn<ArtifactSummary>() {
 				@Override
 				public String getValue(ArtifactSummary artifact) {
-					return artifact.getCreatedOn().toString();
+					return i18n().formatDateTime(artifact.getCreatedOn());
 				}
 			};
 			createdOn.setSortable(true);

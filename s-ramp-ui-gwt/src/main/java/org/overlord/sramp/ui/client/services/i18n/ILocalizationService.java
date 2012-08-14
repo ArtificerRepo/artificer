@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.ui.client.services.i18n;
 
+import java.util.Date;
+
 import org.overlord.sramp.ui.client.services.IService;
 
 /**
@@ -32,4 +34,16 @@ public interface ILocalizationService extends IService {
 	 */
 	public String translate(String key, Object ... args);
 	
+	/**
+	 * Called to format the given date.
+	 * @param date
+	 */
+	public String formatDate(Date date);
+
+	/**
+	 * Called to format the given date/time.
+	 * @param dateTime
+	 */
+	public String formatDateTime(Date dateTime);
+
 }
