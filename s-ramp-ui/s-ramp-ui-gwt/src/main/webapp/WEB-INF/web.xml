@@ -9,6 +9,23 @@
 		<listener-class>org.overlord.sramp.ui.server.listeners.Initializer</listener-class>
 	</listener>
 	
+	<filter>
+		<filter-name>GWTCacheControl</filter-name>
+		<filter-class>org.overlord.sramp.ui.server.filters.GWTCacheControlFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>ResourceCacheControl</filter-name>
+		<filter-class>org.overlord.sramp.ui.server.filters.ResourceCacheControlFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>GWTCacheControl</filter-name>
+		<url-pattern>/srampui/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ResourceCacheControl</filter-name>
+		<url-pattern>/resources/*</url-pattern>
+	</filter-mapping>
+	
 	<servlet>
 		<servlet-name>HostPage</servlet-name>
 		<servlet-class>org.overlord.sramp.ui.server.HostPageServlet</servlet-class>

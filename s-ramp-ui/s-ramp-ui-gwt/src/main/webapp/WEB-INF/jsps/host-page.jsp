@@ -1,12 +1,18 @@
+<%@page import="java.text.DateFormat"%>
+<%@page import="org.overlord.sramp.ui.shared.beans.Version"%>
+<%
+	Version version = (Version) request.getAttribute("version");
+	String buildDate = DateFormat.getDateTimeInstance().format(version.getDate());
+%>
 <!doctype html>
 <html>
 	<head>
 	    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
 	    <link href="resources/css/reset.css" media="all" type="text/css" rel="stylesheet"></link>
-	    <link href="resources/css/widgets.css" media="all" type="text/css" rel="stylesheet"></link>
-	    <link href="resources/css/dialogs.css" media="all" type="text/css" rel="stylesheet"></link>
-	    <link href="resources/css/views.css" media="all" type="text/css" rel="stylesheet"></link>
-	    <link href="resources/css/srampui.css" media="all" type="text/css" rel="stylesheet"></link>
+	    <link href="resources/css/widgets.css?v=<%= version.getVersion() %>" media="all" type="text/css" rel="stylesheet"></link>
+	    <link href="resources/css/dialogs.css?v=<%= version.getVersion() %>" media="all" type="text/css" rel="stylesheet"></link>
+	    <link href="resources/css/views.css?v=<%= version.getVersion() %>" media="all" type="text/css" rel="stylesheet"></link>
+	    <link href="resources/css/srampui.css?v=<%= version.getVersion() %>" media="all" type="text/css" rel="stylesheet"></link>
 		<title>JBoss Overlord - S-RAMP Explorer (GWT)</title>
 	    <script type="text/javascript" src="srampui/srampui.nocache.js"></script>
 	</head>
@@ -32,6 +38,8 @@
 				</div>
 			</div>
 			<div id="footer">
+				<span>S-RAMP Explorer, Version <%= version.getVersion() %> (<em><%= buildDate %></em>)</span>
+				<br />
 				&copy; 2012 - <a href="http://www.jboss.org">JBoss</a> <a href="http://www.jboss.org/overlord">Overlord</a>
 			</div>
 		</div>

@@ -74,7 +74,10 @@ public class ArtifactSummaryPanel extends FlowPanel {
 		artifactForm.add(i18n.translate("browse.summary-panel.created-on-label"), createdOnField);
 		artifactForm.add(i18n.translate("browse.summary-panel.updated-on-label"), updatedOnField);
 		artifactForm.addTwoCol(null, descriptionField);
-		artifactForm.addTwoCol(null, detailsLink);
+		FlowPanel detailsLinkWrapper = new FlowPanel();
+		detailsLinkWrapper.setStyleName("placeLinkWrapper");
+		detailsLinkWrapper.add(detailsLink);
+		artifactForm.addTwoCol(null, detailsLinkWrapper);
 		
 		this.add(noArtifactMessage);
 		this.add(artifactForm);
