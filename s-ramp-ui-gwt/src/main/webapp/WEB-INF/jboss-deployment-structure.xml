@@ -1,0 +1,18 @@
+<jboss-deployment-structure>
+	<deployment>
+		<exclusions>
+			<module name="org.jboss.resteasy.resteasy-atom-provider" slot="main" />
+			<module name="org.jboss.resteasy.resteasy-jaxb-provider" slot="main" />
+			<module name="org.jboss.resteasy.resteasy-jsapi" slot="main" />
+			<module name="org.jboss.resteasy.resteasy-cdi" slot="main" />
+			<module name="org.jboss.resteasy.resteasy-jaxrs" slot="main" />
+			<module name="org.jboss.resteasy.resteasy-multipart-provider" slot="main" />
+			<module name="org.jboss.resteasy.resteasy-jackson-provider" slot="main" />
+			<module name="org.jboss.resteasy.resteasy-jettison-provider" slot="main" />
+			<module name="org.jboss.resteasy.resteasy-yaml-provider" slot="main" />
+			<module name="javax.ws.rs.api" slot="main" />
+			<module name="org.jboss.as.jaxrs" slot="main" />
+			<module name="org.codehaus.jackson.jackson-jaxrs" slot="main" />
+		</exclusions>
+	</deployment>
+</jboss-deployment-structure>
