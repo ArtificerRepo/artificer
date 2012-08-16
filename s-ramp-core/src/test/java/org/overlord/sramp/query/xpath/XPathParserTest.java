@@ -46,7 +46,7 @@ import org.overlord.sramp.query.xpath.visitors.XPathSerializationVisitor;
 public class XPathParserTest {
 	
 	@Test
-	public void testArtifactSet() throws Exception {
+	public void testXPathParser() throws Exception {
 		Collection<Properties> testCases = getTestCases();
 		
 		XPathParser parser = new XPathParser();

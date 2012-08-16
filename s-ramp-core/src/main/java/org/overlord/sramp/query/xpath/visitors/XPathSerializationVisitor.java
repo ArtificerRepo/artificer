@@ -247,10 +247,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(RelationshipPath node) {
-		if (node.isAnyOutgoingRelationship())
-			this.builder.append("outgoing");
-		else
-			this.builder.append(node.getRelationshipType());
+		this.builder.append(node.getRelationshipType());
 	}
 
 	/**
