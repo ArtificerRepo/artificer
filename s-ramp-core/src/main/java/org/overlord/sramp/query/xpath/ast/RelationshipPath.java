@@ -24,7 +24,6 @@ import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
  */
 public class RelationshipPath extends AbstractXPathNode {
 
-	private boolean anyOutgoingRelationship;
 	private String relationshipType;
 
 	/**
@@ -39,25 +38,7 @@ public class RelationshipPath extends AbstractXPathNode {
 	 */
 	public RelationshipPath(String relationshipType) {
 		this();
-		if ("outgoing".equals(relationshipType)) {
-			setAnyOutgoingRelationship(true);
-		} else {
-			setRelationshipType(relationshipType);
-		}
-	}
-
-	/**
-	 * @return the anyOutgoingRelationship
-	 */
-	public boolean isAnyOutgoingRelationship() {
-		return anyOutgoingRelationship;
-	}
-
-	/**
-	 * @param anyOutgoingRelationship the anyOutgoingRelationship to set
-	 */
-	public void setAnyOutgoingRelationship(boolean anyOutgoingRelationship) {
-		this.anyOutgoingRelationship = anyOutgoingRelationship;
+		setRelationshipType(relationshipType);
 	}
 
 	/**
