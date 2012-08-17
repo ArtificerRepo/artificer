@@ -41,7 +41,7 @@ public class Version implements Serializable {
 		Version version = new Version();
 		InputStream resourceAsStream = null;
 		try {
-			resourceAsStream = Version.class.getResourceAsStream("/META-INF/config/version.properties");
+			resourceAsStream = Version.class.getResourceAsStream("/META-INF/config/" + Version.class.getName() + ".properties");
 			Properties props = new Properties();
 			props.load(resourceAsStream);
 			String srampuiVersion = props.getProperty("srampui.version");
