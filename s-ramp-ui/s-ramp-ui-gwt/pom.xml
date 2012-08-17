@@ -80,7 +80,6 @@
 					<outputFileNameMapping>@{artifactId}@.@{extension}@</outputFileNameMapping>
 					<warSourceIncludes>*.jsp,resources/**,WEB-INF/**</warSourceIncludes>
 					<packagingExcludes>**/ui/client/**</packagingExcludes>
-					<!-- <webXml>src/main/webapp/WEB-INF/web-container.xml</webXml> -->
 					<attachClasses>true</attachClasses>
 				</configuration>
 			</plugin>
