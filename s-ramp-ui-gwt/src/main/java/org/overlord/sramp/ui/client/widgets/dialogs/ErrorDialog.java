@@ -25,6 +25,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -36,18 +38,11 @@ public class ErrorDialog extends DialogBox {
 	
 	/**
 	 * Constructor.
-	 * @param error
-	 */
-	public ErrorDialog(RemoteServiceException error) {
-		this("Unexpected Error", error.getMessage());
-	}
-
-	/**
-	 * Constructor.
 	 * @param title
 	 * @param message
+	 * @param error
 	 */
-	public ErrorDialog(String title, String message) {
+	public ErrorDialog(String title, String message, RemoteServiceException error) {
 		super(title);
 		
     	addStyleName("errorDialog");
@@ -59,13 +54,24 @@ public class ErrorDialog extends DialogBox {
     	Button closeButton = new Button(i18n.translate("dialogs.close"));
     	
     	contentWrapper.add(new InlineLabel(message));
+    	
+    	TextArea stacktracePanel = new TextArea();
+    	stacktracePanel.setValue(error.getRootStackTrace());
+    	stacktracePanel.setStyleName("stacktrace");
+    	stacktracePanel.getElement().setAttribute("wrap", "off");
+    	
+    	Label divider = new Label();
+    	divider.setStyleName("divider");
 
 		VerticalPanel vpanel = new VerticalPanel();
-    	vpanel.add(contentWrapper);
     	HorizontalPanel buttonPanel = new HorizontalPanel();
     	buttonPanel.setStyleName("errorButtonPanel");
     	buttonPanel.addStyleName("buttonPanel");
     	buttonPanel.add(closeButton);
+    	
+    	vpanel.add(contentWrapper);
+    	vpanel.add(stacktracePanel);
+    	vpanel.add(divider);
     	vpanel.add(buttonPanel);
     	
     	setWidget(vpanel);
