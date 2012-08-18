@@ -16,6 +16,7 @@
 package org.overlord.sramp.ui.client.services.growl;
 
 import org.overlord.sramp.ui.client.services.IService;
+import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -42,6 +43,14 @@ public interface IGrowlService extends IService {
 	 * @return the unique ID of the growl
 	 */
 	public int growl(String title, String message, GrowlType type);
+
+	/**
+	 * Called by clients to notify the user of an error.
+	 * @param title the title for the growl dialog
+	 * @param message the message to show the user
+	 * @param error the error that occured
+	 */
+	public int growl(String title, String message, RemoteServiceException error);
 
 	/**
 	 * Called by clients to inform the growl service that a progress style growl has 
@@ -75,8 +84,8 @@ public interface IGrowlService extends IService {
 	 * completed with an error.
 	 * @param growlId the ID of the growl to update - returned by a previous call to growl()
 	 * @param title the new title for the growl dialog
-	 * @param message the new message for the growl dialog
+	 * @param error the error that occurred
 	 */
-	public void onProgressError(int growlId, String title, Widget message);
+	public void onProgressError(int growlId, String title, RemoteServiceException error);
 
 }

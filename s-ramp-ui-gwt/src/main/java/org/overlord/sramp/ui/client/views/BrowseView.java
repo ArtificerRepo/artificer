@@ -24,7 +24,6 @@ import org.overlord.sramp.ui.client.widgets.ArtifactSummaryPanel;
 import org.overlord.sramp.ui.client.widgets.DataTable;
 import org.overlord.sramp.ui.client.widgets.DataTableWithPager;
 import org.overlord.sramp.ui.client.widgets.PlaceFilterPanel;
-import org.overlord.sramp.ui.client.widgets.dialogs.ErrorDialog;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 import org.overlord.sramp.ui.shared.types.ArtifactFilter;
@@ -159,9 +158,10 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	@Override
 	public void onQueryFailed(RemoteServiceException error) {
 		this.artifacts.setRowData(null, null, -1, false);
-		ErrorDialog dialog = new ErrorDialog(error);
-		dialog.center();
-		dialog.show();
+		growl().growl(
+				i18n().translate("browse.search-error.title"),
+				i18n().translate("browse.search-error.message"),
+				error);
 	}
 	
 	/*
@@ -198,7 +198,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			};
 			name.setSortable(true);
 			name.setDataStoreName("name");
-			table.addColumn(name, "Artifact Name");
+			table.addColumn(name, i18n().translate("browse.table.name-column"));
 			
 			TextColumn<ArtifactSummary> createdOn = new TextColumn<ArtifactSummary>() {
 				@Override
@@ -208,7 +208,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			};
 			createdOn.setSortable(true);
 			createdOn.setDataStoreName("createdOn");
-			table.addColumn(createdOn, "Created On");
+			table.addColumn(createdOn, i18n().translate("browse.table.createdOn-column"));
 			
 			TextColumn<ArtifactSummary> createdBy = new TextColumn<ArtifactSummary>() {
 				@Override
@@ -218,7 +218,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			};
 			createdBy.setSortable(true);
 			createdBy.setDataStoreName("createdBy");
-			table.addColumn(createdBy, "Created By");
+			table.addColumn(createdBy, i18n().translate("browse.table.createdBy-column"));
 //			setColumnWidth(uuid, 20.0, Unit.PCT);
 		}
 		

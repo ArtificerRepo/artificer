@@ -27,6 +27,7 @@ import org.overlord.sramp.ui.client.widgets.ArtifactUploadForm;
 import org.overlord.sramp.ui.client.widgets.PlaceHyperlink;
 import org.overlord.sramp.ui.client.widgets.TitlePanel;
 import org.overlord.sramp.ui.client.widgets.UnorderedListPanel;
+import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
@@ -129,18 +130,22 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 					jsonData = jsonData.substring(startIdx, endIdx);
 
 				JsonMap jsonMap = JsonMap.fromJSON(jsonData);
-				String uuid = jsonMap.get("uuid");
-				String error = jsonMap.get("error");
-				if (uuid != null) {
+				boolean isError = "true".equals(jsonMap.get("exception"));
+				if (isError) {
+					String errorMessage = jsonMap.get("exception-message");
+					String errorLocalStack = jsonMap.get("exception-localStack");
+					String errorRemoteStack = jsonMap.get("exception-remoteStack");
+					RemoteServiceException error = new RemoteServiceException(errorMessage);
+					error.setRootStackTrace(errorLocalStack + "\nCaused By:\n" + errorRemoteStack);
+					growl().onProgressError(growlId[0], 
+							i18n().translate("dashboard.upload-dialog.error.title"),
+							error);
+				} else {
+					String uuid = jsonMap.get("uuid");
 					growl().onProgressComplete(
 							growlId[0], 
 							i18n().translate("dashboard.upload-dialog.title-2"), 
 							createUploadSuccessWidget(uuid, form.getFilename()));
-				} else if (error != null) {
-					growl().onProgressError(
-							growlId[0], 
-							i18n().translate("dashboard.upload-dialog.error.title"),
-							error);
 				}
 				
 				form.reset();

@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.ui.shared.rsvcs;
 
+
+
 /**
  * Remote services can throw this exception and it will be caught on the client.
  *
@@ -23,20 +25,14 @@ package org.overlord.sramp.ui.shared.rsvcs;
 public class RemoteServiceException extends Exception {
 
 	private static final long serialVersionUID = -5870562184243839633L;
+	
+	private String rootStackTrace;
 
 	/**
 	 * Constructor.
 	 */
 	public RemoteServiceException() {
 		super();
-	}
-	
-	/**
-	 * Constructor.
-	 * @param message
-	 */
-	public RemoteServiceException(String message) {
-		super(message);
 	}
 	
 	/**
@@ -54,6 +50,28 @@ public class RemoteServiceException extends Exception {
 	 */
 	public RemoteServiceException(Throwable root) {
 		super(root);
+	}
+
+	/**
+	 * Constructor.
+	 * @param message
+	 */
+	public RemoteServiceException(String message) {
+		super(message);
+	}
+
+	/**
+	 * @return the rootStackTrace
+	 */
+	public String getRootStackTrace() {
+		return rootStackTrace;
+	}
+
+	/**
+	 * @param rootStackTrace the rootStackTrace to set
+	 */
+	public void setRootStackTrace(String rootStackTrace) {
+		this.rootStackTrace = rootStackTrace;
 	}
 	
 }

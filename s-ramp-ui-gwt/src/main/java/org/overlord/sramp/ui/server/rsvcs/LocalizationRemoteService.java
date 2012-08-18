@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.overlord.sramp.ui.server.util.ExceptionUtils;
 import org.overlord.sramp.ui.shared.rsvcs.ILocalizationRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
@@ -59,7 +60,7 @@ public class LocalizationRemoteService extends RemoteServiceServlet implements I
 				map.put((String) entry.getKey(), (String) entry.getValue());
 			return map;
 		} catch (IOException e) {
-			throw new RemoteServiceException(e);
+			throw ExceptionUtils.createRemoteException(e);
 		}
 	}
 
