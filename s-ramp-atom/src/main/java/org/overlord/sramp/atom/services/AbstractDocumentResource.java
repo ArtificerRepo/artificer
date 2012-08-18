@@ -27,6 +27,7 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.models.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.atom.models.ArtifactToSummaryAtomEntryVisitor;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
@@ -59,8 +60,9 @@ public abstract class AbstractDocumentResource {
      * @param artifactName the name of the artifact being saved
      * @param artifactBody the content of the artifact being saved
      * @param artifactType the type of the artifact being saved
+     * @throws SrampAtomException
      */
-    protected Entry saveArtifact(String artifactName, String artifactBody, ArtifactType artifactType) {
+    protected Entry saveArtifact(String artifactName, String artifactBody, ArtifactType artifactType) throws SrampAtomException {
     	return saveArtifact(artifactName, artifactBody, artifactType, "UTF-8");
     }
 
@@ -70,13 +72,15 @@ public abstract class AbstractDocumentResource {
      * @param artifactBody the content of the artifact being saved
      * @param artifactType the type of the artifact being saved
      * @param contentEncoding the encoding of the artifact content
+	 * @throws SrampAtomException
 	 */
-    protected Entry saveArtifact(String artifactName, String artifactBody, ArtifactType artifactType, String contentEncoding) {
+	protected Entry saveArtifact(String artifactName, String artifactBody, ArtifactType artifactType,
+			String contentEncoding) throws SrampAtomException {
         try {
 			InputStream artifactInputStream = new ByteArrayInputStream(artifactBody.getBytes(contentEncoding));
 			return saveArtifact(artifactName, artifactInputStream, artifactType);
 		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
+			throw new SrampAtomException(e);
 		}
     }
 
@@ -86,8 +90,9 @@ public abstract class AbstractDocumentResource {
      * @param artifactBody the content of the artifact being saved
      * @param artifactType the type of the artifact being saved
      * @return an Atom entry representing the persisted artifact
-	 */
-    protected Entry saveArtifact(String artifactName, InputStream artifactBody, ArtifactType artifactType) {
+     * @throws SrampAtomException
+     */
+    protected Entry saveArtifact(String artifactName, InputStream artifactBody, ArtifactType artifactType) throws SrampAtomException {
         InputStream is = artifactBody;
         try {
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
@@ -106,8 +111,7 @@ public abstract class AbstractDocumentResource {
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
             return visitor.getAtomEntry();
         } catch (Exception e) {
-        	// TODO need better error handling
-			throw new RuntimeException(e);
+			throw new SrampAtomException(e);
         } finally {
         	IOUtils.closeQuietly(is);
         }
@@ -118,8 +122,9 @@ public abstract class AbstractDocumentResource {
 	 * @param uuid the UUID of the s-ramp artifact
 	 * @param artifactType the type of artifact we are expecting
 	 * @return an s-ramp extended Atom entry
-	 */
-    protected Entry getArtifact(String uuid, ArtifactType artifactType) {
+     * @throws SrampAtomException
+     */
+    protected Entry getArtifact(String uuid, ArtifactType artifactType) throws SrampAtomException {
         try {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			// Get the artifact by UUID
@@ -131,9 +136,8 @@ public abstract class AbstractDocumentResource {
 			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return visitor.getAtomEntry();
-		} catch (Exception e) {
-        	// TODO need better error handling
-			throw new RuntimeException(e);
+		} catch (Throwable e) {
+			throw new SrampAtomException(e);
 		}
 	}
 
@@ -142,14 +146,14 @@ public abstract class AbstractDocumentResource {
 	 * @param uuid the UUID of the s-ramp artifact
 	 * @param artifactType the type of artifact we are expecting
 	 * @return the artifact content
+	 * @throws SrampAtomException
 	 */
-	protected InputStream getArtifactContent(String uuid, ArtifactType artifactType) {
+	protected InputStream getArtifactContent(String uuid, ArtifactType artifactType) throws SrampAtomException {
         try {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			return persistenceManager.getArtifactContent(uuid, artifactType);
-		} catch (Exception e) {
-        	// TODO need better error handling
-			throw new RuntimeException(e);
+		} catch (Throwable e) {
+			throw new SrampAtomException(e);
 		}
 	}
 
@@ -157,14 +161,14 @@ public abstract class AbstractDocumentResource {
 	 * Updates an artifact in the s-ramp repository.
 	 * @param artifact the s-ramp artifact to update
 	 * @param type the type of the artifact
+	 * @throws SrampAtomException
 	 */
-	protected void updateArtifact(BaseArtifactType artifact, ArtifactType type) {
+	protected void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampAtomException {
         try {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateArtifact(artifact, type);
-		} catch (Exception e) {
-        	// TODO need better error handling
-			throw new RuntimeException(e);
+		} catch (Throwable e) {
+			throw new SrampAtomException(e);
 		}
 	}
 
@@ -172,8 +176,9 @@ public abstract class AbstractDocumentResource {
 	 * Gets a {@link Feed} of {@link Entry}s for the given S-RAMP artifact type.
 	 * @param type the S-RAMP artifact type
 	 * @return an Atom {@link Feed}
+	 * @throws SrampAtomException
 	 */
-	protected Feed getFeed(ArtifactType type) {
+	protected Feed getFeed(ArtifactType type) throws SrampAtomException {
         try {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			List<BaseArtifactType> artifacts = persistenceManager.getArtifacts(type);
@@ -195,9 +200,8 @@ public abstract class AbstractDocumentResource {
 			}
 
 			return feed;
-		} catch (Exception e) {
-        	// TODO need better error handling
-			throw new RuntimeException(e);
+		} catch (Throwable e) {
+			throw new SrampAtomException(e);
 		}
 	}
 	

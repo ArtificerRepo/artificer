@@ -86,7 +86,6 @@ public class XPathParserTest {
 		if (!testCaseDir.isDirectory())
 			throw new Exception("Failed to find test case directory: " + testCaseDirUrl);
 		
-		@SuppressWarnings("unchecked")
 		Collection<File> testCaseFiles = (Collection<File>) FileUtils.listFiles(testCaseDir, new String[] { "properties" }, true);
 		testCaseFiles = new TreeSet<File>(testCaseFiles);
 		Collection<Properties> testCases = new ArrayList<Properties>(testCaseFiles.size());

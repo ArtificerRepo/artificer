@@ -52,19 +52,32 @@ public class SrampAtomApiClient {
 	 * @param artifactType the artifact type (XmlDocument, XsdDocument, etc)
 	 * @param artifactUuid the S-RAMP uuid of the artifact
 	 * @return an Atom {@link Entry}
-	 * @throws Exception 
+	 * @throws SrampClientException
+	 * @throws SrampServerException
 	 */
-	public Entry getFullArtifactEntry(String artifactModel, String artifactType, String artifactUuid) throws Exception {
-		String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
-		ClientRequest request = new ClientRequest(atomUrl);
-		ClientResponse<Entry> response = request.get(Entry.class);
-		return response.getEntity();
+	public Entry getFullArtifactEntry(String artifactModel, String artifactType, String artifactUuid)
+			throws SrampClientException, SrampServerException {
+		try {
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
+			ClientRequest request = new ClientRequest(atomUrl);
+			ClientResponse<Entry> response = request.get(Entry.class);
+			return response.getEntity();
+		} catch (SrampServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
 	}
 	
 	/**
 	 * Please see javadoc in {@link SrampAtomApiClient#getFullArtifactEntry(String, String, String)}.
+	 * @param artifactType
+	 * @param artifactUuid
+	 * @throws SrampClientException
+	 * @throws SrampServerException
 	 */
-	public Entry getFullArtifactEntry(ArtifactType artifactType, String artifactUuid) throws Exception {
+	public Entry getFullArtifactEntry(ArtifactType artifactType, String artifactUuid)
+			throws SrampClientException, SrampServerException {
 		return getFullArtifactEntry(artifactType.getModel(), artifactType.name(), artifactUuid);
 	}
 
@@ -75,18 +88,29 @@ public class SrampAtomApiClient {
 	 * @param artifactType the artifact type (XmlDocument, XsdDocument, etc)
 	 * @param artifactUuid the S-RAMP uuid of the artifact
 	 * @return an {@link InputStream} to the S-RAMP artifact content
-	 * @throws Exception 
+	 * @throws SrampClientException 
+	 * @throws SrampServerException
 	 */
-	public InputStream getArtifactContent(String artifactModel, String artifactType, String artifactUuid) throws Exception {
-		String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
-		URL url = new URL(atomUrl);
-		return url.openStream();
+	public InputStream getArtifactContent(String artifactModel, String artifactType, String artifactUuid)
+			throws SrampClientException, SrampServerException {
+		try {
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
+			URL url = new URL(atomUrl);
+			return url.openStream();
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
 	}
 	
 	/**
 	 * Please see javadoc in {@link SrampAtomApiClient#getArtifactContent(String, String, String)}.
+	 * @param artifactType
+	 * @param artifactUuid
+	 * @throws SrampClientException
+	 * @throws SrampServerException
 	 */
-	public InputStream getArtifactContent(ArtifactType artifactType, String artifactUuid) throws Exception {
+	public InputStream getArtifactContent(ArtifactType artifactType, String artifactUuid)
+			throws SrampClientException, SrampServerException {
 		return getArtifactContent(artifactType.getModel(), artifactType.name(), artifactUuid);
 	}
 
@@ -97,52 +121,78 @@ public class SrampAtomApiClient {
 	 * @param content the byte content of the artifact
 	 * @param artifactFileName the file name of the artifact (optional, can be null)
 	 * @return an Atom entry representing the new artifact in the s-ramp repository
-	 * @throws Exception
+	 * @throws SrampClientException
+	 * @throws SrampServerException
 	 */
-	public Entry uploadArtifact(String artifactModel, String artifactType, InputStream content, String artifactFileName) throws Exception {
-		String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, artifactModel, artifactType);
-		ClientRequest request = new ClientRequest(atomUrl);
-		if (artifactFileName != null)
-			request.header("Slug", artifactFileName);
-		request.body(MediaType.APPLICATION_XML, content);
+	public Entry uploadArtifact(String artifactModel, String artifactType, InputStream content,
+			String artifactFileName) throws SrampClientException, SrampServerException {
+		try {
+			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, artifactModel, artifactType);
+			ClientRequest request = new ClientRequest(atomUrl);
+			if (artifactFileName != null)
+				request.header("Slug", artifactFileName);
+			request.body(MediaType.APPLICATION_XML, content);
 
-		ClientResponse<Entry> response = request.post(Entry.class);
-		return response.getEntity();
+			ClientResponse<Entry> response = request.post(Entry.class);
+			return response.getEntity();
+		} catch (SrampServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
 	}
 	
 	/**
 	 * Please refer to javadoc in  {@link SrampAtomApiClient#uploadArtifact(String, String, InputStream, String)}
+	 * @param artifactType
+	 * @param content
+	 * @param artifactFileName
+	 * @throws SrampClientException
+	 * @throws SrampServerException
 	 */
-	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName) throws Exception {
+	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
+			throws SrampClientException, SrampServerException {
 		return uploadArtifact(artifactType.getModel(), artifactType.name(), content, artifactFileName);
 	}
 
 	/**
 	 * Executes the given s-ramp query xpath and returns a Feed of the matching artifacts.
 	 * @param srampQuery the s-ramp query (xpath formatted)
+	 * @param page which page of results to return (0 indexed)
+	 * @param pageSize the size of the page of results to return
+	 * @param orderBy the s-ramp property to use for sorting (name, uuid, createdOn, etc)
+	 * @param ascending the direction of the sort
 	 * @return an Atom {@link Feed}
-	 * @throws Exception
+	 * @throws SrampClientException
+	 * @throws SrampServerException
 	 */
-	public Feed query(String srampQuery, int page, int pageSize, String orderBy, boolean ascending) throws Exception {
-		String xpath = srampQuery;
-		if (xpath == null)
-			throw new Exception("Please supply an S-RAMP x-path formatted query.");
-		// Remove the leading /s-ramp/ prior to POSTing to the atom endpoint
-		if (xpath.startsWith("/s-ramp/"))
-			xpath = xpath.substring(8);
-		String atomUrl = this.endpoint;
-		
-		ClientRequest request = new ClientRequest(atomUrl);
-		MultipartFormDataOutput formData = new MultipartFormDataOutput();
-		formData.addFormData("query", srampQuery, MediaType.TEXT_PLAIN_TYPE);
-		formData.addFormData("page", String.valueOf(page), MediaType.TEXT_PLAIN_TYPE);
-		formData.addFormData("pageSize", String.valueOf(pageSize), MediaType.TEXT_PLAIN_TYPE);
-		formData.addFormData("orderBy", orderBy, MediaType.TEXT_PLAIN_TYPE);
-		formData.addFormData("ascending", String.valueOf(ascending), MediaType.TEXT_PLAIN_TYPE);
-		
-		request.body(MediaType.MULTIPART_FORM_DATA_TYPE, formData);
-		ClientResponse<Feed> response = request.post(Feed.class);
-		return response.getEntity();
+	public Feed query(String srampQuery, int page, int pageSize, String orderBy, boolean ascending)
+			throws SrampClientException, SrampServerException {
+		try {
+			String xpath = srampQuery;
+			if (xpath == null)
+				throw new Exception("Please supply an S-RAMP x-path formatted query.");
+			// Remove the leading /s-ramp/ prior to POSTing to the atom endpoint
+			if (xpath.startsWith("/s-ramp/"))
+				xpath = xpath.substring(8);
+			String atomUrl = this.endpoint;
+
+			ClientRequest request = new ClientRequest(atomUrl);
+			MultipartFormDataOutput formData = new MultipartFormDataOutput();
+			formData.addFormData("query", xpath, MediaType.TEXT_PLAIN_TYPE);
+			formData.addFormData("page", String.valueOf(page), MediaType.TEXT_PLAIN_TYPE);
+			formData.addFormData("pageSize", String.valueOf(pageSize), MediaType.TEXT_PLAIN_TYPE);
+			formData.addFormData("orderBy", orderBy, MediaType.TEXT_PLAIN_TYPE);
+			formData.addFormData("ascending", String.valueOf(ascending), MediaType.TEXT_PLAIN_TYPE);
+
+			request.body(MediaType.MULTIPART_FORM_DATA_TYPE, formData);
+			ClientResponse<Feed> response = request.post(Feed.class);
+			return response.getEntity();
+		} catch (SrampServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
 	}
 	
 }
