@@ -35,7 +35,9 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.client.SrampClientUtils;
+import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
+import org.overlord.sramp.ui.server.util.ExceptionUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -85,12 +87,20 @@ public class ArtifactUploadServlet extends HttpServlet {
 						artifactContent = item.getInputStream();
 					}
 				}
-				
+
 				// Now that the content has been extracted, process it (upload the artifact to the s-ramp repo).
 				responseMap = uploadArtifact(artifactType, fileName, artifactContent);
+			} catch (SrampServerException e) {
+				responseMap = new HashMap<String, String>();
+				responseMap.put("exception", "true");
+				responseMap.put("exception-message", e.getMessage());
+				responseMap.put("exception-localStack", ExceptionUtils.getRootStackTrace(e));
+				responseMap.put("exception-remoteStack", e.getRemoteStackTrace());
 			} catch (Throwable e) {
 				responseMap = new HashMap<String, String>();
-				responseMap.put("error", e.getMessage());
+				responseMap.put("exception", "true");
+				responseMap.put("exception-message", e.getMessage());
+				responseMap.put("exception-localStack", ExceptionUtils.getRootStackTrace(e));
 			} finally {
 				IOUtils.closeQuietly(artifactContent);
 			}
@@ -143,7 +153,11 @@ public class ArtifactUploadServlet extends HttpServlet {
 			builder.append("\"");
 			builder.append(key);
 			builder.append("\" : \"");
-			builder.append(val);
+			if (val != null) {
+				val = val.replace("\"", "\\\"");
+				val = val.replace("\n", "\\n");
+				builder.append(val);
+			}
 			builder.append("\"");
 		}
 		builder.append("})");

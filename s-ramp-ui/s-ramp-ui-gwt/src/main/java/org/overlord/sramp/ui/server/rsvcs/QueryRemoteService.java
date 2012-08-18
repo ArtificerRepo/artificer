@@ -20,7 +20,9 @@ import java.util.List;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
+import org.overlord.sramp.ui.server.util.ExceptionUtils;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.beans.PageInfo;
 import org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService;
@@ -67,8 +69,10 @@ public class QueryRemoteService extends RemoteServiceServlet implements IQueryRe
 				rval.add(arty);
 			}
 			return rval;
+		} catch (SrampServerException e) {
+			throw ExceptionUtils.createRemoteException(e);
 		} catch (Throwable t) {
-			throw new RemoteServiceException(t);
+			throw ExceptionUtils.createRemoteException(t);
 		}
 	}
 

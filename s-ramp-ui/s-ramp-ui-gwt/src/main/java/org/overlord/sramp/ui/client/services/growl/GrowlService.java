@@ -21,7 +21,11 @@ import java.util.List;
 import org.overlord.sramp.ui.client.animation.FadeOutAnimation;
 import org.overlord.sramp.ui.client.animation.MoveAnimation;
 import org.overlord.sramp.ui.client.services.AbstractService;
+import org.overlord.sramp.ui.client.services.Services;
+import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
+import org.overlord.sramp.ui.client.widgets.dialogs.ErrorDialog;
 import org.overlord.sramp.ui.client.widgets.dialogs.GrowlDialog;
+import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -29,6 +33,9 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -76,6 +83,24 @@ public class GrowlService extends AbstractService implements IGrowlService {
 	}
 	
 	/**
+	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#growl(java.lang.String, java.lang.String, org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException)
+	 */
+	@Override
+	public int growl(final String title, final String message, final RemoteServiceException error) {
+		final Growl growl = createGrowl(title, message);
+		createGrowlDialog(growl, title, message, GrowlType.error);
+		createGrowlTimers(growl);
+		createGrowlAnimations(growl);
+		
+		Widget wrapper = createErrorGrowlWidget(title, message, error);
+		growl.getDialog().setMessage(wrapper, GrowlType.error);
+
+		positionAndShowGrowlDialog(growl);
+		
+		return growl.getId();
+	}
+	
+	/**
 	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#onProgressComplete(int, java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -114,13 +139,14 @@ public class GrowlService extends AbstractService implements IGrowlService {
 	}
 	
 	/**
-	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#onProgressError(int, java.lang.String, com.google.gwt.user.client.ui.Widget)
+	 * @see org.overlord.sramp.ui.client.services.growl.IGrowlService#onProgressError(int, java.lang.String, org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException)
 	 */
 	@Override
-	public void onProgressError(int growlId, String title, Widget message) {
+	public void onProgressError(int growlId, String title, RemoteServiceException error) {
 		Growl growl = getGrowl(growlId);
 		if (growl != null) {
 			growl.getDialog().setTitle(title);
+			Widget message = createErrorGrowlWidget(title, error.getMessage(), error);
 			growl.getDialog().setMessage(message, GrowlType.error);
 		}
 	}
@@ -282,6 +308,31 @@ public class GrowlService extends AbstractService implements IGrowlService {
 			}
 		};
 		growl.setAutoCloseAnimation(fadeOut);
+	}
+
+	/**
+	 * Creates the widget used in the growl notification window for an exception.
+	 * @param title
+	 * @param message
+	 * @param error
+	 */
+	private Widget createErrorGrowlWidget(final String title, final String message,
+			final RemoteServiceException error) {
+		ILocalizationService i18n = Services.getServices().getService(ILocalizationService.class);
+		FlowPanel wrapper = new FlowPanel();
+		wrapper.add(new InlineLabel(message));
+		wrapper.add(new InlineLabel(" "));
+		Anchor anchor = new Anchor(i18n.translate("services.growl.errorDetails"));
+		anchor.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				ErrorDialog errorDialog = new ErrorDialog(title, message, error);
+				errorDialog.center();
+				errorDialog.show();
+			}
+		});
+		wrapper.add(anchor);
+		return wrapper;
 	}
 
 }

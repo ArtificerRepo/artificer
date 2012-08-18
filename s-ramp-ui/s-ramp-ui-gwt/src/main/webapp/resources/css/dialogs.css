@@ -4,75 +4,75 @@
 
 /* Common Dialog Styles */
 .dialogGlass {
-  background-color: #000000;
-  opacity: 0.5;
-  filter: alpha(opacity=50);
-  z-index: 49;
+	background-color: #000000;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+	z-index: 49;
 }
 .dialog {
-  text-align: left;
-  z-index: 50;
+	text-align: left;
+	z-index: 50;
 }
 .dialog .Caption {
-  cursor: move;
-  color: #E0ECE3;
-  font-weight: bold;
-  text-shadow: 1px 1px 0 #283B4E;
-  font-size: 12px;
-  padding: 10px 5px 5px 10px;
+	cursor: move;
+	color: #E0ECE3;
+	font-weight: bold;
+	text-shadow: 1px 1px 0 #283B4E;
+	font-size: 12px;
+	padding: 10px 5px 5px 10px;
 }
 .dialog .dialogMiddleCenter {
-  background-color: #fafafa;
+	background-color: #fafafa;
 }
 .dialog .dialogTopCenterInner {
-  padding-top: 7px;
+	padding-top: 7px;
 }
 .dialog .dialogTop {
-  height: 42px;
+	height: 42px;
 }
 .dialog .dialogTopLeft {
-  width: 9px;
-  background-image: url(../images/dialog/dlg_tl.png);
-  background-repeat: no-repeat;
+	width: 9px;
+	background-image: url(../images/dialog/dlg_tl.png);
+	background-repeat: no-repeat;
 }
 .dialog .dialogTopCenter {
-  background-image: url(../images/dialog/dlg_top.png);
-  background-repeat: repeat-x;
+	background-image: url(../images/dialog/dlg_top.png);
+	background-repeat: repeat-x;
 }
 .dialog .dialogTopRight {
-  width: 9px;
-  background-image: url(../images/dialog/dlg_tr.png);
-  background-repeat: no-repeat;
+	width: 9px;
+	background-image: url(../images/dialog/dlg_tr.png);
+	background-repeat: no-repeat;
 }
 .dialog .dialogMiddleLeft {
-  width: 9px;
-  background-image: url(../images/dialog/dlg_left.png);
-  background-repeat: repeat-y;
+	width: 9px;
+	background-image: url(../images/dialog/dlg_left.png);
+	background-repeat: repeat-y;
 }
 .dialog .dialogMiddleRight {
-  width: 9px;
-  background-image: url(../images/dialog/dlg_right.png);
-  background-repeat: repeat-y;
+	width: 9px;
+	background-image: url(../images/dialog/dlg_right.png);
+	background-repeat: repeat-y;
 }
 .dialog .dialogBottom {
-  height: 9px;
+	height: 9px;
 }
 .dialog .dialogBottomLeft {
-  width: 9px;
-  background-image: url(../images/dialog/dlg_bl.png);
-  background-repeat: no-repeat;
+	width: 9px;
+	background-image: url(../images/dialog/dlg_bl.png);
+	background-repeat: no-repeat;
 }
 .dialog .dialogBottomCenter {
-  background-image: url(../images/dialog/dlg_bottom.png);
-  background-repeat: repeat-x;
+	background-image: url(../images/dialog/dlg_bottom.png);
+	background-repeat: repeat-x;
 }
 .dialog .dialogBottomRight {
-  width: 9px;
-  background-image: url(../images/dialog/dlg_br.png);
-  background-repeat: no-repeat;
+	width: 9px;
+	background-image: url(../images/dialog/dlg_br.png);
+	background-repeat: no-repeat;
 }
 .dialog .dialogContent {
-  padding-top: 5px;
+	padding-top: 5px;
 }
 .dialog .buttonPanel {
 	text-align: right;
@@ -106,8 +106,22 @@
 	padding-left: 8px;
 	padding-right: 8px;
 	padding-bottom: 5px;
-	max-width: 600px;
+	max-width: 500px;
+}
+.errorDialog .stacktrace {
+	width: 550px;
+	height: 200px;
+	overflow: scroll;
+	overflow-y: scroll;
+	overflow-x: scroll;
+	white-space: nowrap;
+	padding: 5px;
+	border: 1px solid grey;
+}
+.errorDialog .divider {
+	width: 100%;
 	border-bottom: 1px dotted grey;
+	padding-top: 5px;
 }
 
 .artifactUploadDialog .artifactUploadDialogContent {
