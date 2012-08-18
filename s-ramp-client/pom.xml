@@ -7,11 +7,11 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	
+
 	<artifactId>s-ramp-client</artifactId>
 	<name>S-RAMP Client</name>
 	<description>A general purpose client to communicate with any S-RAMP spec-compliant repository.</description>
-	
+
 	<dependencies>
 		<!-- S-RAMP project dependencies -->
 		<dependency>
@@ -24,7 +24,7 @@
 			<artifactId>s-ramp-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<!-- Third party libraries -->
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
@@ -62,13 +62,35 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
 
 		<!-- Test dependencies -->
+		<dependency>
+			<groupId>org.overlord.sramp</groupId>
+			<artifactId>s-ramp-atom</artifactId>
+			<version>${project.version}</version>
+			<classifier>classes</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>tjws</artifactId>
+			<version>${org.jboss.resteasy.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 </project>
