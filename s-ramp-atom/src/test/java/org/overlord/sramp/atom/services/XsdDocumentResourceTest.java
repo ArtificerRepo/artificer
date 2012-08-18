@@ -186,10 +186,12 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 		
 		String artifactFileName = "PO.xsd";
 		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-		String expectedContent = TestUtils.convertStreamToString(POXsd);
-		POXsd.close();
-		
-		Assert.assertEquals(expectedContent, content);
+		try {
+			String expectedContent = TestUtils.convertStreamToString(POXsd);
+			Assert.assertEquals(expectedContent, content);
+		} finally {
+			POXsd.close();
+		}
 	}
 	
 	/**

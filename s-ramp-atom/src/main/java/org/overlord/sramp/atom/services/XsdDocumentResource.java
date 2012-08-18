@@ -29,7 +29,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.xml.bind.JAXBException;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
@@ -39,6 +38,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedInput;
 import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.err.SrampAtomException;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
@@ -51,21 +51,34 @@ public class XsdDocumentResource extends AbstractDocumentResource
 	public XsdDocumentResource() {
 	}
 
+    /**
+     * S-RAMP atom POST to upload an XsdDocument to the repository.  This method handle a simple
+     * XML style POST.
+     * @param fileName
+     * @param body
+     * @throws SrampAtomException
+     */
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry saveXsdDocument(@HeaderParam("Slug") String fileName, String body) {
+    public Entry saveXsdDocument(@HeaderParam("Slug") String fileName, String body) throws SrampAtomException {
     	return super.saveArtifact(fileName, body, ArtifactType.XsdDocument);
     }
 
+    /**
+     * S-RAMP atom POST to upload an XsdDocument to the repository.  This method handles the
+     * multipart/related style POST.
+     * @param input
+     * @throws SrampAtomException
+     */
     @POST
     @Consumes(MultipartConstants.MULTIPART_RELATED)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry saveXsdDocument(MultipartRelatedInput input) {
+    public Entry saveXsdDocument(MultipartRelatedInput input) throws SrampAtomException {
         try {
             List<InputPart> list = input.getParts();
             // Expecting 1 part. 
-            if (list.size()!=1) ; //throw error
+            if (list.size()!=1) ; //TODO throw error
             InputPart firstPart = list.get(0);
 
             // First part being the artifact
@@ -74,9 +87,10 @@ public class XsdDocumentResource extends AbstractDocumentResource
             InputStream is = firstPart.getBody(new GenericType<InputStream>() { });
             
             return super.saveArtifact(fileName, is, ArtifactType.XsdDocument);
-        } catch (Exception e) {
-        	// TODO need better error handling here
-        	throw new RuntimeException(e);
+        } catch (SrampAtomException e) {
+        	throw e;
+        } catch (Throwable e) {
+        	throw new SrampAtomException(e);
         }
     }
 
@@ -89,14 +103,15 @@ public class XsdDocumentResource extends AbstractDocumentResource
     @PUT
     @Path("{uuid}")
     @Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public void updateXsdDocument(@PathParam("uuid") String uuid, Entry atomEntry) {
+    public void updateXsdDocument(@PathParam("uuid") String uuid, Entry atomEntry) throws SrampAtomException {
     	try {
 			Artifact srampArtifactWrapper = atomEntry.getAnyOtherJAXBObject(Artifact.class);
 			XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
 			super.updateArtifact(xsdDocument, ArtifactType.XsdDocument);
-		} catch (JAXBException e) {
-        	// TODO need better error handling here
-        	throw new RuntimeException(e);
+    	} catch (SrampAtomException e) {
+    		throw e;
+		} catch (Throwable e) {
+        	throw new SrampAtomException(e);
 		}
     }
 
@@ -104,22 +119,24 @@ public class XsdDocumentResource extends AbstractDocumentResource
      * Called to get the {@link XsdDocument} with the supplied uuid.
      * @param uuid the UUID of the s-ramp artifact
      * @return an s-ramp extended Atom entry
+     * @throws SrampAtomException
      */
     @GET
     @Path("{uuid}")
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry getXsdDocument(@PathParam("uuid") String uuid) {
+    public Entry getXsdDocument(@PathParam("uuid") String uuid) throws SrampAtomException {
     	return super.getArtifact(uuid, ArtifactType.XsdDocument);
     }
 
     /**
      * Returns a feed of summary documents for all XsdDocument artifacts.
      * @return artifact content stream
+     * @throws SrampAtomException
      */
     @GET
     @Path("{uuid}/media")
     @Produces(MediaType.TEXT_XML)
-    public InputStream getContent(@PathParam("uuid") String uuid) {
+    public InputStream getContent(@PathParam("uuid") String uuid) throws SrampAtomException {
     	return super.getArtifactContent(uuid, ArtifactType.XsdDocument);
     }
     
@@ -136,10 +153,11 @@ public class XsdDocumentResource extends AbstractDocumentResource
     /**
      * Returns a feed of summary documents for all XsdDocument artifacts.
      * @return an Atom {@link Feed}
+     * @throws SrampAtomException
      */
     @GET
     @Produces(MediaType.APPLICATION_ATOM_XML_FEED)
-    public Feed getFeed() {
+    public Feed getFeed() throws SrampAtomException {
     	return super.getFeed(ArtifactType.XsdDocument);
     }
 

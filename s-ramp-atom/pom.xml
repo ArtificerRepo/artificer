@@ -57,7 +57,7 @@
 			<version>${org.jboss.resteasy.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- S-RAMP project dependencies -->
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
@@ -74,22 +74,22 @@
 			<artifactId>s-ramp-repository</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		<!-- Provided libraries -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
 
-        <!-- Common libraries -->
+		<!-- Provided libraries -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Common libraries -->
+		<dependency>
+			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
 
-		<!-- S-RAMP Provider (only JCR for now: runtime scope for Tomcat deployment and unit testing) -->
+		<!-- S-RAMP Provider (only JCR for now: runtime scope for Tomcat deployment 
+			and unit testing) -->
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
 			<artifactId>s-ramp-repository-jcr</artifactId>
@@ -125,5 +125,17 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<attachClasses>true</attachClasses>
+					<classesClassifier>classes</classesClassifier>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

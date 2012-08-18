@@ -39,6 +39,7 @@ import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.repository.QueryManager;
 import org.overlord.sramp.repository.QueryManagerFactory;
 import org.overlord.sramp.repository.query.ArtifactSet;
@@ -51,6 +52,16 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
  */
 @Path("/s-ramp")
 public class AdHocQueryResource {
+	/**
+	 * Do an s-ramp query from a GET style request.
+	 * @param uri
+	 * @param query
+	 * @param page
+	 * @param pageSize
+	 * @param orderBy
+	 * @param asc
+	 * @throws SrampAtomException
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
 	public Feed queryFromGet(
@@ -60,7 +71,7 @@ public class AdHocQueryResource {
 			@QueryParam("pageSize") Integer pageSize,
 			@QueryParam("orderBy") String orderBy,
 			@QueryParam("ascending") Boolean asc
-			) throws Exception {
+			) throws SrampAtomException {
 //		MultivaluedMap<String,String> queryParameters = uri.getQueryParameters();
 //		System.out.println(queryParameters);
     	if (page == null)
@@ -71,33 +82,42 @@ public class AdHocQueryResource {
     		orderBy = "name";
     	if (asc == null)
     		asc = true;
-		return query(query, page, pageSize, orderBy, asc);
+		try {
+			return query(query, page, pageSize, orderBy, asc);
+		} catch (Throwable e) {
+			throw new SrampAtomException(e);
+		}
 	}
 
 	/**
 	 * Handles clients that POST the query to the /s-ramp endpoint.
 	 * @param input the multipart form data 
-	 * @return
-	 * @throws Exception
+	 * @throws SrampAtomException
 	 */
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
-	public Feed queryFromPost(MultipartFormDataInput input) throws Exception {
-    	String query = input.getFormDataPart("query", new GenericType<String>() { });
-    	Integer page = input.getFormDataPart("page", new GenericType<Integer>() { });
-    	if (page == null)
-    		page = 0;
-    	Integer pageSize = input.getFormDataPart("pageSize", new GenericType<Integer>() { });
-    	if (pageSize == null)
-    		pageSize = 20;
-    	String orderBy = input.getFormDataPart("orderBy", new GenericType<String>() { });
-    	if (orderBy == null)
-    		orderBy = "name";
-    	Boolean asc = input.getFormDataPart("ascending", new GenericType<Boolean>() { });
-    	if (asc == null)
-    		asc = true;
-    	return query(query, page, pageSize, orderBy, asc);
+	public Feed queryFromPost(MultipartFormDataInput input) throws SrampAtomException {
+    	try {
+			String query = input.getFormDataPart("query", new GenericType<String>() { });
+			Integer page = input.getFormDataPart("page", new GenericType<Integer>() { });
+			if (page == null)
+				page = 0;
+			Integer pageSize = input.getFormDataPart("pageSize", new GenericType<Integer>() { });
+			if (pageSize == null)
+				pageSize = 20;
+			String orderBy = input.getFormDataPart("orderBy", new GenericType<String>() { });
+			if (orderBy == null)
+				orderBy = "name";
+			Boolean asc = input.getFormDataPart("ascending", new GenericType<Boolean>() { });
+			if (asc == null)
+				asc = true;
+			return query(query, page, pageSize, orderBy, asc);
+		} catch (SrampAtomException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampAtomException(e);
+		}
     }
 
     /**
@@ -108,11 +128,11 @@ public class AdHocQueryResource {
      * @param orderBy the property to sort the results by
      * @param ascending the sort direction
      * @return an Atom {@link Feed}
-     * @throws Exception
+     * @throws SrampAtomException
      */
-    protected Feed query(String query, int page, int pageSize, String orderBy, boolean ascending) throws Exception {
+    protected Feed query(String query, int page, int pageSize, String orderBy, boolean ascending) throws SrampAtomException {
 		if (query == null)
-			throw new IllegalArgumentException("Missing S-RAMP query (param with name 'query').");
+			throw new SrampAtomException("Missing S-RAMP query (param with name 'query').");
 
 		// Add on the "/s-ramp/" if it's missing
 		String xpath = query;
@@ -134,6 +154,8 @@ public class AdHocQueryResource {
 			Feed feed = createFeed(artifactSet, startIdx, endIdx);
 			addPaginationLinks(feed, artifactSet, query, page, pageSize, orderBy, ascending);
 			return feed;
+		} catch (Throwable e) {
+			throw new SrampAtomException(e);
 		} finally {
 			if (artifactSet != null)
 				artifactSet.close();

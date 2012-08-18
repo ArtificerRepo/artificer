@@ -11,7 +11,7 @@
 	<artifactId>s-ramp-wagon</artifactId>
 	<name>Maven S-RAMP Wagon Provider</name>
 	<description>Maven Wagon that gets and puts artifacts from and to remote server using the S-RAMP Atom API.</description>
-	
+
 	<properties>
 		<maven.version>3.0</maven.version>
 		<wagon.version>2.2</wagon.version>
@@ -34,7 +34,7 @@
 			<artifactId>wagon-provider-api</artifactId>
 			<version>${wagon.version}</version>
 		</dependency>
-		
+
 		<!-- S-RAMP project dependencies -->
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
@@ -51,7 +51,7 @@
 			<artifactId>s-ramp-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<!-- Third party libraries -->
 
 		<!-- Common libraries -->
@@ -60,7 +60,7 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
+			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
 

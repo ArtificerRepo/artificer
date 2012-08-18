@@ -25,6 +25,7 @@ import javax.ws.rs.Produces;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.err.SrampAtomException;
 
 /**
  * Implements the XmlDocument S-RAMP Atom API resource.  This provides the mechanism for adding, deleting,
@@ -33,8 +34,8 @@ import org.overlord.sramp.atom.MediaType;
  * @author eric.wittmann@redhat.com
  */
 @Path("/s-ramp/core/XmlDocument")
-public class XmlDocumentResource extends AbstractDocumentResource
-{
+public class XmlDocumentResource extends AbstractDocumentResource {
+
 	/**
 	 * Default constructor.
 	 */
@@ -49,8 +50,8 @@ public class XmlDocumentResource extends AbstractDocumentResource
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry saveXmlDocument(@HeaderParam("Slug") String fileName, String body) {
-    	return super.saveArtifact(fileName, body, ArtifactType.XmlDocument);
+    public Entry saveXmlDocument(@HeaderParam("Slug") String fileName, String body) throws SrampAtomException {
+		return super.saveArtifact(fileName, body, ArtifactType.XmlDocument);
     }
   
 }
