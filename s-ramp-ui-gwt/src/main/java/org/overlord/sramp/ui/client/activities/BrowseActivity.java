@@ -91,8 +91,8 @@ public class BrowseActivity extends AbstractActivity<BrowsePlace, IBrowseView> i
 	 */
 	@Override
 	protected void updateBreadcrumb(BreadcrumbPanel breadcrumbPanel) {
-		breadcrumbPanel.addCrumb(i18n().translate("breadcrumb.dashboard"), new DashboardPlace());
-		breadcrumbPanel.addCrumb(i18n().translate("breadcrumb.browse"), null);
+		breadcrumbPanel.addCrumb(i18n().translate("widgets.breadcrumb.dashboard"), new DashboardPlace());
+		breadcrumbPanel.addCrumb(i18n().translate("widgets.breadcrumb.browse"), null);
 	}
 
 }

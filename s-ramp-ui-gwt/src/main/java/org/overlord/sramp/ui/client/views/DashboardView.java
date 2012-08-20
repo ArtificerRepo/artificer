@@ -69,7 +69,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		dashboardPanel.add(rightColumn);
 		
 		// Create the Activities panel
-		TitlePanel activitiesPanel = new TitlePanel(i18n().translate("dashboard.activities-panel.title"));
+		TitlePanel activitiesPanel = new TitlePanel(i18n().translate("views.dashboard.activities-panel.title"));
 		activitiesPanel.getElement().setId("dash-activitiesPanel");
 		UnorderedListPanel ulPanel = new UnorderedListPanel();
 		List<Widget> activityLinks = createActivityLinks();
@@ -78,14 +78,14 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		activitiesPanel.setWidget(ulPanel);
 		
 		// Create the Upload Artifact panel
-		TitlePanel uploadPanel = new TitlePanel(i18n().translate("dashboard.upload-panel.title"));
+		TitlePanel uploadPanel = new TitlePanel(i18n().translate("views.dashboard.upload-panel.title"));
 		uploadPanel.getElement().setId("dash-uploadPanel");
 		uploadPanel.setWidget(createUploadForm());
 		
 		// Create the Help panel
-		TitlePanel helpPanel = new TitlePanel(i18n().translate("dashboard.help-panel.title"));
+		TitlePanel helpPanel = new TitlePanel(i18n().translate("views.dashboard.help-panel.title"));
 		helpPanel.getElement().setId("dash-helpPanel");
-		HTMLPanel helpText = new HTMLPanel(i18n().translate("dashboard.help-panel.help-text"));
+		HTMLPanel helpText = new HTMLPanel(i18n().translate("views.dashboard.help-panel.help-text"));
 		helpPanel.setWidget(helpText);
 
 		// Now size the columns properly
@@ -113,8 +113,8 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 			@Override
 			public void onSubmit(SubmitEvent event) {
 				int id = growl().growl(
-						i18n().translate("dashboard.upload-dialog.title-1"), 
-						i18n().translate("dashboard.upload-dialog.please-wait", form.getFilename()), 
+						i18n().translate("views.dashboard.upload-dialog.title-1"), 
+						i18n().translate("views.dashboard.upload-dialog.please-wait", form.getFilename()), 
 						GrowlType.progress);
 				growlId[0] = id;
 			}
@@ -138,7 +138,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 					RemoteServiceException error = new RemoteServiceException(errorMessage);
 					error.setRootStackTrace(errorLocalStack + "\nCaused By:\n" + errorRemoteStack);
 					growl().onProgressError(growlId[0], 
-							i18n().translate("dashboard.upload-dialog.error.title"),
+							i18n().translate("views.dashboard.upload-dialog.error.title"),
 							error);
 				} else {
 					String uuid = jsonMap.get("uuid");
@@ -146,7 +146,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 					String type = jsonMap.get("type");
 					growl().onProgressComplete(
 							growlId[0], 
-							i18n().translate("dashboard.upload-dialog.title-2"), 
+							i18n().translate("views.dashboard.upload-dialog.title-2"), 
 							createUploadSuccessWidget(model, type, uuid, form.getFilename()));
 				}
 				
@@ -166,10 +166,10 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 	 */
 	protected Widget createUploadSuccessWidget(String model, String type, String uuid, String artifactName) {
 		FlowPanel wrapper = new FlowPanel();
-		wrapper.add(new InlineLabel(i18n().translate("dashboard.upload-dialog.success.message", uuid, artifactName)));
+		wrapper.add(new InlineLabel(i18n().translate("views.dashboard.upload-dialog.success.message", uuid, artifactName)));
 		wrapper.add(new InlineLabel(" "));
 		Place artifactPlace = new ArtifactPlace(model, type, uuid);
-		PlaceHyperlink link = new PlaceHyperlink(i18n().translate("dashboard.upload-dialog.success.link-label"), artifactPlace);
+		PlaceHyperlink link = new PlaceHyperlink(i18n().translate("views.dashboard.upload-dialog.success.link-label"), artifactPlace);
 		wrapper.add(link);
 		return wrapper;
 	}
@@ -179,11 +179,11 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 	 */
 	private List<Widget> createActivityLinks() {
 		List<Widget> links = new ArrayList<Widget>();
-		PlaceHyperlink browseLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.browse.label"), new BrowsePlace());
+		PlaceHyperlink browseLink = new PlaceHyperlink(i18n().translate("views.dashboard.activities-panel.activities.browse.label"), new BrowsePlace());
 		links.add(browseLink);
-		PlaceHyperlink ontologyLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.ontologies.label"), null);
+		PlaceHyperlink ontologyLink = new PlaceHyperlink(i18n().translate("views.dashboard.activities-panel.activities.ontologies.label"), null);
 		links.add(ontologyLink);
-		PlaceHyperlink savedQueriesLink = new PlaceHyperlink(i18n().translate("dashboard.activities-panel.activities.saved-queries.label"), null);
+		PlaceHyperlink savedQueriesLink = new PlaceHyperlink(i18n().translate("views.dashboard.activities-panel.activities.saved-queries.label"), null);
 		links.add(savedQueriesLink);
 		return links;
 	}

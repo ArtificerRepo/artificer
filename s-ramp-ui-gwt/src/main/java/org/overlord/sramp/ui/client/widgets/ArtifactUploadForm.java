@@ -52,13 +52,13 @@ public class ArtifactUploadForm extends FormPanel {
 		VerticalPanel vpanel = new VerticalPanel();
 
 		final ListBox artifactType = new ListBox();
-		final Button submitButton = new Button(i18n.translate("artifact-upload.submit"));
+		final Button submitButton = new Button(i18n.translate("widgets.artifact-upload.submit"));
 		
 		// Populate the type list box with options
 		artifactType.setName("artifactType");
-		artifactType.addItem(i18n.translate("artifact-upload.please-choose"), "");
-		artifactType.addItem(i18n.translate("artifact-upload.choice.xml"), "XmlDocument");
-		artifactType.addItem(i18n.translate("artifact-upload.choice.xsd"), "XsdDocument");
+		artifactType.addItem(i18n.translate("widgets.artifact-upload.please-choose"), "");
+		artifactType.addItem(i18n.translate("widgets.artifact-upload.choice.xml"), "XmlDocument");
+		artifactType.addItem(i18n.translate("widgets.artifact-upload.choice.xsd"), "XsdDocument");
 		artifactType.setSelectedIndex(0);
 
 		// Configure the file upload widget

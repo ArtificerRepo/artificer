@@ -179,7 +179,7 @@ public abstract class DataTableWithPager<T> extends FlowPanel {
 		int start = (currentPlace.getPage(0) * currentPlace.getPageSize(defaultPageSize)) + 1;
 		int end = start + rowData.size() - 1;
 		ILocalizationService i18n = Services.getServices().getService(ILocalizationService.class);
-		String pagerMsg = i18n.translate("dataTable.pager.label", currentPlace.getPage(0) + 1, start, end);
+		String pagerMsg = i18n.translate("widgets.dataTable.pager.label", currentPlace.getPage(0) + 1, start, end);
 		
 		updateColumnSort(currentPlace);
 		
