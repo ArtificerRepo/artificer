@@ -17,7 +17,6 @@
 	<modules>
 		<module>s-ramp-ui-gwt</module>
 		<module>s-ramp-ui-parent</module>
-		<module>s-ramp-ui-vaadin</module>
 	</modules>
 </project>
 
