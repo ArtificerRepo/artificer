@@ -1,11 +1,13 @@
 package org.overlord.sramp.ui.client;
 
+import org.overlord.sramp.ui.client.places.AbstractPlace;
 import org.overlord.sramp.ui.client.places.DashboardPlace;
 import org.overlord.sramp.ui.client.services.IServicesListener;
 import org.overlord.sramp.ui.client.services.ServiceLifecycleContext;
 import org.overlord.sramp.ui.client.services.ServiceList;
 import org.overlord.sramp.ui.client.services.Services;
 import org.overlord.sramp.ui.client.services.breadcrumb.IBreadcrumbService;
+import org.overlord.sramp.ui.client.services.i18n.ILocalizationService;
 import org.overlord.sramp.ui.client.services.place.IPlaceService;
 
 import com.google.gwt.activity.shared.ActivityManager;
@@ -15,10 +17,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -46,12 +50,20 @@ public class Application implements EntryPoint {
 		Services.init(ServiceList.getRegisteredServices(), context, new IServicesListener() {
 			@Override
 			public void onAllServicesStarted() {
-				IPlaceService placeService = Services.getServices().getService(IPlaceService.class);
-				IBreadcrumbService breadcrumbService = Services.getServices().getService(IBreadcrumbService.class);
+				final IPlaceService placeService = Services.getServices().getService(IPlaceService.class);
+				final IBreadcrumbService breadcrumbService = Services.getServices().getService(IBreadcrumbService.class);
+				final ILocalizationService i18nService = Services.getServices().getService(ILocalizationService.class);
 				
 				// Start ActivityManager for the main widget with our ActivityMapper
 				ActivityMapper activityMapper = new ActivityMapperImpl(clientFactory);
-				ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
+				ActivityManager activityManager = new ActivityManager(activityMapper, eventBus) {
+					@Override
+					public void onPlaceChange(PlaceChangeEvent event) {
+						super.onPlaceChange(event);
+						AbstractPlace place = (AbstractPlace) event.getNewPlace();
+						Window.setTitle(i18nService.translate(place.getTitleKey(), place.getTitleParams()));
+					}
+				};
 				activityManager.setDisplay(appWidget);
 
 				// Start PlaceHistoryHandler with our PlaceHistoryMapper
