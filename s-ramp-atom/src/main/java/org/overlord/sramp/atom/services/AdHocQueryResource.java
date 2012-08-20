@@ -17,7 +17,6 @@ package org.overlord.sramp.atom.services;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Iterator;
@@ -40,10 +39,12 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.atom.models.ArtifactToSummaryAtomEntryVisitor;
 import org.overlord.sramp.repository.QueryManager;
 import org.overlord.sramp.repository.QueryManagerFactory;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
+import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 
@@ -178,9 +179,9 @@ public class AdHocQueryResource {
 	 * @param fromRow return rows starting at this index (inclusive)
 	 * @param toRow return rows ending at this index (inclusive)
 	 * @return an Atom {@link Feed}
-	 * @throws URISyntaxException
+	 * @throws Exception
 	 */
-	private Feed createFeed(ArtifactSet artifactSet, int fromRow, int toRow) throws URISyntaxException {
+	private Feed createFeed(ArtifactSet artifactSet, int fromRow, int toRow) throws Exception {
 		Feed feed = new Feed();
 		feed.setId(new URI(UUID.randomUUID().toString()));
 		feed.setTitle("S-RAMP Feed");
@@ -189,23 +190,22 @@ public class AdHocQueryResource {
 		feed.getAuthors().add(new Person("anonymous"));
 
 		Iterator<BaseArtifactType> iterator = artifactSet.iterator();
+		
 		// Skip any initial rows
 		for (int i = 0; i < fromRow; i++) {
 			if (!iterator.hasNext())
 				break;
 			iterator.next();
 		}
+		
 		// Now get only the rows we're interested in.
+        ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor();
 		for (int i = fromRow; i <= toRow; i++) {
 			if (!iterator.hasNext())
 				break;
-			BaseArtifactType artifact = iterator.next();
-			Entry entry = new Entry();
-			entry.setId(new URI(artifact.getUuid()));
-			entry.setTitle(artifact.getName());
-			entry.setUpdated(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
-			entry.setPublished(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
-			entry.getAuthors().add(new Person(artifact.getCreatedBy()));
+            BaseArtifactType artifact = iterator.next();
+            ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+            Entry entry = visitor.getAtomEntry();
 			feed.getEntries().add(entry);
 		}
 		
