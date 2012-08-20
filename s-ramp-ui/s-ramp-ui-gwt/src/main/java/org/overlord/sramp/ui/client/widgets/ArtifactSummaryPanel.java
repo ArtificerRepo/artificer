@@ -101,7 +101,7 @@ public class ArtifactSummaryPanel extends FlowPanel {
 		updatedOnField.setValue(updatedOn);
 		descriptionField.setText(artifact.getDescription());
 
-		ArtifactPlace artifactDetailsPlace = new ArtifactPlace(artifact.getUuid());
+		ArtifactPlace artifactDetailsPlace = new ArtifactPlace(artifact.getModel(), artifact.getType(), artifact.getUuid());
 		detailsLink.setTargetPlace(artifactDetailsPlace);
 
 		this.noArtifactMessage.setVisible(false);

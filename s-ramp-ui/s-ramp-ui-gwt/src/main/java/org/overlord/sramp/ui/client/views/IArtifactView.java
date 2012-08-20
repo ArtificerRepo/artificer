@@ -16,6 +16,9 @@
 package org.overlord.sramp.ui.client.views;
 
 import org.overlord.sramp.ui.client.activities.IArtifactActivity;
+import org.overlord.sramp.ui.client.places.ArtifactPlace;
+import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
+import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 /**
  * Artifact view interface.
@@ -23,4 +26,24 @@ import org.overlord.sramp.ui.client.activities.IArtifactActivity;
  * @author eric.wittmann@redhat.com
  */
 public interface IArtifactView extends IView<IArtifactActivity> {
+	
+	/**
+	 * Called by the activity when it begins downloading the artifact.
+	 * @param currentPlace
+	 */
+	public void onArtifactLoading(ArtifactPlace currentPlace);
+	
+	/**
+	 * Called by the activity when the artifact download completes.
+	 * @param artifact
+	 */
+	public void onArtifactLoaded(ArtifactDetails artifact);
+	
+	/**
+	 * Called by the activity when the download of the full artifact details
+	 * fails for some reason.
+	 * @param error
+	 */
+	public void onArtifactLoadError(RemoteServiceException error);
+	
 }

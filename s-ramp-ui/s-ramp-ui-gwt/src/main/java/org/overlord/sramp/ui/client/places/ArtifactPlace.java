@@ -29,13 +29,19 @@ import com.google.gwt.place.shared.PlaceTokenizer;
  */
 public class ArtifactPlace extends AbstractPlace {
 	
+	private String model;
+	private String type;
 	private String uuid;
 
 	/**
 	 * Constructor.
+	 * @param model
+	 * @param type
 	 * @param uuid
 	 */
-	public ArtifactPlace(String uuid) {
+	public ArtifactPlace(String model, String type, String uuid) {
+		this.setModel(model);
+		this.setType(type);
 		this.setUuid(uuid);
 	}
 
@@ -52,15 +58,57 @@ public class ArtifactPlace extends AbstractPlace {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
-	
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return the model
+	 */
+	public String getModel() {
+		return model;
+	}
+
+	/**
+	 * @param model the model to set
+	 */
+	public void setModel(String model) {
+		this.model = model;
+	}
+
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof ArtifactPlace))
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
 			return false;
 		ArtifactPlace other = (ArtifactPlace) obj;
+		if (model == null) {
+			if (other.model != null)
+				return false;
+		} else if (!model.equals(other.model))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
 		if (uuid == null) {
 			if (other.uuid != null)
 				return false;
@@ -68,7 +116,6 @@ public class ArtifactPlace extends AbstractPlace {
 			return false;
 		return true;
 	}
-
 
 
 	/*
@@ -80,7 +127,10 @@ public class ArtifactPlace extends AbstractPlace {
 		 */
 		@Override
 		public String getToken(ArtifactPlace place) {
-			return PlaceUtils.createPlaceToken("uuid", place.getUuid());
+			return PlaceUtils.createPlaceToken(
+					"m", place.getModel(),
+					"t", place.getType(),
+					"uuid", place.getUuid());
 		}
 
 		/**
@@ -89,8 +139,10 @@ public class ArtifactPlace extends AbstractPlace {
 		@Override
 		public ArtifactPlace getPlace(String token) {
 			Map<String, String> params = PlaceUtils.parsePlaceToken(token);
+			String model = params.get("m");
+			String type = params.get("t");
 			String uuid = params.get("uuid");
-			return new ArtifactPlace(uuid);
+			return new ArtifactPlace(model, type, uuid);
 		}
 	}
 }

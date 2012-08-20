@@ -29,6 +29,8 @@ public class ArtifactSummary implements Serializable {
 
 	private static final long serialVersionUID = -7419135587961096239L;
 
+	private String model;
+	private String type;
 	private String uuid;
 	private String name;
 	private String description;
@@ -173,6 +175,34 @@ public class ArtifactSummary implements Serializable {
 		} else if (!uuid.equals(other.uuid))
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return the model
+	 */
+	public String getModel() {
+		return model;
+	}
+
+	/**
+	 * @param model the model to set
+	 */
+	public void setModel(String model) {
+		this.model = model;
 	}
 		
 }
