@@ -142,10 +142,12 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 							error);
 				} else {
 					String uuid = jsonMap.get("uuid");
+					String model = jsonMap.get("model");
+					String type = jsonMap.get("type");
 					growl().onProgressComplete(
 							growlId[0], 
 							i18n().translate("dashboard.upload-dialog.title-2"), 
-							createUploadSuccessWidget(uuid, form.getFilename()));
+							createUploadSuccessWidget(model, type, uuid, form.getFilename()));
 				}
 				
 				form.reset();
@@ -157,14 +159,16 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 
 	/**
 	 * Creates the widget (message) shown to the user when an artifact successfully uploads.
-	 * @param uuid the UUID of the new artifact
-	 * @param artifactName the filename of the artifact
+	 * @param model
+	 * @param type
+	 * @param uuid
+	 * @param artifactName
 	 */
-	protected Widget createUploadSuccessWidget(String uuid, String artifactName) {
+	protected Widget createUploadSuccessWidget(String model, String type, String uuid, String artifactName) {
 		FlowPanel wrapper = new FlowPanel();
 		wrapper.add(new InlineLabel(i18n().translate("dashboard.upload-dialog.success.message", uuid, artifactName)));
 		wrapper.add(new InlineLabel(" "));
-		Place artifactPlace = new ArtifactPlace(uuid);
+		Place artifactPlace = new ArtifactPlace(model, type, uuid);
 		PlaceHyperlink link = new PlaceHyperlink(i18n().translate("dashboard.upload-dialog.success.link-label"), artifactPlace);
 		wrapper.add(link);
 		return wrapper;

@@ -19,8 +19,12 @@ import org.overlord.sramp.ui.client.IClientFactory;
 import org.overlord.sramp.ui.client.places.ArtifactPlace;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
 import org.overlord.sramp.ui.client.places.DashboardPlace;
+import org.overlord.sramp.ui.client.services.artifact.IArtifactService;
+import org.overlord.sramp.ui.client.util.RemoteServiceAsyncCallback;
 import org.overlord.sramp.ui.client.views.IArtifactView;
 import org.overlord.sramp.ui.client.widgets.BreadcrumbPanel;
+import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
+import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -48,14 +52,28 @@ public class ArtifactActivity extends AbstractActivity<ArtifactPlace, IArtifactV
 		view.setActivity(this);
 		return view;
 	}
-	
+
 	/**
 	 * @see org.overlord.sramp.ui.client.activities.AbstractActivity#doStart(com.google.gwt.user.client.ui.AcceptsOneWidget, com.google.gwt.event.shared.EventBus)
 	 */
 	@Override
 	protected void doStart(AcceptsOneWidget panel, EventBus eventBus) {
+		getView().onArtifactLoading(getPlace());
+		
+		getService(IArtifactService.class).getArtifactDetailsAsync(getPlace().getModel(),
+				getPlace().getType(), getPlace().getUuid(),
+				new RemoteServiceAsyncCallback<ArtifactDetails>() {
+					@Override
+					public void onSuccess(ArtifactDetails artifact) {
+						getView().onArtifactLoaded(artifact);
+					}
+					@Override
+					protected void onRemoteServiceFailure(RemoteServiceException caught) {
+						getView().onArtifactLoadError(caught);
+					}
+				});
 	}
-	
+
 	/**
 	 * @see org.overlord.sramp.ui.client.activities.AbstractActivity#updateBreadcrumb(org.overlord.sramp.ui.client.widgets.BreadcrumbPanel)
 	 */

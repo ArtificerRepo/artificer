@@ -25,8 +25,8 @@
 }
 .artifactSummaryPanel .simpleFormPanel span.label {
 	padding-right: 5px;
-	font-style: italic;
 	font-size: 14px;
+	color: #777;
 }
 .artifactSummaryPanel .simpleFormPanel input {
 	width: 190px;
@@ -38,3 +38,29 @@
 	padding-top: 10px;
 	text-align: right;
 }
+
+.artifactView .artifactView-content {
+	border-collapse: separate;
+	border-spacing: 10px;
+}
+.artifactView .dpanel {
+	width: 100%;
+}
+.artifactView .dpanel a.header {
+	color: #9C1919;
+	font-size: 18px;
+	border-bottom: 1px dotted grey;
+	padding-bottom: 3px;
+	text-decoration: none;
+}
+.artifactView .dpanel a.header:hover {
+	text-decoration: none;
+}
+.artifactView .dpanel .dpanel-content {
+	padding-top: 5px;
+}
+.artifactView .dpanel .dpanel-content span.label {
+	padding-right: 5px;
+	color: #777;
+}
+

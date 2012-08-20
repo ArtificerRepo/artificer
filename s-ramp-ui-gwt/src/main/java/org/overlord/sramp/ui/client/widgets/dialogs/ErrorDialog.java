@@ -55,11 +55,6 @@ public class ErrorDialog extends DialogBox {
     	
     	contentWrapper.add(new InlineLabel(message));
     	
-    	TextArea stacktracePanel = new TextArea();
-    	stacktracePanel.setValue(error.getRootStackTrace());
-    	stacktracePanel.setStyleName("stacktrace");
-    	stacktracePanel.getElement().setAttribute("wrap", "off");
-    	
     	Label divider = new Label();
     	divider.setStyleName("divider");
 
@@ -70,7 +65,13 @@ public class ErrorDialog extends DialogBox {
     	buttonPanel.add(closeButton);
     	
     	vpanel.add(contentWrapper);
-    	vpanel.add(stacktracePanel);
+    	if (error != null) {
+	    	TextArea stacktracePanel = new TextArea();
+	    	stacktracePanel.setValue(error.getRootStackTrace());
+	    	stacktracePanel.setStyleName("stacktrace");
+	    	stacktracePanel.getElement().setAttribute("wrap", "off");
+	    	vpanel.add(stacktracePanel);
+    	}
     	vpanel.add(divider);
     	vpanel.add(buttonPanel);
     	
