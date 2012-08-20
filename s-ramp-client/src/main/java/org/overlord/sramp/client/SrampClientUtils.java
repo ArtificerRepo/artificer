@@ -15,9 +15,12 @@
  */
 package org.overlord.sramp.client;
 
+import java.net.URI;
+
 import javax.xml.bind.JAXBException;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -83,6 +86,29 @@ public final class SrampClientUtils {
 		Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
 		return unwrapSrampArtifact(artifactType, artifact);
 	}
-	
+
+	/**
+	 * Figures out the S-RAMP artifact model for the given {@link Entry}.
+	 * @param entry
+	 */
+	public static String getArtifactModel(Entry entry) {
+		Link link = entry.getLinkByRel("self");
+		URI href = link.getHref();
+		String path = href.getPath();
+		String [] split = path.split("/");
+		return split[split.length - 3];
+	}
+
+	/**
+	 * Figures out the S-RAMP artifact type for the given {@link Entry}.
+	 * @param entry
+	 */
+	public static String getArtifactType(Entry entry) {
+		Link link = entry.getLinkByRel("self");
+		URI href = link.getHref();
+		String path = href.getPath();
+		String [] split = path.split("/");
+		return split[split.length - 2];
+	}
 
 }
