@@ -39,7 +39,9 @@ public abstract class AbstractPlace extends Place {
 	 * to provide a different key.
 	 */
 	public String getTitleKey() {
-		return "places." + getClass().getSimpleName().toLowerCase() + ".title";
+		String[] ksplit = getClass().toString().split("\\.");
+		String k = ksplit[ksplit.length - 1];
+		return "places." + k.toLowerCase() + ".title";
 	}
 
 	/**
