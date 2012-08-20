@@ -44,6 +44,15 @@ public class ArtifactPlace extends AbstractPlace {
 		this.setType(type);
 		this.setUuid(uuid);
 	}
+	
+	/**
+	 * @see org.overlord.sramp.ui.client.places.AbstractPlace#getTitleParams()
+	 */
+	@Override
+	public Object[] getTitleParams() {
+		Object[] rval = { getUuid() };
+		return rval;
+	}
 
 	/**
 	 * @return the uuid
