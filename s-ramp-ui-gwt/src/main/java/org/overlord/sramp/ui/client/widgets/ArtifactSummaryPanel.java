@@ -50,7 +50,7 @@ public class ArtifactSummaryPanel extends FlowPanel {
 	public ArtifactSummaryPanel() {
 		ILocalizationService i18n = Services.getServices().getService(ILocalizationService.class);
 		
-		noArtifactMessage = new InlineLabel(i18n.translate("browse.summary-panel.no-artifact-message"));
+		noArtifactMessage = new InlineLabel(i18n.translate("views.browse.summary-panel.no-artifact-message"));
 		noArtifactMessage.setStyleName("message");
 		
 		uuidField = new TextBox();
@@ -64,15 +64,15 @@ public class ArtifactSummaryPanel extends FlowPanel {
 		updatedOnField = new TextBox();
 		updatedOnField.setReadOnly(true);
 		descriptionField = new InlineLabel();
-		detailsLink = new PlaceHyperlink(i18n.translate("browse.summary-panel.details-link"));
+		detailsLink = new PlaceHyperlink(i18n.translate("views.browse.summary-panel.details-link"));
 		
 		artifactForm = new SimpleFormLayoutPanel();
 
-		artifactForm.add(i18n.translate("browse.summary-panel.uuid-label"), uuidField);
-		artifactForm.add(i18n.translate("browse.summary-panel.name-label"), nameField);
-		artifactForm.add(i18n.translate("browse.summary-panel.created-by-label"), createdByField);
-		artifactForm.add(i18n.translate("browse.summary-panel.created-on-label"), createdOnField);
-		artifactForm.add(i18n.translate("browse.summary-panel.updated-on-label"), updatedOnField);
+		artifactForm.add(i18n.translate("views.browse.summary-panel.uuid-label"), uuidField);
+		artifactForm.add(i18n.translate("views.browse.summary-panel.name-label"), nameField);
+		artifactForm.add(i18n.translate("views.browse.summary-panel.created-by-label"), createdByField);
+		artifactForm.add(i18n.translate("views.browse.summary-panel.created-on-label"), createdOnField);
+		artifactForm.add(i18n.translate("views.browse.summary-panel.updated-on-label"), updatedOnField);
 		artifactForm.addTwoCol(null, descriptionField);
 		FlowPanel detailsLinkWrapper = new FlowPanel();
 		detailsLinkWrapper.setStyleName("placeLinkWrapper");

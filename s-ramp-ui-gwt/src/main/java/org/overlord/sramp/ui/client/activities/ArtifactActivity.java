@@ -79,9 +79,9 @@ public class ArtifactActivity extends AbstractActivity<ArtifactPlace, IArtifactV
 	 */
 	@Override
 	protected void updateBreadcrumb(BreadcrumbPanel breadcrumbPanel) {
-		breadcrumbPanel.addCrumb(i18n().translate("breadcrumb.dashboard"), new DashboardPlace());
-		breadcrumbPanel.addCrumb(i18n().translate("breadcrumb.browse"), new BrowsePlace());
-		breadcrumbPanel.addCrumb(i18n().translate("breadcrumb.artifact-details"), null);
+		breadcrumbPanel.addCrumb(i18n().translate("widgets.breadcrumb.dashboard"), new DashboardPlace());
+		breadcrumbPanel.addCrumb(i18n().translate("widgets.breadcrumb.browse"), new BrowsePlace());
+		breadcrumbPanel.addCrumb(i18n().translate("widgets.breadcrumb.artifact-details"), null);
 	}
 	
 }

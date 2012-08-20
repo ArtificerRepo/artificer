@@ -70,12 +70,12 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		content.setWidth("100%");
 		main.add(content);
 
-		DisclosurePanel details = new DisclosurePanel("Artifact Details");
+		DisclosurePanel details = new DisclosurePanel(i18n().translate("views.artifact.details.label"));
 		details.setStyleName("dpanel");
 		details.setOpen(true);
 		details.add(createDetailsForm(artifact));
 		
-		DisclosurePanel description = new DisclosurePanel("Description");
+		DisclosurePanel description = new DisclosurePanel(i18n().translate("views.artifact.description.label"));
 		description.setStyleName("dpanel");
 		description.setOpen(true);
 		description.add(createDescriptionForm(artifact));
@@ -96,7 +96,7 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 
 		String artifactDesc = artifact.getDescription();
 		if (artifactDesc == null || artifactDesc.trim().length() == 0)
-			artifactDesc = "No description available.";
+			artifactDesc = i18n().translate("views.artifact.no-description.message");
 		Label descriptionWidget = new Label(artifactDesc);
 		
 		wrapper.add(descriptionWidget);
@@ -115,12 +115,12 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		wrapper.setStyleName("dpanel-content");
 		
 		SimpleFormLayoutPanel formLayoutPanel = new SimpleFormLayoutPanel();
-		formLayoutPanel.add("UUID", new InlineLabel(artifact.getUuid()));
-		formLayoutPanel.add("Name", new InlineLabel(artifact.getName()));
-		formLayoutPanel.add("Created By", new InlineLabel(artifact.getCreatedBy()));
-		formLayoutPanel.add("Created On", new InlineLabel(createdOn));
-		formLayoutPanel.add("Updated By", new InlineLabel(artifact.getUpdatedBy()));
-		formLayoutPanel.add("Updated On", new InlineLabel(updatedOn));
+		formLayoutPanel.add(i18n().translate("views.artifact.details.uuid-label"), new InlineLabel(artifact.getUuid()));
+		formLayoutPanel.add(i18n().translate("views.artifact.details.name-label"), new InlineLabel(artifact.getName()));
+		formLayoutPanel.add(i18n().translate("views.artifact.details.created-by-label"), new InlineLabel(artifact.getCreatedBy()));
+		formLayoutPanel.add(i18n().translate("views.artifact.details.created-on-label"), new InlineLabel(createdOn));
+		formLayoutPanel.add(i18n().translate("views.artifact.details.updated-by-label"), new InlineLabel(artifact.getUpdatedBy()));
+		formLayoutPanel.add(i18n().translate("views.artifact.details.updated-on-label"), new InlineLabel(updatedOn));
 		
 		wrapper.add(formLayoutPanel);
 		return wrapper;

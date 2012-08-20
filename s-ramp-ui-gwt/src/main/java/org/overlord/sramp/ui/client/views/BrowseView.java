@@ -53,7 +53,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	 * Constructor.
 	 */
 	public BrowseView() {
-		filterPanel = new PlaceFilterPanel<BrowsePlace>(i18n().translate("browse.filter-panel.label")) {
+		filterPanel = new PlaceFilterPanel<BrowsePlace>(i18n().translate("views.browse.filter-panel.label")) {
 			@Override
 			protected boolean matches(BrowsePlace currentPlace, BrowsePlace targetPlace) {
 				String currentTypeFilter = currentPlace.getTypeFilter();
@@ -117,8 +117,8 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	private ArtifactDataTable createArtifactTable() {
 		final ArtifactDataTable table = new ArtifactDataTable();
 		table.setWidth("100%");
-		table.setEmptyTableMessage(i18n().translate("browse.artifacts.no-artifacts"));
-		table.setLoadingMessage(i18n().translate("browse.artifacts.loading-artifacts"));
+		table.setEmptyTableMessage(i18n().translate("views.browse.artifacts.no-artifacts"));
+		table.setLoadingMessage(i18n().translate("views.browse.artifacts.loading-artifacts"));
 		final SingleSelectionModel<ArtifactSummary> selectionModel = new SingleSelectionModel<ArtifactSummary>();
 		selectionModel.addSelectionChangeHandler(new Handler() {
 			@Override
@@ -159,8 +159,8 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	public void onQueryFailed(RemoteServiceException error) {
 		this.artifacts.setRowData(null, null, -1, false);
 		growl().growl(
-				i18n().translate("browse.search-error.title"),
-				i18n().translate("browse.search-error.message"),
+				i18n().translate("views.browse.search-error.title"),
+				i18n().translate("views.browse.search-error.message"),
 				error);
 	}
 	
@@ -198,7 +198,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			};
 			name.setSortable(true);
 			name.setDataStoreName("name");
-			table.addColumn(name, i18n().translate("browse.table.name-column"));
+			table.addColumn(name, i18n().translate("views.browse.table.name-column"));
 			
 			TextColumn<ArtifactSummary> createdOn = new TextColumn<ArtifactSummary>() {
 				@Override
@@ -208,7 +208,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			};
 			createdOn.setSortable(true);
 			createdOn.setDataStoreName("createdOn");
-			table.addColumn(createdOn, i18n().translate("browse.table.createdOn-column"));
+			table.addColumn(createdOn, i18n().translate("views.browse.table.createdOn-column"));
 			
 			TextColumn<ArtifactSummary> createdBy = new TextColumn<ArtifactSummary>() {
 				@Override
@@ -218,7 +218,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			};
 			createdBy.setSortable(true);
 			createdBy.setDataStoreName("createdBy");
-			table.addColumn(createdBy, i18n().translate("browse.table.createdBy-column"));
+			table.addColumn(createdBy, i18n().translate("views.browse.table.createdBy-column"));
 //			setColumnWidth(uuid, 20.0, Unit.PCT);
 		}
 		
