@@ -15,7 +15,7 @@
 	<name>S-RAMP</name>
 	<description>Builds the entire S-RAMP distribution.</description>
 
-  <!--  modules in alphabetical order -->
+	<!--  modules in alphabetical order -->
 	<modules>
 		<module>s-ramp-api</module>
 		<module>s-ramp-atom</module>
