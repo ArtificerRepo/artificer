@@ -27,9 +27,9 @@
 	</licenses>
 
 	<scm>
-        <connection>scm:git:git@github.com:Governance/${project.artifactId}.git</connection>
-        <developerConnection>scm:git:git@github.com:Governance/${project.artifactId}.git</developerConnection>
-		<url>http://github.com/Governance/s-ramp</url>
+		<connection>scm:git:git@github.com:Governance/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:git@github.com:Governance/${project.artifactId}.git</developerConnection>
+		<url>scm:git:git@github.com:Governance/${project.artifactId}.git</url>
 	</scm>
 
 	<issueManagement>
