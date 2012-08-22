@@ -26,12 +26,6 @@
 		</license>
 	</licenses>
 
-	<scm>
-		<connection>scm:git:git@github.com:Governance/s-ramp.git</connection>
-		<developerConnection>scm:git:git@github.com:Governance/s-ramp.git</developerConnection>
-		<url>scm:git:git@github.com:Governance/s-ramp.git</url>
-	</scm>
-
 	<issueManagement>
 		<system>jira</system>
 		<url>http://issues.jboss.org/browse/SRAMP</url>
