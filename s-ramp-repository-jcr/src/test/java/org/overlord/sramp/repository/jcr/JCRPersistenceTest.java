@@ -142,4 +142,30 @@ public class JCRPersistenceTest {
 		Assert.assertTrue("Failed to find UUID2.", foundUuid2);
     }
 
+    @Test
+    public void testUpdateMetaData() throws Exception {
+    	// First, add an artifact to the repo
+        String artifactFileName = "PO.xsd";
+        InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Assert.assertNotNull(artifact);
+        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
+        Assert.assertEquals(XsdDocument.class, artifact.getClass());
+        Assert.assertEquals(new Long(2376l), ((XsdDocument) artifact).getContentSize());
+        Assert.assertEquals(artifactFileName, artifact.getName());
+        
+        // Now update the artifact
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        artifact.setName("My PO");
+        artifact.setDescription("A new description of the PO.xsd artifact.");
+        artifact.setVersion("2.0.13");
+        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+        
+        // Now verify the meta-data was updated
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        Assert.assertEquals("My PO", artifact.getName());
+        Assert.assertEquals("A new description of the PO.xsd artifact.", artifact.getDescription());
+        Assert.assertEquals("2.0.13", artifact.getVersion());
+    }
+
 }
