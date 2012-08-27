@@ -274,14 +274,10 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             Node sequencedNode = session.getNode(sequencedArtifactPath);
             UpdateJCRNodeFromArtifactVisitor visitor = new UpdateJCRNodeFromArtifactVisitor(sequencedNode);
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+            if (visitor.hasError())
+            	throw visitor.getError();
             session.save();
-        } catch (LoginException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (NoSuchWorkspaceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {

@@ -30,8 +30,8 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
  */
 public class UpdateJCRNodeFromArtifactVisitor extends ArtifactVisitorAdapter {
 
-	@SuppressWarnings("unused")
 	private Node jcrNode;
+	private Exception error;
 	
 	/**
 	 * Constructor.
@@ -46,7 +46,30 @@ public class UpdateJCRNodeFromArtifactVisitor extends ArtifactVisitorAdapter {
 	 * @param artifact the artifact being visited
 	 */
 	protected void visitBaseArtifact(BaseArtifactType artifact) {
-		
+		try {
+			if (artifact.getName() != null)
+				this.jcrNode.setProperty("sramp:name", artifact.getName());
+			if (artifact.getDescription() != null)
+				this.jcrNode.setProperty("sramp:description", artifact.getDescription());
+			if (artifact.getVersion() != null)
+				this.jcrNode.setProperty("version", artifact.getVersion());
+		} catch (Exception e) {
+			error = e;
+		}
+	}
+	
+	/**
+	 * Returns true if this visitor encountered an error during visitation.
+	 */
+	public boolean hasError() {
+		return error != null;
+	}
+	
+	/**
+	 * Returns the error encountered during visitation.
+	 */
+	public Exception getError() {
+		return error;
 	}
 
 	/**
