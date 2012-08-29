@@ -17,7 +17,10 @@ package org.overlord.sramp.repository.jcr;
 
 import static org.modeshape.jcr.api.observation.Event.Sequencing.NODE_SEQUENCED;
 import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD;
+import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD_NS;
 import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD_ARTIFACT;
+import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_PROPERTIES;
+import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_PROPERTIES_NS;
 import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_UUID;
 
 import java.io.IOException;
@@ -105,7 +108,10 @@ public class JCRRepository {
     public static Session getSession() throws LoginException, NoSuchWorkspaceException, RepositoryException {
         //Credentials cred = new SimpleCredentials(USER, PWD);
         AnonymousCredentials cred = new AnonymousCredentials();
-        return getInstance().login(cred, WORKSPACE_NAME);
+        Session session = getInstance().login(cred, WORKSPACE_NAME);
+        session.setNamespacePrefix(OVERLORD, OVERLORD_NS);
+        session.setNamespacePrefix(SRAMP_PROPERTIES, SRAMP_PROPERTIES_NS);
+		return session;
     }
 
     /**
@@ -117,7 +123,6 @@ public class JCRRepository {
         try {
             session = JCRRepository.getSession();
             NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
-            session.setNamespacePrefix(OVERLORD, "http://www.jboss.org/overlord/1.0");
             
             if (! manager.hasNodeType(SRAMP_UUID)) {
                 // Register the ModeShape S-RAMP node types ...

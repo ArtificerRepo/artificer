@@ -15,7 +15,17 @@
  */
 package org.overlord.sramp.repository.jcr;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 
 import org.overlord.sramp.visitors.ArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -47,17 +57,89 @@ public class UpdateJCRNodeFromArtifactVisitor extends ArtifactVisitorAdapter {
 	 */
 	protected void visitBaseArtifact(BaseArtifactType artifact) {
 		try {
-			if (artifact.getName() != null)
-				this.jcrNode.setProperty("sramp:name", artifact.getName());
-			if (artifact.getDescription() != null)
-				this.jcrNode.setProperty("sramp:description", artifact.getDescription());
-			if (artifact.getVersion() != null)
-				this.jcrNode.setProperty("version", artifact.getVersion());
+			updateArtifactMetaData(artifact);
+			updateArtifactProperties(artifact);
 		} catch (Exception e) {
 			error = e;
 		}
 	}
-	
+
+	/**
+	 * Updates the basic s-ramp meta data.
+	 * @param artifact
+	 * @throws Exception
+	 */
+	private void updateArtifactMetaData(BaseArtifactType artifact) throws Exception {
+		if (artifact.getName() != null)
+			this.jcrNode.setProperty("sramp:name", artifact.getName());
+		if (artifact.getDescription() != null)
+			this.jcrNode.setProperty("sramp:description", artifact.getDescription());
+		if (artifact.getVersion() != null)
+			this.jcrNode.setProperty("version", artifact.getVersion());
+	}
+
+	/**
+	 * Updates the custom s-ramp properties.
+	 * @param artifact
+	 * @throws Exception
+	 */
+	private void updateArtifactProperties(BaseArtifactType artifact) throws Exception {
+		Map<String, String> artifactProps = getArtifactProperties(artifact);
+		Set<String> nodeProps = getNodePropertyNames(jcrNode);
+
+		Set<String> propsToRemove = nodeProps;
+		propsToRemove.removeAll(artifactProps.keySet());
+
+    	String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
+
+		// Remove all properties that have been earmarked for removal.
+		for (String propToRemove : propsToRemove) {
+			String qname = srampPropsPrefix + propToRemove;
+			this.jcrNode.setProperty(qname, (Value) null);
+		}
+
+		// Set all new property values
+		for (Entry<String, String> prop : artifactProps.entrySet()) {
+			String name = prop.getKey();
+			String qname = srampPropsPrefix + name;
+			String val = prop.getValue();
+			this.jcrNode.setProperty(qname, val);
+		}
+	}
+
+	/**
+	 * Gets all of the custom properties from the artifact and returns them as a map.
+	 * @param artifact
+	 */
+	private static Map<String, String> getArtifactProperties(BaseArtifactType artifact) {
+		Map<String, String> props = new HashMap<String, String>();
+		for (org.s_ramp.xmlns._2010.s_ramp.Property property : artifact.getProperty())
+			props.put(property.getPropertyName(), property.getPropertyValue());
+		return props;
+	}
+
+	/**
+	 * Gets all of the custom s-ramp property names currently stored on the given
+	 * JCR node.
+	 * @param jcrNode
+	 * @throws RepositoryException 
+	 */
+	private static Set<String> getNodePropertyNames(Node jcrNode) throws RepositoryException {
+    	String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
+
+    	Set<String> rval = new HashSet<String>();
+		PropertyIterator properties = jcrNode.getProperties();
+		while (properties.hasNext()) {
+			Property prop = properties.nextProperty();
+			String propName = prop.getName();
+			if (propName.startsWith(srampPropsPrefix)) {
+				propName = propName.substring(7);
+				rval.add(propName);
+			}
+		}
+		return rval;
+	}
+
 	/**
 	 * Returns true if this visitor encountered an error during visitation.
 	 */
