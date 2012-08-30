@@ -15,12 +15,16 @@
  */
 package org.overlord.sramp.client;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.xml.bind.JAXBException;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
+import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -85,6 +89,33 @@ public final class SrampClientUtils {
 	public static BaseArtifactType unwrapSrampArtifact(ArtifactType artifactType, Entry entry) throws JAXBException {
 		Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
 		return unwrapSrampArtifact(artifactType, artifact);
+	}
+	
+	/**
+	 * Wraps the given s-ramp artifact in an Atom {@link Entry}.
+	 * @param artifact
+	 * @throws URISyntaxException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 * @throws NoSuchMethodException 
+	 * @throws SecurityException 
+	 */
+	public static Entry wrapSrampArtifact(BaseArtifactType artifact) throws URISyntaxException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
+		Entry entry = new Entry();
+		entry.setId(new URI(artifact.getUuid()));
+		entry.setUpdated(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
+		entry.setTitle(artifact.getName());
+		entry.setPublished(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
+		entry.getAuthors().add(new Person(artifact.getCreatedBy()));
+		entry.setSummary(artifact.getDescription());
+
+        Artifact srampArty = new Artifact();
+        Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass());
+        method.invoke(srampArty, artifact);
+        entry.setAnyOtherJAXBObject(srampArty);
+		
+		return entry;
 	}
 
 	/**

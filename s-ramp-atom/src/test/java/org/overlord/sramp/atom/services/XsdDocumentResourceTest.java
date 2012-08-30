@@ -40,7 +40,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.atom.TestUtils;
@@ -100,9 +99,7 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 		// Update
 		doUpdateXsdEntry(entry);
 		entry = doGetXsdEntry(entryId);
-		// TODO re-enable once update is fully implemented (see UpdateJCRNodeFromArtifactVisitor)
-//		verifyEntryUpdated(entry);
-		
+		verifyEntryUpdated(entry);
 		
 		// TODO implement delete functionality
 //		deleteXsdEntry(entryId);
@@ -225,17 +222,11 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 	 * @throws Exception 
 	 */
 	private void doUpdateXsdEntry(Entry entry) throws Exception {
-		// TODO I think the entryId should be of the format urn:{uuid} and we'll need to parse it - this isn't happening right now though
-		String uuid = entry.getId().toString();
-
 		// First, make a change to the entry.
 		Artifact srampArtifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
 		XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
-		xsdDocument.getClassifiedBy().add("http://example.org/ontologies/account.owl/accounts");
-		Property newProperty = new Property();
-		newProperty.setPropertyName("accountingCalendar");
-		newProperty.setPropertyValue("2009");
-		xsdDocument.getProperty().add(newProperty);
+		String uuid = xsdDocument.getUuid();
+		xsdDocument.setDescription("** Updated description! **");
 		
 		entry.setAnyOtherJAXBObject(srampArtifactWrapper);
 		
@@ -252,15 +243,10 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 	 * the update phase of the test.
 	 * @param entry
 	 */
-	@SuppressWarnings("unused")
 	private void verifyEntryUpdated(Entry entry) throws Exception {
 		Artifact srampArtifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
 		XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
-		Assert.assertFalse(xsdDocument.getClassifiedBy().isEmpty());
-		Assert.assertEquals("http://example.org/ontologies/account.owl/accounts", xsdDocument.getClassifiedBy().get(0));
-		Assert.assertFalse(xsdDocument.getProperty().isEmpty());
-		Assert.assertEquals("accountingCalendar", xsdDocument.getProperty().get(0).getPropertyName());
-		Assert.assertEquals("2009", xsdDocument.getProperty().get(0).getPropertyValue());
+		Assert.assertEquals("** Updated description! **", xsdDocument.getDescription());
 	}
 
 }
