@@ -25,6 +25,7 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.overlord.sramp.ArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * Class used to communicate with the S-RAMP server.
@@ -153,6 +154,33 @@ public class SrampAtomApiClient {
 	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
 			throws SrampClientException, SrampServerException {
 		return uploadArtifact(artifactType.getModel(), artifactType.name(), content, artifactFileName);
+	}
+	
+	/**
+	 * Called to update the meta-data stored in the s-ramp repository for the given s-ramp
+	 * artifact.
+	 * @param artifact
+	 * @throws SrampClientException
+	 */
+	public void updateArtifactMetaData(BaseArtifactType artifact) throws SrampClientException {
+		try {
+			ArtifactType type = ArtifactType.valueOf(artifact);
+			String artifactModel = type.getModel();
+			String artifactType = type.name();
+			String artifactUuid = artifact.getUuid();
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
+			ClientRequest request = new ClientRequest(atomUrl);
+
+			Entry entry = SrampClientUtils.wrapSrampArtifact(artifact);
+			
+			request.body(MediaType.APPLICATION_ATOM_XML, entry);
+			request.put();
+		} catch (SrampServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
+
 	}
 
 	/**
