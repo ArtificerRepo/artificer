@@ -206,14 +206,14 @@ public class JCRPersistenceTest {
         // Now verify that the properties were stored
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
         Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
-        String p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyName();
-        String p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyName();
+        String p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
+        String p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
         Set<String> ps = new HashSet<String>();
         ps.add(p1);
         ps.add(p2);
-        Assert.assertTrue("Prop1 missing from properties.", ps.contains("prop1:propval1"));
-        Assert.assertTrue("Prop2 missing from properties.", ps.contains("prop2:propval2"));
-        Assert.assertFalse("Prop3 somehow existed!.", ps.contains("prop3:propval3"));
+        Assert.assertTrue("Prop1 missing from properties.", ps.contains("prop1=propval1"));
+        Assert.assertTrue("Prop2 missing from properties.", ps.contains("prop2=propval2"));
+        Assert.assertFalse("Prop3 somehow existed!.", ps.contains("prop3=propval3"));
 
         // Now remove one property, add another one, and change the value of one
         artifact.getProperty().clear();
@@ -230,14 +230,15 @@ public class JCRPersistenceTest {
         // Now verify that the properties were updated
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
         Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
-        p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyName();
-        p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyName();
+        p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
+        p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
         ps.clear();
         ps.add(p1);
         ps.add(p2);
-        Assert.assertTrue("Prop1 missing from properties.", ps.contains("prop1:propval1"));
-        Assert.assertFalse("Prop2 existed unexpectedly.", ps.contains("prop2:propval2"));
-        Assert.assertTrue("Prop3 missing from properties.", ps.contains("prop3:propval3"));
+        Assert.assertFalse("Prop1 wasn't updated (old value detected).", ps.contains("prop1=propval1"));
+        Assert.assertTrue("Prop1 wasn't updated (new value not found).", ps.contains("prop1=propval1-updated"));
+        Assert.assertFalse("Prop2 existed unexpectedly.", ps.contains("prop2=propval2"));
+        Assert.assertTrue("Prop3 missing from properties.", ps.contains("prop3=propval3"));
     }
 
 }

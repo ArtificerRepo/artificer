@@ -56,12 +56,13 @@ public abstract class BaseArtifactModel {
         artifact.setVersion(getProperty(jcrNode, "version"));
         
     	String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
+    	int srampPropsPrefixLen = srampPropsPrefix.length();
         PropertyIterator properties = jcrNode.getProperties();
         while (properties.hasNext()) {
         	Property property = properties.nextProperty();
         	String propQName = property.getName();
 			if (propQName.startsWith(srampPropsPrefix)) {
-				String propName = propQName.substring(7);
+				String propName = propQName.substring(srampPropsPrefixLen);
 	        	String propValue = property.getValue().getString();
 	        	org.s_ramp.xmlns._2010.s_ramp.Property srampProp = new org.s_ramp.xmlns._2010.s_ramp.Property();
 	        	srampProp.setPropertyName(propName);

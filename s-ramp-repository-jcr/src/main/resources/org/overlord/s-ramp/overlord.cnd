@@ -11,5 +11,3 @@
  - sramp:artifactType (STRING)
  - sramp:uuid (STRING)
  - sramp:name (STRING)
- - sramp:description (STRING)
- - * (undefined)

@@ -16,11 +16,7 @@
 package org.overlord.sramp.repository.jcr;
 
 import static org.modeshape.jcr.api.observation.Event.Sequencing.NODE_SEQUENCED;
-import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD;
-import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD_NS;
 import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD_ARTIFACT;
-import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_PROPERTIES;
-import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_PROPERTIES_NS;
 import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_UUID;
 
 import java.io.IOException;
@@ -30,6 +26,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import javax.jcr.LoginException;
+import javax.jcr.NamespaceRegistry;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -108,10 +105,7 @@ public class JCRRepository {
     public static Session getSession() throws LoginException, NoSuchWorkspaceException, RepositoryException {
         //Credentials cred = new SimpleCredentials(USER, PWD);
         AnonymousCredentials cred = new AnonymousCredentials();
-        Session session = getInstance().login(cred, WORKSPACE_NAME);
-        session.setNamespacePrefix(OVERLORD, OVERLORD_NS);
-        session.setNamespacePrefix(SRAMP_PROPERTIES, SRAMP_PROPERTIES_NS);
-		return session;
+        return getInstance().login(cred, WORKSPACE_NAME);
     }
 
     /**
@@ -122,6 +116,12 @@ public class JCRRepository {
         InputStream is = null;
         try {
             session = JCRRepository.getSession();
+
+            // Register some namespaces.
+            NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
+            namespaceRegistry.registerNamespace(JCRConstants.OVERLORD, JCRConstants.OVERLORD_NS);
+            namespaceRegistry.registerNamespace(JCRConstants.SRAMP_PROPERTIES, JCRConstants.SRAMP_PROPERTIES_NS);
+
             NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
             
             if (! manager.hasNodeType(SRAMP_UUID)) {

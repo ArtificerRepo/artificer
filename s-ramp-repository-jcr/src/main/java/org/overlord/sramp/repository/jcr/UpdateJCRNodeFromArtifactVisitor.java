@@ -126,6 +126,7 @@ public class UpdateJCRNodeFromArtifactVisitor extends ArtifactVisitorAdapter {
 	 */
 	private static Set<String> getNodePropertyNames(Node jcrNode) throws RepositoryException {
     	String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
+    	int srampPropsPrefixLen = srampPropsPrefix.length();
 
     	Set<String> rval = new HashSet<String>();
 		PropertyIterator properties = jcrNode.getProperties();
@@ -133,7 +134,7 @@ public class UpdateJCRNodeFromArtifactVisitor extends ArtifactVisitorAdapter {
 			Property prop = properties.nextProperty();
 			String propName = prop.getName();
 			if (propName.startsWith(srampPropsPrefix)) {
-				propName = propName.substring(7);
+				propName = propName.substring(srampPropsPrefixLen);
 				rval.add(propName);
 			}
 		}
