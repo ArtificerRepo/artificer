@@ -16,7 +16,6 @@
 package org.overlord.sramp.repository.jcr;
 
 import static org.modeshape.jcr.api.observation.Event.Sequencing.NODE_SEQUENCED;
-import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD;
 import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD_ARTIFACT;
 import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_UUID;
 
@@ -27,6 +26,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import javax.jcr.LoginException;
+import javax.jcr.NamespaceRegistry;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -116,8 +116,13 @@ public class JCRRepository {
         InputStream is = null;
         try {
             session = JCRRepository.getSession();
+
+            // Register some namespaces.
+            NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
+            namespaceRegistry.registerNamespace(JCRConstants.OVERLORD, JCRConstants.OVERLORD_NS);
+            namespaceRegistry.registerNamespace(JCRConstants.SRAMP_PROPERTIES, JCRConstants.SRAMP_PROPERTIES_NS);
+
             NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
-            session.setNamespacePrefix(OVERLORD, "http://www.jboss.org/overlord/1.0");
             
             if (! manager.hasNodeType(SRAMP_UUID)) {
                 // Register the ModeShape S-RAMP node types ...
