@@ -16,32 +16,27 @@
 package org.overlord.sramp.repository.jcr.mapper;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.ValueFormatException;
+import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.overlord.sramp.repository.DerivedArtifactsCreationException;
+import org.overlord.sramp.repository.RepositoryException;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 
+/**
+ * Maps a JCR node to an S-RAMP artifact.  This class specifically handles XML artifacts.
+ */
 public class XmlModel extends DocumentArtifactModel {
 
     /**
-     * Input is the root node of the derived xsd data
-     * @throws DerivedArtifactsCreationException 
-     * @throws RepositoryException 
-     * @throws PathNotFoundException 
-     * @throws ValueFormatException 
+     * Input is the root node of the derived XML data.
+     * @param jcrNode
+     * @throws DatatypeConfigurationException
+     * @throws RepositoryException
      */
-    public static  XmlDocument getXmlDocument(Node derivedNode) throws DerivedArtifactsCreationException {
+    public static XmlDocument getXmlDocument(Node jcrNode) throws RepositoryException {
         XmlDocument xmlDocument = new XmlDocument();
-        
-        try {
-        	mapBaseArtifactMetaData(derivedNode, xmlDocument);
-        	mapDocumentArtifactMetaData(derivedNode, xmlDocument);
-        	mapXmlDocumentArtifactMetaData(derivedNode, xmlDocument);
-        } catch (Exception e) {
-            throw new DerivedArtifactsCreationException(e.getMessage(),e);
-        }
+    	mapBaseArtifactMetaData(jcrNode, xmlDocument);
+    	mapDocumentArtifactMetaData(jcrNode, xmlDocument);
+    	mapXmlDocumentArtifactMetaData(jcrNode, xmlDocument);
         return xmlDocument;
     }
 

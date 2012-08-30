@@ -19,7 +19,7 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.repository.DerivedArtifactsCreationException;
+import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.jcr.mapper.XmlModel;
 import org.overlord.sramp.repository.jcr.mapper.XsdModel;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -57,19 +57,15 @@ public final class JCRNodeToArtifactFactory {
 	 * @param jcrNode a node in the JCR repo
 	 * @param artifactType the type of artifact represented by the {@link Node}
 	 * @return S-RAMP artifact
+	 * @throws RepositoryException 
 	 */
-	public static BaseArtifactType createArtifact(Node jcrNode, ArtifactType artifactType) {
-		// TODO I don't think XYZModel.getXYZDocument() should throw a DerivedArtifactsCreationException (something else maybe)
-        try {
-			if (artifactType == ArtifactType.XsdDocument) {
-			    return XsdModel.getXsdDocument(jcrNode);
-			} else if (artifactType == ArtifactType.XmlDocument) {
-			    return XmlModel.getXmlDocument(jcrNode);
-			} else {
-				return null;
-			}
-		} catch (DerivedArtifactsCreationException e) {
-			throw new RuntimeException(e);
+	public static BaseArtifactType createArtifact(Node jcrNode, ArtifactType artifactType) throws RepositoryException {
+		if (artifactType == ArtifactType.XsdDocument) {
+		    return XsdModel.getXsdDocument(jcrNode);
+		} else if (artifactType == ArtifactType.XmlDocument) {
+		    return XmlModel.getXmlDocument(jcrNode);
+		} else {
+			return null;
 		}
 	}
 

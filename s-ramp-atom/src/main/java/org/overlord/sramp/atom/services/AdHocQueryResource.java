@@ -144,11 +144,10 @@ public class AdHocQueryResource {
 				xpath = "/s-ramp/" + query;
 		}
 
-		QueryManager queryManager = QueryManagerFactory.newInstance();
-		SrampQuery srampQuery = queryManager.createQuery(xpath, orderBy, ascending);
 		ArtifactSet artifactSet = null;
-		
 		try {
+			QueryManager queryManager = QueryManagerFactory.newInstance();
+			SrampQuery srampQuery = queryManager.createQuery(xpath, orderBy, ascending);
 			artifactSet = srampQuery.executeQuery();
 			int startIdx = page * pageSize;
 			int endIdx = startIdx + pageSize - 1;
