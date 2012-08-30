@@ -46,15 +46,17 @@ public interface QueryManager {
 	 * @param orderByProperty property name to use when sorting
 	 * @param orderAscending whether to sort ascending
 	 * @return a new {@link SrampQuery} object
+	 * @throws RepositoryException
 	 */
-	public SrampQuery createQuery(String xpathTemplate, String orderByProperty, boolean orderAscending);
+	public SrampQuery createQuery(String xpathTemplate, String orderByProperty, boolean orderAscending) throws RepositoryException;
 
 	/**
 	 * Create an s-ramp query from the given xpath template.  No order-by hints are given,
 	 * so the s-ramp repository is free to return the artifacts in any arbitrary order.
 	 * @param xpathTemplate the templatized xpath
 	 * @return a new {@link SrampQuery} object
+	 * @throws RepositoryException
 	 */
-	public SrampQuery createQuery(String xpathTemplate);
+	public SrampQuery createQuery(String xpathTemplate) throws RepositoryException;
 
 }
