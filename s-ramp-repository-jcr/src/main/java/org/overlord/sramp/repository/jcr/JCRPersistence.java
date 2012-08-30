@@ -47,6 +47,7 @@ import org.overlord.sramp.repository.DerivedArtifactsCreationException;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.UnsupportedFiletypeException;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
+import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
@@ -91,6 +92,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             identifier = artifactNode.getIdentifier();
             artifactNode.addMixin(JCRConstants.OVERLORD_ARTIFACT_CONTENT);
             
+            JCRUtils.setArtifactContentMimeType(artifactNode, type.getMimeType());
             artifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
             artifactNode.setProperty(JCRConstants.OVERLORD_FILENAME, name);
             log.debug("Successfully saved {} to node={}",name, uuid);

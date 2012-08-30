@@ -79,82 +79,85 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 public enum ArtifactType {
 
 	// Core
-	XmlDocument("core", "XML Document", XmlDocument.class),
+	XmlDocument("core", "XML Document", XmlDocument.class, "text/xml"),
 	// XSD
-	XsdDocument("xsd", "XML Schema", XsdDocument.class),
-	AttributeDeclaration("xsd", "XML Schema Attribute Declaration", AttributeDeclaration.class),
-	ElementDeclaration("xsd", "XML Schema Element Declaration", ElementDeclaration.class),
-	SimpleTypeDeclaration("xsd", "XML Schema Simple Type Declaration", SimpleTypeDeclaration.class),
-	ComplexTypeDeclaration("xsd", "XML Schema Complex Type Declaration", ComplexTypeDeclaration.class),
+	XsdDocument("xsd", "XML Schema", XsdDocument.class, "text/xml"),
+	AttributeDeclaration("xsd", "XML Schema Attribute Declaration", AttributeDeclaration.class, null),
+	ElementDeclaration("xsd", "XML Schema Element Declaration", ElementDeclaration.class, null),
+	SimpleTypeDeclaration("xsd", "XML Schema Simple Type Declaration", SimpleTypeDeclaration.class, null),
+	ComplexTypeDeclaration("xsd", "XML Schema Complex Type Declaration", ComplexTypeDeclaration.class, null),
 	// Policy
-	PolicyDocument("policy", "Policy", PolicyDocument.class),
-	PolicyExpression("policy", "Policy Expression", PolicyExpression.class),
-	PolicyAttachment("policy", "Policy Attachment", PolicyAttachment.class),
+	PolicyDocument("policy", "Policy", PolicyDocument.class, "text/xml"),
+	PolicyExpression("policy", "Policy Expression", PolicyExpression.class, null),
+	PolicyAttachment("policy", "Policy Attachment", PolicyAttachment.class, null),
 	// SOAP
-	SoapAddress("soapWsdl", "SOAP Address", SoapAddress.class),
-	SoapBinding("soapWsdl", "SOAP Binding", SoapBinding.class),
+	SoapAddress("soapWsdl", "SOAP Address", SoapAddress.class, null),
+	SoapBinding("soapWsdl", "SOAP Binding", SoapBinding.class, null),
 	// WSDL
-	WsdlDocument("wsdl", "WSDL", WsdlDocument.class),
-	WsdlService("wsdl", "WSDL Service", WsdlService.class),
-	Port("wsdl", "WSDL Port", Port.class),
-	WsdlExtension("wsdl", "WSDL Extension", WsdlExtension.class),
-	Part("wsdl", "WSDL Part", Part.class),
-	Message("wsdl", "WSDL Message", Message.class),
-	Fault("wsdl", "WSDL Fault", Fault.class),
-	PortType("wsdl", "WSDL Port Type", PortType.class),
-	Operation("wsdl", "WSDL Operation", Operation.class),
-	OperationInput("wsdl", "WSDL Operation Input", OperationInput.class),
-	OperationOutput("wsdl", "WSDL Operation Output", OperationOutput.class),
-	Binding("wsdl", "WSDL Binding", Binding.class),
-	BindingOperation("wsdl", "WSDL Binding Operation", BindingOperation.class),
-	BindingOperationInput("wsdl", "WSDL Binding Operation Input", BindingOperationInput.class),
-	BindingOperationOutput("wsdl", "WSDL Binding Operation Output", BindingOperationOutput.class),
-	BindingOperationFault("wsdl", "WSDL Binding Operation Fault", BindingOperationFault.class),
+	WsdlDocument("wsdl", "WSDL", WsdlDocument.class, "text/xml"),
+	WsdlService("wsdl", "WSDL Service", WsdlService.class, null),
+	Port("wsdl", "WSDL Port", Port.class, null),
+	WsdlExtension("wsdl", "WSDL Extension", WsdlExtension.class, null),
+	Part("wsdl", "WSDL Part", Part.class, null),
+	Message("wsdl", "WSDL Message", Message.class, null),
+	Fault("wsdl", "WSDL Fault", Fault.class, null),
+	PortType("wsdl", "WSDL Port Type", PortType.class, null),
+	Operation("wsdl", "WSDL Operation", Operation.class, null),
+	OperationInput("wsdl", "WSDL Operation Input", OperationInput.class, null),
+	OperationOutput("wsdl", "WSDL Operation Output", OperationOutput.class, null),
+	Binding("wsdl", "WSDL Binding", Binding.class, null),
+	BindingOperation("wsdl", "WSDL Binding Operation", BindingOperation.class, null),
+	BindingOperationInput("wsdl", "WSDL Binding Operation Input", BindingOperationInput.class, null),
+	BindingOperationOutput("wsdl", "WSDL Binding Operation Output", BindingOperationOutput.class, null),
+	BindingOperationFault("wsdl", "WSDL Binding Operation Fault", BindingOperationFault.class, null),
 	// Service Implementation
-	Organization("serviceImplementation", "Organization", Organization.class),
-	ServiceEndpoint("serviceImplementation", "Service Endpoint", ServiceEndpoint.class),
-	ServiceInstance("serviceImplementation", "Service Instance", ServiceInstance.class),
-	ServiceOperation("serviceImplementation", "Service Operation", ServiceOperation.class),
+	Organization("serviceImplementation", "Organization", Organization.class, null),
+	ServiceEndpoint("serviceImplementation", "Service Endpoint", ServiceEndpoint.class, null),
+	ServiceInstance("serviceImplementation", "Service Instance", ServiceInstance.class, null),
+	ServiceOperation("serviceImplementation", "Service Operation", ServiceOperation.class, null),
 	// User Defined
-	UserDefined("user", "User Defined", UserDefinedArtifactType.class), // TODO how are user defined types contributed/registered?
+	UserDefined("user", "User Defined", UserDefinedArtifactType.class, null), // TODO how are user defined types contributed/registered?
 	// SOA
-	HumanActor("soa", "SOA Human Actor", Actor.class),
-	Choreography("soa", "SOA Choreography", Choreography.class),
-	ChoreographyProcess("soa", "SOA Choreography Process", ChoreographyProcess.class),
-	Collaboration("soa", "SOA Collaboration", Collaboration.class),
-	CollaborationProcess("soa", "SOA Collaboration Process", CollaborationProcess.class),
-	Composition("soa", "SOA Composition", Composition.class),
-	Effect("soa", "SOA Effect", Effect.class),
-	Element("soa", "SOA Element", Element.class),
-	Event("soa", "SOA Event", Event.class),
-	InformationType("soa", "SOA Information Type", InformationType.class),
-	Orchestration("soa", "SOA Orchestration", Orchestration.class),
-	OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class),
-	Policy("soa", "SOA Policy", Policy.class),
-	PolicySubject("soa", "SOA Policy Subject", PolicySubject.class),
-	Process("soa", "SOA Process", org.s_ramp.xmlns._2010.s_ramp.Process.class),
-	Service("soa", "SOA Service", Service.class),
-	ServiceContract("soa", "SOA Service Contract", ServiceContract.class),
-	ServiceComposition("soa", "SOA Service Composition", ServiceComposition.class),
-	ServiceInterface("soa", "SOA Service Interface", ServiceInterface.class),
-	System("soa", "SOA System", org.s_ramp.xmlns._2010.s_ramp.System.class),
-	Task("soa", "SOA Task", Task.class)
+	HumanActor("soa", "SOA Human Actor", Actor.class, null),
+	Choreography("soa", "SOA Choreography", Choreography.class, null),
+	ChoreographyProcess("soa", "SOA Choreography Process", ChoreographyProcess.class, null),
+	Collaboration("soa", "SOA Collaboration", Collaboration.class, null),
+	CollaborationProcess("soa", "SOA Collaboration Process", CollaborationProcess.class, null),
+	Composition("soa", "SOA Composition", Composition.class, null),
+	Effect("soa", "SOA Effect", Effect.class, null),
+	Element("soa", "SOA Element", Element.class, null),
+	Event("soa", "SOA Event", Event.class, null),
+	InformationType("soa", "SOA Information Type", InformationType.class, null),
+	Orchestration("soa", "SOA Orchestration", Orchestration.class, null),
+	OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class, null),
+	Policy("soa", "SOA Policy", Policy.class, null),
+	PolicySubject("soa", "SOA Policy Subject", PolicySubject.class, null),
+	Process("soa", "SOA Process", org.s_ramp.xmlns._2010.s_ramp.Process.class, null),
+	Service("soa", "SOA Service", Service.class, null),
+	ServiceContract("soa", "SOA Service Contract", ServiceContract.class, null),
+	ServiceComposition("soa", "SOA Service Composition", ServiceComposition.class, null),
+	ServiceInterface("soa", "SOA Service Interface", ServiceInterface.class, null),
+	System("soa", "SOA System", org.s_ramp.xmlns._2010.s_ramp.System.class, null),
+	Task("soa", "SOA Task", Task.class, null)
 	;
 
 	private final String model;
 	private final String label;
 	private final Class<? extends BaseArtifactType> typeClass;
+    private final String mimeType;
 
 	/**
 	 * Constructor.
 	 * @param model the S-RAMP Artifact Model that this Artifact Type is a part of
 	 * @param label a human friendly label for the artifact type
 	 * @param typeClass the class that implements this Artifact Type
+	 * @param mimeType the mime-type of the artifact
 	 */
-	private ArtifactType(String model, String label, Class<? extends BaseArtifactType> typeClass) {
+	private ArtifactType(String model, String label, Class<? extends BaseArtifactType> typeClass, String mimeType) {
 		this.model = model;
 		this.label = label;
 		this.typeClass = typeClass;
+		this.mimeType = mimeType;
 	}
 
 	/**
@@ -169,6 +172,13 @@ public enum ArtifactType {
 	 */
 	public String getLabel() {
 		return label;
+	}
+
+	/**
+	 * @return the mimeType
+	 */
+	public String getMimeType() {
+		return mimeType;
 	}
 
 	/**
