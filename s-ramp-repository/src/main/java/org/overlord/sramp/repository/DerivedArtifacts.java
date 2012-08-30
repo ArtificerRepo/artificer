@@ -34,6 +34,6 @@ public interface DerivedArtifacts {
      * @param artifact the original artifact
      */
     public Collection<? extends DerivedArtifactType> createDerivedArtifacts(ArtifactType artifactType, BaseArtifactType artifact) 
-    		throws DerivedArtifactsCreationException, UnsupportedFiletypeException;
+    		throws DerivedArtifactsCreationException;
 
 }

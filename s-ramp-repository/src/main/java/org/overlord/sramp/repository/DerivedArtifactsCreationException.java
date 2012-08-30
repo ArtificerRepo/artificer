@@ -15,24 +15,45 @@
  */
 package org.overlord.sramp.repository;
 
-public class DerivedArtifactsCreationException extends Exception {
+/**
+ * Exception thrown when a problem is discovered during indexing/sequencing of
+ * an s-ramp artifact (creating the derived artifacts for a given non-derived
+ * artifact).
+ */
+public class DerivedArtifactsCreationException extends RepositoryException {
 
     private static final long serialVersionUID = -1205817784608428279L;
 
+    /**
+     * Constructor.
+     */
     public DerivedArtifactsCreationException() {
         super();
     }
 
-    public DerivedArtifactsCreationException(String arg0, Throwable arg1) {
-        super(arg0, arg1);
+    /**
+     * Constructor.
+     * @param message
+     * @param rootCause
+     */
+    public DerivedArtifactsCreationException(String message, Throwable rootCause) {
+        super(message, rootCause);
     }
 
-    public DerivedArtifactsCreationException(String arg0) {
-        super(arg0);
+    /**
+     * Constructor.
+     * @param message
+     */
+    public DerivedArtifactsCreationException(String message) {
+        super(message);
     }
 
-    public DerivedArtifactsCreationException(Throwable arg0) {
-        super(arg0);
+    /**
+     * Constructor.
+     * @param rootCause
+     */
+    public DerivedArtifactsCreationException(Throwable rootCause) {
+        super(rootCause);
     }
 
 }

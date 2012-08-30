@@ -19,12 +19,11 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
 import javax.jcr.ValueFormatException;
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
@@ -39,37 +38,42 @@ public abstract class BaseArtifactModel {
 	 * Maps the base artifact model meta data (from the JCR node to the s-ramp artifact).
 	 * @param jcrNode
 	 * @param artifact
-	 * @throws DatatypeConfigurationException 
 	 * @throws RepositoryException 
 	 */
-	protected static void mapBaseArtifactMetaData(Node jcrNode, BaseArtifactType artifact) throws DatatypeConfigurationException, RepositoryException {
-        artifact.setCreatedBy(getProperty(jcrNode, "jcr:createdBy"));
-        XMLGregorianCalendar createdTS;
-        createdTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(getProperty(jcrNode, "jcr:created"));
-        artifact.setCreatedTimestamp(createdTS);
-        artifact.setDescription(getProperty(jcrNode, "sramp:description"));
-        artifact.setLastModifiedBy(getProperty(jcrNode, "jcr:lastModifiedBy"));
-        XMLGregorianCalendar modifiedTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(getProperty(jcrNode, "jcr:lastModified"));
-        artifact.setLastModifiedTimestamp(modifiedTS);
-        artifact.setName(getProperty(jcrNode, "sramp:name"));
-        artifact.setUuid(getProperty(jcrNode, "sramp:uuid"));
-        artifact.setVersion(getProperty(jcrNode, "version"));
-        
-    	String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
-    	int srampPropsPrefixLen = srampPropsPrefix.length();
-        PropertyIterator properties = jcrNode.getProperties();
-        while (properties.hasNext()) {
-        	Property property = properties.nextProperty();
-        	String propQName = property.getName();
-			if (propQName.startsWith(srampPropsPrefix)) {
-				String propName = propQName.substring(srampPropsPrefixLen);
-	        	String propValue = property.getValue().getString();
-	        	org.s_ramp.xmlns._2010.s_ramp.Property srampProp = new org.s_ramp.xmlns._2010.s_ramp.Property();
-	        	srampProp.setPropertyName(propName);
-	        	srampProp.setPropertyValue(propValue);
-				artifact.getProperty().add(srampProp);
-        	}
-        }
+	protected static void mapBaseArtifactMetaData(Node jcrNode, BaseArtifactType artifact) throws RepositoryException {
+		try {
+			// First map in the standard s-ramp meta-data
+			artifact.setCreatedBy(getProperty(jcrNode, "jcr:createdBy"));
+			XMLGregorianCalendar createdTS;
+			createdTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(getProperty(jcrNode, "jcr:created"));
+			artifact.setCreatedTimestamp(createdTS);
+			artifact.setDescription(getProperty(jcrNode, "sramp:description"));
+			artifact.setLastModifiedBy(getProperty(jcrNode, "jcr:lastModifiedBy"));
+			XMLGregorianCalendar modifiedTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(getProperty(jcrNode, "jcr:lastModified"));
+			artifact.setLastModifiedTimestamp(modifiedTS);
+			artifact.setName(getProperty(jcrNode, "sramp:name"));
+			artifact.setUuid(getProperty(jcrNode, "sramp:uuid"));
+			artifact.setVersion(getProperty(jcrNode, "version"));
+			
+			// Now map in all the s-ramp user-defined properties.
+			String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
+			int srampPropsPrefixLen = srampPropsPrefix.length();
+			PropertyIterator properties = jcrNode.getProperties();
+			while (properties.hasNext()) {
+				Property property = properties.nextProperty();
+				String propQName = property.getName();
+				if (propQName.startsWith(srampPropsPrefix)) {
+					String propName = propQName.substring(srampPropsPrefixLen);
+			    	String propValue = property.getValue().getString();
+			    	org.s_ramp.xmlns._2010.s_ramp.Property srampProp = new org.s_ramp.xmlns._2010.s_ramp.Property();
+			    	srampProp.setPropertyName(propName);
+			    	srampProp.setPropertyValue(propValue);
+					artifact.getProperty().add(srampProp);
+				}
+			}
+		} catch (Exception e) {
+			throw new RepositoryException(e);
+		}
 	}
 
     /**
@@ -96,7 +100,7 @@ public abstract class BaseArtifactModel {
 			return node.getProperty(propertyName).getString();
 		} catch (ValueFormatException e) {
 		} catch (PathNotFoundException e) {
-		} catch (RepositoryException e) {
+		} catch (javax.jcr.RepositoryException e) {
 		}
 		return defaultValue;
     }

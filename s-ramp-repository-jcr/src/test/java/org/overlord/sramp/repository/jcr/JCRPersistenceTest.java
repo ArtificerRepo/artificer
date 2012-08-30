@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
+import org.overlord.sramp.repository.RepositoryException;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
@@ -70,7 +71,7 @@ public class JCRPersistenceTest {
 	 * XML is not yet up sequencing all the necessary artifacts.
 	 * @throws Exception
 	 */
-    @Test(expected=RuntimeException.class)
+    @Test(expected=RepositoryException.class)
     public void testSavePO_XML() throws Exception {
         String artifactFileName = "PO.xml";
         InputStream POXml = this.getClass().getResourceAsStream("/sample-files/xml/" + artifactFileName);

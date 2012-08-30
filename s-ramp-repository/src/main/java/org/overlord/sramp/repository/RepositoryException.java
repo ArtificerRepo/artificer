@@ -15,24 +15,43 @@
  */
 package org.overlord.sramp.repository;
 
+/**
+ * Exception thrown by the S-RAMP Repository.
+ */
 public class RepositoryException extends Exception {
 
     private static final long serialVersionUID = -1205817784608428279L;
 
+    /**
+     * Constructor.
+     */
     public RepositoryException() {
         super();
     }
 
-    public RepositoryException(String arg0, Throwable arg1) {
-        super(arg0, arg1);
+    /**
+     * Constructor.
+     * @param message
+     * @param rootCause
+     */
+    public RepositoryException(String message, Throwable rootCause) {
+        super(message, rootCause);
     }
 
-    public RepositoryException(String arg0) {
-        super(arg0);
+    /**
+     * Constructor.
+     * @param message
+     */
+    public RepositoryException(String message) {
+        super(message);
     }
 
-    public RepositoryException(Throwable arg0) {
-        super(arg0);
+    /**
+     * Constructor.
+     * @param rootCause
+     */
+    public RepositoryException(Throwable rootCause) {
+        super(rootCause);
     }
 
 }
