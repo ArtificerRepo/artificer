@@ -13,28 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.query.xpath;
-
-import org.overlord.sramp.SrampConstants;
-
+package org.overlord.sramp;
 
 /**
- * A default namespace context for resolving prefixes to namespaces in an S-RAMP
- * X-Path formatted Query.
+ * Some S-RAMP constants.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DefaultNamespaceContext extends StaticNamespaceContext {
-	
-	/**
-	 * Default constructor.
-	 */
-	public DefaultNamespaceContext() {
-		addMapping(SrampConstants.SRAMP_PREFIX, SrampConstants.SRAMP_NS);
-		addMapping("xs", "http://www.w3.org/2001/XMLSchema");
-		addMapping("fn", "http://www.w3.org/2005/xpath-functions");
-		addMapping("xp2", "http://www.w3.org/2005/xpath-functions");
-		addMapping("err", "http://www.w3.org/2005/xqt-errors");
-	}
+public class SrampConstants {
+
+	public static final String SRAMP_NS = "http://s-ramp.org/xmlns/2010/s-ramp";
+	public static final String SRAMP_PREFIX = "s-ramp";
 
 }

@@ -15,6 +15,12 @@
  */
 package org.overlord.sramp.repository.jcr.query;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
+import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.query.xpath.ast.AndExpr;
 import org.overlord.sramp.query.xpath.ast.Argument;
 import org.overlord.sramp.query.xpath.ast.ArtifactSet;
@@ -30,6 +36,7 @@ import org.overlord.sramp.query.xpath.ast.Query;
 import org.overlord.sramp.query.xpath.ast.RelationshipPath;
 import org.overlord.sramp.query.xpath.ast.SubartifactSet;
 import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
+import org.overlord.sramp.repository.jcr.JCRConstants;
 
 /**
  * Visitor used to produce a JCR SQL2 query from an S-RAMP xpath query.
@@ -39,20 +46,22 @@ import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 
 	private StringBuilder builder = new StringBuilder();
-	private int conditionCount = 0;
+	private static Map<QName, String> corePropertyMap = new HashMap<QName, String>();
+	static {
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "createdBy"), "jcr:createdBy");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "version"), "version");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "uuid"), "sramp:uuid");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "createdTimestamp"), "jcr:created");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "lastModifiedTimestamp"), "jcr:lastModified");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "lastModifiedBy"), "jcr:lastModifiedBy");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "description"), "sramp:description");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "name"), "sramp:name");
+	}
 
 	/**
 	 * Default constructor.
 	 */
 	public SrampToJcrSql2QueryVisitor() {
-	}
-
-	/**
-	 * Resets the visitor back to an empty state.
-	 */
-	public void reset() {
-		this.builder = new StringBuilder();
-		this.conditionCount = 0;
 	}
 
 	/**
@@ -67,6 +76,13 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(AndExpr node) {
+		if (node.getRight() == null) {
+			node.getLeft().accept(this);
+		} else {
+			node.getLeft().accept(this);
+			this.builder.append(" AND ");
+			node.getRight().accept(this);
+		}
 	}
 
 	/**
@@ -74,6 +90,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Argument node) {
+		throw new RuntimeException("Function arguments not yet supported.");
 	}
 
 	/**
@@ -89,6 +106,20 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(EqualityExpr node) {
+		if (node.getExpr() != null) {
+			this.builder.append(" ( ");
+			node.getExpr().accept(this);
+			this.builder.append(" ) ");
+		} else if (node.getOperator() == null) {
+			node.getLeft().accept(this);
+			this.builder.append(" LIKE '%'");
+		} else {
+			node.getLeft().accept(this);
+			this.builder.append(" ");
+			this.builder.append(node.getOperator().symbol());
+			this.builder.append(" ");
+			node.getRight().accept(this);
+		}
 	}
 
 	/**
@@ -96,6 +127,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Expr node) {
+		node.getAndExpr().accept(this);
 	}
 
 	/**
@@ -103,6 +135,28 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(ForwardPropertyStep node) {
+		if (node.getPropertyQName() != null) {
+			QName property = node.getPropertyQName();
+			if (property.getNamespaceURI() == null || "".equals(property.getNamespaceURI()))
+				property = new QName(SrampConstants.SRAMP_NS, property.getLocalPart());
+			
+			if (property.getNamespaceURI().equals(SrampConstants.SRAMP_NS)) {
+				String jcrPropName = null;
+				if (corePropertyMap.containsKey(property)) {
+					jcrPropName = corePropertyMap.get(property);
+				} else {
+					jcrPropName = JCRConstants.SRAMP_PROPERTIES + ":" + property.getLocalPart();
+				}
+				this.builder.append("[");
+				this.builder.append(jcrPropName);
+				this.builder.append("]");
+			} else {
+				throw new RuntimeException("Properties from namespace '" + property.getNamespaceURI() + "' are not supported.");
+			}
+		}
+		if (node.getSubartifactSet() != null) {
+			throw new RuntimeException("Sub-artifact-set in a forward property step not yet supported.");
+		}
 	}
 
 	/**
@@ -110,6 +164,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(FunctionCall node) {
+		throw new RuntimeException("Function calls not yet supported.");
 	}
 
 	/**
@@ -121,6 +176,8 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			appendCondition("[sramp:artifactType] = '" + node.getArtifactType().replace("'", "''") + "'");
 		} else if (node.getArtifactModel() != null) {
 			appendCondition("[sramp:artifactModel] = '" + node.getArtifactModel().replace("'", "''") + "'");
+		} else {
+			appendCondition("[sramp:artifact] = 'true'");
 		}
 	}
 
@@ -129,6 +186,13 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(OrExpr node) {
+		if (node.getRight() == null) {
+			node.getLeft().accept(this);
+		} else {
+			node.getLeft().accept(this);
+			this.builder.append(" OR ");
+			node.getRight().accept(this);
+		}
 	}
 
 	/**
@@ -136,6 +200,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Predicate node) {
+		node.getExpr().accept(this);
 	}
 
 	/**
@@ -143,6 +208,15 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(PrimaryExpr node) {
+		if (node.getLiteral() != null) {
+			this.builder.append("'");
+			this.builder.append(node.getLiteral());
+			this.builder.append("'");
+		} else if (node.getNumber() != null) {
+			this.builder.append(node.getNumber());
+		} else if (node.getPropertyQName() != null) {
+			throw new RuntimeException("Property primary expressions not yet supported.");
+		}
 	}
 
 	/**
@@ -152,6 +226,11 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	public void visit(Query node) {
 		this.builder.append("SELECT * FROM [overlord:artifact]");
 		node.getArtifactSet().accept(this);
+		if (node.getPredicate() != null) {
+			this.builder.append(" AND (");
+			node.getPredicate().accept(this);
+			this.builder.append(")");
+		}
 	}
 
 	/**
@@ -159,6 +238,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(RelationshipPath node) {
+		throw new RuntimeException("Relationship paths not yet supported.");
 	}
 
 	/**
@@ -166,6 +246,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(SubartifactSet node) {
+		throw new RuntimeException("Sub-artifact-sets not yet supported.");
 	}
 
 	/**
@@ -173,13 +254,8 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 * @param condition
 	 */
 	private void appendCondition(String condition) {
-		if (conditionCount == 0) {
-			this.builder.append(" WHERE ");
-		} else {
-			this.builder.append(" AND ");
-		}
+		this.builder.append(" WHERE ");
 		this.builder.append(condition);
-		conditionCount++;
 	}
 
 }
