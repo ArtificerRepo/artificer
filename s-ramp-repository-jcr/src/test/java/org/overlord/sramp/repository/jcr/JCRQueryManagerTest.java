@@ -16,6 +16,7 @@
 package org.overlord.sramp.repository.jcr;
 
 import java.io.InputStream;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -29,6 +30,7 @@ import org.overlord.sramp.repository.QueryManagerFactory;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +81,101 @@ public class JCRQueryManagerTest {
         Assert.assertEquals(artifact.getName(), found.getName());
         Assert.assertEquals(artifact.getDescription(), found.getDescription());
         Assert.assertEquals(artifact.getLastModifiedBy(), found.getLastModifiedBy());
+    }
+
+    /**
+     * Tests querying by s-ramp properties.
+     * @throws Exception
+     */
+    @Test
+    public void testQueryByProperty() throws Exception {
+    	String uniquePropVal1 = UUID.randomUUID().toString();
+    	String uniquePropVal2 = UUID.randomUUID().toString();
+    	String uniquePropVal3 = UUID.randomUUID().toString();
+
+    	// First, store 3 artifacts
+        String artifactFileName = "PO.xsd";
+        InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        BaseArtifactType artifact1 = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Assert.assertNotNull(artifact1);
+        POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        BaseArtifactType artifact2 = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Assert.assertNotNull(artifact2);
+        POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        BaseArtifactType artifact3 = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Assert.assertNotNull(artifact3);
+
+        // Now update some properties on them.
+        Property prop1 = new Property();
+        prop1.setPropertyName("prop1");
+        prop1.setPropertyValue(uniquePropVal1);
+        Property prop2 = new Property();
+        prop2.setPropertyName("prop2");
+        prop2.setPropertyValue(uniquePropVal2);
+        Property prop3 = new Property();
+        prop3.setPropertyName("prop3");
+        prop3.setPropertyValue(uniquePropVal3);
+        // Prop3 is on all 3 artifacts, prop2 is on 2 artifacts, prop1 is on 1 artifact
+        artifact1.getProperty().add(prop1);
+        artifact1.getProperty().add(prop2);
+        artifact1.getProperty().add(prop3);
+        artifact2.getProperty().add(prop2);
+        artifact2.getProperty().add(prop3);
+        artifact3.getProperty().add(prop3);
+        persistenceManager.updateArtifact(artifact1, ArtifactType.XsdDocument);
+        persistenceManager.updateArtifact(artifact2, ArtifactType.XsdDocument);
+        persistenceManager.updateArtifact(artifact3, ArtifactType.XsdDocument);
+
+        // Now query by various properties
+        SrampQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@prop1 = ?]");
+        query.setString(uniquePropVal1);
+        ArtifactSet artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(1, artifactSet.size());
+        
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@prop2 = ?]");
+        query.setString(uniquePropVal2);
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(2, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@prop3 = ?]");
+        query.setString(uniquePropVal3);
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(3, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@prop1 = ?]");
+        query.setString("nomatches");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(0, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@prop2]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(2, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@prop1 = ? and @prop2 = ?]");
+        query.setString(uniquePropVal1);
+        query.setString(uniquePropVal2);
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(1, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@prop1 = ? or @prop2 = ?]");
+        query.setString(uniquePropVal1);
+        query.setString(uniquePropVal2);
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(2, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@name = ?]");
+        query.setString(artifactFileName);
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertTrue(artifactSet.size() >= 3);
+
     }
 
 }
