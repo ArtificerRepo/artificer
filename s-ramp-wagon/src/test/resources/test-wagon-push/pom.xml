@@ -5,6 +5,7 @@
 	<artifactId>test-wagon-push</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>test-wagon-push</name>
+	
 	<repositories>
 		<repository>
 			<id>local-sramp-repo</id>
@@ -19,6 +20,19 @@
 			</snapshots>
 		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>local-sramp-repo</id>
+			<name>S-RAMP Releases Repository</name>
+			<url>sramp://localhost:8080/s-ramp-atom/s-ramp/</url>
+		</repository>
+		<snapshotRepository>
+			<id>local-sramp-repo-snapshots</id>
+			<name>S-RAMP Snapshots Repository</name>
+			<url>sramp://localhost:8080/s-ramp-atom/s-ramp/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<build>
 		<extensions>
