@@ -58,7 +58,6 @@ import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
 import org.overlord.sramp.wagon.util.PomGenerator;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.w3c.dom.Document;
 
@@ -124,33 +123,21 @@ public class SrampWagon extends StreamWagon {
 		try {
 			MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
 			String endpoint = getRepository().getUrl().replace("sramp:", "http:").replace("sramps:", "https:");
-
-			// Query the artifact meta data using universal/uuid form
-			String artifactModel = gavInfo.getGroupId().substring(0, gavInfo.getGroupId().indexOf('.'));
-			String artifactType = gavInfo.getGroupId().substring(gavInfo.getGroupId().indexOf('.') + 1);
-			String uuid = gavInfo.getArtifactId();
 			SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
-			Entry fullEntry = client.getFullArtifactEntry(artifactModel, artifactType, uuid);
-			if (fullEntry == null)
-				throw new ResourceDoesNotExistException("Could not find file: '" + resource + "'");
+
+			// Query the artifact meta data using GAV info
+			BaseArtifactType artifact = findExistingArtifact(client, gavInfo);
+			if (artifact == null)
+				throw new ResourceDoesNotExistException("Artifact not found in s-ramp repository: '" + resource + "'");
+			ArtifactType type = ArtifactType.valueOf(artifact);
 
 			if ("pom".equals(gavInfo.getType())) {
-				String serializedPom = generatePom(artifactType, fullEntry);
+				String serializedPom = generatePom(artifact);
 			    inputData.setInputStream(new ByteArrayInputStream(serializedPom.getBytes("UTF-8")));
-			    return;
-			} else if (artifactModel.equals(gavInfo.getType())) {
-				// Get the artifact content as an input stream
-				InputStream artifactContent = client.getArtifactContent(artifactModel, artifactType, uuid);
-				inputData.setInputStream(artifactContent);
-				return;
-			} else if (gavInfo.getType().equals(artifactModel + ".sha1")) {
-				InputStream artifactContent = client.getArtifactContent(artifactModel, artifactType, uuid);
-				String sha1Hash = generateSHA1Hash(artifactContent);
-			    inputData.setInputStream(new ByteArrayInputStream(sha1Hash.getBytes("UTF-8")));
 			    return;
 			} else if ("pom.sha1".equals(gavInfo.getType())) {
 				// Generate a SHA1 hash on the fly for the POM
-				String serializedPom = generatePom(artifactType, fullEntry);
+				String serializedPom = generatePom(artifact);
 				MessageDigest md = MessageDigest.getInstance("SHA1");
 				md.update(serializedPom.getBytes("UTF-8"));
 				byte[] mdbytes = md.digest();
@@ -160,6 +147,16 @@ public class SrampWagon extends StreamWagon {
 			    }
 			    inputData.setInputStream(new ByteArrayInputStream(sb.toString().getBytes("UTF-8")));
 			    return;
+			} else if (gavInfo.getType().endsWith(".sha1")) {
+				InputStream artifactContent = client.getArtifactContent(type, artifact.getUuid());
+				String sha1Hash = generateSHA1Hash(artifactContent);
+			    inputData.setInputStream(new ByteArrayInputStream(sha1Hash.getBytes("UTF-8")));
+			    return;
+			} else if (supportedTypes.containsKey(gavInfo.getType())) {
+				// Get the artifact content as an input stream
+				InputStream artifactContent = client.getArtifactContent(type, artifact.getUuid());
+				inputData.setInputStream(artifactContent);
+				return;
 			}
 		} catch (ResourceDoesNotExistException e) {
 			throw e;
@@ -205,14 +202,11 @@ public class SrampWagon extends StreamWagon {
 
 	/**
 	 * Generates a POM for the artifact.
-	 * @param artifactType
-	 * @param fullEntry
+	 * @param artifact
 	 * @throws Exception
 	 */
-	private String generatePom(String artifactType, Entry fullEntry) throws Exception {
-		ArtifactType type = ArtifactType.valueOf(artifactType);
-		Artifact srampArty = fullEntry.getAnyOtherJAXBObject(Artifact.class);
-		BaseArtifactType artifact = type.unwrap(srampArty);
+	private String generatePom(BaseArtifactType artifact) throws Exception {
+		ArtifactType type = ArtifactType.valueOf(artifact);
 		PomGenerator pomGenerator = new PomGenerator();
 		Document pomDoc = pomGenerator.generatePom(artifact, type);
 		String serializedPom = serializeDocument(pomDoc);
@@ -337,7 +331,7 @@ public class SrampWagon extends StreamWagon {
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
 		try {
-			BaseArtifactType artifact = findExistingArtifact(client, artifactType, gavInfo);
+			BaseArtifactType artifact = findExistingArtifact(client, gavInfo);
 			if (artifact != null) {
 				updateArtifactContent(client, artifact, resourceInputStream);
 			} else {
@@ -364,16 +358,62 @@ public class SrampWagon extends StreamWagon {
 	 * @throws SrampServerException 
 	 * @throws JAXBException 
 	 */
-	private BaseArtifactType findExistingArtifact(SrampAtomApiClient client, ArtifactType artifactType, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
-		String query = String.format("/s-ramp/%1$s/%2$s[@maven.groupId = '%3$s' and @maven.artifactId = '%4$s' and @maven.version = '%5$s']", 
-				artifactType.getModel(), artifactType.name(), gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion());
+	private BaseArtifactType findExistingArtifact(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
+		BaseArtifactType artifact = findExistingArtifactByGAV(client, gavInfo);
+		if (artifact == null)
+			artifact = findExistingArtifactByUniversal(client, gavInfo);
+		return artifact;
+	}
+
+	/**
+	 * Finds an existing artifact in the s-ramp repository that matches the GAV information.
+	 * @param client 
+	 * @param gavInfo
+	 * @throws SrampClientException 
+	 * @throws SrampServerException 
+	 * @throws JAXBException 
+	 */
+	private BaseArtifactType findExistingArtifactByGAV(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
+		String query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s']", 
+				gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion());
 		Feed feed = client.query(query);
 		if (feed.getEntries().size() == 1) {
 			Entry entry = feed.getEntries().get(0);
 			String uuid = entry.getId().toString();
+			ArtifactType artifactType = SrampClientUtils.getArtifactType(entry);
 			entry = client.getFullArtifactEntry(artifactType, uuid);
 			return SrampClientUtils.unwrapSrampArtifact(artifactType, entry);
+		} else if (feed.getEntries().size() > 1) {
+			// If we got multiple results, then we don't really know what to do.
+			logger.info("Found multiple s-ramp artifact entries for GAV information:");
+			logger.info(gavInfo.toString());
 		}
+		return null;
+	}
+
+	/**
+	 * Finds an existing artifact in the s-ramp repository using 'universal' form.  This allows
+	 * any artifact in the s-ramp repository to be referenced as a Maven dependency using the
+	 * model.type and UUID of the artifact.
+	 * @param client 
+	 * @param artifactType
+	 * @param gavInfo
+	 * @throws SrampClientException 
+	 * @throws SrampServerException 
+	 * @throws JAXBException 
+	 */
+	private BaseArtifactType findExistingArtifactByUniversal(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
+		String artifactModel = gavInfo.getGroupId().substring(0, gavInfo.getGroupId().indexOf('.'));
+		String artifactType = gavInfo.getGroupId().substring(gavInfo.getGroupId().indexOf('.') + 1);
+		String uuid = gavInfo.getArtifactId();
+		Entry entry = null;
+		try {
+			entry = client.getFullArtifactEntry(artifactModel, artifactType, uuid);
+		} catch (Throwable t) {
+			logger.debug(t.getMessage());
+		}
+		if (entry != null)
+			return SrampClientUtils.unwrapSrampArtifact(artifactType, entry);
 		return null;
 	}
 
