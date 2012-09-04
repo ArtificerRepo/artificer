@@ -123,11 +123,18 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			entry.getLinks().add(linkToEdit);
 			
 			//category
-			Category category = new Category();
-			category.setTerm(artifactType.name());
-			category.setLabel(artifactType.getLabel());
-			category.setScheme(new URI("x-s-ramp:2010:type"));
-			entry.getCategories().add(category);
+			Category typeCat = new Category();
+			typeCat.setTerm(artifactType.name());
+			typeCat.setLabel(artifactType.getLabel());
+			typeCat.setScheme(new URI("x-s-ramp:2010:type"));
+			entry.getCategories().add(typeCat);
+			
+			Category modelCat = new Category();
+			modelCat.setTerm(artifactType.getModel());
+			modelCat.setLabel(artifactType.getLabel());
+			modelCat.setScheme(new URI("x-s-ramp:2010:model"));
+			entry.getCategories().add(modelCat);
+
 			
 			setAtomEntry(entry);
 		} catch (URISyntaxException e) {

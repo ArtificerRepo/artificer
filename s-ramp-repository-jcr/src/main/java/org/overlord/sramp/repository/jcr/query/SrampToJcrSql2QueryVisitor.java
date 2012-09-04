@@ -177,7 +177,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		} else if (node.getArtifactModel() != null) {
 			appendCondition("[sramp:artifactModel] = '" + node.getArtifactModel().replace("'", "''") + "'");
 		} else {
-			appendCondition("[sramp:artifact] = 'true'");
+			appendCondition("[sramp:artifactModel] LIKE '%'");
 		}
 	}
 
