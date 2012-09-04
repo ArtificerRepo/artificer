@@ -10,7 +10,7 @@
 		<repository>
 			<id>local-sramp-repo</id>
 			<name>Local S-RAMP Repository</name>
-			<url>sramp://localhost:8080/s-ramp-atom/s-ramp/</url>
+			<url>sramp://localhost:9090/s-ramp-atom/s-ramp/</url>
 			<layout>default</layout>
 			<releases>
 				<enabled>true</enabled>
@@ -25,12 +25,12 @@
 		<repository>
 			<id>local-sramp-repo</id>
 			<name>S-RAMP Releases Repository</name>
-			<url>sramp://localhost:8080/s-ramp-atom/s-ramp/</url>
+			<url>sramp://localhost:9090/s-ramp-atom/s-ramp/</url>
 		</repository>
 		<snapshotRepository>
 			<id>local-sramp-repo-snapshots</id>
 			<name>S-RAMP Snapshots Repository</name>
-			<url>sramp://localhost:8080/s-ramp-atom/s-ramp/</url>
+			<url>sramp://localhost:9090/s-ramp-atom/s-ramp/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -69,7 +69,7 @@
 						<configuration>
 							<artifacts>
 								<artifact>
-									<file>${basedir}/src/main/resources/META_INF/schemas/simple.xsd</file>
+									<file>${basedir}/src/main/resources/META-INF/schemas/simple.xsd</file>
 									<type>xsd</type>
 								</artifact>
 							</artifacts>
