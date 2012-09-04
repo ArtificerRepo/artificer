@@ -43,7 +43,7 @@ public final class SrampClientUtils {
 	 */
 	private SrampClientUtils() {
 	}
-	
+
 	/**
 	 * Unwraps the specific {@link BaseArtifactType} from the S-RAMP Artifact wrapper
 	 * element.  This method requires the artifact's type.
@@ -77,6 +77,19 @@ public final class SrampClientUtils {
 	 */
 	public static BaseArtifactType unwrapSrampArtifact(String artifactType, Entry entry) throws JAXBException {
 		return unwrapSrampArtifact(ArtifactType.valueOf(artifactType), entry);
+	}
+	
+	/**
+	 * Unwraps a specific {@link BaseArtifactType} from the Atom {@link Entry} containing it.  This
+	 * method grabs the {@link Artifact} child from the Atom {@link Entry} and then unwraps the
+	 * {@link BaseArtifactType} from that.
+	 * @param entry an Atom {@link Entry}
+	 * @return a {@link BaseArtifactType}
+	 * @throws JAXBException 
+	 */
+	public static BaseArtifactType unwrapSrampArtifact(Entry entry) throws JAXBException {
+		ArtifactType artifactType = getArtifactType(entry);
+		return unwrapSrampArtifact(artifactType, entry);
 	}
 
 	/**
@@ -121,29 +134,19 @@ public final class SrampClientUtils {
 	}
 
 	/**
-	 * Figures out the S-RAMP artifact model for the given {@link Entry}.
-	 * @param entry
-	 */
-	public static String getArtifactModel(Entry entry) {
-		Link link = entry.getLinkByRel("self");
-		URI href = link.getHref();
-		String path = href.getPath();
-		String [] split = path.split("/");
-		return split[split.length - 3];
-	}
-
-	/**
 	 * Figures out the S-RAMP artifact type for the given {@link Entry}.
 	 * @param entry
 	 */
-	public static String getArtifactType(Entry entry) {
+	public static ArtifactType getArtifactType(Entry entry) {
 		Link link = entry.getLinkByRel("self");
 		URI href = link.getHref();
 		String path = href.getPath();
 		String [] split = path.split("/");
-		return split[split.length - 2];
+		String atype = split[split.length - 2];
+		//String amodel = split[split.length - 3];
+		return ArtifactType.valueOf(atype);
 	}
-	
+
 	/**
 	 * Convenience method to help set a custom s-ramp property on the given artifact.
 	 * @param artifact

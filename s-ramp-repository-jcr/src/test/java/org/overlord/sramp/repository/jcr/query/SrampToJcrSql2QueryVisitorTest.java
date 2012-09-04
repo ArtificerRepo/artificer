@@ -40,7 +40,7 @@ public class SrampToJcrSql2QueryVisitorTest {
 		},
 		{
 			"/s-ramp",
-			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifact] = 'true'"
+			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactModel] LIKE '%'"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@name = 'foo']",
