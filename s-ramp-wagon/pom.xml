@@ -52,8 +52,6 @@
 		</dependency>
 
 		<!-- Third party libraries -->
-
-		<!-- Common libraries -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

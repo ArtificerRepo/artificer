@@ -79,22 +79,22 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 public enum ArtifactType {
 
 	// Core
-	XmlDocument("core", "XML Document", XmlDocument.class, "text/xml"),
+	XmlDocument("core", "XML Document", XmlDocument.class, "application/xml"),
 	// XSD
-	XsdDocument("xsd", "XML Schema", XsdDocument.class, "text/xml"),
+	XsdDocument("xsd", "XML Schema", XsdDocument.class, "application/xml"),
 	AttributeDeclaration("xsd", "XML Schema Attribute Declaration", AttributeDeclaration.class, null),
 	ElementDeclaration("xsd", "XML Schema Element Declaration", ElementDeclaration.class, null),
 	SimpleTypeDeclaration("xsd", "XML Schema Simple Type Declaration", SimpleTypeDeclaration.class, null),
 	ComplexTypeDeclaration("xsd", "XML Schema Complex Type Declaration", ComplexTypeDeclaration.class, null),
 	// Policy
-	PolicyDocument("policy", "Policy", PolicyDocument.class, "text/xml"),
+	PolicyDocument("policy", "Policy", PolicyDocument.class, "application/xml"),
 	PolicyExpression("policy", "Policy Expression", PolicyExpression.class, null),
 	PolicyAttachment("policy", "Policy Attachment", PolicyAttachment.class, null),
 	// SOAP
 	SoapAddress("soapWsdl", "SOAP Address", SoapAddress.class, null),
 	SoapBinding("soapWsdl", "SOAP Binding", SoapBinding.class, null),
 	// WSDL
-	WsdlDocument("wsdl", "WSDL", WsdlDocument.class, "text/xml"),
+	WsdlDocument("wsdl", "WSDL", WsdlDocument.class, "application/xml"),
 	WsdlService("wsdl", "WSDL Service", WsdlService.class, null),
 	Port("wsdl", "WSDL Port", Port.class, null),
 	WsdlExtension("wsdl", "WSDL Extension", WsdlExtension.class, null),

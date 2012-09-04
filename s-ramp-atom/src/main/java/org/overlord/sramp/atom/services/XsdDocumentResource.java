@@ -95,6 +95,19 @@ public class XsdDocumentResource extends AbstractDocumentResource
     }
 
     /**
+     * S-RAMP atom PUT to upload a new version of the XsdDocument to the repositoyr.
+     * @param uuid
+     * @param body
+     * @throws SrampAtomException
+     */
+    @PUT
+    @Path("{uuid}/media")
+    @Consumes(MediaType.APPLICATION_XML)
+    public void updateXsdDocument(@PathParam("uuid") String uuid, String body) throws SrampAtomException {
+    	// TODO implement updating the XSD artifact content!
+    }
+
+    /**
      * Called to update the meta data for a XSD document.  Note that this does *not* update
      * the content of the XSD, just the meta data.
      * @param uuid the UUID of the s-ramp artifact
@@ -103,11 +116,11 @@ public class XsdDocumentResource extends AbstractDocumentResource
     @PUT
     @Path("{uuid}")
     @Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public void updateXsdDocument(@PathParam("uuid") String uuid, Entry atomEntry) throws SrampAtomException {
+    public void updateMetaData(@PathParam("uuid") String uuid, Entry atomEntry) throws SrampAtomException {
     	try {
 			Artifact srampArtifactWrapper = atomEntry.getAnyOtherJAXBObject(Artifact.class);
 			XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
-			super.updateArtifact(xsdDocument, ArtifactType.XsdDocument);
+			super.updateArtifactMetaData(xsdDocument, ArtifactType.XsdDocument);
     	} catch (SrampAtomException e) {
     		throw e;
 		} catch (Throwable e) {

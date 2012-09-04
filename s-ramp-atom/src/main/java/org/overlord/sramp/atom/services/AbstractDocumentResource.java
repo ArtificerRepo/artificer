@@ -158,12 +158,12 @@ public abstract class AbstractDocumentResource {
 	}
 
 	/**
-	 * Updates an artifact in the s-ramp repository.
+	 * Updates the meta-data for an artifact in the s-ramp repository.
 	 * @param artifact the s-ramp artifact to update
 	 * @param type the type of the artifact
 	 * @throws SrampAtomException
 	 */
-	protected void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampAtomException {
+	protected void updateArtifactMetaData(BaseArtifactType artifact, ArtifactType type) throws SrampAtomException {
         try {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateArtifact(artifact, type);
