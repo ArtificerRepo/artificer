@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
@@ -28,6 +29,7 @@ import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Property;
 
 /**
  * Some useful static utils for users of the s-ramp client.
@@ -140,6 +142,29 @@ public final class SrampClientUtils {
 		String path = href.getPath();
 		String [] split = path.split("/");
 		return split[split.length - 2];
+	}
+	
+	/**
+	 * Convenience method to help set a custom s-ramp property on the given artifact.
+	 * @param artifact
+	 * @param propName
+	 * @param propValue
+	 */
+	public static void setCustomProperty(BaseArtifactType artifact, String propName, String propValue) {
+		Property prop = null;
+		List<Property> properties = artifact.getProperty();
+		for (Property property : properties) {
+			if (property.getPropertyName().equals(propName)) {
+				prop = property;
+				break;
+			}
+		}
+		if (prop == null) {
+			prop = new Property();
+			prop.setPropertyName(propName);
+			properties.add(prop);
+		}
+		prop.setPropertyValue(propValue);
 	}
 
 }

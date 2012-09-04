@@ -127,20 +127,8 @@ public class SrampAtomApiClient {
 	 */
 	public Entry uploadArtifact(String artifactModel, String artifactType, InputStream content,
 			String artifactFileName) throws SrampClientException, SrampServerException {
-		try {
-			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, artifactModel, artifactType);
-			ClientRequest request = new ClientRequest(atomUrl);
-			if (artifactFileName != null)
-				request.header("Slug", artifactFileName);
-			request.body(MediaType.APPLICATION_XML, content);
-
-			ClientResponse<Entry> response = request.post(Entry.class);
-			return response.getEntity();
-		} catch (SrampServerException e) {
-			throw e;
-		} catch (Throwable e) {
-			throw new SrampClientException(e);
-		}
+		ArtifactType type = ArtifactType.valueOf(artifactType);
+		return uploadArtifact(type, content, artifactFileName);
 	}
 	
 	/**
@@ -153,7 +141,20 @@ public class SrampAtomApiClient {
 	 */
 	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
 			throws SrampClientException, SrampServerException {
-		return uploadArtifact(artifactType.getModel(), artifactType.name(), content, artifactFileName);
+		try {
+			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, artifactType.getModel(), artifactType.name());
+			ClientRequest request = new ClientRequest(atomUrl);
+			if (artifactFileName != null)
+				request.header("Slug", artifactFileName);
+			request.body(artifactType.getMimeType(), content);
+
+			ClientResponse<Entry> response = request.post(Entry.class);
+			return response.getEntity();
+		} catch (SrampServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
 	}
 	
 	/**
@@ -173,14 +174,47 @@ public class SrampAtomApiClient {
 
 			Entry entry = SrampClientUtils.wrapSrampArtifact(artifact);
 			
-			request.body(MediaType.APPLICATION_ATOM_XML, entry);
+			request.body("application/atom+xml;type=entry", entry);
 			request.put();
 		} catch (SrampServerException e) {
 			throw e;
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
 		}
+	}
 
+	/**
+	 * Updates the content of the artifact.
+	 * @param artifactType
+	 * @param uuid
+	 * @param content
+	 * @throws SrampClientException 
+	 */
+	public void updateArtifact(BaseArtifactType artifact, InputStream content) throws SrampClientException {
+		try {
+			ArtifactType type = ArtifactType.valueOf(artifact);
+			String artifactModel = type.getModel();
+			String artifactType = type.name();
+			String artifactUuid = artifact.getUuid();
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
+			ClientRequest request = new ClientRequest(atomUrl);
+			request.body(type.getMimeType(), content);
+			request.put();
+		} catch (SrampServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
+	}
+
+	/**
+	 * Provides a very simple mechanism for querying.  Defaults many of the parameters.
+	 * @param srampQuery the s-ramp query (xpath formatted)
+	 * @throws SrampClientException
+	 * @throws SrampServerException
+	 */
+	public Feed query(String srampQuery) throws SrampClientException, SrampServerException {
+		return query(srampQuery, 0, 20, "name", true);
 	}
 
 	/**

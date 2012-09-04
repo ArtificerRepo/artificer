@@ -66,6 +66,13 @@ public class SrampToJcrSql2QueryVisitorTest {
 			" AND ([version] = '1.0'" +
 			" OR [sramp-properties:prop1] = 'value1')"
 		},
+		{
+			"/s-ramp/xsd/XsdDocument[@maven.groupId = 'ggg' and @maven.artifactId = 'aaa' and @maven.version = '1.0.0']",
+			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactType] = 'XsdDocument'" +
+			" AND ([sramp-properties:maven.groupId] = 'ggg'" +
+			" AND [sramp-properties:maven.artifactId] = 'aaa'" +
+			" AND [sramp-properties:maven.version] = '1.0.0')"
+		},
 	};
 
 	/**
