@@ -16,49 +16,37 @@
 package org.overlord.sramp.repository.jcr.mapper;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.ValueFormatException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.datatype.DatatypeConfigurationException;
 
-import org.overlord.sramp.repository.DerivedArtifactsCreationException;
+import org.overlord.sramp.repository.RepositoryException;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 
-public class XmlModel {
+/**
+ * Maps a JCR node to an S-RAMP artifact.  This class specifically handles XML artifacts.
+ */
+public class XmlModel extends DocumentArtifactModel {
 
     /**
-     * Input is the root node of the derived xsd data
-     * @throws DerivedArtifactsCreationException 
-     * @throws RepositoryException 
-     * @throws PathNotFoundException 
-     * @throws ValueFormatException 
+     * Input is the root node of the derived XML data.
+     * @param jcrNode
+     * @throws DatatypeConfigurationException
+     * @throws RepositoryException
      */
-    public static  XmlDocument getXmlDocument(Node derivedNode) throws DerivedArtifactsCreationException {
+    public static XmlDocument getXmlDocument(Node jcrNode) throws RepositoryException {
         XmlDocument xmlDocument = new XmlDocument();
-        
-        try {
-            xmlDocument.setContentEncoding(derivedNode.getProperty("sramp:contentEncoding").getString());
-            xmlDocument.setContentSize(Long.valueOf(derivedNode.getProperty("sramp:contentSize").getString()));
-            xmlDocument.setContentType(derivedNode.getProperty("sramp:contentType").getString());
-            xmlDocument.setCreatedBy(derivedNode.getProperty("jcr:createdBy").getString());
-            XMLGregorianCalendar createdTS;
-            createdTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(derivedNode.getProperty("jcr:created").getString());
-            xmlDocument.setCreatedTimestamp(createdTS);
-            xmlDocument.setDescription(derivedNode.getProperty("sramp:description").getString());
-            xmlDocument.setLastModifiedBy(derivedNode.getProperty("jcr:lastModifiedBy").getString());
-            XMLGregorianCalendar modifiedTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(derivedNode.getProperty("jcr:lastModified").getString());
-            xmlDocument.setLastModifiedTimestamp(modifiedTS);
-            xmlDocument.setName(derivedNode.getName());
-            xmlDocument.setUuid(derivedNode.getProperty("uuid").getString());
-            xmlDocument.setVersion(derivedNode.getProperty("version").getString());
-            
-            
-        } catch (Exception e) {
-            throw new DerivedArtifactsCreationException(e.getMessage(),e);
-        }
+    	mapBaseArtifactMetaData(jcrNode, xmlDocument);
+    	mapDocumentArtifactMetaData(jcrNode, xmlDocument);
+    	mapXmlDocumentArtifactMetaData(jcrNode, xmlDocument);
         return xmlDocument;
     }
 
-   
+	/**
+	 * Maps the xml document artifact model meta data (from the JCR node to the s-ramp artifact).
+	 * @param jcrNode
+	 * @param artifact
+	 */
+	protected static void mapXmlDocumentArtifactMetaData(Node jcrNode, XmlDocument artifact) {
+        artifact.setContentEncoding(getProperty(jcrNode, "sramp:contentEncoding"));
+	}
+
 }

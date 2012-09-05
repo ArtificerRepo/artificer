@@ -31,9 +31,11 @@ import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Before;
 import org.junit.Test;
+import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.overlord.sramp.atom.services.AdHocQueryResource;
 import org.overlord.sramp.atom.services.XsdDocumentResource;
+import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
  * Unit test for the 
@@ -101,6 +103,37 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
+	 * Tests updating an artifact.
+	 * @throws Exception
+	 */
+	public void testUpdateArtifactMetaData() throws Exception {
+		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+		URI uuid = null;
+		XsdDocument xsdDoc = null;
+		
+		// First, upload an artifact so we have some content to update
+		String artifactFileName = "PO.xsd";
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		try {
+			Entry entry = client.uploadArtifact("xsd", "XsdDocument", is, artifactFileName);
+			Assert.assertNotNull(entry);
+			Assert.assertEquals(artifactFileName, entry.getTitle());
+			uuid = entry.getId();
+			xsdDoc = entry.getAnyOtherJAXBObject(XsdDocument.class);
+		} finally {
+			is.close();
+		}
+		
+		// Now update the description
+		xsdDoc.setDescription("** DESCRIPTION UPDATED **");
+		client.updateArtifactMetaData(xsdDoc);
+		
+		// Now verify
+		Entry entry = client.getFullArtifactEntry(ArtifactType.XsdDocument, uuid.toString());
+		Assert.assertEquals("** DESCRIPTION UPDATED **", entry.getSummary());
+	}
+
+	/**
 	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#query(java.lang.String, int, int, java.lang.String, boolean)}.
 	 */
 	@Test
@@ -130,7 +163,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		}
 		Assert.assertTrue("Failed to find the artifact we just added!", uuidFound);
 	}
-
+	
 	/**
 	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
 	 */

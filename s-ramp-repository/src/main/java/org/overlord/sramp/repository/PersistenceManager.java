@@ -32,23 +32,25 @@ public interface PersistenceManager {
 	 * @param name the name of the artifact
 	 * @param type the artifact type
 	 * @param content the artifact content
-	 * @throws UnsupportedFiletypeException
+	 * @throws RepositoryException
 	 */
-    public BaseArtifactType persistArtifact(String name, ArtifactType type, InputStream content) throws UnsupportedFiletypeException;
+    public BaseArtifactType persistArtifact(String name, ArtifactType type, InputStream content) throws RepositoryException;
     
     /**
      * Persists a single derived artifact.
      * @param artifact the derived artifact to persist
+	 * @throws RepositoryException
      */
-    public void persistDerivedArtifact(DerivedArtifactType artifact);
+    public void persistDerivedArtifact(DerivedArtifactType artifact) throws RepositoryException;
 
 	/**
 	 * Gets a previously persisted artifact by its UUID.
 	 * @param uuid the UUID of the s-ramp artifact
 	 * @param artifactType the type of the artifact
 	 * @return an instance of a {@link BaseArtifactType}
+	 * @throws RepositoryException
 	 */
-	public BaseArtifactType getArtifact(String uuid, ArtifactType type);
+	public BaseArtifactType getArtifact(String uuid, ArtifactType type) throws RepositoryException;
 
 	/**
 	 * Gets the content (media) for a previously persisted artifact by its UUID.  
@@ -58,23 +60,31 @@ public interface PersistenceManager {
 	 * @param uuid the S-RAMP uuid of the artifact.
 	 * @param artifactType the type of the artifact
 	 * @return an {@link InputStream} over the artifact content
+	 * @throws RepositoryException
 	 */
-	public InputStream getArtifactContent(String uuid, ArtifactType artifactType);
+	public InputStream getArtifactContent(String uuid, ArtifactType artifactType) throws RepositoryException;
 
 	/**
 	 * Updates a previously persisted artifact.  Note that this method only updates the meta data
 	 * of the artifact, not the content.  This will not create or delete any derived artifacts.
 	 * @param artifact the s-ramp artifact being updated
 	 * @param type the type of the artifact
+	 * @throws RepositoryException
 	 */
-	public void updateArtifact(BaseArtifactType artifact, ArtifactType type);
+	public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws RepositoryException;
 
 	/**
 	 * Gets a list of S-RAMP artifacts of the given type.
 	 * @param type the S-RAMP artifact type
 	 * @return a {@link List} of S-RAMP artifacts
+	 * @throws RepositoryException
 	 */
-	public List<BaseArtifactType> getArtifacts(ArtifactType type);
-    
+	public List<BaseArtifactType> getArtifacts(ArtifactType type) throws RepositoryException;
+
+	/**
+	 * TODO remove this
+	 * @param uuid
+	 * @param type
+	 */
     public void printArtifactGraph(String uuid, ArtifactType type);
 }

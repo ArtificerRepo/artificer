@@ -15,15 +15,21 @@
  */
 package org.overlord.sramp.client;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
+import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Property;
 
 /**
  * Some useful static utils for users of the s-ramp client.
@@ -37,7 +43,7 @@ public final class SrampClientUtils {
 	 */
 	private SrampClientUtils() {
 	}
-	
+
 	/**
 	 * Unwraps the specific {@link BaseArtifactType} from the S-RAMP Artifact wrapper
 	 * element.  This method requires the artifact's type.
@@ -72,6 +78,19 @@ public final class SrampClientUtils {
 	public static BaseArtifactType unwrapSrampArtifact(String artifactType, Entry entry) throws JAXBException {
 		return unwrapSrampArtifact(ArtifactType.valueOf(artifactType), entry);
 	}
+	
+	/**
+	 * Unwraps a specific {@link BaseArtifactType} from the Atom {@link Entry} containing it.  This
+	 * method grabs the {@link Artifact} child from the Atom {@link Entry} and then unwraps the
+	 * {@link BaseArtifactType} from that.
+	 * @param entry an Atom {@link Entry}
+	 * @return a {@link BaseArtifactType}
+	 * @throws JAXBException 
+	 */
+	public static BaseArtifactType unwrapSrampArtifact(Entry entry) throws JAXBException {
+		ArtifactType artifactType = getArtifactType(entry);
+		return unwrapSrampArtifact(artifactType, entry);
+	}
 
 	/**
 	 * Unwraps a specific {@link BaseArtifactType} from the Atom {@link Entry} containing it.  This
@@ -86,29 +105,69 @@ public final class SrampClientUtils {
 		Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
 		return unwrapSrampArtifact(artifactType, artifact);
 	}
-
+	
 	/**
-	 * Figures out the S-RAMP artifact model for the given {@link Entry}.
-	 * @param entry
+	 * Wraps the given s-ramp artifact in an Atom {@link Entry}.
+	 * @param artifact
+	 * @throws URISyntaxException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 * @throws NoSuchMethodException 
+	 * @throws SecurityException 
 	 */
-	public static String getArtifactModel(Entry entry) {
-		Link link = entry.getLinkByRel("self");
-		URI href = link.getHref();
-		String path = href.getPath();
-		String [] split = path.split("/");
-		return split[split.length - 3];
+	public static Entry wrapSrampArtifact(BaseArtifactType artifact) throws URISyntaxException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
+		Entry entry = new Entry();
+		entry.setId(new URI(artifact.getUuid()));
+		entry.setUpdated(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
+		entry.setTitle(artifact.getName());
+		entry.setPublished(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
+		entry.getAuthors().add(new Person(artifact.getCreatedBy()));
+		entry.setSummary(artifact.getDescription());
+
+        Artifact srampArty = new Artifact();
+        Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass());
+        method.invoke(srampArty, artifact);
+        entry.setAnyOtherJAXBObject(srampArty);
+		
+		return entry;
 	}
 
 	/**
 	 * Figures out the S-RAMP artifact type for the given {@link Entry}.
 	 * @param entry
 	 */
-	public static String getArtifactType(Entry entry) {
+	public static ArtifactType getArtifactType(Entry entry) {
 		Link link = entry.getLinkByRel("self");
 		URI href = link.getHref();
 		String path = href.getPath();
 		String [] split = path.split("/");
-		return split[split.length - 2];
+		String atype = split[split.length - 2];
+		//String amodel = split[split.length - 3];
+		return ArtifactType.valueOf(atype);
+	}
+
+	/**
+	 * Convenience method to help set a custom s-ramp property on the given artifact.
+	 * @param artifact
+	 * @param propName
+	 * @param propValue
+	 */
+	public static void setCustomProperty(BaseArtifactType artifact, String propName, String propValue) {
+		Property prop = null;
+		List<Property> properties = artifact.getProperty();
+		for (Property property : properties) {
+			if (property.getPropertyName().equals(propName)) {
+				prop = property;
+				break;
+			}
+		}
+		if (prop == null) {
+			prop = new Property();
+			prop.setPropertyName(propName);
+			properties.add(prop);
+		}
+		prop.setPropertyValue(propValue);
 	}
 
 }

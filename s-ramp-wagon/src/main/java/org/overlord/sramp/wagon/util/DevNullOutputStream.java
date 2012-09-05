@@ -13,28 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.query.xpath;
+package org.overlord.sramp.wagon.util;
 
-import org.overlord.sramp.SrampConstants;
+import java.io.IOException;
+import java.io.OutputStream;
 
 
 /**
- * A default namespace context for resolving prefixes to namespaces in an S-RAMP
- * X-Path formatted Query.
+ * An output stream that doesn't go anywhere.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DefaultNamespaceContext extends StaticNamespaceContext {
-	
+public class DevNullOutputStream extends OutputStream {
+
 	/**
-	 * Default constructor.
+	 * Constructor.
 	 */
-	public DefaultNamespaceContext() {
-		addMapping(SrampConstants.SRAMP_PREFIX, SrampConstants.SRAMP_NS);
-		addMapping("xs", "http://www.w3.org/2001/XMLSchema");
-		addMapping("fn", "http://www.w3.org/2005/xpath-functions");
-		addMapping("xp2", "http://www.w3.org/2005/xpath-functions");
-		addMapping("err", "http://www.w3.org/2005/xqt-errors");
+	public DevNullOutputStream() {
 	}
 
+	/**
+	 * @see java.io.OutputStream#write(int)
+	 */
+	@Override
+	public void write(int b) throws IOException {
+		// does nothing
+	}
+	
 }

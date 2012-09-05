@@ -34,6 +34,7 @@ import org.modeshape.common.text.ParsingException;
 import org.modeshape.common.text.TokenStream;
 import org.modeshape.common.text.TokenStream.Tokenizer;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.query.xpath.ast.AndExpr;
 import org.overlord.sramp.query.xpath.ast.Argument;
 import org.overlord.sramp.query.xpath.ast.ArtifactSet;
@@ -64,7 +65,7 @@ public class XPathParser {
      */
     public XPathParser() {
     	setNamespaceContext(new DefaultNamespaceContext());
-    	setDefaultPrefix("s-ramp");
+    	setDefaultPrefix(SrampConstants.SRAMP_PREFIX);
     }
 
 	/**
@@ -178,7 +179,7 @@ public class XPathParser {
 				throw new XPathParserException("Query must begin with /s-ramp or //).");
 			
 			// Next is the artifact model
-			if (tokens.hasNext()) {
+			if (tokens.hasNext() && !tokens.matches('[')) {
 				if (!tokens.canConsume('/'))
 					throw new XPathParserException("Invalid artifact set (step 2).");
 				if (!tokens.matches(XPathTokenizer.NAME))
@@ -186,7 +187,7 @@ public class XPathParser {
 				artifactModel = tokens.consume();
 				
 				// And now the artifact type
-				if (tokens.hasNext()) {
+				if (tokens.hasNext() && !tokens.matches('[')) {
 					if (!tokens.canConsume('/'))
 						throw new XPathParserException("Invalid artifact set (step 3).");
 					if (!tokens.matches(XPathTokenizer.NAME))
