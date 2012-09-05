@@ -21,6 +21,6 @@
             <s-ramp:propertyName>myPropertyName</s-ramp:propertyName>
             <s-ramp:propertyValue>myPropertyValue</s-ramp:propertyValue>
         </s-ramp:property>
-        <s-ramp:importedXsds xlink:href="http://example.org/s-ramp/xsd/XsdDocument/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6b">aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6b</s-ramp:importedXsds>
+        <s-ramp:importedXsds artifactType="XsdDocument" xlink:href="http://example.org/s-ramp/xsd/XsdDocument/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6b">aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6b</s-ramp:importedXsds>
     </s-ramp:XsdDocument>
 </artifact>
