@@ -48,6 +48,8 @@
 			<xsd:sequence>
 				<xsd:choice>
 					<!-- Concrete Artifact Types from Core Model -->
+          <xsd:element name="Document" type="s-ramp:Document"
+            minOccurs="1" maxOccurs="1" />
 					<xsd:element name="XmlDocument" type="s-ramp:XmlDocument"
 						minOccurs="1" maxOccurs="1" />
 
