@@ -233,8 +233,7 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 		// Now PUT the changed entry into the repo
 		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
 		request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, entry);
-		ClientResponse<Void> response = request.put(Void.class);
-		response.getEntity();
+		request.put(Void.class);
 	}
 
 	/**
