@@ -38,7 +38,7 @@
 		<slf4j.api.version>1.5.11</slf4j.api.version>
 		<slf4j.log4j.version>1.5.11</slf4j.log4j.version>
 		<!-- S-RAMP versions -->
-		<sramp.client.version>0.0.1</sramp.client.version>
+		<sramp.client.version>0.0.2-SNAPSHOT</sramp.client.version>
 		<srampui.build.date>${maven.build.timestamp}</srampui.build.date>
 
 		<!-- Maven plugin versions -->
@@ -182,6 +182,11 @@
 			<dependency>
 				<groupId>com.google.gwt</groupId>
 				<artifactId>gwt-user</artifactId>
+				<version>${gwt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.gwt</groupId>
+				<artifactId>gwt-dev</artifactId>
 				<version>${gwt.version}</version>
 			</dependency>
 			<!-- Common libraries -->
