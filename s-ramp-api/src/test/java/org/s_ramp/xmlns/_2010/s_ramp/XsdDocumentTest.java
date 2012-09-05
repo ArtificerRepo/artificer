@@ -34,6 +34,7 @@ import junit.framework.Assert;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -46,7 +47,7 @@ public class XsdDocumentTest {
 	/**
 	 * Testing going from object to XML using JAXB using a XML Fragment.
 	 */
-	@Test 
+	@Test
 	public void marshall()
 	{
 		try {
@@ -76,8 +77,9 @@ public class XsdDocumentTest {
 			
 			xsdDocument.getClassifiedBy().add("http://example.org/ontologies/accounting.owl/accounts");
             
-            Target importedXsdTarget = new Target();
+            XsdDocumentTarget importedXsdTarget = new XsdDocumentTarget();
                 importedXsdTarget.setValue("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6b");
+                importedXsdTarget.setArtifactType(XsdDocumentEnum.XSD_DOCUMENT);
                 importedXsdTarget.getOtherAttributes().put(
                         new QName("xlink:href"), 
                         "http://example.org/s-ramp/xsd/XsdDocument/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6b");

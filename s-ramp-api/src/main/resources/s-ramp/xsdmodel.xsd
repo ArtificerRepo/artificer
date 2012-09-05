@@ -37,14 +37,20 @@
 		CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY USE OR
 		DISTRIBUTION OF THIS DOCUMENT.
 	-->
+  <xsd:simpleType name="xsdDocumentEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="XsdDocument" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
 	<xsd:complexType name="XsdDocument">
 		<xsd:complexContent>
 			<xsd:extension base="s-ramp:XmlDocument">
 				<xsd:sequence>
 					<!-- Derived Relationships with (other)XmlDocument artifact(s): -->
-					<xsd:element name="importedXsds" type="s-ramp:target" minOccurs="0" maxOccurs="unbounded" />
-					<xsd:element name="includedXsds" type="s-ramp:target" minOccurs="0" maxOccurs="unbounded" />
-					<xsd:element name="redefinedXsds" type="s-ramp:target" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="importedXsds" type="s-ramp:xsdDocumentTarget" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="includedXsds" type="s-ramp:xsdDocumentTarget" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="redefinedXsds" type="s-ramp:xsdDocumentTarget" minOccurs="0" maxOccurs="unbounded" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>
@@ -86,4 +92,15 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+	
+<!--
+    Relationship referencing the artifact's UUID, to reference an XsdDocument.
+  -->
+  <xsd:complexType name="xsdDocumentTarget">
+    <xsd:complexContent>
+         <xsd:extension base="s-ramp:target" >
+             <xsd:attribute name="artifactType" type="s-ramp:xsdDocumentEnum" use="required" />
+         </xsd:extension>
+   </xsd:complexContent>
+  </xsd:complexType>
 </xsd:schema>
