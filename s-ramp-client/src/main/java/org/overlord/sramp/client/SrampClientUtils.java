@@ -73,19 +73,19 @@ public final class SrampClientUtils {
 	 * @param artifactType the s-ramp artifact type
 	 * @param entry an Atom {@link Entry}
 	 * @return a {@link BaseArtifactType}
-	 * @throws JAXBException 
+	 * @throws JAXBException
 	 */
 	public static BaseArtifactType unwrapSrampArtifact(String artifactType, Entry entry) throws JAXBException {
 		return unwrapSrampArtifact(ArtifactType.valueOf(artifactType), entry);
 	}
-	
+
 	/**
 	 * Unwraps a specific {@link BaseArtifactType} from the Atom {@link Entry} containing it.  This
 	 * method grabs the {@link Artifact} child from the Atom {@link Entry} and then unwraps the
 	 * {@link BaseArtifactType} from that.
 	 * @param entry an Atom {@link Entry}
 	 * @return a {@link BaseArtifactType}
-	 * @throws JAXBException 
+	 * @throws JAXBException
 	 */
 	public static BaseArtifactType unwrapSrampArtifact(Entry entry) throws JAXBException {
 		ArtifactType artifactType = getArtifactType(entry);
@@ -99,22 +99,22 @@ public final class SrampClientUtils {
 	 * @param artifactType the s-ramp artifact type
 	 * @param entry an Atom {@link Entry}
 	 * @return a {@link BaseArtifactType}
-	 * @throws JAXBException 
+	 * @throws JAXBException
 	 */
 	public static BaseArtifactType unwrapSrampArtifact(ArtifactType artifactType, Entry entry) throws JAXBException {
 		Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
 		return unwrapSrampArtifact(artifactType, artifact);
 	}
-	
+
 	/**
 	 * Wraps the given s-ramp artifact in an Atom {@link Entry}.
 	 * @param artifact
-	 * @throws URISyntaxException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
+	 * @throws URISyntaxException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
 	 */
 	public static Entry wrapSrampArtifact(BaseArtifactType artifact) throws URISyntaxException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
 		Entry entry = new Entry();
@@ -129,7 +129,7 @@ public final class SrampClientUtils {
         Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass());
         method.invoke(srampArty, artifact);
         entry.setAnyOtherJAXBObject(srampArty);
-		
+
 		return entry;
 	}
 
@@ -170,4 +170,21 @@ public final class SrampClientUtils {
 		prop.setPropertyValue(propValue);
 	}
 
+	/**
+	 * Gets the value of one of the s-ramp custom properties.
+	 * @param artifact the s-ramp artifact
+	 * @param propName the name of the custom property
+	 * @return the custom property value or null if not found
+	 */
+	public static String getCustomProperty(BaseArtifactType artifact, String propName) {
+		String rval = null;
+		List<Property> properties = artifact.getProperty();
+		for (Property prop : properties) {
+			if (propName.equals(prop.getPropertyName())) {
+				rval = prop.getPropertyValue();
+				break;
+			}
+		}
+		return rval;
+	}
 }
