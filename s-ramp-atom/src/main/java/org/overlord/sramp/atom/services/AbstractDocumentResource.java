@@ -15,9 +15,7 @@
  */
 package org.overlord.sramp.atom.services;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
@@ -53,37 +51,6 @@ public abstract class AbstractDocumentResource {
 	 */
 	public AbstractDocumentResource() {
 	}
-	
-    /**
-	 * Saves a document in the repository using the persistence manager.  Default content
-	 * encoding of the artifact body is UTF-8.
-     * @param artifactName the name of the artifact being saved
-     * @param artifactBody the content of the artifact being saved
-     * @param artifactType the type of the artifact being saved
-     * @throws SrampAtomException
-     */
-    protected Entry saveArtifact(String artifactName, String artifactBody, ArtifactType artifactType) throws SrampAtomException {
-    	return saveArtifact(artifactName, artifactBody, artifactType, "UTF-8");
-    }
-
-	/**
-	 * Saves a document in the repository using the persistence manager.
-     * @param artifactName the name of the artifact being saved
-     * @param artifactBody the content of the artifact being saved
-     * @param artifactType the type of the artifact being saved
-     * @param contentEncoding the encoding of the artifact content
-	 * @throws SrampAtomException
-	 */
-	protected Entry saveArtifact(String artifactName, String artifactBody, ArtifactType artifactType,
-			String contentEncoding) throws SrampAtomException {
-        try {
-			InputStream artifactInputStream = new ByteArrayInputStream(artifactBody.getBytes(contentEncoding));
-			return saveArtifact(artifactName, artifactInputStream, artifactType);
-		} catch (UnsupportedEncodingException e) {
-			throw new SrampAtomException(e);
-		}
-    }
-
 	/**
 	 * Saves a document in the repository using the persistence manager.
      * @param artifactName the name of the artifact being saved

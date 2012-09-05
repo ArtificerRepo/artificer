@@ -61,7 +61,7 @@ public class XsdDocumentResource extends AbstractDocumentResource
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry saveXsdDocument(@HeaderParam("Slug") String fileName, String body) throws SrampAtomException {
+    public Entry saveXsdDocument(@HeaderParam("Slug") String fileName, InputStream body) throws SrampAtomException {
     	return super.saveArtifact(fileName, body, ArtifactType.XsdDocument);
     }
 

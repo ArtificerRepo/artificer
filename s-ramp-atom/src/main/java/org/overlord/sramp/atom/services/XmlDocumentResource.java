@@ -16,6 +16,8 @@
 package org.overlord.sramp.atom.services;
 
 
+import java.io.InputStream;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -50,7 +52,7 @@ public class XmlDocumentResource extends AbstractDocumentResource {
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry saveXmlDocument(@HeaderParam("Slug") String fileName, String body) throws SrampAtomException {
+    public Entry saveXmlDocument(@HeaderParam("Slug") String fileName, InputStream body) throws SrampAtomException {
 		return super.saveArtifact(fileName, body, ArtifactType.XmlDocument);
     }
   
