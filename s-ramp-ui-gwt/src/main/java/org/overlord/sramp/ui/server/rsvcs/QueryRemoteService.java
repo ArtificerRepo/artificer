@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.client.SrampClientUtils;
 import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
@@ -61,8 +62,9 @@ public class QueryRemoteService extends RemoteServiceServlet implements IQueryRe
 				if (entry.getAuthors() != null && entry.getAuthors().size() > 0)
 					author = entry.getAuthors().get(0).getName();
 				ArtifactSummary arty = new ArtifactSummary();
-				arty.setModel(SrampClientUtils.getArtifactModel(entry));
-				arty.setType(SrampClientUtils.getArtifactType(entry));
+				ArtifactType artifactType = SrampClientUtils.getArtifactType(entry);
+				arty.setModel(artifactType.getModel());
+				arty.setType(artifactType.name());
 				arty.setUuid(entry.getId().toString());
 				arty.setName(entry.getTitle());
 				arty.setDescription(entry.getSummary());
