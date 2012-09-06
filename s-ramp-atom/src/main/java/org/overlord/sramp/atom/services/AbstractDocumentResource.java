@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all document resources in the S-RAMP Atom API binding.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public abstract class AbstractDocumentResource {
@@ -65,14 +65,14 @@ public abstract class AbstractDocumentResource {
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             //store the content
             BaseArtifactType artifact = persistenceManager.persistArtifact(artifactName, artifactType, is);
-            
+
             //create the derivedArtifacts
             Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().createDerivedArtifacts(artifactType, artifact);
-            
+
             //persist the derivedArtifacts
             for (DerivedArtifactType dartifact : dartifacts)
                 persistenceManager.persistDerivedArtifact(dartifact);
-            
+
             //return the entry containing the s-ramp artifact
             ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
@@ -151,7 +151,7 @@ public abstract class AbstractDocumentResource {
 			List<BaseArtifactType> artifacts = persistenceManager.getArtifacts(type);
 
 			Feed feed = new Feed();
-			feed.setId(new URI("urn:sramp:feed:/" + type.getModel() + "/" + type.name()));
+			feed.setId(new URI("urn:sramp:feed:/" + type.getModel() + "/" + type.getType()));
 			feed.setTitle("S-RAMP Artifact Feed");
 			feed.setSubtitle("A feed of S-RAMP artifacts of type '" + type + "'.");
 			feed.setUpdated(new Date());
@@ -171,5 +171,5 @@ public abstract class AbstractDocumentResource {
 			throw new SrampAtomException(e);
 		}
 	}
-	
+
 }

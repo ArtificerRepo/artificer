@@ -21,20 +21,20 @@ public class MapToJCRPath {
 
     private static int folderDepth     = 3;
     private static String PATH         = "/artifact/%1$s/%2$s";
-    
+
     /**
      * "/artifact/<model>/<type>"
-     * 
+     *
      * @param type - artifact type
      * @return path: "/artifact/<model>/<type>"
      */
     public static String getArtifactTypePath(ArtifactType type) {
-        return String.format(PATH, type.getModel(), type.name());
+        return String.format(PATH, type.getModel(), type.getType());
     }
-    
+
     /**
      * "/artifact/<model>/<type>/[btree]"
-     * 
+     *
      * @param uuid - Universally Unique ID
      * @param type - artifact type
      * @return path: "/artifact/<model>/<type>/[btree]"
@@ -42,17 +42,17 @@ public class MapToJCRPath {
     public static String getArtifactPath(String uuid, ArtifactType type) {
         return getArtifactTypePath(type) + "/" + bTreePath(uuid);
     }
-    
+
     /**
      *  * "/s-ramp/<fileExtension>/[btree]"
-     * 
+     *
      * @param artifactFileName
      * @return path: "/s-ramp/<type>/[btree]"
      */
     public static String getSequencedArtifactPath(String path) {
         return path.replace("artifact", "s-ramp");
     }
-    
+
     private static String bTreePath (String uuid) {
         String bTreePath = "";
         for (int i=0; i < folderDepth; i++) {
@@ -61,5 +61,5 @@ public class MapToJCRPath {
         bTreePath += uuid.substring(folderDepth * 2);
         return bTreePath;
     }
-    
+
 }
