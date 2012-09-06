@@ -23,12 +23,12 @@ import javax.ws.rs.core.Application;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 
 /**
- * The SRAMP RESTEasy application.  This is essentially the main entry point into a 
+ * The SRAMP RESTEasy application.  This is essentially the main entry point into a
  * RESTEasy application - it provides the resource implementaiton as well as any other
  * providers (mappers, etc).
  */
 public class SRAMPApplication extends Application {
-	
+
 	private Set<Object> singletons = new HashSet<Object>();
 	private Set<Class<?>> classes = new HashSet<Class<?>>();
 
@@ -36,13 +36,11 @@ public class SRAMPApplication extends Application {
 	 * Constructor.
 	 */
 	public SRAMPApplication() {
-		singletons.add(new EntryResource());
 		singletons.add(new ServiceDocumentResource());
+		singletons.add(new ArtifactResource());
 		singletons.add(new FeedResource());
-		singletons.add(new XsdDocumentResource());
-		singletons.add(new XmlDocumentResource());
-		singletons.add(new AdHocQueryResource());
-		
+		singletons.add(new QueryResource());
+
 		classes.add(SrampAtomExceptionMapper.class);
 	}
 

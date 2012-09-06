@@ -23,21 +23,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
-
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.models.ArtifactToSummaryAtomEntryVisitor;
@@ -50,87 +39,18 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 
 /**
- * Implementation of the S-RAMP Ad-Hoc query features defined in the Atom Binding document (section 3).
+ * Base class for all resources that respond with Atom Feeds.
  */
-@Path("/s-ramp")
-public class AdHocQueryResource {
+public abstract class AbstractFeedResource {
 
 	/**
 	 * Constructor.
 	 */
-	public AdHocQueryResource() {
+	protected AbstractFeedResource() {
 	}
-
-	/**
-	 * Do an s-ramp query from a GET style request.
-	 * @param uri
-	 * @param query
-	 * @param page
-	 * @param pageSize
-	 * @param orderBy
-	 * @param asc
-	 * @throws SrampAtomException
-	 */
-	@GET
-	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
-	public Feed queryFromGet(
-			@Context UriInfo uri,
-			@QueryParam("query") String query,
-			@QueryParam("page") Integer page,
-			@QueryParam("pageSize") Integer pageSize,
-			@QueryParam("orderBy") String orderBy,
-			@QueryParam("ascending") Boolean asc,
-			@QueryParam("propertyName") Set<String> propNames
-			) throws SrampAtomException {
-    	if (page == null)
-    		page = 0;
-    	if (pageSize == null)
-    		pageSize = 20;
-    	if (orderBy == null)
-    		orderBy = "name";
-    	if (asc == null)
-    		asc = true;
-		try {
-			return query(query, page, pageSize, orderBy, asc, propNames);
-		} catch (Throwable e) {
-			throw new SrampAtomException(e);
-		}
-	}
-
-	/**
-	 * Handles clients that POST the query to the /s-ramp endpoint.
-	 * @param input the multipart form data
-	 * @throws SrampAtomException
-	 */
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
-	public Feed queryFromPost(MultipartFormDataInput input) throws SrampAtomException {
-    	try {
-			String query = input.getFormDataPart("query", new GenericType<String>() { });
-			Integer page = input.getFormDataPart("page", new GenericType<Integer>() { });
-			if (page == null)
-				page = 0;
-			Integer pageSize = input.getFormDataPart("pageSize", new GenericType<Integer>() { });
-			if (pageSize == null)
-				pageSize = 20;
-			String orderBy = input.getFormDataPart("orderBy", new GenericType<String>() { });
-			if (orderBy == null)
-				orderBy = "name";
-			Boolean asc = input.getFormDataPart("ascending", new GenericType<Boolean>() { });
-			if (asc == null)
-				asc = true;
-			Set<String> propNames = input.getFormDataPart("propertyName", new GenericType<Set<String>>() { });
-			return query(query, page, pageSize, orderBy, asc, propNames);
-		} catch (SrampAtomException e) {
-			throw e;
-		} catch (Throwable e) {
-			throw new SrampAtomException(e);
-		}
-    }
 
     /**
-     * Common method that performs the query and returns the atom {@link Feed}.
+     * Common method that performs a query for artifacts and returns them in an Atom {@link Feed}.
      * @param query the x-path formatted s-ramp query
      * @param page which page in the results should be returned
      * @param pageSize the size of each page of results
@@ -140,23 +60,21 @@ public class AdHocQueryResource {
      * @return an Atom {@link Feed}
      * @throws SrampAtomException
      */
-    protected Feed query(String query, int page, int pageSize, String orderBy, boolean ascending, Set<String> propNames) throws SrampAtomException {
-		if (query == null)
-			throw new SrampAtomException("Missing S-RAMP query (param with name 'query').");
-
-		// Add on the "/s-ramp/" if it's missing
-		String xpath = query;
-		if (!xpath.startsWith("/s-ramp")) {
-			if (query.startsWith("/"))
-				xpath = "/s-ramp" + query;
-			else
-				xpath = "/s-ramp/" + query;
-		}
+	protected Feed createArtifactFeed(String query, Integer page, Integer pageSize, String orderBy,
+			Boolean ascending, Set<String> propNames) throws SrampAtomException {
+		if (page == null)
+			page = 0;
+		if (pageSize == null)
+			pageSize = 20;
+		if (orderBy == null)
+			orderBy = "name";
+		if (ascending == null)
+			ascending = true;
 
 		ArtifactSet artifactSet = null;
 		try {
 			QueryManager queryManager = QueryManagerFactory.newInstance();
-			SrampQuery srampQuery = queryManager.createQuery(xpath, orderBy, ascending);
+			SrampQuery srampQuery = queryManager.createQuery(query, orderBy, ascending);
 			artifactSet = srampQuery.executeQuery();
 			int startIdx = page * pageSize;
 			int endIdx = startIdx + pageSize - 1;

@@ -19,21 +19,11 @@ import static org.jboss.resteasy.test.TestPortProvider.generateURL;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.URI;
-import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-import javax.xml.namespace.QName;
 
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,62 +35,40 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 import test.org.overlord.sramp.atom.TestUtils;
 
 /**
- * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
- * @version $Revision: 1 $
+ * Test of the jax-rs resource that handles Artifacts.
+ *
+ * @author eric.wittmann@redhat.com
  */
-public class XsdDocumentResourceTest extends BaseResourceTest {
+public class ArtifactResourceTest extends BaseResourceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		// bring up the embedded container with the XsdDocument resource
-		// deployed.
-		dispatcher.getRegistry().addPerRequestResource(XsdDocumentResource.class);
+		// bring up the embedded container with the ArtifactResource deployed.
+		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 	}
 
 	/**
-	 * Called to serialize an Atom entry to an XML string.
-	 * 
-	 * @param entry
-	 * @throws JAXBException
-	 * @throws PropertyException
+	 * Does a full test of all the basic Artifact operations.
+	 * @throws Exception
 	 */
-	private String serializeAtomEntry(Entry entry) throws JAXBException, PropertyException {
-		JAXBContext jaxbContext = JAXBContext.newInstance(Entry.class, Artifact.class);
-		Marshaller marshaller = jaxbContext.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
-		marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-
-		StringWriter writer = new StringWriter();
-		JAXBElement<Entry> element = new JAXBElement<Entry>(new QName("http://www.w3.org/2005/Atom",
-				"entry", "atom"), Entry.class, entry);
-
-		marshaller.marshal(element, writer);
-		return writer.toString();
-	}
-
 	@Test
 	public void testFullPurchaseOrderXSD() throws Exception {
 		// Add
 		Entry entry = doAddXsd();
 		URI entryId = entry.getId();
-		
+
 		// Get
 		entry = doGetXsdEntry(entryId);
-		
+
 		// Get artifact content
 		String content = doGetXsdContent(entryId);
 		verifyXsdContent(content);
 
-		// Feed
-		Feed feed = doGetXsdFeed();
-		verifyXsdFeedContains(feed, entryId);
-		
 		// Update
 		doUpdateXsdEntry(entry);
 		entry = doGetXsdEntry(entryId);
 		verifyEntryUpdated(entry);
-		
+
 		// TODO implement delete functionality
 //		deleteXsdEntry(entryId);
 //		verifyEntryDeleted();
@@ -131,11 +99,6 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 		Assert.assertEquals(Long.valueOf(2376), artifact.getXsdDocument().getContentSize());
 		Assert.assertEquals(artifactFileName, artifact.getXsdDocument().getName());
 
-		// Serializing to XML so we can check that it looks good.
-		String actualXml = serializeAtomEntry(entry);
-		// TODO do some XML assertions here
-		System.out.println(actualXml);
-
 		return entry;
 	}
 
@@ -162,7 +125,7 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 	/**
 	 * Gets the content for the artifact from the repo.
 	 * @param entryId
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private String doGetXsdContent(URI entryId) throws Exception {
 		String uuid = entryId.toString();
@@ -176,11 +139,11 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 	/**
 	 * Verify that the content returned from the repo is right.
 	 * @param content
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private void verifyXsdContent(String content) throws IOException {
 		Assert.assertNotNull(content);
-		
+
 		String artifactFileName = "PO.xsd";
 		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
@@ -190,36 +153,11 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 			POXsd.close();
 		}
 	}
-	
-	/**
-	 * GETs a {@link Feed} of the XsdDocument artifacts.
-	 * @throws Exception 
-	 */
-	private Feed doGetXsdFeed() throws Exception {
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument"));
-		ClientResponse<Feed> response = request.get(Feed.class);
-		return response.getEntity();
-	}
-
-	/**
-	 * Verifies that the 
-	 * @param feed
-	 * @param entryId 
-	 */
-	private void verifyXsdFeedContains(Feed feed, URI entryId) {
-		boolean hasEntryId = false;
-		List<Entry> entries = feed.getEntries();
-		for (Entry entry : entries) {
-			if (entry.getId().equals(entryId))
-				hasEntryId = true;
-		}
-		Assert.assertTrue("Feed did not contain entry with ID: " + entryId, hasEntryId);
-	}
 
 	/**
 	 * PUTs the Atom entry back into the repository (after making some changes).
 	 * @param entry
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void doUpdateXsdEntry(Entry entry) throws Exception {
 		// First, make a change to the entry.
@@ -227,9 +165,9 @@ public class XsdDocumentResourceTest extends BaseResourceTest {
 		XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
 		String uuid = xsdDocument.getUuid();
 		xsdDocument.setDescription("** Updated description! **");
-		
+
 		entry.setAnyOtherJAXBObject(srampArtifactWrapper);
-		
+
 		// Now PUT the changed entry into the repo
 		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
 		request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, entry);
