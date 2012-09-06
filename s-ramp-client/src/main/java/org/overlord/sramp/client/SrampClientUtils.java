@@ -19,7 +19,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
@@ -27,9 +26,9 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
 
 /**
  * Some useful static utils for users of the s-ramp client.
@@ -154,20 +153,7 @@ public final class SrampClientUtils {
 	 * @param propValue
 	 */
 	public static void setCustomProperty(BaseArtifactType artifact, String propName, String propValue) {
-		Property prop = null;
-		List<Property> properties = artifact.getProperty();
-		for (Property property : properties) {
-			if (property.getPropertyName().equals(propName)) {
-				prop = property;
-				break;
-			}
-		}
-		if (prop == null) {
-			prop = new Property();
-			prop.setPropertyName(propName);
-			properties.add(prop);
-		}
-		prop.setPropertyValue(propValue);
+		SrampModelUtils.setCustomProperty(artifact, propName, propValue);
 	}
 
 	/**
@@ -177,14 +163,6 @@ public final class SrampClientUtils {
 	 * @return the custom property value or null if not found
 	 */
 	public static String getCustomProperty(BaseArtifactType artifact, String propName) {
-		String rval = null;
-		List<Property> properties = artifact.getProperty();
-		for (Property prop : properties) {
-			if (propName.equals(prop.getPropertyName())) {
-				rval = prop.getPropertyValue();
-				break;
-			}
-		}
-		return rval;
+		return SrampModelUtils.getCustomProperty(artifact, propName);
 	}
 }

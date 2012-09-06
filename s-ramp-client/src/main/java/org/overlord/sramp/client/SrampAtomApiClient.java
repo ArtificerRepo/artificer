@@ -69,7 +69,7 @@ public class SrampAtomApiClient {
 			throw new SrampClientException(e);
 		}
 	}
-	
+
 	/**
 	 * Please see javadoc in {@link SrampAtomApiClient#getFullArtifactEntry(String, String, String)}.
 	 * @param artifactType
@@ -79,7 +79,7 @@ public class SrampAtomApiClient {
 	 */
 	public Entry getFullArtifactEntry(ArtifactType artifactType, String artifactUuid)
 			throws SrampClientException, SrampServerException {
-		return getFullArtifactEntry(artifactType.getModel(), artifactType.name(), artifactUuid);
+		return getFullArtifactEntry(artifactType.getModel(), artifactType.getType(), artifactUuid);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class SrampAtomApiClient {
 	 * @param artifactType the artifact type (XmlDocument, XsdDocument, etc)
 	 * @param artifactUuid the S-RAMP uuid of the artifact
 	 * @return an {@link InputStream} to the S-RAMP artifact content
-	 * @throws SrampClientException 
+	 * @throws SrampClientException
 	 * @throws SrampServerException
 	 */
 	public InputStream getArtifactContent(String artifactModel, String artifactType, String artifactUuid)
@@ -102,7 +102,7 @@ public class SrampAtomApiClient {
 			throw new SrampClientException(e);
 		}
 	}
-	
+
 	/**
 	 * Please see javadoc in {@link SrampAtomApiClient#getArtifactContent(String, String, String)}.
 	 * @param artifactType
@@ -112,7 +112,7 @@ public class SrampAtomApiClient {
 	 */
 	public InputStream getArtifactContent(ArtifactType artifactType, String artifactUuid)
 			throws SrampClientException, SrampServerException {
-		return getArtifactContent(artifactType.getModel(), artifactType.name(), artifactUuid);
+		return getArtifactContent(artifactType.getModel(), artifactType.getType(), artifactUuid);
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class SrampAtomApiClient {
 		ArtifactType type = ArtifactType.valueOf(artifactType);
 		return uploadArtifact(type, content, artifactFileName);
 	}
-	
+
 	/**
 	 * Please refer to javadoc in  {@link SrampAtomApiClient#uploadArtifact(String, String, InputStream, String)}
 	 * @param artifactType
@@ -142,7 +142,7 @@ public class SrampAtomApiClient {
 	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
 			throws SrampClientException, SrampServerException {
 		try {
-			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, artifactType.getModel(), artifactType.name());
+			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, artifactType.getModel(), artifactType.getType());
 			ClientRequest request = new ClientRequest(atomUrl);
 			if (artifactFileName != null)
 				request.header("Slug", artifactFileName);
@@ -156,7 +156,7 @@ public class SrampAtomApiClient {
 			throw new SrampClientException(e);
 		}
 	}
-	
+
 	/**
 	 * Called to update the meta-data stored in the s-ramp repository for the given s-ramp
 	 * artifact.
@@ -167,13 +167,13 @@ public class SrampAtomApiClient {
 		try {
 			ArtifactType type = ArtifactType.valueOf(artifact);
 			String artifactModel = type.getModel();
-			String artifactType = type.name();
+			String artifactType = type.getType();
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
 
 			Entry entry = SrampClientUtils.wrapSrampArtifact(artifact);
-			
+
 			request.body("application/atom+xml;type=entry", entry);
 			request.put();
 		} catch (SrampServerException e) {
@@ -188,13 +188,13 @@ public class SrampAtomApiClient {
 	 * @param artifactType
 	 * @param uuid
 	 * @param content
-	 * @throws SrampClientException 
+	 * @throws SrampClientException
 	 */
 	public void updateArtifact(BaseArtifactType artifact, InputStream content) throws SrampClientException {
 		try {
 			ArtifactType type = ArtifactType.valueOf(artifact);
 			String artifactModel = type.getModel();
-			String artifactType = type.name();
+			String artifactType = type.getType();
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
@@ -256,5 +256,5 @@ public class SrampAtomApiClient {
 			throw new SrampClientException(e);
 		}
 	}
-	
+
 }
