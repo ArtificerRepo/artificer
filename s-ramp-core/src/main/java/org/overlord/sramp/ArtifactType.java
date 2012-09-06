@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import org.s_ramp.xmlns._2010.s_ramp.Actor;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Binding;
 import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
@@ -73,78 +74,79 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
  * An enum representing all of the Artifact Types defined by S-RAMP.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public enum ArtifactType {
 
 	// Core
-	XmlDocument("core", "XML Document", XmlDocument.class, "application/xml"),
+	XmlDocument("core", "XML Document", XmlDocument.class, "application/xml", BaseArtifactEnum.XML_DOCUMENT),
 	// XSD
-	XsdDocument("xsd", "XML Schema", XsdDocument.class, "application/xml"),
-	AttributeDeclaration("xsd", "XML Schema Attribute Declaration", AttributeDeclaration.class, null),
-	ElementDeclaration("xsd", "XML Schema Element Declaration", ElementDeclaration.class, null),
-	SimpleTypeDeclaration("xsd", "XML Schema Simple Type Declaration", SimpleTypeDeclaration.class, null),
-	ComplexTypeDeclaration("xsd", "XML Schema Complex Type Declaration", ComplexTypeDeclaration.class, null),
+	XsdDocument("xsd", "XML Schema", XsdDocument.class, "application/xml", BaseArtifactEnum.XSD_DOCUMENT),
+	AttributeDeclaration("xsd", "XML Schema Attribute Declaration", AttributeDeclaration.class, null, BaseArtifactEnum.ATTRIBUTE_DECLARATION),
+	ElementDeclaration("xsd", "XML Schema Element Declaration", ElementDeclaration.class, null, BaseArtifactEnum.ELEMENT_DECLARATION),
+	SimpleTypeDeclaration("xsd", "XML Schema Simple Type Declaration", SimpleTypeDeclaration.class, null, BaseArtifactEnum.SIMPLE_TYPE_DECLARATION),
+	ComplexTypeDeclaration("xsd", "XML Schema Complex Type Declaration", ComplexTypeDeclaration.class, null, BaseArtifactEnum.COMPLEX_TYPE_DECLARATION),
 	// Policy
-	PolicyDocument("policy", "Policy", PolicyDocument.class, "application/xml"),
-	PolicyExpression("policy", "Policy Expression", PolicyExpression.class, null),
-	PolicyAttachment("policy", "Policy Attachment", PolicyAttachment.class, null),
+	PolicyDocument("policy", "Policy", PolicyDocument.class, "application/xml", BaseArtifactEnum.POLICY_DOCUMENT),
+	PolicyExpression("policy", "Policy Expression", PolicyExpression.class, null, BaseArtifactEnum.POLICY_EXPRESSION),
+	PolicyAttachment("policy", "Policy Attachment", PolicyAttachment.class, null, BaseArtifactEnum.POLICY_ATTACHMENT),
 	// SOAP
-	SoapAddress("soapWsdl", "SOAP Address", SoapAddress.class, null),
-	SoapBinding("soapWsdl", "SOAP Binding", SoapBinding.class, null),
+	SoapAddress("soapWsdl", "SOAP Address", SoapAddress.class, null, BaseArtifactEnum.SOAP_ADDRESS),
+	SoapBinding("soapWsdl", "SOAP Binding", SoapBinding.class, null, BaseArtifactEnum.SOAP_BINDING),
 	// WSDL
-	WsdlDocument("wsdl", "WSDL", WsdlDocument.class, "application/xml"),
-	WsdlService("wsdl", "WSDL Service", WsdlService.class, null),
-	Port("wsdl", "WSDL Port", Port.class, null),
-	WsdlExtension("wsdl", "WSDL Extension", WsdlExtension.class, null),
-	Part("wsdl", "WSDL Part", Part.class, null),
-	Message("wsdl", "WSDL Message", Message.class, null),
-	Fault("wsdl", "WSDL Fault", Fault.class, null),
-	PortType("wsdl", "WSDL Port Type", PortType.class, null),
-	Operation("wsdl", "WSDL Operation", Operation.class, null),
-	OperationInput("wsdl", "WSDL Operation Input", OperationInput.class, null),
-	OperationOutput("wsdl", "WSDL Operation Output", OperationOutput.class, null),
-	Binding("wsdl", "WSDL Binding", Binding.class, null),
-	BindingOperation("wsdl", "WSDL Binding Operation", BindingOperation.class, null),
-	BindingOperationInput("wsdl", "WSDL Binding Operation Input", BindingOperationInput.class, null),
-	BindingOperationOutput("wsdl", "WSDL Binding Operation Output", BindingOperationOutput.class, null),
-	BindingOperationFault("wsdl", "WSDL Binding Operation Fault", BindingOperationFault.class, null),
+	WsdlDocument("wsdl", "WSDL", WsdlDocument.class, "application/xml", BaseArtifactEnum.WSDL_DOCUMENT),
+	WsdlService("wsdl", "WSDL Service", WsdlService.class, null, BaseArtifactEnum.WSDL_SERVICE),
+	Port("wsdl", "WSDL Port", Port.class, null, BaseArtifactEnum.PORT),
+	WsdlExtension("wsdl", "WSDL Extension", WsdlExtension.class, null, BaseArtifactEnum.WSDL_EXTENSION),
+	Part("wsdl", "WSDL Part", Part.class, null, BaseArtifactEnum.PART),
+	Message("wsdl", "WSDL Message", Message.class, null, BaseArtifactEnum.MESSAGE),
+	Fault("wsdl", "WSDL Fault", Fault.class, null, BaseArtifactEnum.FAULT),
+	PortType("wsdl", "WSDL Port Type", PortType.class, null, BaseArtifactEnum.PORT_TYPE),
+	Operation("wsdl", "WSDL Operation", Operation.class, null, BaseArtifactEnum.OPERATION),
+	OperationInput("wsdl", "WSDL Operation Input", OperationInput.class, null, BaseArtifactEnum.OPERATION_INPUT),
+	OperationOutput("wsdl", "WSDL Operation Output", OperationOutput.class, null, BaseArtifactEnum.OPERATION_OUTPUT),
+	Binding("wsdl", "WSDL Binding", Binding.class, null, BaseArtifactEnum.BINDING),
+	BindingOperation("wsdl", "WSDL Binding Operation", BindingOperation.class, null, BaseArtifactEnum.BINDING_OPERATION),
+	BindingOperationInput("wsdl", "WSDL Binding Operation Input", BindingOperationInput.class, null, BaseArtifactEnum.BINDING_OPERATION_INPUT),
+	BindingOperationOutput("wsdl", "WSDL Binding Operation Output", BindingOperationOutput.class, null, BaseArtifactEnum.BINDING_OPERATION_OUTPUT),
+	BindingOperationFault("wsdl", "WSDL Binding Operation Fault", BindingOperationFault.class, null, BaseArtifactEnum.BINDING_OPERATION_FAULT),
 	// Service Implementation
-	Organization("serviceImplementation", "Organization", Organization.class, null),
-	ServiceEndpoint("serviceImplementation", "Service Endpoint", ServiceEndpoint.class, null),
-	ServiceInstance("serviceImplementation", "Service Instance", ServiceInstance.class, null),
-	ServiceOperation("serviceImplementation", "Service Operation", ServiceOperation.class, null),
+	Organization("serviceImplementation", "Organization", Organization.class, null, BaseArtifactEnum.ORGANIZATION),
+	ServiceEndpoint("serviceImplementation", "Service Endpoint", ServiceEndpoint.class, null, BaseArtifactEnum.SERVICE_ENDPOINT),
+	ServiceInstance("serviceImplementation", "Service Instance", ServiceInstance.class, null, BaseArtifactEnum.SERVICE_INSTANCE),
+	ServiceOperation("serviceImplementation", "Service Operation", ServiceOperation.class, null, BaseArtifactEnum.SERVICE_OPERATION),
 	// User Defined
-	UserDefined("user", "User Defined", UserDefinedArtifactType.class, null), // TODO how are user defined types contributed/registered?
+	UserDefined("user", "User Defined", UserDefinedArtifactType.class, null, BaseArtifactEnum.USER_DEFINED_ARTIFACT_TYPE), // TODO how are user defined types contributed/registered?
 	// SOA
-	HumanActor("soa", "SOA Human Actor", Actor.class, null),
-	Choreography("soa", "SOA Choreography", Choreography.class, null),
-	ChoreographyProcess("soa", "SOA Choreography Process", ChoreographyProcess.class, null),
-	Collaboration("soa", "SOA Collaboration", Collaboration.class, null),
-	CollaborationProcess("soa", "SOA Collaboration Process", CollaborationProcess.class, null),
-	Composition("soa", "SOA Composition", Composition.class, null),
-	Effect("soa", "SOA Effect", Effect.class, null),
-	Element("soa", "SOA Element", Element.class, null),
-	Event("soa", "SOA Event", Event.class, null),
-	InformationType("soa", "SOA Information Type", InformationType.class, null),
-	Orchestration("soa", "SOA Orchestration", Orchestration.class, null),
-	OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class, null),
-	Policy("soa", "SOA Policy", Policy.class, null),
-	PolicySubject("soa", "SOA Policy Subject", PolicySubject.class, null),
-	Process("soa", "SOA Process", org.s_ramp.xmlns._2010.s_ramp.Process.class, null),
-	Service("soa", "SOA Service", Service.class, null),
-	ServiceContract("soa", "SOA Service Contract", ServiceContract.class, null),
-	ServiceComposition("soa", "SOA Service Composition", ServiceComposition.class, null),
-	ServiceInterface("soa", "SOA Service Interface", ServiceInterface.class, null),
-	System("soa", "SOA System", org.s_ramp.xmlns._2010.s_ramp.System.class, null),
-	Task("soa", "SOA Task", Task.class, null)
+	HumanActor("soa", "SOA Human Actor", Actor.class, null, BaseArtifactEnum.ACTOR),
+	Choreography("soa", "SOA Choreography", Choreography.class, null, BaseArtifactEnum.CHOREOGRAPHY),
+	ChoreographyProcess("soa", "SOA Choreography Process", ChoreographyProcess.class, null, BaseArtifactEnum.CHOREOGRAPHY_PROCESS),
+	Collaboration("soa", "SOA Collaboration", Collaboration.class, null, BaseArtifactEnum.COLLABORATION),
+	CollaborationProcess("soa", "SOA Collaboration Process", CollaborationProcess.class, null, BaseArtifactEnum.COLLABORATION_PROCESS),
+	Composition("soa", "SOA Composition", Composition.class, null, BaseArtifactEnum.COMPOSITION),
+	Effect("soa", "SOA Effect", Effect.class, null, BaseArtifactEnum.EFFECT),
+	Element("soa", "SOA Element", Element.class, null, BaseArtifactEnum.ELEMENT),
+	Event("soa", "SOA Event", Event.class, null, BaseArtifactEnum.EVENT),
+	InformationType("soa", "SOA Information Type", InformationType.class, null, BaseArtifactEnum.INFORMATION_TYPE),
+	Orchestration("soa", "SOA Orchestration", Orchestration.class, null, BaseArtifactEnum.ORCHESTRATION),
+	OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class, null, BaseArtifactEnum.ORCHESTRATION_PROCESS),
+	Policy("soa", "SOA Policy", Policy.class, null, BaseArtifactEnum.POLICY),
+	PolicySubject("soa", "SOA Policy Subject", PolicySubject.class, null, BaseArtifactEnum.POLICY_SUBJECT),
+	Process("soa", "SOA Process", org.s_ramp.xmlns._2010.s_ramp.Process.class, null, BaseArtifactEnum.PROCESS),
+	Service("soa", "SOA Service", Service.class, null, BaseArtifactEnum.SERVICE),
+	ServiceContract("soa", "SOA Service Contract", ServiceContract.class, null, BaseArtifactEnum.SERVICE_CONTRACT),
+	ServiceComposition("soa", "SOA Service Composition", ServiceComposition.class, null, BaseArtifactEnum.SERVICE_COMPOSITION),
+	ServiceInterface("soa", "SOA Service Interface", ServiceInterface.class, null, BaseArtifactEnum.SERVICE_INTERFACE),
+	System("soa", "SOA System", org.s_ramp.xmlns._2010.s_ramp.System.class, null, BaseArtifactEnum.SYSTEM),
+	Task("soa", "SOA Task", Task.class, null, BaseArtifactEnum.TASK)
 	;
 
 	private final String model;
 	private final String label;
 	private final Class<? extends BaseArtifactType> typeClass;
     private final String mimeType;
+    private final BaseArtifactEnum apiType;
 
 	/**
 	 * Constructor.
@@ -153,18 +155,27 @@ public enum ArtifactType {
 	 * @param typeClass the class that implements this Artifact Type
 	 * @param mimeType the mime-type of the artifact
 	 */
-	private ArtifactType(String model, String label, Class<? extends BaseArtifactType> typeClass, String mimeType) {
+	private ArtifactType(String model, String label, Class<? extends BaseArtifactType> typeClass,
+			String mimeType, BaseArtifactEnum apiType) {
 		this.model = model;
 		this.label = label;
 		this.typeClass = typeClass;
 		this.mimeType = mimeType;
+		this.apiType = apiType;
 	}
 
 	/**
-	 * @return the model
+	 * @return the artifact model
 	 */
 	public String getModel() {
 		return model;
+	}
+
+	/**
+	 * @return the artifact type
+	 */
+	public String getType() {
+		return name();
 	}
 
 	/**
@@ -179,6 +190,13 @@ public enum ArtifactType {
 	 */
 	public String getMimeType() {
 		return mimeType;
+	}
+
+	/**
+	 * @return the s-ramp API type
+	 */
+	public BaseArtifactEnum getApiType() {
+		return apiType;
 	}
 
 	/**
@@ -201,12 +219,16 @@ public enum ArtifactType {
 	public Class<? extends BaseArtifactType> getTypeClass() {
 		return typeClass;
 	}
-	
+
 	/**
 	 * Figures out the type from the artifact instance.
 	 * @param artifact
 	 */
 	public static ArtifactType valueOf(BaseArtifactType artifact) {
+		BaseArtifactEnum apiType = artifact.getArtifactType();
+		if (apiType != null) {
+			return valueOf(apiType);
+		}
 		ArtifactType[] values = values();
 		for (ArtifactType artifactType : values) {
 			if (artifactType.getTypeClass().equals(artifact.getClass())) {
@@ -214,6 +236,20 @@ public enum ArtifactType {
 			}
 		}
 		throw new RuntimeException("Could not determine Artifact Type from artifact class: " + artifact.getClass());
+	}
+
+	/**
+	 * Figures out the type from the s-ramp API type.
+	 * @param apiType
+	 */
+	public static ArtifactType valueOf(BaseArtifactEnum apiType) {
+		ArtifactType[] values = values();
+		for (ArtifactType artifactType : values) {
+			if (artifactType.getApiType() == apiType) {
+				return artifactType;
+			}
+		}
+		throw new RuntimeException("Could not determine Artifact Type from S-RAMP API type: " + apiType.value());
 	}
 
 }

@@ -103,7 +103,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 
 			//TODO create URL Helper, obtain base URL from server
 			String atomLink = "http://localhost:8080/changeit/s-ramp/" + artifactType.getModel() + "/"
-					+ artifactType.name() + "/" + artifact.getUuid();
+					+ artifactType.getType() + "/" + artifact.getUuid();
 			String mediaLink = atomLink + "/media";
 
 			// Original content can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
@@ -137,7 +137,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 
 			//category
 			Category typeCat = new Category();
-			typeCat.setTerm(artifactType.name());
+			typeCat.setTerm(artifactType.getType());
 			typeCat.setLabel(artifactType.getLabel());
 			typeCat.setScheme(new URI("x-s-ramp:2010:type"));
 			entry.getCategories().add(typeCat);

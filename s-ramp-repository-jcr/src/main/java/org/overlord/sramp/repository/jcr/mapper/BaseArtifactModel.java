@@ -23,8 +23,10 @@ import javax.jcr.ValueFormatException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.jcr.JCRConstants;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -33,15 +35,19 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
  * @author eric.wittmann@redhat.com
  */
 public abstract class BaseArtifactModel {
-	
+
 	/**
 	 * Maps the base artifact model meta data (from the JCR node to the s-ramp artifact).
 	 * @param jcrNode
 	 * @param artifact
-	 * @throws RepositoryException 
+	 * @throws RepositoryException
 	 */
 	protected static void mapBaseArtifactMetaData(Node jcrNode, BaseArtifactType artifact) throws RepositoryException {
 		try {
+			ArtifactType artifactType = ArtifactType.valueOf(artifact);
+			BaseArtifactEnum apiType = artifactType.getApiType();
+			artifact.setArtifactType(apiType);
+
 			// First map in the standard s-ramp meta-data
 			artifact.setCreatedBy(getProperty(jcrNode, "jcr:createdBy"));
 			XMLGregorianCalendar createdTS;
@@ -54,7 +60,7 @@ public abstract class BaseArtifactModel {
 			artifact.setName(getProperty(jcrNode, "sramp:name"));
 			artifact.setUuid(getProperty(jcrNode, "sramp:uuid"));
 			artifact.setVersion(getProperty(jcrNode, "version"));
-			
+
 			// Now map in all the s-ramp user-defined properties.
 			String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
 			int srampPropsPrefixLen = srampPropsPrefix.length();
