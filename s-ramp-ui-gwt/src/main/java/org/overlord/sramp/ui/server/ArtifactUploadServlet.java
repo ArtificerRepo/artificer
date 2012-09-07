@@ -68,7 +68,7 @@ public class ArtifactUploadServlet extends HttpServlet {
 			Map<String, String> responseMap;
 			FileItemFactory factory = new DiskFileItemFactory();
 			ServletFileUpload upload = new ServletFileUpload(factory);
-			
+
 			// Parse the request
 			String artifactType = null;
 			String fileName = null;
@@ -117,18 +117,18 @@ public class ArtifactUploadServlet extends HttpServlet {
 	 * @param artifactType the type of s-ramp artifact
 	 * @param fileName the file name of the artifact being uploaded
 	 * @param artifactContent the content of the artifact
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private Map<String, String> uploadArtifact(String artifactType, String fileName, InputStream artifactContent) throws Exception {
 		SrampAtomApiClient client = SrampAtomApiClient.getInstance();
-		
+
 		ArtifactType at = ArtifactType.valueOf(artifactType);
 		Entry entry = client.uploadArtifact(at, artifactContent, fileName);
 		BaseArtifactType artifact = SrampClientUtils.unwrapSrampArtifact(at, entry);
 
 		Map<String, String> responseParams = new HashMap<String, String>();
 		responseParams.put("model", at.getModel());
-		responseParams.put("type", at.name());
+		responseParams.put("type", at.getType());
 		responseParams.put("uuid", artifact.getUuid());
 		return responseParams;
 	}
@@ -138,7 +138,7 @@ public class ArtifactUploadServlet extends HttpServlet {
 	 * parse the response values for display to the user.
 	 * @param responseMap the response params to write to the http response
 	 * @param response the http response
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private void writeToResponse(Map<String, String> responseMap, HttpServletResponse response) throws IOException {
 		response.setContentType("application/json; charset=UTF8");

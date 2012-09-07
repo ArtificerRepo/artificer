@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A simple data bean for returning summary information for an artifact.
@@ -38,7 +39,7 @@ public class ArtifactSummary implements Serializable {
 	private Date createdOn;
 	private Date updatedOn;
 	private Map<String, String> properties = new HashMap<String, String>();
-	
+
 	/**
 	 * Constructor.
 	 */
@@ -128,15 +129,15 @@ public class ArtifactSummary implements Serializable {
 	public void setUpdatedOn(Date updatedOn) {
 		this.updatedOn = updatedOn;
 	}
-	
+
 	/**
 	 * Gets a property by name.
 	 * @param propName
 	 */
-	public void getProperty(String propName) {
-		this.properties.get(propName);
+	public String getProperty(String propName) {
+		return this.properties.get(propName);
 	}
-	
+
 	/**
 	 * Sets a property.
 	 * @param propName
@@ -144,6 +145,13 @@ public class ArtifactSummary implements Serializable {
 	 */
 	public void setProperty(String propName, String propVal) {
 		this.properties.put(propName, propVal);
+	}
+
+	/**
+	 * @return the names of all the custom properties
+	 */
+	public Set<String> getPropertyNames() {
+		return this.properties.keySet();
 	}
 
 	/**
@@ -204,5 +212,5 @@ public class ArtifactSummary implements Serializable {
 	public void setModel(String model) {
 		this.model = model;
 	}
-		
+
 }
