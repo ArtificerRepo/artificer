@@ -45,6 +45,7 @@
 }
 .artifactView .dpanel {
 	width: 100%;
+	margin-bottom: 10px;
 }
 .artifactView .dpanel a.header {
 	color: #9C1919;

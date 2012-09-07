@@ -24,6 +24,7 @@ import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
 import org.overlord.sramp.ui.shared.rsvcs.IArtifactRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Property;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -63,6 +64,9 @@ public class ArtifactRemoteService extends RemoteServiceServlet implements IArti
 			details.setUpdatedOn(entry.getUpdated());
 
 			BaseArtifactType artifact = SrampClientUtils.unwrapSrampArtifact(type, entry);
+			for (Property property : artifact.getProperty()) {
+				details.setProperty(property.getPropertyName(), property.getPropertyValue());
+			}
 			details.getClassifiedBy().addAll(artifact.getClassifiedBy());
 			details.setUpdatedBy(artifact.getLastModifiedBy());
 

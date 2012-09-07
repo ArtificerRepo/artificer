@@ -15,6 +15,9 @@
  */
 package org.overlord.sramp.ui.client.views;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.overlord.sramp.ui.client.activities.IArtifactActivity;
 import org.overlord.sramp.ui.client.places.ArtifactPlace;
 import org.overlord.sramp.ui.client.widgets.PleaseWait;
@@ -24,6 +27,7 @@ import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -35,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 public class ArtifactView extends AbstractView<IArtifactActivity> implements IArtifactView {
-	
+
 	private ArtifactPlace currentPlace;
 	private FlowPanel main;
 
@@ -65,25 +69,48 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 	public void onArtifactLoaded(ArtifactDetails artifact) {
 		main.clear();
 
-		VerticalPanel content = new VerticalPanel();
-		content.setStyleName("artifactView-content");
-		content.setWidth("100%");
-		main.add(content);
+		HorizontalPanel twoColContent = new HorizontalPanel();
+		twoColContent.setStyleName("artifactView-content");
+		twoColContent.setWidth("100%");
+		main.add(twoColContent);
 
+		VerticalPanel leftCol = new VerticalPanel();
+		leftCol.setStyleName("leftCol");
+		VerticalPanel rightCol = new VerticalPanel();
+		rightCol.setStyleName("rightCol");
+		leftCol.setWidth("100%");
+		rightCol.setWidth("100%");
+		twoColContent.add(leftCol);
+		twoColContent.add(rightCol);
+		twoColContent.setCellWidth(leftCol, "70%");
+		twoColContent.setCellWidth(rightCol, "30%");
+		twoColContent.setCellHorizontalAlignment(rightCol, HorizontalPanel.ALIGN_RIGHT);
+
+		// Artifact details
 		DisclosurePanel details = new DisclosurePanel(i18n().translate("views.artifact.details.label"));
 		details.setStyleName("dpanel");
 		details.setOpen(true);
 		details.add(createDetailsForm(artifact));
-		
+
+		// Artifact description
 		DisclosurePanel description = new DisclosurePanel(i18n().translate("views.artifact.description.label"));
 		description.setStyleName("dpanel");
 		description.setOpen(true);
 		description.add(createDescriptionForm(artifact));
-		
-		content.add(details);
-		content.add(description);
-		content.setCellWidth(details, "100%");
-		content.setCellWidth(description, "100%");
+
+		leftCol.add(details);
+		leftCol.add(description);
+		leftCol.setCellWidth(details, "100%");
+		leftCol.setCellWidth(description, "100%");
+
+		// Artifact properties
+		DisclosurePanel properties = new DisclosurePanel("Properties");
+		properties.setStyleName("dpanel");
+		properties.setOpen(true);
+		properties.add(createPropertiesForm(artifact));
+
+		rightCol.add(properties);
+		rightCol.setCellWidth(details, "100%");
 	}
 
 	/**
@@ -98,7 +125,7 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		if (artifactDesc == null || artifactDesc.trim().length() == 0)
 			artifactDesc = i18n().translate("views.artifact.no-description.message");
 		Label descriptionWidget = new Label(artifactDesc);
-		
+
 		wrapper.add(descriptionWidget);
 		return wrapper;
 	}
@@ -110,10 +137,10 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 	private Widget createDetailsForm(ArtifactDetails artifact) {
 		String createdOn = i18n().formatDateTime(artifact.getCreatedOn());
 		String updatedOn = i18n().formatDateTime(artifact.getUpdatedOn());
-		
+
 		FlowPanel wrapper = new FlowPanel();
 		wrapper.setStyleName("dpanel-content");
-		
+
 		SimpleFormLayoutPanel formLayoutPanel = new SimpleFormLayoutPanel();
 		formLayoutPanel.add(i18n().translate("views.artifact.details.uuid-label"), new InlineLabel(artifact.getUuid()));
 		formLayoutPanel.add(i18n().translate("views.artifact.details.name-label"), new InlineLabel(artifact.getName()));
@@ -121,7 +148,32 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		formLayoutPanel.add(i18n().translate("views.artifact.details.created-on-label"), new InlineLabel(createdOn));
 		formLayoutPanel.add(i18n().translate("views.artifact.details.updated-by-label"), new InlineLabel(artifact.getUpdatedBy()));
 		formLayoutPanel.add(i18n().translate("views.artifact.details.updated-on-label"), new InlineLabel(updatedOn));
-		
+
+		wrapper.add(formLayoutPanel);
+		return wrapper;
+	}
+
+	/**
+	 * Creates the properties form that shows all of the artifact's custom s-ramp properites.
+	 * @param artifact
+	 */
+	private Widget createPropertiesForm(ArtifactDetails artifact) {
+		Set<String> propertyNames = artifact.getPropertyNames();
+		if (propertyNames.size() == 0) {
+			return new InlineLabel("No properties found on this artifact.");
+		}
+		propertyNames = new TreeSet<String>(propertyNames);
+
+		FlowPanel wrapper = new FlowPanel();
+		wrapper.setStyleName("dpanel-content");
+
+		SimpleFormLayoutPanel formLayoutPanel = new SimpleFormLayoutPanel();
+		for (String propertyName : propertyNames) {
+			String propertyValue = artifact.getProperty(propertyName);
+			formLayoutPanel.add(propertyName, new InlineLabel(propertyValue));
+
+		}
+
 		wrapper.add(formLayoutPanel);
 		return wrapper;
 	}
