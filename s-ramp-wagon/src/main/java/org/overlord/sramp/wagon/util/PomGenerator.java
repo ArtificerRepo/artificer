@@ -50,7 +50,7 @@ public class PomGenerator {
 	public Document generatePom(BaseArtifactType artifact, ArtifactType type) throws Exception {
 		Document document = loadTemplate();
 
-		String groupId = type.getModel() + "." + type.name();
+		String groupId = type.getModel() + "." + type.getType();
 		String artifactId = artifact.getUuid();
 		String version = artifact.getVersion();
 		String name = artifact.getName();
@@ -69,7 +69,7 @@ public class PomGenerator {
 		setElementText(document, "name", name);
 		setElementText(document, "description", description);
 		setElementText(document, "type", pomType);
-		
+
 		return document;
 	}
 
