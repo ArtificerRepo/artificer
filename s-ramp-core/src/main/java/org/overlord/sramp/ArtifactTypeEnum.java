@@ -81,73 +81,74 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 public enum ArtifactTypeEnum {
 
 	// Core
-	Document("core", "Document", Document.class, BaseArtifactEnum.DOCUMENT),
-	XmlDocument("core", "XML Document", XmlDocument.class, BaseArtifactEnum.XML_DOCUMENT),
+	Document("core", "Document", Document.class, BaseArtifactEnum.DOCUMENT, false),
+	XmlDocument("core", "XML Document", XmlDocument.class, BaseArtifactEnum.XML_DOCUMENT, false),
 	// XSD
-	XsdDocument("xsd", "XML Schema", XsdDocument.class, BaseArtifactEnum.XSD_DOCUMENT),
-	AttributeDeclaration("xsd", "XML Schema Attribute Declaration", AttributeDeclaration.class, BaseArtifactEnum.ATTRIBUTE_DECLARATION),
-	ElementDeclaration("xsd", "XML Schema Element Declaration", ElementDeclaration.class, BaseArtifactEnum.ELEMENT_DECLARATION),
-	SimpleTypeDeclaration("xsd", "XML Schema Simple Type Declaration", SimpleTypeDeclaration.class, BaseArtifactEnum.SIMPLE_TYPE_DECLARATION),
-	ComplexTypeDeclaration("xsd", "XML Schema Complex Type Declaration", ComplexTypeDeclaration.class, BaseArtifactEnum.COMPLEX_TYPE_DECLARATION),
+	XsdDocument("xsd", "XML Schema", XsdDocument.class, BaseArtifactEnum.XSD_DOCUMENT, false),
+	AttributeDeclaration("xsd", "XML Schema Attribute Declaration", AttributeDeclaration.class, BaseArtifactEnum.ATTRIBUTE_DECLARATION, true),
+	ElementDeclaration("xsd", "XML Schema Element Declaration", ElementDeclaration.class, BaseArtifactEnum.ELEMENT_DECLARATION, true),
+	SimpleTypeDeclaration("xsd", "XML Schema Simple Type Declaration", SimpleTypeDeclaration.class, BaseArtifactEnum.SIMPLE_TYPE_DECLARATION, true),
+	ComplexTypeDeclaration("xsd", "XML Schema Complex Type Declaration", ComplexTypeDeclaration.class, BaseArtifactEnum.COMPLEX_TYPE_DECLARATION, true),
 	// Policy
-	PolicyDocument("policy", "Policy", PolicyDocument.class, BaseArtifactEnum.POLICY_DOCUMENT),
-	PolicyExpression("policy", "Policy Expression", PolicyExpression.class, BaseArtifactEnum.POLICY_EXPRESSION),
-	PolicyAttachment("policy", "Policy Attachment", PolicyAttachment.class, BaseArtifactEnum.POLICY_ATTACHMENT),
+	PolicyDocument("policy", "Policy", PolicyDocument.class, BaseArtifactEnum.POLICY_DOCUMENT, false),
+	PolicyExpression("policy", "Policy Expression", PolicyExpression.class, BaseArtifactEnum.POLICY_EXPRESSION, true),
+	PolicyAttachment("policy", "Policy Attachment", PolicyAttachment.class, BaseArtifactEnum.POLICY_ATTACHMENT, true),
 	// SOAP
-	SoapAddress("soapWsdl", "SOAP Address", SoapAddress.class, BaseArtifactEnum.SOAP_ADDRESS),
-	SoapBinding("soapWsdl", "SOAP Binding", SoapBinding.class, BaseArtifactEnum.SOAP_BINDING),
+	SoapAddress("soapWsdl", "SOAP Address", SoapAddress.class, BaseArtifactEnum.SOAP_ADDRESS, true),
+	SoapBinding("soapWsdl", "SOAP Binding", SoapBinding.class, BaseArtifactEnum.SOAP_BINDING, true),
 	// WSDL
-	WsdlDocument("wsdl", "WSDL", WsdlDocument.class, BaseArtifactEnum.WSDL_DOCUMENT),
-	WsdlService("wsdl", "WSDL Service", WsdlService.class, BaseArtifactEnum.WSDL_SERVICE),
-	Port("wsdl", "WSDL Port", Port.class, BaseArtifactEnum.PORT),
-	WsdlExtension("wsdl", "WSDL Extension", WsdlExtension.class, BaseArtifactEnum.WSDL_EXTENSION),
-	Part("wsdl", "WSDL Part", Part.class, BaseArtifactEnum.PART),
-	Message("wsdl", "WSDL Message", Message.class, BaseArtifactEnum.MESSAGE),
-	Fault("wsdl", "WSDL Fault", Fault.class, BaseArtifactEnum.FAULT),
-	PortType("wsdl", "WSDL Port Type", PortType.class, BaseArtifactEnum.PORT_TYPE),
-	Operation("wsdl", "WSDL Operation", Operation.class, BaseArtifactEnum.OPERATION),
-	OperationInput("wsdl", "WSDL Operation Input", OperationInput.class, BaseArtifactEnum.OPERATION_INPUT),
-	OperationOutput("wsdl", "WSDL Operation Output", OperationOutput.class, BaseArtifactEnum.OPERATION_OUTPUT),
-	Binding("wsdl", "WSDL Binding", Binding.class, BaseArtifactEnum.BINDING),
-	BindingOperation("wsdl", "WSDL Binding Operation", BindingOperation.class, BaseArtifactEnum.BINDING_OPERATION),
-	BindingOperationInput("wsdl", "WSDL Binding Operation Input", BindingOperationInput.class, BaseArtifactEnum.BINDING_OPERATION_INPUT),
-	BindingOperationOutput("wsdl", "WSDL Binding Operation Output", BindingOperationOutput.class, BaseArtifactEnum.BINDING_OPERATION_OUTPUT),
-	BindingOperationFault("wsdl", "WSDL Binding Operation Fault", BindingOperationFault.class, BaseArtifactEnum.BINDING_OPERATION_FAULT),
+	WsdlDocument("wsdl", "WSDL", WsdlDocument.class, BaseArtifactEnum.WSDL_DOCUMENT, false),
+	WsdlService("wsdl", "WSDL Service", WsdlService.class, BaseArtifactEnum.WSDL_SERVICE, true),
+	Port("wsdl", "WSDL Port", Port.class, BaseArtifactEnum.PORT, true),
+	WsdlExtension("wsdl", "WSDL Extension", WsdlExtension.class, BaseArtifactEnum.WSDL_EXTENSION, true),
+	Part("wsdl", "WSDL Part", Part.class, BaseArtifactEnum.PART, true),
+	Message("wsdl", "WSDL Message", Message.class, BaseArtifactEnum.MESSAGE, true),
+	Fault("wsdl", "WSDL Fault", Fault.class, BaseArtifactEnum.FAULT, true),
+	PortType("wsdl", "WSDL Port Type", PortType.class, BaseArtifactEnum.PORT_TYPE, true),
+	Operation("wsdl", "WSDL Operation", Operation.class, BaseArtifactEnum.OPERATION, true),
+	OperationInput("wsdl", "WSDL Operation Input", OperationInput.class, BaseArtifactEnum.OPERATION_INPUT, true),
+	OperationOutput("wsdl", "WSDL Operation Output", OperationOutput.class, BaseArtifactEnum.OPERATION_OUTPUT, true),
+	Binding("wsdl", "WSDL Binding", Binding.class, BaseArtifactEnum.BINDING, true),
+	BindingOperation("wsdl", "WSDL Binding Operation", BindingOperation.class, BaseArtifactEnum.BINDING_OPERATION, true),
+	BindingOperationInput("wsdl", "WSDL Binding Operation Input", BindingOperationInput.class, BaseArtifactEnum.BINDING_OPERATION_INPUT, true),
+	BindingOperationOutput("wsdl", "WSDL Binding Operation Output", BindingOperationOutput.class, BaseArtifactEnum.BINDING_OPERATION_OUTPUT, true),
+	BindingOperationFault("wsdl", "WSDL Binding Operation Fault", BindingOperationFault.class, BaseArtifactEnum.BINDING_OPERATION_FAULT, true),
 	// Service Implementation
-	Organization("serviceImplementation", "Organization", Organization.class, BaseArtifactEnum.ORGANIZATION),
-	ServiceEndpoint("serviceImplementation", "Service Endpoint", ServiceEndpoint.class, BaseArtifactEnum.SERVICE_ENDPOINT),
-	ServiceInstance("serviceImplementation", "Service Instance", ServiceInstance.class, BaseArtifactEnum.SERVICE_INSTANCE),
-	ServiceOperation("serviceImplementation", "Service Operation", ServiceOperation.class, BaseArtifactEnum.SERVICE_OPERATION),
+	Organization("serviceImplementation", "Organization", Organization.class, BaseArtifactEnum.ORGANIZATION, true),
+	ServiceEndpoint("serviceImplementation", "Service Endpoint", ServiceEndpoint.class, BaseArtifactEnum.SERVICE_ENDPOINT, true),
+	ServiceInstance("serviceImplementation", "Service Instance", ServiceInstance.class, BaseArtifactEnum.SERVICE_INSTANCE, true),
+	ServiceOperation("serviceImplementation", "Service Operation", ServiceOperation.class, BaseArtifactEnum.SERVICE_OPERATION, true),
 	// User Defined
-	UserDefined("user", "User Defined", UserDefinedArtifactType.class, BaseArtifactEnum.USER_DEFINED_ARTIFACT_TYPE), // TODO how are user defined types contributed/registered?
+	UserDefined("user", "User Defined", UserDefinedArtifactType.class, BaseArtifactEnum.USER_DEFINED_ARTIFACT_TYPE, false), // TODO how are user defined types contributed/registered?
 	// SOA
-	HumanActor("soa", "SOA Human Actor", Actor.class, BaseArtifactEnum.ACTOR),
-	Choreography("soa", "SOA Choreography", Choreography.class, BaseArtifactEnum.CHOREOGRAPHY),
-	ChoreographyProcess("soa", "SOA Choreography Process", ChoreographyProcess.class, BaseArtifactEnum.CHOREOGRAPHY_PROCESS),
-	Collaboration("soa", "SOA Collaboration", Collaboration.class, BaseArtifactEnum.COLLABORATION),
-	CollaborationProcess("soa", "SOA Collaboration Process", CollaborationProcess.class, BaseArtifactEnum.COLLABORATION_PROCESS),
-	Composition("soa", "SOA Composition", Composition.class, BaseArtifactEnum.COMPOSITION),
-	Effect("soa", "SOA Effect", Effect.class, BaseArtifactEnum.EFFECT),
-	Element("soa", "SOA Element", Element.class, BaseArtifactEnum.ELEMENT),
-	Event("soa", "SOA Event", Event.class, BaseArtifactEnum.EVENT),
-	InformationType("soa", "SOA Information Type", InformationType.class, BaseArtifactEnum.INFORMATION_TYPE),
-	Orchestration("soa", "SOA Orchestration", Orchestration.class, BaseArtifactEnum.ORCHESTRATION),
-	OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class, BaseArtifactEnum.ORCHESTRATION_PROCESS),
-	Policy("soa", "SOA Policy", Policy.class, BaseArtifactEnum.POLICY),
-	PolicySubject("soa", "SOA Policy Subject", PolicySubject.class, BaseArtifactEnum.POLICY_SUBJECT),
-	Process("soa", "SOA Process", org.s_ramp.xmlns._2010.s_ramp.Process.class, BaseArtifactEnum.PROCESS),
-	Service("soa", "SOA Service", Service.class, BaseArtifactEnum.SERVICE),
-	ServiceContract("soa", "SOA Service Contract", ServiceContract.class, BaseArtifactEnum.SERVICE_CONTRACT),
-	ServiceComposition("soa", "SOA Service Composition", ServiceComposition.class, BaseArtifactEnum.SERVICE_COMPOSITION),
-	ServiceInterface("soa", "SOA Service Interface", ServiceInterface.class, BaseArtifactEnum.SERVICE_INTERFACE),
-	System("soa", "SOA System", org.s_ramp.xmlns._2010.s_ramp.System.class, BaseArtifactEnum.SYSTEM),
-	Task("soa", "SOA Task", Task.class, BaseArtifactEnum.TASK)
+	HumanActor("soa", "SOA Human Actor", Actor.class, BaseArtifactEnum.ACTOR, true),
+	Choreography("soa", "SOA Choreography", Choreography.class, BaseArtifactEnum.CHOREOGRAPHY, true),
+	ChoreographyProcess("soa", "SOA Choreography Process", ChoreographyProcess.class, BaseArtifactEnum.CHOREOGRAPHY_PROCESS, true),
+	Collaboration("soa", "SOA Collaboration", Collaboration.class, BaseArtifactEnum.COLLABORATION, true),
+	CollaborationProcess("soa", "SOA Collaboration Process", CollaborationProcess.class, BaseArtifactEnum.COLLABORATION_PROCESS, true),
+	Composition("soa", "SOA Composition", Composition.class, BaseArtifactEnum.COMPOSITION, true),
+	Effect("soa", "SOA Effect", Effect.class, BaseArtifactEnum.EFFECT, true),
+	Element("soa", "SOA Element", Element.class, BaseArtifactEnum.ELEMENT, true),
+	Event("soa", "SOA Event", Event.class, BaseArtifactEnum.EVENT, true),
+	InformationType("soa", "SOA Information Type", InformationType.class, BaseArtifactEnum.INFORMATION_TYPE, true),
+	Orchestration("soa", "SOA Orchestration", Orchestration.class, BaseArtifactEnum.ORCHESTRATION, true),
+	OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class, BaseArtifactEnum.ORCHESTRATION_PROCESS, true),
+	Policy("soa", "SOA Policy", Policy.class, BaseArtifactEnum.POLICY, true),
+	PolicySubject("soa", "SOA Policy Subject", PolicySubject.class, BaseArtifactEnum.POLICY_SUBJECT, true),
+	Process("soa", "SOA Process", org.s_ramp.xmlns._2010.s_ramp.Process.class, BaseArtifactEnum.PROCESS, true),
+	Service("soa", "SOA Service", Service.class, BaseArtifactEnum.SERVICE, true),
+	ServiceContract("soa", "SOA Service Contract", ServiceContract.class, BaseArtifactEnum.SERVICE_CONTRACT, true),
+	ServiceComposition("soa", "SOA Service Composition", ServiceComposition.class, BaseArtifactEnum.SERVICE_COMPOSITION, true),
+	ServiceInterface("soa", "SOA Service Interface", ServiceInterface.class, BaseArtifactEnum.SERVICE_INTERFACE, true),
+	System("soa", "SOA System", org.s_ramp.xmlns._2010.s_ramp.System.class, BaseArtifactEnum.SYSTEM, true),
+	Task("soa", "SOA Task", Task.class, BaseArtifactEnum.TASK, true)
 	;
 
 	private final String model;
 	private final String label;
 	private final Class<? extends BaseArtifactType> typeClass;
     private final BaseArtifactEnum apiType;
+    private final boolean derived;
 
 	/**
 	 * Constructor.
@@ -157,11 +158,12 @@ public enum ArtifactTypeEnum {
 	 * @param apiType the type from the s-ramp API
 	 */
 	private ArtifactTypeEnum(String model, String label, Class<? extends BaseArtifactType> typeClass,
-			BaseArtifactEnum apiType) {
+			BaseArtifactEnum apiType, boolean derived) {
 		this.model = model;
 		this.label = label;
 		this.typeClass = typeClass;
 		this.apiType = apiType;
+		this.derived = derived;
 	}
 
 	/**
@@ -211,6 +213,13 @@ public enum ArtifactTypeEnum {
 	 */
 	public Class<? extends BaseArtifactType> getTypeClass() {
 		return typeClass;
+	}
+
+	/**
+	 * Returns true if the artifact type is a derived type.
+	 */
+	public boolean isDerived() {
+		return this.derived;
 	}
 
 	/**

@@ -137,4 +137,13 @@ public class ArtifactType {
 		this.mimeType = mimeType;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.format("/s-ramp/%1$s/%2$s (%3$s)", getArtifactType().getModel(), getArtifactType()
+				.getType(), getMimeType());
+	}
+
 }
