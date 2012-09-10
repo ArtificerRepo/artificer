@@ -15,76 +15,54 @@
  */
 package org.overlord.sramp.atom.services;
 
-import java.net.URI;
-import java.util.Date;
+import java.util.Set;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.QueryParam;
 
-import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.jboss.resteasy.plugins.providers.atom.Link;
-import org.jboss.resteasy.plugins.providers.atom.Person;
+import org.overlord.sramp.atom.MediaType;
 
 /**
- * S-RAMP implementations SHALL return an Atom Publishing Protocol Service
- * Document to clients who perform an HTTP GET on the following URL:</br></br>
- * <code>
- * {base URL}/s-ramp/servicedocument
- * </code> </br></br>
- * 
- * The content of the Service Document that is returned is defined as follows:
+ * A jax-rs implementation that handles all s-ramp feeds. There are a number of feeds described by the s-ramp
+ * specification, including (but not limited to) the following:
+ *
  * <ul>
- * <li>MUST contain a workspace for each of the artifact models identified in
- * Section 3 of the SOA Repository Artifact Model & Protocol Specification -
- * Foundation Document.</li>
- * <li>Each workspace MUST contain an app:collection element for each of the
- * artifact types that are defined within the corresponding artifact model for
- * that workspace.
- * <li>Each collection in a workspace MUST specify an atom:categories element
- * that will define the categories that MUST be applied to the member resources
- * of the collection as defined in Section 2.3.1.</li>
- * <li>The workspace for the query artifact model MUST contain an app:collection
- * element for each Stored Query that exists in the S-RAMP implementation.</li>
- * <li>The workspace for the SOA or Service Implementation Artifact Model MUST
- * contain an app:collection element for each user defined type that has been
- * registered in the S-RAMP implementation.</li>
+ *   <li>Artifacts</li>
+ *   <li>Relationships</li>
+ *   <li>Properties</li>
  * </ul>
  */
 @Path("/s-ramp")
-public class FeedResource
-{
-    @GET
-    @Path("feed")
-    @Produces(MediaType.APPLICATION_ATOM_XML)
-    
-    public Feed getFeed(@Context UriInfo uri) throws Exception
-    {
-       Feed feed = new Feed();
-       feed.setId(new URI("tag:example.org,2007:/foo"));
-       feed.setTitle("Test Feed");
-       feed.setSubtitle("Feed subtitle");
-       feed.setUpdated(new Date());
-       feed.getAuthors().add(new Person("James Snell"));
-       feed.getLinks().add(new Link("","http://example.com"));
+public class FeedResource extends AbstractFeedResource {
 
+	/**
+	 * Constructor.
+	 */
+	public FeedResource() {
+	}
 
-       Entry entry = new Entry();
-       entry.setId(new URI("tag:example.org,2007:/foo/entries/1"));
-       entry.setTitle("Entry title");
-       entry.setUpdated(new Date());
-       entry.setPublished(new Date());
-       entry.getLinks().add(new Link("", uri.getRequestUri().toString()));
-       feed.getEntries().add(entry);
+	/**
+	 * Gets a feed of artifacts.
+	 * @param uri
+	 * @throws Exception
+	 */
+	@GET
+	@Path("{model}/{type}")
+	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
+	public Feed getArtifactFeed(
+			@PathParam("model") String model,
+			@PathParam("type") String type,
+			@QueryParam("page") Integer page,
+			@QueryParam("pageSize") Integer pageSize,
+			@QueryParam("orderBy") String orderBy,
+			@QueryParam("ascending") Boolean asc,
+			@QueryParam("propertyName") Set<String> propNames) throws Exception {
+    	String xpath = String.format("/s-ramp/%1$s/%2$s", model, type);
+		return createArtifactFeed(xpath, page, pageSize, orderBy, asc, propNames);
+	}
 
-       return feed;
-
-    }
-
-    
-  
 }
