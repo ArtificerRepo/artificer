@@ -50,13 +50,13 @@ public class PomGenerator {
 	public Document generatePom(BaseArtifactType artifact, ArtifactType type) throws Exception {
 		Document document = loadTemplate();
 
-		String groupId = type.getModel() + "." + type.getType();
+		String groupId = type.getArtifactType().getModel() + "." + type.getArtifactType().getType();
 		String artifactId = artifact.getUuid();
 		String version = artifact.getVersion();
 		String name = artifact.getName();
 		String description = artifact.getDescription();
 		// TODO this might not be good enough - might need to specify the artifact file extension in the ArtifactType enum
-		String pomType = type.getModel();
+		String pomType = type.getArtifactType().getModel();
 
 		if (version == null)
 			version = "1.0";

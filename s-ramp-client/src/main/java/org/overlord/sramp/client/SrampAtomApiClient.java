@@ -79,7 +79,7 @@ public class SrampAtomApiClient {
 	 */
 	public Entry getFullArtifactEntry(ArtifactType artifactType, String artifactUuid)
 			throws SrampClientException, SrampServerException {
-		return getFullArtifactEntry(artifactType.getModel(), artifactType.getType(), artifactUuid);
+		return getFullArtifactEntry(artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(), artifactUuid);
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class SrampAtomApiClient {
 	 */
 	public InputStream getArtifactContent(ArtifactType artifactType, String artifactUuid)
 			throws SrampClientException, SrampServerException {
-		return getArtifactContent(artifactType.getModel(), artifactType.getType(), artifactUuid);
+		return getArtifactContent(artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(), artifactUuid);
 	}
 
 	/**
@@ -142,7 +142,8 @@ public class SrampAtomApiClient {
 	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
 			throws SrampClientException, SrampServerException {
 		try {
-			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, artifactType.getModel(), artifactType.getType());
+			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
+					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType());
 			ClientRequest request = new ClientRequest(atomUrl);
 			if (artifactFileName != null)
 				request.header("Slug", artifactFileName);
@@ -166,8 +167,8 @@ public class SrampAtomApiClient {
 	public void updateArtifactMetaData(BaseArtifactType artifact) throws SrampClientException {
 		try {
 			ArtifactType type = ArtifactType.valueOf(artifact);
-			String artifactModel = type.getModel();
-			String artifactType = type.getType();
+			String artifactModel = type.getArtifactType().getModel();
+			String artifactType = type.getArtifactType().getType();
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
@@ -193,8 +194,9 @@ public class SrampAtomApiClient {
 	public void updateArtifact(BaseArtifactType artifact, InputStream content) throws SrampClientException {
 		try {
 			ArtifactType type = ArtifactType.valueOf(artifact);
-			String artifactModel = type.getModel();
-			String artifactType = type.getType();
+
+			String artifactModel = type.getArtifactType().getModel();
+			String artifactType = type.getArtifactType().getType();
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);

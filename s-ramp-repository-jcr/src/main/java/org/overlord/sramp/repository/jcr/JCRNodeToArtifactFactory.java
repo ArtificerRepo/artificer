@@ -19,6 +19,7 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.jcr.mapper.XmlModel;
 import org.overlord.sramp.repository.jcr.mapper.XsdModel;
@@ -26,7 +27,7 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * A simple visitor that will create an S-RAMP artifact from a
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public final class JCRNodeToArtifactFactory {
@@ -51,20 +52,21 @@ public final class JCRNodeToArtifactFactory {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Creates a S-RAMP artifact from the given JCR node.
 	 * @param jcrNode a node in the JCR repo
 	 * @param artifactType the type of artifact represented by the {@link Node}
 	 * @return S-RAMP artifact
-	 * @throws RepositoryException 
+	 * @throws RepositoryException
 	 */
 	public static BaseArtifactType createArtifact(Node jcrNode, ArtifactType artifactType) throws RepositoryException {
-		if (artifactType == ArtifactType.XsdDocument) {
+		if (artifactType.getArtifactType() == ArtifactTypeEnum.XsdDocument) {
 		    return XsdModel.getXsdDocument(jcrNode);
-		} else if (artifactType == ArtifactType.XmlDocument) {
+		} else if (artifactType.getArtifactType() == ArtifactTypeEnum.XmlDocument) {
 		    return XmlModel.getXmlDocument(jcrNode);
 		} else {
+			// TODO implement this properly for all document types
 			return null;
 		}
 	}
