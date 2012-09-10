@@ -30,6 +30,7 @@ import org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Composition;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Effect;
 import org.s_ramp.xmlns._2010.s_ramp.Element;
@@ -78,9 +79,9 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 
 /**
  * A base class for visitors that are interested in specific sections of the
- * S-RAMP class hierarchy.  This class provides methods for the various 
+ * S-RAMP class hierarchy.  This class provides methods for the various
  * shared (abstract) base classes within the hierachy.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisitor {
@@ -90,7 +91,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	 */
 	public HierarchicalArtifactVisitorAdapter() {
 	}
-	
+
 	/**
 	 * Common visit method for all artifacts.
 	 * @param artifact
@@ -98,7 +99,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	protected void visitBase(BaseArtifactType artifact) {
 		// Subclasses can do common visit logic here
 	}
-	
+
 	/**
 	 * Common visit method for derived artifacts.
 	 * @param artifact
@@ -106,7 +107,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	protected void visitDerived(DerivedArtifactType artifact) {
 		// Subclasses can do common visit logic here
 	}
-	
+
 	/**
 	 * Common visit method for WSDL derived artifacts.
 	 * @param artifact
@@ -119,10 +120,10 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	 * Common visit method for XSD derived artifacts.
 	 * @param artifact
 	 */
-	protected void visitXsdDervied(XsdType artifact) {
+	protected void visitXsdDerived(XsdType artifact) {
 		// Subclasses can do common visit logic here
 	}
-	
+
 	/**
 	 * Common visit method for document artifacts.
 	 * @param artifact
@@ -130,7 +131,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	protected void visitDocument(DocumentArtifactType artifact) {
 		// Subclasses can do common visit logic here
 	}
-	
+
 	/**
 	 * Common visit method for XML document artifacts.
 	 * @param artifact
@@ -138,7 +139,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	protected void visitXmlDocument(XmlDocument artifact) {
 		// Subclasses can do common visit logic here
 	}
-	
+
 	/**
 	 * Common visit method for service implementation artifacts.
 	 * @param artifact
@@ -146,7 +147,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	protected void visitServiceImplementation(ServiceImplementationModelType artifact) {
 		// Subclasses can do common visit logic here
 	}
-	
+
 	/**
 	 * Common visit method for SOA model artifacts.
 	 * @param artifact
@@ -154,7 +155,16 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	protected void visitSoa(SoaModelType artifact) {
 		// Subclasses can do common visit logic here
 	}
-	
+
+	/**
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Document)
+	 */
+	@Override
+	public void visit(Document artifact) {
+		visitBase(artifact);
+		visitDocument(artifact);
+	}
+
 	/**
 	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
 	 */
@@ -200,7 +210,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(SimpleTypeDeclaration artifact) {
 		visitBase(artifact);
 		visitDerived(artifact);
-		visitXsdDervied(artifact);
+		visitXsdDerived(artifact);
 	}
 
 	/**
@@ -210,7 +220,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(ComplexTypeDeclaration artifact) {
 		visitBase(artifact);
 		visitDerived(artifact);
-		visitXsdDervied(artifact);
+		visitXsdDerived(artifact);
 	}
 
 	/**

@@ -28,6 +28,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Collaboration;
 import org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Composition;
+import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.Effect;
 import org.s_ramp.xmlns._2010.s_ramp.Element;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
@@ -70,12 +71,13 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 /**
  * An interface for visiting an S-RAMP artifact.  This interface contains a visit method
  * for each type of artifact defined by S-RAMP.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public interface ArtifactVisitor {
 
 	// Core
+	public void visit(Document artifact);
 	public void visit(XmlDocument artifact);
 
 	// XSD
@@ -89,7 +91,7 @@ public interface ArtifactVisitor {
 	public void visit(PolicyDocument artifact);
 	public void visit(PolicyExpression artifact);
 	public void visit(PolicyAttachment artifact);
-	
+
 	// SOAP WSDL
 	public void visit(SoapAddress artifact);
 	public void visit(SoapBinding artifact);

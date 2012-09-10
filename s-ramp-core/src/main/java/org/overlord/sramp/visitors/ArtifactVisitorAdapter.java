@@ -29,6 +29,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Collaboration;
 import org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Composition;
+import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.Effect;
 import org.s_ramp.xmlns._2010.s_ramp.Element;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
@@ -73,7 +74,7 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 /**
  * A base class for visitors that are only interested in implementing a subset
  * of the methods in the interface.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
@@ -83,7 +84,7 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	 */
 	public ArtifactVisitorAdapter() {
 	}
-	
+
 	/**
 	 * Common visit method for all artifacts.
 	 * @param artifact
@@ -91,7 +92,15 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	protected void visitBase(BaseArtifactType artifact) {
 		// Subclasses can do common visit logic here
 	}
-	
+
+	/**
+	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Document)
+	 */
+	@Override
+	public void visit(Document artifact) {
+		visitBase(artifact);
+	}
+
 	/**
 	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
 	 */

@@ -24,25 +24,37 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.jcr.JCRConstants;
+import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 
 /**
- * Handles mapping meta data common to all artifacts.
+ * A visitor for going from a JCR node to an S-RAMP artifact instance.
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class BaseArtifactModel {
+public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter {
+
+	private Node jcrNode;
 
 	/**
-	 * Maps the base artifact model meta data (from the JCR node to the s-ramp artifact).
-	 * @param jcrNode
-	 * @param artifact
-	 * @throws RepositoryException
+	 * Constructor.
 	 */
-	protected static void mapBaseArtifactMetaData(Node jcrNode, BaseArtifactType artifact) throws RepositoryException {
+	public JCRNodeToArtifactVisitor(Node jcrNode) {
+		this.jcrNode = jcrNode;
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitBase(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
+	 */
+	@Override
+	protected void visitBase(BaseArtifactType artifact) {
 		try {
 			ArtifactType artifactType = ArtifactType.valueOf(artifact);
 			BaseArtifactEnum apiType = artifactType.getArtifactType().getApiType();
@@ -78,8 +90,46 @@ public abstract class BaseArtifactModel {
 				}
 			}
 		} catch (Exception e) {
-			throw new RepositoryException(e);
+			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitDerived(org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType)
+	 */
+	@Override
+	protected void visitDerived(DerivedArtifactType artifact) {
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitWsdlDerived(org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType)
+	 */
+	@Override
+	protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitXsdDerived(org.s_ramp.xmlns._2010.s_ramp.XsdType)
+	 */
+	@Override
+	protected void visitXsdDerived(XsdType artifact) {
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitDocument(org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType)
+	 */
+	@Override
+	protected void visitDocument(DocumentArtifactType artifact) {
+        artifact.setContentSize(Long.valueOf(getProperty(jcrNode, "sramp:contentSize")));
+        artifact.setContentType(getProperty(jcrNode, "sramp:contentType"));
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitXmlDocument(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
+	 */
+	@Override
+	protected void visitXmlDocument(XmlDocument artifact) {
+        artifact.setContentEncoding(getProperty(jcrNode, "sramp:contentEncoding"));
 	}
 
     /**
