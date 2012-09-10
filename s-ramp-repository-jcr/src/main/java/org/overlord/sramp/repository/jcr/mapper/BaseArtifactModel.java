@@ -45,7 +45,7 @@ public abstract class BaseArtifactModel {
 	protected static void mapBaseArtifactMetaData(Node jcrNode, BaseArtifactType artifact) throws RepositoryException {
 		try {
 			ArtifactType artifactType = ArtifactType.valueOf(artifact);
-			BaseArtifactEnum apiType = artifactType.getApiType();
+			BaseArtifactEnum apiType = artifactType.getArtifactType().getApiType();
 			artifact.setArtifactType(apiType);
 
 			// First map in the standard s-ramp meta-data
