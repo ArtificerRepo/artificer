@@ -100,6 +100,10 @@ public class ArtifactResource {
         InputStream is = content;
         try {
         	ArtifactType artifactType = ArtifactType.valueOf(type);
+        	if (artifactType.getArtifactType().isDerived()) {
+				throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
+						+ "' is a derived type.");
+        	}
         	String mimeType = determineMimeType(contentType, fileName, artifactType);
         	artifactType.setMimeType(mimeType);
 
@@ -226,7 +230,16 @@ public class ArtifactResource {
 			@HeaderParam("Slug") String fileName, @PathParam("model") String model,
 			@PathParam("type") String type, @PathParam("uuid") String uuid, InputStream content)
 			throws SrampAtomException {
+    	ArtifactType artifactType = ArtifactType.valueOf(type);
+    	if (artifactType.getArtifactType().isDerived()) {
+			throw new SrampAtomException("Failed to create artifact because '" + artifactType.getArtifactType()
+					+ "' is a derived type.");
+    	}
+    	String mimeType = determineMimeType(contentType, fileName, artifactType);
+    	artifactType.setMimeType(mimeType);
+    	// ********************************************
     	// TODO implement updating the artifact content!
+    	// ********************************************
     }
 
     /**

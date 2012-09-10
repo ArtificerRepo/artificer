@@ -29,6 +29,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
@@ -44,7 +45,32 @@ public class ArtifactResourceTest extends BaseResourceTest {
 	@Before
 	public void setUp() throws Exception {
 		// bring up the embedded container with the ArtifactResource deployed.
+		getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testDerivedArtifactCreate() throws Exception {
+		// Making a client call to the actual XsdDocument implementation running in
+		// an embedded container.
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/ElementDeclaration"));
+
+		// read the XsdDocument from file
+		String artifactFileName = "PO.xsd";
+		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String xmltext = TestUtils.convertStreamToString(POXsd);
+		POXsd.close();
+
+		request.header("Slug", artifactFileName);
+		request.body(MediaType.APPLICATION_XML, xmltext);
+
+		ClientResponse<String> response = request.post(String.class);
+		Assert.assertEquals(500, response.getStatus());
+		String stack = response.getEntity();
+		Assert.assertTrue(stack.contains("Failed to create artifact because 'ElementDeclaration' is a derived type."));
 	}
 
 	/**
