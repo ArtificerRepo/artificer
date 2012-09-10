@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -43,6 +44,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedInput;
 import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.models.ArtifactToFullAtomEntryVisitor;
@@ -71,6 +73,8 @@ import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 @Path("/s-ramp")
 public class ArtifactResource {
 
+	private static final MimetypesFileTypeMap mimeTypes = new MimetypesFileTypeMap();
+
 	/**
 	 * Constructor.
 	 */
@@ -90,11 +94,15 @@ public class ArtifactResource {
     @Path("{model}/{type}")
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public Entry create(@HeaderParam("Slug") String fileName, @PathParam("model") String model,
+	public Entry create(@HeaderParam("Content-Type") String contentType,
+			@HeaderParam("Slug") String fileName, @PathParam("model") String model,
 			@PathParam("type") String type, InputStream content) throws SrampAtomException {
         InputStream is = content;
         try {
         	ArtifactType artifactType = ArtifactType.valueOf(type);
+        	String mimeType = determineMimeType(contentType, fileName, artifactType);
+        	artifactType.setMimeType(mimeType);
+
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             //store the content
             BaseArtifactType artifact = persistenceManager.persistArtifact(fileName, artifactType, is);
@@ -117,7 +125,7 @@ public class ArtifactResource {
         }
     }
 
-    /**
+	/**
      * S-RAMP atom POST to upload an artifact to the repository.  This method handles the
      * multipart/related style POST.
      * @param model
@@ -141,15 +149,41 @@ public class ArtifactResource {
             // First part being the artifact
             MultivaluedMap<String, String> headers = firstPart.getHeaders();
             String fileName = headers.getFirst("Slug");
+            String ct = headers.getFirst("Content-Type");
             InputStream is = firstPart.getBody(new GenericType<InputStream>() { });
 
-            return create(fileName, model, type, is);
+            return create(ct, fileName, model, type, is);
         } catch (SrampAtomException e) {
         	throw e;
         } catch (Throwable e) {
         	throw new SrampAtomException(e);
         }
     }
+
+    /**
+     * Figures out the mime type of the new artifact given the POSTed Content-Type, the name
+     * of the uploaded file, and the S-RAMP arifact type.  If the artifact type is Document
+     * then the other two pieces of information are used to determine an appropriate mime type.
+     * If no appropriate mime type can be determined for core/Document, then binary is returned.
+	 * @param contentType the content type request header
+	 * @param fileName the slug request header
+	 * @param artifactType the artifact type (based on the endpoint POSTed to)
+	 */
+	private static String determineMimeType(String contentType, String fileName, ArtifactType artifactType) {
+		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document) {
+			if (contentType != null && contentType.trim().length() > 0)
+				return contentType;
+			if (fileName != null && fileName.trim().length() > 0 && fileName.contains(".")) {
+				String ct = mimeTypes.getContentType(fileName);
+				if (ct != null)
+					return ct;
+			}
+			return "application/octet-stream";
+		} else {
+			// Everything else is an XML file
+			return "application/xml";
+		}
+	}
 
     /**
      * Called to update the meta data for an artifact.  Note that this does *not* update
@@ -168,7 +202,7 @@ public class ArtifactResource {
         try {
         	ArtifactType artifactType = ArtifactType.valueOf(type);
         	Artifact artifactWrapper = atomEntry.getAnyOtherJAXBObject(Artifact.class);
-        	Method method = artifactWrapper.getClass().getMethod("get" + artifactType.getType());
+        	Method method = artifactWrapper.getClass().getMethod("get" + artifactType.getArtifactType().getType());
         	BaseArtifactType artifact = (BaseArtifactType) method.invoke(artifactWrapper);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateArtifact(artifact, artifactType);
@@ -188,8 +222,10 @@ public class ArtifactResource {
     @PUT
     @Path("{model}/{type}/{uuid}/media")
     @Consumes(MediaType.APPLICATION_XML)
-	public void updateContent(@PathParam("model") String model, @PathParam("type") String type,
-			@PathParam("uuid") String uuid, InputStream content) throws SrampAtomException {
+	public void updateContent(@HeaderParam("Content-Type") String contentType,
+			@HeaderParam("Slug") String fileName, @PathParam("model") String model,
+			@PathParam("type") String type, @PathParam("uuid") String uuid, InputStream content)
+			throws SrampAtomException {
     	// TODO implement updating the artifact content!
     }
 

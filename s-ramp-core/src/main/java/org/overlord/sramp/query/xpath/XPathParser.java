@@ -3,14 +3,14 @@
  * See the COPYRIGHT.txt file distributed with this work for information
  * regarding copyright ownership.  Some portions may be licensed
  * to Red Hat, Inc. under one or more contributor license agreements.
- * See the AUTHORS.txt file in the distribution for a full listing of 
+ * See the AUTHORS.txt file in the distribution for a full listing of
  * individual contributors.
  *
  * ModeShape is free software. Unless otherwise indicated, all code in ModeShape
  * is licensed to you under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * ModeShape is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -56,7 +56,7 @@ import org.overlord.sramp.query.xpath.ast.SubartifactSet;
  * defined by the S-RAMP specification and is a subset of the XPath 2.0 grammar.
  */
 public class XPathParser {
-	
+
 	private NamespaceContext namespaceContext;
 	private String defaultPrefix;
 
@@ -136,7 +136,7 @@ public class XPathParser {
 
 		if (tokens.hasNext())
 			throw new XPathParserException("Query string improperly terminated (found extra data)");
-		
+
 		return query;
 	}
 
@@ -160,12 +160,12 @@ public class XPathParser {
 	private LocationPath parseLocationPath(TokenStream tokens) {
 		String artifactModel = null;
 		String artifactType = null;
-		
+
 		if (!tokens.canConsume('/'))
 			throw new XPathParserException("Relative XPath queries not supported.");
 		if (!tokens.matches(XPathTokenizer.NAME) && !tokens.matches('/'))
 			throw new XPathParserException("Invalid artifact set (step 1).");
-		
+
 		// Is this of the form //{artifactType} ?
 		if (tokens.matches('/')) {
 			tokens.consume();
@@ -177,7 +177,7 @@ public class XPathParser {
 			String rootSrampSegment = tokens.consume();
 			if (!"s-ramp".equals(rootSrampSegment))
 				throw new XPathParserException("Query must begin with /s-ramp or //).");
-			
+
 			// Next is the artifact model
 			if (tokens.hasNext() && !tokens.matches('[')) {
 				if (!tokens.canConsume('/'))
@@ -185,7 +185,7 @@ public class XPathParser {
 				if (!tokens.matches(XPathTokenizer.NAME))
 					throw new XPathParserException("Invalid artifact set (step 2).");
 				artifactModel = tokens.consume();
-				
+
 				// And now the artifact type
 				if (tokens.hasNext() && !tokens.matches('[')) {
 					if (!tokens.canConsume('/'))
@@ -196,7 +196,7 @@ public class XPathParser {
 				}
 			}
 		}
-		
+
 		LocationPath locationPath = new LocationPath();
 		locationPath.setArtifactModel(artifactModel);
 		locationPath.setArtifactType(artifactType);
@@ -305,7 +305,7 @@ public class XPathParser {
 		ForwardPropertyStep forwardPropertyStep = new ForwardPropertyStep();
 		QName propertyQName = null;
 		SubartifactSet subartifactSet = null;
-		
+
 		if (tokens.canConsume('@')) {
 			propertyQName = parseQName(tokens, null);
 		} else {
@@ -316,7 +316,7 @@ public class XPathParser {
 				propertyQName = parseQName(tokens, null);
 			}
 		}
-		
+
 		forwardPropertyStep.setSubartifactSet(subartifactSet);
 		forwardPropertyStep.setPropertyQName(propertyQName);
 		return forwardPropertyStep;
@@ -333,7 +333,7 @@ public class XPathParser {
 		String prefix = null;
 		String localPart = null;
 		String namespace = null;
-		
+
 		if (!tokens.matches(XPathTokenizer.NAME))
 			throw new XPathParserException("Expected NAME type token.");
 		String ncname1 = tokens.consume();
@@ -395,14 +395,14 @@ public class XPathParser {
 	private SubartifactSet parseSubartifactSet(TokenStream tokens) {
 		if (!tokens.matches(XPathTokenizer.NAME) && !tokens.matches('.'))
 			throw new XPathParserException("Expression expected.");
-		
+
 		SubartifactSet subartifactSet = new SubartifactSet();
 		String relationshipOrFunction = tokens.consume();
-		
+
 		// If the next token is a [ then we have a relationship
 		// If the next token is a : or a ( then we have a (qualified or unqualified) function call
 		// If none of the above, then we have a relationship
-		
+
 		if (tokens.canConsume('[')) {
 			RelationshipPath relationshipPath = new RelationshipPath(relationshipOrFunction);
 			Predicate predicate = parsePredicate(tokens);
@@ -411,7 +411,7 @@ public class XPathParser {
 
 			subartifactSet.setRelationshipPath(relationshipPath);
 			subartifactSet.setPredicate(predicate);
-			
+
 			if (tokens.canConsume('/')) {
 				SubartifactSet sub_subartifactSet = parseSubartifactSet(tokens);
 				subartifactSet.setSubartifactSet(sub_subartifactSet);
@@ -491,7 +491,7 @@ public class XPathParser {
      * Remove any leading and trailing single-quotes or double-quotes from the supplied text.  Also
      * unescape any possibly escaped quote characters.  The result of calling this method will be
      * the real value of a quoted string from the query.
-     * 
+     *
      * @param text the input text
      * @return the text without leading and trailing quotes
      */
@@ -509,6 +509,6 @@ public class XPathParser {
 	 * @param artifactType the S-RAMP artifact type
 	 */
 	private String resolveArtifactModel(String artifactType) {
-		return ArtifactType.valueOf(artifactType).getModel();
+		return ArtifactType.valueOf(artifactType).getArtifactType().getModel();
 	}
 }

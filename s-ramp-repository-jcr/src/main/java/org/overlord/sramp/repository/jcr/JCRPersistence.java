@@ -131,11 +131,11 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             sequencedNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
             sequencedNode.setProperty(JCRConstants.SRAMP_NAME, filename);
             sequencedNode.setProperty(JCRConstants.OVERLORD_FILENAME, filename);
-            sequencedNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, type.getModel());
-            sequencedNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, type.getType());
+            sequencedNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, type.getArtifactType().getModel());
+            sequencedNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, type.getArtifactType().getType());
             session.save();
 
-            log.info("Created artifact of type " + type.getType() + " with UUID " + uuid);
+            log.info("Created artifact of type " + type.getArtifactType().getType() + " with UUID " + uuid);
 
             // Create an artifact from the sequenced node
             return JCRNodeToArtifactFactory.createArtifact(sequencedNode, type);
