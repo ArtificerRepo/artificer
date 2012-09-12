@@ -101,9 +101,8 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		entry = doGetXsdEntry(entryId);
 		verifyEntryUpdated(entry);
 
-		// TODO implement delete functionality
-//		deleteXsdEntry(entryId);
-//		verifyEntryDeleted();
+		deleteXsdEntry(entryId);
+		verifyEntryDeleted(entryId);
 	}
 
 	/**
@@ -216,6 +215,31 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		Artifact srampArtifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
 		XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
 		Assert.assertEquals("** Updated description! **", xsdDocument.getDescription());
+	}
+
+	/**
+	 * Delete the XSD entry with the given uuid.
+	 * @param entryId
+	 * @throws Exception
+	 */
+	private void deleteXsdEntry(URI entryId) throws Exception {
+		String uuid = entryId.toString();
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
+		request.delete(Void.class);
+	}
+
+	/**
+	 * Verify that the artifact was really deleted.
+	 * @throws Exception
+	 */
+	private void verifyEntryDeleted(URI entryId) throws Exception {
+		String uuid = entryId.toString();
+
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
+		ClientResponse<String> response = request.get(String.class);
+
+		String stacktrace = response.getEntity();
+		Assert.assertTrue(stacktrace.contains("No node exists at path"));
 	}
 
 }
