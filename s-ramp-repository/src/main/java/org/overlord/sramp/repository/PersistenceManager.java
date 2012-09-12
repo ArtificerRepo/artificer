@@ -35,7 +35,7 @@ public interface PersistenceManager {
 	 * @throws RepositoryException
 	 */
     public BaseArtifactType persistArtifact(String name, ArtifactType type, InputStream content) throws RepositoryException;
-    
+
     /**
      * Persists a single derived artifact.
      * @param artifact the derived artifact to persist
@@ -53,9 +53,9 @@ public interface PersistenceManager {
 	public BaseArtifactType getArtifact(String uuid, ArtifactType type) throws RepositoryException;
 
 	/**
-	 * Gets the content (media) for a previously persisted artifact by its UUID.  
+	 * Gets the content (media) for a previously persisted artifact by its UUID.
 	 * <br/><br/>
-	 * <b><i>Note: it is the responsibility of the calling method to close the 
+	 * <b><i>Note: it is the responsibility of the calling method to close the
 	 * resulting {@link InputStream}.</i></b>
 	 * @param uuid the S-RAMP uuid of the artifact.
 	 * @param artifactType the type of the artifact
@@ -72,6 +72,14 @@ public interface PersistenceManager {
 	 * @throws RepositoryException
 	 */
 	public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws RepositoryException;
+
+	/**
+	 * Deletes a previously persisted artifact from the S-RAMP repository.
+	 * @param uuid
+	 * @param artifactType
+	 * @throws RepositoryException
+	 */
+	public void deleteArtifact(String uuid, ArtifactType artifactType) throws RepositoryException;
 
 	/**
 	 * Gets a list of S-RAMP artifacts of the given type.
