@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
@@ -34,48 +35,49 @@ import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import test.org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
+
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  */
 public class JCRQueryManagerTest {
-    
+
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
     private static PersistenceManager persistenceManager = null;
     private static QueryManager queryManager = null;
-    
+
     @BeforeClass
     public static void setup() {
         persistenceManager = PersistenceFactory.newInstance();
         queryManager = QueryManagerFactory.newInstance();
     }
-    
+
+    @Before
+    public void prepForTest() {
+        new JCRRepositoryCleaner().clean();
+    }
+
+    /**
+     * Tests the query manager.
+     * @throws Exception
+     */
     @Test
     public void testQueryManager() throws Exception {
+    	String artifactFileName = "PO.xsd";
     	// First, store an artifact.
-        String artifactFileName = "PO.xsd";
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
         BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
-        
+
         // Now query for it
         SrampQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument");
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        // The assertions are tricky because the jcr repo is a singleton which may be hanging around
-        // from previous unit tests in the suite.
-        // TODO improve the unit testing of the JCR repo by resetting all of the services between each test
-        //   Note: this can be achieved easily in maven by setting:  <forkMode>always</forkMode> in the surefire
-        //         plugin.  However, when running the junit tests in Eclipse, that won't solve the issue.
-        Assert.assertTrue(artifactSet.size() >= 1);
-        BaseArtifactType found = null;
-        for (BaseArtifactType foundArtifact : artifactSet) {
-        	if (foundArtifact.getUuid().equals(artifact.getUuid())) {
-        		found = foundArtifact;
-        		break;
-        	}
-        }
+
+        Assert.assertEquals(1, artifactSet.size());
+        BaseArtifactType found = artifactSet.iterator().next();
         Assert.assertNotNull("Expected artifact not found in artifact set.", found);
         Assert.assertEquals(artifact.getUuid(), found.getUuid());
         Assert.assertEquals(artifact.getName(), found.getName());
@@ -132,7 +134,7 @@ public class JCRQueryManagerTest {
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
-        
+
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@prop2 = ?]");
         query.setString(uniquePropVal2);
         artifactSet = query.executeQuery();
@@ -175,7 +177,6 @@ public class JCRQueryManagerTest {
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertTrue(artifactSet.size() >= 3);
-
     }
 
 }

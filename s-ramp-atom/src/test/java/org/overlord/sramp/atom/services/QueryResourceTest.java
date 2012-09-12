@@ -39,6 +39,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.atom.TestUtils;
+import test.org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 
 /**
  * Tests the s-ramp query features of the atom api binding.
@@ -53,6 +54,11 @@ public class QueryResourceTest extends BaseResourceTest {
 		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
 		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
 	}
+
+    @Before
+    public void prepForTest() {
+        new JCRRepositoryCleaner().clean();
+    }
 
 	/**
 	 * @throws Exception
@@ -74,15 +80,13 @@ public class QueryResourceTest extends BaseResourceTest {
 		ClientRequest request = new ClientRequest(generateURL("/s-ramp?query=xsd/XsdDocument"));
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
-		// TODO segregate the tests so that I can look for the 10 entries I just added
-//		int uuidsFound = 0;
-//		for (Entry entry : feed.getEntries()) {
-//			String entryUuid = entry.getId().toString();
-//			if (uuids.contains(entryUuid))
-//				uuidsFound++;
-//		}
-//		Assert.assertEquals(numEntries, uuidsFound);
-		Assert.assertTrue("Expected at least 10 entries.", feed.getEntries().size() >= 10);
+		int uuidsFound = 0;
+		for (Entry entry : feed.getEntries()) {
+			String entryUuid = entry.getId().toString();
+			if (uuids.contains(entryUuid))
+				uuidsFound++;
+		}
+		Assert.assertEquals(numEntries, uuidsFound);
 
 		// Do it again with POST (multipart form data)
 		request = new ClientRequest(generateURL("/s-ramp"));
@@ -91,15 +95,13 @@ public class QueryResourceTest extends BaseResourceTest {
 		request.body(MediaType.MULTIPART_FORM_DATA_TYPE, formData);
 		response = request.post(Feed.class);
 		feed = response.getEntity();
-		// TODO segregate the tests so that I can look for the 10 entries I just added
-//		uuidsFound = 0;
-//		for (Entry entry : feed.getEntries()) {
-//			String entryUuid = entry.getId().toString();
-//			if (uuids.contains(entryUuid))
-//				uuidsFound++;
-//		}
-//		Assert.assertEquals(numEntries, uuidsFound);
-		Assert.assertTrue("Expected at least 10 entries.", feed.getEntries().size() >= 10);
+		uuidsFound = 0;
+		for (Entry entry : feed.getEntries()) {
+			String entryUuid = entry.getId().toString();
+			if (uuids.contains(entryUuid))
+				uuidsFound++;
+		}
+		Assert.assertEquals(numEntries, uuidsFound);
 
 		// Do a query using GET with multiple documents and using the query params
 		String stampVal = UUID.randomUUID().toString();
