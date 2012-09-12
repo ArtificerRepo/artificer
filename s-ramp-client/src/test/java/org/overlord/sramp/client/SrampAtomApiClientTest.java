@@ -33,12 +33,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
-import org.overlord.sramp.atom.services.AdHocQueryResource;
-import org.overlord.sramp.atom.services.XsdDocumentResource;
+import org.overlord.sramp.atom.services.ArtifactResource;
+import org.overlord.sramp.atom.services.FeedResource;
+import org.overlord.sramp.atom.services.QueryResource;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
- * Unit test for the 
+ * Unit test for the
  *
  * @author eric.wittmann@redhat.com
  */
@@ -47,8 +48,9 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	@Before
 	public void setUp() throws Exception {
 		getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
-		dispatcher.getRegistry().addPerRequestResource(XsdDocumentResource.class);
-		dispatcher.getRegistry().addPerRequestResource(AdHocQueryResource.class);
+		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
+		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
+		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
 	}
 
 	/**
@@ -75,7 +77,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	public void testGetArtifactContent() throws Exception {
 		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
 		URI uuid = null;
-		
+
 		// First, upload an artifact so we have some content to get
 		String artifactFileName = "PO.xsd";
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
@@ -87,7 +89,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		} finally {
 			is.close();
 		}
-		
+
 		// Now get the content.
 		InputStream content = client.getArtifactContent("xsd", "XsdDocument", uuid.toString());
 		try {
@@ -110,7 +112,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
 		URI uuid = null;
 		XsdDocument xsdDoc = null;
-		
+
 		// First, upload an artifact so we have some content to update
 		String artifactFileName = "PO.xsd";
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
@@ -123,11 +125,11 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		} finally {
 			is.close();
 		}
-		
+
 		// Now update the description
 		xsdDoc.setDescription("** DESCRIPTION UPDATED **");
 		client.updateArtifactMetaData(xsdDoc);
-		
+
 		// Now verify
 		Entry entry = client.getFullArtifactEntry(ArtifactType.XsdDocument, uuid.toString());
 		Assert.assertEquals("** DESCRIPTION UPDATED **", entry.getSummary());
@@ -152,7 +154,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		} finally {
 			is.close();
 		}
-		
+
 		// Now search for all XSDs
 		Feed feed = client.query("/s-ramp/xsd/XsdDocument", 0, 50, "name", false);
 		List<Entry> entries = feed.getEntries();
@@ -163,7 +165,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		}
 		Assert.assertTrue("Failed to find the artifact we just added!", uuidFound);
 	}
-	
+
 	/**
 	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
 	 */

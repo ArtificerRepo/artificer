@@ -39,19 +39,26 @@ import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.atom.TestUtils;
+import test.org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 
 /**
  * Tests the s-ramp query features of the atom api binding.
  *
  * @author eric.wittmann@redhat.com
  */
-public class AdHocQueryResourceTest extends BaseResourceTest {
+public class QueryResourceTest extends BaseResourceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		dispatcher.getRegistry().addPerRequestResource(XsdDocumentResource.class);
-		dispatcher.getRegistry().addPerRequestResource(AdHocQueryResource.class);
+		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
+		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
+		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
 	}
+
+    @Before
+    public void prepForTest() {
+        new JCRRepositoryCleaner().clean();
+    }
 
 	/**
 	 * @throws Exception

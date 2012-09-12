@@ -20,13 +20,14 @@ import javax.jcr.PathNotFoundException;
 
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.repository.RepositoryException;
-import org.overlord.sramp.repository.jcr.mapper.XmlModel;
-import org.overlord.sramp.repository.jcr.mapper.XsdModel;
+import org.overlord.sramp.repository.jcr.mapper.JCRNodeToArtifactVisitor;
+import org.overlord.sramp.visitors.ArtifactVisitor;
+import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * A simple visitor that will create an S-RAMP artifact from a
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public final class JCRNodeToArtifactFactory {
@@ -51,21 +52,31 @@ public final class JCRNodeToArtifactFactory {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Creates a S-RAMP artifact from the given JCR node.
 	 * @param jcrNode a node in the JCR repo
 	 * @param artifactType the type of artifact represented by the {@link Node}
 	 * @return S-RAMP artifact
-	 * @throws RepositoryException 
+	 * @throws RepositoryException
 	 */
 	public static BaseArtifactType createArtifact(Node jcrNode, ArtifactType artifactType) throws RepositoryException {
-		if (artifactType == ArtifactType.XsdDocument) {
-		    return XsdModel.getXsdDocument(jcrNode);
-		} else if (artifactType == ArtifactType.XmlDocument) {
-		    return XmlModel.getXmlDocument(jcrNode);
-		} else {
-			return null;
+		try {
+			Class<?> artifactClass = artifactType.getArtifactType().getTypeClass();
+			BaseArtifactType artifact = (BaseArtifactType) artifactClass.newInstance();
+			ArtifactVisitor visitor = new JCRNodeToArtifactVisitor(jcrNode);
+			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+			return artifact;
+		} catch (InstantiationException e) {
+			throw new RepositoryException(e);
+		} catch (IllegalAccessException e) {
+			throw new RepositoryException(e);
+		} catch (RuntimeException e) {
+			if (e.getCause() != null) {
+				throw new RepositoryException(e.getCause());
+			} else {
+				throw new RepositoryException(e);
+			}
 		}
 	}
 
