@@ -127,8 +127,8 @@ public class ArtifactUploadServlet extends HttpServlet {
 		BaseArtifactType artifact = SrampClientUtils.unwrapSrampArtifact(at, entry);
 
 		Map<String, String> responseParams = new HashMap<String, String>();
-		responseParams.put("model", at.getModel());
-		responseParams.put("type", at.getType());
+		responseParams.put("model", at.getArtifactType().getModel());
+		responseParams.put("type", at.getArtifactType().getType());
 		responseParams.put("uuid", artifact.getUuid());
 		return responseParams;
 	}

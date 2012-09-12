@@ -63,8 +63,8 @@ public class QueryRemoteService extends RemoteServiceServlet implements IQueryRe
 					author = entry.getAuthors().get(0).getName();
 				ArtifactSummary arty = new ArtifactSummary();
 				ArtifactType artifactType = SrampClientUtils.getArtifactType(entry);
-				arty.setModel(artifactType.getModel());
-				arty.setType(artifactType.getType());
+				arty.setModel(artifactType.getArtifactType().getModel());
+				arty.setType(artifactType.getArtifactType().getType());
 				arty.setUuid(entry.getId().toString());
 				arty.setName(entry.getTitle());
 				arty.setDescription(entry.getSummary());
