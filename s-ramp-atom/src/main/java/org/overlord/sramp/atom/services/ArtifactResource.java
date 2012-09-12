@@ -309,12 +309,21 @@ public class ArtifactResource {
      * @param model
      * @param type
      * @param uuid
+     * @throws SrampAtomException
      */
     @DELETE
     @Path("{model}/{type}/{uuid}")
 	public void deleteXsdDocument(@PathParam("model") String model, @PathParam("type") String type,
-			@PathParam("uuid") String uuid) {
-    	// TODO implement DELETE
+			@PathParam("uuid") String uuid) throws SrampAtomException {
+        try {
+        	ArtifactType artifactType = ArtifactType.valueOf(type);
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+
+			// Delete the artifact by UUID
+			persistenceManager.deleteArtifact(uuid, artifactType);
+		} catch (Throwable e) {
+			throw new SrampAtomException(e);
+		}
     }
 
 }
