@@ -34,6 +34,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.atom.TestUtils;
+import test.org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 
 /**
  * Test of the jax-rs resource that handles Artifacts.
@@ -48,6 +49,11 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 	}
+
+    @Before
+    public void prepForTest() {
+        new JCRRepositoryCleaner().clean();
+    }
 
 	/**
 	 * @throws Exception
