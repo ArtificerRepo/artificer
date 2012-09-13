@@ -235,6 +235,29 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     }
 
     /**
+     * @see org.overlord.sramp.repository.PersistenceManager#deleteArtifact(java.lang.String, org.overlord.sramp.ArtifactType)
+     */
+    @Override
+    public void deleteArtifact(String uuid, ArtifactType artifactType) throws RepositoryException {
+        Session session = null;
+        String artifactContentPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
+        String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactContentPath);
+
+        try {
+            session = JCRRepository.getSession();
+            session.getNode(artifactContentPath).remove();
+            if (session.nodeExists(sequencedArtifactPath)) {
+            	session.getNode(sequencedArtifactPath).remove();
+            }
+            session.save();
+        } catch (Throwable t) {
+        	throw new RepositoryException(t);
+        } finally {
+            session.logout();
+        }
+    }
+
+    /**
      * @see org.overlord.sramp.repository.PersistenceManager#getArtifacts(org.overlord.sramp.ArtifactType)
      */
     @Override
