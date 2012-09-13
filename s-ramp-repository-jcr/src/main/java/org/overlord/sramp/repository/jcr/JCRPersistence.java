@@ -136,7 +136,9 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             session.save();
 
             log.info("Created artifact of type " + type.getArtifactType().getType() + " with UUID " + uuid);
-
+            if (log.isDebugEnabled()) {
+                printArtifactGraph(uuid, type);
+            }
             // Create an artifact from the sequenced node
             return JCRNodeToArtifactFactory.createArtifact(sequencedNode, type);
         } catch (Throwable t) {

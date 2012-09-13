@@ -30,6 +30,7 @@ import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.RepositoryException;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
@@ -55,6 +56,23 @@ public class JCRPersistenceTest {
     @Before
     public void prepForTest() {
         new JCRRepositoryCleaner().clean();
+    }
+    
+    @Test
+    public void testSave_PDF() throws Exception {
+        String artifactFileName = "s-ramp-press-release.pdf";
+        InputStream pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+
+        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.Document, pdf);
+
+        Assert.assertNotNull(artifact);
+        log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid());
+
+        //print out the derived node
+        persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.Document);
+
+        Assert.assertEquals(Document.class, artifact.getClass());
+        Assert.assertEquals(new Long(19456l), ((Document) artifact).getContentSize());
     }
 
     @Test
@@ -82,7 +100,7 @@ public class JCRPersistenceTest {
     @Test(expected=RepositoryException.class)
     public void testSavePO_XML() throws Exception {
         String artifactFileName = "PO.xml";
-        InputStream POXml = this.getClass().getResourceAsStream("/sample-files/xml/" + artifactFileName);
+        InputStream POXml = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
 
         BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XmlDocument, POXml);
 

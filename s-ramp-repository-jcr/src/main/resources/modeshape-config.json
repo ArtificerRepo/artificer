@@ -14,15 +14,20 @@
     "sequencing" : {
         "removeDerivedContentWithOriginal" : true,
         "sequencers" : {
-            "XSD Sequencer" : {
-            	"description" : "XSD sequencer",
-                "classname" : "org.modeshape.sequencer.xsd.XsdSequencer",
-                "pathExpressions" : [ "default:/artifact/xsd/XsdDocument/(*)/(*)/(*)/*/jcr:content[@jcr:data] => default:/s-ramp/xsd/XsdDocument/$1/$2/$3" ]
+            "Default Sequencer" : {
+              "description" : "Default sequencer",
+                "classname" : "org.modeshape.sequencer.any.DefaultSequencer",
+                "pathExpressions" : [ "default:/artifact/core/Document/(*)/(*)/(*)/*/jcr:content[@jcr:data] => default:/s-ramp/core/Document/$1/$2/$3" ]
             },
             "XML Sequencer" : {
                 "description" : "XML sequencer",
                 "classname" : "org.modeshape.sequencer.xml.XmlSequencer",
                 "pathExpressions" : [ "default:/artifact/core/XmlDocument/(*)/(*)/(*)/*/jcr:content[@jcr:data] => default:/s-ramp/core/XmlDocument/$1/$2/$3" ]
+            },
+            "XSD Sequencer" : {
+            	"description" : "XSD sequencer",
+                "classname" : "org.modeshape.sequencer.xsd.XsdSequencer",
+                "pathExpressions" : [ "default:/artifact/xsd/XsdDocument/(*)/(*)/(*)/*/jcr:content[@jcr:data] => default:/s-ramp/xsd/XsdDocument/$1/$2/$3" ]
             }
         }
     }
