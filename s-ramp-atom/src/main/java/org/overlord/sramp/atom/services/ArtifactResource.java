@@ -47,7 +47,7 @@ import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.atom.models.ArtifactToFullAtomEntryVisitor;
+import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;

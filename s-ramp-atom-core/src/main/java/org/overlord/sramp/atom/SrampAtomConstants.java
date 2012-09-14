@@ -17,7 +17,7 @@ package org.overlord.sramp.atom;
 
 import java.net.URI;
 
-public class Constants {
+public class SrampAtomConstants {
 
     public static final URI URN_X_S_RAMP         = URIHelper.create("urn:x-s-ramp:2010:type");
     
