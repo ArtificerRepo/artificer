@@ -24,7 +24,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -33,8 +32,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -61,11 +58,16 @@ public class SrampArchive {
 
 	/**
 	 * Creates a new, empty S-RAMP archive.
+	 * @throws SrampArchiveException
 	 */
 	public SrampArchive() throws SrampArchiveException {
+		workDir = null;
 		try {
 			workDir = createWorkDir();
 		} catch (IOException e) {
+			if (workDir != null && workDir.exists()) {
+				try { FileUtils.deleteDirectory(workDir); } catch (IOException e1) { }
+			}
 			throw new SrampArchiveException("Failed to create archive work directory", e);
 		}
 	}
@@ -73,11 +75,12 @@ public class SrampArchive {
 	/**
 	 * Creates an S-RAMP archive from an existing archive file.
 	 * @param file
+	 * @throws SrampArchiveException
 	 */
 	public SrampArchive(File file) throws SrampArchiveException {
 		this();
 		try {
-			unpackToWorkDir(file);
+			ArchiveUtils.unpackToWorkDir(file, this.workDir);
 		} catch (IOException e) {
 			throw new SrampArchiveException("Failed to unpack S-RAMP archive into work directory", e);
 		}
@@ -92,39 +95,6 @@ public class SrampArchive {
 		tempFile.delete();
 		tempFile.mkdir();
 		return tempFile;
-	}
-
-	/**
-	 * Unpacks the given archive file into the working directory.
-	 * @param file an s-ramp archive file
-	 * @throws IOException
-	 */
-	private void unpackToWorkDir(File file) throws IOException {
-		ZipFile zipFile = null;
-		try {
-			zipFile = new ZipFile(file);
-			Enumeration<ZipArchiveEntry> zipEntries = zipFile.getEntriesInPhysicalOrder();
-			while (zipEntries.hasMoreElements()) {
-				ZipArchiveEntry entry = zipEntries.nextElement();
-				String entryName = entry.getName();
-				File outFile = new File(this.workDir, entryName);
-				outFile.getParentFile().mkdirs();
-
-				InputStream zipStream = null;
-				OutputStream outFileStream = null;
-
-				zipStream = zipFile.getInputStream(entry);
-				outFileStream = new FileOutputStream(outFile);
-				try {
-					IOUtils.copy(zipStream, outFileStream);
-				} finally {
-					IOUtils.closeQuietly(zipStream);
-					IOUtils.closeQuietly(outFileStream);
-				}
-			}
-		} finally {
-			ZipFile.closeQuietly(zipFile);
-		}
 	}
 
 	/**
