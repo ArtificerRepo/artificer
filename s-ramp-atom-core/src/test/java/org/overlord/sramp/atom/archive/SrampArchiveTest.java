@@ -107,10 +107,10 @@ public class SrampArchiveTest {
 			Assert.assertEquals(1, entries.size());
 			SrampArchiveEntry entry = entries.iterator().next();
 			Assert.assertEquals("sample.xsd", entry.getPath());
-			Assert.assertNotNull(entry.getArtifact());
-			Assert.assertEquals("d658b181-975c-42c5-ad5c-dc65cb9aa4a1", entry.getArtifact().getUuid());
-			Assert.assertEquals("sample.xsd", entry.getArtifact().getName());
-			Assert.assertEquals("1.0", entry.getArtifact().getVersion());
+			Assert.assertNotNull(entry.getMetaData());
+			Assert.assertEquals("d658b181-975c-42c5-ad5c-dc65cb9aa4a1", entry.getMetaData().getUuid());
+			Assert.assertEquals("sample.xsd", entry.getMetaData().getName());
+			Assert.assertEquals("1.0", entry.getMetaData().getVersion());
 		} finally {
 			tempFile.delete();
 			if (archive != null)
@@ -202,25 +202,25 @@ public class SrampArchiveTest {
 				entryMap.put(entry.getPath(), entry);
 
 			// Assertions for sample.xsd
-			XsdDocument sampleXsdMetaData = (XsdDocument) entryMap.get("sample/sample.xsd").getArtifact();
+			XsdDocument sampleXsdMetaData = (XsdDocument) entryMap.get("sample/sample.xsd").getMetaData();
 			Assert.assertNotNull(sampleXsdMetaData);
 			Assert.assertEquals("sample.xsd", sampleXsdMetaData.getName());
 			Assert.assertEquals("1.0.3", sampleXsdMetaData.getVersion());
 			Assert.assertEquals("Just a sample XML Schema.", sampleXsdMetaData.getDescription());
 			// Assertions for PO.xsd
-			XsdDocument poXsdMetaData = (XsdDocument) entryMap.get("sample/PO.xsd").getArtifact();
+			XsdDocument poXsdMetaData = (XsdDocument) entryMap.get("sample/PO.xsd").getMetaData();
 			Assert.assertNotNull(poXsdMetaData);
 			Assert.assertEquals("PO.xsd", poXsdMetaData.getName());
 			Assert.assertEquals("2.1.4", poXsdMetaData.getVersion());
 			Assert.assertEquals("The Purchase Order schema.", poXsdMetaData.getDescription());
 			// Assertions for coremodel.xsd
-			XsdDocument coremodelXsdMetaData = (XsdDocument) entryMap.get("s-ramp/coremodel.xsd").getArtifact();
+			XsdDocument coremodelXsdMetaData = (XsdDocument) entryMap.get("s-ramp/coremodel.xsd").getMetaData();
 			Assert.assertNotNull(coremodelXsdMetaData);
 			Assert.assertEquals("coremodel.xsd", coremodelXsdMetaData.getName());
 			Assert.assertEquals("1.6.1", coremodelXsdMetaData.getVersion());
 			Assert.assertEquals("S-RAMP core schema.", coremodelXsdMetaData.getDescription());
 			// Assertions for xlink.xsd
-			XsdDocument xlinkXsdMetaData = (XsdDocument) entryMap.get("s-ramp/xlink.xsd").getArtifact();
+			XsdDocument xlinkXsdMetaData = (XsdDocument) entryMap.get("s-ramp/xlink.xsd").getMetaData();
 			Assert.assertNotNull(xlinkXsdMetaData);
 			Assert.assertEquals("xlink.xsd", xlinkXsdMetaData.getName());
 			Assert.assertEquals("1.6.1", xlinkXsdMetaData.getVersion());

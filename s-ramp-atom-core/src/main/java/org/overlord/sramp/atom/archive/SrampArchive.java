@@ -27,16 +27,10 @@ import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.overlord.sramp.atom.SrampAtomUtils;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -45,14 +39,6 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
  * @author eric.wittmann@redhat.com
  */
 public class SrampArchive {
-
-	private static JAXBContext jaxbContext;
-	private static JAXBContext getJaxbContext() throws JAXBException {
-		if (jaxbContext == null) {
-			jaxbContext = JAXBContext.newInstance(Entry.class, Artifact.class);
-		}
-		return jaxbContext;
-	}
 
 	private File workDir;
 
@@ -123,8 +109,7 @@ public class SrampArchive {
 				String path = contentFile.getAbsolutePath();
 				path = path.substring(this.workDir.getAbsolutePath().length() + 1);
 				path = path.replace('\\', '/'); // just in case we're in Windows
-				BaseArtifactType metaData = readMetaData(metaDataFile);
-				entries.add(new SrampArchiveEntry(path, metaData));
+				entries.add(new SrampArchiveEntry(path, metaDataFile));
 			}
 		}
 		return entries;
@@ -164,7 +149,7 @@ public class SrampArchive {
 	public void addEntry(SrampArchiveEntry entry, InputStream content) throws SrampArchiveException {
 		if (entry.getPath() == null)
 			throw new SrampArchiveException("Invalid entry path.");
-		if (entry.getArtifact() == null)
+		if (entry.getMetaData() == null)
 			throw new SrampArchiveException("Missing artifact meta-data.");
 		File workPath = new File(this.workDir, entry.getPath());
 		if (workPath.exists())
@@ -173,7 +158,11 @@ public class SrampArchive {
 		workPath.getParentFile().mkdirs();
 		File atomWorkPath = new File(this.workDir, entry.getPath() + ".atom");
 		writeContent(workPath, content);
-		writeMetaData(atomWorkPath, entry.getArtifact());
+		try {
+			SrampArchiveJaxbUtils.writeMetaData(atomWorkPath, entry.getMetaData());
+		} catch (JAXBException e) {
+			throw new SrampArchiveException(e);
+		}
 	}
 
 	/**
@@ -192,37 +181,6 @@ public class SrampArchive {
 		} finally {
 			IOUtils.closeQuietly(content);
 			IOUtils.closeQuietly(outStream);
-		}
-	}
-
-	/**
-	 * Reads the meta-data (*.atom) file and returns a JAXB object.
-	 * @param metaDataFile
-	 */
-	private BaseArtifactType readMetaData(File metaDataFile) throws SrampArchiveException {
-		try {
-			Unmarshaller unmarshaller = getJaxbContext().createUnmarshaller();
-			Entry entry = (Entry) unmarshaller.unmarshal(metaDataFile);
-			return SrampAtomUtils.unwrapSrampArtifact(entry);
-		} catch (JAXBException e) {
-			throw new SrampArchiveException("Error reading artifact meta-data file: " + metaDataFile.getName(), e);
-		}
-	}
-
-	/**
-	 * Writes the artifact meta-data to the given working path.
-	 * @param workPath
-	 * @param artifact
-	 * @throws SrampArchiveException
-	 */
-	private void writeMetaData(File workPath, BaseArtifactType artifact) throws SrampArchiveException {
-		try {
-			Entry atomEntry = SrampAtomUtils.wrapSrampArtifact(artifact);
-			Marshaller marshaller = getJaxbContext().createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			marshaller.marshal(atomEntry, workPath);
-		} catch (Exception e) {
-			throw new SrampArchiveException("Error writing meta-data to archive work directory.", e);
 		}
 	}
 
@@ -277,14 +235,9 @@ public class SrampArchive {
 
 		// Store the meta-data in the ZIP
 		zipOutputStream.putNextEntry(new ZipEntry(entry.getPath() + ".atom"));
-		InputStream metaDataStream = null;
 		try {
-			Entry atomEntry = SrampAtomUtils.wrapSrampArtifact(entry.getArtifact());
-			Marshaller marshaller = getJaxbContext().createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			marshaller.marshal(atomEntry, zipOutputStream);
+			SrampArchiveJaxbUtils.writeMetaData(zipOutputStream, entry.getMetaData());
 		} finally {
-			IOUtils.closeQuietly(metaDataStream);
 		}
 		zipOutputStream.closeEntry();
 	}

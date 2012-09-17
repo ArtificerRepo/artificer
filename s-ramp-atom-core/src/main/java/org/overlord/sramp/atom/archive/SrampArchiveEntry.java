@@ -15,6 +15,10 @@
  */
 package org.overlord.sramp.atom.archive;
 
+import java.io.File;
+
+import javax.xml.bind.JAXBException;
+
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -34,7 +38,8 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 public class SrampArchiveEntry {
 
 	private String path;
-	private BaseArtifactType artifact;
+	private BaseArtifactType metaData;
+	private File metaDataFile;
 
 	/**
 	 * Constructor.
@@ -45,11 +50,22 @@ public class SrampArchiveEntry {
 	/**
 	 * Constructor.
 	 * @param path
-	 * @param artifact
+	 * @param metaData
 	 */
-	public SrampArchiveEntry(String path, BaseArtifactType artifact) {
+	public SrampArchiveEntry(String path, BaseArtifactType metaData) {
 		setPath(path);
-		setArtifact(artifact);
+		setMetaData(metaData);
+	}
+
+	/**
+	 * Constructor.
+	 * @param path
+	 * @param metaDataFile
+	 */
+	public SrampArchiveEntry(String path, File metaDataFile) {
+		setPath(path);
+		setMetaData(null);
+		this.metaDataFile = metaDataFile;
 	}
 
 	/**
@@ -69,15 +85,22 @@ public class SrampArchiveEntry {
 	/**
 	 * @return the artifact
 	 */
-	public BaseArtifactType getArtifact() {
-		return artifact;
+	public BaseArtifactType getMetaData() {
+		if (metaData == null && metaDataFile != null && metaDataFile.exists()) {
+			try {
+				metaData = SrampArchiveJaxbUtils.readMetaData(metaDataFile);
+			} catch (JAXBException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return metaData;
 	}
 
 	/**
 	 * @param artifact the artifact to set
 	 */
-	public void setArtifact(BaseArtifactType artifact) {
-		this.artifact = artifact;
+	public void setMetaData(BaseArtifactType artifact) {
+		this.metaData = artifact;
 	}
 
 }
