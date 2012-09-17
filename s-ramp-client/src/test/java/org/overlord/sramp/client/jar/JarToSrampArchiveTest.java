@@ -27,6 +27,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.overlord.sramp.atom.archive.SrampArchive;
+import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 
 /**
  * Unit test for the {@link JarToSrampArchive} class.
@@ -101,6 +103,36 @@ public class JarToSrampArchiveTest {
 		} finally {
 			if (j2sramp != null)
 				j2sramp.close();
+		}
+	}
+
+	/**
+	 * Test method for {@link org.overlord.sramp.client.jar.JarToSrampArchive#createSrampArchive()}.
+	 */
+	@Test
+	public void testCreateSrampArchive() throws Exception {
+		InputStream resourceAsStream = JarToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar");
+		JarToSrampArchive j2sramp = null;
+		SrampArchive archive = null;
+
+		try {
+			j2sramp = new JarToSrampArchive(resourceAsStream);
+			archive = j2sramp.createSrampArchive();
+			Assert.assertNotNull(archive);
+			Collection<SrampArchiveEntry> entries = archive.getEntries();
+			Assert.assertEquals(2, entries.size());
+			Set<String> paths = new HashSet<String>();
+			for (SrampArchiveEntry entry : entries) {
+				paths.add(entry.getPath());
+			}
+			Assert.assertEquals(2, entries.size());
+			Assert.assertTrue(paths.contains("schema/teetime.xsd"));
+			Assert.assertTrue(paths.contains("wsdl/teetime.wsdl"));
+		} finally {
+			if (j2sramp != null)
+				j2sramp.close();
+			if (archive != null)
+				archive.close();
 		}
 	}
 

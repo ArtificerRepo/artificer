@@ -19,10 +19,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.jgroups.util.UUID;
 import org.overlord.sramp.atom.archive.ArchiveUtils;
+import org.overlord.sramp.atom.archive.SrampArchive;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Document;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
  * Class that converts a JAR into an S-RAMP archive.
@@ -44,6 +52,11 @@ public class JarToSrampArchive {
 	private File originalJar;
 	private boolean shouldDeleteOriginalJar;
 	private File jarWorkDir;
+
+	/* Customizable handlers for various phases of the create. */
+
+	private static final ArtifactFilter DEFAULT_ARTIFACT_FILTER = new DefaultArtifactFilter();
+	private ArtifactFilter artifactFilter = DEFAULT_ARTIFACT_FILTER;
 
 	/**
 	 * Constructor.
@@ -121,6 +134,71 @@ public class JarToSrampArchive {
 	}
 
 	/**
+	 * Creates an S-RAMP archive from this JAR.
+	 * @return an S-RAMP archive
+	 * @throws JarToSrampArchiveException
+	 */
+	public SrampArchive createSrampArchive() throws JarToSrampArchiveException {
+		DiscoveredArtifacts discoveredArtifacts = discoverArtifacts();
+		discoveredArtifacts.index(jarWorkDir);
+		generateMetaData(discoveredArtifacts);
+		try {
+			SrampArchive archive = new SrampArchive();
+			for (DiscoveredArtifact artifact : discoveredArtifacts) {
+				String path = artifact.getArchivePath();
+				archive.addEntry(path, artifact.getMetaData(), artifact.getContent());
+			}
+			return archive;
+		} catch (Exception e) {
+			throw new JarToSrampArchiveException(e);
+		}
+	}
+
+	/**
+	 * Generates the meta data for all of the artifacts found during discovery.
+	 * @param discoveredArtifacts
+	 */
+	private void generateMetaData(DiscoveredArtifacts discoveredArtifacts) {
+		for (DiscoveredArtifact artifact : discoveredArtifacts) {
+			BaseArtifactType metaData = null;
+			if (artifact.getArchivePath().endsWith(".wsdl")) {
+				metaData = new WsdlDocument();
+				metaData.setArtifactType(BaseArtifactEnum.WSDL_DOCUMENT);
+			}
+			if (artifact.getArchivePath().endsWith(".xsd")) {
+				metaData = new XsdDocument();
+				metaData.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
+			}
+			if (metaData == null) {
+				metaData = new Document();
+				metaData.setArtifactType(BaseArtifactEnum.DOCUMENT);
+			}
+			metaData.setUuid(UUID.randomUUID().toString());
+			metaData.setName(artifact.getName());
+
+			artifact.setMetaData(metaData);
+		}
+	}
+
+	/**
+	 * Iterates through all of the entries in the JAR and determines which of them will
+	 * be included in the S-RAMP archive.  Returns the collection of artifacts that should be
+	 * included.
+	 */
+	private DiscoveredArtifacts discoverArtifacts() {
+		DiscoveredArtifacts artifacts = new DiscoveredArtifacts();
+		Collection<File> files = FileUtils.listFiles(jarWorkDir, null, true);
+		for (File file : files) {
+			CandidateArtifact candidate = new CandidateArtifact(file);
+			if (this.artifactFilter.accepts(candidate)) {
+				artifacts.add(file);
+			}
+		}
+
+		return artifacts;
+	}
+
+	/**
 	 * This object should be closed once we're done with it.  This allows us to clean up
 	 * some resources.
 	 * @throws IOException
@@ -130,6 +208,13 @@ public class JarToSrampArchive {
 		if (shouldDeleteOriginalJar) {
 			this.originalJar.delete();
 		}
+	}
+
+	/**
+	 * @param artifactFilter the artifactFilter to set
+	 */
+	public void setArtifactFilter(ArtifactFilter artifactFilter) {
+		this.artifactFilter = artifactFilter;
 	}
 
 }
