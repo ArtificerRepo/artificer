@@ -137,6 +137,44 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
+	 * Test method for {@link org.overlord.sramp.client.jar.JarToSrampArchive#setArtifactFilter(ArtifactFilter)}.
+	 */
+	@Test
+	public void testCustomArtifactFilter() throws Exception {
+		InputStream resourceAsStream = JarToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar");
+		JarToSrampArchive j2sramp = null;
+		SrampArchive archive = null;
+
+		try {
+			j2sramp = new JarToSrampArchive(resourceAsStream);
+			j2sramp.setArtifactFilter(new ArtifactFilter() {
+				@Override
+				public boolean accepts(CandidateArtifact artifact) {
+					return true;
+				}
+			});
+			archive = j2sramp.createSrampArchive();
+			Assert.assertNotNull(archive);
+			Collection<SrampArchiveEntry> entries = archive.getEntries();
+			Assert.assertEquals(16, entries.size());
+			Set<String> paths = new HashSet<String>();
+			for (SrampArchiveEntry entry : entries) {
+				paths.add(entry.getPath());
+			}
+			Assert.assertEquals(16, entries.size());
+			Assert.assertTrue(paths.contains("schema/teetime.xsd"));
+			Assert.assertTrue(paths.contains("wsdl/teetime.wsdl"));
+			Assert.assertTrue(paths.contains("com/redhat/ewittman/teetime/_2012/_09/wsdl/teetime_wsdl/TeeTimePortType.class"));
+			Assert.assertTrue(paths.contains("META-INF/maven/com.redhat.ewittman/sample-web-service/pom.properties"));
+		} finally {
+			if (j2sramp != null)
+				j2sramp.close();
+			if (archive != null)
+				archive.close();
+		}
+	}
+
+	/**
 	 * Gets the JAR working directory.
 	 * @param j2sramp
 	 * @return the private JAR working directory

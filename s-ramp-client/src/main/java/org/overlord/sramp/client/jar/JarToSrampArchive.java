@@ -30,6 +30,7 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
@@ -161,15 +162,16 @@ public class JarToSrampArchive {
 	private void generateMetaData(DiscoveredArtifacts discoveredArtifacts) {
 		for (DiscoveredArtifact artifact : discoveredArtifacts) {
 			BaseArtifactType metaData = null;
-			if (artifact.getArchivePath().endsWith(".wsdl")) {
+			if (artifact.getArchivePath().endsWith(".xml")) {
+				metaData = new XmlDocument();
+				metaData.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
+			} else if (artifact.getArchivePath().endsWith(".wsdl")) {
 				metaData = new WsdlDocument();
 				metaData.setArtifactType(BaseArtifactEnum.WSDL_DOCUMENT);
-			}
-			if (artifact.getArchivePath().endsWith(".xsd")) {
+			} else if (artifact.getArchivePath().endsWith(".xsd")) {
 				metaData = new XsdDocument();
 				metaData.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-			}
-			if (metaData == null) {
+			} else {
 				metaData = new Document();
 				metaData.setArtifactType(BaseArtifactEnum.DOCUMENT);
 			}
