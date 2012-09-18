@@ -23,15 +23,9 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.jgroups.util.UUID;
 import org.overlord.sramp.atom.archive.ArchiveUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Document;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
  * Class that converts a JAR into an S-RAMP archive.
@@ -58,6 +52,8 @@ public class JarToSrampArchive {
 
 	private static final ArtifactFilter DEFAULT_ARTIFACT_FILTER = new DefaultArtifactFilter();
 	private ArtifactFilter artifactFilter = DEFAULT_ARTIFACT_FILTER;
+	private static final MetaDataFactory DEFAULT_META_DATA_FACTORY = new DefaultMetaDataFactory();
+	private MetaDataFactory metaDataFactory = DEFAULT_META_DATA_FACTORY;
 
 	/**
 	 * Constructor.
@@ -161,23 +157,7 @@ public class JarToSrampArchive {
 	 */
 	private void generateMetaData(DiscoveredArtifacts discoveredArtifacts) {
 		for (DiscoveredArtifact artifact : discoveredArtifacts) {
-			BaseArtifactType metaData = null;
-			if (artifact.getArchivePath().endsWith(".xml")) {
-				metaData = new XmlDocument();
-				metaData.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
-			} else if (artifact.getArchivePath().endsWith(".wsdl")) {
-				metaData = new WsdlDocument();
-				metaData.setArtifactType(BaseArtifactEnum.WSDL_DOCUMENT);
-			} else if (artifact.getArchivePath().endsWith(".xsd")) {
-				metaData = new XsdDocument();
-				metaData.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-			} else {
-				metaData = new Document();
-				metaData.setArtifactType(BaseArtifactEnum.DOCUMENT);
-			}
-			metaData.setUuid(UUID.randomUUID().toString());
-			metaData.setName(artifact.getName());
-
+			BaseArtifactType metaData = this.metaDataFactory.createMetaData(artifact);
 			artifact.setMetaData(metaData);
 		}
 	}
@@ -217,6 +197,13 @@ public class JarToSrampArchive {
 	 */
 	public void setArtifactFilter(ArtifactFilter artifactFilter) {
 		this.artifactFilter = artifactFilter;
+	}
+
+	/**
+	 * @param metaDataFactory the metaDataFactory to set
+	 */
+	public void setMetaDataFactory(MetaDataFactory metaDataFactory) {
+		this.metaDataFactory = metaDataFactory;
 	}
 
 }

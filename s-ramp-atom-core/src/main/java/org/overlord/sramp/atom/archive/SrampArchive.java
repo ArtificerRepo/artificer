@@ -242,4 +242,19 @@ public class SrampArchive {
 		zipOutputStream.closeEntry();
 	}
 
+	/**
+	 * Gets a single entry in the archive by path.
+	 * @param archivePath the path of the entry within the archive
+	 * @return the archive entry, or null if not found
+	 */
+	public SrampArchiveEntry getEntry(String archivePath) {
+		File contentFile = new File(this.workDir, archivePath);
+		File metaDataFile = new File(this.workDir, archivePath + ".atom");
+		SrampArchiveEntry rval = null;
+		if (contentFile.exists() && metaDataFile.exists()) {
+			rval = new SrampArchiveEntry(archivePath, metaDataFile);
+		}
+		return rval;
+	}
+
 }
