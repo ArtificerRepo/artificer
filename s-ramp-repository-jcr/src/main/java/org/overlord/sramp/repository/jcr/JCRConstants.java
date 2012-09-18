@@ -21,16 +21,17 @@ public class JCRConstants {
 	public static final String OVERLORD_NS = "http://www.jboss.org/overlord/1.0";
 	public static final String SRAMP_PROPERTIES_NS = "http://s-ramp.org/xmlns/2010/s-ramp#properties";
 	
-    public static final String OVERLORD         = "overlord";
-    public static final String SRAMP            = "sramp";
+    public static final String OVERLORD         = "overlord:";
+    public static final String SRAMP            = "sramp:";
     public static final String SRAMP_PROPERTIES = "sramp-properties";
 
-    public static final String OVERLORD_ARTIFACT_CONTENT = OVERLORD + ":artifactContent";
-    public static final String OVERLORD_ARTIFACT         = OVERLORD + ":artifact";
-    public static final String OVERLORD_FILENAME         = OVERLORD + ":filename";
-    public static final String SRAMP_UUID                = SRAMP + ":uuid";
-    public static final String SRAMP_NAME                = SRAMP + ":name";
-    public static final String SRAMP_ARTIFACT_MODEL      = SRAMP + ":artifactModel";
-    public static final String SRAMP_ARTIFACT_TYPE       = SRAMP + ":artifactType";
+    public static final String SRAMP_BASE_ARTIFACT_TYPE  = SRAMP + "baseArtifactType";
+    public static final String SRAMP_CONTENT_TYPE        = SRAMP + "contentType";
+    public static final String SRAMP_CONTENT_SIZE        = SRAMP + "contentSize";
+    public static final String SRAMP_CONTENT_ENCODING    = SRAMP + "contentEncoding";
+    public static final String SRAMP_UUID                = SRAMP + "uuid";
+    public static final String SRAMP_NAME                = SRAMP + "name";
+    public static final String SRAMP_ARTIFACT_MODEL      = SRAMP + "artifactModel";
+    public static final String SRAMP_ARTIFACT_TYPE       = SRAMP + "artifactType";
    
 }

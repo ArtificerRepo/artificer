@@ -224,7 +224,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Query node) {
-		this.builder.append("SELECT * FROM [overlord:artifact]");
+		this.builder.append("SELECT * FROM [sramp:baseArtifactType]");
 		node.getArtifactSet().accept(this);
 		if (node.getPredicate() != null) {
 			this.builder.append(" AND (");

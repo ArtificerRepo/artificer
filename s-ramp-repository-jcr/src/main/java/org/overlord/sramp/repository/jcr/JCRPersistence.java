@@ -30,7 +30,6 @@ import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.IOUtils;
 import org.modeshape.jcr.api.JcrTools;
@@ -44,6 +43,7 @@ import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,80 +73,44 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     @Override
 	public BaseArtifactType persistArtifact(String name, ArtifactType type, InputStream content) throws RepositoryException {
         Session session = null;
-        String identifier = null;
         try {
             session = JCRRepository.getSession();
             JcrTools tools = new JcrTools();
             String uuid = UUID.randomUUID().toString();
             String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
             log.debug("Uploading file {} to JCR.",name);
-            Node artifactNode = tools.uploadFile(session, artifactPath, content);
-            identifier = artifactNode.getIdentifier();
-            artifactNode.addMixin(JCRConstants.OVERLORD_ARTIFACT_CONTENT);
 
+            Node artifactNode = tools.uploadFile(session, artifactPath, content);
             JCRUtils.setArtifactContentMimeType(artifactNode, type.getMimeType());
+            
+            String jcrMixinName = type.getArtifactType().getApiType().value();
+            jcrMixinName = JCRConstants.SRAMP + jcrMixinName.substring(0,1).toLowerCase() + jcrMixinName.substring(1);
+            artifactNode.addMixin(jcrMixinName);
+            //BaseArtifactType
             artifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
-            artifactNode.setProperty(JCRConstants.OVERLORD_FILENAME, name);
+            artifactNode.setProperty(JCRConstants.SRAMP_NAME, name);
+            artifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, type.getArtifactType().getModel());
+            artifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, type.getArtifactType().getType());
+            //XMLDocument
+            if (XmlDocument.class.isAssignableFrom(type.getArtifactType().getTypeClass())) {
+                // read the encoding from the header
+                artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_ENCODING, "UTF-8");
+            }
+            
             log.debug("Successfully saved {} to node={}",name, uuid);
-            String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactPath);
-			JCRRepository.getListener().addWaitingLatch(sequencedArtifactPath);
             session.save();
+            
+            printArtifactGraph(uuid, type);
+            //now create the S-RAMP Artifact object from the JCR node
+            BaseArtifactType baseTypeArtifact = JCRNodeToArtifactFactory.createArtifact(artifactNode, type);
+            return baseTypeArtifact;
         } catch (Throwable t) {
         	throw new RepositoryException(t);
         } finally {
         	IOUtils.closeQuietly(content);
             session.logout();
         }
-
-        return createArtifactInternal(identifier, type);
     }
-
-    /**
-     * Creates an artifact given a JCR identifier of a persisted artifact.  This method
-     * is called after the ModeShape sequencer has completed sequencing the content.  The
-     * result of sequencing is a new node tree under /sramp/{model}/{type}/{uuid}.  The root
-     * of this new tree must be udpated to include some additional information.
-	 * @param identifier the unique JCR identifier
-	 * @param type the artifact type
-	 * @return an instance of a {@link BaseArtifactType}
-	 * @throws RepositoryException
-	 */
-	protected BaseArtifactType createArtifactInternal(String identifier, ArtifactType type) throws RepositoryException {
-		Session session = null;
-        try {
-            session = JCRRepository.getSession();
-
-            // Get the artifact node
-            Node artifactContentNode = session.getNodeByIdentifier(identifier);
-            String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactContentNode.getPath());
-            // Wait for sequencing
-            JCRRepository.getListener().waitForLatch(sequencedArtifactPath);
-            // Get the sequenced node
-            Node sequencedNode = session.getNode(sequencedArtifactPath);
-
-            // Update the sequenced node with some additional meta data
-            sequencedNode.addMixin(JCRConstants.OVERLORD_ARTIFACT);
-            String uuid = artifactContentNode.getProperty(JCRConstants.SRAMP_UUID).getValue().getString();
-            String filename = artifactContentNode.getProperty(JCRConstants.OVERLORD_FILENAME).getValue().getString();
-            sequencedNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
-            sequencedNode.setProperty(JCRConstants.SRAMP_NAME, filename);
-            sequencedNode.setProperty(JCRConstants.OVERLORD_FILENAME, filename);
-            sequencedNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, type.getArtifactType().getModel());
-            sequencedNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, type.getArtifactType().getType());
-            session.save();
-
-            log.info("Created artifact of type " + type.getArtifactType().getType() + " with UUID " + uuid);
-            if (log.isDebugEnabled()) {
-                printArtifactGraph(uuid, type);
-            }
-            // Create an artifact from the sequenced node
-            return JCRNodeToArtifactFactory.createArtifact(sequencedNode, type);
-        } catch (Throwable t) {
-        	throw new RepositoryException(t);
-		} finally {
-            session.logout();
-        }
-	}
 
 	/**
 	 * @see org.overlord.sramp.repository.DerivedArtifacts#createDerivedArtifacts(org.overlord.sramp.ArtifactType, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
@@ -173,13 +137,12 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     public BaseArtifactType getArtifact(String uuid, ArtifactType type) throws RepositoryException {
         Session session = null;
         String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
-        String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactPath);
 
         try {
             session = JCRRepository.getSession();
-            Node sequencedNode = session.getNode(sequencedArtifactPath);
+            Node artifactNode = session.getNode(artifactPath);
             // Create an artifact from the sequenced node
-            return JCRNodeToArtifactFactory.createArtifact(sequencedNode, type);
+            return JCRNodeToArtifactFactory.createArtifact(artifactNode, type);
         } catch (RepositoryException re) {
         	throw re;
         } catch (Throwable t) {
@@ -217,12 +180,11 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws RepositoryException {
         Session session = null;
         String artifactPath = MapToJCRPath.getArtifactPath(artifact.getUuid(), type);
-        String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactPath);
 
         try {
             session = JCRRepository.getSession();
-            Node sequencedNode = session.getNode(sequencedArtifactPath);
-            UpdateJCRNodeFromArtifactVisitor visitor = new UpdateJCRNodeFromArtifactVisitor(sequencedNode);
+            Node arifactNode = session.getNode(artifactPath);
+            UpdateJCRNodeFromArtifactVisitor visitor = new UpdateJCRNodeFromArtifactVisitor(arifactNode);
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
             if (visitor.hasError())
             	throw visitor.getError();
@@ -240,14 +202,13 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     @Override
     public void deleteArtifact(String uuid, ArtifactType artifactType) throws RepositoryException {
         Session session = null;
-        String artifactContentPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
-        String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactContentPath);
+        String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
 
         try {
             session = JCRRepository.getSession();
-            session.getNode(artifactContentPath).remove();
-            if (session.nodeExists(sequencedArtifactPath)) {
-            	session.getNode(sequencedArtifactPath).remove();
+            session.getNode(artifactPath).remove();
+            if (session.nodeExists(artifactPath)) {
+            	session.getNode(artifactPath).remove();
             }
             session.save();
         } catch (Throwable t) {
@@ -265,13 +226,12 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     	List<BaseArtifactType> artifacts = new ArrayList<BaseArtifactType>();
         Session session = null;
         String artifactTypePath = MapToJCRPath.getArtifactTypePath(type);
-        String sequencedArtifactTypePath = MapToJCRPath.getSequencedArtifactPath(artifactTypePath);
 
         try {
             session = JCRRepository.getSession();
-            Node sequencedNode = session.getNode(sequencedArtifactTypePath);
+            Node artifactNode = session.getNode(artifactTypePath);
             List<Node> collectedNodes = new ArrayList<Node>();
-            getNodes(sequencedNode, collectedNodes);
+            getNodes(artifactNode, collectedNodes);
             for (Node node : collectedNodes) {
                 BaseArtifactType artifact = JCRNodeToArtifactFactory.createArtifact(node, type);
                 artifacts.add(artifact);
@@ -311,10 +271,8 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 	 * @throws Exception
 	 */
 	private boolean isArtifactNode(Node node) throws Exception {
-    	for (NodeType nodeType : node.getMixinNodeTypes()) {
-    		if (nodeType.getName().equals(JCRConstants.OVERLORD_ARTIFACT)) {
-    			return true;
-    		}
+    	if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE)) {
+    		return true;
 		}
 		return false;
 	}
@@ -326,13 +284,11 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     public void printArtifactGraph(String uuid, ArtifactType type) {
         Session session = null;
         String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
-        String sequencedArtifactPath = MapToJCRPath.getSequencedArtifactPath(artifactPath);
-
         try {
             session = JCRRepository.getSession();
-            Node sequencedNode = session.getNode(sequencedArtifactPath);
+            Node artifactNode = session.getNode(artifactPath);
             JcrTools tools = new JcrTools();
-            tools.printSubgraph(sequencedNode);
+            tools.printSubgraph(artifactNode);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

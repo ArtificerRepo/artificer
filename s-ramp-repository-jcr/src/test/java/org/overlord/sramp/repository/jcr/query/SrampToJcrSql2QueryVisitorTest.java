@@ -32,43 +32,43 @@ public class SrampToJcrSql2QueryVisitorTest {
 	private static final String [][] TEST_DATA = {
 		{
 			"/s-ramp/xsd/XsdDocument",
-			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactType] = 'XsdDocument'"
+			"SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:artifactType] = 'XsdDocument'"
 		},
 		{
 			"/s-ramp/xsd",
-			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactModel] = 'xsd'"
+			"SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:artifactModel] = 'xsd'"
 		},
 		{
 			"/s-ramp",
-			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactModel] LIKE '%'"
+			"SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:artifactModel] LIKE '%'"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@name = 'foo']",
-			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactType] = 'XsdDocument' AND ([sramp:name] = 'foo')"
+			"SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:artifactType] = 'XsdDocument' AND ([sramp:name] = 'foo')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@createdBy = 'lincoln73']",
-			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactType] = 'XsdDocument' AND ([jcr:createdBy] = 'lincoln73')"
+			"SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:artifactType] = 'XsdDocument' AND ([jcr:createdBy] = 'lincoln73')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@prop1]",
-			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactType] = 'XsdDocument' AND ([sramp-properties:prop1] LIKE '%')"
+			"SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:artifactType] = 'XsdDocument' AND ([sramp-properties:prop1] LIKE '%')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@version = '1.0' and @prop1 = 'value1']",
-			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactType] = 'XsdDocument'" +
+			"SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:artifactType] = 'XsdDocument'" +
 			" AND ([version] = '1.0'" +
 			" AND [sramp-properties:prop1] = 'value1')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@version = '1.0' or @prop1 = 'value1']",
-			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactType] = 'XsdDocument'" +
+			"SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:artifactType] = 'XsdDocument'" +
 			" AND ([version] = '1.0'" +
 			" OR [sramp-properties:prop1] = 'value1')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@maven.groupId = 'ggg' and @maven.artifactId = 'aaa' and @maven.version = '1.0.0']",
-			"SELECT * FROM [overlord:artifact] WHERE [sramp:artifactType] = 'XsdDocument'" +
+			"SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:artifactType] = 'XsdDocument'" +
 			" AND ([sramp-properties:maven.groupId] = 'ggg'" +
 			" AND [sramp-properties:maven.artifactId] = 'aaa'" +
 			" AND [sramp-properties:maven.version] = '1.0.0')"
