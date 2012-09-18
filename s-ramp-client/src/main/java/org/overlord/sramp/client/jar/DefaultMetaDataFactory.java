@@ -15,7 +15,8 @@
  */
 package org.overlord.sramp.client.jar;
 
-import org.jgroups.util.UUID;
+import java.util.UUID;
+
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
