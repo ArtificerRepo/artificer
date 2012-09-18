@@ -34,7 +34,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.client.SrampClientUtils;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
@@ -124,7 +124,7 @@ public class ArtifactUploadServlet extends HttpServlet {
 
 		ArtifactType at = ArtifactType.valueOf(artifactType);
 		Entry entry = client.uploadArtifact(at, artifactContent, fileName);
-		BaseArtifactType artifact = SrampClientUtils.unwrapSrampArtifact(at, entry);
+		BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(at, entry);
 
 		Map<String, String> responseParams = new HashMap<String, String>();
 		responseParams.put("model", at.getArtifactType().getModel());
