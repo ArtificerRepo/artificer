@@ -29,7 +29,7 @@ import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.atom.models.ArtifactToSummaryAtomEntryVisitor;
+import org.overlord.sramp.atom.visitors.ArtifactToSummaryAtomEntryVisitor;
 import org.overlord.sramp.repository.QueryManager;
 import org.overlord.sramp.repository.QueryManagerFactory;
 import org.overlord.sramp.repository.query.ArtifactSet;
