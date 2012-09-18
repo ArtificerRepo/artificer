@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
-import org.overlord.sramp.repository.RepositoryException;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
@@ -72,7 +71,7 @@ public class JCRPersistenceTest {
         persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.Document);
 
         Assert.assertEquals(Document.class, artifact.getClass());
-        Assert.assertEquals(new Long(19456l), ((Document) artifact).getContentSize());
+        Assert.assertEquals(new Long(18873l), ((Document) artifact).getContentSize());
     }
 
     @Test
@@ -91,13 +90,8 @@ public class JCRPersistenceTest {
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         Assert.assertEquals(new Long(2376l), ((XsdDocument) artifact).getContentSize());
     }
-
-    /**
-	 * For now expecting a runtime exception since the ModeShape Sequencer for
-	 * XML is not yet up sequencing all the necessary artifacts.
-	 * @throws Exception
-	 */
-    @Test(expected=RepositoryException.class)
+    
+    @Test
     public void testSavePO_XML() throws Exception {
         String artifactFileName = "PO.xml";
         InputStream POXml = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
@@ -108,10 +102,10 @@ public class JCRPersistenceTest {
         log.info("persisted PO.xml to JCR, returned artifact uuid=" + artifact.getUuid());
 
         //print out the derived node
-        persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XsdDocument);
+        persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XmlDocument);
 
         Assert.assertEquals(XmlDocument.class, artifact.getClass());
-        Assert.assertEquals(new Long(2376l), ((XmlDocument) artifact).getContentSize());
+        Assert.assertEquals(new Long(825l), ((XmlDocument) artifact).getContentSize());
     }
 
     @Test
