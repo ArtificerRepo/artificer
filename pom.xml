@@ -101,6 +101,7 @@
 		<commons.io.version>2.4</commons.io.version>
 		<commons.lang3.version>3.1</commons.lang3.version>
 		<commons.config.version>1.8</commons.config.version>
+		<commons.compress.version>1.4.1</commons.compress.version>
 	</properties>
 
 	<build>
@@ -229,6 +230,11 @@
 				<version>${commons.config.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-compress</artifactId>
+				<version>${commons.compress.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>${servlet.api.version}</version>
@@ -327,6 +333,7 @@
 	<modules>
 		<module>s-ramp-api</module>
 		<module>s-ramp-atom</module>
+		<module>s-ramp-atom-core</module>
 		<module>s-ramp-client</module>
 		<module>s-ramp-core</module>
 		<module>s-ramp-repository</module>

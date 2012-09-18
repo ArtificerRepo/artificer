@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.atom.models;
 
-import static org.overlord.sramp.atom.Constants.*;
+import static org.overlord.sramp.atom.SrampAtomConstants.*;
 import static org.overlord.sramp.atom.MediaType.*;
 
 import org.jboss.resteasy.plugins.providers.atom.Category;

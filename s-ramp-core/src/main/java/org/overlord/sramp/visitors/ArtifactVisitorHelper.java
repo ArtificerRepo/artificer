@@ -24,7 +24,7 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
  * on each of the generated S-RAMP artifact classes.  I think there might be a jax-b plugin that will do
  * that, but I haven't checked into yet.  This is important because currently the order of the instanceof
  * checks below is vital to the proper visiting of the artifact, which is not ideal.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public final class ArtifactVisitorHelper {
@@ -41,9 +41,9 @@ public final class ArtifactVisitorHelper {
 		} catch (Exception e) {
 			// This shouldn't happen unless we've programmed something wrong in the visitor interface.
 			throw new RuntimeException(
-					"Error: failed to find proper visit() method.  Visitor class=" + visitor.getClass() + ",  Artifact class=" + artifact.getClass(), 
+					"Error: failed to find proper visit() method.  Visitor class=" + visitor.getClass() + ",  Artifact class=" + artifact.getClass(),
 					e);
 		}
 	}
-	
+
 }

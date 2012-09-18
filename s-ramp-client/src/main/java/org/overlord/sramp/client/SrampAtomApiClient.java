@@ -25,6 +25,7 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -173,7 +174,7 @@ public class SrampAtomApiClient {
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
 
-			Entry entry = SrampClientUtils.wrapSrampArtifact(artifact);
+			Entry entry = SrampAtomUtils.wrapSrampArtifact(artifact);
 
 			request.body("application/atom+xml;type=entry", entry);
 			request.put();

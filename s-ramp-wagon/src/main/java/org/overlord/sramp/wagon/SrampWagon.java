@@ -51,9 +51,10 @@ import org.codehaus.plexus.logging.Logger;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampModelUtils;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
-import org.overlord.sramp.client.SrampClientUtils;
 import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
@@ -63,7 +64,7 @@ import org.w3c.dom.Document;
 
 /**
  * Implements a wagon provider that uses the S-RAMP Atom API.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 @SuppressWarnings("unchecked")
@@ -75,7 +76,7 @@ public class SrampWagon extends StreamWagon {
 		supportedTypes.put("xsd", ArtifactType.XsdDocument);
 		supportedTypes.put("wsdl", ArtifactType.WsdlDocument);
 	}
-	
+
 	@Requirement
 	private Logger logger;
 
@@ -108,10 +109,10 @@ public class SrampWagon extends StreamWagon {
 	public void fillInputData(InputData inputData) throws TransferFailedException,
 			ResourceDoesNotExistException, AuthorizationException {
 		Resource resource = inputData.getResource();
-		
+
 		if (resource.getName().endsWith("maven-metadata.xml"))
 			throw new ResourceDoesNotExistException("Could not find file: '" + resource + "'");
-		
+
 		logger.debug("Looking up resource from s-ramp repository: " + resource);
 		// RESTEasy uses the current thread's context classloader to load its logger class.  This
 		// fails in Maven because the context classloader is the wagon plugin's classloader, which
@@ -229,7 +230,7 @@ public class SrampWagon extends StreamWagon {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * @see org.apache.maven.wagon.StreamWagon#putFromStream(java.io.InputStream, java.lang.String)
 	 */
@@ -239,7 +240,7 @@ public class SrampWagon extends StreamWagon {
 		Resource resource = new Resource(destination);
 		putCommon(resource, null, stream);
 	}
-	
+
 	/**
 	 * @see org.apache.maven.wagon.StreamWagon#putFromStream(java.io.InputStream, java.lang.String, long, long)
 	 */
@@ -270,7 +271,7 @@ public class SrampWagon extends StreamWagon {
 		resource.setLastModified(source.lastModified());
 		putCommon(resource, source, resourceInputStream);
 	}
-	
+
 	/**
 	 * Common put implementation.  Handles firing events and ultimately sending the data via the
 	 * s-ramp client.
@@ -300,7 +301,7 @@ public class SrampWagon extends StreamWagon {
 		}
 		firePutCompleted(resource, source);
 	}
-	
+
 	/**
 	 * Gets the artifact type from the resource.  Returns null if the resource type does
 	 * not map to an artifact type.
@@ -336,10 +337,10 @@ public class SrampWagon extends StreamWagon {
 				updateArtifactContent(client, artifact, resourceInputStream);
 			} else {
 				Entry entry = client.uploadArtifact(artifactType, resourceInputStream, resource.getName());
-				artifact = SrampClientUtils.unwrapSrampArtifact(artifactType, entry);
-				SrampClientUtils.setCustomProperty(artifact, "maven.groupId", gavInfo.getGroupId());
-				SrampClientUtils.setCustomProperty(artifact, "maven.artifactId", gavInfo.getArtifactId());
-				SrampClientUtils.setCustomProperty(artifact, "maven.version", gavInfo.getVersion());
+				artifact = SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
+				SrampModelUtils.setCustomProperty(artifact, "maven.groupId", gavInfo.getGroupId());
+				SrampModelUtils.setCustomProperty(artifact, "maven.artifactId", gavInfo.getArtifactId());
+				SrampModelUtils.setCustomProperty(artifact, "maven.version", gavInfo.getVersion());
 				client.updateArtifactMetaData(artifact);
 			}
 		} catch (Throwable t) {
@@ -351,12 +352,12 @@ public class SrampWagon extends StreamWagon {
 
 	/**
 	 * Finds an existing artifact in the s-ramp repository that matches the type and GAV information.
-	 * @param client 
+	 * @param client
 	 * @param artifactType
 	 * @param gavInfo
-	 * @throws SrampClientException 
-	 * @throws SrampServerException 
-	 * @throws JAXBException 
+	 * @throws SrampClientException
+	 * @throws SrampServerException
+	 * @throws JAXBException
 	 */
 	private BaseArtifactType findExistingArtifact(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
 		BaseArtifactType artifact = findExistingArtifactByGAV(client, gavInfo);
@@ -367,22 +368,22 @@ public class SrampWagon extends StreamWagon {
 
 	/**
 	 * Finds an existing artifact in the s-ramp repository that matches the GAV information.
-	 * @param client 
+	 * @param client
 	 * @param gavInfo
-	 * @throws SrampClientException 
-	 * @throws SrampServerException 
-	 * @throws JAXBException 
+	 * @throws SrampClientException
+	 * @throws SrampServerException
+	 * @throws JAXBException
 	 */
 	private BaseArtifactType findExistingArtifactByGAV(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
-		String query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s']", 
+		String query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s']",
 				gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion());
 		Feed feed = client.query(query);
 		if (feed.getEntries().size() == 1) {
 			Entry entry = feed.getEntries().get(0);
 			String uuid = entry.getId().toString();
-			ArtifactType artifactType = SrampClientUtils.getArtifactType(entry);
+			ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
 			entry = client.getFullArtifactEntry(artifactType, uuid);
-			return SrampClientUtils.unwrapSrampArtifact(artifactType, entry);
+			return SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
 		} else if (feed.getEntries().size() > 1) {
 			// If we got multiple results, then we don't really know what to do.
 			logger.info("Found multiple s-ramp artifact entries for GAV information:");
@@ -395,12 +396,12 @@ public class SrampWagon extends StreamWagon {
 	 * Finds an existing artifact in the s-ramp repository using 'universal' form.  This allows
 	 * any artifact in the s-ramp repository to be referenced as a Maven dependency using the
 	 * model.type and UUID of the artifact.
-	 * @param client 
+	 * @param client
 	 * @param artifactType
 	 * @param gavInfo
-	 * @throws SrampClientException 
-	 * @throws SrampServerException 
-	 * @throws JAXBException 
+	 * @throws SrampClientException
+	 * @throws SrampServerException
+	 * @throws JAXBException
 	 */
 	private BaseArtifactType findExistingArtifactByUniversal(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
 		String artifactModel = gavInfo.getGroupId().substring(0, gavInfo.getGroupId().indexOf('.'));
@@ -413,13 +414,13 @@ public class SrampWagon extends StreamWagon {
 			logger.debug(t.getMessage());
 		}
 		if (entry != null)
-			return SrampClientUtils.unwrapSrampArtifact(artifactType, entry);
+			return SrampAtomUtils.unwrapSrampArtifact(ArtifactType.valueOf(artifactType), entry);
 		return null;
 	}
 
 	/**
 	 * Updates the content of the given artifact.  This is called when the Maven deploy is run
-	 * but the s-ramp repository already has an artifact deployed with the same type and GAV 
+	 * but the s-ramp repository already has an artifact deployed with the same type and GAV
 	 * information given (resulting in a re-deploy of the artifact content).
 	 * @param client
 	 * @param artifact
@@ -436,7 +437,7 @@ public class SrampWagon extends StreamWagon {
 	 */
 	@Override
 	public void fillOutputData(OutputData outputData) throws TransferFailedException {
-		// Since the wagon is implementing the put method directly, the StreamWagon's 
+		// Since the wagon is implementing the put method directly, the StreamWagon's
 		// implementation is never called.
 		throw new RuntimeException("Should never get here!");
 	}

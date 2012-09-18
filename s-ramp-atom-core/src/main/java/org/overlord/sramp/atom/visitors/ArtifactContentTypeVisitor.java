@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.atom.models;
+package org.overlord.sramp.atom.visitors;
 
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 
 /**
  * A simple artifact visitor that determines the content type of an S-RAMP
@@ -28,7 +30,7 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitorAdapter {
 
 	private javax.ws.rs.core.MediaType contentType;
-	
+
 	/**
 	 * Default constructor.
 	 */
@@ -40,9 +42,26 @@ public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitorAdapt
 	 */
 	@Override
 	protected void visitBase(BaseArtifactType artifact) {
+		setContentType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitDocument(org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType)
+	 */
+	@Override
+	protected void visitDocument(DocumentArtifactType artifact) {
+		if (artifact.getContentType() != null)
+			setContentType(MediaType.valueOf(artifact.getContentType()));
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitXmlDocument(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
+	 */
+	@Override
+	protected void visitXmlDocument(XmlDocument artifact) {
 		setContentType(MediaType.APPLICATION_XML_TYPE);
 	}
-	
+
 	/**
 	 * @return the contentType
 	 */
@@ -56,5 +75,5 @@ public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitorAdapt
 	public void setContentType(javax.ws.rs.core.MediaType contentType) {
 		this.contentType = contentType;
 	}
-	
+
 }

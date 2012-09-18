@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.atom.models;
+package org.overlord.sramp.atom.visitors;
 
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -94,12 +94,18 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 		try {
 			ArtifactType artifactType = ArtifactType.valueOf(artifact);
 			Entry entry = new Entry();
-			entry.setId(new URI(artifact.getUuid()));
-			entry.setUpdated(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
-			entry.setTitle(artifact.getName());
-			entry.setPublished(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
-			entry.getAuthors().add(new Person(artifact.getCreatedBy()));
-			entry.setSummary(artifact.getDescription());
+			if (artifact.getUuid() != null)
+				entry.setId(new URI(artifact.getUuid()));
+			if (artifact.getLastModifiedTimestamp() != null)
+				entry.setUpdated(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
+			if (artifact.getName() != null)
+				entry.setTitle(artifact.getName());
+			if (artifact.getCreatedTimestamp() != null)
+				entry.setPublished(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
+			if (artifact.getCreatedBy() != null)
+				entry.getAuthors().add(new Person(artifact.getCreatedBy()));
+			if (artifact.getDescription() != null)
+				entry.setSummary(artifact.getDescription());
 
 			//TODO create URL Helper, obtain base URL from server
 			String atomLink = "http://localhost:8080/changeit/s-ramp/"
