@@ -16,7 +16,8 @@
 package org.overlord.sramp.ui.server.rsvcs;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.overlord.sramp.client.SrampClientUtils;
+import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
@@ -63,7 +64,7 @@ public class ArtifactRemoteService extends RemoteServiceServlet implements IArti
 			details.setCreatedOn(entry.getPublished());
 			details.setUpdatedOn(entry.getUpdated());
 
-			BaseArtifactType artifact = SrampClientUtils.unwrapSrampArtifact(type, entry);
+			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(ArtifactType.valueOf(type), entry);
 			for (Property property : artifact.getProperty()) {
 				details.setProperty(property.getPropertyName(), property.getPropertyValue());
 			}
