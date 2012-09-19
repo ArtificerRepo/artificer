@@ -56,7 +56,7 @@ public class JCRPersistenceTest {
     public void prepForTest() {
         new JCRRepositoryCleaner().clean();
     }
-    
+
     @Test
     public void testSave_PDF() throws Exception {
         String artifactFileName = "s-ramp-press-release.pdf";
@@ -90,7 +90,7 @@ public class JCRPersistenceTest {
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         Assert.assertEquals(new Long(2376l), ((XsdDocument) artifact).getContentSize());
     }
-    
+
     @Test
     public void testSavePO_XML() throws Exception {
         String artifactFileName = "PO.xml";
@@ -194,6 +194,31 @@ public class JCRPersistenceTest {
         Assert.assertEquals("My PO", artifact.getName());
         Assert.assertEquals("A new description of the PO.xsd artifact.", artifact.getDescription());
         Assert.assertEquals("2.0.13", artifact.getVersion());
+    }
+
+    /**
+     * Tests that we can update the content of an s-ramp artifact.
+     * @throws Exception
+     */
+    @Test
+    public void testUpdateContent() throws Exception {
+    	// First, add an artifact to the repo
+        String artifactFileName = "PO.xsd";
+        InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Assert.assertNotNull(artifact);
+        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
+        Assert.assertEquals(XsdDocument.class, artifact.getClass());
+        Assert.assertEquals(new Long(2376l), ((XsdDocument) artifact).getContentSize());
+        Assert.assertEquals(artifactFileName, artifact.getName());
+
+        // Now update the artifact content
+        InputStream otherXsd = this.getClass().getResourceAsStream("/sample-files/xsd/XMLSchema.xsd");
+        persistenceManager.updateArtifactContent(artifact.getUuid(), ArtifactType.XsdDocument, otherXsd);
+
+        // Now verify the content was updated
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        Assert.assertEquals(new Long(87677), ((XsdDocument) artifact).getContentSize());
     }
 
     /**

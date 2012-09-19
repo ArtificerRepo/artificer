@@ -82,7 +82,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 
             Node artifactNode = tools.uploadFile(session, artifactPath, content);
             JCRUtils.setArtifactContentMimeType(artifactNode, type.getMimeType());
-            
+
             String jcrMixinName = type.getArtifactType().getApiType().value();
             jcrMixinName = JCRConstants.SRAMP + jcrMixinName.substring(0,1).toLowerCase() + jcrMixinName.substring(1);
             artifactNode.addMixin(jcrMixinName);
@@ -96,10 +96,10 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
                 // read the encoding from the header
                 artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_ENCODING, "UTF-8");
             }
-            
+
             log.debug("Successfully saved {} to node={}",name, uuid);
             session.save();
-            
+
             printArtifactGraph(uuid, type);
             //now create the S-RAMP Artifact object from the JCR node
             BaseArtifactType baseTypeArtifact = JCRNodeToArtifactFactory.createArtifact(artifactNode, type);
@@ -183,16 +183,49 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 
         try {
             session = JCRRepository.getSession();
-            Node arifactNode = session.getNode(artifactPath);
-            UpdateJCRNodeFromArtifactVisitor visitor = new UpdateJCRNodeFromArtifactVisitor(arifactNode);
+            Node artifactNode = session.getNode(artifactPath);
+            if (artifactNode == null) {
+            	throw new RepositoryException("No artifact found with UUID: " + artifact.getUuid());
+            }
+            UpdateJCRNodeFromArtifactVisitor visitor = new UpdateJCRNodeFromArtifactVisitor(artifactNode);
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
             if (visitor.hasError())
             	throw visitor.getError();
             session.save();
+        } catch (RepositoryException e) {
+        	throw e;
         } catch (Throwable t) {
         	throw new RepositoryException(t);
         } finally {
             session.logout();
+        }
+    }
+
+    /**
+     * @see org.overlord.sramp.repository.PersistenceManager#updateArtifactContent(java.lang.String, org.overlord.sramp.ArtifactType, java.io.InputStream)
+     */
+    @Override
+    public void updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws RepositoryException {
+        Session session = null;
+        String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
+
+        try {
+            session = JCRRepository.getSession();
+            Node artifactNode = session.getNode(artifactPath);
+            if (artifactNode == null) {
+            	throw new RepositoryException("No artifact found with UUID: " + uuid);
+            }
+            JcrTools tools = new JcrTools();
+            tools.uploadFile(session, artifactPath, content);
+
+            session.save();
+        } catch (RepositoryException e) {
+        	throw e;
+        } catch (Throwable t) {
+        	throw new RepositoryException(t);
+        } finally {
+            session.logout();
+            IOUtils.closeQuietly(content);
         }
     }
 
