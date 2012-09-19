@@ -237,9 +237,17 @@ public class ArtifactResource {
     	}
     	String mimeType = determineMimeType(contentType, fileName, artifactType);
     	artifactType.setMimeType(mimeType);
-    	// ********************************************
-    	// TODO implement updating the artifact content!
-    	// ********************************************
+
+        InputStream is = content;
+        try {
+            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+            //store the content
+            persistenceManager.updateArtifactContent(uuid, artifactType, is);
+        } catch (Exception e) {
+			throw new SrampAtomException(e);
+        } finally {
+        	IOUtils.closeQuietly(is);
+        }
     }
 
     /**

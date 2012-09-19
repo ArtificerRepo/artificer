@@ -74,6 +74,15 @@ public interface PersistenceManager {
 	public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws RepositoryException;
 
 	/**
+	 * Called to update the content for an existing artifact.
+	 * @param uuid a UUID of an existing artifact
+	 * @param artifactType the artifact's type
+	 * @param content the new artifact content
+	 * @throws RepositoryException
+	 */
+	public void updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws RepositoryException;
+
+	/**
 	 * Deletes a previously persisted artifact from the S-RAMP repository.
 	 * @param uuid
 	 * @param artifactType
