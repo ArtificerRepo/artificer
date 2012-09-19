@@ -23,26 +23,28 @@ import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.specimpl.UriBuilderImpl;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.util.HttpHeaderNames;
+import org.overlord.sramp.atom.providers.HttpResponseProvider;
 
 /**
  * Extends the RESTEasy {@link org.jboss.resteasy.client.ClientRequest} class in order to provide a
  * {@link ClientExecutor} and {@link ResteasyProviderFactory} without requiring clients to pass them in.
- * 
+ *
  * Additionally, this class overrides the various http methods (post, get, put) in order to implement
- * some error handling.  These methods will throw an appropriate exception now (when possible), rather 
+ * some error handling.  These methods will throw an appropriate exception now (when possible), rather
  * than a less meaningful RESTEasy generic exception.  When communicating with the JBoss s-ramp
  * implementation, this error handling should work well (it should throw an exception that also includes
  * the server-side root-cause stack trace).  When connecting to some other s-ramp implementation, your
  * mileage may vary.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
-	
+
 	private static final ResteasyProviderFactory providerFactory = new ResteasyProviderFactory();
 	static {
 		RegisterBuiltin.register(providerFactory);
 		providerFactory.registerProvider(SrampClientExceptionReader.class);
+		providerFactory.registerProvider(HttpResponseProvider.class);
 	}
 
 	/**
@@ -53,7 +55,7 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 		return new UriBuilderImpl().uriTemplate(uriTemplate);
 	}
 
-	
+
 	/**
 	 * Constructor.
 	 * @param uriTemplate
@@ -61,7 +63,7 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 	public ClientRequest(String uriTemplate) {
 		super(getBuilder(uriTemplate), getDefaultExecutor(), providerFactory);
 	}
-	
+
 	/**
 	 * @see org.jboss.resteasy.client.ClientRequest#post(java.lang.Class)
 	 */
@@ -71,7 +73,7 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 		handlePotentialServerError(response);
 		return response;
 	}
-	
+
 	/**
 	 * @see org.jboss.resteasy.client.ClientRequest#get(java.lang.Class)
 	 */
@@ -81,7 +83,7 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 		handlePotentialServerError(response);
 		return response;
 	}
-	
+
 	/**
 	 * @see org.jboss.resteasy.client.ClientRequest#put(java.lang.Class)
 	 */
@@ -91,7 +93,7 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 		handlePotentialServerError(response);
 		return response;
 	}
-	
+
 	/**
 	 * @see org.jboss.resteasy.client.ClientRequest#delete(java.lang.Class)
 	 */
