@@ -37,16 +37,6 @@
 			<artifactId>modeshape-jcr</artifactId>
 			<version>${org.modeshape.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-sequencer-xsd</artifactId>
-			<version>${org.modeshape.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-sequencer-xml</artifactId>
-			<version>${org.modeshape.version}</version>
-		</dependency>
 		<!-- Common libraries -->
 		<dependency>
 			<groupId>commons-io</groupId>

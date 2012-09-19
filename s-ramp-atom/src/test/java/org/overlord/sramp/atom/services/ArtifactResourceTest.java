@@ -48,12 +48,8 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		// bring up the embedded container with the ArtifactResource deployed.
 		getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
+		new JCRRepositoryCleaner().clean();
 	}
-
-    @Before
-    public void prepForTest() {
-        new JCRRepositoryCleaner().clean();
-    }
 
 	/**
 	 * @throws Exception

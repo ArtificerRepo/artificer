@@ -15,10 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import static org.modeshape.jcr.api.observation.Event.Sequencing.NODE_SEQUENCED;
-import static org.overlord.sramp.repository.jcr.JCRConstants.OVERLORD_ARTIFACT;
-import static org.overlord.sramp.repository.jcr.JCRConstants.SRAMP_UUID;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -32,8 +28,6 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Workspace;
 
 import org.apache.commons.io.IOUtils;
 import org.modeshape.jcr.api.AnonymousCredentials;
@@ -46,8 +40,7 @@ public class JCRRepository {
     private static String WORKSPACE_NAME = "default";
     
     private static Repository repository = null;
-    private static SequencingListener listener = null;
-    
+   
     /**
      * Gets the singleton instance of the JCR Repository.
      * @throws RepositoryException
@@ -62,38 +55,9 @@ public class JCRRepository {
                 if (repository != null) break;
             }
             if (repository==null) throw new RepositoryException("ServiceLoader could not instantiate JCR Repository");
-            getListener(); //create the listener
             configureNodeTypes();
         }
         return repository;
-    }
-    
-    /**
-     * Gets the sequencing listener.
-     * @throws UnsupportedRepositoryOperationException
-     * @throws LoginException
-     * @throws NoSuchWorkspaceException
-     * @throws RepositoryException
-     */
-    public static SequencingListener getListener() throws UnsupportedRepositoryOperationException, LoginException, NoSuchWorkspaceException, RepositoryException {
-        if (listener == null) {
-            Session session = null;
-            try {
-                session = JCRRepository.getSession();
-	            listener = new SequencingListener();
-	            ((Workspace) session.getWorkspace()).getObservationManager().addEventListener(listener,
-	                    NODE_SEQUENCED,
-	                    null,
-	                    true,
-	                    null,
-	                    null,
-	                    false);
-            } finally {
-				if (session != null)
-					session.logout();
-            }
-        }
-        return listener;
     }
     
     /**
@@ -124,16 +88,11 @@ public class JCRRepository {
 
             NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
             
-            if (! manager.hasNodeType(SRAMP_UUID)) {
+            //if (! manager.hasNodeType(SRAMP_UUID)) {
                 // Register the ModeShape S-RAMP node types ...
-                is = JCRRepository.class.getResourceAsStream("/org/modeshape/sequencer/sramp/sramp.cnd");
+                is = JCRRepository.class.getResourceAsStream("/org/overlord/s-ramp/sramp.cnd");
                 manager.registerNodeTypes(is,true);
-            }
-            if (! manager.hasNodeType(OVERLORD_ARTIFACT)) {
-                // Register the Overlord node types ...
-                is = JCRRepository.class.getResourceAsStream("/org/overlord/s-ramp/overlord.cnd");
-                manager.registerNodeTypes(is,true);
-            }
+            //}
         } catch (LoginException e) {
             throw e;
         } catch (NoSuchWorkspaceException e) {
