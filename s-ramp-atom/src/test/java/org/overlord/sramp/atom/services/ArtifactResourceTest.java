@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -29,6 +30,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
@@ -92,10 +94,15 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		String content = doGetXsdContent(entryId);
 		verifyXsdContent(content);
 
-		// Update
+		// Update meta data
 		doUpdateXsdEntry(entry);
 		entry = doGetXsdEntry(entryId);
 		verifyEntryUpdated(entry);
+
+		// Update content
+		doUpdateXsdContent(entry);
+		content = doGetXsdContent(entryId);
+		verifyContentUpdated(content);
 
 		deleteXsdEntry(entryId);
 		verifyEntryDeleted(entryId);
@@ -188,12 +195,13 @@ public class ArtifactResourceTest extends BaseResourceTest {
 	 */
 	private void doUpdateXsdEntry(Entry entry) throws Exception {
 		// First, make a change to the entry.
-		Artifact srampArtifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
-		XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
+		XsdDocument xsdDocument = (XsdDocument) SrampAtomUtils.unwrapSrampArtifact(entry);
 		String uuid = xsdDocument.getUuid();
 		xsdDocument.setDescription("** Updated description! **");
 
-		entry.setAnyOtherJAXBObject(srampArtifactWrapper);
+		Artifact arty = new Artifact();
+		arty.setXsdDocument(xsdDocument);
+		entry.setAnyOtherJAXBObject(arty);
 
 		// Now PUT the changed entry into the repo
 		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
@@ -211,6 +219,45 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		Artifact srampArtifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
 		XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
 		Assert.assertEquals("** Updated description! **", xsdDocument.getDescription());
+	}
+
+	/**
+	 * Updates the content of the artifact.
+	 * @param entry
+	 * @throws Exception
+	 */
+	private void doUpdateXsdContent(Entry entry) throws Exception {
+		XsdDocument xsdDocument = (XsdDocument) SrampAtomUtils.unwrapSrampArtifact(entry);
+		String uuid = xsdDocument.getUuid();
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid + "/media"));
+
+		// read the XsdDocument from file
+		String artifactFileName = "PO-updated.xsd";
+		InputStream xsdStream = null;
+		try {
+			xsdStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+			request.body(MediaType.APPLICATION_XML, xsdStream);
+			request.put(Void.class);
+		} finally {
+			IOUtils.closeQuietly(xsdStream);
+		}
+	}
+
+	/**
+	 * Confirms that the content was updated.
+	 * @param content
+	 * @throws IOException
+	 */
+	private void verifyContentUpdated(String content) throws IOException {
+		Assert.assertNotNull(content);
+
+		InputStream xsdStream = this.getClass().getResourceAsStream("/sample-files/xsd/PO-updated.xsd");
+		try {
+			String expectedContent = TestUtils.convertStreamToString(xsdStream);
+			Assert.assertEquals(expectedContent, content);
+		} finally {
+			xsdStream.close();
+		}
 	}
 
 	/**

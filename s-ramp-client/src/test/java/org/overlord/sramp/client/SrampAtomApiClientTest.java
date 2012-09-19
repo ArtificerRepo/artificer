@@ -32,6 +32,7 @@ import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.overlord.sramp.atom.services.ArtifactResource;
 import org.overlord.sramp.atom.services.FeedResource;
@@ -133,6 +134,42 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		// Now verify
 		Entry entry = client.getFullArtifactEntry(ArtifactType.XsdDocument, uuid.toString());
 		Assert.assertEquals("** DESCRIPTION UPDATED **", entry.getSummary());
+	}
+
+	/**
+	 * Tests updating an artifact.
+	 * @throws Exception
+	 */
+	public void testUpdateArtifactContent() throws Exception {
+		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+		URI uuid = null;
+		XsdDocument xsdDoc = null;
+
+		// First, upload an artifact so we have some content to update
+		String artifactFileName = "PO.xsd";
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		try {
+			Entry entry = client.uploadArtifact("xsd", "XsdDocument", is, artifactFileName);
+			Assert.assertNotNull(entry);
+			Assert.assertEquals(artifactFileName, entry.getTitle());
+			uuid = entry.getId();
+			xsdDoc = entry.getAnyOtherJAXBObject(XsdDocument.class);
+		} finally {
+			is.close();
+		}
+
+		// Now update the artifact content
+		is = this.getClass().getResourceAsStream("/sample-files/xsd/PO-updated.xsd");
+		try {
+			client.updateArtifact(xsdDoc, is);
+		} finally {
+			is.close();
+		}
+
+		// Now verify
+		Entry entry = client.getFullArtifactEntry(ArtifactType.XsdDocument, uuid.toString());
+		xsdDoc = (XsdDocument) SrampAtomUtils.unwrapSrampArtifact(entry);
+		Assert.assertEquals(new Long(2583), xsdDoc.getContentSize());
 	}
 
 	/**
