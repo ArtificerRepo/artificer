@@ -120,8 +120,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitDocument(DocumentArtifactType artifact) {
-        artifact.setContentSize(Long.valueOf(getProperty(jcrNode, "sramp:contentSize")));
-        artifact.setContentType(getProperty(jcrNode, "sramp:contentType"));
+        artifact.setContentSize(getPropertyLength(jcrNode,"jcr:content/jcr:data"));
+        artifact.setContentType(getProperty(jcrNode, "jcr:content/jcr:mimeType"));
 	}
 
 	/**
@@ -159,6 +159,35 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 		} catch (javax.jcr.RepositoryException e) {
 		}
 		return defaultValue;
+    }
+    
+    /**
+     * Gets a single property from the given JCR node.  This returns null
+     * if the property does not exist.
+     * @param node the JCR node
+     * @param propertyName the name of the property
+     * @return the String value of the property
+     */
+    protected static final Long getPropertyLength(Node node, String propertyName) {
+        return getPropertyLength(node, propertyName, null);
+    }
+
+    /**
+     * Gets a single property from the given JCR node.  This returns a default value if
+     * the property does not exist.
+     * @param node the JCR node
+     * @param propertyName the name of the property
+     * @param defaultValue a default value if the property does not exist on the node
+     * @return the String value of the property
+     */
+    protected static final Long getPropertyLength(Node node, String propertyName, Long defaultValue) {
+        try {
+            return node.getProperty(propertyName).getLength();
+        } catch (ValueFormatException e) {
+        } catch (PathNotFoundException e) {
+        } catch (javax.jcr.RepositoryException e) {
+        }
+        return defaultValue;
     }
 
 }
