@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.security.MessageDigest;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Transformer;
@@ -70,12 +68,6 @@ import org.w3c.dom.Document;
 @SuppressWarnings("unchecked")
 @Component(role = Wagon.class, hint = "sramp", instantiationStrategy = "per-lookup")
 public class SrampWagon extends StreamWagon {
-	private static final Map<String, ArtifactType> supportedTypes = new HashMap<String, ArtifactType>();
-	static {
-		supportedTypes.put("xml", ArtifactType.XmlDocument);
-		supportedTypes.put("xsd", ArtifactType.XsdDocument);
-		supportedTypes.put("wsdl", ArtifactType.WsdlDocument);
-	}
 
 	@Requirement
 	private Logger logger;
@@ -91,7 +83,11 @@ public class SrampWagon extends StreamWagon {
 	 */
 	@Override
 	protected void openConnectionInternal() throws ConnectionException, AuthenticationException {
+		// Even though the S-RAMP Atom API is session-less, use this open method
+		// to start building up an S-RAMP archive containing the artifacts we are
+		// storing in the repository (along with the meta-data for those artifacts).
 		// The S-RAMP Atom API is session-less, so no connections to open
+
 	}
 
 	/**
@@ -100,6 +96,7 @@ public class SrampWagon extends StreamWagon {
 	@Override
 	public void closeConnection() throws ConnectionException {
 		// The S-RAMP Atom API is session-less, so no connections to close
+		System.out.println("****** CLOSE CONNECTION *******");
 	}
 
 	/**
@@ -153,7 +150,7 @@ public class SrampWagon extends StreamWagon {
 				String sha1Hash = generateSHA1Hash(artifactContent);
 			    inputData.setInputStream(new ByteArrayInputStream(sha1Hash.getBytes("UTF-8")));
 			    return;
-			} else if (supportedTypes.containsKey(gavInfo.getType())) {
+			} else  {
 				// Get the artifact content as an input stream
 				InputStream artifactContent = client.getArtifactContent(type, artifact.getUuid());
 				inputData.setInputStream(artifactContent);
@@ -303,17 +300,14 @@ public class SrampWagon extends StreamWagon {
 	}
 
 	/**
-	 * Gets the artifact type from the resource.  Returns null if the resource type does
-	 * not map to an artifact type.
+	 * Gets the artifact type from the resource.
 	 * @param resource
 	 */
 	private ArtifactType getArtifactType(Resource resource) {
-		MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
-		if (supportedTypes.containsKey(gavInfo.getType())) {
-			return supportedTypes.get(gavInfo.getType());
-		} else {
-			return null;
-		}
+		String fileName = resource.getName();
+		int extensionIdx = fileName.lastIndexOf('.');
+		String extension = resource.getName().substring(extensionIdx + 1);
+		return ArtifactType.fromFileExtension(extension);
 	}
 
 	/**
@@ -334,7 +328,7 @@ public class SrampWagon extends StreamWagon {
 		try {
 			BaseArtifactType artifact = findExistingArtifact(client, gavInfo);
 			if (artifact != null) {
-				updateArtifactContent(client, artifact, resourceInputStream);
+				client.updateArtifact(artifact, resourceInputStream);
 			} else {
 				Entry entry = client.uploadArtifact(artifactType, resourceInputStream, resource.getName());
 				artifact = SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
@@ -355,6 +349,7 @@ public class SrampWagon extends StreamWagon {
 	 * @param client
 	 * @param artifactType
 	 * @param gavInfo
+	 * @return an s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException
 	 * @throws SrampServerException
 	 * @throws JAXBException
@@ -370,6 +365,7 @@ public class SrampWagon extends StreamWagon {
 	 * Finds an existing artifact in the s-ramp repository that matches the GAV information.
 	 * @param client
 	 * @param gavInfo
+	 * @return an s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException
 	 * @throws SrampServerException
 	 * @throws JAXBException
@@ -399,37 +395,23 @@ public class SrampWagon extends StreamWagon {
 	 * @param client
 	 * @param artifactType
 	 * @param gavInfo
+	 * @return an existing s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException
 	 * @throws SrampServerException
 	 * @throws JAXBException
 	 */
 	private BaseArtifactType findExistingArtifactByUniversal(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
-		String artifactModel = gavInfo.getGroupId().substring(0, gavInfo.getGroupId().indexOf('.'));
 		String artifactType = gavInfo.getGroupId().substring(gavInfo.getGroupId().indexOf('.') + 1);
 		String uuid = gavInfo.getArtifactId();
 		Entry entry = null;
 		try {
-			entry = client.getFullArtifactEntry(artifactModel, artifactType, uuid);
+			entry = client.getFullArtifactEntry(ArtifactType.valueOf(artifactType), uuid);
 		} catch (Throwable t) {
 			logger.debug(t.getMessage());
 		}
 		if (entry != null)
 			return SrampAtomUtils.unwrapSrampArtifact(ArtifactType.valueOf(artifactType), entry);
 		return null;
-	}
-
-	/**
-	 * Updates the content of the given artifact.  This is called when the Maven deploy is run
-	 * but the s-ramp repository already has an artifact deployed with the same type and GAV
-	 * information given (resulting in a re-deploy of the artifact content).
-	 * @param client
-	 * @param artifact
-	 * @param resourceInputStream
-	 * @throws SrampClientException
-	 */
-	private void updateArtifactContent(SrampAtomApiClient client, BaseArtifactType artifact,
-			InputStream resourceInputStream) throws SrampClientException {
-		client.updateArtifact(artifact, resourceInputStream);
 	}
 
 	/**

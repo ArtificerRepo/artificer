@@ -60,6 +60,11 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>${slf4j.api.version}</version>
+		</dependency>
 
 		<!-- Test dependencies -->
 		<dependency>

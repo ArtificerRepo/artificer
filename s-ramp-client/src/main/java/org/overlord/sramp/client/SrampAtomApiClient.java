@@ -26,6 +26,7 @@ import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.SrampAtomUtils;
+import org.overlord.sramp.atom.mime.MimeTypes;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -50,17 +51,17 @@ public class SrampAtomApiClient {
 
 	/**
 	 * Gets an Atom {@link Entry} for the given S-RAMP artifact by UUID.
-	 * @param artifactModel the artifact model (core, xsd, wsdl, etc)
-	 * @param artifactType the artifact type (XmlDocument, XsdDocument, etc)
-	 * @param artifactUuid the S-RAMP uuid of the artifact
-	 * @return an Atom {@link Entry}
+	 * @param artifactType
+	 * @param artifactUuid
 	 * @throws SrampClientException
 	 * @throws SrampServerException
 	 */
-	public Entry getFullArtifactEntry(String artifactModel, String artifactType, String artifactUuid)
+	public Entry getFullArtifactEntry(ArtifactType artifactType, String artifactUuid)
 			throws SrampClientException, SrampServerException {
 		try {
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint,
+					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
+					artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
 			ClientResponse<Entry> response = request.get(Entry.class);
 			return response.getEntity();
@@ -72,64 +73,24 @@ public class SrampAtomApiClient {
 	}
 
 	/**
-	 * Please see javadoc in {@link SrampAtomApiClient#getFullArtifactEntry(String, String, String)}.
-	 * @param artifactType
-	 * @param artifactUuid
-	 * @throws SrampClientException
-	 * @throws SrampServerException
-	 */
-	public Entry getFullArtifactEntry(ArtifactType artifactType, String artifactUuid)
-			throws SrampClientException, SrampServerException {
-		return getFullArtifactEntry(artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(), artifactUuid);
-	}
-
-	/**
 	 * Gets the content for an artifact as an input stream.  The caller must close the resulting
-	 * {@link InputStream} when done.
-	 * @param artifactModel the artifact model (core, xsd, wsdl, etc)
-	 * @param artifactType the artifact type (XmlDocument, XsdDocument, etc)
+	 * @param artifactType the artifact type
 	 * @param artifactUuid the S-RAMP uuid of the artifact
 	 * @return an {@link InputStream} to the S-RAMP artifact content
 	 * @throws SrampClientException
 	 * @throws SrampServerException
 	 */
-	public InputStream getArtifactContent(String artifactModel, String artifactType, String artifactUuid)
+	public InputStream getArtifactContent(ArtifactType artifactType, String artifactUuid)
 			throws SrampClientException, SrampServerException {
 		try {
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint,
+					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
+					artifactUuid);
 			URL url = new URL(atomUrl);
 			return url.openStream();
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
 		}
-	}
-
-	/**
-	 * Please see javadoc in {@link SrampAtomApiClient#getArtifactContent(String, String, String)}.
-	 * @param artifactType
-	 * @param artifactUuid
-	 * @throws SrampClientException
-	 * @throws SrampServerException
-	 */
-	public InputStream getArtifactContent(ArtifactType artifactType, String artifactUuid)
-			throws SrampClientException, SrampServerException {
-		return getArtifactContent(artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(), artifactUuid);
-	}
-
-	/**
-	 * Uploads an artifact to the s-ramp repository.
-	 * @param artifactModel the new artifact's model
-	 * @param artifactType the new artifact's type
-	 * @param content the byte content of the artifact
-	 * @param artifactFileName the file name of the artifact (optional, can be null)
-	 * @return an Atom entry representing the new artifact in the s-ramp repository
-	 * @throws SrampClientException
-	 * @throws SrampServerException
-	 */
-	public Entry uploadArtifact(String artifactModel, String artifactType, InputStream content,
-			String artifactFileName) throws SrampClientException, SrampServerException {
-		ArtifactType type = ArtifactType.valueOf(artifactType);
-		return uploadArtifact(type, content, artifactFileName);
 	}
 
 	/**
@@ -142,12 +103,19 @@ public class SrampAtomApiClient {
 	 */
 	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
 			throws SrampClientException, SrampServerException {
+		// Determine the mime type if it's not included in the artifact type.
+		String mimeType = artifactType.getMimeType();
+		if (mimeType == null) {
+			mimeType = MimeTypes.getContentType(artifactFileName);
+		}
 		try {
 			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType());
 			ClientRequest request = new ClientRequest(atomUrl);
 			if (artifactFileName != null)
 				request.header("Slug", artifactFileName);
+			if (mimeType != null)
+				request.header("Content-Type", mimeType);
 			request.body(artifactType.getMimeType(), content);
 
 			ClientResponse<Entry> response = request.post(Entry.class);
