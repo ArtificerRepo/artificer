@@ -239,11 +239,14 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 
         try {
             session = JCRRepository.getSession();
-            session.getNode(artifactPath).remove();
             if (session.nodeExists(artifactPath)) {
             	session.getNode(artifactPath).remove();
+            } else {
+            	throw new RepositoryException("Artifact not found.");
             }
             session.save();
+        } catch (RepositoryException e) {
+        	throw e;
         } catch (Throwable t) {
         	throw new RepositoryException(t);
         } finally {

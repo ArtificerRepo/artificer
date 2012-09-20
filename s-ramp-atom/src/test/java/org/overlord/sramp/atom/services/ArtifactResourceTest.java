@@ -33,6 +33,9 @@ import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Document;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.atom.TestUtils;
@@ -75,6 +78,93 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		Assert.assertEquals(500, response.getStatus());
 		String stack = response.getEntity();
 		Assert.assertTrue(stack.contains("Failed to create artifact because 'ElementDeclaration' is a derived type."));
+	}
+
+	/**
+	 * Tests adding a binary document.
+	 * @throws Exception
+	 */
+	@Test
+	public void testBinaryDocumentCreate() throws Exception {
+		// Add the PDF to the repository
+		String artifactFileName = "sample.pdf";
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/pdf/" + artifactFileName);
+		String uuid = null;
+		try {
+			ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document"));
+			request.header("Slug", artifactFileName);
+			request.body("application/pdf", contentStream);
+
+			ClientResponse<Entry> response = request.post(Entry.class);
+
+			Entry entry = response.getEntity();
+			Assert.assertEquals(artifactFileName, entry.getTitle());
+			BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+			Assert.assertTrue(arty instanceof Document);
+			Document doc = (Document) arty;
+			Assert.assertEquals(artifactFileName, doc.getName());
+			Assert.assertEquals(Long.valueOf(218882), doc.getContentSize());
+			Assert.assertEquals("application/pdf", doc.getContentType());
+			uuid = doc.getUuid();
+		} finally {
+			IOUtils.closeQuietly(contentStream);
+		}
+
+		// Make sure we can query it now
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document/" + uuid));
+		ClientResponse<Entry> response = request.get(Entry.class);
+
+		Entry entry = response.getEntity();
+		BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+		Assert.assertTrue(arty instanceof Document);
+		Document doc = (Document) arty;
+		Assert.assertEquals(artifactFileName, doc.getName());
+		Assert.assertEquals(Long.valueOf(218882), doc.getContentSize());
+		Assert.assertEquals("sample.pdf", doc.getName());
+		Assert.assertEquals("application/pdf", doc.getContentType());
+	}
+
+	/**
+	 * Tests adding a wsdl document.
+	 * @throws Exception
+	 */
+	@Test
+	public void testWsdlDocumentCreate() throws Exception {
+		// Add the PDF to the repository
+		String artifactFileName = "sample.wsdl";
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
+		String uuid = null;
+		try {
+			ClientRequest request = new ClientRequest(generateURL("/s-ramp/wsdl/WsdlDocument"));
+			request.header("Slug", artifactFileName);
+			request.body("application/xml", contentStream);
+
+			ClientResponse<Entry> response = request.post(Entry.class);
+
+			Entry entry = response.getEntity();
+			Assert.assertEquals(artifactFileName, entry.getTitle());
+			BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+			Assert.assertTrue(arty instanceof WsdlDocument);
+			WsdlDocument doc = (WsdlDocument) arty;
+			Assert.assertEquals(artifactFileName, doc.getName());
+			Assert.assertEquals(Long.valueOf(1643), doc.getContentSize());
+			Assert.assertEquals("application/xml", doc.getContentType());
+			uuid = doc.getUuid();
+		} finally {
+			IOUtils.closeQuietly(contentStream);
+		}
+
+		// Make sure we can query it now
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/wsdl/WsdlDocument/" + uuid));
+		ClientResponse<Entry> response = request.get(Entry.class);
+
+		Entry entry = response.getEntity();
+		BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+		Assert.assertNotNull(arty);
+		Assert.assertTrue(arty instanceof WsdlDocument);
+		WsdlDocument wsdlDoc = (WsdlDocument) arty;
+		Assert.assertEquals(Long.valueOf(1643), wsdlDoc.getContentSize());
+		Assert.assertEquals("sample.wsdl", wsdlDoc.getName());
 	}
 
 	/**
