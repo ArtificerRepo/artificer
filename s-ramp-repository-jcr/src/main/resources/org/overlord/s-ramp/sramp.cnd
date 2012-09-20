@@ -59,6 +59,10 @@
 
 [sramp:xsdDocument] > sramp:xmlDocument mixin
 
+[sramp:wsdlDocument] > sramp:xmlDocument mixin
+
+[sramp:policyDocument] > sramp:xmlDocument mixin
+
 [sramp:derivedArtifactType] > sramp:baseArtifactType abstract mixin
 - sramp:relatedDocuments (reference) < 'sramp:documentArtifactType'
 

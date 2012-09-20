@@ -92,7 +92,6 @@ public class ArtifactResource {
      */
     @POST
     @Path("{model}/{type}")
-    @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry create(@HeaderParam("Content-Type") String contentType,
 			@HeaderParam("Slug") String fileName, @PathParam("model") String model,
