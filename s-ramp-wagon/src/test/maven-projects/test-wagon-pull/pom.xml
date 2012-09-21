@@ -5,6 +5,7 @@
 	<artifactId>test-wagon-pull</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>test-wagon-pull</name>
+	
 	<repositories>
 		<repository>
 			<id>local-sramp-repo</id>
@@ -25,7 +26,11 @@
 			<groupId>org.overlord.sramp.test</groupId>
 			<artifactId>test-wagon-push</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<type>xsd</type>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
 		</dependency>
 	</dependencies>
 

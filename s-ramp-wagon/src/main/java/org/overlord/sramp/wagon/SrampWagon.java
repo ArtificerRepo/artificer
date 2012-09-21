@@ -15,20 +15,13 @@
  */
 package org.overlord.sramp.wagon;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.security.MessageDigest;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.conn.HttpHostConnectException;
@@ -59,9 +52,7 @@ import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
-import org.overlord.sramp.wagon.util.PomGenerator;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.w3c.dom.Document;
 
 /**
  * Implements a wagon provider that uses the S-RAMP Atom API.
@@ -127,11 +118,65 @@ public class SrampWagon extends StreamWagon {
 	public void fillInputData(InputData inputData) throws TransferFailedException,
 			ResourceDoesNotExistException, AuthorizationException {
 		Resource resource = inputData.getResource();
-
+		// Skip maven-metadata.xml files - they are not (yet?) supported
 		if (resource.getName().contains("maven-metadata.xml"))
 			throw new ResourceDoesNotExistException("Could not find file: '" + resource + "'");
 
 		logger.debug("Looking up resource from s-ramp repository: " + resource);
+
+		MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
+		if (gavInfo.isHash()) {
+			doGetHash(gavInfo, inputData);
+		} else {
+			doGetArtifact(gavInfo, inputData);
+		}
+
+	}
+
+	/**
+	 * Gets the hash data from the s-ramp repository and stores it in the {@link InputData} for
+	 * use by Maven.
+	 * @param gavInfo
+	 * @param inputData
+	 * @throws TransferFailedException
+	 * @throws ResourceDoesNotExistException
+	 * @throws AuthorizationException
+	 */
+	private void doGetHash(MavenGavInfo gavInfo, InputData inputData) throws TransferFailedException,
+			ResourceDoesNotExistException, AuthorizationException {
+		String artyPath = gavInfo.getFullName();
+		String hashPropName;
+		if (gavInfo.getType().endsWith(".md5")) {
+			hashPropName = "maven.hash.md5";
+			artyPath = artyPath.substring(0, artyPath.length() - 4);
+		} else {
+			hashPropName = "maven.hash.sha1";
+			artyPath = artyPath.substring(0, artyPath.length() - 5);
+		}
+		SrampArchiveEntry entry = this.archive.getEntry(artyPath);
+		if (entry == null) {
+			throw new ResourceDoesNotExistException("Failed to find resource hash: " + gavInfo.getName());
+		}
+		BaseArtifactType metaData = entry.getMetaData();
+
+		String hashValue = SrampModelUtils.getCustomProperty(metaData, hashPropName);
+		if (hashValue == null) {
+			throw new ResourceDoesNotExistException("Failed to find resource hash: " + gavInfo.getName());
+		}
+		inputData.setInputStream(IOUtils.toInputStream(hashValue));
+	}
+
+	/***
+	 * Gets the artifact content from the s-ramp repository and stores it in the {@link InputData}
+	 * object for use by Maven.
+	 * @param gavInfo
+	 * @param inputData
+	 * @throws TransferFailedException
+	 * @throws ResourceDoesNotExistException
+	 * @throws AuthorizationException
+	 */
+	private void doGetArtifact(MavenGavInfo gavInfo, InputData inputData) throws TransferFailedException,
+			ResourceDoesNotExistException, AuthorizationException {
 		// RESTEasy uses the current thread's context classloader to load its logger class.  This
 		// fails in Maven because the context classloader is the wagon plugin's classloader, which
 		// doesn't know about any of the RESTEasy JARs.  So here we're temporarily setting the
@@ -140,43 +185,19 @@ public class SrampWagon extends StreamWagon {
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
 		try {
-			MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
 			String endpoint = getSrampEndpoint();
 			SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 
 			// Query the artifact meta data using GAV info
 			BaseArtifactType artifact = findExistingArtifact(client, gavInfo);
 			if (artifact == null)
-				throw new ResourceDoesNotExistException("Artifact not found in s-ramp repository: '" + resource + "'");
+				throw new ResourceDoesNotExistException("Artifact not found in s-ramp repository: '" + gavInfo.getName() + "'");
+			this.archive.addEntry(gavInfo.getFullName(), artifact, null);
 			ArtifactType type = ArtifactType.valueOf(artifact);
 
-			if ("pom".equals(gavInfo.getType())) {
-				String serializedPom = generatePom(artifact);
-			    inputData.setInputStream(new ByteArrayInputStream(serializedPom.getBytes("UTF-8")));
-			    return;
-			} else if ("pom.sha1".equals(gavInfo.getType())) {
-				// Generate a SHA1 hash on the fly for the POM
-				String serializedPom = generatePom(artifact);
-				MessageDigest md = MessageDigest.getInstance("SHA1");
-				md.update(serializedPom.getBytes("UTF-8"));
-				byte[] mdbytes = md.digest();
-				StringBuilder sb = new StringBuilder();
-			    for (int i = 0; i < mdbytes.length; i++) {
-			    	sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-			    }
-			    inputData.setInputStream(new ByteArrayInputStream(sb.toString().getBytes("UTF-8")));
-			    return;
-			} else if (gavInfo.getType().endsWith(".sha1")) {
-				InputStream artifactContent = client.getArtifactContent(type, artifact.getUuid());
-				String sha1Hash = generateSHA1Hash(artifactContent);
-			    inputData.setInputStream(new ByteArrayInputStream(sha1Hash.getBytes("UTF-8")));
-			    return;
-			} else  {
-				// Get the artifact content as an input stream
-				InputStream artifactContent = client.getArtifactContent(type, artifact.getUuid());
-				inputData.setInputStream(artifactContent);
-				return;
-			}
+			// Get the artifact content as an input stream
+			InputStream artifactContent = client.getArtifactContent(type, artifact.getUuid());
+			inputData.setInputStream(artifactContent);
 		} catch (ResourceDoesNotExistException e) {
 			throw e;
 		} catch (SrampClientException e) {
@@ -188,64 +209,6 @@ public class SrampWagon extends StreamWagon {
 			this.logger.error(t.getMessage(), t);
 		} finally {
 			Thread.currentThread().setContextClassLoader(oldCtxCL);
-		}
-		throw new ResourceDoesNotExistException("Could not find file: '" + resource + "'");
-	}
-
-	/**
-	 * Generates a SHA1 hash for the given binary content.
-	 * @param artifactContent an s-ramp artifact input stream
-	 * @return a SHA1 hash
-	 */
-	private String generateSHA1Hash(InputStream artifactContent) {
-		try {
-			MessageDigest md = MessageDigest.getInstance("SHA1");
-			byte[] buff = new byte[2048];
-			int count = artifactContent.read(buff);
-			while (count != -1) {
-				md.update(buff, 0, count);
-				count = artifactContent.read(buff);
-			}
-			byte[] mdbytes = md.digest();
-			StringBuilder sb = new StringBuilder();
-		    for (int i = 0; i < mdbytes.length; i++) {
-		    	sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-		    }
-		    return sb.toString();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			IOUtils.closeQuietly(artifactContent);
-		}
-	}
-
-	/**
-	 * Generates a POM for the artifact.
-	 * @param artifact
-	 * @throws Exception
-	 */
-	private String generatePom(BaseArtifactType artifact) throws Exception {
-		ArtifactType type = ArtifactType.valueOf(artifact);
-		PomGenerator pomGenerator = new PomGenerator();
-		Document pomDoc = pomGenerator.generatePom(artifact, type);
-		String serializedPom = serializeDocument(pomDoc);
-		return serializedPom;
-	}
-
-	/**
-	 * Serialize a document to a string.
-	 * @param document
-	 */
-	private String serializeDocument(Document document) {
-		try {
-			StringWriter writer = new StringWriter();
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "no");
-			transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-			transformer.transform(new DOMSource(document), new StreamResult(writer));
-			return writer.toString();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
 	}
 
@@ -503,7 +466,8 @@ public class SrampWagon extends StreamWagon {
 	 * @throws SrampServerException
 	 * @throws JAXBException
 	 */
-	private BaseArtifactType findExistingArtifactByUniversal(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
+	private BaseArtifactType findExistingArtifactByUniversal(SrampAtomApiClient client, MavenGavInfo gavInfo)
+			throws SrampServerException, SrampClientException, JAXBException {
 		String artifactType = gavInfo.getGroupId().substring(gavInfo.getGroupId().indexOf('.') + 1);
 		String uuid = gavInfo.getArtifactId();
 		Entry entry = null;
