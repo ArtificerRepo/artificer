@@ -157,11 +157,36 @@ public class SrampArchive {
 		// Create any required parent directories
 		workPath.getParentFile().mkdirs();
 		File atomWorkPath = new File(this.workDir, entry.getPath() + ".atom");
-		writeContent(workPath, content);
+		if (content != null)
+			writeContent(workPath, content);
 		try {
 			SrampArchiveJaxbUtils.writeMetaData(atomWorkPath, entry.getMetaData());
 		} catch (JAXBException e) {
 			throw new SrampArchiveException(e);
+		}
+	}
+
+	/**
+	 * Updates an existing entry in the S-RAMP archive.  This method will close the content
+	 * {@link InputStream}.
+	 * @param entry the archive entry (or null if just udpating the content)
+	 * @param content the entry content (or null if just updating meta data)
+	 * @throws SrampArchiveException
+	 */
+	public void updateEntry(SrampArchiveEntry entry, InputStream content) throws SrampArchiveException {
+		if (entry.getPath() == null)
+			throw new SrampArchiveException("Invalid entry path.");
+		File workPath = new File(this.workDir, entry.getPath());
+		File atomWorkPath = new File(this.workDir, entry.getPath() + ".atom");
+
+		if (content != null)
+			writeContent(workPath, content);
+		if (entry.getMetaData() != null) {
+			try {
+				SrampArchiveJaxbUtils.writeMetaData(atomWorkPath, entry.getMetaData());
+			} catch (JAXBException e) {
+				throw new SrampArchiveException(e);
+			}
 		}
 	}
 
@@ -248,10 +273,9 @@ public class SrampArchive {
 	 * @return the archive entry, or null if not found
 	 */
 	public SrampArchiveEntry getEntry(String archivePath) {
-		File contentFile = new File(this.workDir, archivePath);
 		File metaDataFile = new File(this.workDir, archivePath + ".atom");
 		SrampArchiveEntry rval = null;
-		if (contentFile.exists() && metaDataFile.exists()) {
+		if (metaDataFile.exists()) {
 			rval = new SrampArchiveEntry(archivePath, metaDataFile);
 		}
 		return rval;

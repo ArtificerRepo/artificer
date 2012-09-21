@@ -26,6 +26,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.test.BaseResourceTest;
@@ -163,7 +164,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		try {
 			client.updateArtifact(xsdDoc, is);
 		} finally {
-			is.close();
+			IOUtils.closeQuietly(is);
 		}
 
 		// Now verify
