@@ -27,9 +27,8 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
-import org.overlord.sramp.visitors.ArtifactVisitorAdapter;
+import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
  * An artifact visitor used to update a JCR node.  This class is responsible
@@ -38,11 +37,11 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
  *
  * @author eric.wittmann@redhat.com
  */
-public class UpdateJCRNodeFromArtifactVisitor extends ArtifactVisitorAdapter {
+public class UpdateJCRNodeFromArtifactVisitor extends HierarchicalArtifactVisitorAdapter {
 
 	private Node jcrNode;
 	private Exception error;
-	
+
 	/**
 	 * Constructor.
 	 * @param jcrNode the JCR node this visitor will be updating
@@ -50,12 +49,12 @@ public class UpdateJCRNodeFromArtifactVisitor extends ArtifactVisitorAdapter {
 	public UpdateJCRNodeFromArtifactVisitor(Node jcrNode) {
 		this.jcrNode = jcrNode;
 	}
-	
+
 	/**
-	 * Called to perform all common base artifact updates (e.g. classifiedBy and properties).
-	 * @param artifact the artifact being visited
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitBase(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
 	 */
-	protected void visitBaseArtifact(BaseArtifactType artifact) {
+	@Override
+	protected void visitBase(BaseArtifactType artifact) {
 		try {
 			updateArtifactMetaData(artifact);
 			updateArtifactProperties(artifact);
@@ -122,7 +121,7 @@ public class UpdateJCRNodeFromArtifactVisitor extends ArtifactVisitorAdapter {
 	 * Gets all of the custom s-ramp property names currently stored on the given
 	 * JCR node.
 	 * @param jcrNode
-	 * @throws RepositoryException 
+	 * @throws RepositoryException
 	 */
 	private static Set<String> getNodePropertyNames(Node jcrNode) throws RepositoryException {
     	String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
@@ -147,20 +146,12 @@ public class UpdateJCRNodeFromArtifactVisitor extends ArtifactVisitorAdapter {
 	public boolean hasError() {
 		return error != null;
 	}
-	
+
 	/**
 	 * Returns the error encountered during visitation.
 	 */
 	public Exception getError() {
 		return error;
-	}
-
-	/**
-	 * @see org.overlord.sramp.visitors.ArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.XsdDocument)
-	 */
-	@Override
-	public void visit(XsdDocument artifact) {
-		visitBaseArtifact(artifact);
 	}
 
 }

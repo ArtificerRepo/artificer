@@ -26,6 +26,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.test.BaseResourceTest;
@@ -63,7 +64,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
 			SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
-			Entry entry = client.uploadArtifact("xsd", "XsdDocument", is, artifactFileName);
+			Entry entry = client.uploadArtifact(ArtifactType.XsdDocument, is, artifactFileName);
 			Assert.assertNotNull(entry);
 			Assert.assertEquals(artifactFileName, entry.getTitle());
 		} finally {
@@ -83,7 +84,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		String artifactFileName = "PO.xsd";
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
-			Entry entry = client.uploadArtifact("xsd", "XsdDocument", is, artifactFileName);
+			Entry entry = client.uploadArtifact(ArtifactType.XsdDocument, is, artifactFileName);
 			Assert.assertNotNull(entry);
 			Assert.assertEquals(artifactFileName, entry.getTitle());
 			uuid = entry.getId();
@@ -92,7 +93,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		}
 
 		// Now get the content.
-		InputStream content = client.getArtifactContent("xsd", "XsdDocument", uuid.toString());
+		InputStream content = client.getArtifactContent(ArtifactType.XsdDocument, uuid.toString());
 		try {
 			Assert.assertNotNull(content);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(content));
@@ -118,7 +119,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		String artifactFileName = "PO.xsd";
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
-			Entry entry = client.uploadArtifact("xsd", "XsdDocument", is, artifactFileName);
+			Entry entry = client.uploadArtifact(ArtifactType.XsdDocument, is, artifactFileName);
 			Assert.assertNotNull(entry);
 			Assert.assertEquals(artifactFileName, entry.getTitle());
 			uuid = entry.getId();
@@ -149,7 +150,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		String artifactFileName = "PO.xsd";
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
-			Entry entry = client.uploadArtifact("xsd", "XsdDocument", is, artifactFileName);
+			Entry entry = client.uploadArtifact(ArtifactType.XsdDocument, is, artifactFileName);
 			Assert.assertNotNull(entry);
 			Assert.assertEquals(artifactFileName, entry.getTitle());
 			uuid = entry.getId();
@@ -163,7 +164,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		try {
 			client.updateArtifact(xsdDoc, is);
 		} finally {
-			is.close();
+			IOUtils.closeQuietly(is);
 		}
 
 		// Now verify
@@ -184,7 +185,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		String artifactFileName = "PO.xsd";
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
-			Entry entry = client.uploadArtifact("xsd", "XsdDocument", is, artifactFileName);
+			Entry entry = client.uploadArtifact(ArtifactType.XsdDocument, is, artifactFileName);
 			Assert.assertNotNull(entry);
 			Assert.assertEquals(artifactFileName, entry.getTitle());
 			uuid = entry.getId();
