@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -47,6 +46,7 @@ import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.atom.mime.MimeTypes;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
@@ -72,8 +72,6 @@ import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
  */
 @Path("/s-ramp")
 public class ArtifactResource {
-
-	private static final MimetypesFileTypeMap mimeTypes = new MimetypesFileTypeMap();
 
 	/**
 	 * Constructor.
@@ -176,11 +174,9 @@ public class ArtifactResource {
 		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document) {
 			if (contentType != null && contentType.trim().length() > 0)
 				return contentType;
-			if (fileName != null && fileName.trim().length() > 0 && fileName.contains(".")) {
-				String ct = mimeTypes.getContentType(fileName);
-				if (ct != null)
-					return ct;
-			}
+			String ct = MimeTypes.getContentType(fileName);
+			if (ct != null)
+				return ct;
 			return "application/octet-stream";
 		} else {
 			// Everything else is an XML file
@@ -224,7 +220,6 @@ public class ArtifactResource {
      */
     @PUT
     @Path("{model}/{type}/{uuid}/media")
-    @Consumes(MediaType.APPLICATION_XML)
 	public void updateContent(@HeaderParam("Content-Type") String contentType,
 			@HeaderParam("Slug") String fileName, @PathParam("model") String model,
 			@PathParam("type") String type, @PathParam("uuid") String uuid, InputStream content)
@@ -320,7 +315,7 @@ public class ArtifactResource {
      */
     @DELETE
     @Path("{model}/{type}/{uuid}")
-	public void deleteXsdDocument(@PathParam("model") String model, @PathParam("type") String type,
+	public void delete(@PathParam("model") String model, @PathParam("type") String type,
 			@PathParam("uuid") String uuid) throws SrampAtomException {
         try {
         	ArtifactType artifactType = ArtifactType.valueOf(type);

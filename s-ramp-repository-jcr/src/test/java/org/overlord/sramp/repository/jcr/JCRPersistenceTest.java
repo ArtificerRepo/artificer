@@ -287,4 +287,73 @@ public class JCRPersistenceTest {
         Assert.assertTrue("Prop3 missing from properties.", ps.contains("prop3=propval3"));
     }
 
+    /**
+     * Tests that we can manage s-ramp properties on a /core/Document.
+     * @throws Exception
+     */
+    @Test
+    public void testUpdateProperties_Document() throws Exception {
+    	// First, add an artifact to the repo
+        String artifactFileName = "s-ramp-press-release.pdf";
+        InputStream pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+
+        ArtifactType type = ArtifactType.valueOf("Document");
+        type.setMimeType("application/pdf");
+		BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, type, pdf);
+        Assert.assertNotNull(artifact);
+        log.info("persisted PDF to JCR, returned artifact uuid=" + artifact.getUuid());
+        Assert.assertEquals(Document.class, artifact.getClass());
+        Assert.assertEquals(new Long(18873l), ((Document) artifact).getContentSize());
+
+        // Now update the artifact
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document);
+        Assert.assertTrue("Expected 0 properties.", artifact.getProperty().isEmpty());
+        Property prop1 = new Property();
+        prop1.setPropertyName("prop1");
+        prop1.setPropertyValue("propval1");
+		artifact.getProperty().add(prop1);
+        Property prop2 = new Property();
+        prop2.setPropertyName("prop2");
+        prop2.setPropertyValue("propval2");
+        artifact.getProperty().add(prop2);
+        persistenceManager.updateArtifact(artifact, ArtifactType.Document);
+
+        // Now verify that the properties were stored
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document);
+        Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
+        String p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
+        String p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
+        Set<String> ps = new HashSet<String>();
+        ps.add(p1);
+        ps.add(p2);
+        Assert.assertTrue("Prop1 missing from properties.", ps.contains("prop1=propval1"));
+        Assert.assertTrue("Prop2 missing from properties.", ps.contains("prop2=propval2"));
+        Assert.assertFalse("Prop3 somehow existed!.", ps.contains("prop3=propval3"));
+
+        // Now remove one property, add another one, and change the value of one
+        artifact.getProperty().clear();
+        prop1 = new Property();
+        prop1.setPropertyName("prop1");
+        prop1.setPropertyValue("propval1-updated");
+		artifact.getProperty().add(prop1);
+        Property prop3 = new Property();
+        prop3.setPropertyName("prop3");
+        prop3.setPropertyValue("propval3");
+        artifact.getProperty().add(prop3);
+        persistenceManager.updateArtifact(artifact, ArtifactType.Document);
+
+        // Now verify that the properties were updated
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document);
+        Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
+        p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
+        p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
+        ps.clear();
+        ps.add(p1);
+        ps.add(p2);
+        Assert.assertFalse("Prop1 wasn't updated (old value detected).", ps.contains("prop1=propval1"));
+        Assert.assertTrue("Prop1 wasn't updated (new value not found).", ps.contains("prop1=propval1-updated"));
+        Assert.assertFalse("Prop2 existed unexpectedly.", ps.contains("prop2=propval2"));
+        Assert.assertTrue("Prop3 missing from properties.", ps.contains("prop3=propval3"));
+    }
+
 }
