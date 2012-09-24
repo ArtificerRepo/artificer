@@ -25,6 +25,8 @@ import org.overlord.sramp.ui.client.widgets.SimpleFormLayoutPanel;
 import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -104,12 +106,19 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		leftCol.setCellWidth(description, "100%");
 
 		// Artifact properties
-		DisclosurePanel properties = new DisclosurePanel("Properties");
+		DisclosurePanel properties = new DisclosurePanel(i18n().translate("views.artifact.properties.label"));
 		properties.setStyleName("dpanel");
 		properties.setOpen(true);
 		properties.add(createPropertiesForm(artifact));
 
+		// Artifact links/urls
+		DisclosurePanel links = new DisclosurePanel(i18n().translate("views.artifact.links.label"));
+		links.setStyleName("dpanel");
+		links.setOpen(true);
+		links.add(createLinks(artifact));
+
 		rightCol.add(properties);
+		rightCol.add(links);
 		rightCol.setCellWidth(details, "100%");
 	}
 
@@ -175,6 +184,23 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		}
 
 		wrapper.add(formLayoutPanel);
+		return wrapper;
+	}
+
+	/**
+	 * Creates any links relevant to the artifact.
+	 * @param artifact
+	 */
+	private Widget createLinks(ArtifactDetails artifact) {
+		String url = GWT.getModuleBaseURL() + "services/artifactDownload";
+		url += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType();
+
+		FlowPanel wrapper = new FlowPanel();
+		wrapper.setStyleName("dpanel-content");
+
+		Anchor downloadLink = new Anchor(i18n().translate("views.artifact.links.download"), url);
+
+		wrapper.add(downloadLink);
 		return wrapper;
 	}
 
