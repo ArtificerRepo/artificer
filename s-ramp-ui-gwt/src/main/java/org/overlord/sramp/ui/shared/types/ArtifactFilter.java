@@ -23,10 +23,12 @@ package org.overlord.sramp.ui.shared.types;
  */
 public enum ArtifactFilter {
 
-	all(null, "/s-ramp", "views.browse.artifact.filter.all"), 
-	xml("xml", "/s-ramp/core/XmlDocument", "views.browse.artifact.filter.xml"), 
-	xsd("xsd", "/s-ramp/xsd/XsdDocument", "views.browse.artifact.filter.xsd"), 
-	wsdl("wsdl", "/s-ramp/wsdl/WsdlDocument", "views.browse.artifact.filter.wsdl");
+	all(null, "/s-ramp", "views.browse.artifact.filter.all"),
+	xml("xml", "/s-ramp/core/XmlDocument", "views.browse.artifact.filter.xml"),
+	xsd("xsd", "/s-ramp/xsd/XsdDocument", "views.browse.artifact.filter.xsd"),
+	wsdl("wsdl", "/s-ramp/wsdl/WsdlDocument", "views.browse.artifact.filter.wsdl"),
+	policy("policy", "/s-ramp/policy/PolicyDocument", "views.browse.artifact.filter.policy"),
+	doc("doc", "/s-ramp/core/Document", "views.browse.artifact.filter.doc");
 
 	private String code;
 	private String queryBase;
@@ -64,5 +66,5 @@ public enum ArtifactFilter {
 	public String getI18nKey() {
 		return i18nKey;
 	}
-	
+
 }
