@@ -36,29 +36,32 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ArtifactUploadForm extends FormPanel {
 
 	final FileUpload upload = new FileUpload();
-	
+
 	/**
 	 * Constructor.
 	 * @param url
 	 */
 	public ArtifactUploadForm(String url) {
 		ILocalizationService i18n = Services.getServices().getService(ILocalizationService.class);
-		
+
 		this.setAction(url);
 		this.setEncoding(FormPanel.ENCODING_MULTIPART);
 		this.setMethod(FormPanel.METHOD_POST);
-		
+
 		// Create a panel to hold all of the form widgets.
 		VerticalPanel vpanel = new VerticalPanel();
 
 		final ListBox artifactType = new ListBox();
 		final Button submitButton = new Button(i18n.translate("widgets.artifact-upload.submit"));
-		
+
 		// Populate the type list box with options
 		artifactType.setName("artifactType");
 		artifactType.addItem(i18n.translate("widgets.artifact-upload.please-choose"), "");
+		artifactType.addItem(i18n.translate("widgets.artifact-upload.choice.doc"), "Document");
 		artifactType.addItem(i18n.translate("widgets.artifact-upload.choice.xml"), "XmlDocument");
 		artifactType.addItem(i18n.translate("widgets.artifact-upload.choice.xsd"), "XsdDocument");
+		artifactType.addItem(i18n.translate("widgets.artifact-upload.choice.wsdl"), "WsdlDocument");
+		artifactType.addItem(i18n.translate("widgets.artifact-upload.choice.policy"), "PolicyDocument");
 		artifactType.setSelectedIndex(0);
 
 		// Configure the file upload widget
@@ -67,17 +70,18 @@ public class ArtifactUploadForm extends FormPanel {
 
 		// Hook into the submit button
 		submitButton.addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
 				submit();
 			}
 		});
 		submitButton.setEnabled(false);
-		
+
 		// Add all the widgets to the form.
 		vpanel.add(upload);
 		vpanel.add(artifactType);
 		vpanel.add(submitButton);
-		
+
 		// Create a change handler that will enable/disable the Submit button.
 		ChangeHandler changeHandler = new ChangeHandler() {
 			@Override
@@ -91,20 +95,23 @@ public class ArtifactUploadForm extends FormPanel {
 		upload.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				if (artifactType.getSelectedIndex() != 0)
-					return;
-				String filename = upload.getFilename();
+				String filename = upload.getFilename().toLowerCase();
 				if (filename.endsWith(".xml")) {
-					artifactType.setSelectedIndex(1);
-					submitButton.setEnabled(true);
-				} else if (filename.endsWith(".xsd")) {
 					artifactType.setSelectedIndex(2);
-					submitButton.setEnabled(true);
+				} else if (filename.endsWith(".xsd")) {
+					artifactType.setSelectedIndex(3);
+				} else if (filename.endsWith(".wsdl")) {
+					artifactType.setSelectedIndex(4);
+				} else if (filename.endsWith(".wspolicy")) {
+					artifactType.setSelectedIndex(5);
+				} else {
+					artifactType.setSelectedIndex(1);
 				}
+				submitButton.setEnabled(true);
 			}
 		});
 		artifactType.addChangeHandler(changeHandler);
-		
+
 		setWidget(vpanel);
 	}
 
@@ -114,5 +121,5 @@ public class ArtifactUploadForm extends FormPanel {
 	public String getFilename() {
 		return this.upload.getFilename();
 	}
-	
+
 }

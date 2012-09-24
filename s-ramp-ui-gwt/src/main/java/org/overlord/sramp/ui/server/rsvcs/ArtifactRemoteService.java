@@ -51,7 +51,7 @@ public class ArtifactRemoteService extends RemoteServiceServlet implements IArti
 	public ArtifactDetails getArtifactDetails(String model, String type, String artifactUUID)
 			throws RemoteServiceException {
 		try {
-			Entry entry = SrampAtomApiClient.getInstance().getFullArtifactEntry(model, type, artifactUUID);
+			Entry entry = SrampAtomApiClient.getInstance().getFullArtifactEntry(ArtifactType.valueOf(type), artifactUUID);
 
 			ArtifactDetails details = new ArtifactDetails();
 			details.setUuid(entry.getId().toString());
