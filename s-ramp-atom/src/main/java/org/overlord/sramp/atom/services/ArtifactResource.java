@@ -18,7 +18,6 @@ package org.overlord.sramp.atom.services;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,6 +44,7 @@ import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.mime.MimeTypes;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
@@ -52,7 +52,6 @@ import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
@@ -200,9 +199,7 @@ public class ArtifactResource {
     		@PathParam("uuid") String uuid, Entry atomEntry) throws SrampAtomException {
         try {
         	ArtifactType artifactType = ArtifactType.valueOf(type);
-        	Artifact artifactWrapper = atomEntry.getAnyOtherJAXBObject(Artifact.class);
-        	Method method = artifactWrapper.getClass().getMethod("get" + artifactType.getArtifactType().getType());
-        	BaseArtifactType artifact = (BaseArtifactType) method.invoke(artifactWrapper);
+        	BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateArtifact(artifact, artifactType);
 		} catch (Throwable e) {
@@ -264,7 +261,7 @@ public class ArtifactResource {
 			// Get the artifact by UUID
 			BaseArtifactType artifact = persistenceManager.getArtifact(uuid, artifactType);
 			if (artifact == null)
-				return null;
+				throw new Exception("Artifact not found.");
 
 			// Return the entry containing the s-ramp artifact
 			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();

@@ -173,12 +173,10 @@ public class SrampArchive {
 		for (File metaDataFile : files) {
 			String metaDataAbsPath = metaDataFile.getAbsolutePath();
 			File contentFile = new File(metaDataAbsPath.substring(0, metaDataAbsPath.length() - 5));
-			if (contentFile.isFile()) {
-				String path = contentFile.getAbsolutePath();
-				path = path.substring(this.workDir.getAbsolutePath().length() + 1);
-				path = path.replace('\\', '/'); // just in case we're in Windows
-				entries.add(new SrampArchiveEntry(path, metaDataFile));
-			}
+			String path = contentFile.getAbsolutePath();
+			path = path.substring(this.workDir.getAbsolutePath().length() + 1);
+			path = path.replace('\\', '/'); // just in case we're in Windows :(
+			entries.add(new SrampArchiveEntry(path, metaDataFile));
 		}
 		return entries;
 	}
@@ -186,12 +184,15 @@ public class SrampArchive {
 	/**
 	 * Gets the content {@link InputStream} for the given S-RAMP archive entry.
 	 * @param entry the s-ramp archive entry
-	 * @return an {@link InputStream} over the artifact content
+	 * @return an {@link InputStream} over the artifact content or null if no content found (meta-data only)
 	 * @throws IOException
 	 */
 	public InputStream getInputStream(SrampArchiveEntry entry) throws IOException {
 		File artifactPath = new File(this.workDir, entry.getPath());
-		return FileUtils.openInputStream(artifactPath);
+		if (artifactPath.exists())
+			return FileUtils.openInputStream(artifactPath);
+		else
+			return null;
 	}
 
 	/**
@@ -284,7 +285,7 @@ public class SrampArchive {
 	 */
 	public File pack() throws SrampArchiveException {
 		try {
-			File archiveFile = File.createTempFile("s-ramp-archive", ".zip");
+			File archiveFile = File.createTempFile("s-ramp-archive", ".sramp");
 			FileOutputStream outputStream = FileUtils.openOutputStream(archiveFile);
 			ZipOutputStream zipOutputStream = null;
 			try {
@@ -317,14 +318,16 @@ public class SrampArchive {
 	 */
 	private void packEntry(SrampArchiveEntry entry, ZipOutputStream zipOutputStream) throws IOException, IllegalArgumentException, SecurityException, URISyntaxException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, JAXBException {
 		// Store the artifact content in the ZIP
-		zipOutputStream.putNextEntry(new ZipEntry(entry.getPath()));
 		InputStream contentStream = getInputStream(entry);
-		try {
-			IOUtils.copy(contentStream, zipOutputStream);
-		} finally {
-			IOUtils.closeQuietly(contentStream);
+		if (contentStream != null) {
+			zipOutputStream.putNextEntry(new ZipEntry(entry.getPath()));
+			try {
+				IOUtils.copy(contentStream, zipOutputStream);
+			} finally {
+				IOUtils.closeQuietly(contentStream);
+			}
+			zipOutputStream.closeEntry();
 		}
-		zipOutputStream.closeEntry();
 
 		// Store the meta-data in the ZIP
 		zipOutputStream.putNextEntry(new ZipEntry(entry.getPath() + ".atom"));

@@ -140,9 +140,13 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 
         try {
             session = JCRRepository.getSession();
-            Node artifactNode = session.getNode(artifactPath);
-            // Create an artifact from the sequenced node
-            return JCRNodeToArtifactFactory.createArtifact(artifactNode, type);
+            if (session.nodeExists(artifactPath)) {
+	            Node artifactNode = session.getNode(artifactPath);
+	            // Create an artifact from the sequenced node
+	            return JCRNodeToArtifactFactory.createArtifact(artifactNode, type);
+            } else {
+            	return null;
+            }
         } catch (RepositoryException re) {
         	throw re;
         } catch (Throwable t) {

@@ -16,7 +16,7 @@
 package org.overlord.sramp.atom.services;
 
 import java.io.InputStream;
-import java.util.UUID;
+import java.util.Collection;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
@@ -28,12 +28,21 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
+import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.MediaType;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
+import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
+import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
+import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
+import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
+import org.overlord.sramp.repository.DerivedArtifactsFactory;
+import org.overlord.sramp.repository.PersistenceFactory;
+import org.overlord.sramp.repository.PersistenceManager;
+import org.overlord.sramp.visitors.ArtifactVisitorHelper;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
 /**
  * The JAX-RS resource that handles pushing artifacts into the repository in batches.  The
@@ -44,8 +53,6 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
  */
 @Path("/s-ramp")
 public class BatchResource {
-
-	//private static final MimetypesFileTypeMap mimeTypes = new MimetypesFileTypeMap();
 
 	/**
 	 * Constructor.
@@ -70,6 +77,19 @@ public class BatchResource {
     	SrampArchive archive = null;
         try {
         	archive = new SrampArchive(content);
+
+            MultipartOutput output = new MultipartOutput();
+            output.setBoundary("package");
+
+            // Process all of the entries in the s-ramp package.
+            Collection<SrampArchiveEntry> entries = archive.getEntries();
+            for (SrampArchiveEntry entry: entries) {
+        		BaseArtifactType metaData = entry.getMetaData();
+            	InputStream contentStream = archive.getInputStream(entry);
+        		processBatchEntry(output, entry.getPath(), metaData, contentStream);
+            }
+
+            return output;
         } catch (Exception e) {
 			throw new SrampAtomException(e);
         } finally {
@@ -77,35 +97,160 @@ public class BatchResource {
         	if (archive != null)
         		SrampArchive.closeQuietly(archive);
         }
-
-        MultipartOutput output = new MultipartOutput();
-        output.setBoundary("package");
-
-        HttpResponseBean resp1 = new HttpResponseBean(201, "Created");
-        resp1.setBody(createEntry("hello-world.xsd"), MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-        output.addPart(resp1, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", "<schemas/PO.xsd@package>");
-
-        HttpResponseBean resp2 = new HttpResponseBean(201, "Created");
-        resp2.setBody(createEntry("hello-world2.xsd"), MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-        output.addPart(resp2, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", "<schemas/XMLSchema.xsd@package>");
-
-        return output;
     }
 
 	/**
-	 * asdfasdfasfdsadf
+	 * Process a single entry from the s-ramp archive.
+	 * @param output where to write the result of processing the entry
+	 * @param path path to the entry in the s-ramp package
+	 * @param metaData the entry meta-data (s-ramp artifact)
+	 * @param contentStream the artifact content (or null if a meta-data only entry)
 	 */
-	private Entry createEntry(String title) {
-		XsdDocument xsd = new XsdDocument();
-		xsd.setUuid(UUID.randomUUID().toString());
-		xsd.setName(title);
-		xsd.setVersion("1.0");
-		xsd.setDescription("Hello: " + title);
-		try {
-			return SrampAtomUtils.wrapSrampArtifact(xsd);
+	private void processBatchEntry(MultipartOutput output, String path, BaseArtifactType metaData,
+			InputStream contentStream) {
+		String contentId = String.format("<%1$s@package>", path);
+    	try {
+			ArtifactType artifactType = ArtifactType.valueOf(metaData);
+			if (artifactType.getArtifactType().isDerived()) {
+				throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
+						+ "' is a derived type.");
+			}
+			// Figure out the mime type
+			ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
+			ArtifactVisitorHelper.visitArtifact(ctVizzy, metaData);
+			String mimeType = ctVizzy.getContentType().toString();
+			artifactType.setMimeType(mimeType);
+
+			if (metaData.getUuid() == null && contentStream != null) {
+				// The normal "create" case - no UUID specified + artifact content included
+				Entry atomEntry = processCreate(artifactType, metaData, contentStream);
+				addCreatedPart(output, contentId, atomEntry);
+			} else if (metaData.getUuid() != null && contentStream != null) {
+				// Either an "update" case or a "create" case - depends on if we find an existing
+				// artifact with the supplied UUID.  Content has been supplied, so it *may* be
+				// a create.
+				Entry atomEntry = processUpdateOrCreate(artifactType, metaData, contentStream);
+		        addCreatedPart(output, contentId, atomEntry);
+			} else if (metaData.getUuid() != null && contentStream == null) {
+				// This is the "update" only case - metadata has been supplied but
+				// no content is included.  Thus, this cannot be a create.
+				Entry atomEntry = processUpdate(artifactType, metaData);
+		        addCreatedPart(output, contentId, atomEntry);
+			} else {
+				throw new Exception("Unsupported path (TBD).");
+			}
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+	        HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict");
+	        String stacktrace = SrampAtomExceptionMapper.getRootStackTrace(e);
+	        errorResponse.setBody(stacktrace, MediaType.TEXT_PLAIN_TYPE);
+	        output.addPart(errorResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
 		}
+
+	}
+
+	/**
+	 * Processes a batch create.  This will create the artifact in the s-ramp
+	 * repository and update the resulting repository entry with the meta data
+	 * included.
+	 * @param artifactType the artifact type
+	 * @param metaData the artifact meta-data
+	 * @param contentStream the artifact content
+	 * @return the Atom entry created as a result of the creat operation
+	 * @throws Exception
+	 */
+	private Entry processCreate(ArtifactType artifactType, BaseArtifactType metaData,
+			InputStream contentStream) throws Exception {
+		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+		BaseArtifactType artifact = persistenceManager.persistArtifact(metaData.getName(), artifactType, contentStream);
+		// Create the derivedArtifacts
+		Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().createDerivedArtifacts(artifactType, artifact);
+		// Persist the derivedArtifacts
+		for (DerivedArtifactType dartifact : dartifacts)
+		    persistenceManager.persistDerivedArtifact(dartifact);
+
+		// Update the artifact with data from "metaData" (included *.atom file)
+		metaData.setUuid(artifact.getUuid());
+		persistenceManager.updateArtifact(metaData, artifactType);
+
+		// Now get the latest copy and return it
+		artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
+		// Return the entry containing the s-ramp artifact
+		ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
+		ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+		Entry atomEntry = visitor.getAtomEntry();
+		return atomEntry;
+	}
+
+	/**
+	 * Process the case where we've either got an update or a create.  It could be either
+	 * because we have both meta-data and a valid content stream.  We need to query for an
+	 * existing artifact (by uuid) to figure out which one we're doing.
+	 * @param artifactType the artifact type
+	 * @param metaData the artifact meta-data
+	 * @param contentStream the artifact content
+	 * @return the Atom entry created as a result of the creat operation
+	 * @throws Exception
+	 */
+	private Entry processUpdateOrCreate(ArtifactType artifactType, BaseArtifactType metaData,
+			InputStream contentStream) throws Exception {
+		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+		BaseArtifactType artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
+		if (artifact == null) {
+			return processCreate(artifactType, metaData, contentStream);
+		} else {
+			// Update the artifact metadata
+			persistenceManager.updateArtifact(metaData, artifactType);
+			// Update the artifact content
+			persistenceManager.updateArtifactContent(metaData.getUuid(), artifactType, contentStream);
+
+			// Refetch the data to make sure what we return is up-to-date
+			artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
+			// Return the entry containing the s-ramp artifact
+			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
+			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+			Entry atomEntry = visitor.getAtomEntry();
+			return atomEntry;
+		}
+	}
+
+	/**
+	 * Process the case where we want to update the meta-data only.  This is being done
+	 * because meta-data was supplied without accompanying content.
+	 * @param artifactType the artifact type
+	 * @param metaData the artifact meta-data
+	 * @param contentStream the artifact content
+	 * @return the Atom entry created as a result of the creat operation
+	 * @throws Exception
+	 */
+	private Entry processUpdate(ArtifactType artifactType, BaseArtifactType metaData) throws Exception {
+		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+		BaseArtifactType artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
+		if (artifact == null)
+			throw new Exception("Could not update artifact with UUID: " + metaData.getUuid() + " (Not Found)");
+
+		// update the meta data
+		persistenceManager.updateArtifact(metaData, artifactType);
+
+		// Refetch the data to make sure what we return is up-to-date
+		artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
+		// Return the entry containing the s-ramp artifact
+		ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
+		ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+		Entry atomEntry = visitor.getAtomEntry();
+		return atomEntry;
+	}
+
+	/**
+	 * Adds an appropriate part to the batch response.  This takes the form of an HTTP
+	 * response bean with the appropriate headers and data.
+	 * @param output
+	 * @param contentId
+	 * @param atomEntry
+	 */
+	private void addCreatedPart(MultipartOutput output, String contentId, Entry atomEntry) {
+		HttpResponseBean createdResponse = new HttpResponseBean(201, "Created");
+		createdResponse.setBody(atomEntry, MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
+		output.addPart(createdResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
 	}
 
 }
