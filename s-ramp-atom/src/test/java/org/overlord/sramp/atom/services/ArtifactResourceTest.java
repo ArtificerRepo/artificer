@@ -88,7 +88,7 @@ public class ArtifactResourceTest extends BaseResourceTest {
 	public void testBinaryDocumentCreate() throws Exception {
 		// Add the PDF to the repository
 		String artifactFileName = "sample.pdf";
-		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/pdf/" + artifactFileName);
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
 		String uuid = null;
 		try {
 			ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document"));
@@ -372,7 +372,7 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		ClientResponse<String> response = request.get(String.class);
 
 		String stacktrace = response.getEntity();
-		Assert.assertTrue(stacktrace.contains("No node exists at path"));
+		Assert.assertTrue(stacktrace.contains("Artifact not found."));
 	}
 
 }
