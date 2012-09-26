@@ -142,7 +142,7 @@ public class BatchResource {
 		} catch (Exception e) {
 	        HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict");
 	        String stacktrace = SrampAtomExceptionMapper.getRootStackTrace(e);
-	        errorResponse.setBody(stacktrace, MediaType.TEXT_PLAIN_TYPE);
+	        errorResponse.setBody(stacktrace, MediaType.APPLICATION_STACKTRACE_TYPE);
 	        output.addPart(errorResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
 		}
 

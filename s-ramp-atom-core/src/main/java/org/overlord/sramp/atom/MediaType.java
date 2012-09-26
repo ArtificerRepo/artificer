@@ -39,10 +39,13 @@ public class MediaType extends javax.ws.rs.core.MediaType {
     public final static String APPLICATION_ATOM_XML_UTF8 = "application/atom+xml;charset=utf-8";
     public final static MediaType APPLICATION_ATOM_XML_UTF8_TYPE = new MediaType("application", "atom+xml", param("charset", "utf-8"));
 
-    /** "multipart/mixed;boundary=package" */
+    /** "multipart/mixed" */
     public final static String MULTIPART_MIXED = "multipart/mixed";
-    /** "multipart/form-data" */
     public final static MediaType MULTIPART_MIXED_TYPE = new MediaType("multipart", "mixed");
+
+    /** "application/stacktrace" */
+    public final static String APPLICATION_STACKTRACE = "application/stacktrace";
+    public final static MediaType APPLICATION_STACKTRACE_TYPE = new MediaType("application", "stacktrace");
 
     /**
      * Creates a parameter map.

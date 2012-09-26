@@ -28,10 +28,13 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.io.IOUtils;
+import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 
 /**
- * A RESTEasy message body reader that is capable of reading an exception from the 
+ * A RESTEasy message body reader that is capable of reading an exception from the
  * response body.
+ *
+ * TODO merge this and {@link SrampAtomExceptionMapper} - don't need both
  *
  * @author eric.wittmann@redhat.com
  */
@@ -49,7 +52,7 @@ public class SrampClientExceptionReader implements MessageBodyReader<SrampServer
 	 */
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-		return "application/stacktrace".equals(mediaType.toString());
+		return SrampServerException.class.equals(type) || org.overlord.sramp.atom.MediaType.APPLICATION_STACKTRACE_TYPE.equals(mediaType);
 	}
 
 	/**
@@ -59,7 +62,7 @@ public class SrampClientExceptionReader implements MessageBodyReader<SrampServer
 	public SrampServerException readFrom(Class<SrampServerException> type, Type genericType, Annotation[] annotations,
 			MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
-		List<String> lines = (List<String>) IOUtils.readLines(entityStream);
+		List<String> lines = IOUtils.readLines(entityStream);
 		StringBuilder buffer = new StringBuilder();
 		for (String line : lines) {
 			buffer.append(line).append("\n");

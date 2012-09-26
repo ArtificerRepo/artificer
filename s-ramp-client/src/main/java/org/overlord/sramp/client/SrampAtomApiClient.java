@@ -15,17 +15,26 @@
  */
 package org.overlord.sramp.client;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import javax.ws.rs.core.MediaType;
-
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartInput;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
+import org.overlord.sramp.atom.archive.SrampArchive;
+import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.mime.MimeTypes;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
@@ -128,6 +137,64 @@ public class SrampAtomApiClient {
 	}
 
 	/**
+	 * Performs a batch operation by uploading an s-ramp package archive to the s-ramp server
+	 * for processing.  The contents of the s-ramp archive will be processed, and the results
+	 * will be returned as a Map.  The Map is indexed by the S-RAMP Archive entry path, and each
+	 * each value in the Map will either be a {@link BaseArtifactType} or an
+	 * {@link SrampServerException}, depending on success vs. failure of that entry.
+	 *
+	 * @param archive the s-ramp package archive to upload
+	 * @return the collection of results (one per entry in the s-ramp package)
+	 * @throws SrampClientException
+	 * @throws SrampServerException
+	 */
+	@SuppressWarnings("resource")
+	public Map<String, ?> uploadBatch(SrampArchive archive) throws SrampClientException, SrampServerException {
+		File packageFile = null;
+		InputStream packageStream = null;
+
+		try {
+			packageFile = archive.pack();
+			packageStream = FileUtils.openInputStream(packageFile);
+			ClientRequest request = new ClientRequest(this.endpoint);
+			request.header("Content-Type", "application/zip");
+			request.body(MediaType.APPLICATION_ZIP, packageStream);
+
+			ClientResponse<MultipartInput> clientResponse = request.post(MultipartInput.class);
+			MultipartInput response = clientResponse.getEntity();
+			List<InputPart> parts = response.getParts();
+
+			Map<String, Object> rval = new HashMap<String, Object>(parts.size());
+			for (InputPart part : parts) {
+				String contentId = part.getHeaders().getFirst("Content-ID");
+				String path = contentId.substring(1, contentId.lastIndexOf('@'));
+				HttpResponseBean rbean = part.getBody(HttpResponseBean.class, null);
+				if (rbean.getCode() == 201) {
+					Entry entry = (Entry) rbean.getBody();
+					BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
+					rval.put(path, artifact);
+				} else if (rbean.getCode() == 409) {
+					String errorReason = (String) rbean.getBody();
+					SrampServerException exception = new SrampServerException("Conflict found for: " + path);
+					exception.setRemoteStackTrace(errorReason);
+					rval.put(path, exception);
+				} else {
+					// Only a non-compliant s-ramp impl could cause this
+					throw new Exception("Unexpected return code '" + rbean.getCode() + "' for ID '" + contentId + "'.  The S-RAMP server is non-compliant.");
+				}
+			}
+			return rval;
+		} catch (SrampServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		} finally {
+			IOUtils.closeQuietly(packageStream);
+			FileUtils.deleteQuietly(packageFile);
+		}
+	}
+
+	/**
 	 * Called to update the meta-data stored in the s-ramp repository for the given s-ramp
 	 * artifact.
 	 * @param artifact
@@ -171,6 +238,28 @@ public class SrampAtomApiClient {
 			ClientRequest request = new ClientRequest(atomUrl);
 			request.body(type.getMimeType(), content);
 			request.put();
+		} catch (SrampServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
+	}
+
+	/**
+	 * Delets an artifact from the s-ramp repository.
+	 * @param uuid
+	 * @param type
+	 * @throws SrampClientException
+	 * @throws SrampServerException
+	 */
+	public void deleteArtifact(String uuid, ArtifactType type) throws SrampClientException, SrampServerException {
+		try {
+			String artifactModel = type.getArtifactType().getModel();
+			String artifactType = type.getArtifactType().getType();
+			String artifactUuid = uuid;
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
+			ClientRequest request = new ClientRequest(atomUrl);
+			request.delete();
 		} catch (SrampServerException e) {
 			throw e;
 		} catch (Throwable e) {

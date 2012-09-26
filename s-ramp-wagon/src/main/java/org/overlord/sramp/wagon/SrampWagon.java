@@ -20,9 +20,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.maven.wagon.ConnectionException;
@@ -50,6 +54,9 @@ import org.overlord.sramp.atom.archive.SrampArchiveException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.client.SrampServerException;
+import org.overlord.sramp.client.jar.DefaultMetaDataFactory;
+import org.overlord.sramp.client.jar.DiscoveredArtifact;
+import org.overlord.sramp.client.jar.JarToSrampArchive;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -103,12 +110,7 @@ public class SrampWagon extends StreamWagon {
 	 */
 	@Override
 	public void closeConnection() throws ConnectionException {
-		try {
-			if (this.archive != null)
-				this.archive.close();
-		} catch (IOException e) {
-			throw new ConnectionException("Failed to delete the s-ramp archive (temporary storage)", e);
-		}
+		SrampArchive.closeQuietly(archive);
 	}
 
 	/**
@@ -358,7 +360,7 @@ public class SrampWagon extends StreamWagon {
 	 * @param resourceInputStream
 	 * @throws TransferFailedException
 	 */
-	private void doPutArtifact(MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
+	private void doPutArtifact(final MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
 		ArtifactType artifactType = getArtifactType(gavInfo);
 		String endpoint = getSrampEndpoint();
 		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
@@ -366,7 +368,14 @@ public class SrampWagon extends StreamWagon {
 		// context classloader magic.
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
+		File tempResourceFile = null;
+		SrampArchive archive = null;
+		JarToSrampArchive j2sramp = null;
 		try {
+			// First, stash the content in a temp file - we may need it multiple times.
+			tempResourceFile = stashResourceContent(resourceInputStream);
+			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
+
 			// Only search for existing artifacts by GAV info here
 			BaseArtifactType artifact = findExistingArtifactByGAV(client, gavInfo);
 			// If we found an artifact, we should update its content.  If not, we should upload
@@ -374,6 +383,10 @@ public class SrampWagon extends StreamWagon {
 			if (artifact != null) {
 				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
 				client.updateArtifact(artifact, resourceInputStream);
+				if (shouldExpand(gavInfo)) {
+					final String parentUUID = artifact.getUuid();
+					cleanExpandedArtifacts(client, parentUUID);
+				}
 			} else {
 				// Upload the content, then add the maven properties to the artifact
 				// as meta-data
@@ -388,11 +401,84 @@ public class SrampWagon extends StreamWagon {
 				client.updateArtifactMetaData(artifact);
 				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
 			}
+
+			// Now also add "expanded" content to the s-ramp repository
+			if (shouldExpand(gavInfo)) {
+				// TODO replace parentUUID logic with relationship, once relationships are impl'd
+				final String parentUUID = artifact.getUuid();
+				j2sramp = new JarToSrampArchive(tempResourceFile);
+				j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
+					@Override
+					public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
+						BaseArtifactType metaData = super.createMetaData(artifact);
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-uuid", parentUUID);
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-groupId", gavInfo.getGroupId());
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-artifactId", gavInfo.getArtifactId());
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-version", gavInfo.getVersion());
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-type", gavInfo.getType());
+						return metaData;
+					}
+				});
+				archive = j2sramp.createSrampArchive();
+				client.uploadBatch(archive);
+			}
 		} catch (Throwable t) {
 			throw new TransferFailedException(t.getMessage(), t);
 		} finally {
 			Thread.currentThread().setContextClassLoader(oldCtxCL);
+			SrampArchive.closeQuietly(archive);
+			JarToSrampArchive.closeQuietly(j2sramp);
+			FileUtils.deleteQuietly(tempResourceFile);
 		}
+	}
+
+	/**
+	 * Deletes the 'expanded' artifacts from the s-ramp repository.
+	 * @param client
+	 * @param parentUUID
+	 * @throws SrampClientException
+	 * @throws SrampServerException
+	 */
+	private void cleanExpandedArtifacts(SrampAtomApiClient client, String parentUUID) throws SrampServerException, SrampClientException {
+		String query = String.format("/s-ramp[@maven.parent-uuid = '%1$s']", parentUUID);
+		Feed feed = client.query(query, 0, 200, "name", true);
+		for (Entry entry : feed.getEntries()) {
+			ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
+			String uuid = entry.getId().toString();
+			client.deleteArtifact(uuid, artifactType);
+		}
+	}
+
+	/**
+	 * @param gavInfo resource GAV information
+	 * @return true if this maven artifact should be expanded in s-ramp (its contents exploded)
+	 */
+	private boolean shouldExpand(MavenGavInfo gavInfo) {
+		// TODO this should be configurable in the pom.xml
+		Set<String> expandedTypes = new HashSet<String>();
+		expandedTypes.add("jar");
+		expandedTypes.add("war");
+		expandedTypes.add("ear");
+		return expandedTypes.contains(gavInfo.getType()) && gavInfo.getClassifier() == null;
+	}
+
+	/**
+	 * Make a temporary copy of the resource by saving the content to a temp file.
+	 * @param resourceInputStream
+	 * @throws IOException
+	 */
+	private File stashResourceContent(InputStream resourceInputStream) throws IOException {
+		File resourceTempFile = null;
+		OutputStream oStream = null;
+		try {
+			resourceTempFile = File.createTempFile("s-ramp-wagon-resource", ".tmp");
+			oStream = FileUtils.openOutputStream(resourceTempFile);
+		} finally {
+			IOUtils.copy(resourceInputStream, oStream);
+			IOUtils.closeQuietly(resourceInputStream);
+			IOUtils.closeQuietly(oStream);
+		}
+		return resourceTempFile;
 	}
 
 	/**

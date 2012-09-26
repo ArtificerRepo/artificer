@@ -76,9 +76,8 @@ public class JarToSrampArchiveTest {
 			Assert.assertTrue(fnames.contains("teetime.xsd"));
 			Assert.assertTrue(fnames.contains("teetime.wsdl"));
 		} finally {
-			tempFile.delete();
-			if (j2sramp != null)
-				j2sramp.close();
+			FileUtils.deleteQuietly(tempFile);
+			JarToSrampArchive.closeQuietly(j2sramp);
 		}
 	}
 
@@ -133,10 +132,8 @@ public class JarToSrampArchiveTest {
 			Assert.assertTrue(paths.contains("schema/teetime.xsd"));
 			Assert.assertTrue(paths.contains("wsdl/teetime.wsdl"));
 		} finally {
-			if (j2sramp != null)
-				j2sramp.close();
-			if (archive != null)
-				archive.close();
+			JarToSrampArchive.closeQuietly(j2sramp);
+			SrampArchive.closeQuietly(archive);
 		}
 	}
 
@@ -171,10 +168,8 @@ public class JarToSrampArchiveTest {
 			Assert.assertTrue(paths.contains("com/redhat/ewittman/teetime/_2012/_09/wsdl/teetime_wsdl/TeeTimePortType.class"));
 			Assert.assertTrue(paths.contains("META-INF/maven/com.redhat.ewittman/sample-web-service/pom.properties"));
 		} finally {
-			if (j2sramp != null)
-				j2sramp.close();
-			if (archive != null)
-				archive.close();
+			JarToSrampArchive.closeQuietly(j2sramp);
+			SrampArchive.closeQuietly(archive);
 		}
 	}
 
@@ -200,10 +195,8 @@ public class JarToSrampArchiveTest {
 			Assert.assertEquals("teetime.xsd", md.getName());
 			Assert.assertNotNull(md.getUuid());
 		} finally {
-			if (j2sramp != null)
-				j2sramp.close();
-			if (archive != null)
-				archive.close();
+			JarToSrampArchive.closeQuietly(j2sramp);
+			SrampArchive.closeQuietly(archive);
 		}
 	}
 
@@ -238,10 +231,8 @@ public class JarToSrampArchiveTest {
 			Assert.assertEquals("custom-teetime.xsd", md.getName());
 			Assert.assertNotNull(md.getUuid());
 		} finally {
-			if (j2sramp != null)
-				j2sramp.close();
-			if (archive != null)
-				archive.close();
+			JarToSrampArchive.closeQuietly(j2sramp);
+			SrampArchive.closeQuietly(archive);
 		}
 	}
 
