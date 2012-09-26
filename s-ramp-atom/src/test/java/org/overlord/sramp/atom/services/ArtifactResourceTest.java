@@ -168,6 +168,32 @@ public class ArtifactResourceTest extends BaseResourceTest {
 	}
 
 	/**
+	 * Tests adding an artifact without a slug.
+	 * @throws Exception
+	 */
+	@Test
+	public void testCreateNoSlug() throws Exception {
+		// Add the PDF to the repository
+		String artifactFileName = "sample.wsdl";
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
+		try {
+			ClientRequest request = new ClientRequest(generateURL("/s-ramp/wsdl/WsdlDocument"));
+			request.body("application/xml", contentStream);
+
+			ClientResponse<Entry> response = request.post(Entry.class);
+
+			Entry entry = response.getEntity();
+			Assert.assertEquals("newartifact.wsdl", entry.getTitle());
+			BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+			Assert.assertTrue(arty instanceof WsdlDocument);
+			WsdlDocument doc = (WsdlDocument) arty;
+			Assert.assertEquals("newartifact.wsdl", doc.getName());
+		} finally {
+			IOUtils.closeQuietly(contentStream);
+		}
+	}
+
+	/**
 	 * Does a full test of all the basic Artifact operations.
 	 * @throws Exception
 	 */
