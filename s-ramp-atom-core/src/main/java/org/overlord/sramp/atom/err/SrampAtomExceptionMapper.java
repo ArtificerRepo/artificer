@@ -41,7 +41,7 @@ import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 @Provider
 @ServerInterceptor
 public class SrampAtomExceptionMapper implements ExceptionMapper<SrampAtomException>, MessageBodyWriter<SrampAtomException> {
-	
+
 	/**
 	 * Constructor.
 	 */
@@ -55,11 +55,11 @@ public class SrampAtomExceptionMapper implements ExceptionMapper<SrampAtomExcept
 	public Response toResponse(SrampAtomException exception) {
 		ResponseBuilder builder = Response.status(500);
 		builder.header("S-RAMP-Exception-Message", getRootCause(exception).getMessage());
-		builder.type("application/stacktrace");
+		builder.type(org.overlord.sramp.atom.MediaType.APPLICATION_STACKTRACE);
 		builder.entity(exception);
 		return builder.build();
 	}
-	
+
 	/**
 	 * @see javax.ws.rs.ext.MessageBodyWriter#isWriteable(java.lang.Class, java.lang.reflect.Type, java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType)
 	 */

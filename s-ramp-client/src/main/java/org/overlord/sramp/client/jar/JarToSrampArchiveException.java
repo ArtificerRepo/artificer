@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.client.jar;
 
+
 /**
  * Exception thrown when a problem with the {@link JarToSrampArchive} class encounters an
  * error.

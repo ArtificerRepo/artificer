@@ -155,7 +155,8 @@ public class SrampArchive {
 	 */
 	public static void closeQuietly(SrampArchive archive) {
 		try {
-			archive.close();
+			if (archive != null)
+				archive.close();
 		} catch (IOException e) {
 		}
 	}
@@ -200,7 +201,7 @@ public class SrampArchive {
 	 * {@link InputStream}.
 	 * @param path the path in the archive (usually just the name of the artifact)
 	 * @param metaData the artifact meta-data
-	 * @param content the entry content
+	 * @param content the entry content (or null if a meta-data only entry)
 	 * @throws SrampArchiveException
 	 */
 	public void addEntry(String path, BaseArtifactType metaData, InputStream content) throws SrampArchiveException {
@@ -212,7 +213,7 @@ public class SrampArchive {
 	 * Adds an entry to the S-RAMP archive.  This method will close the content
 	 * {@link InputStream}.
 	 * @param entry the archive entry
-	 * @param content the entry content
+	 * @param content the entry content (or null if a meta-data only entry)
 	 * @throws SrampArchiveException
 	 */
 	public void addEntry(SrampArchiveEntry entry, InputStream content) throws SrampArchiveException {
@@ -280,22 +281,33 @@ public class SrampArchive {
 
 	/**
 	 * Packs up the current contents of the S-RAMP archive into a single (.zip) file and
-	 * returns a reference to it.
+	 * returns a reference to it.  This method is guaranteed to either throw an Exception
+	 * or return a valid {@link File}.  It will never throw and leave a temporary file
+	 * behind.
 	 * @throws SrampArchiveException
 	 */
 	public File pack() throws SrampArchiveException {
 		try {
-			File archiveFile = File.createTempFile("s-ramp-archive", ".sramp");
-			FileOutputStream outputStream = FileUtils.openOutputStream(archiveFile);
-			ZipOutputStream zipOutputStream = null;
+			File archiveFile = null;
 			try {
-				zipOutputStream = new ZipOutputStream(outputStream);
-				Collection<SrampArchiveEntry> entries = getEntries();
-				for (SrampArchiveEntry entry : entries) {
-					packEntry(entry, zipOutputStream);
+				archiveFile = File.createTempFile("s-ramp-archive", ".sramp");
+				FileOutputStream outputStream = FileUtils.openOutputStream(archiveFile);
+				ZipOutputStream zipOutputStream = null;
+				try {
+					zipOutputStream = new ZipOutputStream(outputStream);
+					Collection<SrampArchiveEntry> entries = getEntries();
+					for (SrampArchiveEntry entry : entries) {
+						packEntry(entry, zipOutputStream);
+					}
+				} finally {
+					IOUtils.closeQuietly(zipOutputStream);
 				}
-			} finally {
-				IOUtils.closeQuietly(zipOutputStream);
+			} catch (Throwable t) {
+				// If anything goes wrong, make sure the File is cleaned up, as
+				// we won't have another chance to do so.
+				if (archiveFile != null && archiveFile.isFile())
+					archiveFile.delete();
+				throw t;
 			}
 			return archiveFile;
 		} catch (Throwable t) {

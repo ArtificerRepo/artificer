@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -34,10 +35,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.SrampAtomUtils;
+import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
+import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.services.ArtifactResource;
+import org.overlord.sramp.atom.services.BatchResource;
 import org.overlord.sramp.atom.services.FeedResource;
 import org.overlord.sramp.atom.services.QueryResource;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
@@ -50,8 +56,10 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	@Before
 	public void setUp() throws Exception {
 		getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
+		getProviderFactory().registerProvider(HttpResponseProvider.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
+		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);
 		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
 	}
 
@@ -68,7 +76,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 			Assert.assertNotNull(entry);
 			Assert.assertEquals(artifactFileName, entry.getTitle());
 		} finally {
-			is.close();
+			IOUtils.closeQuietly(is);
 		}
 	}
 
@@ -102,7 +110,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 			Assert.assertTrue("Unexpected content found.", line1.startsWith("<?xml version=\"1.0\""));
 			Assert.assertTrue("Unexpected content found.", line2.startsWith("<xsd:schema"));
 		} finally {
-			content.close();
+			IOUtils.closeQuietly(is);
 		}
 	}
 
@@ -125,7 +133,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 			uuid = entry.getId();
 			xsdDoc = entry.getAnyOtherJAXBObject(XsdDocument.class);
 		} finally {
-			is.close();
+			IOUtils.closeQuietly(is);
 		}
 
 		// Now update the description
@@ -156,7 +164,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 			uuid = entry.getId();
 			xsdDoc = entry.getAnyOtherJAXBObject(XsdDocument.class);
 		} finally {
-			is.close();
+			IOUtils.closeQuietly(is);
 		}
 
 		// Now update the artifact content
@@ -190,7 +198,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 			Assert.assertEquals(artifactFileName, entry.getTitle());
 			uuid = entry.getId();
 		} finally {
-			is.close();
+			IOUtils.closeQuietly(is);
 		}
 
 		// Now search for all XSDs
@@ -217,6 +225,117 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 			String remoteTrace = e.getRemoteStackTrace();
 			Assert.assertNotNull(remoteTrace);
 			Assert.assertTrue(remoteTrace.startsWith("org.overlord.sramp.query.xpath.XPathParserException: Invalid artifact set (step 2)."));
+		}
+	}
+
+	/**
+	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadBatch(SrampArchive)}.
+	 */
+	@Test
+	public void testArchiveUpload() throws Exception {
+		// First, create an s-ramp archive
+		SrampArchive archive = null;
+		InputStream is1 = null;
+		InputStream is2 = null;
+		try {
+			archive = new SrampArchive();
+
+			String artifactFileName = "PO.xsd";
+			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+			BaseArtifactType metaData = new XsdDocument();
+			metaData.setName("PO.xsd");
+			metaData.setVersion("1.1");
+			metaData.setDescription("This is a test description (XSD).");
+			archive.addEntry("schemas/PO.xsd", metaData, is1);
+
+			artifactFileName = "PO.xml";
+			is2 = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+			metaData = new XsdDocument();
+			metaData.setName("PO.xml");
+			metaData.setVersion("1.2");
+			metaData.setDescription("This is a test description (XML).");
+			archive.addEntry("core/PO.xml", metaData, is2);
+		} catch (Exception e) {
+			SrampArchive.closeQuietly(archive);
+			throw e;
+		} finally {
+			IOUtils.closeQuietly(is1);
+			IOUtils.closeQuietly(is2);
+		}
+
+		try {
+			// Now use the s-ramp atom api client to upload the s-ramp archive
+			SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+			Map<String, ?> results = client.uploadBatch(archive);
+			Assert.assertEquals(2, results.size());
+			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd"));
+			Assert.assertTrue(results.keySet().contains("core/PO.xml"));
+
+			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd");
+			Assert.assertNotNull(xsdDoc);
+			Assert.assertEquals("PO.xsd", xsdDoc.getName());
+			Assert.assertEquals("1.1", xsdDoc.getVersion());
+
+			XmlDocument xmlDoc = (XmlDocument) results.get("core/PO.xml");
+			Assert.assertNotNull(xmlDoc);
+			Assert.assertEquals("PO.xml", xmlDoc.getName());
+			Assert.assertEquals("1.2", xmlDoc.getVersion());
+		} finally {
+			SrampArchive.closeQuietly(archive);
+		}
+	}
+
+	/**
+	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadBatch(SrampArchive)}.
+	 */
+	@Test
+	public void testArchiveUploadWithError() throws Exception {
+		// First, create an s-ramp archive
+		SrampArchive archive = null;
+		InputStream is1 = null;
+		InputStream is2 = null;
+		try {
+			archive = new SrampArchive();
+
+			String artifactFileName = "PO.xsd";
+			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+			BaseArtifactType metaData = new XsdDocument();
+			metaData.setName("PO.xsd");
+			metaData.setVersion("1.1");
+			metaData.setDescription("This is a test description (XSD).");
+			archive.addEntry("schemas/PO.xsd", metaData, is1);
+
+			artifactFileName = "PO.xml";
+			metaData = new XsdDocument();
+			metaData.setName("PO.xml");
+			metaData.setVersion("1.2");
+			metaData.setDescription("This is a test description (XML).");
+			archive.addEntry("core/PO.xml", metaData, null);
+		} catch (Exception e) {
+			SrampArchive.closeQuietly(archive);
+			throw e;
+		} finally {
+			IOUtils.closeQuietly(is1);
+			IOUtils.closeQuietly(is2);
+		}
+
+		try {
+			// Now use the s-ramp atom api client to upload the s-ramp archive
+			SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+			Map<String, ?> results = client.uploadBatch(archive);
+			Assert.assertEquals(2, results.size());
+			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd"));
+			Assert.assertTrue(results.keySet().contains("core/PO.xml"));
+
+			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd");
+			Assert.assertNotNull(xsdDoc);
+			Assert.assertEquals("PO.xsd", xsdDoc.getName());
+			Assert.assertEquals("1.1", xsdDoc.getVersion());
+
+			Exception xmlError = (Exception) results.get("core/PO.xml");
+			Assert.assertNotNull(xmlError);
+		} finally {
+			SrampArchive.closeQuietly(archive);
 		}
 	}
 
