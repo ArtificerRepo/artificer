@@ -30,7 +30,7 @@
 		<snapshotRepository>
 			<id>local-sramp-repo-snapshots</id>
 			<name>S-RAMP Snapshots Repository</name>
-			<url>sramp://localhost:9090/s-ramp-atom/s-ramp/</url>
+			<url>sramp://localhost:8080/s-ramp-atom/s-ramp/</url>
 		</snapshotRepository>
 	</distributionManagement>
 

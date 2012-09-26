@@ -20,9 +20,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.maven.wagon.ConnectionException;
@@ -50,6 +54,7 @@ import org.overlord.sramp.atom.archive.SrampArchiveException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.client.SrampServerException;
+import org.overlord.sramp.client.jar.JarToSrampArchive;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -361,7 +366,14 @@ public class SrampWagon extends StreamWagon {
 		// context classloader magic.
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
+		File tempResourceFile = null;
+		SrampArchive archive = null;
+		JarToSrampArchive j2sramp = null;
 		try {
+			// First, stash the content in a temp file - we may need it multiple times.
+			tempResourceFile = stashResourceContent(resourceInputStream);
+			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
+
 			// Only search for existing artifacts by GAV info here
 			BaseArtifactType artifact = findExistingArtifactByGAV(client, gavInfo);
 			// If we found an artifact, we should update its content.  If not, we should upload
@@ -382,12 +394,53 @@ public class SrampWagon extends StreamWagon {
 				SrampModelUtils.setCustomProperty(artifact, "maven.type", gavInfo.getType());
 				client.updateArtifactMetaData(artifact);
 				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
+				// Now also add "expanded" content to the s-ramp repository
+				if (shouldExpand(gavInfo)) {
+					j2sramp = new JarToSrampArchive(tempResourceFile);
+					archive = j2sramp.createSrampArchive();
+					client.uploadBatch(archive);
+				}
 			}
 		} catch (Throwable t) {
 			throw new TransferFailedException(t.getMessage(), t);
 		} finally {
 			Thread.currentThread().setContextClassLoader(oldCtxCL);
+			SrampArchive.closeQuietly(archive);
+			JarToSrampArchive.closeQuietly(j2sramp);
+			FileUtils.deleteQuietly(tempResourceFile);
 		}
+	}
+
+	/**
+	 * @param gavInfo resource GAV information
+	 * @return true if this maven artifact should be expanded in s-ramp (its contents exploded)
+	 */
+	private boolean shouldExpand(MavenGavInfo gavInfo) {
+		// TODO this should be configurable in the pom.xml
+		Set<String> expandedTypes = new HashSet<String>();
+		expandedTypes.add("jar");
+		expandedTypes.add("war");
+		expandedTypes.add("ear");
+		return expandedTypes.contains(gavInfo.getType()) && gavInfo.getClassifier() == null;
+	}
+
+	/**
+	 * Make a temporary copy of the resource by saving the content to a temp file.
+	 * @param resourceInputStream
+	 * @throws IOException
+	 */
+	private File stashResourceContent(InputStream resourceInputStream) throws IOException {
+		File resourceTempFile = null;
+		OutputStream oStream = null;
+		try {
+			resourceTempFile = File.createTempFile("s-ramp-wagon-resource", ".tmp");
+			oStream = FileUtils.openOutputStream(resourceTempFile);
+		} finally {
+			IOUtils.copy(resourceInputStream, oStream);
+			IOUtils.closeQuietly(resourceInputStream);
+			IOUtils.closeQuietly(oStream);
+		}
+		return resourceTempFile;
 	}
 
 	/**

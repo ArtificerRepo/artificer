@@ -155,7 +155,8 @@ public class SrampArchive {
 	 */
 	public static void closeQuietly(SrampArchive archive) {
 		try {
-			archive.close();
+			if (archive != null)
+				archive.close();
 		} catch (IOException e) {
 		}
 	}
