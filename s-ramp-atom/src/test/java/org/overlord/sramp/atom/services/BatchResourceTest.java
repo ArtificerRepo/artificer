@@ -139,9 +139,8 @@ public class BatchResourceTest extends BaseResourceTest {
 			IOUtils.closeQuietly(xsd1ContentStream);
 			IOUtils.closeQuietly(xsd2ContentStream);
 			SrampArchive.closeQuietly(archive);
-			if (zipFile != null)
-				zipFile.delete();
 			IOUtils.closeQuietly(zipStream);
+			FileUtils.deleteQuietly(zipFile);
 		}
 
 		// Verify by querying
@@ -265,9 +264,8 @@ public class BatchResourceTest extends BaseResourceTest {
 			IOUtils.closeQuietly(xsd1ContentStream);
 			IOUtils.closeQuietly(wsdlContentStream);
 			SrampArchive.closeQuietly(archive);
-			if (zipFile != null)
-				zipFile.delete();
 			IOUtils.closeQuietly(zipStream);
+			FileUtils.deleteQuietly(zipFile);
 		}
 
 		// Verify by querying

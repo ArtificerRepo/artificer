@@ -103,12 +103,7 @@ public class SrampWagon extends StreamWagon {
 	 */
 	@Override
 	public void closeConnection() throws ConnectionException {
-		try {
-			if (this.archive != null)
-				this.archive.close();
-		} catch (IOException e) {
-			throw new ConnectionException("Failed to delete the s-ramp archive (temporary storage)", e);
-		}
+		SrampArchive.closeQuietly(archive);
 	}
 
 	/**
