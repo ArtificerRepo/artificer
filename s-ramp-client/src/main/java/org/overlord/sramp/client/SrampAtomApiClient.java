@@ -246,6 +246,28 @@ public class SrampAtomApiClient {
 	}
 
 	/**
+	 * Delets an artifact from the s-ramp repository.
+	 * @param uuid
+	 * @param type
+	 * @throws SrampClientException
+	 * @throws SrampServerException
+	 */
+	public void deleteArtifact(String uuid, ArtifactType type) throws SrampClientException, SrampServerException {
+		try {
+			String artifactModel = type.getArtifactType().getModel();
+			String artifactType = type.getArtifactType().getType();
+			String artifactUuid = uuid;
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
+			ClientRequest request = new ClientRequest(atomUrl);
+			request.delete();
+		} catch (SrampServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
+	}
+
+	/**
 	 * Provides a very simple mechanism for querying.  Defaults many of the parameters.
 	 * @param srampQuery the s-ramp query (xpath formatted)
 	 * @throws SrampClientException

@@ -17,6 +17,7 @@ package org.overlord.sramp.client.jar;
 
 import java.util.UUID;
 
+import org.overlord.sramp.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
@@ -64,6 +65,7 @@ public class DefaultMetaDataFactory implements MetaDataFactory {
 		}
 		metaData.setUuid(UUID.randomUUID().toString());
 		metaData.setName(artifact.getName());
+		SrampModelUtils.setCustomProperty(metaData, "batch.archive-path", artifact.getArchivePath());
 		return metaData;
 	}
 

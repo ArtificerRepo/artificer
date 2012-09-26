@@ -54,6 +54,8 @@ import org.overlord.sramp.atom.archive.SrampArchiveException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.client.SrampServerException;
+import org.overlord.sramp.client.jar.DefaultMetaDataFactory;
+import org.overlord.sramp.client.jar.DiscoveredArtifact;
 import org.overlord.sramp.client.jar.JarToSrampArchive;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
@@ -358,7 +360,7 @@ public class SrampWagon extends StreamWagon {
 	 * @param resourceInputStream
 	 * @throws TransferFailedException
 	 */
-	private void doPutArtifact(MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
+	private void doPutArtifact(final MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
 		ArtifactType artifactType = getArtifactType(gavInfo);
 		String endpoint = getSrampEndpoint();
 		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
@@ -381,6 +383,10 @@ public class SrampWagon extends StreamWagon {
 			if (artifact != null) {
 				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
 				client.updateArtifact(artifact, resourceInputStream);
+				if (shouldExpand(gavInfo)) {
+					final String parentUUID = artifact.getUuid();
+					cleanExpandedArtifacts(client, parentUUID);
+				}
 			} else {
 				// Upload the content, then add the maven properties to the artifact
 				// as meta-data
@@ -394,12 +400,27 @@ public class SrampWagon extends StreamWagon {
 				SrampModelUtils.setCustomProperty(artifact, "maven.type", gavInfo.getType());
 				client.updateArtifactMetaData(artifact);
 				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
-				// Now also add "expanded" content to the s-ramp repository
-				if (shouldExpand(gavInfo)) {
-					j2sramp = new JarToSrampArchive(tempResourceFile);
-					archive = j2sramp.createSrampArchive();
-					client.uploadBatch(archive);
-				}
+			}
+
+			// Now also add "expanded" content to the s-ramp repository
+			if (shouldExpand(gavInfo)) {
+				// TODO replace parentUUID logic with relationship, once relationships are impl'd
+				final String parentUUID = artifact.getUuid();
+				j2sramp = new JarToSrampArchive(tempResourceFile);
+				j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
+					@Override
+					public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
+						BaseArtifactType metaData = super.createMetaData(artifact);
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-uuid", parentUUID);
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-groupId", gavInfo.getGroupId());
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-artifactId", gavInfo.getArtifactId());
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-version", gavInfo.getVersion());
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-type", gavInfo.getType());
+						return metaData;
+					}
+				});
+				archive = j2sramp.createSrampArchive();
+				client.uploadBatch(archive);
 			}
 		} catch (Throwable t) {
 			throw new TransferFailedException(t.getMessage(), t);
@@ -408,6 +429,23 @@ public class SrampWagon extends StreamWagon {
 			SrampArchive.closeQuietly(archive);
 			JarToSrampArchive.closeQuietly(j2sramp);
 			FileUtils.deleteQuietly(tempResourceFile);
+		}
+	}
+
+	/**
+	 * Deletes the 'expanded' artifacts from the s-ramp repository.
+	 * @param client
+	 * @param parentUUID
+	 * @throws SrampClientException
+	 * @throws SrampServerException
+	 */
+	private void cleanExpandedArtifacts(SrampAtomApiClient client, String parentUUID) throws SrampServerException, SrampClientException {
+		String query = String.format("/s-ramp[@maven.parent-uuid = '%1$s']", parentUUID);
+		Feed feed = client.query(query, 0, 200, "name", true);
+		for (Entry entry : feed.getEntries()) {
+			ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
+			String uuid = entry.getId().toString();
+			client.deleteArtifact(uuid, artifactType);
 		}
 	}
 
