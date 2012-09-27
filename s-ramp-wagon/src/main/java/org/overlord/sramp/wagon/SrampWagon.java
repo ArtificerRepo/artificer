@@ -203,10 +203,12 @@ public class SrampWagon extends StreamWagon {
 		} catch (ResourceDoesNotExistException e) {
 			throw e;
 		} catch (SrampClientException e) {
-			if (e.getCause() instanceof HttpHostConnectException)
+			if (e.getCause() instanceof HttpHostConnectException) {
 				this.logger.debug("Could not connect to s-ramp repository: " + e.getMessage());
-			else
+			} else {
 				this.logger.error(e.getMessage(), e);
+			}
+			throw new ResourceDoesNotExistException("Failed to get resource from s-ramp: " + gavInfo.getName());
 		} catch (Throwable t) {
 			this.logger.error(t.getMessage(), t);
 		} finally {
