@@ -12,5 +12,6 @@
 	<name>S-RAMP Demos: Maven Integration</name>
 	<modules>
 		<module>s-ramp-demos-mvn-integration-artifacts</module>
+		<module>s-ramp-demos-mvn-integration-app</module>
 	</modules>
 </project>
