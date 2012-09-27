@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.overlord.sramp.demos</groupId>
+		<artifactId>s-ramp-demos-mvn-integration</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>s-ramp-demos-mvn-integration-artifacts</artifactId>
+	<name>S-RAMP Demos: Maven Integration - Artifacts</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.overlord.sramp</groupId>
+				<artifactId>s-ramp-wagon</artifactId>
+				<version>0.0.2-SNAPSHOT</version>
+			</extension>
+		</extensions>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>xjc</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<schemaDirectory>${project.basedir}/src/main/resources/schemas</schemaDirectory>
+					<packageName>org.overlord.sramp.demos.mvnintegration</packageName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>demo</id>
+			<distributionManagement>
+				<repository>
+					<id>local-sramp-repo</id>
+					<name>S-RAMP Releases Repository</name>
+					<url>sramp://localhost:8080/s-ramp-atom/s-ramp/</url>
+				</repository>
+				<snapshotRepository>
+					<id>local-sramp-repo-snapshots</id>
+					<name>S-RAMP Snapshots Repository</name>
+					<url>sramp://localhost:8080/s-ramp-atom/s-ramp/</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+	</profiles>
+
+</project>
