@@ -14,7 +14,7 @@
 			<artifactId>s-ramp-demos-mvn-integration-artifacts</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<!-- Junit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -25,6 +25,13 @@
 	</dependencies>
 
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.overlord.sramp</groupId>
+				<artifactId>s-ramp-wagon</artifactId>
+				<version>0.0.2-SNAPSHOT</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<!-- Specify the compiler options and settings -->
 			<plugin>
@@ -40,5 +47,25 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>demo</id>
+			<repositories>
+				<repository>
+					<id>local-sramp-repo</id>
+					<name>Local S-RAMP Repository</name>
+					<url>sramp://localhost:8080/s-ramp-atom/s-ramp/</url>
+					<layout>default</layout>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+		</profile>
+	</profiles>
 
 </project>
