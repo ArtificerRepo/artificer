@@ -13,5 +13,6 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>s-ramp-demos-mvn-integration</module>
+		<module>s-ramp-demos-simple-client</module>
 	</modules>
 </project>
