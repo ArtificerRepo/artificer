@@ -59,26 +59,30 @@ public class SimpleClientDemo {
 			// Get an InputStream over the file content
 			InputStream is = SimpleClientDemo.class.getResourceAsStream(file);
 
-			// We need to know the artifact type
-			ArtifactType type = ArtifactType.XsdDocument;
-			if (file.endsWith(".wsdl")) {
-				type = ArtifactType.WsdlDocument;
+			try {
+				// We need to know the artifact type
+				ArtifactType type = ArtifactType.XsdDocument;
+				if (file.endsWith(".wsdl")) {
+					type = ArtifactType.WsdlDocument;
+				}
+
+				// Upload that content to S-RAMP
+				System.out.print("\tUploading artifact " + file + "...");
+				Entry newArtifact = client.uploadArtifact(type, is, file);
+				System.out.println("done.");
+
+				// Update the artifact meta-data (set the version and add a custom property)
+				BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(newArtifact);
+				artifact.setVersion("1.1");
+				SrampModelUtils.setCustomProperty(artifact, "demo", "simple-client");
+
+				// Tell the server about the updated meta-data
+				System.out.print("\tUpdating meta-data for artifact " + file + "...");
+				client.updateArtifactMetaData(artifact);
+				System.out.println("done.");
+			} finally {
+				is.close();
 			}
-
-			// Upload that content to S-RAMP
-			System.out.print("\tUploading artifact " + file + "...");
-			Entry newArtifact = client.uploadArtifact(type, is, file);
-			System.out.println("done.");
-
-			// Update the artifact meta-data (set the version and add a custom property)
-			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(newArtifact);
-			artifact.setVersion("1.1");
-			SrampModelUtils.setCustomProperty(artifact, "demo", "simple-client");
-
-			// Tell the server about the updated meta-data
-			System.out.print("\tUpdating meta-data for artifact " + file + "...");
-			client.updateArtifactMetaData(artifact);
-			System.out.println("done.");
 		}
 
 		// Now query the S-RAMP repository (for the Schemas only)

@@ -1,9 +1,10 @@
-# S-RAMP Demos: Simple Client
+# S-RAMP Demos: Archive Package
 
 ## Summary
 
-This demo illustrates how easy it is to use the S-RAMP client to interact with the S-RAMP
-repository (which it does via an Atom API).
+This demo illustrates how to use the S-RAMP archive package feature to upload multiple
+artifacts to the repository at once (bundled in a ZIP formatted package file as defined
+in the S-RAMP specification).
 
 ## How It Works
 
