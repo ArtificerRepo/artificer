@@ -15,8 +15,10 @@
  */
 package org.overlord.sramp.ui.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +32,18 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.SrampAtomUtils;
+import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.SrampServerException;
+import org.overlord.sramp.client.jar.DefaultMetaDataFactory;
+import org.overlord.sramp.client.jar.DiscoveredArtifact;
+import org.overlord.sramp.client.jar.JarToSrampArchive;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -119,18 +127,86 @@ public class ArtifactUploadServlet extends HttpServlet {
 	 * @param artifactContent the content of the artifact
 	 * @throws Exception
 	 */
-	private Map<String, String> uploadArtifact(String artifactType, String fileName, InputStream artifactContent) throws Exception {
+	private Map<String, String> uploadArtifact(String artifactType, String fileName,
+			InputStream artifactContent) throws Exception {
 		SrampAtomApiClient client = SrampAtomApiClient.getInstance();
-
-		ArtifactType at = ArtifactType.valueOf(artifactType);
-		Entry entry = client.uploadArtifact(at, artifactContent, fileName);
-		BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(at, entry);
-
+		File tempFile = stashResourceContent(artifactContent);
+		InputStream contentStream = null;
+		String uuid = null;
 		Map<String, String> responseParams = new HashMap<String, String>();
-		responseParams.put("model", at.getArtifactType().getModel());
-		responseParams.put("type", at.getArtifactType().getType());
-		responseParams.put("uuid", artifact.getUuid());
+
+		// First, upload the artifact, no matter what kind
+		try {
+			contentStream = FileUtils.openInputStream(tempFile);
+			ArtifactType at = ArtifactType.valueOf(artifactType);
+			Entry entry = client.uploadArtifact(at, contentStream, fileName);
+			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(at, entry);
+			responseParams.put("model", at.getArtifactType().getModel());
+			responseParams.put("type", at.getArtifactType().getType());
+			responseParams.put("uuid", artifact.getUuid());
+			uuid = artifact.getUuid();
+		} finally {
+			IOUtils.closeQuietly(contentStream);
+		}
+
+		// Check if this is an expandable file type.  If it is, then expand it!
+		if (isExpandable(fileName)) {
+			JarToSrampArchive j2sramp = null;
+			SrampArchive archive = null;
+			try {
+				final String parentUUID = uuid;
+				j2sramp = new JarToSrampArchive(tempFile);
+				j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
+					@Override
+					public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
+						BaseArtifactType metaData = super.createMetaData(artifact);
+						SrampModelUtils.setCustomProperty(metaData, "upload.parent-uuid", parentUUID);
+						return metaData;
+					}
+				});
+				archive = j2sramp.createSrampArchive();
+				client.uploadBatch(archive);
+			} finally {
+				SrampArchive.closeQuietly(archive);
+				JarToSrampArchive.closeQuietly(j2sramp);
+			}
+		}
+
 		return responseParams;
+	}
+
+	/**
+	 * Make a temporary copy of the resource by saving the content to a temp file.
+	 * @param resourceInputStream
+	 * @throws IOException
+	 */
+	private File stashResourceContent(InputStream resourceInputStream) throws IOException {
+		File resourceTempFile = null;
+		OutputStream oStream = null;
+		try {
+			resourceTempFile = File.createTempFile("s-ramp-ui-upload", ".tmp");
+			oStream = FileUtils.openOutputStream(resourceTempFile);
+		} catch (IOException e) {
+			if (resourceTempFile != null && resourceTempFile.isFile())
+				resourceTempFile.delete();
+			throw e;
+		} finally {
+			IOUtils.copy(resourceInputStream, oStream);
+			IOUtils.closeQuietly(resourceInputStream);
+			IOUtils.closeQuietly(oStream);
+		}
+		return resourceTempFile;
+	}
+
+	/**
+	 * Returns true if the uploaded file should be expanded.  We support expanding JAR, WAR,
+	 * and EAR files.
+	 * @param fileName the name of the uploaded file
+	 * @return true if the file should be expanded
+	 */
+	private boolean isExpandable(String fileName) {
+		String name = fileName.toLowerCase();
+		return name.endsWith(".jar") || name.endsWith(".war") || name.endsWith(".ear");
 	}
 
 	/**
