@@ -15,5 +15,6 @@
 		<module>s-ramp-demos-mvn-integration</module>
 		<module>s-ramp-demos-simple-client</module>
 		<module>s-ramp-demos-archive-package</module>
+		<module>s-ramp-demos-query</module>
 	</modules>
 </project>

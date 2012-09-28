@@ -2,9 +2,7 @@
 
 ## Summary
 
-This demo illustrates how to use the S-RAMP archive package feature to upload multiple
-artifacts to the repository at once (bundled in a ZIP formatted package file as defined
-in the S-RAMP specification).
+This demo shows a few examples of how the S-RAMP repository can be queried.
 
 ## How It Works
 
@@ -22,4 +20,4 @@ you can customize where the demo looks for the Atom API.  For example:
 	$ mvn -Pdemo -Dsramp.endpoint=http://myhost:8081/s-ramp-atom/s-ramp clean test
 
 The demo should output some interesting information before completing successfully.  Please
-take a look at the code found in the ArchivePackageDemo Java class for more information.
+take a look at the code found in the QueryDemo Java class for more information.
