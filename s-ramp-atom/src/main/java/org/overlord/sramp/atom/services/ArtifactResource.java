@@ -47,6 +47,7 @@ import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
@@ -98,11 +99,12 @@ public class ArtifactResource {
 			@PathParam("type") String type, InputStream content) throws SrampAtomException {
         InputStream is = content;
         try {
-        	ArtifactType artifactType = ArtifactType.valueOf(type);
+            ArtifactType artifactType = ArtifactType.valueOf(model, type);
         	if (artifactType.getArtifactType().isDerived()) {
 				throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
 						+ "' is a derived type.");
         	}
+        	
         	String mimeType = determineMimeType(contentType, fileName, artifactType);
         	artifactType.setMimeType(mimeType);
 
@@ -173,7 +175,7 @@ public class ArtifactResource {
 	 * @param artifactType the artifact type (based on the endpoint POSTed to)
 	 */
 	private static String determineMimeType(String contentType, String fileName, ArtifactType artifactType) {
-		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document) {
+		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.UserDefined) {
 			if (contentType != null && contentType.trim().length() > 0)
 				return contentType;
 			if (fileName != null && fileName.trim().length() > 0 && fileName.contains(".")) {
@@ -203,7 +205,7 @@ public class ArtifactResource {
     public void updateMetaData(@PathParam("model") String model, @PathParam("type") String type,
     		@PathParam("uuid") String uuid, Entry atomEntry) throws SrampAtomException {
         try {
-        	ArtifactType artifactType = ArtifactType.valueOf(type);
+            ArtifactType artifactType = ArtifactType.valueOf(model, type);
         	Artifact artifactWrapper = atomEntry.getAnyOtherJAXBObject(Artifact.class);
         	Method method = artifactWrapper.getClass().getMethod("get" + artifactType.getArtifactType().getType());
         	BaseArtifactType artifact = (BaseArtifactType) method.invoke(artifactWrapper);
@@ -229,7 +231,7 @@ public class ArtifactResource {
 			@HeaderParam("Slug") String fileName, @PathParam("model") String model,
 			@PathParam("type") String type, @PathParam("uuid") String uuid, InputStream content)
 			throws SrampAtomException {
-    	ArtifactType artifactType = ArtifactType.valueOf(type);
+        ArtifactType artifactType = ArtifactType.valueOf(model, type);
     	if (artifactType.getArtifactType().isDerived()) {
 			throw new SrampAtomException("Failed to create artifact because '" + artifactType.getArtifactType()
 					+ "' is a derived type.");
@@ -263,7 +265,7 @@ public class ArtifactResource {
 	public Entry getMetaData(@PathParam("model") String model, @PathParam("type") String type,
 			@PathParam("uuid") String uuid) throws SrampAtomException {
         try {
-        	ArtifactType artifactType = ArtifactType.valueOf(type);
+            ArtifactType artifactType = ArtifactType.valueOf(model, type);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
 			// Get the artifact by UUID
@@ -292,8 +294,14 @@ public class ArtifactResource {
 	public Response getContent(@PathParam("model") String model, @PathParam("type") String type,
 			@PathParam("uuid") String uuid) throws SrampAtomException {
         try {
-        	ArtifactType artifactType = ArtifactType.valueOf(type);
+            ArtifactType artifactType = ArtifactType.valueOf(model, type);
+            //artifactType.setMimeType("application/pdf");
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			BaseArtifactType artifact = persistenceManager.getArtifact(uuid, artifactType);
+            ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
+            ArtifactVisitorHelper.visitArtifact(ctVizzy, artifact);
+            javax.ws.rs.core.MediaType mediaType = ctVizzy.getContentType();
+            artifactType.setMimeType(mediaType.toString());
 			final InputStream artifactContent = persistenceManager.getArtifactContent(uuid, artifactType);
 			Object output = new StreamingOutput() {
 				@Override
@@ -320,10 +328,10 @@ public class ArtifactResource {
      */
     @DELETE
     @Path("{model}/{type}/{uuid}")
-	public void deleteXsdDocument(@PathParam("model") String model, @PathParam("type") String type,
+	public void deleteDocument(@PathParam("model") String model, @PathParam("type") String type,
 			@PathParam("uuid") String uuid) throws SrampAtomException {
         try {
-        	ArtifactType artifactType = ArtifactType.valueOf(type);
+            ArtifactType artifactType = ArtifactType.valueOf(model, type);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
 			// Delete the artifact by UUID

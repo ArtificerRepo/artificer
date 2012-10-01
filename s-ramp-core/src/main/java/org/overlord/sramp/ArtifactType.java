@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 
 /**
  * An enum representing all of the Artifact Types defined by S-RAMP.
@@ -35,6 +36,8 @@ public class ArtifactType {
 
 	private ArtifactTypeEnum artifactType;
 	private String mimeType;
+	/** for a UserDefined Type, the type should be stored here */
+	private String userType;
 
 	/**
 	 * Constructor.
@@ -76,6 +79,23 @@ public class ArtifactType {
 		ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.valueOf(artifactType);
 		return new ArtifactType(artifactTypeEnum, null);
 	}
+	
+	/**
+     * Figures out the artifact type (enum) from the given S-RAMP artifact type string.
+     * @param artifactType
+     */
+    public static ArtifactType valueOf(String model, String type) {
+        ArtifactType artifactType = null;
+        if ("user".equals(model)) {
+            ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.valueOf("UserDefined");
+            artifactType = new ArtifactType(artifactTypeEnum, null);
+            artifactType.setUserType(type);
+        } else {
+            ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.valueOf(type);
+            artifactType = new ArtifactType(artifactTypeEnum, null);
+        }
+        return artifactType;
+    }
 
 	/**
 	 * Figures out the type from the artifact instance.
@@ -84,12 +104,22 @@ public class ArtifactType {
 	public static ArtifactType valueOf(BaseArtifactType artifact) {
 		BaseArtifactEnum apiType = artifact.getArtifactType();
 		if (apiType != null) {
-			return valueOf(apiType);
+		    ArtifactType artifactType = valueOf(apiType);
+		    if (artifactType.getArtifactType().equals(ArtifactTypeEnum.UserDefined)) {
+                String userType = ((UserDefinedArtifactType) artifact).getUserType();
+                artifactType.setUserType(userType);
+            }
+			return artifactType;
 		}
 		ArtifactTypeEnum[] values = ArtifactTypeEnum.values();
-		for (ArtifactTypeEnum artifactType : values) {
-			if (artifactType.getTypeClass().equals(artifact.getClass())) {
-				return new ArtifactType(artifactType, null);
+		for (ArtifactTypeEnum artifactTypeEnum : values) {
+			if (artifactTypeEnum.getTypeClass().equals(artifact.getClass())) {
+			    ArtifactType artifactType = new ArtifactType(artifactTypeEnum, null);
+			    if (artifactTypeEnum.equals(ArtifactTypeEnum.UserDefined)) {
+			        String userType = ((UserDefinedArtifactType) artifact).getUserType();
+                    artifactType.setUserType(userType);
+                }
+				return artifactType;
 			}
 		}
 		throw new RuntimeException("Could not determine Artifact Type from artifact class: " + artifact.getClass());
@@ -122,6 +152,22 @@ public class ArtifactType {
 	public void setArtifactType(ArtifactTypeEnum artifactType) {
 		this.artifactType = artifactType;
 	}
+	
+	public String getModel() {
+	    return getArtifactType().getModel();
+	}
+	
+	public String getType() {
+	    if (getArtifactType().equals(ArtifactTypeEnum.UserDefined)) {
+            return getUserType();
+        } else {
+            return getArtifactType().getType();
+        }
+	}
+	
+	public String getLabel() {
+	    return getArtifactType().getLabel();
+	}
 
 	/**
 	 * @return the mimeType
@@ -145,5 +191,13 @@ public class ArtifactType {
 		return String.format("/s-ramp/%1$s/%2$s (%3$s)", getArtifactType().getModel(), getArtifactType()
 				.getType(), getMimeType());
 	}
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
 
 }
