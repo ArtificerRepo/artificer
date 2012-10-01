@@ -33,5 +33,5 @@ public class JCRConstants {
     public static final String SRAMP_NAME                = SRAMP + "name";
     public static final String SRAMP_ARTIFACT_MODEL      = SRAMP + "artifactModel";
     public static final String SRAMP_ARTIFACT_TYPE       = SRAMP + "artifactType";
-   
+    public static final String SRAMP_USER_TYPE           = SRAMP + "userType";
 }

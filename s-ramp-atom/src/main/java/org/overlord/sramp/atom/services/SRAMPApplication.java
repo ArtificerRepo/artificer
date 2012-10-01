@@ -25,7 +25,7 @@ import org.overlord.sramp.atom.providers.HttpResponseProvider;
 
 /**
  * The SRAMP RESTEasy application.  This is essentially the main entry point into a
- * RESTEasy application - it provides the resource implementaiton as well as any other
+ * RESTEasy application - it provides the resource implementation as well as any other
  * providers (mappers, etc).
  */
 public class SRAMPApplication extends Application {
@@ -39,6 +39,7 @@ public class SRAMPApplication extends Application {
 	public SRAMPApplication() {
 		singletons.add(new ServiceDocumentResource());
 		singletons.add(new ArtifactResource());
+		singletons.add(new BrmsResource());
 		singletons.add(new FeedResource());
 		singletons.add(new QueryResource());
 		singletons.add(new BatchResource());

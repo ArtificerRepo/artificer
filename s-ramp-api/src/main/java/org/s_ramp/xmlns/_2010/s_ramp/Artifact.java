@@ -107,6 +107,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "document",
     "xmlDocument",
+    "userDefinedArtifactType",
     "organization",
     "serviceInstance",
     "serviceOperation",
@@ -168,6 +169,8 @@ public class Artifact
     protected Document document;
     @XmlElement(name = "XmlDocument")
     protected XmlDocument xmlDocument;
+    @XmlElement(name = "UserDefinedArtifactType")
+    protected UserDefinedArtifactType userDefinedArtifactType;
     @XmlElement(name = "Organization")
     protected Organization organization;
     @XmlElement(name = "ServiceInstance")
@@ -315,6 +318,14 @@ public class Artifact
      */
     public void setXmlDocument(XmlDocument value) {
         this.xmlDocument = value;
+    }
+    
+    public UserDefinedArtifactType getUserDefinedArtifactType() {
+        return userDefinedArtifactType;
+    }
+
+    public void setUserDefinedArtifactType(UserDefinedArtifactType userDefinedArtifactType) {
+        this.userDefinedArtifactType = userDefinedArtifactType;
     }
 
     /**

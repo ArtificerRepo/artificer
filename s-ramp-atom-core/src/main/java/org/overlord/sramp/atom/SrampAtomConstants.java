@@ -28,7 +28,6 @@ public class SrampAtomConstants {
     public static final String XSD = "xsd";
     public static final String XML = "xml";
     
-    
     private static class URIHelper {
         static URI create(String uriStr) {
             try {

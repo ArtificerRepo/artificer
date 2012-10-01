@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp;
-
-/**
- * Some S-RAMP constants.
- *
- * @author eric.wittmann@redhat.com
- */
-public class SrampConstants {
-
-	public static final String SRAMP_NS = "http://s-ramp.org/xmlns/2010/s-ramp";
-	public static final String SRAMP_PREFIX = "s-ramp";
-	
-	public static final String SRAMP_CONTENT_SIZE        = SRAMP_PREFIX + "contentSize";
-    public static final String SRAMP_CONTENT_TYPE        = SRAMP_PREFIX + "contentType";
-
-}

@@ -17,9 +17,14 @@ package org.overlord.sramp.atom.services;
 
 import static org.jboss.resteasy.test.TestPortProvider.generateURL;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
+
+import javax.xml.namespace.QName;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientRequest;
@@ -29,12 +34,14 @@ import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
+import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
@@ -81,11 +88,11 @@ public class ArtifactResourceTest extends BaseResourceTest {
 	}
 
 	/**
-	 * Tests adding a binary document.
+	 * Tests adding a PDF document.
 	 * @throws Exception
 	 */
 	@Test
-	public void testBinaryDocumentCreate() throws Exception {
+	public void testPDFDocument() throws Exception {
 		// Add the PDF to the repository
 		String artifactFileName = "sample.pdf";
 		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
@@ -122,7 +129,174 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		Assert.assertEquals(Long.valueOf(218882), doc.getContentSize());
 		Assert.assertEquals("sample.pdf", doc.getName());
 		Assert.assertEquals("application/pdf", doc.getContentType());
+        //Obtain the content for visual inspection
+        ClientRequest request2 = new ClientRequest(generateURL("/s-ramp/core/Document/" + uuid + "/media"));
+        ClientResponse<InputStream> response2 = request2.get(InputStream.class);
+        if (response2.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : "
+                + response.getStatus());
+        }
+        InputStream in = response2.getEntity();
+        File file = new File("target/SRAMP-sample.pdf");
+        OutputStream out = new FileOutputStream(file);
+        IOUtils.copy(in, out);
+        out.flush();
+        IOUtils.closeQuietly(in);
+        IOUtils.closeQuietly(out);
 	}
+	
+	   /**
+     * Tests adding a PDF document.
+     * @throws Exception
+     */
+    @Test
+    public void testDroolsPkgDocument() throws Exception {
+        // Add the pkg to the repository
+        String artifactFileName = "defaultPackage.pkg";
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/user/" + artifactFileName);
+        String uuid = null;
+        try {
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/DroolsPkgDocument"));
+            request.header("Slug", artifactFileName);
+            request.body("application/octet-stream", contentStream);
+
+            ClientResponse<Entry> response = request.post(Entry.class);
+
+            Entry entry = response.getEntity();
+            Assert.assertEquals(artifactFileName, entry.getTitle());
+            BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+            Assert.assertTrue(arty instanceof UserDefinedArtifactType);
+            UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
+            Assert.assertEquals(artifactFileName, doc.getName());
+            Assert.assertEquals("DroolsPkgDocument", doc.getUserType());
+            Assert.assertEquals(Long.valueOf(17043), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+            uuid = doc.getUuid();
+        } finally {
+            IOUtils.closeQuietly(contentStream);
+        }
+
+        // Make sure we can query it now
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/DroolsPkgDocument/" + uuid));
+        ClientResponse<Entry> response = request.get(Entry.class);
+
+        Entry entry = response.getEntity();
+        BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+        Assert.assertTrue(arty instanceof UserDefinedArtifactType);
+        UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
+        Assert.assertEquals(artifactFileName, doc.getName());
+        Assert.assertEquals(Long.valueOf(17043), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+        Assert.assertEquals("defaultPackage.pkg", doc.getName());
+        Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+    }
+    
+    /**
+     * Tests adding a PDF document.
+     * @throws Exception
+     */
+    @Test
+    public void testJPGDocument() throws Exception {
+        // Add the jpg to the repository
+        String artifactFileName = "photo.jpg";
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/user/" + artifactFileName);
+        String uuid = null;
+        try {
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/JpgDocument"));
+            request.header("Slug", artifactFileName);
+            request.body("application/octet-stream", contentStream);
+
+            ClientResponse<Entry> response = request.post(Entry.class);
+
+            Entry entry = response.getEntity();
+            Assert.assertEquals(artifactFileName, entry.getTitle());
+            BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+            Assert.assertTrue(arty instanceof UserDefinedArtifactType);
+            UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
+            Assert.assertEquals(artifactFileName, doc.getName());
+            Assert.assertEquals("JpgDocument", doc.getUserType());
+            Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+            uuid = doc.getUuid();
+        } finally {
+            IOUtils.closeQuietly(contentStream);
+        }
+
+        // Make sure we can query it now
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/JpgDocument/" + uuid));
+        ClientResponse<Entry> response = request.get(Entry.class);
+
+        Entry entry = response.getEntity();
+        BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+        Assert.assertTrue(arty instanceof UserDefinedArtifactType);
+        UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
+        Assert.assertEquals(artifactFileName, doc.getName());
+        Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+        Assert.assertEquals("photo.jpg", doc.getName());
+        Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+        
+        //Obtain the content for visual inspection
+        ClientRequest request2 = new ClientRequest(generateURL("/s-ramp/user/JpgDocument/" + uuid + "/media"));
+        ClientResponse<InputStream> response2 = request2.get(InputStream.class);
+        if (response2.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : "
+                + response.getStatus());
+        }
+        InputStream in = response2.getEntity();
+        File file = new File("target/SRAMP-photo.jpg");
+        OutputStream out = new FileOutputStream(file);
+        IOUtils.copy(in, out);
+        out.flush();
+        IOUtils.closeQuietly(in);
+        IOUtils.closeQuietly(out);
+    }
+	
+	/**
+     * Tests adding a BPMN Process Definition document.
+     * @throws Exception
+     */
+    @Test
+    public void testBpmnUserDefinedDocumentCreate() throws Exception {
+        // Add the BPMN process to the repository
+        String artifactFileName = "Evaluation.bpmn";
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/user/" + artifactFileName);
+        String uuid = null;
+        try {
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/BpmnDocument"));
+            request.header("Slug", artifactFileName);
+            request.body("application/xml", contentStream);
+
+            ClientResponse<Entry> response = request.post(Entry.class);
+
+            Entry entry = response.getEntity();
+            Assert.assertEquals(artifactFileName, entry.getTitle());
+            BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+            Assert.assertTrue(arty instanceof UserDefinedArtifactType);
+            UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
+            Assert.assertEquals(artifactFileName, doc.getName());
+            Assert.assertEquals("BpmnDocument", doc.getUserType());
+            Assert.assertEquals(Long.valueOf(12482), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+            Assert.assertEquals("application/xml", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+            uuid = doc.getUuid();
+        } finally {
+            IOUtils.closeQuietly(contentStream);
+        }
+
+        // Make sure we can query it now
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/BpmnDocument/" + uuid));
+        ClientResponse<Entry> response = request.get(Entry.class);
+
+        Entry entry = response.getEntity();
+        BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+        Assert.assertTrue(arty instanceof UserDefinedArtifactType);
+        UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
+        Assert.assertEquals(artifactFileName, doc.getName());
+        Assert.assertEquals(Long.valueOf(12482), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+        Assert.assertEquals("Evaluation.bpmn", doc.getName());
+        Assert.assertEquals("application/xml", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+        
+        ClientResponse<String> content = request.get(String.class);
+        System.out.println("Content=" + content.getEntity());
+    }
 
 	/**
 	 * Tests adding a wsdl document.
