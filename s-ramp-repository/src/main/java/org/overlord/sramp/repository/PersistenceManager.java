@@ -47,7 +47,7 @@ public interface PersistenceManager {
 	 * Gets a previously persisted artifact by its UUID.
 	 * @param uuid the UUID of the s-ramp artifact
 	 * @param artifactType the type of the artifact
-	 * @return an instance of a {@link BaseArtifactType}
+	 * @return an instance of a {@link BaseArtifactType} or null if not found
 	 * @throws RepositoryException
 	 */
 	public BaseArtifactType getArtifact(String uuid, ArtifactType type) throws RepositoryException;

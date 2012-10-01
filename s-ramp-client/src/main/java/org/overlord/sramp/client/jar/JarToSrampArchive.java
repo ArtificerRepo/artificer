@@ -206,4 +206,15 @@ public class JarToSrampArchive {
 		this.metaDataFactory = metaDataFactory;
 	}
 
+	/**
+	 * @param j2sramp
+	 */
+	public static void closeQuietly(JarToSrampArchive j2sramp) {
+		try {
+			if (j2sramp != null)
+				j2sramp.close();
+		} catch (IOException e) {
+		}
+	}
+
 }

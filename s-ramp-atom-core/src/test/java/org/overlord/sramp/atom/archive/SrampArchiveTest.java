@@ -75,9 +75,8 @@ public class SrampArchiveTest {
 			Assert.assertTrue(fnames.contains("sample.xsd"));
 			Assert.assertTrue(fnames.contains("sample.xsd.atom"));
 		} finally {
-			tempFile.delete();
-			if (archive != null)
-				archive.close();
+			FileUtils.deleteQuietly(tempFile);
+			SrampArchive.closeQuietly(archive);
 		}
 	}
 
@@ -112,9 +111,8 @@ public class SrampArchiveTest {
 			Assert.assertEquals("sample.xsd", entry.getMetaData().getName());
 			Assert.assertEquals("1.0", entry.getMetaData().getVersion());
 		} finally {
-			tempFile.delete();
-			if (archive != null)
-				archive.close();
+			FileUtils.deleteQuietly(tempFile);
+			SrampArchive.closeQuietly(archive);
 		}
 	}
 
@@ -144,8 +142,7 @@ public class SrampArchiveTest {
 			Assert.assertTrue(fnames.contains("sample.xsd"));
 			Assert.assertTrue(fnames.contains("sample.xsd.atom"));
 		} finally {
-			if (archive != null)
-				archive.close();
+			SrampArchive.closeQuietly(archive);
 		}
 	}
 
@@ -188,8 +185,7 @@ public class SrampArchiveTest {
 
 			archiveFile = archive.pack();
 		} finally {
-			if (archive != null)
-				archive.close();
+			SrampArchive.closeQuietly(archive);
 		}
 
 		// Now use the archive we just created, rip it apart and do some assertions
@@ -226,10 +222,8 @@ public class SrampArchiveTest {
 			Assert.assertEquals("1.6.1", xlinkXsdMetaData.getVersion());
 			Assert.assertEquals("X-LINK schema.", xlinkXsdMetaData.getDescription());
 		} finally {
-			if (archive != null)
-				archive.close();
-			if (archiveFile != null)
-				archiveFile.delete();
+			SrampArchive.closeQuietly(archive);
+			FileUtils.deleteQuietly(archiveFile);
 		}
 	}
 

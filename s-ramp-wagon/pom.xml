@@ -8,7 +8,7 @@
 	</parent>
 
 	<artifactId>s-ramp-wagon</artifactId>
-	<name>Maven S-RAMP Wagon Provider</name>
+	<name>S-RAMP Maven Wagon Provider</name>
 	<description>Maven Wagon that gets and puts artifacts from and to remote server using the S-RAMP Atom API.</description>
 
 	<properties>
@@ -59,6 +59,11 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>${slf4j.api.version}</version>
 		</dependency>
 
 		<!-- Test dependencies -->

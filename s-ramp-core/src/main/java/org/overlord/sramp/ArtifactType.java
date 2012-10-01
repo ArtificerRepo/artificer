@@ -33,6 +33,7 @@ public class ArtifactType {
 	public static final ArtifactType XmlDocument = new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml");
 	public static final ArtifactType XsdDocument = new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml");
 	public static final ArtifactType WsdlDocument = new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml");
+	public static final ArtifactType PolicyDocument = new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml");
 
 	private ArtifactTypeEnum artifactType;
 	private String mimeType;
@@ -68,6 +69,26 @@ public class ArtifactType {
 			return (BaseArtifactType) method.invoke(artifactWrapper);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to unwrap artifact for type: " + getArtifactType().getType(), e);
+		}
+	}
+
+	/**
+	 * Returns an {@link ArtifactType} given a common file extension.
+	 * @param extension a file extension
+	 * @return an s-ramp artifact type
+	 */
+	public static ArtifactType fromFileExtension(String extension) {
+		String ext = extension.toLowerCase();
+		if (ext.equals("xml")) {
+			return new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml");
+		} else if (ext.equals("xsd")) {
+			return new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml");
+		} else if (ext.equals("wsdl")) {
+			return new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml");
+		} else if (ext.equals("wspolicy")) {
+			return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml");
+		} else {
+			return new ArtifactType(ArtifactTypeEnum.Document, null);
 		}
 	}
 

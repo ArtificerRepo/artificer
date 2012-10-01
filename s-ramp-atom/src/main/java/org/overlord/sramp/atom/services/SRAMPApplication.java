@@ -21,6 +21,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
+import org.overlord.sramp.atom.providers.HttpResponseProvider;
 
 /**
  * The SRAMP RESTEasy application.  This is essentially the main entry point into a
@@ -41,7 +42,9 @@ public class SRAMPApplication extends Application {
 		singletons.add(new BrmsResource());
 		singletons.add(new FeedResource());
 		singletons.add(new QueryResource());
+		singletons.add(new BatchResource());
 
+		classes.add(HttpResponseProvider.class);
 		classes.add(SrampAtomExceptionMapper.class);
 	}
 

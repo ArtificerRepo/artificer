@@ -36,10 +36,14 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 /**
  * Models the archive format defined in the S-RAMP Atom Binding document.
  *
+ * TODO support plain atom:entry files (*.atom) representing nondocument based artifacts (no content)
+ *
  * @author eric.wittmann@redhat.com
  */
 public class SrampArchive {
 
+	private File originalFile;
+	private boolean shouldDeleteOriginalFile;
 	private File workDir;
 
 	/**
@@ -48,6 +52,7 @@ public class SrampArchive {
 	 */
 	public SrampArchive() throws SrampArchiveException {
 		workDir = null;
+		this.originalFile = null;
 		try {
 			workDir = createWorkDir();
 		} catch (IOException e) {
@@ -65,9 +70,41 @@ public class SrampArchive {
 	 */
 	public SrampArchive(File file) throws SrampArchiveException {
 		this();
+		this.originalFile = file;
+		this.shouldDeleteOriginalFile = false;
 		try {
-			ArchiveUtils.unpackToWorkDir(file, this.workDir);
+			ArchiveUtils.unpackToWorkDir(this.originalFile, this.workDir);
 		} catch (IOException e) {
+			if (this.workDir != null) {
+				try { FileUtils.deleteDirectory(this.workDir); } catch (IOException e1) { }
+			}
+			throw new SrampArchiveException("Failed to unpack S-RAMP archive into work directory", e);
+		}
+	}
+
+	/**
+	 * Creates an S-RAMP archive from an {@link InputStream}.  This will consume and close the
+	 * {@link InputStream}, creating a temporary local file that will be used as the basis for
+	 * the archive input.
+	 * @param input
+	 * @throws SrampArchiveException
+	 */
+	public SrampArchive(InputStream input) throws SrampArchiveException {
+		this();
+		this.originalFile = null;
+		this.shouldDeleteOriginalFile = true;
+
+		try {
+			this.originalFile = File.createTempFile("s-ramp-archive", ".zip");
+			copyZipStream(input, this.originalFile);
+			ArchiveUtils.unpackToWorkDir(this.originalFile, this.workDir);
+		} catch (IOException e) {
+			if (this.workDir != null) {
+				try { FileUtils.deleteDirectory(this.workDir); } catch (IOException e1) { }
+			}
+			if (this.originalFile != null && this.originalFile.exists()) {
+				this.originalFile.delete();
+			}
 			throw new SrampArchiveException("Failed to unpack S-RAMP archive into work directory", e);
 		}
 	}
@@ -84,12 +121,44 @@ public class SrampArchive {
 	}
 
 	/**
+	 * Copies the ZIP content from the input stream to the given output file.
+	 * @param zipStream
+	 * @param zipOutputFile
+	 * @throws IOException
+	 */
+	private static void copyZipStream(InputStream zipStream, File zipOutputFile) throws IOException {
+		OutputStream oStream = null;
+		try {
+			oStream = FileUtils.openOutputStream(zipOutputFile);
+			IOUtils.copy(zipStream, oStream);
+		} finally {
+			IOUtils.closeQuietly(zipStream);
+			IOUtils.closeQuietly(oStream);
+		}
+	}
+
+	/**
 	 * The S-RAMP archive should always be closed when the client is done with it.  This will
 	 * clean up all temporary resources created by the archive.
 	 * @throws IOException
 	 */
 	public void close() throws IOException {
 		FileUtils.deleteDirectory(workDir);
+		if (this.shouldDeleteOriginalFile) {
+			this.originalFile.delete();
+		}
+	}
+
+	/**
+	 * Close the archive quietly (eat any {@link IOException}).
+	 * @param archive
+	 */
+	public static void closeQuietly(SrampArchive archive) {
+		try {
+			if (archive != null)
+				archive.close();
+		} catch (IOException e) {
+		}
 	}
 
 	/**
@@ -105,12 +174,10 @@ public class SrampArchive {
 		for (File metaDataFile : files) {
 			String metaDataAbsPath = metaDataFile.getAbsolutePath();
 			File contentFile = new File(metaDataAbsPath.substring(0, metaDataAbsPath.length() - 5));
-			if (contentFile.isFile()) {
-				String path = contentFile.getAbsolutePath();
-				path = path.substring(this.workDir.getAbsolutePath().length() + 1);
-				path = path.replace('\\', '/'); // just in case we're in Windows
-				entries.add(new SrampArchiveEntry(path, metaDataFile));
-			}
+			String path = contentFile.getAbsolutePath();
+			path = path.substring(this.workDir.getAbsolutePath().length() + 1);
+			path = path.replace('\\', '/'); // just in case we're in Windows :(
+			entries.add(new SrampArchiveEntry(path, metaDataFile));
 		}
 		return entries;
 	}
@@ -118,24 +185,27 @@ public class SrampArchive {
 	/**
 	 * Gets the content {@link InputStream} for the given S-RAMP archive entry.
 	 * @param entry the s-ramp archive entry
-	 * @return an {@link InputStream} over the artifact content
+	 * @return an {@link InputStream} over the artifact content or null if no content found (meta-data only)
 	 * @throws IOException
 	 */
 	public InputStream getInputStream(SrampArchiveEntry entry) throws IOException {
 		File artifactPath = new File(this.workDir, entry.getPath());
-		return FileUtils.openInputStream(artifactPath);
+		if (artifactPath.exists())
+			return FileUtils.openInputStream(artifactPath);
+		else
+			return null;
 	}
 
 	/**
 	 * Adds an entry to the S-RAMP archive.  This method will close the content
 	 * {@link InputStream}.
 	 * @param path the path in the archive (usually just the name of the artifact)
-	 * @param artifact the artifact meta-data
-	 * @param content the entry content
+	 * @param metaData the artifact meta-data
+	 * @param content the entry content (or null if a meta-data only entry)
 	 * @throws SrampArchiveException
 	 */
-	public void addEntry(String path, BaseArtifactType artifact, InputStream content) throws SrampArchiveException {
-		SrampArchiveEntry entry = new SrampArchiveEntry(path, artifact);
+	public void addEntry(String path, BaseArtifactType metaData, InputStream content) throws SrampArchiveException {
+		SrampArchiveEntry entry = new SrampArchiveEntry(path, metaData);
 		addEntry(entry, content);
 	}
 
@@ -143,7 +213,7 @@ public class SrampArchive {
 	 * Adds an entry to the S-RAMP archive.  This method will close the content
 	 * {@link InputStream}.
 	 * @param entry the archive entry
-	 * @param content the entry content
+	 * @param content the entry content (or null if a meta-data only entry)
 	 * @throws SrampArchiveException
 	 */
 	public void addEntry(SrampArchiveEntry entry, InputStream content) throws SrampArchiveException {
@@ -157,11 +227,36 @@ public class SrampArchive {
 		// Create any required parent directories
 		workPath.getParentFile().mkdirs();
 		File atomWorkPath = new File(this.workDir, entry.getPath() + ".atom");
-		writeContent(workPath, content);
+		if (content != null)
+			writeContent(workPath, content);
 		try {
 			SrampArchiveJaxbUtils.writeMetaData(atomWorkPath, entry.getMetaData());
 		} catch (JAXBException e) {
 			throw new SrampArchiveException(e);
+		}
+	}
+
+	/**
+	 * Updates an existing entry in the S-RAMP archive.  This method will close the content
+	 * {@link InputStream}.
+	 * @param entry the archive entry (or null if just udpating the content)
+	 * @param content the entry content (or null if just updating meta data)
+	 * @throws SrampArchiveException
+	 */
+	public void updateEntry(SrampArchiveEntry entry, InputStream content) throws SrampArchiveException {
+		if (entry.getPath() == null)
+			throw new SrampArchiveException("Invalid entry path.");
+		File workPath = new File(this.workDir, entry.getPath());
+		File atomWorkPath = new File(this.workDir, entry.getPath() + ".atom");
+
+		if (content != null)
+			writeContent(workPath, content);
+		if (entry.getMetaData() != null) {
+			try {
+				SrampArchiveJaxbUtils.writeMetaData(atomWorkPath, entry.getMetaData());
+			} catch (JAXBException e) {
+				throw new SrampArchiveException(e);
+			}
 		}
 	}
 
@@ -186,22 +281,33 @@ public class SrampArchive {
 
 	/**
 	 * Packs up the current contents of the S-RAMP archive into a single (.zip) file and
-	 * returns a reference to it.
+	 * returns a reference to it.  This method is guaranteed to either throw an Exception
+	 * or return a valid {@link File}.  It will never throw and leave a temporary file
+	 * behind.
 	 * @throws SrampArchiveException
 	 */
 	public File pack() throws SrampArchiveException {
 		try {
-			File archiveFile = File.createTempFile("s-ramp-archive", ".zip");
-			FileOutputStream outputStream = FileUtils.openOutputStream(archiveFile);
-			ZipOutputStream zipOutputStream = null;
+			File archiveFile = null;
 			try {
-				zipOutputStream = new ZipOutputStream(outputStream);
-				Collection<SrampArchiveEntry> entries = getEntries();
-				for (SrampArchiveEntry entry : entries) {
-					packEntry(entry, zipOutputStream);
+				archiveFile = File.createTempFile("s-ramp-archive", ".sramp");
+				FileOutputStream outputStream = FileUtils.openOutputStream(archiveFile);
+				ZipOutputStream zipOutputStream = null;
+				try {
+					zipOutputStream = new ZipOutputStream(outputStream);
+					Collection<SrampArchiveEntry> entries = getEntries();
+					for (SrampArchiveEntry entry : entries) {
+						packEntry(entry, zipOutputStream);
+					}
+				} finally {
+					IOUtils.closeQuietly(zipOutputStream);
 				}
-			} finally {
-				IOUtils.closeQuietly(zipOutputStream);
+			} catch (Throwable t) {
+				// If anything goes wrong, make sure the File is cleaned up, as
+				// we won't have another chance to do so.
+				if (archiveFile != null && archiveFile.isFile())
+					archiveFile.delete();
+				throw t;
 			}
 			return archiveFile;
 		} catch (Throwable t) {
@@ -224,14 +330,16 @@ public class SrampArchive {
 	 */
 	private void packEntry(SrampArchiveEntry entry, ZipOutputStream zipOutputStream) throws IOException, IllegalArgumentException, SecurityException, URISyntaxException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, JAXBException {
 		// Store the artifact content in the ZIP
-		zipOutputStream.putNextEntry(new ZipEntry(entry.getPath()));
 		InputStream contentStream = getInputStream(entry);
-		try {
-			IOUtils.copy(contentStream, zipOutputStream);
-		} finally {
-			IOUtils.closeQuietly(contentStream);
+		if (contentStream != null) {
+			zipOutputStream.putNextEntry(new ZipEntry(entry.getPath()));
+			try {
+				IOUtils.copy(contentStream, zipOutputStream);
+			} finally {
+				IOUtils.closeQuietly(contentStream);
+			}
+			zipOutputStream.closeEntry();
 		}
-		zipOutputStream.closeEntry();
 
 		// Store the meta-data in the ZIP
 		zipOutputStream.putNextEntry(new ZipEntry(entry.getPath() + ".atom"));
@@ -248,10 +356,9 @@ public class SrampArchive {
 	 * @return the archive entry, or null if not found
 	 */
 	public SrampArchiveEntry getEntry(String archivePath) {
-		File contentFile = new File(this.workDir, archivePath);
 		File metaDataFile = new File(this.workDir, archivePath + ".atom");
 		SrampArchiveEntry rval = null;
-		if (contentFile.exists() && metaDataFile.exists()) {
+		if (metaDataFile.exists()) {
 			rval = new SrampArchiveEntry(archivePath, metaDataFile);
 		}
 		return rval;

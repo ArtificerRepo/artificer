@@ -83,7 +83,7 @@ public class SrampArchiveEntry {
 	}
 
 	/**
-	 * @return the artifact
+	 * @return the artifact meta data
 	 */
 	public BaseArtifactType getMetaData() {
 		if (metaData == null && metaDataFile != null && metaDataFile.exists()) {
@@ -97,10 +97,10 @@ public class SrampArchiveEntry {
 	}
 
 	/**
-	 * @param artifact the artifact to set
+	 * @param metaData the artifact meta data to set
 	 */
-	public void setMetaData(BaseArtifactType artifact) {
-		this.metaData = artifact;
+	public void setMetaData(BaseArtifactType metaData) {
+		this.metaData = metaData;
 	}
 
 }

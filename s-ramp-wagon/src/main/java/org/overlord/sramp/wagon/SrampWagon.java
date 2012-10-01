@@ -15,23 +15,18 @@
  */
 package org.overlord.sramp.wagon;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.security.MessageDigest;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.maven.wagon.ConnectionException;
@@ -53,14 +48,18 @@ import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.SrampAtomUtils;
+import org.overlord.sramp.atom.archive.SrampArchive;
+import org.overlord.sramp.atom.archive.SrampArchiveEntry;
+import org.overlord.sramp.atom.archive.SrampArchiveException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.client.SrampServerException;
+import org.overlord.sramp.client.jar.DefaultMetaDataFactory;
+import org.overlord.sramp.client.jar.DiscoveredArtifact;
+import org.overlord.sramp.client.jar.JarToSrampArchive;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
-import org.overlord.sramp.wagon.util.PomGenerator;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.w3c.dom.Document;
 
 /**
  * Implements a wagon provider that uses the S-RAMP Atom API.
@@ -70,15 +69,11 @@ import org.w3c.dom.Document;
 @SuppressWarnings("unchecked")
 @Component(role = Wagon.class, hint = "sramp", instantiationStrategy = "per-lookup")
 public class SrampWagon extends StreamWagon {
-	private static final Map<String, ArtifactType> supportedTypes = new HashMap<String, ArtifactType>();
-	static {
-		supportedTypes.put("xml", ArtifactType.XmlDocument);
-		supportedTypes.put("xsd", ArtifactType.XsdDocument);
-		supportedTypes.put("wsdl", ArtifactType.WsdlDocument);
-	}
 
 	@Requirement
 	private Logger logger;
+
+	private transient SrampArchive archive;
 
 	/**
 	 * Constructor.
@@ -87,11 +82,27 @@ public class SrampWagon extends StreamWagon {
 	}
 
 	/**
+	 * @return the endpoint to use for the s-ramp repo
+	 */
+	private String getSrampEndpoint() {
+		return getRepository().getUrl().replace("sramp:", "http:").replace("sramps:", "https:");
+	}
+
+	/**
 	 * @see org.apache.maven.wagon.AbstractWagon#openConnectionInternal()
 	 */
 	@Override
 	protected void openConnectionInternal() throws ConnectionException, AuthenticationException {
-		// The S-RAMP Atom API is session-less, so no connections to open
+		// Even though the S-RAMP Atom API is session-less, use this open method
+		// to start building up an S-RAMP archive containing the artifacts we are
+		// storing in the repository (along with the meta-data for those artifacts).
+		// The archive will serve as a temporary place to stash information we may
+		// need later.
+		try {
+			this.archive = new SrampArchive();
+		} catch (SrampArchiveException e) {
+			throw new ConnectionException("Failed to create the s-ramp archive (temporary storage)", e);
+		}
 	}
 
 	/**
@@ -99,7 +110,7 @@ public class SrampWagon extends StreamWagon {
 	 */
 	@Override
 	public void closeConnection() throws ConnectionException {
-		// The S-RAMP Atom API is session-less, so no connections to close
+		SrampArchive.closeQuietly(archive);
 	}
 
 	/**
@@ -109,11 +120,65 @@ public class SrampWagon extends StreamWagon {
 	public void fillInputData(InputData inputData) throws TransferFailedException,
 			ResourceDoesNotExistException, AuthorizationException {
 		Resource resource = inputData.getResource();
-
-		if (resource.getName().endsWith("maven-metadata.xml"))
+		// Skip maven-metadata.xml files - they are not (yet?) supported
+		if (resource.getName().contains("maven-metadata.xml"))
 			throw new ResourceDoesNotExistException("Could not find file: '" + resource + "'");
 
 		logger.debug("Looking up resource from s-ramp repository: " + resource);
+
+		MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
+		if (gavInfo.isHash()) {
+			doGetHash(gavInfo, inputData);
+		} else {
+			doGetArtifact(gavInfo, inputData);
+		}
+
+	}
+
+	/**
+	 * Gets the hash data from the s-ramp repository and stores it in the {@link InputData} for
+	 * use by Maven.
+	 * @param gavInfo
+	 * @param inputData
+	 * @throws TransferFailedException
+	 * @throws ResourceDoesNotExistException
+	 * @throws AuthorizationException
+	 */
+	private void doGetHash(MavenGavInfo gavInfo, InputData inputData) throws TransferFailedException,
+			ResourceDoesNotExistException, AuthorizationException {
+		String artyPath = gavInfo.getFullName();
+		String hashPropName;
+		if (gavInfo.getType().endsWith(".md5")) {
+			hashPropName = "maven.hash.md5";
+			artyPath = artyPath.substring(0, artyPath.length() - 4);
+		} else {
+			hashPropName = "maven.hash.sha1";
+			artyPath = artyPath.substring(0, artyPath.length() - 5);
+		}
+		SrampArchiveEntry entry = this.archive.getEntry(artyPath);
+		if (entry == null) {
+			throw new ResourceDoesNotExistException("Failed to find resource hash: " + gavInfo.getName());
+		}
+		BaseArtifactType metaData = entry.getMetaData();
+
+		String hashValue = SrampModelUtils.getCustomProperty(metaData, hashPropName);
+		if (hashValue == null) {
+			throw new ResourceDoesNotExistException("Failed to find resource hash: " + gavInfo.getName());
+		}
+		inputData.setInputStream(IOUtils.toInputStream(hashValue));
+	}
+
+	/***
+	 * Gets the artifact content from the s-ramp repository and stores it in the {@link InputData}
+	 * object for use by Maven.
+	 * @param gavInfo
+	 * @param inputData
+	 * @throws TransferFailedException
+	 * @throws ResourceDoesNotExistException
+	 * @throws AuthorizationException
+	 */
+	private void doGetArtifact(MavenGavInfo gavInfo, InputData inputData) throws TransferFailedException,
+			ResourceDoesNotExistException, AuthorizationException {
 		// RESTEasy uses the current thread's context classloader to load its logger class.  This
 		// fails in Maven because the context classloader is the wagon plugin's classloader, which
 		// doesn't know about any of the RESTEasy JARs.  So here we're temporarily setting the
@@ -122,112 +187,32 @@ public class SrampWagon extends StreamWagon {
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
 		try {
-			MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
-			String endpoint = getRepository().getUrl().replace("sramp:", "http:").replace("sramps:", "https:");
+			String endpoint = getSrampEndpoint();
 			SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 
 			// Query the artifact meta data using GAV info
 			BaseArtifactType artifact = findExistingArtifact(client, gavInfo);
 			if (artifact == null)
-				throw new ResourceDoesNotExistException("Artifact not found in s-ramp repository: '" + resource + "'");
+				throw new ResourceDoesNotExistException("Artifact not found in s-ramp repository: '" + gavInfo.getName() + "'");
+			this.archive.addEntry(gavInfo.getFullName(), artifact, null);
 			ArtifactType type = ArtifactType.valueOf(artifact);
 
-			if ("pom".equals(gavInfo.getType())) {
-				String serializedPom = generatePom(artifact);
-			    inputData.setInputStream(new ByteArrayInputStream(serializedPom.getBytes("UTF-8")));
-			    return;
-			} else if ("pom.sha1".equals(gavInfo.getType())) {
-				// Generate a SHA1 hash on the fly for the POM
-				String serializedPom = generatePom(artifact);
-				MessageDigest md = MessageDigest.getInstance("SHA1");
-				md.update(serializedPom.getBytes("UTF-8"));
-				byte[] mdbytes = md.digest();
-				StringBuilder sb = new StringBuilder();
-			    for (int i = 0; i < mdbytes.length; i++) {
-			    	sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-			    }
-			    inputData.setInputStream(new ByteArrayInputStream(sb.toString().getBytes("UTF-8")));
-			    return;
-			} else if (gavInfo.getType().endsWith(".sha1")) {
-				InputStream artifactContent = client.getArtifactContent(type, artifact.getUuid());
-				String sha1Hash = generateSHA1Hash(artifactContent);
-			    inputData.setInputStream(new ByteArrayInputStream(sha1Hash.getBytes("UTF-8")));
-			    return;
-			} else if (supportedTypes.containsKey(gavInfo.getType())) {
-				// Get the artifact content as an input stream
-				InputStream artifactContent = client.getArtifactContent(type, artifact.getUuid());
-				inputData.setInputStream(artifactContent);
-				return;
-			}
+			// Get the artifact content as an input stream
+			InputStream artifactContent = client.getArtifactContent(type, artifact.getUuid());
+			inputData.setInputStream(artifactContent);
 		} catch (ResourceDoesNotExistException e) {
 			throw e;
 		} catch (SrampClientException e) {
-			if (e.getCause() instanceof HttpHostConnectException)
+			if (e.getCause() instanceof HttpHostConnectException) {
 				this.logger.debug("Could not connect to s-ramp repository: " + e.getMessage());
-			else
+			} else {
 				this.logger.error(e.getMessage(), e);
+			}
+			throw new ResourceDoesNotExistException("Failed to get resource from s-ramp: " + gavInfo.getName());
 		} catch (Throwable t) {
 			this.logger.error(t.getMessage(), t);
 		} finally {
 			Thread.currentThread().setContextClassLoader(oldCtxCL);
-		}
-		throw new ResourceDoesNotExistException("Could not find file: '" + resource + "'");
-	}
-
-	/**
-	 * Generates a SHA1 hash for the given binary content.
-	 * @param artifactContent an s-ramp artifact input stream
-	 * @return a SHA1 hash
-	 */
-	private String generateSHA1Hash(InputStream artifactContent) {
-		try {
-			MessageDigest md = MessageDigest.getInstance("SHA1");
-			byte[] buff = new byte[2048];
-			int count = artifactContent.read(buff);
-			while (count != -1) {
-				md.update(buff, 0, count);
-				count = artifactContent.read(buff);
-			}
-			byte[] mdbytes = md.digest();
-			StringBuilder sb = new StringBuilder();
-		    for (int i = 0; i < mdbytes.length; i++) {
-		    	sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-		    }
-		    return sb.toString();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			IOUtils.closeQuietly(artifactContent);
-		}
-	}
-
-	/**
-	 * Generates a POM for the artifact.
-	 * @param artifact
-	 * @throws Exception
-	 */
-	private String generatePom(BaseArtifactType artifact) throws Exception {
-		ArtifactType type = ArtifactType.valueOf(artifact);
-		PomGenerator pomGenerator = new PomGenerator();
-		Document pomDoc = pomGenerator.generatePom(artifact, type);
-		String serializedPom = serializeDocument(pomDoc);
-		return serializedPom;
-	}
-
-	/**
-	 * Serialize a document to a string.
-	 * @param document
-	 */
-	private String serializeDocument(Document document) {
-		try {
-			StringWriter writer = new StringWriter();
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "no");
-			transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-			transformer.transform(new DOMSource(document), new StreamResult(writer));
-			return writer.toString();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
 	}
 
@@ -284,12 +269,11 @@ public class SrampWagon extends StreamWagon {
 	 */
 	private void putCommon(Resource resource, File source, InputStream content)
 			throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
+		logger.info("Uploading s-ramp artifact: " + resource.getName());
 		firePutInitiated(resource, source);
 
 		firePutStarted(resource, source);
-		ArtifactType artifactType = getArtifactType(resource);
-		if (artifactType == null || resource.getName().endsWith("maven-metadata.xml")) {
-			// Unsupported type, stream to /dev/null
+		if (resource.getName().contains("maven-metadata.xml")) {
 			logger.info("Skipping unsupported artifact: " + resource.getName());
 			try {
 				transfer(resource, content, new DevNullOutputStream(), TransferEvent.REQUEST_PUT);
@@ -297,57 +281,206 @@ public class SrampWagon extends StreamWagon {
 				throw new TransferFailedException(e.getMessage(), e);
 			}
 		} else {
-			doPut(resource, artifactType, content);
+			doPut(resource, content);
 		}
 		firePutCompleted(resource, source);
 	}
 
 	/**
-	 * Gets the artifact type from the resource.  Returns null if the resource type does
-	 * not map to an artifact type.
-	 * @param resource
+	 * Gets the artifact type from the resource.
+	 * @param gavInfo
 	 */
-	private ArtifactType getArtifactType(Resource resource) {
-		MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
-		if (supportedTypes.containsKey(gavInfo.getType())) {
-			return supportedTypes.get(gavInfo.getType());
-		} else {
-			return null;
-		}
+	private ArtifactType getArtifactType(MavenGavInfo gavInfo) {
+		String fileName = gavInfo.getName();
+		int extensionIdx = fileName.lastIndexOf('.');
+		String extension = gavInfo.getName().substring(extensionIdx + 1);
+		return ArtifactType.fromFileExtension(extension);
 	}
 
 	/**
 	 * Puts the maven resource into the s-ramp repository.
 	 * @param resource
-	 * @param artifactType
 	 * @param resourceInputStream
 	 * @throws TransferFailedException
 	 */
-	private void doPut(Resource resource, ArtifactType artifactType, InputStream resourceInputStream) throws TransferFailedException {
+	private void doPut(Resource resource, InputStream resourceInputStream) throws TransferFailedException {
 		MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
-		String endpoint = getRepository().getUrl().replace("sramp:", "http:").replace("sramps:", "https:");
+		if (gavInfo.isHash()) {
+			doPutHash(gavInfo, resourceInputStream);
+		} else {
+			doPutArtifact(gavInfo, resourceInputStream);
+		}
+	}
+
+	/**
+	 * Updates an artifact by storing its hash value as an S-RAMP property.
+	 * @param gavInfo
+	 * @param resourceInputStream
+	 * @throws TransferFailedException
+	 */
+	private void doPutHash(MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
+		logger.info("Storing hash value as s-ramp property: " + gavInfo.getName());
+		try {
+			String artyPath = gavInfo.getFullName();
+			String hashPropName;
+			if (gavInfo.getType().endsWith(".md5")) {
+				hashPropName = "maven.hash.md5";
+				artyPath = artyPath.substring(0, artyPath.length() - 4);
+			} else {
+				hashPropName = "maven.hash.sha1";
+				artyPath = artyPath.substring(0, artyPath.length() - 5);
+			}
+			String hashValue = IOUtils.toString(resourceInputStream);
+
+			SrampArchiveEntry entry = this.archive.getEntry(artyPath);
+			BaseArtifactType metaData = entry.getMetaData();
+			SrampModelUtils.setCustomProperty(metaData, hashPropName, hashValue);
+			this.archive.updateEntry(entry, null);
+
+			// The meta-data has been updated in the local/temp archive - now send it to the remote repo
+			String endpoint = getSrampEndpoint();
+			SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
+			// See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
+			// context classloader magic.
+			ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
+			try {
+				client.updateArtifactMetaData(metaData);
+			} catch (Throwable t) {
+				throw new TransferFailedException(t.getMessage(), t);
+			} finally {
+				Thread.currentThread().setContextClassLoader(oldCtxCL);
+			}
+		} catch (Exception e) {
+			throw new TransferFailedException("Failed to store a hash: " + gavInfo.getName(), e);
+		}
+	}
+
+	/**
+	 * Puts the artifact into the s-ramp repository.
+	 * @param gavInfo
+	 * @param resourceInputStream
+	 * @throws TransferFailedException
+	 */
+	private void doPutArtifact(final MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
+		ArtifactType artifactType = getArtifactType(gavInfo);
+		String endpoint = getSrampEndpoint();
 		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 		// See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
 		// context classloader magic.
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
+		File tempResourceFile = null;
+		SrampArchive archive = null;
+		JarToSrampArchive j2sramp = null;
 		try {
-			BaseArtifactType artifact = findExistingArtifact(client, gavInfo);
+			// First, stash the content in a temp file - we may need it multiple times.
+			tempResourceFile = stashResourceContent(resourceInputStream);
+			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
+
+			// Only search for existing artifacts by GAV info here
+			BaseArtifactType artifact = findExistingArtifactByGAV(client, gavInfo);
+			// If we found an artifact, we should update its content.  If not, we should upload
+			// the artifact to the repository.
 			if (artifact != null) {
-				updateArtifactContent(client, artifact, resourceInputStream);
+				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
+				client.updateArtifact(artifact, resourceInputStream);
+				if (shouldExpand(gavInfo)) {
+					final String parentUUID = artifact.getUuid();
+					cleanExpandedArtifacts(client, parentUUID);
+				}
 			} else {
-				Entry entry = client.uploadArtifact(artifactType, resourceInputStream, resource.getName());
+				// Upload the content, then add the maven properties to the artifact
+				// as meta-data
+				Entry entry = client.uploadArtifact(artifactType, resourceInputStream, gavInfo.getName());
 				artifact = SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
 				SrampModelUtils.setCustomProperty(artifact, "maven.groupId", gavInfo.getGroupId());
 				SrampModelUtils.setCustomProperty(artifact, "maven.artifactId", gavInfo.getArtifactId());
 				SrampModelUtils.setCustomProperty(artifact, "maven.version", gavInfo.getVersion());
+				if (gavInfo.getClassifier() != null)
+					SrampModelUtils.setCustomProperty(artifact, "maven.classifier", gavInfo.getClassifier());
+				SrampModelUtils.setCustomProperty(artifact, "maven.type", gavInfo.getType());
 				client.updateArtifactMetaData(artifact);
+				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
+			}
+
+			// Now also add "expanded" content to the s-ramp repository
+			if (shouldExpand(gavInfo)) {
+				// TODO replace parentUUID logic with relationship, once relationships are impl'd
+				final String parentUUID = artifact.getUuid();
+				j2sramp = new JarToSrampArchive(tempResourceFile);
+				j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
+					@Override
+					public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
+						BaseArtifactType metaData = super.createMetaData(artifact);
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-uuid", parentUUID);
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-groupId", gavInfo.getGroupId());
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-artifactId", gavInfo.getArtifactId());
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-version", gavInfo.getVersion());
+						SrampModelUtils.setCustomProperty(metaData, "maven.parent-type", gavInfo.getType());
+						return metaData;
+					}
+				});
+				archive = j2sramp.createSrampArchive();
+				client.uploadBatch(archive);
 			}
 		} catch (Throwable t) {
 			throw new TransferFailedException(t.getMessage(), t);
 		} finally {
 			Thread.currentThread().setContextClassLoader(oldCtxCL);
+			SrampArchive.closeQuietly(archive);
+			JarToSrampArchive.closeQuietly(j2sramp);
+			FileUtils.deleteQuietly(tempResourceFile);
 		}
+	}
+
+	/**
+	 * Deletes the 'expanded' artifacts from the s-ramp repository.
+	 * @param client
+	 * @param parentUUID
+	 * @throws SrampClientException
+	 * @throws SrampServerException
+	 */
+	private void cleanExpandedArtifacts(SrampAtomApiClient client, String parentUUID) throws SrampServerException, SrampClientException {
+		String query = String.format("/s-ramp[@maven.parent-uuid = '%1$s']", parentUUID);
+		Feed feed = client.query(query, 0, 200, "name", true);
+		for (Entry entry : feed.getEntries()) {
+			ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
+			String uuid = entry.getId().toString();
+			client.deleteArtifact(uuid, artifactType);
+		}
+	}
+
+	/**
+	 * @param gavInfo resource GAV information
+	 * @return true if this maven artifact should be expanded in s-ramp (its contents exploded)
+	 */
+	private boolean shouldExpand(MavenGavInfo gavInfo) {
+		// TODO this should be configurable in the pom.xml
+		Set<String> expandedTypes = new HashSet<String>();
+		expandedTypes.add("jar");
+		expandedTypes.add("war");
+		expandedTypes.add("ear");
+		return expandedTypes.contains(gavInfo.getType()) && gavInfo.getClassifier() == null;
+	}
+
+	/**
+	 * Make a temporary copy of the resource by saving the content to a temp file.
+	 * @param resourceInputStream
+	 * @throws IOException
+	 */
+	private File stashResourceContent(InputStream resourceInputStream) throws IOException {
+		File resourceTempFile = null;
+		OutputStream oStream = null;
+		try {
+			resourceTempFile = File.createTempFile("s-ramp-wagon-resource", ".tmp");
+			oStream = FileUtils.openOutputStream(resourceTempFile);
+		} finally {
+			IOUtils.copy(resourceInputStream, oStream);
+			IOUtils.closeQuietly(resourceInputStream);
+			IOUtils.closeQuietly(oStream);
+		}
+		return resourceTempFile;
 	}
 
 	/**
@@ -355,6 +488,7 @@ public class SrampWagon extends StreamWagon {
 	 * @param client
 	 * @param artifactType
 	 * @param gavInfo
+	 * @return an s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException
 	 * @throws SrampServerException
 	 * @throws JAXBException
@@ -370,24 +504,40 @@ public class SrampWagon extends StreamWagon {
 	 * Finds an existing artifact in the s-ramp repository that matches the GAV information.
 	 * @param client
 	 * @param gavInfo
+	 * @return an s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException
 	 * @throws SrampServerException
 	 * @throws JAXBException
 	 */
-	private BaseArtifactType findExistingArtifactByGAV(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
-		String query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s']",
-				gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion());
+	private BaseArtifactType findExistingArtifactByGAV(SrampAtomApiClient client, MavenGavInfo gavInfo)
+			throws SrampServerException, SrampClientException, JAXBException {
+		String query = null;
+		// Search by classifier if we have one...
+		if (gavInfo.getClassifier() == null) {
+			query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s' and @maven.type = '%4$s']",
+					gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion(), gavInfo.getType());
+		} else {
+			query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s' and @maven.classifier = '%4$s' and @maven.type = '%5$s']",
+					gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion(), gavInfo.getClassifier(), gavInfo.getType());
+		}
 		Feed feed = client.query(query);
-		if (feed.getEntries().size() == 1) {
-			Entry entry = feed.getEntries().get(0);
-			String uuid = entry.getId().toString();
-			ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
-			entry = client.getFullArtifactEntry(artifactType, uuid);
-			return SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
-		} else if (feed.getEntries().size() > 1) {
-			// If we got multiple results, then we don't really know what to do.
-			logger.info("Found multiple s-ramp artifact entries for GAV information:");
-			logger.info(gavInfo.toString());
+		if (feed.getEntries().size() > 0) {
+			for (Entry entry : feed.getEntries()) {
+				String uuid = entry.getId().toString();
+				ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
+				entry = client.getFullArtifactEntry(artifactType, uuid);
+				BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
+				// If no classifier in the GAV info, only return the artifact that also has no classifier
+				if (gavInfo.getClassifier() == null) {
+					String artyClassifier = SrampModelUtils.getCustomProperty(arty, "maven.classifier");
+					if (artyClassifier == null) {
+						return arty;
+					}
+				} else {
+					// If classifier was supplied in the GAV info, we'll get the first artifact <shrug>
+					return arty;
+				}
+			}
 		}
 		return null;
 	}
@@ -399,37 +549,24 @@ public class SrampWagon extends StreamWagon {
 	 * @param client
 	 * @param artifactType
 	 * @param gavInfo
+	 * @return an existing s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException
 	 * @throws SrampServerException
 	 * @throws JAXBException
 	 */
-	private BaseArtifactType findExistingArtifactByUniversal(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
-		String artifactModel = gavInfo.getGroupId().substring(0, gavInfo.getGroupId().indexOf('.'));
+	private BaseArtifactType findExistingArtifactByUniversal(SrampAtomApiClient client, MavenGavInfo gavInfo)
+			throws SrampServerException, SrampClientException, JAXBException {
 		String artifactType = gavInfo.getGroupId().substring(gavInfo.getGroupId().indexOf('.') + 1);
 		String uuid = gavInfo.getArtifactId();
 		Entry entry = null;
 		try {
-			entry = client.getFullArtifactEntry(artifactModel, artifactType, uuid);
+			entry = client.getFullArtifactEntry(ArtifactType.valueOf(artifactType), uuid);
 		} catch (Throwable t) {
 			logger.debug(t.getMessage());
 		}
 		if (entry != null)
 			return SrampAtomUtils.unwrapSrampArtifact(ArtifactType.valueOf(artifactType), entry);
 		return null;
-	}
-
-	/**
-	 * Updates the content of the given artifact.  This is called when the Maven deploy is run
-	 * but the s-ramp repository already has an artifact deployed with the same type and GAV
-	 * information given (resulting in a re-deploy of the artifact content).
-	 * @param client
-	 * @param artifact
-	 * @param resourceInputStream
-	 * @throws SrampClientException
-	 */
-	private void updateArtifactContent(SrampAtomApiClient client, BaseArtifactType artifact,
-			InputStream resourceInputStream) throws SrampClientException {
-		client.updateArtifact(artifact, resourceInputStream);
 	}
 
 	/**

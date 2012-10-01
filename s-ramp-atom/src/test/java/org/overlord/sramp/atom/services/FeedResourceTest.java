@@ -50,12 +50,8 @@ public class FeedResourceTest extends BaseResourceTest {
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
 		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
-	}
-
-    @Before
-    public void prepForTest() {
         new JCRRepositoryCleaner().clean();
-    }
+	}
 
 	/**
 	 * Tests the artifact feed.

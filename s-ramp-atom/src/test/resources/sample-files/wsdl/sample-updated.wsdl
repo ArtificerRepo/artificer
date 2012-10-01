@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="sample"
+	targetNamespace="http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl"
+	xmlns:tns-types="http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl/types"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<wsdl:types>
+		<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl/types">
+
+			<xsd:element name="find">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="keyword" type="xsd:string" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="findResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="results">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="item" value="xsd:string"
+										minOccurs="0" maxOccurs="unbounded" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="get">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="id" type="xsd:int" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="getResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="item" value="xsd:string" minOccurs="0"
+							maxOccurs="unbounded" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="findRequest">
+		<wsdl:part name="parameters" element="tns-types:find" />
+	</wsdl:message>
+	<wsdl:message name="findResponse">
+		<wsdl:part name="parameters" element="tns-types:findResponse" />
+	</wsdl:message>
+	<wsdl:message name="getRequest">
+		<wsdl:part name="parameters" element="tns-types:get" />
+	</wsdl:message>
+	<wsdl:message name="getResponse">
+		<wsdl:part name="parameters" element="tns-types:getResponse" />
+	</wsdl:message>
+
+	<wsdl:portType name="SamplePortType">
+		<wsdl:operation name="find">
+			<wsdl:input message="tns:findRequest"></wsdl:input>
+			<wsdl:output message="tns:findResponse"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="get">
+			<wsdl:input message="tns:getRequest"></wsdl:input>
+			<wsdl:output message="tns:getResponse"></wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+
+</wsdl:definitions>
