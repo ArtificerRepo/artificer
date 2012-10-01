@@ -22,14 +22,17 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.ValueFormatException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdType;
@@ -131,6 +134,16 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	protected void visitXmlDocument(XmlDocument artifact) {
         artifact.setContentEncoding(getProperty(jcrNode, "sramp:contentEncoding"));
 	}
+	
+	/**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitUserDefined(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
+     */
+    @Override
+    protected void visitUserDefined(UserDefinedArtifactType artifact) {
+        artifact.setUserType(getProperty(jcrNode, "sramp:userType"));
+        artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_SIZE), String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data")));
+        artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_TYPE), getProperty(jcrNode,"jcr:content/jcr:mimeType"));
+    }
 
     /**
      * Gets a single property from the given JCR node.  This returns null

@@ -15,10 +15,14 @@
  */
 package org.overlord.sramp.atom.visitors;
 
+import javax.xml.namespace.QName;
+
+import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 
 /**
@@ -60,6 +64,20 @@ public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitorAdapt
 	@Override
 	protected void visitXmlDocument(XmlDocument artifact) {
 		setContentType(MediaType.APPLICATION_XML_TYPE);
+	}
+	
+	/**
+	 * org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitUserDefined(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
+	 */
+	@Override
+	protected void visitUserDefined(UserDefinedArtifactType artifact) {
+	    //grab the content type from an any-attribute
+	    if ((artifact.getOtherAttributes().keySet().contains(new QName(SrampConstants.SRAMP_CONTENT_TYPE)))) {
+	        String contentTypeStr = artifact.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE));
+	        setContentType(MediaType.valueOf(contentTypeStr));
+	    } else {
+	        setContentType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+	    }
 	}
 
 	/**

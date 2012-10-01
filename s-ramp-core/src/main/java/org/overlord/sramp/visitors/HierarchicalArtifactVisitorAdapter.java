@@ -155,7 +155,15 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	protected void visitSoa(SoaModelType artifact) {
 		// Subclasses can do common visit logic here
 	}
-
+	
+	/**
+     * Common visit method for UserDefined artifacts.
+     * @param artifact
+     */
+    protected void visitUserDefined(UserDefinedArtifactType artifact) {
+        // Subclasses can do common visit logic here
+    }
+	
 	/**
 	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Document)
 	 */
@@ -470,6 +478,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	@Override
 	public void visit(UserDefinedArtifactType artifact) {
 		visitBase(artifact);
+		visitUserDefined(artifact);
 	}
 
 	/**
