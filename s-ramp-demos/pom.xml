@@ -12,7 +12,6 @@
 	<name>S-RAMP Demos</name>
 	<packaging>pom</packaging>
 	<modules>
-		<module>s-ramp-demos-mvn-integration</module>
 		<module>s-ramp-demos-simple-client</module>
 		<module>s-ramp-demos-archive-package</module>
 		<module>s-ramp-demos-query</module>
