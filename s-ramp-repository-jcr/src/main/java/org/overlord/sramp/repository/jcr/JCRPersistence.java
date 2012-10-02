@@ -115,7 +115,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         	throw new RepositoryException(t);
         } finally {
         	IOUtils.closeQuietly(content);
-            session.logout();
+            JCRRepository.logoutQuietly(session);
         }
     }
 
@@ -159,7 +159,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         } catch (Throwable t) {
         	throw new RepositoryException(t);
         } finally {
-            session.logout();
+            JCRRepository.logoutQuietly(session);
         }
     }
 
@@ -180,7 +180,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         } catch (Throwable t) {
         	throw new RepositoryException(t);
 		} finally {
-            session.logout();
+            JCRRepository.logoutQuietly(session);
         }
     }
 
@@ -208,7 +208,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         } catch (Throwable t) {
         	throw new RepositoryException(t);
         } finally {
-            session.logout();
+            JCRRepository.logoutQuietly(session);
         }
     }
 
@@ -235,7 +235,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         } catch (Throwable t) {
         	throw new RepositoryException(t);
         } finally {
-            session.logout();
+            JCRRepository.logoutQuietly(session);
             IOUtils.closeQuietly(content);
         }
     }
@@ -261,7 +261,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         } catch (Throwable t) {
         	throw new RepositoryException(t);
         } finally {
-            session.logout();
+        	JCRRepository.logoutQuietly(session);
         }
     }
 
@@ -289,7 +289,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         } catch (Throwable t) {
         	throw new RepositoryException(t);
         } finally {
-            session.logout();
+            JCRRepository.logoutQuietly(session);
         }
     }
 
@@ -339,7 +339,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            session.logout();
+            JCRRepository.logoutQuietly(session);
         }
     }
 

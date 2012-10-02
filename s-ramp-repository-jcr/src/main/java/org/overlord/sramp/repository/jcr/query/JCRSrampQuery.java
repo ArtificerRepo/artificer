@@ -36,7 +36,7 @@ import org.overlord.sramp.repository.query.SrampQuery;
  * @author eric.wittmann@redhat.com
  */
 public class JCRSrampQuery extends AbstractSrampQueryImpl {
-	
+
 	private static Map<String, String> sOrderByMappings = new HashMap<String, String>();
 	static {
 		sOrderByMappings.put("createdBy", "jcr:createdBy");
@@ -73,7 +73,9 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
             NodeIterator jcrNodes = jcrQueryResult.getNodes();
             return new JCRArtifactSet(session, jcrNodes);
         } catch (Throwable t) {
-            session.logout();
+        	// Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
+        	// responsible for closing the session.
+        	JCRRepository.logoutQuietly(session);
         	throw new QueryExecutionException(t);
         }
 	}
@@ -98,5 +100,5 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 		}
 		return sql2Query;
 	}
-	
+
 }

@@ -22,6 +22,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 
 import org.overlord.sramp.repository.jcr.JCRNodeToArtifactFactory;
+import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
@@ -37,7 +38,7 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 
 	/**
 	 * Constructor.
-	 * @param session 
+	 * @param session
 	 * @param jcrNodes
 	 */
 	public JCRArtifactSet(Session session, NodeIterator jcrNodes) {
@@ -66,7 +67,7 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 	 */
 	@Override
 	public void close() {
-		this.session.logout();
+		JCRRepository.logoutQuietly(this.session);
 	}
 
 	/**
