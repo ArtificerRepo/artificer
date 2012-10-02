@@ -36,7 +36,6 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import test.org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>

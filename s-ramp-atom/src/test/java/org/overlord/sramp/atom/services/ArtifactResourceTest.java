@@ -38,6 +38,7 @@ import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
+import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
@@ -46,7 +47,6 @@ import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.atom.TestUtils;
-import test.org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 
 /**
  * Test of the jax-rs resource that handles Artifacts.

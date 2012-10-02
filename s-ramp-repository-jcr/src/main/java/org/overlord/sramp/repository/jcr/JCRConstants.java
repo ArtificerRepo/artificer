@@ -18,10 +18,9 @@ package org.overlord.sramp.repository.jcr;
 
 public class JCRConstants {
 
-	public static final String OVERLORD_NS = "http://www.jboss.org/overlord/1.0";
+	public static final String SRAMP_NS = "http://s-ramp.org/xmlns/2010/s-ramp";
 	public static final String SRAMP_PROPERTIES_NS = "http://s-ramp.org/xmlns/2010/s-ramp#properties";
 	
-    public static final String OVERLORD         = "overlord:";
     public static final String SRAMP            = "sramp:";
     public static final String SRAMP_PROPERTIES = "sramp-properties";
 

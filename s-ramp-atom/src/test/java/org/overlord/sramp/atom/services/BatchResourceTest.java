@@ -45,13 +45,13 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
+import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
-import test.org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 
 /**
  * Unit test for the {@link BatchResource} class.
