@@ -37,6 +37,16 @@
 			<artifactId>modeshape-jcr</artifactId>
 			<version>${org.modeshape.version}</version>
 		</dependency>
+    <dependency>
+       <groupId>org.modeshape</groupId>
+       <artifactId>modeshape-common</artifactId>
+       <version>${org.modeshape.version}</version>
+   </dependency>
+   <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-cachestore-bdbje</artifactId>
+        <version>5.1.6.FINAL</version>
+    </dependency>
 		<!-- Common libraries -->
 		<dependency>
 			<groupId>commons-io</groupId>

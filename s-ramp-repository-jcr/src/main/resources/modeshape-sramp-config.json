@@ -1,0 +1,25 @@
+{
+    "name" : "S-RAMP-Repository",
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : false
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    },
+    "storage" : {
+        "cacheConfiguration" : "infinispan-configuration.xml",
+        "cacheName" : "persisted-repository",
+        "binaryStorage" : {
+            "type" : "file",
+            "directory": "repos",
+            "minimumBinarySizeInBytes" : 999
+        }
+    }
+    
+
+}
