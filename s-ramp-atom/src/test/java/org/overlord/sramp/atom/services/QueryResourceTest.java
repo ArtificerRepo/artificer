@@ -34,12 +34,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.atom.TestUtils;
-import test.org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 
 /**
  * Tests the s-ramp query features of the atom api binding.

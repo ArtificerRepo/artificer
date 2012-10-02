@@ -25,8 +25,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.overlord.sramp.atom.services.brms.Assets;
 import org.overlord.sramp.atom.services.brms.Packages;
+import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 
-import test.org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 
 /**
  * Tests the s-ramp query features of the atom api binding.

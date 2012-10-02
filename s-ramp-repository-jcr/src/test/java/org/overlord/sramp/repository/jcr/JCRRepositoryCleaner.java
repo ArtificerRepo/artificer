@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.org.overlord.sramp.repository.jcr;
+package org.overlord.sramp.repository.jcr;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -62,7 +62,7 @@ public class JCRRepositoryCleaner {
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		} finally {
-			session.logout();
+			if (session!=null) session.logout();
 		}
 	}
 
