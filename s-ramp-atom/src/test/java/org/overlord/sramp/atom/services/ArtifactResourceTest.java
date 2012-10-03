@@ -31,13 +31,16 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.test.BaseResourceTest;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
+import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -55,13 +58,22 @@ import test.org.overlord.sramp.atom.TestUtils;
  */
 public class ArtifactResourceTest extends BaseResourceTest {
 
+    String uuid = null;
+    
 	@Before
 	public void setUp() throws Exception {
 		// bring up the embedded container with the ArtifactResource deployed.
 		getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
-		new JCRRepositoryCleaner().clean();
+		//new JCRRepositoryCleaner().clean();
 	}
+	
+	@AfterClass
+	public static void cleanup() {
+	    PersistenceFactory.newInstance().shutdown();
+	}
+	
+	
 
 	/**
 	 * @throws Exception
@@ -96,7 +108,7 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		// Add the PDF to the repository
 		String artifactFileName = "sample.pdf";
 		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
-		String uuid = null;
+		//String uuid = null;
 		try {
 			ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document"));
 			request.header("Slug", artifactFileName);
@@ -116,6 +128,9 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}
+		
+		PersistenceFactory.newInstance().shutdown();
+		setUp();
 
 		// Make sure we can query it now
 		ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document/" + uuid));

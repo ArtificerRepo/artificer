@@ -104,4 +104,6 @@ public interface PersistenceManager {
 	 * @param type
 	 */
     public void printArtifactGraph(String uuid, ArtifactType type);
+    
+    public void shutdown();
 }

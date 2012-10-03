@@ -22,6 +22,7 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,6 +56,11 @@ public class JCRPersistenceTest {
     public void prepForTest() {
         new JCRRepositoryCleaner().clean();
     }
+    
+    @AfterClass
+    public static void cleanup() {
+        persistenceManager.shutdown();
+    }
 
     @Test
     public void testSave_PDF() throws Exception {
@@ -67,8 +73,9 @@ public class JCRPersistenceTest {
         log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid());
 
         //print out the derived node
-        persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.Document);
-
+        if (log.isDebugEnabled()) {
+            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.Document);
+        }
         Assert.assertEquals(Document.class, artifact.getClass());
         Assert.assertEquals(new Long(18873l), ((Document) artifact).getContentSize());
     }
@@ -84,8 +91,10 @@ public class JCRPersistenceTest {
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
 
         //print out the derived node
-        //persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XsdDocument);
-
+        if (log.isDebugEnabled()) {
+            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XsdDocument);
+        }
+        
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         Assert.assertEquals(new Long(2376l), ((XsdDocument) artifact).getContentSize());
     }
@@ -101,8 +110,9 @@ public class JCRPersistenceTest {
         log.info("persisted PO.xml to JCR, returned artifact uuid=" + artifact.getUuid());
 
         //print out the derived node
-        persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XmlDocument);
-
+        if (log.isDebugEnabled()) {
+            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XmlDocument);
+        }
         Assert.assertEquals(XmlDocument.class, artifact.getClass());
         Assert.assertEquals(new Long(825l), ((XmlDocument) artifact).getContentSize());
     }
