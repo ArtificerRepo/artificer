@@ -59,7 +59,7 @@ public class Version implements Serializable {
 
 	/**
      * Parses the build date string into a {@link Date}.
-     * 
+     *
      * @param dateString
      */
     private static Date parseBuildDate(String dateString) {
@@ -69,13 +69,19 @@ public class Version implements Serializable {
     	try {
 	        return format.parse(dateString);
         } catch (ParseException e) {
-        	throw new RuntimeException(e);
         }
+    	format = new SimpleDateFormat("yyyyMMdd-HHmm");
+    	try {
+    		return format.parse(dateString);
+    	} catch (ParseException e) {
+        }
+    	// Bail out - we couldn't parse the stupid date in the version file.
+    	return new Date();
     }
 
 	private String version;
 	private Date date;
-	
+
 	/**
 	 * Public constructor (needed for serialization).
 	 */
@@ -109,5 +115,5 @@ public class Version implements Serializable {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+
 }
