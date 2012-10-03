@@ -85,7 +85,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
 
             String jcrMixinName = artifactType.getArtifactType().getApiType().value();
-            jcrMixinName = JCRConstants.SRAMP + jcrMixinName.substring(0,1).toLowerCase() + jcrMixinName.substring(1);
+            jcrMixinName = JCRConstants.SRAMP_ + jcrMixinName.substring(0,1).toLowerCase() + jcrMixinName.substring(1);
             artifactNode.addMixin(jcrMixinName);
             //BaseArtifactType
             artifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
@@ -369,6 +369,10 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 		}
 
 		return file;
+	}
+	@Override
+	public void shutdown() {
+	    JCRRepository.shutdown();
 	}
 
 }

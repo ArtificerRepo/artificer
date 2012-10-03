@@ -16,8 +16,16 @@
         "cacheName" : "persisted-repository",
         "binaryStorage" : {
             "type" : "file",
-            "directory": "target/repos",
+            "directory": "target/repos/binary",
             "minimumBinarySizeInBytes" : 999
+        }
+    },
+    "query" : {
+        "indexStorage" : {
+            "type" : "filesystem",
+            "location" : "target/repos/index",
+            "lockingStrategy" : "simple",
+            "fileSystemAccessType" : "auto"
         }
     }
     

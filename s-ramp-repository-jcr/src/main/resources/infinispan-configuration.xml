@@ -9,11 +9,11 @@
     </default>
 
     <namedCache name="persisted-repository">
-        <loaders passivation="true" shared="false" preload="false">
+        <loaders passivation="false" shared="false" preload="true">
             <loader class="org.infinispan.loaders.bdbje.BdbjeCacheStore"
                    fetchPersistentState="true" purgeOnStartup="false">
                 <properties>
-                    <property name="location" value="target/repos" />
+                    <property name="location" value="target/repos/content" />
                 </properties>
             </loader>
         </loaders>
