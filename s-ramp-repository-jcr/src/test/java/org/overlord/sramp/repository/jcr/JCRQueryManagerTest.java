@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,6 +49,7 @@ public class JCRQueryManagerTest {
 
     @BeforeClass
     public static void setup() {
+        System.out.println("Set up");
         persistenceManager = PersistenceFactory.newInstance();
         queryManager = QueryManagerFactory.newInstance();
     }
@@ -55,6 +57,11 @@ public class JCRQueryManagerTest {
     @Before
     public void prepForTest() {
         new JCRRepositoryCleaner().clean();
+    }
+    
+    @AfterClass
+    public static void cleanup() {
+        persistenceManager.shutdown();
     }
 
     /**

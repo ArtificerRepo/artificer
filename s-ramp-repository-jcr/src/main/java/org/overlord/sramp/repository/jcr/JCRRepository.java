@@ -37,8 +37,12 @@ import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.jcr.api.AnonymousCredentials;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JCRRepository {
+
+    private static Logger log = LoggerFactory.getLogger(JCRRepository.class);
 
     //private static String USER           = "s-ramp";
     //private static char[] PWD            = "s-ramp".toCharArray();
@@ -68,9 +72,6 @@ public class JCRRepository {
                     if (repository != null) break;
                 }
                 if (repository==null) throw new RepositoryException("ServiceLoader could not instantiate JCR Repository");
-                else {
-                    
-                }
                 configureNodeTypes();
             }
         } catch (ParsingException e) {
@@ -86,9 +87,13 @@ public class JCRRepository {
      * it leads to a successful build. We need to look into this.
      */
     public static void shutdown(){
-        if (theFactory instanceof org.modeshape.jcr.api.RepositoryFactory) {
+        if (theFactory instanceof org.modeshape.jcr.JcrRepositoryFactory) {
             try {
-                ((org.modeshape.jcr.api.RepositoryFactory)theFactory).shutdown().get();
+                org.modeshape.jcr.api.RepositoryFactory modeRepo = 
+                (org.modeshape.jcr.api.RepositoryFactory)theFactory;
+                Boolean state = modeRepo.shutdown().get();
+                log.info("called shutdown on ModeShape, with resulting state=" + state);
+                repository = null;
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
