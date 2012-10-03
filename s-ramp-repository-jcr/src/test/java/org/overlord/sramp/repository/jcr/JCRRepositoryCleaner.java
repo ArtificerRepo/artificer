@@ -20,8 +20,6 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.overlord.sramp.repository.jcr.JCRRepository;
-
 /**
  * Cleans the JCR repository to get it ready for a unit test.  This class
  * is used for each unit test so that they don't interfere with each other.
@@ -62,7 +60,7 @@ public class JCRRepositoryCleaner {
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		} finally {
-			if (session!=null) session.logout();
+			JCRRepository.logoutQuietly(session);
 		}
 	}
 

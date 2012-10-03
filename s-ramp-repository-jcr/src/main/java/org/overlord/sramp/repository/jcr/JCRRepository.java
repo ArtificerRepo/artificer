@@ -47,10 +47,10 @@ public class JCRRepository {
     //private static String USER           = "s-ramp";
     //private static char[] PWD            = "s-ramp".toCharArray();
     private static String WORKSPACE_NAME = "default";
-    
+
     private static Repository repository = null;
     private static RepositoryFactory theFactory = null;
-   
+
     /**
      * Gets the singleton instance of the JCR Repository.
      * @throws RepositoryException
@@ -77,13 +77,13 @@ public class JCRRepository {
         } catch (ParsingException e) {
             new RepositoryException(e);
         }
-        
+
         return repository;
     }
-    
+
     /**
      * TODO ModeShape requires shutdown to be called. However calling this after every test
-     * leads to issues where the repo is down, on initialization of the next test. Not using 
+     * leads to issues where the repo is down, on initialization of the next test. Not using
      * it leads to a successful build. We need to look into this.
      */
     public static void shutdown(){
@@ -103,7 +103,7 @@ public class JCRRepository {
             }
         }
     }
-    
+
     /**
      * Convenience method for getting a JCR session from the repo singleton.
      * @throws LoginException
@@ -114,6 +114,20 @@ public class JCRRepository {
         //Credentials cred = new SimpleCredentials(USER, PWD);
         AnonymousCredentials cred = new AnonymousCredentials();
         return getInstance().login(cred, WORKSPACE_NAME);
+    }
+
+    /**
+     * Quietly logs out of the JCR session.
+     * @param session
+     */
+    public static void logoutQuietly(Session session) {
+    	if (session != null) {
+    		try {
+    			session.logout();
+    		} catch (Throwable t) {
+    			// eat it
+    		}
+    	}
     }
 
     /**
@@ -131,12 +145,10 @@ public class JCRRepository {
             namespaceRegistry.registerNamespace(JCRConstants.SRAMP_PROPERTIES, JCRConstants.SRAMP_PROPERTIES_NS);
 
             NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
-            
+
             // Register the ModeShape S-RAMP node types ...
             is = JCRRepository.class.getResourceAsStream("/org/overlord/s-ramp/sramp.cnd");
             manager.registerNodeTypes(is,true);
-            
-            
         } catch (LoginException e) {
             throw e;
         } catch (NoSuchWorkspaceException e) {
@@ -149,7 +161,7 @@ public class JCRRepository {
             throw e;
         } finally {
         	IOUtils.closeQuietly(is);
-            if ( session != null ) session.logout();
+        	JCRRepository.logoutQuietly(session);
         }
     }
 }
