@@ -148,7 +148,6 @@ public class SrampAtomApiClient {
 	 * @throws SrampClientException
 	 * @throws SrampServerException
 	 */
-	@SuppressWarnings("resource")
 	public Map<String, ?> uploadBatch(SrampArchive archive) throws SrampClientException, SrampServerException {
 		File packageFile = null;
 		InputStream packageStream = null;

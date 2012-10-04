@@ -28,8 +28,10 @@ public class MapToJCRPath {
      * @param type - artifact type
      * @return path: "/artifact/<model>/<type>"
      */
-    public static String getArtifactTypePath(ArtifactType type) {
-        return String.format(PATH, type.getArtifactType().getModel(), type.getArtifactType().getType());
+    public static String getArtifactTypePath(ArtifactType artifactType) {
+        String type = artifactType.getArtifactType().getType();
+        //if (artifactType.getUserType()!=null) type = artifactType.getUserType();
+        return String.format(PATH, artifactType.getArtifactType().getModel(), type);
     }
 
     /**

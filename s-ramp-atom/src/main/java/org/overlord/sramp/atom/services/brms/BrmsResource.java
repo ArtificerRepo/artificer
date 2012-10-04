@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.atom.services;
+package org.overlord.sramp.atom.services.brms;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,8 +35,11 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.atom.services.brms.Assets;
-import org.overlord.sramp.atom.services.brms.Packages;
+import org.overlord.sramp.repository.QueryManager;
+import org.overlord.sramp.repository.QueryManagerFactory;
+import org.overlord.sramp.repository.query.ArtifactSet;
+import org.overlord.sramp.repository.query.SrampQuery;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * The JAX-RS resource that handles artifact specific tasks, including:
@@ -69,13 +72,25 @@ public class BrmsResource {
     @Produces(MediaType.APPLICATION_XML)
 	public Packages getAllPackages() throws SrampAtomException {
         try {
-			// For now reading from file
-            JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
-            Unmarshaller unMarshaller = jaxbContext.createUnmarshaller();
-            StringReader reader = new StringReader(PACKAGES_XML);
-            JAXBElement<Packages> element = unMarshaller.unmarshal(new StreamSource(reader),Packages.class);
-            Packages packages = element.getValue();
-			return packages;
+            //BRMS/Drools packages should be uploaded under UserDefinedArtifactType of BrmsPkgDocument
+            ArtifactSet artifactSet = null;
+            Packages brmsPackages = new Packages();
+            QueryManager queryManager = QueryManagerFactory.newInstance();
+            String query = String.format("/s-ramp/%1$s/%2$s", "user", "UserDefinedArtifactType");
+            SrampQuery srampQuery = queryManager.createQuery(query, "name", true);
+            artifactSet = srampQuery.executeQuery();
+            for (BaseArtifactType artifact : artifactSet) {
+                Packages.Package brmsPackage = new Packages.Package();
+                brmsPackage.setTitle(artifact.getName());
+                brmsPackage.setPublished(artifact.getCreatedTimestamp());
+                brmsPackage.setAuthor(artifact.getCreatedBy());
+                brmsPackage.setDescription(artifact.getDescription());
+                Packages.Package.Metadata metaData = new Packages.Package.Metadata();
+                metaData.setUuid(artifact.getUuid());
+                brmsPackage.setMetadata(metaData);
+                brmsPackages.getPackage().add(brmsPackage);
+            }
+			return brmsPackages;
 		} catch (Throwable e) {
 			throw new SrampAtomException(e);
 		}
