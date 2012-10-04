@@ -17,11 +17,14 @@ package org.overlord.sramp.atom.services;
 
 import static org.jboss.resteasy.test.TestPortProvider.generateURL;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -29,6 +32,7 @@ import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
@@ -44,6 +48,14 @@ import test.org.overlord.sramp.atom.TestUtils;
  * @author eric.wittmann@redhat.com
  */
 public class FeedResourceTest extends BaseResourceTest {
+
+	@BeforeClass
+	public static void cleanIndex() {
+		try {
+			FileUtils.deleteDirectory(new File("target/repos"));
+		} catch (Throwable t) {
+		}
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -131,6 +143,78 @@ public class FeedResourceTest extends BaseResourceTest {
 		}
 
 		return entry;
+	}
+
+	/**
+	 * Tests a user-defined type feed.
+	 * @throws Exception
+	 */
+	@Test
+	public void testUserDefinedTypeFeed() throws Exception {
+		// Add some pkg entries
+		Set<String> pkgUuids = new HashSet<String>();
+		for (int i = 0; i < 5; i++) {
+			Entry entry = doAddUserDefined("PkgDocument", "/sample-files/user/defaultPackage.pkg");
+			URI entryId = entry.getId();
+			String uuid = entryId.toString();
+			pkgUuids.add(uuid);
+		}
+		// Add some bpmn entries
+		Set<String> bpmnUuids = new HashSet<String>();
+		for (int i = 0; i < 3; i++) {
+			Entry entry = doAddUserDefined("BpmnDocument", "/sample-files/user/Evaluation.bpmn");
+			URI entryId = entry.getId();
+			String uuid = entryId.toString();
+			bpmnUuids.add(uuid);
+		}
+
+		// Test the feed of the pkg docs
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/PkgDocument"));
+		ClientResponse<Feed> response = request.get(Feed.class);
+		Feed feed = response.getEntity();
+		Set<String> actualPkgUuids = new HashSet<String>();
+		for (Entry entry : feed.getEntries()) {
+			String entryUuid = entry.getId().toString();
+			actualPkgUuids.add(entryUuid);
+		}
+		Assert.assertEquals(pkgUuids, actualPkgUuids);
+
+		// Test the feed of the pkg docs
+		request = new ClientRequest(generateURL("/s-ramp/user/BpmnDocument"));
+		response = request.get(Feed.class);
+		feed = response.getEntity();
+		Set<String> actualBpmnUuids = new HashSet<String>();
+		for (Entry entry : feed.getEntries()) {
+			String entryUuid = entry.getId().toString();
+			actualBpmnUuids.add(entryUuid);
+		}
+		Assert.assertEquals(bpmnUuids, actualBpmnUuids);
+	}
+
+	/**
+	 * Adds a user-defined artifact to the repo by POSTing the content to /s-ramp/user/???.
+	 * @param userType
+	 * @throws Exception
+	 */
+	private Entry doAddUserDefined(String userType, String testFilePath) throws Exception {
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/" + userType));
+
+		File f = new File(testFilePath);
+		String artifactFileName = f.getName();
+		InputStream contentStream = this.getClass().getResourceAsStream(testFilePath);
+		if (contentStream == null)
+			throw new NullPointerException("Failed to find: " + testFilePath);
+		try {
+			request.header("Slug", artifactFileName);
+			request.body(MediaType.APPLICATION_OCTET_STREAM, contentStream);
+
+			ClientResponse<Entry> response = request.post(Entry.class);
+
+			Entry entry = response.getEntity();
+			return entry;
+		} finally {
+			IOUtils.closeQuietly(contentStream);
+		}
 	}
 
 }
