@@ -22,6 +22,7 @@ import javax.ws.rs.core.Application;
 
 import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
+import org.overlord.sramp.atom.services.brms.BrmsResource;
 
 /**
  * The SRAMP RESTEasy application.  This is essentially the main entry point into a
