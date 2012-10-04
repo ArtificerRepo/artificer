@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.query.xpath.ast.AndExpr;
 import org.overlord.sramp.query.xpath.ast.Argument;
@@ -40,7 +41,7 @@ import org.overlord.sramp.repository.jcr.JCRConstants;
 
 /**
  * Visitor used to produce a JCR SQL2 query from an S-RAMP xpath query.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
@@ -139,7 +140,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			QName property = node.getPropertyQName();
 			if (property.getNamespaceURI() == null || "".equals(property.getNamespaceURI()))
 				property = new QName(SrampConstants.SRAMP_NS, property.getLocalPart());
-			
+
 			if (property.getNamespaceURI().equals(SrampConstants.SRAMP_NS)) {
 				String jcrPropName = null;
 				if (corePropertyMap.containsKey(property)) {
@@ -173,11 +174,18 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	@Override
 	public void visit(LocationPath node) {
 		if (node.getArtifactType() != null) {
-			appendCondition("[sramp:artifactType] = '" + node.getArtifactType().replace("'", "''") + "'");
+			// If this is explicitely *or* implicitely a user defined type search...
+			if ("user".equals(node.getArtifactModel()) || !ArtifactTypeEnum.hasEnum(node.getArtifactType())) {
+				this.builder.append(" WHERE [sramp:artifactType] = '" + ArtifactTypeEnum.UserDefinedArtifactType + "'");
+				this.builder.append(" AND ");
+				this.builder.append("[sramp:userType] = '" + node.getArtifactType().replace("'", "''") + "'");
+			} else {
+				this.builder.append(" WHERE [sramp:artifactType] = '" + node.getArtifactType().replace("'", "''") + "'");
+			}
 		} else if (node.getArtifactModel() != null) {
-			appendCondition("[sramp:artifactModel] = '" + node.getArtifactModel().replace("'", "''") + "'");
+			this.builder.append(" WHERE [sramp:artifactModel] = '" + node.getArtifactModel().replace("'", "''") + "'");
 		} else {
-			appendCondition("[sramp:artifactModel] LIKE '%'");
+			this.builder.append(" WHERE [sramp:artifactModel] LIKE '%'");
 		}
 	}
 
@@ -247,15 +255,6 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	@Override
 	public void visit(SubartifactSet node) {
 		throw new RuntimeException("Sub-artifact-sets not yet supported.");
-	}
-
-	/**
-	 * Appends a single WHERE condition to the query.
-	 * @param condition
-	 */
-	private void appendCondition(String condition) {
-		this.builder.append(" WHERE ");
-		this.builder.append(condition);
 	}
 
 }

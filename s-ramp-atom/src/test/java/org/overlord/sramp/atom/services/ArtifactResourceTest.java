@@ -59,19 +59,19 @@ import test.org.overlord.sramp.atom.TestUtils;
 public class ArtifactResourceTest extends BaseResourceTest {
 
     String uuid = null;
-    
+
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// bring up the embedded container with the ArtifactResource deployed.
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 	}
-	
+
 	@Before
 	public void clean() {
 	    getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
 	    new JCRRepositoryCleaner().clean();
 	}
-	
+
 	@AfterClass
 	public static void cleanup() {
 	    PersistenceFactory.newInstance().shutdown();
@@ -129,7 +129,7 @@ public class ArtifactResourceTest extends BaseResourceTest {
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}
-		
+
 		// Make sure we can query it now
 		ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document/" + uuid));
 		ClientResponse<Entry> response = request.get(Entry.class);
@@ -157,8 +157,8 @@ public class ArtifactResourceTest extends BaseResourceTest {
         IOUtils.closeQuietly(in);
         IOUtils.closeQuietly(out);
 	}
-	
-	   /**
+
+	/**
      * Tests adding a BRMS Pkg document.
      * @throws Exception
      */
@@ -202,9 +202,9 @@ public class ArtifactResourceTest extends BaseResourceTest {
         Assert.assertEquals("defaultPackage.pkg", doc.getName());
         Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
     }
-    
+
     /**
-     * Tests adding a PDF document.
+     * Tests adding a JPG document.
      * @throws Exception
      */
     @Test
@@ -246,7 +246,7 @@ public class ArtifactResourceTest extends BaseResourceTest {
         Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
         Assert.assertEquals("photo.jpg", doc.getName());
         Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
-        
+
         //Obtain the content for visual inspection
         ClientRequest request2 = new ClientRequest(generateURL("/s-ramp/user/JpgDocument/" + uuid + "/media"));
         ClientResponse<InputStream> response2 = request2.get(InputStream.class);
@@ -262,7 +262,7 @@ public class ArtifactResourceTest extends BaseResourceTest {
         IOUtils.closeQuietly(in);
         IOUtils.closeQuietly(out);
     }
-	
+
 	/**
      * Tests adding a BPMN Process Definition document.
      * @throws Exception
@@ -306,7 +306,7 @@ public class ArtifactResourceTest extends BaseResourceTest {
         Assert.assertEquals(Long.valueOf(12482), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
         Assert.assertEquals("Evaluation.bpmn", doc.getName());
         Assert.assertEquals("application/xml", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
-        
+
         ClientResponse<String> content = request.get(String.class);
         System.out.println("Content=" + content.getEntity());
     }

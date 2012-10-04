@@ -97,10 +97,17 @@ public class ArtifactType {
 	 * @param artifactType
 	 */
 	public static ArtifactType valueOf(String artifactType) {
-		ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.valueOf(artifactType);
-		return new ArtifactType(artifactTypeEnum, null);
+		if (ArtifactTypeEnum.hasEnum(artifactType)) {
+			ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.valueOf(artifactType);
+			return new ArtifactType(artifactTypeEnum, null);
+		} else {
+			ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.UserDefinedArtifactType;
+			ArtifactType rval = new ArtifactType(artifactTypeEnum, null);
+			rval.setUserType(artifactType);
+			return rval;
+		}
 	}
-	
+
 	/**
      * Figures out the artifact type (enum) from the given S-RAMP artifact type string.
      * @param artifactType
@@ -126,7 +133,7 @@ public class ArtifactType {
 		BaseArtifactEnum apiType = artifact.getArtifactType();
 		if (apiType != null) {
 		    ArtifactType artifactType = valueOf(apiType);
-		    if (artifactType.getArtifactType().equals(ArtifactTypeEnum.UserDefinedArtifactType)) {
+		    if (artifactType.getArtifactType() == ArtifactTypeEnum.UserDefinedArtifactType) {
                 String userType = ((UserDefinedArtifactType) artifact).getUserType();
                 artifactType.setUserType(userType);
             }
@@ -136,7 +143,7 @@ public class ArtifactType {
 		for (ArtifactTypeEnum artifactTypeEnum : values) {
 			if (artifactTypeEnum.getTypeClass().equals(artifact.getClass())) {
 			    ArtifactType artifactType = new ArtifactType(artifactTypeEnum, null);
-			    if (artifactTypeEnum.equals(ArtifactTypeEnum.UserDefinedArtifactType)) {
+			    if (artifactTypeEnum == ArtifactTypeEnum.UserDefinedArtifactType) {
 			        String userType = ((UserDefinedArtifactType) artifact).getUserType();
                     artifactType.setUserType(userType);
                 }
@@ -173,11 +180,11 @@ public class ArtifactType {
 	public void setArtifactType(ArtifactTypeEnum artifactType) {
 		this.artifactType = artifactType;
 	}
-	
+
 	public String getModel() {
 	    return getArtifactType().getModel();
 	}
-	
+
 	public String getType() {
 	    if (getArtifactType().equals(ArtifactTypeEnum.UserDefinedArtifactType)) {
             return getUserType();
@@ -185,7 +192,7 @@ public class ArtifactType {
             return getArtifactType().getType();
         }
 	}
-	
+
 	public String getLabel() {
 	    return getArtifactType().getLabel();
 	}
