@@ -16,6 +16,8 @@
 package org.overlord.sramp;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.s_ramp.xmlns._2010.s_ramp.Actor;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
@@ -144,6 +146,14 @@ public enum ArtifactTypeEnum {
 	Task("soa", "SOA Task", Task.class, BaseArtifactEnum.TASK, true)
 	;
 
+	private final static Set<String> enumValueIndex = new HashSet<String>();
+	static {
+		ArtifactTypeEnum[] values = ArtifactTypeEnum.values();
+		for (ArtifactTypeEnum value : values) {
+			enumValueIndex.add(value.name());
+		}
+	}
+
 	private final String model;
 	private final String label;
 	private final Class<? extends BaseArtifactType> typeClass;
@@ -252,6 +262,15 @@ public enum ArtifactTypeEnum {
 			}
 		}
 		throw new RuntimeException("Could not determine Artifact Type from S-RAMP API type: " + apiType.value());
+	}
+
+	/**
+	 * Returns true if the given string is one of the valid enum values.
+	 * @param artifactType
+	 * @return true if the string is a valid enum value
+	 */
+	public static boolean hasEnum(String artifactType) {
+		return enumValueIndex.contains(artifactType);
 	}
 
 }
