@@ -87,8 +87,7 @@ public class ArtifactResource {
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry create(@HeaderParam("Content-Type") String contentType,
 			@HeaderParam("Slug") String fileName, @PathParam("model") String model,
-			@PathParam("type") String type, InputStream content) throws SrampAtomException {
-        InputStream is = content;
+			@PathParam("type") String type, InputStream is) throws SrampAtomException {
         try {
             ArtifactType artifactType = ArtifactType.valueOf(model, type);
         	if (artifactType.getArtifactType().isDerived()) {
@@ -142,7 +141,7 @@ public class ArtifactResource {
 	 * @param artifactType the artifact type (based on the endpoint POSTed to)
 	 */
 	private static String determineMimeType(String contentType, String fileName, ArtifactType artifactType) {
-		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.UserDefined) {
+		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.UserDefinedArtifactType) {
 			if (contentType != null && contentType.trim().length() > 0)
 				return contentType;
 			if (fileName != null) {

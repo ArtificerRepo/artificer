@@ -61,14 +61,14 @@ public class ArtifactResourceTest extends BaseResourceTest {
     String uuid = null;
     
 	@BeforeClass
-	public void setUp() throws Exception {
+	public static void setUp() throws Exception {
 		// bring up the embedded container with the ArtifactResource deployed.
-		getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 	}
 	
 	@Before
 	public void clean() {
+	    getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
 	    new JCRRepositoryCleaner().clean();
 	}
 	
@@ -130,9 +130,6 @@ public class ArtifactResourceTest extends BaseResourceTest {
 			IOUtils.closeQuietly(contentStream);
 		}
 		
-		PersistenceFactory.newInstance().shutdown();
-		setUp();
-
 		// Make sure we can query it now
 		ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document/" + uuid));
 		ClientResponse<Entry> response = request.get(Entry.class);
@@ -162,17 +159,17 @@ public class ArtifactResourceTest extends BaseResourceTest {
 	}
 	
 	   /**
-     * Tests adding a PDF document.
+     * Tests adding a BRMS Pkg document.
      * @throws Exception
      */
     @Test
-    public void testDroolsPkgDocument() throws Exception {
+    public void testBrmsPkgDocument() throws Exception {
         // Add the pkg to the repository
         String artifactFileName = "defaultPackage.pkg";
         InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/user/" + artifactFileName);
         String uuid = null;
         try {
-            ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/DroolsPkgDocument"));
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/BrmsPkgDocument"));
             request.header("Slug", artifactFileName);
             request.body("application/octet-stream", contentStream);
 
@@ -184,7 +181,7 @@ public class ArtifactResourceTest extends BaseResourceTest {
             Assert.assertTrue(arty instanceof UserDefinedArtifactType);
             UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
             Assert.assertEquals(artifactFileName, doc.getName());
-            Assert.assertEquals("DroolsPkgDocument", doc.getUserType());
+            Assert.assertEquals("BrmsPkgDocument", doc.getUserType());
             Assert.assertEquals(Long.valueOf(17043), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
             Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
             uuid = doc.getUuid();
@@ -193,7 +190,7 @@ public class ArtifactResourceTest extends BaseResourceTest {
         }
 
         // Make sure we can query it now
-        ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/DroolsPkgDocument/" + uuid));
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/BrmsPkgDocument/" + uuid));
         ClientResponse<Entry> response = request.get(Entry.class);
 
         Entry entry = response.getEntity();

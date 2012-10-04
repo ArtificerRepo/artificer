@@ -119,7 +119,7 @@ public enum ArtifactTypeEnum {
 	ServiceInstance("serviceImplementation", "Service Instance", ServiceInstance.class, BaseArtifactEnum.SERVICE_INSTANCE, true),
 	ServiceOperation("serviceImplementation", "Service Operation", ServiceOperation.class, BaseArtifactEnum.SERVICE_OPERATION, true),
 	// User Defined
-	UserDefined("user", "User Defined", UserDefinedArtifactType.class, BaseArtifactEnum.USER_DEFINED_ARTIFACT_TYPE, false), // TODO how are user defined types contributed/registered?
+	UserDefinedArtifactType("user", "User Defined", UserDefinedArtifactType.class, BaseArtifactEnum.USER_DEFINED_ARTIFACT_TYPE, false), // TODO how are user defined types contributed/registered?
 	// SOA
 	HumanActor("soa", "SOA Human Actor", Actor.class, BaseArtifactEnum.ACTOR, true),
 	Choreography("soa", "SOA Choreography", Choreography.class, BaseArtifactEnum.CHOREOGRAPHY, true),

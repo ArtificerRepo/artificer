@@ -108,7 +108,7 @@ public class ArtifactType {
     public static ArtifactType valueOf(String model, String type) {
         ArtifactType artifactType = null;
         if ("user".equals(model)) {
-            ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.valueOf("UserDefined");
+            ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.UserDefinedArtifactType;
             artifactType = new ArtifactType(artifactTypeEnum, null);
             artifactType.setUserType(type);
         } else {
@@ -126,7 +126,7 @@ public class ArtifactType {
 		BaseArtifactEnum apiType = artifact.getArtifactType();
 		if (apiType != null) {
 		    ArtifactType artifactType = valueOf(apiType);
-		    if (artifactType.getArtifactType().equals(ArtifactTypeEnum.UserDefined)) {
+		    if (artifactType.getArtifactType().equals(ArtifactTypeEnum.UserDefinedArtifactType)) {
                 String userType = ((UserDefinedArtifactType) artifact).getUserType();
                 artifactType.setUserType(userType);
             }
@@ -136,7 +136,7 @@ public class ArtifactType {
 		for (ArtifactTypeEnum artifactTypeEnum : values) {
 			if (artifactTypeEnum.getTypeClass().equals(artifact.getClass())) {
 			    ArtifactType artifactType = new ArtifactType(artifactTypeEnum, null);
-			    if (artifactTypeEnum.equals(ArtifactTypeEnum.UserDefined)) {
+			    if (artifactTypeEnum.equals(ArtifactTypeEnum.UserDefinedArtifactType)) {
 			        String userType = ((UserDefinedArtifactType) artifact).getUserType();
                     artifactType.setUserType(userType);
                 }
@@ -179,7 +179,7 @@ public class ArtifactType {
 	}
 	
 	public String getType() {
-	    if (getArtifactType().equals(ArtifactTypeEnum.UserDefined)) {
+	    if (getArtifactType().equals(ArtifactTypeEnum.UserDefinedArtifactType)) {
             return getUserType();
         } else {
             return getArtifactType().getType();
