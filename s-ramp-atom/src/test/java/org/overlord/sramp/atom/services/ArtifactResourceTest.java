@@ -60,21 +60,22 @@ public class ArtifactResourceTest extends BaseResourceTest {
 
     String uuid = null;
     
-	@Before
+	@BeforeClass
 	public void setUp() throws Exception {
 		// bring up the embedded container with the ArtifactResource deployed.
 		getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
-		//new JCRRepositoryCleaner().clean();
+	}
+	
+	@Before
+	public void clean() {
+	    new JCRRepositoryCleaner().clean();
 	}
 	
 	@AfterClass
 	public static void cleanup() {
 	    PersistenceFactory.newInstance().shutdown();
 	}
-	
-	
-
 	/**
 	 * @throws Exception
 	 */
