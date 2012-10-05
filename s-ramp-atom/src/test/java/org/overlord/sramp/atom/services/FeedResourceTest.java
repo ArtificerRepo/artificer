@@ -23,19 +23,14 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
-import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
@@ -47,23 +42,7 @@ import test.org.overlord.sramp.atom.TestUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class FeedResourceTest extends BaseResourceTest {
-
-	@BeforeClass
-	public static void cleanIndex() {
-		try {
-			FileUtils.deleteDirectory(new File("target/repos"));
-		} catch (Throwable t) {
-		}
-	}
-
-	@Before
-	public void setUp() throws Exception {
-		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
-		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
-		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
-        new JCRRepositoryCleaner().clean();
-	}
+public class FeedResourceTest extends AbstractResourceTest {
 
 	/**
 	 * Tests the artifact feed.

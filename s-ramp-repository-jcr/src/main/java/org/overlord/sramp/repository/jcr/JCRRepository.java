@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.jcr.LoginException;
 import javax.jcr.NamespaceRegistry;
@@ -31,8 +33,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.io.IOUtils;
-import org.infinispan.schematic.document.ParsingException;
 import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.jcr.api.AnonymousCredentials;
@@ -59,7 +62,7 @@ public class JCRRepository {
         try {
             if (repository==null) {
                 Map<String,String> parameters = new HashMap<String,String>();
-                URL configUrl = Repository.class.getClassLoader().getResource("modeshape-sramp-config.json");
+                URL configUrl = getConfigurationUrl();
                 RepositoryConfiguration config = RepositoryConfiguration.read(configUrl);
                 Problems problems = config.validate();
                 if (problems.hasErrors()) {
@@ -74,14 +77,45 @@ public class JCRRepository {
                 if (repository==null) throw new RepositoryException("ServiceLoader could not instantiate JCR Repository");
                 configureNodeTypes();
             }
-        } catch (ParsingException e) {
-            new RepositoryException(e);
+        } catch (Exception e) {
+            throw new RepositoryException(e);
         }
 
         return repository;
     }
 
     /**
+	 * Gets the configuration to use for the JCR repository.
+     * @throws Exception
+	 */
+	private static URL getConfigurationUrl() throws Exception {
+		// System properties can be used to set the config URL.  Note that
+		// in the future we'll likely add more configuration types here, so that
+		// the config URL can be specified in interesting ways (JNDI, properties
+		// file on the classpath, etc).
+		CompositeConfiguration config = new CompositeConfiguration();
+		config.addConfiguration(new SystemConfiguration());
+
+		String configUrlStr = config.getString("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName() + "/META-INF/modeshape-configs/persistent-sramp-config.json");
+		if (configUrlStr.startsWith("classpath:")) {
+			Pattern p = Pattern.compile("classpath:/?/?([^/]*)/(.*)$");
+			Matcher matcher = p.matcher(configUrlStr);
+			if (matcher.matches()) {
+				String className = matcher.group(1);
+				String path = "/" + matcher.group(2);
+				Class<?> clazz = Class.forName(className);
+				URL resourceUrl = clazz.getResource(path);
+				if (resourceUrl == null)
+					throw new Exception("Failed to find config: " + configUrlStr);
+				return resourceUrl;
+			}
+			throw new Exception("Invalid 'classpath' formatted URL: " + configUrlStr);
+		} else {
+			return new URL(configUrlStr);
+		}
+	}
+
+	/**
      * TODO ModeShape requires shutdown to be called. However calling this after every test
      * leads to issues where the repo is down, on initialization of the next test. Not using
      * it leads to a successful build. We need to look into this.
@@ -89,7 +123,7 @@ public class JCRRepository {
     public static void shutdown(){
         if (theFactory instanceof org.modeshape.jcr.JcrRepositoryFactory) {
             try {
-                org.modeshape.jcr.api.RepositoryFactory modeRepo = 
+                org.modeshape.jcr.api.RepositoryFactory modeRepo =
                 (org.modeshape.jcr.api.RepositoryFactory)theFactory;
                 Boolean state = modeRepo.shutdown().get();
                 log.info("called shutdown on ModeShape, with resulting state=" + state);

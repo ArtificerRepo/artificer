@@ -31,7 +31,8 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.test.BaseResourceTest;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.SrampAtomUtils;
@@ -42,6 +43,8 @@ import org.overlord.sramp.atom.services.ArtifactResource;
 import org.overlord.sramp.atom.services.BatchResource;
 import org.overlord.sramp.atom.services.FeedResource;
 import org.overlord.sramp.atom.services.QueryResource;
+import org.overlord.sramp.repository.PersistenceFactory;
+import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
@@ -53,14 +56,23 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
  */
 public class SrampAtomApiClientTest extends BaseResourceTest {
 
-	@Before
-	public void setUp() throws Exception {
-		getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
-		getProviderFactory().registerProvider(HttpResponseProvider.class);
+	@BeforeClass
+	public static void setUp() throws Exception {
+		// use the in-memory config for unit tests
+		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
+				+ "/META-INF/modeshape-configs/inmemory-sramp-config.json");
+
+		deployment.getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
+		deployment.getProviderFactory().registerProvider(HttpResponseProvider.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
 		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);
 		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
+	}
+
+	@AfterClass
+	public static void cleanup() {
+		PersistenceFactory.newInstance().shutdown();
 	}
 
 	/**

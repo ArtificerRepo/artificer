@@ -49,6 +49,10 @@ public class JCRPersistenceTest {
 
     @BeforeClass
     public static void setup() {
+		// use the in-memory config for unit tests
+		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
+				+ "/META-INF/modeshape-configs/inmemory-sramp-config.json");
+
         persistenceManager = PersistenceFactory.newInstance();
     }
 
@@ -56,7 +60,7 @@ public class JCRPersistenceTest {
     public void prepForTest() {
         new JCRRepositoryCleaner().clean();
     }
-    
+
     @AfterClass
     public static void cleanup() {
         persistenceManager.shutdown();
@@ -94,7 +98,7 @@ public class JCRPersistenceTest {
         if (log.isDebugEnabled()) {
             persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XsdDocument);
         }
-        
+
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         Assert.assertEquals(new Long(2376l), ((XsdDocument) artifact).getContentSize());
     }

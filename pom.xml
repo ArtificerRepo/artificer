@@ -99,6 +99,7 @@
 		<servlet.api.version>2.5</servlet.api.version>
 		<org.jboss.resteasy.version>2.3.4.Final</org.jboss.resteasy.version>
 		<org.modeshape.version>3.0.0.Beta4</org.modeshape.version>
+		<infinispan.version>5.1.6.FINAL</infinispan.version>
 		<commons.io.version>2.4</commons.io.version>
 		<commons.lang3.version>3.1</commons.lang3.version>
 		<commons.config.version>1.8</commons.config.version>
