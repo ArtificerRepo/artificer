@@ -34,18 +34,13 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartInput;
-import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
-import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
-import org.overlord.sramp.atom.providers.HttpResponseProvider;
-import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
@@ -60,18 +55,7 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
  *
  * @author eric.wittmann@redhat.com
  */
-public class BatchResourceTest extends BaseResourceTest {
-
-	@Before
-	public void setUp() throws Exception {
-		// bring up the embedded container with the BatchResource deployed.
-		getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
-		getProviderFactory().registerProvider(HttpResponseProvider.class);
-		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);
-		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
-		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
-        new JCRRepositoryCleaner().clean();
-	}
+public class BatchResourceTest extends AbstractResourceTest {
 
 	/**
 	 * Test method for {@link org.overlord.sramp.atom.services.BatchResource#zipPackage(java.lang.String, java.io.InputStream)}.

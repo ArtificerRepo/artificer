@@ -4,7 +4,7 @@
 
 	<artifactId>s-ramp-demos-mvn-integration-artifacts</artifactId>
 	<groupId>org.overlord.sramp.demos</groupId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>S-RAMP Demos: Maven Integration - Artifacts</name>
 
 	<dependencies>

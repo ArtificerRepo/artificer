@@ -29,12 +29,9 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
-import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
-import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
@@ -46,19 +43,7 @@ import test.org.overlord.sramp.atom.TestUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class QueryResourceTest extends BaseResourceTest {
-
-	@Before
-	public void setUp() throws Exception {
-		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
-		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
-		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
-	}
-
-    @Before
-    public void prepForTest() {
-        new JCRRepositoryCleaner().clean();
-    }
+public class QueryResourceTest extends AbstractResourceTest {
 
 	/**
 	 * @throws Exception

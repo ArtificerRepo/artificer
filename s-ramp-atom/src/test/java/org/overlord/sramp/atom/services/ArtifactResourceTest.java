@@ -30,18 +30,11 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.test.BaseResourceTest;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
-import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
-import org.overlord.sramp.repository.PersistenceFactory;
-import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
@@ -56,26 +49,10 @@ import test.org.overlord.sramp.atom.TestUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactResourceTest extends BaseResourceTest {
+public class ArtifactResourceTest extends AbstractResourceTest {
 
     String uuid = null;
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		// bring up the embedded container with the ArtifactResource deployed.
-		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
-	}
-
-	@Before
-	public void clean() {
-	    getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
-	    new JCRRepositoryCleaner().clean();
-	}
-
-	@AfterClass
-	public static void cleanup() {
-	    PersistenceFactory.newInstance().shutdown();
-	}
 	/**
 	 * @throws Exception
 	 */
