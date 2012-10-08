@@ -17,13 +17,18 @@ package org.overlord.sramp.repository.jcr;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Session;
+import javax.jcr.Value;
 
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToArtifactVisitor;
+import org.overlord.sramp.repository.jcr.mapper.JCRNodeToArtifactVisitor.JCRReferenceResolver;
 import org.overlord.sramp.visitors.ArtifactVisitor;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple visitor that will create an S-RAMP artifact from a
@@ -31,6 +36,8 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
  * @author eric.wittmann@redhat.com
  */
 public final class JCRNodeToArtifactFactory {
+
+    private static Logger log = LoggerFactory.getLogger(JCRRepository.class);
 
 	/**
 	 * Private constructor.
@@ -42,10 +49,10 @@ public final class JCRNodeToArtifactFactory {
 	 * Creates a S-RAMP artifact from the given JCR node.
 	 * @param jcrNode a JCR node
 	 */
-	public static BaseArtifactType createArtifact(Node jcrNode) {
+	public static BaseArtifactType createArtifact(final Session session, Node jcrNode) {
         try {
 			String artifactType = jcrNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getValue().getString();
-			return createArtifact(jcrNode, ArtifactType.valueOf(artifactType));
+			return createArtifact(session, jcrNode, ArtifactType.valueOf(artifactType));
 		} catch (PathNotFoundException e) {
 			throw new RuntimeException("JCR Node does not seem to be an s-ramp artifact node.", e);
 		} catch (Exception e) {
@@ -60,11 +67,23 @@ public final class JCRNodeToArtifactFactory {
 	 * @return S-RAMP artifact
 	 * @throws RepositoryException
 	 */
-	public static BaseArtifactType createArtifact(Node jcrNode, ArtifactType artifactType) throws RepositoryException {
+	public static BaseArtifactType createArtifact(final Session session, Node jcrNode, ArtifactType artifactType) throws RepositoryException {
 		try {
 			Class<?> artifactClass = artifactType.getArtifactType().getTypeClass();
 			BaseArtifactType artifact = (BaseArtifactType) artifactClass.newInstance();
-			ArtifactVisitor visitor = new JCRNodeToArtifactVisitor(jcrNode);
+			ArtifactVisitor visitor = new JCRNodeToArtifactVisitor(jcrNode, new JCRReferenceResolver() {
+				@Override
+				public String resolveReference(Value reference) {
+					try {
+						String ident = reference.getString();
+						Node node = session.getNodeByIdentifier(ident);
+						return node.getProperty("sramp:uuid").getString();
+					} catch (Exception e) {
+						log.error("Error resolving JCR reference.", e);
+					}
+					return null;
+				}
+			});
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return artifact;
 		} catch (InstantiationException e) {

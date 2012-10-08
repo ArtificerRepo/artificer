@@ -84,7 +84,7 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 	@Override
 	public BaseArtifactType next() {
 		Node jcrNode = this.jcrNodes.nextNode();
-		return JCRNodeToArtifactFactory.createArtifact(jcrNode);
+		return JCRNodeToArtifactFactory.createArtifact(this.session, jcrNode);
 	}
 
 	/**

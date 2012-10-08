@@ -17,11 +17,13 @@ package org.overlord.sramp.repository.jcr;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
@@ -29,6 +31,8 @@ import javax.jcr.Value;
 
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Relationship;
+import org.s_ramp.xmlns._2010.s_ramp.Target;
 
 /**
  * An artifact visitor used to update a JCR node.  This class is responsible
@@ -41,13 +45,16 @@ public class UpdateJCRNodeFromArtifactVisitor extends HierarchicalArtifactVisito
 
 	private Node jcrNode;
 	private Exception error;
+	private JCRReferenceFactory referenceFactory;
 
 	/**
 	 * Constructor.
 	 * @param jcrNode the JCR node this visitor will be updating
+	 * @param referenceFactory a resolver to find JCR nodes by UUID
 	 */
-	public UpdateJCRNodeFromArtifactVisitor(Node jcrNode) {
+	public UpdateJCRNodeFromArtifactVisitor(Node jcrNode, JCRReferenceFactory referenceFactory) {
 		this.jcrNode = jcrNode;
+		this.referenceFactory = referenceFactory;
 	}
 
 	/**
@@ -58,6 +65,7 @@ public class UpdateJCRNodeFromArtifactVisitor extends HierarchicalArtifactVisito
 		try {
 			updateArtifactMetaData(artifact);
 			updateArtifactProperties(artifact);
+			updateGenericRelationships(artifact);
 		} catch (Exception e) {
 			error = e;
 		}
@@ -107,6 +115,40 @@ public class UpdateJCRNodeFromArtifactVisitor extends HierarchicalArtifactVisito
 	}
 
 	/**
+	 * Updates the generic artifact relationships.
+	 * @param artifact
+	 * @throws RepositoryException
+	 */
+	private void updateGenericRelationships(BaseArtifactType artifact) throws RepositoryException {
+		// First remove all existing relationship nodes.
+		// TODO update this to diff the existing node graph with the artifact and apply, rather than
+		// delete all and recreate all (and make sure to update the comments appropriately)
+		NodeIterator existingNodes = this.jcrNode.getNodes();
+		while (existingNodes.hasNext()) {
+			Node rNode = existingNodes.nextNode();
+			if (rNode.isNodeType("sramp:relationship")) {
+				rNode.remove();
+			}
+		}
+		// Create all the relationships
+		for (Relationship relationship : artifact.getRelationship()) {
+			Node rNode = this.jcrNode.addNode(relationship.getRelationshipType(), "sramp:relationship");
+			rNode.setProperty("sramp:relationshipType", relationship.getRelationshipType());
+			List<Target> targets = relationship.getRelationshipTarget();
+			Value [] values = new Value[targets.size()];
+			for (int idx = 0; idx < values.length; idx++) {
+				Target target = targets.get(idx);
+				Value reference = this.referenceFactory.createReference(target.getValue());
+				if (reference == null) {
+					throw new RepositoryException("Relationship creation error - failed to find an s-ramp artifact with target UUID: " + target.getValue());
+				}
+				values[idx] = reference;
+			}
+			rNode.setProperty("sramp:relationshipTarget", values);
+		}
+	}
+
+	/**
 	 * Gets all of the custom properties from the artifact and returns them as a map.
 	 * @param artifact
 	 */
@@ -152,6 +194,24 @@ public class UpdateJCRNodeFromArtifactVisitor extends HierarchicalArtifactVisito
 	 */
 	public Exception getError() {
 		return error;
+	}
+
+	/**
+	 * Interface used by this visitor to resolve JCR node references by s-ramp
+	 * UUID.  In other words, given an s-ramp UUID, this interface will create a
+	 * reference to the appropriate JCR node.
+	 *
+	 * @author eric.wittmann@redhat.com
+	 */
+	protected static interface JCRReferenceFactory {
+
+		/**
+		 * Creates a reference value to another JCR node.
+		 * @param otherNode the node being referenced
+		 * @return a reference Value
+		 */
+		public Value createReference(String uuid);
+
 	}
 
 }
