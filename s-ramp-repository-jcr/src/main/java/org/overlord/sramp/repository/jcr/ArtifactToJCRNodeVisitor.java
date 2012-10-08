@@ -41,7 +41,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Target;
  *
  * @author eric.wittmann@redhat.com
  */
-public class UpdateJCRNodeFromArtifactVisitor extends HierarchicalArtifactVisitorAdapter {
+public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter {
 
 	private Node jcrNode;
 	private Exception error;
@@ -52,7 +52,7 @@ public class UpdateJCRNodeFromArtifactVisitor extends HierarchicalArtifactVisito
 	 * @param jcrNode the JCR node this visitor will be updating
 	 * @param referenceFactory a resolver to find JCR nodes by UUID
 	 */
-	public UpdateJCRNodeFromArtifactVisitor(Node jcrNode, JCRReferenceFactory referenceFactory) {
+	public ArtifactToJCRNodeVisitor(Node jcrNode, JCRReferenceFactory referenceFactory) {
 		this.jcrNode = jcrNode;
 		this.referenceFactory = referenceFactory;
 	}
@@ -145,6 +145,7 @@ public class UpdateJCRNodeFromArtifactVisitor extends HierarchicalArtifactVisito
 				values[idx] = reference;
 			}
 			rNode.setProperty("sramp:relationshipTarget", values);
+			rNode.setProperty("sramp:generic", true);
 		}
 	}
 

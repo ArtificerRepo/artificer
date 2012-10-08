@@ -108,6 +108,12 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 				Node rNode = rnodes.nextNode();
 				if (rNode.isNodeType("sramp:relationship")) {
 					String rtype = getProperty(rNode, "sramp:relationshipType");
+					boolean generic = false;
+					if (rNode.hasProperty("sramp:generic")) {
+						generic = rNode.getProperty("sramp:generic").getBoolean();
+					}
+					if (!generic)
+						continue;
 					Relationship relationship = new Relationship();
 					relationship.setRelationshipType(rtype);
 					if (rNode.hasProperty("sramp:relationshipTarget")) {

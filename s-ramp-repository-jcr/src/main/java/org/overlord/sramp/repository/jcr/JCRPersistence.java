@@ -41,7 +41,7 @@ import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.DerivedArtifactsCreationException;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.RepositoryException;
-import org.overlord.sramp.repository.jcr.UpdateJCRNodeFromArtifactVisitor.JCRReferenceFactory;
+import org.overlord.sramp.repository.jcr.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
@@ -203,7 +203,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             	throw new RepositoryException("No artifact found with UUID: " + artifact.getUuid());
             }
             final Session s = session;
-            UpdateJCRNodeFromArtifactVisitor visitor = new UpdateJCRNodeFromArtifactVisitor(artifactNode, new JCRReferenceFactory() {
+            ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(artifactNode, new JCRReferenceFactory() {
             	@Override
             	public Value createReference(String uuid) {
 					try {
