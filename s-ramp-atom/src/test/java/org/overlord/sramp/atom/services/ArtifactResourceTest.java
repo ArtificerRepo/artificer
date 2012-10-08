@@ -33,6 +33,7 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.junit.Assert;
 import org.junit.Test;
 import org.overlord.sramp.SrampConstants;
+import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
@@ -478,6 +479,8 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		XsdDocument xsdDocument = (XsdDocument) SrampAtomUtils.unwrapSrampArtifact(entry);
 		String uuid = xsdDocument.getUuid();
 		xsdDocument.setDescription("** Updated description! **");
+		SrampModelUtils.setCustomProperty(xsdDocument, "my.property", "Hello World");
+		SrampModelUtils.addGenericRelationship(xsdDocument, "NoTargetRel", null);
 
 		Artifact arty = new Artifact();
 		arty.setXsdDocument(xsdDocument);
@@ -499,6 +502,10 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		Artifact srampArtifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
 		XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
 		Assert.assertEquals("** Updated description! **", xsdDocument.getDescription());
+		Assert.assertEquals("Hello World", SrampModelUtils.getCustomProperty(xsdDocument, "my.property"));
+		Assert.assertNull(SrampModelUtils.getCustomProperty(xsdDocument, "my.missing.property"));
+		Assert.assertNotNull(SrampModelUtils.getGenericRelationship(xsdDocument, "NoTargetRel"));
+		Assert.assertNull(SrampModelUtils.getGenericRelationship(xsdDocument, "MissingRel"));
 	}
 
 	/**
