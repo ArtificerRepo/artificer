@@ -16,9 +16,12 @@
 package org.overlord.sramp.repository.jcr.mapper;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
+import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -32,6 +35,8 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Relationship;
+import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
@@ -45,12 +50,16 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter {
 
 	private Node jcrNode;
+	private JCRReferenceResolver referenceResolver;
 
 	/**
 	 * Constructor.
+	 * @param jcrNode
+	 * @param referenceResolver
 	 */
-	public JCRNodeToArtifactVisitor(Node jcrNode) {
+	public JCRNodeToArtifactVisitor(Node jcrNode, JCRReferenceResolver referenceResolver) {
 		this.jcrNode = jcrNode;
+		this.referenceResolver = referenceResolver;
 	}
 
 	/**
@@ -90,6 +99,37 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 			    	srampProp.setPropertyName(propName);
 			    	srampProp.setPropertyValue(propValue);
 					artifact.getProperty().add(srampProp);
+				}
+			}
+
+			// Now map in the generic relationships
+			NodeIterator rnodes = jcrNode.getNodes();
+			while (rnodes.hasNext()) {
+				Node rNode = rnodes.nextNode();
+				if (rNode.isNodeType("sramp:relationship")) {
+					String rtype = getProperty(rNode, "sramp:relationshipType");
+					boolean generic = false;
+					if (rNode.hasProperty("sramp:generic")) {
+						generic = rNode.getProperty("sramp:generic").getBoolean();
+					}
+					if (!generic)
+						continue;
+					Relationship relationship = new Relationship();
+					relationship.setRelationshipType(rtype);
+					if (rNode.hasProperty("sramp:relationshipTarget")) {
+						Property property = rNode.getProperty("sramp:relationshipTarget");
+						Value[] values = property.getValues();
+						for (Value value : values) {
+							if (value.getType() == PropertyType.REFERENCE) {
+								String targetUUID = referenceResolver.resolveReference(value);
+								Target target = new Target();
+								target.setValue(targetUUID);
+								relationship.getRelationshipTarget().add(target);
+							}
+						}
+					}
+
+					artifact.getRelationship().add(relationship);
 				}
 			}
 		} catch (Exception e) {
@@ -134,7 +174,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	protected void visitXmlDocument(XmlDocument artifact) {
         artifact.setContentEncoding(getProperty(jcrNode, "sramp:contentEncoding"));
 	}
-	
+
 	/**
      * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitUserDefined(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
      */
@@ -173,7 +213,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 		}
 		return defaultValue;
     }
-    
+
     /**
      * Gets a single property from the given JCR node.  This returns null
      * if the property does not exist.
@@ -201,6 +241,22 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
         } catch (javax.jcr.RepositoryException e) {
         }
         return defaultValue;
+    }
+
+    /**
+     * A simple interface used by this class to resolve JCR references into s-ramp artifact UUIDs.
+     *
+     * @author eric.wittmann@redhat.com
+     */
+    public static interface JCRReferenceResolver {
+
+    	/**
+    	 * Resolves a JCR reference into an s-ramp artifact UUID.
+    	 * @param reference a JCR reference
+    	 * @return the UUID of an s-ramp artifact (or null if it fails to resolve)
+    	 */
+    	public String resolveReference(Value reference);
+
     }
 
 }

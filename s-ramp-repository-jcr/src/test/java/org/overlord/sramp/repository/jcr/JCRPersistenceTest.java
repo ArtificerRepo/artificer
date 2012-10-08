@@ -16,6 +16,7 @@
 package org.overlord.sramp.repository.jcr;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,11 +28,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
+import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 import org.slf4j.Logger;
@@ -368,5 +371,100 @@ public class JCRPersistenceTest {
         Assert.assertFalse("Prop2 existed unexpectedly.", ps.contains("prop2=propval2"));
         Assert.assertTrue("Prop3 missing from properties.", ps.contains("prop3=propval3"));
     }
+
+    /**
+     * Tests that we can manage s-ramp properties.
+     * @throws Exception
+     */
+    @Test
+    public void testGenericRelationships() throws Exception {
+    	String uuid1 = null;
+    	String uuid2 = null;
+    	String uuid3 = null;
+
+    	// First, add an artifact to the repo
+        String artifactFileName = "PO.xsd";
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, contentStream);
+        Assert.assertNotNull(artifact);
+        uuid1 = artifact.getUuid();
+        contentStream.close();
+
+        // Now update the artifact's generic relationships
+        artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument);
+        Assert.assertTrue("Expected 0 relationships.", artifact.getRelationship().isEmpty());
+        SrampModelUtils.addGenericRelationship(artifact, "NoTargetRelationship", null);
+        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+
+        // Now verify that the relationship was stored
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        Assert.assertEquals("Expected 1 relationship.", 1, artifact.getRelationship().size());
+        Assert.assertEquals("NoTargetRelationship", artifact.getRelationship().get(0).getRelationshipType());
+        Assert.assertEquals(Collections.EMPTY_LIST, artifact.getRelationship().get(0).getRelationshipTarget());
+
+        // Add a second artifact.
+        artifactFileName = "XMLSchema.xsd";
+        contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        BaseArtifactType artifact2 = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, contentStream);
+        Assert.assertNotNull(artifact2);
+        uuid2 = artifact2.getUuid();
+
+        // Add a second relationship, this time with a target.
+        SrampModelUtils.addGenericRelationship(artifact, "TargetedRelationship", uuid2);
+        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+
+        // Now verify that the targeted relationship was stored
+        artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument);
+        Assert.assertEquals("Expected 2 relationships.", 2, artifact.getRelationship().size());
+        Relationship relationship = SrampModelUtils.getGenericRelationship(artifact, "NoTargetRelationship");
+        Assert.assertNotNull(relationship);
+        Assert.assertEquals("NoTargetRelationship", relationship.getRelationshipType());
+        Assert.assertEquals(Collections.EMPTY_LIST, relationship.getRelationshipTarget());
+        relationship = SrampModelUtils.getGenericRelationship(artifact, "TargetedRelationship");
+        Assert.assertNotNull(relationship);
+        Assert.assertEquals("TargetedRelationship", relationship.getRelationshipType());
+        Assert.assertEquals(1, relationship.getRelationshipTarget().size()); // has only one target
+        Assert.assertEquals(uuid2, relationship.getRelationshipTarget().get(0).getValue());
+
+        // Add a third artifact.
+        artifactFileName = "PO.xml";
+        contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        BaseArtifactType artifact3 = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XmlDocument, contentStream);
+        Assert.assertNotNull(artifact3);
+        uuid3 = artifact3.getUuid();
+
+        // Add a third relationship, again with a target.
+        SrampModelUtils.addGenericRelationship(artifact, "TargetedRelationship", uuid3);
+        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+
+        // More verifications
+        artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument);
+        Assert.assertEquals("Expected 2 relationships.", 2, artifact.getRelationship().size());
+        relationship = SrampModelUtils.getGenericRelationship(artifact, "NoTargetRelationship");
+        Assert.assertNotNull(relationship);
+        Assert.assertEquals("NoTargetRelationship", relationship.getRelationshipType());
+        Assert.assertEquals(Collections.EMPTY_LIST, relationship.getRelationshipTarget());
+        relationship = SrampModelUtils.getGenericRelationship(artifact, "TargetedRelationship");
+        Assert.assertNotNull(relationship);
+        Assert.assertEquals("TargetedRelationship", relationship.getRelationshipType());
+        Assert.assertEquals(2, relationship.getRelationshipTarget().size());
+        Set<String> expected = new HashSet<String>();
+        Set<String> actual = new HashSet<String>();
+        expected.add(uuid2);
+        expected.add(uuid3);
+        actual.add(relationship.getRelationshipTarget().get(0).getValue());
+        actual.add(relationship.getRelationshipTarget().get(1).getValue());
+        Assert.assertEquals(expected, actual);
+
+        // Add a fourth (bogus) relationship
+        SrampModelUtils.addGenericRelationship(artifact, "TargetedRelationship", "not-a-valid-uuid");
+    	try {
+			persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+			Assert.fail("Expected an update failure.");
+		} catch (Exception e) {
+			Assert.assertEquals("javax.jcr.RepositoryException: Relationship creation error - failed to find an s-ramp artifact with target UUID: not-a-valid-uuid", e.getMessage());
+		}
+    }
+
 
 }
