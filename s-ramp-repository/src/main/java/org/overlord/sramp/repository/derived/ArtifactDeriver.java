@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository;
+package org.overlord.sramp.repository.derived;
 
 import java.util.Collection;
 
@@ -21,16 +21,20 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
 /**
- * A service that can rip apart an artifact (previously persisted) and create all of its Derived Artifacts.
+ * Provides a way to derive artifacts.  Classes that implement this interface must
+ * be able to parse a particular type of artifact and produce all of the derived
+ * artifacts for it.  Examples include an XSD deriver, WSDL deriver, etc.
+ *
+ * @author eric.wittmann@redhat.com
  */
-public interface DerivedArtifacts {
+public interface ArtifactDeriver {
 
 	/**
-	 * Create the derived artifacts from the original artifact.
-	 *
-	 * @param artifact the original artifact
+	 * Given an artifact, this method will return a collection of derived content
+	 * for it.
+	 * @param artifact the artifact to derive
+	 * @return derived content
 	 */
-	public Collection<? extends DerivedArtifactType> deriveArtifacts(BaseArtifactType artifact)
-			throws DerivedArtifactsCreationException;
+	public Collection<? extends DerivedArtifactType> derive(BaseArtifactType artifact);
 
 }

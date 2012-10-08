@@ -162,11 +162,10 @@ public class BatchResource {
 			InputStream contentStream) throws Exception {
 		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 		BaseArtifactType artifact = persistenceManager.persistArtifact(metaData.getName(), artifactType, contentStream);
-		// Create the derivedArtifacts
-		Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().createDerivedArtifacts(artifactType, artifact);
-		// Persist the derivedArtifacts
-		for (DerivedArtifactType dartifact : dartifacts)
-		    persistenceManager.persistDerivedArtifact(dartifact);
+		// Create the derived artifacts
+		Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
+		// Persist the derived artifacts
+	    persistenceManager.persistDerivedArtifacts(dartifacts);
 
 		// Update the artifact with data from "metaData" (included *.atom file)
 		metaData.setUuid(artifact.getUuid());

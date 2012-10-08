@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +40,7 @@ import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.DerivedArtifactsCreationException;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.RepositoryException;
+import org.overlord.sramp.repository.derived.ArtifactDeriverFactory;
 import org.overlord.sramp.repository.jcr.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
@@ -123,22 +123,21 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         }
     }
 
-	/**
-	 * @see org.overlord.sramp.repository.DerivedArtifacts#createDerivedArtifacts(org.overlord.sramp.ArtifactType, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
-	 */
-	@Override
-	public Collection<? extends DerivedArtifactType> createDerivedArtifacts(ArtifactType artifactType,
-			BaseArtifactType artifact) throws DerivedArtifactsCreationException {
-		// TODO use the nodes created by ModeShape sequencing to return the set of derived artifacts
-		return Collections.<DerivedArtifactType>emptySet();
-	}
-
     /**
-     * @see org.overlord.sramp.repository.PersistenceManager#persistDerivedArtifact(org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType)
+     * @see org.overlord.sramp.repository.DerivedArtifacts#deriveArtifacts(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
      */
     @Override
-    public void persistDerivedArtifact(DerivedArtifactType artifact) {
-    	// TODO update the derived artifact with any additional properties
+    public Collection<? extends DerivedArtifactType> deriveArtifacts(BaseArtifactType artifact)
+    		throws DerivedArtifactsCreationException {
+    	ArtifactDeriverFactory.createArtifactDeriver(ArtifactType.valueOf(artifact));
+    	return null;
+    }
+
+    /**
+     * @see org.overlord.sramp.repository.PersistenceManager#persistDerivedArtifacts(java.util.Collection)
+     */
+    @Override
+    public void persistDerivedArtifacts(Collection<? extends DerivedArtifactType> artifacts) throws RepositoryException {
     }
 
     /**

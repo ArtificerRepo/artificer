@@ -40,8 +40,8 @@ import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.mime.MimeTypes;
+import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
@@ -94,7 +94,7 @@ public class ArtifactResource {
 				throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
 						+ "' is a derived type.");
         	}
-        	
+
         	String mimeType = determineMimeType(contentType, fileName, artifactType);
         	artifactType.setMimeType(mimeType);
 
@@ -114,11 +114,10 @@ public class ArtifactResource {
             BaseArtifactType artifact = persistenceManager.persistArtifact(fileName, artifactType, is);
 
             //create the derivedArtifacts
-            Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().createDerivedArtifacts(artifactType, artifact);
+            Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
 
             //persist the derivedArtifacts
-            for (DerivedArtifactType dartifact : dartifacts)
-                persistenceManager.persistDerivedArtifact(dartifact);
+            persistenceManager.persistDerivedArtifacts(dartifacts);
 
             //return the entry containing the s-ramp artifact
             ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();

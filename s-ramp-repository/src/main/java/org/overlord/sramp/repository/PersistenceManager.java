@@ -16,6 +16,7 @@
 package org.overlord.sramp.repository;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 
 import org.overlord.sramp.ArtifactType;
@@ -38,10 +39,10 @@ public interface PersistenceManager {
 
     /**
      * Persists a single derived artifact.
-     * @param artifact the derived artifact to persist
+     * @param artifacts the derived artifacts to persist
 	 * @throws RepositoryException
      */
-    public void persistDerivedArtifact(DerivedArtifactType artifact) throws RepositoryException;
+    public void persistDerivedArtifacts(Collection<? extends DerivedArtifactType> artifacts) throws RepositoryException;
 
 	/**
 	 * Gets a previously persisted artifact by its UUID.
@@ -104,6 +105,6 @@ public interface PersistenceManager {
 	 * @param type
 	 */
     public void printArtifactGraph(String uuid, ArtifactType type);
-    
+
     public void shutdown();
 }
