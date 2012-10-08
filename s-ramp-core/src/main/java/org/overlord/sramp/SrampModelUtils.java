@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
+import org.s_ramp.xmlns._2010.s_ramp.Relationship;
+import org.s_ramp.xmlns._2010.s_ramp.Target;
 
 /**
  * A collection of utilities for dealing with the s-ramp models.
@@ -66,6 +68,52 @@ public class SrampModelUtils {
 			}
 		}
 		return rval;
+	}
+
+	/**
+	 * Adds a new generic {@link Relationship} to the artifact.
+	 * @param artifact
+	 * @param relationshipType
+	 * @param targetUUID
+	 * @return the created {@link Relationship}
+	 */
+	public static Relationship addGenericRelationship(BaseArtifactType artifact, String relationshipType, String targetUUID) {
+		Relationship relationship = null;
+		for (Relationship r : artifact.getRelationship()) {
+			if (r.getRelationshipType().equals(relationshipType)) {
+				relationship = r;
+				break;
+			}
+		}
+		if (relationship == null) {
+			relationship = new Relationship();
+	        relationship.setRelationshipType(relationshipType);
+			artifact.getRelationship().add(relationship);
+		}
+
+		// TODO check for duplicates first?
+		if (targetUUID != null) {
+			Target target = new Target();
+			target.setValue(targetUUID);
+			relationship.getRelationshipTarget().add(target);
+		}
+
+		return relationship;
+	}
+
+	/**
+	 * Gets the generic relationship from the artifact (by type).
+	 * @param artifact the s-ramp artifact
+	 * @param relationshipType the relationship type
+	 * @return the Relationship or null if not found
+	 */
+	public static Relationship getGenericRelationship(BaseArtifactType artifact, String relationshipType) {
+		for (Relationship relationship : artifact.getRelationship()) {
+			if (relationship.getRelationshipType().equals(relationshipType)) {
+				return relationship;
+			}
+		}
+		return null;
 	}
 
 }
