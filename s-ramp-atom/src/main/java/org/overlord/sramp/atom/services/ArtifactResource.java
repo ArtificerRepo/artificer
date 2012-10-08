@@ -117,7 +117,7 @@ public class ArtifactResource {
             Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
 
             //persist the derivedArtifacts
-            persistenceManager.persistDerivedArtifacts(dartifacts);
+            persistenceManager.persistDerivedArtifacts(artifact, dartifacts);
 
             //return the entry containing the s-ramp artifact
             ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();

@@ -15,11 +15,15 @@
  */
 package org.overlord.sramp.repository.derived;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.ArtifactTypeEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
 /**
  * Factory used to create an {@link ArtifactDeriver} for a particular type of artifact.
@@ -34,14 +38,25 @@ public class ArtifactDeriverFactory {
 		derivers.put(ArtifactTypeEnum.WsdlDocument, new WsdlDeriver());
 		derivers.put(ArtifactTypeEnum.PolicyDocument, new PolicyDeriver());
 	}
+	private static ArtifactDeriver nullDeriver = new ArtifactDeriver() {
+		@SuppressWarnings("unchecked")
+		@Override
+		public Collection<? extends DerivedArtifactType> derive(BaseArtifactType artifact) {
+			return Collections.EMPTY_SET;
+		}
+	};
 
 	/**
 	 * Creates an artifact deriver for a specific type of artifact.
 	 * @param artifactType type of s-ramp artifact
-	 * @return an artifact deriver, or null if one is not available
+	 * @return an artifact deriver
 	 */
 	public final static ArtifactDeriver createArtifactDeriver(ArtifactType artifactType) {
-		return derivers.get(artifactType.getArtifactType());
+		ArtifactDeriver deriver = derivers.get(artifactType.getArtifactType());
+		if (deriver == null) {
+			deriver = nullDeriver;
+		}
+		return deriver;
 	}
 
 }

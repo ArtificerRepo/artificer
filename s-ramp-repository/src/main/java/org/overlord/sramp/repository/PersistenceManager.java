@@ -39,10 +39,11 @@ public interface PersistenceManager {
 
     /**
      * Persists a single derived artifact.
+     * @param sourceArtifact the source of the derived content
      * @param artifacts the derived artifacts to persist
-	 * @throws RepositoryException
+     * @throws RepositoryException
      */
-    public void persistDerivedArtifacts(Collection<? extends DerivedArtifactType> artifacts) throws RepositoryException;
+    public void persistDerivedArtifacts(BaseArtifactType sourceArtifact, Collection<? extends DerivedArtifactType> artifacts) throws RepositoryException;
 
 	/**
 	 * Gets a previously persisted artifact by its UUID.

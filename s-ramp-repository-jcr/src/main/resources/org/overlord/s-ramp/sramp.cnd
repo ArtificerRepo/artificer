@@ -72,3 +72,10 @@
 
 [sramp:relatedTo] mixin
 - * (weakreference) multiple
+
+// -------------------------------------------------------
+// S-RAMP XSD Model Artifacts
+// -------------------------------------------------------
+[sramp:elementDeclaration] > sramp:derivedArtifactType
+- sramp:ncName (string)
+- sramp:namespace (string)

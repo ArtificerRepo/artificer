@@ -165,7 +165,7 @@ public class BatchResource {
 		// Create the derived artifacts
 		Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
 		// Persist the derived artifacts
-	    persistenceManager.persistDerivedArtifacts(dartifacts);
+	    persistenceManager.persistDerivedArtifacts(artifact, dartifacts);
 
 		// Update the artifact with data from "metaData" (included *.atom file)
 		metaData.setUuid(artifact.getUuid());

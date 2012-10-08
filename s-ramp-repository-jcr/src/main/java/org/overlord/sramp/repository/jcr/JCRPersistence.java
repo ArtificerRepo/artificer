@@ -33,6 +33,7 @@ import javax.jcr.Value;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.modeshape.jcr.JcrRepository.QueryLanguage;
 import org.modeshape.jcr.api.JcrTools;
 import org.overlord.sramp.ArtifactType;
@@ -40,6 +41,7 @@ import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.DerivedArtifactsCreationException;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.RepositoryException;
+import org.overlord.sramp.repository.derived.ArtifactDeriver;
 import org.overlord.sramp.repository.derived.ArtifactDeriverFactory;
 import org.overlord.sramp.repository.jcr.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
@@ -89,7 +91,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
 
             String jcrMixinName = artifactType.getArtifactType().getApiType().value();
-            jcrMixinName = JCRConstants.SRAMP_ + jcrMixinName.substring(0,1).toLowerCase() + jcrMixinName.substring(1);
+            jcrMixinName = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrMixinName);
             artifactNode.addMixin(jcrMixinName);
             //BaseArtifactType
             artifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
@@ -129,15 +131,57 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     @Override
     public Collection<? extends DerivedArtifactType> deriveArtifacts(BaseArtifactType artifact)
     		throws DerivedArtifactsCreationException {
-    	ArtifactDeriverFactory.createArtifactDeriver(ArtifactType.valueOf(artifact));
-    	return null;
+    	ArtifactDeriver deriver = ArtifactDeriverFactory.createArtifactDeriver(ArtifactType.valueOf(artifact));
+    	return deriver.derive(artifact);
     }
 
     /**
-     * @see org.overlord.sramp.repository.PersistenceManager#persistDerivedArtifacts(java.util.Collection)
+     * @see org.overlord.sramp.repository.PersistenceManager#persistDerivedArtifacts(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.util.Collection)
      */
     @Override
-    public void persistDerivedArtifacts(Collection<? extends DerivedArtifactType> artifacts) throws RepositoryException {
+    public void persistDerivedArtifacts(BaseArtifactType sourceArtifact,
+    		Collection<? extends DerivedArtifactType> artifacts) throws RepositoryException {
+        Session session = null;
+        try {
+            session = JCRRepository.getSession();
+            JcrTools tools = new JcrTools();
+
+            // Get the JCR node for the source artifact
+            ArtifactType sourceArtifactType = ArtifactType.valueOf(sourceArtifact);
+			String sourceArtifactPath = MapToJCRPath.getArtifactPath(sourceArtifact.getUuid(), sourceArtifactType);
+            if (!session.nodeExists(sourceArtifactPath)) {
+            	throw new RepositoryException("Failed to find JCR node for source artifact with UUID: " + sourceArtifact.getUuid());
+            }
+            Node sourceArtifactNode = session.getNode(sourceArtifactPath);
+
+            // Persist each of the derived nodes
+            for (DerivedArtifactType derivedArtifact : artifacts) {
+                String uuid = UUID.randomUUID().toString();
+                ArtifactType derivedArtifactType = ArtifactType.valueOf(derivedArtifact);
+                String jcrNodeName = derivedArtifactType.getArtifactType().getApiType().value();
+                jcrNodeName = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrNodeName);
+
+                Node derivedArtifactNode = tools.findOrCreateChild(sourceArtifactNode, derivedArtifact.getName(), jcrNodeName);
+
+                derivedArtifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
+                derivedArtifactNode.setProperty(JCRConstants.SRAMP_NAME, derivedArtifact.getName());
+                derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, derivedArtifactType.getArtifactType().getModel());
+                derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, derivedArtifactType.getArtifactType().getType());
+
+                log.debug("Successfully saved derived artifact {} to node={}", derivedArtifact.getName(), uuid);
+            }
+
+            session.save();
+            if (log.isDebugEnabled()) {
+                printArtifactGraph(sourceArtifact.getUuid(), sourceArtifactType);
+            }
+        } catch (RepositoryException e) {
+        	throw e;
+        } catch (Throwable t) {
+        	throw new RepositoryException(t);
+        } finally {
+            JCRRepository.logoutQuietly(session);
+        }
     }
 
     /**
