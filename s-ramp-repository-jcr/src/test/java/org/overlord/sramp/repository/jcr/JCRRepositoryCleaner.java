@@ -45,15 +45,11 @@ public class JCRRepositoryCleaner {
             Node artifactContentRoot = getNode(session, "/artifact");
             if (artifactContentRoot != null) {
 	        	artifactContentRoot.remove();
-	        	System.out.println("Removed /artifact tree (cleaned)");
             }
-
             Node srampRoot = getNode(session, "/s-ramp");
             if (srampRoot != null) {
 	        	srampRoot.remove();
-	        	System.out.println("Removed /s-ramp tree (cleaned)");
             }
-
         	session.save();
 		} catch (PathNotFoundException e) {
 			// The node doesn't exist - so no worries.

@@ -33,7 +33,7 @@ import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
 public abstract class AbstractResourceTest extends BaseResourceTest {
 
 	@BeforeClass
-	public static void setUp() throws Exception {
+	public static void setUpResTest() throws Exception {
 		// use the in-memory config for unit tests
 		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
 				+ "/META-INF/modeshape-configs/inmemory-sramp-config.json");
