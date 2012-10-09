@@ -30,7 +30,7 @@ public interface DerivedArtifacts {
 	 *
 	 * @param artifact the original artifact
 	 */
-	public Collection<? extends DerivedArtifactType> deriveArtifacts(BaseArtifactType artifact)
+	public Collection<DerivedArtifactType> deriveArtifacts(BaseArtifactType artifact)
 			throws DerivedArtifactsCreationException;
 
 }

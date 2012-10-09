@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.repository.derived;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class ArtifactDeriverFactory {
 	private static ArtifactDeriver nullDeriver = new ArtifactDeriver() {
 		@SuppressWarnings("unchecked")
 		@Override
-		public Collection<? extends DerivedArtifactType> derive(BaseArtifactType artifact) {
+		public Collection<DerivedArtifactType> derive(BaseArtifactType artifact, InputStream content) {
 			return Collections.EMPTY_SET;
 		}
 	};

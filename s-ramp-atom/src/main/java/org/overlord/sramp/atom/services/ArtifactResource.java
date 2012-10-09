@@ -114,7 +114,7 @@ public class ArtifactResource {
             BaseArtifactType artifact = persistenceManager.persistArtifact(fileName, artifactType, is);
 
             //create the derivedArtifacts
-            Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
+            Collection<DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
 
             //persist the derivedArtifacts
             persistenceManager.persistDerivedArtifacts(artifact, dartifacts);

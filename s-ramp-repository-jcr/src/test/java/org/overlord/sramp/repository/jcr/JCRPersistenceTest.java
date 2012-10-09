@@ -18,7 +18,6 @@ package org.overlord.sramp.repository.jcr;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -145,41 +144,6 @@ public class JCRPersistenceTest {
         Assert.assertEquals(artifact.getName(), artifact2.getName());
         Assert.assertEquals(artifact.getVersion(), artifact2.getVersion());
         Assert.assertEquals(artifact.getLastModifiedTimestamp(), artifact2.getLastModifiedTimestamp());
-    }
-
-    /**
-     * Tests the getArtifacts method on the persistence manager.
-     * @throws Exception
-     */
-    @Test
-    public void testGetArtifacts() throws Exception {
-    	// First, add some artifacts.
-        String artifactFileName = "PO.xsd";
-        InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName + "-1", ArtifactType.XsdDocument, POXsd);
-        Assert.assertNotNull(artifact);
-        String uuid1 = artifact.getUuid();
-		log.info("persisted PO.xsd to JCR, returned artifact uuid=" + uuid1);
-
-        POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        artifact = persistenceManager.persistArtifact(artifactFileName + "-2", ArtifactType.XsdDocument, POXsd);
-        Assert.assertNotNull(artifact);
-        String uuid2 = artifact.getUuid();
-		log.info("persisted PO.xsd (again) to JCR, returned artifact uuid=" + uuid2);
-
-		List<BaseArtifactType> artifacts = persistenceManager.getArtifacts(ArtifactType.XsdDocument);
-		Assert.assertNotNull(artifacts);
-		Assert.assertTrue("Wrong number of artifacts returned (should have at least 2).", artifacts.size() >= 2);
-		boolean foundUuid1 = false;
-		boolean foundUuid2 = false;
-		for (BaseArtifactType arty : artifacts) {
-			if (arty.getUuid().equals(uuid1))
-				foundUuid1 = true;
-			if (arty.getUuid().equals(uuid2))
-				foundUuid2 = true;
-		}
-		Assert.assertTrue("Failed to find UUID1.", foundUuid1);
-		Assert.assertTrue("Failed to find UUID2.", foundUuid2);
     }
 
     /**

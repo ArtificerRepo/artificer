@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.repository.derived;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -42,11 +44,11 @@ public class PolicyDeriver implements ArtifactDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.derived.ArtifactDeriver#derive(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
+	 * @see org.overlord.sramp.repository.derived.ArtifactDeriver#derive(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
 	 */
 	@Override
-	public Collection<? extends DerivedArtifactType> derive(BaseArtifactType artifact) {
-		Collection<? extends DerivedArtifactType> derivedArtifacts = new LinkedList<DerivedArtifactType>();
+	public Collection<DerivedArtifactType> derive(BaseArtifactType artifact, InputStream content) throws IOException {
+		Collection<DerivedArtifactType> derivedArtifacts = new LinkedList<DerivedArtifactType>();
 		return derivedArtifacts;
 	}
 

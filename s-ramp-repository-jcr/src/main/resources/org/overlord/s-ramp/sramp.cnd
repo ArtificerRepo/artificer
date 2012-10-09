@@ -55,12 +55,6 @@
 [sramp:xmlDocument] > sramp:documentArtifactType mixin
 - sramp:contentEncoding (string)
 
-[sramp:xsdDocument] > sramp:xmlDocument mixin
-
-[sramp:wsdlDocument] > sramp:xmlDocument mixin
-
-[sramp:policyDocument] > sramp:xmlDocument mixin
-
 [sramp:derivedArtifactType] > sramp:baseArtifactType abstract mixin
 - sramp:relatedDocument (reference) < 'sramp:documentArtifactType'
 
@@ -73,9 +67,37 @@
 [sramp:relatedTo] mixin
 - * (weakreference) multiple
 
+
 // -------------------------------------------------------
 // S-RAMP XSD Model Artifacts
 // -------------------------------------------------------
-[sramp:elementDeclaration] > sramp:derivedArtifactType
+[sramp:xsdDerivedArtifactType] > sramp:derivedArtifactType abstract
 - sramp:ncName (string)
 - sramp:namespace (string)
+
+[sramp:elementDeclaration] > sramp:xsdDerivedArtifactType
+
+[sramp:attributeDeclaration] > sramp:xsdDerivedArtifactType
+
+[sramp:simpleTypeDeclaration] > sramp:xsdDerivedArtifactType
+
+[sramp:complexTypeDeclaration] > sramp:xsdDerivedArtifactType
+
+[sramp:xsdDocument] > sramp:xmlDocument mixin
++ * (sramp:elementDeclaration)
++ * (sramp:attributeDeclaration)
++ * (sramp:simpleTypeDeclaration)
++ * (sramp:complexTypeDeclaration)
+
+
+// -------------------------------------------------------
+// S-RAMP WSDL Model Artifacts
+// -------------------------------------------------------
+[sramp:wsdlDocument] > sramp:xmlDocument mixin
+
+
+// -------------------------------------------------------
+// S-RAMP Policy Model Artifacts
+// -------------------------------------------------------
+[sramp:policyDocument] > sramp:xmlDocument mixin
+

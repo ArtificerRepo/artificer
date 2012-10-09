@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.repository.derived;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -33,8 +35,11 @@ public interface ArtifactDeriver {
 	 * Given an artifact, this method will return a collection of derived content
 	 * for it.
 	 * @param artifact the artifact to derive
+	 * @param contentStream the artifact content
 	 * @return derived content
+	 * @throws IOException
 	 */
-	public Collection<? extends DerivedArtifactType> derive(BaseArtifactType artifact);
+	public Collection<DerivedArtifactType> derive(BaseArtifactType artifact, InputStream contentStream)
+			throws IOException;
 
 }

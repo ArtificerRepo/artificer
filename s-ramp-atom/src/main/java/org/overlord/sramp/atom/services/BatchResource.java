@@ -163,7 +163,7 @@ public class BatchResource {
 		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 		BaseArtifactType artifact = persistenceManager.persistArtifact(metaData.getName(), artifactType, contentStream);
 		// Create the derived artifacts
-		Collection<? extends DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
+		Collection<DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
 		// Persist the derived artifacts
 	    persistenceManager.persistDerivedArtifacts(artifact, dartifacts);
 
