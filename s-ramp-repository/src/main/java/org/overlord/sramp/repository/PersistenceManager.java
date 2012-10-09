@@ -16,7 +16,7 @@
 package org.overlord.sramp.repository;
 
 import java.io.InputStream;
-import java.util.List;
+import java.util.Collection;
 
 import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -38,10 +38,11 @@ public interface PersistenceManager {
 
     /**
      * Persists a single derived artifact.
-     * @param artifact the derived artifact to persist
-	 * @throws RepositoryException
+     * @param sourceArtifact the source of the derived content
+     * @param artifacts the derived artifacts to persist
+     * @throws RepositoryException
      */
-    public void persistDerivedArtifact(DerivedArtifactType artifact) throws RepositoryException;
+    public void persistDerivedArtifacts(BaseArtifactType sourceArtifact, Collection<DerivedArtifactType> artifacts) throws RepositoryException;
 
 	/**
 	 * Gets a previously persisted artifact by its UUID.
@@ -91,19 +92,11 @@ public interface PersistenceManager {
 	public void deleteArtifact(String uuid, ArtifactType artifactType) throws RepositoryException;
 
 	/**
-	 * Gets a list of S-RAMP artifacts of the given type.
-	 * @param type the S-RAMP artifact type
-	 * @return a {@link List} of S-RAMP artifacts
-	 * @throws RepositoryException
-	 */
-	public List<BaseArtifactType> getArtifacts(ArtifactType type) throws RepositoryException;
-
-	/**
 	 * TODO remove this
 	 * @param uuid
 	 * @param type
 	 */
     public void printArtifactGraph(String uuid, ArtifactType type);
-    
+
     public void shutdown();
 }

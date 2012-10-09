@@ -68,18 +68,18 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	protected void visitBase(BaseArtifactType artifact) {
 		try {
+			DatatypeFactory dtFactory = DatatypeFactory.newInstance();
 			ArtifactType artifactType = ArtifactType.valueOf(artifact);
 			BaseArtifactEnum apiType = artifactType.getArtifactType().getApiType();
 			artifact.setArtifactType(apiType);
 
 			// First map in the standard s-ramp meta-data
 			artifact.setCreatedBy(getProperty(jcrNode, "jcr:createdBy"));
-			XMLGregorianCalendar createdTS;
-			createdTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(getProperty(jcrNode, "jcr:created"));
+			XMLGregorianCalendar createdTS = dtFactory.newXMLGregorianCalendar(getProperty(jcrNode, "jcr:created"));
 			artifact.setCreatedTimestamp(createdTS);
 			artifact.setDescription(getProperty(jcrNode, "sramp:description"));
 			artifact.setLastModifiedBy(getProperty(jcrNode, "jcr:lastModifiedBy"));
-			XMLGregorianCalendar modifiedTS = DatatypeFactory.newInstance().newXMLGregorianCalendar(getProperty(jcrNode, "jcr:lastModified"));
+			XMLGregorianCalendar modifiedTS = dtFactory.newXMLGregorianCalendar(getProperty(jcrNode, "jcr:lastModified"));
 			artifact.setLastModifiedTimestamp(modifiedTS);
 			artifact.setName(getProperty(jcrNode, "sramp:name"));
 			artifact.setUuid(getProperty(jcrNode, "sramp:uuid"));
