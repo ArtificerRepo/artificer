@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -30,6 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.junit.Assert;
 import org.junit.Test;
 import org.overlord.sramp.SrampConstants;
@@ -356,6 +359,39 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}
+	}
+
+	/**
+	 * Tests that artifact derivation is happening.
+	 * @throws Exception
+	 */
+	@Test
+	public void testArtifactDerivation() throws Exception {
+		// Add the PDF to the repository
+		String artifactFileName = "PO.xsd";
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		try {
+			ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument"));
+			request.body("application/xml", contentStream);
+			ClientResponse<Entry> response = request.post(Entry.class);
+			response.getEntity();
+		} finally {
+			IOUtils.closeQuietly(contentStream);
+		}
+
+		// Now let's query for the derived artifacts
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/ElementDeclaration"));
+        ClientResponse<Feed> response = request.get(Feed.class);
+        Feed feed = response.getEntity();
+        Assert.assertEquals(2, feed.getEntries().size());
+        Map<String, Entry> entryMap = new HashMap<String, Entry>();
+        for (Entry entry : feed.getEntries()) {
+        	entryMap.put(entry.getTitle(), entry);
+        }
+        Entry purchaseOrder = entryMap.get("purchaseOrder");
+        Assert.assertNotNull(purchaseOrder);
+        Entry comment = entryMap.get("comment");
+        Assert.assertNotNull(comment);
 	}
 
 	/**

@@ -20,10 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import javax.jcr.Binary;
@@ -34,6 +31,7 @@ import javax.jcr.Value;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.modeshape.jcr.JcrRepository.QueryLanguage;
 import org.modeshape.jcr.api.JcrTools;
 import org.overlord.sramp.ArtifactType;
@@ -41,6 +39,8 @@ import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.DerivedArtifactsCreationException;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.RepositoryException;
+import org.overlord.sramp.repository.derived.ArtifactDeriver;
+import org.overlord.sramp.repository.derived.ArtifactDeriverFactory;
 import org.overlord.sramp.repository.jcr.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
+    private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
 
     /**
      * Default constructor.
@@ -89,7 +89,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
 
             String jcrMixinName = artifactType.getArtifactType().getApiType().value();
-            jcrMixinName = JCRConstants.SRAMP_ + jcrMixinName.substring(0,1).toLowerCase() + jcrMixinName.substring(1);
+            jcrMixinName = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrMixinName);
             artifactNode.addMixin(jcrMixinName);
             //BaseArtifactType
             artifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
@@ -123,22 +123,79 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         }
     }
 
-	/**
-	 * @see org.overlord.sramp.repository.DerivedArtifacts#createDerivedArtifacts(org.overlord.sramp.ArtifactType, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
-	 */
-	@Override
-	public Collection<? extends DerivedArtifactType> createDerivedArtifacts(ArtifactType artifactType,
-			BaseArtifactType artifact) throws DerivedArtifactsCreationException {
-		// TODO use the nodes created by ModeShape sequencing to return the set of derived artifacts
-		return Collections.<DerivedArtifactType>emptySet();
-	}
-
     /**
-     * @see org.overlord.sramp.repository.PersistenceManager#persistDerivedArtifact(org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType)
+     * @see org.overlord.sramp.repository.DerivedArtifacts#deriveArtifacts(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
      */
     @Override
-    public void persistDerivedArtifact(DerivedArtifactType artifact) {
-    	// TODO update the derived artifact with any additional properties
+    public Collection<DerivedArtifactType> deriveArtifacts(BaseArtifactType artifact)
+    		throws DerivedArtifactsCreationException {
+    	InputStream content = null;
+    	try {
+    		content = getArtifactContent(artifact.getUuid(), ArtifactType.valueOf(artifact));
+	    	ArtifactDeriver deriver = ArtifactDeriverFactory.createArtifactDeriver(ArtifactType.valueOf(artifact));
+	    	return deriver.derive(artifact, content);
+    	} catch (RepositoryException e) {
+			throw new DerivedArtifactsCreationException(e);
+		} catch (IOException e) {
+			throw new DerivedArtifactsCreationException(e);
+		} finally {
+    		IOUtils.closeQuietly(content);
+    	}
+    }
+
+    /**
+     * @see org.overlord.sramp.repository.PersistenceManager#persistDerivedArtifacts(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.util.Collection)
+     */
+    @Override
+    public void persistDerivedArtifacts(BaseArtifactType sourceArtifact,
+    		Collection<DerivedArtifactType> artifacts) throws RepositoryException {
+        Session session = null;
+        try {
+            session = JCRRepository.getSession();
+            JcrTools tools = new JcrTools();
+
+            // Get the JCR node for the source artifact
+            ArtifactType sourceArtifactType = ArtifactType.valueOf(sourceArtifact);
+			String sourceArtifactPath = MapToJCRPath.getArtifactPath(sourceArtifact.getUuid(), sourceArtifactType);
+            if (!session.nodeExists(sourceArtifactPath)) {
+            	throw new RepositoryException("Failed to find JCR node for source artifact with UUID: " + sourceArtifact.getUuid());
+            }
+            Node sourceArtifactNode = session.getNode(sourceArtifactPath);
+
+            // Persist each of the derived nodes
+            JCRReferenceFactoryImpl referenceFactory = new JCRReferenceFactoryImpl(session);
+            for (DerivedArtifactType derivedArtifact : artifacts) {
+                String uuid = UUID.randomUUID().toString();
+                ArtifactType derivedArtifactType = ArtifactType.valueOf(derivedArtifact);
+                String jcrNodeName = derivedArtifactType.getArtifactType().getApiType().value();
+                jcrNodeName = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrNodeName);
+
+                Node derivedArtifactNode = tools.findOrCreateChild(sourceArtifactNode, derivedArtifact.getName(), jcrNodeName);
+
+                derivedArtifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
+                derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, derivedArtifactType.getArtifactType().getModel());
+                derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, derivedArtifactType.getArtifactType().getType());
+
+				ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(derivedArtifactNode, referenceFactory);
+                ArtifactVisitorHelper.visitArtifact(visitor, derivedArtifact);
+                if (visitor.hasError())
+                	throw visitor.getError();
+
+                log.debug("Successfully saved derived artifact {} to node={}", derivedArtifact.getName(), uuid);
+            }
+
+            session.save();
+
+            if (log.isDebugEnabled()) {
+                printArtifactGraph(sourceArtifact.getUuid(), sourceArtifactType);
+            }
+        } catch (RepositoryException e) {
+        	throw e;
+        } catch (Throwable t) {
+        	throw new RepositoryException(t);
+        } finally {
+            JCRRepository.logoutQuietly(session);
+        }
     }
 
     /**
@@ -202,31 +259,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             if (artifactNode == null) {
             	throw new RepositoryException("No artifact found with UUID: " + artifact.getUuid());
             }
-            final Session s = session;
-            ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(artifactNode, new JCRReferenceFactory() {
-            	@Override
-            	public Value createReference(String uuid) {
-					try {
-			            javax.jcr.query.QueryManager jcrQueryManager = s.getWorkspace().getQueryManager();
-			            String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", uuid);
-			            javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, QueryLanguage.JCR_SQL2);
-			            QueryResult jcrQueryResult = jcrQuery.execute();
-			            NodeIterator jcrNodes = jcrQueryResult.getNodes();
-			            if (!jcrNodes.hasNext()) {
-			            	throw new Exception("No artifact found with UUID: " + uuid);
-			            }
-			            if (jcrNodes.getSize() > 1) {
-			            	throw new Exception("Too many artifacts found with UUID: " + uuid);
-			            }
-			            Node node = jcrNodes.nextNode();
-			            return s.getValueFactory().createValue(node, false);
-					} catch (Exception e) {
-						// TODO log this exception
-						log.error("Error creating JCR reference to S-RAMP artifact with UUID: " + uuid, e);
-					}
-					return null;
-				}
-			});
+            ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(artifactNode, new JCRReferenceFactoryImpl(session));
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
             if (visitor.hasError())
             	throw visitor.getError();
@@ -297,65 +330,6 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         }
     }
 
-    /**
-     * @see org.overlord.sramp.repository.PersistenceManager#getArtifacts(org.overlord.sramp.ArtifactType)
-     */
-    @Override
-    public List<BaseArtifactType> getArtifacts(ArtifactType type) throws RepositoryException {
-    	List<BaseArtifactType> artifacts = new ArrayList<BaseArtifactType>();
-        Session session = null;
-        String artifactTypePath = MapToJCRPath.getArtifactTypePath(type);
-
-        try {
-            session = JCRRepository.getSession();
-            Node artifactNode = session.getNode(artifactTypePath);
-            List<Node> collectedNodes = new ArrayList<Node>();
-            getNodes(artifactNode, collectedNodes);
-            for (Node node : collectedNodes) {
-                BaseArtifactType artifact = JCRNodeToArtifactFactory.createArtifact(session, node, type);
-                artifacts.add(artifact);
-			}
-            return artifacts;
-        } catch (RepositoryException re) {
-        	throw re;
-        } catch (Throwable t) {
-        	throw new RepositoryException(t);
-        } finally {
-            JCRRepository.logoutQuietly(session);
-        }
-    }
-
-    /**
-     * Recursive method for traversing the tree of nodes looking for nodes of a
-     * particular type.
-	 * @param node the parent {@link Node} to navigate
-	 * @return {@link List} of nodes matching the type
-     * @throws Exception
-	 */
-	private void getNodes(Node node, List<Node> collectedNodes) throws Exception {
-        NodeIterator nodeIter = node.getNodes();
-        while (nodeIter.hasNext()) {
-        	Node nextNode = nodeIter.nextNode();
-        	if (isArtifactNode(nextNode))
-        		collectedNodes.add(nextNode);
-        	if (nextNode.hasNodes())
-        		getNodes(nextNode, collectedNodes);
-        }
-	}
-
-	/**
-	 * Returns true if the given node is an S-RAMP artifact.
-	 * @param node a JCR node
-	 * @return boolean indicating if the node is an artifact
-	 * @throws Exception
-	 */
-	private boolean isArtifactNode(Node node) throws Exception {
-    	if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE)) {
-    		return true;
-		}
-		return false;
-	}
-
 	/**
      * @see org.overlord.sramp.repository.PersistenceManager#printArtifactGraph(java.lang.String, org.overlord.sramp.ArtifactType)
      */
@@ -405,6 +379,47 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 	@Override
 	public void shutdown() {
 	    JCRRepository.shutdown();
+	}
+
+	/**
+	 * An impl of a JCR reference factory.
+	 */
+	private static class JCRReferenceFactoryImpl implements JCRReferenceFactory {
+
+		private Session session;
+
+		/**
+		 * Constructor.
+		 * @param session
+		 */
+		public JCRReferenceFactoryImpl(Session session) {
+			this.session = session;
+		}
+
+    	/**
+    	 * @see org.overlord.sramp.repository.jcr.ArtifactToJCRNodeVisitor.JCRReferenceFactory#createReference(java.lang.String)
+    	 */
+    	@Override
+    	public Value createReference(String uuid) {
+			try {
+	            javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
+	            String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", uuid);
+	            javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, QueryLanguage.JCR_SQL2);
+	            QueryResult jcrQueryResult = jcrQuery.execute();
+	            NodeIterator jcrNodes = jcrQueryResult.getNodes();
+	            if (!jcrNodes.hasNext()) {
+	            	throw new Exception("No artifact found with UUID: " + uuid);
+	            }
+	            if (jcrNodes.getSize() > 1) {
+	            	throw new Exception("Too many artifacts found with UUID: " + uuid);
+	            }
+	            Node node = jcrNodes.nextNode();
+	            return session.getValueFactory().createValue(node, false);
+			} catch (Exception e) {
+				log.error("Error creating JCR reference to S-RAMP artifact with UUID: " + uuid, e);
+			}
+			return null;
+		}
 	}
 
 }

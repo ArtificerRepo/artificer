@@ -25,6 +25,6 @@ public class DerivedArtifactsFactory {
         for (DerivedArtifacts manager : ServiceLoader.load(DerivedArtifacts.class)) {
             return manager;
         }
-        return null;
+        throw new RuntimeException("Failed to find a DerivedArtifacts provider.");
     }
 }

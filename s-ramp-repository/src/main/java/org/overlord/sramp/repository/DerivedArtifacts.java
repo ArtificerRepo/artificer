@@ -17,23 +17,20 @@ package org.overlord.sramp.repository;
 
 import java.util.Collection;
 
-import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
-
 
 /**
  * A service that can rip apart an artifact (previously persisted) and create all of its Derived Artifacts.
  */
 public interface DerivedArtifacts {
 
-    /**
-     * Create the derived artifacts from the original artifact.
-     * 
-     * @param artifactType the type of the original artifact
-     * @param artifact the original artifact
-     */
-    public Collection<? extends DerivedArtifactType> createDerivedArtifacts(ArtifactType artifactType, BaseArtifactType artifact) 
-    		throws DerivedArtifactsCreationException;
+	/**
+	 * Create the derived artifacts from the original artifact.
+	 *
+	 * @param artifact the original artifact
+	 */
+	public Collection<DerivedArtifactType> deriveArtifacts(BaseArtifactType artifact)
+			throws DerivedArtifactsCreationException;
 
 }
