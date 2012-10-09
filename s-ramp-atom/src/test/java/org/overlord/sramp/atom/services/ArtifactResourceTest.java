@@ -29,7 +29,6 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
@@ -39,6 +38,9 @@ import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
+import org.overlord.sramp.atom.client.ClientRequest;
+import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
@@ -75,10 +77,14 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		request.header("Slug", artifactFileName);
 		request.body(MediaType.APPLICATION_XML, xmltext);
 
-		ClientResponse<String> response = request.post(String.class);
-		Assert.assertEquals(500, response.getStatus());
-		String stack = response.getEntity();
-		Assert.assertTrue(stack.contains("Failed to create artifact because 'ElementDeclaration' is a derived type."));
+		try {
+			request.post(String.class);
+			Assert.fail("Expected an error here.");
+		} catch (SrampAtomException e) {
+			Assert.assertEquals("Failed to create artifact because 'ElementDeclaration' is a derived type.", e.getMessage());
+			String stack = SrampAtomExceptionProvider.getRootStackTrace(e);
+			Assert.assertTrue(stack.contains("org.overlord.sramp.atom.services.ArtifactResource.create"));
+		}
 	}
 
 	/**
@@ -602,10 +608,12 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		String uuid = entryId.toString();
 
 		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
-		ClientResponse<String> response = request.get(String.class);
-
-		String stacktrace = response.getEntity();
-		Assert.assertTrue(stacktrace.contains("Artifact not found."));
+		try {
+			request.get(String.class);
+			Assert.fail("Expected an 'Artifact not found.' error here.");
+		} catch (SrampAtomException e) {
+			Assert.assertEquals("Artifact not found.", e.getMessage());
+		}
 	}
 
 }

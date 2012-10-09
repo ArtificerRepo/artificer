@@ -36,8 +36,6 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 /**
  * Models the archive format defined in the S-RAMP Atom Binding document.
  *
- * TODO support plain atom:entry files (*.atom) representing nondocument based artifacts (no content)
- *
  * @author eric.wittmann@redhat.com
  */
 public class SrampArchive {

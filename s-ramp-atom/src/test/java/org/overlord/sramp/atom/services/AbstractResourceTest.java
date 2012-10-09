@@ -19,8 +19,8 @@ import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
+import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
@@ -44,7 +44,7 @@ public abstract class AbstractResourceTest extends BaseResourceTest {
 		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
 		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);
 
-		deployment.getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
+		deployment.getProviderFactory().registerProvider(SrampAtomExceptionProvider.class);
 		deployment.getProviderFactory().registerProvider(HttpResponseProvider.class);
 	}
 

@@ -28,7 +28,6 @@ import org.jboss.resteasy.plugins.providers.atom.app.AppService;
 import org.jboss.resteasy.plugins.providers.atom.app.AppWorkspace;
 import org.junit.Assert;
 import org.junit.Test;
-import org.overlord.sramp.atom.models.CoreModel;
 
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>

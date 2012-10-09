@@ -37,8 +37,9 @@ import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
+import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
+import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.overlord.sramp.atom.services.ArtifactResource;
 import org.overlord.sramp.atom.services.BatchResource;
 import org.overlord.sramp.atom.services.FeedResource;
@@ -62,7 +63,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
 				+ "/META-INF/modeshape-configs/inmemory-sramp-config.json");
 
-		deployment.getProviderFactory().registerProvider(SrampAtomExceptionMapper.class);
+		deployment.getProviderFactory().registerProvider(SrampAtomExceptionProvider.class);
 		deployment.getProviderFactory().registerProvider(HttpResponseProvider.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
@@ -233,10 +234,8 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		try {
 			Feed feed = client.query("12345", 0, 20, "name", false);
 			fail("Expected a remote exception from the s-ramp server, but got: " + feed);
-		} catch (SrampServerException e) {
-			String remoteTrace = e.getRemoteStackTrace();
-			Assert.assertNotNull(remoteTrace);
-			Assert.assertTrue(remoteTrace.startsWith("org.overlord.sramp.query.xpath.XPathParserException: Invalid artifact set (step 2)."));
+		} catch (SrampAtomException e) {
+			Assert.assertEquals("Invalid artifact set (step 2).", e.getMessage());
 		}
 	}
 

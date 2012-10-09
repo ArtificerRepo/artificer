@@ -22,12 +22,12 @@ import java.io.StringReader;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.app.AppCollection;
 import org.jboss.resteasy.plugins.providers.atom.app.AppService;
 import org.junit.Assert;
 import org.junit.Test;
+import org.overlord.sramp.atom.client.ClientRequest;
 
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>

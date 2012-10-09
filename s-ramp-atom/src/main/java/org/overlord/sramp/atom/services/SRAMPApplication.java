@@ -20,8 +20,8 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
+import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.overlord.sramp.atom.services.brms.BrmsResource;
 
 /**
@@ -46,7 +46,7 @@ public class SRAMPApplication extends Application {
 		singletons.add(new BatchResource());
 
 		classes.add(HttpResponseProvider.class);
-		classes.add(SrampAtomExceptionMapper.class);
+		classes.add(SrampAtomExceptionProvider.class);
 	}
 
 	@Override
