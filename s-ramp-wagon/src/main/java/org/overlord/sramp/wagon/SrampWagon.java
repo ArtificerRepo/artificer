@@ -51,9 +51,9 @@ import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.archive.SrampArchiveException;
+import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
-import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.client.jar.DefaultMetaDataFactory;
 import org.overlord.sramp.client.jar.DiscoveredArtifact;
 import org.overlord.sramp.client.jar.JarToSrampArchive;
@@ -439,9 +439,9 @@ public class SrampWagon extends StreamWagon {
 	 * @param client
 	 * @param parentUUID
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 */
-	private void cleanExpandedArtifacts(SrampAtomApiClient client, String parentUUID) throws SrampServerException, SrampClientException {
+	private void cleanExpandedArtifacts(SrampAtomApiClient client, String parentUUID) throws SrampAtomException, SrampClientException {
 		String query = String.format("/s-ramp[@maven.parent-uuid = '%1$s']", parentUUID);
 		Feed feed = client.query(query, 0, 200, "name", true);
 		for (Entry entry : feed.getEntries()) {
@@ -490,10 +490,11 @@ public class SrampWagon extends StreamWagon {
 	 * @param gavInfo
 	 * @return an s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 * @throws JAXBException
 	 */
-	private BaseArtifactType findExistingArtifact(SrampAtomApiClient client, MavenGavInfo gavInfo) throws SrampServerException, SrampClientException, JAXBException {
+	private BaseArtifactType findExistingArtifact(SrampAtomApiClient client, MavenGavInfo gavInfo)
+			throws SrampAtomException, SrampClientException, JAXBException {
 		BaseArtifactType artifact = findExistingArtifactByGAV(client, gavInfo);
 		if (artifact == null)
 			artifact = findExistingArtifactByUniversal(client, gavInfo);
@@ -506,11 +507,11 @@ public class SrampWagon extends StreamWagon {
 	 * @param gavInfo
 	 * @return an s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 * @throws JAXBException
 	 */
 	private BaseArtifactType findExistingArtifactByGAV(SrampAtomApiClient client, MavenGavInfo gavInfo)
-			throws SrampServerException, SrampClientException, JAXBException {
+			throws SrampAtomException, SrampClientException, JAXBException {
 		String query = null;
 		// Search by classifier if we have one...
 		if (gavInfo.getClassifier() == null) {
@@ -551,11 +552,11 @@ public class SrampWagon extends StreamWagon {
 	 * @param gavInfo
 	 * @return an existing s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 * @throws JAXBException
 	 */
 	private BaseArtifactType findExistingArtifactByUniversal(SrampAtomApiClient client, MavenGavInfo gavInfo)
-			throws SrampServerException, SrampClientException, JAXBException {
+			throws SrampAtomException, SrampClientException, JAXBException {
 		String artifactType = gavInfo.getGroupId().substring(gavInfo.getGroupId().indexOf('.') + 1);
 		String uuid = gavInfo.getArtifactId();
 		Entry entry = null;

@@ -34,7 +34,6 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.atom.err.SrampAtomExceptionMapper;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
@@ -141,8 +140,8 @@ public class BatchResource {
 			}
 		} catch (Exception e) {
 	        HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict");
-	        String stacktrace = SrampAtomExceptionMapper.getRootStackTrace(e);
-	        errorResponse.setBody(stacktrace, MediaType.APPLICATION_STACKTRACE_TYPE);
+	        SrampAtomException error = new SrampAtomException(e);
+	        errorResponse.setBody(error, MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION_TYPE);
 	        output.addPart(errorResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
 		}
 

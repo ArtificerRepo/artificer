@@ -43,9 +43,9 @@ public class MediaType extends javax.ws.rs.core.MediaType {
     public final static String MULTIPART_MIXED = "multipart/mixed";
     public final static MediaType MULTIPART_MIXED_TYPE = new MediaType("multipart", "mixed");
 
-    /** "application/stacktrace" */
-    public final static String APPLICATION_STACKTRACE = "application/stacktrace";
-    public final static MediaType APPLICATION_STACKTRACE_TYPE = new MediaType("application", "stacktrace");
+    /** "application/sramp-atom-exception" */
+    public final static String APPLICATION_SRAMP_ATOM_EXCEPTION = "application/sramp-atom-exception";
+    public final static MediaType APPLICATION_SRAMP_ATOM_EXCEPTION_TYPE = new MediaType("application", "sramp-atom-exception");
 
     /**
      * Creates a parameter map.
