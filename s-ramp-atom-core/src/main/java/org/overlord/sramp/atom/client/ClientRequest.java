@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.client;
+package org.overlord.sramp.atom.client;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -23,7 +23,10 @@ import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.specimpl.UriBuilderImpl;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.util.HttpHeaderNames;
+import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
+import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 
 /**
  * Extends the RESTEasy {@link org.jboss.resteasy.client.ClientRequest} class in order to provide a
@@ -43,7 +46,7 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 	private static final ResteasyProviderFactory providerFactory = new ResteasyProviderFactory();
 	static {
 		RegisterBuiltin.register(providerFactory);
-		providerFactory.registerProvider(SrampClientExceptionReader.class);
+		providerFactory.registerProvider(SrampAtomExceptionProvider.class);
 		providerFactory.registerProvider(HttpResponseProvider.class);
 	}
 
@@ -107,22 +110,29 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 	/**
 	 * Handles the possibility of an error found in the response.
 	 * @param response
+	 * @throws Exception
 	 */
-	private <T> void handlePotentialServerError(ClientResponse<T> response) {
+	private <T> void handlePotentialServerError(ClientResponse<T> response) throws Exception {
 		String contentType = String.valueOf(response.getMetadata().getFirst(HttpHeaderNames.CONTENT_TYPE));
 		if (response.getStatus() == 500) {
-			SrampServerException error = new SrampServerException("An unexpected (and unknown) error was sent by the S-RAMP repository.");
-			if ("application/stacktrace".equals(contentType)) {
+			Exception error = new Exception("An unexpected (and unknown) error was sent by the S-RAMP repository.");
+			if (MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION.equals(contentType)) {
 				try {
-					SrampServerException entity = response.getEntity(SrampServerException.class);
+					SrampAtomException entity = response.getEntity(SrampAtomException.class);
 					if (entity != null)
 						error = entity;
-				} catch (Throwable t) {}
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
 			}
 			throw error;
 		}
 		if (response.getStatus() == 404) {
-			SrampServerException error = new SrampServerException("The S-RAMP endpoint and/or method could not be found.");
+			SrampAtomException error = new SrampAtomException("The S-RAMP endpoint and/or method could not be found.");
+			throw error;
+		}
+		if (response.getStatus() == 403) {
+			SrampAtomException error = new SrampAtomException("Permission failure while attempting to access the S-RAMP repository.");
 			throw error;
 		}
 	}

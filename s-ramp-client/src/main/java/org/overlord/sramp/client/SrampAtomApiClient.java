@@ -35,6 +35,8 @@ import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
+import org.overlord.sramp.atom.client.ClientRequest;
+import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.mime.MimeTypes;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
@@ -63,10 +65,10 @@ public class SrampAtomApiClient {
 	 * @param artifactType
 	 * @param artifactUuid
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 */
 	public Entry getFullArtifactEntry(ArtifactType artifactType, String artifactUuid)
-			throws SrampClientException, SrampServerException {
+			throws SrampClientException, SrampAtomException {
 		try {
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
@@ -74,7 +76,7 @@ public class SrampAtomApiClient {
 			ClientRequest request = new ClientRequest(atomUrl);
 			ClientResponse<Entry> response = request.get(Entry.class);
 			return response.getEntity();
-		} catch (SrampServerException e) {
+		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
@@ -87,10 +89,10 @@ public class SrampAtomApiClient {
 	 * @param artifactUuid the S-RAMP uuid of the artifact
 	 * @return an {@link InputStream} to the S-RAMP artifact content
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 */
 	public InputStream getArtifactContent(ArtifactType artifactType, String artifactUuid)
-			throws SrampClientException, SrampServerException {
+			throws SrampClientException, SrampAtomException {
 		try {
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint,
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
@@ -108,10 +110,10 @@ public class SrampAtomApiClient {
 	 * @param content
 	 * @param artifactFileName
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 */
 	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
-			throws SrampClientException, SrampServerException {
+			throws SrampClientException, SrampAtomException {
 		// Determine the mime type if it's not included in the artifact type.
 		String mimeType = artifactType.getMimeType();
 		if (mimeType == null) {
@@ -129,7 +131,7 @@ public class SrampAtomApiClient {
 
 			ClientResponse<Entry> response = request.post(Entry.class);
 			return response.getEntity();
-		} catch (SrampServerException e) {
+		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
@@ -141,15 +143,15 @@ public class SrampAtomApiClient {
 	 * for processing.  The contents of the s-ramp archive will be processed, and the results
 	 * will be returned as a Map.  The Map is indexed by the S-RAMP Archive entry path, and each
 	 * each value in the Map will either be a {@link BaseArtifactType} or an
-	 * {@link SrampServerException}, depending on success vs. failure of that entry.
+	 * {@link SrampAtomException}, depending on success vs. failure of that entry.
 	 *
 	 * @param archive the s-ramp package archive to upload
 	 * @return the collection of results (one per entry in the s-ramp package)
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 */
 	@SuppressWarnings("resource")
-	public Map<String, ?> uploadBatch(SrampArchive archive) throws SrampClientException, SrampServerException {
+	public Map<String, ?> uploadBatch(SrampArchive archive) throws SrampClientException, SrampAtomException {
 		File packageFile = null;
 		InputStream packageStream = null;
 
@@ -174,17 +176,21 @@ public class SrampAtomApiClient {
 					BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
 					rval.put(path, artifact);
 				} else if (rbean.getCode() == 409) {
-					String errorReason = (String) rbean.getBody();
-					SrampServerException exception = new SrampServerException("Conflict found for: " + path);
-					exception.setRemoteStackTrace(errorReason);
-					rval.put(path, exception);
+					if (MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION.equals(rbean.getHeaders().get("Content-Type"))) {
+						SrampAtomException exception = (SrampAtomException) rbean.getBody();
+						rval.put(path, exception);
+					} else {
+						String errorReason = (String) rbean.getBody();
+						SrampAtomException exception = new SrampAtomException(errorReason);
+						rval.put(path, exception);
+					}
 				} else {
 					// Only a non-compliant s-ramp impl could cause this
 					throw new Exception("Unexpected return code '" + rbean.getCode() + "' for ID '" + contentId + "'.  The S-RAMP server is non-compliant.");
 				}
 			}
 			return rval;
-		} catch (SrampServerException e) {
+		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
@@ -199,8 +205,9 @@ public class SrampAtomApiClient {
 	 * artifact.
 	 * @param artifact
 	 * @throws SrampClientException
+	 * @throws SrampAtomException
 	 */
-	public void updateArtifactMetaData(BaseArtifactType artifact) throws SrampClientException {
+	public void updateArtifactMetaData(BaseArtifactType artifact) throws SrampClientException, SrampAtomException {
 		try {
 			ArtifactType type = ArtifactType.valueOf(artifact);
 			String artifactModel = type.getArtifactType().getModel();
@@ -213,7 +220,7 @@ public class SrampAtomApiClient {
 
 			request.body("application/atom+xml;type=entry", entry);
 			request.put();
-		} catch (SrampServerException e) {
+		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
@@ -222,12 +229,13 @@ public class SrampAtomApiClient {
 
 	/**
 	 * Updates the content of the artifact.
-	 * @param artifactType
-	 * @param uuid
+	 * @param artifact
 	 * @param content
 	 * @throws SrampClientException
+	 * @throws SrampAtomException
 	 */
-	public void updateArtifact(BaseArtifactType artifact, InputStream content) throws SrampClientException {
+	public void updateArtifact(BaseArtifactType artifact, InputStream content) throws SrampClientException,
+			SrampAtomException {
 		try {
 			ArtifactType type = ArtifactType.valueOf(artifact);
 
@@ -238,7 +246,7 @@ public class SrampAtomApiClient {
 			ClientRequest request = new ClientRequest(atomUrl);
 			request.body(type.getMimeType(), content);
 			request.put();
-		} catch (SrampServerException e) {
+		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
@@ -250,9 +258,9 @@ public class SrampAtomApiClient {
 	 * @param uuid
 	 * @param type
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 */
-	public void deleteArtifact(String uuid, ArtifactType type) throws SrampClientException, SrampServerException {
+	public void deleteArtifact(String uuid, ArtifactType type) throws SrampClientException, SrampAtomException {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
@@ -260,7 +268,7 @@ public class SrampAtomApiClient {
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
 			request.delete();
-		} catch (SrampServerException e) {
+		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
@@ -271,9 +279,9 @@ public class SrampAtomApiClient {
 	 * Provides a very simple mechanism for querying.  Defaults many of the parameters.
 	 * @param srampQuery the s-ramp query (xpath formatted)
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 */
-	public Feed query(String srampQuery) throws SrampClientException, SrampServerException {
+	public Feed query(String srampQuery) throws SrampClientException, SrampAtomException {
 		return query(srampQuery, 0, 20, "name", true);
 	}
 
@@ -286,10 +294,10 @@ public class SrampAtomApiClient {
 	 * @param ascending the direction of the sort
 	 * @return an Atom {@link Feed}
 	 * @throws SrampClientException
-	 * @throws SrampServerException
+	 * @throws SrampAtomException
 	 */
 	public Feed query(String srampQuery, int page, int pageSize, String orderBy, boolean ascending)
-			throws SrampClientException, SrampServerException {
+			throws SrampClientException, SrampAtomException {
 		try {
 			String xpath = srampQuery;
 			if (xpath == null)
@@ -310,7 +318,7 @@ public class SrampAtomApiClient {
 			request.body(MediaType.MULTIPART_FORM_DATA_TYPE, formData);
 			ClientResponse<Feed> response = request.post(Feed.class);
 			return response.getEntity();
-		} catch (SrampServerException e) {
+		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
 			throw new SrampClientException(e);

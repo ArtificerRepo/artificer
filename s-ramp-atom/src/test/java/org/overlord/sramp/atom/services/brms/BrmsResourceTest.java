@@ -19,7 +19,6 @@ import static org.jboss.resteasy.test.TestPortProvider.generateURL;
 
 import java.io.InputStream;
 
-import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.junit.Assert;
@@ -27,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.overlord.sramp.atom.SrampAtomUtils;
+import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.services.AbstractResourceTest;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
