@@ -18,7 +18,6 @@ package org.overlord.sramp.ui.server.rsvcs;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.SrampAtomUtils;
-import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
 import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
@@ -75,8 +74,6 @@ public class ArtifactRemoteService extends RemoteServiceServlet implements IArti
 			details.setUpdatedBy(artifact.getLastModifiedBy());
 
 			return details;
-		} catch (SrampServerException e) {
-			throw ExceptionUtils.createRemoteException(e);
 		} catch (Throwable t) {
 			throw ExceptionUtils.createRemoteException(t);
 		}

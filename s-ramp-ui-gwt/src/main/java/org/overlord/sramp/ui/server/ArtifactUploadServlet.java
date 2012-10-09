@@ -40,7 +40,7 @@ import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.client.SrampServerException;
+import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.jar.DefaultMetaDataFactory;
 import org.overlord.sramp.client.jar.DiscoveredArtifact;
 import org.overlord.sramp.client.jar.JarToSrampArchive;
@@ -98,17 +98,16 @@ public class ArtifactUploadServlet extends HttpServlet {
 
 				// Now that the content has been extracted, process it (upload the artifact to the s-ramp repo).
 				responseMap = uploadArtifact(artifactType, fileName, artifactContent);
-			} catch (SrampServerException e) {
+			} catch (SrampAtomException e) {
 				responseMap = new HashMap<String, String>();
 				responseMap.put("exception", "true");
 				responseMap.put("exception-message", e.getMessage());
-				responseMap.put("exception-localStack", ExceptionUtils.getRootStackTrace(e));
-				responseMap.put("exception-remoteStack", e.getRemoteStackTrace());
+				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e));
 			} catch (Throwable e) {
 				responseMap = new HashMap<String, String>();
 				responseMap.put("exception", "true");
 				responseMap.put("exception-message", e.getMessage());
-				responseMap.put("exception-localStack", ExceptionUtils.getRootStackTrace(e));
+				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e));
 			} finally {
 				IOUtils.closeQuietly(artifactContent);
 			}

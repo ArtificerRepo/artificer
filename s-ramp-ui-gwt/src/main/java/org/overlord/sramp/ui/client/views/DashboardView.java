@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author eric.wittmann@redhat.com
  */
 public class DashboardView extends AbstractView<IDashboardActivity> implements IDashboardView {
-	
+
 	/**
 	 * Constructor.
 	 */
@@ -57,7 +57,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		HorizontalPanel dashboardPanel = new HorizontalPanel();
 		dashboardPanel.getElement().setId("dashboard");
 		dashboardPanel.getElement().setAttribute("style", "width: 100%");
-		
+
 		// Create two columns
 		VerticalPanel leftColumn = new VerticalPanel();
 		leftColumn.getElement().setClassName("dashColumn");
@@ -67,7 +67,7 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		rightColumn.getElement().addClassName("right");
 		dashboardPanel.add(leftColumn);
 		dashboardPanel.add(rightColumn);
-		
+
 		// Create the Activities panel
 		TitlePanel activitiesPanel = new TitlePanel(i18n().translate("views.dashboard.activities-panel.title"));
 		activitiesPanel.getElement().setId("dash-activitiesPanel");
@@ -76,12 +76,12 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		for (Widget link : activityLinks)
 			ulPanel.add(link);
 		activitiesPanel.setWidget(ulPanel);
-		
+
 		// Create the Upload Artifact panel
 		TitlePanel uploadPanel = new TitlePanel(i18n().translate("views.dashboard.upload-panel.title"));
 		uploadPanel.getElement().setId("dash-uploadPanel");
 		uploadPanel.setWidget(createUploadForm());
-		
+
 		// Create the Help panel
 		TitlePanel helpPanel = new TitlePanel(i18n().translate("views.dashboard.help-panel.title"));
 		helpPanel.getElement().setId("dash-helpPanel");
@@ -108,18 +108,19 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 		String url = GWT.getModuleBaseURL() + "services/artifactUpload";
 		final ArtifactUploadForm form = new ArtifactUploadForm(url);
 		final int[] growlId = new int[1];
-		
+
 		form.addSubmitHandler(new SubmitHandler() {
 			@Override
 			public void onSubmit(SubmitEvent event) {
 				int id = growl().growl(
-						i18n().translate("views.dashboard.upload-dialog.title-1"), 
-						i18n().translate("views.dashboard.upload-dialog.please-wait", form.getFilename()), 
+						i18n().translate("views.dashboard.upload-dialog.title-1"),
+						i18n().translate("views.dashboard.upload-dialog.please-wait", form.getFilename()),
 						GrowlType.progress);
 				growlId[0] = id;
 			}
 		});
 		form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
+			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
 				String jsonData = event.getResults();
 				int startIdx = jsonData.indexOf('(');
@@ -133,11 +134,10 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 				boolean isError = "true".equals(jsonMap.get("exception"));
 				if (isError) {
 					String errorMessage = jsonMap.get("exception-message");
-					String errorLocalStack = jsonMap.get("exception-localStack");
-					String errorRemoteStack = jsonMap.get("exception-remoteStack");
+					String errorStack = jsonMap.get("exception-stack");
 					RemoteServiceException error = new RemoteServiceException(errorMessage);
-					error.setRootStackTrace(errorLocalStack + "\nCaused By:\n" + errorRemoteStack);
-					growl().onProgressError(growlId[0], 
+					error.setRootStackTrace(errorStack);
+					growl().onProgressError(growlId[0],
 							i18n().translate("views.dashboard.upload-dialog.error.title"),
 							error);
 				} else {
@@ -145,11 +145,11 @@ public class DashboardView extends AbstractView<IDashboardActivity> implements I
 					String model = jsonMap.get("model");
 					String type = jsonMap.get("type");
 					growl().onProgressComplete(
-							growlId[0], 
-							i18n().translate("views.dashboard.upload-dialog.title-2"), 
+							growlId[0],
+							i18n().translate("views.dashboard.upload-dialog.title-2"),
 							createUploadSuccessWidget(model, type, uuid, form.getFilename()));
 				}
-				
+
 				form.reset();
 			}
 		});
