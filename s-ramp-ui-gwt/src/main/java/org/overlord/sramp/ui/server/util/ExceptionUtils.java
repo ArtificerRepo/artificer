@@ -18,7 +18,6 @@ package org.overlord.sramp.ui.server.util;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.overlord.sramp.client.SrampServerException;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 /**
@@ -27,7 +26,7 @@ import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
  * @author eric.wittmann@redhat.com
  */
 public class ExceptionUtils {
-	
+
 	/**
 	 * Gets the root stack trace as a string.
 	 * @param t
@@ -49,7 +48,7 @@ public class ExceptionUtils {
 			root = root.getCause();
 		return root;
 	}
-	
+
 	/**
 	 * Creates a remote exception that can be thrown to the client.
 	 * @param message
@@ -75,22 +74,6 @@ public class ExceptionUtils {
 	 */
 	public static RemoteServiceException createRemoteException(Throwable root) {
 		return createRemoteException(null, root);
-	}
-
-	/**
-	 * Creates a remote exception that can be thrown to the client.
-	 * @param serverError
-	 */
-	public static RemoteServiceException createRemoteException(SrampServerException serverError) {
-		RemoteServiceException re = new RemoteServiceException(serverError.getMessage());
-		StringBuffer b = new StringBuffer();
-		b.append(getRootStackTrace(serverError));
-		if (serverError.getRemoteStackTrace() != null) {
-			b.append("\nCaused By:\n");
-			b.append(serverError.getRemoteStackTrace());
-		}
-		re.setRootStackTrace(b.toString());
-		return re;
 	}
 
 }
