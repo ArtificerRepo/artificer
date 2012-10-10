@@ -165,14 +165,16 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             // Persist each of the derived nodes
             JCRReferenceFactoryImpl referenceFactory = new JCRReferenceFactoryImpl(session);
             for (DerivedArtifactType derivedArtifact : artifacts) {
-                String uuid = UUID.randomUUID().toString();
+            	if (derivedArtifact.getUuid() == null) {
+            		derivedArtifact.setUuid(UUID.randomUUID().toString());
+            	}
                 ArtifactType derivedArtifactType = ArtifactType.valueOf(derivedArtifact);
                 String jcrNodeName = derivedArtifactType.getArtifactType().getApiType().value();
                 jcrNodeName = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrNodeName);
 
                 Node derivedArtifactNode = tools.findOrCreateChild(sourceArtifactNode, derivedArtifact.getName(), jcrNodeName);
 
-                derivedArtifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
+                derivedArtifactNode.setProperty(JCRConstants.SRAMP_UUID, derivedArtifact.getUuid());
                 derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, derivedArtifactType.getArtifactType().getModel());
                 derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, derivedArtifactType.getArtifactType().getType());
 
@@ -181,7 +183,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
                 if (visitor.hasError())
                 	throw visitor.getError();
 
-                log.debug("Successfully saved derived artifact {} to node={}", derivedArtifact.getName(), uuid);
+                log.debug("Successfully saved derived artifact {} to node={}", derivedArtifact.getName(), derivedArtifact.getUuid());
             }
 
             session.save();

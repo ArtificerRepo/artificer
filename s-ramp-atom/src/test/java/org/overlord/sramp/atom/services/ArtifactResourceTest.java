@@ -321,7 +321,7 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 			Assert.assertTrue(arty instanceof WsdlDocument);
 			WsdlDocument doc = (WsdlDocument) arty;
 			Assert.assertEquals(artifactFileName, doc.getName());
-			Assert.assertEquals(Long.valueOf(1643), doc.getContentSize());
+			Assert.assertEquals(Long.valueOf(1642), doc.getContentSize());
 			Assert.assertEquals("application/xml", doc.getContentType());
 			uuid = doc.getUuid();
 		} finally {
@@ -337,7 +337,7 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		Assert.assertNotNull(arty);
 		Assert.assertTrue(arty instanceof WsdlDocument);
 		WsdlDocument wsdlDoc = (WsdlDocument) arty;
-		Assert.assertEquals(Long.valueOf(1643), wsdlDoc.getContentSize());
+		Assert.assertEquals(Long.valueOf(1642), wsdlDoc.getContentSize());
 		Assert.assertEquals("sample.wsdl", wsdlDoc.getName());
 	}
 
