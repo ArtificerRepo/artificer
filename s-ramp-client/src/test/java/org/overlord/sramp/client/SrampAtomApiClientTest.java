@@ -92,6 +92,27 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 			IOUtils.closeQuietly(is);
 		}
 	}
+	
+	   /**
+     * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
+     */
+    @Test
+    public void testUploadArtifactAndContent() throws Exception {
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        try {
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            XsdDocument xsdDocument = new XsdDocument();
+            xsdDocument.setName(artifactFileName);
+            xsdDocument.setUuid("my-client-side-supplied-UUID");
+            Entry entry = client.uploadArtifact(xsdDocument, is);
+            Assert.assertNotNull(entry);
+            Assert.assertEquals(artifactFileName, entry.getTitle());
+            Assert.assertEquals("my-client-side-supplied-UUID", entry.getId().toString());
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
 
 	/**
 	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#getArtifactContent(java.lang.String, java.lang.String, java.lang.String)}.
