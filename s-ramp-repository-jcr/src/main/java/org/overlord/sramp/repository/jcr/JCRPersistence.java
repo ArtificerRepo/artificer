@@ -76,12 +76,19 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
      * @see org.overlord.sramp.repository.PersistenceManager#persistArtifact(java.lang.String, org.overlord.sramp.ArtifactType, java.io.InputStream)
      */
     @Override
-	public BaseArtifactType persistArtifact(String name, ArtifactType artifactType, InputStream content) throws RepositoryException {
+    public BaseArtifactType persistArtifact(BaseArtifactType baseArtifactType, InputStream content) throws RepositoryException {
         Session session = null;
         try {
             session = JCRRepository.getSession();
             JcrTools tools = new JcrTools();
-            String uuid = UUID.randomUUID().toString();
+            String uuid = null;
+            if (baseArtifactType.getUuid()!=null) {
+                uuid = baseArtifactType.getUuid();
+            } else {
+                uuid = UUID.randomUUID().toString();
+            }
+            ArtifactType artifactType = ArtifactType.valueOf(baseArtifactType);
+            String name = baseArtifactType.getName();
             String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
             log.debug("Uploading file {} to JCR.",name);
 
