@@ -339,6 +339,22 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		WsdlDocument wsdlDoc = (WsdlDocument) arty;
 		Assert.assertEquals(Long.valueOf(1642), wsdlDoc.getContentSize());
 		Assert.assertEquals("sample.wsdl", wsdlDoc.getName());
+
+		// Make sure we can query the derived content
+		ClientRequest frequest = new ClientRequest(generateURL("/s-ramp/wsdl/Message"));
+		ClientResponse<Feed> fresponse = frequest.get(Feed.class);
+		Feed feed = fresponse.getEntity();
+		Assert.assertNotNull(feed);
+		Assert.assertEquals(2, feed.getEntries().size());
+		String findReqMsgUuid = null;
+		for (Entry atomEntry : feed.getEntries()) {
+			if ("findRequest".equals(atomEntry.getTitle())) {
+				findReqMsgUuid = atomEntry.getId().toString();
+			}
+		}
+		Assert.assertNotNull(findReqMsgUuid);
+
+		// TODO retrieve full meta-data for the wsdl Message so we can do some interesting assertions
 	}
 
 	/**
