@@ -206,12 +206,18 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     @Override
     public BaseArtifactType getArtifact(String uuid, ArtifactType type) throws RepositoryException {
         Session session = null;
-        String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
-
         try {
             session = JCRRepository.getSession();
-            if (session.nodeExists(artifactPath)) {
-	            Node artifactNode = session.getNode(artifactPath);
+			Node artifactNode = null;
+            if (type.getArtifactType().isDerived()) {
+				artifactNode = findArtifactNodeByUuid(session, uuid);
+            } else {
+	            String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
+	            if (session.nodeExists(artifactPath)) {
+		            artifactNode = session.getNode(artifactPath);
+	            }
+            }
+            if (artifactNode != null) {
 	            // Create an artifact from the sequenced node
 	            return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
             } else {
@@ -378,6 +384,34 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 
 		return file;
 	}
+
+	/**
+	 * Utility method to find an s-ramp artifact node by its UUID.  Returns null if
+	 * not found.  Throws an exception if too many JCR nodes are found with the given
+	 * UUID.
+	 * @param session
+	 * @param artifactUuid
+	 * @throws Exception
+	 */
+	private static Node findArtifactNodeByUuid(Session session, String artifactUuid) throws Exception {
+        javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
+        String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", artifactUuid);
+        javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, QueryLanguage.JCR_SQL2);
+        QueryResult jcrQueryResult = jcrQuery.execute();
+        NodeIterator jcrNodes = jcrQueryResult.getNodes();
+        if (!jcrNodes.hasNext()) {
+        	return null;
+        }
+        if (jcrNodes.getSize() > 1) {
+        	throw new Exception("Too many artifacts found with UUID: " + artifactUuid);
+        }
+        Node node = jcrNodes.nextNode();
+        return node;
+	}
+
+	/**
+	 * @see org.overlord.sramp.repository.PersistenceManager#shutdown()
+	 */
 	@Override
 	public void shutdown() {
 	    JCRRepository.shutdown();
@@ -404,19 +438,11 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     	@Override
     	public Value createReference(String uuid) {
 			try {
-	            javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
-	            String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", uuid);
-	            javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, QueryLanguage.JCR_SQL2);
-	            QueryResult jcrQueryResult = jcrQuery.execute();
-	            NodeIterator jcrNodes = jcrQueryResult.getNodes();
-	            if (!jcrNodes.hasNext()) {
-	            	throw new Exception("No artifact found with UUID: " + uuid);
-	            }
-	            if (jcrNodes.getSize() > 1) {
-	            	throw new Exception("Too many artifacts found with UUID: " + uuid);
-	            }
-	            Node node = jcrNodes.nextNode();
-	            return session.getValueFactory().createValue(node, false);
+				Node node = findArtifactNodeByUuid(session, uuid);
+				if (node == null) {
+		        	throw new Exception("No artifact found with UUID: " + uuid);
+				}
+				return session.getValueFactory().createValue(node, false);
 			} catch (Exception e) {
 				log.error("Error creating JCR reference to S-RAMP artifact with UUID: " + uuid, e);
 			}

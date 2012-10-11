@@ -39,6 +39,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Event;
 import org.s_ramp.xmlns._2010.s_ramp.Fault;
 import org.s_ramp.xmlns._2010.s_ramp.InformationType;
 import org.s_ramp.xmlns._2010.s_ramp.Message;
+import org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Operation;
 import org.s_ramp.xmlns._2010.s_ramp.OperationInput;
 import org.s_ramp.xmlns._2010.s_ramp.OperationOutput;
@@ -117,6 +118,14 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
+	 * Common visit method for named WSDL derived artifacts.
+	 * @param artifact
+	 */
+	protected void visitNamedWsdlDerived(NamedWsdlDerivedArtifactType artifact) {
+		// Subclasses can do common visit logic here
+	}
+
+	/**
 	 * Common visit method for XSD derived artifacts.
 	 * @param artifact
 	 */
@@ -155,7 +164,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	protected void visitSoa(SoaModelType artifact) {
 		// Subclasses can do common visit logic here
 	}
-	
+
 	/**
      * Common visit method for UserDefined artifacts.
      * @param artifact
@@ -163,7 +172,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
     protected void visitUserDefined(UserDefinedArtifactType artifact) {
         // Subclasses can do common visit logic here
     }
-	
+
 	/**
 	 * @see org.overlord.sramp.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Document)
 	 */
@@ -295,6 +304,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -305,6 +315,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -324,6 +335,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -334,6 +346,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -344,6 +357,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -354,6 +368,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -364,6 +379,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -374,6 +390,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -384,6 +401,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -394,6 +412,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -404,6 +423,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -414,6 +434,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -424,6 +445,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
@@ -434,6 +456,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitDerived(artifact);
 		visitWsdlDerived(artifact);
+		visitNamedWsdlDerived(artifact);
 	}
 
 	/**
