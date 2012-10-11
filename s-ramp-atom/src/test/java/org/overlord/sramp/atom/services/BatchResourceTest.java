@@ -354,7 +354,7 @@ public class BatchResourceTest extends AbstractResourceTest {
 			Assert.assertTrue(arty instanceof WsdlDocument);
 			WsdlDocument doc = (WsdlDocument) arty;
 			Assert.assertEquals(artifactFileName, doc.getName());
-			Assert.assertEquals(Long.valueOf(1643), doc.getContentSize());
+			Assert.assertEquals(Long.valueOf(1642), doc.getContentSize());
 			Assert.assertEquals("application/xml", doc.getContentType());
 			return doc;
 		} finally {

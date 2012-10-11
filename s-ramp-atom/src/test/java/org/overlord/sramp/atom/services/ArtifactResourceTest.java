@@ -321,7 +321,7 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 			Assert.assertTrue(arty instanceof WsdlDocument);
 			WsdlDocument doc = (WsdlDocument) arty;
 			Assert.assertEquals(artifactFileName, doc.getName());
-			Assert.assertEquals(Long.valueOf(1643), doc.getContentSize());
+			Assert.assertEquals(Long.valueOf(1642), doc.getContentSize());
 			Assert.assertEquals("application/xml", doc.getContentType());
 			uuid = doc.getUuid();
 		} finally {
@@ -337,8 +337,24 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		Assert.assertNotNull(arty);
 		Assert.assertTrue(arty instanceof WsdlDocument);
 		WsdlDocument wsdlDoc = (WsdlDocument) arty;
-		Assert.assertEquals(Long.valueOf(1643), wsdlDoc.getContentSize());
+		Assert.assertEquals(Long.valueOf(1642), wsdlDoc.getContentSize());
 		Assert.assertEquals("sample.wsdl", wsdlDoc.getName());
+
+		// Make sure we can query the derived content
+		ClientRequest frequest = new ClientRequest(generateURL("/s-ramp/wsdl/Message"));
+		ClientResponse<Feed> fresponse = frequest.get(Feed.class);
+		Feed feed = fresponse.getEntity();
+		Assert.assertNotNull(feed);
+		Assert.assertEquals(2, feed.getEntries().size());
+		String findReqMsgUuid = null;
+		for (Entry atomEntry : feed.getEntries()) {
+			if ("findRequest".equals(atomEntry.getTitle())) {
+				findReqMsgUuid = atomEntry.getId().toString();
+			}
+		}
+		Assert.assertNotNull(findReqMsgUuid);
+
+		// TODO retrieve full meta-data for the wsdl Message so we can do some interesting assertions
 	}
 
 	/**
