@@ -31,13 +31,13 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartInput;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.MimeTypes;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.atom.mime.MimeTypes;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**

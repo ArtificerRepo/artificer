@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -35,12 +36,16 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedInput;
+import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.ArtifactTypeEnum;
+import org.overlord.sramp.MimeTypes;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.atom.mime.MimeTypes;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
@@ -94,8 +99,7 @@ public class ArtifactResource {
 				throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
 						+ "' is a derived type.");
         	}
-
-        	String mimeType = determineMimeType(contentType, fileName, artifactType);
+        	String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
         	artifactType.setMimeType(mimeType);
 
         	// Pick a reasonable file name if Slug is not present
@@ -111,7 +115,9 @@ public class ArtifactResource {
 
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             //store the content
-            BaseArtifactType artifact = persistenceManager.persistArtifact(fileName, artifactType, is);
+            BaseArtifactType baseArtifactType = ArtifactType.getArtifactInstance(artifactType);  
+            baseArtifactType.setName(fileName);
+            BaseArtifactType artifact = persistenceManager.persistArtifact(baseArtifactType, is);
 
             //create the derivedArtifacts
             Collection<DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
@@ -129,31 +135,65 @@ public class ArtifactResource {
         	IOUtils.closeQuietly(is);
         }
     }
+    
+    @POST
+    @Path("{model}/{type}")
+    @Consumes(MultipartConstants.MULTIPART_RELATED)
+    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+    public Entry createMultiPart(@HeaderParam("Content-Type") String contentType,
+            @PathParam("model") String model, @PathParam("type") String type, 
+            MultipartRelatedInput input) {
+        Entry atomEntry = new Entry();
+        try {
+            ArtifactType artifactType = ArtifactType.valueOf(model, type);
+            if (artifactType.getArtifactType().isDerived()) {
+                throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
+                        + "' is a derived type.");
+            }
 
-    /**
-     * Figures out the mime type of the new artifact given the POSTed Content-Type, the name
-     * of the uploaded file, and the S-RAMP arifact type.  If the artifact type is Document
-     * then the other two pieces of information are used to determine an appropriate mime type.
-     * If no appropriate mime type can be determined for core/Document, then binary is returned.
-	 * @param contentType the content type request header
-	 * @param fileName the slug request header
-	 * @param artifactType the artifact type (based on the endpoint POSTed to)
-	 */
-	private static String determineMimeType(String contentType, String fileName, ArtifactType artifactType) {
-		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.UserDefinedArtifactType) {
-			if (contentType != null && contentType.trim().length() > 0)
-				return contentType;
-			if (fileName != null) {
-				String ct = MimeTypes.getContentType(fileName);
-				if (ct != null)
-					return ct;
-			}
-			return "application/octet-stream";
-		} else {
-			// Everything else is an XML file
-			return "application/xml";
-		}
-	}
+            List<InputPart> list = input.getParts();
+            // Expecting 2 parts
+            if (list.size()!=2) ; //throw error
+            InputPart firstPart  = list.get(0);
+            InputPart secondpart = list.get(1);
+            
+            // Getting the S-RAMP Artifact
+            atomEntry = firstPart.getBody(new GenericType<Entry>() { });
+            BaseArtifactType baseArtifactType = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
+            String fileName = null;
+            if (baseArtifactType.getName()!=null) fileName = baseArtifactType.getName();
+            String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
+            artifactType.setMimeType(mimeType);
+            
+            // Processing the content itself first
+            InputStream is = secondpart.getBody(new GenericType<InputStream>() { });
+            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+            //store the content
+            BaseArtifactType intermediate = persistenceManager.persistArtifact(baseArtifactType, is);
+
+            //create the derivedArtifacts
+            Collection<DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(intermediate);
+
+            // Persist the derivedArtifacts
+            persistenceManager.persistDerivedArtifacts(intermediate, dartifacts);
+            
+            //TODO we could do it all at once in the persistence layer if we can reuse the updateVisitor there
+            intermediate.setDescription(baseArtifactType.getDescription());
+            intermediate.setCreatedBy(baseArtifactType.getCreatedBy());
+            persistenceManager.updateArtifact(baseArtifactType, artifactType);
+            
+            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
+            ArtifactVisitorHelper.visitArtifact(visitor, intermediate);
+            
+            atomEntry  = visitor.getAtomEntry();
+            
+        } catch (Exception e) {
+            //TODO
+            e.printStackTrace();
+        }
+        
+        return atomEntry;
+    }
 
     /**
      * Called to update the meta data for an artifact.  Note that this does *not* update
@@ -181,6 +221,7 @@ public class ArtifactResource {
 
     /**
      * S-RAMP atom PUT to upload a new version of the artifact into the repository.
+     * 
      * @param model
      * @param type
      * @param uuid
@@ -198,9 +239,9 @@ public class ArtifactResource {
 			throw new SrampAtomException("Failed to create artifact because '" + artifactType.getArtifactType()
 					+ "' is a derived type.");
     	}
-    	String mimeType = determineMimeType(contentType, fileName, artifactType);
+    	String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
     	artifactType.setMimeType(mimeType);
-
+    	//TODO we need to update the S-RAMP metadata too (new updateDate, size, etc)?
         InputStream is = content;
         try {
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();

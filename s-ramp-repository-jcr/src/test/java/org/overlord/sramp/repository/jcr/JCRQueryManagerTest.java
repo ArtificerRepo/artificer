@@ -31,7 +31,9 @@ import org.overlord.sramp.repository.QueryManager;
 import org.overlord.sramp.repository.QueryManagerFactory;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +75,10 @@ public class JCRQueryManagerTest {
     	String artifactFileName = "PO.xsd";
     	// First, store an artifact.
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
 
@@ -104,13 +109,16 @@ public class JCRQueryManagerTest {
     	// First, store 3 artifacts
         String artifactFileName = "PO.xsd";
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        BaseArtifactType artifact1 = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
+        BaseArtifactType artifact1 = persistenceManager.persistArtifact(document, POXsd);
         Assert.assertNotNull(artifact1);
         POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        BaseArtifactType artifact2 = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        BaseArtifactType artifact2 = persistenceManager.persistArtifact(document, POXsd);
         Assert.assertNotNull(artifact2);
         POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        BaseArtifactType artifact3 = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        BaseArtifactType artifact3 = persistenceManager.persistArtifact(document, POXsd);
         Assert.assertNotNull(artifact3);
 
         // Now update some properties on them.
