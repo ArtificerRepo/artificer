@@ -31,8 +31,11 @@ import javax.jcr.Value;
 
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 
 /**
  * An artifact visitor used to update a JCR node.  This class is responsible
@@ -66,6 +69,37 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 			updateArtifactMetaData(artifact);
 			updateArtifactProperties(artifact);
 			updateGenericRelationships(artifact);
+		} catch (Exception e) {
+			error = e;
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitDerived(org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType)
+	 */
+	@Override
+	protected void visitDerived(DerivedArtifactType artifact) {
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitWsdlDerived(org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType)
+	 */
+	@Override
+	protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
+		try {
+			this.jcrNode.setProperty("sramp:namespace", artifact.getNamespace());
+		} catch (Exception e) {
+			error = e;
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitNamedWsdlDerived(org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType)
+	 */
+	@Override
+	protected void visitNamedWsdlDerived(NamedWsdlDerivedArtifactType artifact) {
+		try {
+			this.jcrNode.setProperty("sramp:ncName", artifact.getNCName());
 		} catch (Exception e) {
 			error = e;
 		}

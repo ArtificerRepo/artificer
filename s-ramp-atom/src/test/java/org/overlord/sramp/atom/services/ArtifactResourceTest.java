@@ -44,6 +44,7 @@ import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
+import org.s_ramp.xmlns._2010.s_ramp.Message;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
@@ -331,7 +332,6 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		// Make sure we can query it now
 		ClientRequest request = new ClientRequest(generateURL("/s-ramp/wsdl/WsdlDocument/" + uuid));
 		ClientResponse<Entry> response = request.get(Entry.class);
-
 		Entry entry = response.getEntity();
 		BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
 		Assert.assertNotNull(arty);
@@ -354,7 +354,16 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		}
 		Assert.assertNotNull(findReqMsgUuid);
 
-		// TODO retrieve full meta-data for the wsdl Message so we can do some interesting assertions
+		// Get the full meta data for the derived Message
+		request = new ClientRequest(generateURL("/s-ramp/wsdl/Message/" + findReqMsgUuid));
+		response = request.get(Entry.class);
+		entry = response.getEntity();
+		arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+		Assert.assertNotNull(arty);
+		Assert.assertTrue(arty instanceof Message);
+		Message message = (Message) arty;
+		Assert.assertEquals("findRequest", message.getNCName());
+		Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", message.getNamespace());
 	}
 
 	/**
