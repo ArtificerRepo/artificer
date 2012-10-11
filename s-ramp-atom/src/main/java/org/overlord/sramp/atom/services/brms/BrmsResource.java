@@ -192,10 +192,9 @@ public class BrmsResource {
      */
     @GET
     @Path("rest/packages/{pkgName}/assets/{assetName}/binary")
-    public Response getAsset(@PathParam("pkgName") String pkgName, 
-            @PathParam("assetName") String assetName) throws SrampAtomException {
+    public Response getAsset(@PathParam("pkgName")   String pkgName, 
+                             @PathParam("assetName") String assetName) throws SrampAtomException {
         try {
-            pkgName += ".pkg";  //S-RAMP stores the fileName not the package name
             //1. Get all assets for this package
             Assets assets = getAllAssetsInPackage(pkgName);
 
