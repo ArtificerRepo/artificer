@@ -30,6 +30,7 @@ import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
@@ -72,8 +73,11 @@ public class JCRPersistenceTest {
     public void testSave_PDF() throws Exception {
         String artifactFileName = "s-ramp-press-release.pdf";
         InputStream pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.DOCUMENT);
 
-        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.Document, pdf);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, pdf);
 
         Assert.assertNotNull(artifact);
         log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid());
@@ -90,8 +94,11 @@ public class JCRPersistenceTest {
     public void testSavePO_XSD() throws Exception {
         String artifactFileName = "PO.xsd";
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
 
-        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
 
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
@@ -110,7 +117,11 @@ public class JCRPersistenceTest {
         String artifactFileName = "PO.xml";
         InputStream POXml = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
 
-        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XmlDocument, POXml);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
+        
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXml);
 
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xml to JCR, returned artifact uuid=" + artifact.getUuid());
@@ -127,8 +138,11 @@ public class JCRPersistenceTest {
     public void testGetArtifact_XSD() throws Exception {
         String artifactFileName = "PO.xsd";
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-
-        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
+        
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
 
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
@@ -155,7 +169,10 @@ public class JCRPersistenceTest {
     	// First, add an artifact to the repo
         String artifactFileName = "PO.xsd";
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
@@ -185,7 +202,10 @@ public class JCRPersistenceTest {
     	// First, add an artifact to the repo
         String artifactFileName = "PO.xsd";
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
@@ -210,7 +230,10 @@ public class JCRPersistenceTest {
     	// First, add an artifact to the repo
         String artifactFileName = "PO.xsd";
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, POXsd);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
@@ -277,9 +300,11 @@ public class JCRPersistenceTest {
         String artifactFileName = "s-ramp-press-release.pdf";
         InputStream pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
 
-        ArtifactType type = ArtifactType.valueOf("Document");
-        type.setMimeType("application/pdf");
-		BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, type, pdf);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setContentType("application/pdf");
+        document.setArtifactType(BaseArtifactEnum.DOCUMENT);
+		BaseArtifactType artifact = persistenceManager.persistArtifact(document, pdf);
         Assert.assertNotNull(artifact);
         log.info("persisted PDF to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(Document.class, artifact.getClass());
@@ -349,7 +374,10 @@ public class JCRPersistenceTest {
     	// First, add an artifact to the repo
         String artifactFileName = "PO.xsd";
         InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, contentStream);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, contentStream);
         Assert.assertNotNull(artifact);
         uuid1 = artifact.getUuid();
         contentStream.close();
@@ -369,7 +397,10 @@ public class JCRPersistenceTest {
         // Add a second artifact.
         artifactFileName = "XMLSchema.xsd";
         contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        BaseArtifactType artifact2 = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XsdDocument, contentStream);
+        Document document2 = new Document();
+        document2.setName(artifactFileName);
+        document2.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
+        BaseArtifactType artifact2 = persistenceManager.persistArtifact(document2, contentStream);
         Assert.assertNotNull(artifact2);
         uuid2 = artifact2.getUuid();
 
@@ -393,7 +424,11 @@ public class JCRPersistenceTest {
         // Add a third artifact.
         artifactFileName = "PO.xml";
         contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
-        BaseArtifactType artifact3 = persistenceManager.persistArtifact(artifactFileName, ArtifactType.XmlDocument, contentStream);
+        contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        Document document3 = new Document();
+        document3.setName(artifactFileName);
+        document3.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
+        BaseArtifactType artifact3 = persistenceManager.persistArtifact(document3,  contentStream);
         Assert.assertNotNull(artifact3);
         uuid3 = artifact3.getUuid();
 

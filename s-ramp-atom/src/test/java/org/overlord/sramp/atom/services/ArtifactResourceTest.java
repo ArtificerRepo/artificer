@@ -26,12 +26,17 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedOutput;
 import org.junit.Assert;
 import org.junit.Test;
 import org.overlord.sramp.SrampConstants;
@@ -42,11 +47,13 @@ import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.Message;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.atom.TestUtils;
@@ -364,6 +371,60 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		Message message = (Message) arty;
 		Assert.assertEquals("findRequest", message.getNCName());
 		Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", message.getNamespace());
+	}
+	
+    @Path("s-ramp")
+    public static interface MultipartClient
+    {
+       @Path("xsd/XsdDocument")
+       @POST
+       @Consumes(MultipartConstants.MULTIPART_RELATED)
+       public void postRelated(MultipartRelatedOutput output);
+    }
+	
+	@Test
+	public void testMultiPartCreate() {
+	    try {
+	        ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/XmlDocument"));
+
+	        MultipartRelatedOutput output = new MultipartRelatedOutput();
+	        
+	        XmlDocument xmlDocument = new XmlDocument();
+	        xmlDocument.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
+	        xmlDocument.setCreatedBy("kurt");
+	        xmlDocument.setDescription("In depth description of this XML document");
+	        xmlDocument.setName("PO.xml");
+	        xmlDocument.setUuid("my-uuid");
+	        xmlDocument.setVersion("1.0");
+	        
+	        Entry atomEntry = new Entry();
+	        Artifact arty = new Artifact();
+	        arty.setXmlDocument(xmlDocument);
+	        atomEntry.setAnyOtherJAXBObject(arty);
+
+	        MediaType mediaType = new MediaType("application", "atom+xml");
+	        output.addPart(atomEntry, mediaType);
+	        
+	        String artifactFileName = "PO.xml";
+	        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+	        MediaType mediaType2 = new MediaType("application", "xml");
+	        output.addPart(contentStream, mediaType2);
+	        
+	        request.body(MultipartConstants.MULTIPART_RELATED, output);
+    
+            ClientResponse<Entry> response = request.post(Entry.class);
+//    
+            Entry entry = response.getEntity();
+            Assert.assertEquals(artifactFileName, entry.getTitle());
+            Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
+            Assert.assertEquals("my-uuid",artifact.getXmlDocument().getUuid());
+            Assert.assertEquals(Long.valueOf(825), artifact.getXmlDocument().getContentSize());
+            Assert.assertEquals(artifactFileName, artifact.getXmlDocument().getName());
+	    } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
 	}
 
 	/**
