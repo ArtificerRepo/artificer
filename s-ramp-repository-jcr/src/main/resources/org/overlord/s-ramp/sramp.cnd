@@ -92,7 +92,62 @@
 // -------------------------------------------------------
 // S-RAMP WSDL Model Artifacts
 // -------------------------------------------------------
+[sramp:wsdlDerivedArtifactType] > sramp:derivedArtifactType abstract
+- sramp:namespace (string)
+
+[sramp:namedWsdlDerivedArtifactType] > sramp:wsdlDerivedArtifactType abstract
+- sramp:ncName (string)
+
+[sramp:wsdlService] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:port] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:part] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:message] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:fault] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:portType] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:operation] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:operationInput] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:operationOutput] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:binding] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:bindingOperation] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:bindingOperationInput] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:bindingOperationOutput] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:bindingOperationFault] > sramp:namedWsdlDerivedArtifactType
+
+[sramp:wsdlExtension] > sramp:namedWsdlDerivedArtifactType
+
 [sramp:wsdlDocument] > sramp:xmlDocument mixin
++ * (sramp:elementDeclaration)
++ * (sramp:attributeDeclaration)
++ * (sramp:simpleTypeDeclaration)
++ * (sramp:complexTypeDeclaration)
++ * (sramp:wsdlService)
++ * (sramp:port)
++ * (sramp:part)
++ * (sramp:message)
++ * (sramp:fault)
++ * (sramp:portType)
++ * (sramp:operation)
++ * (sramp:operationInput)
++ * (sramp:operationOutput)
++ * (sramp:binding)
++ * (sramp:bindingOperation)
++ * (sramp:bindingOperationInput)
++ * (sramp:bindingOperationOutput)
++ * (sramp:bindingOperationFault)
++ * (sramp:wsdlExtension)
 
 
 // -------------------------------------------------------

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,6 +31,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.overlord.sramp.query.xpath.StaticNamespaceContext;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
@@ -85,10 +87,20 @@ public class XsdDeriver implements ArtifactDeriver {
 			nsCtx.addMapping("xsd", "http://www.w3.org/2001/XMLSchema");
 			xpath.setNamespaceContext(nsCtx);
 
-			processElementDeclarations(derivedArtifacts, artifact, document, xpath);
-			processAttributeDeclarations(derivedArtifacts, artifact, document, xpath);
-			processSimpleTypeDeclarations(derivedArtifacts, artifact, document, xpath);
-			processComplexTypeDeclarations(derivedArtifacts, artifact, document, xpath);
+			Element schemaElem = document.getDocumentElement();
+			processSchema(derivedArtifacts, artifact, schemaElem, xpath);
+
+			// Pre-set the UUIDs for all the derived artifacts.  This is useful
+			// if something downstream needs to reference them.  Also set the
+			// relatedTo relationship.
+			for (DerivedArtifactType derivedArtifact : derivedArtifacts) {
+				derivedArtifact.setUuid(UUID.randomUUID().toString());
+
+				DocumentArtifactTarget related = new DocumentArtifactTarget();
+				related.setValue(artifact.getUuid());
+				related.setArtifactType(DocumentArtifactEnum.fromValue(artifact.getArtifactType()));
+				derivedArtifact.setRelatedDocument(related);
+			}
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
@@ -97,32 +109,45 @@ public class XsdDeriver implements ArtifactDeriver {
 	}
 
 	/**
-	 * Processes the global element declarations found in the schema.
+	 * Process the entire schema for all derived content.
 	 * @param derivedArtifacts
-	 * @param sourceArtifact
-	 * @param document
+	 * @param artifact
+	 * @param schema
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private void processElementDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
-			BaseArtifactType sourceArtifact, Document document, XPath xpath) throws XPathExpressionException {
-		String targetNS = document.getDocumentElement().getAttribute("targetNamespace");
+	public static void processSchema(Collection<DerivedArtifactType> derivedArtifacts,
+			BaseArtifactType artifact, Element schema, XPath xpath) throws XPathExpressionException {
+		processElementDeclarations(derivedArtifacts, artifact, schema, xpath);
+		processAttributeDeclarations(derivedArtifacts, artifact, schema, xpath);
+		processSimpleTypeDeclarations(derivedArtifacts, artifact, schema, xpath);
+		processComplexTypeDeclarations(derivedArtifacts, artifact, schema, xpath);
+	}
+
+	/**
+	 * Processes the global element declarations found in the schema.
+	 * @param derivedArtifacts
+	 * @param sourceArtifact
+	 * @param schema
+	 * @param xpath
+	 * @throws XPathExpressionException
+	 */
+	private static void processElementDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
+		String targetNS = schema.getAttribute("targetNamespace");
 
 		// xpath expression to find all global element decls
-		XPathExpression expr = xpath.compile("/xsd:schema/xsd:element");
-		NodeList nodes = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+		XPathExpression expr = xpath.compile("./xsd:element");
+		NodeList nodes = (NodeList) expr.evaluate(schema, XPathConstants.NODESET);
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
 			if (node.hasAttribute("name")) {
 				String nsName = node.getAttribute("name");
 				ElementDeclaration elementDecl = new ElementDeclaration();
+				elementDecl.setArtifactType(BaseArtifactEnum.ELEMENT_DECLARATION);
 				elementDecl.setName(nsName);
 				elementDecl.setNamespace(targetNS);
 				elementDecl.setNCName(nsName);
-				DocumentArtifactTarget related = new DocumentArtifactTarget();
-				related.setValue(sourceArtifact.getUuid());
-				related.setArtifactType(DocumentArtifactEnum.fromValue(sourceArtifact.getArtifactType()));
-				elementDecl.setRelatedDocument(related);
 				derivedArtifacts.add(elementDecl);
 			}
 		}
@@ -132,29 +157,26 @@ public class XsdDeriver implements ArtifactDeriver {
 	 * Processes the global attribute declarations found in the schema.
 	 * @param derivedArtifacts
 	 * @param sourceArtifact
-	 * @param document
+	 * @param schema
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private void processAttributeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
-			BaseArtifactType sourceArtifact, Document document, XPath xpath) throws XPathExpressionException {
-		String targetNS = document.getDocumentElement().getAttribute("targetNamespace");
+	private static void processAttributeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
+		String targetNS = schema.getAttribute("targetNamespace");
 
 		// xpath expression to find all global attribute decls
-		XPathExpression expr = xpath.compile("/xsd:schema/xsd:attribute");
-		NodeList nodes = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+		XPathExpression expr = xpath.compile("./xsd:attribute");
+		NodeList nodes = (NodeList) expr.evaluate(schema, XPathConstants.NODESET);
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
 			if (node.hasAttribute("name")) {
 				String nsName = node.getAttribute("name");
 				AttributeDeclaration attributeDecl = new AttributeDeclaration();
+				attributeDecl.setArtifactType(BaseArtifactEnum.ATTRIBUTE_DECLARATION);
 				attributeDecl.setName(nsName);
 				attributeDecl.setNamespace(targetNS);
 				attributeDecl.setNCName(nsName);
-				DocumentArtifactTarget related = new DocumentArtifactTarget();
-				related.setValue(sourceArtifact.getUuid());
-				related.setArtifactType(DocumentArtifactEnum.fromValue(sourceArtifact.getArtifactType()));
-				attributeDecl.setRelatedDocument(related);
 				derivedArtifacts.add(attributeDecl);
 			}
 		}
@@ -164,29 +186,26 @@ public class XsdDeriver implements ArtifactDeriver {
 	 * Processes the global simple type declarations found in the schema.
 	 * @param derivedArtifacts
 	 * @param sourceArtifact
-	 * @param document
+	 * @param schema
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private void processSimpleTypeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
-			BaseArtifactType sourceArtifact, Document document, XPath xpath) throws XPathExpressionException {
-		String targetNS = document.getDocumentElement().getAttribute("targetNamespace");
+	private static void processSimpleTypeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
+		String targetNS = schema.getAttribute("targetNamespace");
 
 		// xpath expression to find all global simple type decls
-		XPathExpression expr = xpath.compile("/xsd:schema/xsd:simpleType");
-		NodeList nodes = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+		XPathExpression expr = xpath.compile("./xsd:simpleType");
+		NodeList nodes = (NodeList) expr.evaluate(schema, XPathConstants.NODESET);
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
 			if (node.hasAttribute("name")) {
 				String nsName = node.getAttribute("name");
 				SimpleTypeDeclaration simpleTypeDecl = new SimpleTypeDeclaration();
+				simpleTypeDecl.setArtifactType(BaseArtifactEnum.SIMPLE_TYPE_DECLARATION);
 				simpleTypeDecl.setName(nsName);
 				simpleTypeDecl.setNamespace(targetNS);
 				simpleTypeDecl.setNCName(nsName);
-				DocumentArtifactTarget related = new DocumentArtifactTarget();
-				related.setValue(sourceArtifact.getUuid());
-				related.setArtifactType(DocumentArtifactEnum.fromValue(sourceArtifact.getArtifactType()));
-				simpleTypeDecl.setRelatedDocument(related);
 				derivedArtifacts.add(simpleTypeDecl);
 			}
 		}
@@ -196,29 +215,26 @@ public class XsdDeriver implements ArtifactDeriver {
 	 * Processes the global complex type declarations found in the schema.
 	 * @param derivedArtifacts
 	 * @param sourceArtifact
-	 * @param document
+	 * @param schema
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private void processComplexTypeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
-			BaseArtifactType sourceArtifact, Document document, XPath xpath) throws XPathExpressionException {
-		String targetNS = document.getDocumentElement().getAttribute("targetNamespace");
+	private static void processComplexTypeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
+		String targetNS = schema.getAttribute("targetNamespace");
 
 		// xpath expression to find all global complex type decls
-		XPathExpression expr = xpath.compile("/xsd:schema/xsd:complexType");
-		NodeList nodes = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+		XPathExpression expr = xpath.compile("./xsd:complexType");
+		NodeList nodes = (NodeList) expr.evaluate(schema, XPathConstants.NODESET);
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
 			if (node.hasAttribute("name")) {
 				String nsName = node.getAttribute("name");
 				ComplexTypeDeclaration complexTypeDecl = new ComplexTypeDeclaration();
+				complexTypeDecl.setArtifactType(BaseArtifactEnum.COMPLEX_TYPE_DECLARATION);
 				complexTypeDecl.setName(nsName);
 				complexTypeDecl.setNamespace(targetNS);
 				complexTypeDecl.setNCName(nsName);
-				DocumentArtifactTarget related = new DocumentArtifactTarget();
-				related.setValue(sourceArtifact.getUuid());
-				related.setArtifactType(DocumentArtifactEnum.fromValue(sourceArtifact.getArtifactType()));
-				complexTypeDecl.setRelatedDocument(related);
 				derivedArtifacts.add(complexTypeDecl);
 			}
 		}
