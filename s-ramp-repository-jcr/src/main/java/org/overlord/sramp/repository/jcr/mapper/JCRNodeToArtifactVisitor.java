@@ -35,6 +35,7 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
@@ -149,6 +150,15 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
+		artifact.setNamespace(getProperty(jcrNode, "sramp:namespace"));
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitNamedWsdlDerived(org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType)
+	 */
+	@Override
+	protected void visitNamedWsdlDerived(NamedWsdlDerivedArtifactType artifact) {
+		artifact.setNCName(getProperty(jcrNode, "sramp:ncName"));
 	}
 
 	/**
