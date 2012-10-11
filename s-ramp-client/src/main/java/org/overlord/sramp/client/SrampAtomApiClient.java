@@ -17,6 +17,7 @@ package org.overlord.sramp.client;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,10 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartInput;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedOutput;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.MimeTypes;
 import org.overlord.sramp.atom.MediaType;
@@ -38,6 +41,7 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -137,6 +141,56 @@ public class SrampAtomApiClient {
 			throw new SrampClientException(e);
 		}
 	}
+	
+	/**
+     * Please refer to javadoc in  {@link SrampAtomApiClient#uploadArtifact(String, String, InputStream, String)}
+     * @param baseArtifactType
+     * @param content
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public Entry uploadArtifact(BaseArtifactType baseArtifactType, InputStream content)
+            throws SrampClientException, SrampAtomException {
+        ArtifactType artifactType = ArtifactType.valueOf(baseArtifactType);
+        String artifactFileName = baseArtifactType.getName();
+        // Determine the mime type if it's not included in the artifact type.
+        String mimeType = artifactType.getMimeType();
+        if (mimeType == null) {
+            mimeType = MimeTypes.getContentType(artifactFileName);
+            artifactType.setMimeType(mimeType);
+        }
+        try {
+            String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
+                    artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType());
+            ClientRequest request = new ClientRequest(atomUrl);
+            
+            MultipartRelatedOutput output = new MultipartRelatedOutput();
+            //1. First part, the S-RAMP entry
+            Entry atomEntry = new Entry();
+            MediaType mediaType = new MediaType("application", "atom+xml");
+            Artifact artifact = new Artifact();
+            //get the right method call
+            String methodStr = "set" + artifactType.getArtifactType();
+            Method method = artifact.getClass().getMethod(methodStr, artifactType.getArtifactType().getTypeClass());
+            method.invoke(artifact,baseArtifactType);
+            atomEntry.setAnyOtherJAXBObject(artifact);
+            output.addPart(atomEntry, mediaType);
+            
+            //2. Second part, the content
+            request.body(artifactType.getMimeType(), content);
+            MediaType mediaType2 = MediaType.getInstance(artifactType.getMimeType());
+            output.addPart(content, mediaType2);
+
+            //3. Send the request
+            request.body(MultipartConstants.MULTIPART_RELATED, output);
+            ClientResponse<Entry> response = request.post(Entry.class);
+            return response.getEntity();
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
 
 	/**
 	 * Performs a batch operation by uploading an s-ramp package archive to the s-ramp server
@@ -150,7 +204,6 @@ public class SrampAtomApiClient {
 	 * @throws SrampClientException
 	 * @throws SrampAtomException
 	 */
-	@SuppressWarnings("resource")
 	public Map<String, ?> uploadBatch(SrampArchive archive) throws SrampClientException, SrampAtomException {
 		File packageFile = null;
 		InputStream packageStream = null;
