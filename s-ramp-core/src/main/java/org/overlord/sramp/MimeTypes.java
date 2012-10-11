@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.atom.mime;
+package org.overlord.sramp;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -63,5 +63,30 @@ public class MimeTypes {
 		else
 			return mimeTypes.getContentType(name);
 	}
+	
+	  /**
+     * Figures out the mime type of the new artifact given the POSTed Content-Type, the name
+     * of the uploaded file, and the S-RAMP arifact type.  If the artifact type is Document
+     * then the other two pieces of information are used to determine an appropriate mime type.
+     * If no appropriate mime type can be determined for core/Document, then binary is returned.
+     * @param contentType the content type request header
+     * @param fileName the slug request header
+     * @param artifactType the artifact type (based on the endpoint POSTed to)
+     */
+    public static String determineMimeType(String contentType, String fileName, ArtifactType artifactType) {
+        if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.UserDefinedArtifactType) {
+            if (contentType != null && contentType.trim().length() > 0)
+                return contentType;
+            if (fileName != null) {
+                String ct = MimeTypes.getContentType(fileName);
+                if (ct != null)
+                    return ct;
+            }
+            return "application/octet-stream";
+        } else {
+            // Everything else is an XML file
+            return "application/xml";
+        }
+    }
 
 }

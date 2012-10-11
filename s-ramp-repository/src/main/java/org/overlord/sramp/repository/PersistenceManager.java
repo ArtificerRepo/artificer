@@ -27,14 +27,13 @@ import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
  */
 public interface PersistenceManager {
 
-	/**
-	 * Persists a single artifact.
-	 * @param name the name of the artifact
-	 * @param type the artifact type
-	 * @param content the artifact content
-	 * @throws RepositoryException
-	 */
-    public BaseArtifactType persistArtifact(String name, ArtifactType type, InputStream content) throws RepositoryException;
+    /**
+     * Persists a single artifact.
+     * @param baseArtifactType, the s-ramp artifact
+     * @param content, the artifact content
+     * @throws RepositoryException
+     */
+    public BaseArtifactType persistArtifact(BaseArtifactType baseArtifactType, InputStream content) throws RepositoryException;
 
     /**
      * Persists a single derived artifact.

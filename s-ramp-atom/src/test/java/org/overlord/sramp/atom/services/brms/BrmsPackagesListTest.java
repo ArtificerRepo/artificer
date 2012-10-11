@@ -72,19 +72,19 @@ public class BrmsPackagesListTest {
 	 * Unmarshall an xml fragment.
 	 */
 	@Test
-	public void unmarshallPackageXml()
+	public void unmarshallPackagesXml()
 	{
 		try {
 			JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
 			Unmarshaller unMarshaller = jaxbContext.createUnmarshaller();
 			Assert.assertNotNull("Cannot locate file packages.xml",
-			        this.getClass().getResourceAsStream("packages.xml"));
+			        this.getClass().getResourceAsStream("/brms/srampPackage/rest/packages.xml"));
 
-			String packagesXML = new Scanner(this.getClass().getResourceAsStream("packages.xml")).useDelimiter("\\Z").next();
+			String packagesXML = new Scanner(this.getClass().getResourceAsStream("/brms/srampPackage/rest/packages.xml")).useDelimiter("\\Z").next();
 			StringReader reader = new StringReader(packagesXML);
 			JAXBElement<Packages> element = unMarshaller.unmarshal(new StreamSource(reader),Packages.class);
 			Packages packages = element.getValue();
-			Assert.assertEquals(2, packages.getPackage().size());
+			Assert.assertEquals(1, packages.getPackage().size());
 		} catch (JAXBException jaxbe) {
 		    jaxbe.printStackTrace();
 			fail("No exception should be thrown");
@@ -129,13 +129,13 @@ public class BrmsPackagesListTest {
             JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
             Unmarshaller unMarshaller = jaxbContext.createUnmarshaller();
             Assert.assertNotNull("Cannot locate file packages.xml",
-                    this.getClass().getResourceAsStream("assets.xml"));
+                    this.getClass().getResourceAsStream("/brms/srampPackage/rest/assets.xml"));
 
-            String assetsXML = new Scanner(this.getClass().getResourceAsStream("assets.xml")).useDelimiter("\\Z").next();
+            String assetsXML = new Scanner(this.getClass().getResourceAsStream("/brms/srampPackage/rest/assets.xml")).useDelimiter("\\Z").next();
             StringReader reader = new StringReader(assetsXML);
             JAXBElement<Assets> element = unMarshaller.unmarshal(new StreamSource(reader),Assets.class);
             Assets assets = element.getValue();
-            Assert.assertEquals(13, assets.getAsset().size());
+            Assert.assertEquals(8, assets.getAsset().size());
         } catch (JAXBException jaxbe) {
             jaxbe.printStackTrace();
             fail("No exception should be thrown");

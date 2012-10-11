@@ -24,6 +24,10 @@
 			<artifactId>modeshape-common</artifactId>
 			<version>${org.modeshape.version}</version>
 		</dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
 
 		<!-- Testing (note the scope) -->
 		<dependency>
@@ -34,11 +38,6 @@
 		<dependency>
 			<groupId>xmlunit</groupId>
 			<artifactId>xmlunit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
