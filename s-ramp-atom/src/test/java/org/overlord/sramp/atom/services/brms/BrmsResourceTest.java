@@ -21,18 +21,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedOutput;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.client.ClientRequest;
+import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.services.AbstractResourceTest;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -54,11 +57,23 @@ public class BrmsResourceTest extends AbstractResourceTest {
 		dispatcher.getRegistry().addPerRequestResource(BrmsResource.class);
 	}
 
+	@Test
+    public void testNoSuchPackage() {
+	    try {
+    	    ClientRequest request = new ClientRequest(generateURL("/brms/rest/packages/srampPackage/binary"));
+            @SuppressWarnings("unused")
+            ClientResponse<InputStream> response = request.get(InputStream.class);
+            Assert.fail("Expecting to find no such package.");
+	    } catch (Exception e) {
+	        Assert.assertEquals(e.getClass(), SrampAtomException.class);
+	    }
+	    
+	}
 	/**
 	 * Tests the BRMS packages.
 	 * @throws Exception
 	 */
-	@Test @Ignore
+	@Test
 	public void testBrmsPackages() throws Exception {
 	    //Upload a BrmsPackage
         String artifactFileName = "srampPackage.pkg";
@@ -78,7 +93,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
         ClientResponse<InputStream> response1 = request1.get(InputStream.class);
         if (response1.getStatus() != 200) {
             throw new RuntimeException("Failed : HTTP error code : "
-                + response.getStatus());
+                + response1.getStatus());
         }
         InputStream in = response1.getEntity();
         File file = new File("target/SRAMP-srampPackage.pkg");
@@ -98,9 +113,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
 
 		Assert.assertEquals("srampPackage",packages.getPackage().get(0).getTitle());
 		
-		
 		//Now adding the assetInfo and then asking for the assets of this package
-		
 		//Update the entry by adding the asset info, for now in a property (later as a dependent artifact)
         Assert.assertTrue(arty instanceof UserDefinedArtifactType);
         UserDefinedArtifactType brmsPkgDocument = (UserDefinedArtifactType) arty;
@@ -113,7 +126,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
         String assetsXml = TestUtils.convertStreamToString(assetsInputStream);
         IOUtils.closeQuietly(assetsInputStream);
         //update the links
-        assetsXml = assetsXml.replaceAll("http://localhost:8080/drools-guvnor", "http://localhost:8080/s-ramp/brms");
+        assetsXml = assetsXml.replaceAll("http://localhost:8080/drools-guvnor", "http://localhost:8080/s-ramp-atom/brms");
         assetsProperty.setPropertyValue(assetsXml);
         brmsPkgDocument.getProperty().add(assetsProperty);
         Entry entry3 = new Entry();
@@ -142,41 +155,80 @@ public class BrmsResourceTest extends AbstractResourceTest {
                 //Upload the asset
                 String fileName = asset.getTitle() + "." + asset.getMetadata().getFormat();
                 String uuid = asset.getMetadata().getUuid();
-                
-                
                 //reading the asset from disk
                 InputStream assetInputStream = this.getClass().getResourceAsStream("/brms/srampPackage/" + fileName);
                 //upload the asset using the uuid
                 ArtifactType artifactType = ArtifactType.fromFileExtension(asset.getMetadata().getFormat());
-//                UserDefinedArtifactType userDefinedArtifactType = (UserDefinedArtifactType) ArtifactType.getArtifactInstance(artifactType);
-//                userDefinedArtifactType.setName(fileName);
-//                userDefinedArtifactType.setUuid(uuid);
-//                
-//                String path = "/s-ramp/" + artifactType.getModel() + "/" + artifactType.getType();
-//                ClientRequest request5 = new ClientRequest(generateURL(path));
-//                MultipartRelatedOutput output = new MultipartRelatedOutput();
-//                
-//                Entry atomEntry = new Entry();
-//                MediaType mediaType = new MediaType("application", "atom+xml");
-//                artifact = new Artifact();
-//                artifact.setUserDefinedArtifactType(userDefinedArtifactType);
-//                atomEntry.setAnyOtherJAXBObject(arty);
-//                output.addPart(atomEntry, mediaType);
-//                
-//                MediaType mediaType2 = MediaType.getInstance(artifactType.getMimeType());
-//                output.addPart(assetInputStream, mediaType2);
+                BaseArtifactType baseArtifactType = ArtifactType.getArtifactInstance(artifactType);
+                baseArtifactType.setName(fileName);
+                baseArtifactType.setUuid(uuid);
+                
+                String path = "/s-ramp/" + artifactType.getModel() + "/" + artifactType.getType();
+                ClientRequest request5 = new ClientRequest(generateURL(path));
+                MultipartRelatedOutput output = new MultipartRelatedOutput();
+                
+                Entry atomEntry = new Entry();
+                MediaType mediaType = new MediaType("application", "atom+xml");
+                artifact = new Artifact();
+                
+                //get the right method call
+                String methodStr = "set" + artifactType.getArtifactType();
+                Method method = artifact.getClass().getMethod(methodStr, artifactType.getArtifactType().getTypeClass());
+                method.invoke(artifact,baseArtifactType);
+                
+                //artifact.setUserDefinedArtifactType(baseArtifactType);
+                atomEntry.setAnyOtherJAXBObject(artifact);
+                output.addPart(atomEntry, mediaType);
+                
+                MediaType mediaType2 = MediaType.getInstance(artifactType.getMimeType());
+                output.addPart(assetInputStream, mediaType2);
                 
                 System.out.println("Uploading asset " + fileName + " " + artifactType);
-                //request5.body(MultipartConstants.MULTIPART_RELATED, output);
-
-                
+                request5.body(MultipartConstants.MULTIPART_RELATED, output);
+                ClientResponse<Entry> assetResponse = request5.post(Entry.class);
                 IOUtils.closeQuietly(assetInputStream);
+                
+                Entry assetEntry = assetResponse.getEntity();
+                BaseArtifactType assetArtifact = SrampAtomUtils.unwrapSrampArtifact(assetEntry);
+                System.out.println("Uploaded asset " + assetArtifact.getName() + " " + assetArtifact.getUuid());
+                
             }
         }
+        
+        //now see if we can retrieve some of the assets
+        //for example the Evaluation.bpmn file should be available under
+        // http://localhost:8080/drools-guvnor/rest/packages/srampPackage/assets/Evaluation/binary
+        //Do a query using GET on the pseudo BRMS API, to get the content of the bpmn
+        ClientRequest request7 = new ClientRequest(generateURL("/brms/rest/packages/srampPackage/assets/Evaluation/binary"));
+        ClientResponse<InputStream> response7 = request7.get(InputStream.class);
+        if (response1.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : "
+                + response.getStatus());
+        }
+        InputStream in7 = response7.getEntity();
+        File file7 = new File("target/SRAMP-Evaluation.bpmn");
+        OutputStream out7 = new FileOutputStream(file7);
+        IOUtils.copy(in7, out7);
+        out7.flush();
+        IOUtils.closeQuietly(in7);
+        IOUtils.closeQuietly(out7);
+        Assert.assertTrue(file7.exists());
+        Assert.assertEquals(12483l,file7.length());
+        //also check if we can retrieve the image
+        ClientRequest request8 = new ClientRequest(generateURL("/brms/rest/packages/srampPackage/assets/Evaluation-image/binary"));
+        ClientResponse<InputStream> response8 = request8.get(InputStream.class);
+        if (response1.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : "
+                + response.getStatus());
+        }
+        InputStream in8 = response8.getEntity();
+        File file8 = new File("target/SRAMP-Evaluation-image.png");
+        OutputStream out8 = new FileOutputStream(file8);
+        IOUtils.copy(in8, out8);
+        out8.flush();
+        IOUtils.closeQuietly(in8);
+        IOUtils.closeQuietly(out8);
+        Assert.assertTrue(file8.exists());
+        Assert.assertEquals(14029l,file8.length());
 	}
-	
-
-
-
-
 }

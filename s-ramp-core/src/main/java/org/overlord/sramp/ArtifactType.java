@@ -82,6 +82,8 @@ public class ArtifactType {
     	    userDefinedArtifactTypes.put("html",       new ModelMime("HtmlDocument",    "text/html"));
     	    userDefinedArtifactTypes.put("ftl",        new ModelMime("FtlDocument",     "text/html"));
     	    userDefinedArtifactTypes.put("wid",        new ModelMime("TextDocument",    "text/plain"));
+    	    userDefinedArtifactTypes.put("gif",        new ModelMime("ImageDocument",   "application/octet-stream"));
+    	    userDefinedArtifactTypes.put("png",        new ModelMime("ImageDocument",   "application/octet-stream"));
 	    }
 	}
 

@@ -85,5 +85,14 @@ public class MediaType extends javax.ws.rs.core.MediaType {
     public MediaType(String type, String subtype) {
         super(type, subtype);
     }
+    
+    public static MediaType getInstance(String mimeType) {
+        if (mimeType!=null && mimeType.contains("/")) {
+            String[] type = mimeType.split("/");
+            return new MediaType(type[0],type[1]);
+        } else {
+            return new MediaType(mimeType, null);
+        }
+    }
 
 }
