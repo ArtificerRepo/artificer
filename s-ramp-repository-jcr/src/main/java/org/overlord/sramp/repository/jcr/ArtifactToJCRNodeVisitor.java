@@ -22,17 +22,29 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.version.VersionException;
 
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
+import org.s_ramp.xmlns._2010.s_ramp.Message;
 import org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Part;
+import org.s_ramp.xmlns._2010.s_ramp.PartEnum;
+import org.s_ramp.xmlns._2010.s_ramp.PartTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
@@ -79,6 +91,16 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitDerived(DerivedArtifactType artifact) {
+		try {
+			DocumentArtifactTarget target = artifact.getRelatedDocument();
+			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, "relatedDocument", 1,
+					target.getArtifactType().toString(), false);
+			Value [] values = new Value[1];
+			values[0] = this.referenceFactory.createReference(target.getValue());
+			relationshipNode.setProperty("sramp:relationshipTarget", values);
+		} catch (RepositoryException e) {
+			error = e;
+		}
 	}
 
 	/**
@@ -160,13 +182,14 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		NodeIterator existingNodes = this.jcrNode.getNodes();
 		while (existingNodes.hasNext()) {
 			Node rNode = existingNodes.nextNode();
-			if (rNode.isNodeType("sramp:relationship")) {
+			// Only roemove generic relationships
+			if (rNode.isNodeType("sramp:relationship") && rNode.hasProperty("sramp:generic") && rNode.getProperty("sramp:generic").getBoolean()) {
 				rNode.remove();
 			}
 		}
 		// Create all the relationships
 		for (Relationship relationship : artifact.getRelationship()) {
-			Node rNode = this.jcrNode.addNode(relationship.getRelationshipType(), "sramp:relationship");
+			Node rNode = this.jcrNode.addNode("sramp-relationships:" + relationship.getRelationshipType(), "sramp:relationship");
 			rNode.setProperty("sramp:relationshipType", relationship.getRelationshipType());
 			List<Target> targets = relationship.getRelationshipTarget();
 			Value [] values = new Value[targets.size()];
@@ -180,6 +203,30 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 			}
 			rNode.setProperty("sramp:relationshipTarget", values);
 			rNode.setProperty("sramp:generic", true);
+		}
+	}
+
+	/**
+	 * Message has references to all its {@link Part}s.
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Message)
+	 */
+	@Override
+	public void visit(Message artifact) {
+		super.visit(artifact);
+
+		try {
+			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, "part", -1,
+					PartEnum.PART.toString(), false);
+
+			List<PartTarget> partTargets = artifact.getPart();
+			Value [] values = new Value[partTargets.size()];
+			int idx = 0;
+			for (PartTarget target : partTargets) {
+				values[idx++] = this.referenceFactory.createReference(target.getValue());
+			}
+			relationshipNode.setProperty("sramp:relationshipTarget", values);
+		} catch (RepositoryException e) {
+			error = e;
 		}
 	}
 
@@ -215,6 +262,44 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 			}
 		}
 		return rval;
+	}
+
+	/**
+	 * Will either find and return a relationship child node, or else will create a new
+	 * one and return that.  The provided information is added to the created node when
+	 * appropriate.
+	 * @param parentNode
+	 * @param relationshipType
+	 * @param maxCardinality
+	 * @param targetType
+	 * @param isGeneric
+	 * @throws RepositoryException
+	 * @throws ValueFormatException
+	 * @throws ConstraintViolationException
+	 * @throws VersionException
+	 * @throws LockException
+	 * @throws NoSuchNodeTypeException
+	 * @throws ItemExistsException
+	 * @throws PathNotFoundException
+	 */
+	private static Node getOrCreateRelationshipNode(Node parentNode, String relationshipType,
+			int maxCardinality, String targetType, boolean isGeneric) throws PathNotFoundException,
+			ItemExistsException, NoSuchNodeTypeException, LockException, VersionException,
+			ConstraintViolationException, ValueFormatException, RepositoryException {
+		Node relationshipNode = null;
+		String nodeName = "sramp-relationships:" + relationshipType;
+		if (parentNode.hasNode(nodeName)) {
+			relationshipNode = parentNode.getNode(nodeName);
+		} else {
+			relationshipNode = parentNode.addNode(nodeName, "sramp:relationship");
+			relationshipNode.setProperty("sramp:relationshipType", relationshipType);
+			if (maxCardinality != -1)
+				relationshipNode.setProperty("sramp:maxCardinality", maxCardinality);
+			if (targetType != null)
+				relationshipNode.setProperty("sramp:targetType", targetType);
+			relationshipNode.setProperty("sramp:generic", isGeneric);
+		}
+		return relationshipNode;
 	}
 
 	/**

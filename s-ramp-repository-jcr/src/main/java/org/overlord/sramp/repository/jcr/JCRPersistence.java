@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.jcr.Binary;
@@ -170,6 +172,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 
             // Persist each of the derived nodes
             JCRReferenceFactoryImpl referenceFactory = new JCRReferenceFactoryImpl(session);
+            Map<DerivedArtifactType, ArtifactToJCRNodeVisitor> deferredVisitors = new HashMap<DerivedArtifactType, ArtifactToJCRNodeVisitor>(artifacts.size());
             for (DerivedArtifactType derivedArtifact : artifacts) {
             	if (derivedArtifact.getUuid() == null) {
             		derivedArtifact.setUuid(UUID.randomUUID().toString());
@@ -178,19 +181,35 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
                 String jcrNodeType = derivedArtifactType.getArtifactType().getApiType().value();
                 jcrNodeType = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrNodeType);
 
+                // Create the JCR node and set some basic properties first.
                 String nodeName = derivedArtifact.getUuid();
                 Node derivedArtifactNode = sourceArtifactNode.addNode(nodeName, jcrNodeType);
-
                 derivedArtifactNode.setProperty(JCRConstants.SRAMP_UUID, derivedArtifact.getUuid());
                 derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, derivedArtifactType.getArtifactType().getModel());
                 derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, derivedArtifactType.getArtifactType().getType());
 
+                // Create the visitor that will be used later, once all the JCR nodes have
+                // been created (to ensure that references can be resolved during the visit).
 				ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(derivedArtifactNode, referenceFactory);
-                ArtifactVisitorHelper.visitArtifact(visitor, derivedArtifact);
-                if (visitor.hasError())
-                	throw visitor.getError();
+				deferredVisitors.put(derivedArtifact, visitor);
 
                 log.debug("Successfully saved derived artifact {} to node={}", derivedArtifact.getName(), derivedArtifact.getUuid());
+            }
+
+            // Save current changes so that references to nodes can be found.  Note that if
+            // transactions are enabled, this will not actually persist to final storage.
+            session.save();
+
+            // Now run the Artifact->JCR Node visitor for each JCR node we created.  This will
+            // cause the rest of the meta-data to be populated on the JCR node, including
+            // properties and relationships (for example).  This is deferred so that references
+            // created during processing of Relationships can be successful.
+            for (Map.Entry<DerivedArtifactType, ArtifactToJCRNodeVisitor> entry : deferredVisitors.entrySet()) {
+            	DerivedArtifactType derivedArtifact = entry.getKey();
+            	ArtifactToJCRNodeVisitor visitor = entry.getValue();
+	            ArtifactVisitorHelper.visitArtifact(visitor, derivedArtifact);
+	            if (visitor.hasError())
+	            	throw visitor.getError();
             }
 
             session.save();

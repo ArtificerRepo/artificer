@@ -34,8 +34,13 @@ import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Message;
 import org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.PartEnum;
+import org.s_ramp.xmlns._2010.s_ramp.PartTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
@@ -143,6 +148,29 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitDerived(DerivedArtifactType artifact) {
+		try {
+			// Pull out the 'relatedDocument' relationship, if one exists (it should!)
+			if (this.jcrNode.hasNode("sramp-relationships:relatedDocument")) {
+				Node relatedDocNode = this.jcrNode.getNode("sramp-relationships:relatedDocument");
+				String targetType = getProperty(relatedDocNode, "sramp:targetType");
+				Property property = relatedDocNode.getProperty("sramp:relationshipTarget");
+				Value[] values = property.getValues();
+				if (values.length > 1) {
+					throw new Exception("Maximum cardinality check failed for 'relatedDocument'.  Expected a max cardinality of 1, found " + values.length);
+				}
+				Value value = values[0];
+				String targetUUID = referenceResolver.resolveReference(value);
+
+				DocumentArtifactTarget target = new DocumentArtifactTarget();
+				target.setValue(targetUUID);
+				if (targetType != null) {
+					target.setArtifactType(DocumentArtifactEnum.valueOf(targetType));
+				}
+				artifact.setRelatedDocument(target);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -193,6 +221,31 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
         artifact.setUserType(getProperty(jcrNode, "sramp:userType"));
         artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_SIZE), String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data")));
         artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_TYPE), getProperty(jcrNode,"jcr:content/jcr:mimeType"));
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Message)
+     */
+    @Override
+    public void visit(Message artifact) {
+    	super.visit(artifact);
+		try {
+			// Pull out the 'part' relationship - there should be a target for each
+			// wsdl:part in this wsdl:message
+			if (this.jcrNode.hasNode("sramp-relationships:part")) {
+				Node relatedDocNode = this.jcrNode.getNode("sramp-relationships:part");
+				Property property = relatedDocNode.getProperty("sramp:relationshipTarget");
+				Value[] values = property.getValues();
+				for (Value value : values) {
+					PartTarget target = new PartTarget();
+					target.setValue(referenceResolver.resolveReference(value));
+					target.setArtifactType(PartEnum.PART);
+					artifact.getPart().add(target);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
     }
 
     /**
