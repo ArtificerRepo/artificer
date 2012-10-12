@@ -15,6 +15,10 @@
  */
 package org.overlord.sramp.repository.jcr.mapper;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -37,16 +41,28 @@ import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.ElementTarget;
+import org.s_ramp.xmlns._2010.s_ramp.Fault;
+import org.s_ramp.xmlns._2010.s_ramp.FaultTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Message;
+import org.s_ramp.xmlns._2010.s_ramp.MessageTarget;
 import org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.PartEnum;
+import org.s_ramp.xmlns._2010.s_ramp.Operation;
+import org.s_ramp.xmlns._2010.s_ramp.OperationInput;
+import org.s_ramp.xmlns._2010.s_ramp.OperationInputTarget;
+import org.s_ramp.xmlns._2010.s_ramp.OperationOutput;
+import org.s_ramp.xmlns._2010.s_ramp.OperationOutputTarget;
+import org.s_ramp.xmlns._2010.s_ramp.OperationTarget;
+import org.s_ramp.xmlns._2010.s_ramp.Part;
 import org.s_ramp.xmlns._2010.s_ramp.PartTarget;
+import org.s_ramp.xmlns._2010.s_ramp.PortType;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdType;
+import org.s_ramp.xmlns._2010.s_ramp.XsdTypeTarget;
 
 /**
  * A visitor for going from a JCR node to an S-RAMP artifact instance.
@@ -230,25 +246,171 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
     public void visit(Message artifact) {
     	super.visit(artifact);
 		try {
-			// Pull out the 'part' relationship - there should be a target for each
-			// wsdl:part in this wsdl:message
-			if (this.jcrNode.hasNode("sramp-relationships:part")) {
-				Node relatedDocNode = this.jcrNode.getNode("sramp-relationships:part");
-				Property property = relatedDocNode.getProperty("sramp:relationshipTarget");
-				Value[] values = property.getValues();
-				for (Value value : values) {
-					PartTarget target = new PartTarget();
-					target.setValue(referenceResolver.resolveReference(value));
-					target.setArtifactType(PartEnum.PART);
-					artifact.getPart().add(target);
-				}
-			}
+			artifact.getPart().addAll(getRelationships("part", PartTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
     }
 
     /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Part)
+     */
+    @Override
+    public void visit(Part artifact) {
+    	super.visit(artifact);
+		try {
+			artifact.setElement(getRelationship("element", ElementTarget.class));
+			artifact.setType(getRelationship("type", XsdTypeTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.PortType)
+     */
+    @Override
+    public void visit(PortType artifact) {
+    	super.visit(artifact);
+		try {
+			artifact.getOperation().addAll(getRelationships("operation", OperationTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Operation)
+     */
+    @Override
+    public void visit(Operation artifact) {
+    	super.visit(artifact);
+		try {
+			artifact.setInput(getRelationship("input", OperationInputTarget.class));
+			artifact.setOutput(getRelationship("output", OperationOutputTarget.class));
+			artifact.getFault().addAll(getRelationships("fault", FaultTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.OperationInput)
+     */
+    @Override
+    public void visit(OperationInput artifact) {
+    	super.visit(artifact);
+		try {
+			artifact.setMessage(getRelationship("message", MessageTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.OperationOutput)
+     */
+    @Override
+    public void visit(OperationOutput artifact) {
+    	super.visit(artifact);
+		try {
+			artifact.setMessage(getRelationship("message", MessageTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Fault)
+     */
+    @Override
+    public void visit(Fault artifact) {
+    	super.visit(artifact);
+		try {
+			artifact.setMessage(getRelationship("message", MessageTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * Gets the singular relationship of the given type.  This is called for relationships
+     * that have a max cardinality of 1.
+	 * @param relationshipType
+	 * @param targetClass
+	 * @return list of relationship targets
+	 */
+	private <T> T getRelationship(String relationshipType, Class<T> targetClass) throws Exception {
+		String relNodeName = "sramp-relationships:" + relationshipType;
+		if (this.jcrNode.hasNode(relNodeName)) {
+			Node relationshipNode = this.jcrNode.getNode(relNodeName);
+			String targetType = relationshipNode.getProperty("sramp:targetType").getString();
+			if (relationshipNode.hasProperty("sramp:relationshipTarget")) {
+				Property targetProperty = relationshipNode.getProperty("sramp:relationshipTarget");
+				Value[] values = targetProperty.getValues();
+				Value value = values[0];
+				T t = targetClass.newInstance();
+				Target target = (Target) t;
+				target.setValue(referenceResolver.resolveReference(value));
+				// Use reflection to set the 'artifact type' attribute found on
+				// most (all?) targets.  Unfortunately, the method and field are
+				// redefined in each subclass of Target.
+				try {
+					Method m = targetClass.getMethod("getArtifactType");
+					Class<?> mc = m.getReturnType();
+					m = mc.getMethod("valueOf", String.class);
+					Object o = m.invoke(null, targetType);
+					m = targetClass.getMethod("setArtifactType", o.getClass());
+					m.invoke(target, o);
+				} catch (Exception e) {
+					// eat it
+				}
+				return t;
+			}
+		}
+		return null;
+	}
+
+    /**
+     * Gets the relationships of the given type.
+	 * @param relationshipType
+	 * @param targetClass
+	 * @return list of relationship targets
+	 */
+	private <T> List<T> getRelationships(String relationshipType, Class<T> targetClass) throws Exception {
+		List<T> rval = new ArrayList<T>();
+		String relNodeName = "sramp-relationships:" + relationshipType;
+		if (this.jcrNode.hasNode(relNodeName)) {
+			Node relationshipNode = this.jcrNode.getNode(relNodeName);
+			String targetType = relationshipNode.getProperty("sramp:targetType").getString();
+			if (relationshipNode.hasProperty("sramp:relationshipTarget")) {
+				Property targetsProperty = relationshipNode.getProperty("sramp:relationshipTarget");
+				Value[] values = targetsProperty.getValues();
+				for (Value value : values) {
+					T t = targetClass.newInstance();
+					Target target = (Target) t;
+					target.setValue(referenceResolver.resolveReference(value));
+					// Use reflection to set the 'artifact type' attribute found on
+					// most (all?) targets.  Unfortunately, the method and field are
+					// redefined in each subclass of Target.
+					try {
+						Method m = targetClass.getMethod("getArtifactType");
+						Class<?> mc = m.getReturnType();
+						m = mc.getMethod("valueOf", String.class);
+						Object o = m.invoke(null, targetType);
+						m = targetClass.getMethod("setArtifactType", o.getClass());
+						m.invoke(target, o);
+					} catch (Exception e) {
+						// eat it
+					}
+					rval.add(t);
+				}
+			}
+		}
+		return rval;
+	}
+
+	/**
      * Gets a single property from the given JCR node.  This returns null
      * if the property does not exist.
      * @param node the JCR node
