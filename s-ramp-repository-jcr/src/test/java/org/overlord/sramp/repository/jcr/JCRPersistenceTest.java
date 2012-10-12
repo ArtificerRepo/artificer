@@ -22,14 +22,9 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampModelUtils;
-import org.overlord.sramp.repository.PersistenceFactory;
-import org.overlord.sramp.repository.PersistenceManager;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
@@ -37,37 +32,12 @@ import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  */
-public class JCRPersistenceTest {
-
-    private Logger log = LoggerFactory.getLogger(this.getClass());
-
-    private static PersistenceManager persistenceManager = null;
-
-    @BeforeClass
-    public static void setup() {
-		// use the in-memory config for unit tests
-		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
-				+ "/META-INF/modeshape-configs/inmemory-sramp-config.json");
-
-        persistenceManager = PersistenceFactory.newInstance();
-    }
-
-    @Before
-    public void prepForTest() {
-        new JCRRepositoryCleaner().clean();
-    }
-
-    @AfterClass
-    public static void cleanup() {
-        persistenceManager.shutdown();
-    }
+public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
 
     @Test
     public void testSave_PDF() throws Exception {
@@ -120,7 +90,7 @@ public class JCRPersistenceTest {
         Document document = new Document();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
-        
+
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXml);
 
         Assert.assertNotNull(artifact);
@@ -141,7 +111,7 @@ public class JCRPersistenceTest {
         Document document = new Document();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        
+
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
 
         Assert.assertNotNull(artifact);

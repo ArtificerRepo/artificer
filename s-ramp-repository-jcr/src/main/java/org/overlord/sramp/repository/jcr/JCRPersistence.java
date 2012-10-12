@@ -234,15 +234,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
         Session session = null;
         try {
             session = JCRRepository.getSession();
-			Node artifactNode = null;
-            if (type.getArtifactType().isDerived()) {
-				artifactNode = findArtifactNodeByUuid(session, uuid);
-            } else {
-	            String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
-	            if (session.nodeExists(artifactPath)) {
-		            artifactNode = session.getNode(artifactPath);
-	            }
-            }
+			Node artifactNode = findArtifactNode(uuid, type, session);
             if (artifactNode != null) {
 	            // Create an artifact from the sequenced node
 	            return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
@@ -285,11 +277,9 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     @Override
     public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws RepositoryException {
         Session session = null;
-        String artifactPath = MapToJCRPath.getArtifactPath(artifact.getUuid(), type);
-
         try {
             session = JCRRepository.getSession();
-            Node artifactNode = session.getNode(artifactPath);
+            Node artifactNode = findArtifactNode(artifact.getUuid(), type, session);
             if (artifactNode == null) {
             	throw new RepositoryException("No artifact found with UUID: " + artifact.getUuid());
             }
@@ -382,6 +372,26 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             JCRRepository.logoutQuietly(session);
         }
     }
+
+	/**
+	 * Finds the JCR node for the given artifact (UUID + type).
+	 * @param uuid
+	 * @param type
+	 * @param session
+	 * @throws Exception
+	 */
+	private Node findArtifactNode(String uuid, ArtifactType type, Session session) throws Exception {
+		Node artifactNode = null;
+		if (type.getArtifactType().isDerived()) {
+			artifactNode = findArtifactNodeByUuid(session, uuid);
+		} else {
+		    String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
+		    if (session.nodeExists(artifactPath)) {
+		        artifactNode = session.getNode(artifactPath);
+		    }
+		}
+		return artifactNode;
+	}
 
 	/**
 	 * Saves binary content from the given JCR content (jcr:content) node to a temporary
