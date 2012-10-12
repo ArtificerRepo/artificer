@@ -20,7 +20,7 @@ fi
 if [ "$1" == "brms" ]
 then
    echo "Uploading brms package '$2' to S-RAMP..."
-   java -cp target/s-ramp-clientwithdependencies.jar org.overlord.sramp.client.brms.BrmsPkgToSramp $2 $3 $4
+   java -cp target/s-ramp-client-0.0.3-SNAPSHOT.jar:$(echo target/lib/*.jar | tr ' ' ':') org.overlord.sramp.client.brms.BrmsPkgToSramp $2 $3 $4
 fi
 
 exit 0
