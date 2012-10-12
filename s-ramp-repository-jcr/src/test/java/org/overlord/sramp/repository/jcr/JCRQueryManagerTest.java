@@ -20,51 +20,20 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.repository.PersistenceFactory;
-import org.overlord.sramp.repository.PersistenceManager;
-import org.overlord.sramp.repository.QueryManager;
-import org.overlord.sramp.repository.QueryManagerFactory;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  */
-public class JCRQueryManagerTest {
-
-    private Logger log = LoggerFactory.getLogger(this.getClass());
-
-    private static PersistenceManager persistenceManager = null;
-    private static QueryManager queryManager = null;
-
-    @BeforeClass
-    public static void setup() {
-        System.out.println("Set up");
-        persistenceManager = PersistenceFactory.newInstance();
-        queryManager = QueryManagerFactory.newInstance();
-    }
-
-    @Before
-    public void prepForTest() {
-        new JCRRepositoryCleaner().clean();
-    }
-    
-    @AfterClass
-    public static void cleanup() {
-        persistenceManager.shutdown();
-    }
+public class JCRQueryManagerTest extends AbstractJCRPersistenceTest {
 
     /**
      * Tests the query manager.

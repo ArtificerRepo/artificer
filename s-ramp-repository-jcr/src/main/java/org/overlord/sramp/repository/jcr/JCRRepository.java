@@ -177,6 +177,7 @@ public class JCRRepository {
             NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
             namespaceRegistry.registerNamespace(JCRConstants.SRAMP, JCRConstants.SRAMP_NS);
             namespaceRegistry.registerNamespace(JCRConstants.SRAMP_PROPERTIES, JCRConstants.SRAMP_PROPERTIES_NS);
+            namespaceRegistry.registerNamespace(JCRConstants.SRAMP_RELATIONSHIPS, JCRConstants.SRAMP_RELATIONSHIPS_NS);
 
             NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
 

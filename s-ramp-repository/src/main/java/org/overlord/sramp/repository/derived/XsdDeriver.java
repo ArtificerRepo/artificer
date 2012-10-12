@@ -89,18 +89,6 @@ public class XsdDeriver implements ArtifactDeriver {
 
 			Element schemaElem = document.getDocumentElement();
 			processSchema(derivedArtifacts, artifact, schemaElem, xpath);
-
-			// Pre-set the UUIDs for all the derived artifacts.  This is useful
-			// if something downstream needs to reference them.  Also set the
-			// relatedTo relationship.
-			for (DerivedArtifactType derivedArtifact : derivedArtifacts) {
-				derivedArtifact.setUuid(UUID.randomUUID().toString());
-
-				DocumentArtifactTarget related = new DocumentArtifactTarget();
-				related.setValue(artifact.getUuid());
-				related.setArtifactType(DocumentArtifactEnum.fromValue(artifact.getArtifactType()));
-				derivedArtifact.setRelatedDocument(related);
-			}
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
@@ -122,6 +110,18 @@ public class XsdDeriver implements ArtifactDeriver {
 		processAttributeDeclarations(derivedArtifacts, artifact, schema, xpath);
 		processSimpleTypeDeclarations(derivedArtifacts, artifact, schema, xpath);
 		processComplexTypeDeclarations(derivedArtifacts, artifact, schema, xpath);
+
+		// Pre-set the UUIDs for all the derived artifacts.  This is useful
+		// if something downstream needs to reference them.  Also set the
+		// relatedTo relationship.
+		for (DerivedArtifactType derivedArtifact : derivedArtifacts) {
+			derivedArtifact.setUuid(UUID.randomUUID().toString());
+
+			DocumentArtifactTarget related = new DocumentArtifactTarget();
+			related.setValue(artifact.getUuid());
+			related.setArtifactType(DocumentArtifactEnum.fromValue(artifact.getArtifactType()));
+			derivedArtifact.setRelatedDocument(related);
+		}
 	}
 
 	/**
