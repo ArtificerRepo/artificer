@@ -17,7 +17,6 @@ package org.overlord.sramp.client;
 
 import java.io.File;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +40,6 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -145,7 +143,7 @@ public class SrampAtomApiClient {
 			throw new SrampClientException(e);
 		}
 	}
-	
+
 	/**
      * Please refer to javadoc in  {@link SrampAtomApiClient#uploadArtifact(String, String, InputStream, String)}
      * @param baseArtifactType
@@ -171,18 +169,13 @@ public class SrampAtomApiClient {
             String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
                     artifactType.getArtifactType().getModel(), type);
             ClientRequest request = new ClientRequest(atomUrl);
-            
+
             MultipartRelatedOutput output = new MultipartRelatedOutput();
             
             //1. Add first part, the S-RAMP entry
-            Entry atomEntry = new Entry();
+            Entry atomEntry = SrampAtomUtils.wrapSrampArtifact(baseArtifactType);
+
             MediaType mediaType = new MediaType("application", "atom+xml");
-            Artifact artifact = new Artifact();
-            //get the right method call
-            String methodStr = "set" + artifactType.getArtifactType();
-            Method method = artifact.getClass().getMethod(methodStr, artifactType.getArtifactType().getTypeClass());
-            method.invoke(artifact,baseArtifactType);
-            atomEntry.setAnyOtherJAXBObject(artifact);
             output.addPart(atomEntry, mediaType);
             
             //2. Add second part, the content
@@ -248,7 +241,8 @@ public class SrampAtomApiClient {
 					}
 				} else {
 					// Only a non-compliant s-ramp impl could cause this
-					throw new Exception("Unexpected return code '" + rbean.getCode() + "' for ID '" + contentId + "'.  The S-RAMP server is non-compliant.");
+					SrampAtomException exception = new SrampAtomException("Unexpected return code '" + rbean.getCode() + "' for ID '" + contentId + "'.  The S-RAMP server is non-compliant.");
+					rval.put(path, exception);
 				}
 			}
 			return rval;

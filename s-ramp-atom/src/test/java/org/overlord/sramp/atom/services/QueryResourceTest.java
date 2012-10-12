@@ -24,16 +24,23 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.xml.namespace.QName;
+
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.junit.Assert;
 import org.junit.Test;
+import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.client.ClientRequest;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
+import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.atom.TestUtils;
@@ -175,5 +182,49 @@ public class QueryResourceTest extends AbstractResourceTest {
 
 		return entry;
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testQueriesUserDefined() throws Exception {
+		addJpegDocument("photo1.jpg");
+		addJpegDocument("photo2.jpg");
+
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp?query=user/JpgDocument"));
+		ClientResponse<Feed> response = request.get(Feed.class);
+		Feed feed = response.getEntity();
+		Assert.assertEquals(2, feed.getEntries().size());
+
+		request = new ClientRequest(generateURL("/s-ramp/user/JpgDocument"));
+		response = request.get(Feed.class);
+		feed = response.getEntity();
+		Assert.assertEquals(2, feed.getEntries().size());
+	}
+
+    public void addJpegDocument(String fname) throws Exception {
+        // Add the jpg to the repository
+        String artifactFileName = "photo.jpg";
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/user/" + artifactFileName);
+        try {
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/JpgDocument"));
+            request.header("Slug", fname);
+            request.body("application/octet-stream", contentStream);
+
+            ClientResponse<Entry> response = request.post(Entry.class);
+
+            Entry entry = response.getEntity();
+            Assert.assertEquals(fname, entry.getTitle());
+            BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+            Assert.assertTrue(arty instanceof UserDefinedArtifactType);
+            UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
+            Assert.assertEquals(fname, doc.getName());
+            Assert.assertEquals("JpgDocument", doc.getUserType());
+            Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+        } finally {
+            IOUtils.closeQuietly(contentStream);
+        }
+    }
 
 }

@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -50,7 +51,11 @@ import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Message;
+import org.s_ramp.xmlns._2010.s_ramp.PartEnum;
+import org.s_ramp.xmlns._2010.s_ramp.PartTarget;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
@@ -371,6 +376,14 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		Message message = (Message) arty;
 		Assert.assertEquals("findRequest", message.getNCName());
 		Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", message.getNamespace());
+		DocumentArtifactTarget relatedDocumentTarget = message.getRelatedDocument();
+		Assert.assertEquals(DocumentArtifactEnum.WSDL_DOCUMENT, relatedDocumentTarget.getArtifactType());
+		Assert.assertEquals(uuid, relatedDocumentTarget.getValue());
+		List<PartTarget> parts = message.getPart();
+		Assert.assertNotNull(parts);
+		Assert.assertEquals(1, parts.size());
+		Assert.assertEquals(PartEnum.PART, parts.get(0).getArtifactType());
+		Assert.assertNotNull(parts.get(0).getValue());
 	}
 	
     @Path("s-ramp")

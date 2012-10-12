@@ -92,8 +92,8 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 			IOUtils.closeQuietly(is);
 		}
 	}
-	
-	   /**
+
+	/**
      * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
      */
     @Test
