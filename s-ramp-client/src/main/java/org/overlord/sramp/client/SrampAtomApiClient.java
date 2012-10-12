@@ -124,8 +124,12 @@ public class SrampAtomApiClient {
 			mimeType = MimeTypes.getContentType(artifactFileName);
 		}
 		try {
+		    String type = artifactType.getArtifactType().getType();
+		    if ("user".equals(artifactType.getArtifactType().getModel()) && artifactType.getUserType()!=null) {
+                type = artifactType.getUserType();
+            }
 			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
-					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType());
+					artifactType.getArtifactType().getModel(), type);
 			ClientRequest request = new ClientRequest(atomUrl);
 			if (artifactFileName != null)
 				request.header("Slug", artifactFileName);
@@ -160,12 +164,17 @@ public class SrampAtomApiClient {
             artifactType.setMimeType(mimeType);
         }
         try {
+            String type = artifactType.getArtifactType().getType();
+            if ("user".equals(artifactType.getArtifactType().getModel()) && artifactType.getUserType()!=null) {
+                type = artifactType.getUserType();
+            }
             String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
-                    artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType());
+                    artifactType.getArtifactType().getModel(), type);
             ClientRequest request = new ClientRequest(atomUrl);
             
             MultipartRelatedOutput output = new MultipartRelatedOutput();
-            //1. First part, the S-RAMP entry
+            
+            //1. Add first part, the S-RAMP entry
             Entry atomEntry = new Entry();
             MediaType mediaType = new MediaType("application", "atom+xml");
             Artifact artifact = new Artifact();
@@ -176,7 +185,7 @@ public class SrampAtomApiClient {
             atomEntry.setAnyOtherJAXBObject(artifact);
             output.addPart(atomEntry, mediaType);
             
-            //2. Second part, the content
+            //2. Add second part, the content
             request.body(artifactType.getMimeType(), content);
             MediaType mediaType2 = MediaType.getInstance(artifactType.getMimeType());
             output.addPart(content, mediaType2);
@@ -265,6 +274,9 @@ public class SrampAtomApiClient {
 			ArtifactType type = ArtifactType.valueOf(artifact);
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
+			if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
+                artifactType = type.getUserType();
+            }
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
@@ -294,6 +306,9 @@ public class SrampAtomApiClient {
 
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
+            if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
+                artifactType = type.getUserType();
+            }
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
@@ -317,6 +332,9 @@ public class SrampAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
+			if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
+                artifactType = type.getUserType();
+            }
 			String artifactUuid = uuid;
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
