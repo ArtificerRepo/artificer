@@ -12,6 +12,7 @@
  <name>S-RAMP Client</name>
  <description>A general purpose client to communicate with any S-RAMP spec-compliant repository.</description>
  <build>
+ <!-- 
   <pluginManagement>
    <plugins>
     <plugin>
@@ -38,6 +39,23 @@
      </execution>
     </executions>
    </plugin>
+    -->
+  <plugins>
+   <plugin>
+    <artifactId>maven-dependency-plugin</artifactId>
+    <executions>
+     <execution>
+      <phase>install</phase>
+      <goals>
+       <goal>copy-dependencies</goal>
+      </goals>
+      <configuration>
+       <outputDirectory>${project.build.directory}/lib</outputDirectory>
+      </configuration>
+     </execution>
+    </executions>
+   </plugin>
+
   </plugins>
  </build>
  <dependencies>
