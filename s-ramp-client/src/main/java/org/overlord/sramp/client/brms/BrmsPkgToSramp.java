@@ -1,12 +1,15 @@
 package org.overlord.sramp.client.brms;
 
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
@@ -34,16 +37,59 @@ public class BrmsPkgToSramp {
 
     public static void main(String [ ] args) {
         try {
-            String brmsPackageName = "srampPackage";
+            String brmsPackageName = "defaultPackage";
             String baseUrl         = "http://localhost:8080/drools-guvnor";
-            String tag             = "S_RAMP_0.0.3.0";
+            String tag             = "LATEST";
+            String srampUrl        = "http://localhost:8880/s-ramp-atom";
             if (args.length > 0) brmsPackageName = args[0];
             if (args.length > 1) tag             = args[1];
             if (args.length > 2) baseUrl         = args[2];
-            new BrmsPkgToSramp().uploadBrmsPackage(baseUrl, brmsPackageName, tag);
+            
+            BrmsPkgToSramp sramp = new BrmsPkgToSramp();
+            
+            String srampURLStr = srampUrl + "/brms/rest/packages/";
+            boolean srampExists = sramp.urlExists(srampURLStr, "", "");
+            if (! srampExists) {
+                System.out.println("Can't find S-RAMP endpoint: " + srampURLStr);
+                return;
+            }
+            String brmsURLStr = baseUrl + "/rest/packages/";
+            boolean brmsExists = sramp.urlExists(brmsURLStr, "admin", "admin");
+            if (! brmsExists) {
+                System.out.println("Can't find BRMS endpoint: " + brmsURLStr);
+                return;
+            }
+            sramp.uploadBrmsPackage(baseUrl, brmsPackageName, tag);
+       
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public boolean urlExists(String checkUrl, String user, String password) {
+        //http://localhost:8880/s-ramp-atom/brms/rest/packages/
+        //http://localhost:8880/s-ramp-atom/brms/rest/packages/
+        
+
+        try {
+            URL checkURL = new URL(checkUrl);
+            HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
+            checkConnection.setRequestMethod("GET");
+            checkConnection.setRequestProperty("Accept", "application/xml");
+            checkConnection.setConnectTimeout(10000);
+            checkConnection.setReadTimeout(10000);
+            applyAuth(checkConnection, user, password);
+            checkConnection.connect();
+            return (checkConnection.getResponseCode() == 200);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    protected void applyAuth(HttpURLConnection connection, String user, String password) {
+        String auth = user + ":" + password;
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(Base64.encodeBase64(auth.getBytes())));
     }
     
     public void uploadBrmsPackage(String baseUrl, String pkgName, String tag) throws Exception {
