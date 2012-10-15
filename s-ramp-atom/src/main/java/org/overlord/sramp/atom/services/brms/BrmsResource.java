@@ -138,7 +138,26 @@ public class BrmsResource {
             throw new SrampAtomException(e);
         }
     }
-
+    /**
+     * Returns the content of a Brms/Drools Package in the s-ramp repository. Note that
+     * if multiple droolsPackage with the name are found it simply takes the first one.
+     * This is probably a situation you want to avoid.
+     * 
+     * @param pkgName - the name of the Brms Package
+     * @throws SrampAtomException
+     * http://localhost:8880/s-ramp-atom/brms/org.drools.guvnor.Guvnor/package/srampPackage/S-RAMP-0.0.3.0
+     */
+    @GET
+    @Path("/org.drools.guvnor.Guvnor/package/{pkgName}/{version}")
+    public Response getPackage(@PathParam("pkgName") String pkgName,
+                               @PathParam("version") String version) throws SrampAtomException {
+        try {
+            //TODO for now ignoring version
+            return getPackage(pkgName);
+        } catch (Throwable e) {
+            throw new SrampAtomException(e);
+        }
+    }
     /**
      * Returns the content of a Brms/Drools Package in the s-ramp repository. Note that
      * if multiple droolsPackage with the name are found it simply takes the first one.
