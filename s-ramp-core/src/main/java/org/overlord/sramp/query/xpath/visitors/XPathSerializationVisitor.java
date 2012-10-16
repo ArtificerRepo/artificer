@@ -36,7 +36,7 @@ import org.overlord.sramp.query.xpath.ast.SubartifactSet;
 
 /**
  * Visitor used to serialize a query to a string.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class XPathSerializationVisitor implements XPathVisitor {
@@ -99,7 +99,9 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(EqualityExpr node) {
-		if (node.getExpr() != null) {
+		if (node.getSubartifactSet() != null) {
+			node.getSubartifactSet().accept(this);
+		} else if (node.getExpr() != null) {
 			this.builder.append("(");
 			node.getExpr().accept(this);
 			this.builder.append(")");
@@ -127,11 +129,6 @@ public class XPathSerializationVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(ForwardPropertyStep node) {
-		if (node.getSubartifactSet() != null) {
-			node.getSubartifactSet().accept(this);
-			if (node.getPropertyQName() != null)
-				this.builder.append('/');
-		}
 		if (node.getPropertyQName() != null) {
 			this.builder.append('@');
 			appendQName(node.getPropertyQName());
@@ -173,7 +170,7 @@ public class XPathSerializationVisitor implements XPathVisitor {
 				this.builder.append(node.getArtifactType());
 			}
 		}
-		
+
 	}
 
 	/**

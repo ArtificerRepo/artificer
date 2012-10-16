@@ -22,12 +22,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
 
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -46,7 +51,6 @@ import org.s_ramp.xmlns._2010.s_ramp.OperationOutput;
 import org.s_ramp.xmlns._2010.s_ramp.OperationOutputEnum;
 import org.s_ramp.xmlns._2010.s_ramp.Part;
 import org.s_ramp.xmlns._2010.s_ramp.PartEnum;
-import org.s_ramp.xmlns._2010.s_ramp.PartTarget;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
@@ -96,7 +100,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	protected void visitDerived(DerivedArtifactType artifact) {
 		try {
-			setRelationship("relatedDocument", 1, artifact.getRelatedDocument().getArtifactType().toString(),
+			setRelationship("relatedDocument", 1, 1, artifact.getRelatedDocument().getArtifactType().toString(),
 					false, artifact.getRelatedDocument());
 		} catch (Exception e) {
 			error = e;
@@ -175,35 +179,31 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @param artifact
 	 * @throws RepositoryException
 	 */
-	private void updateGenericRelationships(BaseArtifactType artifact) throws RepositoryException {
-		// First remove all existing relationship nodes.
-		// TODO update this to diff the existing node graph with the artifact and apply, rather than
-		// delete all and recreate all (and make sure to update the comments appropriately)
+	private void updateGenericRelationships(BaseArtifactType artifact) throws Exception {
+		// Create/Update all the relationships included in the artifact
+		Set<String> updatedRelationshipTypes = new HashSet<String>();
+		for (Relationship relationship : artifact.getRelationship()) {
+			setRelationships(relationship.getRelationshipType(), -1, 0, null, true, relationship.getRelationshipTarget());
+			updatedRelationshipTypes.add(relationship.getRelationshipType());
+		}
+
+		// Now remove any relationships that weren't just updated or created (the ones
+		// not included on the artifact but that have existing JCR nodes).
 		NodeIterator existingNodes = this.jcrNode.getNodes();
 		while (existingNodes.hasNext()) {
-			Node rNode = existingNodes.nextNode();
+			Node node = existingNodes.nextNode();
 			// Only roemove generic relationships
-			if (rNode.isNodeType("sramp:relationship") && rNode.hasProperty("sramp:generic") && rNode.getProperty("sramp:generic").getBoolean()) {
-				rNode.remove();
-			}
-		}
-		// Create all the relationships
-		for (Relationship relationship : artifact.getRelationship()) {
-			Node rNode = this.jcrNode.addNode("sramp-relationships:" + relationship.getRelationshipType(), "sramp:relationship");
-			rNode.setProperty("sramp:relationshipType", relationship.getRelationshipType());
-			List<Target> targets = relationship.getRelationshipTarget();
-			Value [] values = new Value[targets.size()];
-			for (int idx = 0; idx < values.length; idx++) {
-				Target target = targets.get(idx);
-				Value reference = this.referenceFactory.createReference(target.getValue());
-				if (reference == null) {
-					throw new RepositoryException("Relationship creation error - failed to find an s-ramp artifact with target UUID: " + target.getValue());
+			if (node.isNodeType("sramp:relationship") && node.hasProperty("sramp:generic")
+					&& node.getProperty("sramp:generic").getBoolean()) {
+				String type = node.getProperty("sramp:relationshipType").getString();
+				// If this relationship type was *not* updated above, then remove it because
+				// it's not included in the latest artifact meta-data
+				if (!updatedRelationshipTypes.contains(type)) {
+					node.remove();
 				}
-				values[idx] = reference;
 			}
-			rNode.setProperty("sramp:relationshipTarget", values);
-			rNode.setProperty("sramp:generic", true);
 		}
+
 	}
 
 	/**
@@ -215,17 +215,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		super.visit(artifact);
 
 		try {
-			setRelationships("part", -1, PartEnum.PART.toString(), false, artifact.getPart());
-			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, "part", -1,
-					PartEnum.PART.toString(), false);
-
-			List<PartTarget> partTargets = artifact.getPart();
-			Value [] values = new Value[partTargets.size()];
-			int idx = 0;
-			for (PartTarget target : partTargets) {
-				values[idx++] = this.referenceFactory.createReference(target.getValue());
-			}
-			relationshipNode.setProperty("sramp:relationshipTarget", values);
+			setRelationships("part", -1, 1, PartEnum.PART.toString(), false, artifact.getPart());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -243,12 +233,12 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 				if (this.jcrNode.hasNode("sramp-relationships:type")) {
 					this.jcrNode.getNode("sramp-relationships:type").remove();
 				}
-				setRelationship("element", 1, ElementEnum.ELEMENT.toString(), false, artifact.getElement());
+				setRelationship("element", 1, 1, ElementEnum.ELEMENT.toString(), false, artifact.getElement());
 			} else if (artifact.getType() != null) {
 				if (this.jcrNode.hasNode("sramp-relationships:element")) {
 					this.jcrNode.getNode("sramp-relationships:element").remove();
 				}
-				setRelationship("type", 1, XsdTypeEnum.XSD_TYPE.toString(), false, artifact.getType());
+				setRelationship("type", 1, 1, XsdTypeEnum.XSD_TYPE.toString(), false, artifact.getType());
 			}
 		} catch (Exception e) {
 			error = e;
@@ -263,7 +253,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		super.visit(artifact);
 
 		try {
-			setRelationships("operation", -1, OperationEnum.OPERATION.toString(), false, artifact.getOperation());
+			setRelationships("operation", -1, 1, OperationEnum.OPERATION.toString(), false, artifact.getOperation());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -277,9 +267,9 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		super.visit(artifact);
 
 		try {
-			setRelationship("input", 1, OperationInputEnum.OPERATION_INPUT.toString(), false, artifact.getInput());
-			setRelationship("output", 1, OperationOutputEnum.OPERATION_OUTPUT.toString(), false, artifact.getOutput());
-			setRelationships("fault", -1, FaultEnum.FAULT.toString(), false, artifact.getFault());
+			setRelationship("input", 1, 1, OperationInputEnum.OPERATION_INPUT.toString(), false, artifact.getInput());
+			setRelationship("output", 1, 1, OperationOutputEnum.OPERATION_OUTPUT.toString(), false, artifact.getOutput());
+			setRelationships("fault", -1, 1, FaultEnum.FAULT.toString(), false, artifact.getFault());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -293,7 +283,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		super.visit(artifact);
 
 		try {
-			setRelationship("message", 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
+			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -307,7 +297,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		super.visit(artifact);
 
 		try {
-			setRelationship("message", 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
+			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -321,7 +311,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		super.visit(artifact);
 
 		try {
-			setRelationship("message", 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
+			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -365,38 +355,65 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * Sets a relationship on the given artifact parent node.
 	 * @param relationshipType
 	 * @param maxCardinality
+	 * @param minCardinality
 	 * @param targetType
 	 * @param isGeneric
 	 * @param target
 	 * @throws Exception
 	 */
-	private void setRelationship(String relationshipType, int maxCardinality, String targetType,
-			boolean isGeneric, Target target) throws Exception {
-		Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType, maxCardinality,
-				targetType, isGeneric);
-		Value [] values = new Value[1];
-		values[0] = this.referenceFactory.createReference(target.getValue());
-		relationshipNode.setProperty("sramp:relationshipTarget", values);
+	private void setRelationship(String relationshipType, int maxCardinality, int minCardinality,
+			String targetType, boolean isGeneric, Target target) throws Exception {
+		if (target != null || minCardinality == 0) {
+			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType, maxCardinality,
+					targetType, isGeneric);
+			Value [] values = new Value[1];
+			values[0] = this.referenceFactory.createReference(target.getValue());
+			relationshipNode.setProperty("sramp:relationshipTarget", values);
+		} else {
+			// If the minimum cardinality is > 0 but no targets have been provided, then
+			// remove the relationship node.
+			removeRelationship(relationshipType);
+		}
 	}
 
 	/**
 	 * Sets a relationship on the given artifact parent node.
 	 * @param relationshipType
 	 * @param maxCardinality
+	 * @param minCardinality
 	 * @param targetType
 	 * @param isGeneric
 	 * @param targets
 	 * @throws Exception
 	 */
-	private void setRelationships(String relationshipType, int maxCardinality,
+	private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,
 			String targetType, boolean isGeneric, List<? extends Target> targets) throws Exception {
-		Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType, maxCardinality,
-				targetType, isGeneric);
-		Value[] values = new Value[targets.size()];
-		for (int idx = 0; idx < targets.size(); idx++) {
-			values[idx] = this.referenceFactory.createReference(targets.get(idx).getValue());
+		if ((targets != null && targets.size() > 0) || minCardinality == 0) {
+			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType, maxCardinality,
+					targetType, isGeneric);
+			Value[] values = new Value[targets.size()];
+			for (int idx = 0; idx < targets.size(); idx++) {
+				values[idx] = this.referenceFactory.createReference(targets.get(idx).getValue());
+			}
+			relationshipNode.setProperty("sramp:relationshipTarget", values);
+		} else {
+			// If the minimum cardinality is > 0 but no targets have been provided, then
+			// remove the relationship node.
+			removeRelationship(relationshipType);
 		}
-		relationshipNode.setProperty("sramp:relationshipTarget", values);
+	}
+
+	/**
+	 * Removes the relationship of the given type from the JCR node.
+	 * @param relationshipType
+	 * @throws Exception
+	 */
+	private void removeRelationship(String relationshipType) throws RepositoryException, VersionException,
+			LockException, ConstraintViolationException, AccessDeniedException, PathNotFoundException {
+		String nodeName = "sramp-relationships:" + relationshipType;
+		if (this.jcrNode.hasNode(nodeName)) {
+			this.jcrNode.getNode(nodeName).remove();
+		}
 	}
 
 	/**
@@ -456,7 +473,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		 * @param otherNode the node being referenced
 		 * @return a reference Value
 		 */
-		public Value createReference(String uuid);
+		public Value createReference(String uuid) throws Exception;
 
 	}
 
