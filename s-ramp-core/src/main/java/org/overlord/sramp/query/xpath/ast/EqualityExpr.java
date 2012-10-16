@@ -19,7 +19,7 @@ import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 
 /**
  * Models an equality expression.
- * 
+ *
  * <pre>
  *   EqualityExpr ::= ForwardPropertyStep
  *                  | ForwardPropertyStep '=' PrimaryExpr
@@ -34,8 +34,9 @@ import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
  * @author eric.wittmann@redhat.com
  */
 public class EqualityExpr extends AbstractBinaryExpr<ForwardPropertyStep, PrimaryExpr> {
-	
+
 	// Note: the following three are mutually exclusive.
+	private SubartifactSet subartifactSet;
 	private Operator operator;
 	private Expr expr;
 
@@ -72,7 +73,7 @@ public class EqualityExpr extends AbstractBinaryExpr<ForwardPropertyStep, Primar
 	public void setExpr(Expr expr) {
 		this.expr = expr;
 	}
-	
+
 	/**
 	 * @see org.overlord.sramp.query.xpath.ast.AbstractXPathNode#accept(org.overlord.sramp.query.xpath.visitors.XPathVisitor)
 	 */
@@ -82,20 +83,34 @@ public class EqualityExpr extends AbstractBinaryExpr<ForwardPropertyStep, Primar
 	}
 
 	/**
+	 * @return the subArtifactSet
+	 */
+	public SubartifactSet getSubartifactSet() {
+		return subartifactSet;
+	}
+
+	/**
+	 * @param subArtifactSet the subArtifactSet to set
+	 */
+	public void setSubArtifactSet(SubartifactSet subArtifactSet) {
+		this.subartifactSet = subArtifactSet;
+	}
+
+	/**
 	 * Models the comparison expression's operator.
 	 */
 	public static enum Operator {
 		EQ("="), NE("!="), LT("<"), GT(">"), LTE("<="), GTE(">=");
-		
+
 		private String symbol;
-		
+
 		/**
 		 * Constructor.
 		 */
 		private Operator(String symbol) {
 			this.symbol = symbol;
 		}
-		
+
 		/**
 		 * Gets the symbol;
 		 */
@@ -104,7 +119,7 @@ public class EqualityExpr extends AbstractBinaryExpr<ForwardPropertyStep, Primar
 		}
 
 		/**
-		 * Looks up the proper {@link Operator} from a symbol. 
+		 * Looks up the proper {@link Operator} from a symbol.
 		 * @param symbol the symbol (e.g. =, !=, >, etc)
 		 * @return an {@link Operator} or null if not found
 		 */
