@@ -54,6 +54,8 @@
 	<wsdl:message name="faultMessage">
 		<wsdl:part name="message" type="xsd:string" />
 	</wsdl:message>
+	<wsdl:message name="emptyMessage">
+	</wsdl:message>
 
 	<wsdl:portType name="SamplePortType">
 		<wsdl:operation name="find">

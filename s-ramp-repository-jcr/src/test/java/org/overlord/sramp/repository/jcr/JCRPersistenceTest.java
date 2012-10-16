@@ -431,7 +431,7 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
 			persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
 			Assert.fail("Expected an update failure.");
 		} catch (Exception e) {
-			Assert.assertEquals("javax.jcr.RepositoryException: Relationship creation error - failed to find an s-ramp artifact with target UUID: not-a-valid-uuid", e.getMessage());
+			Assert.assertEquals("java.lang.Exception: Relationship creation error - failed to find an s-ramp artifact with target UUID: not-a-valid-uuid", e.getMessage());
 		}
     }
 

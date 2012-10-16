@@ -472,17 +472,13 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     	 * @see org.overlord.sramp.repository.jcr.ArtifactToJCRNodeVisitor.JCRReferenceFactory#createReference(java.lang.String)
     	 */
     	@Override
-    	public Value createReference(String uuid) {
-			try {
-				Node node = findArtifactNodeByUuid(session, uuid);
-				if (node == null) {
-		        	throw new Exception("No artifact found with UUID: " + uuid);
-				}
+    	public Value createReference(String uuid) throws Exception {
+			Node node = findArtifactNodeByUuid(session, uuid);
+			if (node != null) {
 				return session.getValueFactory().createValue(node, false);
-			} catch (Exception e) {
-				log.error("Error creating JCR reference to S-RAMP artifact with UUID: " + uuid, e);
+			} else {
+				throw new Exception("Relationship creation error - failed to find an s-ramp artifact with target UUID: " + uuid);
 			}
-			return null;
 		}
 	}
 

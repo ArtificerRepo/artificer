@@ -21,38 +21,21 @@ import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
 
 /**
  * Models a forward property step.
- * 
+ *
  * <pre>
- *   ForwardPropertyStep ::= subartifact-set
- *                         | subartifact-set '/' '@' PropertyQName
- *                         | '@' PropertyQName
+ *   ForwardPropertyStep ::= '@' PropertyQName
  * </pre>
  *
  * @author eric.wittmann@redhat.com
  */
 public class ForwardPropertyStep extends AbstractXPathNode {
-	
-	private SubartifactSet subartifactSet;
+
 	private QName propertyQName;
 
 	/**
 	 * Default constructor.
 	 */
 	public ForwardPropertyStep() {
-	}
-
-	/**
-	 * @return the subartifactSet
-	 */
-	public SubartifactSet getSubartifactSet() {
-		return subartifactSet;
-	}
-
-	/**
-	 * @param subartifactSet the subartifactSet to set
-	 */
-	public void setSubartifactSet(SubartifactSet subartifactSet) {
-		this.subartifactSet = subartifactSet;
 	}
 
 	/**
@@ -68,7 +51,7 @@ public class ForwardPropertyStep extends AbstractXPathNode {
 	public void setPropertyQName(QName propertyQName) {
 		this.propertyQName = propertyQName;
 	}
-	
+
 	/**
 	 * @see org.overlord.sramp.query.xpath.ast.AbstractXPathNode#accept(org.overlord.sramp.query.xpath.visitors.XPathVisitor)
 	 */
@@ -76,5 +59,5 @@ public class ForwardPropertyStep extends AbstractXPathNode {
 	public void accept(XPathVisitor visitor) {
 		visitor.visit(this);
 	}
-	
+
 }
