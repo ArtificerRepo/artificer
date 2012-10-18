@@ -39,6 +39,7 @@ public class SrampArchiveEntry {
 
 	private String path;
 	private BaseArtifactType metaData;
+	private File contentFile;
 	private File metaDataFile;
 
 	/**
@@ -50,22 +51,14 @@ public class SrampArchiveEntry {
 	/**
 	 * Constructor.
 	 * @param path
-	 * @param metaData
-	 */
-	public SrampArchiveEntry(String path, BaseArtifactType metaData) {
-		setPath(path);
-		setMetaData(metaData);
-	}
-
-	/**
-	 * Constructor.
-	 * @param path
 	 * @param metaDataFile
+	 * @param contentFile
 	 */
-	public SrampArchiveEntry(String path, File metaDataFile) {
+	public SrampArchiveEntry(String path, File metaDataFile, File contentFile) {
 		setPath(path);
 		setMetaData(null);
 		this.metaDataFile = metaDataFile;
+		this.contentFile = contentFile;
 	}
 
 	/**
@@ -101,6 +94,14 @@ public class SrampArchiveEntry {
 	 */
 	public void setMetaData(BaseArtifactType metaData) {
 		this.metaData = metaData;
+	}
+
+	/**
+	 * Returns true if this entry has content.  Returns false if it contains only
+	 * meta-data.
+	 */
+	public boolean hasContent() {
+		return this.contentFile != null && this.contentFile.isFile();
 	}
 
 }
