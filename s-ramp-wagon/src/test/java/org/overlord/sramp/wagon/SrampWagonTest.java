@@ -123,12 +123,39 @@ public class SrampWagonTest extends BaseResourceTest {
 		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/"));
 		Feed feed = client.query("/s-ramp/core/Document");
 		Assert.assertEquals(2, feed.getEntries().size());
-
 		feed = client.query("/s-ramp/xsd/XsdDocument");
 		Assert.assertEquals(3, feed.getEntries().size());
-
 		feed = client.query("/s-ramp/wsdl/WsdlDocument");
 		Assert.assertEquals(1, feed.getEntries().size());
+		feed = client.query("/s-ramp[mavenParent]");
+		Assert.assertEquals(4, feed.getEntries().size());
+
+		// Upload the content again (to make sure the expanded artifacts get deleted and re-added)
+		// TODO re-enable this once I figure out why I am getting a referential integrity error
+		/*
+		wagon.connect(repo);
+		try {
+			artifactStream = getClass().getResourceAsStream("artifact-0.0.3.jar");
+			Assert.assertNotNull(artifactStream);
+			wagon.putFromStream(artifactStream, "org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar");
+		} finally {
+			wagon.disconnect();
+			IOUtils.closeQuietly(artifactStream);
+		}
+		*/
+
+		// Now all the same assertions.
+		/*
+		feed = client.query("/s-ramp/core/Document");
+		Assert.assertEquals(2, feed.getEntries().size());
+		feed = client.query("/s-ramp/xsd/XsdDocument");
+		Assert.assertEquals(3, feed.getEntries().size());
+		feed = client.query("/s-ramp/wsdl/WsdlDocument");
+		Assert.assertEquals(1, feed.getEntries().size());
+		feed = client.query("/s-ramp[mavenParent]");
+		Assert.assertEquals(4, feed.getEntries().size());
+		*/
+
 	}
 
 	/**
