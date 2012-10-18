@@ -31,6 +31,8 @@ import org.overlord.sramp.client.shell.commands.archive.OpenArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.PackArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.UpdateEntryArchiveCommand;
+import org.overlord.sramp.client.shell.commands.core.ConnectCommand;
+import org.overlord.sramp.client.shell.commands.core.QueryCommand;
 
 /**
  * Factory used to create shell commands.
@@ -57,6 +59,8 @@ public class ShellCommandFactory {
 		registry.put(new QName("s-ramp", "exit"), ExitCommand.class);
 
 		// S-RAMP client commands
+		registry.put(new QName("s-ramp", "connect"), ConnectCommand.class);
+		registry.put(new QName("s-ramp", "query"), QueryCommand.class);
 
 		// Archive commands
 		registry.put(new QName("archive", "new"), NewArchiveCommand.class);

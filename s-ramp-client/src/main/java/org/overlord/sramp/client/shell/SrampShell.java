@@ -20,6 +20,7 @@ import java.util.Arrays;
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
+import org.overlord.sramp.client.shell.commands.NoOpCommand;
 
 
 /**
@@ -96,6 +97,10 @@ public class SrampShell {
 	 */
 	private ShellCommand readCommand() throws Exception {
 		String line = System.console().readLine("s-ramp> ");
+		if (line.trim().length() == 0) {
+			return new NoOpCommand();
+		}
+
 		String [] split = line.split("\\s");
 		String encodedCommandName = split[0];
 		QName commandName = null;
