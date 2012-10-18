@@ -64,7 +64,7 @@ public class ArtifactType {
 		}
 		setMimeType(mimeType);
 	}
-	
+
 	private void init() {
 	    if (userDefinedArtifactTypes==null) {
     	    userDefinedArtifactTypes = new ConcurrentHashMap<String, ModelMime>();
@@ -193,33 +193,27 @@ public class ArtifactType {
 		}
 		throw new RuntimeException("Could not determine Artifact Type from artifact class: " + artifact.getClass());
 	}
+
 	/**
-	 * Instantiates an S-RAMP artifact of the correct type given the ArtifactType, and populates the artifactType and 
-	 * the contentType.
+	 * Instantiates an S-RAMP artifact of the correct type, and populates the artifactType and the
+	 * contentType.
 	 * @param artifactType
-	 * @return
 	 */
-	public static BaseArtifactType getArtifactInstance(ArtifactType artifactType) {
-	    ArtifactTypeEnum[] values = ArtifactTypeEnum.values();
-        for (ArtifactTypeEnum artifactTypeEnum : values) {
-            if (artifactTypeEnum.equals(artifactType.getArtifactType())) {
-                try {
-                    BaseArtifactType baseArtifactType = (BaseArtifactType) artifactTypeEnum.getTypeClass().newInstance();
-                    baseArtifactType.setArtifactType(artifactTypeEnum.getApiType());
-                    if (DocumentArtifactType.class.isAssignableFrom(baseArtifactType.getClass())) {
-                        ((DocumentArtifactType) baseArtifactType).setContentType(artifactType.getMimeType());
-                    }
-                    if (artifactType.getArtifactType() == ArtifactTypeEnum.UserDefinedArtifactType) {
-                        baseArtifactType.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_TYPE), artifactType.getMimeType());
-                        ((UserDefinedArtifactType) baseArtifactType).setUserType(artifactType.getUserType());
-                    }
-                    return baseArtifactType;
-                } catch (Exception e) {
-                    throw new RuntimeException("Could not instantiate Artifact " + artifactTypeEnum.getTypeClass(),e);
-                }
+	public BaseArtifactType newArtifactInstance() {
+        try {
+            BaseArtifactType baseArtifactType = getArtifactType().getTypeClass().newInstance();
+            baseArtifactType.setArtifactType(getArtifactType().getApiType());
+            if (DocumentArtifactType.class.isAssignableFrom(baseArtifactType.getClass())) {
+                ((DocumentArtifactType) baseArtifactType).setContentType(getMimeType());
             }
+            if (getArtifactType() == ArtifactTypeEnum.UserDefinedArtifactType) {
+                baseArtifactType.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_TYPE), getMimeType());
+                ((UserDefinedArtifactType) baseArtifactType).setUserType(getUserType());
+            }
+            return baseArtifactType;
+        } catch (Exception e) {
+            throw new RuntimeException("Could not instantiate Artifact " + getArtifactType().getTypeClass(),e);
         }
-        throw new RuntimeException("Could not instantiate Artifact from artifactTpe class: " + artifactType);
 	}
 
 	/**
@@ -296,9 +290,9 @@ public class ArtifactType {
     public String getUserType() {
         return userType;
     }
-    
+
     private class ModelMime {
-        
+
         public ModelMime(String userDefinedModel, String mimeType) {
             super();
             this.userDefinedModel = userDefinedModel;
@@ -306,7 +300,7 @@ public class ArtifactType {
         }
         public String userDefinedModel;
         public String mimeType;
-        
+
     }
 
 }

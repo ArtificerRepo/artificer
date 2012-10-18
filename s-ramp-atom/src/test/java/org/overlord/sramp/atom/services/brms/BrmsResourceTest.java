@@ -67,7 +67,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
 	    } catch (Exception e) {
 	        Assert.assertEquals(e.getClass(), SrampAtomException.class);
 	    }
-	    
+
 	}
 	/**
 	 * Tests the BRMS packages.
@@ -78,7 +78,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
 	    //Upload a BrmsPackage
         String artifactFileName = "srampPackage.pkg";
         InputStream contentStream = this.getClass().getResourceAsStream("/brms/srampPackage/" + artifactFileName);
-      
+
         ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/BrmsPkgDocument"));
         request.header("Slug", artifactFileName);
         request.body("application/octet-stream", contentStream);
@@ -87,7 +87,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
         BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
 
         System.out.println(arty.getUuid() + " " + arty.getArtifactType().value());
-        
+
         //check that we can download this package's content
         ClientRequest request1 = new ClientRequest(generateURL("/brms/rest/packages/srampPackage/binary"));
         ClientResponse<InputStream> response1 = request1.get(InputStream.class);
@@ -102,7 +102,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
         out.flush();
         IOUtils.closeQuietly(in);
         IOUtils.closeQuietly(out);
-        
+
 
         //obtain all BRMS packages using the brms rest API
 		ClientRequest request2 = new ClientRequest(generateURL("/brms/rest/packages"));
@@ -112,7 +112,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
 		Assert.assertEquals(1, packages.getPackage().size());
 
 		Assert.assertEquals("srampPackage",packages.getPackage().get(0).getTitle());
-		
+
 		//Now adding the assetInfo and then asking for the assets of this package
 		//Update the entry by adding the asset info, for now in a property (later as a dependent artifact)
         Assert.assertTrue(arty instanceof UserDefinedArtifactType);
@@ -136,16 +136,16 @@ public class BrmsResourceTest extends AbstractResourceTest {
         entry3.setAnyOtherJAXBObject(artifact);
         request3.body(MediaType.APPLICATION_ATOM_XML_ENTRY, entry3);
         request3.put(Void.class);
-        
+
 		//obtain a list of assets in the package
         //Do a query using GET on the pseudo BRMS API
         ClientRequest request4 = new ClientRequest(generateURL("/brms/rest/packages/srampPackage/assets"));
         ClientResponse<Assets> response4 = request4.get(Assets.class);
         Assets assets = response4.getEntity();
-        
+
         Assert.assertEquals(8, assets.getAsset().size());
-        
-        //Upload the process AND process-image, making sure the uuid is identical to the one mentioned 
+
+        //Upload the process AND process-image, making sure the uuid is identical to the one mentioned
         for (Assets.Asset asset : assets.getAsset()) {
             String fileFormat = asset.getMetadata().getFormat().toLowerCase();
             if (fileFormat.equals("package")) {
@@ -159,42 +159,42 @@ public class BrmsResourceTest extends AbstractResourceTest {
                 InputStream assetInputStream = this.getClass().getResourceAsStream("/brms/srampPackage/" + fileName);
                 //upload the asset using the uuid
                 ArtifactType artifactType = ArtifactType.fromFileExtension(asset.getMetadata().getFormat());
-                BaseArtifactType baseArtifactType = ArtifactType.getArtifactInstance(artifactType);
+                BaseArtifactType baseArtifactType = artifactType.newArtifactInstance();
                 baseArtifactType.setName(fileName);
                 baseArtifactType.setUuid(uuid);
-                
+
                 String path = "/s-ramp/" + artifactType.getModel() + "/" + artifactType.getType();
                 ClientRequest request5 = new ClientRequest(generateURL(path));
                 MultipartRelatedOutput output = new MultipartRelatedOutput();
-                
+
                 Entry atomEntry = new Entry();
                 MediaType mediaType = new MediaType("application", "atom+xml");
                 artifact = new Artifact();
-                
+
                 //get the right method call
                 String methodStr = "set" + artifactType.getArtifactType();
                 Method method = artifact.getClass().getMethod(methodStr, artifactType.getArtifactType().getTypeClass());
                 method.invoke(artifact,baseArtifactType);
-                
+
                 //artifact.setUserDefinedArtifactType(baseArtifactType);
                 atomEntry.setAnyOtherJAXBObject(artifact);
                 output.addPart(atomEntry, mediaType);
-                
+
                 MediaType mediaType2 = MediaType.getInstance(artifactType.getMimeType());
                 output.addPart(assetInputStream, mediaType2);
-                
+
                 System.out.println("Uploading asset " + fileName + " " + artifactType);
                 request5.body(MultipartConstants.MULTIPART_RELATED, output);
                 ClientResponse<Entry> assetResponse = request5.post(Entry.class);
                 IOUtils.closeQuietly(assetInputStream);
-                
+
                 Entry assetEntry = assetResponse.getEntity();
                 BaseArtifactType assetArtifact = SrampAtomUtils.unwrapSrampArtifact(assetEntry);
                 System.out.println("Uploaded asset " + assetArtifact.getName() + " " + assetArtifact.getUuid());
-                
+
             }
         }
-        
+
         //now see if we can retrieve some of the assets
         //for example the Evaluation.bpmn file should be available under
         // http://localhost:8080/drools-guvnor/rest/packages/srampPackage/assets/Evaluation/binary

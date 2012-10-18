@@ -115,7 +115,7 @@ public class ArtifactResource {
 
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             //store the content
-            BaseArtifactType baseArtifactType = ArtifactType.getArtifactInstance(artifactType);  
+            BaseArtifactType baseArtifactType = artifactType.newArtifactInstance();
             baseArtifactType.setName(fileName);
             BaseArtifactType artifact = persistenceManager.persistArtifact(baseArtifactType, is);
 
@@ -135,13 +135,13 @@ public class ArtifactResource {
         	IOUtils.closeQuietly(is);
         }
     }
-    
+
     @POST
     @Path("{model}/{type}")
     @Consumes(MultipartConstants.MULTIPART_RELATED)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
     public Entry createMultiPart(@HeaderParam("Content-Type") String contentType,
-            @PathParam("model") String model, @PathParam("type") String type, 
+            @PathParam("model") String model, @PathParam("type") String type,
             MultipartRelatedInput input) {
         Entry atomEntry = new Entry();
         try {
@@ -156,7 +156,7 @@ public class ArtifactResource {
             if (list.size()!=2) ; //throw error
             InputPart firstPart  = list.get(0);
             InputPart secondpart = list.get(1);
-            
+
             // Getting the S-RAMP Artifact
             atomEntry = firstPart.getBody(new GenericType<Entry>() { });
             BaseArtifactType baseArtifactType = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
@@ -164,7 +164,7 @@ public class ArtifactResource {
             if (baseArtifactType.getName()!=null) fileName = baseArtifactType.getName();
             String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
             artifactType.setMimeType(mimeType);
-            
+
             // Processing the content itself first
             InputStream is = secondpart.getBody(new GenericType<InputStream>() { });
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
@@ -176,22 +176,22 @@ public class ArtifactResource {
 
             // Persist the derivedArtifacts
             persistenceManager.persistDerivedArtifacts(intermediate, dartifacts);
-            
+
             //TODO we could do it all at once in the persistence layer if we can reuse the updateVisitor there
             intermediate.setDescription(baseArtifactType.getDescription());
             intermediate.setCreatedBy(baseArtifactType.getCreatedBy());
             persistenceManager.updateArtifact(baseArtifactType, artifactType);
-            
+
             ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
             ArtifactVisitorHelper.visitArtifact(visitor, intermediate);
-            
+
             atomEntry  = visitor.getAtomEntry();
-            
+
         } catch (Exception e) {
             //TODO
             e.printStackTrace();
         }
-        
+
         return atomEntry;
     }
 
@@ -221,7 +221,7 @@ public class ArtifactResource {
 
     /**
      * S-RAMP atom PUT to upload a new version of the artifact into the repository.
-     * 
+     *
      * @param model
      * @param type
      * @param uuid
