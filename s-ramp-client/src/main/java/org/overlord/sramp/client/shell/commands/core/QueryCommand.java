@@ -47,6 +47,19 @@ public class QueryCommand extends AbstractShellCommand {
 	}
 
 	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+	 */
+	@Override
+	public void printHelp() {
+		System.out.println("The 'query' command issues a standard S-RAMP formatted");
+		System.out.println("query against the S-RAMP server.  The query will result");
+		System.out.println("in a Feed of entries.");
+		System.out.println("");
+		System.out.println("Example usage:");
+		System.out.println(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
+	}
+
+	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
 	 */
 	@Override

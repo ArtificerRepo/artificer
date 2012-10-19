@@ -43,6 +43,16 @@ public class RemoveEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+	 */
+	@Override
+	public void printHelp() {
+		System.out.println("The 'removeEntry' command will remove a single entry from the");
+		System.out.println("currently open S-RAMP batch archive.  The path to the entry");
+		System.out.println("must be specified.");
+	}
+
+	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
 	 */
 	@Override
