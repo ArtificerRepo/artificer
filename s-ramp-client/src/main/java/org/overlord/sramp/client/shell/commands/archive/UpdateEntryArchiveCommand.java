@@ -57,6 +57,24 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+	 */
+	@Override
+	public void printHelp() {
+		System.out.println("The 'updateEntry' command is used to modify entries in the");
+		System.out.println("currently open S-RAMP batch archive.  The path to the entry");
+		System.out.println("must be specified, along with details about how the entry is");
+		System.out.println("to be modified.");
+		System.out.println("");
+		System.out.println(" setContent: a sub-command that sets the file content on a ");
+		System.out.println("      particular entry");
+		System.out.println(" setProperty: a sub-command that sets a single custom S-RAMP");
+		System.out.println("      property on the entry");
+		System.out.println(" setRelationship: a sub-command that sets a single generic");
+		System.out.println("      S-RAMP relationship on the entry");
+	}
+
+	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
 	 */
 	@Override

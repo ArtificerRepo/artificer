@@ -46,6 +46,16 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+	 */
+	@Override
+	public void printHelp() {
+		System.out.println("The 'open' operation opens an existing S-RAMP batch archive");
+		System.out.println("file.  Once open, the contents of the archive can be modified");
+		System.out.println("or just listed.");
+	}
+
+	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
 	 */
 	@Override

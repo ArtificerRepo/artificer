@@ -56,6 +56,26 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 	}
 
 	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+	 */
+	@Override
+	public void printHelp() {
+		System.out.println("The 'getMetaData' command downloads only the meta-data for");
+		System.out.println("a single artifact from the S-RAMP repository.  The artifact");
+		System.out.println("can be identified either by its unique S-RAMP uuid or else");
+		System.out.println("by an index into the most recent Feed.  The meta-data will");
+		System.out.println("either be displayed or saved to a local file, depending on");
+		System.out.println("whether a path to an output file (or directory) is provided.");
+		System.out.println("");
+		System.out.println("Note: a Feed can be obtained, for example, by using the ");
+		System.out.println("s-ramp:query command.");
+		System.out.println("");
+		System.out.println("Example usage:");
+		System.out.println(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
+		System.out.println(">  s-ramp:getMetaData feed:1 /home/user/files/");
+	}
+
+	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
 	 */
 	@Override

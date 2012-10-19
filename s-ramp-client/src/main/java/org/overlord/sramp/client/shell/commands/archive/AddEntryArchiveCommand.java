@@ -50,6 +50,19 @@ public class AddEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+	 */
+	@Override
+	public void printHelp() {
+		System.out.println("The 'addEntry' command provides a way to add a single entry to the ");
+		System.out.println("currently open S-RAMP batch archive.  The command requires a path");
+		System.out.println("within the archive to be specified.  In addition, the type of ");
+		System.out.println("artifact must be included along with an optional path to a file");
+		System.out.println("representing the content.");
+
+	}
+
+	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
 	 */
 	@Override

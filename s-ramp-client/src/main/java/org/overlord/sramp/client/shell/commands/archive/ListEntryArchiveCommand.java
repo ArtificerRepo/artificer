@@ -47,6 +47,16 @@ public class ListEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+	 */
+	@Override
+	public void printHelp() {
+		System.out.println("The 'listEntry' command is used to display information about");
+		System.out.println("a single entry in the currently open S-RAMP archive.  The");
+		System.out.println("path within the archive must be specified.");
+	}
+
+	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
 	 */
 	@Override

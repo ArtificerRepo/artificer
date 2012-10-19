@@ -43,6 +43,18 @@ public class ConnectCommand extends AbstractShellCommand {
 	}
 
 	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+	 */
+	@Override
+	public void printHelp() {
+		System.out.println("The 'connect' command creates a connection to a remote");
+		System.out.println("S-RAMP repository at its Atom endpoint.");
+		System.out.println("");
+		System.out.println("Example usage:");
+		System.out.println(">  s-ramp:connect http://localhost:8080/s-ramp-atom/s-ramp");
+	}
+
+	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
 	 */
 	@Override

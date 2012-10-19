@@ -15,13 +15,16 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.shell.commands.CommandNotFoundCommand;
 import org.overlord.sramp.client.shell.commands.ExitCommand;
+import org.overlord.sramp.client.shell.commands.HelpCommand;
 import org.overlord.sramp.client.shell.commands.archive.AddEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.CloseArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.ListArchiveCommand;
@@ -42,6 +45,8 @@ import org.overlord.sramp.client.shell.commands.core.QueryCommand;
  * @author eric.wittmann@redhat.com
  */
 public class ShellCommandFactory {
+
+	private static QName HELP_CMD_NAME = new QName("s-ramp", "help");
 
 	private Map<QName, Class<? extends ShellCommand>> registry;
 
@@ -85,12 +90,31 @@ public class ShellCommandFactory {
 	 * @throws Exception
 	 */
 	public ShellCommand createCommand(QName commandName, String [] args) throws Exception {
-		Class<? extends ShellCommand> commandClass = registry.get(commandName);
-		if (commandClass == null)
-			return new CommandNotFoundCommand();
-		ShellCommand command = commandClass.newInstance();
+		ShellCommand command = null;
+		if (commandName.equals(HELP_CMD_NAME)) {
+			command = new HelpCommand(getCommands());
+		} else {
+			Class<? extends ShellCommand> commandClass = registry.get(commandName);
+			if (commandClass == null)
+				return new CommandNotFoundCommand();
+			command = commandClass.newInstance();
+		}
 		command.setArguments(args);
 		return command;
+	}
+
+	/**
+	 * Gets the available commands, ordered by command {@link QName}.
+	 */
+	private Map<QName, Class<? extends ShellCommand>> getCommands() {
+		TreeMap<QName, Class<? extends ShellCommand>> treeMap = new TreeMap<QName, Class<? extends ShellCommand>>(new Comparator<QName>() {
+			@Override
+			public int compare(QName name1, QName name2) {
+				return name1.toString().compareTo(name2.toString());
+			}
+		});
+		treeMap.putAll(this.registry);
+		return treeMap;
 	}
 
 }

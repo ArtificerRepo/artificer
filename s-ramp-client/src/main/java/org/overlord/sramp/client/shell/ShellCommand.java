@@ -38,4 +38,9 @@ public interface ShellCommand {
 	 */
 	public void printUsage();
 
+	/**
+	 * Prints the help text for this command.
+	 */
+	public void printHelp();
+
 }
