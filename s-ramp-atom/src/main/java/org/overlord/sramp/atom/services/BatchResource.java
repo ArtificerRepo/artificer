@@ -18,17 +18,20 @@ package org.overlord.sramp.atom.services;
 import java.io.InputStream;
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.Sramp;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
@@ -53,6 +56,7 @@ import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 @Path("/s-ramp")
 public class BatchResource {
 
+    private final Sramp sramp = new Sramp();
 	/**
 	 * Constructor.
 	 */
@@ -71,9 +75,11 @@ public class BatchResource {
     @Consumes(MediaType.APPLICATION_ZIP)
     @Produces(MediaType.MULTIPART_MIXED)
     @PartType("message/http")
-	public MultipartOutput zipPackage(@HeaderParam("Slug") String fileName, InputStream content) throws SrampAtomException {
+	public MultipartOutput zipPackage(@Context HttpServletRequest request,
+	        @HeaderParam("Slug") String fileName, InputStream content) throws SrampAtomException {
         InputStream is = content;
     	SrampArchive archive = null;
+    	String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
         try {
         	archive = new SrampArchive(content);
 
@@ -85,7 +91,7 @@ public class BatchResource {
             for (SrampArchiveEntry entry: entries) {
         		BaseArtifactType metaData = entry.getMetaData();
             	InputStream contentStream = archive.getInputStream(entry);
-        		processBatchEntry(output, entry.getPath(), metaData, contentStream);
+        		processBatchEntry(output, entry.getPath(), metaData, contentStream, baseUrl);
             }
 
             return output;
@@ -106,7 +112,7 @@ public class BatchResource {
 	 * @param contentStream the artifact content (or null if a meta-data only entry)
 	 */
 	private void processBatchEntry(MultipartOutput output, String path, BaseArtifactType metaData,
-			InputStream contentStream) {
+			InputStream contentStream, String baseUrl) {
 		String contentId = String.format("<%1$s@package>", path);
     	try {
 			ArtifactType artifactType = ArtifactType.valueOf(metaData);
@@ -122,18 +128,18 @@ public class BatchResource {
 
 			if (metaData.getUuid() == null && contentStream != null) {
 				// The normal "create" case - no UUID specified + artifact content included
-				Entry atomEntry = processCreate(artifactType, metaData, contentStream);
+				Entry atomEntry = processCreate(artifactType, metaData, contentStream, baseUrl);
 				addCreatedPart(output, contentId, atomEntry);
 			} else if (metaData.getUuid() != null && contentStream != null) {
 				// Either an "update" case or a "create" case - depends on if we find an existing
 				// artifact with the supplied UUID.  Content has been supplied, so it *may* be
 				// a create.
-				Entry atomEntry = processUpdateOrCreate(artifactType, metaData, contentStream);
+				Entry atomEntry = processUpdateOrCreate(artifactType, metaData, contentStream, baseUrl);
 		        addCreatedPart(output, contentId, atomEntry);
 			} else if (metaData.getUuid() != null && contentStream == null) {
 				// This is the "update" only case - metadata has been supplied but
 				// no content is included.  Thus, this cannot be a create.
-				Entry atomEntry = processUpdate(artifactType, metaData);
+				Entry atomEntry = processUpdate(artifactType, metaData, baseUrl);
 		        addCreatedPart(output, contentId, atomEntry);
 			} else {
 				throw new Exception("Unsupported path (TBD).");
@@ -158,7 +164,7 @@ public class BatchResource {
 	 * @throws Exception
 	 */
 	private Entry processCreate(ArtifactType artifactType, BaseArtifactType metaData,
-			InputStream contentStream) throws Exception {
+			InputStream contentStream, String baseUrl) throws Exception {
 		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
 		BaseArtifactType artifact = persistenceManager.persistArtifact(metaData, contentStream);
@@ -174,7 +180,7 @@ public class BatchResource {
 		// Now get the latest copy and return it
 		artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
 		// Return the entry containing the s-ramp artifact
-		ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
+		ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
 		ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 		Entry atomEntry = visitor.getAtomEntry();
 		return atomEntry;
@@ -191,11 +197,11 @@ public class BatchResource {
 	 * @throws Exception
 	 */
 	private Entry processUpdateOrCreate(ArtifactType artifactType, BaseArtifactType metaData,
-			InputStream contentStream) throws Exception {
+			InputStream contentStream, String baseUrl) throws Exception {
 		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 		BaseArtifactType artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
 		if (artifact == null) {
-			return processCreate(artifactType, metaData, contentStream);
+			return processCreate(artifactType, metaData, contentStream, baseUrl);
 		} else {
 			// Update the artifact metadata
 			persistenceManager.updateArtifact(metaData, artifactType);
@@ -205,7 +211,7 @@ public class BatchResource {
 			// Refetch the data to make sure what we return is up-to-date
 			artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
 			// Return the entry containing the s-ramp artifact
-			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
+			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			Entry atomEntry = visitor.getAtomEntry();
 			return atomEntry;
@@ -221,7 +227,7 @@ public class BatchResource {
 	 * @return the Atom entry created as a result of the creat operation
 	 * @throws Exception
 	 */
-	private Entry processUpdate(ArtifactType artifactType, BaseArtifactType metaData) throws Exception {
+	private Entry processUpdate(ArtifactType artifactType, BaseArtifactType metaData, String baseUrl) throws Exception {
 		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 		BaseArtifactType artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
 		if (artifact == null)
@@ -233,7 +239,7 @@ public class BatchResource {
 		// Refetch the data to make sure what we return is up-to-date
 		artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
 		// Return the entry containing the s-ramp artifact
-		ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
+		ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
 		ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 		Entry atomEntry = visitor.getAtomEntry();
 		return atomEntry;

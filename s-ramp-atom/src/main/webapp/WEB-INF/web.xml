@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+
+  <listener>
+   <listener-class>org.overlord.sramp.atom.SrampLifeCycle</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>Resteasy</servlet-name>
     <servlet-class>
@@ -10,25 +15,8 @@
       <param-value>org.overlord.sramp.atom.services.SRAMPApplication</param-value>
     </init-param>
   </servlet>
-  <servlet>
-    <servlet-name>S-RAMP-Lifecycle</servlet-name>
-    <servlet-class>
-      org.overlord.sramp.atom.SrampLifeCycleServlet
-    </servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
   <servlet-mapping>
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/*</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>SrampLifeCycleServlet</display-name>
-    <servlet-name>SrampLifeCycleServlet</servlet-name>
-    <servlet-class>org.overlord.sramp.atom.SrampLifeCycleServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>SrampLifeCycleServlet</servlet-name>
-    <url-pattern>/SrampLifeCycleServlet</url-pattern>
   </servlet-mapping>
 </web-app>

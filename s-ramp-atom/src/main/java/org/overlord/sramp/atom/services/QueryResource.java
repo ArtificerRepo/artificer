@@ -17,6 +17,7 @@ package org.overlord.sramp.atom.services;
 
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -24,11 +25,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.util.GenericType;
+import org.overlord.sramp.Sramp;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
 
@@ -39,6 +40,7 @@ import org.overlord.sramp.atom.err.SrampAtomException;
 @Path("/s-ramp")
 public class QueryResource extends AbstractFeedResource {
 
+    private final Sramp sramp = new Sramp();
 	/**
 	 * Constructor.
 	 */
@@ -58,7 +60,7 @@ public class QueryResource extends AbstractFeedResource {
 	@GET
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
 	public Feed queryFromGet(
-			@Context UriInfo uri,
+	        @Context HttpServletRequest request,
 			@QueryParam("query") String query,
 			@QueryParam("page") Integer page,
 			@QueryParam("pageSize") Integer pageSize,
@@ -66,7 +68,8 @@ public class QueryResource extends AbstractFeedResource {
 			@QueryParam("ascending") Boolean asc,
 			@QueryParam("propertyName") Set<String> propNames) throws SrampAtomException {
 		try {
-			return query(query, page, pageSize, orderBy, asc, propNames);
+		    String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+			return query(query, page, pageSize, orderBy, asc, propNames, baseUrl);
 		} catch (Throwable e) {
 			throw new SrampAtomException(e);
 		}
@@ -80,15 +83,16 @@ public class QueryResource extends AbstractFeedResource {
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
-	public Feed queryFromPost(MultipartFormDataInput input) throws SrampAtomException {
+	public Feed queryFromPost(@Context HttpServletRequest request, MultipartFormDataInput input) throws SrampAtomException {
     	try {
+    	    String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
 			String query = input.getFormDataPart("query", new GenericType<String>() { });
 			Integer page = input.getFormDataPart("page", new GenericType<Integer>() { });
 			Integer pageSize = input.getFormDataPart("pageSize", new GenericType<Integer>() { });
 			String orderBy = input.getFormDataPart("orderBy", new GenericType<String>() { });
 			Boolean asc = input.getFormDataPart("ascending", new GenericType<Boolean>() { });
 			Set<String> propNames = input.getFormDataPart("propertyName", new GenericType<Set<String>>() { });
-			return query(query, page, pageSize, orderBy, asc, propNames);
+			return query(query, page, pageSize, orderBy, asc, propNames, baseUrl);
 		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
@@ -107,7 +111,7 @@ public class QueryResource extends AbstractFeedResource {
      * @return an Atom {@link Feed}
      * @throws SrampAtomException
      */
-    protected Feed query(String query, Integer page, Integer pageSize, String orderBy, Boolean ascending, Set<String> propNames) throws SrampAtomException {
+    protected Feed query(String query, Integer page, Integer pageSize, String orderBy, Boolean ascending, Set<String> propNames, String baseUrl) throws SrampAtomException {
 		if (query == null)
 			throw new SrampAtomException("Missing S-RAMP query (param with name 'query').");
 
@@ -120,6 +124,6 @@ public class QueryResource extends AbstractFeedResource {
 				xpath = "/s-ramp/" + query;
 		}
 
-		return createArtifactFeed(xpath, page, pageSize, orderBy, ascending, propNames);
+		return createArtifactFeed(xpath, page, pageSize, orderBy, ascending, propNames, baseUrl);
     }
 }

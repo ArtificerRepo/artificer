@@ -22,10 +22,16 @@ package org.overlord.sramp;
  */
 public class SrampConstants {
 
-	public static final String SRAMP_NS = "http://s-ramp.org/xmlns/2010/s-ramp";
+    public static final String DATE_FORMAT  = "EEE, d MMM yyyy HH:mm:ss Z";
+    
+	public static final String SRAMP_NS     = "http://s-ramp.org/xmlns/2010/s-ramp";
 	public static final String SRAMP_PREFIX = "s-ramp";
 	
 	public static final String SRAMP_CONTENT_SIZE        = SRAMP_PREFIX + "contentSize";
     public static final String SRAMP_CONTENT_TYPE        = SRAMP_PREFIX + "contentType";
 
+    //Configuration constants
+    public static final String SRAMP_CONFIG_FILE_NAME     = "sramp.config.file.name";
+    public static final String SRAMP_CONFIG_FILE_REFRESH  = "sramp.config.file.refresh";
+    public static final String SRAMP_CONFIG_BASEURL       = "sramp.config.baseurl";
 }
