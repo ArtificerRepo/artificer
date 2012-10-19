@@ -67,10 +67,6 @@ public class BrmsPkgToSramp {
     }
 
     public boolean urlExists(String checkUrl, String user, String password) {
-        //http://localhost:8880/s-ramp-atom/brms/rest/packages/
-        //http://localhost:8880/s-ramp-atom/brms/rest/packages/
-
-
         try {
             URL checkURL = new URL(checkUrl);
             HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
@@ -150,6 +146,7 @@ public class BrmsPkgToSramp {
 
         //Upload the process AND process-image, making sure the uuid is identical to the one mentioned
         for (Assets.Asset asset : assets.getAsset()) {
+            if (!"package".equalsIgnoreCase(asset.getMetadata().getFormat())) {
                 //Upload the asset
                 String fileName = asset.getTitle() + "." + asset.getMetadata().getFormat().toLowerCase();
                 String uuid = asset.getMetadata().getUuid();
@@ -170,8 +167,7 @@ public class BrmsPkgToSramp {
                 IOUtils.closeQuietly(assetInputStream);
                 BaseArtifactType assetArtifact = SrampAtomUtils.unwrapSrampArtifact(assetEntry);
                 System.out.println("Uploaded asset " + assetArtifact.getName() + " " + assetArtifact.getUuid());
-
-
+            }
         }
 
         System.out.println("OK");

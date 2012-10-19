@@ -18,9 +18,11 @@ package org.overlord.sramp.atom.services;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -31,8 +33,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import javax.xml.namespace.QName;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -43,6 +47,8 @@ import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.MimeTypes;
+import org.overlord.sramp.Sramp;
+import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
@@ -72,6 +78,8 @@ import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 @Path("/s-ramp")
 public class ArtifactResource {
 
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(SrampConstants.DATE_FORMAT);
+    private final Sramp sramp = new Sramp();
 	/**
 	 * Constructor.
 	 */
@@ -90,10 +98,11 @@ public class ArtifactResource {
     @POST
     @Path("{model}/{type}")
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public Entry create(@HeaderParam("Content-Type") String contentType,
+	public Entry create(@Context HttpServletRequest request, @HeaderParam("Content-Type") String contentType,
 			@HeaderParam("Slug") String fileName, @PathParam("model") String model,
 			@PathParam("type") String type, InputStream is) throws SrampAtomException {
         try {
+            String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
             ArtifactType artifactType = ArtifactType.valueOf(model, type);
         	if (artifactType.getArtifactType().isDerived()) {
 				throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
@@ -127,7 +136,7 @@ public class ArtifactResource {
             persistenceManager.persistDerivedArtifacts(artifact, derivedArtifacts);
 
             //return the entry containing the s-ramp artifact
-            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
+            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
             return visitor.getAtomEntry();
         } catch (Exception e) {
@@ -152,11 +161,12 @@ public class ArtifactResource {
     @Path("{model}/{type}")
     @Consumes(MultipartConstants.MULTIPART_RELATED)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry create(@HeaderParam("Content-Type") String contentType,
-            @PathParam("model") String model, @PathParam("type") String type,
+    public Entry createMultiPart(@Context HttpServletRequest request, @HeaderParam("Content-Type") String contentType,
+            @PathParam("model") String model, @PathParam("type") String type, 
             MultipartRelatedInput input) throws SrampAtomException {
         InputStream contentStream = null;
         try {
+            String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
             ArtifactType artifactType = ArtifactType.valueOf(model, type);
             if (artifactType.getArtifactType().isDerived()) {
                 throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
@@ -198,7 +208,7 @@ public class ArtifactResource {
             persistenceManager.persistDerivedArtifacts(intermediate, dartifacts);
 
             // Convert to a full Atom Entry and return it
-            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
+            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
             ArtifactVisitorHelper.visitArtifact(visitor, intermediate);
             return visitor.getAtomEntry();
         } catch (Exception e) {
@@ -278,9 +288,10 @@ public class ArtifactResource {
     @GET
     @Path("{model}/{type}/{uuid}")
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public Entry getMetaData(@PathParam("model") String model, @PathParam("type") String type,
+	public Entry getMetaData(@Context HttpServletRequest request, @PathParam("model") String model, @PathParam("type") String type,
 			@PathParam("uuid") String uuid) throws SrampAtomException {
         try {
+            String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
             ArtifactType artifactType = ArtifactType.valueOf(model, type);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
@@ -290,7 +301,7 @@ public class ArtifactResource {
 				throw new Exception("Artifact not found.");
 
 			// Return the entry containing the s-ramp artifact
-			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
+			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return visitor.getAtomEntry();
 		} catch (Throwable e) {
@@ -312,9 +323,9 @@ public class ArtifactResource {
         try {
             ArtifactType artifactType = ArtifactType.valueOf(model, type);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-			BaseArtifactType artifact = persistenceManager.getArtifact(uuid, artifactType);
+			BaseArtifactType baseArtifact = persistenceManager.getArtifact(uuid, artifactType);
             ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
-            ArtifactVisitorHelper.visitArtifact(ctVizzy, artifact);
+            ArtifactVisitorHelper.visitArtifact(ctVizzy, baseArtifact);
             javax.ws.rs.core.MediaType mediaType = ctVizzy.getContentType();
             artifactType.setMimeType(mediaType.toString());
 			final InputStream artifactContent = persistenceManager.getArtifactContent(uuid, artifactType);
@@ -328,7 +339,12 @@ public class ArtifactResource {
 					}
 				}
 			};
-	    	return Response.ok(output, artifactType.getMimeType()).build();
+			String lastModifiedDate = simpleDateFormat.format(baseArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
+            return Response.ok(output, artifactType.getMimeType())
+                .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
+                .header("Content-Length", baseArtifact.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE)))
+                .header("Last-Modified", lastModifiedDate)
+                .build();
 		} catch (Throwable e) {
 			throw new SrampAtomException(e);
 		}

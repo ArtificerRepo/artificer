@@ -27,7 +27,8 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	/**
 	 * Constructor.
 	 */
-	public ArtifactToFullAtomEntryVisitor() {
+	public ArtifactToFullAtomEntryVisitor(String baseUrl) {
+	    super(baseUrl);
 	}
 
 	/**
