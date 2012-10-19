@@ -99,6 +99,7 @@ public class ArtifactResource {
 				throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
 						+ "' is a derived type.");
         	}
+        	// Figure out the mime type (from the http header, filename, or default by artifact type)
         	String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
         	artifactType.setMimeType(mimeType);
 
@@ -136,14 +137,25 @@ public class ArtifactResource {
         }
     }
 
+    /**
+     * Handles multi-part creates.  In S-RAMP, an HTTP multi-part request can be POST'd to
+     * the endpoint, which allows Atom Entry formatted meta-data to be included in the
+     * same request as the artifact content.
+     * @param contentType
+     * @param model
+     * @param type
+     * @param input
+     * @return the newly created artifact as an Atom {@link Entry}
+     * @throws SrampAtomException
+     */
     @POST
     @Path("{model}/{type}")
     @Consumes(MultipartConstants.MULTIPART_RELATED)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry createMultiPart(@HeaderParam("Content-Type") String contentType,
+    public Entry create(@HeaderParam("Content-Type") String contentType,
             @PathParam("model") String model, @PathParam("type") String type,
-            MultipartRelatedInput input) {
-        Entry atomEntry = new Entry();
+            MultipartRelatedInput input) throws SrampAtomException {
+        InputStream contentStream = null;
         try {
             ArtifactType artifactType = ArtifactType.valueOf(model, type);
             if (artifactType.getArtifactType().isDerived()) {
@@ -153,46 +165,47 @@ public class ArtifactResource {
 
             List<InputPart> list = input.getParts();
             // Expecting 2 parts
-            if (list.size()!=2) ; //throw error
+			if (list.size() != 2) {
+				throw new SrampAtomException("Invalid multi-part POST - expected two parts but got " + list.size());
+			}
             InputPart firstPart  = list.get(0);
             InputPart secondpart = list.get(1);
 
             // Getting the S-RAMP Artifact
-            atomEntry = firstPart.getBody(new GenericType<Entry>() { });
-            BaseArtifactType baseArtifactType = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
+            Entry atomEntry = firstPart.getBody(new GenericType<Entry>() { });
+            BaseArtifactType artifactMetaData = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
+            ArtifactType metaDataType = ArtifactType.valueOf(artifactMetaData);
+			if (metaDataType.getArtifactType() != artifactType.getArtifactType()) {
+				String errorMsg = String.format(
+						"Invalid multi-part POST - attempted to POST a '%1$s' to the '%2$s' endpoint.",
+						metaDataType.getArtifactType().getType(), artifactType.getArtifactType().getType());
+				throw new SrampAtomException(errorMsg);
+            }
             String fileName = null;
-            if (baseArtifactType.getName()!=null) fileName = baseArtifactType.getName();
+			if (artifactMetaData.getName() != null)
+				fileName = artifactMetaData.getName();
             String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
             artifactType.setMimeType(mimeType);
 
             // Processing the content itself first
-            InputStream is = secondpart.getBody(new GenericType<InputStream>() { });
+            contentStream = secondpart.getBody(new GenericType<InputStream>() { });
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             //store the content
-            BaseArtifactType intermediate = persistenceManager.persistArtifact(baseArtifactType, is);
+            BaseArtifactType intermediate = persistenceManager.persistArtifact(artifactMetaData, contentStream);
 
-            //create the derivedArtifacts
+            //create and persist the derivedArtifacts
             Collection<DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(intermediate);
-
-            // Persist the derivedArtifacts
             persistenceManager.persistDerivedArtifacts(intermediate, dartifacts);
 
-            //TODO we could do it all at once in the persistence layer if we can reuse the updateVisitor there
-            intermediate.setDescription(baseArtifactType.getDescription());
-            intermediate.setCreatedBy(baseArtifactType.getCreatedBy());
-            persistenceManager.updateArtifact(baseArtifactType, artifactType);
-
+            // Convert to a full Atom Entry and return it
             ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor();
             ArtifactVisitorHelper.visitArtifact(visitor, intermediate);
-
-            atomEntry  = visitor.getAtomEntry();
-
+            return visitor.getAtomEntry();
         } catch (Exception e) {
-            //TODO
-            e.printStackTrace();
+			throw new SrampAtomException(e);
+        } finally {
+        	IOUtils.closeQuietly(contentStream);
         }
-
-        return atomEntry;
     }
 
     /**

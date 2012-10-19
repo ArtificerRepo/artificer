@@ -78,19 +78,19 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
      * @see org.overlord.sramp.repository.PersistenceManager#persistArtifact(java.lang.String, org.overlord.sramp.ArtifactType, java.io.InputStream)
      */
     @Override
-    public BaseArtifactType persistArtifact(BaseArtifactType baseArtifactType, InputStream content) throws RepositoryException {
+    public BaseArtifactType persistArtifact(BaseArtifactType metaData, InputStream content) throws RepositoryException {
         Session session = null;
         try {
             session = JCRRepository.getSession();
             JcrTools tools = new JcrTools();
             String uuid = null;
-            if (baseArtifactType.getUuid()!=null) {
-                uuid = baseArtifactType.getUuid();
-            } else {
-                uuid = UUID.randomUUID().toString();
-            }
-            ArtifactType artifactType = ArtifactType.valueOf(baseArtifactType);
-            String name = baseArtifactType.getName();
+			if (metaData.getUuid() != null) {
+				uuid = metaData.getUuid();
+			} else {
+				uuid = UUID.randomUUID().toString();
+			}
+            ArtifactType artifactType = ArtifactType.valueOf(metaData);
+            String name = metaData.getName();
             String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
             log.debug("Uploading file {} to JCR.",name);
 
@@ -100,21 +100,25 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             String jcrMixinName = artifactType.getArtifactType().getApiType().value();
             jcrMixinName = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrMixinName);
             artifactNode.addMixin(jcrMixinName);
-            //BaseArtifactType
+            // BaseArtifactType
             artifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
-            artifactNode.setProperty(JCRConstants.SRAMP_NAME, name);
             artifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, artifactType.getArtifactType().getModel());
             artifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, artifactType.getArtifactType().getType());
-            //UserDefined
+            // UserDefined
             if (UserDefinedArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
                 // read the encoding from the header
                 artifactNode.setProperty(JCRConstants.SRAMP_USER_TYPE, artifactType.getUserType());
             }
-            //XMLDocument
+            // XMLDocument
             if (XmlDocument.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
                 // read the encoding from the header
                 artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_ENCODING, "UTF-8");
             }
+            // Update the JCR node with any properties included in the meta-data
+            ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(artifactNode, new JCRReferenceFactoryImpl(session));
+            ArtifactVisitorHelper.visitArtifact(visitor, metaData);
+            if (visitor.hasError())
+            	throw visitor.getError();
 
             log.debug("Successfully saved {} to node={}",name, uuid);
             session.save();
