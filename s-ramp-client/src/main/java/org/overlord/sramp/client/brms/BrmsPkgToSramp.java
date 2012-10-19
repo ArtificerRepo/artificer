@@ -147,6 +147,7 @@ public class BrmsPkgToSramp {
         
         //Upload the process AND process-image, making sure the uuid is identical to the one mentioned 
         for (Assets.Asset asset : assets.getAsset()) {
+            if (!"package".equalsIgnoreCase(asset.getMetadata().getFormat())) {
                 //Upload the asset
                 String fileName = asset.getTitle() + "." + asset.getMetadata().getFormat().toLowerCase();
                 String uuid = asset.getMetadata().getUuid();
@@ -167,7 +168,7 @@ public class BrmsPkgToSramp {
                 IOUtils.closeQuietly(assetInputStream);
                 BaseArtifactType assetArtifact = SrampAtomUtils.unwrapSrampArtifact(assetEntry);
                 System.out.println("Uploaded asset " + assetArtifact.getName() + " " + assetArtifact.getUuid());
-                
+            }
           
         }
         

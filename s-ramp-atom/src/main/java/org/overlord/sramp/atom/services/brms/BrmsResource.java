@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,10 +31,12 @@ import javax.ws.rs.core.StreamingOutput;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.repository.PersistenceFactory;
@@ -59,7 +62,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Property;
 @Path("/brms")
 public class BrmsResource {
 
-
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(SrampConstants.DATE_FORMAT);
     /**
      * Constructor.
      */
@@ -191,7 +194,12 @@ public class BrmsResource {
                         }
                     }
                 };
-                return Response.ok(output, "application/octet-stream").build();
+                String lastModifiedDate = simpleDateFormat.format(baseArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
+                return Response.ok(output, "application/octet-stream")
+                    .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
+                    .header("Content-Length", baseArtifact.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE)))
+                    .header("Last-Modified", lastModifiedDate)
+                    .build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
@@ -232,6 +240,7 @@ public class BrmsResource {
             if (uuid!=null) {
                 ArtifactType artifactType = ArtifactType.fromFileExtension(format);
                 PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+                BaseArtifactType baseArtifact = persistenceManager.getArtifact(uuid, artifactType);
                 final InputStream artifactContent = persistenceManager.getArtifactContent(uuid, artifactType);
                 Object output = new StreamingOutput() {
                     @Override
@@ -243,7 +252,12 @@ public class BrmsResource {
                         }
                     }
                 };
-                return Response.ok(output, "application/octet-stream").build();
+                String lastModifiedDate = simpleDateFormat.format(baseArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
+                return Response.ok(output, "application/octet-stream")
+                    .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
+                    .header("Content-Length", baseArtifact.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE)))
+                    .header("Last-Modified", lastModifiedDate)
+                    .build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
