@@ -40,6 +40,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Property;
  */
 public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 
+    protected String baseUrl = "";
 	protected Entry atomEntry;
 	protected Exception failure;
 	protected Set<String> propertyNames;
@@ -47,14 +48,16 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	/**
 	 * Constructor.
 	 */
-	public ArtifactToSummaryAtomEntryVisitor() {
+	public ArtifactToSummaryAtomEntryVisitor(String baseUrl) {
+	    this.baseUrl = baseUrl;
 	}
 
 	/**
 	 * Constructor.
 	 * @param propNames
 	 */
-	public ArtifactToSummaryAtomEntryVisitor(Set<String> propNames) {
+	public ArtifactToSummaryAtomEntryVisitor(String baseUrl, Set<String> propNames) {
+	    this.baseUrl = baseUrl;
 		this.propertyNames = propNames;
 	}
 
@@ -106,9 +109,8 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 				entry.getAuthors().add(new Person(artifact.getCreatedBy()));
 			if (artifact.getDescription() != null)
 				entry.setSummary(artifact.getDescription());
-
-			//TODO create URL Helper, obtain base URL from server
-			String atomLink = "http://localhost:8080/changeit/s-ramp/"
+			
+			String atomLink = baseUrl + "/s-ramp/"
 					+ artifactType.getModel() + "/"
 					+ artifactType.getType() + "/" + artifact.getUuid();
 			String mediaLink = atomLink + "/media";

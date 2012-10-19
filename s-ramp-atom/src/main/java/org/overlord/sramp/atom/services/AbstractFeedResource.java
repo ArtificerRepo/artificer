@@ -61,7 +61,7 @@ public abstract class AbstractFeedResource {
      * @throws SrampAtomException
      */
 	protected Feed createArtifactFeed(String query, Integer page, Integer pageSize, String orderBy,
-			Boolean ascending, Set<String> propNames) throws SrampAtomException {
+			Boolean ascending, Set<String> propNames, String baseUrl) throws SrampAtomException {
 		if (page == null)
 			page = 0;
 		if (pageSize == null)
@@ -78,7 +78,7 @@ public abstract class AbstractFeedResource {
 			artifactSet = srampQuery.executeQuery();
 			int startIdx = page * pageSize;
 			int endIdx = startIdx + pageSize - 1;
-			Feed feed = createFeed(artifactSet, startIdx, endIdx, propNames);
+			Feed feed = createFeed(artifactSet, startIdx, endIdx, propNames, baseUrl);
 			addPaginationLinks(feed, artifactSet, query, page, pageSize, orderBy, ascending);
 			return feed;
 		} catch (Throwable e) {
@@ -108,7 +108,7 @@ public abstract class AbstractFeedResource {
 	 * @return an Atom {@link Feed}
 	 * @throws Exception
 	 */
-	private Feed createFeed(ArtifactSet artifactSet, int fromRow, int toRow, Set<String> propNames) throws Exception {
+	private Feed createFeed(ArtifactSet artifactSet, int fromRow, int toRow, Set<String> propNames, String baseUrl) throws Exception {
 		Feed feed = new Feed();
 		feed.setId(new URI(UUID.randomUUID().toString()));
 		feed.setTitle("S-RAMP Feed");
@@ -126,7 +126,7 @@ public abstract class AbstractFeedResource {
 		}
 
 		// Now get only the rows we're interested in.
-        ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor(propNames);
+        ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor(baseUrl, propNames);
 		for (int i = fromRow; i <= toRow; i++) {
 			if (!iterator.hasNext())
 				break;

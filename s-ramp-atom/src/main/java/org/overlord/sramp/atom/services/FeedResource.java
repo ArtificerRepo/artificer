@@ -17,13 +17,16 @@ package org.overlord.sramp.atom.services;
 
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.overlord.sramp.Sramp;
 import org.overlord.sramp.atom.MediaType;
 
 /**
@@ -39,6 +42,7 @@ import org.overlord.sramp.atom.MediaType;
 @Path("/s-ramp")
 public class FeedResource extends AbstractFeedResource {
 
+    private final Sramp sramp = new Sramp();
 	/**
 	 * Constructor.
 	 */
@@ -54,6 +58,7 @@ public class FeedResource extends AbstractFeedResource {
 	@Path("{model}/{type}")
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
 	public Feed getArtifactFeed(
+	        @Context HttpServletRequest request,
 			@PathParam("model") String model,
 			@PathParam("type") String type,
 			@QueryParam("page") Integer page,
@@ -62,7 +67,8 @@ public class FeedResource extends AbstractFeedResource {
 			@QueryParam("ascending") Boolean asc,
 			@QueryParam("propertyName") Set<String> propNames) throws Exception {
     	String xpath = String.format("/s-ramp/%1$s/%2$s", model, type);
-		return createArtifactFeed(xpath, page, pageSize, orderBy, asc, propNames);
+    	String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+		return createArtifactFeed(xpath, page, pageSize, orderBy, asc, propNames, baseUrl);
 	}
 
 }
