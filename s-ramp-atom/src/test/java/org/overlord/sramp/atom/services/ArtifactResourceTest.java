@@ -27,9 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.IOUtils;
@@ -385,23 +382,17 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		Assert.assertEquals(PartEnum.PART, parts.get(0).getArtifactType());
 		Assert.assertNotNull(parts.get(0).getValue());
 	}
-	
-    @Path("s-ramp")
-    public static interface MultipartClient
-    {
-       @Path("xsd/XsdDocument")
-       @POST
-       @Consumes(MultipartConstants.MULTIPART_RELATED)
-       public void postRelated(MultipartRelatedOutput output);
-    }
-	
+
+	/**
+	 * Tests the multi-part create scenario.
+	 */
 	@Test
 	public void testMultiPartCreate() {
 	    try {
 	        ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/XmlDocument"));
 
 	        MultipartRelatedOutput output = new MultipartRelatedOutput();
-	        
+
 	        XmlDocument xmlDocument = new XmlDocument();
 	        xmlDocument.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
 	        xmlDocument.setCreatedBy("kurt");
@@ -409,7 +400,7 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 	        xmlDocument.setName("PO.xml");
 	        xmlDocument.setUuid("my-uuid");
 	        xmlDocument.setVersion("1.0");
-	        
+
 	        Entry atomEntry = new Entry();
 	        Artifact arty = new Artifact();
 	        arty.setXmlDocument(xmlDocument);
@@ -417,16 +408,16 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 
 	        MediaType mediaType = new MediaType("application", "atom+xml");
 	        output.addPart(atomEntry, mediaType);
-	        
+
 	        String artifactFileName = "PO.xml";
 	        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
 	        MediaType mediaType2 = new MediaType("application", "xml");
 	        output.addPart(contentStream, mediaType2);
-	        
+
 	        request.body(MultipartConstants.MULTIPART_RELATED, output);
-    
+
             ClientResponse<Entry> response = request.post(Entry.class);
-//    
+//
             Entry entry = response.getEntity();
             Assert.assertEquals(artifactFileName, entry.getTitle());
             Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
