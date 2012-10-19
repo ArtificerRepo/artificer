@@ -23,7 +23,6 @@ import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
@@ -76,8 +75,6 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractJCRPersistenceTest {
         } finally {
         	IOUtils.closeQuietly(contentStream);
         }
-
-        persistenceManager.printArtifactGraph(uuid, ArtifactType.WsdlDocument);
 
         WsdlDocument wsdl = (WsdlDocument) getArtifactByUUID(uuid);
         Assert.assertNotNull(wsdl);

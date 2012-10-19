@@ -46,7 +46,6 @@ import org.overlord.sramp.repository.jcr.JCRConstants;
  */
 public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 
-	private StringBuilder builder = new StringBuilder();
 	private static Map<QName, String> corePropertyMap = new HashMap<QName, String>();
 	static {
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "createdBy"), "jcr:createdBy");
@@ -59,6 +58,11 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "name"), "sramp:name");
 	}
 
+	private StringBuilder fromBuilder = new StringBuilder();
+	private StringBuilder whereBuilder = new StringBuilder();
+	private String predicateContext = "artifact";
+	private int relationshipJoinCounter = 1;
+
 	/**
 	 * Default constructor.
 	 */
@@ -69,7 +73,45 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 * Returns the sql-2 query created by this visitor.
 	 */
 	public String getSql2Query() {
-		return this.builder.toString();
+		String query = "SELECT artifact.* FROM " + fromBuilder.toString() + " WHERE " + whereBuilder.toString();
+		return query;
+	}
+
+	/**
+	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.Query)
+	 */
+	@Override
+	public void visit(Query node) {
+		this.fromBuilder.append("[sramp:baseArtifactType] AS artifact");
+		node.getArtifactSet().accept(this);
+		if (node.getPredicate() != null) {
+			this.whereBuilder.append(" AND (");
+			node.getPredicate().accept(this);
+			this.whereBuilder.append(")");
+		}
+		if (node.getSubartifactSet() != null)
+			throw new RuntimeException("Top level sub-artifact-sets not supported.");
+	}
+
+	/**
+	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.LocationPath)
+	 */
+	@Override
+	public void visit(LocationPath node) {
+		if (node.getArtifactType() != null) {
+			// If this is explicitely *or* implicitely a user defined type search...
+			if ("user".equals(node.getArtifactModel()) || !ArtifactTypeEnum.hasEnum(node.getArtifactType())) {
+				this.whereBuilder.append("artifact.[sramp:artifactType] = '" + ArtifactTypeEnum.UserDefinedArtifactType + "'");
+				this.whereBuilder.append(" AND ");
+				this.whereBuilder.append("artifact.[sramp:userType] = '" + node.getArtifactType().replace("'", "''") + "'");
+			} else {
+				this.whereBuilder.append("artifact.[sramp:artifactType] = '" + node.getArtifactType().replace("'", "''") + "'");
+			}
+		} else if (node.getArtifactModel() != null) {
+			this.whereBuilder.append("artifact.[sramp:artifactModel] = '" + node.getArtifactModel().replace("'", "''") + "'");
+		} else {
+			this.whereBuilder.append("artifact.[sramp:artifactModel] LIKE '%'");
+		}
 	}
 
 	/**
@@ -81,7 +123,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			node.getLeft().accept(this);
 		} else {
 			node.getLeft().accept(this);
-			this.builder.append(" AND ");
+			this.whereBuilder.append(" AND ");
 			node.getRight().accept(this);
 		}
 	}
@@ -107,18 +149,20 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(EqualityExpr node) {
-		if (node.getExpr() != null) {
-			this.builder.append(" ( ");
+		if (node.getSubartifactSet() != null) {
+			node.getSubartifactSet().accept(this);
+		} else if (node.getExpr() != null) {
+			this.whereBuilder.append(" ( ");
 			node.getExpr().accept(this);
-			this.builder.append(" ) ");
+			this.whereBuilder.append(" ) ");
 		} else if (node.getOperator() == null) {
 			node.getLeft().accept(this);
-			this.builder.append(" LIKE '%'");
+			this.whereBuilder.append(" LIKE '%'");
 		} else {
 			node.getLeft().accept(this);
-			this.builder.append(" ");
-			this.builder.append(node.getOperator().symbol());
-			this.builder.append(" ");
+			this.whereBuilder.append(" ");
+			this.whereBuilder.append(node.getOperator().symbol());
+			this.whereBuilder.append(" ");
 			node.getRight().accept(this);
 		}
 	}
@@ -148,15 +192,13 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 				} else {
 					jcrPropName = JCRConstants.SRAMP_PROPERTIES + ":" + property.getLocalPart();
 				}
-				this.builder.append("[");
-				this.builder.append(jcrPropName);
-				this.builder.append("]");
+				this.whereBuilder.append(this.predicateContext);
+				this.whereBuilder.append(".[");
+				this.whereBuilder.append(jcrPropName);
+				this.whereBuilder.append("]");
 			} else {
 				throw new RuntimeException("Properties from namespace '" + property.getNamespaceURI() + "' are not supported.");
 			}
-		}
-		if (node.getSubartifactSet() != null) {
-			throw new RuntimeException("Sub-artifact-set in a forward property step not yet supported.");
 		}
 	}
 
@@ -169,27 +211,6 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.LocationPath)
-	 */
-	@Override
-	public void visit(LocationPath node) {
-		if (node.getArtifactType() != null) {
-			// If this is explicitely *or* implicitely a user defined type search...
-			if ("user".equals(node.getArtifactModel()) || !ArtifactTypeEnum.hasEnum(node.getArtifactType())) {
-				this.builder.append(" WHERE [sramp:artifactType] = '" + ArtifactTypeEnum.UserDefinedArtifactType + "'");
-				this.builder.append(" AND ");
-				this.builder.append("[sramp:userType] = '" + node.getArtifactType().replace("'", "''") + "'");
-			} else {
-				this.builder.append(" WHERE [sramp:artifactType] = '" + node.getArtifactType().replace("'", "''") + "'");
-			}
-		} else if (node.getArtifactModel() != null) {
-			this.builder.append(" WHERE [sramp:artifactModel] = '" + node.getArtifactModel().replace("'", "''") + "'");
-		} else {
-			this.builder.append(" WHERE [sramp:artifactModel] LIKE '%'");
-		}
-	}
-
-	/**
 	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.OrExpr)
 	 */
 	@Override
@@ -198,7 +219,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			node.getLeft().accept(this);
 		} else {
 			node.getLeft().accept(this);
-			this.builder.append(" OR ");
+			this.whereBuilder.append(" OR ");
 			node.getRight().accept(this);
 		}
 	}
@@ -217,27 +238,13 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	@Override
 	public void visit(PrimaryExpr node) {
 		if (node.getLiteral() != null) {
-			this.builder.append("'");
-			this.builder.append(node.getLiteral());
-			this.builder.append("'");
+			this.whereBuilder.append("'");
+			this.whereBuilder.append(node.getLiteral());
+			this.whereBuilder.append("'");
 		} else if (node.getNumber() != null) {
-			this.builder.append(node.getNumber());
+			this.whereBuilder.append(node.getNumber());
 		} else if (node.getPropertyQName() != null) {
 			throw new RuntimeException("Property primary expressions not yet supported.");
-		}
-	}
-
-	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.Query)
-	 */
-	@Override
-	public void visit(Query node) {
-		this.builder.append("SELECT * FROM [sramp:baseArtifactType]");
-		node.getArtifactSet().accept(this);
-		if (node.getPredicate() != null) {
-			this.builder.append(" AND (");
-			node.getPredicate().accept(this);
-			this.builder.append(")");
 		}
 	}
 
@@ -246,7 +253,18 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(RelationshipPath node) {
-		throw new RuntimeException("Relationship paths not yet supported.");
+		String alias = this.predicateContext;
+
+		fromBuilder.append(" JOIN [sramp:relationship] AS ");
+		fromBuilder.append(alias);
+		fromBuilder.append(" ON ISCHILDNODE(");
+		fromBuilder.append(alias);
+		fromBuilder.append(", artifact)");
+
+		whereBuilder.append(alias);
+		whereBuilder.append(".[sramp:relationshipType] = '");
+		whereBuilder.append(node.getRelationshipType());
+		whereBuilder.append("'");
 	}
 
 	/**
@@ -254,7 +272,36 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(SubartifactSet node) {
-		throw new RuntimeException("Sub-artifact-sets not yet supported.");
+		if (node.getFunctionCall() != null) {
+			node.getFunctionCall().accept(this);
+		} else if (node.getRelationshipPath() != null) {
+			String oldCtx = this.predicateContext;
+
+			if (node.getPredicate() != null) {
+				whereBuilder.append("("); // open the predicate paren
+			}
+			String relationshipAlias = "relationship" + relationshipJoinCounter++;
+			this.predicateContext = relationshipAlias;
+			node.getRelationshipPath().accept(this);
+			if (node.getPredicate() != null) {
+				this.whereBuilder.append(" AND ");
+				this.whereBuilder.append(relationshipAlias);
+				this.whereBuilder.append(".[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS target WHERE ");
+
+				this.predicateContext = "target";
+				node.getPredicate().accept(this);
+
+				this.whereBuilder.append(")"); // close the sub-query paren
+			}
+			if (node.getPredicate() != null) {
+				whereBuilder.append(")"); // Close the predicate paren
+			}
+
+			this.predicateContext = oldCtx;
+			if (node.getSubartifactSet() != null) {
+				throw new RuntimeException("Multi-level sub-artifact-sets not supported.");
+			}
+		}
 	}
 
 }

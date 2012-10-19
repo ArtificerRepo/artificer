@@ -62,16 +62,31 @@ public class SrampArchiveJaxbUtils {
 
 	/**
 	 * Writes the artifact meta-data to the given working path.
-	 * @param workPath
+	 * @param outputFile
 	 * @param artifact
 	 * @throws JAXBException
 	 */
-	public static void writeMetaData(File workPath, BaseArtifactType artifact) throws JAXBException {
+	public static void writeMetaData(File outputFile, BaseArtifactType artifact) throws JAXBException {
+		writeMetaData(outputFile, artifact, true);
+	}
+
+	/**
+	 * Writes the artifact meta-data to the given working path.
+	 * @param outputFile
+	 * @param artifact
+	 * @param wrap
+	 * @throws JAXBException
+	 */
+	public static void writeMetaData(File outputFile, BaseArtifactType artifact, boolean wrap) throws JAXBException {
 		try {
-			Entry atomEntry = SrampAtomUtils.wrapSrampArtifact(artifact);
 			Marshaller marshaller = getJaxbContext().createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			marshaller.marshal(atomEntry, workPath);
+			Entry atomEntry = SrampAtomUtils.wrapSrampArtifact(artifact);
+			if (wrap) {
+				marshaller.marshal(atomEntry, outputFile);
+			} else {
+				marshaller.marshal(atomEntry.getAnyOtherJAXBObject(), outputFile);
+			}
 		} catch (JAXBException e) {
 			throw e;
 		} catch (Exception e) {

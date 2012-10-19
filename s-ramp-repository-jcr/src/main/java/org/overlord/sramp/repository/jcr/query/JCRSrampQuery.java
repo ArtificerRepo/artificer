@@ -96,7 +96,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 		queryModel.accept(visitor);
 		String sql2Query = visitor.getSql2Query();
 		if (jcrOrderBy != null) {
-			sql2Query += " ORDER BY [" + jcrOrderBy + "] " + (isOrderAscending() ? "ASC" : "DESC");
+			sql2Query += " ORDER BY artifact.[" + jcrOrderBy + "] " + (isOrderAscending() ? "ASC" : "DESC");
 		}
 		return sql2Query;
 	}

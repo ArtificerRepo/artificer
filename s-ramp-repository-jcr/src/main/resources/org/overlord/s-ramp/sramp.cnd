@@ -46,7 +46,7 @@
 - sramp:description (string)
 - * (string)
 - * (string) multiple
-+ * (sramp:relationship) sns
++ * (sramp:relationship)
 
 [sramp:documentArtifactType] > sramp:baseArtifactType abstract mixin
 - sramp:contentType (string)

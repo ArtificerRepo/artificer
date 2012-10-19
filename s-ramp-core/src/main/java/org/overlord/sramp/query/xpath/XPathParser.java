@@ -271,7 +271,7 @@ public class XPathParser {
 			equalityExpr.setExpr(expr);
 			if (!tokens.canConsume(')'))
 				throw new XPathParserException("Missing close-paren ')' in expression.");
-		} else {
+		} else if (tokens.canConsume('@')) {
 			ForwardPropertyStep forwardPropertyStep = parseForwardPropertyStep(tokens);
 			PrimaryExpr primaryExpr = null;
 			if (tokens.canConsume("!", "=")) {
@@ -292,6 +292,9 @@ public class XPathParser {
 
 			equalityExpr.setLeft(forwardPropertyStep);
 			equalityExpr.setRight(primaryExpr);
+		} else {
+			SubartifactSet subartifactSet = parseSubartifactSet(tokens);
+			equalityExpr.setSubArtifactSet(subartifactSet);
 		}
 		return equalityExpr;
 	}
@@ -303,21 +306,7 @@ public class XPathParser {
 	 */
 	private ForwardPropertyStep parseForwardPropertyStep(TokenStream tokens) {
 		ForwardPropertyStep forwardPropertyStep = new ForwardPropertyStep();
-		QName propertyQName = null;
-		SubartifactSet subartifactSet = null;
-
-		if (tokens.canConsume('@')) {
-			propertyQName = parseQName(tokens, null);
-		} else {
-			subartifactSet = parseSubartifactSet(tokens);
-			if (tokens.canConsume('/')) {
-				if (!tokens.canConsume('@'))
-					throw new XPathParserException("Missing '@' from forward property step.");
-				propertyQName = parseQName(tokens, null);
-			}
-		}
-
-		forwardPropertyStep.setSubartifactSet(subartifactSet);
+		QName propertyQName = parseQName(tokens, null);
 		forwardPropertyStep.setPropertyQName(propertyQName);
 		return forwardPropertyStep;
 	}

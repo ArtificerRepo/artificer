@@ -68,9 +68,35 @@
 
 		<!-- Test dependencies -->
 		<dependency>
+			<groupId>org.overlord.sramp</groupId>
+			<artifactId>s-ramp-repository-jcr</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.overlord.sramp</groupId>
+			<artifactId>s-ramp-repository-jcr</artifactId>
+			<version>${project.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.overlord.sramp</groupId>
+			<artifactId>s-ramp-atom</artifactId>
+			<version>${project.version}</version>
+			<classifier>classes</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.maven.wagon</groupId>
 			<artifactId>wagon-provider-test</artifactId>
 			<version>${wagon.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>tjws</artifactId>
+			<version>${org.jboss.resteasy.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

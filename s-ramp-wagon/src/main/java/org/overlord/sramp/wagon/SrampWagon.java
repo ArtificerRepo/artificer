@@ -406,18 +406,17 @@ public class SrampWagon extends StreamWagon {
 
 			// Now also add "expanded" content to the s-ramp repository
 			if (shouldExpand(gavInfo)) {
-				// TODO replace parentUUID logic with relationship, once relationships are impl'd
 				final String parentUUID = artifact.getUuid();
 				j2sramp = new JarToSrampArchive(tempResourceFile);
 				j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
 					@Override
 					public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
 						BaseArtifactType metaData = super.createMetaData(artifact);
-						SrampModelUtils.setCustomProperty(metaData, "maven.parent-uuid", parentUUID);
 						SrampModelUtils.setCustomProperty(metaData, "maven.parent-groupId", gavInfo.getGroupId());
 						SrampModelUtils.setCustomProperty(metaData, "maven.parent-artifactId", gavInfo.getArtifactId());
 						SrampModelUtils.setCustomProperty(metaData, "maven.parent-version", gavInfo.getVersion());
 						SrampModelUtils.setCustomProperty(metaData, "maven.parent-type", gavInfo.getType());
+						SrampModelUtils.addGenericRelationship(metaData, "mavenParent", parentUUID);
 						return metaData;
 					}
 				});
@@ -442,12 +441,19 @@ public class SrampWagon extends StreamWagon {
 	 * @throws SrampAtomException
 	 */
 	private void cleanExpandedArtifacts(SrampAtomApiClient client, String parentUUID) throws SrampAtomException, SrampClientException {
-		String query = String.format("/s-ramp[@maven.parent-uuid = '%1$s']", parentUUID);
-		Feed feed = client.query(query, 0, 200, "name", true);
-		for (Entry entry : feed.getEntries()) {
-			ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
-			String uuid = entry.getId().toString();
-			client.deleteArtifact(uuid, artifactType);
+		String query = String.format("/s-ramp[mavenParent[@uuid = '%1$s']]", parentUUID);
+		boolean done = false;
+		while (!done) {
+			Feed feed = client.query(query, 0, 20, "name", true);
+			if (feed.getEntries().size() == 0) {
+				done = true;
+			} else {
+				for (Entry entry : feed.getEntries()) {
+					ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
+					String uuid = entry.getId().toString();
+					client.deleteArtifact(uuid, artifactType);
+				}
+			}
 		}
 	}
 

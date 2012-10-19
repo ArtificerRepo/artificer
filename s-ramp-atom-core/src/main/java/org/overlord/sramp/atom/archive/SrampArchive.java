@@ -175,7 +175,7 @@ public class SrampArchive {
 			String path = contentFile.getAbsolutePath();
 			path = path.substring(this.workDir.getAbsolutePath().length() + 1);
 			path = path.replace('\\', '/'); // just in case we're in Windows :(
-			entries.add(new SrampArchiveEntry(path, metaDataFile));
+			entries.add(new SrampArchiveEntry(path, metaDataFile, contentFile));
 		}
 		return entries;
 	}
@@ -203,32 +203,20 @@ public class SrampArchive {
 	 * @throws SrampArchiveException
 	 */
 	public void addEntry(String path, BaseArtifactType metaData, InputStream content) throws SrampArchiveException {
-		SrampArchiveEntry entry = new SrampArchiveEntry(path, metaData);
-		addEntry(entry, content);
-	}
-
-	/**
-	 * Adds an entry to the S-RAMP archive.  This method will close the content
-	 * {@link InputStream}.
-	 * @param entry the archive entry
-	 * @param content the entry content (or null if a meta-data only entry)
-	 * @throws SrampArchiveException
-	 */
-	public void addEntry(SrampArchiveEntry entry, InputStream content) throws SrampArchiveException {
-		if (entry.getPath() == null)
+		if (path == null)
 			throw new SrampArchiveException("Invalid entry path.");
-		if (entry.getMetaData() == null)
+		if (metaData == null)
 			throw new SrampArchiveException("Missing artifact meta-data.");
-		File workPath = new File(this.workDir, entry.getPath());
-		if (workPath.exists())
+		File metaDataFile = new File(this.workDir, path + ".atom");
+		File contentFile = new File(this.workDir, path);
+		if (metaDataFile.exists())
 			throw new SrampArchiveException("Archive entry already exists.");
 		// Create any required parent directories
-		workPath.getParentFile().mkdirs();
-		File atomWorkPath = new File(this.workDir, entry.getPath() + ".atom");
+		metaDataFile.getParentFile().mkdirs();
 		if (content != null)
-			writeContent(workPath, content);
+			writeContent(contentFile, content);
 		try {
-			SrampArchiveJaxbUtils.writeMetaData(atomWorkPath, entry.getMetaData());
+			SrampArchiveJaxbUtils.writeMetaData(metaDataFile, metaData);
 		} catch (JAXBException e) {
 			throw new SrampArchiveException(e);
 		}
@@ -244,14 +232,14 @@ public class SrampArchive {
 	public void updateEntry(SrampArchiveEntry entry, InputStream content) throws SrampArchiveException {
 		if (entry.getPath() == null)
 			throw new SrampArchiveException("Invalid entry path.");
-		File workPath = new File(this.workDir, entry.getPath());
-		File atomWorkPath = new File(this.workDir, entry.getPath() + ".atom");
+		File contentFile = new File(this.workDir, entry.getPath());
+		File metaDataFile = new File(this.workDir, entry.getPath() + ".atom");
 
 		if (content != null)
-			writeContent(workPath, content);
+			writeContent(contentFile, content);
 		if (entry.getMetaData() != null) {
 			try {
-				SrampArchiveJaxbUtils.writeMetaData(atomWorkPath, entry.getMetaData());
+				SrampArchiveJaxbUtils.writeMetaData(metaDataFile, entry.getMetaData());
 			} catch (JAXBException e) {
 				throw new SrampArchiveException(e);
 			}
@@ -354,12 +342,41 @@ public class SrampArchive {
 	 * @return the archive entry, or null if not found
 	 */
 	public SrampArchiveEntry getEntry(String archivePath) {
+		File contentFile = new File(this.workDir, archivePath);
 		File metaDataFile = new File(this.workDir, archivePath + ".atom");
 		SrampArchiveEntry rval = null;
 		if (metaDataFile.exists()) {
-			rval = new SrampArchiveEntry(archivePath, metaDataFile);
+			rval = new SrampArchiveEntry(archivePath, metaDataFile, contentFile);
 		}
 		return rval;
+	}
+
+	/**
+	 * Returns true if the s-ramp archive contains an entry at the given path.
+	 * @param archivePath path to the entry within the archive
+	 * @return true if an entry exists at the path
+	 */
+	public boolean containsEntry(String archivePath) {
+		File metaDataFile = new File(this.workDir, archivePath + ".atom");
+		return metaDataFile.exists();
+	}
+
+	/**
+	 * Removes the s-ramp archive entry at the given path if it exists.
+	 * @param archivePath path to the entry within the archive
+	 * @return true if an entry existed and was removed
+	 */
+	public boolean removeEntry(String archivePath) {
+		File metaDataFile = new File(this.workDir, archivePath + ".atom");
+		File contentFile = new File(this.workDir, archivePath);
+		if (metaDataFile.isFile()) {
+			metaDataFile.delete();
+			if (contentFile.isFile()) {
+				contentFile.delete();
+			}
+			return true;
+		}
+		return false;
 	}
 
 }
