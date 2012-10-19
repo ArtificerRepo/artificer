@@ -46,6 +46,16 @@ public class PackArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+	 */
+	@Override
+	public void printHelp() {
+		System.out.println("The 'pack' command packages up the currently open S-RAMP batch");
+		System.out.println("archive file.  The S-RAMP batch archive is zip'd up and then");
+		System.out.println("copied to the output file location provided.");
+	}
+
+	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
 	 */
 	@Override
