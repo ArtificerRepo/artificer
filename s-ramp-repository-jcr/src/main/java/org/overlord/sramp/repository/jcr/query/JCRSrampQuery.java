@@ -24,11 +24,15 @@ import javax.jcr.query.QueryResult;
 
 import org.modeshape.jcr.JcrRepository.QueryLanguage;
 import org.overlord.sramp.query.xpath.ast.Query;
+import org.overlord.sramp.query.xpath.visitors.XPathSerializationVisitor;
+import org.overlord.sramp.repository.jcr.JCRPersistence;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.query.AbstractSrampQueryImpl;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.QueryExecutionException;
 import org.overlord.sramp.repository.query.SrampQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A JCR implementation of an s-ramp query ({@link SrampQuery}).
@@ -36,6 +40,8 @@ import org.overlord.sramp.repository.query.SrampQuery;
  * @author eric.wittmann@redhat.com
  */
 public class JCRSrampQuery extends AbstractSrampQueryImpl {
+
+    private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
 
 	private static Map<String, String> sOrderByMappings = new HashMap<String, String>();
 	static {
@@ -68,6 +74,12 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
             session = JCRRepository.getSession();
             javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
             String jcrSql2Query = createSql2Query(queryModel);
+            if (log.isDebugEnabled()) {
+            	XPathSerializationVisitor visitor = new XPathSerializationVisitor();
+            	queryModel.accept(visitor);
+            	String originalQuery = visitor.getXPath();
+            	log.debug("JCR-SQL2 Query:\n---------------\n" + jcrSql2Query + "\n^^^^ FROM ^^^^\n" + originalQuery);
+            }
             javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, QueryLanguage.JCR_SQL2);
             QueryResult jcrQueryResult = jcrQuery.execute();
             NodeIterator jcrNodes = jcrQueryResult.getNodes();

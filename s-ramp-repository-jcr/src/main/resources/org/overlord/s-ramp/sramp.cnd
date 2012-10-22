@@ -131,6 +131,7 @@
 [sramp:wsdlExtension] > sramp:namedWsdlDerivedArtifactType
 
 [sramp:wsdlDocument] > sramp:xmlDocument mixin
+- sramp:targetNamespace (string)
 + * (sramp:elementDeclaration)
 + * (sramp:attributeDeclaration)
 + * (sramp:simpleTypeDeclaration)

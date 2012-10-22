@@ -60,6 +60,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeTarget;
@@ -237,6 +238,20 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
         artifact.setUserType(getProperty(jcrNode, "sramp:userType"));
         artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_SIZE), String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data")));
         artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_TYPE), getProperty(jcrNode,"jcr:content/jcr:mimeType"));
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlDocument)
+     */
+    @Override
+    public void visit(WsdlDocument artifact) {
+    	super.visit(artifact);
+
+    	try {
+    		artifact.setTargetNamespace(getProperty(jcrNode, "sramp:targetNamespace"));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
     }
 
     /**

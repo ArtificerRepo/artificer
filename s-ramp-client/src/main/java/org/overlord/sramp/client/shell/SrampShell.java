@@ -96,6 +96,10 @@ public class SrampShell {
 	 * @throws Exception
 	 */
 	private ShellCommand readCommand() throws Exception {
+		if (System.console() == null) {
+			System.out.println("No interactive console available, exiting.");
+			System.exit(1);
+		}
 		String line = System.console().readLine("s-ramp> ");
 		if (line.trim().length() == 0) {
 			return new NoOpCommand();
