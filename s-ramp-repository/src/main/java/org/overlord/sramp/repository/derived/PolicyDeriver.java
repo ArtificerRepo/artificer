@@ -16,12 +16,12 @@
 package org.overlord.sramp.repository.derived;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.LinkedList;
 
+import javax.xml.xpath.XPath;
+
+import org.overlord.sramp.query.xpath.StaticNamespaceContext;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
+import org.w3c.dom.Element;
 
 /**
  * Creates derived content from a Policy document.  This will create the derived content as
@@ -35,7 +35,7 @@ import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
  *
  * @author eric.wittmann@redhat.com
  */
-public class PolicyDeriver implements ArtifactDeriver {
+public class PolicyDeriver extends AbstractXmlDeriver {
 
 	/**
 	 * Constructor.
@@ -44,12 +44,19 @@ public class PolicyDeriver implements ArtifactDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.derived.ArtifactDeriver#derive(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
+	 * @see org.overlord.sramp.repository.derived.AbstractXmlDeriver#configureNamespaceMappings(org.overlord.sramp.query.xpath.StaticNamespaceContext)
 	 */
 	@Override
-	public Collection<DerivedArtifactType> derive(BaseArtifactType artifact, InputStream content) throws IOException {
-		Collection<DerivedArtifactType> derivedArtifacts = new LinkedList<DerivedArtifactType>();
-		return derivedArtifacts;
+	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
+		super.configureNamespaceMappings(namespaceContext);
+		namespaceContext.addMapping("wsp", "http://www.w3.org/ns/ws-policy");
 	}
 
+	/**
+	 * @see org.overlord.sramp.repository.derived.AbstractXmlDeriver#derive(org.overlord.sramp.repository.derived.IndexedArtifactCollection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+	 */
+	@Override
+	protected void derive(IndexedArtifactCollection derivedArtifacts, BaseArtifactType artifact,
+			Element rootElement, XPath xpath) throws IOException {
+	}
 }
