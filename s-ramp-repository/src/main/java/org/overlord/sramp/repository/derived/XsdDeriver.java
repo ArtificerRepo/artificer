@@ -16,18 +16,12 @@
 package org.overlord.sramp.repository.derived;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.UUID;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.overlord.sramp.query.xpath.StaticNamespaceContext;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
@@ -35,11 +29,8 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -57,7 +48,7 @@ import org.w3c.dom.NodeList;
  *
  * @author eric.wittmann@redhat.com
  */
-public class XsdDeriver implements ArtifactDeriver {
+public class XsdDeriver extends AbstractXmlDeriver {
 
 	/**
 	 * Constructor.
@@ -66,34 +57,27 @@ public class XsdDeriver implements ArtifactDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.derived.ArtifactDeriver#derive(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
+	 * @see org.overlord.sramp.repository.derived.AbstractXmlDeriver#configureNamespaceMappings(org.overlord.sramp.query.xpath.StaticNamespaceContext)
 	 */
 	@Override
-	public Collection<DerivedArtifactType> derive(BaseArtifactType artifact, InputStream content) throws IOException {
-		Collection<DerivedArtifactType> derivedArtifacts = new LinkedList<DerivedArtifactType>();
+	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
+		super.configureNamespaceMappings(namespaceContext);
 
+		namespaceContext.addMapping("xs", "http://www.w3.org/2001/XMLSchema");
+		namespaceContext.addMapping("xsd", "http://www.w3.org/2001/XMLSchema");
+	}
+
+	/**
+	 * @see org.overlord.sramp.repository.derived.AbstractXmlDeriver#derive(org.overlord.sramp.repository.derived.IndexedArtifactCollection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+	 */
+	@Override
+	protected void derive(IndexedArtifactCollection derivedArtifacts, BaseArtifactType artifact,
+			Element rootElement, XPath xpath) throws IOException {
 		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setNamespaceAware(true);
-			factory.setValidating(false);
-			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.parse(content);
-			XPathFactory xPathfactory = XPathFactory.newInstance();
-			XPath xpath = xPathfactory.newXPath();
-			StaticNamespaceContext nsCtx = new StaticNamespaceContext();
-			nsCtx.addMapping("xs", "http://www.w3.org/2001/XMLSchema");
-			nsCtx.addMapping("xsd", "http://www.w3.org/2001/XMLSchema");
-			xpath.setNamespaceContext(nsCtx);
-
-			Element schemaElem = document.getDocumentElement();
-			processSchema(derivedArtifacts, artifact, schemaElem, xpath);
+			processSchema(derivedArtifacts, artifact, rootElement, xpath);
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
-
-		return derivedArtifacts;
 	}
 
 	/**
@@ -104,7 +88,7 @@ public class XsdDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	public static void processSchema(Collection<DerivedArtifactType> derivedArtifacts,
+	public void processSchema(Collection<DerivedArtifactType> derivedArtifacts,
 			BaseArtifactType artifact, Element schema, XPath xpath) throws XPathExpressionException {
 		processElementDeclarations(derivedArtifacts, artifact, schema, xpath);
 		processAttributeDeclarations(derivedArtifacts, artifact, schema, xpath);
@@ -112,15 +96,9 @@ public class XsdDeriver implements ArtifactDeriver {
 		processComplexTypeDeclarations(derivedArtifacts, artifact, schema, xpath);
 
 		// Pre-set the UUIDs for all the derived artifacts.  This is useful
-		// if something downstream needs to reference them.  Also set the
-		// relatedTo relationship.
+		// if something downstream needs to reference them.
 		for (DerivedArtifactType derivedArtifact : derivedArtifacts) {
 			derivedArtifact.setUuid(UUID.randomUUID().toString());
-
-			DocumentArtifactTarget related = new DocumentArtifactTarget();
-			related.setValue(artifact.getUuid());
-			related.setArtifactType(DocumentArtifactEnum.fromValue(artifact.getArtifactType()));
-			derivedArtifact.setRelatedDocument(related);
 		}
 	}
 
@@ -132,13 +110,12 @@ public class XsdDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static void processElementDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+	private void processElementDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
 		String targetNS = schema.getAttribute("targetNamespace");
 
 		// xpath expression to find all global element decls
-		XPathExpression expr = xpath.compile("./xsd:element");
-		NodeList nodes = (NodeList) expr.evaluate(schema, XPathConstants.NODESET);
+		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:element", XPathConstants.NODESET);
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
 			if (node.hasAttribute("name")) {
@@ -161,13 +138,12 @@ public class XsdDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static void processAttributeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+	private void processAttributeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
 		String targetNS = schema.getAttribute("targetNamespace");
 
 		// xpath expression to find all global attribute decls
-		XPathExpression expr = xpath.compile("./xsd:attribute");
-		NodeList nodes = (NodeList) expr.evaluate(schema, XPathConstants.NODESET);
+		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:attribute", XPathConstants.NODESET);
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
 			if (node.hasAttribute("name")) {
@@ -190,13 +166,12 @@ public class XsdDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static void processSimpleTypeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+	private void processSimpleTypeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
 		String targetNS = schema.getAttribute("targetNamespace");
 
 		// xpath expression to find all global simple type decls
-		XPathExpression expr = xpath.compile("./xsd:simpleType");
-		NodeList nodes = (NodeList) expr.evaluate(schema, XPathConstants.NODESET);
+		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:simpleType", XPathConstants.NODESET);
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
 			if (node.hasAttribute("name")) {
@@ -219,13 +194,12 @@ public class XsdDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static void processComplexTypeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+	private void processComplexTypeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
 		String targetNS = schema.getAttribute("targetNamespace");
 
 		// xpath expression to find all global complex type decls
-		XPathExpression expr = xpath.compile("./xsd:complexType");
-		NodeList nodes = (NodeList) expr.evaluate(schema, XPathConstants.NODESET);
+		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:complexType", XPathConstants.NODESET);
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
 			if (node.hasAttribute("name")) {
