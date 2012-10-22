@@ -416,7 +416,7 @@ public class SrampWagon extends StreamWagon {
 						SrampModelUtils.setCustomProperty(metaData, "maven.parent-artifactId", gavInfo.getArtifactId());
 						SrampModelUtils.setCustomProperty(metaData, "maven.parent-version", gavInfo.getVersion());
 						SrampModelUtils.setCustomProperty(metaData, "maven.parent-type", gavInfo.getType());
-						SrampModelUtils.addGenericRelationship(metaData, "mavenParent", parentUUID);
+						SrampModelUtils.addGenericRelationship(metaData, "expandedFromDocument", parentUUID);
 						return metaData;
 					}
 				});

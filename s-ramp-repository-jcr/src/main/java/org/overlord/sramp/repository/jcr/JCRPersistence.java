@@ -454,7 +454,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 	 */
 	@Override
 	public void shutdown() {
-	    JCRRepository.shutdown();
+		JCRRepository.destroy();
 	}
 
 	/**

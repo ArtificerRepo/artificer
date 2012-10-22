@@ -18,10 +18,15 @@ package org.overlord.sramp.repository;
 import java.util.ServiceLoader;
 
 
+/**
+ * Factory used to create an instance of an S-RAMP {@link PersistenceManager}.
+ */
 public class PersistenceFactory {
 
+    /**
+     * Return a new instance of the persistence manager.
+     */
     public static PersistenceManager newInstance() {
-
         for (PersistenceManager manager : ServiceLoader.load(PersistenceManager.class)) {
             return manager;
         }
