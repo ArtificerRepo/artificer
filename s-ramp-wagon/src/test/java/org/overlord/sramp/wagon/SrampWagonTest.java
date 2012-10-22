@@ -127,7 +127,7 @@ public class SrampWagonTest extends BaseResourceTest {
 		Assert.assertEquals(3, feed.getEntries().size());
 		feed = client.query("/s-ramp/wsdl/WsdlDocument");
 		Assert.assertEquals(1, feed.getEntries().size());
-		feed = client.query("/s-ramp[mavenParent]");
+		feed = client.query("/s-ramp[expandedFromDocument]");
 		Assert.assertEquals(4, feed.getEntries().size());
 
 		// Upload the content again (to make sure the expanded artifacts get deleted and re-added)
