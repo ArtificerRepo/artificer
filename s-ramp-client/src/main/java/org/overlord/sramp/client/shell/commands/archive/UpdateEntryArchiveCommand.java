@@ -142,6 +142,23 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 
 		SrampArchiveEntry entry = archive.getEntry(entryPath);
 		BaseArtifactType metaData = entry.getMetaData();
+
+		if ("name".equals(propNameArg)) {
+			metaData.setName(propValArg);
+		} else if ("description".equals(propNameArg)) {
+			metaData.setDescription(propValArg);
+		} else if ("version".equals(propNameArg)) {
+			metaData.setVersion(propValArg);
+		} else if ("createdBy".equals(propNameArg)) {
+			metaData.setCreatedBy(propValArg);
+		} else if ("lastModifiedBy".equals(propNameArg)) {
+			metaData.setLastModifiedBy(propValArg);
+		} else if ("uuid".equals(propNameArg)) {
+			metaData.setUuid(propValArg);
+		} else if ("createdTimestamp".equals(propNameArg)) {
+		} else if ("lastModifiedTimestamp".equals(propNameArg)) {
+		}
+
 		SrampModelUtils.setCustomProperty(metaData, propNameArg, propValArg);
 		archive.updateEntry(entry, null);
 		System.out.println("Entry (meta-data) successfully set.");
