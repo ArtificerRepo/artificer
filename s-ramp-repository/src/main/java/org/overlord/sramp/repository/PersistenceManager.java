@@ -16,11 +16,9 @@
 package org.overlord.sramp.repository;
 
 import java.io.InputStream;
-import java.util.Collection;
 
 import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
 /**
  * Service used to persist artifacts to some (permanent?) storage.
@@ -34,14 +32,6 @@ public interface PersistenceManager {
      * @throws RepositoryException
      */
     public BaseArtifactType persistArtifact(BaseArtifactType baseArtifactType, InputStream content) throws RepositoryException;
-
-    /**
-     * Persists a single derived artifact.
-     * @param sourceArtifact the source of the derived content
-     * @param artifacts the derived artifacts to persist
-     * @throws RepositoryException
-     */
-    public void persistDerivedArtifacts(BaseArtifactType sourceArtifact, Collection<DerivedArtifactType> artifacts) throws RepositoryException;
 
 	/**
 	 * Gets a previously persisted artifact by its UUID.

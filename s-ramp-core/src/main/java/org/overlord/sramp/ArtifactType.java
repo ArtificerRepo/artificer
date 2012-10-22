@@ -95,7 +95,9 @@ public class ArtifactType {
 	public BaseArtifactType unwrap(Artifact artifactWrapper) {
 		try {
 			Method method = Artifact.class.getMethod("get" + getArtifactType().getType());
-			return (BaseArtifactType) method.invoke(artifactWrapper);
+			BaseArtifactType artifact = (BaseArtifactType) method.invoke(artifactWrapper);
+			artifact.setArtifactType(this.getArtifactType().getApiType());
+			return artifact;
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to unwrap artifact for type: " + getArtifactType().getType(), e);
 		}
@@ -302,5 +304,42 @@ public class ArtifactType {
         public String mimeType;
 
     }
+
+	/**
+	 * What kind of artifact is inside that wrapper?
+	 * @param artifactWrapper
+	 */
+	public static ArtifactType valueOf(Artifact artifactWrapper) {
+		ArtifactType type = null;
+		Method[] methods = artifactWrapper.getClass().getMethods();
+		try {
+			for (Method method : methods) {
+				if (method.getName().startsWith("get")) {
+					Object o = method.invoke(artifactWrapper);
+					if (o != null && BaseArtifactType.class.isAssignableFrom(o.getClass())) {
+						Class<? extends BaseArtifactType> artyClass = ((BaseArtifactType) o).getClass();
+						return valueOf(artyClass);
+					}
+				}
+			}
+		} catch (Exception e) {
+			// eat it
+		}
+		return type;
+	}
+
+	/**
+	 * Figures out the artifact type from the class.
+	 * @param artyClass
+	 */
+	private static ArtifactType valueOf(Class<? extends BaseArtifactType> artyClass) {
+		ArtifactType rval = null;
+		for (ArtifactTypeEnum e : ArtifactTypeEnum.values()) {
+			if (e.getTypeClass().equals(artyClass)) {
+				rval = new ArtifactType(e, null);
+			}
+		}
+		return rval;
+	}
 
 }

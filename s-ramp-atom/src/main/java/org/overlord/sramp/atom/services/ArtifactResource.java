@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,12 +53,10 @@ import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
-import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
 /**
  * The JAX-RS resource that handles artifact specific tasks, including:
@@ -129,12 +126,6 @@ public class ArtifactResource {
             baseArtifactType.setName(fileName);
             BaseArtifactType artifact = persistenceManager.persistArtifact(baseArtifactType, is);
 
-            //create the derivedArtifacts
-            Collection<DerivedArtifactType> derivedArtifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
-
-            //persist the derivedArtifacts
-            persistenceManager.persistDerivedArtifacts(artifact, derivedArtifacts);
-
             //return the entry containing the s-ramp artifact
             ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
@@ -162,7 +153,7 @@ public class ArtifactResource {
     @Consumes(MultipartConstants.MULTIPART_RELATED)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
     public Entry createMultiPart(@Context HttpServletRequest request, @HeaderParam("Content-Type") String contentType,
-            @PathParam("model") String model, @PathParam("type") String type, 
+            @PathParam("model") String model, @PathParam("type") String type,
             MultipartRelatedInput input) throws SrampAtomException {
         InputStream contentStream = null;
         try {
@@ -201,15 +192,11 @@ public class ArtifactResource {
             contentStream = secondpart.getBody(new GenericType<InputStream>() { });
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             //store the content
-            BaseArtifactType intermediate = persistenceManager.persistArtifact(artifactMetaData, contentStream);
-
-            //create and persist the derivedArtifacts
-            Collection<DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(intermediate);
-            persistenceManager.persistDerivedArtifacts(intermediate, dartifacts);
+            BaseArtifactType artifactRval = persistenceManager.persistArtifact(artifactMetaData, contentStream);
 
             // Convert to a full Atom Entry and return it
             ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
-            ArtifactVisitorHelper.visitArtifact(visitor, intermediate);
+            ArtifactVisitorHelper.visitArtifact(visitor, artifactRval);
             return visitor.getAtomEntry();
         } catch (Exception e) {
 			throw new SrampAtomException(e);
