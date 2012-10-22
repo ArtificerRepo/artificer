@@ -9,15 +9,17 @@ import org.overlord.sramp.repository.PersistenceFactory;
  * Listener for deploy/undeploy events.
  */
 public class SrampLifeCycle implements ServletContextListener {
-	private static final long serialVersionUID = 1L;
-       	
-	
 
-    @Override
+	/**
+	 * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
+	 */
+	@Override
     public void contextInitialized(ServletContextEvent sce) {
-
     }
 
+    /**
+     * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
+     */
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         PersistenceFactory.newInstance().shutdown();
