@@ -78,7 +78,7 @@ public class SrampAtomException extends Exception {
 	 * @param stackTrace string formatted java stack trace
 	 * @return stack trace element array
 	 */
-	private StackTraceElement[] parseStackTrace(String stackTrace) {
+	private static StackTraceElement[] parseStackTrace(String stackTrace) {
 		List<StackTraceElement> stElements = new ArrayList<StackTraceElement>();
 
 		Matcher matcher = ST_PATTERN.matcher(stackTrace);

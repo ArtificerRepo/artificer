@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.derived;
+package org.overlord.sramp.derived;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -51,6 +51,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Part;
 import org.s_ramp.xmlns._2010.s_ramp.PartEnum;
 import org.s_ramp.xmlns._2010.s_ramp.PartTarget;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeEnum;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeTarget;
@@ -111,6 +112,9 @@ public class WsdlDeriver extends XsdDeriver {
 	@Override
 	protected void derive(IndexedArtifactCollection derivedArtifacts, BaseArtifactType artifact,
 			Element rootElement, XPath xpath) throws IOException {
+		String targetNS = rootElement.getAttribute("targetNamespace");
+		((WsdlDocument) artifact).setTargetNamespace(targetNS);
+
 		try {
 			processDefinitions(derivedArtifacts, artifact, rootElement, xpath);
 		} catch (Exception e) {

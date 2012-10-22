@@ -29,7 +29,6 @@ import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -57,36 +56,6 @@ public final class SrampAtomUtils {
 	}
 
 	/**
-	 * Unwraps the {@link BaseArtifactType} from the S-RAMP {@link Artifact} wrapper.  It does
-	 * this by going through all of the getter methods and finding one that returns a non-null
-	 * value.  That sounds expensive, but it shouldn't be a problem (a few dozen method calls
-	 * and tests for null).
-	 * @param artifact
-	 */
-	public static BaseArtifactType unwrapSrampArtifact(Artifact artifact) {
-		if (artifact == null)
-			return null;
-
-		try {
-			Method[] methods = artifact.getClass().getMethods();
-			for (Method method : methods) {
-				if (method.getName().startsWith("get")) {
-					if (BaseArtifactType.class.isAssignableFrom(method.getReturnType())) {
-						BaseArtifactType rval = (BaseArtifactType) method.invoke(artifact);
-						if (rval != null)
-							return rval;
-					}
-				}
-			}
-			// Didn't find one!
-			return null;
-		} catch (Throwable t) {
-			// It's unlikely this will ever happen.
-			throw new RuntimeException(t);
-		}
-	}
-
-	/**
 	 * Unwraps a specific {@link BaseArtifactType} from the Atom {@link Entry} containing it.  This
 	 * method grabs the {@link Artifact} child from the Atom {@link Entry} and then unwraps the
 	 * {@link BaseArtifactType} from that.
@@ -94,25 +63,8 @@ public final class SrampAtomUtils {
 	 * @return a {@link BaseArtifactType}
 	 */
 	public static BaseArtifactType unwrapSrampArtifact(Entry entry) {
-		try {
-			// Look for it as the "any other jaxb object" first.
-			Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
-
-			// Didn't find it?  Maybe it's in the list of "other" objects
-			if (artifact == null) {
-				List<Object> others = entry.getAnyOther();
-				for (Object other : others) {
-					if (other instanceof Artifact) {
-						artifact = (Artifact) other;
-					}
-				}
-			}
-
-			return unwrapSrampArtifact(artifact);
-		} catch (JAXBException e) {
-			// This is unlikely to happen.
-			throw new RuntimeException(e);
-		}
+		ArtifactType artifactType = getArtifactType(entry);
+		return unwrapSrampArtifact(artifactType, entry);
 	}
 
 	/**
@@ -125,12 +77,30 @@ public final class SrampAtomUtils {
 	 */
 	public static BaseArtifactType unwrapSrampArtifact(ArtifactType artifactType, Entry entry) {
 		try {
-			Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
+			Artifact artifact = getArtifactWrapper(entry);
 			return unwrapSrampArtifact(artifactType, artifact);
 		} catch (JAXBException e) {
 			// This is unlikely to happen.
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * Gets the {@link Artifact} jaxb object from the {@link Entry}.
+	 * @param entry
+	 * @throws JAXBException
+	 */
+	private static Artifact getArtifactWrapper(Entry entry) throws JAXBException {
+		Artifact artifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
+		if (artifactWrapper == null) {
+			for (Object anyOther : entry.getAnyOther()) {
+				if (anyOther != null && anyOther.getClass().equals(Artifact.class)) {
+					artifactWrapper = (Artifact) anyOther;
+					break;
+				}
+			}
+		}
+		return artifactWrapper;
 	}
 
 	/**
@@ -180,7 +150,16 @@ public final class SrampAtomUtils {
 	 * @param entry
 	 */
 	public static ArtifactType getArtifactType(Entry entry) {
-		// First, check the 'self' link
+		// Try the Category
+		List<Category> categories = entry.getCategories();
+		for (Category cat : categories) {
+			if ("x-s-ramp:2010:type".equals(cat.getScheme().toString())) {
+				String atype = cat.getTerm();
+				return ArtifactType.valueOf(atype);
+			}
+		}
+
+		// Check the 'self' link
 		Link link = entry.getLinkByRel("self");
 		if (link != null) {
 			URI href = link.getHref();
@@ -191,17 +170,16 @@ public final class SrampAtomUtils {
 			return ArtifactType.valueOf(atype);
 		}
 
-		// Next, try the Category
-		List<Category> categories = entry.getCategories();
-		for (Category cat : categories) {
-			if ("x-s-ramp:2010:type".equals(cat.getScheme().toString())) {
-				String atype = cat.getTerm();
-				return ArtifactType.valueOf(atype);
+		// Finally, try to figure it out by introspecting the 'artifact' extension element
+		try {
+			Artifact artifactWrapper = getArtifactWrapper(entry);
+			if (artifactWrapper != null) {
+				return ArtifactType.valueOf(artifactWrapper);
 			}
+		} catch (JAXBException e) {
 		}
 
-		// Finally, unwrap the Artifact and use it
-		BaseArtifactEnum typeEnum = unwrapSrampArtifact(entry).getArtifactType();
-		return ArtifactType.valueOf(typeEnum);
+		// If all else fails!
+		return ArtifactType.valueOf("Document");
 	}
 }

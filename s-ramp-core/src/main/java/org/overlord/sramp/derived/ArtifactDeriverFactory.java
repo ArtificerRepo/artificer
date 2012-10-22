@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.derived;
+package org.overlord.sramp.derived;
 
 import java.io.InputStream;
 import java.util.Collection;
