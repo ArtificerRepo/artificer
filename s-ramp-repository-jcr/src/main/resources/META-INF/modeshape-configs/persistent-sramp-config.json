@@ -12,18 +12,18 @@
         }
     },
     "storage" : {
-        "cacheConfiguration" : "infinispan-configuration.xml",
+        "cacheConfiguration" : "${modeshape.cache.config.url}",
         "cacheName" : "persisted-repository",
         "binaryStorage" : {
             "type" : "file",
-            "directory": "target/repos/binary",
+            "directory": "${modeshape.jcr.datadir}/binary",
             "minimumBinarySizeInBytes" : 999
         }
     },
     "query" : {
         "indexStorage" : {
             "type" : "filesystem",
-            "location" : "target/repos/index",
+            "location" : "${modeshape.jcr.datadir}/index",
             "lockingStrategy" : "simple",
             "fileSystemAccessType" : "auto"
         }

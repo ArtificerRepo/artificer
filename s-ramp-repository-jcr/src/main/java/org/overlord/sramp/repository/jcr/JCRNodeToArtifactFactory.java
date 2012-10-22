@@ -79,7 +79,7 @@ public final class JCRNodeToArtifactFactory {
 						Node node = session.getNodeByIdentifier(ident);
 						return node.getProperty("sramp:uuid").getString();
 					} catch (Exception e) {
-						log.error("Error resolving JCR reference.", e);
+						log.debug("Error resolving JCR reference.", e);
 					}
 					return null;
 				}
