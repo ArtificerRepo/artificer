@@ -16,7 +16,6 @@
 package org.overlord.sramp.repository.jcr;
 
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -28,7 +27,6 @@ import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Fault;
 import org.s_ramp.xmlns._2010.s_ramp.FaultTarget;
@@ -68,10 +66,6 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractJCRPersistenceTest {
 	        BaseArtifactType artifact = persistenceManager.persistArtifact(wsdlDoc, contentStream);
 	        Assert.assertNotNull(artifact);
 	        uuid = artifact.getUuid();
-	        // Derive content
-            Collection<DerivedArtifactType> dArtifacts = derivedArtifacts.deriveArtifacts(artifact);
-            // Persist the derived content
-            persistenceManager.persistDerivedArtifacts(artifact, dArtifacts);
         } finally {
         	IOUtils.closeQuietly(contentStream);
         }
@@ -79,6 +73,7 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractJCRPersistenceTest {
         WsdlDocument wsdl = (WsdlDocument) getArtifactByUUID(uuid);
         Assert.assertNotNull(wsdl);
         Assert.assertEquals("jcr-sample.wsdl", wsdl.getName());
+        Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", wsdl.getTargetNamespace());
         // Make sure all of the derived artifacts were properly created.
         SimpleTypeDeclaration keywordType = (SimpleTypeDeclaration)
         		assertSingleArtifact(ArtifactTypeEnum.SimpleTypeDeclaration, "keywordType");

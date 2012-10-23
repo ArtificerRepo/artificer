@@ -55,6 +55,7 @@ import org.s_ramp.xmlns._2010.s_ramp.PortType;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeEnum;
 
 /**
@@ -203,7 +204,21 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 				}
 			}
 		}
+	}
 
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlDocument)
+	 */
+	@Override
+	public void visit(WsdlDocument artifact) {
+		super.visit(artifact);
+
+		try {
+			if (artifact.getTargetNamespace() != null)
+				this.jcrNode.setProperty("sramp:targetNamespace", artifact.getTargetNamespace());
+		} catch (Exception e) {
+			error = e;
+		}
 	}
 
 	/**

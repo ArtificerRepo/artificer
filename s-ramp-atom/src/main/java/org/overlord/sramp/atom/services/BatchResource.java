@@ -39,12 +39,10 @@ import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
-import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
 /**
  * The JAX-RS resource that handles pushing artifacts into the repository in batches.  The
@@ -168,14 +166,6 @@ public class BatchResource {
 		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
 		BaseArtifactType artifact = persistenceManager.persistArtifact(metaData, contentStream);
-		// Create the derivedArtifacts
-		Collection<DerivedArtifactType> dartifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(artifact);
-		// Persist the derivedArtifacts
-        persistenceManager.persistDerivedArtifacts(artifact, dartifacts);
-
-		// Update the artifact with data from "metaData" (included *.atom file)
-		metaData.setUuid(artifact.getUuid());
-		persistenceManager.updateArtifact(metaData, artifactType);
 
 		// Now get the latest copy and return it
 		artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);

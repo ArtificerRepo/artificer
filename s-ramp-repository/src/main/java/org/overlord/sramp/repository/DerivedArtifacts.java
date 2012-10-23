@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.repository;
 
+import java.io.InputStream;
 import java.util.Collection;
 
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -28,9 +29,10 @@ public interface DerivedArtifacts {
 	/**
 	 * Create the derived artifacts from the original artifact.
 	 *
-	 * @param artifact the original artifact
+	 * @param sourceArtifact the source artifact's meta-data
+	 * @param sourceArtifactContent the source artifact's content
 	 */
-	public Collection<DerivedArtifactType> deriveArtifacts(BaseArtifactType artifact)
-			throws DerivedArtifactsCreationException;
+	public Collection<DerivedArtifactType> deriveArtifacts(BaseArtifactType sourceArtifact,
+			InputStream sourceArtifactContent) throws DerivedArtifactsCreationException;
 
 }

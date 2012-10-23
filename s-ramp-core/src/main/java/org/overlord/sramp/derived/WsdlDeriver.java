@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.derived;
+package org.overlord.sramp.derived;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.UUID;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.soap.Node;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.overlord.sramp.query.xpath.StaticNamespaceContext;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.ElementEnum;
 import org.s_ramp.xmlns._2010.s_ramp.ElementTarget;
@@ -59,10 +51,10 @@ import org.s_ramp.xmlns._2010.s_ramp.Part;
 import org.s_ramp.xmlns._2010.s_ramp.PartEnum;
 import org.s_ramp.xmlns._2010.s_ramp.PartTarget;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeEnum;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeTarget;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -96,7 +88,7 @@ import org.w3c.dom.NodeList;
  *
  * @author eric.wittmann@redhat.com
  */
-public class WsdlDeriver implements ArtifactDeriver {
+public class WsdlDeriver extends XsdDeriver {
 
 	/**
 	 * Constructor.
@@ -105,45 +97,29 @@ public class WsdlDeriver implements ArtifactDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.derived.ArtifactDeriver#derive(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
+	 * @see org.overlord.sramp.repository.derived.XsdDeriver#configureNamespaceMappings(org.overlord.sramp.query.xpath.StaticNamespaceContext)
 	 */
 	@Override
-	public Collection<DerivedArtifactType> derive(BaseArtifactType artifact, InputStream content) throws IOException {
-		IndexedArtifactCollection derivedArtifacts = new IndexedArtifactCollection();
+	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
+		super.configureNamespaceMappings(namespaceContext);
+
+		namespaceContext.addMapping("wsdl", "http://schemas.xmlsoap.org/wsdl/");
+	}
+
+	/**
+	 * @see org.overlord.sramp.repository.derived.XsdDeriver#derive(org.overlord.sramp.repository.derived.IndexedArtifactCollection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+	 */
+	@Override
+	protected void derive(IndexedArtifactCollection derivedArtifacts, BaseArtifactType artifact,
+			Element rootElement, XPath xpath) throws IOException {
+		String targetNS = rootElement.getAttribute("targetNamespace");
+		((WsdlDocument) artifact).setTargetNamespace(targetNS);
 
 		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setNamespaceAware(true);
-			factory.setValidating(false);
-			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.parse(content);
-			XPathFactory xPathfactory = XPathFactory.newInstance();
-			XPath xpath = xPathfactory.newXPath();
-			StaticNamespaceContext nsCtx = new StaticNamespaceContext();
-			nsCtx.addMapping("xs", "http://www.w3.org/2001/XMLSchema");
-			nsCtx.addMapping("xsd", "http://www.w3.org/2001/XMLSchema");
-			nsCtx.addMapping("wsdl", "http://schemas.xmlsoap.org/wsdl/");
-			xpath.setNamespaceContext(nsCtx);
-
-			Element definitionsElem = document.getDocumentElement();
-			processDefinitions(derivedArtifacts, artifact, definitionsElem, xpath);
-
-			// Set the relatedTo relationship for all derived artifacts
-			for (DerivedArtifactType derivedArtifact : derivedArtifacts) {
-				if (derivedArtifact.getRelatedDocument() == null) {
-					DocumentArtifactTarget related = new DocumentArtifactTarget();
-					related.setValue(artifact.getUuid());
-					related.setArtifactType(DocumentArtifactEnum.fromValue(artifact.getArtifactType()));
-					derivedArtifact.setRelatedDocument(related);
-				}
-			}
+			processDefinitions(derivedArtifacts, artifact, rootElement, xpath);
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
-
-		return derivedArtifacts;
 	}
 
 	/**
@@ -154,15 +130,14 @@ public class WsdlDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	public static void processDefinitions(IndexedArtifactCollection derivedArtifacts,
+	public void processDefinitions(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType artifact, Element definitions, XPath xpath) throws XPathExpressionException {
 
 		// Get derived content from all of the schemas embedded in this WSDL
-		XPathExpression expr = xpath.compile("./wsdl:types/xsd:schema");
-		NodeList schemas = (NodeList) expr.evaluate(definitions, XPathConstants.NODESET);
+		NodeList schemas = (NodeList) this.query(xpath, definitions, "./wsdl:types/xsd:schema", XPathConstants.NODESET);
 		for (int idx = 0; idx < schemas.getLength(); idx++) {
 			Element schema = (Element) schemas.item(idx);
-			XsdDeriver.processSchema(derivedArtifacts, artifact, schema, xpath);
+			processSchema(derivedArtifacts, artifact, schema, xpath);
 		}
 
 		processMessages(derivedArtifacts, artifact, definitions, xpath);
@@ -177,13 +152,12 @@ public class WsdlDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static void processMessages(IndexedArtifactCollection derivedArtifacts,
+	private void processMessages(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element definitions, XPath xpath) throws XPathExpressionException {
 		String targetNS = definitions.getAttribute("targetNamespace");
 
 		// Get all the WSDL messages and add them (and their parts) to the list
-		XPathExpression expr = xpath.compile("./wsdl:message");
-		NodeList messages = (NodeList) expr.evaluate(definitions, XPathConstants.NODESET);
+		NodeList messages = (NodeList) this.query(xpath, definitions, "./wsdl:message", XPathConstants.NODESET);
 		for (int idx = 0; idx < messages.getLength(); idx++) {
 			Element messageElem = (Element) messages.item(idx);
 			if (messageElem.hasAttribute("name")) {
@@ -215,14 +189,13 @@ public class WsdlDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static Collection<Part> processParts(IndexedArtifactCollection derivedArtifacts,
+	private Collection<Part> processParts(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element messageElem, XPath xpath) throws XPathExpressionException {
 		Collection<Part> rval = new LinkedList<Part>();
 		String targetNS = messageElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
 
 		// Get all the parts and add them to the list
-		XPathExpression expr = xpath.compile("./wsdl:part");
-		NodeList parts = (NodeList) expr.evaluate(messageElem, XPathConstants.NODESET);
+		NodeList parts = (NodeList) this.query(xpath, messageElem, "./wsdl:part", XPathConstants.NODESET);
 		for (int idx = 0; idx < parts.getLength(); idx++) {
 			Element partElem = (Element) parts.item(idx);
 			if (partElem.hasAttribute("name")) {
@@ -270,13 +243,12 @@ public class WsdlDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static void processPortTypes(IndexedArtifactCollection derivedArtifacts,
+	private void processPortTypes(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element definitions, XPath xpath) throws XPathExpressionException {
 		String targetNS = definitions.getAttribute("targetNamespace");
 
 		// Get all the port types and add them to the list
-		XPathExpression expr = xpath.compile("./wsdl:portType");
-		NodeList portTypes = (NodeList) expr.evaluate(definitions, XPathConstants.NODESET);
+		NodeList portTypes = (NodeList) this.query(xpath, definitions, "./wsdl:portType", XPathConstants.NODESET);
 		for (int idx = 0; idx < portTypes.getLength(); idx++) {
 			Element portTypeElem = (Element) portTypes.item(idx);
 			if (portTypeElem.hasAttribute("name")) {
@@ -308,14 +280,13 @@ public class WsdlDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static Collection<Operation> processOperations(IndexedArtifactCollection derivedArtifacts,
+	private Collection<Operation> processOperations(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element portTypeElem, XPath xpath) throws XPathExpressionException {
 		Collection<Operation> rval = new LinkedList<Operation>();
 		String targetNS = portTypeElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
 
 		// Get all the parts and add them to the list
-		XPathExpression expr = xpath.compile("./wsdl:operation");
-		NodeList operations = (NodeList) expr.evaluate(portTypeElem, XPathConstants.NODESET);
+		NodeList operations = (NodeList) this.query(xpath, portTypeElem, "./wsdl:operation", XPathConstants.NODESET);
 		for (int idx = 0; idx < operations.getLength(); idx++) {
 			Element operationElem = (Element) operations.item(idx);
 			if (operationElem.hasAttribute("name")) {
@@ -366,13 +337,12 @@ public class WsdlDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static OperationInput processOperationInput(IndexedArtifactCollection derivedArtifacts,
+	private OperationInput processOperationInput(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
 		OperationInput rval = null;
 		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
 
-		XPathExpression expr = xpath.compile("./wsdl:input");
-		Element inputElem = (Element) expr.evaluate(operationElem, XPathConstants.NODE);
+		Element inputElem = (Element) this.query(xpath, operationElem, "./wsdl:input", XPathConstants.NODE);
 		if (inputElem != null) {
 			OperationInput input = new OperationInput();
 			input.setUuid(UUID.randomUUID().toString());
@@ -414,13 +384,12 @@ public class WsdlDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static OperationOutput processOperationOutput(IndexedArtifactCollection derivedArtifacts,
+	private OperationOutput processOperationOutput(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
 		OperationOutput rval = null;
 		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
 
-		XPathExpression expr = xpath.compile("./wsdl:output");
-		Element outputElem = (Element) expr.evaluate(operationElem, XPathConstants.NODE);
+		Element outputElem = (Element) this.query(xpath, operationElem, "./wsdl:output", XPathConstants.NODE);
 		if (outputElem != null) {
 			OperationOutput output = new OperationOutput();
 			output.setUuid(UUID.randomUUID().toString());
@@ -462,13 +431,12 @@ public class WsdlDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private static Collection<Fault> processOperationFaults(IndexedArtifactCollection derivedArtifacts,
+	private Collection<Fault> processOperationFaults(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
 		Collection<Fault> rval = new LinkedList<Fault>();
 		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
 
-		XPathExpression expr = xpath.compile("./wsdl:fault");
-		NodeList faults = (NodeList) expr.evaluate(operationElem, XPathConstants.NODESET);
+		NodeList faults = (NodeList) this.query(xpath, operationElem, "./wsdl:fault", XPathConstants.NODESET);
 		for (int idx = 0; idx < faults.getLength(); idx++) {
 			Element faultElem = (Element) faults.item(idx);
 			Fault fault = new Fault();
@@ -508,7 +476,7 @@ public class WsdlDeriver implements ArtifactDeriver {
 	 * @param defaultNamespace
 	 * @param encodedQName
 	 */
-	private static QName resolveQName(Element context, String defaultNamespace, String encodedQName) {
+	private QName resolveQName(Element context, String defaultNamespace, String encodedQName) {
 		int idx = encodedQName.indexOf(":");
 		if (idx == -1) {
 			return new QName(defaultNamespace, encodedQName);
@@ -529,7 +497,7 @@ public class WsdlDeriver implements ArtifactDeriver {
 	 * @param context
 	 * @param prefix
 	 */
-	private static String resolveNamespaceByPrefix(Element context, String prefix) {
+	private String resolveNamespaceByPrefix(Element context, String prefix) {
 		String nsDecl = "xmlns:" + prefix;
 		Element elem = context;
 		String ns = null;

@@ -20,9 +20,7 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.services.brms.Assets;
 import org.overlord.sramp.atom.services.brms.BrmsConstants;
 import org.overlord.sramp.atom.services.brms.Packages;
@@ -145,13 +143,13 @@ public class BrmsPkgToSramp {
         assetsProperty.setPropertyValue(assetsXml);
         userDefinedArtifactType.getProperty().add(assetsProperty);
 
-        System.out.println("Reading " + pkgName + " from url " + urlStr );
+        System.out.println("Reading " + pkgName + " from url " + urlStr);
         ClientResponse<InputStream> pkgResponse = getInputStream(urlStr);
         InputStream content = pkgResponse.getEntity();
         SrampAtomApiClient client = new SrampAtomApiClient(srampUrl + "/s-ramp");
-        Entry entry = client.uploadArtifact(userDefinedArtifactType, content);
+        BaseArtifactType artifact = client.uploadArtifact(userDefinedArtifactType, content);
         IOUtils.closeQuietly(content);
-        System.out.println("Uploaded " + pkgName + " UUID=" + entry.getId().toString());
+        System.out.println("Uploaded " + pkgName + " UUID=" + artifact.getUuid());
 
         // Now obtaining the assets in the this package, and upload those
         // TODO set relationship to parent pkg
@@ -176,9 +174,8 @@ public class BrmsPkgToSramp {
                 baseArtifactType.setName(fileName);
                 baseArtifactType.setUuid(uuid);
 
-                Entry assetEntry = client.uploadArtifact(baseArtifactType, assetInputStream);
+                BaseArtifactType assetArtifact = client.uploadArtifact(baseArtifactType, assetInputStream);
                 IOUtils.closeQuietly(assetInputStream);
-                BaseArtifactType assetArtifact = SrampAtomUtils.unwrapSrampArtifact(assetEntry);
                 System.out.println("Uploaded asset " + assetArtifact.getName() + " " + assetArtifact.getUuid());
             }
         }

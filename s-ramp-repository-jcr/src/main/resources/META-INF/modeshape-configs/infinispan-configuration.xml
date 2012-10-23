@@ -13,7 +13,7 @@
             <loader class="org.infinispan.loaders.bdbje.BdbjeCacheStore"
                    fetchPersistentState="true" purgeOnStartup="false">
                 <properties>
-                    <property name="location" value="target/repos/content" />
+                    <property name="location" value="${modeshape.jcr.datadir}/content" />
                 </properties>
             </loader>
         </loaders>

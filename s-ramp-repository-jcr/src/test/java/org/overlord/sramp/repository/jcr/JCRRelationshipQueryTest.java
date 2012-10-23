@@ -16,7 +16,6 @@
 package org.overlord.sramp.repository.jcr;
 
 import java.io.InputStream;
-import java.util.Collection;
 
 import junit.framework.Assert;
 
@@ -30,7 +29,6 @@ import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
@@ -143,10 +141,6 @@ public class JCRRelationshipQueryTest extends AbstractJCRPersistenceTest {
 	        // Persist the artifact
 	        BaseArtifactType artifact = persistenceManager.persistArtifact(wsdlDoc, contentStream);
 	        Assert.assertNotNull(artifact);
-	        // Derive content
-            Collection<DerivedArtifactType> dArtifacts = derivedArtifacts.deriveArtifacts(artifact);
-            // Persist the derived content
-            persistenceManager.persistDerivedArtifacts(artifact, dArtifacts);
 
             return (WsdlDocument) artifact;
         } finally {
@@ -170,10 +164,6 @@ public class JCRRelationshipQueryTest extends AbstractJCRPersistenceTest {
 	        // Persist the artifact
 	        BaseArtifactType artifact = persistenceManager.persistArtifact(xsdDoc, contentStream);
 	        Assert.assertNotNull(artifact);
-	        // Derive content
-            Collection<DerivedArtifactType> dArtifacts = derivedArtifacts.deriveArtifacts(artifact);
-            // Persist the derived content
-            persistenceManager.persistDerivedArtifacts(artifact, dArtifacts);
 
             return (XsdDocument) artifact;
         } finally {

@@ -43,11 +43,8 @@ import org.apache.maven.wagon.resource.Resource;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampModelUtils;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.archive.SrampArchiveException;
@@ -57,6 +54,8 @@ import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.client.jar.DefaultMetaDataFactory;
 import org.overlord.sramp.client.jar.DiscoveredArtifact;
 import org.overlord.sramp.client.jar.JarToSrampArchive;
+import org.overlord.sramp.client.query.ArtifactSummary;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -384,7 +383,7 @@ public class SrampWagon extends StreamWagon {
 			// the artifact to the repository.
 			if (artifact != null) {
 				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
-				client.updateArtifact(artifact, resourceInputStream);
+				client.updateArtifactContent(artifact, resourceInputStream);
 				if (shouldExpand(gavInfo)) {
 					final String parentUUID = artifact.getUuid();
 					cleanExpandedArtifacts(client, parentUUID);
@@ -392,8 +391,7 @@ public class SrampWagon extends StreamWagon {
 			} else {
 				// Upload the content, then add the maven properties to the artifact
 				// as meta-data
-				Entry entry = client.uploadArtifact(artifactType, resourceInputStream, gavInfo.getName());
-				artifact = SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
+				artifact = client.uploadArtifact(artifactType, resourceInputStream, gavInfo.getName());
 				SrampModelUtils.setCustomProperty(artifact, "maven.groupId", gavInfo.getGroupId());
 				SrampModelUtils.setCustomProperty(artifact, "maven.artifactId", gavInfo.getArtifactId());
 				SrampModelUtils.setCustomProperty(artifact, "maven.version", gavInfo.getVersion());
@@ -416,7 +414,7 @@ public class SrampWagon extends StreamWagon {
 						SrampModelUtils.setCustomProperty(metaData, "maven.parent-artifactId", gavInfo.getArtifactId());
 						SrampModelUtils.setCustomProperty(metaData, "maven.parent-version", gavInfo.getVersion());
 						SrampModelUtils.setCustomProperty(metaData, "maven.parent-type", gavInfo.getType());
-						SrampModelUtils.addGenericRelationship(metaData, "mavenParent", parentUUID);
+						SrampModelUtils.addGenericRelationship(metaData, "expandedFromDocument", parentUUID);
 						return metaData;
 					}
 				});
@@ -444,13 +442,13 @@ public class SrampWagon extends StreamWagon {
 		String query = String.format("/s-ramp[mavenParent[@uuid = '%1$s']]", parentUUID);
 		boolean done = false;
 		while (!done) {
-			Feed feed = client.query(query, 0, 20, "name", true);
-			if (feed.getEntries().size() == 0) {
+			QueryResultSet rset = client.query(query, 0, 20, "name", true);
+			if (rset.size() == 0) {
 				done = true;
 			} else {
-				for (Entry entry : feed.getEntries()) {
-					ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
-					String uuid = entry.getId().toString();
+				for (ArtifactSummary entry : rset) {
+					ArtifactType artifactType = entry.getType();
+					String uuid = entry.getUuid();
 					client.deleteArtifact(uuid, artifactType);
 				}
 			}
@@ -527,13 +525,12 @@ public class SrampWagon extends StreamWagon {
 			query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s' and @maven.classifier = '%4$s' and @maven.type = '%5$s']",
 					gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion(), gavInfo.getClassifier(), gavInfo.getType());
 		}
-		Feed feed = client.query(query);
-		if (feed.getEntries().size() > 0) {
-			for (Entry entry : feed.getEntries()) {
-				String uuid = entry.getId().toString();
-				ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
-				entry = client.getFullArtifactEntry(artifactType, uuid);
-				BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
+		QueryResultSet rset = client.query(query);
+		if (rset.size() > 0) {
+			for (ArtifactSummary summary : rset) {
+				String uuid = summary.getUuid();
+				ArtifactType artifactType = summary.getType();
+				BaseArtifactType arty = client.getArtifactMetaData(artifactType, uuid);
 				// If no classifier in the GAV info, only return the artifact that also has no classifier
 				if (gavInfo.getClassifier() == null) {
 					String artyClassifier = SrampModelUtils.getCustomProperty(arty, "maven.classifier");
@@ -565,14 +562,11 @@ public class SrampWagon extends StreamWagon {
 			throws SrampAtomException, SrampClientException, JAXBException {
 		String artifactType = gavInfo.getGroupId().substring(gavInfo.getGroupId().indexOf('.') + 1);
 		String uuid = gavInfo.getArtifactId();
-		Entry entry = null;
 		try {
-			entry = client.getFullArtifactEntry(ArtifactType.valueOf(artifactType), uuid);
+			return client.getArtifactMetaData(ArtifactType.valueOf(artifactType), uuid);
 		} catch (Throwable t) {
 			logger.debug(t.getMessage());
 		}
-		if (entry != null)
-			return SrampAtomUtils.unwrapSrampArtifact(ArtifactType.valueOf(artifactType), entry);
 		return null;
 	}
 
