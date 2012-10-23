@@ -18,10 +18,10 @@ package org.overlord.sramp.demos.archivepkg;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.query.ArtifactSummary;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
@@ -130,10 +130,10 @@ public class ArchivePackageDemo {
 
 		// Now query the S-RAMP repository (for the Schemas only)
 		System.out.print("Querying the S-RAMP repository for Schemas...");
-		Feed feed = client.query("/s-ramp/xsd/XsdDocument");
-		System.out.println("success: " + feed.getEntries().size() + " Schemas found:");
-		for (Entry entry : feed.getEntries()) {
-			System.out.println("\t * " + entry.getTitle() + " (" + entry.getId() + ")");
+		QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument");
+		System.out.println("success: " + rset.size() + " Schemas found:");
+		for (ArtifactSummary summary : rset) {
+			System.out.println("\t * " + summary.getName() + " (" + summary.getUuid() + ")");
 		}
 
 		System.out.println("\n*** Demo Completed Successfully ***\n\n");

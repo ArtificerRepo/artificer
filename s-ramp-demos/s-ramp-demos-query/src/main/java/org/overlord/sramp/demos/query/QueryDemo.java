@@ -15,9 +15,9 @@
  */
 package org.overlord.sramp.demos.query;
 
-import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.query.QueryResultSet;
 
 /**
  * Demonstrates a number of different queries supported by S-RAMP.  Also, more generally,
@@ -67,33 +67,33 @@ public class QueryDemo {
 
 		// First, a simple query for the XSDs.
 		System.out.print("Querying the S-RAMP repository for Schemas...");
-		Feed feed = client.query("/s-ramp/xsd/XsdDocument");
-		System.out.println("success: " + feed.getEntries().size() + " Schema(s) found (expected AT LEAST 2)");
+		QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument");
+		System.out.println("success: " + rset.size() + " Schema(s) found (expected AT LEAST 2)");
 
 		// Now a simple query for the WSDLs.
 		System.out.print("Querying the S-RAMP repository for WSDLs...");
-		feed = client.query("/s-ramp/wsdl/WsdlDocument");
-		System.out.println("success: " + feed.getEntries().size() + " WSDL(s) found (expected AT LEAST 1)");
+		rset = client.query("/s-ramp/wsdl/WsdlDocument");
+		System.out.println("success: " + rset.size() + " WSDL(s) found (expected AT LEAST 1)");
 
 		// Try searching for everything with a version of 1.1 (should be at least 2)
 		System.out.print("Querying the S-RAMP repository for all artifacts version 1.1...");
-		feed = client.query("/s-ramp[@version = '1.1']");
-		System.out.println("success: " + feed.getEntries().size() + " artifact(s) found (expected AT LEAST 2)");
+		rset = client.query("/s-ramp[@version = '1.1']");
+		System.out.println("success: " + rset.size() + " artifact(s) found (expected AT LEAST 2)");
 
 		// Try searching for everything with a version of 1.2 (should be at least 1)
 		System.out.print("Querying the S-RAMP repository for all artifacts version 1.2...");
-		feed = client.query("/s-ramp[@version = '1.2']");
-		System.out.println("success: " + feed.getEntries().size() + " artifact(s) found (expected AT LEAST 1)");
+		rset = client.query("/s-ramp[@version = '1.2']");
+		System.out.println("success: " + rset.size() + " artifact(s) found (expected AT LEAST 1)");
 
 		// Find just a single artifact by name and version
 		System.out.print("Querying the S-RAMP repository for a unique artifact by name + version...");
-		feed = client.query("/s-ramp[@name = 'wsrm-1.1-schema-200702.xsd' and @version = '1.1']");
-		System.out.println("success: " + feed.getEntries().size() + " artifact(s) found (expected 1)");
+		rset = client.query("/s-ramp[@name = 'wsrm-1.1-schema-200702.xsd' and @version = '1.1']");
+		System.out.println("success: " + rset.size() + " artifact(s) found (expected 1)");
 
 		// If we search for conflicting meta-data we should get 0 results, right?
 		System.out.print("Querying the S-RAMP repository conflicting meta data...");
-		feed = client.query("/s-ramp[@name = 'wsrm-1.1-schema-200702.xsd' and @version = '1.2']");
-		System.out.println("success: " + feed.getEntries().size() + " artifact(s) found (expected 0)");
+		rset = client.query("/s-ramp[@name = 'wsrm-1.1-schema-200702.xsd' and @version = '1.2']");
+		System.out.println("success: " + rset.size() + " artifact(s) found (expected 0)");
 
 		System.out.println("\n*** Demo Completed Successfully ***\n\n");
 		Thread.sleep(3000);
