@@ -2,6 +2,23 @@ package org.overlord.sramp.govenance;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.message.BasicNameValuePair;
 
 public class Multipart 
 {
@@ -11,8 +28,7 @@ public class Multipart
     public Multipart()
     {
         text = new StringBuilder();
-        boundary = Long.toHexString(
-            System.currentTimeMillis()); 
+        boundary = Long.toHexString(System.currentTimeMillis()); 
     }
     public String getContent()
     {
@@ -31,11 +47,9 @@ public class Multipart
     {
         StringBuilder sb = new StringBuilder();
         sb.append("--" + boundary).append(CRLF);
-        sb.append("Content-Disposition: form-data; "
-            +"name=\""+name+"\"");
+        sb.append("Content-Disposition: form-data; " +"name=\""+name+"\"");
         sb.append(CRLF);
-        sb.append("Content-Type: text/plain; charset=" 
-            + encoding );
+        sb.append("Content-Type: text/plain; charset=" + encoding );
         sb.append(CRLF);
         sb.append(CRLF);
         sb.append(value);
@@ -78,5 +92,22 @@ public class Multipart
         text.append( boundary );
         text.append( "--" );
         text.append( CRLF );
+    }
+    
+    public void post(HttpClient httpclient, URI uri, List<BasicNameValuePair> parameters) throws ClientProtocolException, IOException {
+        MultipartEntity multiPartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+        
+        Iterator<BasicNameValuePair> iter = parameters.iterator();
+        while (iter.hasNext()) {
+            BasicNameValuePair nvp = iter.next();
+            StringBody stringBody = new StringBody(nvp.getValue(), "text/plain", Charset.forName("UTF-8"));
+            multiPartEntity.addPart(nvp.getName(), (ContentBody) stringBody);
+        }
+        HttpPost httpPost = new HttpPost(uri);
+        httpPost.setEntity(multiPartEntity);
+        HttpResponse response = httpclient.execute(httpPost);
+        InputStream is = response.getEntity().getContent();
+        System.out.println(IOUtils.toString(is));
+        is.close();
     }
 }
