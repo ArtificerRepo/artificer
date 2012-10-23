@@ -1,4 +1,4 @@
-package org.overlord.sramp.govenance;
+package org.overlord.sramp.governance;
 
 import java.io.IOException;
 import java.io.InputStream;

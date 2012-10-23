@@ -1,4 +1,4 @@
-package org.overlord.sramp.govenance;
+package org.overlord.sramp.governance;
 
 import java.io.File;
 import java.io.FileInputStream;
