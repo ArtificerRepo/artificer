@@ -19,11 +19,10 @@ import java.io.File;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchiveJaxbUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.query.ArtifactSummary;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
@@ -92,16 +91,14 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 		BaseArtifactType artifact = null;
 		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
 		if ("feed".equals(idType)) {
-			Feed feed = (Feed) context.getVariable(feedVarName);
-			context.setVariable(feedVarName, feed);
+			QueryResultSet rset = (QueryResultSet) context.getVariable(feedVarName);
 			int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
-			if (feedIdx < 0 || feedIdx >= feed.getEntries().size()) {
+			if (feedIdx < 0 || feedIdx >= rset.size()) {
 				throw new InvalidCommandArgumentException(0, "Feed index out of range.");
 			}
-			Entry entry = feed.getEntries().get(feedIdx);
-			String artifactUUID = entry.getId().toString();
-			Entry fullArtifactEntry = client.getFullArtifactEntry(SrampAtomUtils.getArtifactType(entry), artifactUUID);
-			artifact = SrampAtomUtils.unwrapSrampArtifact(fullArtifactEntry);
+			ArtifactSummary summary = rset.get(feedIdx);
+			String artifactUUID = summary.getUuid();
+			artifact = client.getArtifactMetaData(summary.getType(), artifactUUID);
 		} else if ("uuid".equals(idType)) {
 //			String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
 //			artifact = getArtifactMetaDataByUUID(client, artifactUUID);

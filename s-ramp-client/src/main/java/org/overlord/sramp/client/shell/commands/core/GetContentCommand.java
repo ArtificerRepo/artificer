@@ -100,8 +100,7 @@ public class GetContentCommand extends AbstractShellCommand {
 			}
 			Entry entry = feed.getEntries().get(feedIdx);
 			String artifactUUID = entry.getId().toString();
-			Entry fullArtifactEntry = client.getFullArtifactEntry(SrampAtomUtils.getArtifactType(entry), artifactUUID);
-			artifact = SrampAtomUtils.unwrapSrampArtifact(fullArtifactEntry);
+			artifact = client.getArtifactMetaData(SrampAtomUtils.getArtifactType(entry), artifactUUID);
 		} else if ("uuid".equals(idType)) {
 //			String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
 //			artifact = getArtifactMetaDataByUUID(client, artifactUUID);

@@ -40,10 +40,11 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
- * Class used to communicate with the S-RAMP server.
+ * Class used to communicate with the S-RAMP server via the S-RAMP Atom API.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -63,13 +64,13 @@ public class SrampAtomApiClient {
 	}
 
 	/**
-	 * Gets an Atom {@link Entry} for the given S-RAMP artifact by UUID.
+	 * Gets the full meta-data listing for an Artifact in the S-RAMP repository.
 	 * @param artifactType
 	 * @param artifactUuid
 	 * @throws SrampClientException
 	 * @throws SrampAtomException
 	 */
-	public Entry getFullArtifactEntry(ArtifactType artifactType, String artifactUuid)
+	public BaseArtifactType getArtifactMetaData(ArtifactType artifactType, String artifactUuid)
 			throws SrampClientException, SrampAtomException {
 		try {
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint,
@@ -77,7 +78,8 @@ public class SrampAtomApiClient {
 					artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
 			ClientResponse<Entry> response = request.get(Entry.class);
-			return response.getEntity();
+			Entry entry = response.getEntity();
+			return SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
 		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
@@ -114,7 +116,7 @@ public class SrampAtomApiClient {
 	 * @throws SrampClientException
 	 * @throws SrampAtomException
 	 */
-	public Entry uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
+	public BaseArtifactType uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
 			throws SrampClientException, SrampAtomException {
 		// Determine the mime type if it's not included in the artifact type.
 		String mimeType = artifactType.getMimeType();
@@ -136,7 +138,8 @@ public class SrampAtomApiClient {
 			request.body(artifactType.getMimeType(), content);
 
 			ClientResponse<Entry> response = request.post(Entry.class);
-			return response.getEntity();
+			Entry entry = response.getEntity();
+			return SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
 		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
@@ -151,7 +154,7 @@ public class SrampAtomApiClient {
      * @throws SrampClientException
      * @throws SrampAtomException
      */
-    public Entry uploadArtifact(BaseArtifactType baseArtifactType, InputStream content)
+    public BaseArtifactType uploadArtifact(BaseArtifactType baseArtifactType, InputStream content)
             throws SrampClientException, SrampAtomException {
         ArtifactType artifactType = ArtifactType.valueOf(baseArtifactType);
         String artifactFileName = baseArtifactType.getName();
@@ -171,13 +174,13 @@ public class SrampAtomApiClient {
             ClientRequest request = new ClientRequest(atomUrl);
 
             MultipartRelatedOutput output = new MultipartRelatedOutput();
-            
+
             //1. Add first part, the S-RAMP entry
             Entry atomEntry = SrampAtomUtils.wrapSrampArtifact(baseArtifactType);
 
             MediaType mediaType = new MediaType("application", "atom+xml");
             output.addPart(atomEntry, mediaType);
-            
+
             //2. Add second part, the content
             request.body(artifactType.getMimeType(), content);
             MediaType mediaType2 = MediaType.getInstance(artifactType.getMimeType());
@@ -186,7 +189,8 @@ public class SrampAtomApiClient {
             //3. Send the request
             request.body(MultipartConstants.MULTIPART_RELATED, output);
             ClientResponse<Entry> response = request.post(Entry.class);
-            return response.getEntity();
+            Entry entry = response.getEntity();
+            return SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
         } catch (SrampAtomException e) {
             throw e;
         } catch (Throwable e) {
@@ -293,7 +297,7 @@ public class SrampAtomApiClient {
 	 * @throws SrampClientException
 	 * @throws SrampAtomException
 	 */
-	public void updateArtifact(BaseArtifactType artifact, InputStream content) throws SrampClientException,
+	public void updateArtifactContent(BaseArtifactType artifact, InputStream content) throws SrampClientException,
 			SrampAtomException {
 		try {
 			ArtifactType type = ArtifactType.valueOf(artifact);
@@ -346,7 +350,7 @@ public class SrampAtomApiClient {
 	 * @throws SrampClientException
 	 * @throws SrampAtomException
 	 */
-	public Feed query(String srampQuery) throws SrampClientException, SrampAtomException {
+	public QueryResultSet query(String srampQuery) throws SrampClientException, SrampAtomException {
 		return query(srampQuery, 0, 20, "name", true);
 	}
 
@@ -361,7 +365,7 @@ public class SrampAtomApiClient {
 	 * @throws SrampClientException
 	 * @throws SrampAtomException
 	 */
-	public Feed query(String srampQuery, int page, int pageSize, String orderBy, boolean ascending)
+	public QueryResultSet query(String srampQuery, int page, int pageSize, String orderBy, boolean ascending)
 			throws SrampClientException, SrampAtomException {
 		try {
 			String xpath = srampQuery;
@@ -382,7 +386,7 @@ public class SrampAtomApiClient {
 
 			request.body(MediaType.MULTIPART_FORM_DATA_TYPE, formData);
 			ClientResponse<Feed> response = request.post(Feed.class);
-			return response.getEntity();
+			return new QueryResultSet(response.getEntity());
 		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
