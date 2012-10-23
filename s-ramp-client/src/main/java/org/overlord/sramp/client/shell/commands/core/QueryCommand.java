@@ -17,11 +17,10 @@ package org.overlord.sramp.client.shell.commands.core;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.query.ArtifactSummary;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.ShellContext;
 
@@ -67,16 +66,17 @@ public class QueryCommand extends AbstractShellCommand {
 		String queryArg = this.requiredArgument(0, "Please specify a valid S-RAMP query.");
 		QName varName = new QName("s-ramp", "client");
 		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(varName);
-		Feed feed = client.query(queryArg);
+		QueryResultSet rset = client.query(queryArg);
 		int entryIndex = 1;
-		System.out.printf("Atom Feed (%1$d entries)\n", feed.getEntries().size());
+		System.out.printf("Atom Feed (%1$d entries)\n", rset.size());
 		System.out.printf("  Idx                 Type Name\n");
 		System.out.printf("  ---                 ---- ----\n");
-		for (Entry entry : feed.getEntries()) {
-			ArtifactType type = SrampAtomUtils.getArtifactType(entry);
-			System.out.printf("  %1$3d %2$20s %3$-40s\n", entryIndex++, type.getArtifactType().getType().toString(), entry.getTitle());
+		for (ArtifactSummary summary : rset) {
+			ArtifactType type = summary.getType();
+			System.out.printf("  %1$3d %2$20s %3$-40s\n", entryIndex++, type.getArtifactType().getType()
+					.toString(), summary.getName());
 		}
-		context.setVariable(new QName("s-ramp", "feed"), feed);
+		context.setVariable(new QName("s-ramp", "feed"), rset);
 	}
 
 }

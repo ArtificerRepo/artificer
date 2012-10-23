@@ -47,6 +47,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 
 	/**
 	 * Constructor.
+	 * @param baseUrl
 	 */
 	public ArtifactToSummaryAtomEntryVisitor(String baseUrl) {
 	    this.baseUrl = baseUrl;
@@ -54,6 +55,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 
 	/**
 	 * Constructor.
+	 * @param baseUrl
 	 * @param propNames
 	 */
 	public ArtifactToSummaryAtomEntryVisitor(String baseUrl, Set<String> propNames) {
@@ -109,7 +111,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 				entry.getAuthors().add(new Person(artifact.getCreatedBy()));
 			if (artifact.getDescription() != null)
 				entry.setSummary(artifact.getDescription());
-			
+
 			String atomLink = baseUrl + "/s-ramp/"
 					+ artifactType.getModel() + "/"
 					+ artifactType.getType() + "/" + artifact.getUuid();

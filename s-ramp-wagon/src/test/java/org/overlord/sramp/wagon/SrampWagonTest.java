@@ -28,7 +28,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.wagon.repository.Repository;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,6 +41,7 @@ import org.overlord.sramp.atom.services.BatchResource;
 import org.overlord.sramp.atom.services.FeedResource;
 import org.overlord.sramp.atom.services.QueryResource;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
@@ -121,14 +121,14 @@ public class SrampWagonTest extends BaseResourceTest {
 		// Now that we've deployed the artifacts, do some queries to make sure we put away
 		// what we intended.
 		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/"));
-		Feed feed = client.query("/s-ramp/core/Document");
-		Assert.assertEquals(2, feed.getEntries().size());
-		feed = client.query("/s-ramp/xsd/XsdDocument");
-		Assert.assertEquals(3, feed.getEntries().size());
-		feed = client.query("/s-ramp/wsdl/WsdlDocument");
-		Assert.assertEquals(1, feed.getEntries().size());
-		feed = client.query("/s-ramp[expandedFromDocument]");
-		Assert.assertEquals(4, feed.getEntries().size());
+		QueryResultSet rset = client.query("/s-ramp/core/Document");
+		Assert.assertEquals(2, rset.size());
+		rset = client.query("/s-ramp/xsd/XsdDocument");
+		Assert.assertEquals(3, rset.size());
+		rset = client.query("/s-ramp/wsdl/WsdlDocument");
+		Assert.assertEquals(1, rset.size());
+		rset = client.query("/s-ramp[expandedFromDocument]");
+		Assert.assertEquals(4, rset.size());
 
 		// Upload the content again (to make sure the expanded artifacts get deleted and re-added)
 		// TODO re-enable this once I figure out why I am getting a referential integrity error
@@ -146,14 +146,14 @@ public class SrampWagonTest extends BaseResourceTest {
 
 		// Now all the same assertions.
 		/*
-		feed = client.query("/s-ramp/core/Document");
-		Assert.assertEquals(2, feed.getEntries().size());
-		feed = client.query("/s-ramp/xsd/XsdDocument");
-		Assert.assertEquals(3, feed.getEntries().size());
-		feed = client.query("/s-ramp/wsdl/WsdlDocument");
-		Assert.assertEquals(1, feed.getEntries().size());
-		feed = client.query("/s-ramp[mavenParent]");
-		Assert.assertEquals(4, feed.getEntries().size());
+		rset = client.query("/s-ramp/core/Document");
+		Assert.assertEquals(2, rset.size());
+		rset = client.query("/s-ramp/xsd/XsdDocument");
+		Assert.assertEquals(3, rset.size());
+		rset = client.query("/s-ramp/wsdl/WsdlDocument");
+		Assert.assertEquals(1, rset.size());
+		rset = client.query("/s-ramp[mavenParent]");
+		Assert.assertEquals(4, rset.size());
 		*/
 
 	}

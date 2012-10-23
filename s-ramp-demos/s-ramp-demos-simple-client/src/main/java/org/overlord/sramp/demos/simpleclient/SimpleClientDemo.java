@@ -17,12 +17,11 @@ package org.overlord.sramp.demos.simpleclient;
 
 import java.io.InputStream;
 
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampModelUtils;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.query.ArtifactSummary;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -68,11 +67,10 @@ public class SimpleClientDemo {
 
 				// Upload that content to S-RAMP
 				System.out.print("\tUploading artifact " + file + "...");
-				Entry newArtifact = client.uploadArtifact(type, is, file);
+				BaseArtifactType artifact = client.uploadArtifact(type, is, file);
 				System.out.println("done.");
 
 				// Update the artifact meta-data (set the version and add a custom property)
-				BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(newArtifact);
 				artifact.setVersion("1.1");
 				SrampModelUtils.setCustomProperty(artifact, "demo", "simple-client");
 
@@ -87,10 +85,10 @@ public class SimpleClientDemo {
 
 		// Now query the S-RAMP repository (for the Schemas only)
 		System.out.print("Querying the S-RAMP repository for Schemas...");
-		Feed feed = client.query("/s-ramp/xsd/XsdDocument");
-		System.out.println("success: " + feed.getEntries().size() + " Schemas found:");
-		for (Entry entry : feed.getEntries()) {
-			System.out.println("\t * " + entry.getTitle() + " (" + entry.getId() + ")");
+		QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument");
+		System.out.println("success: " + rset.size() + " Schemas found:");
+		for (ArtifactSummary entry : rset) {
+			System.out.println("\t * " + entry.getName() + " (" + entry.getUuid() + ")");
 		}
 
 		System.out.println("\n*** Demo Completed Successfully ***\n\n");
