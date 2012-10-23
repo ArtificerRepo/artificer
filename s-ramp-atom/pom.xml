@@ -18,6 +18,7 @@
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.2.2</version>
+      <scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
@@ -33,6 +34,7 @@
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxb-provider</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
+      <scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>

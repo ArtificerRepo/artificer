@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="update BRMS config" default="update.config">
+
+  <property file="build.properties" />
+	
+	<target name="update.config" depends="patch.jbpm-gwt-console-server">
+		<!-- pointing jbpm to S-RAMP -->
+		<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/jbpm.console.properties"
+		       todir="restore"/>
+	  <copy  file="updates/jbpm.console.properties"
+	         todir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/" overwrite="true" />
+		<!-- removing the '-Djbpm.console.directory' setting, we want to read from S-RAMP only -->
+		<move  file="${jboss.home}/build.xml"
+		       todir="restore"/>
+		<copy  file="updates/build.xml"
+		       todir="${jboss.home}" overwrite="true" />
+	</target>
+	
+	<!-- there is no codechange to this jar, we have to figure out why if WE compile the same
+	     jar it is ok and the http returns 200 (success)  -->
+  <target name="patch.jbpm-gwt-console-server" depends="explode.jbpm-gwt-console-server">
+  	<echo>patching jbpm-gwt-console-server.war, with jbpm-gwt-shared-5.3.0.SRAMP.jar</echo>
+  	<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/jbpm-gwt-shared-5.3.0.Final.jar"
+  	           todir="restore"/>
+    <copy  file="updates/jbpm-gwt-shared-5.3.0.SRAMP.jar"
+           todir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/" />
+  </target>
+  	
+	<target name="explode.jbpm-gwt-console-server" depends="dir.check" unless="dir.exists">
+		<echo>exploding the jbpm-gwt-console-server.war, keeping a backup in restore</echo>
+		<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war"
+		       todir="restore"/>
+		<mkdir dir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
+		<unzip src="restore/jbpm-gwt-console-server.war" 
+	         dest="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
+	</target>
+	
+	<target name="dir.check">
+    <condition property="dir.exists">
+      <available file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" type="dir"/>
+    </condition>
+  </target>
+	
+	<target name="clean">
+	  <delete dir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war"/>
+		<copy file="restore/jbpm-gwt-console-server.war"
+		      todir="${jboss.home}/standalone/deployments/" />
+		<copy file="restore/build.xml"
+		      todir="${jboss.home}" />
+	</target>
+	
+</project>
