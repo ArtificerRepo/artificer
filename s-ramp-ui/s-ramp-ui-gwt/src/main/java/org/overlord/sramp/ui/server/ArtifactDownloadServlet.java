@@ -25,9 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
@@ -63,8 +61,7 @@ public class ArtifactDownloadServlet extends HttpServlet {
 			String type = req.getParameter("type");
 
 			ArtifactType artyType = ArtifactType.valueOf(type);
-			Entry artifactEntry = client.getFullArtifactEntry(artyType, uuid);
-			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(artyType, artifactEntry);
+			BaseArtifactType artifact = client.getArtifactMetaData(artyType, uuid);
 
 			// Set the content-disposition
 			String artifactName = artifact.getName();

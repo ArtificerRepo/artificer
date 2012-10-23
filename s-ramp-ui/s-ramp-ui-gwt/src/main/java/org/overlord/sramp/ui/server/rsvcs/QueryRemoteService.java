@@ -18,10 +18,8 @@ package org.overlord.sramp.ui.server.rsvcs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.atom.SrampAtomUtils;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
@@ -53,23 +51,20 @@ public class QueryRemoteService extends RemoteServiceServlet implements IQueryRe
 	@Override
 	public List<ArtifactSummary> findArtifacts(final PageInfo page, ArtifactFilter filter) throws RemoteServiceException {
 		try {
-			Feed feed = SrampAtomApiClient.getInstance().query(filter.getQueryBase(), page.getPage(),
+			QueryResultSet rset = SrampAtomApiClient.getInstance().query(filter.getQueryBase(), page.getPage(),
 					page.getPageSize(), page.getOrderBy(), page.isAscending());
 			List<ArtifactSummary> rval = new ArrayList<ArtifactSummary>();
-			for (Entry entry : feed.getEntries()) {
-				String author = null;
-				if (entry.getAuthors() != null && entry.getAuthors().size() > 0)
-					author = entry.getAuthors().get(0).getName();
+			for (org.overlord.sramp.client.query.ArtifactSummary entry : rset) {
 				ArtifactSummary arty = new ArtifactSummary();
-				ArtifactType artifactType = SrampAtomUtils.getArtifactType(entry);
+				ArtifactType artifactType = entry.getType();
 				arty.setModel(artifactType.getArtifactType().getModel());
 				arty.setType(artifactType.getArtifactType().getType());
-				arty.setUuid(entry.getId().toString());
-				arty.setName(entry.getTitle());
-				arty.setDescription(entry.getSummary());
-				arty.setCreatedBy(author);
-				arty.setCreatedOn(entry.getPublished());
-				arty.setUpdatedOn(entry.getUpdated());
+				arty.setUuid(entry.getUuid());
+				arty.setName(entry.getName());
+				arty.setDescription(entry.getDescription());
+				arty.setCreatedBy(entry.getCreatedBy());
+				arty.setCreatedOn(entry.getCreatedTimestamp());
+				arty.setUpdatedOn(entry.getLastModifiedTimestamp());
 				rval.add(arty);
 			}
 			return rval;
