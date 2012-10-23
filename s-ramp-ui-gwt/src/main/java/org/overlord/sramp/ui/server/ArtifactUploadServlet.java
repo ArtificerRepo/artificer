@@ -35,10 +35,8 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampModelUtils;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.jar.DefaultMetaDataFactory;
@@ -134,44 +132,47 @@ public class ArtifactUploadServlet extends HttpServlet {
 		String uuid = null;
 		Map<String, String> responseParams = new HashMap<String, String>();
 
-		// First, upload the artifact, no matter what kind
 		try {
-			contentStream = FileUtils.openInputStream(tempFile);
-			ArtifactType at = ArtifactType.valueOf(artifactType);
-			Entry entry = client.uploadArtifact(at, contentStream, fileName);
-			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(at, entry);
-			responseParams.put("model", at.getArtifactType().getModel());
-			responseParams.put("type", at.getArtifactType().getType());
-			responseParams.put("uuid", artifact.getUuid());
-			uuid = artifact.getUuid();
-		} finally {
-			IOUtils.closeQuietly(contentStream);
-		}
-
-		// Check if this is an expandable file type.  If it is, then expand it!
-		if (isExpandable(fileName)) {
-			JarToSrampArchive j2sramp = null;
-			SrampArchive archive = null;
+			// First, upload the artifact, no matter what kind
 			try {
-				final String parentUUID = uuid;
-				j2sramp = new JarToSrampArchive(tempFile);
-				j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
-					@Override
-					public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
-						BaseArtifactType metaData = super.createMetaData(artifact);
-						SrampModelUtils.setCustomProperty(metaData, "upload.parent-uuid", parentUUID);
-						return metaData;
-					}
-				});
-				archive = j2sramp.createSrampArchive();
-				client.uploadBatch(archive);
+				contentStream = FileUtils.openInputStream(tempFile);
+				ArtifactType at = ArtifactType.valueOf(artifactType);
+				BaseArtifactType artifact = client.uploadArtifact(at, contentStream, fileName);
+				responseParams.put("model", at.getArtifactType().getModel());
+				responseParams.put("type", at.getArtifactType().getType());
+				responseParams.put("uuid", artifact.getUuid());
+				uuid = artifact.getUuid();
 			} finally {
-				SrampArchive.closeQuietly(archive);
-				JarToSrampArchive.closeQuietly(j2sramp);
+				IOUtils.closeQuietly(contentStream);
 			}
-		}
 
-		return responseParams;
+			// Check if this is an expandable file type.  If it is, then expand it!
+			if (isExpandable(fileName)) {
+				JarToSrampArchive j2sramp = null;
+				SrampArchive archive = null;
+				try {
+					final String parentUUID = uuid;
+					j2sramp = new JarToSrampArchive(tempFile);
+					j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
+						@Override
+						public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
+							BaseArtifactType metaData = super.createMetaData(artifact);
+							SrampModelUtils.addGenericRelationship(metaData, "expandedFromDocument", parentUUID);
+							return metaData;
+						}
+					});
+					archive = j2sramp.createSrampArchive();
+					client.uploadBatch(archive);
+				} finally {
+					SrampArchive.closeQuietly(archive);
+					JarToSrampArchive.closeQuietly(j2sramp);
+				}
+			}
+
+			return responseParams;
+		} finally {
+			FileUtils.deleteQuietly(tempFile);
+		}
 	}
 
 	/**
@@ -186,8 +187,7 @@ public class ArtifactUploadServlet extends HttpServlet {
 			resourceTempFile = File.createTempFile("s-ramp-ui-upload", ".tmp");
 			oStream = FileUtils.openOutputStream(resourceTempFile);
 		} catch (IOException e) {
-			if (resourceTempFile != null && resourceTempFile.isFile())
-				resourceTempFile.delete();
+			FileUtils.deleteQuietly(resourceTempFile);
 			throw e;
 		} finally {
 			IOUtils.copy(resourceInputStream, oStream);

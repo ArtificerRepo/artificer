@@ -15,9 +15,7 @@
  */
 package org.overlord.sramp.ui.server.rsvcs;
 
-import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
 import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
@@ -51,22 +49,18 @@ public class ArtifactRemoteService extends RemoteServiceServlet implements IArti
 			throws RemoteServiceException {
 		try {
 			ArtifactType artyType = ArtifactType.valueOf(type);
-			Entry entry = SrampAtomApiClient.getInstance().getFullArtifactEntry(artyType, artifactUUID);
+			BaseArtifactType artifact = SrampAtomApiClient.getInstance().getArtifactMetaData(artyType, artifactUUID);
 
 			ArtifactDetails details = new ArtifactDetails();
 			details.setModel(artyType.getArtifactType().getModel());
 			details.setType(artyType.getArtifactType().getType());
-			details.setUuid(entry.getId().toString());
-			details.setName(entry.getTitle());
-			details.setDescription(entry.getSummary());
-			String author = null;
-			if (entry.getAuthors() != null && entry.getAuthors().size() > 0)
-				author = entry.getAuthors().get(0).getName();
-			details.setCreatedBy(author);
-			details.setCreatedOn(entry.getPublished());
-			details.setUpdatedOn(entry.getUpdated());
+			details.setUuid(artifact.getUuid());
+			details.setName(artifact.getName());
+			details.setDescription(artifact.getDescription());
+			details.setCreatedBy(artifact.getCreatedBy());
+			details.setCreatedOn(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
+			details.setUpdatedOn(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
 
-			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(artyType, entry);
 			for (Property property : artifact.getProperty()) {
 				details.setProperty(property.getPropertyName(), property.getPropertyValue());
 			}
