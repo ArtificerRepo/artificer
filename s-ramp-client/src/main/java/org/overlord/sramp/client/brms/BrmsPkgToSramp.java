@@ -35,14 +35,29 @@ public class BrmsPkgToSramp {
 
     public static void main(String [ ] args) {
         try {
+            
             String brmsPackageName = "defaultPackage";
-            String baseUrl         = "http://localhost:8080/drools-guvnor";
             String tag             = "LATEST";
+            String baseUrl         = "http://localhost:8080/drools-guvnor";
+            String brmsUserId      = "admin";
+            String brmsPassword    = "admin";
             String srampUrl        = "http://localhost:8880/s-ramp-atom";
+            
             if (args.length > 0) brmsPackageName = args[0];
             if (args.length > 1) tag             = args[1];
             if (args.length > 2) baseUrl         = args[2];
-
+            if (args.length > 3) brmsUserId      = args[3];
+            if (args.length > 4) brmsPassword    = args[4];
+            if (args.length > 5) srampUrl        = args[5];
+            
+            System.out.println("Using ");
+            System.out.println("   brmsPackageName..: " + brmsPackageName);
+            System.out.println("   tag .............: " + tag);
+            System.out.println("   baseUrl..........: " + baseUrl);
+            System.out.println("   brmsUserId.......: " + brmsUserId);
+            System.out.println("   brmsPassword.....: " + brmsPassword);
+            System.out.println("   srampUrl.........: " + srampUrl);
+            
             BrmsPkgToSramp sramp = new BrmsPkgToSramp();
 
             String srampURLStr = srampUrl + "/brms/rest/packages/";
@@ -52,12 +67,12 @@ public class BrmsPkgToSramp {
                 return;
             }
             String brmsURLStr = baseUrl + "/rest/packages/";
-            boolean brmsExists = sramp.urlExists(brmsURLStr, "admin", "admin");
+            boolean brmsExists = sramp.urlExists(brmsURLStr, brmsUserId, brmsPassword);
             if (! brmsExists) {
                 System.out.println("Can't find BRMS endpoint: " + brmsURLStr);
                 return;
             }
-            sramp.uploadBrmsPackage(baseUrl, brmsPackageName, tag);
+            sramp.uploadBrmsPackage(baseUrl, brmsPackageName, tag, brmsUserId, brmsPassword, srampUrl);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,12 +101,10 @@ public class BrmsPkgToSramp {
                 + new String(Base64.encodeBase64(auth.getBytes())));
     }
 
-    public void uploadBrmsPackage(String baseUrl, String pkgName, String tag) throws Exception {
+    public void uploadBrmsPackage(String baseUrl, String pkgName, String tag, String userId, String password, String srampUrl) 
+        throws Exception {
         // http://localhost:8080/drools-guvnor/org.drools.guvnor.Guvnor/package/srampPackage/S_RAMP_0.0.3.0
         String urlStr = baseUrl + "/org.drools.guvnor.Guvnor/package/" + pkgName + "/" + tag;
-
-        String userId   = "admin";
-        String password = "admin";
 
         Credentials credentials = new UsernamePasswordCredentials(userId, password);
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -110,11 +123,11 @@ public class BrmsPkgToSramp {
         Packages.Package brmsPkg = brmsPkgMap.get(pkgName);
 
         System.out.println("Located BRMS package '" + pkgName + "' :");
-        System.out.println("   UUID ..........: " + brmsPkg.getMetadata().getUuid());
-        System.out.println("   Version .......: " + brmsPkg.getMetadata().getVersionNumber());
-        System.out.println("   Author ........: " + brmsPkg.getAuthor());
-        System.out.println("   Last published : " + brmsPkg.getPublished());
-        System.out.println("   Description ...: " + brmsPkg.getDescription());
+        System.out.println("   UUID ............: " + brmsPkg.getMetadata().getUuid());
+        System.out.println("   Version .........: " + brmsPkg.getMetadata().getVersionNumber());
+        System.out.println("   Author ..........: " + brmsPkg.getAuthor());
+        System.out.println("   Last published ..: " + brmsPkg.getPublished());
+        System.out.println("   Description .....: " + brmsPkg.getDescription());
 
         // now uploading this into s-ramp
         UserDefinedArtifactType userDefinedArtifactType =
@@ -126,14 +139,14 @@ public class BrmsPkgToSramp {
         assetsProperty.setPropertyName(BrmsConstants.ASSET_INFO_XML);
         String assetsXml = getAssetsStringFromBrms(baseUrl, pkgName);
         //update the links
-        assetsXml = assetsXml.replaceAll("http://localhost:8080/drools-guvnor", "http://localhost:8880/s-ramp-atom/brms");
+        assetsXml = assetsXml.replaceAll(baseUrl, srampUrl + "/brms");
         assetsProperty.setPropertyValue(assetsXml);
         userDefinedArtifactType.getProperty().add(assetsProperty);
 
         System.out.println("Reading " + pkgName + " from url " + urlStr);
         ClientResponse<InputStream> pkgResponse = getInputStream(urlStr);
         InputStream content = pkgResponse.getEntity();
-        SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8880/s-ramp-atom/s-ramp");
+        SrampAtomApiClient client = new SrampAtomApiClient(srampUrl + "/s-ramp");
         BaseArtifactType artifact = client.uploadArtifact(userDefinedArtifactType, content);
         IOUtils.closeQuietly(content);
         System.out.println("Uploaded " + pkgName + " UUID=" + artifact.getUuid());

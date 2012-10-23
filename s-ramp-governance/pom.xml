@@ -22,8 +22,15 @@
       <artifactId>s-ramp-client</artifactId>
       <version>${project.version}</version>
     </dependency>
-
-
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpmime</artifactId>
+      <version>4.1.2</version>
+    </dependency>
 
 		<!-- Testing (note the scope) -->
 		<dependency>
@@ -36,16 +43,7 @@
 			<artifactId>xmlunit</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpmime</artifactId>
-			<version>4.1.2</version>
-		</dependency>
+
 	</dependencies>
 
 </project>

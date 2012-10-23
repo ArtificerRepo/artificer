@@ -2,197 +2,105 @@ package org.overlord.sramp.govenance;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 public class JbpmRestClient {
+    
+    String jbpmUrl = null;
+    HttpClient httpclient = null;
+    
+    public JbpmRestClient(HttpClient httpclient, String jbpmUrl) {
+        super();
+        this.jbpmUrl = jbpmUrl;
+        this.httpclient = httpclient;
+    }
 
-    public boolean urlExists(String checkUrl, String user, String password) {
+    public void logon(String username, String password) throws ClientProtocolException, IOException {
 
-        try {
-            URL checkURL = new URL(checkUrl);
-            HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
-            checkConnection.setRequestMethod("GET");
-            checkConnection.setRequestProperty("Accept", "application/json");
-            checkConnection.setConnectTimeout(10000);
-            checkConnection.setReadTimeout(10000);
-            //applyAuth(checkConnection, user, password);
-            checkConnection.connect();
-            return (checkConnection.getResponseCode() == 200);
-        } catch (Exception e) {
-            return false;
+        HttpGet getMethod = new HttpGet(jbpmUrl + "/rs/process/definitions");
+        HttpResponse response = httpclient.execute(getMethod);
+        InputStream is = response.getEntity().getContent();
+        String responseStr = IOUtils.toString(is);
+        is.close();
+        if (responseStr.contains("j_security_check")) {
+            HttpPost authMethod = new HttpPost(jbpmUrl + "/rs/process/j_security_check");
+            List<BasicNameValuePair> parameters = new ArrayList<BasicNameValuePair>();
+            parameters.add(new BasicNameValuePair("j_username", username));
+            parameters.add(new BasicNameValuePair("j_password", password));
+            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters, "UTF-8");
+            authMethod.setEntity(entity);
+            response = httpclient.execute(authMethod);
+            response.getEntity().getContent().close();
+            response = httpclient.execute(getMethod);
+            is = response.getEntity().getContent();
+            System.out.println(IOUtils.toString(is));
+            is.close();
         }
     }
 
-    protected void applyAuth(HttpURLConnection connection, String user, String password) {
-        String auth = user + ":" + password;
-        connection.setRequestProperty("Authorization", "Basic "
-                + new String(Base64.encodeBase64(auth.getBytes())));
-    }
-
-    @SuppressWarnings("unused")
-	private void logon(String jbpmUrl, Map<String,String> params) throws MalformedURLException {
-    	URL logonUrl = new URL(jbpmUrl + "/rs/identity/secure/j_security_check");
-    	postMultipart(logonUrl, params);
-    }
-
-    @SuppressWarnings("unused")
-	private void newProcessInstance(String jbpmUrl, Map<String,String> params, String processId) throws MalformedURLException {
-        URL startProcessUrl = new URL(jbpmUrl + "/rs/form/process/" + processId + "/complete");
-        postMultipart(startProcessUrl, params);
-    }
-
-    private void postMultipart(URL url, Map<String,String> params) {
-        //need to make a mutipartForm request
-        //http://localhost:8080/gwt-console-server/rs/form/process/com.sample.evaluation/render
-        try {
-
-            HttpURLConnection jbpmConnection = (HttpURLConnection) url.openConnection();
-            jbpmConnection.setRequestMethod("POST");
-            jbpmConnection.setRequestProperty("Accept", "text/html");
-
-            Multipart mmp = new Multipart();
-            for (String key : params.keySet()) {
-                mmp.putStandardParam( key, params.get(key), "UTF-8" );
-            }
-            mmp.finish();
-            jbpmConnection.setRequestProperty("Content-Length",
-                    Integer.toString(mmp.getLength()));
-            jbpmConnection.setRequestProperty("Content-Type",
-                    "multipart/form-data, boundary="
-                    +mmp.getBoundary());
-            jbpmConnection.setConnectTimeout(10000);
-            jbpmConnection.setReadTimeout(10000);
-            jbpmConnection.setDoOutput(true);
-            jbpmConnection.setUseCaches(false);
-            //applyAuth(jbpmConnection, user, password);
-            jbpmConnection.connect();
-            System.out.println(url);
-            System.out.println(mmp.getContent());
-
-            OutputStream output = jbpmConnection.getOutputStream();
-            output.write( mmp.getContent().getBytes() );
-            output.flush();
-            output.close();
-            printResponse(jbpmConnection);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void printResponse(
-            URLConnection conn )
-        {
-            try
-            {
-                InputStream is = conn.getInputStream();
-                while ( is.available() != 0 )
-                {
-                    byte[] data = new byte[is.available()];
-                    is.read( data );
-                    System.out.println(new String(data,
-                       "UTF-8"));
-                }
-            }
-            catch ( Exception e )
-            {
-                e.printStackTrace( System.out );
-            }
-        }
-
-    public static void main(String [ ] args) {
-        org.apache.http.client.HttpClient httpclient = new DefaultHttpClient();
-        try {
-        HttpGet getMethod = new HttpGet("http://localhost:8080/gwt-console-server/rs/process/definitions");
-
-        HttpPost authMethod = new HttpPost("http://localhost:8080/gwt-console-server/rs/process/j_security_check");
+    public void newProcessInstanceAndCompleteFirstTask(String processId, Map<String,String> params) throws URISyntaxException, ClientProtocolException, IOException {
+        //"http://localhost:8080/gwt-console-server/rs/form/process/com.sample.evaluation/complete"
+        URI startProcessUrl = new URL(jbpmUrl + "/rs/form/process/" + processId + "/complete").toURI();
         List<BasicNameValuePair> parameters = new ArrayList<BasicNameValuePair>();
-        parameters.add(new BasicNameValuePair("j_username", "admin"));
-        parameters.add(new BasicNameValuePair("j_password", "admin"));
-        UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters, "UTF-8");
-        authMethod.setEntity(entity);
+        for (String key : params.keySet()) {
+            parameters.add(new BasicNameValuePair(key, params.get(key)));
+        }
+        new Multipart().post(httpclient, startProcessUrl, parameters);
+    }
+    /**
+     * Creates a new jBPM5 process instance, given the processId.
+     * @param processId
+     * @throws URISyntaxException
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
+    public void newProcessInstance(String processId) throws URISyntaxException, ClientProtocolException, IOException {
+        //"http://localhost:8080/gwt-console-server/rs/process/definition/{id}/new_instance"
+        URI startProcessUrl = new URL(jbpmUrl + "/rs/process/definition/" + processId + "/new_instance").toURI();
+        HttpPost newInstance = new HttpPost(startProcessUrl);
+        httpclient.execute(newInstance);
+    }
 
-              HttpResponse response = httpclient.execute(getMethod);
-              response.getEntity().getContent().close();
-              response = httpclient.execute(authMethod);
-              response.getEntity().getContent().close();
-              response = httpclient.execute(getMethod);
-              InputStream is = response.getEntity().getContent();
-              System.out.println(IOUtils.toString(is));
-              is.close();
-
-              parameters = new ArrayList<BasicNameValuePair>();
-              parameters.add(new BasicNameValuePair("employee", "krisv"));
-              parameters.add(new BasicNameValuePair("reason", "just bc"));
-              MultipartEntity multiPartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-              Iterator<BasicNameValuePair> iter = parameters.iterator();
-              while (iter.hasNext()) {
-                  BasicNameValuePair nvp = iter.next();
-                  StringBody stringBody = new StringBody(nvp.getValue(), "text/plain", Charset.forName("UTF-8"));
-                  multiPartEntity.addPart(nvp.getName(), stringBody);
-              }
-              HttpPost httpPost = new HttpPost("http://localhost:8080/gwt-console-server/rs/form/process/com.sample.evaluation/complete");
-              httpPost.setEntity(multiPartEntity);
-              response = httpclient.execute(httpPost);
-              is = response.getEntity().getContent();
-              System.out.println(IOUtils.toString(is));
-              is.close();
-              httpclient.getConnectionManager().shutdown();
-          } catch (IOException e) {
-              e.printStackTrace();
-          } finally {
-
-          }
-
-//        try {
-//            String processId = "com.sample.evaluation";
-//            String jbpmUrl   = "http://localhost:8080/gwt-console-server";
-//
-//            if (args.length > 0) processId = args[0];
-//            if (args.length > 1) jbpmUrl   = args[1];
-//
-//            JbpmRestClient jbpm = new JbpmRestClient();
-//            //http://localhost:8080/gwt-console-server/rs/process/definition/com.sample.evaluation/new_instance
-//
-//            String jbpmURLStr = jbpmUrl + "/rs/process/definitions";
-//            boolean jbpmExists = jbpm.urlExists(jbpmURLStr, "admin", "admin");
-//            if (! jbpmExists) {
-//                System.out.println("Can't find jBPM REST endpoint: " + jbpmURLStr);
-//                return;
-//            }
-//            Map<String,String> requestMap = new HashMap<String,String>();
-//            requestMap.put("j_username","admin");
-//            requestMap.put("j_password","admin");
-//
-//            jbpm.logon(jbpmUrl, requestMap);
-//
-//            requestMap = new HashMap<String,String>();
-//            requestMap.put("employee", "krisv");
-//            requestMap.put("reason", "just because");
-//            jbpm.newProcessInstance(jbpmUrl, requestMap, processId);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+    public static void main(String [ ] args) throws Exception {
+        
+        HttpClient httpclient = new DefaultHttpClient();
+        JbpmRestClient jbpmClient = new JbpmRestClient(httpclient, "http://localhost:8080/gwt-console-server");
+        try {
+            jbpmClient.logon("admin", "admin");
+            //parameters that will be set in the jBPM context Map
+            Map<String,String> parameters = new HashMap<String,String>();
+            parameters.put("employee", "krisv");
+            parameters.put("reason", "just bc");
+            parameters.put("uuid", "some-uuid-lkjlkj");
+            jbpmClient.newProcessInstanceAndCompleteFirstTask("com.sample.evaluation",parameters);
+            jbpmClient.shutdown();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            jbpmClient.shutdown();
+        }
+    }
+    
+    // shuts down the httpclient in use by this client
+    public void shutdown() {
+        if (httpclient!=null) {
+            httpclient.getConnectionManager().shutdown();
+        }
     }
 }
