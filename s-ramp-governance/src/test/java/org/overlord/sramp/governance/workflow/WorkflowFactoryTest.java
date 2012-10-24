@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.overlord.sramp.governance.workflow.WorkflowFactory;
 import org.overlord.sramp.governance.workflow.brms.JbpmManager;
@@ -43,7 +44,7 @@ public class WorkflowFactoryTest {
         Assert.assertEquals(JbpmManager.class, bpmManager.getClass());
     }
     
-    @Test //@Ignore  //the BPM engine needs to be running for this test to pass
+    @Test @Ignore  //the BPM engine needs to be running for this test to pass
     public void testNewProcessInstance() throws Exception {
         BpmManager bpmManager = WorkflowFactory.newInstance();
         String processId = "com.sample.evaluation";
