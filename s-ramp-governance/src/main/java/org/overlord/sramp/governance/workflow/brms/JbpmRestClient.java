@@ -1,4 +1,19 @@
-package org.overlord.sramp.governance;
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.overlord.sramp.governance.workflow.brms;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,7 +21,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,11 +31,14 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.overlord.sramp.governance.workflow.Multipart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JbpmRestClient {
     
+    private Logger log = LoggerFactory.getLogger(this.getClass());
     String jbpmUrl = null;
     HttpClient httpclient = null;
     
@@ -49,19 +66,17 @@ public class JbpmRestClient {
             response.getEntity().getContent().close();
             response = httpclient.execute(getMethod);
             is = response.getEntity().getContent();
-            System.out.println(IOUtils.toString(is));
+            if (log.isDebugEnabled()) {
+                log.debug(IOUtils.toString(is));
+            }
             is.close();
         }
     }
 
-    public void newProcessInstanceAndCompleteFirstTask(String processId, Map<String,String> params) throws URISyntaxException, ClientProtocolException, IOException {
+    public void newProcessInstanceAndCompleteFirstTask(String processId, Map<String,Object> params) throws IOException, URISyntaxException {
         //"http://localhost:8080/gwt-console-server/rs/form/process/com.sample.evaluation/complete"
         URI startProcessUrl = new URL(jbpmUrl + "/rs/form/process/" + processId + "/complete").toURI();
-        List<BasicNameValuePair> parameters = new ArrayList<BasicNameValuePair>();
-        for (String key : params.keySet()) {
-            parameters.add(new BasicNameValuePair(key, params.get(key)));
-        }
-        new Multipart().post(httpclient, startProcessUrl, parameters);
+        new Multipart().post(httpclient, startProcessUrl, params);
     }
     /**
      * Creates a new jBPM5 process instance, given the processId.
@@ -70,37 +85,10 @@ public class JbpmRestClient {
      * @throws ClientProtocolException
      * @throws IOException
      */
-    public void newProcessInstance(String processId) throws URISyntaxException, ClientProtocolException, IOException {
+    public void newProcessInstance(String processId) throws URISyntaxException, IOException {
         //"http://localhost:8080/gwt-console-server/rs/process/definition/{id}/new_instance"
         URI startProcessUrl = new URL(jbpmUrl + "/rs/process/definition/" + processId + "/new_instance").toURI();
         HttpPost newInstance = new HttpPost(startProcessUrl);
         httpclient.execute(newInstance);
-    }
-
-    public static void main(String [ ] args) throws Exception {
-        
-        HttpClient httpclient = new DefaultHttpClient();
-        JbpmRestClient jbpmClient = new JbpmRestClient(httpclient, "http://localhost:8080/gwt-console-server");
-        try {
-            jbpmClient.logon("admin", "admin");
-            //parameters that will be set in the jBPM context Map
-            Map<String,String> parameters = new HashMap<String,String>();
-            parameters.put("employee", "krisv");
-            parameters.put("reason", "just bc");
-            parameters.put("uuid", "some-uuid-lkjlkj");
-            jbpmClient.newProcessInstanceAndCompleteFirstTask("com.sample.evaluation",parameters);
-            jbpmClient.shutdown();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            jbpmClient.shutdown();
-        }
-    }
-    
-    // shuts down the httpclient in use by this client
-    public void shutdown() {
-        if (httpclient!=null) {
-            httpclient.getConnectionManager().shutdown();
-        }
     }
 }
