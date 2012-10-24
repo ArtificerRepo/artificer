@@ -24,15 +24,13 @@
 package org.overlord.sramp.query.xpath;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
-import org.modeshape.common.text.ParsingException;
-import org.modeshape.common.text.TokenStream;
-import org.modeshape.common.text.TokenStream.Tokenizer;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.query.xpath.ast.AndExpr;
@@ -102,11 +100,11 @@ public class XPathParser {
      * @return an S-RAMP XPath AST
      */
 	public Query parseXPath(String xpath) {
-		Tokenizer tokenizer = new XPathTokenizer(false); // skip comments
+		XPathTokenizer tokenizer = new XPathTokenizer();
 		try {
-			TokenStream tokens = new TokenStream(xpath, tokenizer, true).start(); // case sensitive!!
+			TokenStream tokens = tokenizer.tokenize(xpath);
 			return parseQuery(tokens);
-		} catch (ParsingException e) {
+		} catch (ParseException e) {
 			throw new XPathParserException(e.getMessage());
 		}
 	}
@@ -122,14 +120,14 @@ public class XPathParser {
 		ArtifactSet artifactSet = parseArtifactSet(tokens);
 		query.setArtifactSet(artifactSet);
 
-		if (tokens.canConsume('[')) {
+		if (tokens.canConsume("[")) {
 			Predicate predicate = parsePredicate(tokens);
 			query.setPredicate(predicate);
-			if (!tokens.canConsume(']'))
+			if (!tokens.canConsume("]"))
 				throw new XPathParserException("Artifact-set predicate not terminated.");
 		}
 
-		if (tokens.canConsume('/')) {
+		if (tokens.canConsume("/")) {
 			SubartifactSet subartifactSet = parseSubartifactSet(tokens);
 			query.setSubartifactSet(subartifactSet);
 		}
@@ -161,38 +159,38 @@ public class XPathParser {
 		String artifactModel = null;
 		String artifactType = null;
 
-		if (!tokens.canConsume('/'))
+		if (!tokens.canConsume("/"))
 			throw new XPathParserException("Relative XPath queries not supported.");
-		if (!tokens.matches(XPathTokenizer.NAME) && !tokens.matches('/'))
+		if (!tokens.matches(TokenType.name) && !tokens.matches("/"))
 			throw new XPathParserException("Invalid artifact set (step 1).");
 
 		// Is this of the form //{artifactType} ?
-		if (tokens.matches('/')) {
-			tokens.consume();
-			if (!tokens.matches(XPathTokenizer.NAME))
+		if (tokens.matches("/")) {
+			tokens.consume().toString();
+			if (!tokens.matches(TokenType.name))
 				throw new XPathParserException("Empty // is an invalid query (expected '//{artifactType}').");
-			artifactType = tokens.consume();
+			artifactType = tokens.consume().toString();
 			artifactModel = resolveArtifactModel(artifactType);
 		} else {
-			String rootSrampSegment = tokens.consume();
+			String rootSrampSegment = tokens.consume().toString();
 			if (!"s-ramp".equals(rootSrampSegment))
 				throw new XPathParserException("Query must begin with /s-ramp or //).");
 
 			// Next is the artifact model
-			if (tokens.hasNext() && !tokens.matches('[')) {
-				if (!tokens.canConsume('/'))
+			if (tokens.hasNext() && !tokens.matches("[")) {
+				if (!tokens.canConsume("/"))
 					throw new XPathParserException("Invalid artifact set (step 2).");
-				if (!tokens.matches(XPathTokenizer.NAME))
+				if (!tokens.matches(TokenType.name))
 					throw new XPathParserException("Invalid artifact set (step 2).");
-				artifactModel = tokens.consume();
+				artifactModel = tokens.consume().toString();
 
 				// And now the artifact type
-				if (tokens.hasNext() && !tokens.matches('[')) {
-					if (!tokens.canConsume('/'))
+				if (tokens.hasNext() && !tokens.matches("[")) {
+					if (!tokens.canConsume("/"))
 						throw new XPathParserException("Invalid artifact set (step 3).");
-					if (!tokens.matches(XPathTokenizer.NAME))
+					if (!tokens.matches(TokenType.name))
 						throw new XPathParserException("Invalid artifact set (step 3).");
-					artifactType = tokens.consume();
+					artifactType = tokens.consume().toString();
 				}
 			}
 		}
@@ -266,12 +264,12 @@ public class XPathParser {
 	 */
 	private EqualityExpr parseEqualityExpr(TokenStream tokens) {
 		EqualityExpr equalityExpr = new EqualityExpr();
-		if (tokens.canConsume('(')) {
+		if (tokens.canConsume("(")) {
 			Expr expr = parseExpr(tokens);
 			equalityExpr.setExpr(expr);
-			if (!tokens.canConsume(')'))
+			if (!tokens.canConsume(")"))
 				throw new XPathParserException("Missing close-paren ')' in expression.");
-		} else if (tokens.canConsume('@')) {
+		} else if (tokens.canConsume("@")) {
 			ForwardPropertyStep forwardPropertyStep = parseForwardPropertyStep(tokens);
 			PrimaryExpr primaryExpr = null;
 			if (tokens.canConsume("!", "=")) {
@@ -284,7 +282,7 @@ public class XPathParser {
 				equalityExpr.setOperator(Operator.GTE);
 				primaryExpr = parsePrimaryExpr(tokens);
 			} else if (tokens.matchesAnyOf("=", "<", ">")) {
-				String symbol = tokens.consume();
+				String symbol = tokens.consume().toString();
 				Operator operator = Operator.valueOfSymbol(symbol);
 				equalityExpr.setOperator(operator);
 				primaryExpr = parsePrimaryExpr(tokens);
@@ -323,13 +321,13 @@ public class XPathParser {
 		String localPart = null;
 		String namespace = null;
 
-		if (!tokens.matches(XPathTokenizer.NAME))
+		if (!tokens.matches(TokenType.name))
 			throw new XPathParserException("Expected NAME type token.");
-		String ncname1 = tokens.consume();
+		String ncname1 = tokens.consume().toString();
 		if (tokens.canConsume(":")) {
-			if (!tokens.matches(XPathTokenizer.NAME))
+			if (!tokens.matches(TokenType.name))
 				throw new XPathParserException("Expected NAME type token.");
-			String ncname2 = tokens.consume();
+			String ncname2 = tokens.consume().toString();
 			prefix = ncname1;
 			localPart = ncname2;
 		} else {
@@ -349,15 +347,15 @@ public class XPathParser {
 	 */
 	private PrimaryExpr parsePrimaryExpr(TokenStream tokens) {
 		PrimaryExpr primaryExpr = new PrimaryExpr();
-		if (tokens.canConsume('$')) {
+		if (tokens.canConsume("$")) {
 			QName propertyQName = parseQName(tokens, null);
 			primaryExpr.setPropertyQName(propertyQName);
-		} else if (tokens.matches(XPathTokenizer.QUOTED_STRING)) {
-			String literal = tokens.consume();
+		} else if (tokens.matches(TokenType.quotedString)) {
+			String literal = tokens.consume().toString();
 			literal = removeQuotes(literal);
 			primaryExpr.setLiteral(literal);
-		} else if (tokens.matches(XPathTokenizer.NUMERIC)) {
-			String numberStr = tokens.consume();
+		} else if (tokens.matches(TokenType.numeric)) {
+			String numberStr = tokens.consume().toString();
 			Number number = null;
 			try {
 				if (numberStr.contains(".")) {
@@ -382,37 +380,37 @@ public class XPathParser {
 	 * @return a {@link SubartifactSet}
 	 */
 	private SubartifactSet parseSubartifactSet(TokenStream tokens) {
-		if (!tokens.matches(XPathTokenizer.NAME) && !tokens.matches('.'))
+		if (!tokens.matches(TokenType.name) && !tokens.matches("."))
 			throw new XPathParserException("Expression expected.");
 
 		SubartifactSet subartifactSet = new SubartifactSet();
-		String relationshipOrFunction = tokens.consume();
+		String relationshipOrFunction = tokens.consume().toString();
 
 		// If the next token is a [ then we have a relationship
 		// If the next token is a : or a ( then we have a (qualified or unqualified) function call
 		// If none of the above, then we have a relationship
 
-		if (tokens.canConsume('[')) {
+		if (tokens.canConsume("[")) {
 			RelationshipPath relationshipPath = new RelationshipPath(relationshipOrFunction);
 			Predicate predicate = parsePredicate(tokens);
-			if (!tokens.canConsume(']'))
+			if (!tokens.canConsume("]"))
 				throw new XPathParserException("Unterminated predicate in subartifact-set.");
 
 			subartifactSet.setRelationshipPath(relationshipPath);
 			subartifactSet.setPredicate(predicate);
 
-			if (tokens.canConsume('/')) {
+			if (tokens.canConsume("/")) {
 				SubartifactSet sub_subartifactSet = parseSubartifactSet(tokens);
 				subartifactSet.setSubartifactSet(sub_subartifactSet);
 			}
-		} else if (tokens.canConsume(':')) {
+		} else if (tokens.canConsume(":")) {
 			String prefix = relationshipOrFunction;
-			if (!tokens.matches(XPathTokenizer.NAME))
+			if (!tokens.matches(TokenType.name))
 				throw new XPathParserException("Expected function name.");
-			String localName = tokens.consume();
+			String localName = tokens.consume().toString();
 			String namespace = getNamespaceContext().getNamespaceURI(prefix);
 			QName functionName = new QName(namespace, localName, prefix);
-			if (!tokens.matches('('))
+			if (!tokens.matches("("))
 				throw new XPathParserException("Expected function arguments.");
 			List<Argument> arguments = parseFunctionArguments(tokens);
 
@@ -420,7 +418,7 @@ public class XPathParser {
 			functionCall.setFunctionName(functionName);
 			functionCall.setArguments(arguments);
 			subartifactSet.setFunctionCall(functionCall);
-		} else if (tokens.matches('(')) {
+		} else if (tokens.matches("(")) {
 			String prefix = getDefaultPrefix();
 			String localName = relationshipOrFunction;
 			String namespace = getNamespaceContext().getNamespaceURI(prefix);
@@ -444,17 +442,17 @@ public class XPathParser {
 	 * @return a list of {@link Argument}s
 	 */
 	private List<Argument> parseFunctionArguments(TokenStream tokens) {
-		tokens.consume(); // Consume the open paren
+		tokens.consume().toString(); // Consume the open paren
 		List<Argument> arguments = new ArrayList<Argument>();
-		if (!tokens.matches(')')) {
+		if (!tokens.matches(")")) {
 			boolean hasMoreArguments = true;
 			while (hasMoreArguments) {
 				Argument argument = parseArgument(tokens);
 				arguments.add(argument);
-				hasMoreArguments = tokens.canConsume(',');
+				hasMoreArguments = tokens.canConsume(",");
 			}
 		}
-		if (!tokens.canConsume(')')) // Consume the close paren
+		if (!tokens.canConsume(")")) // Consume the close paren
 			throw new XPathParserException("Unterminated argument list.");
 		return arguments;
 	}
@@ -466,7 +464,7 @@ public class XPathParser {
 	 */
 	private Argument parseArgument(TokenStream tokens) {
 		Argument argument = new Argument();
-		if (tokens.matchesAnyOf(XPathTokenizer.QUOTED_STRING, XPathTokenizer.NUMERIC) || tokens.matches('$')) {
+		if (tokens.matchesAnyOf(TokenType.quotedString, TokenType.numeric) || tokens.matches("$")) {
 			PrimaryExpr primaryExpr = parsePrimaryExpr(tokens);
 			argument.setPrimaryExpr(primaryExpr);
 		} else {
