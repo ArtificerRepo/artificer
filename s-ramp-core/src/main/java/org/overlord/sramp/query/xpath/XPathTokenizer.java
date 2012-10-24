@@ -15,62 +15,30 @@
  */
 package org.overlord.sramp.query.xpath;
 
-import org.modeshape.common.CommonI18n;
-import org.modeshape.common.text.ParsingException;
-import org.modeshape.common.text.Position;
-import org.modeshape.common.text.TokenStream;
-import org.modeshape.common.text.TokenStream.CharacterStream;
-import org.modeshape.common.text.TokenStream.Tokens;
-import org.modeshape.common.xml.XmlCharacters;
+import java.text.ParseException;
 
 /**
- * An extension of the ModeShape tokenizer for XPath queries.  Thanks to the ModeShape project
- * for this class.  Please see org.modeshape.jcr.query.xpath.XPathParser.XPathTokenizer in
- * the ModeShape project for the original class.  The original class was copied here in case
- * it needs to be altered separately from the ModeShape implementation.
+ * This class tokenizes an input string into a stream of tokens.
  */
-public class XPathTokenizer implements TokenStream.Tokenizer {
-    /**
-     * The token type for tokens that represent an unquoted string containing a character sequence made up of non-whitespace
-     * and non-symbol characters.
-     */
-    public static final int NAME = 2 << 0;
-    /**
-     * The token type for tokens that consist of an individual "symbol" character. The set of characters includes:
-     * <code>(){}*.,;+%?$!<>|=:-[]^/\#@</code>
-     */
-    public static final int SYMBOL = 2 << 1;
-    /**
-     * The token type for tokens that consist of all the characters within single-quotes, double-quotes.
-     */
-    public static final int QUOTED_STRING = 2 << 2;
-    /**
-     * The token type for tokens that consist of all the characters between "(:" and ":)".
-     */
-    public static final int COMMENT = 2 << 3;
-    /**
-     * The token type for tokens that consist of single characters that are not a {@link #SYMBOL}, valid {@link #NAME}, or
-     * {@link #QUOTED_STRING}.
-     */
-    public static final int OTHER = 2 << 4;
-    /**
-     * The token type for tokens that consist of a numeric literal.
-     */
-    public static final int NUMERIC = 2 << 5;
+public class XPathTokenizer {
 
-    private final boolean useComments;
-
-    public XPathTokenizer( boolean useComments ) {
-        this.useComments = useComments;
+    /**
+     * Constructor.
+     */
+    public XPathTokenizer() {
     }
 
-    @Override
-    public void tokenize( CharacterStream input,
-                          Tokens tokens ) throws ParsingException {
-        while (input.hasNext()) {
-            char c = input.next();
-            int startIndex, endIndex, tokenType;
-            Position pos;
+	/**
+	 * Tokenize the input into a stream of tokens that the parser can then use.
+	 * @param input
+	 * @throws ParsingException
+	 */
+	public TokenStream tokenize(String input) throws ParseException {
+		CharacterStream stream = new CharacterStream(input);
+		TokenStream tokens = new TokenStream();
+        while (stream.hasNext()) {
+            char c = stream.next();
+            int startIndex, endIndex;
             switch (c) {
                 case ' ':
                 case '\t':
@@ -81,14 +49,13 @@ public class XPathTokenizer implements TokenStream.Tokenizer {
                 case '.':
                 case '-':
                 	// If it's followed by a digit, then tokenize it as a numeric
-                	if (input.isNextAnyOf("0123456789")) {
-                        startIndex = input.index();
-                        pos = input.position(startIndex);
-                    	while (isNextValidNumeric(input)) {
-                    		c = input.next();
+                	if (stream.isNextNumericStart()) {
+                        startIndex = stream.index();
+                    	while (stream.isNextNumeric()) {
+                    		c = stream.next();
                     	}
-                        endIndex = input.index() + 1; // beyond last character that was included
-                        tokens.addToken(pos, startIndex, endIndex, NUMERIC);
+                        endIndex = stream.index() + 1;
+                        tokens.addToken(stream.get(startIndex, endIndex), TokenType.numeric);
                         break;
                 	}
                 case ')':
@@ -114,79 +81,82 @@ public class XPathTokenizer implements TokenStream.Tokenizer {
                 case '\\':
                 case '#':
                 case '@':
-                    tokens.addToken(input.position(input.index()), input.index(), input.index() + 1, SYMBOL);
+                    tokens.addToken(stream.get(stream.index(), stream.index() + 1), TokenType.symbol);
                     break;
                 case '\'':
                 case '\"':
-                    startIndex = input.index();
+                    startIndex = stream.index();
                     char closingChar = c;
-                    pos = input.position(startIndex);
                     boolean foundClosingQuote = false;
-                    while (input.hasNext()) {
-                        c = input.next();
-                        if (c == closingChar && input.isNext(closingChar)) {
-                            c = input.next(); // consume the next closeChar since it is escaped
+                    while (stream.hasNext()) {
+                        c = stream.next();
+                        if (c == closingChar && stream.isNext(closingChar)) {
+                            c = stream.next(); // consume the next closeChar since it is escaped
                         } else if (c == closingChar) {
                             foundClosingQuote = true;
                             break;
                         }
                     }
                     if (!foundClosingQuote) {
-                        String msg = CommonI18n.noMatchingDoubleQuoteFound.text(pos.getLine(), pos.getColumn());
-                        if (closingChar == '\'') {
-                            msg = CommonI18n.noMatchingSingleQuoteFound.text(pos.getLine(), pos.getColumn());
-                        }
-                        throw new ParsingException(pos, msg);
+                    	throw new ParseException("No matching closing quote was found.", stream.index());
                     }
-                    endIndex = input.index() + 1; // beyond last character read
-                    tokens.addToken(pos, startIndex, endIndex, QUOTED_STRING);
+                    endIndex = stream.index() + 1; // beyond last character read
+                    tokens.addToken(stream.get(startIndex, endIndex), TokenType.quotedString);
                     break;
                 case '(':
-                    startIndex = input.index();
-                    if (input.isNext(':')) {
-                        // This is a comment ...
-                        pos = input.position(startIndex);
-                        while (input.hasNext() && !input.isNext(':', ')')) {
-                            c = input.next();
-                        }
-                        if (input.hasNext()) input.next(); // consume the ':'
-                        if (input.hasNext()) input.next(); // consume the ')'
-                        if (useComments) {
-                            endIndex = input.index() + 1; // the token will include the closing ':' and ')' characters
-                            tokens.addToken(pos, startIndex, endIndex, COMMENT);
-                        }
-                    } else {
-                        tokens.addToken(input.position(startIndex), input.index(), input.index() + 1, SYMBOL);
-                        break;
-                    }
-                    break;
+                	startIndex = stream.index();
+                	if (stream.isNext(':')) {
+                		// This is a comment ...
+                		while (stream.hasNext() && !stream.areNext(':', ')')) {
+                			c = stream.next();
+                		}
+                		// consume the ':'
+                		if (stream.hasNext())
+                			stream.next();
+                		// consume the ')'
+                		if (stream.hasNext())
+                			stream.next();
+                	} else {
+                		tokens.addToken(stream.get(stream.index(), stream.index() + 1), TokenType.symbol);
+                		break;
+                	}
+                	break;
                 default:
-                    startIndex = input.index();
-                    pos = input.position(startIndex);
-                    if (XmlCharacters.isValidNcNameStart(c)) {
-                    	tokenType = NAME;
+                    startIndex = stream.index();
+                    TokenType tokenType;
+                    if (isValidNcNameStart(c)) {
+                    	tokenType = TokenType.name;
                         // Read as long as there is a valid XML character ...
-                        while (input.isNextValidXmlNcNameCharacter()) {
-                            c = input.next();
+                        while (stream.isNextValidXmlNcNameCharacter()) {
+                            c = stream.next();
                         }
                     } else if (isValidNumericStart(c)) {
-                    	tokenType = NUMERIC;
+                    	tokenType = TokenType.numeric;
                         // Read as long as there is a valid numeric character ...
-                    	while (isNextValidNumeric(input)) {
-                    		c = input.next();
+                    	while (stream.isNextNumeric()) {
+                    		c = stream.next();
                     	}
                     } else {
-                    	tokenType = OTHER;
+                    	tokenType = TokenType.other;
                         // Read as long as there is a valid XML character ...
-                        while (input.isNextValidXmlNcNameCharacter()) {
-                            c = input.next();
+                        while (stream.isNextValidXmlNcNameCharacter()) {
+                            c = stream.next();
                         }
                     }
-                    endIndex = input.index() + 1; // beyond last character that was included
-                    tokens.addToken(pos, startIndex, endIndex, tokenType);
+                    endIndex = stream.index() + 1; // beyond last character that was included
+                    tokens.addToken(stream.get(startIndex, endIndex), tokenType);
             }
         }
+        return tokens.build();
     }
+
+	/**
+	 * Returns true if the given character is a valid start of an NCName.
+	 * @param c
+	 */
+	private boolean isValidNcNameStart(char c) {
+		return Character.isLetter(c) || c == '_';
+	}
 
 	/**
 	 * Returns true if the given character is a valid numeric start character.
@@ -195,15 +165,5 @@ public class XPathTokenizer implements TokenStream.Tokenizer {
 	 */
 	private boolean isValidNumericStart(char c) {
 		return Character.isDigit(c);
-	}
-
-	/**
-	 * Returns true if the next character on the given stream is a valid numeric
-	 * character.
-	 * @param input the character stream
-	 * @return boolean
-	 */
-	private boolean isNextValidNumeric(CharacterStream input) {
-		return input.isNextAnyOf("0123456789.-+eE");
 	}
 }

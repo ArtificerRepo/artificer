@@ -32,7 +32,7 @@ import org.overlord.sramp.query.xpath.ast.Query;
 import org.overlord.sramp.query.xpath.visitors.XPathSerializationVisitor;
 
 /**
- * Unit test for the {@link XPathParser} class.  This test case loads a number of test cases 
+ * Unit test for the {@link XPathParser} class.  This test case loads a number of test cases
  * from *.properties files located in the src/test/resources folder.  See the files here:<br/>
  * <br/>
  * <pre>src/test/java/org/overlord/sramp/query/xpath/parser-test-cases</pre>
@@ -44,11 +44,11 @@ import org.overlord.sramp.query.xpath.visitors.XPathSerializationVisitor;
  * @author eric.wittmann@redhat.com
  */
 public class XPathParserTest {
-	
+
 	@Test
 	public void testXPathParser() throws Exception {
 		Collection<Properties> testCases = getTestCases();
-		
+
 		XPathParser parser = new XPathParser();
 		XPathSerializationVisitor visitor = new XPathSerializationVisitor();
 		for (Properties properties : testCases) {
@@ -56,7 +56,7 @@ public class XPathParserTest {
 			String xpath = properties.getProperty("xpath");
 			String expectedXpath = properties.getProperty("expected.xpath");
 			String expectedErrorMessage = properties.getProperty("expected.errorMessage");
-			
+
 			try {
 				Query query = parser.parseXPath(xpath);
 				visitor.reset();
@@ -85,8 +85,8 @@ public class XPathParserTest {
 		File testCaseDir = new File(testCaseDirUrl.toURI());
 		if (!testCaseDir.isDirectory())
 			throw new Exception("Failed to find test case directory: " + testCaseDirUrl);
-		
-		Collection<File> testCaseFiles = (Collection<File>) FileUtils.listFiles(testCaseDir, new String[] { "properties" }, true);
+
+		Collection<File> testCaseFiles = FileUtils.listFiles(testCaseDir, new String[] { "properties" }, true);
 		testCaseFiles = new TreeSet<File>(testCaseFiles);
 		Collection<Properties> testCases = new ArrayList<Properties>(testCaseFiles.size());
 		for (File testCaseFile : testCaseFiles) {
@@ -102,5 +102,5 @@ public class XPathParserTest {
 		}
 		return testCases;
 	}
-	
+
 }
