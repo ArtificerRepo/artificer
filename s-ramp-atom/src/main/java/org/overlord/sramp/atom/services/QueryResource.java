@@ -41,6 +41,7 @@ import org.overlord.sramp.atom.err.SrampAtomException;
 public class QueryResource extends AbstractFeedResource {
 
     private final Sramp sramp = new Sramp();
+
 	/**
 	 * Constructor.
 	 */

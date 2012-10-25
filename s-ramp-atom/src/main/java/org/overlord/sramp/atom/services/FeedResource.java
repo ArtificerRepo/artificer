@@ -43,6 +43,7 @@ import org.overlord.sramp.atom.MediaType;
 public class FeedResource extends AbstractFeedResource {
 
     private final Sramp sramp = new Sramp();
+
 	/**
 	 * Constructor.
 	 */
