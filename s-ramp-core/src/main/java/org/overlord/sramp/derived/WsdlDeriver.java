@@ -29,6 +29,21 @@ import javax.xml.xpath.XPathExpressionException;
 import org.overlord.sramp.query.xpath.StaticNamespaceContext;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Binding;
+import org.s_ramp.xmlns._2010.s_ramp.BindingEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFault;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFaultEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFaultTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInput;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInputEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInputTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutput;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutputEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutputTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingTarget;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.ElementEnum;
 import org.s_ramp.xmlns._2010.s_ramp.ElementTarget;
@@ -50,8 +65,14 @@ import org.s_ramp.xmlns._2010.s_ramp.OperationTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Part;
 import org.s_ramp.xmlns._2010.s_ramp.PartEnum;
 import org.s_ramp.xmlns._2010.s_ramp.PartTarget;
+import org.s_ramp.xmlns._2010.s_ramp.Port;
+import org.s_ramp.xmlns._2010.s_ramp.PortEnum;
+import org.s_ramp.xmlns._2010.s_ramp.PortTarget;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
+import org.s_ramp.xmlns._2010.s_ramp.PortTypeEnum;
+import org.s_ramp.xmlns._2010.s_ramp.PortTypeTarget;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeEnum;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeTarget;
@@ -142,6 +163,8 @@ public class WsdlDeriver extends XsdDeriver {
 
 		processMessages(derivedArtifacts, artifact, definitions, xpath);
 		processPortTypes(derivedArtifacts, artifact, definitions, xpath);
+		processBindings(derivedArtifacts, artifact, definitions, xpath);
+		processServices(derivedArtifacts, artifact, definitions, xpath);
 	}
 
 	/**
@@ -285,7 +308,7 @@ public class WsdlDeriver extends XsdDeriver {
 		Collection<Operation> rval = new LinkedList<Operation>();
 		String targetNS = portTypeElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
 
-		// Get all the parts and add them to the list
+		// Get all the operations and add them to the list
 		NodeList operations = (NodeList) this.query(xpath, portTypeElem, "./wsdl:operation", XPathConstants.NODESET);
 		for (int idx = 0; idx < operations.getLength(); idx++) {
 			Element operationElem = (Element) operations.item(idx);
@@ -443,14 +466,14 @@ public class WsdlDeriver extends XsdDeriver {
 			fault.setUuid(UUID.randomUUID().toString());
 			fault.setArtifactType(BaseArtifactEnum.FAULT);
 
-			String ncname = null;
+			String name = null;
 			derivedArtifacts.add(fault);
 			rval.add(fault);
 
 			if (faultElem.hasAttribute("message")) {
 				String encodedMsgQname = faultElem.getAttribute("message");
 				QName msgQname = resolveQName(faultElem, targetNS, encodedMsgQname);
-				ncname = msgQname.getLocalPart();
+				name = msgQname.getLocalPart();
 				Message message = derivedArtifacts.lookupMessage(msgQname);
 				if (message != null) {
 					MessageTarget target = new MessageTarget();
@@ -460,12 +483,314 @@ public class WsdlDeriver extends XsdDeriver {
 				}
 			}
 			if (faultElem.hasAttribute("name")) {
-				ncname = faultElem.getAttribute("name");
+				name = faultElem.getAttribute("name");
+				fault.setNCName(name);
 			}
 
-			fault.setName(ncname);
-			fault.setNCName(ncname);
+			fault.setName(name);
 			fault.setNamespace(targetNS);
+		}
+		return rval;
+	}
+
+	/**
+	 * Process all the bindings found in the WSDL.
+	 * @param derivedArtifacts
+	 * @param sourceArtifact
+	 * @param definitions
+	 * @param xpath
+	 * @throws XPathExpressionException
+	 */
+	private void processBindings(IndexedArtifactCollection derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element definitions, XPath xpath) throws XPathExpressionException {
+		String targetNS = definitions.getAttribute("targetNamespace");
+
+		// Get all the bindings and add them to the list
+		NodeList bindings = (NodeList) this.query(xpath, definitions, "./wsdl:binding", XPathConstants.NODESET);
+		for (int idx = 0; idx < bindings.getLength(); idx++) {
+			Element bindingElem = (Element) bindings.item(idx);
+			if (bindingElem.hasAttribute("name")) {
+				String name = bindingElem.getAttribute("name");
+				Binding binding = new Binding();
+				binding.setUuid(UUID.randomUUID().toString());
+				binding.setArtifactType(BaseArtifactEnum.BINDING);
+				binding.setName(name);
+				binding.setNamespace(targetNS);
+				binding.setNCName(name);
+				derivedArtifacts.add(binding);
+
+				// Resolve the referenced port type and create a relationship to it.
+				PortType portType = null;
+				if (bindingElem.hasAttribute("type")) {
+					String portTypeEncodedQName = bindingElem.getAttribute("type");
+					QName portTypeQName = resolveQName(bindingElem, targetNS, portTypeEncodedQName);
+					portType = derivedArtifacts.lookupPortType(portTypeQName);
+					if (portType != null) {
+						PortTypeTarget target = new PortTypeTarget();
+						target.setValue(portType.getUuid());
+						target.setArtifactType(PortTypeEnum.PORT_TYPE);
+						binding.setPortType(target);
+					}
+				}
+
+				// Process all the wsdl:operation children
+				Collection<BindingOperation> bindingOperations = processBindingOperations(derivedArtifacts,
+						sourceArtifact, bindingElem, portType, xpath);
+				for (BindingOperation bindingOperation : bindingOperations) {
+					BindingOperationTarget target = new BindingOperationTarget();
+					target.setValue(bindingOperation.getUuid());
+					target.setArtifactType(BindingOperationEnum.BINDING_OPERATION);
+					binding.getBindingOperation().add(target);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Processes the operations found in the WSDL binding.
+	 * @param derivedArtifacts
+	 * @param sourceArtifact
+	 * @param bindingElem
+	 * @param xpath
+	 * @throws XPathExpressionException
+	 */
+	private Collection<BindingOperation> processBindingOperations(IndexedArtifactCollection derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element bindingElem, PortType portType, XPath xpath) throws XPathExpressionException {
+		Collection<BindingOperation> rval = new LinkedList<BindingOperation>();
+		String targetNS = bindingElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+
+		// Get all the binding operations and add them to the list
+		NodeList bindingOperations = (NodeList) this.query(xpath, bindingElem, "./wsdl:operation", XPathConstants.NODESET);
+		for (int idx = 0; idx < bindingOperations.getLength(); idx++) {
+			Element bindingOperationElem = (Element) bindingOperations.item(idx);
+			if (bindingOperationElem.hasAttribute("name")) {
+				String name = bindingOperationElem.getAttribute("name");
+				BindingOperation bindingOperation = new BindingOperation();
+				bindingOperation.setUuid(UUID.randomUUID().toString());
+				bindingOperation.setArtifactType(BaseArtifactEnum.BINDING_OPERATION);
+				bindingOperation.setName(name);
+				bindingOperation.setNamespace(targetNS);
+				bindingOperation.setNCName(name);
+				derivedArtifacts.add(bindingOperation);
+				rval.add(bindingOperation);
+
+				if (portType != null) {
+					QName portTypeQName = new QName(portType.getNamespace(), portType.getName());
+					Operation operation = derivedArtifacts.lookupOperation(portTypeQName, name);
+					OperationTarget opTarget = new OperationTarget();
+					opTarget.setValue(operation.getUuid());
+					opTarget.setArtifactType(OperationEnum.OPERATION);
+					bindingOperation.setOperation(opTarget);
+				}
+
+				BindingOperationInput bindingOperationInput = processBindingOperationInput(derivedArtifacts, sourceArtifact, bindingOperationElem, xpath);
+				BindingOperationOutput bindingOperationOutput = processBindingOperationOutput(derivedArtifacts, sourceArtifact, bindingOperationElem, xpath);
+				Collection<BindingOperationFault> bindingOperationFaults = processBindingOperationFaults(derivedArtifacts, sourceArtifact, bindingOperationElem, xpath);
+
+				if (bindingOperationInput != null) {
+					BindingOperationInputTarget target = new BindingOperationInputTarget();
+					target.setValue(bindingOperationInput.getUuid());
+					target.setArtifactType(BindingOperationInputEnum.BINDING_OPERATION_INPUT);
+					bindingOperation.setInput(target);
+				}
+				if (bindingOperationOutput != null) {
+					BindingOperationOutputTarget target = new BindingOperationOutputTarget();
+					target.setValue(bindingOperationOutput.getUuid());
+					target.setArtifactType(BindingOperationOutputEnum.BINDING_OPERATION_OUTPUT);
+					bindingOperation.setOutput(target);
+				}
+				for (BindingOperationFault fault : bindingOperationFaults) {
+					BindingOperationFaultTarget target = new BindingOperationFaultTarget();
+					target.setValue(fault.getUuid());
+					target.setArtifactType(BindingOperationFaultEnum.BINDING_OPERATION_FAULT);
+					bindingOperation.getFault().add(target);
+				}
+			}
+		}
+		return rval;
+	}
+
+	/**
+	 * Processes the input for a binding operation.
+	 * @param derivedArtifacts
+	 * @param sourceArtifact
+	 * @param operationElem
+	 * @param xpath
+	 * @throws XPathExpressionException
+	 */
+	private BindingOperationInput processBindingOperationInput(IndexedArtifactCollection derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
+		BindingOperationInput rval = null;
+		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+
+		Element inputElem = (Element) this.query(xpath, operationElem, "./wsdl:input", XPathConstants.NODE);
+		if (inputElem != null) {
+			BindingOperationInput bindingOperationInput = new BindingOperationInput();
+			bindingOperationInput.setUuid(UUID.randomUUID().toString());
+			bindingOperationInput.setArtifactType(BaseArtifactEnum.BINDING_OPERATION_INPUT);
+			String name = "wsdl:input";
+			if (inputElem.hasAttribute("name")) {
+				name = inputElem.getAttribute("name");
+				bindingOperationInput.setNCName(name);
+			}
+			bindingOperationInput.setName(name);
+			bindingOperationInput.setNamespace(targetNS);
+			derivedArtifacts.add(bindingOperationInput);
+
+			rval = bindingOperationInput;
+		}
+		return rval;
+	}
+
+	/**
+	 * Processes the output for a binding operation.
+	 * @param derivedArtifacts
+	 * @param sourceArtifact
+	 * @param operationElem
+	 * @param xpath
+	 * @throws XPathExpressionException
+	 */
+	private BindingOperationOutput processBindingOperationOutput(IndexedArtifactCollection derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
+		BindingOperationOutput rval = null;
+		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+
+		Element outputElem = (Element) this.query(xpath, operationElem, "./wsdl:output", XPathConstants.NODE);
+		if (outputElem != null) {
+			BindingOperationOutput bindingOperationOutput = new BindingOperationOutput();
+			bindingOperationOutput.setUuid(UUID.randomUUID().toString());
+			bindingOperationOutput.setArtifactType(BaseArtifactEnum.BINDING_OPERATION_OUTPUT);
+			String name = "wsdl:output";
+			if (outputElem.hasAttribute("name")) {
+				name = outputElem.getAttribute("name");
+				bindingOperationOutput.setNCName(name);
+			}
+			bindingOperationOutput.setName(name);
+			bindingOperationOutput.setNamespace(targetNS);
+			derivedArtifacts.add(bindingOperationOutput);
+
+			rval = bindingOperationOutput;
+		}
+		return rval;
+	}
+
+	/**
+	 * Processes the faults for a binding operation.
+	 * @param derivedArtifacts
+	 * @param sourceArtifact
+	 * @param operationElem
+	 * @param xpath
+	 * @throws XPathExpressionException
+	 */
+	private Collection<BindingOperationFault> processBindingOperationFaults(IndexedArtifactCollection derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
+		Collection<BindingOperationFault> rval = new LinkedList<BindingOperationFault>();
+		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+
+		NodeList faults = (NodeList) this.query(xpath, operationElem, "./wsdl:fault", XPathConstants.NODESET);
+		for (int idx = 0; idx < faults.getLength(); idx++) {
+			Element faultElem = (Element) faults.item(idx);
+			BindingOperationFault bindingOperationFault = new BindingOperationFault();
+			bindingOperationFault.setUuid(UUID.randomUUID().toString());
+			bindingOperationFault.setArtifactType(BaseArtifactEnum.BINDING_OPERATION_FAULT);
+
+			String name = "wsdl:fault";
+			if (faultElem.hasAttribute("name")) {
+				name = faultElem.getAttribute("name");
+				bindingOperationFault.setNCName(name);
+			}
+
+			bindingOperationFault.setName(name);
+			bindingOperationFault.setNamespace(targetNS);
+			derivedArtifacts.add(bindingOperationFault);
+			rval.add(bindingOperationFault);
+		}
+		return rval;
+	}
+
+	/**
+	 * Processes all the services in the wsdl.
+	 *
+	 * @param derivedArtifacts
+	 * @param sourceArtifact
+	 * @param definitions
+	 * @param xpath
+	 * @throws XPathExpressionException
+	 */
+	private void processServices(IndexedArtifactCollection derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element definitions, XPath xpath) throws XPathExpressionException {
+		String targetNS = definitions.getAttribute("targetNamespace");
+
+		// Get all the bindings and add them to the list
+		NodeList services = (NodeList) this.query(xpath, definitions, "./wsdl:service", XPathConstants.NODESET);
+		for (int idx = 0; idx < services.getLength(); idx++) {
+			Element serviceElem = (Element) services.item(idx);
+			WsdlService service = new WsdlService();
+			service.setUuid(UUID.randomUUID().toString());
+			service.setArtifactType(BaseArtifactEnum.WSDL_SERVICE);
+			service.setNamespace(targetNS);
+			if (serviceElem.hasAttribute("name")) {
+				String name = serviceElem.getAttribute("name");
+				service.setName(name);
+				service.setNCName(name);
+			} else {
+				service.setName("wsdl:service");
+			}
+			derivedArtifacts.add(service);
+
+			Collection<Port> ports = processPorts(derivedArtifacts, sourceArtifact, serviceElem, xpath);
+			for (Port port : ports) {
+				PortTarget target = new PortTarget();
+				target.setValue(port.getUuid());
+				target.setArtifactType(PortEnum.PORT);
+				service.getPort().add(target);
+			}
+		}
+	}
+
+	/**
+	 * Processes the ports for a service.
+	 * @param derivedArtifacts
+	 * @param sourceArtifact
+	 * @param serviceElem
+	 * @param xpath
+	 * @throws XPathExpressionException
+	 */
+	private Collection<Port> processPorts(IndexedArtifactCollection derivedArtifacts,
+			BaseArtifactType sourceArtifact, Element serviceElem, XPath xpath) throws XPathExpressionException {
+		Collection<Port> rval = new LinkedList<Port>();
+		String targetNS = serviceElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+
+		NodeList ports = (NodeList) this.query(xpath, serviceElem, "./wsdl:port", XPathConstants.NODESET);
+		for (int idx = 0; idx < ports.getLength(); idx++) {
+			Element portElem = (Element) ports.item(idx);
+			Port port = new Port();
+			port.setUuid(UUID.randomUUID().toString());
+			port.setArtifactType(BaseArtifactEnum.PORT);
+			port.setNamespace(targetNS);
+
+			if (portElem.hasAttribute("name")) {
+				String name = portElem.getAttribute("name");
+				port.setNCName(name);
+				port.setName(name);
+			} else {
+				port.setName("wsdl:port");
+			}
+
+			if (portElem.hasAttribute("binding")) {
+				String bindingEncodedQName = portElem.getAttribute("binding");
+				QName bindingQName = resolveQName(portElem, targetNS, bindingEncodedQName);
+				Binding binding = derivedArtifacts.lookupBinding(bindingQName);
+				if (binding != null) {
+					BindingTarget target = new BindingTarget();
+					target.setValue(binding.getUuid());
+					target.setArtifactType(BindingEnum.BINDING);
+					port.setBinding(target);
+				}
+			}
+
+			derivedArtifacts.add(port);
+			rval.add(port);
 		}
 		return rval;
 	}

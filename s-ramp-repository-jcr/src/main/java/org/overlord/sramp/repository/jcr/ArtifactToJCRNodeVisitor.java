@@ -36,6 +36,13 @@ import javax.jcr.version.VersionException;
 
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Binding;
+import org.s_ramp.xmlns._2010.s_ramp.BindingEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFaultEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInputEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutputEnum;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ElementEnum;
 import org.s_ramp.xmlns._2010.s_ramp.Fault;
@@ -51,11 +58,15 @@ import org.s_ramp.xmlns._2010.s_ramp.OperationOutput;
 import org.s_ramp.xmlns._2010.s_ramp.OperationOutputEnum;
 import org.s_ramp.xmlns._2010.s_ramp.Part;
 import org.s_ramp.xmlns._2010.s_ramp.PartEnum;
+import org.s_ramp.xmlns._2010.s_ramp.Port;
+import org.s_ramp.xmlns._2010.s_ramp.PortEnum;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
+import org.s_ramp.xmlns._2010.s_ramp.PortTypeEnum;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeEnum;
 
 /**
@@ -212,7 +223,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(WsdlDocument artifact) {
 		super.visit(artifact);
-
 		try {
 			if (artifact.getTargetNamespace() != null)
 				this.jcrNode.setProperty("sramp:targetNamespace", artifact.getTargetNamespace());
@@ -228,7 +238,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(Message artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationships("part", -1, 1, PartEnum.PART.toString(), false, artifact.getPart());
 		} catch (Exception e) {
@@ -242,7 +251,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(Part artifact) {
 		super.visit(artifact);
-
 		try {
 			if (artifact.getElement() != null) {
 				if (this.jcrNode.hasNode("sramp-relationships:type")) {
@@ -266,7 +274,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(PortType artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationships("operation", -1, 1, OperationEnum.OPERATION.toString(), false, artifact.getOperation());
 		} catch (Exception e) {
@@ -280,7 +287,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(Operation artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationship("input", 1, 1, OperationInputEnum.OPERATION_INPUT.toString(), false, artifact.getInput());
 			setRelationship("output", 1, 1, OperationOutputEnum.OPERATION_OUTPUT.toString(), false, artifact.getOutput());
@@ -296,7 +302,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(OperationInput artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
 		} catch (Exception e) {
@@ -310,7 +315,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(OperationOutput artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
 		} catch (Exception e) {
@@ -324,13 +328,69 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(Fault artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
 		} catch (Exception e) {
 			error = e;
 		}
 	}
+
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Binding)
+     */
+    @Override
+    public void visit(Binding artifact) {
+    	super.visit(artifact);
+		try {
+			setRelationships("bindingOperation", -1, 1, BindingOperationEnum.BINDING_OPERATION.toString(), false, artifact.getBindingOperation());
+			setRelationship("portType", 1, 1, PortTypeEnum.PORT_TYPE.toString(), false, artifact.getPortType());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperation)
+     */
+    @Override
+    public void visit(BindingOperation artifact) {
+    	super.visit(artifact);
+		try {
+			setRelationship("input", 1, 1, BindingOperationInputEnum.BINDING_OPERATION_INPUT.toString(), false, artifact.getInput());
+			setRelationship("output", 1, 1, BindingOperationOutputEnum.BINDING_OPERATION_OUTPUT.toString(), false, artifact.getOutput());
+			setRelationships("fault", -1, 1, BindingOperationFaultEnum.BINDING_OPERATION_FAULT.toString(), false, artifact.getFault());
+			setRelationship("operation", 1, 1, OperationEnum.OPERATION.toString(), false, artifact.getOperation());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlService)
+     */
+    @Override
+    public void visit(WsdlService artifact) {
+    	super.visit(artifact);
+		try {
+			setRelationships("port", -1, 1, PortEnum.PORT.toString(), false, artifact.getPort());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Port)
+     */
+    @Override
+    public void visit(Port artifact) {
+    	super.visit(artifact);
+		try {
+			setRelationship("binding", 1, 1, BindingEnum.BINDING.toString(), false, artifact.getBinding());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
 
 	/**
 	 * Gets all of the custom properties from the artifact and returns them as a map.
@@ -482,14 +542,12 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @author eric.wittmann@redhat.com
 	 */
 	protected static interface JCRReferenceFactory {
-
 		/**
 		 * Creates a reference value to another JCR node.
 		 * @param otherNode the node being referenced
 		 * @return a reference Value
 		 */
 		public Value createReference(String uuid) throws Exception;
-
 	}
 
 }

@@ -37,6 +37,13 @@ import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Binding;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFaultTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInputTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutputTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingTarget;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
@@ -55,12 +62,16 @@ import org.s_ramp.xmlns._2010.s_ramp.OperationOutputTarget;
 import org.s_ramp.xmlns._2010.s_ramp.OperationTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Part;
 import org.s_ramp.xmlns._2010.s_ramp.PartTarget;
+import org.s_ramp.xmlns._2010.s_ramp.Port;
+import org.s_ramp.xmlns._2010.s_ramp.PortTarget;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
+import org.s_ramp.xmlns._2010.s_ramp.PortTypeTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeTarget;
@@ -343,6 +354,62 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
     	super.visit(artifact);
 		try {
 			artifact.setMessage(getRelationship("message", MessageTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Binding)
+     */
+    @Override
+    public void visit(Binding artifact) {
+    	super.visit(artifact);
+		try {
+			artifact.getBindingOperation().addAll(getRelationships("bindingOperation", BindingOperationTarget.class));
+			artifact.setPortType(getRelationship("portType", PortTypeTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperation)
+     */
+    @Override
+    public void visit(BindingOperation artifact) {
+    	super.visit(artifact);
+		try {
+			artifact.setInput(getRelationship("input", BindingOperationInputTarget.class));
+			artifact.setOutput(getRelationship("output", BindingOperationOutputTarget.class));
+			artifact.getFault().addAll(getRelationships("fault", BindingOperationFaultTarget.class));
+			artifact.setOperation(getRelationship("operation", OperationTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlService)
+     */
+    @Override
+    public void visit(WsdlService artifact) {
+    	super.visit(artifact);
+		try {
+			artifact.getPort().addAll(getRelationships("port", PortTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+    }
+
+    /**
+     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Port)
+     */
+    @Override
+    public void visit(Port artifact) {
+    	super.visit(artifact);
+		try {
+			artifact.setBinding(getRelationship("binding", BindingTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

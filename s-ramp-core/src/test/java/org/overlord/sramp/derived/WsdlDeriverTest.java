@@ -32,6 +32,10 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
+import org.s_ramp.xmlns._2010.s_ramp.Binding;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInput;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutput;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
@@ -41,9 +45,11 @@ import org.s_ramp.xmlns._2010.s_ramp.Operation;
 import org.s_ramp.xmlns._2010.s_ramp.OperationInput;
 import org.s_ramp.xmlns._2010.s_ramp.OperationOutput;
 import org.s_ramp.xmlns._2010.s_ramp.Part;
+import org.s_ramp.xmlns._2010.s_ramp.Port;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
 import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 
 /**
  * Unit test for the {@link WsdlDeriver} class.
@@ -80,9 +86,9 @@ public class WsdlDeriverTest {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/deriver.wsdl");
 			Collection<DerivedArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
 			Assert.assertNotNull(derivedArtifacts);
-			Assert.assertEquals(22, derivedArtifacts.size());
+			Assert.assertEquals(33, derivedArtifacts.size());
 
-			// Index the results - note: this is no good in general, but works ok for this test.
+			// Index the results by artifact type and name
 			Map<QName, DerivedArtifactType> index = new HashMap<QName, DerivedArtifactType>();
 			for (DerivedArtifactType artifact : derivedArtifacts) {
 				if (artifact instanceof NamedWsdlDerivedArtifactType) {
@@ -187,6 +193,64 @@ public class WsdlDeriverTest {
 			Assert.assertEquals(
 					index.get(new QName(BaseArtifactEnum.MESSAGE.toString(), "findResponse")).getUuid(),
 					operationOutput.getMessage().getValue());
+
+			// Find the binding named 'SampleBinding'
+			artifact = index.get(new QName(BaseArtifactEnum.BINDING.toString(), "SampleBinding"));
+			Assert.assertNotNull(artifact);
+			Assert.assertEquals("SampleBinding", artifact.getName());
+			Assert.assertEquals("SampleBinding", ((Binding) artifact).getNCName());
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((Binding) artifact).getNamespace());
+			Binding binding = (Binding) artifact;
+			Assert.assertEquals(2, binding.getBindingOperation().size());
+
+			// Find the binding operation named 'find'
+			artifact = index.get(new QName(BaseArtifactEnum.BINDING_OPERATION.toString(), "find"));
+			Assert.assertNotNull(artifact);
+			Assert.assertEquals("find", artifact.getName());
+			BindingOperation bindingOperation = (BindingOperation) artifact;
+			Assert.assertEquals("find", bindingOperation.getNCName());
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", bindingOperation.getNamespace());
+			Assert.assertNotNull(bindingOperation.getInput());
+			Assert.assertNotNull(bindingOperation.getOutput());
+			Assert.assertNotNull(bindingOperation.getFault());
+			Assert.assertEquals(2, bindingOperation.getFault().size());
+			Assert.assertNotNull(bindingOperation.getOperation());
+			Assert.assertEquals(operation.getUuid(), bindingOperation.getOperation().getValue());
+
+			// Find the binding operation input named 'findRequest'
+			artifact = index.get(new QName(BaseArtifactEnum.BINDING_OPERATION_INPUT.toString(), "findRequest"));
+			Assert.assertNotNull(artifact);
+			Assert.assertEquals("findRequest", artifact.getName());
+			BindingOperationInput bindingOperationInput = (BindingOperationInput) artifact;
+			Assert.assertEquals("findRequest", bindingOperationInput.getNCName());
+			Assert.assertEquals(bindingOperation.getInput().getValue(), bindingOperationInput.getUuid());
+
+			// Find the binding operation output named 'findResponse'
+			artifact = index.get(new QName(BaseArtifactEnum.BINDING_OPERATION_OUTPUT.toString(), "findResponse"));
+			Assert.assertNotNull(artifact);
+			Assert.assertEquals("findResponse", artifact.getName());
+			BindingOperationOutput bindingOperationOutput = (BindingOperationOutput) artifact;
+			Assert.assertEquals("findResponse", bindingOperationOutput.getNCName());
+			Assert.assertEquals(bindingOperation.getOutput().getValue(), bindingOperationOutput.getUuid());
+
+			// Find the service named 'SampleService'
+			artifact = index.get(new QName(BaseArtifactEnum.WSDL_SERVICE.toString(), "SampleService"));
+			Assert.assertNotNull(artifact);
+			Assert.assertEquals("SampleService", artifact.getName());
+			Assert.assertEquals("SampleService", ((WsdlService) artifact).getNCName());
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((WsdlService) artifact).getNamespace());
+			WsdlService service = (WsdlService) artifact;
+			Assert.assertEquals(1, service.getPort().size());
+
+			// Find the port named 'SamplePort'
+			artifact = index.get(new QName(BaseArtifactEnum.PORT.toString(), "SamplePort"));
+			Assert.assertNotNull(artifact);
+			Assert.assertEquals("SamplePort", artifact.getName());
+			Assert.assertEquals("SamplePort", ((Port) artifact).getNCName());
+			Port port = (Port) artifact;
+			Assert.assertNotNull(port.getBinding());
+			Assert.assertEquals(port.getBinding().getValue(), binding.getUuid());
+
 		} finally {
 			IOUtils.closeQuietly(testSrcContent);
 		}
