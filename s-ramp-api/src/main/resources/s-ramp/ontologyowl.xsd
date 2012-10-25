@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.w3.org/2002/07/owl#"
+	version="1.0" xmlns:tns="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#">
+
+	<xsd:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+		schemaLocation="ontologyrdf.xsd" />
+	<xsd:import namespace="http://www.w3.org/2000/01/rdf-schema#"
+		schemaLocation="ontologyrdfs.xsd" />
+
+	<xsd:element name="Ontology">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element ref="rdfs:label" minOccurs="0" />
+				<xsd:element ref="rdfs:comment" minOccurs="0" />
+			</xsd:all>
+			<xsd:attribute ref="rdf:ID" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="Class">
+		<xsd:complexType>
+			<xsd:all>
+				<xsd:element ref="rdfs:subClassOf" minOccurs="0" />
+				<xsd:element ref="rdfs:label" minOccurs="0" />
+				<xsd:element ref="rdfs:comment" minOccurs="0" />
+			</xsd:all>
+			<xsd:attribute ref="rdf:ID" use="required" />
+		</xsd:complexType>
+	</xsd:element>
+
+</xsd:schema>
