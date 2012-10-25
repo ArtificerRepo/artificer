@@ -22,10 +22,13 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.s_ramp.xmlns._2010.s_ramp.Binding;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Message;
+import org.s_ramp.xmlns._2010.s_ramp.Operation;
+import org.s_ramp.xmlns._2010.s_ramp.PortType;
 import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 
@@ -43,6 +46,11 @@ public class IndexedArtifactCollection extends LinkedList<DerivedArtifactType> {
 	private Map<QName, ElementDeclaration> elementIndex = new HashMap<QName, ElementDeclaration>();
 	private Map<QName, XsdType> schemaTypeIndex = new HashMap<QName, XsdType>();
 	private Map<QName, Message> messageIndex = new HashMap<QName, Message>();
+	private Map<QName, PortType> portTypeIndex = new HashMap<QName, PortType>();
+	private Map<String, Operation> operationIndex = new HashMap<String, Operation>();
+	private Map<QName, Binding> bindingIndex = new HashMap<QName, Binding>();
+
+	private QName mostRecentPortType;
 
 	/**
 	 * Constructor.
@@ -80,6 +88,21 @@ public class IndexedArtifactCollection extends LinkedList<DerivedArtifactType> {
 			Message message = (Message) artifact;
 			QName key = new QName(message.getNamespace(), message.getNCName());
 			messageIndex.put(key, message);
+		} else if (artifact instanceof PortType) {
+			PortType portType = (PortType) artifact;
+			QName key = new QName(portType.getNamespace(), portType.getNCName());
+			portTypeIndex.put(key, portType);
+			mostRecentPortType = key;
+		} else if (artifact instanceof Operation) {
+			Operation operation = (Operation) artifact;
+			if (mostRecentPortType != null) {
+				String key = mostRecentPortType.toString() + ":" + operation.getNCName();
+				operationIndex.put(key, operation);
+			}
+		} else if (artifact instanceof Binding) {
+			Binding binding = (Binding) artifact;
+			QName key = new QName(binding.getNamespace(), binding.getNCName());
+			bindingIndex.put(key, binding);
 		}
 	}
 
@@ -105,6 +128,32 @@ public class IndexedArtifactCollection extends LinkedList<DerivedArtifactType> {
 	 */
 	public Message lookupMessage(QName name) {
 		return messageIndex.get(name);
+	}
+
+	/**
+	 * Find a port type by QName.
+	 * @param name
+	 */
+	public PortType lookupPortType(QName name) {
+		return portTypeIndex.get(name);
+	}
+
+	/**
+	 * Find an operation by Port Type and QName.
+	 * @param portTypeName
+	 * @param operationName
+	 */
+	public Operation lookupOperation(QName portTypeName, String operationName) {
+		String key = mostRecentPortType.toString() + ":" + operationName;
+		return operationIndex.get(key);
+	}
+
+	/**
+	 * Find a binding by QName.
+	 * @param name
+	 */
+	public Binding lookupBinding(QName name) {
+		return bindingIndex.get(name);
 	}
 
 }
