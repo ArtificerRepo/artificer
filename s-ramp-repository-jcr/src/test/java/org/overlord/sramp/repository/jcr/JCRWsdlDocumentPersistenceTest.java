@@ -27,6 +27,13 @@ import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Binding;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFault;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFaultTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInput;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutput;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationTarget;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Fault;
 import org.s_ramp.xmlns._2010.s_ramp.FaultTarget;
@@ -36,10 +43,12 @@ import org.s_ramp.xmlns._2010.s_ramp.OperationInput;
 import org.s_ramp.xmlns._2010.s_ramp.OperationOutput;
 import org.s_ramp.xmlns._2010.s_ramp.OperationTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Part;
+import org.s_ramp.xmlns._2010.s_ramp.Port;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
 import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 
 
 
@@ -97,6 +106,8 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractJCRPersistenceTest {
         Operation findSimpleOp = (Operation) assertSingleArtifact(ArtifactTypeEnum.Operation, "findSimple");
         Fault errorFault = (Fault) assertSingleArtifact(ArtifactTypeEnum.Fault, "errorFault");
         Fault unknownFault = (Fault) assertSingleArtifact(ArtifactTypeEnum.Fault, "unknownFault");
+        Binding binding = (Binding) assertSingleArtifact(ArtifactTypeEnum.Binding, "SampleBinding");
+        WsdlService service = (WsdlService) assertSingleArtifact(ArtifactTypeEnum.WsdlService, "SampleService");
 
         // findRequestMessage assertions
         Part part = (Part) getArtifactByTarget(findRequestMessage.getPart().get(0));
@@ -153,6 +164,32 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractJCRPersistenceTest {
         output = (OperationOutput) getArtifactByTarget(operation.getOutput());
         faults = operation.getFault();
         Assert.assertEquals(0, faults.size());
+
+        // binding
+        PortType pt = (PortType) getArtifactByTarget(binding.getPortType());
+        Assert.assertNotNull(pt);
+        Assert.assertEquals(samplePortType.getUuid(), pt.getUuid());
+
+        // binding operations
+        BindingOperation bindingOperation = assertHasOperation(binding, "find");
+        BindingOperationInput bindingInput = (BindingOperationInput) getArtifactByTarget(bindingOperation.getInput());
+        Assert.assertEquals("findRequest", bindingInput.getNCName());
+        BindingOperationOutput bindingOutput = (BindingOperationOutput) getArtifactByTarget(bindingOperation.getOutput());
+        Assert.assertEquals("findResponse", bindingOutput.getNCName());
+        List<BindingOperationFaultTarget> bfaults = bindingOperation.getFault();
+        Assert.assertEquals(2, bfaults.size());
+        assertHasFault(bindingOperation, "errorFault");
+        assertHasFault(bindingOperation, "unknownFault");
+        Operation op = (Operation) getArtifactByTarget(bindingOperation.getOperation());
+        Assert.assertNotNull(op);
+        Assert.assertEquals(findOp.getUuid(), op.getUuid());
+
+        // sevice
+        Assert.assertEquals(1, service.getPort().size());
+        Port port = (Port) getArtifactByTarget(service.getPort().get(0));
+        Assert.assertNotNull(port);
+        Binding b = (Binding) getArtifactByTarget(port.getBinding());
+        Assert.assertEquals(binding.getUuid(), b.getUuid());
     }
 
 	/**
@@ -175,6 +212,25 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractJCRPersistenceTest {
 	}
 
 	/**
+	 * Asserts that the operation contains a valid reference to a fault with
+	 * the given name.  Returns the fault or throws if any assertions fail.
+	 * @param operation
+	 * @param faultName
+	 * @throws Exception
+	 */
+	private BindingOperationFault assertHasFault(BindingOperation operation, String faultName) throws Exception {
+		List<BindingOperationFaultTarget> faults = operation.getFault();
+		for (BindingOperationFaultTarget t : faults) {
+			BindingOperationFault fault = (BindingOperationFault) getArtifactByTarget(t);
+			if (fault.getNCName().equals(faultName)) {
+				return fault;
+			}
+		}
+		Assert.fail("Failed to find fault with name: " + faultName);
+		return null;
+	}
+
+	/**
 	 * Asserts that the port type contains a valid reference to an operation with
 	 * the given name.  Returns the operation or throws if any assertions fail.
 	 * @param portType
@@ -185,6 +241,25 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractJCRPersistenceTest {
 		List<OperationTarget> operation = portType.getOperation();
 		for (OperationTarget t : operation) {
 			Operation op = (Operation) getArtifactByTarget(t);
+			if (op.getNCName().equals(operationName)) {
+				return op;
+			}
+		}
+		Assert.fail("Failed to find operation with name: " + operationName);
+		return null;
+	}
+
+	/**
+	 * Asserts that the port type contains a valid reference to an operation with
+	 * the given name.  Returns the operation or throws if any assertions fail.
+	 * @param binding
+	 * @param operationName
+	 * @throws Exception
+	 */
+	private BindingOperation assertHasOperation(Binding binding, String operationName) throws Exception {
+		List<BindingOperationTarget> operation = binding.getBindingOperation();
+		for (BindingOperationTarget t : operation) {
+			BindingOperation op = (BindingOperation) getArtifactByTarget(t);
 			if (op.getNCName().equals(operationName)) {
 				return op;
 			}
