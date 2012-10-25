@@ -24,7 +24,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.plugins.providers.atom.app.AppService;
-import org.overlord.sramp.atom.models.CoreModel;
+import org.overlord.sramp.atom.workspaces.CoreWorkspace;
+import org.overlord.sramp.atom.workspaces.PolicyWorkspace;
+import org.overlord.sramp.atom.workspaces.WsdlWorkspace;
+import org.overlord.sramp.atom.workspaces.XsdWorkspace;
 
 @Path("/s-ramp")
 public class ServiceDocumentResource
@@ -32,9 +35,9 @@ public class ServiceDocumentResource
     /**
      * S-RAMP implementations SHALL return an Atom Publishing Protocol Service
      * Document to clients who perform an HTTP GET on the following URL:
-     * 
+     *
      * {base URL}/s-ramp/servicedocument
-     * 
+     *
      * The content of the Service Document that is returned is defined as
      * follows:
      * <ul>
@@ -54,32 +57,36 @@ public class ServiceDocumentResource
      * The workspace for the SOA or Service Implementation Artifact Model MUST
      * contain an app:collection element for each user defined type that has
      * been registered in the S-RAMP implementation.
-     * 
+     *
      * @return AppService - service document.
      */
     @GET
     @Path("servicedocument")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public AppService getService() {
- 
-        AppService appService = new AppService();
-        String hrefBase = getRawPath();
-        
-        appService.getWorkspace().add(CoreModel.getWorkSpace(hrefBase));
+	public AppService getService() {
+		AppService appService = new AppService();
+		String hrefBase = getBaseUri();
 
-        
-        return appService;
-    }
-    
+		appService.getWorkspace().add(new CoreWorkspace(hrefBase));
+		appService.getWorkspace().add(new XsdWorkspace(hrefBase));
+		appService.getWorkspace().add(new PolicyWorkspace(hrefBase));
+		appService.getWorkspace().add(new WsdlWorkspace(hrefBase));
+
+		return appService;
+	}
+
     @Context
     private UriInfo uriInfo;
-    
-    public String getRawPath(){
-      String rawPath = uriInfo.getBaseUri().getRawPath();
-      if (rawPath==null) {
-          rawPath = "http://localhost:8080/s-ramp-atom/";
-      }
-      return rawPath;
+
+    /**
+     * Gets the raw URL path from the injected {@link UriInfo}.
+     */
+    private String getBaseUri(){
+		String uri = uriInfo.getBaseUri().toString();
+		if (uri == null) {
+			uri = "http://localhost:8080/s-ramp-atom/";
+		}
+		return uri;
     }
-  
+
 }
