@@ -77,6 +77,7 @@ public class ArtifactResource {
 
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(SrampConstants.DATE_FORMAT);
     private final Sramp sramp = new Sramp();
+
 	/**
 	 * Constructor.
 	 */

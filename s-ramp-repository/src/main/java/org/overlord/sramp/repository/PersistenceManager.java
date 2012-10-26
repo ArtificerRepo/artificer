@@ -16,8 +16,10 @@
 package org.overlord.sramp.repository;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.ontology.SrampOntology;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -79,6 +81,42 @@ public interface PersistenceManager {
 	 * @throws RepositoryException
 	 */
 	public void deleteArtifact(String uuid, ArtifactType artifactType) throws RepositoryException;
+
+    /**
+     * Persists a single ontology.
+     * @param ontology
+     * @throws RepositoryException
+     */
+    public SrampOntology persistOntology(SrampOntology ontology) throws RepositoryException;
+
+	/**
+	 * Gets a previously persisted ontology by its UUID.
+	 * @param uuid the UUID of the s-ramp ontology
+	 * @return an instance of a {@link SrampOntology} or null if not found
+	 * @throws RepositoryException
+	 */
+	public SrampOntology getOntology(String uuid) throws RepositoryException;
+
+	/**
+	 * Gets all of the ontologies known to the S-RAMP repository.
+	 * @throws RepositoryException
+	 */
+	public List<SrampOntology> getOntologies() throws RepositoryException;
+
+	/**
+	 * Updates a previously persisted ontology.
+	 * @param ontology the s-ramp artifact being updated
+	 * @param type the type of the artifact
+	 * @throws RepositoryException
+	 */
+	public void updateOntology(SrampOntology ontology) throws RepositoryException;
+
+	/**
+	 * Deletes a previously persisted ontology from the S-RAMP repository.
+	 * @param uuid
+	 * @throws RepositoryException
+	 */
+	public void deleteOntology(String uuid) throws RepositoryException;
 
 	/**
 	 * TODO remove this
