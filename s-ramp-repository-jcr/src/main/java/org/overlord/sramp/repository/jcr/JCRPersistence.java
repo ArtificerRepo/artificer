@@ -20,8 +20,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,12 +42,16 @@ import org.modeshape.jcr.api.JcrTools;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.derived.ArtifactDeriver;
 import org.overlord.sramp.derived.ArtifactDeriverFactory;
+import org.overlord.sramp.ontology.SrampOntology;
 import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.DerivedArtifactsCreationException;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.RepositoryException;
-import org.overlord.sramp.repository.jcr.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
+import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
+import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
+import org.overlord.sramp.repository.jcr.mapper.JCRNodeToOntology;
+import org.overlord.sramp.repository.jcr.mapper.OntologyToJCRNode;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
@@ -67,6 +73,9 @@ import org.slf4j.LoggerFactory;
 public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 
     private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
+
+	private static OntologyToJCRNode o2jcr = new OntologyToJCRNode();
+	private static JCRNodeToOntology jcr2o = new JCRNodeToOntology();
 
     /**
      * Default constructor.
@@ -364,6 +373,155 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
     }
 
 	/**
+	 * @see org.overlord.sramp.repository.PersistenceManager#persistOntology(org.overlord.sramp.ontology.SrampOntology)
+	 */
+	@Override
+	public SrampOntology persistOntology(SrampOntology ontology) throws RepositoryException {
+        Session session = null;
+        if (ontology.getUuid() == null) {
+        	ontology.setUuid(UUID.randomUUID().toString());
+        }
+        String ontologyPath = "/s-ramp/ontology/" + ontology.getUuid();
+
+        try {
+            session = JCRRepository.getSession();
+            if (session.nodeExists(ontologyPath)) {
+            	throw new RepositoryException("Ontology already exists.");
+            } else {
+            	JcrTools tools = new JcrTools();
+            	Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", null, null);
+            	Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology");
+            	o2jcr.write(ontology, ontologyNode);
+                session.save();
+
+                // TODO remove this
+            	tools.printSubgraph(ontologyNode);
+                return ontology;
+            }
+        } catch (RepositoryException e) {
+        	throw e;
+        } catch (Throwable t) {
+        	throw new RepositoryException(t);
+        } finally {
+        	JCRRepository.logoutQuietly(session);
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.repository.PersistenceManager#getOntology(java.lang.String)
+	 */
+	@Override
+	public SrampOntology getOntology(String uuid) throws RepositoryException {
+        Session session = null;
+        String ontologyPath = "/s-ramp/ontology/" + uuid;
+
+        try {
+        	SrampOntology ontology = null;
+            session = JCRRepository.getSession();
+            if (session.nodeExists(ontologyPath)) {
+            	Node ontologyNode = session.getNode(ontologyPath);
+            	ontology = new SrampOntology();
+            	ontology.setUuid(uuid);
+            	jcr2o.read(ontology, ontologyNode);
+            } else {
+            	throw new RepositoryException("Ontology does not exist.");
+            }
+            session.save();
+        	return ontology;
+        } catch (RepositoryException e) {
+        	throw e;
+        } catch (Throwable t) {
+        	throw new RepositoryException(t);
+        } finally {
+        	JCRRepository.logoutQuietly(session);
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.repository.PersistenceManager#getOntologies()
+	 */
+	@Override
+	public List<SrampOntology> getOntologies() throws RepositoryException {
+        Session session = null;
+
+        try {
+            session = JCRRepository.getSession();
+        	JcrTools tools = new JcrTools();
+        	Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", null, null);
+        	NodeIterator nodes = ontologiesNode.getNodes();
+        	List<SrampOntology> ontologies = new ArrayList<SrampOntology>();
+        	while (nodes.hasNext()) {
+        		Node node = nodes.nextNode();
+        		SrampOntology ontology = new SrampOntology();
+        		jcr2o.read(ontology, node);
+        		ontologies.add(ontology);
+        	}
+            return ontologies;
+        } catch (Throwable t) {
+        	throw new RepositoryException(t);
+        } finally {
+        	JCRRepository.logoutQuietly(session);
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.repository.PersistenceManager#updateOntology(org.overlord.sramp.ontology.SrampOntology)
+	 */
+	@Override
+	public void updateOntology(SrampOntology ontology) throws RepositoryException {
+        Session session = null;
+        String ontologyPath = "/s-ramp/ontology/" + ontology.getUuid();
+
+        try {
+            session = JCRRepository.getSession();
+            if (session.nodeExists(ontologyPath)) {
+            	Node ontologyNode = session.getNode(ontologyPath);
+            	NodeIterator nodes = ontologyNode.getNodes();
+            	while (nodes.hasNext()) {
+            		Node child = nodes.nextNode();
+            		child.remove();
+            	}
+            	o2jcr.write(ontology, ontologyNode);
+            } else {
+            	throw new RepositoryException("Ontology does not exist.");
+            }
+            session.save();
+        } catch (RepositoryException e) {
+        	throw e;
+        } catch (Throwable t) {
+        	throw new RepositoryException(t);
+        } finally {
+        	JCRRepository.logoutQuietly(session);
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.repository.PersistenceManager#deleteOntology(java.lang.String)
+	 */
+	@Override
+	public void deleteOntology(String uuid) throws RepositoryException {
+        Session session = null;
+        String ontologyPath = "/s-ramp/ontology/" + uuid;
+
+        try {
+            session = JCRRepository.getSession();
+            if (session.nodeExists(ontologyPath)) {
+            	Node ontologyNode = session.getNode(ontologyPath);
+            	ontologyNode.remove();
+            } else {
+            	throw new RepositoryException("Ontology does not exist.");
+            }
+            session.save();
+        } catch (RepositoryException e) {
+        	throw e;
+        } catch (Throwable t) {
+        	throw new RepositoryException(t);
+        } finally {
+        	JCRRepository.logoutQuietly(session);
+        }
+	}
+
+	/**
      * @see org.overlord.sramp.repository.PersistenceManager#printArtifactGraph(java.lang.String, org.overlord.sramp.ArtifactType)
      */
     @Override
@@ -478,7 +636,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
 		}
 
     	/**
-    	 * @see org.overlord.sramp.repository.jcr.ArtifactToJCRNodeVisitor.JCRReferenceFactory#createReference(java.lang.String)
+    	 * @see org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor.JCRReferenceFactory#createReference(java.lang.String)
     	 */
     	@Override
     	public Value createReference(String uuid) throws Exception {

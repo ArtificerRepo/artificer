@@ -27,6 +27,25 @@
 //------------------------------------------------------------------------------
 
 // -------------------------------------------------------
+// S-RAMP Ontologies
+// -------------------------------------------------------
+
+[sramp:class]
+- sramp:uri (string) mandatory
+- sramp:id (string) mandatory
+- sramp:label (string)
+- sramp:comment (string)
++ * (sramp:class)
+
+[sramp:ontology] > mix:created, mix:lastModified
+- sramp:uuid (string) mandatory
+- sramp:label (string)
+- sramp:comment (string)
+- sramp:base (string)
+- sramp:id (string)
++ * (sramp:class)
+
+// -------------------------------------------------------
 // S-RAMP Core Model Artifacts
 // -------------------------------------------------------
 
@@ -64,9 +83,6 @@
 
 [sramp:storedQuery] > nt:query
 - sramp:propertyList (string) multiple
-
-[sramp:relatedTo] mixin
-- * (weakreference) multiple
 
 
 // -------------------------------------------------------
