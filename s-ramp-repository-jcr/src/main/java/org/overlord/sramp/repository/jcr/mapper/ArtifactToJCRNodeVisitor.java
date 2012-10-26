@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.repository.jcr.mapper;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -100,6 +101,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	protected void visitBase(BaseArtifactType artifact) {
 		try {
 			updateArtifactMetaData(artifact);
+			updateClassifications(artifact);
 			updateArtifactProperties(artifact);
 			updateGenericRelationships(artifact);
 		} catch (Exception e) {
@@ -156,6 +158,25 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 			this.jcrNode.setProperty("sramp:description", artifact.getDescription());
 		if (artifact.getVersion() != null)
 			this.jcrNode.setProperty("version", artifact.getVersion());
+	}
+
+	/**
+	 * Updates the classifications.
+	 *
+	 * TODO also normalize the classifications (setting the sramp:normalizedClassifiedBy property)
+	 *
+	 * @param artifact
+	 * @throws Exception
+	 */
+	private void updateClassifications(BaseArtifactType artifact) throws Exception {
+		List<String> classifications = artifact.getClassifiedBy();
+		String [] values = new String[classifications.size()];
+		int idx = 0;
+		for (String classification : classifications) {
+			URI classifiedBy = new URI(classification);
+			values[idx++] = classifiedBy.toString();
+		}
+		this.jcrNode.setProperty("sramp:classifiedBy", values);
 	}
 
 	/**

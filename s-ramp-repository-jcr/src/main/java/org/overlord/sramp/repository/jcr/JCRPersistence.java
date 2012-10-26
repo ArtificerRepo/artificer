@@ -393,9 +393,6 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts {
             	Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology");
             	o2jcr.write(ontology, ontologyNode);
                 session.save();
-
-                // TODO remove this
-            	tools.printSubgraph(ontologyNode);
                 return ontology;
             }
         } catch (RepositoryException e) {

@@ -61,7 +61,8 @@
 - sramp:name (string)
 - sramp:artifactModel (string)
 - sramp:artifactType (string)
-- sramp:classifiedBy (reference) multiple < 'owl:class'
+- sramp:classifiedBy (string) multiple
+- sramp:normalizedClassifiedBy (string) multiple
 - sramp:description (string)
 - * (string)
 - * (string) multiple

@@ -146,6 +146,20 @@ public class SrampOntology {
 	}
 
 	/**
+	 * Finds a class by its unique id within the ontology.
+	 * @param id
+	 */
+	public SrampOntology.Class findClass(String id) {
+		for (SrampOntology.Class candidate : rootClasses) {
+			SrampOntology.Class found = candidate.findClass(id);
+			if (found != null) {
+				return found;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Finds a class by its unique URI.
 	 * @param uri
 	 */
@@ -185,6 +199,24 @@ public class SrampOntology {
 		 * Constructor.
 		 */
 		public Class() {
+		}
+
+		/**
+		 * Recursively finds a class matching the given ID.
+		 * @param id
+		 */
+		public Class findClass(String id) {
+			if (this.id.equals(id)) {
+				return this;
+			} else {
+				for (Class c : this.children) {
+					Class found = c.findClass(id);
+					if (found != null) {
+						return found;
+					}
+				}
+			}
+			return null;
 		}
 
 		/**

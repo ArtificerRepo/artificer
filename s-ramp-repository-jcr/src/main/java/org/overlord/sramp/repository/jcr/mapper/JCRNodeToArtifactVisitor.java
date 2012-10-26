@@ -119,7 +119,17 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 			artifact.setUuid(getProperty(jcrNode, "sramp:uuid"));
 			artifact.setVersion(getProperty(jcrNode, "version"));
 
-			// Now map in all the s-ramp user-defined properties.
+			// Map in the classifications
+			if (jcrNode.hasProperty("sramp:classifiedBy")) {
+				Property classifiedByProp = jcrNode.getProperty("sramp:classifiedBy");
+				Value [] values = classifiedByProp.getValues();
+				for (Value value : values) {
+					String classification = value.getString();
+					artifact.getClassifiedBy().add(classification);
+				}
+			}
+
+			// Map in all the s-ramp user-defined properties.
 			String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
 			int srampPropsPrefixLen = srampPropsPrefix.length();
 			PropertyIterator properties = jcrNode.getProperties();
@@ -136,7 +146,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 				}
 			}
 
-			// Now map in the generic relationships
+			// Map in the generic relationships
 			NodeIterator rnodes = jcrNode.getNodes();
 			while (rnodes.hasNext()) {
 				Node rNode = rnodes.nextNode();
