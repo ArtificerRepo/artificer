@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://s-ramp.org/xmlns/2010/s-ramp"
+	version="1.0" xmlns:tns="http://s-ramp.org/xmlns/2010/s-ramp"
+	xmlns:s-ramp="http://s-ramp.org/xmlns/2010/s-ramp" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#">
+
+	<xsd:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+		schemaLocation="ontologyrdf.xsd" />
+
+</xsd:schema>

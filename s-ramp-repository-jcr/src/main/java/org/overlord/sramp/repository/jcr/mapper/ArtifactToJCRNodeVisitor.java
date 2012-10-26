@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.jcr;
+package org.overlord.sramp.repository.jcr.mapper;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +35,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Binding;
@@ -99,6 +101,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	protected void visitBase(BaseArtifactType artifact) {
 		try {
 			updateArtifactMetaData(artifact);
+			updateClassifications(artifact);
 			updateArtifactProperties(artifact);
 			updateGenericRelationships(artifact);
 		} catch (Exception e) {
@@ -155,6 +158,25 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 			this.jcrNode.setProperty("sramp:description", artifact.getDescription());
 		if (artifact.getVersion() != null)
 			this.jcrNode.setProperty("version", artifact.getVersion());
+	}
+
+	/**
+	 * Updates the classifications.
+	 *
+	 * TODO also normalize the classifications (setting the sramp:normalizedClassifiedBy property)
+	 *
+	 * @param artifact
+	 * @throws Exception
+	 */
+	private void updateClassifications(BaseArtifactType artifact) throws Exception {
+		List<String> classifications = artifact.getClassifiedBy();
+		String [] values = new String[classifications.size()];
+		int idx = 0;
+		for (String classification : classifications) {
+			URI classifiedBy = new URI(classification);
+			values[idx++] = classifiedBy.toString();
+		}
+		this.jcrNode.setProperty("sramp:classifiedBy", values);
 	}
 
 	/**
@@ -541,7 +563,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 *
 	 * @author eric.wittmann@redhat.com
 	 */
-	protected static interface JCRReferenceFactory {
+	public static interface JCRReferenceFactory {
 		/**
 		 * Creates a reference value to another JCR node.
 		 * @param otherNode the node being referenced
