@@ -15,6 +15,10 @@
  */
 package org.overlord.sramp.atom.services;
 
+import java.net.URI;
+import java.util.Date;
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -26,8 +30,14 @@ import javax.ws.rs.Produces;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.atom.mappers.OntologyToRdfMapper;
+import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
+import org.overlord.sramp.ontology.SrampOntology;
+import org.overlord.sramp.repository.PersistenceFactory;
+import org.overlord.sramp.repository.PersistenceManager;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
@@ -45,6 +55,9 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 @Path("/s-ramp")
 public class OntologyResource {
 
+	private static OntologyToRdfMapper o2rdf = new OntologyToRdfMapper();
+	private static RdfToOntologyMapper rdf2o = new RdfToOntologyMapper();
+
 	/**
 	 * Constructor.
 	 */
@@ -61,25 +74,54 @@ public class OntologyResource {
      */
     @POST
     @Path("ontology")
+    @Consumes(MediaType.APPLICATION_RDF_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public Entry create(Entry atomEntry) throws SrampAtomException {
-    	throw new SrampAtomException("Not yet implemented.");
+	public Entry create(RDF rdf) throws SrampAtomException {
+    	try {
+			SrampOntology ontology = new SrampOntology();
+			rdf2o.map(rdf, ontology);
+
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			ontology = persistenceManager.persistOntology(ontology);
+
+			RDF responseRDF = new RDF();
+			o2rdf.map(ontology, responseRDF);
+
+			Entry entry = new Entry();
+			entry.setId(new URI(ontology.getUuid()));
+			entry.setPublished(ontology.getCreatedOn());
+			entry.setUpdated(ontology.getLastModifiedOn());
+			entry.getAuthors().add(new Person(ontology.getCreatedBy()));
+			entry.setTitle(ontology.getLabel());
+			entry.setSummary(ontology.getComment());
+
+			entry.setAnyOtherJAXBObject(responseRDF);
+			return entry;
+        } catch (Exception e) {
+			throw new SrampAtomException(e);
+        }
     }
 
     /**
-     * Called to update a single ontology by providing a new OWL RDF document wrapped
-     * in an Atom Entry.
-     * @param model
-     * @param type
+     * Called to update a single ontology by providing a new OWL RDF document.
      * @param uuid
-     * @param atomEntry
+     * @param rdf
      * @throws SrampAtomException
      */
     @PUT
     @Path("ontology/{uuid}")
-    @Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public void update(@PathParam("uuid") String uuid, Entry atomEntry) throws SrampAtomException {
-    	throw new SrampAtomException("Not yet implemented.");
+    @Consumes(MediaType.APPLICATION_RDF_XML)
+    public void update(@PathParam("uuid") String uuid, RDF rdf) throws SrampAtomException {
+    	try {
+			SrampOntology ontology = new SrampOntology();
+			ontology.setUuid(uuid);
+			rdf2o.map(rdf, ontology);
+
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			persistenceManager.updateOntology(ontology);
+        } catch (Exception e) {
+			throw new SrampAtomException(e);
+        }
     }
 
     /**
@@ -94,7 +136,25 @@ public class OntologyResource {
     @Path("ontology/{uuid}")
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry get(@PathParam("uuid") String uuid) throws SrampAtomException {
-    	throw new SrampAtomException("Not yet implemented.");
+    	try {
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			SrampOntology ontology = persistenceManager.getOntology(uuid);
+
+			RDF responseRDF = new RDF();
+			o2rdf.map(ontology, responseRDF);
+
+			Entry entry = new Entry();
+			entry.setId(new URI(ontology.getUuid()));
+			entry.setPublished(ontology.getCreatedOn());
+			entry.setUpdated(ontology.getLastModifiedOn());
+			entry.getAuthors().add(new Person(ontology.getCreatedBy()));
+			entry.setTitle(ontology.getLabel());
+			entry.setSummary(ontology.getComment());
+			entry.setAnyOtherJAXBObject(responseRDF);
+			return entry;
+        } catch (Exception e) {
+			throw new SrampAtomException(e);
+        }
     }
 
     /**
@@ -107,7 +167,12 @@ public class OntologyResource {
     @DELETE
     @Path("ontology/{uuid}")
 	public void delete(@PathParam("uuid") String uuid) throws SrampAtomException {
-    	throw new SrampAtomException("Not yet implemented.");
+    	try {
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			persistenceManager.deleteOntology(uuid);
+        } catch (Exception e) {
+			throw new SrampAtomException(e);
+        }
     }
 
 	/**
@@ -119,7 +184,30 @@ public class OntologyResource {
 	@Path("ontology")
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
 	public Feed getArtifactFeed() throws SrampAtomException {
-    	throw new SrampAtomException("Not yet implemented.");
+    	try {
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			List<SrampOntology> ontologies = persistenceManager.getOntologies();
+
+			Feed feed = new Feed();
+			feed.setTitle("S-RAMP ontology feed");
+			feed.setUpdated(new Date());
+
+			for (SrampOntology ontology : ontologies) {
+		    	Entry entry = new Entry();
+				entry.setId(new URI(ontology.getUuid()));
+				entry.setPublished(ontology.getCreatedOn());
+				entry.setUpdated(ontology.getLastModifiedOn());
+				entry.getAuthors().add(new Person(ontology.getCreatedBy()));
+				entry.setTitle(ontology.getLabel());
+				entry.setSummary(ontology.getComment());
+
+				feed.getEntries().add(entry);
+			}
+
+			return feed;
+        } catch (Exception e) {
+			throw new SrampAtomException(e);
+        }
 	}
 
 }

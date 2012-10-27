@@ -20,6 +20,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
+import org.overlord.sramp.atom.providers.OntologyProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepository;
@@ -43,9 +44,11 @@ public abstract class AbstractResourceTest extends BaseResourceTest {
 		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
 		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
 		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);
+		dispatcher.getRegistry().addPerRequestResource(OntologyResource.class);
 
 		deployment.getProviderFactory().registerProvider(SrampAtomExceptionProvider.class);
 		deployment.getProviderFactory().registerProvider(HttpResponseProvider.class);
+		deployment.getProviderFactory().registerProvider(OntologyProvider.class);
 	}
 
 	@Before

@@ -17,6 +17,7 @@ package org.overlord.sramp.repository.jcr.mapper;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -43,6 +44,16 @@ public class JCRNodeToOntology {
 		ontology.setComment(getProperty(jcrNode, "sramp:comment"));
 		ontology.setBase(getProperty(jcrNode, "sramp:base"));
 		ontology.setId(getProperty(jcrNode, "sramp:id"));
+		ontology.setCreatedBy(getProperty(jcrNode, "jcr:createdBy"));
+		ontology.setLastModifiedBy(getProperty(jcrNode, "jcr:lastModifiedBy"));
+		if (jcrNode.hasProperty("jcr:created")) {
+			Date d = jcrNode.getProperty("jcr:created").getDate().getTime();
+			ontology.setCreatedOn(d);
+		}
+		if (jcrNode.hasProperty("jcr:lastModified")) {
+			Date d = jcrNode.getProperty("jcr:lastModified").getDate().getTime();
+			ontology.setLastModifiedOn(d);
+		}
 
 		NodeIterator nodes = jcrNode.getNodes();
 		while (nodes.hasNext()) {
