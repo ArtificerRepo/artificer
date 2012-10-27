@@ -21,6 +21,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
+import org.overlord.sramp.atom.providers.OntologyProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.overlord.sramp.atom.services.brms.BrmsResource;
 
@@ -44,9 +45,11 @@ public class SRAMPApplication extends Application {
 		singletons.add(new FeedResource());
 		singletons.add(new QueryResource());
 		singletons.add(new BatchResource());
+		singletons.add(new OntologyResource());
 
 		classes.add(HttpResponseProvider.class);
 		classes.add(SrampAtomExceptionProvider.class);
+		classes.add(OntologyProvider.class);
 	}
 
 	@Override
