@@ -18,6 +18,7 @@ package org.overlord.sramp.ontology;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +39,10 @@ public class SrampOntology {
 	private String id;
 	private List<SrampOntology.Class> rootClasses = new ArrayList<SrampOntology.Class>();
 	private Map<URI, SrampOntology.Class> classIndex = new HashMap<URI, SrampOntology.Class>();
+	private String createdBy;
+	private Date createdOn;
+	private String lastModifiedBy;
+	private Date lastModifiedOn;
 
 	/**
 	 * Constructor.
@@ -123,6 +128,27 @@ public class SrampOntology {
 	}
 
 	/**
+	 * @return a list of all clases in the ontology
+	 */
+	public List<SrampOntology.Class> getAllClasses() {
+		List<SrampOntology.Class> allClasses = new ArrayList<SrampOntology.Class>();
+		addAllClasses(allClasses, getRootClasses());
+		return allClasses;
+	}
+
+	/**
+	 * Adds all classes recursively to the list of classes.
+	 * @param allClasses
+	 * @param classes
+	 */
+	private void addAllClasses(List<Class> allClasses, List<Class> classes) {
+		allClasses.addAll(classes);
+		for (Class c : classes) {
+			addAllClasses(allClasses, c.getChildren());
+		}
+	}
+
+	/**
 	 * @param rootClasses the rootClasses to set
 	 */
 	public void setRootClasses(List<SrampOntology.Class> rootClasses) {
@@ -179,6 +205,62 @@ public class SrampOntology {
 			}
 			return found;
 		}
+	}
+
+	/**
+	 * @return the createdBy
+	 */
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	/**
+	 * @param createdBy the createdBy to set
+	 */
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	/**
+	 * @return the createdOn
+	 */
+	public Date getCreatedOn() {
+		return createdOn;
+	}
+
+	/**
+	 * @param createdOn the createdOn to set
+	 */
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
+
+	/**
+	 * @return the lastModifiedBy
+	 */
+	public String getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+
+	/**
+	 * @param lastModifiedBy the lastModifiedBy to set
+	 */
+	public void setLastModifiedBy(String lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	/**
+	 * @return the lastModifiedOn
+	 */
+	public Date getLastModifiedOn() {
+		return lastModifiedOn;
+	}
+
+	/**
+	 * @param lastModifiedOn the lastModifiedOn to set
+	 */
+	public void setLastModifiedOn(Date lastModifiedOn) {
+		this.lastModifiedOn = lastModifiedOn;
 	}
 
 	/**
