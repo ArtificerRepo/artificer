@@ -16,6 +16,7 @@
 package org.overlord.sramp.repository.jcr.mapper;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +36,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -83,15 +85,18 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	private Node jcrNode;
 	private Exception error;
 	private JCRReferenceFactory referenceFactory;
+	private ClassificationHelper classificationHelper;
 
 	/**
 	 * Constructor.
 	 * @param jcrNode the JCR node this visitor will be updating
 	 * @param referenceFactory a resolver to find JCR nodes by UUID
+	 * @param classificationHelper helps resolve, verify, and normalize classifications
 	 */
-	public ArtifactToJCRNodeVisitor(Node jcrNode, JCRReferenceFactory referenceFactory) {
+	public ArtifactToJCRNodeVisitor(Node jcrNode, JCRReferenceFactory referenceFactory, ClassificationHelper classificationHelper) {
 		this.jcrNode = jcrNode;
 		this.referenceFactory = referenceFactory;
+		this.classificationHelper = classificationHelper;
 	}
 
 	/**
@@ -163,20 +168,28 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	/**
 	 * Updates the classifications.
 	 *
-	 * TODO also normalize the classifications (setting the sramp:normalizedClassifiedBy property)
-	 *
 	 * @param artifact
 	 * @throws Exception
 	 */
 	private void updateClassifications(BaseArtifactType artifact) throws Exception {
-		List<String> classifications = artifact.getClassifiedBy();
+		Collection<URI> classifications = this.classificationHelper.resolveAll(artifact.getClassifiedBy());
+		Collection<URI> normalizedClassifications = this.classificationHelper.normalizeAll(classifications);
+
+		// Store the classifications
 		String [] values = new String[classifications.size()];
 		int idx = 0;
-		for (String classification : classifications) {
-			URI classifiedBy = new URI(classification);
-			values[idx++] = classifiedBy.toString();
+		for (URI classification : classifications) {
+			values[idx++] = classification.toString();
 		}
 		this.jcrNode.setProperty("sramp:classifiedBy", values);
+
+		// Store the normalized classifications
+		values = new String[normalizedClassifications.size()];
+		idx = 0;
+		for (URI classification : normalizedClassifications) {
+			values[idx++] = classification.toString();
+		}
+		this.jcrNode.setProperty("sramp:normalizedClassifiedBy", values);
 	}
 
 	/**
@@ -191,7 +204,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		Set<String> propsToRemove = nodeProps;
 		propsToRemove.removeAll(artifactProps.keySet());
 
-    	String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
+		String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
 
 		// Remove all properties that have been earmarked for removal.
 		for (String propToRemove : propsToRemove) {
@@ -358,26 +371,26 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	}
 
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Binding)
-     */
-    @Override
-    public void visit(Binding artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Binding)
+	 */
+	@Override
+	public void visit(Binding artifact) {
+		super.visit(artifact);
 		try {
 			setRelationships("bindingOperation", -1, 1, BindingOperationEnum.BINDING_OPERATION.toString(), false, artifact.getBindingOperation());
 			setRelationship("portType", 1, 1, PortTypeEnum.PORT_TYPE.toString(), false, artifact.getPortType());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperation)
-     */
-    @Override
-    public void visit(BindingOperation artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperation)
+	 */
+	@Override
+	public void visit(BindingOperation artifact) {
+		super.visit(artifact);
 		try {
 			setRelationship("input", 1, 1, BindingOperationInputEnum.BINDING_OPERATION_INPUT.toString(), false, artifact.getInput());
 			setRelationship("output", 1, 1, BindingOperationOutputEnum.BINDING_OPERATION_OUTPUT.toString(), false, artifact.getOutput());
@@ -386,33 +399,33 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlService)
-     */
-    @Override
-    public void visit(WsdlService artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlService)
+	 */
+	@Override
+	public void visit(WsdlService artifact) {
+		super.visit(artifact);
 		try {
 			setRelationships("port", -1, 1, PortEnum.PORT.toString(), false, artifact.getPort());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Port)
-     */
-    @Override
-    public void visit(Port artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Port)
+	 */
+	@Override
+	public void visit(Port artifact) {
+		super.visit(artifact);
 		try {
 			setRelationship("binding", 1, 1, BindingEnum.BINDING.toString(), false, artifact.getBinding());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
 	/**
 	 * Gets all of the custom properties from the artifact and returns them as a map.
@@ -432,10 +445,10 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @throws RepositoryException
 	 */
 	private static Set<String> getNodePropertyNames(Node jcrNode) throws RepositoryException {
-    	String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
-    	int srampPropsPrefixLen = srampPropsPrefix.length();
+		String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
+		int srampPropsPrefixLen = srampPropsPrefix.length();
 
-    	Set<String> rval = new HashSet<String>();
+		Set<String> rval = new HashSet<String>();
 		PropertyIterator properties = jcrNode.getProperties();
 		while (properties.hasNext()) {
 			Property prop = properties.nextProperty();
@@ -506,7 +519,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @throws Exception
 	 */
 	private void removeRelationship(String relationshipType) throws RepositoryException, VersionException,
-			LockException, ConstraintViolationException, AccessDeniedException, PathNotFoundException {
+	LockException, ConstraintViolationException, AccessDeniedException, PathNotFoundException {
 		String nodeName = "sramp-relationships:" + relationshipType;
 		if (this.jcrNode.hasNode(nodeName)) {
 			this.jcrNode.getNode(nodeName).remove();
