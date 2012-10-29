@@ -112,7 +112,7 @@ public class QueryResourceTest extends AbstractResourceTest {
 		Assert.assertEquals(5, feed.getEntries().size());
 		// Verify that we can choose to return only 2 of them
 		query = String.format("xsd/XsdDocument[@stamp%%3D'%1$s']", stampVal);
-		request = new ClientRequest(generateURL("/s-ramp?page=0&pageSize=2&query=" + query));
+		request = new ClientRequest(generateURL("/s-ramp?startIndex=0&count=2&query=" + query));
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		Assert.assertEquals(2, feed.getEntries().size());
@@ -136,7 +136,7 @@ public class QueryResourceTest extends AbstractResourceTest {
 			}
 		}
 		// TODO restore this assertion once this is fixed:  https://issues.jboss.org/browse/RESTEASY-761
-//		Assert.assertEquals(allTidxVals, actualTidxVals);
+		//		Assert.assertEquals(allTidxVals, actualTidxVals);
 	}
 
 	/**
@@ -202,29 +202,29 @@ public class QueryResourceTest extends AbstractResourceTest {
 		Assert.assertEquals(2, feed.getEntries().size());
 	}
 
-    public void addJpegDocument(String fname) throws Exception {
-        // Add the jpg to the repository
-        String artifactFileName = "photo.jpg";
-        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/user/" + artifactFileName);
-        try {
-            ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/JpgDocument"));
-            request.header("Slug", fname);
-            request.body("application/octet-stream", contentStream);
+	public void addJpegDocument(String fname) throws Exception {
+		// Add the jpg to the repository
+		String artifactFileName = "photo.jpg";
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/user/" + artifactFileName);
+		try {
+			ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/JpgDocument"));
+			request.header("Slug", fname);
+			request.body("application/octet-stream", contentStream);
 
-            ClientResponse<Entry> response = request.post(Entry.class);
+			ClientResponse<Entry> response = request.post(Entry.class);
 
-            Entry entry = response.getEntity();
-            Assert.assertEquals(fname, entry.getTitle());
-            BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
-            Assert.assertTrue(arty instanceof UserDefinedArtifactType);
-            UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
-            Assert.assertEquals(fname, doc.getName());
-            Assert.assertEquals("JpgDocument", doc.getUserType());
-            Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
-            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
-        } finally {
-            IOUtils.closeQuietly(contentStream);
-        }
-    }
+			Entry entry = response.getEntity();
+			Assert.assertEquals(fname, entry.getTitle());
+			BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+			Assert.assertTrue(arty instanceof UserDefinedArtifactType);
+			UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
+			Assert.assertEquals(fname, doc.getName());
+			Assert.assertEquals("JpgDocument", doc.getUserType());
+			Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+			Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+		} finally {
+			IOUtils.closeQuietly(contentStream);
+		}
+	}
 
 }
