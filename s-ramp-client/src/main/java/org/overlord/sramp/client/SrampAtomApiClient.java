@@ -124,10 +124,10 @@ public class SrampAtomApiClient {
 			mimeType = MimeTypes.getContentType(artifactFileName);
 		}
 		try {
-		    String type = artifactType.getArtifactType().getType();
-		    if ("user".equals(artifactType.getArtifactType().getModel()) && artifactType.getUserType()!=null) {
-                type = artifactType.getUserType();
-            }
+			String type = artifactType.getArtifactType().getType();
+			if ("user".equals(artifactType.getArtifactType().getModel()) && artifactType.getUserType()!=null) {
+				type = artifactType.getUserType();
+			}
 			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), type);
 			ClientRequest request = new ClientRequest(atomUrl);
@@ -148,55 +148,55 @@ public class SrampAtomApiClient {
 	}
 
 	/**
-     * Please refer to javadoc in  {@link SrampAtomApiClient#uploadArtifact(String, String, InputStream, String)}
-     * @param baseArtifactType
-     * @param content
-     * @throws SrampClientException
-     * @throws SrampAtomException
-     */
-    public BaseArtifactType uploadArtifact(BaseArtifactType baseArtifactType, InputStream content)
-            throws SrampClientException, SrampAtomException {
-        ArtifactType artifactType = ArtifactType.valueOf(baseArtifactType);
-        String artifactFileName = baseArtifactType.getName();
-        // Determine the mime type if it's not included in the artifact type.
-        String mimeType = artifactType.getMimeType();
-        if (mimeType == null) {
-            mimeType = MimeTypes.getContentType(artifactFileName);
-            artifactType.setMimeType(mimeType);
-        }
-        try {
-            String type = artifactType.getArtifactType().getType();
-            if ("user".equals(artifactType.getArtifactType().getModel()) && artifactType.getUserType()!=null) {
-                type = artifactType.getUserType();
-            }
-            String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
-                    artifactType.getArtifactType().getModel(), type);
-            ClientRequest request = new ClientRequest(atomUrl);
+	 * Please refer to javadoc in  {@link SrampAtomApiClient#uploadArtifact(String, String, InputStream, String)}
+	 * @param baseArtifactType
+	 * @param content
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+	public BaseArtifactType uploadArtifact(BaseArtifactType baseArtifactType, InputStream content)
+			throws SrampClientException, SrampAtomException {
+		ArtifactType artifactType = ArtifactType.valueOf(baseArtifactType);
+		String artifactFileName = baseArtifactType.getName();
+		// Determine the mime type if it's not included in the artifact type.
+		String mimeType = artifactType.getMimeType();
+		if (mimeType == null) {
+			mimeType = MimeTypes.getContentType(artifactFileName);
+			artifactType.setMimeType(mimeType);
+		}
+		try {
+			String type = artifactType.getArtifactType().getType();
+			if ("user".equals(artifactType.getArtifactType().getModel()) && artifactType.getUserType()!=null) {
+				type = artifactType.getUserType();
+			}
+			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
+					artifactType.getArtifactType().getModel(), type);
+			ClientRequest request = new ClientRequest(atomUrl);
 
-            MultipartRelatedOutput output = new MultipartRelatedOutput();
+			MultipartRelatedOutput output = new MultipartRelatedOutput();
 
-            //1. Add first part, the S-RAMP entry
-            Entry atomEntry = SrampAtomUtils.wrapSrampArtifact(baseArtifactType);
+			//1. Add first part, the S-RAMP entry
+			Entry atomEntry = SrampAtomUtils.wrapSrampArtifact(baseArtifactType);
 
-            MediaType mediaType = new MediaType("application", "atom+xml");
-            output.addPart(atomEntry, mediaType);
+			MediaType mediaType = new MediaType("application", "atom+xml");
+			output.addPart(atomEntry, mediaType);
 
-            //2. Add second part, the content
-            request.body(artifactType.getMimeType(), content);
-            MediaType mediaType2 = MediaType.getInstance(artifactType.getMimeType());
-            output.addPart(content, mediaType2);
+			//2. Add second part, the content
+			request.body(artifactType.getMimeType(), content);
+			MediaType mediaType2 = MediaType.getInstance(artifactType.getMimeType());
+			output.addPart(content, mediaType2);
 
-            //3. Send the request
-            request.body(MultipartConstants.MULTIPART_RELATED, output);
-            ClientResponse<Entry> response = request.post(Entry.class);
-            Entry entry = response.getEntity();
-            return SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
-        } catch (SrampAtomException e) {
-            throw e;
-        } catch (Throwable e) {
-            throw new SrampClientException(e);
-        }
-    }
+			//3. Send the request
+			request.body(MultipartConstants.MULTIPART_RELATED, output);
+			ClientResponse<Entry> response = request.post(Entry.class);
+			Entry entry = response.getEntity();
+			return SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
+		} catch (SrampAtomException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
+	}
 
 	/**
 	 * Performs a batch operation by uploading an s-ramp package archive to the s-ramp server
@@ -273,8 +273,8 @@ public class SrampAtomApiClient {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
 			if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
-                artifactType = type.getUserType();
-            }
+				artifactType = type.getUserType();
+			}
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
@@ -298,15 +298,15 @@ public class SrampAtomApiClient {
 	 * @throws SrampAtomException
 	 */
 	public void updateArtifactContent(BaseArtifactType artifact, InputStream content) throws SrampClientException,
-			SrampAtomException {
+	SrampAtomException {
 		try {
 			ArtifactType type = ArtifactType.valueOf(artifact);
 
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-            if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
-                artifactType = type.getUserType();
-            }
+			if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
+				artifactType = type.getUserType();
+			}
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
@@ -331,8 +331,8 @@ public class SrampAtomApiClient {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
 			if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
-                artifactType = type.getUserType();
-            }
+				artifactType = type.getUserType();
+			}
 			String artifactUuid = uuid;
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = new ClientRequest(atomUrl);
@@ -357,15 +357,15 @@ public class SrampAtomApiClient {
 	/**
 	 * Executes the given s-ramp query xpath and returns a Feed of the matching artifacts.
 	 * @param srampQuery the s-ramp query (xpath formatted)
-	 * @param page which page of results to return (0 indexed)
-	 * @param pageSize the size of the page of results to return
+	 * @param startIndex which index within the result to start (0 indexed)
+	 * @param count the size of the page of results to return
 	 * @param orderBy the s-ramp property to use for sorting (name, uuid, createdOn, etc)
 	 * @param ascending the direction of the sort
 	 * @return an Atom {@link Feed}
 	 * @throws SrampClientException
 	 * @throws SrampAtomException
 	 */
-	public QueryResultSet query(String srampQuery, int page, int pageSize, String orderBy, boolean ascending)
+	public QueryResultSet query(String srampQuery, int startIndex, int count, String orderBy, boolean ascending)
 			throws SrampClientException, SrampAtomException {
 		try {
 			String xpath = srampQuery;
@@ -379,8 +379,8 @@ public class SrampAtomApiClient {
 			ClientRequest request = new ClientRequest(atomUrl);
 			MultipartFormDataOutput formData = new MultipartFormDataOutput();
 			formData.addFormData("query", xpath, MediaType.TEXT_PLAIN_TYPE);
-			formData.addFormData("page", String.valueOf(page), MediaType.TEXT_PLAIN_TYPE);
-			formData.addFormData("pageSize", String.valueOf(pageSize), MediaType.TEXT_PLAIN_TYPE);
+			formData.addFormData("startIndex", String.valueOf(startIndex), MediaType.TEXT_PLAIN_TYPE);
+			formData.addFormData("count", String.valueOf(count), MediaType.TEXT_PLAIN_TYPE);
 			formData.addFormData("orderBy", orderBy, MediaType.TEXT_PLAIN_TYPE);
 			formData.addFormData("ascending", String.valueOf(ascending), MediaType.TEXT_PLAIN_TYPE);
 

@@ -74,7 +74,7 @@ public class FeedResourceTest extends AbstractResourceTest {
 		Assert.assertEquals(numEntries, uuidsFound);
 
 		// Make sure the query params work
-		request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument?page=2&pageSize=2"));
+		request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument?startPage=2&count=2"));
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		Assert.assertTrue("Expected 2 entries.", feed.getEntries().size() == 2);

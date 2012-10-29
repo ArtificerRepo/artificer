@@ -49,23 +49,23 @@ public abstract class AbstractFeedResource {
 	protected AbstractFeedResource() {
 	}
 
-    /**
-     * Common method that performs a query for artifacts and returns them in an Atom {@link Feed}.
-     * @param query the x-path formatted s-ramp query
-     * @param page which page in the results should be returned
-     * @param pageSize the size of each page of results
-     * @param orderBy the property to sort the results by
-     * @param ascending the sort direction
-     * @param propNames the set of s-ramp property names - the extra properties that the query should return as part of the {@link Feed}
-     * @return an Atom {@link Feed}
-     * @throws SrampAtomException
-     */
-	protected Feed createArtifactFeed(String query, Integer page, Integer pageSize, String orderBy,
+	/**
+	 * Common method that performs a query for artifacts and returns them in an Atom {@link Feed}.
+	 * @param query the x-path formatted s-ramp query
+	 * @param startIndex which index within the result set to start with (0 indexed)
+	 * @param count the number of items desired
+	 * @param orderBy the property to sort the results by
+	 * @param ascending the sort direction
+	 * @param propNames the set of s-ramp property names - the extra properties that the query should return as part of the {@link Feed}
+	 * @return an Atom {@link Feed}
+	 * @throws SrampAtomException
+	 */
+	protected Feed createArtifactFeed(String query, Integer startIndex, Integer count, String orderBy,
 			Boolean ascending, Set<String> propNames, String baseUrl) throws SrampAtomException {
-		if (page == null)
-			page = 0;
-		if (pageSize == null)
-			pageSize = 20;
+		if (startIndex == null)
+			startIndex = 0;
+		if (count == null)
+			count = 100;
 		if (orderBy == null)
 			orderBy = "name";
 		if (ascending == null)
@@ -76,10 +76,10 @@ public abstract class AbstractFeedResource {
 			QueryManager queryManager = QueryManagerFactory.newInstance();
 			SrampQuery srampQuery = queryManager.createQuery(query, orderBy, ascending);
 			artifactSet = srampQuery.executeQuery();
-			int startIdx = page * pageSize;
-			int endIdx = startIdx + pageSize - 1;
+			int startIdx = startIndex;
+			int endIdx = startIdx + count - 1;
 			Feed feed = createFeed(artifactSet, startIdx, endIdx, propNames, baseUrl);
-			addPaginationLinks(feed, artifactSet, query, page, pageSize, orderBy, ascending);
+			addPaginationLinks(feed, artifactSet, query, startIndex, count, orderBy, ascending);
 			return feed;
 		} catch (Throwable e) {
 			throw new SrampAtomException(e);
@@ -87,7 +87,7 @@ public abstract class AbstractFeedResource {
 			if (artifactSet != null)
 				artifactSet.close();
 		}
-    }
+	}
 
 	/**
 	 * Creates the Atom {@link Feed} from the given artifact set (query result set).
@@ -126,13 +126,13 @@ public abstract class AbstractFeedResource {
 		}
 
 		// Now get only the rows we're interested in.
-        ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor(baseUrl, propNames);
+		ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor(baseUrl, propNames);
 		for (int i = fromRow; i <= toRow; i++) {
 			if (!iterator.hasNext())
 				break;
-            BaseArtifactType artifact = iterator.next();
-            ArtifactVisitorHelper.visitArtifact(visitor, artifact);
-            Entry entry = visitor.getAtomEntry();
+			BaseArtifactType artifact = iterator.next();
+			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+			Entry entry = visitor.getAtomEntry();
 			feed.getEntries().add(entry);
 			visitor.reset();
 		}
@@ -148,30 +148,31 @@ public abstract class AbstractFeedResource {
 	 * @param feed
 	 * @param query
 	 * @param artifactSet
-	 * @param page
-	 * @param pageSize
+	 * @param startIndex
+	 * @param count
 	 * @param orderBy
 	 * @param ascending
 	 * @throws UnsupportedEncodingException
 	 */
-	private void addPaginationLinks(Feed feed, ArtifactSet artifactSet, String query, int page, int pageSize,
+	private void addPaginationLinks(Feed feed, ArtifactSet artifactSet, String query, int startIndex, int count,
 			String orderBy, boolean ascending) throws UnsupportedEncodingException {
 		String endpoint = "http://localhost:8080/s-ramp-atom/s-ramp";
 
 		String hrefPattern = "%1$s?query=%2$s&page=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s";
 		String encodedQuery = URLEncoder.encode(query, "UTF-8");
-		String firstHref = String.format(hrefPattern, endpoint, encodedQuery, 0, String.valueOf(pageSize),
+		String firstHref = String.format(hrefPattern, endpoint, encodedQuery, 0, String.valueOf(count),
 				String.valueOf(orderBy), String.valueOf(ascending));
-		String prevHref = String.format(hrefPattern, endpoint, encodedQuery, page - 1, String.valueOf(pageSize),
+		int prevIndex = Math.max(0,  startIndex - count);
+		String prevHref = String.format(hrefPattern, endpoint, encodedQuery, prevIndex, String.valueOf(count),
 				String.valueOf(orderBy), String.valueOf(ascending));
-		String nextHref = String.format(hrefPattern, endpoint, encodedQuery, page + 1, String.valueOf(pageSize),
+		String nextHref = String.format(hrefPattern, endpoint, encodedQuery, startIndex + count, String.valueOf(count),
 				String.valueOf(orderBy), String.valueOf(ascending));
 
 		Link first = new Link("first", firstHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
 		Link prev = new Link("prev", prevHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
 		Link next = new Link("next", nextHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
 
-		if (page > 0) {
+		if (startIndex > 0) {
 			feed.getLinks().add(first);
 			feed.getLinks().add(prev);
 		}
