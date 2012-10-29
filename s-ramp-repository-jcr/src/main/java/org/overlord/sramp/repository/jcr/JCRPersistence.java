@@ -171,6 +171,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 
 			return artifact;
 		} catch (Throwable t) {
+			log.error("Error found persisting artifact: " + metaData.getUuid(), t);
 			throw new RepositoryException(t);
 		} finally {
 			IOUtils.closeQuietly(content);
@@ -186,8 +187,11 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			InputStream sourceArtifactContent) throws DerivedArtifactsCreationException {
 		try {
 			ArtifactDeriver deriver = ArtifactDeriverFactory.createArtifactDeriver(ArtifactType.valueOf(sourceArtifact));
-			return deriver.derive(sourceArtifact, sourceArtifactContent);
+			Collection<DerivedArtifactType> derivedArtifacts = deriver.derive(sourceArtifact, sourceArtifactContent);
+			log.debug("Successfully derived {} artifacts from {}.", derivedArtifacts.size(), sourceArtifact.getUuid());
+			return derivedArtifacts;
 		} catch (IOException e) {
+			log.error("Error found deriving artifact: " + sourceArtifact.getUuid(), e);
 			throw new DerivedArtifactsCreationException(e);
 		}
 	}
@@ -244,10 +248,14 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 					throw visitor.getError();
 			}
 
+			log.debug("Successfully saved {} artifacts.", derivedArtifacts.size());
+
 			session.save();
 		} catch (RepositoryException e) {
+			log.error("Error found persisting derived artifacts.", e);
 			throw e;
 		} catch (Throwable t) {
+			log.error("Error found persisting derived artifacts.", t);
 			throw new RepositoryException(t);
 		}
 	}
@@ -268,8 +276,10 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				return null;
 			}
 		} catch (RepositoryException re) {
+			log.error("Error found getting artifact meta-data: " + uuid, re);
 			throw re;
 		} catch (Throwable t) {
+			log.error("Error found getting artifact meta-data: " + uuid, t);
 			throw new RepositoryException(t);
 		} finally {
 			JCRRepository.logoutQuietly(session);
@@ -291,6 +301,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			File tempFile = saveToTempFile(artifactContentNode);
 			return new DeleteOnCloseFileInputStream(tempFile);
 		} catch (Throwable t) {
+			log.error("Error found getting artifact content: " + uuid, t);
 			throw new RepositoryException(t);
 		} finally {
 			JCRRepository.logoutQuietly(session);
@@ -316,12 +327,16 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				throw visitor.getError();
 			session.save();
 
+			log.debug("Successfully updated meta-data for artifact {}.", artifact.getUuid());
+
 			if (log.isDebugEnabled()) {
 				printArtifactGraph(artifact.getUuid(), type);
 			}
 		} catch (RepositoryException e) {
+			log.error("Error found updating artifact meta-data: " + artifact.getUuid(), e);
 			throw e;
 		} catch (Throwable t) {
+			log.error("Error found updating artifact meta-data: " + artifact.getUuid(), t);
 			throw new RepositoryException(t);
 		} finally {
 			JCRRepository.logoutQuietly(session);
@@ -346,9 +361,12 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			tools.uploadFile(session, artifactPath, content);
 
 			session.save();
+			log.debug("Successfully updated content for artifact {}.", uuid);
 		} catch (RepositoryException e) {
+			log.error("Error found updating artifact content: " + uuid, e);
 			throw e;
 		} catch (Throwable t) {
+			log.error("Error found updating artifact content: " + uuid, t);
 			throw new RepositoryException(t);
 		} finally {
 			JCRRepository.logoutQuietly(session);
@@ -372,9 +390,12 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				throw new RepositoryException("Artifact not found.");
 			}
 			session.save();
+			log.debug("Successfully deleted artifact {}.", uuid);
 		} catch (RepositoryException e) {
+			log.error("Error found deleting artifact: " + uuid, e);
 			throw e;
 		} catch (Throwable t) {
+			log.error("Error found deleting artifact: " + uuid, t);
 			throw new RepositoryException(t);
 		} finally {
 			JCRRepository.logoutQuietly(session);
@@ -402,11 +423,14 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology");
 				o2jcr.write(ontology, ontologyNode);
 				session.save();
+				log.debug("Successfully saved ontology {}.", ontology.getUuid());
 				return ontology;
 			}
 		} catch (RepositoryException e) {
+			log.error("Error found persisting ontology: " + ontology.getUuid(), e);
 			throw e;
 		} catch (Throwable t) {
+			log.error("Error found persisting ontology: " + ontology.getUuid(), t);
 			throw new RepositoryException(t);
 		} finally {
 			JCRRepository.logoutQuietly(session);
@@ -435,8 +459,10 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			session.save();
 			return ontology;
 		} catch (RepositoryException e) {
+			log.error("Error found getting ontology: " + uuid, e);
 			throw e;
 		} catch (Throwable t) {
+			log.error("Error found getting ontology: " + uuid, t);
 			throw new RepositoryException(t);
 		} finally {
 			JCRRepository.logoutQuietly(session);
@@ -465,6 +491,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			}
 			return ontologies;
 		} catch (Throwable t) {
+			log.error("Error found getting all ontologies.", t);
 			throw new RepositoryException(t);
 		} finally {
 			JCRRepository.logoutQuietly(session);
@@ -492,10 +519,13 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			} else {
 				throw new RepositoryException("Ontology does not exist.");
 			}
+			log.debug("Successfully updated ontology {}.", ontology.getUuid());
 			session.save();
 		} catch (RepositoryException e) {
+			log.error("Error found updating ontology: " + ontology.getUuid(), e);
 			throw e;
 		} catch (Throwable t) {
+			log.error("Error found updating ontology: " + ontology.getUuid(), t);
 			throw new RepositoryException(t);
 		} finally {
 			JCRRepository.logoutQuietly(session);
@@ -519,9 +549,12 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				throw new RepositoryException("Ontology does not exist.");
 			}
 			session.save();
+			log.debug("Successfully deleted ontology {}.", uuid);
 		} catch (RepositoryException e) {
+			log.error("Error found deleting ontology: " + uuid, e);
 			throw e;
 		} catch (Throwable t) {
+			log.error("Error found deleting ontology: " + uuid, t);
 			throw new RepositoryException(t);
 		} finally {
 			JCRRepository.logoutQuietly(session);

@@ -83,8 +83,14 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 				log.debug("JCR-SQL2 Query:\n---------------\n" + jcrSql2Query + "\n^^^^ FROM ^^^^\n" + originalQuery);
 			}
 			javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, QueryLanguage.JCR_SQL2);
+			long startTime = System.currentTimeMillis();
 			QueryResult jcrQueryResult = jcrQuery.execute();
 			NodeIterator jcrNodes = jcrQueryResult.getNodes();
+			long endTime = System.currentTimeMillis();
+
+			log.debug("Successfully executed JCR-SQL2 query: {}", jcrSql2Query);
+			log.debug("Query exectued in {} ms", endTime - startTime);
+
 			return new JCRArtifactSet(session, jcrNodes);
 		} catch (Throwable t) {
 			// Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
