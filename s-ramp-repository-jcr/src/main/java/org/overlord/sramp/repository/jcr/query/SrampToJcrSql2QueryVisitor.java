@@ -15,7 +15,11 @@
  */
 package org.overlord.sramp.repository.jcr.query;
 
+import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -37,6 +41,8 @@ import org.overlord.sramp.query.xpath.ast.Query;
 import org.overlord.sramp.query.xpath.ast.RelationshipPath;
 import org.overlord.sramp.query.xpath.ast.SubartifactSet;
 import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
+import org.overlord.sramp.repository.RepositoryException;
+import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 
 /**
@@ -46,6 +52,11 @@ import org.overlord.sramp.repository.jcr.JCRConstants;
  */
 public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 
+	private static QName CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAnyOf");
+	private static QName CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAllOf");
+	private static QName EXACTLY_CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAnyOf");
+	private static QName EXACTLY_CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAllOf");
+	private static QName MATCHES = new QName("http://www.w3.org/2005/xpath-functions", "matches");
 	private static Map<QName, String> corePropertyMap = new HashMap<QName, String>();
 	static {
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "createdBy"), "jcr:createdBy");
@@ -62,11 +73,14 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	private StringBuilder whereBuilder = new StringBuilder();
 	private String predicateContext = "artifact";
 	private int relationshipJoinCounter = 1;
+	private ClassificationHelper classificationHelper;
 
 	/**
 	 * Default constructor.
+	 * @param classificationHelper
 	 */
-	public SrampToJcrSql2QueryVisitor() {
+	public SrampToJcrSql2QueryVisitor(ClassificationHelper classificationHelper) {
+		this.classificationHelper = classificationHelper;
 	}
 
 	/**
@@ -133,7 +147,10 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Argument node) {
-		throw new RuntimeException("Function arguments not yet supported.");
+		if (node.getPrimaryExpr() != null)
+			node.getPrimaryExpr().accept(this);
+		else
+			throw new RuntimeException("Function arguments (except primary expressions) are not supported.");
 	}
 
 	/**
@@ -207,7 +224,71 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(FunctionCall node) {
-		throw new RuntimeException("Function calls not yet supported.");
+		if (SrampConstants.SRAMP_NS.equals(node.getFunctionName().getNamespaceURI())) {
+			String propertyName = null, operator = null;
+			Collection<URI> classifications = resolveArgumentsToClassifications(node.getArguments());
+			if (node.getFunctionName().equals(CLASSIFIED_BY_ALL_OF)) {
+				propertyName = "sramp:normalizedClassifiedBy";
+				operator = "AND";
+			} else if (node.getFunctionName().equals(CLASSIFIED_BY_ANY_OF)) {
+				propertyName = "sramp:normalizedClassifiedBy";
+				operator = "OR";
+			} else if (node.getFunctionName().equals(EXACTLY_CLASSIFIED_BY_ALL_OF)) {
+				propertyName = "sramp:classifiedBy";
+				operator = "AND";
+			} else if (node.getFunctionName().equals(EXACTLY_CLASSIFIED_BY_ANY_OF)) {
+				propertyName = "sramp:classifiedBy";
+				operator = "OR";
+			} else {
+				throw new RuntimeException("Function not supported: " + node.getFunctionName().toString());
+			}
+
+			if (classifications.size() > 1) {
+				this.whereBuilder.append("(");
+			}
+			boolean first = true;
+			for (URI classification : classifications) {
+				if (!first) {
+					this.whereBuilder.append(" ");
+					this.whereBuilder.append(operator);
+					this.whereBuilder.append(" ");
+				}
+				this.whereBuilder.append("artifact.[");
+				this.whereBuilder.append(propertyName);
+				this.whereBuilder.append("] = '");
+				this.whereBuilder.append(classification.toString());
+				this.whereBuilder.append("'");
+				first = false;
+			}
+			if (classifications.size() > 1) {
+				this.whereBuilder.append(")");
+			}
+		} else if (MATCHES.equals(node.getFunctionName())) {
+			// TODO support the 'matches' s-ramp function here
+			throw new RuntimeException("The fn:matches() function is not yet supported.");
+		} else {
+			throw new RuntimeException("Function not supported: " + node.getFunctionName().toString());
+		}
+	}
+
+	/**
+	 * Resolves the list of arguments to a collection of classification URIs.
+	 * @param arguments
+	 */
+	private Collection<URI> resolveArgumentsToClassifications(List<Argument> arguments) {
+		Collection<String> classifiedBy = new HashSet<String>();
+		for (int idx = 1; idx < arguments.size(); idx++) {
+			Argument arg = arguments.get(idx);
+			if (arg.getPrimaryExpr() == null || arg.getPrimaryExpr().getLiteral() == null) {
+				throw new RuntimeException("Classifications must be URI formatted string literals.");
+			}
+			classifiedBy.add(arg.getPrimaryExpr().getLiteral());
+		}
+		try {
+			return this.classificationHelper.resolveAll(classifiedBy);
+		} catch (RepositoryException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

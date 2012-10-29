@@ -37,12 +37,13 @@ public class SrampOntology {
 	private String comment;
 	private String base;
 	private String id;
-	private List<SrampOntology.Class> rootClasses = new ArrayList<SrampOntology.Class>();
-	private Map<URI, SrampOntology.Class> classIndex = new HashMap<URI, SrampOntology.Class>();
 	private String createdBy;
 	private Date createdOn;
 	private String lastModifiedBy;
 	private Date lastModifiedOn;
+	private List<SrampOntology.Class> rootClasses = new ArrayList<SrampOntology.Class>();
+	private Map<URI, SrampOntology.Class> classIndexByUri = new HashMap<URI, SrampOntology.Class>();
+	private Map<String, SrampOntology.Class> classIndexById = new HashMap<String, SrampOntology.Class>();
 
 	/**
 	 * Constructor.
@@ -175,14 +176,22 @@ public class SrampOntology {
 	 * Finds a class by its unique id within the ontology.
 	 * @param id
 	 */
-	public SrampOntology.Class findClass(String id) {
-		for (SrampOntology.Class candidate : rootClasses) {
-			SrampOntology.Class found = candidate.findClass(id);
-			if (found != null) {
-				return found;
+	public synchronized SrampOntology.Class findClass(String id) {
+		if (classIndexById.containsKey(id)) {
+			return classIndexById.get(id);
+		} else {
+			SrampOntology.Class found = null;
+			for (SrampOntology.Class candidate : rootClasses) {
+				found = candidate.findClass(id);
+				if (found != null) {
+					break;
+				}
 			}
+			if (found != null) {
+				classIndexById.put(id, found);
+			}
+			return found;
 		}
-		return null;
 	}
 
 	/**
@@ -190,8 +199,8 @@ public class SrampOntology {
 	 * @param uri
 	 */
 	public synchronized SrampOntology.Class findClass(URI uri) {
-		if (classIndex.containsKey(uri)) {
-			return classIndex.get(uri);
+		if (classIndexByUri.containsKey(uri)) {
+			return classIndexByUri.get(uri);
 		} else {
 			SrampOntology.Class found = null;
 			for (SrampOntology.Class candidate : rootClasses) {
@@ -201,7 +210,7 @@ public class SrampOntology {
 				}
 			}
 			if (found != null) {
-				classIndex.put(uri, found);
+				classIndexByUri.put(uri, found);
 			}
 			return found;
 		}
