@@ -15,30 +15,47 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.shell.commands.NoOpCommand;
 
 /**
- * An implementation of the {@link ShellCommandReader} that uses standard input
- * to read commands typed in by the user.  This implementation uses the Java
- * System.console() facility to read user input.
+ * An implementation of the {@link ShellCommandReader} that uses allows more
+ * dynamic interactions with the user.  This implementation supports features
+ * such as tab completion and command history navigation.
+ * 
+ * TODO this doesn't work interactively yet because I can't figure out how to get the characters typed by the user as she types them - can only get them after she hits enter
  * 
  * @author eric.wittmann@redhat.com
  */
-public class ConsoleShellCommandReader implements ShellCommandReader {
+public class InteractiveShellCommandReader implements ShellCommandReader {
 
 	private ShellCommandFactory factory;
+	private List<String> lineHistory = new LinkedList<String>();
+	private InputStream userStream = new FileInputStream(FileDescriptor.in);
 
 	/**
 	 * Constructor.
 	 * @param factory
 	 */
-	public ConsoleShellCommandReader(ShellCommandFactory factory) {
+	public InteractiveShellCommandReader(ShellCommandFactory factory) {
 		this.factory = factory;
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommandReader#close()
+	 */
+	@Override
+	public void close() throws IOException {
+		userStream.close();
 	}
 
 	/**
@@ -46,15 +63,10 @@ public class ConsoleShellCommandReader implements ShellCommandReader {
 	 */
 	@Override
 	public ShellCommand read() throws Exception {
-		if (System.console() == null) {
-			System.out.println("No interactive console available, exiting.");
-			System.exit(1);
-		}
-		String line = System.console().readLine("s-ramp> ");
+		String line = readLine();
 		if (line.trim().length() == 0) {
 			return new NoOpCommand();
 		}
-
 		String [] split = line.split("\\s");
 		String encodedCommandName = split[0];
 		QName commandName = null;
@@ -71,10 +83,29 @@ public class ConsoleShellCommandReader implements ShellCommandReader {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommandReader#close()
+	 * Prompts the user for a single line of input.
+	 * @param userStream
+	 * @throws IOException
 	 */
-	@Override
-	public void close() throws IOException {
+	private String readLine() throws IOException {
+		if (userStream.available() == 0) {
+			System.out.print("sramp> ");
+		}
+		boolean done = false;
+		StringBuilder builder = new StringBuilder();
+		while (!done) {
+			char c = (char) userStream.read();
+			if (c == '\n') {
+				done = true;
+			} else {
+				builder.append(c);
+			}
+		}
+		String line = builder.toString().trim();
+		if (line.length() > 0) {
+			lineHistory.add(line);
+		}
+		return line;
 	}
 
 }

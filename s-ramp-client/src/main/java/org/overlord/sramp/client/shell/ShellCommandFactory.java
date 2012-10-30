@@ -38,6 +38,7 @@ import org.overlord.sramp.client.shell.commands.core.ConnectCommand;
 import org.overlord.sramp.client.shell.commands.core.GetContentCommand;
 import org.overlord.sramp.client.shell.commands.core.GetMetaDataCommand;
 import org.overlord.sramp.client.shell.commands.core.QueryCommand;
+import org.overlord.sramp.client.shell.commands.core.UploadArtifactCommand;
 
 /**
  * Factory used to create shell commands.
@@ -64,12 +65,14 @@ public class ShellCommandFactory {
 		registry = new HashMap<QName, Class<? extends ShellCommand>>();
 		// Core commands
 		registry.put(new QName("s-ramp", "exit"), ExitCommand.class);
+		registry.put(new QName("s-ramp", "quit"), ExitCommand.class);
 
 		// S-RAMP client commands
 		registry.put(new QName("s-ramp", "connect"), ConnectCommand.class);
 		registry.put(new QName("s-ramp", "query"), QueryCommand.class);
 		registry.put(new QName("s-ramp", "getMetaData"), GetMetaDataCommand.class);
 		registry.put(new QName("s-ramp", "getContent"), GetContentCommand.class);
+		registry.put(new QName("s-ramp", "uploadArtifact"), UploadArtifactCommand.class);
 
 		// Archive commands
 		registry.put(new QName("archive", "new"), NewArchiveCommand.class);

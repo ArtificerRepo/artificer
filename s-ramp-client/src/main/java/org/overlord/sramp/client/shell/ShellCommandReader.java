@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.io.IOException;
+
 /**
  * Interface used to read commands from the user (or some other source, like
  * an input file).
@@ -27,5 +29,11 @@ public interface ShellCommandReader {
 	 * @throws Exception
 	 */
 	public ShellCommand read() throws Exception;
+
+	/**
+	 * Called by the shell when exiting.
+	 * @throws IOException
+	 */
+	public void close() throws IOException;
 
 }

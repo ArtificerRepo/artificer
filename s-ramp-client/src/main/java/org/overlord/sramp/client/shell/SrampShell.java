@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.io.IOException;
+
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 
 
@@ -84,6 +86,7 @@ public class SrampShell {
 	 */
 	public void shutdown() {
 		System.out.print("S-RAMP shell shutting down...");
+		try { this.reader.close(); } catch (IOException e) { }
 		this.context.destroy();
 		System.out.println("done.");
 	}
