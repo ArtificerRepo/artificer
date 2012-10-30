@@ -71,7 +71,11 @@ import org.s_ramp.xmlns._2010.s_ramp.PortTarget;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
 import org.s_ramp.xmlns._2010.s_ramp.PortTypeEnum;
 import org.s_ramp.xmlns._2010.s_ramp.PortTypeTarget;
+import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
+import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlExtensionEnum;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlExtensionTarget;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeEnum;
@@ -125,6 +129,7 @@ public class WsdlDeriver extends XsdDeriver {
 		super.configureNamespaceMappings(namespaceContext);
 
 		namespaceContext.addMapping("wsdl", "http://schemas.xmlsoap.org/wsdl/");
+		namespaceContext.addMapping("soap", "http://schemas.xmlsoap.org/wsdl/soap/");
 	}
 
 	/**
@@ -542,6 +547,26 @@ public class WsdlDeriver extends XsdDeriver {
 					target.setArtifactType(BindingOperationEnum.BINDING_OPERATION);
 					binding.getBindingOperation().add(target);
 				}
+
+				// Process soap extensions
+				NodeList soapBindings = (NodeList) this.query(xpath, bindingElem, "./soap:binding", XPathConstants.NODESET);
+				for (int jdx = 0; jdx < bindings.getLength(); jdx++) {
+					Element soapBindingElem = (Element) soapBindings.item(jdx);
+					SoapBinding soapBinding = new SoapBinding();
+					soapBinding.setUuid(UUID.randomUUID().toString());
+					soapBinding.setArtifactType(BaseArtifactEnum.SOAP_BINDING);
+					soapBinding.setName("soap:binding");
+					soapBinding.setNamespace(soapBindingElem.getNamespaceURI());
+					soapBinding.setNCName(soapBindingElem.getLocalName());
+					soapBinding.setStyle(soapBindingElem.getAttribute("style"));
+					soapBinding.setTransport(soapBindingElem.getAttribute("transport"));
+					derivedArtifacts.add(soapBinding);
+
+					WsdlExtensionTarget target = new WsdlExtensionTarget();
+					target.setArtifactType(WsdlExtensionEnum.WSDL_EXTENSION);
+					target.setValue(soapBinding.getUuid());
+					binding.getExtension().add(target);
+				}
 			}
 		}
 	}
@@ -791,6 +816,24 @@ public class WsdlDeriver extends XsdDeriver {
 
 			derivedArtifacts.add(port);
 			rval.add(port);
+
+			NodeList soapAddresses = (NodeList) this.query(xpath, portElem, "./soap:address", XPathConstants.NODESET);
+			for (int jdx = 0; jdx < soapAddresses.getLength(); jdx++) {
+				Element soapAddressElem = (Element) soapAddresses.item(jdx);
+				SoapAddress soapAddress = new SoapAddress();
+				soapAddress.setUuid(UUID.randomUUID().toString());
+				soapAddress.setArtifactType(BaseArtifactEnum.SOAP_ADDRESS);
+				soapAddress.setName("soap:address");
+				soapAddress.setNCName(soapAddressElem.getLocalName());
+				soapAddress.setNamespace(soapAddressElem.getNamespaceURI());
+				soapAddress.setSoapLocation(soapAddressElem.getAttribute("location"));
+				derivedArtifacts.add(soapAddress);
+
+				WsdlExtensionTarget target = new WsdlExtensionTarget();
+				target.setArtifactType(WsdlExtensionEnum.WSDL_EXTENSION);
+				target.setValue(soapAddress.getUuid());
+				port.getExtension().add(target);
+			}
 		}
 		return rval;
 	}

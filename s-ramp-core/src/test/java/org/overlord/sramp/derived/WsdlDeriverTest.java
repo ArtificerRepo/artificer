@@ -48,7 +48,10 @@ import org.s_ramp.xmlns._2010.s_ramp.Part;
 import org.s_ramp.xmlns._2010.s_ramp.Port;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
 import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
+import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
+import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlExtension;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 
 /**
@@ -86,7 +89,7 @@ public class WsdlDeriverTest {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/deriver.wsdl");
 			Collection<DerivedArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
 			Assert.assertNotNull(derivedArtifacts);
-			Assert.assertEquals(33, derivedArtifacts.size());
+			Assert.assertEquals(35, derivedArtifacts.size());
 
 			// Index the results by artifact type and name
 			Map<QName, DerivedArtifactType> index = new HashMap<QName, DerivedArtifactType>();
@@ -95,6 +98,9 @@ public class WsdlDeriverTest {
 					NamedWsdlDerivedArtifactType arty = (NamedWsdlDerivedArtifactType) artifact;
 					if (arty.getNCName() != null)
 						index.put(new QName(arty.getArtifactType().toString(), arty.getNCName()), artifact);
+				} else if (artifact instanceof WsdlExtension) {
+					WsdlExtension arty = (WsdlExtension) artifact;
+					index.put(new QName(arty.getArtifactType().toString(), arty.getNCName()), arty);
 				} else if (artifact instanceof ElementDeclaration) {
 					ElementDeclaration arty = (ElementDeclaration) artifact;
 					index.put(new QName(arty.getArtifactType().toString(), arty.getNCName()), artifact);
@@ -202,6 +208,18 @@ public class WsdlDeriverTest {
 			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((Binding) artifact).getNamespace());
 			Binding binding = (Binding) artifact;
 			Assert.assertEquals(2, binding.getBindingOperation().size());
+			Assert.assertEquals(1, binding.getExtension().size());
+
+			// Find the document style soap:binding
+			artifact = index.get(new QName(BaseArtifactEnum.SOAP_BINDING.toString(), "binding"));
+			Assert.assertNotNull(artifact);
+			Assert.assertEquals("soap:binding", artifact.getName());
+			Assert.assertEquals("binding", ((SoapBinding) artifact).getNCName());
+			Assert.assertEquals("http://schemas.xmlsoap.org/wsdl/soap/", ((SoapBinding) artifact).getNamespace());
+			SoapBinding soapBinding = (SoapBinding) artifact;
+			Assert.assertEquals("document", soapBinding.getStyle());
+			Assert.assertEquals("http://schemas.xmlsoap.org/soap/http", soapBinding.getTransport());
+			Assert.assertEquals(binding.getExtension().get(0).getValue(), soapBinding.getUuid());
 
 			// Find the binding operation named 'find'
 			artifact = index.get(new QName(BaseArtifactEnum.BINDING_OPERATION.toString(), "find"));
@@ -250,6 +268,17 @@ public class WsdlDeriverTest {
 			Port port = (Port) artifact;
 			Assert.assertNotNull(port.getBinding());
 			Assert.assertEquals(port.getBinding().getValue(), binding.getUuid());
+			Assert.assertEquals(1, port.getExtension().size());
+
+			// Find the soap:address
+			artifact = index.get(new QName(BaseArtifactEnum.SOAP_ADDRESS.toString(), "address"));
+			Assert.assertNotNull(artifact);
+			Assert.assertEquals("soap:address", artifact.getName());
+			Assert.assertEquals("address", ((SoapAddress) artifact).getNCName());
+			Assert.assertEquals("http://schemas.xmlsoap.org/wsdl/soap/", ((SoapAddress) artifact).getNamespace());
+			SoapAddress soapAddress = (SoapAddress) artifact;
+			Assert.assertEquals("http://localhost:8080/sample/sampleEP", soapAddress.getSoapLocation());
+			Assert.assertEquals(port.getExtension().get(0).getValue(), soapAddress.getUuid());
 
 		} finally {
 			IOUtils.closeQuietly(testSrcContent);
