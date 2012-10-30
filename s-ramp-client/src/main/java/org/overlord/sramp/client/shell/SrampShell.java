@@ -15,12 +15,7 @@
  */
 package org.overlord.sramp.client.shell;
 
-import java.util.Arrays;
-
-import javax.xml.namespace.QName;
-
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
-import org.overlord.sramp.client.shell.commands.NoOpCommand;
 
 
 /**
@@ -53,6 +48,7 @@ public class SrampShell {
 
 	private ShellCommandFactory factory = new ShellCommandFactory();
 	private ShellContextImpl context = new ShellContextImpl();
+	private ShellCommandReader reader;
 
 	/**
 	 * Constructor.
@@ -66,10 +62,11 @@ public class SrampShell {
 	 * @throws Exception
 	 */
 	public void run(String[] args) throws Exception {
+		reader = new ConsoleShellCommandReader(factory);
 		displayWelcomeMessage();
 		boolean done = false;
 		while (!done) {
-			ShellCommand command = readCommand();
+			ShellCommand command = reader.read();
 			try {
 				command.execute(context);
 			} catch (InvalidCommandArgumentException e) {
@@ -89,35 +86,6 @@ public class SrampShell {
 		System.out.print("S-RAMP shell shutting down...");
 		this.context.destroy();
 		System.out.println("done.");
-	}
-
-	/**
-	 * Reads a single command from user input.
-	 * @throws Exception
-	 */
-	private ShellCommand readCommand() throws Exception {
-		if (System.console() == null) {
-			System.out.println("No interactive console available, exiting.");
-			System.exit(1);
-		}
-		String line = System.console().readLine("s-ramp> ");
-		if (line.trim().length() == 0) {
-			return new NoOpCommand();
-		}
-
-		String [] split = line.split("\\s");
-		String encodedCommandName = split[0];
-		QName commandName = null;
-		if (encodedCommandName != null) {
-			if (encodedCommandName.contains(":")) {
-				String [] nameSplit = encodedCommandName.split(":");
-				commandName = new QName(nameSplit[0], nameSplit[1]);
-			} else {
-				commandName = new QName("s-ramp", encodedCommandName);
-			}
-		}
-		String [] args = Arrays.copyOfRange(split, 1, split.length);
-		return factory.createCommand(commandName, args);
 	}
 
 	/**
