@@ -62,8 +62,14 @@ public class ConnectCommand extends AbstractShellCommand {
 		String endpointUrlArg = this.requiredArgument(0, "Please specify a valid s-ramp URL.");
 		QName varName = new QName("s-ramp", "client");
 		SrampAtomApiClient client = new SrampAtomApiClient(endpointUrlArg);
-		context.setVariable(varName, client);
-		System.out.println("Connected to endpoint: " + endpointUrlArg);
+		try {
+			client.getServiceDocument();
+			context.setVariable(varName, client);
+			System.out.println("Successfully connected to S-RAMP endpoint: " + endpointUrlArg);
+		} catch (Exception e) {
+			System.out.println("FAILED to connect to S-RAMP endpoint: " + endpointUrlArg);
+			System.out.println("\t" + e.getMessage());
+		}
 	}
 
 }

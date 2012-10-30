@@ -27,6 +27,7 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.atom.app.AppService;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
@@ -60,6 +61,24 @@ public class SrampAtomApiClient {
 		this.endpoint = endpoint;
 		if (this.endpoint.endsWith("/")) {
 			this.endpoint = this.endpoint.substring(0, this.endpoint.length()-1);
+		}
+	}
+
+	/**
+	 * Gets the S-RAMP service document.
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+	public AppService getServiceDocument() throws SrampClientException, SrampAtomException {
+		try {
+			String atomUrl = String.format("%1$s/servicedocument", this.endpoint);
+			ClientRequest request = new ClientRequest(atomUrl);
+			ClientResponse<AppService> response = request.get(AppService.class);
+			return response.getEntity();
+		} catch (SrampAtomException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
 		}
 	}
 

@@ -63,7 +63,7 @@ public class ServiceDocumentResource
     @GET
     @Path("servicedocument")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-	public AppService getService() {
+	public AppService get() {
 		AppService appService = new AppService();
 		String hrefBase = getBaseUri();
 
