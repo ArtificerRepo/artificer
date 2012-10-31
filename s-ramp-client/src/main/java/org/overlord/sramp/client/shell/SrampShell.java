@@ -64,7 +64,7 @@ public class SrampShell {
 	 * @throws Exception
 	 */
 	public void run(String[] args) throws Exception {
-		reader = new ConsoleShellCommandReader(factory);
+		reader = new InteractiveShellCommandReader(factory);
 		displayWelcomeMessage();
 		boolean done = false;
 		while (!done) {

@@ -87,6 +87,10 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 		QName clientVarName = new QName("s-ramp", "client");
 		QName feedVarName = new QName("s-ramp", "feed");
 		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		if (client == null) {
+			System.out.println("No S-RAMP repository connection is currently open.");
+			return;
+		}
 
 		BaseArtifactType artifact = null;
 		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));

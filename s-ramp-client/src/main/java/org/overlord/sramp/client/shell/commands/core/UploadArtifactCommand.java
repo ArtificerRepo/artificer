@@ -49,7 +49,7 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:uploadArtifact <pathToArtifactContent> [<artifactType>]");
+		System.out.println("s-ramp:upload <pathToArtifactContent> [<artifactType>]");
 	}
 
 	/**
@@ -57,14 +57,14 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'uploadArtifact' command uploads the content of a local");
-		System.out.println("file to the S-RAMP repository, creating a new artifact.  The");
-		System.out.println("artifact type can optionally be provided.  If excluded, the");
-		System.out.println("artifact type will be determined based on file extension.");
+		System.out.println("The 'upload' command uploads the content of a local file to");
+		System.out.println("the S-RAMP repository, creating a new artifact.  The artifact");
+		System.out.println("type can optionally be provided.  If excluded, the artifact");
+		System.out.println("type will be determined based on file extension.");
 		System.out.println("");
 		System.out.println("Example usages:");
-		System.out.println(">  s-ramp:uploadArtifact /home/uname/files/mytypes.xsd");
-		System.out.println(">  s-ramp:uploadArtifact /home/uname/files/myservice.wsdl WsdlDocument");
+		System.out.println(">  s-ramp:upload /home/uname/files/mytypes.xsd");
+		System.out.println(">  s-ramp:upload /home/uname/files/myservice.wsdl WsdlDocument");
 	}
 
 	/**
@@ -77,6 +77,10 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 
 		QName clientVarName = new QName("s-ramp", "client");
 		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		if (client == null) {
+			System.out.println("No S-RAMP repository connection is currently open.");
+			return;
+		}
 		InputStream content = null;
 		try {
 			File file = new File(filePathArg);

@@ -35,10 +35,13 @@ import org.overlord.sramp.client.shell.commands.archive.PackArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.UpdateEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.core.ConnectCommand;
+import org.overlord.sramp.client.shell.commands.core.DisconnectCommand;
 import org.overlord.sramp.client.shell.commands.core.GetContentCommand;
 import org.overlord.sramp.client.shell.commands.core.GetMetaDataCommand;
 import org.overlord.sramp.client.shell.commands.core.QueryCommand;
 import org.overlord.sramp.client.shell.commands.core.UploadArtifactCommand;
+import org.overlord.sramp.client.shell.commands.ontology.ListOntologiesCommand;
+import org.overlord.sramp.client.shell.commands.ontology.UploadOntologyCommand;
 
 /**
  * Factory used to create shell commands.
@@ -69,10 +72,11 @@ public class ShellCommandFactory {
 
 		// S-RAMP client commands
 		registry.put(new QName("s-ramp", "connect"), ConnectCommand.class);
+		registry.put(new QName("s-ramp", "disconnect"), DisconnectCommand.class);
 		registry.put(new QName("s-ramp", "query"), QueryCommand.class);
 		registry.put(new QName("s-ramp", "getMetaData"), GetMetaDataCommand.class);
 		registry.put(new QName("s-ramp", "getContent"), GetContentCommand.class);
-		registry.put(new QName("s-ramp", "uploadArtifact"), UploadArtifactCommand.class);
+		registry.put(new QName("s-ramp", "upload"), UploadArtifactCommand.class);
 
 		// Archive commands
 		registry.put(new QName("archive", "new"), NewArchiveCommand.class);
@@ -84,6 +88,10 @@ public class ShellCommandFactory {
 		registry.put(new QName("archive", "removeEntry"), RemoveEntryArchiveCommand.class);
 		registry.put(new QName("archive", "listEntry"), ListEntryArchiveCommand.class);
 		registry.put(new QName("archive", "pack"), PackArchiveCommand.class);
+
+		// Ontology commands
+		registry.put(new QName("ontology", "upload"), UploadOntologyCommand.class);
+		registry.put(new QName("ontology", "list"), ListOntologiesCommand.class);
 	}
 
 	/**
