@@ -73,11 +73,11 @@ public class QueryCommand extends AbstractShellCommand {
 		QueryResultSet rset = client.query(queryArg, 0, 100, "uuid", true);
 		int entryIndex = 1;
 		System.out.printf("Atom Feed (%1$d entries)\n", rset.size());
-		System.out.printf("  Idx                 Type Name\n");
-		System.out.printf("  ---                 ---- ----\n");
+		System.out.printf("  Idx                    Type Name\n");
+		System.out.printf("  ---                    ---- ----\n");
 		for (ArtifactSummary summary : rset) {
 			ArtifactType type = summary.getType();
-			System.out.printf("  %1$3d %2$20s %3$-40s\n", entryIndex++, type.getArtifactType().getType()
+			System.out.printf("  %1$3d %2$23s %3$-40s\n", entryIndex++, type.getArtifactType().getType()
 					.toString(), summary.getName());
 		}
 		context.setVariable(new QName("s-ramp", "feed"), rset);

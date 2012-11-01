@@ -25,6 +25,12 @@ import java.io.IOException;
 public interface ShellCommandReader {
 
 	/**
+	 * Called to open the shell command reader.
+	 * @throws IOException
+	 */
+	public void open() throws IOException;
+
+	/**
 	 * Reads the next command from the input source.
 	 * @throws Exception
 	 */

@@ -101,7 +101,7 @@ public class HelpCommand extends AbstractShellCommand {
 				colCount = 0;
 			}
 		}
-		System.out.println("");
+		System.out.println("\n");
 		System.out.println("To get help for a specific command, try 'help <cmdNamespace>:<cmdName>'.");
 		System.out.println("");
 		System.out.println("To execute a specific command, try '<namespace>:<commandName> <args>'.");

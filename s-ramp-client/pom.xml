@@ -85,6 +85,11 @@
 			<artifactId>log4j</artifactId>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>jline</groupId>
+			<artifactId>jline</artifactId>
+			<version>${jline.version}</version>
+		</dependency>
 
 		<!-- Test dependencies -->
 		<dependency>

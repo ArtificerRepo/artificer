@@ -15,27 +15,32 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import jline.console.ConsoleReader;
+import java.io.InputStreamReader;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 /**
- * An implementation of the {@link ShellCommandReader} that uses JLine to provide
- * a rich console experience to the user, complete with history, tab completion,
- * and ansi output.
+ * An implementation of the {@link ShellCommandReader} that reads data from
+ * a file.
  *
  * @author eric.wittmann@redhat.com
  */
-public class InteractiveShellCommandReader extends AbstractShellCommandReader {
+public class FileShellCommandReader extends AbstractShellCommandReader {
 
-	private ConsoleReader consoleReader;
+	private String filePath;
+	private BufferedReader fileReader;
 
 	/**
 	 * Constructor.
 	 * @param factory
 	 */
-	public InteractiveShellCommandReader(ShellCommandFactory factory) {
+	public FileShellCommandReader(ShellCommandFactory factory, String filePath) {
 		super(factory);
+		this.filePath = filePath;
 	}
 
 	/**
@@ -43,8 +48,11 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	 */
 	@Override
 	public void open() throws IOException {
-		consoleReader = new ConsoleReader();
-		consoleReader.setPrompt("sramp> ");
+		File file = new File(filePath);
+		if (!file.isFile()) {
+			throw new FileNotFoundException(filePath);
+		}
+		this.fileReader = new BufferedReader(new InputStreamReader(FileUtils.openInputStream(file)));
 	}
 
 	/**
@@ -52,7 +60,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	 */
 	@Override
 	protected String readLine() throws IOException {
-		return consoleReader.readLine();
+		return fileReader.readLine();
 	}
 
 	/**
@@ -60,7 +68,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	 */
 	@Override
 	public void close() throws IOException {
-		consoleReader.shutdown();
+		IOUtils.closeQuietly(fileReader);
 	}
 
 }

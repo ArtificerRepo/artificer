@@ -15,59 +15,42 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.io.Console;
 import java.io.IOException;
-import java.util.Arrays;
-
-import javax.xml.namespace.QName;
-
-import org.overlord.sramp.client.shell.commands.NoOpCommand;
 
 /**
  * An implementation of the {@link ShellCommandReader} that uses standard input
  * to read commands typed in by the user.  This implementation uses the Java
  * System.console() facility to read user input.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
-public class ConsoleShellCommandReader implements ShellCommandReader {
+public class ConsoleShellCommandReader extends AbstractShellCommandReader {
 
-	private ShellCommandFactory factory;
+	private Console console;
 
 	/**
 	 * Constructor.
 	 * @param factory
 	 */
 	public ConsoleShellCommandReader(ShellCommandFactory factory) {
-		this.factory = factory;
+		super(factory);
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommandReader#read()
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommandReader#open()
 	 */
 	@Override
-	public ShellCommand read() throws Exception {
-		if (System.console() == null) {
-			System.out.println("No interactive console available, exiting.");
-			System.exit(1);
-		}
-		String line = System.console().readLine("s-ramp> ");
-		if (line.trim().length() == 0) {
-			return new NoOpCommand();
-		}
+	public void open() throws IOException {
+		this.console = System.console();
+	}
 
-		String [] split = line.split("\\s");
-		String encodedCommandName = split[0];
-		QName commandName = null;
-		if (encodedCommandName != null) {
-			if (encodedCommandName.contains(":")) {
-				String [] nameSplit = encodedCommandName.split(":");
-				commandName = new QName(nameSplit[0], nameSplit[1]);
-			} else {
-				commandName = new QName("s-ramp", encodedCommandName);
-			}
-		}
-		String [] args = Arrays.copyOfRange(split, 1, split.length);
-		return factory.createCommand(commandName, args);
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommandReader#readLine()
+	 */
+	@Override
+	protected String readLine() throws IOException {
+		return console.readLine("s-ramp> ");
 	}
 
 	/**
@@ -75,6 +58,8 @@ public class ConsoleShellCommandReader implements ShellCommandReader {
 	 */
 	@Override
 	public void close() throws IOException {
+		console.flush();
+		console = null;
 	}
 
 }

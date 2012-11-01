@@ -51,6 +51,8 @@ import org.overlord.sramp.client.shell.commands.ontology.UploadOntologyCommand;
 public class ShellCommandFactory {
 
 	private static QName HELP_CMD_NAME = new QName("s-ramp", "help");
+	private static QName EXIT_CMD_NAME = new QName("s-ramp", "exit");
+	private static QName QUIT_CMD_NAME = new QName("s-ramp", "quit");
 
 	private Map<QName, Class<? extends ShellCommand>> registry;
 
@@ -66,9 +68,6 @@ public class ShellCommandFactory {
 	 */
 	private void registerCommands() {
 		registry = new HashMap<QName, Class<? extends ShellCommand>>();
-		// Core commands
-		registry.put(new QName("s-ramp", "exit"), ExitCommand.class);
-		registry.put(new QName("s-ramp", "quit"), ExitCommand.class);
 
 		// S-RAMP client commands
 		registry.put(new QName("s-ramp", "connect"), ConnectCommand.class);
@@ -104,6 +103,10 @@ public class ShellCommandFactory {
 		ShellCommand command = null;
 		if (commandName.equals(HELP_CMD_NAME)) {
 			command = new HelpCommand(getCommands());
+		} else if (commandName.equals(QUIT_CMD_NAME)) {
+			command = new ExitCommand();
+		} else if (commandName.equals(EXIT_CMD_NAME)) {
+			command = new ExitCommand();
 		} else {
 			Class<? extends ShellCommand> commandClass = registry.get(commandName);
 			if (commandClass == null)

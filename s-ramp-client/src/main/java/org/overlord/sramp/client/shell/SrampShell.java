@@ -64,13 +64,17 @@ public class SrampShell {
 	 * @throws Exception
 	 */
 	public void run(String[] args) throws Exception {
-		reader = new InteractiveShellCommandReader(factory);
+		reader = createCommandReader(args);
 		displayWelcomeMessage();
 		boolean done = false;
 		while (!done) {
 			ShellCommand command = reader.read();
 			try {
-				command.execute(context);
+				if (command == null) {
+					done = true;
+				} else {
+					command.execute(context);
+				}
 			} catch (InvalidCommandArgumentException e) {
 				System.out.println("Invalid argument:  " + e.getMessage());
 				System.out.print("Usage:  ");
@@ -79,6 +83,34 @@ public class SrampShell {
 				e.printStackTrace(System.err);
 			}
 		}
+	}
+
+	/**
+	 * Creates an appropriate {@link ShellCommandReader} based on the command line
+	 * arguments and the current runtime environment.
+	 * @param args
+	 * @throws IOException
+	 */
+	protected ShellCommandReader createCommandReader(String[] args) throws IOException {
+		ShellCommandReader commandReader = null;
+		if (args.length >= 2 && "-f".equals(args[0])) {
+			String filePath = args[1];
+			commandReader = new FileShellCommandReader(factory, filePath);
+		} else if (args.length == 1 && "-simple".equals(args[0])) {
+			if (System.console() != null) {
+				commandReader = new ConsoleShellCommandReader(factory);
+			} else {
+				commandReader = new StdInShellCommandReader(factory);
+			}
+		} else {
+			if (System.console() != null) {
+				commandReader = new InteractiveShellCommandReader(factory);
+			} else {
+				commandReader = new StdInShellCommandReader(factory);
+			}
+		}
+		commandReader.open();
+		return commandReader;
 	}
 
 	/**
