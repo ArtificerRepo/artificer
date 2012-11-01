@@ -65,6 +65,9 @@ public class ConnectCommand extends AbstractShellCommand {
 		String endpointUrlArg = this.requiredArgument(0, "Please specify a valid s-ramp URL.");
 		String disableValidationOptionArg = this.optionalArgument(1);
 		boolean validating = disableValidationOptionArg == null ? true : !Boolean.parseBoolean(disableValidationOptionArg);
+		if (!endpointUrlArg.startsWith("http")) {
+			endpointUrlArg = "http://" + endpointUrlArg;
+		}
 		QName varName = new QName("s-ramp", "client");
 		try {
 			SrampAtomApiClient client = new SrampAtomApiClient(endpointUrlArg, validating);

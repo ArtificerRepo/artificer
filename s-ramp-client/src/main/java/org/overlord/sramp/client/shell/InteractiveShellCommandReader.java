@@ -44,7 +44,16 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	@Override
 	public void open() throws IOException {
 		consoleReader = new ConsoleReader();
-		consoleReader.setPrompt("sramp> ");
+		String prompt = createAnsiPrompt();
+		consoleReader.setPrompt(prompt);
+		consoleReader.addCompleter(new TabCompleter(getFactory()));
+	}
+
+	/**
+	 * Creates the ANSI compatible prompt.
+	 */
+	private String createAnsiPrompt() {
+		return "\033[1m\033[31ms-ramp>\033[37m\033[22m ";
 	}
 
 	/**

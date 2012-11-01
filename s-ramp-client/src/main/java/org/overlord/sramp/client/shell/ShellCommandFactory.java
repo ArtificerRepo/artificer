@@ -18,7 +18,9 @@ package org.overlord.sramp.client.shell;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
@@ -129,6 +131,36 @@ public class ShellCommandFactory {
 		});
 		treeMap.putAll(this.registry);
 		return treeMap;
+	}
+
+	/**
+	 * Gets the set of namespaces for all commands in the factory.
+	 */
+	public Set<String> getNamespaces() {
+		Set<String> namespaces = new TreeSet<String>();
+		for (QName cmdName : this.registry.keySet()) {
+			namespaces.add(cmdName.getNamespaceURI());
+		}
+		return namespaces;
+	}
+
+	/**
+	 * Gets the set of commands available within the given namespace.
+	 * @param namespace
+	 */
+	public Set<QName> getCommandNames(String namespace) {
+		Set<QName> commandNames = new TreeSet<QName>(new Comparator<QName>() {
+			@Override
+			public int compare(QName o1, QName o2) {
+				return o1.getLocalPart().compareTo(o2.getLocalPart());
+			}
+		});
+		for (QName cmdName : this.registry.keySet()) {
+			if (namespace.equals(cmdName.getNamespaceURI())) {
+				commandNames.add(cmdName);
+			}
+		}
+		return commandNames;
 	}
 
 }
