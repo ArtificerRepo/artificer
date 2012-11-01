@@ -419,7 +419,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				throw new RepositoryException("Ontology already exists.");
 			} else {
 				JcrTools tools = new JcrTools();
-				Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", null, null);
+				Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", "nt:folder");
 				Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology");
 				o2jcr.write(ontology, ontologyNode);
 				session.save();

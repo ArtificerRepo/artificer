@@ -127,14 +127,18 @@ public class SrampShell {
 	 * Displays a welcome message to the user.
 	 */
 	private void displayWelcomeMessage() {
-		System.out.println("******************************************************************************************************");
-		System.out.println("*                     _________         __________    _____      _____ __________                    *");
-		System.out.println("*                    /   _____/         \\______   \\  /  _  \\    /     \\\\______   \\                   *");
-		System.out.println("*                    \\_____  \\   ______  |       _/ /  /_\\  \\  /  \\ /  \\|     ___/                   *");
-		System.out.println("*                    /        \\ /_____/  |    |   \\/    |    \\/    Y    \\    |                       *");
-		System.out.println("*                   /_______  /          |____|_  /\\____|__  /\\____|__  /____|                       *");
-		System.out.println("*                           \\/                  \\/         \\/         \\/                             *");
-		System.out.println("* JBoss S-RAMP Kurt Stam and Eric Wittmann, Licensed under the Apache License, V2.0, Copyright 2012  *");
-		System.out.println("******************************************************************************************************\n");
+		System.out.println(
+				"**********************************************************************\n" +
+				"           _____       ______  ___ ___  ________  \n" +
+				"          /  ___|      | ___ \\/ _ \\|  \\/  | ___ \\ \n" +
+				"          \\ `--. ______| |_/ / /_\\ \\ .  . | |_/ / \n" +
+				"           `--. \\______|    /|  _  | |\\/| |  __/  \n" +
+				"          /\\__/ /      | |\\ \\| | | | |  | | |     \n" +
+				"          \\____/       \\_| \\_\\_| |_|_|  |_|_|     \n" +
+				"                                                  \n" +
+				"  JBoss S-RAMP Kurt Stam and Eric Wittmann, Licensed under the\n" +
+				"  Apache License, V2.0, Copyright 2012\n" +
+				"**********************************************************************"
+				);
 	}
 }

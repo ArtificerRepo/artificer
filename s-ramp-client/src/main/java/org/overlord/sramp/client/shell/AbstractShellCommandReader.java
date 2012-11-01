@@ -63,7 +63,7 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 		String encodedCommandName = split[0];
 		QName commandName = null;
 		if (encodedCommandName != null) {
-			if (encodedCommandName.contains(":")) {
+			if (encodedCommandName.contains(":") && !encodedCommandName.endsWith(":")) {
 				String [] nameSplit = encodedCommandName.split(":");
 				commandName = new QName(nameSplit[0], nameSplit[1]);
 			} else {
