@@ -50,7 +50,7 @@ public class CommandNotFoundCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void execute(ShellContext context) {
-		System.out.println("Command not found.");
+		System.out.println("Command not found.  Try 'help' for a list of available commands.");
 	}
 
 }

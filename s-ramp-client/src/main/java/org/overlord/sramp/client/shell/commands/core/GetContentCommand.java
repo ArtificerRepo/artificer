@@ -23,11 +23,10 @@ import java.io.OutputStream;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.query.ArtifactSummary;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
@@ -88,19 +87,22 @@ public class GetContentCommand extends AbstractShellCommand {
 		QName clientVarName = new QName("s-ramp", "client");
 		QName feedVarName = new QName("s-ramp", "feed");
 		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		if (client == null) {
+			System.out.println("No S-RAMP repository connection is currently open.");
+			return;
+		}
 
 		BaseArtifactType artifact = null;
 		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
 		if ("feed".equals(idType)) {
-			Feed feed = (Feed) context.getVariable(feedVarName);
-			context.setVariable(feedVarName, feed);
+			QueryResultSet rset = (QueryResultSet) context.getVariable(feedVarName);
 			int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
-			if (feedIdx < 0 || feedIdx >= feed.getEntries().size()) {
+			if (feedIdx < 0 || feedIdx >= rset.size()) {
 				throw new InvalidCommandArgumentException(0, "Feed index out of range.");
 			}
-			Entry entry = feed.getEntries().get(feedIdx);
-			String artifactUUID = entry.getId().toString();
-			artifact = client.getArtifactMetaData(SrampAtomUtils.getArtifactType(entry), artifactUUID);
+			ArtifactSummary summary = rset.get(feedIdx);
+			String artifactUUID = summary.getUuid();
+			artifact = client.getArtifactMetaData(summary.getType(), artifactUUID);
 		} else if ("uuid".equals(idType)) {
 //			String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
 //			artifact = getArtifactMetaDataByUUID(client, artifactUUID);

@@ -47,31 +47,31 @@ import org.slf4j.LoggerFactory;
 
 public class JCRRepository {
 
-    private static Logger log = LoggerFactory.getLogger(JCRRepository.class);
-    private static String WORKSPACE_NAME = "default";
+	private static Logger log = LoggerFactory.getLogger(JCRRepository.class);
+	private static String WORKSPACE_NAME = "default";
 
-    private static JCRRepository instance;
-    public static synchronized JCRRepository getInstance() throws RepositoryException {
-    	if (instance == null) {
-    		instance = new JCRRepository();
-    		instance.startup();
-    	}
-    	return instance;
-    }
-    public static synchronized void destroy() {
+	private static JCRRepository instance;
+	public static synchronized JCRRepository getInstance() throws RepositoryException {
+		if (instance == null) {
+			instance = new JCRRepository();
+			instance.startup();
+		}
+		return instance;
+	}
+	public static synchronized void destroy() {
 		try {
 			getInstance().shutdown();
 		} catch (RepositoryException e) {
 			log.error("Failed to shut down ModeShape.", e);
 		}
-    	instance = null;
-    }
+		instance = null;
+	}
 
-    private Repository repository = null;
-    private RepositoryFactory theFactory = null;
-    private File tempConfigDir;
+	private Repository repository = null;
+	private RepositoryFactory theFactory = null;
+	private File tempConfigDir;
 
-    /**
+	/**
 	 * Constructor.
 	 */
 	public JCRRepository() {
@@ -84,43 +84,43 @@ public class JCRRepository {
 		return repository;
 	}
 
-    /**
-     * Starts up the JCR repository.
-     * @throws RepositoryException
-     */
-    private void startup() throws RepositoryException {
-        try {
-            Map<String,String> parameters = new HashMap<String,String>();
-            URL configUrl = getConfigurationUrl();
-            RepositoryConfiguration config = RepositoryConfiguration.read(configUrl);
-            Problems problems = config.validate();
-            if (problems.hasErrors()) {
-                throw new RepositoryException(problems.toString());
-            }
-            parameters.put("org.modeshape.jcr.URL",configUrl.toExternalForm());
-            for (RepositoryFactory factory : ServiceLoader.load(RepositoryFactory.class)) {
-                theFactory = factory;
-                repository = factory.getRepository(parameters);
-                if (repository != null) break;
-            }
+	/**
+	 * Starts up the JCR repository.
+	 * @throws RepositoryException
+	 */
+	private void startup() throws RepositoryException {
+		try {
+			Map<String,String> parameters = new HashMap<String,String>();
+			URL configUrl = getConfigurationUrl();
+			RepositoryConfiguration config = RepositoryConfiguration.read(configUrl);
+			Problems problems = config.validate();
+			if (problems.hasErrors()) {
+				throw new RepositoryException(problems.toString());
+			}
+			parameters.put("org.modeshape.jcr.URL",configUrl.toExternalForm());
+			for (RepositoryFactory factory : ServiceLoader.load(RepositoryFactory.class)) {
+				theFactory = factory;
+				repository = factory.getRepository(parameters);
+				if (repository != null) break;
+			}
 			if (repository == null) {
 				throw new RepositoryException("ServiceLoader could not instantiate JCR Repository");
 			}
 			configureNodeTypes();
-        } catch (RepositoryException e) {
-        	throw e;
-        } catch (Exception e) {
-            throw new RepositoryException(e);
-        } finally {
+		} catch (RepositoryException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RepositoryException(e);
+		} finally {
 			if (this.tempConfigDir != null && this.tempConfigDir.isDirectory()) {
 				FileUtils.deleteQuietly(tempConfigDir);
 			}
-        }
-    }
+		}
+	}
 
-    /**
+	/**
 	 * Gets the configuration to use for the JCR repository.
-     * @throws Exception
+	 * @throws Exception
 	 */
 	private URL getConfigurationUrl() throws Exception {
 		// System properties can be used to set the config URL.  Note that
@@ -172,9 +172,9 @@ public class JCRRepository {
 		File tempModeShapeConfigFile = new File(tempConfigDir, "modeshape-config.json");
 		File tempInfinispanConfigFile = new File(tempConfigDir, "infinispan-configuration.xml");
 
-		msConfig = msConfig.replace("${modeshape.jcr.datadir}", dataDir.getCanonicalPath());
-		msConfig = msConfig.replace("${modeshape.cache.config.url}", tempInfinispanConfigFile.getCanonicalPath());
-		isConfig = isConfig.replace("${modeshape.jcr.datadir}", dataDir.getCanonicalPath());
+		msConfig = msConfig.replace("${modeshape.jcr.datadir}", dataDir.getCanonicalPath().replace("\\", "\\\\"));
+		msConfig = msConfig.replace("${modeshape.cache.config.url}", tempInfinispanConfigFile.getCanonicalPath().replace("\\", "\\\\"));
+		isConfig = isConfig.replace("${modeshape.jcr.datadir}", dataDir.getCanonicalPath().replace("\\", "\\\\"));
 
 		FileUtils.writeStringToFile(tempModeShapeConfigFile, msConfig);
 		FileUtils.writeStringToFile(tempInfinispanConfigFile, isConfig);
@@ -209,10 +209,10 @@ public class JCRRepository {
 	}
 
 	/**
-     * TODO ModeShape requires shutdown to be called. However calling this after every test
-     * leads to issues where the repo is down, on initialization of the next test. Not using
-     * it leads to a successful build. We need to look into this.
-     */
+	 * TODO ModeShape requires shutdown to be called. However calling this after every test
+	 * leads to issues where the repo is down, on initialization of the next test. Not using
+	 * it leads to a successful build. We need to look into this.
+	 */
 	private void shutdown() {
 		if (theFactory instanceof org.modeshape.jcr.JcrRepositoryFactory) {
 			try {
@@ -228,65 +228,65 @@ public class JCRRepository {
 		}
 	}
 
-    /**
-     * Convenience method for getting a JCR session from the repo singleton.
-     * @throws LoginException
-     * @throws NoSuchWorkspaceException
-     * @throws RepositoryException
-     */
-    public static Session getSession() throws LoginException, NoSuchWorkspaceException, RepositoryException {
-        //Credentials cred = new SimpleCredentials(USER, PWD);
-        AnonymousCredentials cred = new AnonymousCredentials();
-        return getInstance().get().login(cred, WORKSPACE_NAME);
-    }
+	/**
+	 * Convenience method for getting a JCR session from the repo singleton.
+	 * @throws LoginException
+	 * @throws NoSuchWorkspaceException
+	 * @throws RepositoryException
+	 */
+	public static Session getSession() throws LoginException, NoSuchWorkspaceException, RepositoryException {
+		//Credentials cred = new SimpleCredentials(USER, PWD);
+		AnonymousCredentials cred = new AnonymousCredentials();
+		return getInstance().get().login(cred, WORKSPACE_NAME);
+	}
 
-    /**
-     * Quietly logs out of the JCR session.
-     * @param session
-     */
-    public static void logoutQuietly(Session session) {
-    	if (session != null) {
-    		try {
-    			session.logout();
-    		} catch (Throwable t) {
-    			// eat it
-    		}
-    	}
-    }
+	/**
+	 * Quietly logs out of the JCR session.
+	 * @param session
+	 */
+	public static void logoutQuietly(Session session) {
+		if (session != null) {
+			try {
+				session.logout();
+			} catch (Throwable t) {
+				// eat it
+			}
+		}
+	}
 
-    /**
-     * Called to configure the custom JCR node types.
-     */
-    private void configureNodeTypes() throws RepositoryException {
-        Session session = null;
-        InputStream is = null;
-        try {
-            session = JCRRepository.getSession();
+	/**
+	 * Called to configure the custom JCR node types.
+	 */
+	private void configureNodeTypes() throws RepositoryException {
+		Session session = null;
+		InputStream is = null;
+		try {
+			session = JCRRepository.getSession();
 
-            // Register some namespaces.
-            NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
-            namespaceRegistry.registerNamespace(JCRConstants.SRAMP, JCRConstants.SRAMP_NS);
-            namespaceRegistry.registerNamespace(JCRConstants.SRAMP_PROPERTIES, JCRConstants.SRAMP_PROPERTIES_NS);
-            namespaceRegistry.registerNamespace(JCRConstants.SRAMP_RELATIONSHIPS, JCRConstants.SRAMP_RELATIONSHIPS_NS);
+			// Register some namespaces.
+			NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
+			namespaceRegistry.registerNamespace(JCRConstants.SRAMP, JCRConstants.SRAMP_NS);
+			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_PROPERTIES, JCRConstants.SRAMP_PROPERTIES_NS);
+			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_RELATIONSHIPS, JCRConstants.SRAMP_RELATIONSHIPS_NS);
 
-            NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
+			NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
 
-            // Register the ModeShape S-RAMP node types ...
-            is = JCRRepository.class.getResourceAsStream("/org/overlord/s-ramp/sramp.cnd");
-            manager.registerNodeTypes(is,true);
-        } catch (LoginException e) {
-            throw e;
-        } catch (NoSuchWorkspaceException e) {
-            throw e;
-        } catch (RepositoryException e) {
-            throw e;
-        } catch (IOException e) {
-            throw new RepositoryException(e);
-        } catch (RuntimeException e) {
-            throw e;
-        } finally {
-        	IOUtils.closeQuietly(is);
-        	JCRRepository.logoutQuietly(session);
-        }
-    }
+			// Register the ModeShape S-RAMP node types ...
+			is = JCRRepository.class.getResourceAsStream("/org/overlord/s-ramp/sramp.cnd");
+			manager.registerNodeTypes(is,true);
+		} catch (LoginException e) {
+			throw e;
+		} catch (NoSuchWorkspaceException e) {
+			throw e;
+		} catch (RepositoryException e) {
+			throw e;
+		} catch (IOException e) {
+			throw new RepositoryException(e);
+		} catch (RuntimeException e) {
+			throw e;
+		} finally {
+			IOUtils.closeQuietly(is);
+			JCRRepository.logoutQuietly(session);
+		}
+	}
 }

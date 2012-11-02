@@ -31,7 +31,9 @@ import javax.ws.rs.Produces;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Person;
+import org.jboss.resteasy.plugins.providers.atom.Source;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.mappers.OntologyToRdfMapper;
 import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
@@ -110,9 +112,10 @@ public class OntologyResource {
      */
     @PUT
     @Path("ontology/{uuid}")
-    @Consumes(MediaType.APPLICATION_RDF_XML)
-    public void update(@PathParam("uuid") String uuid, RDF rdf) throws SrampAtomException {
+    @Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
+    public void update(@PathParam("uuid") String uuid, Entry entry) throws SrampAtomException {
     	try {
+    		RDF rdf = SrampAtomUtils.unwrap(entry, RDF.class);
 			SrampOntology ontology = new SrampOntology();
 			ontology.setUuid(uuid);
 			rdf2o.map(rdf, ontology);
@@ -183,7 +186,7 @@ public class OntologyResource {
 	@GET
 	@Path("ontology")
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
-	public Feed getArtifactFeed() throws SrampAtomException {
+	public Feed list() throws SrampAtomException {
     	try {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			List<SrampOntology> ontologies = persistenceManager.getOntologies();
@@ -200,6 +203,10 @@ public class OntologyResource {
 				entry.getAuthors().add(new Person(ontology.getCreatedBy()));
 				entry.setTitle(ontology.getLabel());
 				entry.setSummary(ontology.getComment());
+				Source source = new Source();
+				source.setBase(new URI(ontology.getBase()));
+				source.setId(new URI(ontology.getId()));
+				entry.setSource(source);
 
 				feed.getEntries().add(entry);
 			}

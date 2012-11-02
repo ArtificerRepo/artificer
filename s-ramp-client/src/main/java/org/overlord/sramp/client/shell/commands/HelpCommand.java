@@ -81,20 +81,34 @@ public class HelpCommand extends AbstractShellCommand {
 	 */
 	private void printHelpAll() {
 		System.out.println("The S-RAMP Shell supports the following commands:");
-		System.out.println("");
 		String currentNamespace = null;
+		int colCount = 0;
 		for (Entry<QName,Class<? extends ShellCommand>> entry : this.commands.entrySet()) {
 			QName cmdName = entry.getKey();
 			String namespace = cmdName.getNamespaceURI();
 			String name = cmdName.getLocalPart();
 			if (!namespace.equals(currentNamespace)) {
-				System.out.printf(":: %1$s ::\n", namespace);
+				System.out.printf("\n\nNamespace: %1$s\n-----------------------\n", namespace);
 				currentNamespace = namespace;
+				System.out.printf("  %1$-18s", name);
+				colCount = 0;
+			} else {
+				System.out.printf("%1$-18s", name);
+				colCount++;
 			}
-			System.out.println("   " + name);
+			if (colCount == 3) {
+				System.out.print("\n  ");
+				colCount = 0;
+			}
 		}
-		System.out.println("");
+		System.out.println("\n");
 		System.out.println("To get help for a specific command, try 'help <cmdNamespace>:<cmdName>'.");
+		System.out.println("");
+		System.out.println("To execute a specific command, try '<namespace>:<commandName> <args>'.");
+		System.out.println("Some examples:");
+		System.out.println("   s-ramp:connect http://localhost:8080/s-ramp-atom/s-ramp");
+		System.out.println("   archive:open /home/uname/files/my-package.sramp");
+		System.out.println("");
 	}
 
 	/**

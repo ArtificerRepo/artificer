@@ -18,15 +18,23 @@ package org.overlord.sramp.client;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.atom.app.AppCategories;
+import org.jboss.resteasy.plugins.providers.atom.app.AppCollection;
+import org.jboss.resteasy.plugins.providers.atom.app.AppService;
+import org.jboss.resteasy.plugins.providers.atom.app.AppWorkspace;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
@@ -40,8 +48,10 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
  * Class used to communicate with the S-RAMP server via the S-RAMP Atom API.
@@ -51,6 +61,8 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 public class SrampAtomApiClient {
 
 	private String endpoint;
+	private boolean validating;
+	private Set<String> enabledFeatures = new HashSet<String>();
 
 	/**
 	 * Constructor.
@@ -64,6 +76,90 @@ public class SrampAtomApiClient {
 	}
 
 	/**
+	 * Constructor.
+	 * @param endpoint
+	 * @param validating
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+	public SrampAtomApiClient(String endpoint, boolean validating) throws SrampClientException, SrampAtomException {
+		this(endpoint);
+		this.validating = validating;
+		if (this.validating) {
+			discoverAvailableFeatures();
+		}
+	}
+
+	/**
+	 * This method will grab the /s-ramp/servicedocument from the S-RAMP repository
+	 * and examine its contents in order to determine the features supported by the
+	 * repository.
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+	private void discoverAvailableFeatures() throws SrampClientException, SrampAtomException {
+		AppService serviceDoc = getServiceDocument();
+		for (AppWorkspace workspace : serviceDoc.getWorkspace()) {
+			for (AppCollection collection : workspace.getCollection()) {
+				for (AppCategories cats : collection.getCategories()) {
+					for (Category category : cats.getCategory()) {
+						this.enabledFeatures.add(category.getTerm());
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Asserts that the given feature is enabled.  If it is not, then an exception
+	 * is thrown.  If this client is not set to validating, then this method will
+	 * always pass.
+	 * @param feature
+	 * @throws SrampClientException
+	 */
+	private void assertFeatureEnabled(String feature) throws SrampClientException {
+		if (this.validating) {
+			if (!this.enabledFeatures.contains(feature)) {
+				throw new SrampClientException("The S-RAMP repository does not appear to support this feature.");
+			}
+		}
+	}
+
+	/**
+	 * Asserts that the given feature is enabled.  If it is not, then an exception
+	 * is thrown.  If this client is not set to validating, then this method will
+	 * always pass.
+	 * @param feature
+	 * @throws SrampClientException
+	 */
+	private void assertFeatureEnabled(ArtifactType feature) throws SrampClientException {
+		if (this.validating) {
+			if (!this.enabledFeatures.contains(feature.getType())) {
+				throw new SrampClientException("The S-RAMP repository does not appear to support this feature.");
+			}
+		}
+	}
+
+
+	/**
+	 * Gets the S-RAMP service document.
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+	public AppService getServiceDocument() throws SrampClientException, SrampAtomException {
+		try {
+			String atomUrl = String.format("%1$s/servicedocument", this.endpoint);
+			ClientRequest request = new ClientRequest(atomUrl);
+			ClientResponse<AppService> response = request.get(AppService.class);
+			return response.getEntity();
+		} catch (SrampAtomException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
+	}
+
+	/**
 	 * Gets the full meta-data listing for an Artifact in the S-RAMP repository.
 	 * @param artifactType
 	 * @param artifactUuid
@@ -72,6 +168,7 @@ public class SrampAtomApiClient {
 	 */
 	public BaseArtifactType getArtifactMetaData(ArtifactType artifactType, String artifactUuid)
 			throws SrampClientException, SrampAtomException {
+		assertFeatureEnabled(artifactType);
 		try {
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
@@ -97,6 +194,7 @@ public class SrampAtomApiClient {
 	 */
 	public InputStream getArtifactContent(ArtifactType artifactType, String artifactUuid)
 			throws SrampClientException, SrampAtomException {
+		assertFeatureEnabled(artifactType);
 		try {
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint,
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
@@ -118,6 +216,7 @@ public class SrampAtomApiClient {
 	 */
 	public BaseArtifactType uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
 			throws SrampClientException, SrampAtomException {
+		assertFeatureEnabled(artifactType);
 		// Determine the mime type if it's not included in the artifact type.
 		String mimeType = artifactType.getMimeType();
 		if (mimeType == null) {
@@ -157,6 +256,7 @@ public class SrampAtomApiClient {
 	public BaseArtifactType uploadArtifact(BaseArtifactType baseArtifactType, InputStream content)
 			throws SrampClientException, SrampAtomException {
 		ArtifactType artifactType = ArtifactType.valueOf(baseArtifactType);
+		assertFeatureEnabled(artifactType);
 		String artifactFileName = baseArtifactType.getName();
 		// Determine the mime type if it's not included in the artifact type.
 		String mimeType = artifactType.getMimeType();
@@ -268,8 +368,9 @@ public class SrampAtomApiClient {
 	 * @throws SrampAtomException
 	 */
 	public void updateArtifactMetaData(BaseArtifactType artifact) throws SrampClientException, SrampAtomException {
+		ArtifactType type = ArtifactType.valueOf(artifact);
+		assertFeatureEnabled(type);
 		try {
-			ArtifactType type = ArtifactType.valueOf(artifact);
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
 			if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
@@ -297,11 +398,11 @@ public class SrampAtomApiClient {
 	 * @throws SrampClientException
 	 * @throws SrampAtomException
 	 */
-	public void updateArtifactContent(BaseArtifactType artifact, InputStream content) throws SrampClientException,
-	SrampAtomException {
+	public void updateArtifactContent(BaseArtifactType artifact, InputStream content)
+			throws SrampClientException, SrampAtomException {
+		ArtifactType type = ArtifactType.valueOf(artifact);
+		assertFeatureEnabled(type);
 		try {
-			ArtifactType type = ArtifactType.valueOf(artifact);
-
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
 			if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
@@ -327,6 +428,7 @@ public class SrampAtomApiClient {
 	 * @throws SrampAtomException
 	 */
 	public void deleteArtifact(String uuid, ArtifactType type) throws SrampClientException, SrampAtomException {
+		assertFeatureEnabled(type);
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
@@ -387,6 +489,59 @@ public class SrampAtomApiClient {
 			request.body(MediaType.MULTIPART_FORM_DATA_TYPE, formData);
 			ClientResponse<Feed> response = request.post(Feed.class);
 			return new QueryResultSet(response.getEntity());
+		} catch (SrampAtomException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
+	}
+
+	/**
+	 * Uploads an ontology to the S-RAMP repository.  This will only work if the S-RAMP
+	 * repository supports the ontology collection, which is not a part of the S-RAMP 1.0
+	 * specification.
+	 * @param content
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+	public RDF uploadOntology(InputStream content) throws SrampClientException, SrampAtomException {
+		assertFeatureEnabled("ontology");
+		try {
+			String atomUrl = String.format("%1$s/ontology", this.endpoint);
+			ClientRequest request = new ClientRequest(atomUrl);
+			request.body(MediaType.APPLICATION_RDF_XML_TYPE, content);
+
+			ClientResponse<Entry> response = request.post(Entry.class);
+			Entry entry = response.getEntity();
+			RDF rdf = SrampAtomUtils.unwrap(entry, RDF.class);
+			return rdf;
+		} catch (SrampAtomException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
+	}
+
+	/**
+	 * Gets a list of all the ontologies currently installed in the S-RAMP repository.  This
+	 * will only work if the S-RAMP repository supports the ontology collection, which is not
+	 * a part of the S-RAMP 1.0 specification.
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+	public List<OntologySummary> getOntologies() throws SrampClientException, SrampAtomException {
+		assertFeatureEnabled("ontology");
+		try {
+			String atomUrl = String.format("%1$s/ontology", this.endpoint);
+			ClientRequest request = new ClientRequest(atomUrl);
+			ClientResponse<Feed> response = request.get(Feed.class);
+			Feed feed = response.getEntity();
+			List<OntologySummary> rval = new ArrayList<OntologySummary>(feed.getEntries().size());
+			for (Entry entry : feed.getEntries()) {
+				OntologySummary summary = new OntologySummary(entry);
+				rval.add(summary);
+			}
+			return rval;
 		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {

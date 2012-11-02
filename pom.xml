@@ -104,6 +104,7 @@
 		<commons.lang3.version>3.1</commons.lang3.version>
 		<commons.config.version>1.8</commons.config.version>
 		<commons.compress.version>1.4.1</commons.compress.version>
+		<jline.version>2.9</jline.version>
 	</properties>
 
 	<build>
