@@ -49,7 +49,7 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:upload <pathToArtifactContent> [<artifactType>]");
+		print("s-ramp:upload <pathToArtifactContent> [<artifactType>]");
 	}
 
 	/**
@@ -57,14 +57,14 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'upload' command uploads the content of a local file to");
-		System.out.println("the S-RAMP repository, creating a new artifact.  The artifact");
-		System.out.println("type can optionally be provided.  If excluded, the artifact");
-		System.out.println("type will be determined based on file extension.");
-		System.out.println("");
-		System.out.println("Example usages:");
-		System.out.println(">  s-ramp:upload /home/uname/files/mytypes.xsd");
-		System.out.println(">  s-ramp:upload /home/uname/files/myservice.wsdl WsdlDocument");
+		print("The 'upload' command uploads the content of a local file to");
+		print("the S-RAMP repository, creating a new artifact.  The artifact");
+		print("type can optionally be provided.  If excluded, the artifact");
+		print("type will be determined based on file extension.");
+		print("");
+		print("Example usages:");
+		print(">  s-ramp:upload /home/uname/files/mytypes.xsd");
+		print(">  s-ramp:upload /home/uname/files/myservice.wsdl WsdlDocument");
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 		QName clientVarName = new QName("s-ramp", "client");
 		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
 		if (client == null) {
-			System.out.println("No S-RAMP repository connection is currently open.");
+			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
 		InputStream content = null;
@@ -92,12 +92,12 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 			}
 			content = FileUtils.openInputStream(file);
 			BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
-			System.out.println("Successfully uploaded an artifact.");
+			print("Successfully uploaded an artifact.");
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 		} catch (Exception e) {
-			System.out.println("FAILED to upload an artifact.");
-			System.out.println("\t" + e.getMessage());
+			print("FAILED to upload an artifact.");
+			print("\t" + e.getMessage());
 			IOUtils.closeQuietly(content);
 		}
 	}

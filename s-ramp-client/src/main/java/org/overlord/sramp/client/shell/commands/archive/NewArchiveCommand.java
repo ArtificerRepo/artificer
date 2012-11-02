@@ -40,7 +40,7 @@ public class NewArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:new");
+		print("archive:new");
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class NewArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'new' operation creates and opens an empty S-RAMP archive.");
+		print("The 'new' operation creates and opens an empty S-RAMP archive.");
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class NewArchiveCommand extends AbstractShellCommand {
 		archive = (SrampArchive) context.getVariable(varName);
 
 		if (archive != null) {
-			System.out.println("An S-RAMP archive is already open.  Please archive:close it before creating a new one.");
+			print("An S-RAMP archive is already open.  Please archive:close it before creating a new one.");
 			return;
 		}
 
@@ -76,7 +76,7 @@ public class NewArchiveCommand extends AbstractShellCommand {
 				SrampArchive.closeQuietly((SrampArchive) object);
 			}
 		});
-		System.out.println("New S-RAMP batch archive opened.");
+		print("New S-RAMP batch archive opened.");
 	}
 
 }

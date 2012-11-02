@@ -39,7 +39,7 @@ public class RemoveEntryArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:removeEntry <archivePath>");
+		print("archive:removeEntry <archivePath>");
 	}
 
 	/**
@@ -47,9 +47,9 @@ public class RemoveEntryArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'removeEntry' command will remove a single entry from the");
-		System.out.println("currently open S-RAMP batch archive.  The path to the entry");
-		System.out.println("must be specified.");
+		print("The 'removeEntry' command will remove a single entry from the");
+		print("currently open S-RAMP batch archive.  The path to the entry");
+		print("must be specified.");
 	}
 
 	/**
@@ -63,13 +63,13 @@ public class RemoveEntryArchiveCommand extends AbstractShellCommand {
 		SrampArchive archive = (SrampArchive) context.getVariable(varName);
 
 		if (archive == null) {
-			System.out.println("No S-RAMP archive is currently open.");
+			print("No S-RAMP archive is currently open.");
 		} else {
 			boolean success = archive.removeEntry(archivePathArg);
 			if (success) {
-				System.out.println("The S-RAMP archive entry was successfully delete.");
+				print("The S-RAMP archive entry was successfully delete.");
 			} else {
-				System.out.println("No S-RAMP archive entry could be found at path: " + archivePathArg);
+				print("No S-RAMP archive entry could be found at path: " + archivePathArg);
 			}
 		}
 	}

@@ -42,7 +42,7 @@ public class PackArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:pack <outputLocation>");
+		print("archive:pack <outputLocation>");
 	}
 
 	/**
@@ -50,9 +50,9 @@ public class PackArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'pack' command packages up the currently open S-RAMP batch");
-		System.out.println("archive file.  The S-RAMP batch archive is zip'd up and then");
-		System.out.println("copied to the output file location provided.");
+		print("The 'pack' command packages up the currently open S-RAMP batch");
+		print("archive file.  The S-RAMP batch archive is zip'd up and then");
+		print("copied to the output file location provided.");
 	}
 
 	/**
@@ -66,18 +66,18 @@ public class PackArchiveCommand extends AbstractShellCommand {
 		SrampArchive archive = (SrampArchive) context.getVariable(varName);
 
 		if (archive == null) {
-			System.out.println("No S-RAMP archive is currently open.");
+			print("No S-RAMP archive is currently open.");
 		} else {
 			File outputFile = new File(outputLocationArg);
 			if (outputFile.exists()) {
-				System.out.println("Output location already exists!");
+				print("Output location already exists!");
 			}
 			if (!outputFile.getParentFile().exists()) {
 				outputFile.mkdirs();
 			}
 			File packedFile = archive.pack();
 			FileUtils.copyFile(packedFile, outputFile);
-			System.out.println("S-RAMP archive packaged and copied to: " + outputFile.getCanonicalPath());
+			print("S-RAMP archive packaged and copied to: " + outputFile.getCanonicalPath());
 		}
 	}
 

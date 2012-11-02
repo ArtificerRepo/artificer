@@ -16,6 +16,7 @@
 package org.overlord.sramp.client.shell;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import jline.console.ConsoleReader;
 
@@ -62,6 +63,14 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	@Override
 	protected String readLine() throws IOException {
 		return consoleReader.readLine();
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommandReader#getCommandOutput()
+	 */
+	@Override
+	protected Writer getCommandOutput() {
+		return consoleReader.getOutput();
 	}
 
 	/**

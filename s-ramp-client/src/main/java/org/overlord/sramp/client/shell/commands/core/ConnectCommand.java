@@ -39,7 +39,7 @@ public class ConnectCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:connect <endpointUrl> [--disableValidation]");
+		print("s-ramp:connect <endpointUrl> [--disableValidation]");
 	}
 
 	/**
@@ -47,14 +47,14 @@ public class ConnectCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'connect' command creates a connection to a remote");
-		System.out.println("S-RAMP repository at its Atom endpoint.  The connection");
-		System.out.println("to the repository will be validated unless the ");
-		System.out.println("'--disableValidation' option is set.");
-		System.out.println("");
-		System.out.println("Example usage:");
-		System.out.println(">  s-ramp:connect http://localhost:8080/s-ramp-atom/s-ramp");
-		System.out.println(">  s-ramp:connect http://example.org/s-ramp --disableValidation");
+		print("The 'connect' command creates a connection to a remote");
+		print("S-RAMP repository at its Atom endpoint.  The connection");
+		print("to the repository will be validated unless the ");
+		print("'--disableValidation' option is set.");
+		print("");
+		print("Example usage:");
+		print(">  s-ramp:connect http://localhost:8080/s-ramp-atom/s-ramp");
+		print(">  s-ramp:connect http://example.org/s-ramp --disableValidation");
 	}
 
 	/**
@@ -72,10 +72,10 @@ public class ConnectCommand extends AbstractShellCommand {
 		try {
 			SrampAtomApiClient client = new SrampAtomApiClient(endpointUrlArg, validating);
 			context.setVariable(varName, client);
-			System.out.println("Successfully connected to S-RAMP endpoint: " + endpointUrlArg);
+			print("Successfully connected to S-RAMP endpoint: " + endpointUrlArg);
 		} catch (Exception e) {
-			System.out.println("FAILED to connect to S-RAMP endpoint: " + endpointUrlArg);
-			System.out.println("\t" + e.getMessage());
+			print("FAILED to connect to S-RAMP endpoint: " + endpointUrlArg);
+			print("\t" + e.getMessage());
 		}
 	}
 

@@ -46,7 +46,7 @@ public class AddEntryArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:addEntry <archivePath> <srampArtifactType> [<pathToFileContent>]");
+		print("archive:addEntry <archivePath> <srampArtifactType> [<pathToFileContent>]");
 	}
 
 	/**
@@ -54,11 +54,11 @@ public class AddEntryArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'addEntry' command provides a way to add a single entry to the ");
-		System.out.println("currently open S-RAMP batch archive.  The command requires a path");
-		System.out.println("within the archive to be specified.  In addition, the type of ");
-		System.out.println("artifact must be included along with an optional path to a file");
-		System.out.println("representing the content.");
+		print("The 'addEntry' command provides a way to add a single entry to the ");
+		print("currently open S-RAMP batch archive.  The command requires a path");
+		print("within the archive to be specified.  In addition, the type of ");
+		print("artifact must be included along with an optional path to a file");
+		print("representing the content.");
 
 	}
 
@@ -75,7 +75,7 @@ public class AddEntryArchiveCommand extends AbstractShellCommand {
 		SrampArchive archive = (SrampArchive) context.getVariable(varName);
 
 		if (archive == null) {
-			System.out.println("No S-RAMP archive is currently open.");
+			print("No S-RAMP archive is currently open.");
 		} else {
 			InputStream contentStream = null;
 			try {
@@ -88,7 +88,7 @@ public class AddEntryArchiveCommand extends AbstractShellCommand {
 				BaseArtifactType artifact = type.newArtifactInstance();
 				artifact.setName(name);
 				archive.addEntry(archivePathArg, artifact, contentStream);
-				System.out.println("Entry added to S-RAMP archive:  " + archivePathArg);
+				print("Entry added to S-RAMP archive:  " + archivePathArg);
 			} finally {
 				IOUtils.closeQuietly(contentStream);
 			}

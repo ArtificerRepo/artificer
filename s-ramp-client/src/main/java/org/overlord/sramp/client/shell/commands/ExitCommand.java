@@ -36,7 +36,7 @@ public class ExitCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("exit");
+		print("exit");
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class ExitCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void execute(ShellContext context) {
-		System.out.println("Good bye!");
+		print("Good bye!");
 		System.exit(0);
 	}
 

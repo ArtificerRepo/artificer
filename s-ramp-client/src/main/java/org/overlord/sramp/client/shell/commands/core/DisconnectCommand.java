@@ -39,7 +39,7 @@ public class DisconnectCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:disconnect");
+		print("s-ramp:disconnect");
 	}
 
 	/**
@@ -47,11 +47,11 @@ public class DisconnectCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'disconnect' command disconnects from the currently");
-		System.out.println("active S-RAMP repository.");
-		System.out.println("");
-		System.out.println("Example usage:");
-		System.out.println(">  s-ramp:disconnect");
+		print("The 'disconnect' command disconnects from the currently");
+		print("active S-RAMP repository.");
+		print("");
+		print("Example usage:");
+		print(">  s-ramp:disconnect");
 	}
 
 	/**
@@ -62,11 +62,11 @@ public class DisconnectCommand extends AbstractShellCommand {
 		QName varName = new QName("s-ramp", "client");
 		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(varName);
 		if (client == null) {
-			System.out.println("No S-RAMP repository connection is currently open.");
+			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
 		context.removeVariable(varName);
-		System.out.println("Successfully disconnected from the S-RAMP repository.");
+		print("Successfully disconnected from the S-RAMP repository.");
 	}
 
 }

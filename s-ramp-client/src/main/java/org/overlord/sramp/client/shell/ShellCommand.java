@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.io.Writer;
+
 /**
  * Interface implemented by all shell commands.
  *
@@ -27,6 +29,12 @@ public interface ShellCommand {
 	 * @param arguments
 	 */
 	public void setArguments(String [] arguments);
+
+	/**
+	 * Configure the command's output.
+	 * @param output
+	 */
+	public void setOutput(Writer output);
 
 	/**
 	 * Called to execute the command.
@@ -42,5 +50,12 @@ public interface ShellCommand {
 	 * Prints the help text for this command.
 	 */
 	public void printHelp();
+
+	/**
+	 * Prints the given message to the output stream.
+	 * @param formattedMessage
+	 * @param params
+	 */
+	public void print(String formattedMessage, Object ... params);
 
 }

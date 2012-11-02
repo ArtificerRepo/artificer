@@ -23,18 +23,19 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.ShellContext;
+import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 
 /**
- * Lists all ontologies in the S-RAMP repository.
+ * Deletes an ontology.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ListOntologiesCommand extends AbstractShellCommand {
+public class DeleteOntologyCommand extends AbstractShellCommand {
 
 	/**
 	 * Constructor.
 	 */
-	public ListOntologiesCommand() {
+	public DeleteOntologyCommand() {
 	}
 
 	/**
@@ -42,7 +43,10 @@ public class ListOntologiesCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		print("ontology:list");
+		print("ontology:delete <ontologyId>");
+		print("\tValid formats for ontologyId:");
+		print("\t  feed:<feedIndex> - an index into the most recent list of ontologies");
+		print("\t  uuid:<ontologyUUID> - the UUID of an ontology");
 	}
 
 	/**
@@ -50,38 +54,54 @@ public class ListOntologiesCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		print("The 'list' command displays a list of all the ontologies");
-		print("currently known to the S-RAMP repository.  This list may be");
-		print("empty if no ontologies have yet been added to the repository.");
+		print("The 'delete' command removes a single ontology from the S-RAMP");
+		print("repository.");
 		print("");
 		print("Example usage:");
-		print("> ontology:list");
+		print("> ontology:delete feed:2");
+		print("> ontology:delete uuid:2763-2382-39293-382873");
 	}
 
 	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(ShellContext context) throws Exception {
-		QName clientVarName = new QName("s-ramp", "client");
+		String ontologyIdArg = this.requiredArgument(0, "Please specify a valid ontology identifier.");
+
 		QName feedVarName = new QName("ontology", "feed");
+		QName clientVarName = new QName("s-ramp", "client");
 		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
 		if (client == null) {
 			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
-		try {
-			List<OntologySummary> ontologies = client.getOntologies();
-			print("Ontologies (%1$d entries)", ontologies.size());
-			print("  Idx  Base");
-			print("  ---  ----");
-			int idx = 1;
-			for (OntologySummary ontology : ontologies) {
-				String base = ontology.getBase();
-				print("  %1$3d  %2$s", idx++, base);
-			}
 
-			context.setVariable(feedVarName, ontologies);
+		if (!ontologyIdArg.contains(":") || ontologyIdArg.endsWith(":")) {
+			throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
+		}
+		String ontologyUuid = null;
+		int colonIdx = ontologyIdArg.indexOf(':');
+		String idType = ontologyIdArg.substring(0, colonIdx);
+		String idValue = ontologyIdArg.substring(colonIdx + 1);
+		if ("feed".equals(idType)) {
+			List<OntologySummary> ontologies = (List<OntologySummary>) context.getVariable(feedVarName);
+			int feedIdx = Integer.parseInt(idValue) - 1;
+			if (feedIdx < 0 || feedIdx >= ontologies.size()) {
+				throw new InvalidCommandArgumentException(0, "Feed index out of range.");
+			}
+			OntologySummary summary = ontologies.get(feedIdx);
+			ontologyUuid = summary.getUuid();
+		} else if ("uuid".equals(idType)) {
+			ontologyUuid = idValue;
+		} else {
+			throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
+		}
+
+		try {
+			client.deleteOntology(ontologyUuid);
+			print("Successfully deleted the ontology.");
 		} catch (Exception e) {
 			print("FAILED to get the list of ontologies.");
 			print("\t" + e.getMessage());

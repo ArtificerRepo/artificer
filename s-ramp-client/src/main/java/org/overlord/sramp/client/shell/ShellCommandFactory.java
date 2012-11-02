@@ -36,12 +36,16 @@ import org.overlord.sramp.client.shell.commands.archive.OpenArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.PackArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.UpdateEntryArchiveCommand;
+import org.overlord.sramp.client.shell.commands.brms.Pkg2SrampCommand;
 import org.overlord.sramp.client.shell.commands.core.ConnectCommand;
 import org.overlord.sramp.client.shell.commands.core.DisconnectCommand;
 import org.overlord.sramp.client.shell.commands.core.GetContentCommand;
 import org.overlord.sramp.client.shell.commands.core.GetMetaDataCommand;
 import org.overlord.sramp.client.shell.commands.core.QueryCommand;
+import org.overlord.sramp.client.shell.commands.core.UpdateContentCommand;
+import org.overlord.sramp.client.shell.commands.core.UpdateMetaDataCommand;
 import org.overlord.sramp.client.shell.commands.core.UploadArtifactCommand;
+import org.overlord.sramp.client.shell.commands.ontology.DeleteOntologyCommand;
 import org.overlord.sramp.client.shell.commands.ontology.ListOntologiesCommand;
 import org.overlord.sramp.client.shell.commands.ontology.UploadOntologyCommand;
 
@@ -78,6 +82,8 @@ public class ShellCommandFactory {
 		registry.put(new QName("s-ramp", "getMetaData"), GetMetaDataCommand.class);
 		registry.put(new QName("s-ramp", "getContent"), GetContentCommand.class);
 		registry.put(new QName("s-ramp", "upload"), UploadArtifactCommand.class);
+		registry.put(new QName("s-ramp", "updateMetaData"), UpdateMetaDataCommand.class);
+		registry.put(new QName("s-ramp", "updateContent"), UpdateContentCommand.class);
 
 		// Archive commands
 		registry.put(new QName("archive", "new"), NewArchiveCommand.class);
@@ -93,15 +99,18 @@ public class ShellCommandFactory {
 		// Ontology commands
 		registry.put(new QName("ontology", "upload"), UploadOntologyCommand.class);
 		registry.put(new QName("ontology", "list"), ListOntologiesCommand.class);
+		registry.put(new QName("ontology", "delete"), DeleteOntologyCommand.class);
+
+		// BRMS commands
+		registry.put(new QName("brms", "pkg2sramp"), Pkg2SrampCommand.class);
 	}
 
 	/**
 	 * Called to create a shell command.
 	 * @param commandName
-	 * @param args
 	 * @throws Exception
 	 */
-	public ShellCommand createCommand(QName commandName, String [] args) throws Exception {
+	public ShellCommand createCommand(QName commandName) throws Exception {
 		ShellCommand command = null;
 		if (commandName.equals(HELP_CMD_NAME)) {
 			command = new HelpCommand(getCommands());
@@ -115,7 +124,6 @@ public class ShellCommandFactory {
 				return new CommandNotFoundCommand();
 			command = commandClass.newInstance();
 		}
-		command.setArguments(args);
 		return command;
 	}
 

@@ -48,10 +48,10 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:getMetaData <artifactId> [<outputFilePath>]");
-		System.out.println("\tValid formats for artifactId:");
-		System.out.println("\t  feed:<feedIndex> - an index into the most recent feed");
-		System.out.println("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
+		print("s-ramp:getMetaData <artifactId> [<outputFilePath>]");
+		print("\tValid formats for artifactId:");
+		print("\t  feed:<feedIndex> - an index into the most recent feed");
+		print("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
 	}
 
 	/**
@@ -59,19 +59,19 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'getMetaData' command downloads only the meta-data for");
-		System.out.println("a single artifact from the S-RAMP repository.  The artifact");
-		System.out.println("can be identified either by its unique S-RAMP uuid or else");
-		System.out.println("by an index into the most recent Feed.  The meta-data will");
-		System.out.println("either be displayed or saved to a local file, depending on");
-		System.out.println("whether a path to an output file (or directory) is provided.");
-		System.out.println("");
-		System.out.println("Note: a Feed can be obtained, for example, by using the ");
-		System.out.println("s-ramp:query command.");
-		System.out.println("");
-		System.out.println("Example usage:");
-		System.out.println(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
-		System.out.println(">  s-ramp:getMetaData feed:1 /home/user/files/");
+		print("The 'getMetaData' command downloads only the meta-data for");
+		print("a single artifact from the S-RAMP repository.  The artifact");
+		print("can be identified either by its unique S-RAMP uuid or else");
+		print("by an index into the most recent Feed.  The meta-data will");
+		print("either be displayed or saved to a local file, depending on");
+		print("whether a path to an output file (or directory) is provided.");
+		print("");
+		print("Note: a Feed can be obtained, for example, by using the ");
+		print("s-ramp:query command.");
+		print("");
+		print("Example usage:");
+		print(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
+		print(">  s-ramp:getMetaData feed:1 /home/user/files/");
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 		QName feedVarName = new QName("s-ramp", "feed");
 		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
 		if (client == null) {
-			System.out.println("No S-RAMP repository connection is currently open.");
+			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
 
@@ -111,10 +111,14 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 			throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
 		}
 
+		// Store the artifact in the context, making it the active artifact.
+		QName artifactVarName = new QName("s-ramp", "artifact");
+		context.setVariable(artifactVarName, artifact);
+
 		if (outputFilePathArg == null) {
 			// Print out the meta-data information
-			System.out.println("Meta Data for: " + artifact.getUuid());
-			System.out.println("--------------");
+			print("Meta Data for: " + artifact.getUuid());
+			print("--------------");
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 		} else {
@@ -127,7 +131,7 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 			}
 			outFile.getParentFile().mkdirs();
 			SrampArchiveJaxbUtils.writeMetaData(outFile, artifact, false);
-			System.out.println("Artifact meta-data saved to " + outFile.getCanonicalPath());
+			print("Artifact meta-data saved to " + outFile.getCanonicalPath());
 		}
 	}
 

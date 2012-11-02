@@ -16,6 +16,8 @@
 package org.overlord.sramp.client.shell;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Arrays;
 
 import javax.xml.namespace.QName;
@@ -71,7 +73,18 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 			}
 		}
 		String [] args = Arrays.copyOfRange(split, 1, split.length);
-		return factory.createCommand(commandName, args);
+		ShellCommand command = factory.createCommand(commandName);
+		command.setArguments(args);
+		command.setOutput(getCommandOutput());
+		return command;
+	}
+
+	/**
+	 * Gets the output stream that should be used by commands when they need
+	 * to print a message to the console.
+	 */
+	protected Writer getCommandOutput() {
+		return new OutputStreamWriter(System.out);
 	}
 
 	/**

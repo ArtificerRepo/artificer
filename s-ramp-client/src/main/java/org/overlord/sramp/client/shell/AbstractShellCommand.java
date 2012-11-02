@@ -15,6 +15,9 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 
 /**
@@ -25,6 +28,7 @@ import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 public abstract class AbstractShellCommand implements ShellCommand {
 
 	private String [] arguments;
+	private Writer writer;
 
 	/**
 	 * Constructor.
@@ -48,6 +52,8 @@ public abstract class AbstractShellCommand implements ShellCommand {
 	}
 
 	/**
+	 * Returns the argument at the given index.  Throws an exception if the argument
+	 * does not exist.
 	 * @param argIndex
 	 * @throws InvalidCommandArgumentException
 	 */
@@ -59,14 +65,51 @@ public abstract class AbstractShellCommand implements ShellCommand {
 	}
 
 	/**
+	 * Returns the optional argument at the given index.  Returns null if the argument
+	 * does not exist.
 	 * @param argIndex
-	 * @throws InvalidCommandArgumentException
 	 */
-	protected String optionalArgument(int argIndex) throws InvalidCommandArgumentException {
+	protected String optionalArgument(int argIndex) {
+		return optionalArgument(argIndex, null);
+	}
+
+	/**
+	 * Returns the optional argument at the given index.  Returns the given default value if
+	 * the argument does not exist.
+	 * @param argIndex
+	 * @param defaultValue
+	 */
+	protected String optionalArgument(int argIndex, String defaultValue) {
 		if (getArguments() == null || getArguments().length <= argIndex) {
-			return null;
+			return defaultValue;
 		}
 		return getArguments()[argIndex];
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#print(java.lang.String, java.lang.Object[])
+	 */
+	@Override
+	public void print(String formattedMessage, Object... params) {
+		String msg = String.format(formattedMessage, params);
+		if (writer != null) {
+			try {
+				writer.write(msg);
+				writer.write('\n');
+				writer.flush();
+			} catch (IOException e) {
+			}
+		} else {
+			System.out.println(formattedMessage);
+		}
+	}
+
+	/**
+	 * @param output the output to set
+	 */
+	@Override
+	public void setOutput(Writer output) {
+		this.writer = output;
 	}
 
 }

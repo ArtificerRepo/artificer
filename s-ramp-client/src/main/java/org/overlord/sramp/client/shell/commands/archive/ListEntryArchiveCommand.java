@@ -43,7 +43,7 @@ public class ListEntryArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:listEntry <archivePath>");
+		print("archive:listEntry <archivePath>");
 	}
 
 	/**
@@ -51,9 +51,9 @@ public class ListEntryArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'listEntry' command is used to display information about");
-		System.out.println("a single entry in the currently open S-RAMP archive.  The");
-		System.out.println("path within the archive must be specified.");
+		print("The 'listEntry' command is used to display information about");
+		print("a single entry in the currently open S-RAMP archive.  The");
+		print("path within the archive must be specified.");
 	}
 
 	/**
@@ -67,12 +67,12 @@ public class ListEntryArchiveCommand extends AbstractShellCommand {
 		SrampArchive archive = (SrampArchive) context.getVariable(varName);
 
 		if (archive == null) {
-			System.out.println("No S-RAMP archive is currently open.");
+			print("No S-RAMP archive is currently open.");
 		} else {
 			SrampArchiveEntry entry = archive.getEntry(archivePathArg);
 			BaseArtifactType metaData = entry.getMetaData();
-			System.out.println("Entry: " + archivePathArg);
-			System.out.println("-----");
+			print("Entry: " + archivePathArg);
+			print("-----");
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, metaData);
 		}

@@ -50,10 +50,10 @@ public class GetContentCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:getContent <artifactId> <outputFilePath>");
-		System.out.println("\tValid formats for artifactId:");
-		System.out.println("\t  feed:<feedIndex> - an index into the most recent feed");
-		System.out.println("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
+		print("s-ramp:getContent <artifactId> <outputFilePath>");
+		print("\tValid formats for artifactId:");
+		print("\t  feed:<feedIndex> - an index into the most recent feed");
+		print("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
 	}
 
 	/**
@@ -61,17 +61,17 @@ public class GetContentCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'getContent' command downloads the file content for");
-		System.out.println("a single artifact from the S-RAMP repository.  The artifact");
-		System.out.println("can be identified either by its unique S-RAMP uuid or else");
-		System.out.println("by an index into the most recent Feed.");
-		System.out.println("");
-		System.out.println("Note: a Feed can be obtained, for example, by using the ");
-		System.out.println("s-ramp:query command.");
-		System.out.println("");
-		System.out.println("Example usage:");
-		System.out.println(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
-		System.out.println(">  s-ramp:getContent feed:1 /home/user/files/");
+		print("The 'getContent' command downloads the file content for");
+		print("a single artifact from the S-RAMP repository.  The artifact");
+		print("can be identified either by its unique S-RAMP uuid or else");
+		print("by an index into the most recent Feed.");
+		print("");
+		print("Note: a Feed can be obtained, for example, by using the ");
+		print("s-ramp:query command.");
+		print("");
+		print("Example usage:");
+		print(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
+		print(">  s-ramp:getContent feed:1 /home/user/files/");
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class GetContentCommand extends AbstractShellCommand {
 		QName feedVarName = new QName("s-ramp", "feed");
 		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
 		if (client == null) {
-			System.out.println("No S-RAMP repository connection is currently open.");
+			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
 
@@ -127,7 +127,7 @@ public class GetContentCommand extends AbstractShellCommand {
 			artifactContent = client.getArtifactContent(ArtifactType.valueOf(artifact), artifact.getUuid());
 			outputStream = new FileOutputStream(outFile);
 			IOUtils.copy(artifactContent, outputStream);
-			System.out.println("Artifact content saved to " + outFile.getCanonicalPath());
+			print("Artifact content saved to " + outFile.getCanonicalPath());
 		} finally {
 			IOUtils.closeQuietly(artifactContent);
 			IOUtils.closeQuietly(outputStream);

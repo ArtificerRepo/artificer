@@ -42,7 +42,7 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:open <pathToArchive>");
+		print("archive:open <pathToArchive>");
 	}
 
 	/**
@@ -50,9 +50,9 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'open' operation opens an existing S-RAMP batch archive");
-		System.out.println("file.  Once open, the contents of the archive can be modified");
-		System.out.println("or just listed.");
+		print("The 'open' operation opens an existing S-RAMP batch archive");
+		print("file.  Once open, the contents of the archive can be modified");
+		print("or just listed.");
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 		QName varName = new QName("archive", "active-archive");
 		archive = (SrampArchive) context.getVariable(varName);
 		if (archive != null) {
-			System.out.println("An S-RAMP archive is already open.  Please archive:close it before creating a new one.");
+			print("An S-RAMP archive is already open.  Please archive:close it before creating a new one.");
 			return;
 		}
 
@@ -83,7 +83,7 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 				SrampArchive.closeQuietly((SrampArchive) object);
 			}
 		});
-		System.out.println("S-RAMP batch archive opened from " + archiveFile.getCanonicalPath());
+		print("S-RAMP batch archive opened from " + archiveFile.getCanonicalPath());
 	}
 
 }

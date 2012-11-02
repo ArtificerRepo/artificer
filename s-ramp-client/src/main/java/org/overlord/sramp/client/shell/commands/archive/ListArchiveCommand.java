@@ -42,7 +42,7 @@ public class ListArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:list");
+		print("archive:list");
 	}
 
 	/**
@@ -50,8 +50,8 @@ public class ListArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("This command display a list of the entries in the currently");
-		System.out.println("open S-RAMP archive.");
+		print("This command display a list of the entries in the currently");
+		print("open S-RAMP archive.");
 	}
 
 	/**
@@ -63,21 +63,22 @@ public class ListArchiveCommand extends AbstractShellCommand {
 		SrampArchive archive = (SrampArchive) context.getVariable(varName);
 
 		if (archive == null) {
-			System.out.println("No S-RAMP archive is currently open.");
+			print("No S-RAMP archive is currently open.");
 		} else {
 			Collection<SrampArchiveEntry> entries = archive.getEntries();
-			System.out.println("  Entry Path");
-			System.out.println("  ----------");
+			print("  Entry Path");
+			print("  ----------");
 			for (SrampArchiveEntry entry : entries) {
+				String modifier = null;
 				if (entry.hasContent()) {
-					System.out.print("  C ");
+					modifier = "  C ";
 				} else {
-					System.out.print("  E ");
+					modifier = "  E ";
 				}
-				System.out.println(entry.getPath());
+				print(modifier + entry.getPath());
 			}
-			System.out.println("  ----------");
-			System.out.println("  " + entries.size() + " entries");
+			print("  ----------");
+			print("  " + entries.size() + " entries");
 		}
 	}
 

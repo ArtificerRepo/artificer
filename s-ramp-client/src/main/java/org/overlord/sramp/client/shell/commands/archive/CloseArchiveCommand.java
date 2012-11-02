@@ -39,7 +39,7 @@ public class CloseArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:close");
+		print("archive:close");
 	}
 
 	/**
@@ -47,8 +47,8 @@ public class CloseArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("This command will close the currently open S-RAMP archive.  If");
-		System.out.println("no archive is currently open, this command does nothing.");
+		print("This command will close the currently open S-RAMP archive.  If");
+		print("no archive is currently open, this command does nothing.");
 	}
 
 	/**
@@ -60,9 +60,9 @@ public class CloseArchiveCommand extends AbstractShellCommand {
 		SrampArchive archive = (SrampArchive) context.removeVariable(varName);
 
 		if (archive == null) {
-			System.out.println("No S-RAMP archive is currently open.");
+			print("No S-RAMP archive is currently open.");
 		} else {
-			System.out.println("S-RAMP archive closed (and deleted if appropriate).");
+			print("S-RAMP archive closed (and deleted if appropriate).");
 		}
 	}
 

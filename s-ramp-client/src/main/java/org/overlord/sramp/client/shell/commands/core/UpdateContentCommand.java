@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.client.shell.commands.ontology;
+package org.overlord.sramp.client.shell.commands.core;
 
 import java.io.File;
 import java.io.InputStream;
@@ -25,18 +25,21 @@ import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.ShellContext;
+import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
- * Uploads an ontology (S-RAMP OWL format) to the s-ramp repository.
+ * Updates an artifact's content in the s-ramp repository. This requires an active artifact to exist in the
+ * context.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UploadOntologyCommand extends AbstractShellCommand {
+public class UpdateContentCommand extends AbstractShellCommand {
 
 	/**
 	 * Constructor.
 	 */
-	public UploadOntologyCommand() {
+	public UpdateContentCommand() {
 	}
 
 	/**
@@ -44,7 +47,7 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		print("ontology:upload <pathToOntologyFile>");
+		print("s-ramp:updateContent <filePathToContent>");
 	}
 
 	/**
@@ -52,12 +55,12 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		print("The 'upload' command uploads a new OWL ontology file to the");
-		print("S-RAMP repository.  This makes the classes defined in the OWL");
-		print("ontology available for use as classifications on artifacts.");
+		print("The 'updateContent' command updates the content of the currently active");
+		print("artifact in the context.  The new content is uploaded to the S-RAMP");
+		print("server.");
 		print("");
 		print("Example usage:");
-		print(">  ontology:upload /home/uname/files/regions.owl.xml");
+		print(">  s-ramp:updateContent /home/uname/files/new-content.wsdl");
 	}
 
 	/**
@@ -65,26 +68,37 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void execute(ShellContext context) throws Exception {
-		String filePathArg = this.requiredArgument(0, "Please specify a path to a local ontology file.");
-
+		String contentFilePathArg = requiredArgument(0, "Please supply a file path to the new content.");
 		QName clientVarName = new QName("s-ramp", "client");
+		QName artifactVarName = new QName("s-ramp", "artifact");
+
 		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
 		if (client == null) {
 			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
+
+		BaseArtifactType artifact = (BaseArtifactType) context.getVariable(artifactVarName);
+		if (artifact == null) {
+			print("No active S-RAMP artifact exists.  Use s-ramp:getMetaData.");
+			return;
+		}
+
+		File file = new File(contentFilePathArg);
+		if (!file.isFile()) {
+			throw new InvalidCommandArgumentException(0, "Please supply a path to a valid content file.");
+		}
+
 		InputStream content = null;
 		try {
-			File file = new File(filePathArg);
 			content = FileUtils.openInputStream(file);
-			client.uploadOntology(content);
-			print("Successfully uploaded a new ontology to the S-RAMP repository.");
+			client.updateArtifactContent(artifact, content);
+			print("Successfully updated artifact %1$s.", artifact.getName());
 		} catch (Exception e) {
-			print("FAILED to upload an artifact.");
+			print("FAILED to update the artifact.");
 			print("\t" + e.getMessage());
-			IOUtils.closeQuietly(content);
-		} finally {
 			IOUtils.closeQuietly(content);
 		}
 	}
+
 }
