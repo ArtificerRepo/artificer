@@ -65,6 +65,12 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitorAda
 			System.out.println("  -- Description --");
 			System.out.println(artifact.getDescription());
 		}
+		if (artifact.getClassifiedBy().size() > 0) {
+			System.out.println("  -- Classifications --");
+			for (String classification : artifact.getClassifiedBy()) {
+				printProperty("Classified By", classification);
+			}
+		}
 		if (artifact.getProperty().size() > 0) {
 			System.out.println("  -- Custom Properties --");
 			for (Property property : artifact.getProperty()) {

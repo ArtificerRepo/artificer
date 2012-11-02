@@ -91,16 +91,7 @@ public final class SrampAtomUtils {
 	 * @throws JAXBException
 	 */
 	private static Artifact getArtifactWrapper(Entry entry) throws JAXBException {
-		Artifact artifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
-		if (artifactWrapper == null) {
-			for (Object anyOther : entry.getAnyOther()) {
-				if (anyOther != null && anyOther.getClass().equals(Artifact.class)) {
-					artifactWrapper = (Artifact) anyOther;
-					break;
-				}
-			}
-		}
-		return artifactWrapper;
+		return unwrap(entry, Artifact.class);
 	}
 
 	/**
@@ -131,10 +122,10 @@ public final class SrampAtomUtils {
 		if (artifact.getDescription() != null)
 			entry.setSummary(artifact.getDescription());
 
-        Artifact srampArty = new Artifact();
-        Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass());
-        method.invoke(srampArty, artifact);
-        entry.setAnyOtherJAXBObject(srampArty);
+		Artifact srampArty = new Artifact();
+		Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass());
+		method.invoke(srampArty, artifact);
+		entry.setAnyOtherJAXBObject(srampArty);
 
 		return entry;
 	}
@@ -181,5 +172,25 @@ public final class SrampAtomUtils {
 
 		// If all else fails!
 		return ArtifactType.valueOf("Document");
+	}
+
+	/**
+	 * Unwrap some other jaxb object from its Atom Entry wrapper.
+	 * @param entry
+	 * @param clazz
+	 * @throws JAXBException
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T unwrap(Entry entry, Class<T> clazz) throws JAXBException {
+		T object = entry.getAnyOtherJAXBObject(clazz);
+		if (object == null) {
+			for (Object anyOther : entry.getAnyOther()) {
+				if (anyOther != null && anyOther.getClass().equals(clazz)) {
+					object = (T) anyOther;
+					break;
+				}
+			}
+		}
+		return object;
 	}
 }

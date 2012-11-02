@@ -37,7 +37,7 @@
 - sramp:comment (string)
 + * (sramp:class)
 
-[sramp:ontology] > mix:created, mix:lastModified
+[sramp:ontology] > nt:hierarchyNode, mix:created, mix:lastModified
 - sramp:uuid (string) mandatory
 - sramp:label (string)
 - sramp:comment (string)

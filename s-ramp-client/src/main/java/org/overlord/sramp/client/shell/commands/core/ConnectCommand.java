@@ -39,7 +39,7 @@ public class ConnectCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:connect <endpointUrl>");
+		System.out.println("s-ramp:connect <endpointUrl> [--disableValidation]");
 	}
 
 	/**
@@ -48,10 +48,13 @@ public class ConnectCommand extends AbstractShellCommand {
 	@Override
 	public void printHelp() {
 		System.out.println("The 'connect' command creates a connection to a remote");
-		System.out.println("S-RAMP repository at its Atom endpoint.");
+		System.out.println("S-RAMP repository at its Atom endpoint.  The connection");
+		System.out.println("to the repository will be validated unless the ");
+		System.out.println("'--disableValidation' option is set.");
 		System.out.println("");
 		System.out.println("Example usage:");
 		System.out.println(">  s-ramp:connect http://localhost:8080/s-ramp-atom/s-ramp");
+		System.out.println(">  s-ramp:connect http://example.org/s-ramp --disableValidation");
 	}
 
 	/**
@@ -60,10 +63,20 @@ public class ConnectCommand extends AbstractShellCommand {
 	@Override
 	public void execute(ShellContext context) throws Exception {
 		String endpointUrlArg = this.requiredArgument(0, "Please specify a valid s-ramp URL.");
+		String disableValidationOptionArg = this.optionalArgument(1);
+		boolean validating = disableValidationOptionArg == null ? true : !Boolean.parseBoolean(disableValidationOptionArg);
+		if (!endpointUrlArg.startsWith("http")) {
+			endpointUrlArg = "http://" + endpointUrlArg;
+		}
 		QName varName = new QName("s-ramp", "client");
-		SrampAtomApiClient client = new SrampAtomApiClient(endpointUrlArg);
-		context.setVariable(varName, client);
-		System.out.println("Connected to endpoint: " + endpointUrlArg);
+		try {
+			SrampAtomApiClient client = new SrampAtomApiClient(endpointUrlArg, validating);
+			context.setVariable(varName, client);
+			System.out.println("Successfully connected to S-RAMP endpoint: " + endpointUrlArg);
+		} catch (Exception e) {
+			System.out.println("FAILED to connect to S-RAMP endpoint: " + endpointUrlArg);
+			System.out.println("\t" + e.getMessage());
+		}
 	}
 
 }
