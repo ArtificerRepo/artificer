@@ -83,6 +83,8 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 					derivedArtifact.setRelatedDocument(related);
 				}
 			}
+		} catch (IOException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
