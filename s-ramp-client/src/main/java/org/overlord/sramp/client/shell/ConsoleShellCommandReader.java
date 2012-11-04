@@ -32,9 +32,10 @@ public class ConsoleShellCommandReader extends AbstractShellCommandReader {
 	/**
 	 * Constructor.
 	 * @param factory
+	 * @param context
 	 */
-	public ConsoleShellCommandReader(ShellCommandFactory factory) {
-		super(factory);
+	public ConsoleShellCommandReader(ShellCommandFactory factory, ShellContext context) {
+		super(factory, context);
 	}
 
 	/**

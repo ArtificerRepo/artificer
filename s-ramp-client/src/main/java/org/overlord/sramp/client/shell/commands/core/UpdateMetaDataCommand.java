@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.client.shell.commands.ontology;
-
-import java.util.List;
+package org.overlord.sramp.client.shell.commands.core;
 
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
- * Lists all ontologies in the S-RAMP repository.
+ * Updates an artifact's meta-data in the s-ramp repository. This requires an active artifact to exist in the
+ * context, which was presumably modified in some way (updated core meta-data, properties, relationships,
+ * etc).
  *
  * @author eric.wittmann@redhat.com
  */
-public class ListOntologiesCommand extends AbstractShellCommand {
+public class UpdateMetaDataCommand extends AbstractShellCommand {
 
 	/**
 	 * Constructor.
 	 */
-	public ListOntologiesCommand() {
+	public UpdateMetaDataCommand() {
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class ListOntologiesCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		print("ontology:list");
+		print("s-ramp:updateMetaData");
 	}
 
 	/**
@@ -49,12 +49,12 @@ public class ListOntologiesCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		print("The 'list' command displays a list of all the ontologies");
-		print("currently known to the S-RAMP repository.  This list may be");
-		print("empty if no ontologies have yet been added to the repository.");
+		print("The 'updateMetaData' command updates the meta-data of the currently active");
+		print("artifact in the context.  Whatever changes were made to the active");
+		print("artifact will be sent back to the S-RAMP repository.");
 		print("");
 		print("Example usage:");
-		print("> ontology:list");
+		print(">  s-ramp:updateMetaData");
 	}
 
 	/**
@@ -63,27 +63,27 @@ public class ListOntologiesCommand extends AbstractShellCommand {
 	@Override
 	public void execute() throws Exception {
 		QName clientVarName = new QName("s-ramp", "client");
-		QName feedVarName = new QName("ontology", "feed");
+		QName artifactVarName = new QName("s-ramp", "artifact");
+
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
-		try {
-			List<OntologySummary> ontologies = client.getOntologies();
-			print("Ontologies (%1$d entries)", ontologies.size());
-			print("  Idx  Base");
-			print("  ---  ----");
-			int idx = 1;
-			for (OntologySummary ontology : ontologies) {
-				String base = ontology.getBase();
-				print("  %1$3d  %2$s", idx++, base);
-			}
 
-			getContext().setVariable(feedVarName, ontologies);
+		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
+		if (artifact == null) {
+			print("No active S-RAMP artifact exists.  Use s-ramp:getMetaData.");
+			return;
+		}
+
+		try {
+			client.updateArtifactMetaData(artifact);
+			print("Successfully updated artifact %1$s.", artifact.getName());
 		} catch (Exception e) {
-			print("FAILED to get the list of ontologies.");
+			print("FAILED to update the artifact.");
 			print("\t" + e.getMessage());
 		}
 	}
+
 }

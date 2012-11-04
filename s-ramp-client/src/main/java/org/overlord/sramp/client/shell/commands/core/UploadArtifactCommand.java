@@ -26,7 +26,6 @@ import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.util.PrintArtifactMetaDataVisitor;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -49,7 +48,7 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:upload <pathToArtifactContent> [<artifactType>]");
+		print("s-ramp:upload <pathToArtifactContent> [<artifactType>]");
 	}
 
 	/**
@@ -57,28 +56,28 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'upload' command uploads the content of a local file to");
-		System.out.println("the S-RAMP repository, creating a new artifact.  The artifact");
-		System.out.println("type can optionally be provided.  If excluded, the artifact");
-		System.out.println("type will be determined based on file extension.");
-		System.out.println("");
-		System.out.println("Example usages:");
-		System.out.println(">  s-ramp:upload /home/uname/files/mytypes.xsd");
-		System.out.println(">  s-ramp:upload /home/uname/files/myservice.wsdl WsdlDocument");
+		print("The 'upload' command uploads the content of a local file to");
+		print("the S-RAMP repository, creating a new artifact.  The artifact");
+		print("type can optionally be provided.  If excluded, the artifact");
+		print("type will be determined based on file extension.");
+		print("");
+		print("Example usages:");
+		print(">  s-ramp:upload /home/uname/files/mytypes.xsd");
+		print(">  s-ramp:upload /home/uname/files/myservice.wsdl WsdlDocument");
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String filePathArg = this.requiredArgument(0, "Please specify a path to a local file.");
 		String artifactTypeArg = this.optionalArgument(1);
 
 		QName clientVarName = new QName("s-ramp", "client");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
-			System.out.println("No S-RAMP repository connection is currently open.");
+			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
 		InputStream content = null;
@@ -92,12 +91,12 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 			}
 			content = FileUtils.openInputStream(file);
 			BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
-			System.out.println("Successfully uploaded an artifact.");
+			print("Successfully uploaded an artifact.");
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 		} catch (Exception e) {
-			System.out.println("FAILED to upload an artifact.");
-			System.out.println("\t" + e.getMessage());
+			print("FAILED to upload an artifact.");
+			print("\t" + e.getMessage());
 			IOUtils.closeQuietly(content);
 		}
 	}

@@ -549,4 +549,25 @@ public class SrampAtomApiClient {
 		}
 	}
 
+	/**
+	 * Deletes a single ontology by its UUID.  Note that this will only work if the S-RAMP
+	 * repository supports the ontology collection, which is not a part of the S-RAMP 1.0
+	 * specification.
+	 * @param ontologyUuid
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+	public void deleteOntology(String ontologyUuid) throws SrampClientException, SrampAtomException {
+		assertFeatureEnabled("ontology");
+		try {
+			String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid);
+			ClientRequest request = new ClientRequest(atomUrl);
+			request.delete();
+		} catch (SrampAtomException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new SrampClientException(e);
+		}
+	}
+
 }

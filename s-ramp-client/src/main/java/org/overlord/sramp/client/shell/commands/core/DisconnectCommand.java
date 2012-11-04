@@ -19,7 +19,6 @@ import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Disconnects from the current S-RAMP repository.
@@ -39,7 +38,7 @@ public class DisconnectCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:disconnect");
+		print("s-ramp:disconnect");
 	}
 
 	/**
@@ -47,26 +46,26 @@ public class DisconnectCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'disconnect' command disconnects from the currently");
-		System.out.println("active S-RAMP repository.");
-		System.out.println("");
-		System.out.println("Example usage:");
-		System.out.println(">  s-ramp:disconnect");
+		print("The 'disconnect' command disconnects from the currently");
+		print("active S-RAMP repository.");
+		print("");
+		print("Example usage:");
+		print(">  s-ramp:disconnect");
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		QName varName = new QName("s-ramp", "client");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(varName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(varName);
 		if (client == null) {
-			System.out.println("No S-RAMP repository connection is currently open.");
+			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
-		context.removeVariable(varName);
-		System.out.println("Successfully disconnected from the S-RAMP repository.");
+		getContext().removeVariable(varName);
+		print("Successfully disconnected from the S-RAMP repository.");
 	}
 
 }

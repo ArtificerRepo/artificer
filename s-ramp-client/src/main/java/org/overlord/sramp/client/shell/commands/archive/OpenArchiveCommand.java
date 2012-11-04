@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.AbstractShellContextVariableLifecycleHandler;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Opens an existing S-RAMP batch archive.
@@ -42,7 +41,7 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:open <pathToArchive>");
+		print("archive:open <pathToArchive>");
 	}
 
 	/**
@@ -50,30 +49,30 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'open' operation opens an existing S-RAMP batch archive");
-		System.out.println("file.  Once open, the contents of the archive can be modified");
-		System.out.println("or just listed.");
+		print("The 'open' operation opens an existing S-RAMP batch archive");
+		print("file.  Once open, the contents of the archive can be modified");
+		print("or just listed.");
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String pathToArchive = requiredArgument(0, "Please supply the path to an S-RAMP batch archive file.");
 
 		SrampArchive archive = null;
 		QName varName = new QName("archive", "active-archive");
-		archive = (SrampArchive) context.getVariable(varName);
+		archive = (SrampArchive) getContext().getVariable(varName);
 		if (archive != null) {
-			System.out.println("An S-RAMP archive is already open.  Please archive:close it before creating a new one.");
+			print("An S-RAMP archive is already open.  Please archive:close it before creating a new one.");
 			return;
 		}
 
 		File archiveFile = new File(pathToArchive);
 
 		archive = new SrampArchive(archiveFile);
-		context.setVariable(varName, archive, new AbstractShellContextVariableLifecycleHandler() {
+		getContext().setVariable(varName, archive, new AbstractShellContextVariableLifecycleHandler() {
 			@Override
 			public void onRemove(Object object) {
 				SrampArchive.closeQuietly((SrampArchive) object);
@@ -83,7 +82,7 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 				SrampArchive.closeQuietly((SrampArchive) object);
 			}
 		});
-		System.out.println("S-RAMP batch archive opened from " + archiveFile.getCanonicalPath());
+		print("S-RAMP batch archive opened from " + archiveFile.getCanonicalPath());
 	}
 
 }
