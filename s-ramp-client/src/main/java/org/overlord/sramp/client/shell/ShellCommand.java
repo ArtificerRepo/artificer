@@ -15,6 +15,11 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.io.Writer;
+import java.util.List;
+
+import org.overlord.sramp.client.shell.commands.Arguments;
+
 /**
  * Interface implemented by all shell commands.
  *
@@ -26,12 +31,24 @@ public interface ShellCommand {
 	 * Sets the arguments that can be used by this command.
 	 * @param arguments
 	 */
-	public void setArguments(String [] arguments);
+	public void setArguments(Arguments arguments);
+
+	/**
+	 * Configure the command's output.
+	 * @param output
+	 */
+	public void setOutput(Writer output);
+
+	/**
+	 * The shell context.
+	 * @param context
+	 */
+	public void setContext(ShellContext context);
 
 	/**
 	 * Called to execute the command.
 	 */
-	public void execute(ShellContext context) throws Exception;
+	public void execute() throws Exception;
 
 	/**
 	 * Prints the usage help for this command.
@@ -42,5 +59,20 @@ public interface ShellCommand {
 	 * Prints the help text for this command.
 	 */
 	public void printHelp();
+
+	/**
+	 * Prints the given message to the output stream.
+	 * @param formattedMessage
+	 * @param params
+	 */
+	public void print(String formattedMessage, Object ... params);
+
+	/**
+	 * Handle tab completion for the command.  This is optional, but provides a mechanism by
+	 * which individual commands can enable command-specific tab completion functionality.
+	 * @param lastArgument
+	 * @param candidates
+	 */
+	public void tabCompletion(String lastArgument, List<CharSequence> candidates);
 
 }

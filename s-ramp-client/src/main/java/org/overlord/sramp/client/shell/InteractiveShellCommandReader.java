@@ -16,6 +16,7 @@
 package org.overlord.sramp.client.shell;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import jline.console.ConsoleReader;
 
@@ -33,9 +34,10 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	/**
 	 * Constructor.
 	 * @param factory
+	 * @param context
 	 */
-	public InteractiveShellCommandReader(ShellCommandFactory factory) {
-		super(factory);
+	public InteractiveShellCommandReader(ShellCommandFactory factory, ShellContextImpl context) {
+		super(factory, context);
 	}
 
 	/**
@@ -46,7 +48,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 		consoleReader = new ConsoleReader();
 		String prompt = createAnsiPrompt();
 		consoleReader.setPrompt(prompt);
-		consoleReader.addCompleter(new TabCompleter(getFactory()));
+		consoleReader.addCompleter(new TabCompleter(getFactory(), getContext()));
 	}
 
 	/**
@@ -62,6 +64,14 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	@Override
 	protected String readLine() throws IOException {
 		return consoleReader.readLine();
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommandReader#getCommandOutput()
+	 */
+	@Override
+	protected Writer getCommandOutput() {
+		return consoleReader.getOutput();
 	}
 
 	/**

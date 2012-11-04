@@ -108,6 +108,17 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 	}
 
 	/**
+	 * @see org.jboss.resteasy.client.ClientRequest#delete()
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public ClientResponse delete() throws Exception {
+		ClientResponse response = super.delete();
+		handlePotentialServerError(response);
+		return response;
+	}
+
+	/**
 	 * Handles the possibility of an error found in the response.
 	 * @param response
 	 * @throws Exception

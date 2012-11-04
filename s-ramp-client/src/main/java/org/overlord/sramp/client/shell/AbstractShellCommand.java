@@ -15,6 +15,11 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.List;
+
+import org.overlord.sramp.client.shell.commands.Arguments;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 
 /**
@@ -24,7 +29,9 @@ import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
  */
 public abstract class AbstractShellCommand implements ShellCommand {
 
-	private String [] arguments;
+	private ShellContext context;
+	private Arguments arguments;
+	private Writer writer;
 
 	/**
 	 * Constructor.
@@ -33,40 +40,102 @@ public abstract class AbstractShellCommand implements ShellCommand {
 	}
 
 	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#setContext(org.overlord.sramp.client.shell.ShellContext)
+	 */
+	@Override
+	public void setContext(ShellContext context) {
+		this.context = context;
+	}
+
+	/**
+	 * @return the shell context
+	 */
+	protected ShellContext getContext() {
+		return this.context;
+	}
+
+	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#setArguments(java.lang.String[])
 	 */
 	@Override
-	public void setArguments(String[] arguments) {
+	public void setArguments(Arguments arguments) {
 		this.arguments = arguments;
 	}
 
 	/**
 	 * Gets the command's arguments.
 	 */
-	protected String [] getArguments() {
+	protected Arguments getArguments() {
 		return this.arguments;
 	}
 
 	/**
+	 * Returns the argument at the given index.  Throws an exception if the argument
+	 * does not exist.
 	 * @param argIndex
+	 * @param message
 	 * @throws InvalidCommandArgumentException
 	 */
 	protected String requiredArgument(int argIndex, String message) throws InvalidCommandArgumentException {
-		if (getArguments() == null || getArguments().length <= argIndex) {
+		if (getArguments().size() <= argIndex) {
 			throw new InvalidCommandArgumentException(argIndex, message);
 		}
-		return getArguments()[argIndex];
+		return getArguments().get(argIndex);
 	}
 
 	/**
+	 * Returns the optional argument at the given index.  Returns null if the argument
+	 * does not exist.
 	 * @param argIndex
-	 * @throws InvalidCommandArgumentException
 	 */
-	protected String optionalArgument(int argIndex) throws InvalidCommandArgumentException {
-		if (getArguments() == null || getArguments().length <= argIndex) {
-			return null;
+	protected String optionalArgument(int argIndex) {
+		return optionalArgument(argIndex, null);
+	}
+
+	/**
+	 * Returns the optional argument at the given index.  Returns the given default value if
+	 * the argument does not exist.
+	 * @param argIndex
+	 * @param defaultValue
+	 */
+	protected String optionalArgument(int argIndex, String defaultValue) {
+		if (getArguments().size() <= argIndex) {
+			return defaultValue;
 		}
-		return getArguments()[argIndex];
+		return getArguments().get(argIndex);
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#print(java.lang.String, java.lang.Object[])
+	 */
+	@Override
+	public void print(String formattedMessage, Object... params) {
+		String msg = String.format(formattedMessage, params);
+		if (writer != null) {
+			try {
+				writer.write(msg);
+				writer.write('\n');
+				writer.flush();
+			} catch (IOException e) {
+			}
+		} else {
+			System.out.println(formattedMessage);
+		}
+	}
+
+	/**
+	 * @param output the output to set
+	 */
+	@Override
+	public void setOutput(Writer output) {
+		this.writer = output;
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.ShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 */
+	@Override
+	public void tabCompletion(String lastArgument, List<CharSequence> candidates) {
 	}
 
 }

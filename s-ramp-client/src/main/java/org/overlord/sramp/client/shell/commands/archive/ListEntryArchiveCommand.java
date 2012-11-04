@@ -20,7 +20,6 @@ import javax.xml.namespace.QName;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.util.PrintArtifactMetaDataVisitor;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -43,7 +42,7 @@ public class ListEntryArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:listEntry <archivePath>");
+		print("archive:listEntry <archivePath>");
 	}
 
 	/**
@@ -51,28 +50,28 @@ public class ListEntryArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'listEntry' command is used to display information about");
-		System.out.println("a single entry in the currently open S-RAMP archive.  The");
-		System.out.println("path within the archive must be specified.");
+		print("The 'listEntry' command is used to display information about");
+		print("a single entry in the currently open S-RAMP archive.  The");
+		print("path within the archive must be specified.");
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String archivePathArg = requiredArgument(0, "Please include an entry path (relative archive path).");
 
 		QName varName = new QName("archive", "active-archive");
-		SrampArchive archive = (SrampArchive) context.getVariable(varName);
+		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
-			System.out.println("No S-RAMP archive is currently open.");
+			print("No S-RAMP archive is currently open.");
 		} else {
 			SrampArchiveEntry entry = archive.getEntry(archivePathArg);
 			BaseArtifactType metaData = entry.getMetaData();
-			System.out.println("Entry: " + archivePathArg);
-			System.out.println("-----");
+			print("Entry: " + archivePathArg);
+			print("-----");
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, metaData);
 		}

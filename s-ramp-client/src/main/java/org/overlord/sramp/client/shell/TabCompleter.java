@@ -19,6 +19,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.overlord.sramp.client.shell.commands.Arguments;
+
 import jline.console.completer.Completer;
 
 /**
@@ -29,13 +31,16 @@ import jline.console.completer.Completer;
 public class TabCompleter implements Completer {
 
 	private ShellCommandFactory factory;
+	private ShellContext context;
 
 	/**
 	 * Constructor.
 	 * @param factory
+	 * @param context
 	 */
-	public TabCompleter(ShellCommandFactory factory) {
+	public TabCompleter(ShellCommandFactory factory, ShellContext context) {
 		this.factory = factory;
+		this.context = context;
 	}
 
 	/**
@@ -89,6 +94,27 @@ public class TabCompleter implements Completer {
 				}
 			}
 			return colonIdx + 1;
+		}
+
+		// Case 5 - a full command name has been entered, delegate further procesing
+		// to that specific command
+		Arguments arguments = new Arguments(buffer);
+		QName commandName = arguments.removeCommandName();
+		String lastArgument = null;
+		if (arguments.size() > 0) {
+			lastArgument = arguments.remove(arguments.size() - 1);
+		}
+		try {
+			ShellCommand command = factory.createCommand(commandName);
+			if (command != null) {
+				command.setContext(this.context);
+				command.setArguments(arguments);
+				command.tabCompletion(lastArgument, candidates);
+				if (!candidates.isEmpty()) {
+					return buffer.length() - (lastArgument == null ? 0 : lastArgument.length());
+				}
+			}
+		} catch (Exception e) {
 		}
 
 		return cursor;

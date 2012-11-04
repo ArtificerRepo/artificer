@@ -16,7 +16,6 @@
 package org.overlord.sramp.client.shell.commands;
 
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * The command used when a command does not exist for a given command name.
@@ -46,11 +45,11 @@ public class CommandNotFoundCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) {
-		System.out.println("Command not found.  Try 'help' for a list of available commands.");
+	public void execute() {
+		print("Command not found.  Try 'help' for a list of available commands.");
 	}
 
 }

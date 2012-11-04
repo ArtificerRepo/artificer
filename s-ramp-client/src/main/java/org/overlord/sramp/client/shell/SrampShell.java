@@ -73,7 +73,7 @@ public class SrampShell {
 				if (command == null) {
 					done = true;
 				} else {
-					command.execute(context);
+					command.execute();
 				}
 			} catch (InvalidCommandArgumentException e) {
 				System.out.println("Invalid argument:  " + e.getMessage());
@@ -95,18 +95,18 @@ public class SrampShell {
 		ShellCommandReader commandReader = null;
 		if (args.length >= 2 && "-f".equals(args[0])) {
 			String filePath = args[1];
-			commandReader = new FileShellCommandReader(factory, filePath);
+			commandReader = new FileShellCommandReader(factory, context, filePath);
 		} else if (args.length == 1 && "-simple".equals(args[0])) {
 			if (System.console() != null) {
-				commandReader = new ConsoleShellCommandReader(factory);
+				commandReader = new ConsoleShellCommandReader(factory, context);
 			} else {
-				commandReader = new StdInShellCommandReader(factory);
+				commandReader = new StdInShellCommandReader(factory, context);
 			}
 		} else {
 			if (System.console() != null) {
-				commandReader = new InteractiveShellCommandReader(factory);
+				commandReader = new InteractiveShellCommandReader(factory, context);
 			} else {
-				commandReader = new StdInShellCommandReader(factory);
+				commandReader = new StdInShellCommandReader(factory, context);
 			}
 		}
 		commandReader.open();

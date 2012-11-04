@@ -22,7 +22,6 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Performs a query against the s-ramp server and displays the result.
@@ -42,7 +41,7 @@ public class QueryCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:query <srampQuery>");
+		print("s-ramp:query <srampQuery>");
 	}
 
 	/**
@@ -50,37 +49,37 @@ public class QueryCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'query' command issues a standard S-RAMP formatted");
-		System.out.println("query against the S-RAMP server.  The query will result");
-		System.out.println("in a Feed of entries.");
-		System.out.println("");
-		System.out.println("Example usage:");
-		System.out.println(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
+		print("The 'query' command issues a standard S-RAMP formatted");
+		print("query against the S-RAMP server.  The query will result");
+		print("in a Feed of entries.");
+		print("");
+		print("Example usage:");
+		print(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String queryArg = this.requiredArgument(0, "Please specify a valid S-RAMP query.");
 		QName varName = new QName("s-ramp", "client");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(varName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(varName);
 		if (client == null) {
-			System.out.println("No S-RAMP repository connection is currently open.");
+			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
 		QueryResultSet rset = client.query(queryArg, 0, 100, "uuid", true);
 		int entryIndex = 1;
-		System.out.printf("Atom Feed (%1$d entries)\n", rset.size());
-		System.out.printf("  Idx                    Type Name\n");
-		System.out.printf("  ---                    ---- ----\n");
+		print("Atom Feed (%1$d entries)", rset.size());
+		print("  Idx                    Type Name");
+		print("  ---                    ---- ----");
 		for (ArtifactSummary summary : rset) {
 			ArtifactType type = summary.getType();
-			System.out.printf("  %1$3d %2$23s %3$-40s\n", entryIndex++, type.getArtifactType().getType()
-					.toString(), summary.getName());
+			print("  %1$3d %2$23s %3$-40s", entryIndex++, type.getArtifactType().getType().toString(),
+					summary.getName());
 		}
-		context.setVariable(new QName("s-ramp", "feed"), rset);
+		getContext().setVariable(new QName("s-ramp", "feed"), rset);
 	}
 
 }

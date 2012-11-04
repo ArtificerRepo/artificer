@@ -37,9 +37,11 @@ public class FileShellCommandReader extends AbstractShellCommandReader {
 	/**
 	 * Constructor.
 	 * @param factory
+	 * @param context
+	 * @param filePath
 	 */
-	public FileShellCommandReader(ShellCommandFactory factory, String filePath) {
-		super(factory);
+	public FileShellCommandReader(ShellCommandFactory factory, ShellContextImpl context, String filePath) {
+		super(factory, context);
 		this.filePath = filePath;
 	}
 
