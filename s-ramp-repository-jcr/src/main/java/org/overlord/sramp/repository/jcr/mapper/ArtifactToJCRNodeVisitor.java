@@ -67,9 +67,12 @@ import org.s_ramp.xmlns._2010.s_ramp.PortEnum;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
 import org.s_ramp.xmlns._2010.s_ramp.PortTypeEnum;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
+import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
+import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlExtensionEnum;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeEnum;
 
@@ -134,6 +137,8 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
 		try {
 			this.jcrNode.setProperty("sramp:namespace", artifact.getNamespace());
+
+			setRelationships("extension", -1, 1, WsdlExtensionEnum.WSDL_EXTENSION.toString(), false, artifact.getExtension());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -259,8 +264,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(WsdlDocument artifact) {
 		super.visit(artifact);
 		try {
-			if (artifact.getTargetNamespace() != null)
-				this.jcrNode.setProperty("sramp:targetNamespace", artifact.getTargetNamespace());
+			this.jcrNode.setProperty("sramp:targetNamespace", artifact.getTargetNamespace());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -370,7 +374,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		}
 	}
 
-
 	/**
 	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Binding)
 	 */
@@ -380,6 +383,20 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		try {
 			setRelationships("bindingOperation", -1, 1, BindingOperationEnum.BINDING_OPERATION.toString(), false, artifact.getBindingOperation());
 			setRelationship("portType", 1, 1, PortTypeEnum.PORT_TYPE.toString(), false, artifact.getPortType());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.SoapBinding)
+	 */
+	@Override
+	public void visit(SoapBinding artifact) {
+		super.visit(artifact);
+		try {
+			this.jcrNode.setProperty("sramp:style", artifact.getStyle());
+			this.jcrNode.setProperty("sramp:transport", artifact.getTransport());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -422,6 +439,19 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		super.visit(artifact);
 		try {
 			setRelationship("binding", 1, 1, BindingEnum.BINDING.toString(), false, artifact.getBinding());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.SoapAddress)
+	 */
+	@Override
+	public void visit(SoapAddress artifact) {
+		super.visit(artifact);
+		try {
+			this.jcrNode.setProperty("sramp:soapLocation", artifact.getSoapLocation());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
