@@ -18,10 +18,9 @@ package org.overlord.sramp.client.shell;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Arrays;
-
 import javax.xml.namespace.QName;
 
+import org.overlord.sramp.client.shell.commands.Arguments;
 import org.overlord.sramp.client.shell.commands.NoOpCommand;
 
 /**
@@ -31,14 +30,17 @@ import org.overlord.sramp.client.shell.commands.NoOpCommand;
  */
 public abstract class AbstractShellCommandReader implements ShellCommandReader {
 
+	private ShellContext context;
 	private ShellCommandFactory factory;
 
 	/**
 	 * Constructor.
 	 * @param factory
+	 * @param context
 	 */
-	public AbstractShellCommandReader(ShellCommandFactory factory) {
+	public AbstractShellCommandReader(ShellCommandFactory factory, ShellContext context) {
 		this.factory = factory;
+		this.context = context;
 	}
 
 	/**
@@ -56,25 +58,19 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 		if (line == null) {
 			return null;
 		}
-		if (line.trim().length() == 0) {
+
+		Arguments arguments = new Arguments(line);
+		if (arguments.isEmpty()) {
 			return new NoOpCommand();
 		}
 
-		//  TODO support quoted strings
-		String [] split = line.split("\\s");
-		String encodedCommandName = split[0];
-		QName commandName = null;
-		if (encodedCommandName != null) {
-			if (encodedCommandName.contains(":") && !encodedCommandName.endsWith(":")) {
-				String [] nameSplit = encodedCommandName.split(":");
-				commandName = new QName(nameSplit[0], nameSplit[1]);
-			} else {
-				commandName = new QName("s-ramp", encodedCommandName);
-			}
-		}
-		String [] args = Arrays.copyOfRange(split, 1, split.length);
+		// The first argument is the qualified command name.
+		QName commandName = arguments.removeCommandName();
+
+		// Create the command.
 		ShellCommand command = factory.createCommand(commandName);
-		command.setArguments(args);
+		command.setContext(this.context);
+		command.setArguments(arguments);
 		command.setOutput(getCommandOutput());
 		return command;
 	}
@@ -105,6 +101,13 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 	 */
 	public ShellCommandFactory getFactory() {
 		return factory;
+	}
+
+	/**
+	 * @return the context
+	 */
+	public ShellContext getContext() {
+		return context;
 	}
 
 }

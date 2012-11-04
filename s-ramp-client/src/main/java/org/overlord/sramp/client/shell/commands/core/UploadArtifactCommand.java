@@ -26,7 +26,6 @@ import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.util.PrintArtifactMetaDataVisitor;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -68,15 +67,15 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String filePathArg = this.requiredArgument(0, "Please specify a path to a local file.");
 		String artifactTypeArg = this.optionalArgument(1);
 
 		QName clientVarName = new QName("s-ramp", "client");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print("No S-RAMP repository connection is currently open.");
 			return;

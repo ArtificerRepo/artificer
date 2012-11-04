@@ -28,7 +28,6 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
@@ -75,10 +74,10 @@ public class GetContentCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String artifactIdArg = this.requiredArgument(0, "Please specify a valid artifact identifier.");
 		String outputFilePathArg = this.requiredArgument(1, "Please specify an output path (file or directory).");
 		if (!artifactIdArg.contains(":")) {
@@ -86,7 +85,7 @@ public class GetContentCommand extends AbstractShellCommand {
 		}
 		QName clientVarName = new QName("s-ramp", "client");
 		QName feedVarName = new QName("s-ramp", "feed");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print("No S-RAMP repository connection is currently open.");
 			return;
@@ -95,7 +94,7 @@ public class GetContentCommand extends AbstractShellCommand {
 		BaseArtifactType artifact = null;
 		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
 		if ("feed".equals(idType)) {
-			QueryResultSet rset = (QueryResultSet) context.getVariable(feedVarName);
+			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
 			int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
 			if (feedIdx < 0 || feedIdx >= rset.size()) {
 				throw new InvalidCommandArgumentException(0, "Feed index out of range.");

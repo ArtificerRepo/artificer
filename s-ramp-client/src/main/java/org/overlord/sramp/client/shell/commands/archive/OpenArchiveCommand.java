@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.AbstractShellContextVariableLifecycleHandler;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Opens an existing S-RAMP batch archive.
@@ -56,15 +55,15 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String pathToArchive = requiredArgument(0, "Please supply the path to an S-RAMP batch archive file.");
 
 		SrampArchive archive = null;
 		QName varName = new QName("archive", "active-archive");
-		archive = (SrampArchive) context.getVariable(varName);
+		archive = (SrampArchive) getContext().getVariable(varName);
 		if (archive != null) {
 			print("An S-RAMP archive is already open.  Please archive:close it before creating a new one.");
 			return;
@@ -73,7 +72,7 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 		File archiveFile = new File(pathToArchive);
 
 		archive = new SrampArchive(archiveFile);
-		context.setVariable(varName, archive, new AbstractShellContextVariableLifecycleHandler() {
+		getContext().setVariable(varName, archive, new AbstractShellContextVariableLifecycleHandler() {
 			@Override
 			public void onRemove(Object object) {
 				SrampArchive.closeQuietly((SrampArchive) object);

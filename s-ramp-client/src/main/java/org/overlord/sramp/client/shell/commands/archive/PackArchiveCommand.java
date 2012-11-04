@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 import org.apache.commons.io.FileUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Removes an entry from the current S-RAMP batch archive.
@@ -56,14 +55,14 @@ public class PackArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String outputLocationArg = requiredArgument(0, "Please include the output location (file path).");
 
 		QName varName = new QName("archive", "active-archive");
-		SrampArchive archive = (SrampArchive) context.getVariable(varName);
+		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
 			print("No S-RAMP archive is currently open.");

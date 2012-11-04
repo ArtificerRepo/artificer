@@ -16,6 +16,7 @@
 package org.overlord.sramp.client.shell.commands.core;
 
 import java.io.File;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -24,7 +25,6 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 import org.overlord.sramp.client.shell.util.PrintArtifactMetaDataVisitor;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
@@ -75,10 +75,10 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String artifactIdArg = this.requiredArgument(0, "Please specify a valid artifact identifier.");
 		String outputFilePathArg = this.optionalArgument(1);
 		if (!artifactIdArg.contains(":")) {
@@ -86,7 +86,7 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 		}
 		QName clientVarName = new QName("s-ramp", "client");
 		QName feedVarName = new QName("s-ramp", "feed");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print("No S-RAMP repository connection is currently open.");
 			return;
@@ -95,7 +95,7 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 		BaseArtifactType artifact = null;
 		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
 		if ("feed".equals(idType)) {
-			QueryResultSet rset = (QueryResultSet) context.getVariable(feedVarName);
+			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
 			int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
 			if (feedIdx < 0 || feedIdx >= rset.size()) {
 				throw new InvalidCommandArgumentException(0, "Feed index out of range.");
@@ -113,7 +113,7 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 
 		// Store the artifact in the context, making it the active artifact.
 		QName artifactVarName = new QName("s-ramp", "artifact");
-		context.setVariable(artifactVarName, artifact);
+		getContext().setVariable(artifactVarName, artifact);
 
 		if (outputFilePathArg == null) {
 			// Print out the meta-data information
@@ -132,6 +132,28 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 			outFile.getParentFile().mkdirs();
 			SrampArchiveJaxbUtils.writeMetaData(outFile, artifact, false);
 			print("Artifact meta-data saved to " + outFile.getCanonicalPath());
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 */
+	@Override
+	public void tabCompletion(String lastArgument, List<CharSequence> candidates) {
+		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) {
+			QName feedVarName = new QName("s-ramp", "feed");
+			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
+			if (rset != null) {
+				for (int idx = 0; idx < rset.size(); idx++) {
+					String candidate = "feed:" + (idx+1);
+					if (lastArgument == null) {
+						candidates.add(candidate);
+					}
+					if (lastArgument != null && candidate.startsWith(lastArgument)) {
+						candidates.add(candidate);
+					}
+				}
+			}
 		}
 	}
 

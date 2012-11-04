@@ -32,9 +32,10 @@ public class StdInShellCommandReader extends AbstractShellCommandReader {
 	/**
 	 * Constructor.
 	 * @param factory
+	 * @param context
 	 */
-	public StdInShellCommandReader(ShellCommandFactory factory) {
-		super(factory);
+	public StdInShellCommandReader(ShellCommandFactory factory, ShellContextImpl context) {
+		super(factory, context);
 	}
 
 	/**

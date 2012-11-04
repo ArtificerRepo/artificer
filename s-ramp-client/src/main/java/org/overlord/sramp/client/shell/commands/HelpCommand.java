@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.ShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Implements the 'help' command.
@@ -56,10 +55,10 @@ public class HelpCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String namespaceOrCmdName = optionalArgument(0);
 		if (namespaceOrCmdName == null) {
 			printHelpAll();

@@ -24,7 +24,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
@@ -64,21 +63,21 @@ public class UpdateContentCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String contentFilePathArg = requiredArgument(0, "Please supply a file path to the new content.");
 		QName clientVarName = new QName("s-ramp", "client");
 		QName artifactVarName = new QName("s-ramp", "artifact");
 
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
 
-		BaseArtifactType artifact = (BaseArtifactType) context.getVariable(artifactVarName);
+		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		if (artifact == null) {
 			print("No active S-RAMP artifact exists.  Use s-ramp:getMetaData.");
 			return;

@@ -75,15 +75,15 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String archivePathArg = requiredArgument(0, "Please include an entry path (relative archive path).");
 		String subCommandArg = requiredArgument(1, "Please specify a sub-command.");
 
 		QName varName = new QName("archive", "active-archive");
-		SrampArchive archive = (SrampArchive) context.getVariable(varName);
+		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
 			print("No S-RAMP archive is currently open.");
@@ -93,13 +93,13 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 			}
 
 			if ("setContent".equals(subCommandArg)) {
-				executeSetContent(archive, archivePathArg, context);
+				executeSetContent(archive, archivePathArg, getContext());
 			}
 			if ("setProperty".equals(subCommandArg)) {
-				executeSetProperty(archive, archivePathArg, context);
+				executeSetProperty(archive, archivePathArg, getContext());
 			}
 			if ("setRelationship".equals(subCommandArg)) {
-				executeSetRelationship(archive, archivePathArg, context);
+				executeSetRelationship(archive, archivePathArg, getContext());
 			}
 		}
 	}

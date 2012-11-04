@@ -34,9 +34,10 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	/**
 	 * Constructor.
 	 * @param factory
+	 * @param context
 	 */
-	public InteractiveShellCommandReader(ShellCommandFactory factory) {
-		super(factory);
+	public InteractiveShellCommandReader(ShellCommandFactory factory, ShellContextImpl context) {
+		super(factory, context);
 	}
 
 	/**
@@ -47,7 +48,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 		consoleReader = new ConsoleReader();
 		String prompt = createAnsiPrompt();
 		consoleReader.setPrompt(prompt);
-		consoleReader.addCompleter(new TabCompleter(getFactory()));
+		consoleReader.addCompleter(new TabCompleter(getFactory(), getContext()));
 	}
 
 	/**

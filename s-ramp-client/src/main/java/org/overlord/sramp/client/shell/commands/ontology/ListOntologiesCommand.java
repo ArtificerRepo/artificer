@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Lists all ontologies in the S-RAMP repository.
@@ -59,13 +58,13 @@ public class ListOntologiesCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		QName clientVarName = new QName("s-ramp", "client");
 		QName feedVarName = new QName("ontology", "feed");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print("No S-RAMP repository connection is currently open.");
 			return;
@@ -81,7 +80,7 @@ public class ListOntologiesCommand extends AbstractShellCommand {
 				print("  %1$3d  %2$s", idx++, base);
 			}
 
-			context.setVariable(feedVarName, ontologies);
+			getContext().setVariable(feedVarName, ontologies);
 		} catch (Exception e) {
 			print("FAILED to get the list of ontologies.");
 			print("\t" + e.getMessage());

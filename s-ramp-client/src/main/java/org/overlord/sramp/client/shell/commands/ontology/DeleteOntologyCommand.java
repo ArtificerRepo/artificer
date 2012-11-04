@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 
 /**
@@ -63,16 +62,16 @@ public class DeleteOntologyCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String ontologyIdArg = this.requiredArgument(0, "Please specify a valid ontology identifier.");
 
 		QName feedVarName = new QName("ontology", "feed");
 		QName clientVarName = new QName("s-ramp", "client");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print("No S-RAMP repository connection is currently open.");
 			return;
@@ -86,7 +85,10 @@ public class DeleteOntologyCommand extends AbstractShellCommand {
 		String idType = ontologyIdArg.substring(0, colonIdx);
 		String idValue = ontologyIdArg.substring(colonIdx + 1);
 		if ("feed".equals(idType)) {
-			List<OntologySummary> ontologies = (List<OntologySummary>) context.getVariable(feedVarName);
+			List<OntologySummary> ontologies = (List<OntologySummary>) getContext().getVariable(feedVarName);
+			if (ontologies == null) {
+				throw new InvalidCommandArgumentException(0, "There is no ontology feed available, try 'ontology:list' first.");
+			}
 			int feedIdx = Integer.parseInt(idValue) - 1;
 			if (feedIdx < 0 || feedIdx >= ontologies.size()) {
 				throw new InvalidCommandArgumentException(0, "Feed index out of range.");
@@ -105,6 +107,29 @@ public class DeleteOntologyCommand extends AbstractShellCommand {
 		} catch (Exception e) {
 			print("FAILED to get the list of ontologies.");
 			print("\t" + e.getMessage());
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 */
+	@Override
+	public void tabCompletion(String lastArgument, List<CharSequence> candidates) {
+		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) {
+			QName feedVarName = new QName("ontology", "feed");
+			@SuppressWarnings("unchecked")
+			List<OntologySummary> ontologies = (List<OntologySummary>) getContext().getVariable(feedVarName);
+			if (ontologies != null) {
+				for (int idx = 0; idx < ontologies.size(); idx++) {
+					String candidate = "feed:" + (idx+1);
+					if (lastArgument == null) {
+						candidates.add(candidate);
+					}
+					if (lastArgument != null && candidate.startsWith(lastArgument)) {
+						candidates.add(candidate);
+					}
+				}
+			}
 		}
 	}
 }

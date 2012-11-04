@@ -25,7 +25,6 @@ import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -63,16 +62,16 @@ public class AddEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String archivePathArg = requiredArgument(0, "Please include an entry path (relative archive path).");
 		String artifactTypeArg = requiredArgument(1, "Please include an entry path (relative archive path).");
 		String pathToContent = optionalArgument(2);
 
 		QName varName = new QName("archive", "active-archive");
-		SrampArchive archive = (SrampArchive) context.getVariable(varName);
+		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
 			print("No S-RAMP archive is currently open.");

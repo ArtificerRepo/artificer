@@ -22,7 +22,6 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Performs a query against the s-ramp server and displays the result.
@@ -59,13 +58,13 @@ public class QueryCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String queryArg = this.requiredArgument(0, "Please specify a valid S-RAMP query.");
 		QName varName = new QName("s-ramp", "client");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(varName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(varName);
 		if (client == null) {
 			print("No S-RAMP repository connection is currently open.");
 			return;
@@ -80,7 +79,7 @@ public class QueryCommand extends AbstractShellCommand {
 			print("  %1$3d %2$23s %3$-40s", entryIndex++, type.getArtifactType().getType().toString(),
 					summary.getName());
 		}
-		context.setVariable(new QName("s-ramp", "feed"), rset);
+		getContext().setVariable(new QName("s-ramp", "feed"), rset);
 	}
 
 }
