@@ -18,6 +18,7 @@ package org.overlord.sramp.client.shell;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -103,6 +104,16 @@ public class ShellCommandFactory {
 
 		// BRMS commands
 		registry.put(new QName("brms", "pkg2sramp"), Pkg2SrampCommand.class);
+
+		// Register commands contributed via the Java Service mechanism
+        for (ShellCommandProvider provider : ServiceLoader.load(ShellCommandProvider.class)) {
+        	Map<String, Class<? extends ShellCommand>> commands = provider.provideCommands();
+        	for (Map.Entry<String, Class<? extends ShellCommand>> entry : commands.entrySet()) {
+        		QName qualifiedCmdName = new QName(provider.getNamespace(), entry.getKey());
+        		registry.put(qualifiedCmdName, entry.getValue());
+        	}
+        }
+
 	}
 
 	/**
