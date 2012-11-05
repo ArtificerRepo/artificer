@@ -51,7 +51,8 @@ public class QueryRemoteService extends RemoteServiceServlet implements IQueryRe
 	@Override
 	public List<ArtifactSummary> findArtifacts(final PageInfo page, ArtifactFilter filter) throws RemoteServiceException {
 		try {
-			QueryResultSet rset = SrampAtomApiClient.getInstance().query(filter.getQueryBase(), page.getPage(),
+			int startIndex = page.getPage() * page.getPageSize();
+			QueryResultSet rset = SrampAtomApiClient.getInstance().query(filter.getQueryBase(), startIndex,
 					page.getPageSize(), page.getOrderBy(), page.isAscending());
 			List<ArtifactSummary> rval = new ArrayList<ArtifactSummary>();
 			for (org.overlord.sramp.client.query.ArtifactSummary entry : rset) {
