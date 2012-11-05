@@ -246,10 +246,16 @@ public class ArtifactType {
 		this.artifactType = artifactType;
 	}
 
+	/**
+	 * @return the artifact model
+	 */
 	public String getModel() {
 	    return getArtifactType().getModel();
 	}
 
+	/**
+	 * @return the artifact type
+	 */
 	public String getType() {
 	    if (getArtifactType().equals(ArtifactTypeEnum.UserDefinedArtifactType)) {
             return getUserType();
@@ -258,6 +264,9 @@ public class ArtifactType {
         }
 	}
 
+	/**
+	 * @return the artifact type label
+	 */
 	public String getLabel() {
 	    return getArtifactType().getLabel();
 	}
