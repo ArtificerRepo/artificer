@@ -245,6 +245,16 @@
         </app:collection>
     </app:workspace>
     <app:workspace>
+        <atom:title>User Defined Model</atom:title>
+        <app:collection href="http://localhost:8081/s-ramp/user">
+            <atom:title>User Defined Model Objects</atom:title>
+            <app:accept>application/octet-stream</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="User Defined" scheme="urn:x-s-ramp:2010:type" term="UserDefinedArtifactType"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+    <app:workspace>
         <atom:title>Ontology Model</atom:title>
         <app:collection href="http://localhost:8081/s-ramp/ontology">
             <atom:title>Ontology Objects</atom:title>

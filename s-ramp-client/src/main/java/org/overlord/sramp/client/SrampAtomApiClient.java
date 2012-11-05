@@ -134,12 +134,11 @@ public class SrampAtomApiClient {
 	 */
 	private void assertFeatureEnabled(ArtifactType feature) throws SrampClientException {
 		if (this.validating) {
-			if (!this.enabledFeatures.contains(feature.getType())) {
+			if (!this.enabledFeatures.contains(feature.getArtifactType().getType())) {
 				throw new SrampClientException("The S-RAMP repository does not appear to support this feature.");
 			}
 		}
 	}
-
 
 	/**
 	 * Gets the S-RAMP service document.
