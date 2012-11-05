@@ -15,11 +15,12 @@
  */
 package org.overlord.sramp.client.shell.commands.core;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Connects to an s-ramp server.
@@ -39,7 +40,7 @@ public class ConnectCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:connect <endpointUrl>");
+		print("s-ramp:connect <endpointUrl> [--disableValidation]");
 	}
 
 	/**
@@ -47,23 +48,46 @@ public class ConnectCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'connect' command creates a connection to a remote");
-		System.out.println("S-RAMP repository at its Atom endpoint.");
-		System.out.println("");
-		System.out.println("Example usage:");
-		System.out.println(">  s-ramp:connect http://localhost:8080/s-ramp-atom/s-ramp");
+		print("The 'connect' command creates a connection to a remote");
+		print("S-RAMP repository at its Atom endpoint.  The connection");
+		print("to the repository will be validated unless the ");
+		print("'--disableValidation' option is set.");
+		print("");
+		print("Example usage:");
+		print(">  s-ramp:connect http://localhost:8080/s-ramp-atom/s-ramp");
+		print(">  s-ramp:connect http://example.org/s-ramp --disableValidation");
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String endpointUrlArg = this.requiredArgument(0, "Please specify a valid s-ramp URL.");
+		String disableValidationOptionArg = this.optionalArgument(1);
+		boolean validating = disableValidationOptionArg == null ? true : !Boolean.parseBoolean(disableValidationOptionArg);
+		if (!endpointUrlArg.startsWith("http")) {
+			endpointUrlArg = "http://" + endpointUrlArg;
+		}
 		QName varName = new QName("s-ramp", "client");
-		SrampAtomApiClient client = new SrampAtomApiClient(endpointUrlArg);
-		context.setVariable(varName, client);
-		System.out.println("Connected to endpoint: " + endpointUrlArg);
+		try {
+			SrampAtomApiClient client = new SrampAtomApiClient(endpointUrlArg, validating);
+			getContext().setVariable(varName, client);
+			print("Successfully connected to S-RAMP endpoint: " + endpointUrlArg);
+		} catch (Exception e) {
+			print("FAILED to connect to S-RAMP endpoint: " + endpointUrlArg);
+			print("\t" + e.getMessage());
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 */
+	@Override
+	public void tabCompletion(String lastArgument, List<CharSequence> candidates) {
+		if (getArguments().isEmpty()) {
+			candidates.add("http://localhost:8080/s-ramp-atom/s-ramp");
+		}
 	}
 
 }

@@ -27,6 +27,25 @@
 //------------------------------------------------------------------------------
 
 // -------------------------------------------------------
+// S-RAMP Ontologies
+// -------------------------------------------------------
+
+[sramp:class]
+- sramp:uri (string) mandatory
+- sramp:id (string) mandatory
+- sramp:label (string)
+- sramp:comment (string)
++ * (sramp:class)
+
+[sramp:ontology] > nt:hierarchyNode, mix:created, mix:lastModified
+- sramp:uuid (string) mandatory
+- sramp:label (string)
+- sramp:comment (string)
+- sramp:base (string)
+- sramp:id (string)
++ * (sramp:class)
+
+// -------------------------------------------------------
 // S-RAMP Core Model Artifacts
 // -------------------------------------------------------
 
@@ -42,7 +61,8 @@
 - sramp:name (string)
 - sramp:artifactModel (string)
 - sramp:artifactType (string)
-- sramp:classifiedBy (reference) multiple < 'owl:class'
+- sramp:classifiedBy (string) multiple
+- sramp:normalizedClassifiedBy (string) multiple
 - sramp:description (string)
 - * (string)
 - * (string) multiple
@@ -64,9 +84,6 @@
 
 [sramp:storedQuery] > nt:query
 - sramp:propertyList (string) multiple
-
-[sramp:relatedTo] mixin
-- * (weakreference) multiple
 
 
 // -------------------------------------------------------
@@ -128,7 +145,9 @@
 
 [sramp:bindingOperationFault] > sramp:namedWsdlDerivedArtifactType
 
-[sramp:wsdlExtension] > sramp:namedWsdlDerivedArtifactType
+[sramp:wsdlExtension] > sramp:derivedArtifactType abstract
+- sramp:namespace (string)
+- sramp:ncName (string)
 
 [sramp:wsdlDocument] > sramp:xmlDocument mixin
 - sramp:targetNamespace (string)
@@ -152,6 +171,16 @@
 + * (sramp:bindingOperationFault)
 + * (sramp:wsdlExtension)
 
+
+// -------------------------------------------------------
+// S-RAMP SOAP WSDL Model Artifacts
+// -------------------------------------------------------
+[sramp:soapBinding] > sramp:wsdlExtension
+- sramp:style (string)
+- sramp:transport (string)
+
+[sramp:soapAddress] > sramp:wsdlExtension
+- sramp:soapLocation (string)
 
 // -------------------------------------------------------
 // S-RAMP Policy Model Artifacts

@@ -47,6 +47,10 @@ public class MediaType extends javax.ws.rs.core.MediaType {
     public final static String APPLICATION_SRAMP_ATOM_EXCEPTION = "application/sramp-atom-exception";
     public final static MediaType APPLICATION_SRAMP_ATOM_EXCEPTION_TYPE = new MediaType("application", "sramp-atom-exception");
 
+    /** "application/rdf+xml" */
+    public final static String APPLICATION_RDF_XML = "application/rdf+xml";
+    public final static MediaType APPLICATION_RDF_XML_TYPE = new MediaType("application", "rdf+xml");
+
     /**
      * Creates a parameter map.
      *
@@ -85,7 +89,7 @@ public class MediaType extends javax.ws.rs.core.MediaType {
     public MediaType(String type, String subtype) {
         super(type, subtype);
     }
-    
+
     public static MediaType getInstance(String mimeType) {
         if (mimeType!=null && mimeType.contains("/")) {
             String[] type = mimeType.split("/");

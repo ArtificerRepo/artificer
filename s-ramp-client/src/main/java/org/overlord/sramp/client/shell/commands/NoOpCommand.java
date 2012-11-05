@@ -16,7 +16,6 @@
 package org.overlord.sramp.client.shell.commands;
 
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * The command about nothing.  The Seinfeld command.
@@ -46,10 +45,10 @@ public class NoOpCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) {
+	public void execute() {
 	}
 
 }

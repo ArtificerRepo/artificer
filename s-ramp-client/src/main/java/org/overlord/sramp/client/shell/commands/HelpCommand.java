@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.ShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Implements the 'help' command.
@@ -56,10 +55,10 @@ public class HelpCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String namespaceOrCmdName = optionalArgument(0);
 		if (namespaceOrCmdName == null) {
 			printHelpAll();
@@ -80,21 +79,37 @@ public class HelpCommand extends AbstractShellCommand {
 	 * Prints the generic help (lists all commands, etc).
 	 */
 	private void printHelpAll() {
-		System.out.println("The S-RAMP Shell supports the following commands:");
-		System.out.println("");
+		print("The S-RAMP Shell supports the following commands:");
 		String currentNamespace = null;
+		int colCount = 0;
+		StringBuilder builder = new StringBuilder();
 		for (Entry<QName,Class<? extends ShellCommand>> entry : this.commands.entrySet()) {
 			QName cmdName = entry.getKey();
 			String namespace = cmdName.getNamespaceURI();
 			String name = cmdName.getLocalPart();
 			if (!namespace.equals(currentNamespace)) {
-				System.out.printf(":: %1$s ::\n", namespace);
+				builder.append(String.format("\n\nNamespace: %1$s\n-----------------------\n", namespace));
 				currentNamespace = namespace;
+				builder.append(String.format("  %1$-18s", name));
+				colCount = 0;
+			} else {
+				builder.append(String.format("%1$-18s", name));
+				colCount++;
 			}
-			System.out.println("   " + name);
+			if (colCount == 3) {
+				builder.append("\n  ");
+				colCount = 0;
+			}
 		}
-		System.out.println("");
-		System.out.println("To get help for a specific command, try 'help <cmdNamespace>:<cmdName>'.");
+		print(builder.toString());
+		print("\n");
+		print("To get help for a specific command, try 'help <cmdNamespace>:<cmdName>'.");
+		print("");
+		print("To execute a specific command, try '<namespace>:<commandName> <args>'.");
+		print("Some examples:");
+		print("   s-ramp:connect http://localhost:8080/s-ramp-atom/s-ramp");
+		print("   archive:open /home/uname/files/my-package.sramp");
+		print("");
 	}
 
 	/**
@@ -108,11 +123,11 @@ public class HelpCommand extends AbstractShellCommand {
 			String ns = cmdName.getNamespaceURI();
 			String name = cmdName.getLocalPart();
 			if (ns.equals(namespace)) {
-				System.out.println("   " + name);
+				print("   " + name);
 			}
 		}
-		System.out.println("");
-		System.out.println("To get help for a specific command, try 'help <cmdNamespace>:<cmdName>'.");
+		print("");
+		print("To get help for a specific command, try 'help <cmdNamespace>:<cmdName>'.");
 	}
 
 	/**
@@ -128,9 +143,9 @@ public class HelpCommand extends AbstractShellCommand {
 			ShellCommand command = commandClass.newInstance();
 			System.out.print("Usage: ");
 			command.printUsage();
-			System.out.println("");
+			print("");
 			command.printHelp();
-			System.out.println("");
+			print("");
 		}
 	}
 

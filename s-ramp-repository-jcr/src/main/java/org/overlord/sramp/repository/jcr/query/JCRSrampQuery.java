@@ -25,6 +25,8 @@ import javax.jcr.query.QueryResult;
 import org.modeshape.jcr.JcrRepository.QueryLanguage;
 import org.overlord.sramp.query.xpath.ast.Query;
 import org.overlord.sramp.query.xpath.visitors.XPathSerializationVisitor;
+import org.overlord.sramp.repository.PersistenceFactory;
+import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRPersistence;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.query.AbstractSrampQueryImpl;
@@ -41,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JCRSrampQuery extends AbstractSrampQueryImpl {
 
-    private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
+	private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
 
 	private static Map<String, String> sOrderByMappings = new HashMap<String, String>();
 	static {
@@ -69,27 +71,33 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 	 */
 	@Override
 	protected ArtifactSet executeQuery(Query queryModel) throws QueryExecutionException {
-        Session session = null;
-        try {
-            session = JCRRepository.getSession();
-            javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
-            String jcrSql2Query = createSql2Query(queryModel);
-            if (log.isDebugEnabled()) {
-            	XPathSerializationVisitor visitor = new XPathSerializationVisitor();
-            	queryModel.accept(visitor);
-            	String originalQuery = visitor.getXPath();
-            	log.debug("JCR-SQL2 Query:\n---------------\n" + jcrSql2Query + "\n^^^^ FROM ^^^^\n" + originalQuery);
-            }
-            javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, QueryLanguage.JCR_SQL2);
-            QueryResult jcrQueryResult = jcrQuery.execute();
-            NodeIterator jcrNodes = jcrQueryResult.getNodes();
-            return new JCRArtifactSet(session, jcrNodes);
-        } catch (Throwable t) {
-        	// Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
-        	// responsible for closing the session.
-        	JCRRepository.logoutQuietly(session);
-        	throw new QueryExecutionException(t);
-        }
+		Session session = null;
+		try {
+			session = JCRRepository.getSession();
+			javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
+			String jcrSql2Query = createSql2Query(queryModel);
+			if (log.isDebugEnabled()) {
+				XPathSerializationVisitor visitor = new XPathSerializationVisitor();
+				queryModel.accept(visitor);
+				String originalQuery = visitor.getXPath();
+				log.debug("JCR-SQL2 Query:\n---------------\n" + jcrSql2Query + "\n^^^^ FROM ^^^^\n" + originalQuery);
+			}
+			javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, QueryLanguage.JCR_SQL2);
+			long startTime = System.currentTimeMillis();
+			QueryResult jcrQueryResult = jcrQuery.execute();
+			NodeIterator jcrNodes = jcrQueryResult.getNodes();
+			long endTime = System.currentTimeMillis();
+
+			log.debug("Successfully executed JCR-SQL2 query: {}", jcrSql2Query);
+			log.debug("Query exectued in {} ms", endTime - startTime);
+
+			return new JCRArtifactSet(session, jcrNodes);
+		} catch (Throwable t) {
+			// Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
+			// responsible for closing the session.
+			JCRRepository.logoutQuietly(session);
+			throw new QueryExecutionException(t);
+		}
 	}
 
 	/**
@@ -104,7 +112,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 				jcrOrderBy = jcrPropName;
 			}
 		}
-		SrampToJcrSql2QueryVisitor visitor = new SrampToJcrSql2QueryVisitor();
+		SrampToJcrSql2QueryVisitor visitor = new SrampToJcrSql2QueryVisitor((ClassificationHelper) PersistenceFactory.newInstance());
 		queryModel.accept(visitor);
 		String sql2Query = visitor.getSql2Query();
 		if (jcrOrderBy != null) {

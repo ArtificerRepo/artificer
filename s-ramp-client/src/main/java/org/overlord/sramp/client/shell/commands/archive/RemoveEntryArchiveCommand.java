@@ -19,7 +19,6 @@ import javax.xml.namespace.QName;
 
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Removes an entry from the current S-RAMP batch archive.
@@ -39,7 +38,7 @@ public class RemoveEntryArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:removeEntry <archivePath>");
+		print("archive:removeEntry <archivePath>");
 	}
 
 	/**
@@ -47,29 +46,29 @@ public class RemoveEntryArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'removeEntry' command will remove a single entry from the");
-		System.out.println("currently open S-RAMP batch archive.  The path to the entry");
-		System.out.println("must be specified.");
+		print("The 'removeEntry' command will remove a single entry from the");
+		print("currently open S-RAMP batch archive.  The path to the entry");
+		print("must be specified.");
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String archivePathArg = requiredArgument(0, "Please include an entry path (relative archive path).");
 
 		QName varName = new QName("archive", "active-archive");
-		SrampArchive archive = (SrampArchive) context.getVariable(varName);
+		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
-			System.out.println("No S-RAMP archive is currently open.");
+			print("No S-RAMP archive is currently open.");
 		} else {
 			boolean success = archive.removeEntry(archivePathArg);
 			if (success) {
-				System.out.println("The S-RAMP archive entry was successfully delete.");
+				print("The S-RAMP archive entry was successfully delete.");
 			} else {
-				System.out.println("No S-RAMP archive entry could be found at path: " + archivePathArg);
+				print("No S-RAMP archive entry could be found at path: " + archivePathArg);
 			}
 		}
 	}

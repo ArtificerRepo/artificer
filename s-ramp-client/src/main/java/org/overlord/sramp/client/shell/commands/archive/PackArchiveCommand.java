@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 import org.apache.commons.io.FileUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Removes an entry from the current S-RAMP batch archive.
@@ -42,7 +41,7 @@ public class PackArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("archive:pack <outputLocation>");
+		print("archive:pack <outputLocation>");
 	}
 
 	/**
@@ -50,34 +49,34 @@ public class PackArchiveCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'pack' command packages up the currently open S-RAMP batch");
-		System.out.println("archive file.  The S-RAMP batch archive is zip'd up and then");
-		System.out.println("copied to the output file location provided.");
+		print("The 'pack' command packages up the currently open S-RAMP batch");
+		print("archive file.  The S-RAMP batch archive is zip'd up and then");
+		print("copied to the output file location provided.");
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String outputLocationArg = requiredArgument(0, "Please include the output location (file path).");
 
 		QName varName = new QName("archive", "active-archive");
-		SrampArchive archive = (SrampArchive) context.getVariable(varName);
+		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
-			System.out.println("No S-RAMP archive is currently open.");
+			print("No S-RAMP archive is currently open.");
 		} else {
 			File outputFile = new File(outputLocationArg);
 			if (outputFile.exists()) {
-				System.out.println("Output location already exists!");
+				print("Output location already exists!");
 			}
 			if (!outputFile.getParentFile().exists()) {
 				outputFile.mkdirs();
 			}
 			File packedFile = archive.pack();
 			FileUtils.copyFile(packedFile, outputFile);
-			System.out.println("S-RAMP archive packaged and copied to: " + outputFile.getCanonicalPath());
+			print("S-RAMP archive packaged and copied to: " + outputFile.getCanonicalPath());
 		}
 	}
 

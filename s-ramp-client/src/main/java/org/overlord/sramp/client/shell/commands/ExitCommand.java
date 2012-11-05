@@ -16,7 +16,6 @@
 package org.overlord.sramp.client.shell.commands;
 
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 
 /**
  * Implements the 'exit' command.
@@ -36,7 +35,7 @@ public class ExitCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("exit");
+		print("exit");
 	}
 
 	/**
@@ -47,11 +46,11 @@ public class ExitCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) {
-		System.out.println("Good bye!");
+	public void execute() throws Exception {
+		print("Good bye!");
 		System.exit(0);
 	}
 

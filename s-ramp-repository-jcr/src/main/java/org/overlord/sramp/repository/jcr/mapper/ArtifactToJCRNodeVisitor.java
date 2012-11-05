@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.jcr;
+package org.overlord.sramp.repository.jcr.mapper;
 
+import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,8 +36,17 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import org.overlord.sramp.repository.jcr.ClassificationHelper;
+import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Binding;
+import org.s_ramp.xmlns._2010.s_ramp.BindingEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFaultEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInputEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutputEnum;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ElementEnum;
 import org.s_ramp.xmlns._2010.s_ramp.Fault;
@@ -51,11 +62,18 @@ import org.s_ramp.xmlns._2010.s_ramp.OperationOutput;
 import org.s_ramp.xmlns._2010.s_ramp.OperationOutputEnum;
 import org.s_ramp.xmlns._2010.s_ramp.Part;
 import org.s_ramp.xmlns._2010.s_ramp.PartEnum;
+import org.s_ramp.xmlns._2010.s_ramp.Port;
+import org.s_ramp.xmlns._2010.s_ramp.PortEnum;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
+import org.s_ramp.xmlns._2010.s_ramp.PortTypeEnum;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
+import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
+import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlExtensionEnum;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeEnum;
 
 /**
@@ -70,15 +88,18 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	private Node jcrNode;
 	private Exception error;
 	private JCRReferenceFactory referenceFactory;
+	private ClassificationHelper classificationHelper;
 
 	/**
 	 * Constructor.
 	 * @param jcrNode the JCR node this visitor will be updating
 	 * @param referenceFactory a resolver to find JCR nodes by UUID
+	 * @param classificationHelper helps resolve, verify, and normalize classifications
 	 */
-	public ArtifactToJCRNodeVisitor(Node jcrNode, JCRReferenceFactory referenceFactory) {
+	public ArtifactToJCRNodeVisitor(Node jcrNode, JCRReferenceFactory referenceFactory, ClassificationHelper classificationHelper) {
 		this.jcrNode = jcrNode;
 		this.referenceFactory = referenceFactory;
+		this.classificationHelper = classificationHelper;
 	}
 
 	/**
@@ -88,6 +109,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	protected void visitBase(BaseArtifactType artifact) {
 		try {
 			updateArtifactMetaData(artifact);
+			updateClassifications(artifact);
 			updateArtifactProperties(artifact);
 			updateGenericRelationships(artifact);
 		} catch (Exception e) {
@@ -115,6 +137,8 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
 		try {
 			this.jcrNode.setProperty("sramp:namespace", artifact.getNamespace());
+
+			setRelationships("extension", -1, 1, WsdlExtensionEnum.WSDL_EXTENSION.toString(), false, artifact.getExtension());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -147,6 +171,33 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	}
 
 	/**
+	 * Updates the classifications.
+	 *
+	 * @param artifact
+	 * @throws Exception
+	 */
+	private void updateClassifications(BaseArtifactType artifact) throws Exception {
+		Collection<URI> classifications = this.classificationHelper.resolveAll(artifact.getClassifiedBy());
+		Collection<URI> normalizedClassifications = this.classificationHelper.normalizeAll(classifications);
+
+		// Store the classifications
+		String [] values = new String[classifications.size()];
+		int idx = 0;
+		for (URI classification : classifications) {
+			values[idx++] = classification.toString();
+		}
+		this.jcrNode.setProperty("sramp:classifiedBy", values);
+
+		// Store the normalized classifications
+		values = new String[normalizedClassifications.size()];
+		idx = 0;
+		for (URI classification : normalizedClassifications) {
+			values[idx++] = classification.toString();
+		}
+		this.jcrNode.setProperty("sramp:normalizedClassifiedBy", values);
+	}
+
+	/**
 	 * Updates the custom s-ramp properties.
 	 * @param artifact
 	 * @throws Exception
@@ -158,7 +209,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		Set<String> propsToRemove = nodeProps;
 		propsToRemove.removeAll(artifactProps.keySet());
 
-    	String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
+		String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
 
 		// Remove all properties that have been earmarked for removal.
 		for (String propToRemove : propsToRemove) {
@@ -212,10 +263,8 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(WsdlDocument artifact) {
 		super.visit(artifact);
-
 		try {
-			if (artifact.getTargetNamespace() != null)
-				this.jcrNode.setProperty("sramp:targetNamespace", artifact.getTargetNamespace());
+			this.jcrNode.setProperty("sramp:targetNamespace", artifact.getTargetNamespace());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -228,7 +277,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(Message artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationships("part", -1, 1, PartEnum.PART.toString(), false, artifact.getPart());
 		} catch (Exception e) {
@@ -242,7 +290,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(Part artifact) {
 		super.visit(artifact);
-
 		try {
 			if (artifact.getElement() != null) {
 				if (this.jcrNode.hasNode("sramp-relationships:type")) {
@@ -266,7 +313,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(PortType artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationships("operation", -1, 1, OperationEnum.OPERATION.toString(), false, artifact.getOperation());
 		} catch (Exception e) {
@@ -280,7 +326,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(Operation artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationship("input", 1, 1, OperationInputEnum.OPERATION_INPUT.toString(), false, artifact.getInput());
 			setRelationship("output", 1, 1, OperationOutputEnum.OPERATION_OUTPUT.toString(), false, artifact.getOutput());
@@ -296,7 +341,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(OperationInput artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
 		} catch (Exception e) {
@@ -310,7 +354,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(OperationOutput artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
 		} catch (Exception e) {
@@ -324,11 +367,93 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(Fault artifact) {
 		super.visit(artifact);
-
 		try {
 			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
 		} catch (Exception e) {
 			error = e;
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Binding)
+	 */
+	@Override
+	public void visit(Binding artifact) {
+		super.visit(artifact);
+		try {
+			setRelationships("bindingOperation", -1, 1, BindingOperationEnum.BINDING_OPERATION.toString(), false, artifact.getBindingOperation());
+			setRelationship("portType", 1, 1, PortTypeEnum.PORT_TYPE.toString(), false, artifact.getPortType());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.SoapBinding)
+	 */
+	@Override
+	public void visit(SoapBinding artifact) {
+		super.visit(artifact);
+		try {
+			this.jcrNode.setProperty("sramp:style", artifact.getStyle());
+			this.jcrNode.setProperty("sramp:transport", artifact.getTransport());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperation)
+	 */
+	@Override
+	public void visit(BindingOperation artifact) {
+		super.visit(artifact);
+		try {
+			setRelationship("input", 1, 1, BindingOperationInputEnum.BINDING_OPERATION_INPUT.toString(), false, artifact.getInput());
+			setRelationship("output", 1, 1, BindingOperationOutputEnum.BINDING_OPERATION_OUTPUT.toString(), false, artifact.getOutput());
+			setRelationships("fault", -1, 1, BindingOperationFaultEnum.BINDING_OPERATION_FAULT.toString(), false, artifact.getFault());
+			setRelationship("operation", 1, 1, OperationEnum.OPERATION.toString(), false, artifact.getOperation());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlService)
+	 */
+	@Override
+	public void visit(WsdlService artifact) {
+		super.visit(artifact);
+		try {
+			setRelationships("port", -1, 1, PortEnum.PORT.toString(), false, artifact.getPort());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Port)
+	 */
+	@Override
+	public void visit(Port artifact) {
+		super.visit(artifact);
+		try {
+			setRelationship("binding", 1, 1, BindingEnum.BINDING.toString(), false, artifact.getBinding());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.SoapAddress)
+	 */
+	@Override
+	public void visit(SoapAddress artifact) {
+		super.visit(artifact);
+		try {
+			this.jcrNode.setProperty("sramp:soapLocation", artifact.getSoapLocation());
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -350,10 +475,10 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @throws RepositoryException
 	 */
 	private static Set<String> getNodePropertyNames(Node jcrNode) throws RepositoryException {
-    	String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
-    	int srampPropsPrefixLen = srampPropsPrefix.length();
+		String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
+		int srampPropsPrefixLen = srampPropsPrefix.length();
 
-    	Set<String> rval = new HashSet<String>();
+		Set<String> rval = new HashSet<String>();
 		PropertyIterator properties = jcrNode.getProperties();
 		while (properties.hasNext()) {
 			Property prop = properties.nextProperty();
@@ -424,7 +549,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @throws Exception
 	 */
 	private void removeRelationship(String relationshipType) throws RepositoryException, VersionException,
-			LockException, ConstraintViolationException, AccessDeniedException, PathNotFoundException {
+	LockException, ConstraintViolationException, AccessDeniedException, PathNotFoundException {
 		String nodeName = "sramp-relationships:" + relationshipType;
 		if (this.jcrNode.hasNode(nodeName)) {
 			this.jcrNode.getNode(nodeName).remove();
@@ -481,15 +606,13 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 *
 	 * @author eric.wittmann@redhat.com
 	 */
-	protected static interface JCRReferenceFactory {
-
+	public static interface JCRReferenceFactory {
 		/**
 		 * Creates a reference value to another JCR node.
 		 * @param otherNode the node being referenced
 		 * @return a reference Value
 		 */
 		public Value createReference(String uuid) throws Exception;
-
 	}
 
 }

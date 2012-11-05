@@ -37,6 +37,13 @@ import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.Binding;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFaultTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInputTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutputTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingOperationTarget;
+import org.s_ramp.xmlns._2010.s_ramp.BindingTarget;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
@@ -55,12 +62,19 @@ import org.s_ramp.xmlns._2010.s_ramp.OperationOutputTarget;
 import org.s_ramp.xmlns._2010.s_ramp.OperationTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Part;
 import org.s_ramp.xmlns._2010.s_ramp.PartTarget;
+import org.s_ramp.xmlns._2010.s_ramp.Port;
+import org.s_ramp.xmlns._2010.s_ramp.PortTarget;
 import org.s_ramp.xmlns._2010.s_ramp.PortType;
+import org.s_ramp.xmlns._2010.s_ramp.PortTypeTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
+import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
+import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlExtensionTarget;
+import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdType;
 import org.s_ramp.xmlns._2010.s_ramp.XsdTypeTarget;
@@ -108,7 +122,17 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 			artifact.setUuid(getProperty(jcrNode, "sramp:uuid"));
 			artifact.setVersion(getProperty(jcrNode, "version"));
 
-			// Now map in all the s-ramp user-defined properties.
+			// Map in the classifications
+			if (jcrNode.hasProperty("sramp:classifiedBy")) {
+				Property classifiedByProp = jcrNode.getProperty("sramp:classifiedBy");
+				Value [] values = classifiedByProp.getValues();
+				for (Value value : values) {
+					String classification = value.getString();
+					artifact.getClassifiedBy().add(classification);
+				}
+			}
+
+			// Map in all the s-ramp user-defined properties.
 			String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
 			int srampPropsPrefixLen = srampPropsPrefix.length();
 			PropertyIterator properties = jcrNode.getProperties();
@@ -117,15 +141,15 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 				String propQName = property.getName();
 				if (propQName.startsWith(srampPropsPrefix)) {
 					String propName = propQName.substring(srampPropsPrefixLen);
-			    	String propValue = property.getValue().getString();
-			    	org.s_ramp.xmlns._2010.s_ramp.Property srampProp = new org.s_ramp.xmlns._2010.s_ramp.Property();
-			    	srampProp.setPropertyName(propName);
-			    	srampProp.setPropertyValue(propValue);
+					String propValue = property.getValue().getString();
+					org.s_ramp.xmlns._2010.s_ramp.Property srampProp = new org.s_ramp.xmlns._2010.s_ramp.Property();
+					srampProp.setPropertyName(propName);
+					srampProp.setPropertyValue(propValue);
 					artifact.getProperty().add(srampProp);
 				}
 			}
 
-			// Now map in the generic relationships
+			// Map in the generic relationships
 			NodeIterator rnodes = jcrNode.getNodes();
 			while (rnodes.hasNext()) {
 				Node rNode = rnodes.nextNode();
@@ -196,6 +220,11 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
 		artifact.setNamespace(getProperty(jcrNode, "sramp:namespace"));
+		try {
+			artifact.getExtension().addAll(getRelationships("extension", WsdlExtensionTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -218,8 +247,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitDocument(DocumentArtifactType artifact) {
-        artifact.setContentSize(getPropertyLength(jcrNode,"jcr:content/jcr:data"));
-        artifact.setContentType(getProperty(jcrNode, "jcr:content/jcr:mimeType"));
+		artifact.setContentSize(getPropertyLength(jcrNode,"jcr:content/jcr:data"));
+		artifact.setContentType(getProperty(jcrNode, "jcr:content/jcr:mimeType"));
 	}
 
 	/**
@@ -227,79 +256,79 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitXmlDocument(XmlDocument artifact) {
-        artifact.setContentEncoding(getProperty(jcrNode, "sramp:contentEncoding"));
+		artifact.setContentEncoding(getProperty(jcrNode, "sramp:contentEncoding"));
 	}
 
 	/**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitUserDefined(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
-     */
-    @Override
-    protected void visitUserDefined(UserDefinedArtifactType artifact) {
-        artifact.setUserType(getProperty(jcrNode, "sramp:userType"));
-        artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_SIZE), String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data")));
-        artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_TYPE), getProperty(jcrNode,"jcr:content/jcr:mimeType"));
-    }
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitUserDefined(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
+	 */
+	@Override
+	protected void visitUserDefined(UserDefinedArtifactType artifact) {
+		artifact.setUserType(getProperty(jcrNode, "sramp:userType"));
+		artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_SIZE), String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data")));
+		artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_TYPE), getProperty(jcrNode,"jcr:content/jcr:mimeType"));
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlDocument)
-     */
-    @Override
-    public void visit(WsdlDocument artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlDocument)
+	 */
+	@Override
+	public void visit(WsdlDocument artifact) {
+		super.visit(artifact);
 
-    	try {
-    		artifact.setTargetNamespace(getProperty(jcrNode, "sramp:targetNamespace"));
+		try {
+			artifact.setTargetNamespace(getProperty(jcrNode, "sramp:targetNamespace"));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Message)
-     */
-    @Override
-    public void visit(Message artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Message)
+	 */
+	@Override
+	public void visit(Message artifact) {
+		super.visit(artifact);
 		try {
 			artifact.getPart().addAll(getRelationships("part", PartTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Part)
-     */
-    @Override
-    public void visit(Part artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Part)
+	 */
+	@Override
+	public void visit(Part artifact) {
+		super.visit(artifact);
 		try {
 			artifact.setElement(getRelationship("element", ElementTarget.class));
 			artifact.setType(getRelationship("type", XsdTypeTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.PortType)
-     */
-    @Override
-    public void visit(PortType artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.PortType)
+	 */
+	@Override
+	public void visit(PortType artifact) {
+		super.visit(artifact);
 		try {
 			artifact.getOperation().addAll(getRelationships("operation", OperationTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Operation)
-     */
-    @Override
-    public void visit(Operation artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Operation)
+	 */
+	@Override
+	public void visit(Operation artifact) {
+		super.visit(artifact);
 		try {
 			artifact.setInput(getRelationship("input", OperationInputTarget.class));
 			artifact.setOutput(getRelationship("output", OperationOutputTarget.class));
@@ -307,50 +336,125 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.OperationInput)
-     */
-    @Override
-    public void visit(OperationInput artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.OperationInput)
+	 */
+	@Override
+	public void visit(OperationInput artifact) {
+		super.visit(artifact);
 		try {
 			artifact.setMessage(getRelationship("message", MessageTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.OperationOutput)
-     */
-    @Override
-    public void visit(OperationOutput artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.OperationOutput)
+	 */
+	@Override
+	public void visit(OperationOutput artifact) {
+		super.visit(artifact);
 		try {
 			artifact.setMessage(getRelationship("message", MessageTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Fault)
-     */
-    @Override
-    public void visit(Fault artifact) {
-    	super.visit(artifact);
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Fault)
+	 */
+	@Override
+	public void visit(Fault artifact) {
+		super.visit(artifact);
 		try {
 			artifact.setMessage(getRelationship("message", MessageTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-    }
+	}
 
-    /**
-     * Gets the singular relationship of the given type.  This is called for relationships
-     * that have a max cardinality of 1.
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Binding)
+	 */
+	@Override
+	public void visit(Binding artifact) {
+		super.visit(artifact);
+		try {
+			artifact.getBindingOperation().addAll(getRelationships("bindingOperation", BindingOperationTarget.class));
+			artifact.setPortType(getRelationship("portType", PortTypeTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.SoapBinding)
+	 */
+	@Override
+	public void visit(SoapBinding artifact) {
+		super.visit(artifact);
+		artifact.setStyle(getProperty(jcrNode, "sramp:style"));
+		artifact.setTransport(getProperty(jcrNode, "sramp:transport"));
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperation)
+	 */
+	@Override
+	public void visit(BindingOperation artifact) {
+		super.visit(artifact);
+		try {
+			artifact.setInput(getRelationship("input", BindingOperationInputTarget.class));
+			artifact.setOutput(getRelationship("output", BindingOperationOutputTarget.class));
+			artifact.getFault().addAll(getRelationships("fault", BindingOperationFaultTarget.class));
+			artifact.setOperation(getRelationship("operation", OperationTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlService)
+	 */
+	@Override
+	public void visit(WsdlService artifact) {
+		super.visit(artifact);
+		try {
+			artifact.getPort().addAll(getRelationships("port", PortTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.Port)
+	 */
+	@Override
+	public void visit(Port artifact) {
+		super.visit(artifact);
+		try {
+			artifact.setBinding(getRelationship("binding", BindingTarget.class));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.SoapAddress)
+	 */
+	@Override
+	public void visit(SoapAddress artifact) {
+		super.visit(artifact);
+		artifact.setSoapLocation(getProperty(jcrNode, "sramp:soapLocation"));
+	}
+
+	/**
+	 * Gets the singular relationship of the given type.  This is called for relationships
+	 * that have a max cardinality of 1.
 	 * @param relationshipType
 	 * @param targetClass
 	 * @return list of relationship targets
@@ -386,8 +490,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 		return null;
 	}
 
-    /**
-     * Gets the relationships of the given type.
+	/**
+	 * Gets the relationships of the given type.
 	 * @param relationshipType
 	 * @param targetClass
 	 * @return list of relationship targets
@@ -426,77 +530,77 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	}
 
 	/**
-     * Gets a single property from the given JCR node.  This returns null
-     * if the property does not exist.
-     * @param node the JCR node
-     * @param propertyName the name of the property
-     * @return the String value of the property
-     */
-    protected static final String getProperty(Node node, String propertyName) {
-    	return getProperty(node, propertyName, null);
-    }
+	 * Gets a single property from the given JCR node.  This returns null
+	 * if the property does not exist.
+	 * @param node the JCR node
+	 * @param propertyName the name of the property
+	 * @return the String value of the property
+	 */
+	protected static final String getProperty(Node node, String propertyName) {
+		return getProperty(node, propertyName, null);
+	}
 
-    /**
-     * Gets a single property from the given JCR node.  This returns a default value if
-     * the property does not exist.
-     * @param node the JCR node
-     * @param propertyName the name of the property
-     * @param defaultValue a default value if the property does not exist on the node
-     * @return the String value of the property
-     */
-    protected static final String getProperty(Node node, String propertyName, String defaultValue) {
-    	try {
+	/**
+	 * Gets a single property from the given JCR node.  This returns a default value if
+	 * the property does not exist.
+	 * @param node the JCR node
+	 * @param propertyName the name of the property
+	 * @param defaultValue a default value if the property does not exist on the node
+	 * @return the String value of the property
+	 */
+	protected static final String getProperty(Node node, String propertyName, String defaultValue) {
+		try {
 			return node.getProperty(propertyName).getString();
 		} catch (ValueFormatException e) {
 		} catch (PathNotFoundException e) {
 		} catch (javax.jcr.RepositoryException e) {
 		}
 		return defaultValue;
-    }
+	}
 
-    /**
-     * Gets a single property from the given JCR node.  This returns null
-     * if the property does not exist.
-     * @param node the JCR node
-     * @param propertyName the name of the property
-     * @return the String value of the property
-     */
-    protected static final Long getPropertyLength(Node node, String propertyName) {
-        return getPropertyLength(node, propertyName, null);
-    }
+	/**
+	 * Gets a single property from the given JCR node.  This returns null
+	 * if the property does not exist.
+	 * @param node the JCR node
+	 * @param propertyName the name of the property
+	 * @return the String value of the property
+	 */
+	protected static final Long getPropertyLength(Node node, String propertyName) {
+		return getPropertyLength(node, propertyName, null);
+	}
 
-    /**
-     * Gets a single property from the given JCR node.  This returns a default value if
-     * the property does not exist.
-     * @param node the JCR node
-     * @param propertyName the name of the property
-     * @param defaultValue a default value if the property does not exist on the node
-     * @return the String value of the property
-     */
-    protected static final Long getPropertyLength(Node node, String propertyName, Long defaultValue) {
-        try {
-            return node.getProperty(propertyName).getLength();
-        } catch (ValueFormatException e) {
-        } catch (PathNotFoundException e) {
-        } catch (javax.jcr.RepositoryException e) {
-        }
-        return defaultValue;
-    }
+	/**
+	 * Gets a single property from the given JCR node.  This returns a default value if
+	 * the property does not exist.
+	 * @param node the JCR node
+	 * @param propertyName the name of the property
+	 * @param defaultValue a default value if the property does not exist on the node
+	 * @return the String value of the property
+	 */
+	protected static final Long getPropertyLength(Node node, String propertyName, Long defaultValue) {
+		try {
+			return node.getProperty(propertyName).getLength();
+		} catch (ValueFormatException e) {
+		} catch (PathNotFoundException e) {
+		} catch (javax.jcr.RepositoryException e) {
+		}
+		return defaultValue;
+	}
 
-    /**
-     * A simple interface used by this class to resolve JCR references into s-ramp artifact UUIDs.
-     *
-     * @author eric.wittmann@redhat.com
-     */
-    public static interface JCRReferenceResolver {
+	/**
+	 * A simple interface used by this class to resolve JCR references into s-ramp artifact UUIDs.
+	 *
+	 * @author eric.wittmann@redhat.com
+	 */
+	public static interface JCRReferenceResolver {
 
-    	/**
-    	 * Resolves a JCR reference into an s-ramp artifact UUID.
-    	 * @param reference a JCR reference
-    	 * @return the UUID of an s-ramp artifact (or null if it fails to resolve)
-    	 */
-    	public String resolveReference(Value reference);
+		/**
+		 * Resolves a JCR reference into an s-ramp artifact UUID.
+		 * @param reference a JCR reference
+		 * @return the UUID of an s-ramp artifact (or null if it fails to resolve)
+		 */
+		public String resolveReference(Value reference);
 
-    }
+	}
 
 }

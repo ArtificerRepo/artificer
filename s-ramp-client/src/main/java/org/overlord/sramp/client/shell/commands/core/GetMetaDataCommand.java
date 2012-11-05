@@ -16,6 +16,7 @@
 package org.overlord.sramp.client.shell.commands.core;
 
 import java.io.File;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -24,7 +25,6 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 import org.overlord.sramp.client.shell.util.PrintArtifactMetaDataVisitor;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
@@ -48,10 +48,10 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:getMetaData <artifactId> [<outputFilePath>]");
-		System.out.println("\tValid formats for artifactId:");
-		System.out.println("\t  feed:<feedIndex> - an index into the most recent feed");
-		System.out.println("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
+		print("s-ramp:getMetaData <artifactId> [<outputFilePath>]");
+		print("\tValid formats for artifactId:");
+		print("\t  feed:<feedIndex> - an index into the most recent feed");
+		print("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
 	}
 
 	/**
@@ -59,26 +59,26 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'getMetaData' command downloads only the meta-data for");
-		System.out.println("a single artifact from the S-RAMP repository.  The artifact");
-		System.out.println("can be identified either by its unique S-RAMP uuid or else");
-		System.out.println("by an index into the most recent Feed.  The meta-data will");
-		System.out.println("either be displayed or saved to a local file, depending on");
-		System.out.println("whether a path to an output file (or directory) is provided.");
-		System.out.println("");
-		System.out.println("Note: a Feed can be obtained, for example, by using the ");
-		System.out.println("s-ramp:query command.");
-		System.out.println("");
-		System.out.println("Example usage:");
-		System.out.println(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
-		System.out.println(">  s-ramp:getMetaData feed:1 /home/user/files/");
+		print("The 'getMetaData' command downloads only the meta-data for");
+		print("a single artifact from the S-RAMP repository.  The artifact");
+		print("can be identified either by its unique S-RAMP uuid or else");
+		print("by an index into the most recent Feed.  The meta-data will");
+		print("either be displayed or saved to a local file, depending on");
+		print("whether a path to an output file (or directory) is provided.");
+		print("");
+		print("Note: a Feed can be obtained, for example, by using the ");
+		print("s-ramp:query command.");
+		print("");
+		print("Example usage:");
+		print(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
+		print(">  s-ramp:getMetaData feed:1 /home/user/files/");
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String artifactIdArg = this.requiredArgument(0, "Please specify a valid artifact identifier.");
 		String outputFilePathArg = this.optionalArgument(1);
 		if (!artifactIdArg.contains(":")) {
@@ -86,12 +86,16 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 		}
 		QName clientVarName = new QName("s-ramp", "client");
 		QName feedVarName = new QName("s-ramp", "feed");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
+		if (client == null) {
+			print("No S-RAMP repository connection is currently open.");
+			return;
+		}
 
 		BaseArtifactType artifact = null;
 		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
 		if ("feed".equals(idType)) {
-			QueryResultSet rset = (QueryResultSet) context.getVariable(feedVarName);
+			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
 			int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
 			if (feedIdx < 0 || feedIdx >= rset.size()) {
 				throw new InvalidCommandArgumentException(0, "Feed index out of range.");
@@ -107,10 +111,14 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 			throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
 		}
 
+		// Store the artifact in the context, making it the active artifact.
+		QName artifactVarName = new QName("s-ramp", "artifact");
+		getContext().setVariable(artifactVarName, artifact);
+
 		if (outputFilePathArg == null) {
 			// Print out the meta-data information
-			System.out.println("Meta Data for: " + artifact.getUuid());
-			System.out.println("--------------");
+			print("Meta Data for: " + artifact.getUuid());
+			print("--------------");
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 		} else {
@@ -123,7 +131,29 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 			}
 			outFile.getParentFile().mkdirs();
 			SrampArchiveJaxbUtils.writeMetaData(outFile, artifact, false);
-			System.out.println("Artifact meta-data saved to " + outFile.getCanonicalPath());
+			print("Artifact meta-data saved to " + outFile.getCanonicalPath());
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 */
+	@Override
+	public void tabCompletion(String lastArgument, List<CharSequence> candidates) {
+		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) {
+			QName feedVarName = new QName("s-ramp", "feed");
+			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
+			if (rset != null) {
+				for (int idx = 0; idx < rset.size(); idx++) {
+					String candidate = "feed:" + (idx+1);
+					if (lastArgument == null) {
+						candidates.add(candidate);
+					}
+					if (lastArgument != null && candidate.startsWith(lastArgument)) {
+						candidates.add(candidate);
+					}
+				}
+			}
 		}
 	}
 

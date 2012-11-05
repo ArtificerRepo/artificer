@@ -19,15 +19,8 @@ import java.net.URI;
 
 public class SrampAtomConstants {
 
-    public static final URI URN_X_S_RAMP         = URIHelper.create("urn:x-s-ramp:2010:type");
-    
-    public static final String XML_DOCUMENT      = "XML Document";
-    
-    public static final String XML_DOCUMENT_TERM = "XmlDocument";
-    
-    public static final String XSD = "xsd";
-    public static final String XML = "xml";
-    
+    public static final URI URN_X_S_RAMP_TYPE    = URIHelper.create("urn:x-s-ramp:2010:type");
+
     private static class URIHelper {
         static URI create(String uriStr) {
             try {
@@ -36,6 +29,6 @@ public class SrampAtomConstants {
                 throw new RuntimeException(e);
             }
         }
-        
+
     }
 }

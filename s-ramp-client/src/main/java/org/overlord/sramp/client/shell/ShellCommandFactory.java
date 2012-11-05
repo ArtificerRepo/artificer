@@ -18,7 +18,10 @@ package org.overlord.sramp.client.shell;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
@@ -34,10 +37,18 @@ import org.overlord.sramp.client.shell.commands.archive.OpenArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.PackArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.UpdateEntryArchiveCommand;
+import org.overlord.sramp.client.shell.commands.brms.Pkg2SrampCommand;
 import org.overlord.sramp.client.shell.commands.core.ConnectCommand;
+import org.overlord.sramp.client.shell.commands.core.DisconnectCommand;
 import org.overlord.sramp.client.shell.commands.core.GetContentCommand;
 import org.overlord.sramp.client.shell.commands.core.GetMetaDataCommand;
 import org.overlord.sramp.client.shell.commands.core.QueryCommand;
+import org.overlord.sramp.client.shell.commands.core.UpdateContentCommand;
+import org.overlord.sramp.client.shell.commands.core.UpdateMetaDataCommand;
+import org.overlord.sramp.client.shell.commands.core.UploadArtifactCommand;
+import org.overlord.sramp.client.shell.commands.ontology.DeleteOntologyCommand;
+import org.overlord.sramp.client.shell.commands.ontology.ListOntologiesCommand;
+import org.overlord.sramp.client.shell.commands.ontology.UploadOntologyCommand;
 
 /**
  * Factory used to create shell commands.
@@ -47,6 +58,8 @@ import org.overlord.sramp.client.shell.commands.core.QueryCommand;
 public class ShellCommandFactory {
 
 	private static QName HELP_CMD_NAME = new QName("s-ramp", "help");
+	private static QName EXIT_CMD_NAME = new QName("s-ramp", "exit");
+	private static QName QUIT_CMD_NAME = new QName("s-ramp", "quit");
 
 	private Map<QName, Class<? extends ShellCommand>> registry;
 
@@ -62,14 +75,16 @@ public class ShellCommandFactory {
 	 */
 	private void registerCommands() {
 		registry = new HashMap<QName, Class<? extends ShellCommand>>();
-		// Core commands
-		registry.put(new QName("s-ramp", "exit"), ExitCommand.class);
 
 		// S-RAMP client commands
 		registry.put(new QName("s-ramp", "connect"), ConnectCommand.class);
+		registry.put(new QName("s-ramp", "disconnect"), DisconnectCommand.class);
 		registry.put(new QName("s-ramp", "query"), QueryCommand.class);
 		registry.put(new QName("s-ramp", "getMetaData"), GetMetaDataCommand.class);
 		registry.put(new QName("s-ramp", "getContent"), GetContentCommand.class);
+		registry.put(new QName("s-ramp", "upload"), UploadArtifactCommand.class);
+		registry.put(new QName("s-ramp", "updateMetaData"), UpdateMetaDataCommand.class);
+		registry.put(new QName("s-ramp", "updateContent"), UpdateContentCommand.class);
 
 		// Archive commands
 		registry.put(new QName("archive", "new"), NewArchiveCommand.class);
@@ -81,25 +96,45 @@ public class ShellCommandFactory {
 		registry.put(new QName("archive", "removeEntry"), RemoveEntryArchiveCommand.class);
 		registry.put(new QName("archive", "listEntry"), ListEntryArchiveCommand.class);
 		registry.put(new QName("archive", "pack"), PackArchiveCommand.class);
+
+		// Ontology commands
+		registry.put(new QName("ontology", "upload"), UploadOntologyCommand.class);
+		registry.put(new QName("ontology", "list"), ListOntologiesCommand.class);
+		registry.put(new QName("ontology", "delete"), DeleteOntologyCommand.class);
+
+		// BRMS commands
+		registry.put(new QName("brms", "pkg2sramp"), Pkg2SrampCommand.class);
+
+		// Register commands contributed via the Java Service mechanism
+        for (ShellCommandProvider provider : ServiceLoader.load(ShellCommandProvider.class)) {
+        	Map<String, Class<? extends ShellCommand>> commands = provider.provideCommands();
+        	for (Map.Entry<String, Class<? extends ShellCommand>> entry : commands.entrySet()) {
+        		QName qualifiedCmdName = new QName(provider.getNamespace(), entry.getKey());
+        		registry.put(qualifiedCmdName, entry.getValue());
+        	}
+        }
+
 	}
 
 	/**
 	 * Called to create a shell command.
 	 * @param commandName
-	 * @param args
 	 * @throws Exception
 	 */
-	public ShellCommand createCommand(QName commandName, String [] args) throws Exception {
+	public ShellCommand createCommand(QName commandName) throws Exception {
 		ShellCommand command = null;
 		if (commandName.equals(HELP_CMD_NAME)) {
 			command = new HelpCommand(getCommands());
+		} else if (commandName.equals(QUIT_CMD_NAME)) {
+			command = new ExitCommand();
+		} else if (commandName.equals(EXIT_CMD_NAME)) {
+			command = new ExitCommand();
 		} else {
 			Class<? extends ShellCommand> commandClass = registry.get(commandName);
 			if (commandClass == null)
 				return new CommandNotFoundCommand();
 			command = commandClass.newInstance();
 		}
-		command.setArguments(args);
 		return command;
 	}
 
@@ -115,6 +150,36 @@ public class ShellCommandFactory {
 		});
 		treeMap.putAll(this.registry);
 		return treeMap;
+	}
+
+	/**
+	 * Gets the set of namespaces for all commands in the factory.
+	 */
+	public Set<String> getNamespaces() {
+		Set<String> namespaces = new TreeSet<String>();
+		for (QName cmdName : this.registry.keySet()) {
+			namespaces.add(cmdName.getNamespaceURI());
+		}
+		return namespaces;
+	}
+
+	/**
+	 * Gets the set of commands available within the given namespace.
+	 * @param namespace
+	 */
+	public Set<QName> getCommandNames(String namespace) {
+		Set<QName> commandNames = new TreeSet<QName>(new Comparator<QName>() {
+			@Override
+			public int compare(QName o1, QName o2) {
+				return o1.getLocalPart().compareTo(o2.getLocalPart());
+			}
+		});
+		for (QName cmdName : this.registry.keySet()) {
+			if (namespace.equals(cmdName.getNamespaceURI())) {
+				commandNames.add(cmdName);
+			}
+		}
+		return commandNames;
 	}
 
 }

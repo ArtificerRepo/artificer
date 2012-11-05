@@ -42,7 +42,8 @@ import org.overlord.sramp.atom.MediaType;
 @Path("/s-ramp")
 public class FeedResource extends AbstractFeedResource {
 
-    private final Sramp sramp = new Sramp();
+	private final Sramp sramp = new Sramp();
+
 	/**
 	 * Constructor.
 	 */
@@ -58,17 +59,22 @@ public class FeedResource extends AbstractFeedResource {
 	@Path("{model}/{type}")
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
 	public Feed getArtifactFeed(
-	        @Context HttpServletRequest request,
+			@Context HttpServletRequest request,
 			@PathParam("model") String model,
 			@PathParam("type") String type,
-			@QueryParam("page") Integer page,
-			@QueryParam("pageSize") Integer pageSize,
+			@QueryParam("startPage") Integer startPage,
+			@QueryParam("startIndex") Integer startIndex,
+			@QueryParam("count") Integer count,
 			@QueryParam("orderBy") String orderBy,
 			@QueryParam("ascending") Boolean asc,
 			@QueryParam("propertyName") Set<String> propNames) throws Exception {
-    	String xpath = String.format("/s-ramp/%1$s/%2$s", model, type);
-    	String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
-		return createArtifactFeed(xpath, page, pageSize, orderBy, asc, propNames, baseUrl);
+		String xpath = String.format("/s-ramp/%1$s/%2$s", model, type);
+		String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+		if (startIndex == null && startPage != null) {
+			int c = count != null ? count.intValue() : 100;
+			startIndex = (startPage.intValue() - 1) * c;
+		}
+		return createArtifactFeed(xpath, startIndex, count, orderBy, asc, propNames, baseUrl);
 	}
 
 }

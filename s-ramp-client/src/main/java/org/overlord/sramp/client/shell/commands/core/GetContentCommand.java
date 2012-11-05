@@ -23,13 +23,11 @@ import java.io.OutputStream;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.query.ArtifactSummary;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
@@ -51,10 +49,10 @@ public class GetContentCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		System.out.println("s-ramp:getContent <artifactId> <outputFilePath>");
-		System.out.println("\tValid formats for artifactId:");
-		System.out.println("\t  feed:<feedIndex> - an index into the most recent feed");
-		System.out.println("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
+		print("s-ramp:getContent <artifactId> <outputFilePath>");
+		print("\tValid formats for artifactId:");
+		print("\t  feed:<feedIndex> - an index into the most recent feed");
+		print("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
 	}
 
 	/**
@@ -62,24 +60,24 @@ public class GetContentCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		System.out.println("The 'getContent' command downloads the file content for");
-		System.out.println("a single artifact from the S-RAMP repository.  The artifact");
-		System.out.println("can be identified either by its unique S-RAMP uuid or else");
-		System.out.println("by an index into the most recent Feed.");
-		System.out.println("");
-		System.out.println("Note: a Feed can be obtained, for example, by using the ");
-		System.out.println("s-ramp:query command.");
-		System.out.println("");
-		System.out.println("Example usage:");
-		System.out.println(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
-		System.out.println(">  s-ramp:getContent feed:1 /home/user/files/");
+		print("The 'getContent' command downloads the file content for");
+		print("a single artifact from the S-RAMP repository.  The artifact");
+		print("can be identified either by its unique S-RAMP uuid or else");
+		print("by an index into the most recent Feed.");
+		print("");
+		print("Note: a Feed can be obtained, for example, by using the ");
+		print("s-ramp:query command.");
+		print("");
+		print("Example usage:");
+		print(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
+		print(">  s-ramp:getContent feed:1 /home/user/files/");
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute(org.overlord.sramp.client.shell.ShellContext)
+	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute(ShellContext context) throws Exception {
+	public void execute() throws Exception {
 		String artifactIdArg = this.requiredArgument(0, "Please specify a valid artifact identifier.");
 		String outputFilePathArg = this.requiredArgument(1, "Please specify an output path (file or directory).");
 		if (!artifactIdArg.contains(":")) {
@@ -87,20 +85,23 @@ public class GetContentCommand extends AbstractShellCommand {
 		}
 		QName clientVarName = new QName("s-ramp", "client");
 		QName feedVarName = new QName("s-ramp", "feed");
-		SrampAtomApiClient client = (SrampAtomApiClient) context.getVariable(clientVarName);
+		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
+		if (client == null) {
+			print("No S-RAMP repository connection is currently open.");
+			return;
+		}
 
 		BaseArtifactType artifact = null;
 		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
 		if ("feed".equals(idType)) {
-			Feed feed = (Feed) context.getVariable(feedVarName);
-			context.setVariable(feedVarName, feed);
+			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
 			int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
-			if (feedIdx < 0 || feedIdx >= feed.getEntries().size()) {
+			if (feedIdx < 0 || feedIdx >= rset.size()) {
 				throw new InvalidCommandArgumentException(0, "Feed index out of range.");
 			}
-			Entry entry = feed.getEntries().get(feedIdx);
-			String artifactUUID = entry.getId().toString();
-			artifact = client.getArtifactMetaData(SrampAtomUtils.getArtifactType(entry), artifactUUID);
+			ArtifactSummary summary = rset.get(feedIdx);
+			String artifactUUID = summary.getUuid();
+			artifact = client.getArtifactMetaData(summary.getType(), artifactUUID);
 		} else if ("uuid".equals(idType)) {
 //			String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
 //			artifact = getArtifactMetaDataByUUID(client, artifactUUID);
@@ -125,7 +126,7 @@ public class GetContentCommand extends AbstractShellCommand {
 			artifactContent = client.getArtifactContent(ArtifactType.valueOf(artifact), artifact.getUuid());
 			outputStream = new FileOutputStream(outFile);
 			IOUtils.copy(artifactContent, outputStream);
-			System.out.println("Artifact content saved to " + outFile.getCanonicalPath());
+			print("Artifact content saved to " + outFile.getCanonicalPath());
 		} finally {
 			IOUtils.closeQuietly(artifactContent);
 			IOUtils.closeQuietly(outputStream);
