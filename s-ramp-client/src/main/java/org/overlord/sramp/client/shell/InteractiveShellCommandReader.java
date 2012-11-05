@@ -55,7 +55,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	 * Creates the ANSI compatible prompt.
 	 */
 	private String createAnsiPrompt() {
-		return "\033[1m\033[31ms-ramp>\033[37m\033[22m ";
+		return "\033[1m\033[31ms-ramp>\033[0m ";
 	}
 
 	/**
