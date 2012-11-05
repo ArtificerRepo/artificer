@@ -65,7 +65,7 @@ public class ConnectCommand extends AbstractShellCommand {
 	public void execute() throws Exception {
 		String endpointUrlArg = this.requiredArgument(0, "Please specify a valid s-ramp URL.");
 		String disableValidationOptionArg = this.optionalArgument(1);
-		boolean validating = disableValidationOptionArg == null ? true : !Boolean.parseBoolean(disableValidationOptionArg);
+		boolean validating = !"--disableValidation".equals(disableValidationOptionArg);
 		if (!endpointUrlArg.startsWith("http")) {
 			endpointUrlArg = "http://" + endpointUrlArg;
 		}

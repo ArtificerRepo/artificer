@@ -27,6 +27,7 @@ import org.jboss.resteasy.plugins.providers.atom.app.AppService;
 import org.overlord.sramp.atom.workspaces.CoreWorkspace;
 import org.overlord.sramp.atom.workspaces.OntologyWorkspace;
 import org.overlord.sramp.atom.workspaces.PolicyWorkspace;
+import org.overlord.sramp.atom.workspaces.UserDefinedWorkspace;
 import org.overlord.sramp.atom.workspaces.WsdlWorkspace;
 import org.overlord.sramp.atom.workspaces.XsdWorkspace;
 
@@ -75,6 +76,7 @@ public class ServiceDocumentResource {
 		appService.getWorkspace().add(new XsdWorkspace(hrefBase));
 		appService.getWorkspace().add(new PolicyWorkspace(hrefBase));
 		appService.getWorkspace().add(new WsdlWorkspace(hrefBase));
+		appService.getWorkspace().add(new UserDefinedWorkspace(hrefBase));
 		appService.getWorkspace().add(new OntologyWorkspace(hrefBase));
 
 		return appService;
