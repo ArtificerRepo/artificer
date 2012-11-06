@@ -114,7 +114,7 @@ public class DeleteOntologyCommand extends AbstractShellCommand {
 	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
 	 */
 	@Override
-	public void tabCompletion(String lastArgument, List<CharSequence> candidates) {
+	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
 		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) {
 			QName feedVarName = new QName("ontology", "feed");
 			@SuppressWarnings("unchecked")
@@ -130,6 +130,9 @@ public class DeleteOntologyCommand extends AbstractShellCommand {
 					}
 				}
 			}
+			return 0;
+		} else {
+			return -1;
 		}
 	}
 }

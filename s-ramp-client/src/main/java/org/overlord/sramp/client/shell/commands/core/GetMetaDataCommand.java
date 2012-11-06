@@ -26,6 +26,7 @@ import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
+import org.overlord.sramp.client.shell.util.FileNameCompleter;
 import org.overlord.sramp.client.shell.util.PrintArtifactMetaDataVisitor;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -139,7 +140,7 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
 	 */
 	@Override
-	public void tabCompletion(String lastArgument, List<CharSequence> candidates) {
+	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
 		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) {
 			QName feedVarName = new QName("s-ramp", "feed");
 			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
@@ -154,6 +155,14 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 					}
 				}
 			}
+			return 0;
+		} else if (getArguments().size() == 1) {
+			if (lastArgument == null)
+				lastArgument = "";
+			FileNameCompleter delegate = new FileNameCompleter();
+			return delegate.complete(lastArgument, lastArgument.length(), candidates);
+		} else {
+			return -1;
 		}
 	}
 

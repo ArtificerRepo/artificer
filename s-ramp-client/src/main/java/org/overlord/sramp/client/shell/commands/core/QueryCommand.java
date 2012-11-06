@@ -15,9 +15,14 @@
  */
 package org.overlord.sramp.client.shell.commands.core;
 
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
@@ -69,6 +74,9 @@ public class QueryCommand extends AbstractShellCommand {
 			print("No S-RAMP repository connection is currently open.");
 			return;
 		}
+		if (queryArg.endsWith("/")) {
+			queryArg = queryArg.substring(0, queryArg.length() - 1);
+		}
 		QueryResultSet rset = client.query(queryArg, 0, 100, "uuid", true);
 		int entryIndex = 1;
 		print("Atom Feed (%1$d entries)", rset.size());
@@ -80,6 +88,76 @@ public class QueryCommand extends AbstractShellCommand {
 					summary.getName());
 		}
 		getContext().setVariable(new QName("s-ramp", "feed"), rset);
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 */
+	@Override
+	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+		if (getArguments().isEmpty()) {
+			if (lastArgument == null) {
+				candidates.add("/s-ramp/");
+				return 0;
+			} else {
+				String [] split = lastArgument.split("/");
+				if (split.length == 0 || split.length == 1 || (split.length == 2 && !lastArgument.endsWith("/"))) {
+					candidates.add("/s-ramp/");
+					return 0;
+				}
+				// All artifact models
+				if (lastArgument.equals("/s-ramp/")) {
+					Set<String> modelCandidates = new TreeSet<String>();
+					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+						modelCandidates.add(t.getModel());
+					}
+					candidates.addAll(modelCandidates);
+					return lastArgument.length();
+				}
+				// Artifact models matching the partial value
+				if (split.length == 3 && !lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) {
+					String partialModel = split[2];
+					Set<String> modelCandidates = new TreeSet<String>();
+					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+						if (t.getModel().startsWith(partialModel))
+							modelCandidates.add(t.getModel());
+					}
+					if (modelCandidates.size() == 1) {
+						candidates.add(modelCandidates.iterator().next() + "/");
+					} else {
+						candidates.addAll(modelCandidates);
+					}
+
+					return lastArgument.length() - partialModel.length();
+				}
+				// All artifact types
+				if (split.length == 3 && lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) {
+					String model = split[2];
+					Set<String> typeCandidates = new TreeSet<String>();
+					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+						if (t.getModel().equals(model)) {
+							typeCandidates.add(t.getType());
+						}
+					}
+					candidates.addAll(typeCandidates);
+					return lastArgument.length();
+				}
+				// Artifact types matching the partial value
+				if (split.length == 4 && !lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) {
+					String model = split[2];
+					String partialType = split[3];
+					Set<String> typeCandidates = new TreeSet<String>();
+					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+						if (t.getModel().equals(model) && t.getType().startsWith(partialType)) {
+							typeCandidates.add(t.getType());
+						}
+					}
+					candidates.addAll(typeCandidates);
+					return lastArgument.length() - partialType.length();
+				}
+			}
+		}
+		return -1;
 	}
 
 }

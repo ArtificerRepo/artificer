@@ -17,6 +17,7 @@ package org.overlord.sramp.client.shell.commands.core;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -25,6 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
 import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
+import org.overlord.sramp.client.shell.util.FileNameCompleter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -98,6 +100,20 @@ public class UpdateContentCommand extends AbstractShellCommand {
 			print("\t" + e.getMessage());
 			IOUtils.closeQuietly(content);
 		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 */
+	@Override
+	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+		if (getArguments().isEmpty()) {
+			if (lastArgument == null)
+				lastArgument = "";
+			FileNameCompleter delegate = new FileNameCompleter();
+			return delegate.complete(lastArgument, lastArgument.length(), candidates);
+		}
+		return -1;
 	}
 
 }
