@@ -5,8 +5,8 @@
 	<id>dist</id>
 	<formats>
 		<format>zip</format>
-		<!-- <format>tar.gz</format> -->
-		<!-- <format>tar.bz2</format> -->
+		<format>tar.gz</format>
+		<format>tar.bz2</format>
 	</formats>
 	<includeBaseDirectory>true</includeBaseDirectory>
 	<moduleSets>
@@ -18,7 +18,7 @@
 			</includes>
 			<binaries>
 				<outputDirectory>bin</outputDirectory>
-				<attachmentClassifier>jar-with-dependencies</attachmentClassifier>
+				<attachmentClassifier>onejar</attachmentClassifier>
 				<includeDependencies>false</includeDependencies>
 				<unpack>false</unpack>
 				<outputFileNameMapping>s-ramp-shell-${project.version}.jar</outputFileNameMapping>
@@ -26,6 +26,7 @@
 		</moduleSet>
 	</moduleSets>
 	<dependencySets>
+		<!-- All of the S-RAMP WARs -->
 		<dependencySet>
 			<outputDirectory>bin</outputDirectory>
 			<includes>
@@ -37,6 +38,7 @@
 			<useTransitiveDependencies>false</useTransitiveDependencies>
 			<useTransitiveFiltering>false</useTransitiveFiltering>
 		</dependencySet>
+		<!-- The source archives for all S-RAMP JARs -->
 		<dependencySet>
 			<outputDirectory>src</outputDirectory>
 			<includes>
@@ -49,20 +51,28 @@
 		</dependencySet>
 	</dependencySets>
 	<fileSets>
+		<!-- Files at the root of the distribution -->
+		<fileSet>
+			<directory>src/main/resources/ROOT</directory>
+			<outputDirectory></outputDirectory>
+			<filtered>true</filtered>
+		</fileSet>
+		<!-- The S-RAMP demos -->
 		<fileSet>
 			<directory>s-ramp-demos</directory>
 			<outputDirectory>demos</outputDirectory>
 			<useDefaultExcludes>true</useDefaultExcludes>
 			<excludes>
-				<exclude>.settings</exclude>
-				<exclude>.classpath</exclude>
-				<exclude>.project</exclude>
-				<exclude>.gitignore</exclude>
+				<exclude>**/.settings/**</exclude>
+				<exclude>**/.classpath</exclude>
+				<exclude>**/.project</exclude>
+				<exclude>**/.gitignore</exclude>
 				<exclude>**/target/**</exclude>
 			</excludes>
 		</fileSet>
+		<!-- Additional files in the bin subfolder -->
 		<fileSet>
-			<directory>../s-ramp-distro-shell/src/main/resources</directory>
+			<directory>../s-ramp-distro-shell/src/main/bin</directory>
 			<outputDirectory>bin</outputDirectory>
 			<filtered>true</filtered>
 			<includes>
