@@ -1,0 +1,74 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>dist</id>
+	<formats>
+		<format>zip</format>
+		<!-- <format>tar.gz</format> -->
+		<!-- <format>tar.bz2</format> -->
+	</formats>
+	<includeBaseDirectory>true</includeBaseDirectory>
+	<moduleSets>
+		<!-- The S-RAMP interactive shell -->
+		<moduleSet>
+			<useAllReactorProjects>true</useAllReactorProjects>
+			<includes>
+				<include>org.overlord.sramp:s-ramp-distro-shell:*</include>
+			</includes>
+			<binaries>
+				<outputDirectory>bin</outputDirectory>
+				<attachmentClassifier>jar-with-dependencies</attachmentClassifier>
+				<includeDependencies>false</includeDependencies>
+				<unpack>false</unpack>
+				<outputFileNameMapping>s-ramp-shell-${project.version}.jar</outputFileNameMapping>
+			</binaries>
+		</moduleSet>
+	</moduleSets>
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>bin</outputDirectory>
+			<includes>
+				<include>org.overlord.sramp:*:war</include>
+			</includes>
+			<outputFileNameMapping>${artifact.artifactId}-${project.version}.${artifact.extension}</outputFileNameMapping>
+			<useProjectArtifact>false</useProjectArtifact>
+			<useProjectAttachments>false</useProjectAttachments>
+			<useTransitiveDependencies>false</useTransitiveDependencies>
+			<useTransitiveFiltering>false</useTransitiveFiltering>
+		</dependencySet>
+		<dependencySet>
+			<outputDirectory>src</outputDirectory>
+			<includes>
+				<include>org.overlord.sramp:s-ramp-*:jar:*</include>
+			</includes>
+			<useProjectArtifact>false</useProjectArtifact>
+			<useProjectAttachments>false</useProjectAttachments>
+			<useTransitiveDependencies>false</useTransitiveDependencies>
+			<useTransitiveFiltering>false</useTransitiveFiltering>
+		</dependencySet>
+	</dependencySets>
+	<fileSets>
+		<fileSet>
+			<directory>s-ramp-demos</directory>
+			<outputDirectory>demos</outputDirectory>
+			<useDefaultExcludes>true</useDefaultExcludes>
+			<excludes>
+				<exclude>.settings</exclude>
+				<exclude>.classpath</exclude>
+				<exclude>.project</exclude>
+				<exclude>.gitignore</exclude>
+				<exclude>**/target/**</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>../s-ramp-distro-shell/src/main/resources</directory>
+			<outputDirectory>bin</outputDirectory>
+			<filtered>true</filtered>
+			<includes>
+				<include>*.sh</include>
+				<include>*.bat</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>
