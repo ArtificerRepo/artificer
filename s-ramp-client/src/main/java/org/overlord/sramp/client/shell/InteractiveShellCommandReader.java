@@ -18,6 +18,8 @@ package org.overlord.sramp.client.shell;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.xml.namespace.QName;
+
 import jline.console.ConsoleReader;
 
 /**
@@ -27,7 +29,9 @@ import jline.console.ConsoleReader;
  *
  * @author eric.wittmann@redhat.com
  */
-public class InteractiveShellCommandReader extends AbstractShellCommandReader {
+public class InteractiveShellCommandReader extends AbstractShellCommandReader implements ShellContextEventHandler {
+
+	private static final QName CLIENT_NAME = new QName("s-ramp", "client");
 
 	private ConsoleReader consoleReader;
 
@@ -38,6 +42,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	 */
 	public InteractiveShellCommandReader(ShellCommandFactory factory, ShellContextImpl context) {
 		super(factory, context);
+		context.addHandler(this);
 	}
 
 	/**
@@ -46,7 +51,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	@Override
 	public void open() throws IOException {
 		consoleReader = new ConsoleReader();
-		String prompt = createAnsiPrompt();
+		String prompt = defaultAnsiPrompt();
 		consoleReader.setPrompt(prompt);
 		consoleReader.addCompleter(new TabCompleter(getFactory(), getContext()));
 	}
@@ -54,8 +59,15 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	/**
 	 * Creates the ANSI compatible prompt.
 	 */
-	private String createAnsiPrompt() {
+	private String defaultAnsiPrompt() {
 		return "\033[1m\033[31ms-ramp>\033[0m ";
+	}
+
+	/**
+	 * Creates the ANSI compatible prompt.
+	 */
+	private String connectedAnsiPrompt() {
+		return "\033[1m\033[32ms-ramp>\033[0m ";
 	}
 
 	/**
@@ -80,6 +92,34 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader {
 	@Override
 	public void close() throws IOException {
 		consoleReader.shutdown();
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.ShellContextEventHandler#onVariableAdded(javax.xml.namespace.QName, java.lang.Object)
+	 */
+	@Override
+	public void onVariableAdded(QName variableName, Object value) {
+		if (CLIENT_NAME.equals(variableName)) {
+			consoleReader.setPrompt(connectedAnsiPrompt());
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.ShellContextEventHandler#onVariableChanged(javax.xml.namespace.QName, java.lang.Object)
+	 */
+	@Override
+	public void onVariableChanged(QName variableName, Object value) {
+		// Nothing to do here
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.ShellContextEventHandler#onVariableRemoved(javax.xml.namespace.QName)
+	 */
+	@Override
+	public void onVariableRemoved(QName variableName) {
+		if (CLIENT_NAME.equals(variableName)) {
+			consoleReader.setPrompt(defaultAnsiPrompt());
+		}
 	}
 
 }
