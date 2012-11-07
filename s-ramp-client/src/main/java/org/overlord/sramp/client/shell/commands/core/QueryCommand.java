@@ -60,6 +60,7 @@ public class QueryCommand extends AbstractShellCommand {
 		print("");
 		print("Example usage:");
 		print(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
+		print(">  s-ramp:query \"/s-ramp/wsdl[@name = 'find']\"");
 	}
 
 	/**

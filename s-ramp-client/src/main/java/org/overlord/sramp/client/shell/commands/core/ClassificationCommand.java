@@ -65,6 +65,8 @@ public class ClassificationCommand extends AbstractShellCommand {
 		print("current session through the s-ramp:getMetaData command.  This command");
 		print("adds or removes classifications on that active artifact.");
 		print("");
+		print("Supported sub-commands:  add, remove, clear");
+		print("");
 		print("Example usage:");
 		print(">  s-ramp:classification add http://www.example.org/regions.owl#China");
 		print(">  s-ramp:classification remove http://www.example.org/regions.owl#China");

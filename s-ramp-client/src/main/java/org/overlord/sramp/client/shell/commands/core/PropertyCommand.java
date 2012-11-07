@@ -70,6 +70,8 @@ public class PropertyCommand extends AbstractShellCommand {
 		print("properties and custom (user-defined) properties can be manipulated");
 		print("using this command.");
 		print("");
+		print("Supported sub-commands:  set, unset");
+		print("");
 		print("Example usage:");
 		print(">  s-ramp:property set name MyArtifactName");
 		print(">  s-ramp:property set customProp customVal");
