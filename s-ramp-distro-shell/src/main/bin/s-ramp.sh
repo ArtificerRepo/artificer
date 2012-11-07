@@ -10,7 +10,7 @@
 # -----------------------------------------------------------------------------
 
 if [ -r "$JAVA_HOME"/bin/java ]; then
-  $JAVA_HOME/bin/java -jar s-ramp-shell-${project.version}.jar
+  $JAVA_HOME/bin/java -jar s-ramp-shell-${project.version}.jar $@
 else
   echo "The JAVA_HOME environment variable is not defined correctly."
   echo "This environment variable is needed to run the S-RAMP shell."

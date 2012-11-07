@@ -22,6 +22,8 @@
 				<includeDependencies>false</includeDependencies>
 				<unpack>false</unpack>
 				<outputFileNameMapping>s-ramp-shell-${project.version}.jar</outputFileNameMapping>
+				<directoryMode>0755</directoryMode>
+				<fileMode>0755</fileMode>
 			</binaries>
 		</moduleSet>
 	</moduleSets>
@@ -37,6 +39,8 @@
 			<useProjectAttachments>false</useProjectAttachments>
 			<useTransitiveDependencies>false</useTransitiveDependencies>
 			<useTransitiveFiltering>false</useTransitiveFiltering>
+			<directoryMode>0755</directoryMode>
+			<fileMode>0755</fileMode>
 		</dependencySet>
 		<!-- The source archives for all S-RAMP JARs -->
 		<dependencySet>
@@ -48,6 +52,8 @@
 			<useProjectAttachments>false</useProjectAttachments>
 			<useTransitiveDependencies>false</useTransitiveDependencies>
 			<useTransitiveFiltering>false</useTransitiveFiltering>
+			<directoryMode>0755</directoryMode>
+			<fileMode>0755</fileMode>
 		</dependencySet>
 	</dependencySets>
 	<fileSets>
@@ -56,6 +62,8 @@
 			<directory>src/main/resources/ROOT</directory>
 			<outputDirectory></outputDirectory>
 			<filtered>true</filtered>
+			<directoryMode>0755</directoryMode>
+			<fileMode>0755</fileMode>
 		</fileSet>
 		<!-- The S-RAMP demos -->
 		<fileSet>
@@ -69,6 +77,8 @@
 				<exclude>**/.gitignore</exclude>
 				<exclude>**/target/**</exclude>
 			</excludes>
+			<directoryMode>0755</directoryMode>
+			<fileMode>0755</fileMode>
 		</fileSet>
 		<!-- Additional files in the bin subfolder -->
 		<fileSet>
@@ -79,6 +89,8 @@
 				<include>*.sh</include>
 				<include>*.bat</include>
 			</includes>
+			<directoryMode>0755</directoryMode>
+			<fileMode>0755</fileMode>
 		</fileSet>
 	</fileSets>
 </assembly>

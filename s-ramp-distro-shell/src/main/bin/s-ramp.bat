@@ -10,7 +10,7 @@ rem ---------------------------------------------------------------------------
 @echo on
 
 if not exist "%JAVA_HOME%\bin\java.exe" goto noJava
-%JAVA_HOME%/bin/java.exe -jar s-ramp-shell-${project.version}.jar
+%JAVA_HOME%/bin/java.exe -jar s-ramp-shell-${project.version}.jar %*
 
 :noJava
 echo The JAVA_HOME environment variable is not defined correctly.
