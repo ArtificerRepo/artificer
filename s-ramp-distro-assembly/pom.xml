@@ -97,6 +97,9 @@
 					</descriptors>
 					<tarLongFileMode>gnu</tarLongFileMode>
 					<appendAssemblyId>false</appendAssemblyId>
+					<archiverConfig>
+						<defaultDirectoryMode>0755</defaultDirectoryMode>
+					</archiverConfig>
 				</configuration>
 				<executions>
 					<execution>
