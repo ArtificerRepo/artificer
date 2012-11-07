@@ -63,7 +63,7 @@ public class PropertyCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		print("The 'property' command manipulates the properties of the currently.");
+		print("The 'property' command manipulates the properties of the currently");
 		print("active S-RAMP artifact.  The artifact must first be in the current");
 		print("session through the s-ramp:getMetaData command.  This command sets");
 		print("or unsets properties on that active artifact.  Both core meta-data");
@@ -81,11 +81,11 @@ public class PropertyCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void execute() throws Exception {
-		String subcmd = requiredArgument(0, "Please specify a sub-command (set, unset).");
-		String propName = requiredArgument(1, "Please specify a property name.");
-		String propValue = null;
-		if ("set".equals(subcmd)) {
-			propValue = requiredArgument(2, "Please specify a property value.");
+		String subcmdArg = requiredArgument(0, "Please specify a sub-command (set, unset).");
+		String propNameArg = requiredArgument(1, "Please specify a property name.");
+		String propValueArg = null;
+		if ("set".equals(subcmdArg)) {
+			propValueArg = requiredArgument(2, "Please specify a property value.");
 		}
 
 		QName artifactVarName = new QName("s-ramp", "artifact");
@@ -96,12 +96,12 @@ public class PropertyCommand extends AbstractShellCommand {
 		}
 
 		try {
-			if ("set".equals(subcmd)) {
-				setProperty(artifact, propName, propValue);
-				print("Successfully set property %1$s.", propName);
-			} else if ("unset".equals(subcmd)) {
-				unsetProperty(artifact, propName);
-				print("Successfully unset property %1$s.", propName);
+			if ("set".equals(subcmdArg)) {
+				setProperty(artifact, propNameArg, propValueArg);
+				print("Successfully set property %1$s.", propNameArg);
+			} else if ("unset".equals(subcmdArg)) {
+				unsetProperty(artifact, propNameArg);
+				print("Successfully unset property %1$s.", propNameArg);
 			} else {
 				throw new InvalidCommandArgumentException(0, "Invalid sub-command, must be either 'set' or 'unset'.");
 			}

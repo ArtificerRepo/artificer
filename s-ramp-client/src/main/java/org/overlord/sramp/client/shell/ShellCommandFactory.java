@@ -38,6 +38,7 @@ import org.overlord.sramp.client.shell.commands.archive.PackArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.UpdateEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.brms.Pkg2SrampCommand;
+import org.overlord.sramp.client.shell.commands.core.ClassificationCommand;
 import org.overlord.sramp.client.shell.commands.core.ConnectCommand;
 import org.overlord.sramp.client.shell.commands.core.DisconnectCommand;
 import org.overlord.sramp.client.shell.commands.core.GetContentCommand;
@@ -90,6 +91,7 @@ public class ShellCommandFactory {
 		registry.put(new QName("s-ramp", "updateMetaData"), UpdateMetaDataCommand.class);
 		registry.put(new QName("s-ramp", "updateContent"), UpdateContentCommand.class);
 		registry.put(new QName("s-ramp", "property"), PropertyCommand.class);
+		registry.put(new QName("s-ramp", "classification"), ClassificationCommand.class);
 		registry.put(new QName("s-ramp", "showMetaData"), ShowMetaDataCommand.class);
 
 		// Archive commands
