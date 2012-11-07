@@ -16,7 +16,9 @@
 package org.overlord.sramp.client.shell;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -29,6 +31,7 @@ public class ShellContextImpl implements ShellContext {
 
 	private Map<QName, Object> variables = new HashMap<QName, Object>();
 	private Map<QName, ShellContextVariableLifecycleHandler> variableLifecycleHandlers = new HashMap<QName, ShellContextVariableLifecycleHandler>();
+	private Set<ShellContextEventHandler> eventHandlers = new HashSet<ShellContextEventHandler>();
 
 	/**
 	 * Constructor.
@@ -41,7 +44,13 @@ public class ShellContextImpl implements ShellContext {
 	 */
 	@Override
 	public void setVariable(QName name, Object object) {
+		boolean isUpdate = this.variables.containsKey(name);
 		this.variables.put(name, object);
+		if (isUpdate) {
+			fireChangeEvent(name, object);
+		} else {
+			fireAddEvent(name, object);
+		}
 	}
 
 	/**
@@ -50,7 +59,7 @@ public class ShellContextImpl implements ShellContext {
 	@Override
 	public void setVariable(QName name, Object object, ShellContextVariableLifecycleHandler lifecycleHandler) {
 		if (lifecycleHandler.onAdd(object)) {
-			this.variables.put(name, object);
+			setVariable(name, object);
 			this.variableLifecycleHandlers.put(name, lifecycleHandler);
 		}
 	}
@@ -77,6 +86,7 @@ public class ShellContextImpl implements ShellContext {
 		if (handler != null) {
 			handler.onRemove(rval);
 		}
+		fireRemoveEvent(name);
 		return rval;
 	}
 
@@ -90,6 +100,54 @@ public class ShellContextImpl implements ShellContext {
 			if (handler != null) {
 				handler.onContextDestroyed(object);
 			}
+		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.ShellContext#addHandler(org.overlord.sramp.client.shell.ShellContextEventHandler)
+	 */
+	@Override
+	public void addHandler(ShellContextEventHandler handler) {
+		this.eventHandlers.add(handler);
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.ShellContext#removeHandler(org.overlord.sramp.client.shell.ShellContextEventHandler)
+	 */
+	@Override
+	public void removeHandler(ShellContextEventHandler handler) {
+		this.eventHandlers.remove(handler);
+	}
+
+	/**
+	 * Fires the add event.
+	 * @param name
+	 * @param object
+	 */
+	private void fireAddEvent(QName name, Object object) {
+		for (ShellContextEventHandler handler : eventHandlers) {
+			handler.onVariableAdded(name, object);
+		}
+	}
+
+	/**
+	 * Fires the change event.
+	 * @param name
+	 * @param object
+	 */
+	private void fireChangeEvent(QName name, Object object) {
+		for (ShellContextEventHandler handler : eventHandlers) {
+			handler.onVariableChanged(name, object);
+		}
+	}
+
+	/**
+	 * Fires the remove event.
+	 * @param name
+	 */
+	private void fireRemoveEvent(QName name) {
+		for (ShellContextEventHandler handler : eventHandlers) {
+			handler.onVariableRemoved(name);
 		}
 	}
 

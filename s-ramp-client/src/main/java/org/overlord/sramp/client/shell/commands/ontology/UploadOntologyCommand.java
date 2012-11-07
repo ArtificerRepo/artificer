@@ -17,6 +17,7 @@ package org.overlord.sramp.client.shell.commands.ontology;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -24,6 +25,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
+import org.overlord.sramp.client.shell.util.FileNameCompleter;
 
 /**
  * Uploads an ontology (S-RAMP OWL format) to the s-ramp repository.
@@ -85,5 +87,19 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 		} finally {
 			IOUtils.closeQuietly(content);
 		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 */
+	@Override
+	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+		if (lastArgument == null)
+			lastArgument = "";
+		if (getArguments().isEmpty()) {
+			FileNameCompleter delegate = new FileNameCompleter();
+			return delegate.complete(lastArgument, lastArgument.length(), candidates);
+		}
+		return -1;
 	}
 }

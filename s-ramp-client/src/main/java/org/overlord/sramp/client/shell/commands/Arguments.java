@@ -42,20 +42,30 @@ public class Arguments extends ArrayList<String> {
 	 */
 	private void parseArguments(String arguments) {
 		ScannerState state = ScannerState.scanningForStart;
+		char quotChar = '\'';
 		int startPos = -1;
 		int endPos = -1;
-		// TODO support quoted strings
 		for (int position = 0; position < arguments.length(); position++) {
 			char c = arguments.charAt(position);
 			if (state == ScannerState.scanningForStart) {
-				if (!Character.isWhitespace(c)) {
+				if (c == '\"' || c == '\'') {
+					startPos = position;
+					state = ScannerState.scanningForEndQuote;
+					quotChar = c;
+				} else if (!Character.isWhitespace(c)) {
 					startPos = position;
 					state = ScannerState.scanningForEnd;
 				}
-			} else {
+			} else if (state == ScannerState.scanningForEnd) {
 				if (Character.isWhitespace(c)) {
 					endPos = position;
 					add(arguments.substring(startPos, endPos));
+					state = ScannerState.scanningForStart;
+				}
+			} else if (state == ScannerState.scanningForEndQuote) {
+				if (c == quotChar) {
+					endPos = position;
+					add(arguments.substring(startPos+1, endPos));
 					state = ScannerState.scanningForStart;
 				}
 			}
@@ -88,7 +98,8 @@ public class Arguments extends ArrayList<String> {
 
 	private static enum ScannerState {
 		scanningForStart,
-		scanningForEnd
+		scanningForEnd,
+		scanningForEndQuote
 	}
 
 }

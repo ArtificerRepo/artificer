@@ -70,9 +70,26 @@ public interface ShellCommand {
 	/**
 	 * Handle tab completion for the command.  This is optional, but provides a mechanism by
 	 * which individual commands can enable command-specific tab completion functionality.
+	 *
+	 * The return value of this method represents the cursor position within lastArgument
+	 * that represents the origin point for all of the candidates.  Return 0 to indicate that
+	 * the candidates are all full-replacements of lastArgument.  Return -1 to indicate that
+	 * no candidates were supplied.  Return a positive, non-negative value if the returned
+	 * candidates are partial completions.
+	 *
+	 * For example, if the user has typed "aar", then a command could return any of:
+	 *
+	 * candidates=[]  rval=-1
+	 * candidates=["aardvark", "aardwolf"]  rval=0
+	 * candidates=["dvark", "dwolf"]  rval=3
+	 *
+	 * In the latter two examples, the tab-completion will be the same, but the user will
+	 * be shown the different candidate values (when more than 1 candidate is returned).
+	 *
 	 * @param lastArgument
 	 * @param candidates
+	 * @return the cursor position
 	 */
-	public void tabCompletion(String lastArgument, List<CharSequence> candidates);
+	public int tabCompletion(String lastArgument, List<CharSequence> candidates);
 
 }

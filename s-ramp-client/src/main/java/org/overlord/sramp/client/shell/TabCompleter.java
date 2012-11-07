@@ -19,9 +19,9 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.sramp.client.shell.commands.Arguments;
-
 import jline.console.completer.Completer;
+
+import org.overlord.sramp.client.shell.commands.Arguments;
 
 /**
  * Implements tab completion for the interactive
@@ -97,11 +97,12 @@ public class TabCompleter implements Completer {
 		}
 
 		// Case 5 - a full command name has been entered, delegate further procesing
-		// to that specific command
-		Arguments arguments = new Arguments(buffer);
+		// to the specific command
+		String args = buffer.substring(0, cursor);
+		Arguments arguments = new Arguments(args);
 		QName commandName = arguments.removeCommandName();
 		String lastArgument = null;
-		if (arguments.size() > 0) {
+		if (arguments.size() > 0 && !args.endsWith(" ")) {
 			lastArgument = arguments.remove(arguments.size() - 1);
 		}
 		try {
@@ -109,9 +110,10 @@ public class TabCompleter implements Completer {
 			if (command != null) {
 				command.setContext(this.context);
 				command.setArguments(arguments);
-				command.tabCompletion(lastArgument, candidates);
+				int rval = command.tabCompletion(lastArgument, candidates);
 				if (!candidates.isEmpty()) {
-					return buffer.length() - (lastArgument == null ? 0 : lastArgument.length());
+					int curs = args.length() - (lastArgument == null ? 0 : lastArgument.length());
+					return curs + rval;
 				}
 			}
 		} catch (Exception e) {

@@ -480,7 +480,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		try {
 			session = JCRRepository.getSession();
 			JcrTools tools = new JcrTools();
-			Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", null, null);
+			Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", "nt:folder");
 			NodeIterator nodes = ontologiesNode.getNodes();
 			List<SrampOntology> ontologies = new ArrayList<SrampOntology>();
 			while (nodes.hasNext()) {

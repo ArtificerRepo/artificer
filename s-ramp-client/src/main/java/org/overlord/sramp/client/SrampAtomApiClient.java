@@ -91,6 +91,13 @@ public class SrampAtomApiClient {
 	}
 
 	/**
+	 * @return the s-ramp endpoint
+	 */
+	public String getEndpoint() {
+		return this.endpoint;
+	}
+
+	/**
 	 * This method will grab the /s-ramp/servicedocument from the S-RAMP repository
 	 * and examine its contents in order to determine the features supported by the
 	 * repository.

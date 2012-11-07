@@ -84,9 +84,12 @@ public class ConnectCommand extends AbstractShellCommand {
 	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
 	 */
 	@Override
-	public void tabCompletion(String lastArgument, List<CharSequence> candidates) {
+	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
 		if (getArguments().isEmpty()) {
 			candidates.add("http://localhost:8080/s-ramp-atom/s-ramp");
+			return 0;
+		} else {
+			return -1;
 		}
 	}
 
