@@ -49,7 +49,11 @@ public class SrampModelUtils {
 			prop.setPropertyName(propName);
 			properties.add(prop);
 		}
-		prop.setPropertyValue(propValue);
+		if (propValue == null) {
+			properties.remove(prop);
+		} else {
+			prop.setPropertyValue(propValue);
+		}
 	}
 
 	/**

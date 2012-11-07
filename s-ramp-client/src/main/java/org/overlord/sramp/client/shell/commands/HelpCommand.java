@@ -15,8 +15,11 @@
  */
 package org.overlord.sramp.client.shell.commands;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
@@ -117,7 +120,7 @@ public class HelpCommand extends AbstractShellCommand {
 	 * @param namespace
 	 */
 	private void printHelpForNamespace(String namespace) {
-		System.out.printf("The S-RAMP Shell supports the following commands for the '%1$s' namespace:\n", namespace);
+		print("The S-RAMP Shell supports the following commands for the '%1$s' namespace:", namespace);
 		for (Entry<QName,Class<? extends ShellCommand>> entry : this.commands.entrySet()) {
 			QName cmdName = entry.getKey();
 			String ns = cmdName.getNamespaceURI();
@@ -138,15 +141,44 @@ public class HelpCommand extends AbstractShellCommand {
 	private void printHelpForCommand(QName cmdName) throws Exception {
 		Class<? extends ShellCommand> commandClass = this.commands.get(cmdName);
 		if (commandClass == null) {
-			System.out.printf("No help available:  not a valid command");
+			print("No help available:  not a valid command.");
 		} else {
 			ShellCommand command = commandClass.newInstance();
-			System.out.print("Usage: ");
+			print("USAGE");
 			command.printUsage();
 			print("");
 			command.printHelp();
 			print("");
 		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 */
+	@Override
+	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+		if (getArguments().isEmpty()) {
+			for (String candidate : generateHelpCandidates()) {
+				if (lastArgument == null || candidate.startsWith(lastArgument)) {
+					candidates.add(candidate);
+				}
+			}
+			return 0;
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * @return a collection of all possible command names
+	 */
+	private Collection<String> generateHelpCandidates() {
+		TreeSet<String> candidates = new TreeSet<String>();
+		for (QName key : this.commands.keySet()) {
+			String candidate = key.getNamespaceURI() + ":" + key.getLocalPart();
+			candidates.add(candidate);
+		}
+		return candidates;
 	}
 
 }

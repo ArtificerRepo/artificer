@@ -78,6 +78,17 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 	}
 
 	/**
+	 * @see org.jboss.resteasy.client.ClientRequest#post()
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public ClientResponse post() throws Exception {
+		ClientResponse response = super.post();
+		handlePotentialServerError(response);
+		return response;
+	}
+
+	/**
 	 * @see org.jboss.resteasy.client.ClientRequest#get(java.lang.Class)
 	 */
 	@Override
@@ -88,11 +99,33 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 	}
 
 	/**
+	 * @see org.jboss.resteasy.client.ClientRequest#get()
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public ClientResponse get() throws Exception {
+		ClientResponse response = super.get();
+		handlePotentialServerError(response);
+		return response;
+	}
+
+	/**
 	 * @see org.jboss.resteasy.client.ClientRequest#put(java.lang.Class)
 	 */
 	@Override
 	public <T> ClientResponse<T> put(Class<T> returnType) throws Exception {
 		ClientResponse<T> response = super.put(returnType);
+		handlePotentialServerError(response);
+		return response;
+	}
+
+	/**
+	 * @see org.jboss.resteasy.client.ClientRequest#put()
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public ClientResponse put() throws Exception {
+		ClientResponse response = super.put();
 		handlePotentialServerError(response);
 		return response;
 	}

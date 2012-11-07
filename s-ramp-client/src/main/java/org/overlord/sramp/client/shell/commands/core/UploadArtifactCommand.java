@@ -17,6 +17,7 @@ package org.overlord.sramp.client.shell.commands.core;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -24,8 +25,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
+import org.overlord.sramp.client.shell.util.FileNameCompleter;
 import org.overlord.sramp.client.shell.util.PrintArtifactMetaDataVisitor;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -120,6 +123,28 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 			type = ArtifactType.valueOf("Document");
 		}
 		return type;
+	}
+
+	/**
+	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 */
+	@Override
+	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+		if (getArguments().isEmpty()) {
+			if (lastArgument == null)
+				lastArgument = "";
+			FileNameCompleter delegate = new FileNameCompleter();
+			return delegate.complete(lastArgument, lastArgument.length(), candidates);
+		} else if (getArguments().size() == 1) {
+			for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+				String candidate = t.getType();
+				if (lastArgument == null || candidate.startsWith(lastArgument)) {
+					candidates.add(candidate);
+				}
+			}
+			return 0;
+		}
+		return -1;
 	}
 
 }

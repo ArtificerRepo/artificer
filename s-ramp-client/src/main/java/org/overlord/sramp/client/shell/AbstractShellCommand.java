@@ -135,7 +135,8 @@ public abstract class AbstractShellCommand implements ShellCommand {
 	 * @see org.overlord.sramp.client.shell.ShellCommand#tabCompletion(java.lang.String, java.util.List)
 	 */
 	@Override
-	public void tabCompletion(String lastArgument, List<CharSequence> candidates) {
+	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+		return -1;
 	}
 
 }
