@@ -66,6 +66,7 @@ public class QueryRemoteService extends RemoteServiceServlet implements IQueryRe
 				arty.setCreatedBy(entry.getCreatedBy());
 				arty.setCreatedOn(entry.getCreatedTimestamp());
 				arty.setUpdatedOn(entry.getLastModifiedTimestamp());
+				arty.setDerived(artifactType.getArtifactType().isDerived());
 				rval.add(arty);
 			}
 			return rval;

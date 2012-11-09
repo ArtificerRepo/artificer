@@ -39,6 +39,7 @@ public class ArtifactSummary implements Serializable {
 	private Date createdOn;
 	private Date updatedOn;
 	private Map<String, String> properties = new HashMap<String, String>();
+	private boolean derived;
 
 	/**
 	 * Constructor.
@@ -211,6 +212,20 @@ public class ArtifactSummary implements Serializable {
 	 */
 	public void setModel(String model) {
 		this.model = model;
+	}
+
+	/**
+	 * @return the derived
+	 */
+	public boolean isDerived() {
+		return derived;
+	}
+
+	/**
+	 * @param derived the derived to set
+	 */
+	public void setDerived(boolean derived) {
+		this.derived = derived;
 	}
 
 }
