@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.ui.client.views;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -22,6 +23,7 @@ import org.overlord.sramp.ui.client.activities.IArtifactActivity;
 import org.overlord.sramp.ui.client.places.ArtifactPlace;
 import org.overlord.sramp.ui.client.widgets.PleaseWait;
 import org.overlord.sramp.ui.client.widgets.SimpleFormLayoutPanel;
+import org.overlord.sramp.ui.client.widgets.UnorderedListPanel;
 import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
@@ -111,6 +113,12 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		properties.setOpen(true);
 		properties.add(createPropertiesForm(artifact));
 
+		// Classifications
+		DisclosurePanel classifications = new DisclosurePanel(i18n().translate("views.artifact.classifications.label"));
+		classifications.setStyleName("dpanel");
+		classifications.setOpen(true);
+		classifications.add(createClassificationsForm(artifact));
+
 		// Artifact links/urls
 		DisclosurePanel links = new DisclosurePanel(i18n().translate("views.artifact.links.label"));
 		links.setStyleName("dpanel");
@@ -118,6 +126,7 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		links.add(createLinks(artifact));
 
 		rightCol.add(properties);
+		rightCol.add(classifications);
 		rightCol.add(links);
 		rightCol.setCellWidth(details, "100%");
 	}
@@ -168,8 +177,8 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 	 */
 	private Widget createPropertiesForm(ArtifactDetails artifact) {
 		Set<String> propertyNames = artifact.getPropertyNames();
-		if (propertyNames.size() == 0) {
-			return new InlineLabel("No properties found on this artifact.");
+		if (propertyNames.isEmpty()) {
+			return new InlineLabel(i18n().translate("views.artifact.no-properties.message"));
 		}
 		propertyNames = new TreeSet<String>(propertyNames);
 
@@ -180,10 +189,32 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		for (String propertyName : propertyNames) {
 			String propertyValue = artifact.getProperty(propertyName);
 			formLayoutPanel.add(propertyName, new InlineLabel(propertyValue));
-
 		}
 
 		wrapper.add(formLayoutPanel);
+		return wrapper;
+	}
+
+	/**
+	 * Creates the classifications form that shows all of the artifact's S-RAMP classifications.
+	 * @param artifact
+	 */
+	private Widget createClassificationsForm(ArtifactDetails artifact) {
+		List<String> classifiedBy = artifact.getClassifiedBy();
+		if (classifiedBy.isEmpty()) {
+			return new InlineLabel(i18n().translate("views.artifact.no-classifications.message"));
+		}
+		Set<String> orderedClassifications = new TreeSet<String>(classifiedBy);
+
+		FlowPanel wrapper = new FlowPanel();
+		wrapper.setStyleName("dpanel-content");
+
+		UnorderedListPanel ulPanel = new UnorderedListPanel();
+		for (String classification : orderedClassifications) {
+			ulPanel.add(new Label(classification));
+		}
+
+		wrapper.add(ulPanel);
 		return wrapper;
 	}
 
@@ -198,9 +229,10 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		FlowPanel wrapper = new FlowPanel();
 		wrapper.setStyleName("dpanel-content");
 
-		Anchor downloadLink = new Anchor(i18n().translate("views.artifact.links.download"), url);
-
-		wrapper.add(downloadLink);
+		if (!artifact.isDerived()) {
+			Anchor downloadLink = new Anchor(i18n().translate("views.artifact.links.download"), url);
+			wrapper.add(downloadLink);
+		}
 		return wrapper;
 	}
 

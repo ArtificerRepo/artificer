@@ -60,6 +60,7 @@ public class ArtifactRemoteService extends RemoteServiceServlet implements IArti
 			details.setCreatedBy(artifact.getCreatedBy());
 			details.setCreatedOn(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
 			details.setUpdatedOn(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
+			details.setDerived(artyType.getArtifactType().isDerived());
 
 			for (Property property : artifact.getProperty()) {
 				details.setProperty(property.getPropertyName(), property.getPropertyValue());
