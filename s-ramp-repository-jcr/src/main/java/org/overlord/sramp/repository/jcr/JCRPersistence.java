@@ -62,6 +62,7 @@ import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.slf4j.Logger;
@@ -124,6 +125,11 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			if (UserDefinedArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
 				// read the encoding from the header
 				artifactNode.setProperty(JCRConstants.SRAMP_USER_TYPE, artifactType.getUserType());
+			}
+			// Document
+			if (DocumentArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
+				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, artifactType.getMimeType());
+				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty("jcr:content/jcr:data").getLength());
 			}
 			// XMLDocument
 			if (XmlDocument.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
@@ -359,6 +365,15 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			}
 			JcrTools tools = new JcrTools();
 			tools.uploadFile(session, artifactPath, content);
+			JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
+
+			// Document
+			if (DocumentArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
+				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, artifactType.getMimeType());
+				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty("jcr:content/jcr:data").getLength());
+			}
+
+			// TODO delete and re-create the derived artifacts?  what if some of them have properties or classifications?
 
 			session.save();
 			log.debug("Successfully updated content for artifact {}.", uuid);
