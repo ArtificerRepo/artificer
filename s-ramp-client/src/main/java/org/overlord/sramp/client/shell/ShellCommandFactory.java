@@ -45,6 +45,7 @@ import org.overlord.sramp.client.shell.commands.core.GetContentCommand;
 import org.overlord.sramp.client.shell.commands.core.GetMetaDataCommand;
 import org.overlord.sramp.client.shell.commands.core.PropertyCommand;
 import org.overlord.sramp.client.shell.commands.core.QueryCommand;
+import org.overlord.sramp.client.shell.commands.core.RefreshMetaDataCommand;
 import org.overlord.sramp.client.shell.commands.core.ShowMetaDataCommand;
 import org.overlord.sramp.client.shell.commands.core.StatusCommand;
 import org.overlord.sramp.client.shell.commands.core.UpdateContentCommand;
@@ -93,6 +94,7 @@ public class ShellCommandFactory {
 		registry.put(new QName("s-ramp", "property"), PropertyCommand.class);
 		registry.put(new QName("s-ramp", "classification"), ClassificationCommand.class);
 		registry.put(new QName("s-ramp", "showMetaData"), ShowMetaDataCommand.class);
+		registry.put(new QName("s-ramp", "refreshMetaData"), RefreshMetaDataCommand.class);
 
 		// Archive commands
 		registry.put(new QName("archive", "new"), NewArchiveCommand.class);
