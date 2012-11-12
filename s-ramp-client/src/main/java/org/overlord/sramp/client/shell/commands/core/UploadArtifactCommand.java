@@ -94,6 +94,9 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 			}
 			content = FileUtils.openInputStream(file);
 			BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
+			// Put the artifact in the session as the active artifact
+			QName artifactVarName = new QName("s-ramp", "artifact");
+			getContext().setVariable(artifactVarName, artifact);
 			print("Successfully uploaded an artifact.");
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
