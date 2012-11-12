@@ -21,13 +21,16 @@ import java.util.TreeSet;
 
 import org.overlord.sramp.ui.client.activities.IArtifactActivity;
 import org.overlord.sramp.ui.client.places.ArtifactPlace;
+import org.overlord.sramp.ui.client.widgets.PlaceHyperlink;
 import org.overlord.sramp.ui.client.widgets.PleaseWait;
 import org.overlord.sramp.ui.client.widgets.SimpleFormLayoutPanel;
 import org.overlord.sramp.ui.client.widgets.UnorderedListPanel;
 import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
+import org.overlord.sramp.ui.shared.beans.RelationshipDetails;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -102,10 +105,18 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		description.setOpen(true);
 		description.add(createDescriptionForm(artifact));
 
+		// Relationships
+		DisclosurePanel relationships = new DisclosurePanel(i18n().translate("views.artifact.relationships.label"));
+		relationships.setStyleName("dpanel");
+		relationships.setOpen(true);
+		relationships.add(createRelationshipsForm(artifact));
+
 		leftCol.add(details);
 		leftCol.add(description);
+		leftCol.add(relationships);
 		leftCol.setCellWidth(details, "100%");
 		leftCol.setCellWidth(description, "100%");
+		leftCol.setCellWidth(relationships, "100%");
 
 		// Artifact properties
 		DisclosurePanel properties = new DisclosurePanel(i18n().translate("views.artifact.properties.label"));
@@ -149,6 +160,30 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 	}
 
 	/**
+	 * Creates a form that shows the artifact's relationships.
+	 * @param artifact
+	 */
+	private Widget createRelationshipsForm(ArtifactDetails artifact) {
+		FlowPanel wrapper = new FlowPanel();
+		wrapper.setStyleName("dpanel-content");
+
+		List<RelationshipDetails> relationships = artifact.getRelationships();
+		if (relationships.isEmpty()) {
+			wrapper.add(new InlineLabel(i18n().translate("views.artifact.no-relationships.message")));
+		} else {
+			SimpleFormLayoutPanel formLayoutPanel = new SimpleFormLayoutPanel();
+			for (RelationshipDetails rd : relationships) {
+				Place targetPlace = new ArtifactPlace(null, null, rd.getTargetUuid());
+				PlaceHyperlink link = new PlaceHyperlink(rd.getTargetUuid(), targetPlace);
+				formLayoutPanel.add(rd.getType(), link);
+			}
+			wrapper.add(formLayoutPanel);
+		}
+
+		return wrapper;
+	}
+
+	/**
 	 * Creates the details form that shows all of the detailed meta information about the artifact.
 	 * @param artifact
 	 */
@@ -160,6 +195,7 @@ public class ArtifactView extends AbstractView<IArtifactActivity> implements IAr
 		wrapper.setStyleName("dpanel-content");
 
 		SimpleFormLayoutPanel formLayoutPanel = new SimpleFormLayoutPanel();
+		formLayoutPanel.add(i18n().translate("views.artifact.details.type-label"), new InlineLabel(artifact.getType()));
 		formLayoutPanel.add(i18n().translate("views.artifact.details.uuid-label"), new InlineLabel(artifact.getUuid()));
 		formLayoutPanel.add(i18n().translate("views.artifact.details.name-label"), new InlineLabel(artifact.getName()));
 		formLayoutPanel.add(i18n().translate("views.artifact.details.created-by-label"), new InlineLabel(artifact.getCreatedBy()));

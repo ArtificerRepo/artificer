@@ -29,9 +29,10 @@ import java.util.List;
 public class ArtifactDetails extends ArtifactSummary implements Serializable {
 
 	private static final long serialVersionUID = 810743629840463833L;
-	
+
 	private String updatedBy;
 	private List<String> classifiedBy = new ArrayList<String>();
+	private List<RelationshipDetails> relationships = new ArrayList<RelationshipDetails>();
 
 	/**
 	 * Constructor.
@@ -59,12 +60,34 @@ public class ArtifactDetails extends ArtifactSummary implements Serializable {
 	public List<String> getClassifiedBy() {
 		return classifiedBy;
 	}
-	
+
 	/**
 	 * @param classification
 	 */
 	public void addClassifiedBy(String classification) {
 		classifiedBy.add(classification);
+	}
+
+	/**
+	 * @return the relationships
+	 */
+	public List<RelationshipDetails> getRelationships() {
+		return relationships;
+	}
+
+	/**
+	 * @param relationships the relationships to set
+	 */
+	public void setRelationships(List<RelationshipDetails> relationships) {
+		this.relationships = relationships;
+	}
+
+	/**
+	 * Adds a single relationship.
+	 * @param relationship
+	 */
+	public void addRelationship(RelationshipDetails relationship) {
+		getRelationships().add(relationship);
 	}
 
 }
