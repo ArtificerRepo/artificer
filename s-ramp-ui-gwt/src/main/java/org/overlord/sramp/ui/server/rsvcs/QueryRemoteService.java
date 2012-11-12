@@ -26,7 +26,7 @@ import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.beans.PageInfo;
 import org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
-import org.overlord.sramp.ui.shared.types.ArtifactFilter;
+import org.overlord.sramp.ui.shared.types.ArtifactTypeFilter;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -46,13 +46,19 @@ public class QueryRemoteService extends RemoteServiceServlet implements IQueryRe
 	}
 
 	/**
-	 * @see org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService#findArtifacts(PageInfo, ArtifactFilter)
+	 * @see org.overlord.sramp.ui.shared.rsvcs.IQueryRemoteService#findArtifacts(org.overlord.sramp.ui.shared.beans.PageInfo, org.overlord.sramp.ui.shared.types.ArtifactTypeFilter, java.lang.String)
 	 */
 	@Override
-	public List<ArtifactSummary> findArtifacts(final PageInfo page, ArtifactFilter filter) throws RemoteServiceException {
+	public List<ArtifactSummary> findArtifacts(PageInfo page, ArtifactTypeFilter filter, String nameFilter)
+			throws RemoteServiceException {
 		try {
 			int startIndex = page.getPage() * page.getPageSize();
-			QueryResultSet rset = SrampAtomApiClient.getInstance().query(filter.getQueryBase(), startIndex,
+			String query = filter.getQueryBase();
+			if (nameFilter != null) {
+				String criteria = nameFilter.replace("*", ".*").replace("'", "''");
+				query = query + "[fn:matches(@name, '" + criteria + "')]";
+			}
+			QueryResultSet rset = SrampAtomApiClient.getInstance().query(query, startIndex,
 					page.getPageSize(), page.getOrderBy(), page.isAscending());
 			List<ArtifactSummary> rval = new ArrayList<ArtifactSummary>();
 			for (org.overlord.sramp.client.query.ArtifactSummary entry : rset) {

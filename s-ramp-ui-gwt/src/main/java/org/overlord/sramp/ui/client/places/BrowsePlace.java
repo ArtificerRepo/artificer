@@ -21,31 +21,48 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
  * Place:  /dashboard/browse
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class BrowsePlace extends AbstractPagedPlace implements Cloneable {
-	
+
+	private String nameFilter;
 	private String typeFilter;
 
 	/**
 	 * Constructor.
 	 */
 	public BrowsePlace() {
-		this(null, null, null, null, null);
+		this(null, null, null, null, null, null);
 	}
-	
+
 	/**
 	 * Constructor.
+	 * @param nameFilter
 	 * @param page
 	 * @param pageSize
 	 * @param orderBy
 	 * @param ascending
 	 * @param typeFilter
 	 */
-	public BrowsePlace(Integer page, Integer pageSize, String orderBy, Boolean ascending, String typeFilter) {
+	public BrowsePlace(String nameFilter, Integer page, Integer pageSize, String orderBy, Boolean ascending, String typeFilter) {
 		super(page, pageSize, orderBy, ascending);
+		setNameFilter(nameFilter);
 		setTypeFilter(typeFilter);
+	}
+
+	/**
+	 * @return the nameFilter
+	 */
+	public String getNameFilter() {
+		return nameFilter;
+	}
+
+	/**
+	 * @param nameFilter the nameFilter to set
+	 */
+	public void setNameFilter(String nameFilter) {
+		this.nameFilter = nameFilter;
 	}
 
 	/**
@@ -61,13 +78,14 @@ public class BrowsePlace extends AbstractPagedPlace implements Cloneable {
 	public void setTypeFilter(String typeFilter) {
 		this.typeFilter = typeFilter;
 	}
-	
+
 	/**
 	 * Creates a new copy of this place.
 	 * @see java.lang.Object#clone()
 	 */
 	public BrowsePlace clone() {
 		BrowsePlace copy = new BrowsePlace();
+		copy.setNameFilter(getNameFilter());
 		copy.setAscending(isAscending());
 		copy.setOrderBy(getOrderBy());
 		copy.setPage(getPage());
@@ -86,6 +104,11 @@ public class BrowsePlace extends AbstractPagedPlace implements Cloneable {
 		if (!super.equals(obj))
 			return false;
 		BrowsePlace other = (BrowsePlace) obj;
+		if (nameFilter == null) {
+			if (other.nameFilter != null)
+				return false;
+		} else if (!nameFilter.equals(other.nameFilter))
+			return false;
 		if (typeFilter == null) {
 			if (other.typeFilter != null)
 				return false;
@@ -103,7 +126,7 @@ public class BrowsePlace extends AbstractPagedPlace implements Cloneable {
 		 */
 		@Override
 		public String getToken(BrowsePlace place) {
-			return PlaceUtils.createPlaceToken(place, "tf", place.getTypeFilter());
+			return PlaceUtils.createPlaceToken(place, "nf", place.getNameFilter(), "tf", place.getTypeFilter());
 		}
 
 		/**
@@ -112,8 +135,10 @@ public class BrowsePlace extends AbstractPagedPlace implements Cloneable {
 		@Override
 		public BrowsePlace getPlace(String token) {
 			Map<String, String> params = PlaceUtils.parsePlaceToken(token);
+			String nameFilter = params.get("nf");
 			String typeFilter = params.get("tf");
 			BrowsePlace place = new BrowsePlace();
+			place.setNameFilter(nameFilter);
 			place.setTypeFilter(typeFilter);
 			PlaceUtils.fillPagedPlace(place, params);
 			return place;

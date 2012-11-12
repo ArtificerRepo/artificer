@@ -20,16 +20,26 @@ import java.util.List;
 import org.overlord.sramp.ui.client.activities.IBrowseActivity;
 import org.overlord.sramp.ui.client.places.AbstractPagedPlace;
 import org.overlord.sramp.ui.client.places.BrowsePlace;
+import org.overlord.sramp.ui.client.services.Services;
+import org.overlord.sramp.ui.client.services.place.IPlaceService;
 import org.overlord.sramp.ui.client.widgets.ArtifactSummaryPanel;
 import org.overlord.sramp.ui.client.widgets.DataTable;
 import org.overlord.sramp.ui.client.widgets.DataTableWithPager;
 import org.overlord.sramp.ui.client.widgets.PlaceFilterPanel;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
-import org.overlord.sramp.ui.shared.types.ArtifactFilter;
+import org.overlord.sramp.ui.shared.types.ArtifactTypeFilter;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -45,7 +55,8 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	private static final String DEFAULT_ORDER_BY = "name";
 
 	private ArtifactDataTable artifacts;
-	private PlaceFilterPanel<BrowsePlace> filterPanel;
+	private PlaceFilterPanel<BrowsePlace> typeFilterPanel;
+	private TextBox nameFilterBox;
 	private ArtifactSummaryPanel summaryPanel;
 	private BrowsePlace currentPlace;
 
@@ -53,7 +64,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	 * Constructor.
 	 */
 	public BrowseView() {
-		filterPanel = new PlaceFilterPanel<BrowsePlace>(i18n().translate("views.browse.filter-panel.label")) {
+		typeFilterPanel = new PlaceFilterPanel<BrowsePlace>(i18n().translate("views.browse.filter-panel.label")) {
 			@Override
 			protected boolean matches(BrowsePlace currentPlace, BrowsePlace targetPlace) {
 				String currentTypeFilter = currentPlace.getTypeFilter();
@@ -66,18 +77,50 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			}
 		};
 		artifacts = createArtifactTable();
+		nameFilterBox = new TextBox();
+		nameFilterBox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				BrowsePlace newPlace = currentPlace.clone();
+				newPlace.setNameFilter(nameFilterBox.getValue());
+				History.newItem(toHistoryToken(newPlace));
+			}
+		});
 		summaryPanel = new ArtifactSummaryPanel();
+
+		FlowPanel nameFilterPanel = new FlowPanel();
+		nameFilterPanel.setStyleName("filterPanel");
+		InlineLabel label = new InlineLabel("Filter by name:");
+		label.setStyleName("label");
+		nameFilterPanel.add(label);
+		nameFilterPanel.add(nameFilterBox);
+
+		VerticalPanel vpanel = new VerticalPanel();
+		vpanel.add(typeFilterPanel);
+		vpanel.add(nameFilterPanel);
 
 		HorizontalPanel hpanel = new HorizontalPanel();
 		hpanel.setWidth("100%");
-		hpanel.add(filterPanel);
+		hpanel.add(vpanel);
 		hpanel.add(artifacts);
 		hpanel.add(summaryPanel);
 
-		hpanel.setCellWidth(filterPanel, "175px");
+		hpanel.setCellWidth(vpanel, "175px");
 		hpanel.setCellWidth(summaryPanel, "300px");
 
 		this.initWidget(hpanel);
+	}
+
+	/**
+	 * Creates a history token for the given {@link Place}.
+	 * @param place the {@link Place} to tokenize
+	 * @return the place token
+	 */
+	private static String toHistoryToken(Place place) {
+		if (place == null)
+			return "";
+		IPlaceService placeService = Services.getServices().getService(IPlaceService.class);
+		return placeService.generatePlaceToken(place);
 	}
 
 	/**
@@ -85,14 +128,14 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	 * @param currentPlace
 	 */
 	private void configureFilters(BrowsePlace currentPlace) {
-		for (ArtifactFilter filter : ArtifactFilter.values()) {
+		for (ArtifactTypeFilter filter : ArtifactTypeFilter.values()) {
 			BrowsePlace p = currentPlace.clone();
 			p.setPage(null);
 			p.setTypeFilter(filter.getCode());
-			this.filterPanel.addFilterOption(i18n().translate(filter.getI18nKey()), p);
+			this.typeFilterPanel.addFilterOption(i18n().translate(filter.getI18nKey()), p);
 		}
 
-		this.filterPanel.setCurrentPlace(currentPlace);
+		this.typeFilterPanel.setCurrentPlace(currentPlace);
 	}
 
 	/**
@@ -142,6 +185,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 		configureFilters(currentPlace);
 		this.currentPlace = currentPlace;
 		this.artifacts.reset();
+		this.nameFilterBox.setValue(currentPlace.getNameFilter());
 	}
 
 	/**
