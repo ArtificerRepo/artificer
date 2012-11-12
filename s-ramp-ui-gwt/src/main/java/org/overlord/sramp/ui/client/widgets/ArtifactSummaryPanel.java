@@ -34,10 +34,11 @@ import com.google.gwt.user.client.ui.TextBox;
 public class ArtifactSummaryPanel extends FlowPanel {
 
 	private InlineLabel noArtifactMessage;
-	
+
 	private SimpleFormLayoutPanel artifactForm;
 	private TextBox uuidField;
 	private TextBox nameField;
+	private TextBox typeField;
 	private TextBox createdByField;
 	private TextBox createdOnField;
 	private TextBox updatedOnField;
@@ -49,14 +50,16 @@ public class ArtifactSummaryPanel extends FlowPanel {
 	 */
 	public ArtifactSummaryPanel() {
 		ILocalizationService i18n = Services.getServices().getService(ILocalizationService.class);
-		
+
 		noArtifactMessage = new InlineLabel(i18n.translate("views.browse.summary-panel.no-artifact-message"));
 		noArtifactMessage.setStyleName("message");
-		
+
 		uuidField = new TextBox();
 		uuidField.setReadOnly(true);
 		nameField = new TextBox();
 		nameField.setReadOnly(true);
+		typeField = new TextBox();
+		typeField.setReadOnly(true);
 		createdByField = new TextBox();
 		createdByField.setReadOnly(true);
 		createdOnField = new TextBox();
@@ -65,11 +68,12 @@ public class ArtifactSummaryPanel extends FlowPanel {
 		updatedOnField.setReadOnly(true);
 		descriptionField = new InlineLabel();
 		detailsLink = new PlaceHyperlink(i18n.translate("views.browse.summary-panel.details-link"));
-		
+
 		artifactForm = new SimpleFormLayoutPanel();
 
 		artifactForm.add(i18n.translate("views.browse.summary-panel.uuid-label"), uuidField);
 		artifactForm.add(i18n.translate("views.browse.summary-panel.name-label"), nameField);
+		artifactForm.add(i18n.translate("views.browse.summary-panel.type-label"), typeField);
 		artifactForm.add(i18n.translate("views.browse.summary-panel.created-by-label"), createdByField);
 		artifactForm.add(i18n.translate("views.browse.summary-panel.created-on-label"), createdOnField);
 		artifactForm.add(i18n.translate("views.browse.summary-panel.updated-on-label"), updatedOnField);
@@ -78,14 +82,14 @@ public class ArtifactSummaryPanel extends FlowPanel {
 		detailsLinkWrapper.setStyleName("placeLinkWrapper");
 		detailsLinkWrapper.add(detailsLink);
 		artifactForm.addTwoCol(null, detailsLinkWrapper);
-		
+
 		this.add(noArtifactMessage);
 		this.add(artifactForm);
-		
+
 		getElement().addClassName("artifactSummaryPanel");
 		reset();
 	}
-	
+
 	/**
 	 * When called, the form fields are populated with data from the given artifact.
 	 * @param artifact
@@ -93,9 +97,10 @@ public class ArtifactSummaryPanel extends FlowPanel {
 	public void setValue(ArtifactSummary artifact) {
 		String createdOn = Services.getServices().getService(ILocalizationService.class).formatDateTime(artifact.getCreatedOn());
 		String updatedOn = Services.getServices().getService(ILocalizationService.class).formatDateTime(artifact.getUpdatedOn());
-		
+
 		uuidField.setValue(artifact.getUuid());
 		nameField.setValue(artifact.getName());
+		typeField.setValue(artifact.getType());
 		createdOnField.setValue(createdOn);
 		createdByField.setValue(artifact.getCreatedBy());
 		updatedOnField.setValue(updatedOn);
@@ -115,9 +120,10 @@ public class ArtifactSummaryPanel extends FlowPanel {
 	public void reset() {
 		this.noArtifactMessage.setVisible(true);
 		this.artifactForm.setVisible(false);
-		
+
 		uuidField.setValue("");
 		nameField.setValue("");
+		typeField.setValue("");
 		createdOnField.setValue("");
 		createdByField.setValue("");
 		updatedOnField.setValue("");
