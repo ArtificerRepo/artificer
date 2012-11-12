@@ -247,8 +247,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitDocument(DocumentArtifactType artifact) {
-		artifact.setContentSize(getPropertyLength(jcrNode,"jcr:content/jcr:data"));
-		artifact.setContentType(getProperty(jcrNode, "jcr:content/jcr:mimeType"));
+		artifact.setContentSize(getPropertyLong(jcrNode,"sramp:contentSize"));
+		artifact.setContentType(getProperty(jcrNode, "sramp:contentType"));
 	}
 
 	/**
@@ -551,6 +551,35 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	protected static final String getProperty(Node node, String propertyName, String defaultValue) {
 		try {
 			return node.getProperty(propertyName).getString();
+		} catch (ValueFormatException e) {
+		} catch (PathNotFoundException e) {
+		} catch (javax.jcr.RepositoryException e) {
+		}
+		return defaultValue;
+	}
+
+	/**
+	 * Gets a single property from the given JCR node.  This returns null
+	 * if the property does not exist.
+	 * @param node the JCR node
+	 * @param propertyName the name of the property
+	 * @return the String value of the property
+	 */
+	protected static final long getPropertyLong(Node node, String propertyName) {
+		return getPropertyLong(node, propertyName, -1);
+	}
+
+	/**
+	 * Gets a single property from the given JCR node.  This returns a default value if
+	 * the property does not exist.
+	 * @param node the JCR node
+	 * @param propertyName the name of the property
+	 * @param defaultValue a default value if the property does not exist on the node
+	 * @return the String value of the property
+	 */
+	protected static final long getPropertyLong(Node node, String propertyName, long defaultValue) {
+		try {
+			return node.getProperty(propertyName).getLong();
 		} catch (ValueFormatException e) {
 		} catch (PathNotFoundException e) {
 		} catch (javax.jcr.RepositoryException e) {
