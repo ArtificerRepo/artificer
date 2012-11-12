@@ -16,11 +16,15 @@
 package org.overlord.sramp.ui.server.rsvcs;
 
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.client.query.ArtifactSummary;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
+import org.overlord.sramp.ui.server.visitors.RelationshipVisitor;
 import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
 import org.overlord.sramp.ui.shared.rsvcs.IArtifactRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
+import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 
@@ -48,7 +52,12 @@ public class ArtifactRemoteService extends RemoteServiceServlet implements IArti
 	public ArtifactDetails getArtifactDetails(String model, String type, String artifactUUID)
 			throws RemoteServiceException {
 		try {
-			ArtifactType artyType = ArtifactType.valueOf(type);
+			ArtifactType artyType = null;
+			if (type == null) {
+				artyType = resolveArtifactType(artifactUUID);
+			} else {
+				artyType = ArtifactType.valueOf(type);
+			}
 			BaseArtifactType artifact = SrampAtomApiClient.getInstance().getArtifactMetaData(artyType, artifactUUID);
 
 			ArtifactDetails details = new ArtifactDetails();
@@ -60,18 +69,44 @@ public class ArtifactRemoteService extends RemoteServiceServlet implements IArti
 			details.setCreatedBy(artifact.getCreatedBy());
 			details.setCreatedOn(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
 			details.setUpdatedOn(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
+			details.setUpdatedBy(artifact.getLastModifiedBy());
 			details.setDerived(artyType.getArtifactType().isDerived());
-
+			// Properties
 			for (Property property : artifact.getProperty()) {
 				details.setProperty(property.getPropertyName(), property.getPropertyValue());
 			}
+			// Classifications
 			details.getClassifiedBy().addAll(artifact.getClassifiedBy());
-			details.setUpdatedBy(artifact.getLastModifiedBy());
+			// Relationships
+			RelationshipVisitor visitor = new RelationshipVisitor(details);
+			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 
 			return details;
 		} catch (Throwable t) {
 			throw ExceptionUtils.createRemoteException(t);
 		}
+	}
+
+	/**
+	 * Looks up the artifact type for a given artifact UUID.  This is unfortunately done by
+	 * issueing a query to the S-RAMP repository.
+	 * @param artifactUUID
+	 */
+	private ArtifactType resolveArtifactType(String artifactUUID) throws Exception {
+		// Even though there really isn't much of an injection danger, we still make
+		// sure to fail if someone tries it.
+		if (artifactUUID.contains("'")) {
+			throw new Exception("Invalid UUID: " + artifactUUID);
+		}
+		String q = String.format("/s-ramp[@uuid = '%1$s']", artifactUUID);
+		QueryResultSet resultSet = SrampAtomApiClient.getInstance().query(q);
+		if (resultSet.size() == 1) {
+			ArtifactSummary summary = resultSet.iterator().next();
+			return summary.getType();
+		} else {
+			throw new Exception("Failed to find artifact with UUID '" + artifactUUID + "'.");
+		}
+
 	}
 
 }

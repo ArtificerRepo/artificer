@@ -91,7 +91,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			p.setTypeFilter(filter.getCode());
 			this.filterPanel.addFilterOption(i18n().translate(filter.getI18nKey()), p);
 		}
-		
+
 		this.filterPanel.setCurrentPlace(currentPlace);
 	}
 
@@ -102,7 +102,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 	public int getDefaultPageSize() {
 		return DEFAULT_PAGE_SIZE;
 	}
-	
+
 	/**
 	 * @see org.overlord.sramp.ui.client.views.IPagedResultView#getDefaultOrderBy()
 	 */
@@ -163,7 +163,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 				i18n().translate("views.browse.search-error.message"),
 				error);
 	}
-	
+
 	/*
 	 * Impl class for the artifact data table.
 	 */
@@ -174,7 +174,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 		 */
 		public ArtifactDataTable() {
 		}
-		
+
 		/**
 		 * @see org.overlord.sramp.ui.client.widgets.DataTableWithPager#createPagerPlace(org.overlord.sramp.ui.client.places.AbstractPagedPlace)
 		 */
@@ -190,6 +190,7 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 		 */
 		@Override
 		protected void createColumns(DataTable<ArtifactSummary> table) {
+			// Name
 			TextColumn<ArtifactSummary> name = new TextColumn<ArtifactSummary>() {
 				@Override
 				public String getValue(ArtifactSummary artifact) {
@@ -199,29 +200,31 @@ public class BrowseView extends AbstractView<IBrowseActivity> implements IBrowse
 			name.setSortable(true);
 			name.setDataStoreName("name");
 			table.addColumn(name, i18n().translate("views.browse.table.name-column"));
-			
-			TextColumn<ArtifactSummary> createdOn = new TextColumn<ArtifactSummary>() {
+
+			// Type
+			TextColumn<ArtifactSummary> type = new TextColumn<ArtifactSummary>() {
 				@Override
 				public String getValue(ArtifactSummary artifact) {
-					return i18n().formatDateTime(artifact.getCreatedOn());
+					return artifact.getType();
 				}
 			};
-			createdOn.setSortable(true);
-			createdOn.setDataStoreName("createdOn");
-			table.addColumn(createdOn, i18n().translate("views.browse.table.createdOn-column"));
-			
-			TextColumn<ArtifactSummary> createdBy = new TextColumn<ArtifactSummary>() {
+			type.setSortable(false);
+			type.setDataStoreName("type");
+			table.addColumn(type, i18n().translate("views.browse.table.type-column"));
+
+			// Updated On
+			TextColumn<ArtifactSummary> updatedOn = new TextColumn<ArtifactSummary>() {
 				@Override
 				public String getValue(ArtifactSummary artifact) {
-					return artifact.getCreatedBy();
+					return i18n().formatDateTime(artifact.getUpdatedOn());
 				}
 			};
-			createdBy.setSortable(true);
-			createdBy.setDataStoreName("createdBy");
-			table.addColumn(createdBy, i18n().translate("views.browse.table.createdBy-column"));
+			updatedOn.setSortable(true);
+			updatedOn.setDataStoreName("updatedOn");
+			table.addColumn(updatedOn, i18n().translate("views.browse.table.updatedOn-column"));
 //			setColumnWidth(uuid, 20.0, Unit.PCT);
 		}
-		
+
 		/**
 		 * @see org.overlord.sramp.ui.client.widgets.DataTableWithPager#getDefaultOrderBy()
 		 */
