@@ -21,13 +21,14 @@ package org.overlord.sramp.ui.shared.types;
  *
  * @author eric.wittmann@redhat.com
  */
-public enum ArtifactFilter {
+public enum ArtifactTypeFilter {
 
 	all(null, "/s-ramp", "views.browse.artifact.filter.all"),
 	xml("xml", "/s-ramp/core/XmlDocument", "views.browse.artifact.filter.xml"),
-	xsd("xsd", "/s-ramp/xsd/XsdDocument", "views.browse.artifact.filter.xsd"),
-	wsdl("wsdl", "/s-ramp/wsdl/WsdlDocument", "views.browse.artifact.filter.wsdl"),
-	policy("policy", "/s-ramp/policy/PolicyDocument", "views.browse.artifact.filter.policy"),
+	xsd("xsd", "/s-ramp/xsd", "views.browse.artifact.filter.xsd"),
+	wsdl("wsdl", "/s-ramp/wsdl", "views.browse.artifact.filter.wsdl"),
+	policy("policy", "/s-ramp/policy", "views.browse.artifact.filter.policy"),
+	user("user", "/s-ramp/user", "views.browse.artifact.filter.user"),
 	doc("doc", "/s-ramp/core/Document", "views.browse.artifact.filter.doc");
 
 	private String code;
@@ -40,7 +41,7 @@ public enum ArtifactFilter {
 	 * @param queryBase
 	 * @param i18nKey
 	 */
-	private ArtifactFilter(String code, String queryBase, String i18nKey) {
+	private ArtifactTypeFilter(String code, String queryBase, String i18nKey) {
 		this.code = code;
 		this.queryBase = queryBase;
 		this.i18nKey = i18nKey;
