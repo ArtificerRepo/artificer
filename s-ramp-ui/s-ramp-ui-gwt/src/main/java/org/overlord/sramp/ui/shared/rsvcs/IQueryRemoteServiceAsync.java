@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.beans.PageInfo;
-import org.overlord.sramp.ui.shared.types.ArtifactFilter;
+import org.overlord.sramp.ui.shared.types.ArtifactTypeFilter;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -31,8 +31,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface IQueryRemoteServiceAsync {
 
 	/**
-	 * Async version of {@link IQueryRemoteService#findArtifacts(int, int)}
+	 * Async version of {@link IQueryRemoteService#findArtifacts(PageInfo, ArtifactTypeFilter, String)
 	 */
-	public void findArtifacts(PageInfo page, ArtifactFilter filter, AsyncCallback<List<ArtifactSummary>> callback);
+	public void findArtifacts(PageInfo page, ArtifactTypeFilter typeFilter, String nameFilter, AsyncCallback<List<ArtifactSummary>> callback);
 
 }

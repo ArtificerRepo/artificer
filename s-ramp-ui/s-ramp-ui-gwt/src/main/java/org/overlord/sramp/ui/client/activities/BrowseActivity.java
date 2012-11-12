@@ -27,7 +27,7 @@ import org.overlord.sramp.ui.client.widgets.BreadcrumbPanel;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;
 import org.overlord.sramp.ui.shared.beans.PageInfo;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
-import org.overlord.sramp.ui.shared.types.ArtifactFilter;
+import org.overlord.sramp.ui.shared.types.ArtifactTypeFilter;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -38,14 +38,14 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
  * @author eric.wittmann@redhat.com
  */
 public class BrowseActivity extends AbstractActivity<BrowsePlace, IBrowseView> implements IBrowseActivity {
-	
+
 	/**
 	 * Constructor.
 	 */
 	public BrowseActivity(BrowsePlace place, IClientFactory clientFactory) {
 		super(place, clientFactory);
 	}
-	
+
 	/**
 	 * @see org.overlord.sramp.ui.client.activities.AbstractActivity#createView(com.google.gwt.event.shared.EventBus)
 	 */
@@ -55,26 +55,26 @@ public class BrowseActivity extends AbstractActivity<BrowsePlace, IBrowseView> i
 		view.setActivity(this);
 		return view;
 	}
-	
+
 	/**
 	 * @see org.overlord.sramp.ui.client.activities.AbstractActivity#doStart(com.google.gwt.user.client.ui.AcceptsOneWidget, com.google.gwt.event.shared.EventBus)
 	 */
 	@Override
 	protected void doStart(AcceptsOneWidget panel, EventBus eventBus) {
 		getView().onQueryStarting(getPlace());
-		
+
 		final PageInfo page = new PageInfo();
 		page.setPage(getPlace().getPage(0));
 		page.setPageSize(getPlace().getPageSize(getView().getDefaultPageSize()));
 		page.setOrderBy(getPlace().getOrderBy(getView().getDefaultOrderBy()));
 		page.setAscending(getPlace().isAscending(Boolean.TRUE));
-		ArtifactFilter filter = null;
+		ArtifactTypeFilter filter = null;
 		if (getPlace().getTypeFilter() == null)
-			filter = ArtifactFilter.all;
+			filter = ArtifactTypeFilter.all;
 		else
-			filter = ArtifactFilter.valueOf(getPlace().getTypeFilter());
-		
-		getService(IQueryService.class).findArtifactsAsync(page, filter, new RemoteServiceAsyncCallback<List<ArtifactSummary>>() {
+			filter = ArtifactTypeFilter.valueOf(getPlace().getTypeFilter());
+
+		getService(IQueryService.class).findArtifactsAsync(page, filter, getPlace().getNameFilter(), new RemoteServiceAsyncCallback<List<ArtifactSummary>>() {
 			@Override
 			public void onSuccess(List<ArtifactSummary> result) {
 				getView().onQueryComplete(result, result.size() == page.getPageSize());
@@ -85,7 +85,7 @@ public class BrowseActivity extends AbstractActivity<BrowsePlace, IBrowseView> i
 			}
 		});
 	}
-	
+
 	/**
 	 * @see org.overlord.sramp.ui.client.activities.AbstractActivity#updateBreadcrumb(org.overlord.sramp.ui.client.widgets.BreadcrumbPanel)
 	 */
