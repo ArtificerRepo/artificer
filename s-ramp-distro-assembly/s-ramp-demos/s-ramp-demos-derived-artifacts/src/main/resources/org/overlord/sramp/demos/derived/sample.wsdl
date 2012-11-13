@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="sample"
+	targetNamespace="http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl"
+	xmlns:tns="http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl"
+	xmlns:tns-types="http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl/types"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<wsdl:types>
+		<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl/types">
+
+			<xsd:simpleType name="keywordType">
+				<xsd:restriction base="xsd:string">
+					<xsd:length value="12" />
+				</xsd:restriction>
+			</xsd:simpleType>
+
+			<xsd:element name="find">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="keyword" type="xsd:string" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="findResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="results">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="item" type="xsd:string"
+										minOccurs="0" maxOccurs="unbounded" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="findRequest">
+		<wsdl:part name="parameters" element="tns-types:find" />
+	</wsdl:message>
+	<wsdl:message name="findResponse">
+		<wsdl:part name="parameters" element="tns-types:findResponse" />
+	</wsdl:message>
+	<wsdl:message name="findRequestSimple">
+		<wsdl:part name="keyword" type="tns-types:keywordType" />
+	</wsdl:message>
+	<wsdl:message name="findResponseSimple">
+		<wsdl:part name="parameters" element="tns-types:findResponse" />
+	</wsdl:message>
+	<wsdl:message name="faultMessage">
+		<wsdl:part name="message" type="xsd:string" />
+	</wsdl:message>
+
+	<wsdl:portType name="SamplePortType">
+		<wsdl:operation name="find">
+			<wsdl:input name="findRequest" message="tns:findRequest"></wsdl:input>
+			<wsdl:output name="findResponse" message="tns:findResponse"></wsdl:output>
+			<wsdl:fault name="errorFault" message="tns:faultMessage" />
+			<wsdl:fault name="unknownFault" message="tns:faultMessage" />
+		</wsdl:operation>
+		<wsdl:operation name="findSimple">
+			<wsdl:input message="tns:findRequestSimple"></wsdl:input>
+			<wsdl:output message="tns:findResponseSimple"></wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name="SampleBinding" type="tns:SamplePortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="find">
+			<soap:operation soapAction="" />
+			<wsdl:input name="findRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="findResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+			<wsdl:fault name="errorFault">
+				<soap:fault name="errorFault" use="literal" />
+			</wsdl:fault>
+			<wsdl:fault name="unknownFault">
+				<soap:fault name="unknownFault" use="literal" />
+			</wsdl:fault>
+		</wsdl:operation>
+		<wsdl:operation name="findSimple">
+			<soap:operation soapAction="" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name="SampleService">
+		<wsdl:port binding="tns:SampleBinding" name="SamplePort">
+			<soap:address location="http://localhost:8080/sample/sampleEP" />
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>

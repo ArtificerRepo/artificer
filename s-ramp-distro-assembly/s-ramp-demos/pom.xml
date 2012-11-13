@@ -107,5 +107,6 @@
 		<module>s-ramp-demos-ontologies</module>
 		<module>s-ramp-demos-classifications</module>
 		<module>s-ramp-demos-relationships</module>
+		<module>s-ramp-demos-derived-artifacts</module>
 	</modules>
 </project>
