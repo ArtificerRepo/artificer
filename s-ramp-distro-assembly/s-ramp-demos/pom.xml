@@ -103,5 +103,9 @@
 		<module>s-ramp-demos-simple-client</module>
 		<module>s-ramp-demos-archive-package</module>
 		<module>s-ramp-demos-query</module>
+		<module>s-ramp-demos-properties</module>
+		<module>s-ramp-demos-ontologies</module>
+		<module>s-ramp-demos-classifications</module>
+		<module>s-ramp-demos-relationships</module>
 	</modules>
 </project>
