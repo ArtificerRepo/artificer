@@ -74,7 +74,7 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 			Element rootElement = document.getDocumentElement();
 			derive(derivedArtifacts, artifact, rootElement, xpath);
 
-			// Set the relatedTo relationship for all derived artifacts
+			// Set the relatedDocument relationship for all derived artifacts
 			for (DerivedArtifactType derivedArtifact : derivedArtifacts) {
 				if (derivedArtifact.getRelatedDocument() == null) {
 					DocumentArtifactTarget related = new DocumentArtifactTarget();
