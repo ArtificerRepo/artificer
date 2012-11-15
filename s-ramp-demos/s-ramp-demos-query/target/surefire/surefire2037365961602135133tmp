@@ -1,0 +1,6 @@
+#surefire
+#Thu Nov 15 09:12:58 EST 2012
+java.io.tmpdir=C\:\\Users\\Eric\\git\\s-ramp\\s-ramp-demos\\s-ramp-demos-query/target
+user.dir=C\:\\Users\\Eric\\git\\s-ramp\\s-ramp-demos\\s-ramp-demos-query
+localRepository=C\:\\Users\\Eric\\.m2\\repository
+basedir=C\:\\Users\\Eric\\git\\s-ramp\\s-ramp-demos\\s-ramp-demos-query
