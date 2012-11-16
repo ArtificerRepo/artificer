@@ -10,11 +10,16 @@
 		       todir="restore"/>
 	  <copy  file="updates/jbpm.console.properties"
 	         todir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/" overwrite="true" />
+		<!-- adding HttpClient Workitem Handler -->
+		<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/META-INF/CustomWorkItemHandlers.conf"
+		       todir="restore"/>
+		<copy  file="updates/CustomWorkItemHandlers.conf"
+		       todir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/META-INF" overwrite="true" />
 		<!-- removing the '-Djbpm.console.directory' setting, we want to read from S-RAMP only -->
-		<move  file="${jboss.home}/build.xml"
+		<move  file="${install.home}/build.xml"
 		       todir="restore"/>
 		<copy  file="updates/build.xml"
-		       todir="${jboss.home}" overwrite="true" />
+		       todir="${install.home}" overwrite="true" />
 	</target>
 	
 	<!-- there is no codechange to this jar, we have to figure out why if WE compile the same
@@ -22,9 +27,14 @@
   <target name="patch.jbpm-gwt-console-server" depends="explode.jbpm-gwt-console-server">
   	<echo>patching jbpm-gwt-console-server.war, with jbpm-gwt-shared-5.3.0.SRAMP.jar</echo>
   	<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/jbpm-gwt-shared-5.3.0.Final.jar"
-  	           todir="restore"/>
+  	       todir="restore"/>
     <copy  file="updates/jbpm-gwt-shared-5.3.0.SRAMP.jar"
            todir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/" />
+  	<echo>patching jbpm-gwt-console-server.war, with jbpm-workitems-5.3.0.SRAMP.jar, adding HttpClient</echo>
+  	<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/jbpm-workitems-5.3.0.Final.jar"
+  	       todir="restore"/>
+    <copy  file="updates/jbpm-workitems-5.3.0.SRAMP.jar"
+  	       todir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/" />
   </target>
   	
 	<target name="explode.jbpm-gwt-console-server" depends="dir.check" unless="dir.exists">

@@ -94,7 +94,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
 			return;
 		}
 
-        String brmsPackageName = optionalArgument(0, "defaultPackage");
+        String brmsPackageName = optionalArgument(0, "SRAMPPackage");
         String tag             = optionalArgument(1, "LATEST");
         String baseUrl         = optionalArgument(2, "http://localhost:8080/drools-guvnor");
         String brmsUserId      = optionalArgument(3, "admin");
