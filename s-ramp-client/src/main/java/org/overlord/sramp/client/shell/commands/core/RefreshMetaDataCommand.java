@@ -15,32 +15,27 @@
  */
 package org.overlord.sramp.client.shell.commands.core;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.commands.InvalidCommandArgumentException;
-import org.overlord.sramp.client.shell.util.FileNameCompleter;
+import org.overlord.sramp.client.shell.util.PrintArtifactMetaDataVisitor;
+import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
- * Updates an artifact's content in the s-ramp repository. This requires an active artifact to exist in the
- * context.
+ * Refreshes the full meta-data for a single artifact - namely the currently active
+ * artifact in the session.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UpdateContentCommand extends AbstractShellCommand {
+public class RefreshMetaDataCommand extends AbstractShellCommand {
 
 	/**
 	 * Constructor.
 	 */
-	public UpdateContentCommand() {
+	public RefreshMetaDataCommand() {
 	}
 
 	/**
@@ -48,7 +43,7 @@ public class UpdateContentCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		print("s-ramp:updateContent <filePathToContent>");
+		print("s-ramp:refreshMetaData");
 	}
 
 	/**
@@ -56,12 +51,15 @@ public class UpdateContentCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printHelp() {
-		print("The 'updateContent' command updates the content of the currently active");
-		print("artifact in the context.  The new content is uploaded to the S-RAMP");
-		print("server.");
+		print("The 'refreshMetaData' command downloads the latest meta-data for");
+		print("a single artifact from the S-RAMP repository.  The artifact in");
+		print("question is the currently active artifact in the session.  If no");
+		print("artifact is currently active, then this command will fail.  This");
+		print("essentially re-downloads the meta-data for the current artifact");
+		print("and replaces any changes that may have existed there.");
 		print("");
 		print("Example usage:");
-		print(">  s-ramp:updateContent /home/uname/files/new-content.wsdl");
+		print(">  s-ramp:refreshMetaData");
 	}
 
 	/**
@@ -69,7 +67,6 @@ public class UpdateContentCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void execute() throws Exception {
-		String contentFilePathArg = requiredArgument(0, "Please supply a file path to the new content.");
 		QName clientVarName = new QName("s-ramp", "client");
 		QName artifactVarName = new QName("s-ramp", "artifact");
 
@@ -81,39 +78,23 @@ public class UpdateContentCommand extends AbstractShellCommand {
 
 		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		if (artifact == null) {
-			print("No active S-RAMP artifact exists.  Use s-ramp:getMetaData.");
+			print("No active S-RAMP artifact exists.  Use s-ramp:getMetaData or s-ramp:upload.");
 			return;
 		}
 
-		File file = new File(contentFilePathArg);
-		if (!file.isFile()) {
-			throw new InvalidCommandArgumentException(0, "Please supply a path to a valid content file.");
-		}
-
-		InputStream content = null;
 		try {
-			content = FileUtils.openInputStream(file);
-			client.updateArtifactContent(artifact, content);
-			print("Successfully updated artifact %1$s.", artifact.getName());
+			ArtifactType type = ArtifactType.valueOf(artifact);
+			BaseArtifactType metaData = client.getArtifactMetaData(type, artifact.getUuid());
+			getContext().setVariable(artifactVarName, metaData);
+			print("Successfully refreshed meta-data for artifact '%1$s'.", artifact.getName());
+			print("Meta Data for: " + artifact.getUuid());
+			print("--------------");
+			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
+			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 		} catch (Exception e) {
 			print("FAILED to update the artifact.");
 			print("\t" + e.getMessage());
-			IOUtils.closeQuietly(content);
 		}
-	}
-
-	/**
-	 * @see org.overlord.sramp.client.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty()) {
-			if (lastArgument == null)
-				lastArgument = "";
-			FileNameCompleter delegate = new FileNameCompleter();
-			return delegate.complete(lastArgument, lastArgument.length(), candidates);
-		}
-		return -1;
 	}
 
 }

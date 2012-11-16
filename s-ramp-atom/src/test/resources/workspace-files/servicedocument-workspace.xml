@@ -245,6 +245,31 @@
         </app:collection>
     </app:workspace>
     <app:workspace>
+        <atom:title>SOAP-WSDL Model</atom:title>
+        <app:collection href="http://localhost:8081/s-ramp/soapWsdl">
+            <atom:title>SOAP-WSDL Model Objects</atom:title>
+            <app:accept>application/zip</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="SOAP Address" scheme="urn:x-s-ramp:2010:type" term="SoapAddress"/>
+                <atom:category label="SOAP Binding" scheme="urn:x-s-ramp:2010:type" term="SoapBinding"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://localhost:8081/s-ramp/soapWsdl/SoapAddress">
+            <atom:title>SOAP Addresses</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="SOAP Address" scheme="urn:x-s-ramp:2010:type" term="SoapAddress"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://localhost:8081/s-ramp/soapWsdl/SoapBinding">
+            <atom:title>SOAP Bindings</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="SOAP Binding" scheme="urn:x-s-ramp:2010:type" term="SoapBinding"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+    <app:workspace>
         <atom:title>User Defined Model</atom:title>
         <app:collection href="http://localhost:8081/s-ramp/user">
             <atom:title>User Defined Model Objects</atom:title>

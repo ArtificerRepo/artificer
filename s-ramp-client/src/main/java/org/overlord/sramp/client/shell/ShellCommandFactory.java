@@ -38,11 +38,16 @@ import org.overlord.sramp.client.shell.commands.archive.PackArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.UpdateEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.brms.Pkg2SrampCommand;
+import org.overlord.sramp.client.shell.commands.core.ClassificationCommand;
 import org.overlord.sramp.client.shell.commands.core.ConnectCommand;
 import org.overlord.sramp.client.shell.commands.core.DisconnectCommand;
 import org.overlord.sramp.client.shell.commands.core.GetContentCommand;
 import org.overlord.sramp.client.shell.commands.core.GetMetaDataCommand;
+import org.overlord.sramp.client.shell.commands.core.PropertyCommand;
 import org.overlord.sramp.client.shell.commands.core.QueryCommand;
+import org.overlord.sramp.client.shell.commands.core.RefreshMetaDataCommand;
+import org.overlord.sramp.client.shell.commands.core.ShowMetaDataCommand;
+import org.overlord.sramp.client.shell.commands.core.StatusCommand;
 import org.overlord.sramp.client.shell.commands.core.UpdateContentCommand;
 import org.overlord.sramp.client.shell.commands.core.UpdateMetaDataCommand;
 import org.overlord.sramp.client.shell.commands.core.UploadArtifactCommand;
@@ -76,15 +81,20 @@ public class ShellCommandFactory {
 	private void registerCommands() {
 		registry = new HashMap<QName, Class<? extends ShellCommand>>();
 
-		// S-RAMP client commands
+		// S-RAMP core commands
 		registry.put(new QName("s-ramp", "connect"), ConnectCommand.class);
 		registry.put(new QName("s-ramp", "disconnect"), DisconnectCommand.class);
+		registry.put(new QName("s-ramp", "status"), StatusCommand.class);
 		registry.put(new QName("s-ramp", "query"), QueryCommand.class);
 		registry.put(new QName("s-ramp", "getMetaData"), GetMetaDataCommand.class);
 		registry.put(new QName("s-ramp", "getContent"), GetContentCommand.class);
 		registry.put(new QName("s-ramp", "upload"), UploadArtifactCommand.class);
 		registry.put(new QName("s-ramp", "updateMetaData"), UpdateMetaDataCommand.class);
 		registry.put(new QName("s-ramp", "updateContent"), UpdateContentCommand.class);
+		registry.put(new QName("s-ramp", "property"), PropertyCommand.class);
+		registry.put(new QName("s-ramp", "classification"), ClassificationCommand.class);
+		registry.put(new QName("s-ramp", "showMetaData"), ShowMetaDataCommand.class);
+		registry.put(new QName("s-ramp", "refreshMetaData"), RefreshMetaDataCommand.class);
 
 		// Archive commands
 		registry.put(new QName("archive", "new"), NewArchiveCommand.class);

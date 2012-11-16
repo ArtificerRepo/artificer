@@ -40,6 +40,18 @@ public interface ShellContext {
 	public void setVariable(QName name, Object object, ShellContextVariableLifecycleHandler lifecycleHandler);
 
 	/**
+	 * Adds an event handler to the shell context.
+	 * @param handler
+	 */
+	public void addHandler(ShellContextEventHandler handler);
+
+	/***
+	 * Removes an event handler from the shell context.
+	 * @param handler
+	 */
+	public void removeHandler(ShellContextEventHandler handler);
+
+	/**
 	 * Gets a variable from the context.
 	 * @param name
 	 */

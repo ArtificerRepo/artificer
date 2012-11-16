@@ -67,6 +67,16 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "lastModifiedBy"), "jcr:lastModifiedBy");
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "description"), "sramp:description");
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "name"), "sramp:name");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentType"), "sramp:contentType");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentSize"), "sramp:contentSize");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentEncoding"), "sramp:contentEncoding");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "userType"), "sramp:userType");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "ncName"), "sramp:ncName");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "namespace"), "sramp:namespace");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "targetNamespace"), "sramp:targetNamespace");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "style"), "sramp:style");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "transport"), "sramp:transport");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "soapLocation"), "sramp:soapLocation");
 	}
 
 	private StringBuilder fromBuilder = new StringBuilder();
@@ -117,12 +127,12 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			if ("user".equals(node.getArtifactModel()) || !ArtifactTypeEnum.hasEnum(node.getArtifactType())) {
 				this.whereBuilder.append("artifact.[sramp:artifactType] = '" + ArtifactTypeEnum.UserDefinedArtifactType + "'");
 				this.whereBuilder.append(" AND ");
-				this.whereBuilder.append("artifact.[sramp:userType] = '" + node.getArtifactType().replace("'", "''") + "'");
+				this.whereBuilder.append("artifact.[sramp:userType] = '" + escapeStringLiteral(node.getArtifactType()) + "'");
 			} else {
-				this.whereBuilder.append("artifact.[sramp:artifactType] = '" + node.getArtifactType().replace("'", "''") + "'");
+				this.whereBuilder.append("artifact.[sramp:artifactType] = '" + escapeStringLiteral(node.getArtifactType()) + "'");
 			}
 		} else if (node.getArtifactModel() != null) {
-			this.whereBuilder.append("artifact.[sramp:artifactModel] = '" + node.getArtifactModel().replace("'", "''") + "'");
+			this.whereBuilder.append("artifact.[sramp:artifactModel] = '" + escapeStringLiteral(node.getArtifactModel()) + "'");
 		} else {
 			this.whereBuilder.append("artifact.[sramp:artifactModel] LIKE '%'");
 		}
@@ -256,7 +266,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 				this.whereBuilder.append("artifact.[");
 				this.whereBuilder.append(propertyName);
 				this.whereBuilder.append("] = '");
-				this.whereBuilder.append(classification.toString());
+				this.whereBuilder.append(escapeStringLiteral(classification.toString()));
 				this.whereBuilder.append("'");
 				first = false;
 			}
@@ -264,8 +274,20 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 				this.whereBuilder.append(")");
 			}
 		} else if (MATCHES.equals(node.getFunctionName())) {
-			// TODO support the 'matches' s-ramp function here
-			throw new RuntimeException("The fn:matches() function is not yet supported.");
+			if (node.getArguments().size() != 2) {
+				throw new RuntimeException("The xp2:matches() function requires exactly two arguments, but found " + node.getArguments().size() + ".");
+			}
+			Argument attributeArg = node.getArguments().get(0);
+			Argument patternArg = node.getArguments().get(1);
+
+			ForwardPropertyStep attribute = reducePropertyArgument(attributeArg);
+			String pattern = reduceStringLiteralArgument(patternArg);
+			pattern = pattern.replace(".*", "%"); // the only valid wildcard
+
+			attribute.accept(this);
+			this.whereBuilder.append(" LIKE '");
+			this.whereBuilder.append(escapeStringLiteral(pattern));
+			this.whereBuilder.append("'");
 		} else {
 			throw new RuntimeException("Function not supported: " + node.getFunctionName().toString());
 		}
@@ -320,6 +342,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	public void visit(PrimaryExpr node) {
 		if (node.getLiteral() != null) {
 			this.whereBuilder.append("'");
+			// TODO prevent injection here
 			this.whereBuilder.append(node.getLiteral());
 			this.whereBuilder.append("'");
 		} else if (node.getNumber() != null) {
@@ -383,6 +406,49 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 				throw new RuntimeException("Multi-level sub-artifact-sets not supported.");
 			}
 		}
+	}
+
+	/**
+	 * Reduces an Argument subtree to the final {@link ForwardPropertyStep} that is it's (supposed)
+	 * final node.  This method will throw a runtime exception if it doesn't find the expected
+	 * {@link ForwardPropertyStep}.
+	 * @param argument
+	 */
+	private ForwardPropertyStep reducePropertyArgument(Argument argument) {
+		try {
+			ForwardPropertyStep fps = argument.getExpr().getAndExpr().getLeft().getLeft().getLeft();
+			if (fps == null) {
+				throw new NullPointerException();
+			}
+			return fps;
+		} catch (Throwable t) {
+			throw new RuntimeException("Expected a property (@propname) as the first argument.");
+		}
+	}
+
+	/**
+	 * Reduces an Argument to a string literal.  This method will throw a runtime exception if it
+	 * doesn't find the expected string literal.
+	 * @param argument
+	 */
+	private String reduceStringLiteralArgument(Argument argument) {
+		try {
+			String l = argument.getPrimaryExpr().getLiteral();
+			if (l == null) {
+				throw new NullPointerException();
+			}
+			return l;
+		} catch (Throwable t) {
+			throw new RuntimeException("Expected a string literal as the argument (the only supported argument type for the argument).");
+		}
+	}
+
+	/**
+	 * Escape string literals to prevent injection.
+	 * @param literal
+	 */
+	private String escapeStringLiteral(String literal) {
+		return literal.replace("'", "''");
 	}
 
 }

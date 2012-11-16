@@ -1,11 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.overlord.sramp</groupId>
 	<artifactId>s-ramp</artifactId>
 	<version>0.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	
+
 	<name>S-RAMP</name>
 	<description>S-RAMP is a SOA Repository Artifact Model and Protocol (S-RAMP) implementation.</description>
 	<url>http://www.jboss.org/overlord</url>
@@ -339,7 +340,6 @@
 		<module>s-ramp-atom-core</module>
 		<module>s-ramp-client</module>
 		<module>s-ramp-core</module>
-		<module>s-ramp-demos</module>
     <module>s-ramp-governance</module>
 		<module>s-ramp-repository</module>
 		<module>s-ramp-repository-jcr</module>
