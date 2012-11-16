@@ -79,7 +79,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
 		print("BRMS system and uploads it to the S-RAMP repository.");
 		print("");
 		print("Example usage:");
-		print("> brms:pkg2sramp defaultPackage LATEST http://localhost:8080/drools-guvnor admin admin");
+		print("> brms:pkg2sramp SRAMPPackage LATEST http://localhost:8080/drools-guvnor admin admin");
 	}
 
 	/**

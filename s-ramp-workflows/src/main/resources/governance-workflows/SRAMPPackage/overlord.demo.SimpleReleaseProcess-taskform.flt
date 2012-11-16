@@ -244,7 +244,7 @@
 </style>
 <div id="container">
 	<div id="header">
-		New Process Instance: SRAMPPackage.Sample Release Process
+		New Process Instance: SRAMPPackage.Simple Release Process
 	</div>
 	<div id="content">
 		<fieldset>
