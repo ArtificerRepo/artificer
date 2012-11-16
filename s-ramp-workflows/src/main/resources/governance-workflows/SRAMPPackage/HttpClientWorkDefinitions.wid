@@ -1,0 +1,27 @@
+import org.drools.process.core.datatype.impl.type.StringDataType;
+[
+  // the HttpClient work item
+  [
+    "name" : "HttpClientDeploy",
+    "parameters" : [
+      "Url" : new StringDataType(),
+      "Method" : new StringDataType(),
+      "Uuid" : new StringDataType(),
+    ],
+    "displayName" : "Deploy",
+    "icon" : "http://localhost:8080/drools-guvnor/rest/packages/SRAMPPackage/assets/run-build-install/binary",
+  ],
+ 
+    // the HttpClient work item
+  [
+    "name" : "HttpClientNotify",
+    "parameters" : [
+      "Url" : new StringDataType(),
+      "Method" : new StringDataType(),
+      "Uuid" : new StringDataType(),
+    ],
+    "displayName" : "Notify",
+    "icon" : "http://localhost:8080/drools-guvnor/rest/packages/SRAMPPackage/assets/audio-input-microphone-3/binary",
+  ]
+
+]

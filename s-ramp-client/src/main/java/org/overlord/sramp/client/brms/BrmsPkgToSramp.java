@@ -36,7 +36,7 @@ public class BrmsPkgToSramp {
     public static void main(String [ ] args) {
         try {
             
-            String brmsPackageName = "defaultPackage";
+            String brmsPackageName = "SRAMPPackage";
             String tag             = "LATEST";
             String baseUrl         = "http://localhost:8080/drools-guvnor";
             String brmsUserId      = "admin";

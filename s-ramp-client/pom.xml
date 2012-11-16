@@ -28,6 +28,12 @@
 			<artifactId>s-ramp-atom-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-workflows</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
 
 		<!-- Third party libraries -->
 		<dependency>
