@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -29,7 +28,7 @@ import org.junit.Test;
  */
 public class JbpmRestClientTest {
     
-    @Test @Ignore  //the BPM engine needs to be running for this test to pass
+    @Test  //the BPM engine needs to be running for this test to pass
     public void testNewProcessInstance() throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         JbpmRestClient jbpmClient = new JbpmRestClient(httpclient, "http://localhost:8080/gwt-console-server");
@@ -37,10 +36,10 @@ public class JbpmRestClientTest {
             jbpmClient.logon("admin", "admin");
             //parameters that will be set in the jBPM context Map
             Map<String,Object> parameters = new HashMap<String,Object>();
-            parameters.put("employee", "krisv");
-            parameters.put("reason", "just bc");
-            parameters.put("uuid", "some-uuid-lkjlkj");
-            jbpmClient.newProcessInstanceAndCompleteFirstTask("com.sample.evaluation",parameters);
+            parameters.put("DevDeploymentUrl", "http://localhost:8080");
+            parameters.put("DevDeploymentUrlMethod", "GET");
+            parameters.put("ArtifactUuid", "some-uuid-lkjlkj");
+            jbpmClient.newProcessInstanceAndCompleteFirstTask("overlord.demo.SimpleReleaseProcess",parameters);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
