@@ -36,12 +36,16 @@ import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Base class for all resources that respond with Atom Feeds.
  */
 public abstract class AbstractFeedResource {
+
+	private static Logger logger = LoggerFactory.getLogger(AbstractFeedResource.class);
 
 	/**
 	 * Constructor.
@@ -82,6 +86,7 @@ public abstract class AbstractFeedResource {
 			addPaginationLinks(feed, artifactSet, query, startIndex, count, orderBy, ascending);
 			return feed;
 		} catch (Throwable e) {
+			logger.error("Error trying to create an Artifact Feed.", e);
 			throw new SrampAtomException(e);
 		} finally {
 			if (artifactSet != null)

@@ -40,6 +40,8 @@ import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
 import org.overlord.sramp.ontology.SrampOntology;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
@@ -56,6 +58,8 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
  */
 @Path("/s-ramp")
 public class OntologyResource {
+
+	private static Logger logger = LoggerFactory.getLogger(OntologyResource.class);
 
 	private static OntologyToRdfMapper o2rdf = new OntologyToRdfMapper();
 	private static RdfToOntologyMapper rdf2o = new RdfToOntologyMapper();
@@ -100,6 +104,7 @@ public class OntologyResource {
 			entry.setAnyOtherJAXBObject(responseRDF);
 			return entry;
         } catch (Exception e) {
+        	logger.error("Error creating a new ontology.", e);
 			throw new SrampAtomException(e);
         }
     }
@@ -123,6 +128,7 @@ public class OntologyResource {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateOntology(ontology);
         } catch (Exception e) {
+        	logger.error("Error updating an ontology with UUID: " + uuid, e);
 			throw new SrampAtomException(e);
         }
     }
@@ -156,6 +162,7 @@ public class OntologyResource {
 			entry.setAnyOtherJAXBObject(responseRDF);
 			return entry;
         } catch (Exception e) {
+        	logger.error("Error getting an ontology with UUID: " + uuid, e);
 			throw new SrampAtomException(e);
         }
     }
@@ -174,6 +181,7 @@ public class OntologyResource {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.deleteOntology(uuid);
         } catch (Exception e) {
+        	logger.error("Error deleting an ontology with UUID: " + uuid, e);
 			throw new SrampAtomException(e);
         }
     }
@@ -213,6 +221,7 @@ public class OntologyResource {
 
 			return feed;
         } catch (Exception e) {
+        	logger.error("Error getting the list of ontologies.", e);
 			throw new SrampAtomException(e);
         }
 	}
