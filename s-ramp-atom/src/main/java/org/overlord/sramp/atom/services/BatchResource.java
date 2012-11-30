@@ -43,6 +43,8 @@ import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The JAX-RS resource that handles pushing artifacts into the repository in batches.  The
@@ -54,7 +56,10 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 @Path("/s-ramp")
 public class BatchResource {
 
+	private static Logger logger = LoggerFactory.getLogger(BatchResource.class);
+
     private final Sramp sramp = new Sramp();
+
 	/**
 	 * Constructor.
 	 */
@@ -94,6 +99,7 @@ public class BatchResource {
 
             return output;
         } catch (Exception e) {
+        	logger.error("Error consuming S-RAMP batch zip package.", e);
 			throw new SrampAtomException(e);
         } finally {
         	IOUtils.closeQuietly(is);

@@ -57,17 +57,19 @@ import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The JAX-RS resource that handles artifact specific tasks, including:
  *
  * <ul>
- *   <li>Add an artifact (upload)</li>
- *   <li>Get an artifact (full Atom {@link Entry})</li>
- *   <li>Get artifact content (binary content)</li>
- *   <li>Update artifact meta data</li>
- *   <li>Update artifact content</li>
- *   <li>Delete an artifact</li>
+ * <li>Add an artifact (upload)</li>
+ * <li>Get an artifact (full Atom {@link Entry})</li>
+ * <li>Get artifact content (binary content)</li>
+ * <li>Update artifact meta data</li>
+ * <li>Update artifact content</li>
+ * <li>Delete an artifact</li>
  * </ul>
  *
  * @author eric.wittmann@redhat.com
@@ -75,8 +77,17 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 @Path("/s-ramp")
 public class ArtifactResource {
 
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(SrampConstants.DATE_FORMAT);
-    private final Sramp sramp = new Sramp();
+	private static Logger logger = LoggerFactory.getLogger(BatchResource.class);
+
+	// Sadly, date formats are not thread safe.
+	private static final ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>() {
+		@Override
+		protected SimpleDateFormat initialValue() {
+			return new SimpleDateFormat(SrampConstants.DATE_FORMAT);
+		}
+	};
+
+	private final Sramp sramp = new Sramp();
 
 	/**
 	 * Constructor.
@@ -84,203 +95,213 @@ public class ArtifactResource {
 	public ArtifactResource() {
 	}
 
-    /**
-     * S-RAMP atom POST to upload an artifact to the repository.  The artifact content should
-     * be POSTed raw.
-     * @param fileName
-     * @param model
-     * @param type
-     * @param content
-     * @throws SrampAtomException
-     */
-    @POST
-    @Path("{model}/{type}")
-    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+	/**
+	 * S-RAMP atom POST to upload an artifact to the repository. The artifact content should be POSTed raw.
+	 *
+	 * @param fileName
+	 * @param model
+	 * @param type
+	 * @param content
+	 * @throws SrampAtomException
+	 */
+	@POST
+	@Path("{model}/{type}")
+	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry create(@Context HttpServletRequest request, @HeaderParam("Content-Type") String contentType,
-			@HeaderParam("Slug") String fileName, @PathParam("model") String model,
-			@PathParam("type") String type, InputStream is) throws SrampAtomException {
-        try {
-            String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
-            ArtifactType artifactType = ArtifactType.valueOf(model, type);
-        	if (artifactType.getArtifactType().isDerived()) {
+	        @HeaderParam("Slug") String fileName, @PathParam("model") String model,
+	        @PathParam("type") String type, InputStream is) throws SrampAtomException {
+		try {
+			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+			if (artifactType.getArtifactType().isDerived()) {
 				throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
-						+ "' is a derived type.");
-        	}
-        	// Figure out the mime type (from the http header, filename, or default by artifact type)
-        	String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
-        	artifactType.setMimeType(mimeType);
-
-        	// Pick a reasonable file name if Slug is not present
-        	if (fileName == null) {
-        		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document) {
-            		fileName = "newartifact.bin";
-        		} else if (artifactType.getArtifactType() == ArtifactTypeEnum.XmlDocument) {
-        			fileName = "newartifact.xml";
-        		} else {
-            		fileName = "newartifact." + artifactType.getArtifactType().getModel();
-        		}
-        	}
-
-            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-            //store the content
-            BaseArtifactType baseArtifactType = artifactType.newArtifactInstance();
-            baseArtifactType.setName(fileName);
-            BaseArtifactType artifact = persistenceManager.persistArtifact(baseArtifactType, is);
-
-            //return the entry containing the s-ramp artifact
-            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
-            ArtifactVisitorHelper.visitArtifact(visitor, artifact);
-            return visitor.getAtomEntry();
-        } catch (Exception e) {
-			throw new SrampAtomException(e);
-        } finally {
-        	IOUtils.closeQuietly(is);
-        }
-    }
-
-    /**
-     * Handles multi-part creates.  In S-RAMP, an HTTP multi-part request can be POST'd to
-     * the endpoint, which allows Atom Entry formatted meta-data to be included in the
-     * same request as the artifact content.
-     * @param contentType
-     * @param model
-     * @param type
-     * @param input
-     * @return the newly created artifact as an Atom {@link Entry}
-     * @throws SrampAtomException
-     */
-    @POST
-    @Path("{model}/{type}")
-    @Consumes(MultipartConstants.MULTIPART_RELATED)
-    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry createMultiPart(@Context HttpServletRequest request, @HeaderParam("Content-Type") String contentType,
-            @PathParam("model") String model, @PathParam("type") String type,
-            MultipartRelatedInput input) throws SrampAtomException {
-        InputStream contentStream = null;
-        try {
-            String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
-            ArtifactType artifactType = ArtifactType.valueOf(model, type);
-            if (artifactType.getArtifactType().isDerived()) {
-                throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
-                        + "' is a derived type.");
-            }
-
-            List<InputPart> list = input.getParts();
-            // Expecting 2 parts
-			if (list.size() != 2) {
-				throw new SrampAtomException("Invalid multi-part POST - expected two parts but got " + list.size());
+				        + "' is a derived type.");
 			}
-            InputPart firstPart  = list.get(0);
-            InputPart secondpart = list.get(1);
+			// Figure out the mime type (from the http header, filename, or default by artifact type)
+			String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
+			artifactType.setMimeType(mimeType);
 
-            // Getting the S-RAMP Artifact
-            Entry atomEntry = firstPart.getBody(new GenericType<Entry>() { });
-            BaseArtifactType artifactMetaData = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
-            ArtifactType metaDataType = ArtifactType.valueOf(artifactMetaData);
+			// Pick a reasonable file name if Slug is not present
+			if (fileName == null) {
+				if (artifactType.getArtifactType() == ArtifactTypeEnum.Document) {
+					fileName = "newartifact.bin";
+				} else if (artifactType.getArtifactType() == ArtifactTypeEnum.XmlDocument) {
+					fileName = "newartifact.xml";
+				} else {
+					fileName = "newartifact." + artifactType.getArtifactType().getModel();
+				}
+			}
+
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			// store the content
+			BaseArtifactType baseArtifactType = artifactType.newArtifactInstance();
+			baseArtifactType.setName(fileName);
+			BaseArtifactType artifact = persistenceManager.persistArtifact(baseArtifactType, is);
+
+			// return the entry containing the s-ramp artifact
+			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
+			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+			return visitor.getAtomEntry();
+		} catch (Exception e) {
+			logger.error("Error creating an artifact.", e);
+			throw new SrampAtomException(e);
+		} finally {
+			IOUtils.closeQuietly(is);
+		}
+	}
+
+	/**
+	 * Handles multi-part creates. In S-RAMP, an HTTP multi-part request can be POST'd to the endpoint, which
+	 * allows Atom Entry formatted meta-data to be included in the same request as the artifact content.
+	 *
+	 * @param contentType
+	 * @param model
+	 * @param type
+	 * @param input
+	 * @return the newly created artifact as an Atom {@link Entry}
+	 * @throws SrampAtomException
+	 */
+	@POST
+	@Path("{model}/{type}")
+	@Consumes(MultipartConstants.MULTIPART_RELATED)
+	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+	public Entry createMultiPart(@Context HttpServletRequest request,
+	        @HeaderParam("Content-Type") String contentType, @PathParam("model") String model,
+	        @PathParam("type") String type, MultipartRelatedInput input) throws SrampAtomException {
+		InputStream contentStream = null;
+		try {
+			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+			if (artifactType.getArtifactType().isDerived()) {
+				throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
+				        + "' is a derived type.");
+			}
+
+			List<InputPart> list = input.getParts();
+			// Expecting 2 parts
+			if (list.size() != 2) {
+				throw new SrampAtomException("Invalid multi-part POST - expected two parts but got "
+				        + list.size());
+			}
+			InputPart firstPart = list.get(0);
+			InputPart secondpart = list.get(1);
+
+			// Getting the S-RAMP Artifact
+			Entry atomEntry = firstPart.getBody(new GenericType<Entry>() {
+			});
+			BaseArtifactType artifactMetaData = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
+			ArtifactType metaDataType = ArtifactType.valueOf(artifactMetaData);
 			if (metaDataType.getArtifactType() != artifactType.getArtifactType()) {
 				String errorMsg = String.format(
-						"Invalid multi-part POST - attempted to POST a '%1$s' to the '%2$s' endpoint.",
-						metaDataType.getArtifactType().getType(), artifactType.getArtifactType().getType());
+				        "Invalid multi-part POST - attempted to POST a '%1$s' to the '%2$s' endpoint.",
+				        metaDataType.getArtifactType().getType(), artifactType.getArtifactType().getType());
 				throw new SrampAtomException(errorMsg);
-            }
-            String fileName = null;
+			}
+			String fileName = null;
 			if (artifactMetaData.getName() != null)
 				fileName = artifactMetaData.getName();
-            String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
-            artifactType.setMimeType(mimeType);
+			String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
+			artifactType.setMimeType(mimeType);
 
-            // Processing the content itself first
-            contentStream = secondpart.getBody(new GenericType<InputStream>() { });
-            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-            //store the content
-            BaseArtifactType artifactRval = persistenceManager.persistArtifact(artifactMetaData, contentStream);
+			// Processing the content itself first
+			contentStream = secondpart.getBody(new GenericType<InputStream>() {
+			});
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			// store the content
+			BaseArtifactType artifactRval = persistenceManager.persistArtifact(artifactMetaData,
+			        contentStream);
 
-            // Convert to a full Atom Entry and return it
-            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
-            ArtifactVisitorHelper.visitArtifact(visitor, artifactRval);
-            return visitor.getAtomEntry();
-        } catch (Exception e) {
+			// Convert to a full Atom Entry and return it
+			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
+			ArtifactVisitorHelper.visitArtifact(visitor, artifactRval);
+			return visitor.getAtomEntry();
+		} catch (Exception e) {
+			logger.error("Error creating an artifact.", e);
 			throw new SrampAtomException(e);
-        } finally {
-        	IOUtils.closeQuietly(contentStream);
-        }
-    }
+		} finally {
+			IOUtils.closeQuietly(contentStream);
+		}
+	}
 
-    /**
-     * Called to update the meta data for an artifact.  Note that this does *not* update
-     * the content of the artifact, just the meta data.
-     * @param model
-     * @param type
-     * @param uuid
-     * @param atomEntry
-     * @throws SrampAtomException
-     */
-    @PUT
-    @Path("{model}/{type}/{uuid}")
-    @Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public void updateMetaData(@PathParam("model") String model, @PathParam("type") String type,
-    		@PathParam("uuid") String uuid, Entry atomEntry) throws SrampAtomException {
-        try {
-            ArtifactType artifactType = ArtifactType.valueOf(model, type);
-        	BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
+	/**
+	 * Called to update the meta data for an artifact. Note that this does *not* update the content of the
+	 * artifact, just the meta data.
+	 *
+	 * @param model
+	 * @param type
+	 * @param uuid
+	 * @param atomEntry
+	 * @throws SrampAtomException
+	 */
+	@PUT
+	@Path("{model}/{type}/{uuid}")
+	@Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
+	public void updateMetaData(@PathParam("model") String model, @PathParam("type") String type,
+	        @PathParam("uuid") String uuid, Entry atomEntry) throws SrampAtomException {
+		try {
+			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateArtifact(artifact, artifactType);
 		} catch (Throwable e) {
+			logger.error("Error updating artifact meta data for: " + uuid, e);
 			throw new SrampAtomException(e);
 		}
-    }
+	}
 
-    /**
-     * S-RAMP atom PUT to upload a new version of the artifact into the repository.
-     *
-     * @param model
-     * @param type
-     * @param uuid
-     * @param content
-     * @throws SrampAtomException
-     */
-    @PUT
-    @Path("{model}/{type}/{uuid}/media")
+	/**
+	 * S-RAMP atom PUT to upload a new version of the artifact into the repository.
+	 *
+	 * @param model
+	 * @param type
+	 * @param uuid
+	 * @param content
+	 * @throws SrampAtomException
+	 */
+	@PUT
+	@Path("{model}/{type}/{uuid}/media")
 	public void updateContent(@HeaderParam("Content-Type") String contentType,
-			@HeaderParam("Slug") String fileName, @PathParam("model") String model,
-			@PathParam("type") String type, @PathParam("uuid") String uuid, InputStream content)
-			throws SrampAtomException {
-        ArtifactType artifactType = ArtifactType.valueOf(model, type);
-    	if (artifactType.getArtifactType().isDerived()) {
-			throw new SrampAtomException("Failed to create artifact because '" + artifactType.getArtifactType()
-					+ "' is a derived type.");
-    	}
-    	String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
-    	artifactType.setMimeType(mimeType);
-    	//TODO we need to update the S-RAMP metadata too (new updateDate, size, etc)?
-        InputStream is = content;
-        try {
-            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-            //store the content
-            persistenceManager.updateArtifactContent(uuid, artifactType, is);
-        } catch (Exception e) {
+	        @HeaderParam("Slug") String fileName, @PathParam("model") String model,
+	        @PathParam("type") String type, @PathParam("uuid") String uuid, InputStream content)
+	        throws SrampAtomException {
+		ArtifactType artifactType = ArtifactType.valueOf(model, type);
+		if (artifactType.getArtifactType().isDerived()) {
+			throw new SrampAtomException("Failed to create artifact because '"
+			        + artifactType.getArtifactType() + "' is a derived type.");
+		}
+		String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
+		artifactType.setMimeType(mimeType);
+		// TODO we need to update the S-RAMP metadata too (new updateDate, size, etc)?
+		InputStream is = content;
+		try {
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			// store the content
+			persistenceManager.updateArtifactContent(uuid, artifactType, is);
+		} catch (Exception e) {
+			logger.error("Error updating artifact content for: " + uuid, e);
 			throw new SrampAtomException(e);
-        } finally {
-        	IOUtils.closeQuietly(is);
-        }
-    }
+		} finally {
+			IOUtils.closeQuietly(is);
+		}
+	}
 
-    /**
-     * Called to get the meta data for an s-ramp artifact.  This will return an Atom {@link Entry}
-     * with the full information about the artifact.
-     * @param model
-     * @param type
-     * @param uuid
-     * @throws SrampAtomException
-     */
-    @GET
-    @Path("{model}/{type}/{uuid}")
-    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public Entry getMetaData(@Context HttpServletRequest request, @PathParam("model") String model, @PathParam("type") String type,
-			@PathParam("uuid") String uuid) throws SrampAtomException {
-        try {
-            String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
-            ArtifactType artifactType = ArtifactType.valueOf(model, type);
+	/**
+	 * Called to get the meta data for an s-ramp artifact. This will return an Atom {@link Entry} with the
+	 * full information about the artifact.
+	 *
+	 * @param model
+	 * @param type
+	 * @param uuid
+	 * @throws SrampAtomException
+	 */
+	@GET
+	@Path("{model}/{type}/{uuid}")
+	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+	public Entry getMetaData(@Context HttpServletRequest request, @PathParam("model") String model,
+	        @PathParam("type") String type, @PathParam("uuid") String uuid) throws SrampAtomException {
+		try {
+			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+			ArtifactType artifactType = ArtifactType.valueOf(model, type);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
 			// Get the artifact by UUID
@@ -293,29 +314,31 @@ public class ArtifactResource {
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return visitor.getAtomEntry();
 		} catch (Throwable e) {
+			logger.error("Error getting artifact meta data for: " + uuid, e);
 			throw new SrampAtomException(e);
 		}
-    }
+	}
 
-    /**
-     * Returns the content of an artifact in the s-ramp repository.
-     * @param model
-     * @param type
-     * @param uuid
-     * @throws SrampAtomException
-     */
-    @GET
-    @Path("{model}/{type}/{uuid}/media")
+	/**
+	 * Returns the content of an artifact in the s-ramp repository.
+	 *
+	 * @param model
+	 * @param type
+	 * @param uuid
+	 * @throws SrampAtomException
+	 */
+	@GET
+	@Path("{model}/{type}/{uuid}/media")
 	public Response getContent(@PathParam("model") String model, @PathParam("type") String type,
-			@PathParam("uuid") String uuid) throws SrampAtomException {
-        try {
-            ArtifactType artifactType = ArtifactType.valueOf(model, type);
+	        @PathParam("uuid") String uuid) throws SrampAtomException {
+		try {
+			ArtifactType artifactType = ArtifactType.valueOf(model, type);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			BaseArtifactType baseArtifact = persistenceManager.getArtifact(uuid, artifactType);
-            ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
-            ArtifactVisitorHelper.visitArtifact(ctVizzy, baseArtifact);
-            javax.ws.rs.core.MediaType mediaType = ctVizzy.getContentType();
-            artifactType.setMimeType(mediaType.toString());
+			ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
+			ArtifactVisitorHelper.visitArtifact(ctVizzy, baseArtifact);
+			javax.ws.rs.core.MediaType mediaType = ctVizzy.getContentType();
+			artifactType.setMimeType(mediaType.toString());
 			final InputStream artifactContent = persistenceManager.getArtifactContent(uuid, artifactType);
 			Object output = new StreamingOutput() {
 				@Override
@@ -327,37 +350,43 @@ public class ArtifactResource {
 					}
 				}
 			};
-			String lastModifiedDate = simpleDateFormat.format(baseArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
-            return Response.ok(output, artifactType.getMimeType())
-                .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
-                .header("Content-Length", baseArtifact.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE)))
-                .header("Last-Modified", lastModifiedDate)
-                .build();
+			String lastModifiedDate = dateFormat.get().format(
+			        baseArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
+			return Response
+			        .ok(output, artifactType.getMimeType())
+			        .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
+			        .header("Content-Length",
+			                baseArtifact.getOtherAttributes().get(
+			                        new QName(SrampConstants.SRAMP_CONTENT_SIZE)))
+			        .header("Last-Modified", lastModifiedDate).build();
 		} catch (Throwable e) {
+			logger.error("Error getting artifact content for: " + uuid, e);
 			throw new SrampAtomException(e);
 		}
-    }
+	}
 
-    /**
-     * Called to delete an s-ramp artifact from the repository.
-     * @param model
-     * @param type
-     * @param uuid
-     * @throws SrampAtomException
-     */
-    @DELETE
-    @Path("{model}/{type}/{uuid}")
+	/**
+	 * Called to delete an s-ramp artifact from the repository.
+	 *
+	 * @param model
+	 * @param type
+	 * @param uuid
+	 * @throws SrampAtomException
+	 */
+	@DELETE
+	@Path("{model}/{type}/{uuid}")
 	public void delete(@PathParam("model") String model, @PathParam("type") String type,
-			@PathParam("uuid") String uuid) throws SrampAtomException {
-        try {
-            ArtifactType artifactType = ArtifactType.valueOf(model, type);
+	        @PathParam("uuid") String uuid) throws SrampAtomException {
+		try {
+			ArtifactType artifactType = ArtifactType.valueOf(model, type);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
 			// Delete the artifact by UUID
 			persistenceManager.deleteArtifact(uuid, artifactType);
 		} catch (Throwable e) {
+			logger.error("Error deleting artifact: " + uuid, e);
 			throw new SrampAtomException(e);
 		}
-    }
+	}
 
 }
