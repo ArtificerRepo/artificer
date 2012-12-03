@@ -196,4 +196,54 @@ public class FeedResourceTest extends AbstractResourceTest {
 		}
 	}
 
+	/**
+	 * Tests the model feed.
+	 * @throws Exception
+	 */
+	@Test
+	public void testModelFeed() throws Exception {
+		// Add 5 XSD entries
+		Set<String> xsdUuids = new HashSet<String>();
+		for (int i = 0; i < 5; i++) {
+			Entry entry = doAddXsd();
+			URI entryId = entry.getId();
+			String uuid = entryId.toString();
+			xsdUuids.add(uuid);
+		}
+		// Add some pkg entries
+		Set<String> pkgUuids = new HashSet<String>();
+		for (int i = 0; i < 5; i++) {
+			Entry entry = doAddUserDefined("PkgDocument", "/sample-files/user/defaultPackage.pkg");
+			URI entryId = entry.getId();
+			String uuid = entryId.toString();
+			pkgUuids.add(uuid);
+		}
+		// Add some bpmn entries
+		Set<String> bpmnUuids = new HashSet<String>();
+		for (int i = 0; i < 3; i++) {
+			Entry entry = doAddUserDefined("BpmnDocument", "/sample-files/user/Evaluation.bpmn");
+			URI entryId = entry.getId();
+			String uuid = entryId.toString();
+			bpmnUuids.add(uuid);
+		}
+
+		// Do a query for *just* the User Defined types - there should be 5+3=8 of them
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/user"));
+		ClientResponse<Feed> response = request.get(Feed.class);
+		Feed feed = response.getEntity();
+		int uuidsFound = 0;
+		for (Entry entry : feed.getEntries()) {
+			String entryUuid = entry.getId().toString();
+			if (pkgUuids.contains(entryUuid) || bpmnUuids.contains(entryUuid))
+				uuidsFound++;
+		}
+		Assert.assertEquals(8, uuidsFound);
+
+		// Make sure the query params work
+		request = new ClientRequest(generateURL("/s-ramp/xsd?startPage=1&count=2"));
+		response = request.get(Feed.class);
+		feed = response.getEntity();
+		Assert.assertTrue("Expected 2 entries.", feed.getEntries().size() == 2);
+	}
+
 }
