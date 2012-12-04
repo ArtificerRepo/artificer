@@ -80,8 +80,8 @@
       <!-- soapwsdl model -->
       <xsd:enumeration value="SoapAddress" />
       <xsd:enumeration value="SoapBinding" />
-      <!-- userdefined artifacts -->
-      <xsd:enumeration value="UserDefinedArtifactType" />
+      <!-- extended artifacts -->
+      <xsd:enumeration value="ExtendedArtifactType" />
       <!-- soa model -->
       <xsd:enumeration value="SoaModelType" />
       <xsd:enumeration value="ServiceInterface" />
@@ -223,11 +223,11 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <!-- Base type for all User Defined Artifacts in S-RAMP -->
-  <xsd:complexType name="UserDefinedArtifactType">
+  <!-- Type used for Extended Artifact Models in S-RAMP -->
+  <xsd:complexType name="ExtendedArtifactType">
     <xsd:complexContent>
       <xsd:extension base="s-ramp:BaseArtifactType">
-        <xsd:attribute name="userType" type="xsd:string" />
+        <xsd:attribute name="extendedType" type="xsd:string" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
