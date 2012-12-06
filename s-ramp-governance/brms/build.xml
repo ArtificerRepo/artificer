@@ -2,13 +2,39 @@
 
 <project name="update BRMS config" default="update.config">
 
-  <property file="build.properties" />
+
+	<property file="build.properties" />
+
+	<target name="install.jbpm5">
+		<mkdir dir="${jbpm5.dir}" />
+		<!-- installing jbpm5.4 -->
+		<echo>downloading the jbpm5.4 installer. This may take a while, go get some coffee</echo>
+		<get src="${sramp.jbpm5.url}" dest="${sramp.jbpm5.dir}" usetimestamp="true" />
+		<echo>unzipping jbpm5 to ${sramp.jbpm5.dir}</echo>
+		<unzip src="${sramp.jbpm5.dir}/jbpm-5.4.0.Final-installer-full.zip" dest="${sramp.jbpm5.dir}" overwrite="false" />
+		<ant dir="${sramp.jbpm5.dir}/jbpm-installer" target="install.demo.noeclipse" />
+		<!-- patching JBossAS -->
+		<echo>Upgrading JBossAS to RESTeasy 2.3.5</echo>
+		<get src="${sramp.resteasy.url}" dest="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final-all.zip"  usetimestamp="true"/>
+		<echo>unzipping RESTeasy to ${sramp.jbpm5.dir}</echo>
+		<unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final-all.zip" dest="${sramp.jbpm5.dir}" overwrite="false"/>
+		<echo>patching resteasy in JBossAS</echo>
+		<unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final/resteasy-jboss-modules-2.3.5.Final.zip" dest="${sramp.jboss.home}/modules" overwrite="false" />
+	</target>
 	
+	<target name="deploy.sramp">
+	  <copy file="../../s-ramp-atom/target/s-ramp-atom.war" todir="${sramp.jboss.home}/standalone/deployments" />
+	</target>
+	
+	<target name="upload.to.guvnor">
+	  
+	</target>
+
 	<target name="update.config" depends="patch.jbpm-gwt-console-server">
 		<!-- pointing jbpm to S-RAMP -->
 		<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/jbpm.console.properties"
 		       todir="restore"/>
-	  <copy  file="updates/jbpm.console.properties"
+		<copy  file="updates/jbpm.console.properties"
 	         todir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/" overwrite="true" />
 		<!-- adding HttpClient Workitem Handler -->
 		<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/META-INF/CustomWorkItemHandlers.conf"
@@ -21,22 +47,22 @@
 		<copy  file="updates/build.xml"
 		       todir="${install.home}" overwrite="true" />
 	</target>
-	
+
 	<!-- there is no codechange to this jar, we have to figure out why if WE compile the same
 	     jar it is ok and the http returns 200 (success)  -->
-  <target name="patch.jbpm-gwt-console-server" depends="explode.jbpm-gwt-console-server">
-  	<echo>patching jbpm-gwt-console-server.war, with jbpm-gwt-shared-5.3.0.SRAMP.jar</echo>
-  	<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/jbpm-gwt-shared-5.3.0.Final.jar"
+	<target name="patch.jbpm-gwt-console-server" depends="explode.jbpm-gwt-console-server">
+		<echo>patching jbpm-gwt-console-server.war, with jbpm-gwt-shared-5.3.0.SRAMP.jar</echo>
+		<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/jbpm-gwt-shared-5.3.0.Final.jar"
   	       todir="restore"/>
-    <copy  file="updates/jbpm-gwt-shared-5.3.0.SRAMP.jar"
+		<copy  file="updates/jbpm-gwt-shared-5.3.0.SRAMP.jar"
            todir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/" />
-  	<echo>patching jbpm-gwt-console-server.war, with jbpm-workitems-5.3.0.SRAMP.jar, adding HttpClient</echo>
-  	<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/jbpm-workitems-5.3.0.Final.jar"
+		<echo>patching jbpm-gwt-console-server.war, with jbpm-workitems-5.3.0.SRAMP.jar, adding HttpClient</echo>
+		<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/jbpm-workitems-5.3.0.Final.jar"
   	       todir="restore"/>
-    <copy  file="updates/jbpm-workitems-5.3.0.SRAMP.jar"
+		<copy  file="updates/jbpm-workitems-5.3.0.SRAMP.jar"
   	       todir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/" />
-  </target>
-  	
+	</target>
+
 	<target name="explode.jbpm-gwt-console-server" depends="dir.check" unless="dir.exists">
 		<echo>exploding the jbpm-gwt-console-server.war, keeping a backup in restore</echo>
 		<move  file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war"
@@ -45,19 +71,19 @@
 		<unzip src="restore/jbpm-gwt-console-server.war" 
 	         dest="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
 	</target>
-	
+
 	<target name="dir.check">
-    <condition property="dir.exists">
-      <available file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" type="dir"/>
-    </condition>
-  </target>
-	
+		<condition property="dir.exists">
+			<available file="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" type="dir"/>
+		</condition>
+	</target>
+
 	<target name="clean">
-	  <delete dir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war"/>
+		<delete dir="${jboss.home}/standalone/deployments/jbpm-gwt-console-server.war"/>
 		<copy file="restore/jbpm-gwt-console-server.war"
 		      todir="${jboss.home}/standalone/deployments/" />
 		<copy file="restore/build.xml"
 		      todir="${jboss.home}" />
 	</target>
-	
+
 </project>
