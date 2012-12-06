@@ -6,20 +6,21 @@
 	<property file="build.properties" />
 
 	<target name="install.jbpm5">
-		<mkdir dir="${jbpm5.dir}" />
-		<!-- installing jbpm5.4 -->
+		<mkdir dir="${sramp.jbpm5.dir}" />
 		<echo>downloading the jbpm5.4 installer. This may take a while, go get some coffee</echo>
 		<get src="${sramp.jbpm5.url}" dest="${sramp.jbpm5.dir}" usetimestamp="true" />
 		<echo>unzipping jbpm5 to ${sramp.jbpm5.dir}</echo>
 		<unzip src="${sramp.jbpm5.dir}/jbpm-5.4.0.Final-installer-full.zip" dest="${sramp.jbpm5.dir}" overwrite="false" />
 		<ant dir="${sramp.jbpm5.dir}/jbpm-installer" target="install.demo.noeclipse" />
-		<!-- patching JBossAS -->
+		
 		<echo>Upgrading JBossAS to RESTeasy 2.3.5</echo>
 		<get src="${sramp.resteasy.url}" dest="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final-all.zip"  usetimestamp="true"/>
 		<echo>unzipping RESTeasy to ${sramp.jbpm5.dir}</echo>
 		<unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final-all.zip" dest="${sramp.jbpm5.dir}" overwrite="false"/>
-		<echo>patching resteasy in JBossAS</echo>
+		<echo>upgrading resteasy in JBossAS</echo>
 		<unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final/resteasy-jboss-modules-2.3.5.Final.zip" dest="${sramp.jboss.home}/modules" overwrite="false" />
+	  <echo>patching ${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml in JBossAS</echo>
+		<copy file="updates/module.xml" tofile="${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml"/>
 	</target>
 	
 	<target name="deploy.sramp">
