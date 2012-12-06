@@ -22,11 +22,11 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.query.QueryResult;
 
-import org.modeshape.jcr.JcrRepository.QueryLanguage;
 import org.overlord.sramp.query.xpath.ast.Query;
 import org.overlord.sramp.query.xpath.visitors.XPathSerializationVisitor;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
+import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.repository.jcr.JCRPersistence;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.query.AbstractSrampQueryImpl;
@@ -82,7 +82,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 				String originalQuery = visitor.getXPath();
 				log.debug("JCR-SQL2 Query:\n---------------\n" + jcrSql2Query + "\n^^^^ FROM ^^^^\n" + originalQuery);
 			}
-			javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, QueryLanguage.JCR_SQL2);
+			javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, JCRConstants.JCR_SQL2);
 			long startTime = System.currentTimeMillis();
 			QueryResult jcrQueryResult = jcrQuery.execute();
 			NodeIterator jcrNodes = jcrQueryResult.getNodes();
