@@ -21,7 +21,7 @@
 //
 
 
-package org.overlord.sramp.atom.services.brms;
+package org.overlord.sramp.atom.services.brms.assets;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,13 +45,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="package" maxOccurs="unbounded" minOccurs="0">
+ *         &lt;element name="asset" maxOccurs="unbounded" minOccurs="0">
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="assets" type="{http://www.w3.org/2001/XMLSchema}anyURI" maxOccurs="unbounded" minOccurs="0"/>
  *                   &lt;element name="author" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *                   &lt;element name="binaryContentAttachmentFileName" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                   &lt;element name="binaryLink" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
  *                   &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                   &lt;element name="metadata">
@@ -59,9 +59,11 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *                       &lt;complexContent>
  *                         &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                           &lt;sequence>
- *                             &lt;element name="archived" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *                             &lt;element name="checkinComment" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *                             &lt;element name="checkInComment" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                             &lt;element name="created" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+ *                             &lt;element name="disabled" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *                             &lt;element name="format" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *                             &lt;element name="note" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                             &lt;element name="state" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                             &lt;element name="uuid" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                             &lt;element name="versionNumber" type="{http://www.w3.org/2001/XMLSchema}byte"/>
@@ -71,6 +73,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *                     &lt;/complexType>
  *                   &lt;/element>
  *                   &lt;element name="published" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+ *                   &lt;element name="refLink" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
  *                   &lt;element name="sourceLink" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
  *                   &lt;element name="title" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *                 &lt;/sequence>
@@ -88,44 +91,43 @@ import javax.xml.datatype.XMLGregorianCalendar;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "_package"
+    "asset"
 })
-@XmlRootElement(name = "packages")
-public class Packages
+@XmlRootElement(name = "collection")
+public class Assets
     implements Serializable
 {
 
-    private static final long serialVersionUID = 3645832945733755638L;
-    @XmlElement(name = "package")
-    protected List<Packages.Package> _package;
+    private static final long serialVersionUID = 7561111833611451562L;
+    protected List<Assets.Asset> asset;
 
     /**
-     * Gets the value of the package property.
+     * Gets the value of the asset property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the package property.
+     * This is why there is not a <CODE>set</CODE> method for the asset property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getPackage().add(newItem);
+     *    getAsset().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Packages.Package }
+     * {@link Assets.Asset }
      * 
      * 
      */
-    public List<Packages.Package> getPackage() {
-        if (_package == null) {
-            _package = new ArrayList<Packages.Package>();
+    public List<Assets.Asset> getAsset() {
+        if (asset == null) {
+            asset = new ArrayList<Assets.Asset>();
         }
-        return this._package;
+        return this.asset;
     }
 
 
@@ -139,8 +141,8 @@ public class Packages
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="assets" type="{http://www.w3.org/2001/XMLSchema}anyURI" maxOccurs="unbounded" minOccurs="0"/>
      *         &lt;element name="author" type="{http://www.w3.org/2001/XMLSchema}string"/>
+     *         &lt;element name="binaryContentAttachmentFileName" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *         &lt;element name="binaryLink" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
      *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *         &lt;element name="metadata">
@@ -148,9 +150,11 @@ public class Packages
      *             &lt;complexContent>
      *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *                 &lt;sequence>
-     *                   &lt;element name="archived" type="{http://www.w3.org/2001/XMLSchema}string"/>
-     *                   &lt;element name="checkinComment" type="{http://www.w3.org/2001/XMLSchema}string"/>
+     *                   &lt;element name="checkInComment" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *                   &lt;element name="created" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+     *                   &lt;element name="disabled" type="{http://www.w3.org/2001/XMLSchema}string"/>
+     *                   &lt;element name="format" type="{http://www.w3.org/2001/XMLSchema}string"/>
+     *                   &lt;element name="note" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *                   &lt;element name="state" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *                   &lt;element name="uuid" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *                   &lt;element name="versionNumber" type="{http://www.w3.org/2001/XMLSchema}byte"/>
@@ -160,6 +164,7 @@ public class Packages
      *           &lt;/complexType>
      *         &lt;/element>
      *         &lt;element name="published" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+     *         &lt;element name="refLink" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
      *         &lt;element name="sourceLink" type="{http://www.w3.org/2001/XMLSchema}anyURI"/>
      *         &lt;element name="title" type="{http://www.w3.org/2001/XMLSchema}string"/>
      *       &lt;/sequence>
@@ -172,68 +177,43 @@ public class Packages
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "assets",
         "author",
+        "binaryContentAttachmentFileName",
         "binaryLink",
         "description",
         "metadata",
         "published",
+        "refLink",
         "sourceLink",
         "title"
     })
-    public static class Package
+    public static class Asset
         implements Serializable
     {
 
-        private static final long serialVersionUID = 3645832945733755638L;
-        @XmlSchemaType(name = "anyURI")
-        protected List<String> assets;
+        private static final long serialVersionUID = 7561111833611451562L;
         @XmlElement(required = true)
         protected String author;
+        @XmlElement(required = true)
+        protected String binaryContentAttachmentFileName;
         @XmlElement(required = true)
         @XmlSchemaType(name = "anyURI")
         protected String binaryLink;
         @XmlElement(required = true)
         protected String description;
         @XmlElement(required = true)
-        protected Packages.Package.Metadata metadata;
+        protected Assets.Asset.Metadata metadata;
         @XmlElement(required = true)
         @XmlSchemaType(name = "dateTime")
         protected XMLGregorianCalendar published;
         @XmlElement(required = true)
         @XmlSchemaType(name = "anyURI")
+        protected String refLink;
+        @XmlElement(required = true)
+        @XmlSchemaType(name = "anyURI")
         protected String sourceLink;
         @XmlElement(required = true)
         protected String title;
-
-        /**
-         * Gets the value of the assets property.
-         * 
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the assets property.
-         * 
-         * <p>
-         * For example, to add a new item, do as follows:
-         * <pre>
-         *    getAssets().add(newItem);
-         * </pre>
-         * 
-         * 
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link String }
-         * 
-         * 
-         */
-        public List<String> getAssets() {
-            if (assets == null) {
-                assets = new ArrayList<String>();
-            }
-            return this.assets;
-        }
 
         /**
          * Gets the value of the author property.
@@ -257,6 +237,30 @@ public class Packages
          */
         public void setAuthor(String value) {
             this.author = value;
+        }
+
+        /**
+         * Gets the value of the binaryContentAttachmentFileName property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getBinaryContentAttachmentFileName() {
+            return binaryContentAttachmentFileName;
+        }
+
+        /**
+         * Sets the value of the binaryContentAttachmentFileName property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setBinaryContentAttachmentFileName(String value) {
+            this.binaryContentAttachmentFileName = value;
         }
 
         /**
@@ -312,10 +316,10 @@ public class Packages
          * 
          * @return
          *     possible object is
-         *     {@link Packages.Package.Metadata }
+         *     {@link Assets.Asset.Metadata }
          *     
          */
-        public Packages.Package.Metadata getMetadata() {
+        public Assets.Asset.Metadata getMetadata() {
             return metadata;
         }
 
@@ -324,10 +328,10 @@ public class Packages
          * 
          * @param value
          *     allowed object is
-         *     {@link Packages.Package.Metadata }
+         *     {@link Assets.Asset.Metadata }
          *     
          */
-        public void setMetadata(Packages.Package.Metadata value) {
+        public void setMetadata(Assets.Asset.Metadata value) {
             this.metadata = value;
         }
 
@@ -353,6 +357,30 @@ public class Packages
          */
         public void setPublished(XMLGregorianCalendar value) {
             this.published = value;
+        }
+
+        /**
+         * Gets the value of the refLink property.
+         * 
+         * @return
+         *     possible object is
+         *     {@link String }
+         *     
+         */
+        public String getRefLink() {
+            return refLink;
+        }
+
+        /**
+         * Sets the value of the refLink property.
+         * 
+         * @param value
+         *     allowed object is
+         *     {@link String }
+         *     
+         */
+        public void setRefLink(String value) {
+            this.refLink = value;
         }
 
         /**
@@ -414,9 +442,11 @@ public class Packages
          *   &lt;complexContent>
          *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
          *       &lt;sequence>
-         *         &lt;element name="archived" type="{http://www.w3.org/2001/XMLSchema}string"/>
-         *         &lt;element name="checkinComment" type="{http://www.w3.org/2001/XMLSchema}string"/>
+         *         &lt;element name="checkInComment" type="{http://www.w3.org/2001/XMLSchema}string"/>
          *         &lt;element name="created" type="{http://www.w3.org/2001/XMLSchema}dateTime"/>
+         *         &lt;element name="disabled" type="{http://www.w3.org/2001/XMLSchema}string"/>
+         *         &lt;element name="format" type="{http://www.w3.org/2001/XMLSchema}string"/>
+         *         &lt;element name="note" type="{http://www.w3.org/2001/XMLSchema}string"/>
          *         &lt;element name="state" type="{http://www.w3.org/2001/XMLSchema}string"/>
          *         &lt;element name="uuid" type="{http://www.w3.org/2001/XMLSchema}string"/>
          *         &lt;element name="versionNumber" type="{http://www.w3.org/2001/XMLSchema}byte"/>
@@ -430,9 +460,11 @@ public class Packages
          */
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(name = "", propOrder = {
-            "archived",
-            "checkinComment",
+            "checkInComment",
             "created",
+            "disabled",
+            "format",
+            "note",
             "state",
             "uuid",
             "versionNumber"
@@ -441,14 +473,18 @@ public class Packages
             implements Serializable
         {
 
-            private static final long serialVersionUID = 3645832945733755638L;
+            private static final long serialVersionUID = 7561111833611451562L;
             @XmlElement(required = true)
-            protected String archived;
-            @XmlElement(required = true)
-            protected String checkinComment;
+            protected String checkInComment;
             @XmlElement(required = true)
             @XmlSchemaType(name = "dateTime")
             protected XMLGregorianCalendar created;
+            @XmlElement(required = true)
+            protected String disabled;
+            @XmlElement(required = true)
+            protected String format;
+            @XmlElement(required = true)
+            protected String note;
             @XmlElement(required = true)
             protected String state;
             @XmlElement(required = true)
@@ -456,51 +492,27 @@ public class Packages
             protected byte versionNumber;
 
             /**
-             * Gets the value of the archived property.
+             * Gets the value of the checkInComment property.
              * 
              * @return
              *     possible object is
              *     {@link String }
              *     
              */
-            public String getArchived() {
-                return archived;
+            public String getCheckInComment() {
+                return checkInComment;
             }
 
             /**
-             * Sets the value of the archived property.
+             * Sets the value of the checkInComment property.
              * 
              * @param value
              *     allowed object is
              *     {@link String }
              *     
              */
-            public void setArchived(String value) {
-                this.archived = value;
-            }
-
-            /**
-             * Gets the value of the checkinComment property.
-             * 
-             * @return
-             *     possible object is
-             *     {@link String }
-             *     
-             */
-            public String getCheckinComment() {
-                return checkinComment;
-            }
-
-            /**
-             * Sets the value of the checkinComment property.
-             * 
-             * @param value
-             *     allowed object is
-             *     {@link String }
-             *     
-             */
-            public void setCheckinComment(String value) {
-                this.checkinComment = value;
+            public void setCheckInComment(String value) {
+                this.checkInComment = value;
             }
 
             /**
@@ -525,6 +537,78 @@ public class Packages
              */
             public void setCreated(XMLGregorianCalendar value) {
                 this.created = value;
+            }
+
+            /**
+             * Gets the value of the disabled property.
+             * 
+             * @return
+             *     possible object is
+             *     {@link String }
+             *     
+             */
+            public String getDisabled() {
+                return disabled;
+            }
+
+            /**
+             * Sets the value of the disabled property.
+             * 
+             * @param value
+             *     allowed object is
+             *     {@link String }
+             *     
+             */
+            public void setDisabled(String value) {
+                this.disabled = value;
+            }
+
+            /**
+             * Gets the value of the format property.
+             * 
+             * @return
+             *     possible object is
+             *     {@link String }
+             *     
+             */
+            public String getFormat() {
+                return format;
+            }
+
+            /**
+             * Sets the value of the format property.
+             * 
+             * @param value
+             *     allowed object is
+             *     {@link String }
+             *     
+             */
+            public void setFormat(String value) {
+                this.format = value;
+            }
+
+            /**
+             * Gets the value of the note property.
+             * 
+             * @return
+             *     possible object is
+             *     {@link String }
+             *     
+             */
+            public String getNote() {
+                return note;
+            }
+
+            /**
+             * Sets the value of the note property.
+             * 
+             * @param value
+             *     allowed object is
+             *     {@link String }
+             *     
+             */
+            public void setNote(String value) {
+                this.note = value;
             }
 
             /**

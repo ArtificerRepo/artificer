@@ -41,8 +41,6 @@ import javax.jcr.query.QueryResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.modeshape.jcr.JcrRepository.QueryLanguage;
-import org.modeshape.jcr.api.JcrTools;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.derived.ArtifactDeriver;
 import org.overlord.sramp.derived.ArtifactDeriverFactory;
@@ -101,7 +99,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		Session session = null;
 		try {
 			session = JCRRepository.getSession();
-			JcrTools tools = new JcrTools();
+			JCRUtils tools = new JCRUtils();
 			if (metaData.getUuid() == null) {
 				metaData.setUuid(UUID.randomUUID().toString());
 			}
@@ -363,7 +361,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			if (artifactNode == null) {
 				throw new RepositoryException("No artifact found with UUID: " + uuid);
 			}
-			JcrTools tools = new JcrTools();
+			JCRUtils tools = new JCRUtils();
 			tools.uploadFile(session, artifactPath, content);
 			JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
 
@@ -433,7 +431,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			if (session.nodeExists(ontologyPath)) {
 				throw new RepositoryException("Ontology already exists.");
 			} else {
-				JcrTools tools = new JcrTools();
+			    JCRUtils tools = new JCRUtils();
 				Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", "nt:folder");
 				Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology");
 				o2jcr.write(ontology, ontologyNode);
@@ -494,7 +492,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 
 		try {
 			session = JCRRepository.getSession();
-			JcrTools tools = new JcrTools();
+			JCRUtils tools = new JCRUtils();
 			Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", "nt:folder");
 			NodeIterator nodes = ontologiesNode.getNodes();
 			List<SrampOntology> ontologies = new ArrayList<SrampOntology>();
@@ -652,7 +650,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		try {
 			session = JCRRepository.getSession();
 			Node artifactNode = session.getNode(artifactPath);
-			JcrTools tools = new JcrTools();
+			JCRUtils tools = new JCRUtils();
 			tools.printSubgraph(artifactNode);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -720,7 +718,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	private static Node findArtifactNodeByUuid(Session session, String artifactUuid) throws Exception {
 		javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
 		String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", artifactUuid);
-		javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, QueryLanguage.JCR_SQL2);
+		javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, JCRConstants.JCR_SQL2);
 		QueryResult jcrQueryResult = jcrQuery.execute();
 		NodeIterator jcrNodes = jcrQueryResult.getNodes();
 		if (!jcrNodes.hasNext()) {

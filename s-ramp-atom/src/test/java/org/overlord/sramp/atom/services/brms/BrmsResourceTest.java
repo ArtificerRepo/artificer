@@ -37,6 +37,8 @@ import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.services.AbstractResourceTest;
+import org.overlord.sramp.atom.services.brms.assets.Assets;
+import org.overlord.sramp.atom.services.brms.packages.Packages;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
@@ -69,6 +71,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
 	    }
 
 	}
+	
 	/**
 	 * Tests the BRMS packages.
 	 * @throws Exception

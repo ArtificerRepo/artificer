@@ -119,7 +119,7 @@ public abstract class AbstractShellCommand implements ShellCommand {
 			} catch (IOException e) {
 			}
 		} else {
-			System.out.println(formattedMessage);
+			System.out.println(msg);
 		}
 	}
 
