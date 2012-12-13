@@ -70,6 +70,7 @@
 	</target>
 
 	<target name="patch.jbpm-gwt-console-server" depends="explode.jbpm-gwt-console-server">
+		<mkdir dir="restore" />
 		<copy  file="../../s-ramp-workitems/target/s-ramp-workitems-${sramp.version}.jar"
   	       tofile="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/s-ramp-workitems.jar" />
   	<copy  file="updates/CustomWorkItemHandlers.conf"
