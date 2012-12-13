@@ -32,6 +32,8 @@ import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.Sramp;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,6 +41,8 @@ import org.overlord.sramp.atom.err.SrampAtomException;
  */
 @Path("/s-ramp")
 public class QueryResource extends AbstractFeedResource {
+
+	private static Logger logger = LoggerFactory.getLogger(QueryResource.class);
 
 	private final Sramp sramp = new Sramp();
 
@@ -78,6 +82,7 @@ public class QueryResource extends AbstractFeedResource {
 			}
 			return query(query, startIndex, count, orderBy, asc, propNames, baseUrl);
 		} catch (Throwable e) {
+			logger.error("Error executing S-RAMP query: " + query, e);
 			throw new SrampAtomException(e);
 		}
 	}
@@ -91,9 +96,10 @@ public class QueryResource extends AbstractFeedResource {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
 	public Feed queryFromPost(@Context HttpServletRequest request, MultipartFormDataInput input) throws SrampAtomException {
+		String query = null;
 		try {
 			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
-			String query = input.getFormDataPart("query", new GenericType<String>() { });
+			query = input.getFormDataPart("query", new GenericType<String>() { });
 			Integer startPage = input.getFormDataPart("startPage", new GenericType<Integer>() { });
 			Integer startIndex = input.getFormDataPart("startIndex", new GenericType<Integer>() { });
 			Integer count = input.getFormDataPart("count", new GenericType<Integer>() { });
@@ -106,8 +112,10 @@ public class QueryResource extends AbstractFeedResource {
 			}
 			return query(query, startIndex, count, orderBy, asc, propNames, baseUrl);
 		} catch (SrampAtomException e) {
+			logger.error("Error executing S-RAMP query: " + query, e);
 			throw e;
 		} catch (Throwable e) {
+			logger.error("Error executing S-RAMP query: " + query, e);
 			throw new SrampAtomException(e);
 		}
 	}

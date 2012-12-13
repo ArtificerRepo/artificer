@@ -56,6 +56,32 @@ public class FeedResource extends AbstractFeedResource {
 	 * @throws Exception
 	 */
 	@GET
+	@Path("{model}")
+	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
+	public Feed getArtifactFeed(
+			@Context HttpServletRequest request,
+			@PathParam("model") String model,
+			@QueryParam("startPage") Integer startPage,
+			@QueryParam("startIndex") Integer startIndex,
+			@QueryParam("count") Integer count,
+			@QueryParam("orderBy") String orderBy,
+			@QueryParam("ascending") Boolean asc,
+			@QueryParam("propertyName") Set<String> propNames) throws Exception {
+		String xpath = String.format("/s-ramp/%1$s", model);
+		String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+		if (startIndex == null && startPage != null) {
+			int c = count != null ? count.intValue() : 100;
+			startIndex = (startPage.intValue() - 1) * c;
+		}
+		return createArtifactFeed(xpath, startIndex, count, orderBy, asc, propNames, baseUrl);
+	}
+
+	/**
+	 * Gets a feed of artifacts.
+	 * @param uri
+	 * @throws Exception
+	 */
+	@GET
 	@Path("{model}/{type}")
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
 	public Feed getArtifactFeed(
