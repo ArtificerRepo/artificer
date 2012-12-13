@@ -172,6 +172,15 @@ public class DirToBrms {
                 }
             }
         }
+        //when done compile the package
+        String urlCompile = baseUrl + "/rest/packages/" + pkgName + "/binary";
+        ClientRequest compileRequest = fac.createRequest(urlCompile);
+        ClientResponse<InputStream> compileResponse =compileRequest.get(InputStream.class);
+        if (compileResponse.getStatus()==200) {
+            System.out.println("Upload complete");
+        } else {
+            System.err.println(compileResponse.getStatus() + " " + compileResponse.getResponseStatus().getReasonPhrase());
+        }
     }
     
     private void uploadToBrms(String fileName, InputStream is, ClientRequest addAssetRequest) throws Exception {
