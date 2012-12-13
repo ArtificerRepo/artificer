@@ -31,6 +31,8 @@ import javax.xml.transform.stream.StreamSource;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.overlord.sramp.atom.services.brms.assets.Assets;
+import org.overlord.sramp.atom.services.brms.packages.Packages;
 
 /**
  * Testing marshalling functionality, making sure UTF-8 is handled correctly.
@@ -58,7 +60,7 @@ public class BrmsPackagesListTest {
             _package.getAssets().add("http://localhost:8080/drools-guvnor/rest/packages/defaultPackage/assets/Test");
             packages.getPackage().add(_package);
             StringWriter writer = new StringWriter();
-            JAXBElement<Packages> element = new JAXBElement<Packages>(new QName("","packages",""),Packages.class,packages);
+            JAXBElement<Packages> element = new JAXBElement<Packages>(new QName("","collection",""),Packages.class,packages);
 
             marshaller.marshal(element,writer);
             String actualXml=writer.toString();
@@ -109,7 +111,7 @@ public class BrmsPackagesListTest {
             asset.setTitle("myAsset");
            assets.getAsset().add(asset);
             StringWriter writer = new StringWriter();
-            JAXBElement<Assets> element = new JAXBElement<Assets>(new QName("","assets",""),Assets.class,assets);
+            JAXBElement<Assets> element = new JAXBElement<Assets>(new QName("","collection",""),Assets.class,assets);
 
             marshaller.marshal(element,writer);
             String actualXml=writer.toString();
@@ -138,6 +140,30 @@ public class BrmsPackagesListTest {
             Assert.assertEquals(8, assets.getAsset().size());
         } catch (JAXBException jaxbe) {
             jaxbe.printStackTrace();
+            fail("No exception should be thrown");
+        }
+    }
+    
+    @Test
+    public void marshallFormatXml()
+    {
+        try {
+            JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+
+            Format format = new Format();
+            format.setValue("ftl");
+            StringWriter writer = new StringWriter();
+            JAXBElement<Format> element = new JAXBElement<Format>(new QName("","format",""),Format.class,format);
+
+            marshaller.marshal(element,writer);
+            String actualXml=writer.toString();
+            java.lang.System.out.println(actualXml);
+        } catch (Exception e) {
+            e.printStackTrace();
             fail("No exception should be thrown");
         }
     }

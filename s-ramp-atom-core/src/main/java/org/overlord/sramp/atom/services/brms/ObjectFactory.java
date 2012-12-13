@@ -25,6 +25,9 @@ package org.overlord.sramp.atom.services.brms;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
+import org.overlord.sramp.atom.services.brms.assets.Assets;
+import org.overlord.sramp.atom.services.brms.packages.Packages;
+
 
 /**
  * This object contains factory methods for each 
@@ -98,5 +101,12 @@ public class ObjectFactory {
     public Assets createAssets() {
         return new Assets();
     }
-
+    
+    /**
+     * Create an instance of {@link Format }
+     * 
+     */
+    public Format createFormat() {
+        return new Format();
+    }
 }

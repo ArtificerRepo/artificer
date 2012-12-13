@@ -1,2 +1,8 @@
-install.home=/opt/jbpm-installer
-jboss.home=${install.home}/jboss-as-7.0.2.Final
+sramp.version=0.0.3-SNAPSHOT
+# this should point to the jbpm-5.4 installer
+sramp.jbpm5.url=http://downloads.sourceforge.net/project/jbpm/jBPM%205/jbpm-5.4.0.Final/jbpm-5.4.0.Final-installer-full.zip?r=&ts=1354726167&use_mirror=iweb
+sramp.resteasy.url=http://sourceforge.net/projects/resteasy/files/Resteasy%20JAX-RS/2.3.5.Final/resteasy-jaxrs-2.3.5.Final-all.zip/download
+# where jbpm5 should be unzipped
+sramp.jbpm5.dir=../jbpm5
+sramp.install.home=${sramp.jbpm5.dir}/jbpm-installer
+sramp.jboss.home=${sramp.install.home}/jboss-as-7.1.1.Final

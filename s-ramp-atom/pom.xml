@@ -14,27 +14,35 @@
 	<description>S-RAMP Atom binding module.</description>
 
 	<dependencies>
+ <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.5</version>
+      <scope>compile</scope>
+    </dependency>
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.2.2</version>
-      <scope>runtime</scope>
+      <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
+      <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-atom-provider</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
+      <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxb-provider</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
-      <scope>runtime</scope>
+      <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
@@ -46,11 +54,13 @@
 					<groupId>javax.servlet</groupId>
 				</exclusion>
 			</exclusions>
+      <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>jaxrs-api</artifactId>
 			<version>${org.jboss.resteasy.version}</version>
+      <scope>provided</scope>
 		</dependency>
 
 		<!-- S-RAMP project dependencies -->
@@ -87,6 +97,7 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
+    
 
 		<!-- S-RAMP Provider (only JCR for now: runtime scope for Tomcat deployment 
 			and unit testing) -->

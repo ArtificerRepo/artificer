@@ -1,4 +1,4 @@
-<packages>
+<collection>
  <package>
   <assets>http://localhost:8080/drools-guvnor/rest/packages/srampPackage/assets/WorkDefinitions
   </assets>
@@ -33,4 +33,4 @@
   </sourceLink>
   <title>srampPackage</title>
  </package>
-</packages>
+</collection>

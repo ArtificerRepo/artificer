@@ -37,11 +37,14 @@ import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.atom.services.brms.Assets;
 import org.overlord.sramp.atom.services.brms.BrmsConstants;
-import org.overlord.sramp.atom.services.brms.Packages;
+import org.overlord.sramp.atom.services.brms.assets.Assets;
+import org.overlord.sramp.atom.services.brms.packages.Packages;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
+import org.overlord.sramp.client.shell.ShellContext;
+import org.overlord.sramp.client.shell.ShellContextImpl;
+import org.overlord.sramp.client.shell.commands.Arguments;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
@@ -82,6 +85,17 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
 		print("> brms:pkg2sramp SRAMPPackage LATEST http://localhost:8080/drools-guvnor admin admin");
 	}
 
+	public static void main(String [ ] args) throws Exception {
+	    SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-atom/s-ramp");
+	    QName clientVarName = new QName("s-ramp", "client");
+	    Pkg2SrampCommand cmd = new Pkg2SrampCommand();
+	    ShellContext context = new ShellContextImpl();
+	    context.setVariable(clientVarName, client);
+	    cmd.setArguments(new Arguments(""));
+	    cmd.setContext(context);
+	    cmd.execute();
+	}
+	
 	/**
 	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
 	 */
@@ -204,7 +218,8 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
         assetsProperty.setPropertyName(BrmsConstants.ASSET_INFO_XML);
         String assetsXml = getAssetsStringFromBrms(baseUrl, pkgName);
         //update the links
-        assetsXml = assetsXml.replaceAll(baseUrl, client + "/brms");
+        String srampUrl = client.getEndpoint().substring(0,client.getEndpoint().lastIndexOf("/"));
+        assetsXml = assetsXml.replaceAll(baseUrl, srampUrl + "/brms");
         assetsProperty.setPropertyValue(assetsXml);
         userDefinedArtifactType.getProperty().add(assetsProperty);
 

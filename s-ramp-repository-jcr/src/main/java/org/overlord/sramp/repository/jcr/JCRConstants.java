@@ -18,6 +18,10 @@ package org.overlord.sramp.repository.jcr;
 
 public class JCRConstants {
 
+    public static final String JCR_MIME_TYPE = "jcr:mimeType";
+    public static final String JCR_CONTENT = "jcr:content";
+    public static final String JCR_SQL2 = "JCR-SQL2";
+    
     public static final String SRAMP                  = "sramp";
 	public static final String SRAMP_NS               = "http://s-ramp.org/xmlns/2010/s-ramp";
 	public static final String SRAMP_PROPERTIES       = "sramp-properties";

@@ -345,6 +345,7 @@
 		<module>s-ramp-repository-jcr</module>
 		<module>s-ramp-wagon</module>
     <module>s-ramp-workflows</module>
+    <module>s-ramp-workitems</module>
 	</modules>
 </project>
 

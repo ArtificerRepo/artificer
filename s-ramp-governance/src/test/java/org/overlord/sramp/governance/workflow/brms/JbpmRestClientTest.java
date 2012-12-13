@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -28,7 +29,7 @@ import org.junit.Test;
  */
 public class JbpmRestClientTest {
     
-    @Test  //the BPM engine needs to be running for this test to pass
+    @Test @Ignore //the BPM engine needs to be running for this test to pass
     public void testNewProcessInstance() throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         JbpmRestClient jbpmClient = new JbpmRestClient(httpclient, "http://localhost:8080/gwt-console-server");
