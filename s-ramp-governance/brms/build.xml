@@ -2,101 +2,94 @@
 
 <project name="update BRMS config" default="configure">
 
-	<property file="build.properties" />
-	
-	<path id="client-classpath">
-	  <fileset dir="../../s-ramp-client/target/lib">
-	    <include name="**/*.jar"/>
-	  </fileset>
-		<fileset dir="../../s-ramp-client/target/">
-      <include name="s-ramp-client-${sramp.version}.jar"/>
+  <property file="build.properties" />
+
+  <path id="client-classpath">
+    <fileset dir="../../s-ramp-client/target/lib">
+      <include name="**/*.jar" />
     </fileset>
-	</path>
+    <fileset dir="../../s-ramp-client/target/">
+      <include name="s-ramp-client-${sramp.version}.jar" />
+    </fileset>
+  </path>
 
-	<target name="install">
-		<mkdir dir="${sramp.jbpm5.dir}" />
-		<echo>downloading the jbpm5.4 installer. This may take a while, go get some coffee</echo>
-		<get src="${sramp.jbpm5.url}" dest="${sramp.jbpm5.dir}" usetimestamp="true" />
-		<echo>unzipping jbpm5 to ${sramp.jbpm5.dir}</echo>
-		<unzip src="${sramp.jbpm5.dir}/jbpm-5.4.0.Final-installer-full.zip" dest="${sramp.jbpm5.dir}" overwrite="false" />
-		<ant dir="${sramp.jbpm5.dir}/jbpm-installer" target="install.demo.noeclipse" />
-		<echo>Upgrading JBossAS to RESTeasy 2.3.5</echo>
-		<get src="${sramp.resteasy.url}" dest="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final-all.zip"  usetimestamp="true"/>
-		<echo>unzipping RESTeasy to ${sramp.jbpm5.dir}</echo>
-		<unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final-all.zip" dest="${sramp.jbpm5.dir}" overwrite="false"/>
-		<echo>upgrading resteasy in JBossAS</echo>
-		<unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final/resteasy-jboss-modules-2.3.5.Final.zip" dest="${sramp.jboss.home}/modules" overwrite="false" />
-	  <echo>patching ${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml in JBossAS</echo>
-		<copy file="updates/module.xml" tofile="${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml"/>
-	</target>
-	
-	<target name="configure" depends="patch.jbpm-gwt-console-server,deploy.sramp">
-		<!-- pointing jBPM to S-RAMP -->
-		<copy  file="updates/default.jbpm.console.properties"
-	         todir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/" overwrite="true" />
-	</target>
+  <target name="install">
+    <mkdir dir="${sramp.jbpm5.dir}" />
+    <echo>Downloading the jbpm5.4 installer. This may take a while, go get some coffee</echo>
+    <get src="${sramp.jbpm5.url}" dest="${sramp.jbpm5.dir}" usetimestamp="true" />
+    <echo>Unzipping jbpm5 to ${sramp.jbpm5.dir}</echo>
+    <unzip src="${sramp.jbpm5.dir}/jbpm-5.4.0.Final-installer-full.zip" dest="${sramp.jbpm5.dir}" overwrite="false" />
+    <ant dir="${sramp.jbpm5.dir}/jbpm-installer" target="install.demo.noeclipse" />
+    <echo>Upgrading JBossAS to RESTeasy 2.3.5</echo>
+    <get src="${sramp.resteasy.url}" dest="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final-all.zip" usetimestamp="true" />
+    <echo>Unzipping RESTeasy to ${sramp.jbpm5.dir}</echo>
+    <unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final-all.zip" dest="${sramp.jbpm5.dir}" overwrite="false" />
+    <echo>Upgrading RESTEasy in JBossAS</echo>
+    <unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final/resteasy-jboss-modules-2.3.5.Final.zip" dest="${sramp.jboss.home}/modules" overwrite="false" />
+    <echo>Patching ${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml in JBossAS</echo>
+    <copy file="updates/module.xml" tofile="${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml" />
+  </target>
 
-	<target name="start" >
-		<ant dir="${sramp.jbpm5.dir}/jbpm-installer" target="start.demo.noeclipse" />
-	</target>
-	
-	<target name="tail" >
-	  <exec executable="tail">
-	    <arg value="-f"/>
-	    <arg value="../jbpm5/jbpm-installer/jboss-as-7.1.1.Final/standalone/log/server.log"/>
-	  </exec>
-	</target>
-	
-	<target name="upload" depends="upload.to.brms,brms.to.sramp" />
-	
-	<target name="stop" >
-	  <ant dir="${sramp.jbpm5.dir}/jbpm-installer" target="stop.demo" />
-	</target>
-	
-	<target name="deploy.sramp" depends="patch.jbpm-gwt-console-server">
+  <target name="configure" depends="patch.jbpm-gwt-console-server,deploy.sramp">
+    <!-- pointing jBPM to S-RAMP -->
+    <copy file="updates/default.jbpm.console.properties" todir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/" overwrite="true" />
+  </target>
+
+  <target name="start">
+    <ant dir="${sramp.jbpm5.dir}/jbpm-installer" target="start.demo.noeclipse" />
+  </target>
+
+  <target name="tail">
+    <exec executable="tail">
+      <arg value="-f" />
+      <arg value="../jbpm5/jbpm-installer/jboss-as-7.1.1.Final/standalone/log/server.log" />
+    </exec>
+  </target>
+
+  <target name="upload" depends="upload.to.brms,brms.to.sramp" />
+
+  <target name="stop">
+    <ant dir="${sramp.jbpm5.dir}/jbpm-installer" target="stop.demo" />
+  </target>
+
+  <target name="deploy.sramp" depends="patch.jbpm-gwt-console-server">
     <copy file="../../s-ramp-atom/target/s-ramp-atom.war" todir="${sramp.jboss.home}/standalone/deployments" />
   </target>
-	
-	<target name="upload.to.brms" >
-		<java classname="org.overlord.sramp.client.brms.DirToBrms">
-     <classpath refid="client-classpath"/>
+
+  <target name="upload.to.brms">
+    <java classname="org.overlord.sramp.client.shell.commands.brms.Dir2BrmsCommand">
+      <classpath refid="client-classpath" />
     </java>
-	</target>
-	
-	<target name="brms.to.sramp" >
-		<java classname="org.overlord.sramp.client.shell.commands.brms.Pkg2SrampCommand">
-		  <classpath refid="client-classpath"/>
-		</java>
-	</target>
+  </target>
 
-	<target name="patch.jbpm-gwt-console-server" depends="explode.jbpm-gwt-console-server">
-		<mkdir dir="restore" />
-		<copy  file="../../s-ramp-workitems/target/s-ramp-workitems-${sramp.version}.jar"
-  	       tofile="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/s-ramp-workitems.jar" />
-  	<copy  file="updates/CustomWorkItemHandlers.conf"
-		       todir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/META-INF/"
-		       overwrite="true"/>
-	</target>
+  <target name="brms.to.sramp">
+    <java classname="org.overlord.sramp.client.shell.commands.brms.Pkg2SrampCommand">
+      <classpath refid="client-classpath" />
+    </java>
+  </target>
 
-	<target name="explode.jbpm-gwt-console-server" depends="dir.check" unless="dir.exists">
-		<echo>exploding the jbpm-gwt-console-server.war, keeping a backup in restore</echo>
-		<move  file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war"
-		       todir="restore"/>
-		<mkdir dir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
-		<unzip src="restore/jbpm-gwt-console-server.war" 
-	         dest="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
-	</target>
+  <target name="patch.jbpm-gwt-console-server" depends="explode.jbpm-gwt-console-server">
+    <mkdir dir="restore" />
+    <copy file="../../s-ramp-workitems/target/s-ramp-workitems-${sramp.version}.jar" tofile="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/s-ramp-workitems.jar" />
+    <copy file="updates/CustomWorkItemHandlers.conf" todir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/classes/META-INF/" overwrite="true" />
+  </target>
 
-	<target name="dir.check">
-		<condition property="dir.exists">
-			<available file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" type="dir"/>
-		</condition>
-	</target>
+  <target name="explode.jbpm-gwt-console-server" depends="dir.check" unless="dir.exists">
+    <echo>Exploding the jbpm-gwt-console-server.war, keeping a backup in restore</echo>
+    <move file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" todir="restore" />
+    <mkdir dir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
+    <unzip src="restore/jbpm-gwt-console-server.war" dest="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
+  </target>
 
-	<target name="clean">
-		<delete dir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war"/>
-		<copy file="restore/jbpm-gwt-console-server.war"
-		      todir="${sramp.jboss.home}/standalone/deployments/" />
-	</target>
+  <target name="dir.check">
+    <condition property="dir.exists">
+      <available file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" type="dir" />
+    </condition>
+  </target>
+
+  <target name="clean">
+    <delete dir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
+    <copy file="restore/jbpm-gwt-console-server.war" todir="${sramp.jboss.home}/standalone/deployments/" />
+  </target>
 
 </project>
