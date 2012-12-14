@@ -37,6 +37,7 @@ import org.overlord.sramp.client.shell.commands.archive.OpenArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.PackArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.UpdateEntryArchiveCommand;
+import org.overlord.sramp.client.shell.commands.brms.Dir2BrmsCommand;
 import org.overlord.sramp.client.shell.commands.brms.Pkg2SrampCommand;
 import org.overlord.sramp.client.shell.commands.core.ClassificationCommand;
 import org.overlord.sramp.client.shell.commands.core.ConnectCommand;
@@ -113,7 +114,8 @@ public class ShellCommandFactory {
 		registry.put(new QName("ontology", "delete"), DeleteOntologyCommand.class);
 
 		// BRMS commands
-		registry.put(new QName("brms", "pkg2sramp"), Pkg2SrampCommand.class);
+        registry.put(new QName("brms", "dir2brms"), Dir2BrmsCommand.class);
+        registry.put(new QName("brms", "pkg2sramp"), Pkg2SrampCommand.class);
 
 		// Register commands contributed via the Java Service mechanism
         for (ShellCommandProvider provider : ServiceLoader.load(ShellCommandProvider.class)) {
