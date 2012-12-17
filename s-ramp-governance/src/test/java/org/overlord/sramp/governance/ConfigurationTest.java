@@ -15,9 +15,9 @@
  */
 package org.overlord.sramp.governance;
 
+import java.util.Map;
 import java.util.Set;
 
-import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Test;
 
 
@@ -26,14 +26,14 @@ import org.junit.Test;
  *
  * @author kurt.stam@redhat.com
  */
-public class ConfigurationTest extends BaseResourceTest {
+public class ConfigurationTest {
 	
 	/**
 	 */
 	@Test
 	public void testConfigure() {
 	    Governance governance = new Governance();
-	    Set<Target> targets = governance.getTargets();
+	    Map<String,Target> targets = governance.getTargets();
 	    Set<Workflow> workflows = governance.getWorkflows();
 	    System.out.println("ok");
 	}
