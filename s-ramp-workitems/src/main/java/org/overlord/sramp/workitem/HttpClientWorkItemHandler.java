@@ -24,7 +24,7 @@ public class HttpClientWorkItemHandler implements WorkItemHandler {
     String uuid = (String) workItem.getParameter("Uuid");
     
     if (uuid!=null && urlStr.contains("${uuid}")) {
-    	urlStr.replace("${uuid}", uuid);
+    	urlStr = urlStr.replace("${uuid}", uuid);
     }
 
     // call http endpoint

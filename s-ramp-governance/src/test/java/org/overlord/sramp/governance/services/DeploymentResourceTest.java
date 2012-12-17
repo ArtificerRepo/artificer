@@ -17,8 +17,14 @@ package org.overlord.sramp.governance.services;
 
 import static org.jboss.resteasy.test.TestPortProvider.generateURL;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.test.BaseResourceTest;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -48,13 +54,28 @@ public class DeploymentResourceTest extends BaseResourceTest {
 	 */
 	@Test @Ignore
 	public void testDeploy() {
-	    ClientRequest request = new ClientRequest(generateURL("/deploy/copy/dev/e67e1b09-1de7-4945-a47f-45646752437a"));
-        try {
-            ClientResponse<?> response = request.post();
-            System.out.println(response.getStatus());
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+	    try {
+	        
+	        URL url = new URL(generateURL("/deploy/copy/dev/e67e1b09-1de7-4945-a47f-45646752437a"));
+	        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	        connection.setRequestMethod("POST");
+	        connection.setConnectTimeout(10000);
+	        connection.setReadTimeout(10000);
+	        connection.connect();
+	        int responseCode = connection.getResponseCode();
+	        if (responseCode == 200) {
+	             InputStream is = (InputStream) connection.getContent();
+	             String reply = IOUtils.toString(is);
+	            System.out.println("reply=" + reply);
+	        } else {
+	            System.err.println("endpoint could not be reached");
+	            Assert.fail();
+	        }
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        Assert.fail();
+	    }
+	    
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,9 +37,10 @@ public class JbpmRestClientTest {
             jbpmClient.logon("admin", "admin");
             //parameters that will be set in the jBPM context Map
             Map<String,Object> parameters = new HashMap<String,Object>();
-            parameters.put("DevDeploymentUrl", "http://localhost:8080");
-            parameters.put("DevDeploymentUrlMethod", "GET");
-            parameters.put("ArtifactUuid", "some-uuid-lkjlkj");
+            parameters.put("DevDeploymentUrl", "http://localhost:8080/s-ramp-governance/deploy/copy/dev/${uuid}");
+            parameters.put("DevDeploymentUrlMethod", "POST");
+            parameters.put("ArtifactUuid", "e67e1b09-1de7-4945-a47f-45646752437a");
+            
             jbpmClient.newProcessInstanceAndCompleteFirstTask("overlord.demo.SimpleReleaseProcess",parameters);
         } catch (IOException e) {
             e.printStackTrace();
