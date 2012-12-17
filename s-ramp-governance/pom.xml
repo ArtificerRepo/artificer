@@ -7,6 +7,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
+  <packaging>war</packaging>
 	<artifactId>s-ramp-governance</artifactId>
 	<name>S-RAMP Governance</name>
 	<description>S-RAMP Governance manages governance workflows.</description>
@@ -22,6 +23,42 @@
       <artifactId>s-ramp-client</artifactId>
       <version>${project.version}</version>
     </dependency>
+        <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+      <version>${org.jboss.resteasy.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-atom-provider</artifactId>
+      <version>${org.jboss.resteasy.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxb-provider</artifactId>
+      <version>${org.jboss.resteasy.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-multipart-provider</artifactId>
+      <version>${org.jboss.resteasy.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>servlet-api</artifactId>
+          <groupId>javax.servlet</groupId>
+        </exclusion>
+      </exclusions>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+      <version>${org.jboss.resteasy.version}</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -30,6 +67,13 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpmime</artifactId>
       <version>4.1.2</version>
+    </dependency>
+    
+    <!-- Provided libraries -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
 		<!-- Testing (note the scope) -->
