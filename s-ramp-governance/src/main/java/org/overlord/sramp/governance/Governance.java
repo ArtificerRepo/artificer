@@ -1,6 +1,12 @@
 package org.overlord.sramp.governance;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
@@ -29,8 +35,8 @@ public class Governance {
             CompositeConfiguration config = new CompositeConfiguration();
             config.addConfiguration(new SystemConfiguration());
             //config.addConfiguration(new JNDIConfiguration("java:comp/env/overlord/s-ramp"));
-            String configFile = config.getString(GovernanceConstants.GOVERNANCE_CONFIG_FILE_NAME, "/governance.properties");
-            Long refreshDelay = config.getLong(GovernanceConstants.GOVERNANCE_CONFIG_FILE_REFRESH, 5000l);
+            String configFile = config.getString(GovernanceConstants.GOVERNANCE_FILE_NAME, "governance.properties");
+            Long refreshDelay = config.getLong(GovernanceConstants.GOVERNANCE_FILE_REFRESH, 5000l);
             URL url = Governance.class.getClassLoader().getResource(configFile);
             if (url==null) {
                 log.warn("Cannot find " + configFile);
@@ -49,15 +55,41 @@ public class Governance {
     }
     
     public String getJbpmUser() {
-        return configuration.getString(GovernanceConstants.GOVERNANCE_CONFIG_JBPM_USER, "admin");
+        return configuration.getString(GovernanceConstants.GOVERNANCE_JBPM_USER, "admin");
     }
     
     public String getJbpmPassword() {
-        return configuration.getString(GovernanceConstants.GOVERNANCE_CONFIG_JBPM_PASSWORD, "admin");
+        return configuration.getString(GovernanceConstants.GOVERNANCE_JBPM_PASSWORD, "admin");
     }
     
     public String getJbpmUrl() {
-        return configuration.getString(GovernanceConstants.GOVERNANCE_CONFIG_JBPM_URL, "http://localhost:8080/gwt-console-server");
+        return configuration.getString(GovernanceConstants.GOVERNANCE_JBPM_URL, "http://localhost:8080/gwt-console-server");
+    }
+    
+    public String getSrampUrl() {
+        return configuration.getString(GovernanceConstants.SRAMP_REPO_URL, "http://localhost:8080/s-ramp-atom") + "/s-ramp";
+    }
+    
+    public Map<String,Target> getTargets() {
+        Map<String,Target> targets = new HashMap<String,Target>();
+        String[] targetStrings = configuration.getStringArray(GovernanceConstants.GOVERNANCE_TARGETS);
+        for (String targetString : targetStrings) {
+            String[] info = targetString.split(":");
+            Target target = new Target(info[0],info[1]);
+            targets.put(target.getName(), target);
+        }
+        return targets;
+    }
+    
+    public Set<Workflow> getWorkflows() {
+        Set<Workflow> workflows = new HashSet<Workflow>();
+        String[] workflowStrings = configuration.getStringArray(GovernanceConstants.GOVERNANCE_WORKFLOWS);
+        for (String workflowString : workflowStrings) {
+            String[] info = workflowString.split(":");
+            Workflow workflow = new Workflow(info[0],info[1]);
+            workflows.add(workflow);
+        }
+        return workflows;
     }
     
 }
