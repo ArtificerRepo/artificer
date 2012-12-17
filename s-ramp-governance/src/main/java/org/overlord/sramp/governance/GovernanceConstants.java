@@ -22,11 +22,16 @@ package org.overlord.sramp.governance;
 public interface GovernanceConstants {
 
     //Configuration constants
-    public static final String GOVERNANCE_CONFIG_FILE_NAME     = "governance.config.file.name";
-    public static final String GOVERNANCE_CONFIG_FILE_REFRESH  = "governance.config.file.refresh";
+    public static final String GOVERNANCE_FILE_NAME     = "governance.file.name";
+    public static final String GOVERNANCE_FILE_REFRESH  = "governance.file.refresh";
+    public static final String SRAMP_REPO_URL           = "sramp.repo.url";
     
     //JBPM connection info
-    public static final String GOVERNANCE_CONFIG_JBPM_USER     = "governance.config.jbpm.user";
-    public static final String GOVERNANCE_CONFIG_JBPM_PASSWORD = "governance.config.jbpm.password";
-    public static final String GOVERNANCE_CONFIG_JBPM_URL      = "governance.config.jbpm.url";
+    public static final String GOVERNANCE_JBPM_USER     = "governance.jbpm.user";
+    public static final String GOVERNANCE_JBPM_PASSWORD = "governance.jbpm.password";
+    public static final String GOVERNANCE_JBPM_URL      = "governance.jbpm.url";
+    
+    //governance.targets
+    public static final String GOVERNANCE_TARGETS       = "governance.targets";
+    public static final String GOVERNANCE_WORKFLOWS     = "governance.workflows";
 }
