@@ -57,84 +57,106 @@ import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
  */
 public class Pkg2SrampCommand extends AbstractShellCommand {
 
+    /**
+     * Main entry point - for use outside the interactive shell.
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String [ ] args) throws Exception {
+        String brmsPackageName = "SRAMPPackage";
+        String tag             = "LATEST";
+        String brmsBaseUrl     = "http://localhost:8080/drools-guvnor";
+        String brmsUserId      = "admin";
+        String brmsPassword    = "admin";
+        if (args.length > 0) brmsPackageName = args[0];
+        if (args.length > 1) tag             = args[1];
+        if (args.length > 2) brmsBaseUrl     = args[2];
+        if (args.length > 3) brmsUserId      = args[3];
+        if (args.length > 4) brmsPassword    = args[4];
+        StringBuilder argLine = new StringBuilder();
+        argLine.append(brmsPackageName)
+                .append(" ").append(tag)
+                .append(" ").append(brmsBaseUrl)
+                .append(" ").append(brmsUserId)
+                .append(" ").append(brmsPassword);
+
+        SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-atom/s-ramp");
+        QName clientVarName = new QName("s-ramp", "client");
+        Pkg2SrampCommand cmd = new Pkg2SrampCommand();
+        ShellContext context = new ShellContextImpl();
+        context.setVariable(clientVarName, client);
+        cmd.setArguments(new Arguments(argLine.toString()));
+        cmd.setContext(context);
+        cmd.execute();
+    }
+
     private ClientRequestFactory fac = null;
 
-	/**
-	 * Constructor.
-	 */
-	public Pkg2SrampCommand() {
-	}
+    /**
+     * Constructor.
+     */
+    public Pkg2SrampCommand() {
+    }
 
-	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("brms:pkg2sramp <brmsPackageName> <tag> <brmsBaseUrl> <brmsUserId> <brmsPassword>");
-	}
+    /**
+     * @see org.overlord.sramp.client.shell.ShellCommand#printUsage()
+     */
+    @Override
+    public void printUsage() {
+        print("brms:pkg2sramp <brmsPackageName> <tag> <brmsBaseUrl> <brmsUserId> <brmsPassword>");
+    }
 
-	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'pkg2sramp' command copies a named BRMS package from the");
-		print("BRMS system and uploads it to the S-RAMP repository.");
-		print("");
-		print("Example usage:");
-		print("> brms:pkg2sramp SRAMPPackage LATEST http://localhost:8080/drools-guvnor admin admin");
-	}
+    /**
+     * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+     */
+    @Override
+    public void printHelp() {
+        print("The 'pkg2sramp' command copies a named BRMS package from the");
+        print("BRMS system and uploads it to the S-RAMP repository.");
+        print("");
+        print("Example usage:");
+        print("> brms:pkg2sramp SRAMPPackage LATEST http://localhost:8080/drools-guvnor admin admin");
+    }
 
-	public static void main(String [ ] args) throws Exception {
-	    SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-atom/s-ramp");
-	    QName clientVarName = new QName("s-ramp", "client");
-	    Pkg2SrampCommand cmd = new Pkg2SrampCommand();
-	    ShellContext context = new ShellContextImpl();
-	    context.setVariable(clientVarName, client);
-	    cmd.setArguments(new Arguments(""));
-	    cmd.setContext(context);
-	    cmd.execute();
-	}
-	
-	/**
-	 * @see org.overlord.sramp.client.shell.ShellCommand#execute()
-	 */
-	@Override
-	public void execute() throws Exception {
-		QName clientVarName = new QName("s-ramp", "client");
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
-		if (client == null) {
-			print("No S-RAMP repository connection is currently open.");
-			return;
-		}
+    /**
+     * @see org.overlord.sramp.client.shell.ShellCommand#execute()
+     */
+    @Override
+    public void execute() throws Exception {
+        QName clientVarName = new QName("s-ramp", "client");
+        SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
+        if (client == null) {
+            print("No S-RAMP repository connection is currently open.");
+            return;
+        }
 
         String brmsPackageName = optionalArgument(0, "SRAMPPackage");
         String tag             = optionalArgument(1, "LATEST");
-        String baseUrl         = optionalArgument(2, "http://localhost:8080/drools-guvnor");
+        String brmsBaseUrl     = optionalArgument(2, "http://localhost:8080/drools-guvnor");
         String brmsUserId      = optionalArgument(3, "admin");
         String brmsPassword    = optionalArgument(4, "admin");
 
         print("Copying BRMS package to S-RAMP using: ");
         print("   brmsPackageName..: %1$s", brmsPackageName);
         print("   tag .............: %1$s", tag);
-        print("   baseUrl..........: %1$s", baseUrl);
+        print("   brmsBaseUrl......: %1$s", brmsBaseUrl);
         print("   brmsUserId.......: %1$s", brmsUserId);
         print("   brmsPassword.....: %1$s", brmsPassword);
 
-		String brmsURLStr = baseUrl + "/rest/packages/";
-		boolean brmsExists = urlExists(brmsURLStr, brmsUserId, brmsPassword);
-		if (!brmsExists) {
-			print("Can't find BRMS endpoint: " + brmsURLStr);
-			return;
-		}
+        String brmsURLStr = brmsBaseUrl + "/rest/packages/";
+        boolean brmsExists = urlExists(brmsURLStr, brmsUserId, brmsPassword);
+        if (!brmsExists) {
+            print("Can't find BRMS endpoint: " + brmsURLStr);
+            return;
+        }
 
-		try {
-            uploadBrmsPackage(baseUrl, brmsPackageName, tag, brmsUserId, brmsPassword, client);
-		} catch (Exception e) {
-			print("FAILED to copy the BRMS package.");
-			print("\t" + e.getMessage());
-		}
-	}
+        try {
+            uploadBrmsPackage(brmsBaseUrl, brmsPackageName, tag, brmsUserId, brmsPassword, client);
+        } catch (Exception e) {
+            print("FAILED to copy the BRMS package.");
+            print("\t" + e.getMessage());
+        }
+    }
 
     /**
      * Returns true if the given URL can be accessed.
@@ -172,7 +194,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
 
     /**
      * Uploads the BMRS package.
-     * @param baseUrl
+     * @param brmsBaseUrl
      * @param pkgName
      * @param tag
      * @param userId
@@ -180,18 +202,18 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
      * @param client
      * @throws Exception
      */
-	public void uploadBrmsPackage(String baseUrl, String pkgName, String tag, String userId, String password,
-			SrampAtomApiClient client) throws Exception {
+    public void uploadBrmsPackage(String brmsBaseUrl, String pkgName, String tag, String userId,
+            String password, SrampAtomApiClient client) throws Exception {
         // http://localhost:8080/drools-guvnor/org.drools.guvnor.Guvnor/package/srampPackage/S_RAMP_0.0.3.0
-        String urlStr = baseUrl + "/org.drools.guvnor.Guvnor/package/" + pkgName + "/" + tag;
+        String urlStr = brmsBaseUrl + "/org.drools.guvnor.Guvnor/package/" + pkgName + "/" + tag;
 
         Credentials credentials = new UsernamePasswordCredentials(userId, password);
         DefaultHttpClient httpClient = new DefaultHttpClient();
         httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
         ClientExecutor clientExecutor = new ApacheHttpClient4Executor(httpClient);
-        fac = new ClientRequestFactory(clientExecutor, new URI(baseUrl));
+        fac = new ClientRequestFactory(clientExecutor, new URI(brmsBaseUrl));
 
-        Map<String, Packages.Package> brmsPkgMap = getPkgsFromBrms(baseUrl);
+        Map<String, Packages.Package> brmsPkgMap = getPkgsFromBrms(brmsBaseUrl);
         if (! brmsPkgMap.containsKey(pkgName)) {
             print("Brms contains the following BRMS Packages");
             for (String name : brmsPkgMap.keySet()) {
@@ -216,10 +238,10 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
 
         Property assetsProperty = new Property();
         assetsProperty.setPropertyName(BrmsConstants.ASSET_INFO_XML);
-        String assetsXml = getAssetsStringFromBrms(baseUrl, pkgName);
+        String assetsXml = getAssetsStringFromBrms(brmsBaseUrl, pkgName);
         //update the links
         String srampUrl = client.getEndpoint().substring(0,client.getEndpoint().lastIndexOf("/"));
-        assetsXml = assetsXml.replaceAll(baseUrl, srampUrl + "/brms");
+        assetsXml = assetsXml.replaceAll(brmsBaseUrl, srampUrl + "/brms");
         assetsProperty.setPropertyValue(assetsXml);
         userDefinedArtifactType.getProperty().add(assetsProperty);
 
@@ -233,7 +255,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
 
         // Now obtaining the assets in the this package, and upload those
         // TODO set relationship to parent pkg
-        Assets assets = getAssetsFromBrms(baseUrl, pkgName);
+        Assets assets = getAssetsFromBrms(brmsBaseUrl, pkgName);
 
         //Upload the process AND process-image, making sure the uuid is identical to the one mentioned
         for (Assets.Asset asset : assets.getAsset()) {
@@ -243,7 +265,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
                 String uuid = asset.getMetadata().getUuid();
                 //reading the asset from disk
                 //http://localhost:8080/drools-guvnor/rest/packages/srampPackage/assets/
-                String assetURLStr = baseUrl + "/rest/packages/" + pkgName + "/assets/" + asset.getTitle() + "/binary";
+                String assetURLStr = brmsBaseUrl + "/rest/packages/" + pkgName + "/assets/" + asset.getTitle() + "/binary";
                 print("Reading asset " + asset.getTitle() + " from url " + assetURLStr );
                 ClientResponse<InputStream> assetResponse = getInputStream(assetURLStr);
                 InputStream assetInputStream = assetResponse.getEntity();
@@ -266,11 +288,11 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
 
     /**
      * Gets the packages from BRMS at the given URL.
-     * @param baseUrl
+     * @param brmsBaseUrl
      * @throws Exception
      */
-    protected Map<String, Packages.Package> getPkgsFromBrms(String baseUrl) throws Exception {
-        String pkgsUrl = baseUrl + "/rest/packages/";
+    protected Map<String, Packages.Package> getPkgsFromBrms(String brmsBaseUrl) throws Exception {
+        String pkgsUrl = brmsBaseUrl + "/rest/packages/";
         print("Reading from " + pkgsUrl + " to find all packages in BRMS..");
         ClientRequest pkgsRequest = fac.createRequest(pkgsUrl);
         pkgsRequest.accept(MediaType.APPLICATION_XML);
@@ -289,12 +311,12 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
 
     /**
      * Gets the assets XML as a string.
-     * @param baseUrl
+     * @param brmsBaseUrl
      * @param pkgName
      * @throws Exception
      */
-    protected String getAssetsStringFromBrms(String baseUrl, String pkgName) throws Exception {
-        String assetsUrl = baseUrl + "/rest/packages/" + pkgName + "/assets";
+    protected String getAssetsStringFromBrms(String brmsBaseUrl, String pkgName) throws Exception {
+        String assetsUrl = brmsBaseUrl + "/rest/packages/" + pkgName + "/assets";
         print("Reading from " + assetsUrl + " to find all assets in package " + pkgName);
         ClientRequest assetsRequest = fac.createRequest(assetsUrl);
         assetsRequest.accept(MediaType.APPLICATION_XML);
@@ -309,12 +331,12 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
 
     /**
      * Gets the assets from BRMS.
-     * @param baseUrl
+     * @param brmsBaseUrl
      * @param pkgName
      * @throws Exception
      */
-    protected Assets getAssetsFromBrms(String baseUrl, String pkgName) throws Exception {
-        String assetsUrl = baseUrl + "/rest/packages/" + pkgName + "/assets";
+    protected Assets getAssetsFromBrms(String brmsBaseUrl, String pkgName) throws Exception {
+        String assetsUrl = brmsBaseUrl + "/rest/packages/" + pkgName + "/assets";
         print("Reading from " + assetsUrl + " to find all assets in package " + pkgName);
         ClientRequest assetsRequest = fac.createRequest(assetsUrl);
         assetsRequest.accept(MediaType.APPLICATION_XML);
