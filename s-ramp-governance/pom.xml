@@ -1,23 +1,23 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.overlord.sramp</groupId>
-		<artifactId>s-ramp</artifactId>
-		<version>0.0.3-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord.sramp</groupId>
+    <artifactId>s-ramp</artifactId>
+    <version>0.0.3-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-  <packaging>war</packaging>
-	<artifactId>s-ramp-governance</artifactId>
-	<name>S-RAMP Governance</name>
-	<description>S-RAMP Governance manages governance workflows.</description>
+  <artifactId>s-ramp-governance</artifactId>
+  <name>S-RAMP Governance</name>
+  <description>S-RAMP Governance manages governance workflows.</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.overlord.sramp</groupId>
-			<artifactId>s-ramp-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-client</artifactId>
@@ -76,25 +76,25 @@
       <scope>provided</scope>
     </dependency>
 
-		<!-- Testing (note the scope) -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>xmlunit</groupId>
-			<artifactId>xmlunit</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <!-- Testing (note the scope) -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>tjws</artifactId>
       <version>${org.jboss.resteasy.version}</version>
       <scope>test</scope>
     </dependency>
-	</dependencies>
- 
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -111,7 +111,28 @@
           </archive>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <attach>true</attach>
+          <descriptors>
+            <descriptor>src/main/assembly/brms.xml</descriptor>
+          </descriptors>
+          <archiverConfig>
+            <defaultDirectoryMode>0755</defaultDirectoryMode>
+          </archiverConfig>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
-  
+
 </project>
