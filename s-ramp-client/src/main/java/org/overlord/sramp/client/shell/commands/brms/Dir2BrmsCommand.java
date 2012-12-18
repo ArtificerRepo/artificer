@@ -256,7 +256,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
                         try {
                             is = jarFile.getInputStream(entry);
                             print("Uploading " + entryName + " -> " + urlStr );
-                            uploadToBrms(entryName, is, addAssetRequest);
+                            uploadToBrms(assetName, is, addAssetRequest);
                         } finally {
                             is.close();
                         }
