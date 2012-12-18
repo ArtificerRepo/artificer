@@ -1,0 +1,1 @@
+brms:dir2brms SRAMPPackage http://localhost:8080/drools-guvnor admin admin bin/s-ramp-workflows-${project.version}.jar

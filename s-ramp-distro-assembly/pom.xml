@@ -85,6 +85,43 @@
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
 		</dependency>
+        <dependency>
+            <groupId>org.overlord.sramp</groupId>
+            <artifactId>s-ramp-governance</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.overlord.sramp</groupId>
+            <artifactId>s-ramp-workflows</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.overlord.sramp</groupId>
+            <artifactId>s-ramp-workitems</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <!-- Dependency on s-ramp-governance BRMS install package -->
+        <dependency>
+            <groupId>org.overlord.sramp</groupId>
+            <artifactId>s-ramp-governance</artifactId>
+            <version>${project.version}</version>
+            <classifier>brms</classifier>
+            <type>zip</type>
+        </dependency>
+        <!-- Dependency on workitems and workflows to include them in the assembly -->
+        <dependency>
+            <groupId>org.overlord.sramp</groupId>
+            <artifactId>s-ramp-workflows</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.overlord.sramp</groupId>
+            <artifactId>s-ramp-workitems</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>
