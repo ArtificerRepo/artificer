@@ -98,6 +98,7 @@
     <move file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" todir="restore" />
     <mkdir dir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
     <unzip src="restore/jbpm-gwt-console-server.war" dest="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
+  	<touch file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war.dodeploy" />
   </target>
 
   <target name="dir.check">
