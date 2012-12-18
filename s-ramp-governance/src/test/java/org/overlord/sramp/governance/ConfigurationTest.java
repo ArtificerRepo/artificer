@@ -27,10 +27,11 @@ import org.junit.Test;
  * @author kurt.stam@redhat.com
  */
 public class ConfigurationTest {
-	
+
 	/**
 	 */
-	@Test
+	@SuppressWarnings("unused")
+    @Test
 	public void testConfigure() {
 	    Governance governance = new Governance();
 	    Map<String,Target> targets = governance.getTargets();
