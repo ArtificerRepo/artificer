@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class Governance {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
-            
+
     public Governance() {
         super();
         if (configuration == null) {
@@ -27,7 +27,7 @@ public class Governance {
     }
 
     private static Configuration configuration = null;
-    
+
     public synchronized void read() {
         try {
             CompositeConfiguration config = new CompositeConfiguration();
@@ -51,23 +51,23 @@ public class Governance {
             throw new RuntimeException(e);
         }
     }
-    
+
     public String getJbpmUser() {
         return configuration.getString(GovernanceConstants.GOVERNANCE_JBPM_USER, "admin");
     }
-    
+
     public String getJbpmPassword() {
         return configuration.getString(GovernanceConstants.GOVERNANCE_JBPM_PASSWORD, "admin");
     }
-    
+
     public String getJbpmUrl() {
         return configuration.getString(GovernanceConstants.GOVERNANCE_JBPM_URL, "http://localhost:8080/gwt-console-server");
     }
-    
+
     public String getSrampUrl() {
         return configuration.getString(GovernanceConstants.SRAMP_REPO_URL, "http://localhost:8080/s-ramp-atom") + "/s-ramp";
     }
-    
+
     public Map<String,Target> getTargets() {
         Map<String,Target> targets = new HashMap<String,Target>();
         String[] targetStrings = configuration.getStringArray(GovernanceConstants.GOVERNANCE_TARGETS);
@@ -78,7 +78,7 @@ public class Governance {
         }
         return targets;
     }
-    
+
     public Set<Workflow> getWorkflows() {
         Set<Workflow> workflows = new HashSet<Workflow>();
         String[] workflowStrings = configuration.getStringArray(GovernanceConstants.GOVERNANCE_WORKFLOWS);
@@ -89,5 +89,5 @@ public class Governance {
         }
         return workflows;
     }
-    
+
 }
