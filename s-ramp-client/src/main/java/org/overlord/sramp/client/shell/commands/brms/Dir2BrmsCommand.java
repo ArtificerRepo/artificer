@@ -214,6 +214,13 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
      */
     public void addAssetsToPackageToBRMS(String brmsBaseUrl, String pkgName, String userId, String password,
             String packagePath) throws Exception {
+        String urlStr = brmsBaseUrl + "/rest/packages/" + pkgName + "/assets";
+        Credentials credentials = new UsernamePasswordCredentials(userId, password);
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
+        ClientExecutor clientExecutor = new ApacheHttpClient4Executor(httpClient);
+        fac = new ClientRequestFactory(clientExecutor, new URI(urlStr));
+
         if (packagePath != null) {
             File packageJar = new File(packagePath);
             if (!packageJar.isFile())
@@ -221,6 +228,16 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
             addAssetsToPackageToBRMSFromJar(brmsBaseUrl, pkgName, userId, password, packageJar);
         } else {
             addAssetsToPackageToBRMSFromClasspath(brmsBaseUrl, pkgName, userId, password);
+        }
+
+        //when done compile the package
+        String urlCompile = brmsBaseUrl + "/rest/packages/" + pkgName + "/binary";
+        ClientRequest compileRequest = fac.createRequest(urlCompile);
+        ClientResponse<InputStream> compileResponse =compileRequest.get(InputStream.class);
+        if (compileResponse.getStatus()==200) {
+            print("Upload complete");
+        } else {
+            System.err.println(compileResponse.getStatus() + " " + compileResponse.getResponseStatus().getReasonPhrase());
         }
     }
 
@@ -235,6 +252,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
     private void addAssetsToPackageToBRMSFromJar(String brmsBaseUrl, String pkgName, String userId,
             String password, File packageJar) throws Exception {
         String urlStr = brmsBaseUrl + "/rest/packages/" + pkgName + "/assets";
+
         Set<String> exclusions = new HashSet<String>();
         exclusions.add(".gitignore");
         exclusions.add(".cvsignore");
@@ -280,12 +298,6 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
             String password) throws Exception {
         String urlStr = brmsBaseUrl + "/rest/packages/" + pkgName + "/assets";
         String dir  = "/governance-workflows/" + pkgName;
-        Credentials credentials = new UsernamePasswordCredentials(userId, password);
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-        httpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
-        ClientExecutor clientExecutor = new ApacheHttpClient4Executor(httpClient);
-        fac = new ClientRequestFactory(clientExecutor, new URI(urlStr));
-
         URL url = this.getClass().getResource(dir);
         if (url==null) throw new Exception ("Could not find " + dir + " on the classpath");
         String path = url.toURI().getSchemeSpecificPart();
@@ -320,15 +332,6 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
                     uploadToBrms(fileName, is, addAssetRequest);
                 }
             }
-        }
-        //when done compile the package
-        String urlCompile = brmsBaseUrl + "/rest/packages/" + pkgName + "/binary";
-        ClientRequest compileRequest = fac.createRequest(urlCompile);
-        ClientResponse<InputStream> compileResponse =compileRequest.get(InputStream.class);
-        if (compileResponse.getStatus()==200) {
-            print("Upload complete");
-        } else {
-            System.err.println(compileResponse.getStatus() + " " + compileResponse.getResponseStatus().getReasonPhrase());
         }
     }
 
