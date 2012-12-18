@@ -6,3 +6,6 @@ sramp.resteasy.url=http://sourceforge.net/projects/resteasy/files/Resteasy%20JAX
 sramp.jbpm5.dir=../jbpm5
 sramp.install.home=${sramp.jbpm5.dir}/jbpm-installer
 sramp.jboss.home=${sramp.install.home}/jboss-as-7.1.1.Final
+sramp.workitems.path=../../s-ramp-workitems/target/s-ramp-workitems-${sramp.version}.jar
+sramp.war.path=../../s-ramp-atom/target/s-ramp-atom.war
+sramp-ui.war.path=../../../s-ramp-ui/s-ramp-ui-gwt/target/s-ramp-ui.war
