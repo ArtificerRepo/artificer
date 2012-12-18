@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -49,17 +51,21 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
         String baseUrl         = "http://localhost:8080/drools-guvnor";
         String brmsUserId      = "admin";
         String brmsPassword    = "admin";
+        String packagePath     = null;
         if (args.length > 0) brmsPackageName = args[0];
         if (args.length > 1) baseUrl         = args[1];
         if (args.length > 2) brmsUserId      = args[2];
         if (args.length > 3) brmsPassword    = args[3];
+        if (args.length > 4) packagePath     = args[4];
         StringBuilder argLine = new StringBuilder();
         argLine.append(brmsPackageName)
                 .append(" ").append(baseUrl)
                 .append(" ").append(brmsUserId)
                 .append(" ").append(brmsPassword);
+        if (packagePath != null)
+            argLine.append(" ").append(packagePath);
 
-        Pkg2SrampCommand cmd = new Pkg2SrampCommand();
+        Dir2BrmsCommand cmd = new Dir2BrmsCommand();
         ShellContext context = new ShellContextImpl();
         cmd.setArguments(new Arguments(argLine.toString()));
         cmd.setContext(context);
@@ -79,7 +85,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
      */
     @Override
     public void printUsage() {
-        print("brms:dir2brms <brmsPackageName> <brmsBaseUrl> <brmsUserId> <brmsPassword>");
+        print("brms:dir2brms <brmsPackageName> <brmsBaseUrl> <brmsUserId> <brmsPassword> <packagePath>");
     }
 
     /**
@@ -92,7 +98,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
         print("only be done when you first install BRMS for use with S-RAMP.");
         print("");
         print("Example usage:");
-        print("> brms:dir2brms SRAMPPackage http://localhost:8080/drools-guvnor admin admin");
+        print("> brms:dir2brms SRAMPPackage http://localhost:8080/drools-guvnor admin admin /home/user/s-ramp-workflows.jar");
     }
 
     /**
@@ -105,17 +111,19 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
             String brmsBaseUrl     = optionalArgument(1, "http://localhost:8080/drools-guvnor");
             String brmsUserId      = optionalArgument(2, "admin");
             String brmsPassword    = optionalArgument(3, "admin");
+            String packagePath     = optionalArgument(4);
 
             print("Copying default governance package to BRMS using: ");
             print("   brmsPackageName..: %1$s", brmsPackageName);
             print("   brmsBaseUrl......: %1$s", brmsBaseUrl);
             print("   brmsUserId.......: %1$s", brmsUserId);
             print("   brmsPassword.....: %1$s", brmsPassword);
+            print("   packagePath......: %1$s", packagePath);
 
             String brmsURLStr = brmsBaseUrl + "/rest/packages/";
             boolean brmsExists = urlExists(brmsURLStr, brmsUserId, brmsPassword);
             if (! brmsExists) {
-                System.out.println("Can't find BRMS endpoint: " + brmsURLStr);
+                print("Can't find BRMS endpoint: " + brmsURLStr);
                 return;
             }
             //create the package if it does not exist
@@ -123,7 +131,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
                 createNewPackage(brmsBaseUrl, brmsPackageName, brmsUserId, brmsPassword);
             }
             //add the assets
-            addAssetsToPackageToBRMS(brmsBaseUrl, brmsPackageName, brmsUserId, brmsPassword);
+            addAssetsToPackageToBRMS(brmsBaseUrl, brmsPackageName, brmsUserId, brmsPassword, packagePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -191,8 +199,8 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
         entry.setSummary("S-RAMP Package containing Governance Workflows");
         createNewPackageRequest.body(MediaType.APPLICATION_ATOM_XML, entry);
         ClientResponse<Entry> newPackageResponse = createNewPackageRequest.post(Entry.class);
-        System.out.println("response status=" + newPackageResponse.getResponseStatus());
-        System.out.println("Create new package with id=" + newPackageResponse.getEntity().getId());
+        print("response status=" + newPackageResponse.getResponseStatus());
+        print("Create new package with id=" + newPackageResponse.getEntity().getId());
     }
 
     /**
@@ -201,9 +209,75 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
      * @param pkgName
      * @param userId
      * @param password
+     * @param packagePath
      * @throws Exception
      */
-    public void addAssetsToPackageToBRMS(String brmsBaseUrl, String pkgName, String userId, String password) throws Exception {
+    public void addAssetsToPackageToBRMS(String brmsBaseUrl, String pkgName, String userId, String password,
+            String packagePath) throws Exception {
+        if (packagePath != null) {
+            File packageJar = new File(packagePath);
+            if (!packageJar.isFile())
+                throw new Exception("Included path to workflows package (JAR) is invalid: " + packagePath);
+            addAssetsToPackageToBRMSFromJar(brmsBaseUrl, pkgName, userId, password, packageJar);
+        } else {
+            addAssetsToPackageToBRMSFromClasspath(brmsBaseUrl, pkgName, userId, password);
+        }
+    }
+
+    /**
+     * Finds the assets from the given JAR file.
+     * @param brmsBaseUrl
+     * @param pkgName
+     * @param userId
+     * @param password
+     * @param packageJar
+     */
+    private void addAssetsToPackageToBRMSFromJar(String brmsBaseUrl, String pkgName, String userId,
+            String password, File packageJar) throws Exception {
+        String urlStr = brmsBaseUrl + "/rest/packages/" + pkgName + "/assets";
+        Set<String> exclusions = new HashSet<String>();
+        exclusions.add(".gitignore");
+        exclusions.add(".cvsignore");
+
+        JarFile jarFile = null;
+        String assetPrefix = "governance-workflows/" + pkgName;
+        try {
+            jarFile = new JarFile(packageJar);
+            Enumeration<JarEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String entryName = entry.getName();
+                if (entryName.startsWith(assetPrefix) && !entry.isDirectory()) {
+                    String assetName = new File(entryName).getName();
+                    if (!exclusions.contains(assetName)) {
+                        print("Processing workflow asset: " + entryName);
+                        ClientRequest addAssetRequest = fac.createRequest(urlStr);
+                        InputStream is = null;
+                        try {
+                            is = jarFile.getInputStream(entry);
+                            print("Uploading " + entryName + " -> " + urlStr );
+                            uploadToBrms(entryName, is, addAssetRequest);
+                        } finally {
+                            is.close();
+                        }
+                    }
+                }
+            }
+        } finally {
+            if (jarFile != null)
+                jarFile.close();
+        }
+    }
+
+    /**
+     * Finds the assets from the current classpath.
+     * @param brmsBaseUrl
+     * @param pkgName
+     * @param userId
+     * @param password
+     */
+    private void addAssetsToPackageToBRMSFromClasspath(String brmsBaseUrl, String pkgName, String userId,
+            String password) throws Exception {
         String urlStr = brmsBaseUrl + "/rest/packages/" + pkgName + "/assets";
         String dir  = "/governance-workflows/" + pkgName;
         Credentials credentials = new UsernamePasswordCredentials(userId, password);
@@ -228,7 +302,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
             for (File file : fileList) {
                 ClientRequest addAssetRequest = fac.createRequest(urlStr);
                 InputStream is = file.toURI().toURL().openStream();
-                System.out.println("uploading " + file.getName() + " -> " + urlStr );
+                print("uploading " + file.getName() + " -> " + urlStr );
                 uploadToBrms(file.getName(), is, addAssetRequest);
             }
         } else if (path.indexOf("!") > 0) {
@@ -242,7 +316,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
                     String fileName = name.substring(name.lastIndexOf("/")+1,name.length());
                     InputStream is = this.getClass().getResourceAsStream("/" + name);
                     ClientRequest addAssetRequest = fac.createRequest(urlStr);
-                    System.out.println("uploading " + name + " -> " + urlStr );
+                    print("uploading " + name + " -> " + urlStr );
                     uploadToBrms(fileName, is, addAssetRequest);
                 }
             }
@@ -252,7 +326,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
         ClientRequest compileRequest = fac.createRequest(urlCompile);
         ClientResponse<InputStream> compileResponse =compileRequest.get(InputStream.class);
         if (compileResponse.getStatus()==200) {
-            System.out.println("Upload complete");
+            print("Upload complete");
         } else {
             System.err.println(compileResponse.getStatus() + " " + compileResponse.getResponseStatus().getReasonPhrase());
         }
@@ -273,7 +347,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
         int status = uploadAssetResponse.getStatus();
         String response = uploadAssetResponse.getEntity();
         if (200 == status) {
-            System.out.println(response);
+            print(response);
         } else {
             System.err.println("Upload to BRMS failed with response status = " + status);
         }
