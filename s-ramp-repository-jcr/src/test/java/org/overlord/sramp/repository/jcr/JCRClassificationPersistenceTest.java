@@ -21,8 +21,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampException;
 import org.overlord.sramp.ontology.SrampOntology;
-import org.overlord.sramp.repository.RepositoryException;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
@@ -60,9 +60,9 @@ public class JCRClassificationPersistenceTest extends AbstractJCRPersistenceTest
     }
 
 	/**
-	 * @throws RepositoryException
+	 * @throws SrampException
 	 */
-	private SrampOntology createOntology() throws RepositoryException {
+	private SrampOntology createOntology() throws SrampException {
     	SrampOntology ontology = new SrampOntology();
     	ontology.setBase("urn:example.org/test2");
     	ontology.setLabel("Test Ontology #2");

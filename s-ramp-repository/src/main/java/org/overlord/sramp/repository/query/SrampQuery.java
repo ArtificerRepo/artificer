@@ -17,6 +17,7 @@ package org.overlord.sramp.repository.query;
 
 import java.math.BigInteger;
 
+import org.overlord.sramp.SrampException;
 import org.overlord.sramp.repository.QueryManager;
 
 /**
@@ -43,7 +44,7 @@ import org.overlord.sramp.repository.QueryManager;
  * @author eric.wittmann@redhat.com
  */
 public interface SrampQuery {
-	
+
 	/**
 	 * Sets the value of the next replacement as a quoted string literal.
 	 * @param paramValue the replacement parameter value
@@ -85,6 +86,6 @@ public interface SrampQuery {
 	 * and return a set of s-ramp artifacts.
 	 * @return a set of s-ramp artifacts
 	 */
-	public ArtifactSet executeQuery() throws InvalidQueryException, QueryExecutionException;
-	
+	public ArtifactSet executeQuery() throws SrampException;
+
 }

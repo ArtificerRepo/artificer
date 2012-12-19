@@ -18,11 +18,11 @@ package org.overlord.sramp.repository.jcr;
 import java.net.URI;
 import java.util.Collection;
 
-import org.overlord.sramp.repository.RepositoryException;
+import org.overlord.sramp.SrampException;
 
 
 /**
- * This interfaced is used to assist with Classification related tasks.  For
+ * This interface is used to assist with Classification related tasks.  For
  * example, it is used to verify and normalize the classifications on an artifact
  * during create and update of an artifact's meta data.  It's also used in the
  * query layer to resolve classifications to URIs from simple IDs (in the various
@@ -38,17 +38,17 @@ public interface ClassificationHelper {
 	 * cannot be resolved using any of the ontologies known to the S-RAMP repository
 	 * then an exception will be thrown.
 	 * @param classifiedBy
-	 * @throws RepositoryException
+	 * @throws SrampException
 	 */
-	public URI resolve(String classifiedBy) throws RepositoryException;
+	public URI resolve(String classifiedBy) throws SrampException;
 
 	/**
 	 * Normalizes a single classification URI to the list of URIs matching itself and all
 	 * of its ancestors within its ontology.
 	 * @param classification
-	 * @throws RepositoryException
+	 * @throws SrampException
 	 */
-	public Collection<URI> normalize(URI classification) throws RepositoryException;
+	public Collection<URI> normalize(URI classification) throws SrampException;
 
 	/**
 	 * Resolves all of the "classified-by" values into full URIs.  Note that these
@@ -56,15 +56,17 @@ public interface ClassificationHelper {
 	 * this method also serves to validate all of the values.  If one of the values
 	 * cannot be resolved to an existing ontology, this method will throw.
 	 * @param classifiedBy
+     * @throws SrampException
 	 */
-	public Collection<URI> resolveAll(Collection<String> classifiedBy) throws RepositoryException;
+	public Collection<URI> resolveAll(Collection<String> classifiedBy) throws SrampException;
 
 	/**
 	 * Normalizes all of the classification URIs.  In this context, normalizing the
 	 * cassifications means walking up the ontology and including all ancestors along
 	 * with the specified classifications themselves.
 	 * @param classifications
+     * @throws SrampException
 	 */
-	public Collection<URI> normalizeAll(Collection<URI> classifications) throws RepositoryException;
+	public Collection<URI> normalizeAll(Collection<URI> classifications) throws SrampException;
 
 }

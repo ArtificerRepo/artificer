@@ -15,12 +15,14 @@
  */
 package org.overlord.sramp.repository.query;
 
+import org.overlord.sramp.SrampUserException;
+
 /**
  * Exception thrown when an s-ramp query is not valid.
  *
  * @author eric.wittmann@redhat.com
  */
-public class InvalidQueryException extends Exception {
+public class InvalidQueryException extends SrampUserException {
 
     private static final long serialVersionUID = InvalidQueryException.class.hashCode();
 

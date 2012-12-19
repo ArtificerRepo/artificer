@@ -57,7 +57,7 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
  * @author eric.wittmann@redhat.com
  */
 @Path("/s-ramp")
-public class OntologyResource {
+public class OntologyResource extends AbstractResource {
 
 	private static Logger logger = LoggerFactory.getLogger(OntologyResource.class);
 
@@ -104,7 +104,7 @@ public class OntologyResource {
 			entry.setAnyOtherJAXBObject(responseRDF);
 			return entry;
         } catch (Exception e) {
-        	logger.error("Error creating a new ontology.", e);
+        	logError(logger, "Error creating a new ontology.", e);
 			throw new SrampAtomException(e);
         }
     }
@@ -128,7 +128,7 @@ public class OntologyResource {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateOntology(ontology);
         } catch (Exception e) {
-        	logger.error("Error updating an ontology with UUID: " + uuid, e);
+        	logError(logger, "Error updating an ontology with UUID: " + uuid, e);
 			throw new SrampAtomException(e);
         }
     }
@@ -162,7 +162,7 @@ public class OntologyResource {
 			entry.setAnyOtherJAXBObject(responseRDF);
 			return entry;
         } catch (Exception e) {
-        	logger.error("Error getting an ontology with UUID: " + uuid, e);
+        	logError(logger, "Error getting an ontology with UUID: " + uuid, e);
 			throw new SrampAtomException(e);
         }
     }
@@ -181,7 +181,7 @@ public class OntologyResource {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.deleteOntology(uuid);
         } catch (Exception e) {
-        	logger.error("Error deleting an ontology with UUID: " + uuid, e);
+        	logError(logger, "Error deleting an ontology with UUID: " + uuid, e);
 			throw new SrampAtomException(e);
         }
     }
@@ -221,7 +221,7 @@ public class OntologyResource {
 
 			return feed;
         } catch (Exception e) {
-        	logger.error("Error getting the list of ontologies.", e);
+        	logError(logger, "Error getting the list of ontologies.", e);
 			throw new SrampAtomException(e);
         }
 	}
