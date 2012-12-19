@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Base class for all resources that respond with Atom Feeds.
  */
-public abstract class AbstractFeedResource {
+public abstract class AbstractFeedResource extends AbstractResource {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractFeedResource.class);
 
@@ -86,7 +86,7 @@ public abstract class AbstractFeedResource {
 			addPaginationLinks(feed, artifactSet, query, startIndex, count, orderBy, ascending);
 			return feed;
 		} catch (Throwable e) {
-			logger.error("Error trying to create an Artifact Feed.", e);
+			logError(logger, "Error trying to create an Artifact Feed.", e);
 			throw new SrampAtomException(e);
 		} finally {
 			if (artifactSet != null)

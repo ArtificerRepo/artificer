@@ -15,12 +15,14 @@
  */
 package org.overlord.sramp.repository.query;
 
+import org.overlord.sramp.SrampServerException;
+
 /**
  * Exception thrown when an s-ramp query fails.
  *
  * @author eric.wittmann@redhat.com
  */
-public class QueryExecutionException extends Exception {
+public class QueryExecutionException extends SrampServerException {
 
     private static final long serialVersionUID = QueryExecutionException.class.hashCode();
 

@@ -702,7 +702,7 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 			request.get(String.class);
 			Assert.fail("Expected an 'Artifact not found.' error here.");
 		} catch (SrampAtomException e) {
-			Assert.assertEquals("Artifact not found.", e.getMessage());
+			Assert.assertTrue(e.getMessage().startsWith("No artifact found with UUID:"));
 		}
 	}
 

@@ -33,7 +33,7 @@ import org.overlord.sramp.atom.workspaces.WsdlWorkspace;
 import org.overlord.sramp.atom.workspaces.XsdWorkspace;
 
 @Path("/s-ramp")
-public class ServiceDocumentResource {
+public class ServiceDocumentResource extends AbstractResource {
 
 	@Context
 	private UriInfo uriInfo;
