@@ -31,10 +31,10 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
  */
 public class SimpleClientDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-atom/s-ramp";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-atom";
 	private static final String[] FILES = { "ws-humantask.xsd", "ws-humantask-context.xsd",
-			"ws-humantask-policy.xsd", "ws-humantask-types.xsd", "ws-humantask-api.wsdl",
-			"ws-humantask-leantask-api.wsdl", "ws-humantask-protocol.wsdl" };
+			"ws-humantask-policy.xsd", "ws-humantask-types.xsd", "ws-humantask-leantask-api.wsdl",
+			"ws-humantask-protocol.wsdl" };
 
 	/**
 	 * Main.

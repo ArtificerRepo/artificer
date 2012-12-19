@@ -73,7 +73,7 @@
 				<repository>
 					<id>local-sramp-repo</id>
 					<name>Local S-RAMP Repository</name>
-					<url>sramp://localhost:8080/s-ramp-atom/s-ramp/</url>
+					<url>sramp://localhost:8080/s-ramp-atom/</url>
 					<layout>default</layout>
 					<releases>
 						<enabled>true</enabled>
