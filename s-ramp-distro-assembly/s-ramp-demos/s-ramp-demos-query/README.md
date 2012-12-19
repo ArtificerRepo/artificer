@@ -12,7 +12,7 @@ To run the demo, simply do the following:
 
 *Note* - the demo expects the S-RAMP Atom API endpoint to be located at:
 
-	http://localhost:8080/s-ramp-atom/s-ramp
+	http://localhost:8080/s-ramp-atom
 
 If you are running the S-RAMP repository on some other port or deployed in some other way
 you can customize where the demo looks for the Atom API.  For example:

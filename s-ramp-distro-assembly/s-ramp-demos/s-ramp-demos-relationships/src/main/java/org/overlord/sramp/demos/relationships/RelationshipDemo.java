@@ -31,7 +31,7 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
  */
 public class RelationshipDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-atom/s-ramp";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-atom";
 
 	/**
 	 * Main.
