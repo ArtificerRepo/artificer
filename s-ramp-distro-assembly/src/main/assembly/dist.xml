@@ -99,6 +99,12 @@
             <directoryMode>0755</directoryMode>
             <fileMode>0755</fileMode>
             <unpack>true</unpack>
+            <unpackOptions>
+                <excludes>
+                    <exclude>build.properties-example</exclude>
+                    <exclude>README.txt</exclude>
+                </excludes>
+            </unpackOptions>
         </dependencySet>
 	</dependencySets>
 	<fileSets>
