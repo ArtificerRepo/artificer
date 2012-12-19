@@ -80,7 +80,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
                 .append(" ").append(brmsUserId)
                 .append(" ").append(brmsPassword);
 
-        SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-atom/s-ramp");
+        SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-atom");
         QName clientVarName = new QName("s-ramp", "client");
         Pkg2SrampCommand cmd = new Pkg2SrampCommand();
         ShellContext context = new ShellContextImpl();

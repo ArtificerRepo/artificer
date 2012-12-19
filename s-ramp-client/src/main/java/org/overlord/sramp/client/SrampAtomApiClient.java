@@ -73,6 +73,9 @@ public class SrampAtomApiClient {
 		if (this.endpoint.endsWith("/")) {
 			this.endpoint = this.endpoint.substring(0, this.endpoint.length()-1);
 		}
+		if (!this.endpoint.endsWith("/s-ramp")) {
+		    this.endpoint += "/s-ramp";
+		}
 	}
 
 	/**

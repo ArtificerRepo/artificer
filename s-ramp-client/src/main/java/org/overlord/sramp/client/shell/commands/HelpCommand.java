@@ -110,7 +110,7 @@ public class HelpCommand extends AbstractShellCommand {
 		print("");
 		print("To execute a specific command, try '<namespace>:<commandName> <args>'.");
 		print("Some examples:");
-		print("   s-ramp:connect http://localhost:8080/s-ramp-atom/s-ramp");
+		print("   s-ramp:connect http://localhost:8080/s-ramp-atom");
 		print("   archive:open /home/uname/files/my-package.sramp");
 		print("");
 	}
