@@ -54,7 +54,7 @@ public class ConnectCommand extends AbstractShellCommand {
 		print("'--disableValidation' option is set.");
 		print("");
 		print("Example usage:");
-		print(">  s-ramp:connect http://localhost:8080/s-ramp-atom/s-ramp");
+		print(">  s-ramp:connect http://localhost:8080/s-ramp-atom");
 		print(">  s-ramp:connect http://example.org/s-ramp --disableValidation");
 	}
 
@@ -86,7 +86,7 @@ public class ConnectCommand extends AbstractShellCommand {
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
 		if (getArguments().isEmpty()) {
-			candidates.add("http://localhost:8080/s-ramp-atom/s-ramp");
+			candidates.add("http://localhost:8080/s-ramp-atom");
 			return 0;
 		} else {
 			return -1;
