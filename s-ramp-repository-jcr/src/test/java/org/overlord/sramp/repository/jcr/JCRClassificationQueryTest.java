@@ -21,8 +21,8 @@ import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.overlord.sramp.SrampException;
 import org.overlord.sramp.ontology.SrampOntology;
-import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
@@ -31,7 +31,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Document;
 
 /**
  * Tests that classifications can be queried.
- * 
+ *
  * @author eric.wittmann@redhat.com
  */
 public class JCRClassificationQueryTest extends AbstractJCRPersistenceTest {
@@ -103,9 +103,9 @@ public class JCRClassificationQueryTest extends AbstractJCRPersistenceTest {
 	}
 
 	/**
-	 * @throws RepositoryException
+	 * @throws SrampException
 	 */
-	private SrampOntology createOntology() throws RepositoryException {
+	private SrampOntology createOntology() throws SrampException {
 		SrampOntology ontology = new SrampOntology();
 		ontology.setBase("urn:example.org/test2");
 		ontology.setLabel("Test Ontology #2");
@@ -148,9 +148,9 @@ public class JCRClassificationQueryTest extends AbstractJCRPersistenceTest {
 	}
 
 	/**
-	 * @throws RepositoryException
+	 * @throws SrampException
 	 */
-	private Document addDocument(String name, String ... classifications) throws RepositoryException {
+	private Document addDocument(String name, String ... classifications) throws SrampException {
 		InputStream contentStream = null;
 		try {
 			String artifactFileName = "s-ramp-press-release.pdf";

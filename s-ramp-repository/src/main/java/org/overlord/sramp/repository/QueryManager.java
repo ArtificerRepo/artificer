@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.repository;
 
+import org.overlord.sramp.SrampException;
 import org.overlord.sramp.repository.query.SrampQuery;
 
 /**
@@ -32,7 +33,7 @@ public interface QueryManager {
 	 * <code>/s-ramp/xsd/XsdDocument[@prop1 = ?]</code>
 	 * <br/>
 	 * <br/>
-	 * This method will create the {@link SrampQuery} object, which can then be 
+	 * This method will create the {@link SrampQuery} object, which can then be
 	 * used to bind real values to the template and finally execute the query. An
 	 * example illustrates the idea:<br/>
 	 * <br/>
@@ -46,17 +47,17 @@ public interface QueryManager {
 	 * @param orderByProperty property name to use when sorting
 	 * @param orderAscending whether to sort ascending
 	 * @return a new {@link SrampQuery} object
-	 * @throws RepositoryException
+	 * @throws SrampException
 	 */
-	public SrampQuery createQuery(String xpathTemplate, String orderByProperty, boolean orderAscending) throws RepositoryException;
+	public SrampQuery createQuery(String xpathTemplate, String orderByProperty, boolean orderAscending) throws SrampException;
 
 	/**
 	 * Create an s-ramp query from the given xpath template.  No order-by hints are given,
 	 * so the s-ramp repository is free to return the artifacts in any arbitrary order.
 	 * @param xpathTemplate the templatized xpath
 	 * @return a new {@link SrampQuery} object
-	 * @throws RepositoryException
+	 * @throws SrampException
 	 */
-	public SrampQuery createQuery(String xpathTemplate) throws RepositoryException;
+	public SrampQuery createQuery(String xpathTemplate) throws SrampException;
 
 }

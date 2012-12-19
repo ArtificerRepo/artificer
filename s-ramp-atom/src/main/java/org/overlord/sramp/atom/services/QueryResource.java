@@ -82,7 +82,7 @@ public class QueryResource extends AbstractFeedResource {
 			}
 			return query(query, startIndex, count, orderBy, asc, propNames, baseUrl);
 		} catch (Throwable e) {
-			logger.error("Error executing S-RAMP query: " + query, e);
+			logError(logger, "Error executing S-RAMP query: " + query, e);
 			throw new SrampAtomException(e);
 		}
 	}
@@ -112,10 +112,9 @@ public class QueryResource extends AbstractFeedResource {
 			}
 			return query(query, startIndex, count, orderBy, asc, propNames, baseUrl);
 		} catch (SrampAtomException e) {
-			logger.error("Error executing S-RAMP query: " + query, e);
 			throw e;
 		} catch (Throwable e) {
-			logger.error("Error executing S-RAMP query: " + query, e);
+			logError(logger, "Error executing S-RAMP query: " + query, e);
 			throw new SrampAtomException(e);
 		}
 	}

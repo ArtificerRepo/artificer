@@ -36,6 +36,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import org.overlord.sramp.SrampException;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
@@ -609,10 +610,11 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public static interface JCRReferenceFactory {
 		/**
 		 * Creates a reference value to another JCR node.
-		 * @param otherNode the node being referenced
+         * @param uuid UUID of target artifact
 		 * @return a reference Value
+		 * @throws SrampException
 		 */
-		public Value createReference(String uuid) throws Exception;
+		public Value createReference(String uuid) throws SrampException;
 	}
 
 }

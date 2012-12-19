@@ -19,20 +19,21 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.overlord.sramp.SrampException;
 import org.overlord.sramp.query.xpath.XPathParser;
 import org.overlord.sramp.query.xpath.ast.Query;
 
 /**
  * A base class for concrete implementations of the {@link SrampQuery} interface.  This
  * base class does a lot of the common work, such as managing the replacement of params
- * in the xpath template.  It frees up individual providers to focus on the 
+ * in the xpath template.  It frees up individual providers to focus on the
  *
  * @author eric.wittmann@redhat.com
  */
 public abstract class AbstractSrampQueryImpl implements SrampQuery {
 
 	private static final XPathParser sParser = new XPathParser();
-	
+
 	private String xpathTemplate;
 	private List<QueryReplacementParam<?>> replacementParams = new ArrayList<QueryReplacementParam<?>>();
 	private String orderByProperty;
@@ -144,7 +145,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	 * @see org.overlord.sramp.repository.query.SrampQuery#executeQuery()
 	 */
 	@Override
-	public final ArtifactSet executeQuery() throws InvalidQueryException, QueryExecutionException {
+	public final ArtifactSet executeQuery() throws SrampException {
 		String xpathTemplate = getXpathTemplate();
 		String xpath = formatQuery(xpathTemplate, this.replacementParams);
 		Query queryModel = parseXPath(xpath);
@@ -158,7 +159,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	 * @param replacementParams replacements for the template's ?'s
 	 * @return final xpath used to query the s-ramp repository
 	 */
-	protected static final String formatQuery(String xpathTemplate, List<QueryReplacementParam<?>> replacementParams) 
+	protected static final String formatQuery(String xpathTemplate, List<QueryReplacementParam<?>> replacementParams)
 			throws InvalidQueryException {
 		StringBuilder builder = new StringBuilder();
 		String [] xpathSegments = xpathTemplate.split("\\?");
@@ -176,7 +177,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 		}
 		if (replacementParams.size() > paramCounter)
 			throw new InvalidQueryException("Too many query replacement parameters provided.");
-			
+
 		return builder.toString();
 	}
 
@@ -184,15 +185,15 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	 * Parse the given xpath into an AST.
 	 * @param xpath an s-ramp xpath query
 	 * @return a {@link Query}
-	 * @throws InvalidQueryException 
+	 * @throws InvalidQueryException
 	 */
 	protected static final Query parseXPath(String xpath) throws InvalidQueryException {
 		try {
 			return sParser.parseXPath(xpath);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new InvalidQueryException("Query failed to parse.", e);
 		}
-	}	
+	}
 
 	/**
 	 * Perform some static validation of the s-ramp query.
@@ -207,6 +208,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	 * Executes the s-ramp xpath query, returning a set of artifacts.
 	 * @param queryModel the s-ramp query model
 	 * @return a set of s-ramp artifacts
+	 * @throws SrampException
 	 */
-	protected abstract ArtifactSet executeQuery(Query queryModel) throws QueryExecutionException;
+	protected abstract ArtifactSet executeQuery(Query queryModel) throws SrampException;
 }

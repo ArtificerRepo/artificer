@@ -17,6 +17,7 @@ package org.overlord.sramp.repository.jcr.query;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.overlord.sramp.ArtifactTypeEnum;
 import org.overlord.sramp.SrampConstants;
+import org.overlord.sramp.SrampException;
 import org.overlord.sramp.query.xpath.ast.AndExpr;
 import org.overlord.sramp.query.xpath.ast.Argument;
 import org.overlord.sramp.query.xpath.ast.ArtifactSet;
@@ -41,7 +43,6 @@ import org.overlord.sramp.query.xpath.ast.Query;
 import org.overlord.sramp.query.xpath.ast.RelationshipPath;
 import org.overlord.sramp.query.xpath.ast.SubartifactSet;
 import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
-import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 
@@ -84,6 +85,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	private String predicateContext = "artifact";
 	private int relationshipJoinCounter = 1;
 	private ClassificationHelper classificationHelper;
+	private SrampException error;
 
 	/**
 	 * Default constructor.
@@ -96,7 +98,10 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	/**
 	 * Returns the sql-2 query created by this visitor.
 	 */
-	public String getSql2Query() {
+	public String getSql2Query() throws SrampException {
+	    if (this.error != null) {
+	        throw this.error;
+	    }
 		String query = "SELECT artifact.* FROM " + fromBuilder.toString() + " WHERE " + whereBuilder.toString();
 		return query;
 	}
@@ -106,6 +111,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(Query node) {
+	    this.error = null;
 		this.fromBuilder.append("[sramp:baseArtifactType] AS artifact");
 		node.getArtifactSet().accept(this);
 		if (node.getPredicate() != null) {
@@ -308,8 +314,9 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		}
 		try {
 			return this.classificationHelper.resolveAll(classifiedBy);
-		} catch (RepositoryException e) {
-			throw new RuntimeException(e);
+		} catch (SrampException e) {
+		    this.error = e;
+		    return Collections.emptySet();
 		}
 	}
 

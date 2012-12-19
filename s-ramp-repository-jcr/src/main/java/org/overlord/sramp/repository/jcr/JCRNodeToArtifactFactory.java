@@ -21,7 +21,8 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.repository.RepositoryException;
+import org.overlord.sramp.SrampException;
+import org.overlord.sramp.SrampServerException;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToArtifactVisitor;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToArtifactVisitor.JCRReferenceResolver;
 import org.overlord.sramp.visitors.ArtifactVisitor;
@@ -65,9 +66,10 @@ public final class JCRNodeToArtifactFactory {
 	 * @param jcrNode a node in the JCR repo
 	 * @param artifactType the type of artifact represented by the {@link Node}
 	 * @return S-RAMP artifact
-	 * @throws RepositoryException
+	 * @throws SrampException
 	 */
-	public static BaseArtifactType createArtifact(final Session session, Node jcrNode, ArtifactType artifactType) throws RepositoryException {
+    public static BaseArtifactType createArtifact(final Session session, Node jcrNode,
+            ArtifactType artifactType) throws SrampException {
 		try {
 			Class<?> artifactClass = artifactType.getArtifactType().getTypeClass();
 			BaseArtifactType artifact = (BaseArtifactType) artifactClass.newInstance();
@@ -87,14 +89,14 @@ public final class JCRNodeToArtifactFactory {
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return artifact;
 		} catch (InstantiationException e) {
-			throw new RepositoryException(e);
+			throw new SrampServerException(e);
 		} catch (IllegalAccessException e) {
-			throw new RepositoryException(e);
+			throw new SrampServerException(e);
 		} catch (RuntimeException e) {
 			if (e.getCause() != null) {
-				throw new RepositoryException(e.getCause());
+				throw new SrampServerException(e.getCause());
 			} else {
-				throw new RepositoryException(e);
+				throw new SrampServerException(e);
 			}
 		}
 	}
