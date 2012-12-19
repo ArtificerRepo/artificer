@@ -72,7 +72,7 @@ public class Governance {
         Map<String,Target> targets = new HashMap<String,Target>();
         String[] targetStrings = configuration.getStringArray(GovernanceConstants.GOVERNANCE_TARGETS);
         for (String targetString : targetStrings) {
-            String[] info = targetString.split(":");
+            String[] info = targetString.split("\\|");
             Target target = new Target(info[0],info[1]);
             targets.put(target.getName(), target);
         }
@@ -83,8 +83,8 @@ public class Governance {
         Set<Workflow> workflows = new HashSet<Workflow>();
         String[] workflowStrings = configuration.getStringArray(GovernanceConstants.GOVERNANCE_WORKFLOWS);
         for (String workflowString : workflowStrings) {
-            String[] info = workflowString.split(":");
-            Workflow workflow = new Workflow(info[0],info[1]);
+            String[] info = workflowString.split("\\|");
+            Workflow workflow = new Workflow(info[0],info[1],info[2]);
             workflows.add(workflow);
         }
         return workflows;
