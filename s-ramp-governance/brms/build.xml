@@ -71,7 +71,7 @@
   <target name="upload.to.brms.fromdist" if="is.dist">
     <java jar="bin/s-ramp-shell-${sramp.version}.jar" fork="true">
       <arg value="-f" />
-      <arg value="upload-to-brms.cmds.txt" />
+      <arg value="updates/upload-to-brms.cmds.txt" />
     </java>
   </target>
 
@@ -83,7 +83,7 @@
   <target name="brms.to.sramp.fromdist" if="is.dist">
     <java jar="bin/s-ramp-shell-${sramp.version}.jar" fork="true">
       <arg value="-f" />
-      <arg value="brms-to-sramp.cmds.txt" />
+      <arg value="updates/brms-to-sramp.cmds.txt" />
     </java>
   </target>
 
@@ -98,6 +98,7 @@
     <move file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" todir="restore" />
     <mkdir dir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
     <unzip src="restore/jbpm-gwt-console-server.war" dest="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
+  	<touch file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war.dodeploy" />
   </target>
 
   <target name="dir.check">

@@ -65,7 +65,7 @@ public class Governance {
     }
 
     public String getSrampUrl() {
-        return configuration.getString(GovernanceConstants.SRAMP_REPO_URL, "http://localhost:8080/s-ramp-atom") + "/s-ramp";
+        return configuration.getString(GovernanceConstants.SRAMP_REPO_URL, "http://localhost:8080/s-ramp-atom");
     }
 
     public Map<String,Target> getTargets() {
