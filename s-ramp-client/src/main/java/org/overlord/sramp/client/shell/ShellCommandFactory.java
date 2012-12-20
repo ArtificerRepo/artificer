@@ -15,8 +15,16 @@
  */
 package org.overlord.sramp.client.shell;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -25,6 +33,7 @@ import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.io.FileUtils;
 import org.overlord.sramp.client.shell.commands.CommandNotFoundCommand;
 import org.overlord.sramp.client.shell.commands.ExitCommand;
 import org.overlord.sramp.client.shell.commands.HelpCommand;
@@ -37,8 +46,6 @@ import org.overlord.sramp.client.shell.commands.archive.OpenArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.PackArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.client.shell.commands.archive.UpdateEntryArchiveCommand;
-import org.overlord.sramp.client.shell.commands.brms.Dir2BrmsCommand;
-import org.overlord.sramp.client.shell.commands.brms.Pkg2SrampCommand;
 import org.overlord.sramp.client.shell.commands.core.ClassificationCommand;
 import org.overlord.sramp.client.shell.commands.core.ConnectCommand;
 import org.overlord.sramp.client.shell.commands.core.DisconnectCommand;
@@ -113,20 +120,66 @@ public class ShellCommandFactory {
 		registry.put(new QName("ontology", "list"), ListOntologiesCommand.class);
 		registry.put(new QName("ontology", "delete"), DeleteOntologyCommand.class);
 
-		// BRMS commands
-        registry.put(new QName("brms", "dir2brms"), Dir2BrmsCommand.class);
-        registry.put(new QName("brms", "pkg2sramp"), Pkg2SrampCommand.class);
+		discoverContributedCommands();
+	}
 
-		// Register commands contributed via the Java Service mechanism
-        for (ShellCommandProvider provider : ServiceLoader.load(ShellCommandProvider.class)) {
-        	Map<String, Class<? extends ShellCommand>> commands = provider.provideCommands();
-        	for (Map.Entry<String, Class<? extends ShellCommand>> entry : commands.entrySet()) {
-        		QName qualifiedCmdName = new QName(provider.getNamespace(), entry.getKey());
-        		registry.put(qualifiedCmdName, entry.getValue());
-        	}
+    /**
+     * Discover any contributed commands, both on the classpath and registered
+     * in the .sramp/commands.ini file in the user's home directory.
+     */
+    private void discoverContributedCommands() {
+        List<ClassLoader> commandClassloaders = new ArrayList<ClassLoader>();
+        commandClassloaders.add(Thread.currentThread().getContextClassLoader());
+
+        // Register commands listed in the user's commands.ini config file
+        String userHome = System.getProperty("user.home", "/");
+        String commandsFileName = System.getProperty("s-ramp.shell.commandsIni",
+                userHome + "/.s-ramp/commands.ini");
+        File commandsFile = new File(commandsFileName);
+        if (commandsFile.isFile()) {
+            try {
+                List<String> lines = FileUtils.readLines(commandsFile);
+                for (String line : lines) {
+                    if (!line.startsWith("#") && line.trim().length() > 0) {
+                        try {
+                            File f = new File(line);
+                            if (f.exists()) {
+                                commandClassloaders.add(new URLClassLoader(new URL[] { f.toURI().toURL() }));
+                            }
+                            continue;
+                        } catch (Throwable t) {
+                            // skip error
+                        }
+                        try {
+                            URL url = new URL(line);
+                            URLConnection urlConnection = url.openConnection();
+                            InputStream inputStream = urlConnection.getInputStream();
+                            inputStream.close();
+                            // We have a valid URL!
+                            commandClassloaders.add(new URLClassLoader(new URL[] { url }));
+                        } catch (Throwable t) {
+                            // skip error
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
-	}
+        // Now that we have identified all ClassLoaders to check for commands, iterate
+        // through them all and use the Java ServiceLoader mechanism to actually
+        // load the commands.
+        for (ClassLoader classLoader : commandClassloaders) {
+            for (ShellCommandProvider provider : ServiceLoader.load(ShellCommandProvider.class, classLoader)) {
+                Map<String, Class<? extends ShellCommand>> commands = provider.provideCommands();
+                for (Map.Entry<String, Class<? extends ShellCommand>> entry : commands.entrySet()) {
+                    QName qualifiedCmdName = new QName(provider.getNamespace(), entry.getKey());
+                    registry.put(qualifiedCmdName, entry.getValue());
+                }
+            }
+        }
+    }
 
 	/**
 	 * Called to create a shell command.
