@@ -9,8 +9,17 @@ rem
 rem ---------------------------------------------------------------------------
 @echo on
 
+@if not "%ECHO%" == ""  echo %ECHO%
+@if "%OS%" == "Windows_NT" setlocal
+
+if "%OS%" == "Windows_NT" (
+  set "DIRNAME=%~dp0%"
+) else (
+  set DIRNAME=.\
+)
+
 if not exist "%JAVA_HOME%\bin\java.exe" goto noJava
-%JAVA_HOME%/bin/java.exe -jar s-ramp-shell-${project.version}.jar %*
+%JAVA_HOME%/bin/java.exe -jar %DIRNAME%\s-ramp-shell-0.0.3-SNAPSHOT.jar %*
 
 :noJava
 echo The JAVA_HOME environment variable is not defined correctly.
