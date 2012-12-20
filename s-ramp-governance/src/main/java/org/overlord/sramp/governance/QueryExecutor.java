@@ -57,9 +57,20 @@ public class QueryExecutor {
                         //have this cached?
                         BaseArtifactType artifactBaseType = client.getArtifactMetaData(artifactSummary.getType(), artifactSummary.getUuid());
                         List<Property> properties = artifactBaseType.getProperty();
+                        String propertyName = "workflowProcessId=" + workflow.getWorkflowId();
+                        boolean hasWorkflow = false;
+                        for (Property property : properties) {
+                            if (property.getPropertyName().equals(propertyName)) {
+                                hasWorkflow = true;
+                                continue;
+                            }
+                        }
+                        if (!hasWorkflow) {
+                            //start workflow for this artifact
+                            bpmManager.newProcessInstance(workflow.getWorkflowId(), workflow.getParameters());
+                        }
                     }
                     
-                    bpmManager.newProcessInstance(workflow.getWorkflowId(), workflow.getParameters());
                 }
 	        
     	    } catch (Exception e) {
