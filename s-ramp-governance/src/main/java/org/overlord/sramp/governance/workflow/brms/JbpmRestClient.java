@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -75,6 +76,12 @@ public class JbpmRestClient {
 
     public void newProcessInstanceAndCompleteFirstTask(String processId, Map<String,Object> params) throws IOException, URISyntaxException {
         //"http://localhost:8080/gwt-console-server/rs/form/process/com.sample.evaluation/complete"
+        //URI startProcessUrl = new URL(jbpmUrl + "/rs/process/definition/" + processId + "/new_instance").toURI();
+        //HttpPost newInstance = new HttpPost(startProcessUrl);
+        //HttpEntity entity = newInstance.getEntity();
+        //String json = IOUtils.toString(entity.getContent());
+        
+        //entity.
         URI startProcessUrl = new URL(jbpmUrl + "/rs/form/process/" + processId + "/complete").toURI();
         new Multipart().post(httpclient, startProcessUrl, params);
     }

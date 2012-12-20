@@ -101,7 +101,9 @@ public class DeploymentResource {
             file.createNewFile();
             os = new FileOutputStream(file);
             IOUtils.copy(is, os);
-            return Response.ok().build();
+            
+            InputStream reply = IOUtils.toInputStream("success");
+            return Response.ok(reply, MediaType.APPLICATION_OCTET_STREAM).build();
         } catch (Exception e) {
             logger.error("Error deploying artifact.", e);
             throw new SrampAtomException(e);
