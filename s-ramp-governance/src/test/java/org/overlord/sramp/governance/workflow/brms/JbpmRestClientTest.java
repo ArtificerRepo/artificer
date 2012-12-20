@@ -29,7 +29,7 @@ import org.junit.Test;
  */
 public class JbpmRestClientTest {
     
-    @Test  //the BPM engine needs to be running for this test to pass
+    @Test  @Ignore//the BPM engine needs to be running for this test to pass
     public void testNewEvaluationProcessInstance() throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         JbpmRestClient jbpmClient = new JbpmRestClient(httpclient, "http://localhost:8080/gwt-console-server");
