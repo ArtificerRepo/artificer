@@ -23,6 +23,7 @@ import java.util.Set;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.overlord.sramp.ArtifactNotFoundException;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
@@ -431,7 +432,8 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
 			persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
 			Assert.fail("Expected an update failure.");
 		} catch (Exception e) {
-			Assert.assertEquals("java.lang.Exception: Relationship creation error - failed to find an s-ramp artifact with target UUID: not-a-valid-uuid", e.getMessage());
+		    Assert.assertEquals(ArtifactNotFoundException.class, e.getClass());
+			Assert.assertEquals("No artifact found with UUID: not-a-valid-uuid", e.getMessage());
 		}
     }
 

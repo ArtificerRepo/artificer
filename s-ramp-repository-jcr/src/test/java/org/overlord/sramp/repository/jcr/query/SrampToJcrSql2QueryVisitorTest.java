@@ -23,9 +23,10 @@ import java.util.HashSet;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.overlord.sramp.SrampException;
+import org.overlord.sramp.SrampServerException;
 import org.overlord.sramp.query.xpath.XPathParser;
 import org.overlord.sramp.query.xpath.ast.Query;
-import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
 
 
@@ -190,15 +191,16 @@ public class SrampToJcrSql2QueryVisitorTest {
 
 	/**
 	 * Tests the visitor.
+	 * @throws SrampException
 	 */
 	@Test
-	public void testVisitor() {
+	public void testVisitor() throws SrampException {
 		for (String[] testCase : TEST_DATA) {
 			String srampXpath = testCase[0];
 			String expectedJcrSQL2 = testCase[1];
 			SrampToJcrSql2QueryVisitor visitor = new SrampToJcrSql2QueryVisitor(new ClassificationHelper() {
 				@Override
-				public Collection<URI> resolveAll(Collection<String> classifiedBy) throws RepositoryException {
+				public Collection<URI> resolveAll(Collection<String> classifiedBy) throws SrampException {
 					Collection<URI> uris = new HashSet<URI>();
 					for (String c : classifiedBy) {
 						uris.add(resolve(c));
@@ -207,35 +209,35 @@ public class SrampToJcrSql2QueryVisitorTest {
 				}
 
 				@Override
-				public URI resolve(String classifiedBy) throws RepositoryException {
+				public URI resolve(String classifiedBy) throws SrampException {
 					try {
 						return new URI(classifiedBy);
 					} catch (URISyntaxException e) {
-						throw new RepositoryException(e);
+						throw new SrampServerException(e);
 					}
 				}
 
 				@Override
-				public Collection<URI> normalizeAll(Collection<URI> classifications) throws RepositoryException {
+				public Collection<URI> normalizeAll(Collection<URI> classifications) throws SrampException {
 					try {
 						Collection<URI> uris = new HashSet<URI>();
 						uris.addAll(classifications);
 						uris.add(new URI("#AdditionalNormalizedClassification"));
 						return uris;
 					} catch (URISyntaxException e) {
-						throw new RepositoryException(e);
+						throw new SrampServerException(e);
 					}
 				}
 
 				@Override
-				public Collection<URI> normalize(URI classification) throws RepositoryException {
+				public Collection<URI> normalize(URI classification) throws SrampException {
 					try {
 						Collection<URI> uris = new HashSet<URI>();
 						uris.add(classification);
 						uris.add(new URI("#AdditionalNormalizedClassification"));
 						return uris;
 					} catch (URISyntaxException e) {
-						throw new RepositoryException(e);
+						throw new SrampServerException(e);
 					}
 				}
 			});

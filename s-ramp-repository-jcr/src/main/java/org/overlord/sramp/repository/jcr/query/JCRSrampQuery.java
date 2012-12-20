@@ -22,6 +22,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.query.QueryResult;
 
+import org.overlord.sramp.SrampException;
 import org.overlord.sramp.query.xpath.ast.Query;
 import org.overlord.sramp.query.xpath.visitors.XPathSerializationVisitor;
 import org.overlord.sramp.repository.PersistenceFactory;
@@ -70,7 +71,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 	 * @see org.overlord.sramp.repository.query.AbstractSrampQueryImpl#executeQuery(org.overlord.sramp.query.xpath.ast.Query)
 	 */
 	@Override
-	protected ArtifactSet executeQuery(Query queryModel) throws QueryExecutionException {
+	protected ArtifactSet executeQuery(Query queryModel) throws SrampException {
 		Session session = null;
 		try {
 			session = JCRRepository.getSession();
@@ -92,6 +93,11 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 			log.debug("Query exectued in {} ms", endTime - startTime);
 
 			return new JCRArtifactSet(session, jcrNodes);
+		} catch (SrampException e) {
+            // Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
+            // responsible for closing the session.
+            JCRRepository.logoutQuietly(session);
+		    throw e;
 		} catch (Throwable t) {
 			// Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
 			// responsible for closing the session.
@@ -103,8 +109,9 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 	/**
 	 * Visits the S-RAMP query AST/model and produces a functionally equivalent JCR SQL-2 query.
 	 * @param queryModel the s-ramp query
+	 * @throws SrampException
 	 */
-	private String createSql2Query(Query queryModel) {
+	private String createSql2Query(Query queryModel) throws SrampException {
 		String jcrOrderBy = null;
 		if (getOrderByProperty() != null) {
 			String jcrPropName = sOrderByMappings.get(getOrderByProperty());

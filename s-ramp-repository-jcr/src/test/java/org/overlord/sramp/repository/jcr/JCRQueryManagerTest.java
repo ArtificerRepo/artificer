@@ -22,8 +22,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampException;
 import org.overlord.sramp.SrampModelUtils;
-import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
@@ -141,9 +141,9 @@ public class JCRQueryManagerTest extends AbstractJCRPersistenceTest {
     }
 
 	/**
-	 * @throws RepositoryException
+	 * @throws SrampException
 	 */
-	private BaseArtifactType createDocument(int idx) throws RepositoryException {
+	private BaseArtifactType createDocument(int idx) throws SrampException {
         String artifactFileName = "s-ramp-press-release.pdf";
 		InputStream content = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
         Document document = new Document();

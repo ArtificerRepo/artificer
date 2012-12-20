@@ -22,9 +22,8 @@ import junit.framework.Assert;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampException;
 import org.overlord.sramp.SrampModelUtils;
-import org.overlord.sramp.repository.DerivedArtifactsCreationException;
-import org.overlord.sramp.repository.RepositoryException;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
@@ -129,7 +128,7 @@ public class JCRRelationshipQueryTest extends AbstractJCRPersistenceTest {
 	 * @throws RepositoryException
 	 * @throws DerivedArtifactsCreationException
 	 */
-	private WsdlDocument addWsdlDoc() throws RepositoryException, DerivedArtifactsCreationException {
+	private WsdlDocument addWsdlDoc() throws SrampException {
 		String artifactFileName = "jcr-sample.wsdl";
         InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
 
@@ -152,7 +151,7 @@ public class JCRRelationshipQueryTest extends AbstractJCRPersistenceTest {
 	 * @throws RepositoryException
 	 * @throws DerivedArtifactsCreationException
 	 */
-	private XsdDocument addXsdDoc() throws RepositoryException, DerivedArtifactsCreationException {
+	private XsdDocument addXsdDoc() throws SrampException {
 		String artifactFileName = "PO.xsd";
         InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 

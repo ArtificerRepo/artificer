@@ -30,13 +30,16 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
+import org.overlord.sramp.ArtifactNotFoundException;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.Sramp;
+import org.overlord.sramp.SrampServerException;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.atom.services.errors.DerivedArtifactAccessException;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.repository.PersistenceFactory;
@@ -54,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * @author eric.wittmann@redhat.com
  */
 @Path("/s-ramp")
-public class BatchResource {
+public class BatchResource extends AbstractResource {
 
 	private static Logger logger = LoggerFactory.getLogger(BatchResource.class);
 
@@ -99,7 +102,7 @@ public class BatchResource {
 
             return output;
         } catch (Exception e) {
-        	logger.error("Error consuming S-RAMP batch zip package.", e);
+        	logError(logger, "Error consuming S-RAMP batch zip package.", e);
 			throw new SrampAtomException(e);
         } finally {
         	IOUtils.closeQuietly(is);
@@ -121,8 +124,7 @@ public class BatchResource {
     	try {
 			ArtifactType artifactType = ArtifactType.valueOf(metaData);
 			if (artifactType.getArtifactType().isDerived()) {
-				throw new Exception("Failed to create artifact because '" + artifactType.getArtifactType()
-						+ "' is a derived type.");
+				throw new DerivedArtifactAccessException(artifactType.getArtifactType());
 			}
 			// Figure out the mime type
 			ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
@@ -146,7 +148,7 @@ public class BatchResource {
 				Entry atomEntry = processUpdate(artifactType, metaData, baseUrl);
 		        addCreatedPart(output, contentId, atomEntry);
 			} else {
-				throw new Exception("Unsupported path (TBD).");
+				throw new SrampServerException("Unsupported path (TBD).");
 			}
 		} catch (Exception e) {
 	        HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict");
@@ -154,7 +156,6 @@ public class BatchResource {
 	        errorResponse.setBody(error, MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION_TYPE);
 	        output.addPart(errorResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
 		}
-
 	}
 
 	/**
@@ -227,7 +228,7 @@ public class BatchResource {
 		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 		BaseArtifactType artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
 		if (artifact == null)
-			throw new Exception("Could not update artifact with UUID: " + metaData.getUuid() + " (Not Found)");
+			throw new ArtifactNotFoundException(metaData.getUuid());
 
 		// update the meta data
 		persistenceManager.updateArtifact(metaData, artifactType);
