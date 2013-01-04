@@ -23,11 +23,11 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- * The default/main "Artifacts" page.
+ * The default "Artifacts" page.
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("site/artifacts.html#page")
+@Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#page")
 @Page(path="artifacts", startingPage=true)
 @Dependent
 public class ArtifactsPage extends Composite {
