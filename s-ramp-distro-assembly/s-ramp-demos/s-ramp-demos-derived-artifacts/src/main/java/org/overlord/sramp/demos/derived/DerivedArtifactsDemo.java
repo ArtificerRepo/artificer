@@ -53,7 +53,7 @@ public class DerivedArtifactsDemo {
 		// additional artifacts derived from the content of the WSDL file.
 		System.out.print("Uploading 'sample.wsdl' to the repo...");
 		WsdlDocument wsdlArtifact = (WsdlDocument) client.uploadArtifact(
-				ArtifactType.WsdlDocument,
+				ArtifactType.WsdlDocument(),
 				DerivedArtifactsDemo.class.getResourceAsStream("sample.wsdl"),
 				"sample.wsdl");
 		System.out.println("uploaded.");

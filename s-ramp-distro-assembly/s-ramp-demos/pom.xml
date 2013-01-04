@@ -108,5 +108,6 @@
 		<module>s-ramp-demos-classifications</module>
 		<module>s-ramp-demos-relationships</module>
 		<module>s-ramp-demos-derived-artifacts</module>
+		<module>s-ramp-demos-custom-deriver</module>
 	</modules>
 </project>
