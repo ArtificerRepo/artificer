@@ -19,8 +19,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.xml.namespace.QName;
-
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
@@ -28,23 +26,59 @@ import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 
 /**
- * An enum representing all of the Artifact Types defined by S-RAMP.
+ * A class representing all of the Artifact Types defined by S-RAMP.
  *
  * @author eric.wittmann@redhat.com
  */
 public class ArtifactType {
 
-    public static final ArtifactType Document = new ArtifactType(ArtifactTypeEnum.Document, "application/octet-stream");
-    public static final ArtifactType XmlDocument = new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml");
-    public static final ArtifactType XsdDocument = new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml");
-    public static final ArtifactType WsdlDocument = new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml");
-    public static final ArtifactType PolicyDocument = new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml");
+    public static final ArtifactType Document() {
+        return new ArtifactType(ArtifactTypeEnum.Document, "application/octet-stream");
+    }
+    public static final ArtifactType XmlDocument() {
+        return new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml");
+    }
+    public static final ArtifactType XsdDocument() {
+        return new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml");
+    }
+    public static final ArtifactType WsdlDocument() {
+        return new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml");
+    }
+    public static final ArtifactType PolicyDocument() {
+        return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml");
+    }
+    public static final ArtifactType UserDefined(String userType, boolean derived) {
+        ArtifactType at = new ArtifactType(ArtifactTypeEnum.UserDefinedArtifactType, null);
+        at.setUserType(userType);
+        at.setUserDerivedType(derived);
+        return at;
+    }
 
 	private ArtifactTypeEnum artifactType;
 	private String mimeType;
 	/** for a UserDefined Type, the type should be stored here */
 	private String userType;
+	private boolean userDerivedType;
 	private static Map<String, ModelMime> userDefinedArtifactTypes;
+	static {
+	    userDefinedArtifactTypes = new ConcurrentHashMap<String, ModelMime>();
+        //TODO use SRAMP documents to store SRAMP internal information? We would put this one in here as
+        // an hard coded UserDefinedArtifactType (UserDefined by us)
+        userDefinedArtifactTypes.put("sramp",      new ModelMime("SRAMPDocument",   "application/xml"));
+        //TODO read this from the repo instead (store as an Artifact, can we do TextDocument?)
+        userDefinedArtifactTypes.put("pkg",        new ModelMime("BrmsPkgDocument", "application/octet-stream"));
+        userDefinedArtifactTypes.put("package",    new ModelMime("BrmsPkgDocument", "application/octet-stream"));
+        userDefinedArtifactTypes.put("bpmn",       new ModelMime("BpmnDocument",    "application/xml"));
+        userDefinedArtifactTypes.put("bpmn2",      new ModelMime("BpmnDocument",    "application/xml"));
+        userDefinedArtifactTypes.put("txt",        new ModelMime("TextDocument",    "text/plain"));
+        userDefinedArtifactTypes.put("properties", new ModelMime("TextDocument",    "text/plain"));
+        userDefinedArtifactTypes.put("css",        new ModelMime("CssDocument",     "text/css"));
+        userDefinedArtifactTypes.put("html",       new ModelMime("HtmlDocument",    "text/html"));
+        userDefinedArtifactTypes.put("ftl",        new ModelMime("FtlDocument",     "text/html"));
+        userDefinedArtifactTypes.put("wid",        new ModelMime("TextDocument",    "text/plain"));
+        userDefinedArtifactTypes.put("gif",        new ModelMime("ImageDocument",   "application/octet-stream"));
+        userDefinedArtifactTypes.put("png",        new ModelMime("ImageDocument",   "application/octet-stream"));
+	}
 
 	/**
 	 * Constructor.
@@ -52,7 +86,6 @@ public class ArtifactType {
 	 * @param mimeType
 	 */
 	private ArtifactType(ArtifactTypeEnum artifactType, String mimeType) {
-	    init();
 		setArtifactType(artifactType);
 		// Might need something more interesting than this in the future.
 		if (mimeType == null) {
@@ -63,28 +96,6 @@ public class ArtifactType {
 			}
 		}
 		setMimeType(mimeType);
-	}
-
-	private void init() {
-	    if (userDefinedArtifactTypes==null) {
-    	    userDefinedArtifactTypes = new ConcurrentHashMap<String, ModelMime>();
-    	    //TODO use SRAMP documents to store SRAMP internal information? We would put this one in here as
-    	    // an hard coded UserDefinedArtifactType (UserDefined by us)
-    	    userDefinedArtifactTypes.put("sramp",      new ModelMime("SRAMPDocument",   "application/xml"));
-    	    //TODO read this from the repo instead (store as an Artifact, can we do TextDocument?)
-    	    userDefinedArtifactTypes.put("pkg",        new ModelMime("BrmsPkgDocument", "application/octet-stream"));
-    	    userDefinedArtifactTypes.put("package",    new ModelMime("BrmsPkgDocument", "application/octet-stream"));
-    	    userDefinedArtifactTypes.put("bpmn",       new ModelMime("BpmnDocument",    "application/xml"));
-    	    userDefinedArtifactTypes.put("bpmn2",      new ModelMime("BpmnDocument",    "application/xml"));
-    	    userDefinedArtifactTypes.put("txt",        new ModelMime("TextDocument",    "text/plain"));
-    	    userDefinedArtifactTypes.put("properties", new ModelMime("TextDocument",    "text/plain"));
-    	    userDefinedArtifactTypes.put("css",        new ModelMime("CssDocument",     "text/css"));
-    	    userDefinedArtifactTypes.put("html",       new ModelMime("HtmlDocument",    "text/html"));
-    	    userDefinedArtifactTypes.put("ftl",        new ModelMime("FtlDocument",     "text/html"));
-    	    userDefinedArtifactTypes.put("wid",        new ModelMime("TextDocument",    "text/plain"));
-    	    userDefinedArtifactTypes.put("gif",        new ModelMime("ImageDocument",   "application/octet-stream"));
-    	    userDefinedArtifactTypes.put("png",        new ModelMime("ImageDocument",   "application/octet-stream"));
-	    }
 	}
 
 	/**
@@ -120,8 +131,8 @@ public class ArtifactType {
 			return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml");
 		} else if (userDefinedArtifactTypes.containsKey(ext)){
 		    ModelMime modelMime = userDefinedArtifactTypes.get(ext);
-		    ArtifactType artifactType = new ArtifactType(ArtifactTypeEnum.UserDefinedArtifactType, modelMime.mimeType);
-		    artifactType.setUserType(modelMime.userDefinedModel);
+		    ArtifactType artifactType = ArtifactType.UserDefined(modelMime.userDefinedModel, false);
+		    artifactType.setMimeType(modelMime.mimeType);
 		    return artifactType;
 		} else {
 			return new ArtifactType(ArtifactTypeEnum.Document, null);
@@ -173,12 +184,14 @@ public class ArtifactType {
 		        artifactType.setMimeType(((DocumentArtifactType)artifact).getContentType());
 		    }
 		    if (artifactType.getArtifactType() == ArtifactTypeEnum.UserDefinedArtifactType) {
-		        if ((artifact.getOtherAttributes().keySet().contains(new QName(SrampConstants.SRAMP_CONTENT_TYPE)))) {
-		            String contentTypeStr = artifact.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE));
+		        if ((artifact.getOtherAttributes().keySet().contains(SrampConstants.SRAMP_CONTENT_TYPE_QNAME))) {
+		            String contentTypeStr = artifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME);
 		            artifactType.setMimeType(contentTypeStr);
 		        }
                 String userType = ((UserDefinedArtifactType) artifact).getUserType();
+                String userDerived = artifact.getOtherAttributes().get(SrampConstants.SRAMP_DERIVED_QNAME);
                 artifactType.setUserType(userType);
+                artifactType.setUserDerivedType("true".equals(userDerived));
             }
 			return artifactType;
 		}
@@ -187,8 +200,14 @@ public class ArtifactType {
 			if (artifactTypeEnum.getTypeClass().equals(artifact.getClass())) {
 			    ArtifactType artifactType = new ArtifactType(artifactTypeEnum, null);
 			    if (artifactTypeEnum == ArtifactTypeEnum.UserDefinedArtifactType) {
+	                if ((artifact.getOtherAttributes().keySet().contains(SrampConstants.SRAMP_CONTENT_TYPE_QNAME))) {
+	                    String contentTypeStr = artifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME);
+	                    artifactType.setMimeType(contentTypeStr);
+	                }
 			        String userType = ((UserDefinedArtifactType) artifact).getUserType();
+	                String userDerived = artifact.getOtherAttributes().get(SrampConstants.SRAMP_DERIVED_QNAME);
                     artifactType.setUserType(userType);
+                    artifactType.setUserDerivedType("true".equals(userDerived));
                 }
 				return artifactType;
 			}
@@ -209,7 +228,7 @@ public class ArtifactType {
                 ((DocumentArtifactType) baseArtifactType).setContentType(getMimeType());
             }
             if (getArtifactType() == ArtifactTypeEnum.UserDefinedArtifactType) {
-                baseArtifactType.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_TYPE), getMimeType());
+                baseArtifactType.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_TYPE_QNAME, getMimeType());
                 ((UserDefinedArtifactType) baseArtifactType).setUserType(getUserType());
             }
             return baseArtifactType;
@@ -237,6 +256,20 @@ public class ArtifactType {
 	 */
 	public ArtifactTypeEnum getArtifactType() {
 		return artifactType;
+	}
+
+	/**
+	 * @return true iff the type is a {@link UserDefinedArtifactType}.
+	 */
+	public boolean isUserDefinedType() {
+	    return getArtifactType() == ArtifactTypeEnum.UserDefinedArtifactType;
+	}
+
+	/**
+	 * @return true if the artifact is derived
+	 */
+	public boolean isDerived() {
+	    return getArtifactType().isDerived() || isUserDerivedType();
 	}
 
 	/**
@@ -302,16 +335,13 @@ public class ArtifactType {
         return userType;
     }
 
-    private class ModelMime {
-
+    private static class ModelMime {
         public ModelMime(String userDefinedModel, String mimeType) {
-            super();
             this.userDefinedModel = userDefinedModel;
             this.mimeType = mimeType;
         }
         public String userDefinedModel;
         public String mimeType;
-
     }
 
 	/**
@@ -350,5 +380,19 @@ public class ArtifactType {
 		}
 		return rval;
 	}
+
+    /**
+     * @return the userDerivedType
+     */
+    protected boolean isUserDerivedType() {
+        return userDerivedType;
+    }
+
+    /**
+     * @param userDerivedType the userDerivedType to set
+     */
+    public void setUserDerivedType(boolean userDerivedType) {
+        this.userDerivedType = userDerivedType;
+    }
 
 }

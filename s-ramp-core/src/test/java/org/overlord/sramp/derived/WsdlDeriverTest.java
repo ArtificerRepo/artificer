@@ -32,6 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Binding;
 import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
 import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInput;
@@ -87,13 +88,14 @@ public class WsdlDeriverTest {
 		InputStream testSrcContent = null;
 		try {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/deriver.wsdl");
-			Collection<DerivedArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
+			Collection<BaseArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
 			Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(35, derivedArtifacts.size());
 
 			// Index the results by artifact type and name
 			Map<QName, DerivedArtifactType> index = new HashMap<QName, DerivedArtifactType>();
-			for (DerivedArtifactType artifact : derivedArtifacts) {
+			for (BaseArtifactType da : derivedArtifacts) {
+			    DerivedArtifactType artifact = (DerivedArtifactType) da;
 				if (artifact instanceof NamedWsdlDerivedArtifactType) {
 					NamedWsdlDerivedArtifactType arty = (NamedWsdlDerivedArtifactType) artifact;
 					if (arty.getNCName() != null)
@@ -312,7 +314,7 @@ public class WsdlDeriverTest {
 		InputStream testSrcContent = null;
 		try {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/ws-humantask-api.wsdl");
-			Collection<DerivedArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
+			Collection<BaseArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
 			Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(850, derivedArtifacts.size());
 		} finally {

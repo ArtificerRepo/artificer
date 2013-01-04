@@ -115,15 +115,15 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 		ArtifactType type = null;
 		String extension = FilenameUtils.getExtension(file.getName());
 		if ("wsdl".equals(extension)) {
-			type = ArtifactType.WsdlDocument;
+			type = ArtifactType.WsdlDocument();
 		} else if ("xsd".equals(extension)) {
-			type = ArtifactType.XsdDocument;
+			type = ArtifactType.XsdDocument();
 		} else if ("wspolicy".equals(extension)) {
-			type = ArtifactType.PolicyDocument;
+			type = ArtifactType.PolicyDocument();
 		} else if ("xml".equals(extension)) {
-			type = ArtifactType.XmlDocument;
+			type = ArtifactType.XmlDocument();
 		} else {
-			type = ArtifactType.valueOf("Document");
+			type = ArtifactType.Document();
 		}
 		return type;
 	}

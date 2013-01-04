@@ -78,6 +78,8 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "style"), "sramp:style");
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "transport"), "sramp:transport");
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "soapLocation"), "sramp:soapLocation");
+
+        corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "derived"), "sramp:derived");
 	}
 
 	private StringBuilder fromBuilder = new StringBuilder();

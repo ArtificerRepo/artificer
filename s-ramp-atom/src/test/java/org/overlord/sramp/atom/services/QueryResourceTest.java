@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.xml.namespace.QName;
-
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -220,8 +218,8 @@ public class QueryResourceTest extends AbstractResourceTest {
 			UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
 			Assert.assertEquals(fname, doc.getName());
 			Assert.assertEquals("JpgDocument", doc.getUserType());
-			Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
-			Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+			Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
+			Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}

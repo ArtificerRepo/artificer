@@ -36,6 +36,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampException;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
@@ -86,6 +87,7 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdTypeEnum;
  */
 public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter {
 
+    private ArtifactType artifactType;
 	private Node jcrNode;
 	private Exception error;
 	private JCRReferenceFactory referenceFactory;
@@ -93,11 +95,13 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 
 	/**
 	 * Constructor.
+     * @param artifactType the type of the artifact being persisted
 	 * @param jcrNode the JCR node this visitor will be updating
 	 * @param referenceFactory a resolver to find JCR nodes by UUID
 	 * @param classificationHelper helps resolve, verify, and normalize classifications
 	 */
-	public ArtifactToJCRNodeVisitor(Node jcrNode, JCRReferenceFactory referenceFactory, ClassificationHelper classificationHelper) {
+	public ArtifactToJCRNodeVisitor(ArtifactType artifactType, Node jcrNode, JCRReferenceFactory referenceFactory, ClassificationHelper classificationHelper) {
+	    this.artifactType = artifactType;
 		this.jcrNode = jcrNode;
 		this.referenceFactory = referenceFactory;
 		this.classificationHelper = classificationHelper;
@@ -165,10 +169,13 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	private void updateArtifactMetaData(BaseArtifactType artifact) throws Exception {
 		if (artifact.getName() != null)
 			this.jcrNode.setProperty("sramp:name", artifact.getName());
+		else
+		    this.jcrNode.setProperty("sramp:name", artifact.getClass().getSimpleName());
 		if (artifact.getDescription() != null)
 			this.jcrNode.setProperty("sramp:description", artifact.getDescription());
 		if (artifact.getVersion() != null)
 			this.jcrNode.setProperty("version", artifact.getVersion());
+		this.jcrNode.setProperty("sramp:derived", this.artifactType.isDerived());
 	}
 
 	/**

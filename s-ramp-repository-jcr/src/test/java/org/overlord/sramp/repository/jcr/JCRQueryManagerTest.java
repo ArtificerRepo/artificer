@@ -84,12 +84,12 @@ public class JCRQueryManagerTest extends AbstractJCRPersistenceTest {
         SrampModelUtils.setCustomProperty(artifact2, "prop3", uniquePropVal3);
         SrampModelUtils.setCustomProperty(artifact3, "prop3", uniquePropVal3);
 
-        persistenceManager.updateArtifact(artifact1, ArtifactType.Document);
-        persistenceManager.updateArtifact(artifact2, ArtifactType.Document);
-        persistenceManager.updateArtifact(artifact3, ArtifactType.Document);
+        persistenceManager.updateArtifact(artifact1, ArtifactType.Document());
+        persistenceManager.updateArtifact(artifact2, ArtifactType.Document());
+        persistenceManager.updateArtifact(artifact3, ArtifactType.Document());
 
         // Now query by various properties
-        persistenceManager.printArtifactGraph(artifact1.getUuid(), ArtifactType.Document);
+        persistenceManager.printArtifactGraph(artifact1.getUuid(), ArtifactType.Document());
         SrampQuery query = queryManager.createQuery("/s-ramp/core/Document[@prop1 = ?]");
         query.setString(uniquePropVal1);
         ArtifactSet artifactSet = query.executeQuery();

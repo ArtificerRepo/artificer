@@ -22,9 +22,9 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Binding;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Message;
 import org.s_ramp.xmlns._2010.s_ramp.Operation;
@@ -39,7 +39,7 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdType;
  *
  * @author eric.wittmann@redhat.com
  */
-public class IndexedArtifactCollection extends LinkedList<DerivedArtifactType> {
+public class IndexedArtifactCollection extends LinkedList<BaseArtifactType> {
 
 	private static final long serialVersionUID = 3333444885794949531L;
 
@@ -62,7 +62,7 @@ public class IndexedArtifactCollection extends LinkedList<DerivedArtifactType> {
 	 * @see java.util.LinkedList#add(java.lang.Object)
 	 */
 	@Override
-	public boolean add(DerivedArtifactType artifact) {
+	public boolean add(BaseArtifactType artifact) {
 		indexArtifact(artifact);
 		return super.add(artifact);
 	}
@@ -71,7 +71,7 @@ public class IndexedArtifactCollection extends LinkedList<DerivedArtifactType> {
 	 * Adds the given artifact to the appropriate index.
 	 * @param artifact
 	 */
-	private void indexArtifact(DerivedArtifactType artifact) {
+	private void indexArtifact(BaseArtifactType artifact) {
 		if (artifact instanceof ElementDeclaration) {
 			ElementDeclaration element = (ElementDeclaration) artifact;
 			QName key = new QName(element.getNamespace(), element.getNCName());

@@ -49,10 +49,10 @@ public class JCRClassificationPersistenceTest extends AbstractJCRPersistenceTest
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, contentStream);
         Assert.assertNotNull(artifact);
         if (log.isDebugEnabled()) {
-            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.Document);
+            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.Document());
         }
 
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document());
 
         Assert.assertNotNull(artifact.getClassifiedBy());
         Assert.assertEquals(1, artifact.getClassifiedBy().size());

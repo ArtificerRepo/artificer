@@ -28,7 +28,6 @@ import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
 import org.w3c.dom.Element;
@@ -68,10 +67,10 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.derived.AbstractXmlDeriver#derive(org.overlord.sramp.repository.derived.IndexedArtifactCollection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+	 * @see org.overlord.sramp.derived.AbstractXmlDeriver#derive(java.util.Collection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
 	 */
 	@Override
-	protected void derive(IndexedArtifactCollection derivedArtifacts, BaseArtifactType artifact,
+	protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
 			Element rootElement, XPath xpath) throws IOException {
 		try {
 			processSchema(derivedArtifacts, artifact, rootElement, xpath);
@@ -88,7 +87,7 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	public void processSchema(Collection<DerivedArtifactType> derivedArtifacts,
+	public void processSchema(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType artifact, Element schema, XPath xpath) throws XPathExpressionException {
 		processElementDeclarations(derivedArtifacts, artifact, schema, xpath);
 		processAttributeDeclarations(derivedArtifacts, artifact, schema, xpath);
@@ -97,7 +96,7 @@ public class XsdDeriver extends AbstractXmlDeriver {
 
 		// Pre-set the UUIDs for all the derived artifacts.  This is useful
 		// if something downstream needs to reference them.
-		for (DerivedArtifactType derivedArtifact : derivedArtifacts) {
+		for (BaseArtifactType derivedArtifact : derivedArtifacts) {
 			derivedArtifact.setUuid(UUID.randomUUID().toString());
 		}
 	}
@@ -110,7 +109,7 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private void processElementDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+	private void processElementDeclarations(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
 		String targetNS = schema.getAttribute("targetNamespace");
 
@@ -138,7 +137,7 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private void processAttributeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+	private void processAttributeDeclarations(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
 		String targetNS = schema.getAttribute("targetNamespace");
 
@@ -166,7 +165,7 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private void processSimpleTypeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+	private void processSimpleTypeDeclarations(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
 		String targetNS = schema.getAttribute("targetNamespace");
 
@@ -194,7 +193,7 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 * @param xpath
 	 * @throws XPathExpressionException
 	 */
-	private void processComplexTypeDeclarations(Collection<DerivedArtifactType> derivedArtifacts,
+	private void processComplexTypeDeclarations(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
 		String targetNS = schema.getAttribute("targetNamespace");
 

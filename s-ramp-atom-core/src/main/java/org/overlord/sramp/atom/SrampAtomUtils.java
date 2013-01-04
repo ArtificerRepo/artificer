@@ -28,6 +28,7 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampConstants;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
@@ -131,17 +132,33 @@ public final class SrampAtomUtils {
 	}
 
 	/**
-	 * Figures out the S-RAMP artifact type for the given {@link Entry}.  There are a number of
-	 * ways we can do this.  We'll try them all:
-	 *
-	 * 1) check the 'self' link, parsing it for the type and model information
-	 * 2) check the Atom Category - there should be one for the artifact type
-	 * 3) unwrap the Entry's {@link Artifact} and get the artifactType value (xml attribute)
+     * Figures out the S-RAMP artifact type for the given {@link Entry}.
 	 *
 	 * @param entry
 	 */
 	public static ArtifactType getArtifactType(Entry entry) {
-		// Try the Category
+		ArtifactType type = getArtifactTypeFromEntry(entry);
+		if (type.isUserDefinedType()) {
+            boolean derived = "true".equals(entry.getExtensionAttributes().get(SrampConstants.SRAMP_DERIVED_QNAME));
+            String userType = (String) entry.getExtensionAttributes().get(SrampConstants.SRAMP_USER_TYPE_QNAME);
+            type.setUserDerivedType(derived);
+            type.setUserType(userType);
+		}
+        return type;
+	}
+
+    /**
+     * Figures out the S-RAMP artifact type for the given {@link Entry}.  There are a number of
+     * ways we can do this.  We'll try them all:
+     *
+     * 1) check the 'self' link, parsing it for the type and model information
+     * 2) check the Atom Category - there should be one for the artifact type
+     * 3) unwrap the Entry's {@link Artifact} and get the artifactType value (xml attribute)
+     *
+     * @param entry
+     */
+    protected static ArtifactType getArtifactTypeFromEntry(Entry entry) {
+        // Try the Category
 		List<Category> categories = entry.getCategories();
 		for (Category cat : categories) {
 			if ("x-s-ramp:2010:type".equals(cat.getScheme().toString())) {
@@ -172,7 +189,7 @@ public final class SrampAtomUtils {
 
 		// If all else fails!
 		return ArtifactType.valueOf("Document");
-	}
+    }
 
 	/**
 	 * Unwrap some other jaxb object from its Atom Entry wrapper.

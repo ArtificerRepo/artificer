@@ -17,6 +17,7 @@ package org.overlord.sramp.derived;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.xml.namespace.QName;
@@ -27,11 +28,13 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.query.xpath.StaticNamespaceContext;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
+import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -54,8 +57,8 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 	 * @see org.overlord.sramp.repository.derived.ArtifactDeriver#derive(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
 	 */
 	@Override
-	public Collection<DerivedArtifactType> derive(BaseArtifactType artifact, InputStream content) throws IOException {
-		IndexedArtifactCollection derivedArtifacts = new IndexedArtifactCollection();
+	public Collection<BaseArtifactType> derive(BaseArtifactType artifact, InputStream content) throws IOException {
+	    Collection<BaseArtifactType> derivedArtifacts = createDerivedArtifactCollection();
 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -75,13 +78,21 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 			derive(derivedArtifacts, artifact, rootElement, xpath);
 
 			// Set the relatedDocument relationship for all derived artifacts
-			for (DerivedArtifactType derivedArtifact : derivedArtifacts) {
-				if (derivedArtifact.getRelatedDocument() == null) {
-					DocumentArtifactTarget related = new DocumentArtifactTarget();
-					related.setValue(artifact.getUuid());
-					related.setArtifactType(DocumentArtifactEnum.fromValue(artifact.getArtifactType()));
-					derivedArtifact.setRelatedDocument(related);
-				}
+			for (BaseArtifactType derivedArtifact : derivedArtifacts) {
+			    if (derivedArtifact instanceof DerivedArtifactType) {
+			        DerivedArtifactType dat = (DerivedArtifactType) derivedArtifact;
+			        if (dat.getRelatedDocument() == null) {
+			            DocumentArtifactTarget related = new DocumentArtifactTarget();
+			            related.setValue(artifact.getUuid());
+			            related.setArtifactType(DocumentArtifactEnum.fromValue(artifact.getArtifactType()));
+			            dat.setRelatedDocument(related);
+			        }
+			    } else {
+			        Relationship genericRelationship = SrampModelUtils.getGenericRelationship(derivedArtifact, "relatedDocument");
+			        if (genericRelationship == null) {
+			            SrampModelUtils.addGenericRelationship(derivedArtifact, "relatedDocument", artifact.getUuid());
+			        }
+			    }
 			}
 		} catch (IOException e) {
 			throw e;
@@ -91,6 +102,15 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 
 		return derivedArtifacts;
 	}
+
+    /**
+     * Sub-classes could provide an alternate collection here.  For example, the {@link WsdlDeriver}
+     * creates an indexed artifact collection so that it can reference derived artifacts and make
+     * connections/relationships.
+     */
+    protected Collection<BaseArtifactType> createDerivedArtifactCollection() {
+        return new ArrayList<BaseArtifactType>();
+    }
 
 	/**
 	 * Performs an x-query against the given context node.
@@ -112,7 +132,7 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 	 * @param xpath
 	 * @throws IOException
 	 */
-	protected abstract void derive(IndexedArtifactCollection derivedArtifacts,
+	protected abstract void derive(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType artifact, Element rootElement, XPath xpath) throws IOException;
 
 	/**
