@@ -60,9 +60,9 @@ public class SimpleClientDemo {
 
 			try {
 				// We need to know the artifact type
-				ArtifactType type = ArtifactType.XsdDocument;
+				ArtifactType type = ArtifactType.XsdDocument();
 				if (file.endsWith(".wsdl")) {
-					type = ArtifactType.WsdlDocument;
+					type = ArtifactType.WsdlDocument();
 				}
 
 				// Upload that content to S-RAMP
