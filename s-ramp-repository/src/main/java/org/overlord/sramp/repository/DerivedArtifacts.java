@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import org.overlord.sramp.SrampException;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
 /**
  * A service that can rip apart an artifact (previously persisted) and create all of its Derived Artifacts.
@@ -33,7 +32,7 @@ public interface DerivedArtifacts {
 	 * @param sourceArtifact the source artifact's meta-data
 	 * @param sourceArtifactContent the source artifact's content
 	 */
-	public Collection<DerivedArtifactType> deriveArtifacts(BaseArtifactType sourceArtifact,
+	public Collection<BaseArtifactType> deriveArtifacts(BaseArtifactType sourceArtifact,
 			InputStream sourceArtifactContent) throws SrampException;
 
 }

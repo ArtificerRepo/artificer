@@ -133,16 +133,24 @@ public class WsdlDeriver extends XsdDeriver {
 	}
 
 	/**
+	 * @see org.overlord.sramp.derived.AbstractXmlDeriver#createDerivedArtifactCollection()
+	 */
+	@Override
+	protected Collection<BaseArtifactType> createDerivedArtifactCollection() {
+	    return new IndexedArtifactCollection();
+	}
+
+	/**
 	 * @see org.overlord.sramp.repository.derived.XsdDeriver#derive(org.overlord.sramp.repository.derived.IndexedArtifactCollection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
 	 */
 	@Override
-	protected void derive(IndexedArtifactCollection derivedArtifacts, BaseArtifactType artifact,
+	protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
 			Element rootElement, XPath xpath) throws IOException {
 		String targetNS = rootElement.getAttribute("targetNamespace");
 		((WsdlDocument) artifact).setTargetNamespace(targetNS);
 
 		try {
-			processDefinitions(derivedArtifacts, artifact, rootElement, xpath);
+			processDefinitions((IndexedArtifactCollection) derivedArtifacts, artifact, rootElement, xpath);
 		} catch (Exception e) {
 			throw new IOException(e);
 		}

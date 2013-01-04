@@ -55,7 +55,7 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
 
         //print out the derived node
         if (log.isDebugEnabled()) {
-            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.Document);
+            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.Document());
         }
         Assert.assertEquals(Document.class, artifact.getClass());
         Assert.assertEquals(new Long(18873l), ((Document) artifact).getContentSize());
@@ -76,7 +76,7 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
 
         //print out the derived node
         if (log.isDebugEnabled()) {
-            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XsdDocument);
+            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XsdDocument());
         }
 
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
@@ -99,7 +99,7 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
 
         //print out the derived node
         if (log.isDebugEnabled()) {
-            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XmlDocument);
+            persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XmlDocument());
         }
         Assert.assertEquals(XmlDocument.class, artifact.getClass());
         Assert.assertEquals(new Long(825l), ((XmlDocument) artifact).getContentSize());
@@ -121,7 +121,7 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         Assert.assertEquals(new Long(2376l), ((XsdDocument) artifact).getContentSize());
 
-        BaseArtifactType artifact2 = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        BaseArtifactType artifact2 = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
         Assert.assertEquals(artifact.getUuid(), artifact2.getUuid());
         Assert.assertEquals(artifact.getCreatedBy(), artifact2.getCreatedBy());
         Assert.assertEquals(artifact.getDescription(), artifact2.getDescription());
@@ -151,14 +151,14 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
         Assert.assertEquals(artifactFileName, artifact.getName());
 
         // Now update the artifact
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
         artifact.setName("My PO");
         artifact.setDescription("A new description of the PO.xsd artifact.");
         artifact.setVersion("2.0.13");
-        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
 
         // Now verify the meta-data was updated
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
         Assert.assertEquals("My PO", artifact.getName());
         Assert.assertEquals("A new description of the PO.xsd artifact.", artifact.getDescription());
         Assert.assertEquals("2.0.13", artifact.getVersion());
@@ -185,10 +185,10 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
 
         // Now update the artifact content
         InputStream otherXsd = this.getClass().getResourceAsStream("/sample-files/xsd/XMLSchema.xsd");
-        persistenceManager.updateArtifactContent(artifact.getUuid(), ArtifactType.XsdDocument, otherXsd);
+        persistenceManager.updateArtifactContent(artifact.getUuid(), ArtifactType.XsdDocument(), otherXsd);
 
         // Now verify the content was updated
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
         Assert.assertEquals(new Long(87677), ((XsdDocument) artifact).getContentSize());
     }
 
@@ -211,7 +211,7 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
         Assert.assertEquals(new Long(2376l), ((XsdDocument) artifact).getContentSize());
 
         // Now update the artifact
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
         Assert.assertTrue("Expected 0 properties.", artifact.getProperty().isEmpty());
         Property prop1 = new Property();
         prop1.setPropertyName("prop1");
@@ -221,10 +221,10 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
         prop2.setPropertyName("prop2");
         prop2.setPropertyValue("propval2");
         artifact.getProperty().add(prop2);
-        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
 
         // Now verify that the properties were stored
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
         Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
         String p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
         String p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
@@ -245,10 +245,10 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
         prop3.setPropertyName("prop3");
         prop3.setPropertyValue("propval3");
         artifact.getProperty().add(prop3);
-        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
 
         // Now verify that the properties were updated
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
         Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
         p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
         p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
@@ -282,7 +282,7 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
         Assert.assertEquals(new Long(18873l), ((Document) artifact).getContentSize());
 
         // Now update the artifact
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document());
         Assert.assertTrue("Expected 0 properties.", artifact.getProperty().isEmpty());
         Property prop1 = new Property();
         prop1.setPropertyName("prop1");
@@ -292,10 +292,10 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
         prop2.setPropertyName("prop2");
         prop2.setPropertyValue("propval2");
         artifact.getProperty().add(prop2);
-        persistenceManager.updateArtifact(artifact, ArtifactType.Document);
+        persistenceManager.updateArtifact(artifact, ArtifactType.Document());
 
         // Now verify that the properties were stored
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document());
         Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
         String p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
         String p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
@@ -316,10 +316,10 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
         prop3.setPropertyName("prop3");
         prop3.setPropertyValue("propval3");
         artifact.getProperty().add(prop3);
-        persistenceManager.updateArtifact(artifact, ArtifactType.Document);
+        persistenceManager.updateArtifact(artifact, ArtifactType.Document());
 
         // Now verify that the properties were updated
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document());
         Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
         p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
         p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
@@ -354,13 +354,13 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
         contentStream.close();
 
         // Now update the artifact's generic relationships
-        artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument);
+        artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument());
         Assert.assertTrue("Expected 0 relationships.", artifact.getRelationship().isEmpty());
         SrampModelUtils.addGenericRelationship(artifact, "NoTargetRelationship", null);
-        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
 
         // Now verify that the relationship was stored
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument);
+        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
         Assert.assertEquals("Expected 1 relationship.", 1, artifact.getRelationship().size());
         Assert.assertEquals("NoTargetRelationship", artifact.getRelationship().get(0).getRelationshipType());
         Assert.assertEquals(Collections.EMPTY_LIST, artifact.getRelationship().get(0).getRelationshipTarget());
@@ -377,10 +377,10 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
 
         // Add a second relationship, this time with a target.
         SrampModelUtils.addGenericRelationship(artifact, "TargetedRelationship", uuid2);
-        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
 
         // Now verify that the targeted relationship was stored
-        artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument);
+        artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument());
         Assert.assertEquals("Expected 2 relationships.", 2, artifact.getRelationship().size());
         Relationship relationship = SrampModelUtils.getGenericRelationship(artifact, "NoTargetRelationship");
         Assert.assertNotNull(relationship);
@@ -405,10 +405,10 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
 
         // Add a third relationship, again with a target.
         SrampModelUtils.addGenericRelationship(artifact, "TargetedRelationship", uuid3);
-        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
 
         // More verifications
-        artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument);
+        artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument());
         Assert.assertEquals("Expected 2 relationships.", 2, artifact.getRelationship().size());
         relationship = SrampModelUtils.getGenericRelationship(artifact, "NoTargetRelationship");
         Assert.assertNotNull(relationship);
@@ -429,7 +429,7 @@ public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
         // Add a fourth (bogus) relationship
         SrampModelUtils.addGenericRelationship(artifact, "TargetedRelationship", "not-a-valid-uuid");
     	try {
-			persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument);
+			persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
 			Assert.fail("Expected an update failure.");
 		} catch (Exception e) {
 		    Assert.assertEquals(ArtifactNotFoundException.class, e.getClass());

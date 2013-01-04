@@ -88,5 +88,17 @@ public class ArtifactSummary {
 		return entry.getSummary();
 	}
 
+	/**
+	 * @return true if the artifact is a user-defined type
+	 */
+	public boolean isUserDefinedType() {
+	    return getType().isUserDefinedType();
+	}
 
+	/**
+	 * @return true if the artifact is a derived type
+	 */
+	public boolean isDerived() {
+        return getType().isDerived();
+	}
 }

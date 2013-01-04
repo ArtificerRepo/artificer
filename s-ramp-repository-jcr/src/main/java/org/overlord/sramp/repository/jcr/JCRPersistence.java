@@ -64,7 +64,6 @@ import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
@@ -142,7 +141,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			// create additional artifacts)
 			InputStream cis = null;
 			File tempFile = null;
-			Collection<DerivedArtifactType> derivedArtifacts = null;
+			Collection<BaseArtifactType> derivedArtifacts = null;
 			try {
 				Node artifactContentNode = artifactNode.getNode("jcr:content");
 				tempFile = saveToTempFile(artifactContentNode);
@@ -154,7 +153,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			}
 
 			// Update the JCR node with any properties included in the meta-data
-			ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(artifactNode,
+			ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(artifactType, artifactNode,
 					new JCRReferenceFactoryImpl(session), this);
 			ArtifactVisitorHelper.visitArtifact(visitor, metaData);
 			if (visitor.hasError())
@@ -191,11 +190,11 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	 * @see org.overlord.sramp.repository.DerivedArtifacts#deriveArtifacts(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
 	 */
 	@Override
-	public Collection<DerivedArtifactType> deriveArtifacts(BaseArtifactType sourceArtifact,
+	public Collection<BaseArtifactType> deriveArtifacts(BaseArtifactType sourceArtifact,
 			InputStream sourceArtifactContent) throws SrampException {
 		try {
 			ArtifactDeriver deriver = ArtifactDeriverFactory.createArtifactDeriver(ArtifactType.valueOf(sourceArtifact));
-			Collection<DerivedArtifactType> derivedArtifacts = deriver.derive(sourceArtifact, sourceArtifactContent);
+			Collection<BaseArtifactType> derivedArtifacts = deriver.derive(sourceArtifact, sourceArtifactContent);
 			log.debug("Successfully derived {} artifacts from {}.", derivedArtifacts.size(), sourceArtifact.getUuid());
 			return derivedArtifacts;
 		} catch (IOException e) {
@@ -210,18 +209,22 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	 * @param derivedArtifacts
 	 * @throws SrampException
 	 */
-	protected void persistDerivedArtifacts(Session session, Node sourceArtifactNode, Collection<DerivedArtifactType> derivedArtifacts)
+	protected void persistDerivedArtifacts(Session session, Node sourceArtifactNode, Collection<BaseArtifactType> derivedArtifacts)
 			throws SrampException {
 		try {
 			// Persist each of the derived nodes
 			JCRReferenceFactoryImpl referenceFactory = new JCRReferenceFactoryImpl(session);
-			Map<DerivedArtifactType, ArtifactToJCRNodeVisitor> deferredVisitors = new HashMap<DerivedArtifactType, ArtifactToJCRNodeVisitor>(derivedArtifacts.size());
-			for (DerivedArtifactType derivedArtifact : derivedArtifacts) {
+			Map<BaseArtifactType, ArtifactToJCRNodeVisitor> deferredVisitors = new HashMap<BaseArtifactType, ArtifactToJCRNodeVisitor>(derivedArtifacts.size());
+			for (BaseArtifactType derivedArtifact : derivedArtifacts) {
 				if (derivedArtifact.getUuid() == null) {
 					throw new SrampServerException("Missing UUID for derived artifact: " + derivedArtifact.getName());
 				}
 				ArtifactType derivedArtifactType = ArtifactType.valueOf(derivedArtifact);
 				String jcrNodeType = derivedArtifactType.getArtifactType().getApiType().value();
+				if (derivedArtifactType.isUserDefinedType()) {
+				    jcrNodeType = "userDefinedDerivedArtifactType";
+				    derivedArtifactType.setUserDerivedType(true);
+				}
 				jcrNodeType = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrNodeType);
 
 				// Create the JCR node and set some basic properties first.
@@ -230,10 +233,16 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				derivedArtifactNode.setProperty(JCRConstants.SRAMP_UUID, derivedArtifact.getUuid());
 				derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, derivedArtifactType.getArtifactType().getModel());
 				derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, derivedArtifactType.getArtifactType().getType());
+	            // UserDefined
+	            if (UserDefinedArtifactType.class.isAssignableFrom(derivedArtifactType.getArtifactType().getTypeClass())) {
+	                // read the encoding from the header
+	                derivedArtifactNode.setProperty(JCRConstants.SRAMP_USER_TYPE, derivedArtifactType.getUserType());
+	            }
 
 				// Create the visitor that will be used later, once all the JCR nodes have
 				// been created (to ensure that references can be resolved during the visit).
-				ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(derivedArtifactNode, referenceFactory, this);
+                ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(derivedArtifactType,
+                        derivedArtifactNode, referenceFactory, this);
 				deferredVisitors.put(derivedArtifact, visitor);
 
 				log.debug("Successfully saved derived artifact {} to node={}", derivedArtifact.getName(), derivedArtifact.getUuid());
@@ -247,8 +256,8 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			// cause the rest of the meta-data to be populated on the JCR node, including
 			// properties and relationships (for example).  This is deferred so that references
 			// created during processing of Relationships can be successful.
-			for (Map.Entry<DerivedArtifactType, ArtifactToJCRNodeVisitor> entry : deferredVisitors.entrySet()) {
-				DerivedArtifactType derivedArtifact = entry.getKey();
+			for (Map.Entry<BaseArtifactType, ArtifactToJCRNodeVisitor> entry : deferredVisitors.entrySet()) {
+			    BaseArtifactType derivedArtifact = entry.getKey();
 				ArtifactToJCRNodeVisitor visitor = entry.getValue();
 				ArtifactVisitorHelper.visitArtifact(visitor, derivedArtifact);
 				if (visitor.hasError())
@@ -324,7 +333,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			if (artifactNode == null) {
 				throw new ArtifactNotFoundException(artifact.getUuid());
 			}
-			ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(artifactNode,
+			ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(type, artifactNode,
 					new JCRReferenceFactoryImpl(session), this);
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			if (visitor.hasError())
@@ -660,6 +669,9 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
 			if (session.nodeExists(artifactPath)) {
 				artifactNode = session.getNode(artifactPath);
+			} else if (type.isUserDefinedType()) {
+			    // Might be a user-defined derived type, so try searching for it by UUID
+	            artifactNode = findArtifactNodeByUuid(session, uuid);
 			}
 		}
 		return artifactNode;
