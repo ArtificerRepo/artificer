@@ -27,6 +27,7 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
+import org.overlord.sramp.SrampConstants;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.visitors.ArtifactToSummaryAtomEntryVisitor;
@@ -113,8 +114,10 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	 * @return an Atom {@link Feed}
 	 * @throws Exception
 	 */
-	private Feed createFeed(ArtifactSet artifactSet, int fromRow, int toRow, Set<String> propNames, String baseUrl) throws Exception {
+	@SuppressWarnings("unchecked")
+    private Feed createFeed(ArtifactSet artifactSet, int fromRow, int toRow, Set<String> propNames, String baseUrl) throws Exception {
 		Feed feed = new Feed();
+		feed.getExtensionAttributes().put(SrampConstants.SRAMP_PROVIDER_QNAME, "JBoss Overlord");
 		feed.setId(new URI(UUID.randomUUID().toString()));
 		feed.setTitle("S-RAMP Feed");
 		feed.setSubtitle("Ad Hoc query feed");

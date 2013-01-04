@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.util.Collection;
 
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 
 /**
  * Provides a way to derive artifacts.  Classes that implement this interface must
@@ -39,7 +38,7 @@ public interface ArtifactDeriver {
 	 * @return derived content
 	 * @throws IOException
 	 */
-	public Collection<DerivedArtifactType> derive(BaseArtifactType artifact, InputStream contentStream)
+	public Collection<BaseArtifactType> derive(BaseArtifactType artifact, InputStream contentStream)
 			throws IOException;
 
 }

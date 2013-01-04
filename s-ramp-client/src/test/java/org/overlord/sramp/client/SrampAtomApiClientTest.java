@@ -82,7 +82,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
 			SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
-			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument, is, artifactFileName);
+			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
 			Assert.assertEquals(artifactFileName, artifact.getName());
 		} finally {
@@ -123,7 +123,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		String artifactFileName = "PO.xsd";
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
-			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument, is, artifactFileName);
+			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
 			Assert.assertEquals(artifactFileName, artifact.getName());
 			uuid = artifact.getUuid();
@@ -132,7 +132,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		}
 
 		// Now get the content.
-		InputStream content = client.getArtifactContent(ArtifactType.XsdDocument, uuid.toString());
+		InputStream content = client.getArtifactContent(ArtifactType.XsdDocument(), uuid.toString());
 		try {
 			Assert.assertNotNull(content);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(content));
@@ -158,7 +158,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		String artifactFileName = "PO.xsd";
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
-			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument, is, artifactFileName);
+			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
 			Assert.assertEquals(artifactFileName, artifact.getName());
 			uuid = artifact.getUuid();
@@ -172,7 +172,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		client.updateArtifactMetaData(xsdDoc);
 
 		// Now verify
-		BaseArtifactType artifact = client.getArtifactMetaData(ArtifactType.XsdDocument, uuid.toString());
+		BaseArtifactType artifact = client.getArtifactMetaData(ArtifactType.XsdDocument(), uuid.toString());
 		Assert.assertEquals("** DESCRIPTION UPDATED **", artifact.getDescription());
 	}
 
@@ -189,7 +189,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		String artifactFileName = "PO.xsd";
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
-			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument, is, artifactFileName);
+			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
 			Assert.assertEquals(artifactFileName, artifact.getName());
 			uuid = artifact.getUuid();
@@ -207,7 +207,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		}
 
 		// Now verify
-		BaseArtifactType artifact = client.getArtifactMetaData(ArtifactType.XsdDocument, uuid.toString());
+		BaseArtifactType artifact = client.getArtifactMetaData(ArtifactType.XsdDocument(), uuid.toString());
 		xsdDoc = (XsdDocument) artifact;
 		Assert.assertEquals(new Long(2583), xsdDoc.getContentSize());
 	}
@@ -224,7 +224,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		String artifactFileName = "PO.xsd";
 		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
-			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument, is, artifactFileName);
+			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
 			Assert.assertEquals(artifactFileName, artifact.getName());
 			uuid = artifact.getUuid();

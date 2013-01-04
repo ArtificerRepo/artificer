@@ -45,6 +45,7 @@
 - sramp:id (string)
 + * (sramp:class)
 
+
 // -------------------------------------------------------
 // S-RAMP Core Model Artifacts
 // -------------------------------------------------------
@@ -64,6 +65,7 @@
 - sramp:classifiedBy (string) multiple
 - sramp:normalizedClassifiedBy (string) multiple
 - sramp:description (string)
+- sramp:derived (boolean)
 - * (string)
 - * (string) multiple
 + * (sramp:relationship)
@@ -79,8 +81,13 @@
 
 [sramp:derivedArtifactType] > sramp:baseArtifactType abstract mixin
 
+// Special case of a user defined type that is derived.
+[sramp:userDefinedDerivedArtifactType] > sramp:baseArtifactType
+- sramp:userType (string)
+
 [sramp:userDefinedArtifactType] > sramp:baseArtifactType mixin
 - sramp:userType (string) mandatory
++ * (sramp:userDefinedDerivedArtifactType)
 
 [sramp:storedQuery] > nt:query
 - sramp:propertyList (string) multiple

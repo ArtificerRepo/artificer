@@ -46,6 +46,10 @@ public class SrampToJcrSql2QueryVisitorTest {
 			"/s-ramp/xsd",
 			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactModel] = 'xsd'"
 		},
+        {
+            "/s-ramp/xsd[@derived = 'true']",
+            "SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactModel] = 'xsd' AND (artifact.[sramp:derived] = 'true')"
+        },
 		{
 			"/s-ramp",
 			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactModel] LIKE '%'"

@@ -29,7 +29,6 @@ import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampConstants;
@@ -264,9 +263,17 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitUserDefined(UserDefinedArtifactType artifact) {
-		artifact.setUserType(getProperty(jcrNode, "sramp:userType"));
-		artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_SIZE), String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data")));
-		artifact.getOtherAttributes().put(new QName(SrampConstants.SRAMP_CONTENT_TYPE), getProperty(jcrNode,"jcr:content/jcr:mimeType"));
+        String userType = getProperty(jcrNode, "sramp:userType");
+        String contentType = getProperty(jcrNode,"jcr:content/jcr:mimeType");
+        String contentLength = String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data"));
+        String userDerived = getProperty(jcrNode, "sramp:derived", "false");
+
+        artifact.setUserType(userType);
+		if (contentType != null && contentLength != null) {
+            artifact.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_SIZE_QNAME, contentLength);
+            artifact.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_TYPE_QNAME, contentType);
+		}
+        artifact.getOtherAttributes().put(SrampConstants.SRAMP_DERIVED_QNAME, userDerived);
 	}
 
 	/**

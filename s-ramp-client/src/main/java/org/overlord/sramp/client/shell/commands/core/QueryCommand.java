@@ -85,7 +85,11 @@ public class QueryCommand extends AbstractShellCommand {
 		print("  ---                    ---- ----");
 		for (ArtifactSummary summary : rset) {
 			ArtifactType type = summary.getType();
-			print("  %1$3d %2$23s %3$-40s", entryIndex++, type.getArtifactType().getType().toString(),
+			String displayType = type.getArtifactType().getType().toString();
+			if (type.isUserDefinedType() && type.getUserType() != null) {
+			    displayType = type.getUserType();
+			}
+            print("  %1$3d %2$23s %3$-40s", entryIndex++, displayType,
 					summary.getName());
 		}
 		getContext().setVariable(new QName("s-ramp", "feed"), rset);
