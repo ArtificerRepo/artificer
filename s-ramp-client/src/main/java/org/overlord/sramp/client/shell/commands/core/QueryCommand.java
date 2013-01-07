@@ -27,6 +27,7 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.client.shell.AbstractShellCommand;
+import org.overlord.sramp.client.shell.commands.Arguments;
 
 /**
  * Performs a query against the s-ramp server and displays the result.
@@ -69,6 +70,18 @@ public class QueryCommand extends AbstractShellCommand {
 	@Override
 	public void execute() throws Exception {
 		String queryArg = this.requiredArgument(0, "Please specify a valid S-RAMP query.");
+
+		// Now process any additiona args - if there are any, then the user didn't
+		// surround the query with quotes - so mash them all together.
+		Arguments args = getArguments();
+		args.remove(0);
+		if (!args.isEmpty()) {
+    		for (String queryFragment : args) {
+                queryArg += " " + queryFragment;
+            }
+		}
+
+		// Get the client out of the context and exec the query
 		QName varName = new QName("s-ramp", "client");
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(varName);
 		if (client == null) {
@@ -78,21 +91,29 @@ public class QueryCommand extends AbstractShellCommand {
 		if (queryArg.endsWith("/")) {
 			queryArg = queryArg.substring(0, queryArg.length() - 1);
 		}
-		QueryResultSet rset = client.query(queryArg, 0, 100, "uuid", true);
-		int entryIndex = 1;
-		print("Atom Feed (%1$d entries)", rset.size());
-		print("  Idx                    Type Name");
-		print("  ---                    ---- ----");
-		for (ArtifactSummary summary : rset) {
-			ArtifactType type = summary.getType();
-			String displayType = type.getArtifactType().getType().toString();
-			if (type.isUserDefinedType() && type.getUserType() != null) {
-			    displayType = type.getUserType();
-			}
-            print("  %1$3d %2$23s %3$-40s", entryIndex++, displayType,
-					summary.getName());
+
+		print("Querying the S-RAMP repository:");
+		print("\t" + queryArg);
+		try {
+    		QueryResultSet rset = client.query(queryArg, 0, 100, "uuid", true);
+    		int entryIndex = 1;
+    		print("Atom Feed (%1$d entries)", rset.size());
+    		print("  Idx                    Type Name");
+    		print("  ---                    ---- ----");
+    		for (ArtifactSummary summary : rset) {
+    			ArtifactType type = summary.getType();
+    			String displayType = type.getArtifactType().getType().toString();
+    			if (type.isUserDefinedType() && type.getUserType() != null) {
+    			    displayType = type.getUserType();
+    			}
+                print("  %1$3d %2$23s %3$-40s", entryIndex++, displayType,
+    					summary.getName());
+    		}
+    		getContext().setVariable(new QName("s-ramp", "feed"), rset);
+		} catch (Exception e) {
+            print("FAILED to query the repository.");
+            print("\t" + e.getMessage());
 		}
-		getContext().setVariable(new QName("s-ramp", "feed"), rset);
 	}
 
 	/**
