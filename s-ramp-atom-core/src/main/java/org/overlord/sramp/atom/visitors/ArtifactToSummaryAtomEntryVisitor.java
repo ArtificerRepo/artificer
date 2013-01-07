@@ -188,7 +188,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 
 	    if (this.atomEntry != null) {
 	        String userType = artifact.getUserType();
-	        this.atomEntry.getExtensionAttributes().put(SrampConstants.SRAMP_DERIVED_QNAME, userType);
+	        this.atomEntry.getExtensionAttributes().put(SrampConstants.SRAMP_USER_TYPE_QNAME, userType);
 	    }
 	}
 
