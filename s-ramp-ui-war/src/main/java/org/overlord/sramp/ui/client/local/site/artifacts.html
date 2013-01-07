@@ -76,7 +76,7 @@
                       <div class="accordion-inner">
                         <form class="">
                           <div class="controls">
-                            <label>Type</label>
+                            <label class="sramp-filter-label">Type</label>
                             <select class="span12" type="text">
                               <option selected="selected">All</option>
                               <option value="doc">Document</option>
@@ -85,27 +85,27 @@
                             </select>
                           </div>
                           <div class="controls controls-row">
-                            <label>Date Created</label>
-                            <input class="span5" type="text" placeholder="Any">
+                            <label class="sramp-filter-label">Date Created</label>
+                            <input class="span5 sramp-date" type="text" placeholder="Any">
                             <span class="span2" style="padding-top: 4px; text-align: center">to</span>
-                            <input class="span5" type="text" placeholder="Any">
+                            <input class="span5 sramp-date" type="text" placeholder="Any">
                           </div>
                           <div class="controls controls-row">
-                            <label>Date Last Modified</label>
-                            <input class="span5" type="text" placeholder="Any">
+                            <label class="sramp-filter-label">Date Last Modified</label>
+                            <input class="span5 sramp-date" type="text" placeholder="Any">
                             <span class="span2" style="padding-top: 4px; text-align: center">to</span>
-                            <input class="span5" type="text" placeholder="Any">
+                            <input class="span5 sramp-date" type="text" placeholder="Any">
                           </div>
                           <div class="controls">
-                            <label>Created By</label>
+                            <label class="sramp-filter-label">Created By</label>
                             <input class="span12" type="text" placeholder="Any">
                           </div>
                           <div class="controls">
-                            <label>Last Modified By</label>
+                            <label class="sramp-filter-label">Last Modified By</label>
                             <input class="span12" type="text" placeholder="Any">
                           </div>
                           <div class="controls controls-row">
-                            <label>Origin</label>
+                            <label class="sramp-filter-label">Origin</label>
                             <label class="radio offset1">
                               <input type="radio" name="origin" id="origin-any" value="" checked="checked">
                               Any
@@ -146,7 +146,7 @@
                           </li>
                           <li>
                             <a href="#"><i class="icon-chevron-right"></i>
-                              Species
+                              Species (0 of 50 selected)
                             </a>
                           </li>
                         </ul>
@@ -171,15 +171,15 @@
                       <div class="accordion-inner">
                         <form class="">
                           <div class="controls">
-                            <label>Property 1:</label>
+                            <label class="sramp-filter-label">Property 1:</label>
                             <input class="span12" type="text" placeholder="Any">
                           </div>
                           <div class="controls">
-                            <label>Property 2:</label>
+                            <label class="sramp-filter-label">Property 2:</label>
                             <input class="span12" type="text" placeholder="Any">
                           </div>
                           <div class="controls">
-                            <label>Property 3:</label>
+                            <label class="sramp-filter-label">Property 3:</label>
                             <select class="span12" type="text">
                               <option selected="selected">Any</option>
                               <option value="one">Configured Value 1</option>
@@ -211,10 +211,10 @@
             <div class="row-fluid">
               <div class="span12 sramp-artifacts-actions">
                 <div class="btn-group" style="margin-right: 10px">
-                  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                    Actions
+                  <button class="btn">Actions</button>
+                  <button class="btn dropdown-toggle" data-toggle="dropdown">
                     <span class="caret"></span>
-                  </a>
+                  </button>
                   <ul class="dropdown-menu">
                     <li><a href="#">Download Selected</a></li>
                     <li><a href="#">Add to Favorites</a></li>
@@ -222,7 +222,7 @@
                     <li><a href="#">Categories</a></li>
                   </ul>
                 </div>
-                <a class="btn">Import Artifacts</a>
+                <a class="btn btn-primary">Import Artifacts</a>
                 <span class="pull-right sramp-btn-label">Displaying 1-11 of 37 Artifacts</span>
               </div>
               <table class="table table-striped table-condensed table-hover table-bordered">
@@ -327,6 +327,16 @@
                 </tr>
               </tbody>
               </table>
+              <div class="pagination sramp-artifacts-pager">
+                <ul>
+                  <li class="disabled"><a href="#">&#x00AB;</a></li>
+                  <li class="active"><a href="#">1</a></li>
+                  <li><a href="#">2</a></li>
+                  <li><a href="#">3</a></li>
+                  <li><a href="#">4</a></li>
+                  <li><a href="#">&#x00BB;</a></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -339,8 +349,7 @@
     </div> <!-- /page -->
 
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../../../../../../../../webapp/js/jquery-1.8.3.min.js"></script>
-    <script src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap.min.js"></script>
-
+    <script type="text/javascript" src="../../../../../../../../webapp/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap.min.js"></script>
   </body>
 </html>
