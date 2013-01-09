@@ -35,3 +35,34 @@
 .sramp-filter-label {
 	cursor: default;
 }
+
+.sramp-nav-tabs {
+	margin-bottom: 0px;
+}
+
+.sramp-tab-content {
+	border-left: 1px solid rgb(221, 221, 221);
+	border-right: 1px solid rgb(221, 221, 221);
+	border-bottom: 1px solid rgb(221, 221, 221);
+	padding-bottom: 15px;
+}
+
+.sramp-meta-data-section {
+	margin-top: 15px;
+}
+
+.row-fluid .sramp-meta-data-section-header {
+	font-weight: bold;
+	border-bottom: 1px dotted #afafaf;
+	float: left;
+}
+
+.row-fluid .sramp-meta-data-section-label {
+	white-space: nowrap;
+	min-width: 130px;
+	float: left;
+}
+
+.row-fluid .sramp-meta-data-section-value {
+    float: left;
+}
