@@ -94,10 +94,10 @@
                 <!-- Links Section -->
                 <div class="row-fluid sramp-meta-data-section">
                   <div class="sramp-meta-data-section-header">Links</div>
-                  <span class="clearfix"></span>
+                  <div class="clearfix"></div>
                   <div class="sramp-meta-data-section-label">Download:</div>
                   <div class="sramp-meta-data-section-value"><a href="#">http://localhost:8080/s-ramp-atom/s-ramp/core/Document/1234-5678-9101-11213/media</a></div>
-                  <span class="clearfix"></span>
+                  <div class="clearfix"></div>
                   <div class="sramp-meta-data-section-label">Meta Data:</div>
                   <div class="sramp-meta-data-section-value"><a href="#">http://localhost:8080/s-ramp-atom/s-ramp/core/Document/1234-5678-9101-11213</a></div>
                 </div>
@@ -106,46 +106,46 @@
                   <!-- Core Properties (left half) -->
                   <div class="span6 sramp-meta-data-section">
                     <div class="sramp-meta-data-section-header">Core Properties</div>
-                    <span class="clearfix"></span>
+                    <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">Type:</div>
                     <div class="sramp-meta-data-section-value">XmlDocument</div>
-                    <span class="clearfix"></span>
+                    <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">UUID:</div>
                     <div class="sramp-meta-data-section-value">XmlDocument</div>
-                    <span class="clearfix"></span>
+                    <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">Derived:</div>
                     <div class="sramp-meta-data-section-value">true</div>
-                    <span class="clearfix"></span>
+                    <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">Date Created:</div>
                     <div class="sramp-meta-data-section-value">12/07/2012 by Danny Devito</div>
-                    <span class="clearfix"></span>
+                    <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">Last Modified:</div>
                     <div class="sramp-meta-data-section-value">12/07/2012 by Danny Devito</div>
-                    <span class="clearfix"></span>
+                    <div class="clearfix"></div>
                   </div>
                   <!-- Custom Properties (right half) -->
                   <div class="span6 sramp-meta-data-section">
                     <div class="sramp-meta-data-section-header">Custom Properties</div>
-                    <span class="clearfix"></span>
+                    <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">custom-property-1:</div>
                     <div class="sramp-meta-data-section-value">Property value 1</div>
-                    <span class="clearfix"></span>
+                    <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">custom-property-2:</div>
                     <div class="sramp-meta-data-section-value">Property value 2</div>
-                    <span class="clearfix"></span>
+                    <div class="clearfix"></div>
                     <a href="#" class="btn btn-mini">Add Property</a>
-                    <span class="clearfix"></span>
+                    <div class="clearfix"></div>
                   </div>
                 </div>
                 <!-- Classifiers -->
                 <div class="row-fluid sramp-meta-data-section">
                   <div class="sramp-meta-data-section-header">Classifiers</div>
-                  <span class="clearfix"></span>
+                  <div class="clearfix"></div>
                   <div class="sramp-meta-data-section-label">Region:</div>
                   <div class="sramp-meta-data-section-value">United Kingdom</div>
-                  <span class="clearfix"></span>
+                  <div class="clearfix"></div>
                   <a href="#" class="btn btn-mini">Modify Classifiers</a>
-                  <span class="clearfix"></span>
+                  <div class="clearfix"></div>
                 </div>
               </div>
               <!-- Relationships Tab -->
@@ -262,11 +262,58 @@
       
     </div> <!-- /page -->
 
-    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- Delete artifact modal -->
+    <div id="delete-dialog" class="modal hide fade">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4>Delete Artifact</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete Artifact 1?</p>
+        <p>Deleting Artifact 1 will also remove its 3 derived artifacts.</p>
+        <table class="sramp-delete-artifacts-table table table-condensed table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PurchaseOrder</td>
+              <td>ElementDeclaration</td>
+            </tr>
+            <tr>
+              <td>PurchaseOrderResponse</td>
+              <td>ElementDeclaration</td>
+            </tr>
+            <tr>
+              <td>InvoiceType</td>
+              <td>ComplexTypeDeclaration</td>
+            </tr>
+            <tr>
+              <td>InvoiceId</td>
+              <td>SimpleTypeDeclaration</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+        <a href="#" class="btn btn-primary">Delete</a>
+      </div>
+    </div>
+
+    <!-- Some scripting to add functionality to the live template -->
     <script>
-      var editor = ace.edit("editor");
-      editor.setTheme("ace/theme/eclipse");
-      editor.getSession().setMode("ace/mode/xml");
+      $(document).ready(function() {
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/eclipse");
+        editor.getSession().setMode("ace/mode/xml");
+      });
+      $('.sramp-artifact-header ul li:nth-child(3)').click(function() {
+        $('#delete-dialog').modal();
+      });
     </script>
   </body>
 </html>
