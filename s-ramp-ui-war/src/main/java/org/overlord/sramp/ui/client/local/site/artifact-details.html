@@ -19,6 +19,10 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+
+    <script type="text/javascript" src="../../../../../../../../webapp/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap.min.js"></script>
+    <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
   </head>
 
   <body>
@@ -86,7 +90,7 @@
             </ul>
             <div id="tabContent" class="tab-content sramp-tab-content">
               <!-- Overview Tab -->
-              <div class="tab-pane fade active in container-fluid" id="overview">
+              <div class="tab-pane fade in active container-fluid" id="overview">
                 <!-- Links Section -->
                 <div class="row-fluid sramp-meta-data-section">
                   <div class="sramp-meta-data-section-header">Links</div>
@@ -184,10 +188,18 @@
               </div>
               <!-- Source Tab -->
               <div class="tab-pane fade container-fluid" id="source">
-              
-              
-              
-              
+                <div class="sramp-source-editor-wrapper span12">
+                  <div id="editor" class="sramp-source-editor">&lt;assembly
+    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+    &lt;id>brms&lt;/id>
+    &lt;formats>
+        &lt;format>zip&lt;/format>
+    &lt;/formats>
+    &lt;includeBaseDirectory>false&lt;/includeBaseDirectory>
+&lt;/assembly></div>
+                </div>
               </div>
               <!-- History Tab -->
               <div class="tab-pane fade container-fluid" id="history">
@@ -207,7 +219,10 @@
     </div> <!-- /page -->
 
     <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="../../../../../../../../webapp/js/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap.min.js"></script>
+    <script>
+      var editor = ace.edit("editor");
+      editor.setTheme("ace/theme/eclipse");
+      editor.getSession().setMode("ace/mode/xml");
+    </script>
   </body>
 </html>
