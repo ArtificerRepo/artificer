@@ -60,7 +60,7 @@
         <!-- Action bar -->
         <div class="row-fluid">
           <div class="span12 sramp-artifact-header">
-            <span>Artifact 1 - v1.1.2</span>
+            <span class="sramp-sp4n-label">Artifact 1 - v1.1.2</span>
             <div class="btn-group" style="margin-left: 20px">
               <button class="btn">Actions</button>
               <button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -72,7 +72,7 @@
                 <li><a href="#">Delete</a></li>
               </ul>
             </div>
-            <span class="pull-right">Derived from: <a href="#">[some other artifact]</a></span>
+            <span class="sramp-sp4n-label pull-right">Derived from: <a href="#">Master Artifact 0</a></span>
           </div>
         </div>
         <!-- Tabs -->
@@ -85,6 +85,7 @@
               <li class=""><a href="#history" data-toggle="tab">History</a></li>
             </ul>
             <div id="tabContent" class="tab-content sramp-tab-content">
+              <!-- Overview Tab -->
               <div class="tab-pane fade active in container-fluid" id="overview">
                 <!-- Links Section -->
                 <div class="row-fluid sramp-meta-data-section">
@@ -140,13 +141,56 @@
                   <a href="#" class="btn btn-mini">Modify Classifiers</a>
                 </div>
               </div>
-              <div class="tab-pane fade" id="relationships">
-                <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
+              <!-- Relationships Tab -->
+              <div class="tab-pane fade container-fluid" id="relationships">
+                <div class="span12">
+                  <table class="sramp-relationship-table table table-condensed table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Last Modified</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="sramp-relationship-type">
+                        <td colspan="4">Derived From</td>
+                      </tr>
+                      <tr>
+                        <td><a href="artifact-details.html">Master Artifact 0</a></td>
+                        <td>WsdlDocument</td>
+                        <td>02/12/2011</td>
+                        <td></td>
+                      </tr>
+                      <tr class="sramp-relationship-type">
+                        <td colspan="4">Documented By</td>
+                      </tr>
+                      <tr>
+                        <td><a href="artifact-details.html">Documentation Alpha</a></td>
+                        <td>OfficeDocument</td>
+                        <td>03/17/2012</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td><a href="artifact-details.html">Documentation Beta</a></td>
+                        <td>OfficeDocument</td>
+                        <td>08/21/2012</td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <div class="tab-pane fade" id="source">
-                <p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater. Lomo wolf viral, mustache readymade thundercats keffiyeh craft beer marfa ethical. Wolf salvia freegan, sartorial keffiyeh echo park vegan.</p>
+              <!-- Source Tab -->
+              <div class="tab-pane fade container-fluid" id="source">
+              
+              
+              
+              
               </div>
-              <div class="tab-pane fade" id="history">
+              <!-- History Tab -->
+              <div class="tab-pane fade container-fluid" id="history">
                 <p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater. Lomo wolf viral, mustache readymade thundercats keffiyeh craft beer marfa ethical. Wolf salvia freegan, sartorial keffiyeh echo park vegan.</p>
               </div>
             </div>

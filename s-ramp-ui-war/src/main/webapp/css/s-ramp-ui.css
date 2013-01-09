@@ -27,9 +27,10 @@
 	padding: 5px;
 }
 
-.sramp-btn-label {
+.sramp-sp4n-label {
 	padding: 4px 12px;
 	line-height: 20px;
+	display: inline;
 }
 
 .sramp-filter-label {
@@ -51,18 +52,31 @@
 	margin-top: 15px;
 }
 
-.row-fluid .sramp-meta-data-section-header {
+.sramp-meta-data-section .btn {
+    margin-top: 5px;
+}
+
+.sramp-meta-data-section-header {
 	font-weight: bold;
 	border-bottom: 1px dotted #afafaf;
 	float: left;
 }
 
-.row-fluid .sramp-meta-data-section-label {
+.sramp-meta-data-section-label {
 	white-space: nowrap;
 	min-width: 130px;
 	float: left;
 }
 
-.row-fluid .sramp-meta-data-section-value {
+.sramp-meta-data-section-value {
     float: left;
+}
+
+.sramp-relationship-type {
+	font-weight: bold;
+	background-color: #f6f6f6;
+}
+
+.sramp-relationship-table {
+	margin-top: 15px;
 }
