@@ -73,7 +73,8 @@
               <ul class="dropdown-menu">
                 <li><a href="#">Download</a></li>
                 <li><a href="#">Add to Favorites</a></li>
-                <li><a href="#">Delete</a></li>
+                <li><a href="#">Delete (Master)</a></li>
+                <li><a href="#">Delete (Referenced)</a></li>
               </ul>
             </div>
             <span class="sramp-sp4n-label pull-right">Derived from: <a href="artifact-details.html">Master Artifact 0</a></span>
@@ -262,8 +263,8 @@
       
     </div> <!-- /page -->
 
-    <!-- Delete artifact modal -->
-    <div id="delete-dialog" class="modal hide fade">
+    <!-- Delete artifact with derived content modal -->
+    <div id="delete-dialog-derived" class="modal hide fade">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4>Delete Artifact</h4>
@@ -271,7 +272,7 @@
       <div class="modal-body">
         <p>Are you sure you want to delete Artifact 1?</p>
         <p>Deleting Artifact 1 will also remove its 3 derived artifacts.</p>
-        <table class="sramp-delete-artifacts-table table table-condensed table-bordered table-striped">
+        <table id="delete-dialog-children" class="sramp-delete-artifacts-table table table-condensed table-bordered table-striped">
           <thead>
             <tr>
               <th>Name</th>
@@ -304,6 +305,55 @@
       </div>
     </div>
 
+    <!-- Delete artifact with references modal -->
+    <div id="delete-dialog-referenced" class="modal hide fade">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4>Delete Warning</h4>
+      </div>
+      <div class="modal-body">
+        <p>Warning: Artifact 1 is referenced by 5 artifacts.</p>
+        <p>Deleting Artifact 1 will cause problems for these artifacts.</p>
+        <div id="delete-dialog-refs" class="collapse out">
+          <table class="sramp-delete-artifacts-table table table-condensed table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>invoice.xsd</td>
+                <td>XsdDocument</td>
+              </tr>
+              <tr>
+                <td>po.xsd</td>
+                <td>XsdDocument</td>
+              </tr>
+              <tr>
+                <td>invoice-ws.wsdl</td>
+                <td>WsdlDocument</td>
+              </tr>
+              <tr>
+                <td>po-ws.wsdl</td>
+                <td>WsdlDocument</td>
+              </tr>
+              <tr>
+                <td>ws-all.wsdl</td>
+                <td>WsdlDocument</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn pull-left" data-toggle="collapse" data-target="#delete-dialog-refs">Show References <b class="caret"></b></a>
+        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+        <a href="#" class="btn btn-primary">Delete</a>
+      </div>
+    </div>
+
     <!-- Some scripting to add functionality to the live template -->
     <script>
       $(document).ready(function() {
@@ -312,8 +362,11 @@
         editor.getSession().setMode("ace/mode/xml");
       });
       $('.sramp-artifact-header ul li:nth-child(3)').click(function() {
-        $('#delete-dialog').modal();
+        $('#delete-dialog-derived').modal();
       });
+      $('.sramp-artifact-header ul li:nth-child(4)').click(function() {
+          $('#delete-dialog-referenced').modal();
+        });
     </script>
   </body>
 </html>
