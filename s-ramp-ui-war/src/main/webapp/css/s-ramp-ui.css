@@ -96,3 +96,47 @@
     right: 1px;
     background: white;
 }
+
+#ontologies {
+	height: 500px;
+	border: 1px solid rgb(221, 221, 221);
+}
+#ontologies ul {
+	margin-bottom: 0px;
+}
+
+.sramp-ontology-box-header {
+	font-weight: bold;
+	background-color: rgb(245, 240, 240);
+	border-bottom: 1px solid rgb(221, 221, 221);
+	padding: 3px;
+	height: 20px;
+}
+
+#ontology-editor {
+	height: 500px;
+	border: 1px solid rgb(221, 221, 221);
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#ontology-editor .sramp-ontology-tier {
+	width: 200px;
+	border-right: 1px solid rgb(221, 221, 221);
+	height: 498px;
+	float: left;
+}
+
+#ontology-editor .sramp-ontology-tier .sramp-ontology-tier-header {
+    background-color: rgb(245, 240, 240);
+    border-bottom: 1px solid rgb(221, 221, 221);
+    padding: 3px;
+	height: 20px;
+}
+
+#ontology-editor .sramp-ontology-tier ul {
+	margin: 0px;
+}
+
+#ontology-editor .sramp-ontology-editor-canvas {
+}
