@@ -79,7 +79,11 @@ public final class SrampAtomUtils {
 	public static BaseArtifactType unwrapSrampArtifact(ArtifactType artifactType, Entry entry) {
 		try {
 			Artifact artifact = getArtifactWrapper(entry);
-			return unwrapSrampArtifact(artifactType, artifact);
+			if (artifact != null) {
+                return unwrapSrampArtifact(artifactType, artifact);
+			} else {
+                return null;
+			}
 		} catch (JAXBException e) {
 			// This is unlikely to happen.
 			throw new RuntimeException(e);

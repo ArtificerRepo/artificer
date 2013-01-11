@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.atom.services;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.Sramp;
@@ -105,7 +108,14 @@ public class QueryResource extends AbstractFeedResource {
 			Integer count = input.getFormDataPart("count", new GenericType<Integer>() { });
 			String orderBy = input.getFormDataPart("orderBy", new GenericType<String>() { });
 			Boolean asc = input.getFormDataPart("ascending", new GenericType<Boolean>() { });
-			Set<String> propNames = input.getFormDataPart("propertyName", new GenericType<Set<String>>() { });
+            Set<String> propNames = new HashSet<String>();
+			List<InputPart> list = input.getFormDataMap().get("propertyName");
+			if (list != null) {
+    			for (InputPart inputPart : list) {
+    			    propNames.add(inputPart.getBodyAsString());
+                }
+			}
+
 			if (startIndex == null && startPage != null) {
 				int c = count != null ? count.intValue() : 100;
 				startIndex = (startPage.intValue() - 1) * c;

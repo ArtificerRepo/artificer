@@ -21,7 +21,9 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -31,6 +33,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
@@ -241,6 +244,71 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		}
 		Assert.assertTrue("Failed to find the artifact we just added!", uuidFound);
 	}
+
+    /**
+     * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#query(String, int, int, String, boolean, java.util.Collection)
+     */
+    @Test
+    public void testQueryWithPropertyName() throws Exception {
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        String uuid = null;
+
+        // First add an artifact so we have something to search for
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        try {
+            BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
+            Assert.assertNotNull(artifact);
+            Assert.assertEquals(artifactFileName, artifact.getName());
+            uuid = artifact.getUuid();
+
+            // Set a couple of custom properties and update
+            SrampModelUtils.setCustomProperty(artifact, "prop1", "foo");
+            SrampModelUtils.setCustomProperty(artifact, "prop2", "bar");
+            SrampModelUtils.setCustomProperty(artifact, "prop3", "baz");
+            client.updateArtifactMetaData(artifact);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
+        // Now search for the artifact and request one of the custom
+        // properties be returned in the result set.
+        Set<String> propertyNames = new HashSet<String>();
+        propertyNames.add("prop1");
+        propertyNames.add("prop2");
+        QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument[@uuid='"+uuid+"']", 0, 50, "name", false, propertyNames);
+        Assert.assertEquals("Expected a single artifact returned.", 1, rset.size());
+        ArtifactSummary summary = rset.get(0);
+        Assert.assertEquals("foo", summary.getCustomPropertyValue("prop1"));
+        Assert.assertEquals("bar", summary.getCustomPropertyValue("prop2"));
+        Assert.assertNull("I didn't ask for 'prop3' to be returned!", summary.getCustomPropertyValue("prop3"));
+    }
+
+    /**
+     * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#buildQuery(String)
+     */
+    @Test
+    public void testBuildQuery() throws Exception {
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        String uuid = null;
+
+        // First add an artifact so we have something to search for
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        try {
+            BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
+            Assert.assertNotNull(artifact);
+            Assert.assertEquals(artifactFileName, artifact.getName());
+            uuid = artifact.getUuid();
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
+        // Now search for the XSD by its UUID
+        QueryResultSet rset = client.buildQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]").parameter(uuid)
+                .count(1).query();
+        Assert.assertTrue("Failed to find the artifact we just added!", rset.size() == 1);
+    }
 
 	/**
 	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
