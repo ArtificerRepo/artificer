@@ -19,10 +19,10 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
     <script type="text/javascript" src="../../../../../../../../webapp/js/jquery-1.8.3.min.js"></script>
     <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap.min.js"></script>
     <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="static-linkages.js"></script>
   </head>
 
   <body>
@@ -31,29 +31,24 @@
       <!-- Top header/nav bar -->
       <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
-          <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </a>
+          <div class="container-fluid">
             <a class="brand" href="#">JBoss - S-RAMP</a>
-            <div class="nav-collapse collapse">
+            <div>
               <ul class="nav">
-                <li class="active"><a data-field="artifactsLink" href="artifacts.html">Artifacts</a></li>
-                <li><a data-field="ontologiesLink" href="ontologies.html">Ontologies</a></li>
-                <li><a data-field="settingsLink" href="settings.html">Settings</a></li>
+                <li class="active"><a class="sramp-hl sramp-hl-artifacts" data-field="artifactsLink">Artifacts</a></li>
+                <li><a class="sramp-hl sramp-hl-ontologies" data-field="ontologiesLink">Ontologies</a></li>
+                <li><a class="sramp-hl sramp-hl-settings" data-field="settingsLink">Settings</a></li>
               </ul>
-              <ul class="nav pull-right">
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, Eric <b class="caret"></b></a>
-                  <ul class="dropdown-menu">
-                    <li><a href="logout.html">My Profile</a></li>
-                    <li class="divider"></li>
-                    <li><a href="logout.html">Logout</a></li>
-                  </ul>
-                </li>
-              </ul>
+              <div class="pull-right nav-shadowman"></div>
+              <div class="btn-group pull-right" style="margin-left: 20px">
+                <button class="btn">John Doe</button>
+                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Logout</a></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -211,7 +206,7 @@
               <div class="tab-pane fade container-fluid" id="history">
                 <div class="row-fluid">
                   <div class="span12">
-                    <table class="sramp-history-table table table-condensed table-bordered">
+                    <table class="sramp-history-table table table-condensed table-bordered table-striped">
                       <thead>
                         <tr>
                           <th>Version</th>
@@ -365,8 +360,8 @@
         $('#delete-dialog-derived').modal();
       });
       $('.sramp-artifact-header ul li:nth-child(4)').click(function() {
-          $('#delete-dialog-referenced').modal();
-        });
+        $('#delete-dialog-referenced').modal();
+      });
     </script>
   </body>
 </html>

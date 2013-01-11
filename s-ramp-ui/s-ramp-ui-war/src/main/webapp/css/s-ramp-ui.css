@@ -1,3 +1,37 @@
+body {
+	padding-top: 80px;
+}
+.navbar {
+    background-image: url("../images/header-center.png");
+    background-repeat: repeat-x;
+	}
+.navbar-inverse .navbar-inner {
+	min-height: 72px;
+    background-image: url("../images/header-logo.png");
+    background-repeat: no-repeat;
+    background-position: top left;
+    background-color: transparent;
+    border: none;
+}
+.navbar .brand {
+	text-indent: -5000px;
+	width: 220px;
+}
+.navbar-inverse .nav li a {
+	color: #dadaff;
+}
+.navbar-inverse .nav .active a, .navbar-inverse .nav .active a:hover, .navbar-inverse .nav .active a:focus {
+	background-color: transparent;
+}
+.navbar .nav li a {
+	padding: 25px 15px 23px 15px;
+}
+.nav-shadowman {
+	background-image: url("../images/header-shadowman.png");
+	width: 60px;
+	height: 72px;
+}
+
 #accordian-filters .sramp-vspacer {
     min-height: 10px;
     height: 10px;
