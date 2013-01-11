@@ -27,6 +27,7 @@ import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.SrampConstants;
+import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.visitors.ArtifactVisitorAdapter;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
@@ -198,9 +199,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	 * additional custom properties.
 	 */
 	protected boolean includeArtifact() {
-//		return propertyNames != null && propertyNames.size() > 0;
-		// TODO switch this back once this is fixed:  https://issues.jboss.org/browse/RESTEASY-761
-		return false;
+		return propertyNames != null && propertyNames.size() > 0;
 	}
 
 	/**
@@ -214,9 +213,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			List<Property> properties = artifact.getProperty();
 			for (Property prop : properties) {
 				if (this.propertyNames.contains(prop.getPropertyName())) {
-					Property newProp = new Property();
-					newProp.setPropertyName(prop.getPropertyName());
-					newProp.setPropertyValue(prop.getPropertyValue());
+					SrampModelUtils.setCustomProperty(includedArtifact, prop.getPropertyName(), prop.getPropertyValue());
 				}
 			}
 			return includedArtifact;

@@ -133,8 +133,7 @@ public class QueryResourceTest extends AbstractResourceTest {
 				}
 			}
 		}
-		// TODO restore this assertion once this is fixed:  https://issues.jboss.org/browse/RESTEASY-761
-		//		Assert.assertEquals(allTidxVals, actualTidxVals);
+		Assert.assertEquals(allTidxVals, actualTidxVals);
 	}
 
 	/**
