@@ -18,7 +18,9 @@ package org.overlord.sramp.client;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -465,6 +467,23 @@ public class SrampAtomApiClient {
 		return query(srampQuery, 0, 20, "name", true);
 	}
 
+    /**
+     * Executes the given s-ramp query xpath and returns a Feed of the matching artifacts.
+     * @param srampQuery the s-ramp query (xpath formatted)
+     * @param startIndex which index within the result to start (0 indexed)
+     * @param count the size of the page of results to return
+     * @param orderBy the s-ramp property to use for sorting (name, uuid, createdOn, etc)
+     * @param ascending the direction of the sort
+     * @param propertyNames an optional collection of names of custom s-ramp properties to be returned as part of the result set
+     * @return an Atom {@link Feed}
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public QueryResultSet query(String srampQuery, int startIndex, int count, String orderBy,
+            boolean ascending) throws SrampClientException, SrampAtomException {
+        return query(srampQuery, startIndex, count, orderBy, ascending, null);
+    }
+
 	/**
 	 * Executes the given s-ramp query xpath and returns a Feed of the matching artifacts.
 	 * @param srampQuery the s-ramp query (xpath formatted)
@@ -472,12 +491,13 @@ public class SrampAtomApiClient {
 	 * @param count the size of the page of results to return
 	 * @param orderBy the s-ramp property to use for sorting (name, uuid, createdOn, etc)
 	 * @param ascending the direction of the sort
+	 * @param propertyNames an optional collection of names of custom s-ramp properties to be returned as part of the result set
 	 * @return an Atom {@link Feed}
 	 * @throws SrampClientException
 	 * @throws SrampAtomException
 	 */
-	public QueryResultSet query(String srampQuery, int startIndex, int count, String orderBy, boolean ascending)
-			throws SrampClientException, SrampAtomException {
+	public QueryResultSet query(String srampQuery, int startIndex, int count, String orderBy, boolean ascending,
+	        Collection<String> propertyNames) throws SrampClientException, SrampAtomException {
 		try {
 			String xpath = srampQuery;
 			if (xpath == null)
@@ -487,22 +507,80 @@ public class SrampAtomApiClient {
 				xpath = xpath.substring(8);
 			String atomUrl = this.endpoint;
 
-			ClientRequest request = new ClientRequest(atomUrl);
-			MultipartFormDataOutput formData = new MultipartFormDataOutput();
-			formData.addFormData("query", xpath, MediaType.TEXT_PLAIN_TYPE);
-			formData.addFormData("startIndex", String.valueOf(startIndex), MediaType.TEXT_PLAIN_TYPE);
-			formData.addFormData("count", String.valueOf(count), MediaType.TEXT_PLAIN_TYPE);
-			formData.addFormData("orderBy", orderBy, MediaType.TEXT_PLAIN_TYPE);
-			formData.addFormData("ascending", String.valueOf(ascending), MediaType.TEXT_PLAIN_TYPE);
+			// Do a GET if multiple propertyNames are provided.  We would like to always
+			// do a POST but the RESTEasy client doesn't seem to have a way to send multiple
+			// values for a single multipart/form-data part name.
+			if (propertyNames == null || propertyNames.size() < 2) {
+    			ClientRequest request = new ClientRequest(atomUrl);
+    			MultipartFormDataOutput formData = new MultipartFormDataOutput();
+    			formData.addFormData("query", xpath, MediaType.TEXT_PLAIN_TYPE);
+    			formData.addFormData("startIndex", String.valueOf(startIndex), MediaType.TEXT_PLAIN_TYPE);
+    			formData.addFormData("count", String.valueOf(count), MediaType.TEXT_PLAIN_TYPE);
+    			formData.addFormData("orderBy", orderBy, MediaType.TEXT_PLAIN_TYPE);
+    			formData.addFormData("ascending", String.valueOf(ascending), MediaType.TEXT_PLAIN_TYPE);
+    			if (propertyNames != null) {
+    			    for (String propertyName : propertyNames) {
+                        formData.addFormData("propertyName", propertyName, MediaType.TEXT_PLAIN_TYPE);
+                    }
+    			}
 
-			request.body(MediaType.MULTIPART_FORM_DATA_TYPE, formData);
-			ClientResponse<Feed> response = request.post(Feed.class);
-			return new QueryResultSet(response.getEntity());
+    			request.body(MediaType.MULTIPART_FORM_DATA_TYPE, formData);
+    			ClientResponse<Feed> response = request.post(Feed.class);
+    			return new QueryResultSet(response.getEntity());
+			} else {
+			    StringBuilder urlBuilder = new StringBuilder();
+			    urlBuilder.append(atomUrl);
+                urlBuilder.append("?query=");
+                urlBuilder.append(URLEncoder.encode(srampQuery, "UTF8"));
+                urlBuilder.append("&startIndex=");
+                urlBuilder.append(String.valueOf(startIndex));
+                urlBuilder.append("&count=");
+                urlBuilder.append(String.valueOf(count));
+                urlBuilder.append("&orderBy=");
+                urlBuilder.append(URLEncoder.encode(orderBy, "UTF8"));
+                urlBuilder.append("&ascending=");
+                urlBuilder.append(String.valueOf(ascending));
+                for (String propName : propertyNames) {
+                    urlBuilder.append("&propertyName=");
+                    urlBuilder.append(URLEncoder.encode(propName, "UTF8"));
+                }
+                ClientRequest request = new ClientRequest(urlBuilder.toString());
+                ClientResponse<Feed> response = request.get(Feed.class);
+                return new QueryResultSet(response.getEntity());
+			}
 		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
 		}
+	}
+
+	/**
+	 * Build a query that can be parameterized and then executed.  The format
+	 * of the query can either be a complete valid query or a query with JDBC style
+	 * parameters (using the ? placeholder for parameters).
+	 *
+	 * Additionally, the start index, count, order-by, ascending, and extra propertyNames
+	 * can all be set after calling this method.
+	 *
+	 * <code>
+	 *   String uuid = ...
+	 *   client.buildQuery("/s-ramp/core/Document[@uuid = ?]")
+	 *         .parameter(uuid)
+	 *         .startIndex(3)
+	 *         .count(20)
+	 *         .orderBy("name")
+	 *         .ascending()
+	 *         .propertyName("custom-prop-1")
+	 *         .propertyName("custom-prop-2")
+	 *         .query();
+	 * </code>
+	 *
+	 * @param query
+	 * @return a client query object
+	 */
+	public SrampClientQuery buildQuery(String query) {
+	    return new SrampClientQuery(this, query);
 	}
 
 	/**
