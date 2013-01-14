@@ -7,14 +7,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-    </style>
     <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="../../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet">
+    <link href="../../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -29,15 +24,16 @@
     <div data-field="page">
     
       <!-- Top header/nav bar -->
-      <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar navbar-inverse sramp-navbar-fixed-top">
         <div class="navbar-inner">
           <div class="container-fluid">
             <a class="brand" href="#">JBoss - S-RAMP</a>
-            <div>
+            <!-- Desktop Nav Controls (tabs, shadowman, etc) -->
+            <div class="desktop-only">
               <ul class="nav">
-                <li class="active"><a class="sramp-hl sramp-hl-artifacts" data-field="artifactsLink">Artifacts</a></li>
-                <li><a class="sramp-hl sramp-hl-ontologies" data-field="ontologiesLink">Ontologies</a></li>
-                <li><a class="sramp-hl sramp-hl-settings" data-field="settingsLink">Settings</a></li>
+                <li class="active"><a class="sramp-hl sramp-hl-artifacts">Artifacts</a></li>
+                <li><a class="sramp-hl sramp-hl-ontologies">Ontologies</a></li>
+                <li><a class="sramp-hl sramp-hl-settings">Settings</a></li>
               </ul>
               <div class="pull-right nav-shadowman"></div>
               <div class="btn-group pull-right" style="margin-left: 20px">
@@ -50,12 +46,30 @@
                 </ul>
               </div>
             </div>
+            <!-- Non-desktop navigation (phones, tablets) -->
+            <div class="mobile-only">
+              <a href="#" id="mobile-nav-btn" data-toggle="collapse" data-target="#mobile-nav" class="pull-right">Menu</a>
+            </div>
           </div>
         </div>
       </div>
+      
+      <!-- Mobile navigation menu -->
+      <div id="mobile-nav" class="collapse out">
+        <ul class="nav nav-list">
+          <!-- Navigation Tabs -->
+          <li class="nav-header">List header</li>
+          <li class="active"><a class="sramp-hl sramp-hl-artifacts">Artifacts</a></li>
+          <li><a class="sramp-hl sramp-hl-ontologies">Ontologies</a></li>
+          <li><a class="sramp-hl sramp-hl-settings">Settings</a></li>
+          <!-- User Menu (logout, etc) -->
+          <li class="nav-header">John Doe</li>
+          <li><a href="#">Logout</a></li>
+        </ul>
+      </div>
 
       <!-- Content area with footer-->
-      <div class="container-fluid">
+      <div id="page-content" class="container-fluid">
         <!-- Action bar -->
         <div class="row-fluid">
           <div class="span12 sramp-artifact-header">
