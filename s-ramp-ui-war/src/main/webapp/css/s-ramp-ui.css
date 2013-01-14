@@ -28,13 +28,17 @@
   width: 60px;
   height: 72px;
 }
-#mobile-nav-menu {
+#mobile-nav-btn {
   color: white;
   margin-top: 20px;
   background-image: url("../images/header-nav-phone.png");
   height: 30px;
   width: 30px;
   text-indent: -3000px;
+}
+
+.sramp-filter-sidebar {
+  max-width: 320px;
 }
 
 #accordian-filters .sramp-vspacer {
