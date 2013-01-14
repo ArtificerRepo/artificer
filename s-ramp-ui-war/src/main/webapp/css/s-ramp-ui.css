@@ -36,12 +36,8 @@
   width: 30px;
   text-indent: -3000px;
 }
-#mobile-nav {
-  margin-bottom: 15px;
-}
-
-.sramp-filter-sidebar {
-  max-width: 320px;
+#mobile-nav .nav-list {
+  padding-bottom: 15px;
 }
 
 #accordian-filters .sramp-vspacer {

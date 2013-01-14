@@ -30,6 +30,9 @@
     padding-left: 0px;
     border-radius: 0px 0px 0px 0px;
   }
+  .sramp-filter-sidebar {
+    max-width: 330px;
+  }
 }
 
 /* Mobile */
