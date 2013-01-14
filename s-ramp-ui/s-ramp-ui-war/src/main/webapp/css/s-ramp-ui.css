@@ -1,175 +1,180 @@
-body {
-	padding-top: 80px;
-}
 .navbar {
-    background-image: url("../images/header-center.png");
-    background-repeat: repeat-x;
-	}
+  background-image: url("../images/header-center.png");
+  background-repeat: repeat-x;
+}
 .navbar-inverse .navbar-inner {
-	min-height: 72px;
-    background-image: url("../images/header-logo.png");
-    background-repeat: no-repeat;
-    background-position: top left;
-    background-color: transparent;
-    border: none;
+  min-height: 72px;
+  background-image: url("../images/header-logo.png");
+  background-repeat: no-repeat;
+  background-position: top left;
+  background-color: transparent;
+  border: none;
 }
 .navbar .brand {
-	text-indent: -5000px;
-	width: 220px;
+  text-indent: -5000px;
+  width: 175px;
 }
 .navbar-inverse .nav li a {
-	color: #dadaff;
+  color: #dadaff;
 }
 .navbar-inverse .nav .active a, .navbar-inverse .nav .active a:hover, .navbar-inverse .nav .active a:focus {
-	background-color: transparent;
+  background-color: transparent;
 }
 .navbar .nav li a {
-	padding: 25px 15px 23px 15px;
+  padding: 25px 15px 23px 15px;
 }
 .nav-shadowman {
-	background-image: url("../images/header-shadowman.png");
-	width: 60px;
-	height: 72px;
+  background-image: url("../images/header-shadowman.png");
+  width: 60px;
+  height: 72px;
+}
+#mobile-nav-menu {
+  color: white;
+  margin-top: 20px;
+  background-image: url("../images/header-nav-phone.png");
+  height: 30px;
+  width: 30px;
+  text-indent: -3000px;
 }
 
 #accordian-filters .sramp-vspacer {
-    min-height: 10px;
-    height: 10px;
+  min-height: 10px;
+  height: 10px;
 }
 
 .sramp-filter-list {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .sramp-filter-list .icon-chevron-right {
-    float: right;
-    margin-top: 3px;
+  float: right;
+  margin-top: 3px;
 }
 
 .sramp-filter-list li a {
-    color: rgb(51,51,51);
+  color: rgb(51,51,51);
 }
 
 .sramp-artifacts {
 }
 
 .sramp-search {
-    padding: 5px;
+  padding: 5px;
 }
 
 .sramp-artifacts-actions {
-    padding: 5px;
+  padding: 5px;
 }
 
 .sramp-sp4n-label {
-    padding: 4px 12px;
-    line-height: 20px;
-    display: inline;
+  padding: 4px 12px;
+  line-height: 20px;
+  display: inline;
 }
 
 .sramp-filter-label {
-    cursor: default;
+  cursor: default;
 }
 
 .sramp-nav-tabs {
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 .sramp-tab-content {
-    border-left: 1px solid rgb(221, 221, 221);
-    border-right: 1px solid rgb(221, 221, 221);
-    border-bottom: 1px solid rgb(221, 221, 221);
-    padding-bottom: 15px;
+  border-left: 1px solid rgb(221, 221, 221);
+  border-right: 1px solid rgb(221, 221, 221);
+  border-bottom: 1px solid rgb(221, 221, 221);
+  padding-bottom: 15px;
 }
 
 .sramp-meta-data-section {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .sramp-meta-data-section .btn {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 
 .sramp-meta-data-section-header {
-    font-weight: bold;
-    border-bottom: 1px dotted #afafaf;
-    float: left;
+  font-weight: bold;
+  border-bottom: 1px dotted #afafaf;
+  float: left;
 }
 
 .sramp-meta-data-section-label {
-    white-space: nowrap;
-    min-width: 130px;
-    float: left;
+  white-space: nowrap;
+  min-width: 130px;
+  float: left;
 }
 
 .sramp-meta-data-section-value {
-    float: left;
+  float: left;
 }
 
 .sramp-relationship-type {
-    font-weight: bold;
-    background-color: #f6f6f6;
+  font-weight: bold;
+  background-color: #f6f6f6;
 }
 
 .sramp-relationship-table, .sramp-history-table {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .sramp-source-editor-wrapper {
-    margin-top: 15px;
-    background-color: #fff8f8;
-    position: relative;
-    height: 350px;
-    border: 1px solid rgb(221, 221, 221);
+  margin-top: 15px;
+  background-color: #fff8f8;
+  position: relative;
+  height: 350px;
+  border: 1px solid rgb(221, 221, 221);
 }
 
 .sramp-source-editor {
-    left: 0px;
-    top: 0px;
-    bottom: 1px;
-    right: 1px;
-    background: white;
+  left: 0px;
+  top: 0px;
+  bottom: 1px;
+  right: 1px;
+  background: white;
 }
 
 #ontologies {
-	height: 500px;
-	border: 1px solid rgb(221, 221, 221);
+  height: 500px;
+  border: 1px solid rgb(221, 221, 221);
 }
 #ontologies ul {
-	margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 .sramp-ontology-box-header {
-	font-weight: bold;
-	background-color: rgb(245, 240, 240);
-	border-bottom: 1px solid rgb(221, 221, 221);
-	padding: 3px;
-	height: 20px;
+  font-weight: bold;
+  background-color: rgb(245, 240, 240);
+  border-bottom: 1px solid rgb(221, 221, 221);
+  padding: 3px;
+  height: 20px;
 }
 
 #ontology-editor {
-	height: 500px;
-	border: 1px solid rgb(221, 221, 221);
-    overflow-x: auto;
-    overflow-y: hidden;
+  height: 500px;
+  border: 1px solid rgb(221, 221, 221);
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 #ontology-editor .sramp-ontology-tier {
-	width: 220px;
-	border-right: 1px solid rgb(221, 221, 221);
-	height: 498px;
-	float: left;
+  width: 220px;
+  border-right: 1px solid rgb(221, 221, 221);
+  height: 498px;
+  float: left;
 }
 
 #ontology-editor .sramp-ontology-tier .sramp-ontology-tier-header {
-    background-color: rgb(245, 240, 240);
-    border-bottom: 1px solid rgb(221, 221, 221);
-    padding: 3px;
-	height: 20px;
+  background-color: rgb(245, 240, 240);
+  border-bottom: 1px solid rgb(221, 221, 221);
+  padding: 3px;
+  height: 20px;
 }
 
 #ontology-editor .sramp-ontology-tier ul {
-	margin: 0px;
+  margin: 0px;
 }
 
 #ontology-editor .sramp-ontology-editor-canvas {
