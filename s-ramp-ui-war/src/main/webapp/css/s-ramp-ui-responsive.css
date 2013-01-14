@@ -47,5 +47,9 @@
   body {
     padding: 0px;
   }
+  
+  #page-content {
+    padding: 5px;
+  }
 
 }
