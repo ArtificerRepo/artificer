@@ -17,11 +17,10 @@ package org.overlord.sramp.client.shell;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -135,35 +134,22 @@ public class ShellCommandFactory {
 
         // Register commands listed in the user's commands.ini config file
         String userHome = System.getProperty("user.home", "/");
-        String commandsFileName = System.getProperty("s-ramp.shell.commandsIni",
-                userHome + "/.s-ramp/commands.ini");
-        File commandsFile = new File(commandsFileName);
-        if (commandsFile.isFile()) {
+        String commandsDirName = System.getProperty("s-ramp.shell.commandsDir",
+                userHome + "/.s-ramp/commands");
+        File commandsDir = new File(commandsDirName);
+        if (!commandsDir.exists()) {
+            commandsDir.mkdirs();
+        }
+        if (commandsDir.isDirectory()) {
             try {
-                List<String> lines = FileUtils.readLines(commandsFile);
-                for (String line : lines) {
-                    if (!line.startsWith("#") && line.trim().length() > 0) {
-                        try {
-                            File f = new File(line);
-                            if (f.exists()) {
-                                commandClassloaders.add(new URLClassLoader(new URL[] { f.toURI().toURL() }));
-                            }
-                            continue;
-                        } catch (Throwable t) {
-                            // skip error
-                        }
-                        try {
-                            URL url = new URL(line);
-                            URLConnection urlConnection = url.openConnection();
-                            InputStream inputStream = urlConnection.getInputStream();
-                            inputStream.close();
-                            // We have a valid URL!
-                            commandClassloaders.add(new URLClassLoader(new URL[] { url }));
-                        } catch (Throwable t) {
-                            // skip error
-                        }
-                    }
+                Collection<File> jarFiles = FileUtils.listFiles(commandsDir, new String[] { "jar" }, false);
+                List<URL> jarURLs = new ArrayList<URL>(jarFiles.size());
+                for (File jarFile : jarFiles) {
+                    jarURLs.add(jarFile.toURI().toURL());
                 }
+                URL[] urls = jarURLs.toArray(new URL[jarURLs.size()]);
+                ClassLoader extraCommandsCL = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
+                commandClassloaders.add(extraCommandsCL);
             } catch (IOException e) {
                 e.printStackTrace();
             }
