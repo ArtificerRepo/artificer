@@ -7,6 +7,7 @@
     <meta name="description" content=""></meta>
     <meta name="author" content=""></meta>
     <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
     <link href="../../../../../../../../webapp/kalendae-0.2/kalendae.css" rel="stylesheet" type="text/css" charset="utf-8"></link>
     <link href="../../../../../../../../webapp/kalendae-0.2/metal.css" rel="stylesheet" type="text/css" charset="utf-8"></link>
     <link href="../../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
@@ -49,10 +50,19 @@
             </div>
             <!-- Non-desktop navigation (phones, tablets) -->
             <div class="mobile-only">
-              <a href="#" id="mobile-nav-menu" class="pull-right">Menu</a>
+              <a href="#" id="mobile-nav-btn" data-toggle="collapse" data-target="#mobile-nav" class="pull-right">Menu</a>
             </div>
           </div>
         </div>
+      </div>
+      
+      <!-- Mobile navigation menu -->
+      <div id="mobile-nav" class="collapse out">
+        <ul class="nav nav-tabs nav-stacked">
+          <li class="active"><a class="sramp-hl sramp-hl-artifacts">Artifacts</a></li>
+          <li><a class="sramp-hl sramp-hl-ontologies">Ontologies</a></li>
+          <li><a class="sramp-hl sramp-hl-settings">Settings</a></li>
+        </ul>
       </div>
 
       <!-- Content area with footer-->
@@ -87,13 +97,13 @@
                           <div class="controls controls-row">
                             <label class="sramp-filter-label">Date Created</label>
                             <input class="span5 auto-kal sramp-date" type="text" placeholder="Any">
-                            <span class="span2" style="padding-top: 4px; text-align: center">to</span>
+                            <span class="span2 desktop-only" style="padding-top: 4px; text-align: center">to</span>
                             <input class="span5 auto-kal sramp-date" type="text" placeholder="Any">
                           </div>
                           <div class="controls controls-row">
                             <label class="sramp-filter-label">Date Last Modified</label>
                             <input class="span5 auto-kal sramp-date" type="text" placeholder="Any">
-                            <span class="span2" style="padding-top: 4px; text-align: center">to</span>
+                            <span class="span2 desktop-only" style="padding-top: 4px; text-align: center">to</span>
                             <input class="span5 auto-kal sramp-date" type="text" placeholder="Any">
                           </div>
                           <div class="controls">
@@ -200,7 +210,7 @@
               </div>
             </div>
           </div>
-
+          
           <!-- The Artifacts table -->
           <div class="span9 sramp-artifacts">
             <div class="row-fluid">
@@ -230,100 +240,100 @@
                 <tr>
                   <th>Name</th>
                   <th>Type</th>
-                  <th>Derived</th>
-                  <th>Last Modified</th>
-                  <th>Favorite</th>
-                  <th>Actions</th>
+                  <th class="desktop-only">Derived</th>
+                  <th class="desktop-only">Last Modified</th>
+                  <th class="desktop-only">Favorite</th>
+                  <th class="desktop-only">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 1</a></td>
                   <td>XmlDocument</td>
-                  <td></td>
-                  <td>03/10/2012</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only">03/10/2012</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 2</a></td>
                   <td>WsdlDocument</td>
-                  <td></td>
-                  <td>02/10/2009</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only">02/10/2009</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 3</a></td>
                   <td>ElementDeclaration</td>
-                  <td>true</td>
-                  <td>01/17/2012</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only">true</td>
+                  <td class="desktop-only">01/17/2012</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 4</a></td>
                   <td>ElementDeclaration</td>
-                  <td>true</td>
-                  <td>03/10/2012</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only">true</td>
+                  <td class="desktop-only">03/10/2012</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 5</a></td>
                   <td>ElementDeclaration</td>
-                  <td>true</td>
-                  <td>03/10/2012</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only">true</td>
+                  <td class="desktop-only">03/10/2012</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 6</a></td>
                   <td>XsdDocument</td>
-                  <td></td>
-                  <td>09/05/2008</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only">09/05/2008</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 7</a></td>
                   <td>ComplexTypeDeclaration</td>
-                  <td>true</td>
-                  <td>02/10/2011</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only">true</td>
+                  <td class="desktop-only">02/10/2011</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 8</a></td>
                   <td>PolicyDocument</td>
-                  <td></td>
-                  <td>07/10/2005</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only">07/10/2005</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 9</a></td>
                   <td>PolicyDocument</td>
-                  <td></td>
-                  <td>07/10/2005</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only">07/10/2005</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 10</a></td>
                   <td>BrmsDocument</td>
-                  <td></td>
-                  <td>12/31/2011</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only">12/31/2011</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
                 <tr>
                   <td><a href="artifact-details.html">Artifact 11</a></td>
                   <td>XmlDocument</td>
-                  <td></td>
-                  <td>03/10/2012</td>
-                  <td></td>
-                  <td></td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only">03/10/2012</td>
+                  <td class="desktop-only"></td>
+                  <td class="desktop-only"></td>
                 </tr>
               </tbody>
               </table>
