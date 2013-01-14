@@ -1,3 +1,7 @@
+/* Huge Desktop */
+@media ( min-width : 1900px) {
+}
+
 /* Desktop */
 @media ( min-width : 768px) {
   .mobile-only {
@@ -36,4 +40,12 @@
   .no-mobile {
     display: none !important;
   }
+  .navbar {
+    margin-bottom: 5px;
+  }
+  
+  body {
+    padding: 0px;
+  }
+
 }
