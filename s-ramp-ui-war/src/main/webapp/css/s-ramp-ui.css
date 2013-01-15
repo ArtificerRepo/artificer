@@ -1,3 +1,7 @@
+body {
+  background-color: #eaeaea;
+}
+
 .navbar {
   background-image: url("../images/header-center.png");
   background-repeat: repeat-x;
@@ -46,13 +50,15 @@
 }
 
 .mobile-header {
-  text-indent: 20px;
+  text-indent: 15px;
   background-color: #1f97d8;
-  border-bottom: 1px solid #d3d3d3;
+  border-bottom: 2px solid #d3d3d3;
 }
 .mobile-header a {
   padding-top: 5px;
   color: white;
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
 .mobile-header span.caret {
   color: white;
@@ -65,22 +71,63 @@
   margin-bottom: 5px;
 }
 
-#accordian-filters .sramp-vspacer {
+#accordion-filters .sramp-vspacer {
   min-height: 10px;
   height: 10px;
+}
+
+.s-ramp-filter-header, .sramp-filter-body {
+  border-left: 1px solid #d3d3d3;
+  border-right: 1px solid #d3d3d3;
+}
+.s-ramp-filter-header .sramp-filter-toggle {
+  border-bottom: 1px solid #d3d3d3;
+  background-color: #f6f6f6;
+  background-image: url("../images/s-ramp-filter-header-bg.png");
+  background-position: bottom left;
+  background-repeat: repeat-x;
+}
+.s-ramp-filter-header .collapsed {
+}
+.sramp-filter-body {
+}
+.sramp-filter-inner {
+  padding: 9px 15px 0px;
+}
+
+.sramp-filter-toggle {
+  display: block;
+  padding: 8px 15px;
+  cursor: pointer;
+  color: #666;
+  font-weight: bold;
 }
 
 .sramp-filter-list {
   margin-bottom: 10px;
 }
-
 .sramp-filter-list .icon-chevron-right {
   float: right;
   margin-top: 3px;
 }
-
 .sramp-filter-list li a {
   color: rgb(51,51,51);
+}
+
+.s-ramp-filter-footer {
+  margin-top: -20px;
+}
+
+.s-ramp-filter-footer .sramp-filter-toggle {
+  border-bottom: 1px solid #d3d3d3;
+  height: 12px;
+  background-image: url("../images/s-ramp-filter-footer-bg.png");
+  background-position: bottom left;
+  background-repeat: repeat-x;
+}
+
+.s-ramp-filter-footer .sramp-filter-toggle .caret {
+  margin-top: 4px;
 }
 
 .sramp-artifacts {

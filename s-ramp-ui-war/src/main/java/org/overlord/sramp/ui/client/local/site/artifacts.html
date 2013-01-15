@@ -80,21 +80,21 @@
             <div class="row-fluid mobile-header mobile-only">
               <a class="span12" data-toggle="collapse" data-target="#sramp-filters" href="#">Filters <span class="caret pull-right"></span></a>
             </div>
-            <!-- The actual Fitlers (accordian control) -->
+            <!-- The actual Filters (accordion control) -->
             <div id="sramp-filters" class="row-fluid collapse in">
               <div class="span12">
                 <!-- Filter Accordian -->
-                <div class="accordion" id="accordian-filters">
+                <div class="" id="accordion-filters">
                 
-                  <!-- Core Propertiy Filters -->
-                  <div class="accordion-group">
-                    <div class="accordion-heading">
-                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordian-filters" href="#accordian-filters-core">
+                  <!-- Core Property Filters -->
+                  <div class="sramp-filter-group">
+                    <div class="s-ramp-filter-header">
+                      <a class="sramp-filter-toggle collapsed" data-toggle="collapse" data-target="#accordion-filters-core">
                         Core Properties
                       </a>
                     </div>
-                    <div id="accordian-filters-core" class="accordion-body collapse in">
-                      <div class="accordion-inner">
+                    <div id="accordion-filters-core" class="sramp-filter-body collapse">
+                      <div class="sramp-filter-inner">
                         <form class="">
                           <div class="controls">
                             <label class="sramp-filter-label">Type</label>
@@ -140,25 +140,28 @@
                               Derived
                             </label>
                           </div>
-                          <div class="span12 sramp-vspacer"></div>
                           <div class="controls">
-                            <a class="btn span12">Clear All Filters</a>
+                            <a class="btn">Clear All Filters</a>
                           </div>
-                          <div class="span12 sramp-vspacer"></div>
                         </form>
+                      </div>
+                      <div class="s-ramp-filter-footer">
+                        <a class="sramp-filter-toggle dropup" data-toggle="collapse" data-target="#accordion-filters-core">
+                          <span class="pull-right caret"></span>
+                        </a>
                       </div>
                     </div>
                   </div>
                   
                   <!-- Category Filters -->
-                  <div class="accordion-group">
-                    <div class="accordion-heading">
-                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordian-filters" href="#accordian-filters-categories">
+                  <div class="sramp-filter-group">
+                    <div class="s-ramp-filter-header">
+                      <a class="sramp-filter-toggle collapsed" data-toggle="collapse" data-target="#accordion-filters-categories">
                         Categories
                       </a>
                     </div>
-                    <div id="accordian-filters-categories" class="accordion-body collapse">
-                      <div class="accordion-inner">
+                    <div id="accordion-filters-categories" class="sramp-filter-body collapse">
+                      <div class="sramp-filter-inner">
                         <ul class="sramp-filter-list nav nav-list span12">
                           <li>
                             <a href="#"><i class="icon-chevron-right"></i>
@@ -173,23 +176,27 @@
                         </ul>
                         <form class="">
                           <div class="controls">
-                            <a class="btn span12">Clear All Filters</a>
+                            <a class="btn">Clear All Filters</a>
                           </div>
-                          <div class="span12 sramp-vspacer"></div>
                         </form>
+                      </div>
+                      <div class="s-ramp-filter-footer">
+                        <a class="sramp-filter-toggle dropup" data-toggle="collapse" data-target="#accordion-filters-categories">
+                          <span class="pull-right caret"></span>
+                        </a>
                       </div>
                     </div>
                   </div>
 
                   <!-- Custom Property Filter -->
-                  <div class="accordion-group">
-                    <div class="accordion-heading">
-                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordian-filters" href="#accordian-filters-properties">
+                  <div class="sramp-filter-group">
+                    <div class="s-ramp-filter-header">
+                      <a class="sramp-filter-toggle collapsed" data-toggle="collapse" data-target="#accordion-filters-properties">
                         Custom Properties
                       </a>
                     </div>
-                    <div id="accordian-filters-properties" class="accordion-body collapse">
-                      <div class="accordion-inner">
+                    <div id="accordion-filters-properties" class="sramp-filter-body collapse">
+                      <div class="sramp-filter-inner">
                         <form class="">
                           <div class="controls">
                             <label class="sramp-filter-label">Property 1:</label>
@@ -208,12 +215,15 @@
                               <option value="three">Configured Value 3</option>
                             </select>
                           </div>
-                          <div class="span12 sramp-vspacer"></div>
                           <div class="controls">
-                            <a class="btn span12">Clear All Filters</a>
+                            <a class="btn">Clear All Filters</a>
                           </div>
-                          <div class="span12 sramp-vspacer"></div>
                         </form>
+                      </div>
+                      <div class="s-ramp-filter-footer">
+                        <a class="sramp-filter-toggle dropup" data-toggle="collapse" data-target="#accordion-filters-properties">
+                          <span class="pull-right caret"></span>
+                        </a>
                       </div>
                     </div>
                   </div>
