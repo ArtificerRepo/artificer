@@ -3,6 +3,9 @@ var prevMobile = false;
 $(document).ready(function() {
 	$(window).resize(function(e) { onResize(); });
 	onResize();
+	if (!isMobile()) {
+		$('#accordion-filters-core').collapse();
+	}
 });
 
 /**
