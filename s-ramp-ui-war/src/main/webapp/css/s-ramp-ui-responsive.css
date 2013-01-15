@@ -33,6 +33,9 @@
   .sramp-filter-sidebar {
     max-width: 330px;
   }
+  #sramp-filters {
+    height: auto;
+  }
 }
 
 /* Mobile */
@@ -44,7 +47,7 @@
     display: none !important;
   }
   .navbar {
-    margin-bottom: 5px;
+    margin-bottom: 0px;
   }
   
   body {
