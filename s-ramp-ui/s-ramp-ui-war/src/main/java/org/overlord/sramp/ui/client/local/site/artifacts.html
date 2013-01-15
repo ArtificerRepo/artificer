@@ -19,6 +19,7 @@
     <script type="text/javascript" src="../../../../../../../../webapp/js/jquery-1.8.3.min.js"></script>
     <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../../../../../../webapp/kalendae-0.2/kalendae.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-responsive.js"></script>
     <script type="text/javascript" src="static-linkages.js"></script>
   </head>
 
@@ -60,7 +61,7 @@
       <div id="mobile-nav" class="collapse out">
         <ul class="nav nav-list">
           <!-- Navigation Tabs -->
-          <li class="nav-header">List header</li>
+          <li class="nav-header">Navigation</li>
           <li class="active"><a class="sramp-hl sramp-hl-artifacts">Artifacts</a></li>
           <li><a class="sramp-hl sramp-hl-ontologies">Ontologies</a></li>
           <li><a class="sramp-hl sramp-hl-settings">Settings</a></li>
@@ -75,7 +76,12 @@
         <div class="row-fluid">
           <!-- The Filter Sidebar -->
           <div class="span3 sramp-filter-sidebar">
-            <div class="row-fluid">
+            <!-- Mobile-only header used to collapse the entire Filters section -->
+            <div class="row-fluid mobile-header mobile-only">
+              <a class="span12" data-toggle="collapse" data-target="#sramp-filters" href="#">Filters <span class="caret pull-right"></span></a>
+            </div>
+            <!-- The actual Fitlers (accordian control) -->
+            <div id="sramp-filters" class="row-fluid collapse in">
               <div class="span12">
                 <!-- Filter Accordian -->
                 <div class="accordion" id="accordian-filters">
