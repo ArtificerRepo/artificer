@@ -3,11 +3,11 @@ body {
 }
 
 .btn-focus {
-    color: #2da0db;
-    text-shadow: 0px 1px 0px white;
+  color: #2da0db;
+  text-shadow: 0px 1px 0px white;
 }
 .btn-focus:hover {
-    color: #2da0db;
+  color: #2da0db;
 }
 .btn-clear {
   padding: 5px 0px 5px 0px;
@@ -336,15 +336,19 @@ body {
 .sramp-settings {
 }
 
-.sramp-settings h4 {
+.sramp-settings .sramp-settings-sh {
+  padding: 15px 5px 15px 5px;
+}
+.sramp-settings .sramp-settings-header {
   font-size: medium;
 }
 .sramp-settings .sramp-settings-message {
   font-size: small;
 }
-.sramp-settings h4, .sramp-settings .sramp-settings-message {
+.sramp-settings .sramp-settings-header, .sramp-settings .sramp-settings-message {
   color: #666;
   text-shadow: 0px 1px 0px white;
+  width: 95%;
 }
 
 .sramp-settings-properties {
@@ -384,4 +388,22 @@ body {
 .sramp-settings-add-prop {
   margin-left: 10px;
   margin-bottom: 10px;
+}
+
+.tooltip-inner {
+  background-color: #666;
+  color: #fafafa;
+  text-shadow: 0px 1px 0px black;
+}
+
+.tooltip.in {
+  opacity: 1.0;
+}
+
+.tooltip.top .tooltip-arrow {
+  bottom: 0px;
+  left: 50%;
+  margin-left: -5px;
+  border-top-color: #666;
+  border-width: 5px 5px 0px;
 }

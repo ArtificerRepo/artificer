@@ -6,6 +6,7 @@ $(document).ready(function() {
 	if (!isMobile()) {
 		$('#accordion-filters-core').collapse();
 	}
+	$('.is-tooltip').tooltip();
 });
 
 /**
@@ -42,5 +43,5 @@ function onResize() {
  * @returns {Boolean}
  */
 function isMobile() {
-	return $(window).width() <= 767;
+	return $(window).width() < 768;
 }
