@@ -86,6 +86,7 @@ body {
   background-image: url("../images/s-ramp-filter-header-bg.png");
   background-position: bottom left;
   background-repeat: repeat-x;
+  text-shadow: 1px 1px #fafafa;
 }
 .s-ramp-filter-header .collapsed {
 }
