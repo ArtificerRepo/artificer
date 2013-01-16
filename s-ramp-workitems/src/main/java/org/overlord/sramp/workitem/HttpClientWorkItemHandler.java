@@ -41,10 +41,12 @@ public class HttpClientWorkItemHandler implements WorkItemHandler {
     	connection.connect();
     	int responseCode = connection.getResponseCode();
     	if (responseCode == 200) {
-    		 InputStream is = (InputStream) connection.getContent();
-    		 String reply = IOUtils.toString(is);
+    		InputStream is = (InputStream) connection.getContent();
+    		String reply = IOUtils.toString(is);
     		System.out.println("reply=" + reply);
     	} else {
+    	    workItem.getParameters().put("Status", "ERROR");
+    	    workItem.getParameters().put("StatusMsg", "endpoint " + urlStr + " could not be reached");
     		System.err.println("endpoint could not be reached");
     	}
     	

@@ -10,6 +10,7 @@
 
   <artifactId>s-ramp-governance</artifactId>
   <name>S-RAMP Governance</name>
+  <packaging>war</packaging>
   <description>S-RAMP Governance manages governance workflows.</description>
 
   <dependencies>

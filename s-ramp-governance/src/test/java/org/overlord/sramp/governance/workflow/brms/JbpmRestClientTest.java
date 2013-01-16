@@ -29,16 +29,16 @@ import org.junit.Test;
  */
 public class JbpmRestClientTest {
     
-    @Test  @Ignore//the BPM engine needs to be running for this test to pass
+    @Test @Ignore//the BPM engine needs to be running for this test to pass
     public void testNewEvaluationProcessInstance() throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         JbpmRestClient jbpmClient = new JbpmRestClient(httpclient, "http://localhost:8080/gwt-console-server");
         try {
-            jbpmClient.logon("admin", "admin");
+            jbpmClient.logon("krisv", "krisv");
             //parameters that will be set in the jBPM context Map
             Map<String,Object> parameters = new HashMap<String,Object>();
             parameters.put("employee", "krisv");
-            parameters.put("reason", "annual review");
+            parameters.put("reason", "annual review 3");
             
             jbpmClient.newProcessInstanceAndCompleteFirstTask("com.sample.evaluation",parameters);
         } catch (IOException e) {
@@ -48,7 +48,7 @@ public class JbpmRestClientTest {
         }
     }
     
-    @Test  @Ignore//the BPM engine needs to be running for this test to pass
+    @Test @Ignore//the BPM engine needs to be running for this test to pass
     public void testNewProcessInstance() throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         JbpmRestClient jbpmClient = new JbpmRestClient(httpclient, "http://localhost:8080/gwt-console-server");

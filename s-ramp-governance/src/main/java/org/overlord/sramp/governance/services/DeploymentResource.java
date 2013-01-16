@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
+import jline.internal.Log;
+
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
@@ -47,8 +49,7 @@ import org.slf4j.LoggerFactory;
 @Path("/deploy")
 public class DeploymentResource {
 
-    private static Logger logger = LoggerFactory
-            .getLogger(DeploymentResource.class);
+    private static Logger logger = LoggerFactory.getLogger(DeploymentResource.class);
     private Governance governance = new Governance();
 
     /**
@@ -76,8 +77,7 @@ public class DeploymentResource {
         OutputStream os = null;
         try {
             // 1. get the artifact from the repo
-            String srampUrl = governance.getSrampUrl();
-            SrampAtomApiClient client = new SrampAtomApiClient(srampUrl);
+            SrampAtomApiClient client = new SrampAtomApiClient(governance.getSrampUrl().toExternalForm());
             String query = String.format("/s-ramp[@uuid='%s']", uuid);
             QueryResultSet queryResultSet = client.query(query);
             if (queryResultSet.size() == 0) {
@@ -88,6 +88,10 @@ public class DeploymentResource {
 
             // 2. get the deployment environment settings
             Target target = governance.getTargets().get(environment);
+            if (target==null) {
+                Log.error("No target could be found for environment '"+ environment + "'");
+                throw new SrampAtomException("No target could be found for environment '"+ environment + "'");
+            }
             File deployDir = new File(target.getDeployDir());
             if (!deployDir.exists()) {
                 logger.info("creating " + deployDir);
