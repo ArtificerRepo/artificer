@@ -70,7 +70,7 @@ public class DeploymentResource {
     @POST
     @Path("copy/{environment}/{uuid}")
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Response create(@Context HttpServletRequest request,
+    public Response copy(@Context HttpServletRequest request,
             @PathParam("environment") String environment,
             @PathParam("uuid") String uuid) throws Exception {
         InputStream is = null;
