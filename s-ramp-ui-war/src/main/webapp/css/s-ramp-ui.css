@@ -165,6 +165,10 @@ body {
   color: rgb(51,51,51);
 }
 
+.sramp-filter-label {
+  cursor: default;
+}
+
 .s-ramp-filter-footer {
   margin-top: -20px;
 }
@@ -181,25 +185,48 @@ body {
   margin-top: 4px;
 }
 
-.sramp-artifacts {
-}
-
 .sramp-search {
   padding: 5px;
 }
 
-.sramp-artifacts-actions {
-  padding: 5px;
+.sramp-artifacts {
+  padding: 0px;
 }
 
-.sramp-sp4n-label {
+.sramp-artifacts-actions {
+  border: 1px solid #d3d3d3;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background-image: url("../images/sramp-artifacts-actions-bg.png");
+  background-position: bottom left;
+  background-repeat: repeat-x;
+  background-color: #f2f2f2;
+  padding: 10px;
+  border-bottom: 1px solid #d3d3d3;
+}
+.sramp-artifacts-actions .sramp-sp4n-label {
+  text-shadow: 0px 1px 0px white;
   padding: 4px 12px;
   line-height: 20px;
   display: inline;
 }
 
-.sramp-filter-label {
-  cursor: default;
+.sramp-artifacts-table {
+  border-left: 1px solid #d3d3d3;
+  border-right: 1px solid #d3d3d3;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.sramp-artifacts-table thead th {
+  background-color: white;
+}
+
+.sramp-artifacts-table thead th, .sramp-artifacts-table tbody td {
+  border-left: 1px solid #d3d3d3;
+}
+
+.table-striped tbody > tr:nth-child(2n) > td, .table-striped tbody > tr:nth-child(2n) > th {
+    background-color: white;
 }
 
 .sramp-nav-tabs {
