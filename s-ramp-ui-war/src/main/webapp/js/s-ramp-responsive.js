@@ -13,7 +13,7 @@ $(document).ready(function() {
  * from a mobile layout to a desktop layout.
  */
 function onSwitchToDesktop() {
-	$('#sramp-filters').removeAttr('style');
+	$('.collapse-on-mobile').collapse('show');
 }
 
 /**
@@ -21,7 +21,7 @@ function onSwitchToDesktop() {
  * from a desktop layout to a mobile layout.
  */
 function onSwitchToMobile() {
-	$('#sramp-filters').collapse();
+	$('.collapse-on-mobile').collapse('hide');
 }
 
 /**
