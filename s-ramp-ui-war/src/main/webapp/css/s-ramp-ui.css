@@ -225,8 +225,8 @@ body {
   border-left: 1px solid #d3d3d3;
 }
 
-.table-striped tbody > tr:nth-child(2n) > td, .table-striped tbody > tr:nth-child(2n) > th {
-    background-color: white;
+.table-striped tbody tr:nth-child(2n) td, .table-striped tbody tr:nth-child(2n) th {
+  background-color: white;
 }
 
 .sramp-nav-tabs {
@@ -331,4 +331,57 @@ body {
 }
 
 #ontology-editor .sramp-ontology-editor-canvas {
+}
+
+.sramp-settings {
+}
+
+.sramp-settings h4 {
+  font-size: medium;
+}
+.sramp-settings .sramp-settings-message {
+  font-size: small;
+}
+.sramp-settings h4, .sramp-settings .sramp-settings-message {
+  color: #666;
+  text-shadow: 0px 1px 0px white;
+}
+
+.sramp-settings-properties {
+  background-color: #f9f9f9;
+  border: 1px solid #d3d3d3;
+}
+
+.sramp-settings-property-list .nav-stacked {
+  margin-bottom: 8px;
+}
+
+.sramp-settings-property-list .nav-pills .sramp-settings-property a {
+  border-radius: 0px;
+  border-bottom: 1px solid #d3d3d3;
+  background-image: url("../images/s-ramp-filter-header-bg.png");
+  background-position: bottom left;
+  background-repeat: repeat-x;
+  background-color: #f6f6f6;
+  margin: 0px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.sramp-settings-property-list .nav-pills .active a, .sramp-settings-property-list .nav-pills .active a:hover {
+  color: rgb(255, 255, 255);
+  background-color: rgb(0, 136, 204);
+  background-image: none;
+}
+
+.row-fluid .sramp-settings-property-details {
+  padding: 10px;
+  border-left: 1px solid #d3d3d3;
+  background-color: white;
+  margin-left: 0px;
+}
+
+.sramp-settings-add-prop {
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
