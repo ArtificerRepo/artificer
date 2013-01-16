@@ -31,6 +31,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
@@ -92,7 +93,7 @@ public class XsdDeriverTest {
 		InputStream testSrcContent = null;
 		try {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/xsd/ws-humantask.xsd");
-			Collection<DerivedArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
+			Collection<BaseArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
 			Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(83, derivedArtifacts.size());
 			int numElements = 0;
@@ -103,7 +104,8 @@ public class XsdDeriverTest {
 			Set<String> attributeNames = new HashSet<String>();
 			Set<String> simpleTypeNames = new HashSet<String>();
 			Set<String> complexTypeNames = new HashSet<String>();
-			for (DerivedArtifactType dat : derivedArtifacts) {
+			for (BaseArtifactType derivedArtifact : derivedArtifacts) {
+			    DerivedArtifactType dat = (DerivedArtifactType) derivedArtifact;
 				Assert.assertEquals(testSrcArtifact.getUuid(), dat.getRelatedDocument().getValue());
 				Assert.assertEquals(DocumentArtifactEnum.XSD_DOCUMENT, dat.getRelatedDocument().getArtifactType());
 

@@ -35,7 +35,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import javax.xml.namespace.QName;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -357,8 +356,7 @@ public class ArtifactResource extends AbstractResource {
 			        .ok(output, artifactType.getMimeType())
 			        .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
 			        .header("Content-Length",
-			                baseArtifact.getOtherAttributes().get(
-			                        new QName(SrampConstants.SRAMP_CONTENT_SIZE)))
+			                baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME))
 			        .header("Last-Modified", lastModifiedDate).build();
 		} catch (Throwable e) {
 			logError(logger, "Error getting artifact content for: " + uuid, e);

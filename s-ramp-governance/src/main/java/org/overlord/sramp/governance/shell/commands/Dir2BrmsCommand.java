@@ -1,4 +1,4 @@
-package org.overlord.sramp.client.shell.commands.brms;
+package org.overlord.sramp.governance.shell.commands;
 
 import java.io.File;
 import java.io.FilenameFilter;

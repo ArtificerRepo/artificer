@@ -27,7 +27,6 @@ import org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 
 /**
@@ -50,11 +49,15 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitorAda
 	protected void visitBase(BaseArtifactType artifact) {
 		ArtifactType artifactType = ArtifactType.valueOf(artifact);
 		System.out.println("  -- Core S-RAMP Info --");
-		printProperty("Type", artifactType.getArtifactType().getType());
+        if (artifactType.isUserDefinedType())
+            printProperty("Type", artifactType.getUserType());
+        else
+            printProperty("Type", artifactType.getArtifactType().getType());
 		printProperty("Model", artifactType.getArtifactType().getModel());
 		printProperty("UUID", artifact.getUuid());
 		printProperty("Name", artifact.getName());
 		printProperty("Version", artifact.getVersion());
+		printProperty("Derived", String.valueOf(artifactType.isDerived()));
 		printProperty("Created By", artifact.getCreatedBy());
 		if (artifact.getCreatedTimestamp() != null)
 			printProperty("Created On", artifact.getCreatedTimestamp().toXMLFormat());
@@ -122,15 +125,6 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitorAda
 	protected void visitNamedWsdlDerived(NamedWsdlDerivedArtifactType artifact) {
 		System.out.println("  -- Named WSDL Info --");
 		printProperty("NCName", artifact.getNCName());
-	}
-
-	/**
-	 * @see org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter#visitUserDefined(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
-	 */
-	@Override
-	protected void visitUserDefined(UserDefinedArtifactType artifact) {
-		System.out.println("  -- User Defined Type Info --");
-		printProperty("User Type", artifact.getUserType());
 	}
 
 	/**

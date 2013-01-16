@@ -33,7 +33,6 @@ import javax.ws.rs.core.StreamingOutput;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
@@ -156,8 +155,8 @@ public class BrmsResource {
     @GET
     @Path("rest/packages/{pkgName}/assets/{assetName}")
     @Produces({MediaType.APPLICATION_ATOM_XML_ENTRY, MediaType.APPLICATION_ATOM_XML})
-    public Entry getRestXMLAsset(@PathParam("pkgName") String pkgName, 
-                                    @PathParam("assetName") String assetName) 
+    public Entry getRestXMLAsset(@PathParam("pkgName") String pkgName,
+                                    @PathParam("assetName") String assetName)
        throws SrampAtomException {
 
         try {
@@ -211,7 +210,7 @@ public class BrmsResource {
      * Returns the content of a Brms/Drools Package in the s-ramp repository. Note that
      * if multiple droolsPackage with the name are found it simply takes the first one.
      * This is probably a situation you want to avoid.
-     * 
+     *
      * @param pkgName - the name of the Brms Package
      * @throws SrampAtomException
      * http://localhost:8880/s-ramp-atom/brms/org.drools.guvnor.Guvnor/package/srampPackage/S-RAMP-0.0.3.0
@@ -231,7 +230,7 @@ public class BrmsResource {
      * Returns the content of a Brms/Drools Package in the s-ramp repository. Note that
      * if multiple droolsPackage with the name are found it simply takes the first one.
      * This is probably a situation you want to avoid.
-     * 
+     *
      * @param pkgName - the name of the Brms Package
      * @throws SrampAtomException
      */
@@ -263,7 +262,7 @@ public class BrmsResource {
                 String lastModifiedDate = simpleDateFormat.format(baseArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
                 return Response.ok(output, "application/octet-stream")
                     .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
-                    .header("Content-Length", baseArtifact.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE)))
+                    .header("Content-Length", baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME))
                     .header("Last-Modified", lastModifiedDate)
                     .build();
             } else {
@@ -273,10 +272,10 @@ public class BrmsResource {
             throw new SrampAtomException(e);
         }
     }
-    
+
     @GET
     @Path("org.drools.guvnor.Guvnor/package/{pkgName}/{version}/{fileName}")
-    public Response getDroolsFile(@PathParam("pkgName")   String pkgName, 
+    public Response getDroolsFile(@PathParam("pkgName")   String pkgName,
                              @PathParam("version")  String version,
                              @PathParam("fileName") String fileName) throws SrampAtomException {
         String assetName = fileName;
@@ -289,7 +288,7 @@ public class BrmsResource {
      * Returns the content of a Brms/Drools Package in the s-ramp repository. Note that
      * if multiple droolsPackage with the name are found it simply takes the first one.
      * This is probably a situation you want to avoid.
-     * 
+     *
      * @param pkgName - the name of the Brms Package
      * @param assetName - the name of the Brms Asset
      * @throws SrampAtomException
@@ -300,7 +299,7 @@ public class BrmsResource {
     @Produces({MediaType.APPLICATION_ATOM_XML, "application/octet-stream"})
     @Path("rest/packages/{pkgName}/assets/{assetName}/binary")
     public Response getRestAsset(@HeaderParam("Accept") String accept,
-                             @PathParam("pkgName")   String pkgName, 
+                             @PathParam("pkgName")   String pkgName,
                              @PathParam("assetName") String assetName
                              ) throws SrampAtomException {
         try {
@@ -337,13 +336,13 @@ public class BrmsResource {
                 String lastModifiedDate = simpleDateFormat.format(baseArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
                 if (accept!=null && (accept.contains(MediaType.APPLICATION_ATOM_XML) || accept.contains(MediaType.APPLICATION_XML) )) {
                     return Response.ok(output, MediaType.APPLICATION_XML)
-                    .header("Content-Length", baseArtifact.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE)))
+                    .header("Content-Length", baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME))
                     .header("Last-Modified", lastModifiedDate)
                     .build();
                 } else {
                      return Response.ok(output, "application/octet-stream")
                         .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
-                        .header("Content-Length", baseArtifact.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE)))
+                        .header("Content-Length", baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME))
                         .header("Last-Modified", lastModifiedDate)
                         .build();
                 }
@@ -355,10 +354,10 @@ public class BrmsResource {
             throw new SrampAtomException(e);
         }
     }
-    
+
     @GET
     @Path("rest/packages/{pkgName}/assets/{assetName}/source")
-    public Response getRestSourceAsset(@PathParam("pkgName")   String pkgName, 
+    public Response getRestSourceAsset(@PathParam("pkgName")   String pkgName,
                              @PathParam("assetName") String assetName) throws SrampAtomException {
         return getRestAsset(MediaType.APPLICATION_XML, pkgName, assetName);
     }

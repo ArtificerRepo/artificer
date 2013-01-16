@@ -26,12 +26,15 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampConstants;
+import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.visitors.ArtifactVisitorAdapter;
 import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
+import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 
 /**
  * Visitor used to convert an artifact to an Atom entry.
@@ -94,7 +97,8 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	 * Creates the base Atom Entry, doing the stuff that's common to all types of artifacts.
 	 * @see org.overlord.sramp.visitors.ArtifactVisitorAdapter#visitBase(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
 	 */
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	protected void visitBase(BaseArtifactType artifact) {
 		try {
 			ArtifactType artifactType = ArtifactType.valueOf(artifact);
@@ -111,6 +115,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 				entry.getAuthors().add(new Person(artifact.getCreatedBy()));
 			if (artifact.getDescription() != null)
 				entry.setSummary(artifact.getDescription());
+			entry.getExtensionAttributes().put(SrampConstants.SRAMP_DERIVED_QNAME, String.valueOf(artifactType.isDerived()));
 
 			String atomLink = baseUrl + "/s-ramp/"
 					+ artifactType.getModel() + "/"
@@ -146,13 +151,14 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			linkToEdit.setHref(new URI(atomLink));
 			entry.getLinks().add(linkToEdit);
 
-			//category
+			// Type category
 			Category typeCat = new Category();
 			typeCat.setTerm(artifactType.getType());
 			typeCat.setLabel(artifactType.getLabel());
 			typeCat.setScheme(new URI("x-s-ramp:2010:type"));
 			entry.getCategories().add(typeCat);
 
+			// Model category
 			Category modelCat = new Category();
 			modelCat.setTerm(artifactType.getModel());
 			modelCat.setLabel(artifactType.getLabel());
@@ -174,14 +180,26 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	}
 
 	/**
+	 * @see org.overlord.sramp.visitors.ArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
+	 */
+	@SuppressWarnings("unchecked")
+    @Override
+	public void visit(UserDefinedArtifactType artifact) {
+	    super.visit(artifact);
+
+	    if (this.atomEntry != null) {
+	        String userType = artifact.getUserType();
+	        this.atomEntry.getExtensionAttributes().put(SrampConstants.SRAMP_USER_TYPE_QNAME, userType);
+	    }
+	}
+
+	/**
 	 * Returns true if we should include the Artifact wrapper in the Entry.  For the summary
 	 * {@link Entry} we would include the artifact wrapper only if we're returning some
 	 * additional custom properties.
 	 */
 	protected boolean includeArtifact() {
-//		return propertyNames != null && propertyNames.size() > 0;
-		// TODO switch this back once this is fixed:  https://issues.jboss.org/browse/RESTEASY-761
-		return false;
+		return propertyNames != null && propertyNames.size() > 0;
 	}
 
 	/**
@@ -195,9 +213,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			List<Property> properties = artifact.getProperty();
 			for (Property prop : properties) {
 				if (this.propertyNames.contains(prop.getPropertyName())) {
-					Property newProp = new Property();
-					newProp.setPropertyName(prop.getPropertyName());
-					newProp.setPropertyValue(prop.getPropertyValue());
+					SrampModelUtils.setCustomProperty(includedArtifact, prop.getPropertyName(), prop.getPropertyValue());
 				}
 			}
 			return includedArtifact;

@@ -19,7 +19,9 @@ import java.util.Date;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.SrampAtomUtils;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * Models a summary of a single S-RAMP artifact from a Feed (result of an
@@ -30,6 +32,7 @@ import org.overlord.sramp.atom.SrampAtomUtils;
 public class ArtifactSummary {
 
 	private Entry entry;
+	private BaseArtifactType artifact;
 
 	/**
 	 * Constructor.
@@ -88,5 +91,35 @@ public class ArtifactSummary {
 		return entry.getSummary();
 	}
 
+	/**
+	 * @return true if the artifact is a user-defined type
+	 */
+	public boolean isUserDefinedType() {
+	    return getType().isUserDefinedType();
+	}
 
+	/**
+	 * @return true if the artifact is a derived type
+	 */
+	public boolean isDerived() {
+        return getType().isDerived();
+	}
+
+	/**
+	 * Returns the value of a property included in the query result set.  Note that
+	 * the property must have been requested via the "propertyName" parameter of the
+	 * issueing query.
+	 * @param propertyName the name of the property
+	 * @return the property value or null if not present
+	 */
+	public String getCustomPropertyValue(String propertyName) {
+	    if (artifact == null) {
+	        artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
+	    }
+	    if (artifact != null) {
+	        return SrampModelUtils.getCustomProperty(artifact, propertyName);
+	    } else {
+	        return null;
+	    }
+	}
 }

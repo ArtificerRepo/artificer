@@ -16,6 +16,7 @@
 package org.overlord.sramp.derived;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.xml.xpath.XPath;
 
@@ -53,10 +54,10 @@ public class PolicyDeriver extends AbstractXmlDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.derived.AbstractXmlDeriver#derive(org.overlord.sramp.repository.derived.IndexedArtifactCollection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+	 * @see org.overlord.sramp.derived.AbstractXmlDeriver#derive(java.util.Collection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
 	 */
 	@Override
-	protected void derive(IndexedArtifactCollection derivedArtifacts, BaseArtifactType artifact,
+	protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
 			Element rootElement, XPath xpath) throws IOException {
 	}
 }

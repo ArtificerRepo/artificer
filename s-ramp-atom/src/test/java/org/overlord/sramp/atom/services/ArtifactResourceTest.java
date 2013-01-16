@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -179,8 +177,8 @@ public class ArtifactResourceTest extends AbstractResourceTest {
             UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
             Assert.assertEquals(artifactFileName, doc.getName());
             Assert.assertEquals("BrmsPkgDocument", doc.getUserType());
-            Assert.assertEquals(Long.valueOf(17043), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
-            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+            Assert.assertEquals(Long.valueOf(17043), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
+            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
             uuid = doc.getUuid();
         } finally {
             IOUtils.closeQuietly(contentStream);
@@ -195,9 +193,9 @@ public class ArtifactResourceTest extends AbstractResourceTest {
         Assert.assertTrue(arty instanceof UserDefinedArtifactType);
         UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
         Assert.assertEquals(artifactFileName, doc.getName());
-        Assert.assertEquals(Long.valueOf(17043), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+        Assert.assertEquals(Long.valueOf(17043), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
         Assert.assertEquals("defaultPackage.pkg", doc.getName());
-        Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+        Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
     }
 
     /**
@@ -224,8 +222,8 @@ public class ArtifactResourceTest extends AbstractResourceTest {
             UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
             Assert.assertEquals(artifactFileName, doc.getName());
             Assert.assertEquals("JpgDocument", doc.getUserType());
-            Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
-            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+            Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
+            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
             uuid = doc.getUuid();
         } finally {
             IOUtils.closeQuietly(contentStream);
@@ -240,9 +238,9 @@ public class ArtifactResourceTest extends AbstractResourceTest {
         Assert.assertTrue(arty instanceof UserDefinedArtifactType);
         UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
         Assert.assertEquals(artifactFileName, doc.getName());
-        Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+        Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
         Assert.assertEquals("photo.jpg", doc.getName());
-        Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+        Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
 
         //Obtain the content for visual inspection
         ClientRequest request2 = new ClientRequest(generateURL("/s-ramp/user/JpgDocument/" + uuid + "/media"));
@@ -284,8 +282,8 @@ public class ArtifactResourceTest extends AbstractResourceTest {
             UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
             Assert.assertEquals(artifactFileName, doc.getName());
             Assert.assertEquals("BpmnDocument", doc.getUserType());
-            Assert.assertEquals(Long.valueOf(12482), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
-            Assert.assertEquals("application/xml", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+            Assert.assertEquals(Long.valueOf(12482), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
+            Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
             uuid = doc.getUuid();
         } finally {
             IOUtils.closeQuietly(contentStream);
@@ -300,9 +298,9 @@ public class ArtifactResourceTest extends AbstractResourceTest {
         Assert.assertTrue(arty instanceof UserDefinedArtifactType);
         UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
         Assert.assertEquals(artifactFileName, doc.getName());
-        Assert.assertEquals(Long.valueOf(12482), Long.valueOf(doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_SIZE))));
+        Assert.assertEquals(Long.valueOf(12482), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
         Assert.assertEquals("Evaluation.bpmn", doc.getName());
-        Assert.assertEquals("application/xml", doc.getOtherAttributes().get(new QName(SrampConstants.SRAMP_CONTENT_TYPE)));
+        Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
 
         ClientResponse<String> content = request.get(String.class);
         System.out.println("Content=" + content.getEntity());

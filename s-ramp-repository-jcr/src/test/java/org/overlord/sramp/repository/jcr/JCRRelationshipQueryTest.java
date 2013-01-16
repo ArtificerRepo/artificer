@@ -95,7 +95,7 @@ public class JCRRelationshipQueryTest extends AbstractJCRPersistenceTest {
     	SrampModelUtils.addGenericRelationship(xsdDoc, "importedBy", wsdlDoc.getUuid());
     	SrampModelUtils.addGenericRelationship(xsdDoc, "markerRel", null);
 
-    	persistenceManager.updateArtifact(xsdDoc, ArtifactType.XsdDocument);
+    	persistenceManager.updateArtifact(xsdDoc, ArtifactType.XsdDocument());
 
         SrampQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[markerRel]");
         ArtifactSet artifactSet = query.executeQuery();

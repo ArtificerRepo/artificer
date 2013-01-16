@@ -71,8 +71,8 @@ public class GetMetaDataCommand extends AbstractShellCommand {
 		print("s-ramp:query command.");
 		print("");
 		print("Example usage:");
-		print(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
-		print(">  s-ramp:getMetaData feed:1 /home/user/files/");
+        print(">  s-ramp:getMetaData feed:1 /home/user/files/");
+        print(">  s-ramp:getMetaData uuid:7387-28732-9183-92737");
 	}
 
 	/**

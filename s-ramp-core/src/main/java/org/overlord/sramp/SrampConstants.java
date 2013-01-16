@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp;
 
+import javax.xml.namespace.QName;
+
 /**
  * Some S-RAMP constants.
  *
@@ -23,15 +25,27 @@ package org.overlord.sramp;
 public class SrampConstants {
 
     public static final String DATE_FORMAT  = "EEE, d MMM yyyy HH:mm:ss Z";
-    
+
 	public static final String SRAMP_NS     = "http://s-ramp.org/xmlns/2010/s-ramp";
 	public static final String SRAMP_PREFIX = "s-ramp";
-	
-	public static final String SRAMP_CONTENT_SIZE        = SRAMP_PREFIX + "contentSize";
-    public static final String SRAMP_CONTENT_TYPE        = SRAMP_PREFIX + "contentType";
+
+	private static final String SRAMP_CONTENT_SIZE         = "contentSize";
+	private static final String SRAMP_CONTENT_TYPE         = "contentType";
+	private static final String SRAMP_DERIVED              = "derived";
+    private static final String SRAMP_USER_TYPE            = "userType";
+    private static final String SRAMP_PROVIDER             = "provider";
+
+    public static final QName SRAMP_CONTENT_SIZE_QNAME    = new QName(SRAMP_NS, SRAMP_CONTENT_SIZE, SRAMP_PREFIX);
+    public static final QName SRAMP_CONTENT_TYPE_QNAME    = new QName(SRAMP_NS, SRAMP_CONTENT_TYPE, SRAMP_PREFIX);
+    public static final QName SRAMP_DERIVED_QNAME         = new QName(SRAMP_NS, SRAMP_DERIVED, SRAMP_PREFIX);
+    public static final QName SRAMP_PROVIDER_QNAME        = new QName(SRAMP_NS, SRAMP_PROVIDER, SRAMP_PREFIX);
+    public static final QName SRAMP_USER_TYPE_QNAME       = new QName(SRAMP_NS, SRAMP_USER_TYPE, SRAMP_PREFIX);
 
     //Configuration constants
     public static final String SRAMP_CONFIG_FILE_NAME     = "sramp.config.file.name";
     public static final String SRAMP_CONFIG_FILE_REFRESH  = "sramp.config.file.refresh";
     public static final String SRAMP_CONFIG_BASEURL       = "sramp.config.baseurl";
+
+    // Location of a directory containing JARs which provide custom derivers
+    public static final String SRAMP_CUSTOM_DERIVER_DIR   = "sramp.derivers.customDir";
 }
