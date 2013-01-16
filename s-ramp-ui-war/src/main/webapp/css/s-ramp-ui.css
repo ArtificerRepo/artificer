@@ -401,9 +401,29 @@ body {
 }
 
 .tooltip.top .tooltip-arrow {
-  bottom: 0px;
-  left: 50%;
-  margin-left: -5px;
   border-top-color: #666;
-  border-width: 5px 5px 0px;
+}
+.tooltip.right .tooltip-arrow {
+  border-right-color: #666;
+}
+.tooltip.left .tooltip-arrow {
+  border-left-color: #666;
+}
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: #666;
+}
+
+footer {
+  color: #666;
+  text-shadow: 0px 1px 0px white;
+  margin-bottom: 10px;
+}
+
+footer p {
+  margin: 0px;
+  padding: 0px;
+}
+
+footer hr {
+  border-bottom: 1px solid #bbb;
 }
