@@ -70,14 +70,12 @@
 
       <!-- Content area with footer-->
       <div id="page-content" class="sramp-settings container-fluid">
-        <div class="row-fluid">
+        <div class="sramp-settings-sh row-fluid">
           <div class="span12">
-            <h4>Custom Property Filters</h4>
-          </div>
-        </div>
-        <div class="row-fluid">
-          <div class="sramp-settings-message span12">
-            Enter custom property names to be used in the S-RAMP filter pane's "Custom Properties" section.
+            <div class="sramp-settings-header">Custom Property Filters</div>
+            <div class="sramp-settings-message">
+              Enter custom property names to be used in the S-RAMP filter pane's "Custom Properties" section.
+            </div>
           </div>
         </div>
         <div class="row-fluid sramp-settings-properties">
@@ -96,19 +94,25 @@
           <div class="span10 sramp-settings-property-details">
             <form class="form-horizontal span9">
               <div class="control-group">
-                <label class="control-label" for="inputFieldName">Field Name:</label>
+                <label class="control-label is-tooltip" data-placement="right" for="inputFieldLabel" title="This will be the label shown to users when they are choosing their filter.">Property Label:</label>
+                <div class="controls">
+                  <input type="text" id="inputFieldLabel" placeholder="Name">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label is-tooltip" data-placement="right" for="inputFieldName" title="The name of the S-RAMP custom property (used in the actual query).">Property Name:</label>
                 <div class="controls">
                   <input type="text" id="inputFieldName" placeholder="Name">
                 </div>
               </div>
               <div class="control-group">
-                <label class="control-label" for="inputFieldDesc">Field Description:</label>
+                <label class="control-label is-tooltip" data-placement="right" for="inputFieldDesc" title="This will be shown to users as a tooltip when they are configuring their filters.">Description:</label>
                 <div class="controls">
                   <textarea class="span12" id="inputFieldDesc" rows="2"></textarea>
                 </div>
               </div>
               <div class="control-group">
-                <label class="control-label" for="optionsRadios">Field Type:</label>
+                <label class="control-label is-tooltip" data-placement="right" for="optionsRadios" title="Determines whether this property filter is free-form or a drop-down list of values.">Type:</label>
                 <div class="controls">
                   <label class="radio">
                     <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>

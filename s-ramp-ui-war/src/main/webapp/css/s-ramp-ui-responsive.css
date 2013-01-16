@@ -50,15 +50,24 @@
   .navbar {
     margin-bottom: 0px;
   }
-  
+
   body {
     padding: 0px;
   }
-  
+
   #page-content {
     padding: 5px;
   }
+
+  .sramp-settings .sramp-settings-sh {
+    padding: 5px 10px 5px 10px;
+    line-height: normal;
+  }
   
+  .sramp-settings-header {
+    margin-bottom: 3px;
+  }
+
   .row-fluid .sramp-settings-property-list {
     border-bottom: 1px solid #d3d3d3;
     min-height: 0px;
