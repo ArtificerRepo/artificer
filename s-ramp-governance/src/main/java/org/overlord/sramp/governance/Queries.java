@@ -15,35 +15,26 @@
  */
 package org.overlord.sramp.governance;
 
-public class Target {
+import java.util.ArrayList;
+import java.util.List;
 
-    public Target(String name, String deployDir) {
-        super();
-        this.name = name;
-        this.deployDir = deployDir;
-    }
+public class Queries {
 
-    private String name;
-    private String deployDir;
+    List<Target> targets;
+    List<Query> queries;
     
-    public void setName(String name) {
-        this.name = name;
+    public List<Target> getTargets() {
+        if (targets==null) targets = new ArrayList<Target>();
+        return targets;
     }
-    
-    public String getName() {
-        return name;
+    public void setTargets(List<Target> targets) {
+        this.targets = targets;
     }
-    
-    public void setDeployDir(String deployDir) {
-        this.deployDir = deployDir;
+    public List<Query> getQueries() {
+        if (queries==null) queries = new ArrayList<Query>();
+        return queries;
     }
-    
-    public String getDeployDir() {
-        return deployDir;
-    }
-
-    @Override
-    public String toString() {
-        return "Name=" + name + "\nDeployDir=" + deployDir;
+    public void setQueries(List<Query> queries) {
+        this.queries = queries;
     }
 }

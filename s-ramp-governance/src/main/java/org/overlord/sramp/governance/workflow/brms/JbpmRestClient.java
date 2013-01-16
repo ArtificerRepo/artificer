@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -34,6 +33,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.overlord.sramp.governance.workflow.Multipart;
+import org.overlord.sramp.governance.workflow.WorkflowException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,16 +74,10 @@ public class JbpmRestClient {
         }
     }
 
-    public void newProcessInstanceAndCompleteFirstTask(String processId, Map<String,Object> params) throws IOException, URISyntaxException {
+    public void newProcessInstanceAndCompleteFirstTask(String processId, Map<String,Object> params) throws IOException, URISyntaxException, WorkflowException {
         //"http://localhost:8080/gwt-console-server/rs/form/process/com.sample.evaluation/complete"
-        //URI startProcessUrl = new URL(jbpmUrl + "/rs/process/definition/" + processId + "/new_instance").toURI();
-        //HttpPost newInstance = new HttpPost(startProcessUrl);
-        //HttpEntity entity = newInstance.getEntity();
-        //String json = IOUtils.toString(entity.getContent());
-        
-        //entity.
-        URI startProcessUrl = new URL(jbpmUrl + "/rs/form/process/" + processId + "/complete").toURI();
-        new Multipart().post(httpclient, startProcessUrl, params);
+        URI sendTaskFormUrl = new URL(jbpmUrl + "/rs/form/process/" + processId + "/complete").toURI();
+        new Multipart().post(httpclient, sendTaskFormUrl, params);
     }
     /**
      * Creates a new jBPM5 process instance, given the processId.
