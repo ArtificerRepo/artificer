@@ -11,6 +11,9 @@
     <fileset dir="../../s-ramp-client/target/">
       <include name="s-ramp-client-${sramp.version}.jar" />
     </fileset>
+  	<fileset dir="../target/">
+      <include name="s-ramp-governance-classes.jar" />
+    </fileset>
   </path>
 
   <target name="install">
@@ -64,7 +67,7 @@
   </target>
 
   <target name="upload.to.brms.fromsrc" unless="is.dist">
-    <java classname="org.overlord.sramp.client.shell.commands.brms.Dir2BrmsCommand">
+    <java classname="org.overlord.sramp.governance.shell.commands.Dir2BrmsCommand">
       <classpath refid="client-classpath" />
     </java>
   </target>
@@ -77,7 +80,7 @@
 
   <target name="brms.to.sramp.fromsrc" unless="is.dist">
   	<echo>Load Workflows into S-RAMP</echo>
-    <java classname="org.overlord.sramp.client.shell.commands.brms.Pkg2SrampCommand">
+    <java classname="org.overlord.sramp.governance.shell.commands.Pkg2SrampCommand">
       <classpath refid="client-classpath" />
     </java>
   </target>
