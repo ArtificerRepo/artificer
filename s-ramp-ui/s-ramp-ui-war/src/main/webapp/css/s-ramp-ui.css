@@ -14,11 +14,12 @@ body {
   width: 100%;
 }
 
-.navbar {
+.sramp-navbar {
   background-image: url("../images/header-center.png");
   background-repeat: repeat-x;
+  background-color: #0d80b0;
 }
-.navbar-inverse .navbar-inner {
+.sramp-navbar .sramp-navbar-inner {
   min-height: 72px;
   background-image: url("../images/header-logo.png");
   background-repeat: no-repeat;
@@ -26,18 +27,54 @@ body {
   background-color: transparent;
   border: none;
 }
-.navbar .brand {
+.sramp-navbar .brand {
   text-indent: -5000px;
   width: 175px;
+  display: block;
+  float: left;
+  padding: 10px 20px 10px;
+  margin-left: -20px;
+  font-size: 20px;
+  font-weight: 200;
+  color: #777;
+  text-shadow: 0 1px 0 white;
 }
-.navbar-inverse .nav li a {
-  color: #dadaff;
+.sramp-navbar .nav {
+  position: relative;
+  left: 0;
+  display: block;
+  float: left;
+  margin: 0 10px 0 0;
 }
-.navbar-inverse .nav .active a, .navbar-inverse .nav .active a:hover, .navbar-inverse .nav .active a:focus {
+.sramp-navbar .nav li {
+  float: left;
+}
+.sramp-navbar .nav li a, .sramp-navbar .nav li a:hover, .sramp-navbar .nav li a:focus {
   background-color: transparent;
 }
-.navbar .nav li a {
+.sramp-navbar .nav li a:hover {
+  color: white;
+}
+.sramp-navbar .nav .active a, .sramp-navbar .nav .active a:hover, .sramp-navbar .nav .active a:focus {
+  background-color: transparent;
+  color: white;
+  text-decoration: none;
+  -webkit-box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.125);
+  -moz-box-shadow: inset 0 3px 8px rgba(0,0,0,0.125);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.125);
+}
+.sramp-navbar .nav li a {
+  color: #dadaff;
+}
+.sramp-navbar .nav .active a, .sramp-navbar .nav .active a:hover, .sramp-navbar .nav .active a:focus {
+  background-color: transparent;
+}
+.sramp-navbar .nav li a {
   padding: 25px 15px 23px 15px;
+}
+.nav-user {
+  margin-top: 10px;
+  margin-right: 5px;
 }
 .nav-shadowman {
   background-image: url("../images/header-shadowman.png");
@@ -47,6 +84,7 @@ body {
 #mobile-nav-btn {
   color: white;
   margin-top: 20px;
+  margin-right: 25px;
   background-image: url("../images/header-nav-phone.png");
   height: 30px;
   width: 30px;
