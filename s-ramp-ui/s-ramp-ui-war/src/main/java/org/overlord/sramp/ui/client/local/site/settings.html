@@ -69,28 +69,31 @@
       </div>
 
       <!-- Content area with footer-->
-      <div id="page-content" class="container-fluid">
+      <div id="page-content" class="sramp-settings container-fluid">
         <div class="row-fluid">
           <div class="span12">
             <h4>Custom Property Filters</h4>
           </div>
         </div>
         <div class="row-fluid">
-          <div class="span12">
+          <div class="sramp-settings-message span12">
             Enter custom property names to be used in the S-RAMP filter pane's "Custom Properties" section.
           </div>
         </div>
-        <div class="row-fluid">
-          <div class="span2">
-            <ul class="nav nav-pills nav-stacked">
-              <li><a href="#">Property 1</a></li>
-              <li class="active"><a href="#">Property 2</a></li>
-              <li><a href="#">Property 3</a></li>
-              <li><a href="#">Property 4</a></li>
-              <li><a class="btn btn-small" href="#">Add Property</a></li>
+        <div class="row-fluid sramp-settings-properties">
+          <div class="span2 sramp-settings-property-list">
+            <div class="row-fluid mobile-header mobile-only">
+              <a class="span12" data-toggle="collapse" data-target="#sramp-settings-property-list" href="#">Choose a Property [Property 2] <span class="caret pull-right"></span></a>
+            </div>
+            <ul id="sramp-settings-property-list" class="nav nav-pills nav-stacked collapse-on-mobile collapse in">
+              <li class="sramp-settings-property"><a href="#">Property 1</a></li>
+              <li class="sramp-settings-property active"><a href="#">Property 2</a></li>
+              <li class="sramp-settings-property"><a href="#">Property 3</a></li>
+              <li class="sramp-settings-property"><a href="#">Property 4</a></li>
             </ul>
+            <a class="sramp-settings-add-prop btn btn-small" href="#">Add Property</a>
           </div>
-          <div class="span10">
+          <div class="span10 sramp-settings-property-details">
             <form class="form-horizontal span9">
               <div class="control-group">
                 <label class="control-label" for="inputFieldName">Field Name:</label>
