@@ -25,6 +25,8 @@ public interface GovernanceConstants {
     public static final String GOVERNANCE_FILE_NAME     = "governance.file.name";
     public static final String GOVERNANCE_FILE_REFRESH  = "governance.file.refresh";
     public static final String SRAMP_REPO_URL           = "sramp.repo.url";
+    public static final String GOVERNANCE_QUERY_INTERVAL= "governance.query.interval";
+    public static final String GOVERNANCE_ACCEPTABLE_LAG= "governance.acceptable.lagtime";
     
     //JBPM connection info
     public static final String GOVERNANCE_JBPM_USER     = "governance.jbpm.user";
@@ -33,5 +35,5 @@ public interface GovernanceConstants {
     
     //governance.targets
     public static final String GOVERNANCE_TARGETS       = "governance.targets";
-    public static final String GOVERNANCE_WORKFLOWS     = "governance.workflows";
+    public static final String GOVERNANCE_QUERIES       = "governance.queries";
 }

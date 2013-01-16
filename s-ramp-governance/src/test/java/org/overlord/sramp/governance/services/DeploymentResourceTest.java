@@ -22,13 +22,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.overlord.sramp.atom.client.ClientRequest;
 
 
 /**
@@ -66,7 +64,7 @@ public class DeploymentResourceTest extends BaseResourceTest {
 	        if (responseCode == 200) {
 	             InputStream is = (InputStream) connection.getContent();
 	             String reply = IOUtils.toString(is);
-	            System.out.println("reply=" + reply);
+	             System.out.println("reply=" + reply);
 	        } else {
 	            System.err.println("endpoint could not be reached");
 	            Assert.fail();

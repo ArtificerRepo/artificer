@@ -23,14 +23,15 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.overlord.sramp.governance.Governance;
 import org.overlord.sramp.governance.workflow.BpmManager;
+import org.overlord.sramp.governance.workflow.WorkflowException;
 
 public class JbpmManager implements BpmManager {
 
     Governance governance = new Governance();
     @Override
-    public void newProcessInstance(String processId, Map<String, Object> context) throws URISyntaxException, IOException {
+    public void newProcessInstance(String processId, Map<String, Object> context) throws URISyntaxException, IOException, WorkflowException {
         HttpClient httpclient = new DefaultHttpClient();
-        JbpmRestClient jbpmClient = new JbpmRestClient(httpclient, governance.getJbpmUrl());
+        JbpmRestClient jbpmClient = new JbpmRestClient(httpclient, governance.getJbpmUrl().toExternalForm());
         jbpmClient.logon(governance.getJbpmUser(), governance.getJbpmPassword());
         jbpmClient.newProcessInstanceAndCompleteFirstTask(processId, context);
         httpclient.getConnectionManager().shutdown();

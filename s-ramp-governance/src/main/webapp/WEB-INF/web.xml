@@ -2,6 +2,12 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 
   <servlet>
+    <servlet-name>GovernanceServlet</servlet-name>
+    <display-name>Governance Servlet</display-name>
+    <servlet-class>org.overlord.sramp.governance.GovernanceServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet>
     <servlet-name>Resteasy</servlet-name>
     <servlet-class>
 			org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
@@ -11,6 +17,7 @@
       <param-value>org.overlord.sramp.governance.services.GovernanceApplication</param-value>
     </init-param>
   </servlet>
+  
   <servlet-mapping>
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/*</url-pattern>

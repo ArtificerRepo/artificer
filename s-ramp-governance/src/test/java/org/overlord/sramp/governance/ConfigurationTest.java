@@ -18,6 +18,8 @@ package org.overlord.sramp.governance;
 import java.util.Map;
 import java.util.Set;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 
@@ -29,13 +31,65 @@ import org.junit.Test;
 public class ConfigurationTest {
 
 	/**
+	 * @throws ConfigException 
 	 */
-	@SuppressWarnings("unused")
     @Test
-	public void testConfigure() {
+	public void testConfigure() throws ConfigException {
 	    Governance governance = new Governance();
 	    Map<String,Target> targets = governance.getTargets();
-	    Set<Workflow> workflows = governance.getWorkflows();
-	    System.out.println("ok");
+	    Assert.assertTrue(targets.size() > 0);
+	    Set<Query> queries = governance.getQueries();
+	    Assert.assertTrue(queries.size() > 0);
+	    System.out.println(governance.validate());
 	}
+    /**
+     * Add a malform url
+     * @throws ConfigException
+     */
+    @Test
+    public void testBad1UrlConfiguration() throws ConfigException {
+        System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad1-governance.properties");
+        Governance governance = new Governance();
+        governance.read();
+        try {
+            System.out.println(governance.validate());
+            Assert.fail("Expecting exception");
+        } catch (ConfigException e) {
+            Assert.assertEquals("java.net.MalformedURLException: no protocol: http//localhost:8080/s-ramp-atom",e.getMessage());
+        }
+    }
+    /**
+     * Add a bad query
+     * 
+     * @throws ConfigException
+     */
+    @Test() 
+    public void testBad2QueryConfiguration() throws ConfigException {
+        System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad2-governance.properties");
+        Governance governance = new Governance();
+        governance.read();
+        try {
+            governance.validate();
+            Assert.fail("Expecting exception");
+        } catch (ConfigException e) {
+            Assert.assertTrue(e.getMessage().startsWith(Governance.QUERY_ERROR));
+        }
+    }
+    /**
+     * Add a bad target
+     * 
+     * @throws ConfigException
+     */
+    @Test() 
+    public void testBad3TargetConfiguration() throws ConfigException {
+        System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad3-governance.properties");
+        Governance governance = new Governance();
+        governance.read();
+        try {
+            governance.validate();
+            Assert.fail("Expecting exception");
+        } catch (ConfigException e) {
+            Assert.assertTrue(e.getMessage().startsWith(Governance.TARGET_ERROR));
+        }
+    }
 }
