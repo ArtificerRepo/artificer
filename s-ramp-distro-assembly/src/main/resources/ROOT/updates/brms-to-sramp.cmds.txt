@@ -1,2 +1,2 @@
-connect http://localhost:8080/s-ramp-atom
+connect http://localhost:8080/s-ramp-server
 brms:pkg2sramp

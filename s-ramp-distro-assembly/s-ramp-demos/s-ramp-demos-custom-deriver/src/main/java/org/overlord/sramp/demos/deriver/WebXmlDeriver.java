@@ -23,10 +23,10 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.overlord.sramp.SrampModelUtils;
-import org.overlord.sramp.derived.AbstractXmlDeriver;
-import org.overlord.sramp.derived.ArtifactDeriver;
-import org.overlord.sramp.query.xpath.StaticNamespaceContext;
+import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.derived.AbstractXmlDeriver;
+import org.overlord.sramp.common.derived.ArtifactDeriver;
+import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
@@ -48,7 +48,7 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
     }
 
     /**
-     * @see org.overlord.sramp.derived.AbstractXmlDeriver#configureNamespaceMappings(org.overlord.sramp.query.xpath.StaticNamespaceContext)
+     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#configureNamespaceMappings(org.overlord.sramp.common.query.xpath.StaticNamespaceContext)
      */
     @Override
     protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
@@ -58,7 +58,7 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
     }
 
     /**
-     * @see org.overlord.sramp.derived.AbstractXmlDeriver#createDerivedArtifactCollection()
+     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#createDerivedArtifactCollection()
      */
     @Override
     protected Collection<BaseArtifactType> createDerivedArtifactCollection() {
@@ -66,7 +66,7 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
     }
 
     /**
-     * @see org.overlord.sramp.derived.AbstractXmlDeriver#derive(java.util.Collection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
      */
     @Override
     protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,

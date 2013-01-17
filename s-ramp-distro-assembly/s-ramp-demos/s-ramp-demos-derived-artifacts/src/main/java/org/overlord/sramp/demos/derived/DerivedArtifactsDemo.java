@@ -15,10 +15,10 @@
  */
 package org.overlord.sramp.demos.derived;
 
-import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
+import org.overlord.sramp.common.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 
 /**
@@ -29,7 +29,7 @@ import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
  */
 public class DerivedArtifactsDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-atom";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
 
 	/**
 	 * Main.

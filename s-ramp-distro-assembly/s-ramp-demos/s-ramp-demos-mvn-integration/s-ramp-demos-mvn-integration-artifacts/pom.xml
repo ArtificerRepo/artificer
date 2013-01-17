@@ -86,12 +86,12 @@
 				<repository>
 					<id>local-sramp-repo</id>
 					<name>S-RAMP Releases Repository</name>
-					<url>sramp://localhost:8080/s-ramp-atom/</url>
+					<url>sramp://localhost:8080/s-ramp-server/</url>
 				</repository>
 				<snapshotRepository>
 					<id>local-sramp-repo-snapshots</id>
 					<name>S-RAMP Snapshots Repository</name>
-					<url>sramp://localhost:8080/s-ramp-atom/</url>
+					<url>sramp://localhost:8080/s-ramp-server/</url>
 				</snapshotRepository>
 			</distributionManagement>
 		</profile>

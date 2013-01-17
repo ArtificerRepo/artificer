@@ -12,7 +12,7 @@
   <dependencies>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-core</artifactId>
+      <artifactId>s-ramp-common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

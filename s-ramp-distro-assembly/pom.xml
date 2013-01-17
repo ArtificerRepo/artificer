@@ -14,7 +14,7 @@
 		<!-- Dependencies on the various WARs to include in the distro. -->
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
-			<artifactId>s-ramp-atom</artifactId>
+			<artifactId>s-ramp-server</artifactId>
 			<type>war</type>
 			<version>${project.version}</version>
 		</dependency>
@@ -24,6 +24,12 @@
 			<type>war</type>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.overlord.sramp</groupId>
+            <artifactId>s-ramp-governance</artifactId>
+            <type>war</type>
+            <version>${project.version}</version>
+        </dependency>
 		<!-- Dependencies on the Source JARs to include in the distro. -->
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
@@ -39,7 +45,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
-			<artifactId>s-ramp-atom-core</artifactId>
+			<artifactId>s-ramp-server</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
 		</dependency>
@@ -51,7 +57,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
-			<artifactId>s-ramp-core</artifactId>
+			<artifactId>s-ramp-common</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
 		</dependency>
@@ -85,12 +91,6 @@
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
 		</dependency>
-        <dependency>
-            <groupId>org.overlord.sramp</groupId>
-            <artifactId>s-ramp-governance</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
         <dependency>
             <groupId>org.overlord.sramp</groupId>
             <artifactId>s-ramp-workflows</artifactId>

@@ -12,12 +12,12 @@
   <dependencies>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-core</artifactId>
+      <artifactId>s-ramp-common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-client</artifactId>
+      <artifactId>s-ramp-shell</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

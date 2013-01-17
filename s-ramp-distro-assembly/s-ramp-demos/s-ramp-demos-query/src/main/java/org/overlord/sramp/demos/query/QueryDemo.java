@@ -27,7 +27,7 @@ import org.overlord.sramp.client.query.QueryResultSet;
  */
 public class QueryDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-atom";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
 
 	/**
 	 * Main.

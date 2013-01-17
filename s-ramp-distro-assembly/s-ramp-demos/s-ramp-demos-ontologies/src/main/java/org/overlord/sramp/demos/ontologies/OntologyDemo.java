@@ -31,7 +31,7 @@ import org.overlord.sramp.client.ontology.OntologySummary;
  */
 public class OntologyDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-atom";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
 
 	/**
 	 * Main.

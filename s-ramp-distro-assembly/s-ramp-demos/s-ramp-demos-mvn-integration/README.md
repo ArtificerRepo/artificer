@@ -26,7 +26,7 @@ The first step is to build and deploy the 'artifacts' project to S-RAMP using Ma
 	$ mvn -Pdemo clean deploy
 
 That will enable the 'demo' profile, which will configure the Maven **distributionManagement** to
-point to a local S-RAMP repository (http://localhost:8080/s-ramp-atom/).  Therefore you need to
+point to a local S-RAMP repository (http://localhost:8080/s-ramp-server/).  Therefore you need to
 be running S-RAMP on port 8080 and deployed as the 's-ramp-atom' context.
 
 The build should complete successfully.

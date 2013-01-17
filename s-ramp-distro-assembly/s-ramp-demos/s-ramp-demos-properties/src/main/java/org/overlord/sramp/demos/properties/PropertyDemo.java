@@ -15,10 +15,10 @@
  */
 package org.overlord.sramp.demos.properties;
 
-import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.QueryResultSet;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -30,7 +30,7 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
  */
 public class PropertyDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-atom";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
 
 	/**
 	 * Main.
