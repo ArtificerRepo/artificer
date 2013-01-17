@@ -18,8 +18,8 @@ package org.overlord.sramp.ui.server.rsvcs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.client.query.QueryResultSet;
+import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
 import org.overlord.sramp.ui.shared.beans.ArtifactSummary;

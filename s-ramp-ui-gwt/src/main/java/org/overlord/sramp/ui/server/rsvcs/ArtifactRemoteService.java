@@ -15,16 +15,16 @@
  */
 package org.overlord.sramp.ui.server.rsvcs;
 
-import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
 import org.overlord.sramp.ui.server.visitors.RelationshipVisitor;
 import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
 import org.overlord.sramp.ui.shared.rsvcs.IArtifactRemoteService;
 import org.overlord.sramp.ui.shared.rsvcs.RemoteServiceException;
-import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 

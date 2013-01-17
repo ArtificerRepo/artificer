@@ -17,9 +17,9 @@ package org.overlord.sramp.ui.server.visitors;
 
 import java.util.Collection;
 
+import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter;
 import org.overlord.sramp.ui.shared.beans.ArtifactDetails;
 import org.overlord.sramp.ui.shared.beans.RelationshipDetails;
-import org.overlord.sramp.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Binding;
 import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
