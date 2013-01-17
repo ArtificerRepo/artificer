@@ -92,10 +92,10 @@ public class ArtifactSummary {
 	}
 
 	/**
-	 * @return true if the artifact is a user-defined type
+	 * @return true if the artifact is an extended type
 	 */
-	public boolean isUserDefinedType() {
-	    return getType().isUserDefinedType();
+	public boolean isExtendedType() {
+	    return getType().isExtendedType();
 	}
 
 	/**

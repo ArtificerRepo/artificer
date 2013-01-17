@@ -19,7 +19,7 @@ import java.util.Map;
 
 /**
  * Implement this interface to provide a Deriver that will be used when an artifact
- * of a specific user defined type is added to the repository.
+ * of a specific extended type is added to the repository.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -27,9 +27,9 @@ public interface DeriverProvider {
 
     /**
      * Creates zero or more {@link ArtifactDeriver} instances to be used by the S-RAMP
-     * repository when adding user defined artifacts to the repository.
+     * repository when adding extended artifacts to the repository.
      *
-     * @return a map of User Defined type (userType) to {@link ArtifactDeriver} instance
+     * @return a map of Extended type (extendedType) to {@link ArtifactDeriver} instance
      */
     public Map<String, ArtifactDeriver> createArtifactDerivers();
 

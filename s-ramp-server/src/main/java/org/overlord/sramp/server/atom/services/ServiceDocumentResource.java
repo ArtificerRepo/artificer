@@ -28,7 +28,7 @@ import org.overlord.sramp.server.atom.workspaces.CoreWorkspace;
 import org.overlord.sramp.server.atom.workspaces.OntologyWorkspace;
 import org.overlord.sramp.server.atom.workspaces.PolicyWorkspace;
 import org.overlord.sramp.server.atom.workspaces.SoapWsdlWorkspace;
-import org.overlord.sramp.server.atom.workspaces.UserDefinedWorkspace;
+import org.overlord.sramp.server.atom.workspaces.ExtendedWorkspace;
 import org.overlord.sramp.server.atom.workspaces.WsdlWorkspace;
 import org.overlord.sramp.server.atom.workspaces.XsdWorkspace;
 
@@ -61,7 +61,7 @@ public class ServiceDocumentResource extends AbstractResource {
 	 * implementation.</li>
 	 * </ul>
 	 * The workspace for the SOA or Service Implementation Artifact Model MUST
-	 * contain an app:collection element for each user defined type that has
+	 * contain an app:collection element for each extended type that has
 	 * been registered in the S-RAMP implementation.
 	 *
 	 * @return AppService - service document.
@@ -78,7 +78,7 @@ public class ServiceDocumentResource extends AbstractResource {
 		appService.getWorkspace().add(new PolicyWorkspace(hrefBase));
 		appService.getWorkspace().add(new WsdlWorkspace(hrefBase));
 		appService.getWorkspace().add(new SoapWsdlWorkspace(hrefBase));
-		appService.getWorkspace().add(new UserDefinedWorkspace(hrefBase));
+		appService.getWorkspace().add(new ExtendedWorkspace(hrefBase));
 		appService.getWorkspace().add(new OntologyWorkspace(hrefBase));
 
 		return appService;

@@ -125,15 +125,15 @@ public class FeedResourceTest extends AbstractResourceTest {
 	}
 
 	/**
-	 * Tests a user-defined type feed.
+	 * Tests an extended type feed.
 	 * @throws Exception
 	 */
 	@Test
-	public void testUserDefinedTypeFeed() throws Exception {
+	public void testExtendedTypeFeed() throws Exception {
 		// Add some pkg entries
 		Set<String> pkgUuids = new HashSet<String>();
 		for (int i = 0; i < 5; i++) {
-			Entry entry = doAddUserDefined("PkgDocument", "/sample-files/user/defaultPackage.pkg");
+			Entry entry = doAddExtended("PkgDocument", "/sample-files/ext/defaultPackage.pkg");
 			URI entryId = entry.getId();
 			String uuid = entryId.toString();
 			pkgUuids.add(uuid);
@@ -141,14 +141,14 @@ public class FeedResourceTest extends AbstractResourceTest {
 		// Add some bpmn entries
 		Set<String> bpmnUuids = new HashSet<String>();
 		for (int i = 0; i < 3; i++) {
-			Entry entry = doAddUserDefined("BpmnDocument", "/sample-files/user/Evaluation.bpmn");
+			Entry entry = doAddExtended("BpmnDocument", "/sample-files/ext/Evaluation.bpmn");
 			URI entryId = entry.getId();
 			String uuid = entryId.toString();
 			bpmnUuids.add(uuid);
 		}
 
 		// Test the feed of the pkg docs
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/PkgDocument"));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/PkgDocument"));
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		Set<String> actualPkgUuids = new HashSet<String>();
@@ -159,7 +159,7 @@ public class FeedResourceTest extends AbstractResourceTest {
 		Assert.assertEquals(pkgUuids, actualPkgUuids);
 
 		// Test the feed of the pkg docs
-		request = new ClientRequest(generateURL("/s-ramp/user/BpmnDocument"));
+		request = new ClientRequest(generateURL("/s-ramp/ext/BpmnDocument"));
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		Set<String> actualBpmnUuids = new HashSet<String>();
@@ -171,12 +171,12 @@ public class FeedResourceTest extends AbstractResourceTest {
 	}
 
 	/**
-	 * Adds a user-defined artifact to the repo by POSTing the content to /s-ramp/user/???.
-	 * @param userType
+	 * Adds a extended artifact to the repo by POSTing the content to /s-ramp/ext/???.
+	 * @param extendedType
 	 * @throws Exception
 	 */
-	private Entry doAddUserDefined(String userType, String testFilePath) throws Exception {
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/" + userType));
+	private Entry doAddExtended(String extendedType, String testFilePath) throws Exception {
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/" + extendedType));
 
 		File f = new File(testFilePath);
 		String artifactFileName = f.getName();
@@ -213,7 +213,7 @@ public class FeedResourceTest extends AbstractResourceTest {
 		// Add some pkg entries
 		Set<String> pkgUuids = new HashSet<String>();
 		for (int i = 0; i < 5; i++) {
-			Entry entry = doAddUserDefined("PkgDocument", "/sample-files/user/defaultPackage.pkg");
+			Entry entry = doAddExtended("PkgDocument", "/sample-files/ext/defaultPackage.pkg");
 			URI entryId = entry.getId();
 			String uuid = entryId.toString();
 			pkgUuids.add(uuid);
@@ -221,14 +221,14 @@ public class FeedResourceTest extends AbstractResourceTest {
 		// Add some bpmn entries
 		Set<String> bpmnUuids = new HashSet<String>();
 		for (int i = 0; i < 3; i++) {
-			Entry entry = doAddUserDefined("BpmnDocument", "/sample-files/user/Evaluation.bpmn");
+			Entry entry = doAddExtended("BpmnDocument", "/sample-files/ext/Evaluation.bpmn");
 			URI entryId = entry.getId();
 			String uuid = entryId.toString();
 			bpmnUuids.add(uuid);
 		}
 
-		// Do a query for *just* the User Defined types - there should be 5+3=8 of them
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/user"));
+		// Do a query for *just* the Extended types - there should be 5+3=8 of them
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext"));
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		int uuidsFound = 0;

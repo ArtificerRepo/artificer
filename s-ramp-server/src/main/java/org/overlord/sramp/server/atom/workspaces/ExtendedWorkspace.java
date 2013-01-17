@@ -21,10 +21,10 @@ import org.overlord.sramp.common.ArtifactTypeEnum;
 
 
 /**
- * Models the S-RAMP user-defined workspace.
+ * Models the S-RAMP extended workspace.
  * @author eric.wittmann@redhat.com
  */
-public class UserDefinedWorkspace extends AbstractWorkspace {
+public class ExtendedWorkspace extends AbstractWorkspace {
 
 	private static final long serialVersionUID = 1837991326302484187L;
 
@@ -32,8 +32,8 @@ public class UserDefinedWorkspace extends AbstractWorkspace {
 	 * Constructor.
 	 * @param hrefBase
 	 */
-	public UserDefinedWorkspace(String hrefBase) {
-		super(hrefBase, "User Defined Model");
+	public ExtendedWorkspace(String hrefBase) {
+		super(hrefBase, "Extended Model");
 	}
 
 	/**
@@ -41,8 +41,8 @@ public class UserDefinedWorkspace extends AbstractWorkspace {
 	 */
 	@Override
 	protected void configureWorkspace() {
-        AppCollection userCollection = addCollection("/s-ramp/user", "User Defined Model Objects", MediaType.APPLICATION_OCTET_STREAM);
+        AppCollection extCollection = addCollection("/s-ramp/ext", "Extended Model Objects", MediaType.APPLICATION_OCTET_STREAM);
 
-        addTypeCategory(userCollection, ArtifactTypeEnum.UserDefinedArtifactType);
+        addTypeCategory(extCollection, ArtifactTypeEnum.ExtendedArtifactType);
     }
 }

@@ -33,8 +33,8 @@ import org.overlord.sramp.common.visitors.ArtifactVisitorAdapter;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 
 /**
  * Visitor used to convert an artifact to an Atom entry.
@@ -180,16 +180,16 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType)
 	 */
 	@SuppressWarnings("unchecked")
     @Override
-	public void visit(UserDefinedArtifactType artifact) {
+	public void visit(ExtendedArtifactType artifact) {
 	    super.visit(artifact);
 
 	    if (this.atomEntry != null) {
-	        String userType = artifact.getUserType();
-	        this.atomEntry.getExtensionAttributes().put(SrampConstants.SRAMP_USER_TYPE_QNAME, userType);
+	        String extendedType = artifact.getExtendedType();
+	        this.atomEntry.getExtensionAttributes().put(SrampConstants.SRAMP_EXTENDED_TYPE_QNAME, extendedType);
 	    }
 	}
 

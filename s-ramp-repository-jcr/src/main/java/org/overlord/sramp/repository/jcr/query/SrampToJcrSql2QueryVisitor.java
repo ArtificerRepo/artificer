@@ -71,7 +71,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentType"), "sramp:contentType");
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentSize"), "sramp:contentSize");
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentEncoding"), "sramp:contentEncoding");
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "userType"), "sramp:userType");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "extendedType"), "sramp:extendedType");
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "ncName"), "sramp:ncName");
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "namespace"), "sramp:namespace");
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "targetNamespace"), "sramp:targetNamespace");
@@ -131,11 +131,11 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	@Override
 	public void visit(LocationPath node) {
 		if (node.getArtifactType() != null) {
-			// If this is explicitely *or* implicitely a user defined type search...
-			if ("user".equals(node.getArtifactModel()) || !ArtifactTypeEnum.hasEnum(node.getArtifactType())) {
-				this.whereBuilder.append("artifact.[sramp:artifactType] = '" + ArtifactTypeEnum.UserDefinedArtifactType + "'");
+			// If this is explicitely *or* implicitely a extended type search...
+			if ("ext".equals(node.getArtifactModel()) || !ArtifactTypeEnum.hasEnum(node.getArtifactType())) {
+				this.whereBuilder.append("artifact.[sramp:artifactType] = '" + ArtifactTypeEnum.ExtendedArtifactType + "'");
 				this.whereBuilder.append(" AND ");
-				this.whereBuilder.append("artifact.[sramp:userType] = '" + escapeStringLiteral(node.getArtifactType()) + "'");
+				this.whereBuilder.append("artifact.[sramp:extendedType] = '" + escapeStringLiteral(node.getArtifactType()) + "'");
 			} else {
 				this.whereBuilder.append("artifact.[sramp:artifactType] = '" + escapeStringLiteral(node.getArtifactType()) + "'");
 			}

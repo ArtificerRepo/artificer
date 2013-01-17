@@ -49,8 +49,8 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitorAda
 	protected void visitBase(BaseArtifactType artifact) {
 		ArtifactType artifactType = ArtifactType.valueOf(artifact);
 		System.out.println("  -- Core S-RAMP Info --");
-        if (artifactType.isUserDefinedType())
-            printProperty("Type", artifactType.getUserType());
+        if (artifactType.isExtendedType())
+            printProperty("Type", artifactType.getExtendedType());
         else
             printProperty("Type", artifactType.getArtifactType().getType());
 		printProperty("Model", artifactType.getArtifactType().getModel());
