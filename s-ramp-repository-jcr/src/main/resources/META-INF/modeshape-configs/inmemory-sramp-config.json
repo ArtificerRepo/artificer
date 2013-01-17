@@ -1,5 +1,6 @@
 {
-    "name" : "S-RAMP Repository",
+    "name" : "S-RAMP-Repository",
+    "jndiName" : "",
     "workspaces" : {
         "predefined" : ["otherWorkspace"],
         "default" : "default",

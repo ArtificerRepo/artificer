@@ -23,7 +23,7 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
-import org.overlord.sramp.ontology.SrampOntology;
+import org.overlord.sramp.common.ontology.SrampOntology;
 
 /**
  * Reads an ontology from the given JCR node.

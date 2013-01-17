@@ -24,7 +24,12 @@
       <artifactId>s-ramp-client</artifactId>
       <version>${project.version}</version>
     </dependency>
-        <dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-shell</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
       <version>${org.jboss.resteasy.version}</version>

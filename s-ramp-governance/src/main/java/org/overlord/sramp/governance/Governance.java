@@ -110,10 +110,10 @@ public class Governance {
         return new URL(configuration.getString(GovernanceConstants.GOVERNANCE_JBPM_URL, "http://localhost:8080/gwt-console-server"));
     }
     /**
-     * This returns the baseURL, which by default is http://localhost:8080/s-ramp-atom
+     * This returns the baseURL, which by default is http://localhost:8080/s-ramp-server
      */
     public URL getSrampUrl() throws MalformedURLException {
-        return new URL(configuration.getString(GovernanceConstants.SRAMP_REPO_URL, "http://localhost:8080/s-ramp-atom"));
+        return new URL(configuration.getString(GovernanceConstants.SRAMP_REPO_URL, "http://localhost:8080/s-ramp-server"));
     }
 
     public Map<String,Target> getTargets() throws ConfigException {

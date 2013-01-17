@@ -34,7 +34,7 @@ public class JCRQueryManager implements QueryManager {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.QueryManager#createQuery(java.lang.String, java.lang.String, boolean)
+	 * @see org.overlord.sramp.common.repository.QueryManager#createQuery(java.lang.String, java.lang.String, boolean)
 	 */
 	@Override
 	public SrampQuery createQuery(String xpathTemplate, String orderByProperty, boolean orderAscending) {
@@ -42,7 +42,7 @@ public class JCRQueryManager implements QueryManager {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.QueryManager#createQuery(java.lang.String)
+	 * @see org.overlord.sramp.common.repository.QueryManager#createQuery(java.lang.String)
 	 */
 	@Override
 	public SrampQuery createQuery(String xpathTemplate) {

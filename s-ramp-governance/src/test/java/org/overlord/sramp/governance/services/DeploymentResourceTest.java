@@ -45,8 +45,8 @@ public class DeploymentResourceTest extends BaseResourceTest {
 	 * This is an integration test, and only works if artifact 'e67e1b09-1de7-4945-a47f-45646752437a'
      * exists in the repo; check the following urls to find out:
      * 
-	 * http://localhost:8080/s-ramp-atom/s-ramp?query=/s-ramp[@uuid%3D'e67e1b09-1de7-4945-a47f-45646752437a']
-	 * http://localhost:8080/s-ramp-atom/s-ramp/user/BpmnDocument/e67e1b09-1de7-4945-a47f-45646752437a
+	 * http://localhost:8080/s-ramp-server/s-ramp?query=/s-ramp[@uuid%3D'e67e1b09-1de7-4945-a47f-45646752437a']
+	 * http://localhost:8080/s-ramp-server/s-ramp/user/BpmnDocument/e67e1b09-1de7-4945-a47f-45646752437a
 	 * 
 	 * @throws Exception
 	 */

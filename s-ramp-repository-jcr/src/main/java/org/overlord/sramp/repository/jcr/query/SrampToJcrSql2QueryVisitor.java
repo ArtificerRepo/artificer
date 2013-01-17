@@ -25,24 +25,24 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.sramp.ArtifactTypeEnum;
-import org.overlord.sramp.SrampConstants;
-import org.overlord.sramp.SrampException;
-import org.overlord.sramp.query.xpath.ast.AndExpr;
-import org.overlord.sramp.query.xpath.ast.Argument;
-import org.overlord.sramp.query.xpath.ast.ArtifactSet;
-import org.overlord.sramp.query.xpath.ast.EqualityExpr;
-import org.overlord.sramp.query.xpath.ast.Expr;
-import org.overlord.sramp.query.xpath.ast.ForwardPropertyStep;
-import org.overlord.sramp.query.xpath.ast.FunctionCall;
-import org.overlord.sramp.query.xpath.ast.LocationPath;
-import org.overlord.sramp.query.xpath.ast.OrExpr;
-import org.overlord.sramp.query.xpath.ast.Predicate;
-import org.overlord.sramp.query.xpath.ast.PrimaryExpr;
-import org.overlord.sramp.query.xpath.ast.Query;
-import org.overlord.sramp.query.xpath.ast.RelationshipPath;
-import org.overlord.sramp.query.xpath.ast.SubartifactSet;
-import org.overlord.sramp.query.xpath.visitors.XPathVisitor;
+import org.overlord.sramp.common.ArtifactTypeEnum;
+import org.overlord.sramp.common.SrampConstants;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.query.xpath.ast.AndExpr;
+import org.overlord.sramp.common.query.xpath.ast.Argument;
+import org.overlord.sramp.common.query.xpath.ast.ArtifactSet;
+import org.overlord.sramp.common.query.xpath.ast.EqualityExpr;
+import org.overlord.sramp.common.query.xpath.ast.Expr;
+import org.overlord.sramp.common.query.xpath.ast.ForwardPropertyStep;
+import org.overlord.sramp.common.query.xpath.ast.FunctionCall;
+import org.overlord.sramp.common.query.xpath.ast.LocationPath;
+import org.overlord.sramp.common.query.xpath.ast.OrExpr;
+import org.overlord.sramp.common.query.xpath.ast.Predicate;
+import org.overlord.sramp.common.query.xpath.ast.PrimaryExpr;
+import org.overlord.sramp.common.query.xpath.ast.Query;
+import org.overlord.sramp.common.query.xpath.ast.RelationshipPath;
+import org.overlord.sramp.common.query.xpath.ast.SubartifactSet;
+import org.overlord.sramp.common.query.xpath.visitors.XPathVisitor;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 
@@ -109,7 +109,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.Query)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.Query)
 	 */
 	@Override
 	public void visit(Query node) {
@@ -126,7 +126,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.LocationPath)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.LocationPath)
 	 */
 	@Override
 	public void visit(LocationPath node) {
@@ -147,7 +147,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.AndExpr)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.AndExpr)
 	 */
 	@Override
 	public void visit(AndExpr node) {
@@ -161,7 +161,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.Argument)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.Argument)
 	 */
 	@Override
 	public void visit(Argument node) {
@@ -172,7 +172,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.ArtifactSet)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.ArtifactSet)
 	 */
 	@Override
 	public void visit(ArtifactSet node) {
@@ -180,7 +180,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.EqualityExpr)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.EqualityExpr)
 	 */
 	@Override
 	public void visit(EqualityExpr node) {
@@ -203,7 +203,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.Expr)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.Expr)
 	 */
 	@Override
 	public void visit(Expr node) {
@@ -211,7 +211,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.ForwardPropertyStep)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.ForwardPropertyStep)
 	 */
 	@Override
 	public void visit(ForwardPropertyStep node) {
@@ -238,7 +238,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.FunctionCall)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.FunctionCall)
 	 */
 	@Override
 	public void visit(FunctionCall node) {
@@ -323,7 +323,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.OrExpr)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.OrExpr)
 	 */
 	@Override
 	public void visit(OrExpr node) {
@@ -337,7 +337,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.Predicate)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.Predicate)
 	 */
 	@Override
 	public void visit(Predicate node) {
@@ -345,7 +345,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.PrimaryExpr)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.PrimaryExpr)
 	 */
 	@Override
 	public void visit(PrimaryExpr node) {
@@ -362,7 +362,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.RelationshipPath)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.RelationshipPath)
 	 */
 	@Override
 	public void visit(RelationshipPath node) {
@@ -381,7 +381,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	}
 
 	/**
-	 * @see org.overlord.sramp.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.query.xpath.ast.SubartifactSet)
+	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.SubartifactSet)
 	 */
 	@Override
 	public void visit(SubartifactSet node) {

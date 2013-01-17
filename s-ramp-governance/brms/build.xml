@@ -71,7 +71,7 @@
   </target>
 
   <target name="deploy.sramp" depends="patch.jbpm-gwt-console-server">
-    <copy file="${sramp.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-atom.war" failonerror="true" />
+    <copy file="${sramp.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-server.war" failonerror="true" />
     <copy file="${sramp-ui.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-ui.war" failonerror="false" />
   </target>
 
