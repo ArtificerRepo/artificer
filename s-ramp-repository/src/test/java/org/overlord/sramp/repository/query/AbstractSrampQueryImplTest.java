@@ -29,7 +29,7 @@ import org.junit.Test;
 public class AbstractSrampQueryImplTest {
 
 	/**
-	 * Test method for {@link org.overlord.sramp.repository.query.AbstractSrampQueryImpl#formatQuery(java.lang.String, java.util.List)}.
+	 * Test method for {@link org.overlord.sramp.common.repository.query.AbstractSrampQueryImpl#formatQuery(java.lang.String, java.util.List)}.
 	 * @throws InvalidQueryException 
 	 */
 	@Test
@@ -59,7 +59,7 @@ public class AbstractSrampQueryImplTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.repository.query.AbstractSrampQueryImpl#formatQuery(java.lang.String, java.util.List)}.
+	 * Test method for {@link org.overlord.sramp.common.repository.query.AbstractSrampQueryImpl#formatQuery(java.lang.String, java.util.List)}.
 	 * @throws InvalidQueryException 
 	 */
 	@Test(expected=InvalidQueryException.class)
@@ -68,7 +68,7 @@ public class AbstractSrampQueryImplTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.repository.query.AbstractSrampQueryImpl#formatQuery(java.lang.String, java.util.List)}.
+	 * Test method for {@link org.overlord.sramp.common.repository.query.AbstractSrampQueryImpl#formatQuery(java.lang.String, java.util.List)}.
 	 * @throws InvalidQueryException 
 	 */
 	@Test(expected=InvalidQueryException.class)

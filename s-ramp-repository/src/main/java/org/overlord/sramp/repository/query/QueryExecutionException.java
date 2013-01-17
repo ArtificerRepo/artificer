@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.repository.query;
 
-import org.overlord.sramp.SrampServerException;
+import org.overlord.sramp.common.SrampServerException;
 
 /**
  * Exception thrown when an s-ramp query fails.

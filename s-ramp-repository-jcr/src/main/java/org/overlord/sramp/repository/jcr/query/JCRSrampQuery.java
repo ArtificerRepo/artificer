@@ -22,9 +22,9 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.query.QueryResult;
 
-import org.overlord.sramp.SrampException;
-import org.overlord.sramp.query.xpath.ast.Query;
-import org.overlord.sramp.query.xpath.visitors.XPathSerializationVisitor;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.query.xpath.ast.Query;
+import org.overlord.sramp.common.query.xpath.visitors.XPathSerializationVisitor;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
@@ -68,7 +68,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.AbstractSrampQueryImpl#executeQuery(org.overlord.sramp.query.xpath.ast.Query)
+	 * @see org.overlord.sramp.common.repository.query.AbstractSrampQueryImpl#executeQuery(org.overlord.sramp.common.query.xpath.ast.Query)
 	 */
 	@Override
 	protected ArtifactSet executeQuery(Query queryModel) throws SrampException {

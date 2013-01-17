@@ -18,7 +18,7 @@ package org.overlord.sramp.repository.jcr.mapper;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.overlord.sramp.ontology.SrampOntology;
+import org.overlord.sramp.common.ontology.SrampOntology;
 
 /**
  * Class that knows how to write an ontology to the given JCR node.

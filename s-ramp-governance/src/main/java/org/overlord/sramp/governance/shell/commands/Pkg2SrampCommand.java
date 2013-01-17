@@ -36,15 +36,15 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
-import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.services.brms.BrmsConstants;
 import org.overlord.sramp.atom.services.brms.assets.Assets;
 import org.overlord.sramp.atom.services.brms.packages.Packages;
 import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
-import org.overlord.sramp.client.shell.ShellContextImpl;
-import org.overlord.sramp.client.shell.commands.Arguments;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.shell.AbstractShellCommand;
+import org.overlord.sramp.shell.ShellContext;
+import org.overlord.sramp.shell.ShellContextImpl;
+import org.overlord.sramp.shell.commands.Arguments;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
@@ -80,7 +80,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
                 .append(" ").append(brmsUserId)
                 .append(" ").append(brmsPassword);
 
-        SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-atom");
+        SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-server");
         QName clientVarName = new QName("s-ramp", "client");
         Pkg2SrampCommand cmd = new Pkg2SrampCommand();
         ShellContext context = new ShellContextImpl();
@@ -99,7 +99,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.client.shell.ShellCommand#printUsage()
+     * @see org.overlord.sramp.common.shell.ShellCommand#printUsage()
      */
     @Override
     public void printUsage() {
@@ -107,7 +107,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+     * @see org.overlord.sramp.common.shell.ShellCommand#printHelp()
      */
     @Override
     public void printHelp() {
@@ -119,7 +119,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.client.shell.ShellCommand#execute()
+     * @see org.overlord.sramp.common.shell.ShellCommand#execute()
      */
     @Override
     public void execute() throws Exception {

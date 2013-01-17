@@ -18,9 +18,9 @@ package org.overlord.sramp.client.query;
 import java.util.Date;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.SrampAtomUtils;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**

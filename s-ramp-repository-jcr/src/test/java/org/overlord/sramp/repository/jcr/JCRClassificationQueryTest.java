@@ -21,8 +21,8 @@ import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.overlord.sramp.SrampException;
-import org.overlord.sramp.ontology.SrampOntology;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;

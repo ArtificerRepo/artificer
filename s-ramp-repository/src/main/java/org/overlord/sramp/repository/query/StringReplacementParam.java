@@ -31,7 +31,7 @@ public class StringReplacementParam extends QueryReplacementParam<String> {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.QueryReplacementParam#getFormattedValue()
+	 * @see org.overlord.sramp.common.repository.query.QueryReplacementParam#getFormattedValue()
 	 */
 	@Override
 	public String getFormattedValue() {

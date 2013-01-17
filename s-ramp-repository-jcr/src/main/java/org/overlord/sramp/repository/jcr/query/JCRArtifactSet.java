@@ -55,7 +55,7 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.ArtifactSet#size()
+	 * @see org.overlord.sramp.common.repository.query.ArtifactSet#size()
 	 */
 	@Override
 	public long size() {
@@ -63,7 +63,7 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.ArtifactSet#close()
+	 * @see org.overlord.sramp.common.repository.query.ArtifactSet#close()
 	 */
 	@Override
 	public void close() {
