@@ -20,9 +20,9 @@ import java.io.InputStream;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.SrampException;
-import org.overlord.sramp.ontology.SrampOntology;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.ontology.SrampOntology;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;

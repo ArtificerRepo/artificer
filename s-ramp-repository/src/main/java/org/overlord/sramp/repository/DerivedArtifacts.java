@@ -18,7 +18,7 @@ package org.overlord.sramp.repository;
 import java.io.InputStream;
 import java.util.Collection;
 
-import org.overlord.sramp.SrampException;
+import org.overlord.sramp.common.SrampException;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**

@@ -32,20 +32,20 @@ import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
-import org.overlord.sramp.atom.services.ArtifactResource;
-import org.overlord.sramp.atom.services.BatchResource;
-import org.overlord.sramp.atom.services.FeedResource;
-import org.overlord.sramp.atom.services.QueryResource;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepository;
+import org.overlord.sramp.server.atom.services.ArtifactResource;
+import org.overlord.sramp.server.atom.services.BatchResource;
+import org.overlord.sramp.server.atom.services.FeedResource;
+import org.overlord.sramp.server.atom.services.QueryResource;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
@@ -77,7 +77,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
+	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
 	 */
 	@Test
 	public void testUploadArtifact() throws Exception {
@@ -94,7 +94,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
-     * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
+     * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
      */
     @Test
     public void testUploadArtifactAndContent() throws Exception {
@@ -115,7 +115,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
     }
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#getArtifactContent(java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#getArtifactContent(java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public void testGetArtifactContent() throws Exception {
@@ -216,7 +216,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#query(java.lang.String, int, int, java.lang.String, boolean)}.
+	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#query(java.lang.String, int, int, java.lang.String, boolean)}.
 	 */
 	@Test
 	public void testQuery() throws Exception {
@@ -246,7 +246,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
     /**
-     * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#query(String, int, int, String, boolean, java.util.Collection)
+     * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#query(String, int, int, String, boolean, java.util.Collection)
      */
     @Test
     public void testQueryWithPropertyName() throws Exception {
@@ -285,7 +285,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
     }
 
     /**
-     * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#buildQuery(String)
+     * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#buildQuery(String)
      */
     @Test
     public void testBuildQuery() throws Exception {
@@ -311,7 +311,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
     }
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
+	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
 	 */
 	@Test
 	public void testQueryError() throws Exception {
@@ -325,7 +325,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadBatch(SrampArchive)}.
+	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#uploadBatch(SrampArchive)}.
 	 */
 	@Test
 	public void testArchiveUpload() throws Exception {
@@ -382,7 +382,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.SrampAtomApiClient#uploadBatch(SrampArchive)}.
+	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#uploadBatch(SrampArchive)}.
 	 */
 	@Test
 	public void testArchiveUploadWithError() throws Exception {

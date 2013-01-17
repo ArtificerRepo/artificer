@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import org.overlord.sramp.ArtifactType;
+import org.overlord.sramp.common.ArtifactType;
 
 public class MapToJCRPath {
 

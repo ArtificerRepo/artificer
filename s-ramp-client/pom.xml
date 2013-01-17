@@ -21,12 +21,12 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-core</artifactId>
+      <artifactId>s-ramp-common</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-atom-core</artifactId>
+      <artifactId>s-ramp-atom</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -92,16 +92,11 @@
       <artifactId>log4j</artifactId>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>jline</groupId>
-      <artifactId>jline</artifactId>
-      <version>${jline.version}</version>
-    </dependency>
 
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-atom</artifactId>
+      <artifactId>s-ramp-server</artifactId>
       <version>${project.version}</version>
       <classifier>classes</classifier>
       <scope>test</scope>
@@ -141,5 +136,34 @@
         </executions>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>[2.1,)</versionRange>
+                    <goals>
+                      <goal>copy-dependencies</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 </project>

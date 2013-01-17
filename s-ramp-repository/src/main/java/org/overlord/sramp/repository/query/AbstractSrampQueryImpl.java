@@ -19,9 +19,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.overlord.sramp.SrampException;
-import org.overlord.sramp.query.xpath.XPathParser;
-import org.overlord.sramp.query.xpath.ast.Query;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.query.xpath.XPathParser;
+import org.overlord.sramp.common.query.xpath.ast.Query;
 
 /**
  * A base class for concrete implementations of the {@link SrampQuery} interface.  This
@@ -94,7 +94,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.SrampQuery#setString(java.lang.String)
+	 * @see org.overlord.sramp.common.repository.query.SrampQuery#setString(java.lang.String)
 	 */
 	@Override
 	public void setString(String paramValue) {
@@ -102,7 +102,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.SrampQuery#setNumber(int)
+	 * @see org.overlord.sramp.common.repository.query.SrampQuery#setNumber(int)
 	 */
 	@Override
 	public void setNumber(int paramValue) {
@@ -110,7 +110,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.SrampQuery#setNumber(long)
+	 * @see org.overlord.sramp.common.repository.query.SrampQuery#setNumber(long)
 	 */
 	@Override
 	public void setNumber(long paramValue) {
@@ -118,7 +118,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.SrampQuery#setNumber(float)
+	 * @see org.overlord.sramp.common.repository.query.SrampQuery#setNumber(float)
 	 */
 	@Override
 	public void setNumber(float paramValue) {
@@ -126,7 +126,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.SrampQuery#setNumber(double)
+	 * @see org.overlord.sramp.common.repository.query.SrampQuery#setNumber(double)
 	 */
 	@Override
 	public void setNumber(double paramValue) {
@@ -134,7 +134,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.SrampQuery#setNumber(java.math.BigInteger)
+	 * @see org.overlord.sramp.common.repository.query.SrampQuery#setNumber(java.math.BigInteger)
 	 */
 	@Override
 	public void setNumber(BigInteger paramValue) {
@@ -142,7 +142,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.query.SrampQuery#executeQuery()
+	 * @see org.overlord.sramp.common.repository.query.SrampQuery#executeQuery()
 	 */
 	@Override
 	public final ArtifactSet executeQuery() throws SrampException {

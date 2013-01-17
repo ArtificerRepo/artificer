@@ -42,7 +42,7 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 public class JarToSrampArchiveTest {
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.jar.JarToSrampArchive#JarToSrampArchive(java.io.File)}.
+	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#JarToSrampArchive(java.io.File)}.
 	 */
 	@Test
 	public void testJarToSrampArchiveFile() throws Exception {
@@ -82,7 +82,7 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.jar.JarToSrampArchive#JarToSrampArchive(java.io.InputStream)}.
+	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#JarToSrampArchive(java.io.InputStream)}.
 	 */
 	@Test
 	public void testJarToSrampArchiveInputStream() throws Exception {
@@ -110,7 +110,7 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.jar.JarToSrampArchive#createSrampArchive()}.
+	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#createSrampArchive()}.
 	 */
 	@Test
 	public void testCreateSrampArchive() throws Exception {
@@ -138,7 +138,7 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.jar.JarToSrampArchive#setArtifactFilter(ArtifactFilter)}.
+	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#setArtifactFilter(ArtifactFilter)}.
 	 */
 	@Test
 	public void testCustomArtifactFilter() throws Exception {
@@ -174,7 +174,7 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.jar.JarToSrampArchive#createSrampArchive()}.
+	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#createSrampArchive()}.
 	 */
 	@Test
 	public void testMetaData() throws Exception {
@@ -201,7 +201,7 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.client.jar.JarToSrampArchive#createSrampArchive()}.
+	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#createSrampArchive()}.
 	 */
 	@Test
 	public void testMetaDataFactory() throws Exception {

@@ -47,7 +47,7 @@ public class DefaultArtifactFilter implements ArtifactFilter {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.jar.ArtifactFilter#accepts(org.overlord.sramp.client.jar.CandidateArtifact)
+	 * @see org.overlord.sramp.common.client.jar.ArtifactFilter#accepts(org.overlord.sramp.common.client.jar.CandidateArtifact)
 	 */
 	@Override
 	public boolean accepts(CandidateArtifact artifact) {

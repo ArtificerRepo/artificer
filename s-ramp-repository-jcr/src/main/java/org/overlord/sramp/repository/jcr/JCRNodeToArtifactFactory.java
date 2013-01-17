@@ -20,13 +20,13 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
-import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.SrampException;
-import org.overlord.sramp.SrampServerException;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.SrampServerException;
+import org.overlord.sramp.common.visitors.ArtifactVisitor;
+import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToArtifactVisitor;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToArtifactVisitor.JCRReferenceResolver;
-import org.overlord.sramp.visitors.ArtifactVisitor;
-import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

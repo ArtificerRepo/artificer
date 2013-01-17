@@ -23,7 +23,7 @@ import java.util.Set;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.overlord.sramp.ontology.SrampOntology;
+import org.overlord.sramp.common.ontology.SrampOntology;
 
 
 /**
