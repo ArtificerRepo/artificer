@@ -18,8 +18,8 @@ package org.overlord.sramp.demos.deriver;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.overlord.sramp.derived.ArtifactDeriver;
-import org.overlord.sramp.derived.DeriverProvider;
+import org.overlord.sramp.common.derived.ArtifactDeriver;
+import org.overlord.sramp.common.derived.DeriverProvider;
 
 /**
  * This provider contributes an {@link ArtifactDeriver} to the S-RAMP repository
@@ -36,7 +36,7 @@ public class WebXmlDeriverProvider implements DeriverProvider {
     }
 
     /**
-     * @see org.overlord.sramp.derived.DeriverProvider#createArtifactDerivers()
+     * @see org.overlord.sramp.common.derived.DeriverProvider#createArtifactDerivers()
      */
     @Override
     public Map<String, ArtifactDeriver> createArtifactDerivers() {

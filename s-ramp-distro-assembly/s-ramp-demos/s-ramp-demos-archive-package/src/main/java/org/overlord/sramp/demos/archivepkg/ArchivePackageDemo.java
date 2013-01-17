@@ -35,7 +35,7 @@ import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
  */
 public class ArchivePackageDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-atom";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
 
 	/**
 	 * Main.

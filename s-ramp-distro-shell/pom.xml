@@ -14,12 +14,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
-			<artifactId>s-ramp-client</artifactId>
+			<artifactId>s-ramp-shell</artifactId>
 			<version>${project.version}</version>
 		</dependency>
         <dependency>
             <groupId>org.overlord.sramp</groupId>
             <artifactId>s-ramp-governance</artifactId>
+            <classifier>classes</classifier>
             <version>${project.version}</version>
         </dependency>
 		<dependency>
@@ -46,7 +47,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>org.overlord.sramp.client.shell.SrampShell</mainClass>
+							<mainClass>org.overlord.sramp.shell.SrampShell</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

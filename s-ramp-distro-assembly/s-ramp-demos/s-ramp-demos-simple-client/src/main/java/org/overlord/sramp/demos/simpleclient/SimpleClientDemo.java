@@ -17,11 +17,11 @@ package org.overlord.sramp.demos.simpleclient;
 
 import java.io.InputStream;
 
-import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.SrampModelUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -31,7 +31,7 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
  */
 public class SimpleClientDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-atom";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
 	private static final String[] FILES = { "ws-humantask.xsd", "ws-humantask-context.xsd",
 			"ws-humantask-policy.xsd", "ws-humantask-types.xsd", "ws-humantask-leantask-api.wsdl",
 			"ws-humantask-protocol.wsdl" };

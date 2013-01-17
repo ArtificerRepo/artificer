@@ -163,7 +163,7 @@
 		<!-- Dependencies on the various WARs to include in the distro. -->
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
-			<artifactId>s-ramp-atom</artifactId>
+			<artifactId>s-ramp-server</artifactId>
 			<type>war</type>
 			<version>${project.version}</version>
 		</dependency>
