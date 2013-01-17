@@ -33,193 +33,124 @@
       DISTRIBUTION OF THIS DOCUMENT.
   -->
   
- <xsd:schema targetNamespace="http://s-ramp.org/xmlns/2010/s-ramp" version="1.0" 
-            elementFormDefault="qualified" 
-            xmlns:tns="http://s-ramp.org/xmlns/2010/s-ramp" 
-            xmlns:s-ramp="http://s-ramp.org/xmlns/2010/s-ramp" 
-            xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  
-  <xsd:include schemaLocation="serviceimplementationmodel.xsd"/>
-  <xsd:include schemaLocation="coremodel.xsd"/>
-  <xsd:include schemaLocation="wsdlmodel.xsd"/>
-  <xsd:include schemaLocation="xsdmodel.xsd"/>
-  <xsd:include schemaLocation="policymodel.xsd"/>
-  <xsd:include schemaLocation="soamodel.xsd"/>
-  <xsd:include schemaLocation="soapwsdlmodel.xsd"/>
-              
+  <xsd:include schemaLocation="serviceimplementationmodel.xsd" />
+  <xsd:include schemaLocation="coremodel.xsd" />
+  <xsd:include schemaLocation="wsdlmodel.xsd" />
+  <xsd:include schemaLocation="xsdmodel.xsd" />
+  <xsd:include schemaLocation="policymodel.xsd" />
+  <xsd:include schemaLocation="soamodel.xsd" />
+  <xsd:include schemaLocation="soapwsdlmodel.xsd" />
+
   <!-- Base type for all Derived Artifacts in S-RAMP -->
   <xsd:element name="artifact">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:choice>
           <!-- Concrete Artifact Types from Core Model -->
-          <xsd:element name="XmlDocument" type="s-ramp:XmlDocument" 
-                       minOccurs="1" maxOccurs="1"/>
-            
-           <!-- Concrete Artifact Types from Service Implementation Model -->
-          <xsd:element name="Organization" type="s-ramp:Organization" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="ServiceInstance" type="s-ramp:ServiceInstance" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="ServiceOperation" type="s-ramp:ServiceOperation" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="ServiceEndpoint" type="s-ramp:ServiceEndpoint" 
-                       minOccurs="1" maxOccurs="1"/> 
-   
+          <xsd:element name="Document" type="s-ramp:Document" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="XmlDocument" type="s-ramp:XmlDocument" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="ExtendedArtifactType" type="s-ramp:ExtendedArtifactType" minOccurs="1" maxOccurs="1" />
+
+          <!-- Concrete Artifact Types from Service Implementation Model -->
+          <xsd:element name="Organization" type="s-ramp:Organization" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="ServiceEndpoint" type="s-ramp:ServiceEndpoint" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="ServiceInstance" type="s-ramp:ServiceInstance" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="ServiceOperation" type="s-ramp:ServiceOperation" minOccurs="1" maxOccurs="1" />
+
           <!-- Concrete Artifact Types from SOA Model -->
-          <xsd:element name="HumanActor" type="s-ramp:HumanActor"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Choreography" type="s-ramp:Choreography" 
-                       minOccurs="1" maxOccurs="1"/>            
-          <xsd:element name="ChoreographyProcess" 
-                       type="s-ramp:ChoreographyProcess" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Collaboration" type="s-ramp:Collaboration" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="CollaborationProcess" 
-                       type="s-ramp:CollaborationProcess" minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Composition" type="s-ramp:Composition" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Effect" type="s-ramp:Effect"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Element" type="s-ramp:Element"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Event" type="s-ramp:Event"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="InformationType" type="s-ramp:InformationType" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Orchestration" type="s-ramp:Orchestration" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="OrchestrationProcess" type="s-ramp:OrchestrationProcess"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Policy" type="s-ramp:Policy"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Organization" type="s-ramp:Organization"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="PolicySubject" type="s-ramp:PolicySubject"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Process" type="s-ramp:Process"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Service" type="s-ramp:Service" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="ServiceContract" type="s-ramp:ServiceContract" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="ServiceInterface" type="s-ramp:ServiceInterface" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="System" type="s-ramp:System"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Task" type="s-ramp:Task"
-                       minOccurs="1" maxOccurs="1"/>
-            
+          <xsd:element name="Actor" type="s-ramp:Actor" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Choreography" type="s-ramp:Choreography" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="ChoreographyProcess" type="s-ramp:ChoreographyProcess" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Collaboration" type="s-ramp:Collaboration" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="CollaborationProcess" type="s-ramp:CollaborationProcess" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Composition" type="s-ramp:Composition" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Effect" type="s-ramp:Effect" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Element" type="s-ramp:Element" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Event" type="s-ramp:Event" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="InformationType" type="s-ramp:InformationType" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Orchestration" type="s-ramp:Orchestration" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="OrchestrationProcess" type="s-ramp:OrchestrationProcess" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Policy" type="s-ramp:Policy" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="PolicySubject" type="s-ramp:PolicySubject" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Process" type="s-ramp:Process" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Service" type="s-ramp:Service" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="ServiceContract" type="s-ramp:ServiceContract" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="ServiceComposition" type="s-ramp:ServiceComposition" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="ServiceInterface" type="s-ramp:ServiceInterface" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="System" type="s-ramp:System" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Task" type="s-ramp:Task" minOccurs="1" maxOccurs="1" />
+
           <!-- Concrete Artifact Types from Policy Model -->
-          <xsd:element name="PolicyAttachment" type="s-ramp:PolicyAttachment" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="PolicyExpression" type="s-ramp:PolicyExpression" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="PolicyDocument" type="s-ramp:PolicyDocument" 
-                       minOccurs="1" maxOccurs="1"/>
-            
+          <xsd:element name="PolicyAttachment" type="s-ramp:PolicyAttachment" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="PolicyExpression" type="s-ramp:PolicyExpression" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="PolicyDocument" type="s-ramp:PolicyDocument" minOccurs="1" maxOccurs="1" />
+
           <!-- Concrete Artifact Types from XSD Model -->
-          <xsd:element name="XsdDocument" type="s-ramp:XsdDocument" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="AttributeDeclaration" type="s-ramp:AttributeDeclaration" 
-                       minOccurs="1" maxOccurs="1"/> 
-          <xsd:element name="ElementDeclaration" type="s-ramp:ElementDeclaration" 
-                       minOccurs="1" maxOccurs="1"/> 
-          <xsd:element name="XsdType" type="s-ramp:XsdType"
-                       minOccurs="1" maxOccurs="1"/> 
-          <xsd:element name="ComplexTypeDeclaration" type="s-ramp:ComplexTypeDeclaration"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="SimpleTypeDeclaration" type="s-ramp:SimpleTypeDeclaration"
-                       minOccurs="1" maxOccurs="1"/>  
-             
-          <!-- Concrete Artifact Types from WSDL Model -->           
-          <xsd:element name="WsdlDocument" type="s-ramp:WsdlDocument" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="WsdlService" type="s-ramp:WsdlService" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Port" type="s-ramp:Port"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Binding" type="s-ramp:Binding"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="PortType" type="s-ramp:PortType"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="BindingOperation" type="s-ramp:BindingOperation" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="BindingOperationInput" type="s-ramp:BindingOperationInput"  
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="BindingOperationFault" type="s-ramp:BindingOperationFault"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="OperationInput" type="s-ramp:OperationInput" 
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Fault" type="s-ramp:Fault"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Message" type="s-ramp:Message"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="Part" type="s-ramp:Part"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="BindingOperationOutput" type="s-ramp:BindingOperationOutput"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="OperationOutput" type="s-ramp:OperationOutput"
-                       minOccurs="1" maxOccurs="1"/>
-          <xsd:element name="WsdlExtension" type="s-ramp:WsdlExtension" 
-                       minOccurs="1" maxOccurs="1"/>  
-            
-          <!--  Concrete Artifact Types from SOAP WSDL Model -->              
-          <xsd:element name="SoapAddress" type="s-ramp:SoapAddress" 
-                       minOccurs="1" maxOccurs="1"/>  
-          <xsd:element name="SoapBinding" type="s-ramp:SoapBinding" 
-                       minOccurs="1" maxOccurs="1"/>  
+          <xsd:element name="XsdDocument" type="s-ramp:XsdDocument" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="AttributeDeclaration" type="s-ramp:AttributeDeclaration" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="ElementDeclaration" type="s-ramp:ElementDeclaration" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="ComplexTypeDeclaration" type="s-ramp:ComplexTypeDeclaration" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="SimpleTypeDeclaration" type="s-ramp:SimpleTypeDeclaration" minOccurs="1" maxOccurs="1" />
+
+          <!-- Concrete Artifact Types from WSDL Model -->
+          <xsd:element name="WsdlDocument" type="s-ramp:WsdlDocument" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="WsdlService" type="s-ramp:WsdlService" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Port" type="s-ramp:Port" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="WsdlExtension" type="s-ramp:WsdlExtension" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Part" type="s-ramp:Part" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Message" type="s-ramp:Message" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Fault" type="s-ramp:Fault" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="PortType" type="s-ramp:PortType" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Operation" type="s-ramp:Operation" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="OperationInput" type="s-ramp:OperationInput" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="OperationOutput" type="s-ramp:OperationOutput" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="Binding" type="s-ramp:Binding" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="BindingOperation" type="s-ramp:BindingOperation" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="BindingOperationInput" type="s-ramp:BindingOperationInput" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="BindingOperationOutput" type="s-ramp:BindingOperationOutput" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="BindingOperationFault" type="s-ramp:BindingOperationFault" minOccurs="1" maxOccurs="1" />
+
+          <!-- Concrete Artifact Types from SOAP WSDL Model -->
+          <xsd:element name="SoapAddress" type="s-ramp:SoapAddress" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="SoapBinding" type="s-ramp:SoapBinding" minOccurs="1" maxOccurs="1" />
         </xsd:choice>
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:complexType name="target">
-    <xsd:simpleContent>
-      <xsd:extension base="xsd:string">
-        <xsd:attribute name="href" type="xlink:hrefType" />
-        <xsd:anyAttribute namespace="##any" />
-      </xsd:extension>
-    </xsd:simpleContent>
-  </xsd:complexType>
-    
   <!-- Relationship Data element used in S-RAMP Relationship Entry documents -->
   <xsd:element name="relationshipData">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="s-ramp:relationshipType"
-                     minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="s-ramp:relationshipType" minOccurs="0" maxOccurs="1" />
         <!-- sourceId is the UUID of the source artifact -->
         <xsd:element ref="tns:sourceId" minOccurs="0" maxOccurs="1" />
         <!-- targetId is the UUID of the target artifact -->
         <xsd:element ref="tns:targetId" minOccurs="1" maxOccurs="1" />
       </xsd:sequence>
     </xsd:complexType>
-  </xsd:element>  
-    
-  <!-- 
-       Relationship Type Data element used in S-RAMP Relationship Type Entry documents. For now
-       this only includes the s-ramp:relationshipType.
-  -->
+  </xsd:element>
+
+  <!-- Relationship Type Data element used in S-RAMP Relationship Type Entry 
+       documents. For now this only includes the s-ramp:relationshipType. -->
   <xsd:element name="relationshipTypeData">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="s-ramp:relationshipType" minOccurs="1" maxOccurs="1" />
       </xsd:sequence>
     </xsd:complexType>
-  </xsd:element>  
-    
-  <!-- Properties Data element used in S-RAMP Property Entry documents.  -->
+  </xsd:element>
+
+  <!-- Properties Data element used in S-RAMP Property Entry documents. -->
   <xsd:element name="propertyData">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="s-ramp:property" minOccurs="1" maxOccurs="1" />
       </xsd:sequence>
     </xsd:complexType>
-  </xsd:element>  
-    
-  <!-- Properties Data element used in S-RAMP Classification Entry documents.  -->
+  </xsd:element>
+
+  <!-- Properties Data element used in S-RAMP Classification Entry documents. -->
   <xsd:element name="classificationData">
     <xsd:complexType>
       <xsd:sequence>
@@ -227,8 +158,8 @@
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
-            
-  <!-- Stored Query Data element used in S-RAMP Classification Entry documents.  -->
+
+  <!-- Stored Query Data element used in S-RAMP Classification Entry documents. -->
   <xsd:element name="storedQueryData">
     <xsd:complexType>
       <xsd:sequence>
@@ -239,4 +170,3 @@
     </xsd:complexType>
   </xsd:element>
 </xsd:schema>
-
