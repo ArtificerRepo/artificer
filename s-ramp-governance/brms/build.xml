@@ -31,6 +31,15 @@
     <unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final/resteasy-jboss-modules-2.3.5.Final.zip" dest="${sramp.jboss.home}/modules" overwrite="false" />
     <echo>Patching ${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml in JBossAS</echo>
     <copy file="updates/module.xml" tofile="${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml" />
+    <!-- increase the memory setting -->
+  	<replace file="${sramp.jbpm5.dir}/jbpm-installer/build.xml">
+  	  <replacetoken>256m</replacetoken>
+  	  <replacevalue>384m</replacevalue>
+  	</replace>
+  	<replace file="${sramp.jbpm5.dir}/jbpm-installer/build.xml">
+  	  <replacetoken>512m</replacetoken>
+  	  <replacevalue>1024m</replacevalue>
+  	</replace>
   </target>
 
   <target name="configure" depends="patch.jbpm-gwt-console-server,deploy.sramp">
