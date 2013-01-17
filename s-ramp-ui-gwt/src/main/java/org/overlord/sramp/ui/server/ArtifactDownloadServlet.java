@@ -25,10 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.overlord.sramp.ArtifactType;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.ui.server.api.SrampAtomApiClient;
-import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 
