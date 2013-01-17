@@ -29,25 +29,25 @@ import org.overlord.sramp.repository.jcr.JCRPersistence;
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  */
 public class JCRFactoryTest {
-    
+
     @Test
     public void testFindServiceConfig() {
         URL url = this.getClass().getClassLoader().getResource("META-INF/services/org.overlord.sramp.repository.DerivedArtifacts");
         System.out.println("URL=" + url);
         Assert.assertNotNull(url);
     }
-    
+
     @Test
     public void testPersistenceFactory() throws Exception {
         PersistenceManager persistenceManager = PersistenceFactory.newInstance();
         Assert.assertEquals(JCRPersistence.class, persistenceManager.getClass());
     }
-    
+
     @Test
     public void testDerivedArtifactsFactory() throws Exception {
         DerivedArtifacts derivedArtifacts = DerivedArtifactsFactory.newInstance();
         Assert.assertEquals(JCRPersistence.class, derivedArtifacts.getClass());
     }
-    
-   
+
+
 }

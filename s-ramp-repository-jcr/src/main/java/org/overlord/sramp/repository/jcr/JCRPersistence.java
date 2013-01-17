@@ -42,17 +42,18 @@ import javax.jcr.query.QueryResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.overlord.sramp.ArtifactNotFoundException;
-import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.SrampException;
-import org.overlord.sramp.SrampServerException;
-import org.overlord.sramp.derived.ArtifactDeriver;
-import org.overlord.sramp.derived.ArtifactDeriverFactory;
-import org.overlord.sramp.ontology.InvalidClassifiedByException;
-import org.overlord.sramp.ontology.OntologyAlreadyExistsException;
-import org.overlord.sramp.ontology.OntologyNotFoundException;
-import org.overlord.sramp.ontology.SrampOntology;
-import org.overlord.sramp.ontology.SrampOntology.Class;
+import org.overlord.sramp.common.ArtifactNotFoundException;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.SrampServerException;
+import org.overlord.sramp.common.derived.ArtifactDeriver;
+import org.overlord.sramp.common.derived.ArtifactDeriverFactory;
+import org.overlord.sramp.common.ontology.InvalidClassifiedByException;
+import org.overlord.sramp.common.ontology.OntologyAlreadyExistsException;
+import org.overlord.sramp.common.ontology.OntologyNotFoundException;
+import org.overlord.sramp.common.ontology.SrampOntology;
+import org.overlord.sramp.common.ontology.SrampOntology.Class;
+import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceManager;
@@ -62,7 +63,6 @@ import org.overlord.sramp.repository.jcr.mapper.JCRNodeToOntology;
 import org.overlord.sramp.repository.jcr.mapper.OntologyToJCRNode;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
-import org.overlord.sramp.visitors.ArtifactVisitorHelper;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
@@ -94,7 +94,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#persistArtifact(java.lang.String, org.overlord.sramp.ArtifactType, java.io.InputStream)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#persistArtifact(java.lang.String, org.overlord.sramp.common.ArtifactType, java.io.InputStream)
 	 */
 	@Override
 	public BaseArtifactType persistArtifact(BaseArtifactType metaData, InputStream content) throws SrampException {
@@ -187,7 +187,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.DerivedArtifacts#deriveArtifacts(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
+	 * @see org.overlord.sramp.common.repository.DerivedArtifacts#deriveArtifacts(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
 	 */
 	@Override
 	public Collection<BaseArtifactType> deriveArtifacts(BaseArtifactType sourceArtifact,
@@ -275,7 +275,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#getArtifact(java.lang.String, org.overlord.sramp.ArtifactType)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#getArtifact(java.lang.String, org.overlord.sramp.common.ArtifactType)
 	 */
 	@Override
 	public BaseArtifactType getArtifact(String uuid, ArtifactType type) throws SrampException {
@@ -299,7 +299,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#getArtifactContent(java.lang.String, org.overlord.sramp.ArtifactType)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#getArtifactContent(java.lang.String, org.overlord.sramp.common.ArtifactType)
 	 */
 	@Override
 	public InputStream getArtifactContent(String uuid, ArtifactType type) throws SrampException {
@@ -322,7 +322,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#updateArtifact(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.overlord.sramp.ArtifactType)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#updateArtifact(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.overlord.sramp.common.ArtifactType)
 	 */
 	@Override
 	public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampException {
@@ -355,7 +355,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#updateArtifactContent(java.lang.String, org.overlord.sramp.ArtifactType, java.io.InputStream)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#updateArtifactContent(java.lang.String, org.overlord.sramp.common.ArtifactType, java.io.InputStream)
 	 */
 	@Override
 	public void updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws SrampException {
@@ -396,7 +396,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#deleteArtifact(java.lang.String, org.overlord.sramp.ArtifactType)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#deleteArtifact(java.lang.String, org.overlord.sramp.common.ArtifactType)
 	 */
 	@Override
 	public void deleteArtifact(String uuid, ArtifactType artifactType) throws SrampException {
@@ -422,7 +422,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#persistOntology(org.overlord.sramp.ontology.SrampOntology)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#persistOntology(org.overlord.sramp.common.ontology.SrampOntology)
 	 */
 	@Override
 	public SrampOntology persistOntology(SrampOntology ontology) throws SrampException {
@@ -455,7 +455,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#getOntology(java.lang.String)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#getOntology(java.lang.String)
 	 */
 	@Override
 	public SrampOntology getOntology(String uuid) throws SrampException {
@@ -485,7 +485,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#getOntologies()
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#getOntologies()
 	 */
 	@Override
 	public List<SrampOntology> getOntologies() throws SrampException {
@@ -513,7 +513,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#updateOntology(org.overlord.sramp.ontology.SrampOntology)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#updateOntology(org.overlord.sramp.common.ontology.SrampOntology)
 	 */
 	@Override
 	public void updateOntology(SrampOntology ontology) throws SrampException {
@@ -545,7 +545,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#deleteOntology(java.lang.String)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#deleteOntology(java.lang.String)
 	 */
 	@Override
 	public void deleteOntology(String uuid) throws SrampException {
@@ -572,7 +572,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.jcr.ClassificationHelper#resolve(java.lang.String)
+	 * @see org.overlord.sramp.common.repository.jcr.ClassificationHelper#resolve(java.lang.String)
 	 */
 	@Override
 	public URI resolve(String classifiedBy) throws SrampException {
@@ -596,7 +596,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.jcr.ClassificationHelper#normalize(java.net.URI)
+	 * @see org.overlord.sramp.common.repository.jcr.ClassificationHelper#normalize(java.net.URI)
 	 */
 	@Override
 	public Collection<URI> normalize(URI classification) throws SrampException {
@@ -612,7 +612,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.jcr.ClassificationHelper#resolveAll(java.util.Collection)
+	 * @see org.overlord.sramp.common.repository.jcr.ClassificationHelper#resolveAll(java.util.Collection)
 	 */
 	@Override
 	public Collection<URI> resolveAll(Collection<String> classifiedBy) throws SrampException {
@@ -624,7 +624,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.jcr.ClassificationHelper#normalizeAll(java.util.Collection)
+	 * @see org.overlord.sramp.common.repository.jcr.ClassificationHelper#normalizeAll(java.util.Collection)
 	 */
 	@Override
 	public Collection<URI> normalizeAll(Collection<URI> classifications) throws SrampException {
@@ -636,7 +636,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#printArtifactGraph(java.lang.String, org.overlord.sramp.ArtifactType)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#printArtifactGraph(java.lang.String, org.overlord.sramp.common.ArtifactType)
 	 */
 	@Override
 	public void printArtifactGraph(String uuid, ArtifactType type) {
@@ -730,7 +730,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.PersistenceManager#shutdown()
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#shutdown()
 	 */
 	@Override
 	public void shutdown() {
@@ -753,7 +753,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		}
 
 		/**
-		 * @see org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor.JCRReferenceFactory#createReference(java.lang.String)
+		 * @see org.overlord.sramp.common.repository.jcr.mapper.ArtifactToJCRNodeVisitor.JCRReferenceFactory#createReference(java.lang.String)
 		 */
 		@Override
 		public Value createReference(String uuid) throws SrampException {

@@ -30,20 +30,20 @@ import org.overlord.sramp.governance.workflow.brms.JbpmManager;
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  */
 public class WorkflowFactoryTest {
-    
+
     @Test
     public void testFindServiceConfig() {
         URL url = this.getClass().getClassLoader().getResource("META-INF/services/org.overlord.sramp.governance.workflow.BpmManager");
         System.out.println("URL=" + url);
         Assert.assertNotNull(url);
     }
-    
+
     @Test
     public void testPersistenceFactory() throws Exception {
         BpmManager bpmManager = WorkflowFactory.newInstance();
         Assert.assertEquals(JbpmManager.class, bpmManager.getClass());
     }
-    
+
     @Test @Ignore  //the BPM engine needs to be running for this test to pass
     public void testNewProcessInstance() throws Exception {
         BpmManager bpmManager = WorkflowFactory.newInstance();

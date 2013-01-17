@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.repository;
 
-import org.overlord.sramp.SrampException;
+import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.repository.query.SrampQuery;
 
 /**

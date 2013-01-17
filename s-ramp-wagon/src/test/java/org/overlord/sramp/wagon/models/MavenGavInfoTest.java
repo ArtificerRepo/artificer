@@ -73,7 +73,7 @@ public class MavenGavInfoTest {
 	};
 
 	/**
-	 * Test method for {@link org.overlord.sramp.wagon.models.MavenGavInfo#fromResource(org.apache.maven.wagon.resource.Resource)}.
+	 * Test method for {@link org.overlord.sramp.common.wagon.models.MavenGavInfo#fromResource(org.apache.maven.wagon.resource.Resource)}.
 	 */
 	@Test
 	public void testFromResource() {

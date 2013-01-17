@@ -36,15 +36,15 @@ import org.junit.Test;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
-import org.overlord.sramp.atom.services.ArtifactResource;
-import org.overlord.sramp.atom.services.BatchResource;
-import org.overlord.sramp.atom.services.FeedResource;
-import org.overlord.sramp.atom.services.QueryResource;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
+import org.overlord.sramp.server.atom.services.ArtifactResource;
+import org.overlord.sramp.server.atom.services.BatchResource;
+import org.overlord.sramp.server.atom.services.FeedResource;
+import org.overlord.sramp.server.atom.services.QueryResource;
 
 /**
  * Unit test for the s-ramp wagon class.

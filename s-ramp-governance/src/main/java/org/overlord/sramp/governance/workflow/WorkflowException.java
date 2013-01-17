@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.governance.workflow;
 
-import org.overlord.sramp.SrampException;
+import org.overlord.sramp.common.SrampException;
 
 /**
  *

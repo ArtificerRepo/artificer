@@ -25,10 +25,10 @@ import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.overlord.sramp.client.shell.AbstractShellCommand;
-import org.overlord.sramp.client.shell.ShellContext;
-import org.overlord.sramp.client.shell.ShellContextImpl;
-import org.overlord.sramp.client.shell.commands.Arguments;
+import org.overlord.sramp.shell.AbstractShellCommand;
+import org.overlord.sramp.shell.ShellContext;
+import org.overlord.sramp.shell.ShellContextImpl;
+import org.overlord.sramp.shell.commands.Arguments;
 
 /**
  * Some good resources:
@@ -81,7 +81,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.client.shell.ShellCommand#printUsage()
+     * @see org.overlord.sramp.common.shell.ShellCommand#printUsage()
      */
     @Override
     public void printUsage() {
@@ -89,7 +89,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.client.shell.ShellCommand#printHelp()
+     * @see org.overlord.sramp.common.shell.ShellCommand#printHelp()
      */
     @Override
     public void printHelp() {
@@ -102,7 +102,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.client.shell.ShellCommand#execute()
+     * @see org.overlord.sramp.common.shell.ShellCommand#execute()
      */
     @Override
     public void execute() throws Exception {

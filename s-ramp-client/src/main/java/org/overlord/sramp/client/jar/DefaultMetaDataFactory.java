@@ -17,7 +17,7 @@ package org.overlord.sramp.client.jar;
 
 import java.util.UUID;
 
-import org.overlord.sramp.SrampModelUtils;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Document;
@@ -41,7 +41,7 @@ public class DefaultMetaDataFactory implements MetaDataFactory {
 	}
 
 	/**
-	 * @see org.overlord.sramp.client.jar.MetaDataFactory#createMetaData(org.overlord.sramp.client.jar.DiscoveredArtifact)
+	 * @see org.overlord.sramp.common.client.jar.MetaDataFactory#createMetaData(org.overlord.sramp.common.client.jar.DiscoveredArtifact)
 	 */
 	@Override
 	public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {

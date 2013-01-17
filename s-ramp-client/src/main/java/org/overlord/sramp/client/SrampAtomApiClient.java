@@ -42,8 +42,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartInput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedOutput;
-import org.overlord.sramp.ArtifactType;
-import org.overlord.sramp.MimeTypes;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
@@ -52,6 +50,8 @@ import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.QueryResultSet;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.MimeTypes;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 

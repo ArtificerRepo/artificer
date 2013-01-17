@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.repository.query;
 
-import org.overlord.sramp.SrampUserException;
+import org.overlord.sramp.common.SrampUserException;
 
 /**
  * Exception thrown when an s-ramp query is not valid.

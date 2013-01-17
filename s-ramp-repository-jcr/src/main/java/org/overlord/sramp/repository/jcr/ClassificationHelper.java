@@ -18,7 +18,7 @@ package org.overlord.sramp.repository.jcr;
 import java.net.URI;
 import java.util.Collection;
 
-import org.overlord.sramp.SrampException;
+import org.overlord.sramp.common.SrampException;
 
 
 /**
