@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * 
- *     Intended for use as the type of user-declared elements to make them
+ *     Intended for use as the type of extended-declared elements to make them
  *     extended links.
  *     Note that the elements referenced in the content model are all abstract.
  *     The intention is that by simply declaring elements with these as their

@@ -43,8 +43,8 @@ import org.overlord.sramp.server.atom.services.AbstractResourceTest;
 import org.overlord.sramp.server.atom.services.brms.BrmsResource;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 
 import test.org.overlord.sramp.server.TestUtils;
 
@@ -84,7 +84,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
         String artifactFileName = "srampPackage.pkg";
         InputStream contentStream = this.getClass().getResourceAsStream("/brms/srampPackage/" + artifactFileName);
 
-        ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/BrmsPkgDocument"));
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/BrmsPkgDocument"));
         request.header("Slug", artifactFileName);
         request.body("application/octet-stream", contentStream);
         ClientResponse<Entry> response = request.post(Entry.class);
@@ -120,8 +120,8 @@ public class BrmsResourceTest extends AbstractResourceTest {
 
 		//Now adding the assetInfo and then asking for the assets of this package
 		//Update the entry by adding the asset info, for now in a property (later as a dependent artifact)
-        Assert.assertTrue(arty instanceof UserDefinedArtifactType);
-        UserDefinedArtifactType brmsPkgDocument = (UserDefinedArtifactType) arty;
+        Assert.assertTrue(arty instanceof ExtendedArtifactType);
+        ExtendedArtifactType brmsPkgDocument = (ExtendedArtifactType) arty;
         Property assetsProperty = new Property();
         assetsProperty.setPropertyName(BrmsConstants.ASSET_INFO_XML);
         //in real life we'd get the asset info from BRMS, and we should update the links so that they
@@ -135,9 +135,9 @@ public class BrmsResourceTest extends AbstractResourceTest {
         assetsProperty.setPropertyValue(assetsXml);
         brmsPkgDocument.getProperty().add(assetsProperty);
         Entry entry3 = new Entry();
-        ClientRequest request3 = new ClientRequest(generateURL("/s-ramp/user/BrmsPkgDocument/" + brmsPkgDocument.getUuid()));
+        ClientRequest request3 = new ClientRequest(generateURL("/s-ramp/ext/BrmsPkgDocument/" + brmsPkgDocument.getUuid()));
         Artifact artifact = new Artifact();
-        artifact.setUserDefinedArtifactType(brmsPkgDocument);
+        artifact.setExtendedArtifactType(brmsPkgDocument);
         entry3.setAnyOtherJAXBObject(artifact);
         request3.body(MediaType.APPLICATION_ATOM_XML_ENTRY, entry3);
         request3.put(Void.class);
@@ -181,7 +181,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
                 Method method = artifact.getClass().getMethod(methodStr, artifactType.getArtifactType().getTypeClass());
                 method.invoke(artifact,baseArtifactType);
 
-                //artifact.setUserDefinedArtifactType(baseArtifactType);
+                //artifact.setExtendedArtifactType(baseArtifactType);
                 atomEntry.setAnyOtherJAXBObject(artifact);
                 output.addPart(atomEntry, mediaType);
 

@@ -36,6 +36,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Effect;
 import org.s_ramp.xmlns._2010.s_ramp.Element;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Event;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Fault;
 import org.s_ramp.xmlns._2010.s_ramp.InformationType;
 import org.s_ramp.xmlns._2010.s_ramp.Message;
@@ -69,7 +70,6 @@ import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
 import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
 import org.s_ramp.xmlns._2010.s_ramp.System;
 import org.s_ramp.xmlns._2010.s_ramp.Task;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlExtension;
@@ -166,10 +166,10 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-     * Common visit method for UserDefined artifacts.
+     * Common visit method for Extended artifacts.
      * @param artifact
      */
-    protected void visitUserDefined(UserDefinedArtifactType artifact) {
+    protected void visitExtended(ExtendedArtifactType artifact) {
         // Subclasses can do common visit logic here
     }
 
@@ -496,12 +496,12 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType)
 	 */
 	@Override
-	public void visit(UserDefinedArtifactType artifact) {
+	public void visit(ExtendedArtifactType artifact) {
 		visitBase(artifact);
-		visitUserDefined(artifact);
+		visitExtended(artifact);
 	}
 
 	/**

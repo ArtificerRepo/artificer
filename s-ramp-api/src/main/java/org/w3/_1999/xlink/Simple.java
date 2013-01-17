@@ -37,7 +37,7 @@ import org.w3c.dom.Element;
 
 /**
  * 
- *     Intended for use as the type of user-declared elements to make them
+ *     Intended for use as the type of extended-declared elements to make them
  *     simple links.
  *    
  * 
@@ -87,7 +87,7 @@ public class Simple
 
     /**
      * 
-     *     Intended for use as the type of user-declared elements to make them
+     *     Intended for use as the type of extended-declared elements to make them
      *     simple links.
      *    Gets the value of the content property.
      * 

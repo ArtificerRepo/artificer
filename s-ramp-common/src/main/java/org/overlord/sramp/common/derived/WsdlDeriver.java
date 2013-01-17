@@ -401,7 +401,6 @@ public class WsdlDeriver extends XsdDeriver {
 			if (inputElem.hasAttribute("name")) {
 				name = inputElem.getAttribute("name");
 				input.setNCName(name);
-				input.setInputNCName(name);
 			}
 
 			input.setName(name);
@@ -448,7 +447,6 @@ public class WsdlDeriver extends XsdDeriver {
 			if (outputElem.hasAttribute("name")) {
 				name = outputElem.getAttribute("name");
 				output.setNCName(name);
-				output.setOutputNCName(name);
 			}
 
 			output.setName(name);

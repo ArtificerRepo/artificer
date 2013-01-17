@@ -235,8 +235,8 @@ public class SrampAtomApiClient {
 		}
 		try {
 			String type = artifactType.getArtifactType().getType();
-			if ("user".equals(artifactType.getArtifactType().getModel()) && artifactType.getUserType()!=null) {
-				type = artifactType.getUserType();
+			if ("ext".equals(artifactType.getArtifactType().getModel()) && artifactType.getExtendedType()!=null) {
+				type = artifactType.getExtendedType();
 			}
 			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), type);
@@ -277,8 +277,8 @@ public class SrampAtomApiClient {
 		}
 		try {
 			String type = artifactType.getArtifactType().getType();
-			if ("user".equals(artifactType.getArtifactType().getModel()) && artifactType.getUserType()!=null) {
-				type = artifactType.getUserType();
+			if ("ext".equals(artifactType.getArtifactType().getModel()) && artifactType.getExtendedType()!=null) {
+				type = artifactType.getExtendedType();
 			}
 			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), type);
@@ -384,8 +384,8 @@ public class SrampAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-			if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
-				artifactType = type.getUserType();
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
+				artifactType = type.getExtendedType();
 			}
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
@@ -416,8 +416,8 @@ public class SrampAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-			if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
-				artifactType = type.getUserType();
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
+				artifactType = type.getExtendedType();
 			}
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
@@ -443,8 +443,8 @@ public class SrampAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-			if ("user".equals(type.getArtifactType().getModel()) && type.getUserType()!=null) {
-				artifactType = type.getUserType();
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
+				artifactType = type.getExtendedType();
 			}
 			String artifactUuid = uuid;
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);

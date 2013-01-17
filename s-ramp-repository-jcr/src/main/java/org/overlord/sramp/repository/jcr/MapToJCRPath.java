@@ -30,7 +30,7 @@ public class MapToJCRPath {
      */
     public static String getArtifactTypePath(ArtifactType artifactType) {
         String type = artifactType.getArtifactType().getType();
-        //if (artifactType.getUserType()!=null) type = artifactType.getUserType();
+        //if (artifactType.getExtendedType()!=null) type = artifactType.getExtendedType();
         return String.format(PATH, artifactType.getArtifactType().getModel(), type);
     }
 

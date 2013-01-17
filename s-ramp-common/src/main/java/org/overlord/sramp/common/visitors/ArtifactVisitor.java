@@ -33,6 +33,7 @@ import org.s_ramp.xmlns._2010.s_ramp.Effect;
 import org.s_ramp.xmlns._2010.s_ramp.Element;
 import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.Event;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Fault;
 import org.s_ramp.xmlns._2010.s_ramp.InformationType;
 import org.s_ramp.xmlns._2010.s_ramp.Message;
@@ -61,7 +62,6 @@ import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
 import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
 import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
 import org.s_ramp.xmlns._2010.s_ramp.Task;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlExtension;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
@@ -120,8 +120,8 @@ public interface ArtifactVisitor {
 	public void visit(ServiceInstance artifact);
 	public void visit(ServiceOperation artifact);
 
-	// User Defined
-	public void visit(UserDefinedArtifactType artifact);
+	// Extended
+	public void visit(ExtendedArtifactType artifact);
 
 	// SOA
 	public void visit(Actor artifact);

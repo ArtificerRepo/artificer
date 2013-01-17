@@ -142,11 +142,11 @@ public final class SrampAtomUtils {
 	 */
 	public static ArtifactType getArtifactType(Entry entry) {
 		ArtifactType type = getArtifactTypeFromEntry(entry);
-		if (type.isUserDefinedType()) {
+		if (type.isExtendedType()) {
             boolean derived = "true".equals(entry.getExtensionAttributes().get(SrampConstants.SRAMP_DERIVED_QNAME));
-            String userType = (String) entry.getExtensionAttributes().get(SrampConstants.SRAMP_USER_TYPE_QNAME);
-            type.setUserDerivedType(derived);
-            type.setUserType(userType);
+            String extendedType = (String) entry.getExtensionAttributes().get(SrampConstants.SRAMP_EXTENDED_TYPE_QNAME);
+            type.setExtendedDerivedType(derived);
+            type.setExtendedType(extendedType);
 		}
         return type;
 	}

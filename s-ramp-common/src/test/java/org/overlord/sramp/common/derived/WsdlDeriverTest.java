@@ -181,7 +181,6 @@ public class WsdlDeriverTest {
 			Assert.assertNotNull(artifact);
 			Assert.assertEquals("findRequest", artifact.getName());
 			OperationInput operationInput = (OperationInput) artifact;
-			Assert.assertEquals("findRequest", operationInput.getInputNCName());
 			Assert.assertEquals("findRequest", operationInput.getNCName());
 			Assert.assertNotNull(operationInput.getMessage());
 			Assert.assertNotNull(operationInput.getMessage().getValue());
@@ -194,7 +193,6 @@ public class WsdlDeriverTest {
 			Assert.assertNotNull(artifact);
 			Assert.assertEquals("findResponse", artifact.getName());
 			OperationOutput operationOutput = (OperationOutput) artifact;
-			Assert.assertEquals("findResponse", operationOutput.getOutputNCName());
 			Assert.assertEquals("findResponse", operationOutput.getNCName());
 			Assert.assertNotNull(operationOutput.getMessage());
 			Assert.assertNotNull(operationOutput.getMessage().getValue());

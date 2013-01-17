@@ -41,10 +41,10 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 public class ArtifactDeriverFactory {
 
 	private static Map<ArtifactTypeEnum, ArtifactDeriver> derivers = new HashMap<ArtifactTypeEnum, ArtifactDeriver>();
-	private static Map<String, ArtifactDeriver> userDerivers = new HashMap<String, ArtifactDeriver>();
+	private static Map<String, ArtifactDeriver> extendedDerivers = new HashMap<String, ArtifactDeriver>();
 	static {
 		loadBuiltInDerivers();
-		loadUserDerivers();
+		loadExtendedDerivers();
 	}
 
     /**
@@ -56,10 +56,10 @@ public class ArtifactDeriverFactory {
 		derivers.put(ArtifactTypeEnum.PolicyDocument, new PolicyDeriver());
     }
 	/**
-     * Loads any user-defined derivers.  These can be contributed via the
+     * Loads any extended derivers.  These can be contributed via the
      * standard Java service loading mechanism.
      */
-    private static void loadUserDerivers() {
+    private static void loadExtendedDerivers() {
         Collection<ClassLoader> loaders = new LinkedList<ClassLoader>();
         loaders.add(Thread.currentThread().getContextClassLoader());
 
@@ -86,7 +86,7 @@ public class ArtifactDeriverFactory {
             for (DeriverProvider provider : ServiceLoader.load(DeriverProvider.class, loader)) {
                 Map<String, ArtifactDeriver> derivers = provider.createArtifactDerivers();
                 if (derivers != null && !derivers.isEmpty()) {
-                    userDerivers.putAll(derivers);
+                    extendedDerivers.putAll(derivers);
                 }
             }
         }
@@ -110,8 +110,8 @@ public class ArtifactDeriverFactory {
 	 */
 	public final static ArtifactDeriver createArtifactDeriver(ArtifactType artifactType) {
 	    ArtifactDeriver deriver = null;
-	    if (artifactType.isUserDefinedType()) {
-	        deriver = userDerivers.get(artifactType.getUserType());
+	    if (artifactType.isExtendedType()) {
+	        deriver = extendedDerivers.get(artifactType.getExtendedType());
 	    } else {
     		deriver = derivers.get(artifactType.getArtifactType());
 	    }

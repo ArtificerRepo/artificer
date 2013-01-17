@@ -88,11 +88,11 @@ public class BrmsResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_ATOM_XML})
     public Packages getRestAllPackages() throws SrampAtomException {
         try {
-            //BRMS/Drools packages should be uploaded under UserDefinedArtifactType of BrmsPkgDocument
+            //BRMS/Drools packages should be uploaded under ExtendedArtifactType of BrmsPkgDocument
             ArtifactSet artifactSet = null;
             Packages brmsPackages = new Packages();
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            String query = String.format("/s-ramp/%1$s/%2$s", "user", BrmsConstants.BRMS_PKG_DOCUMENT);
+            String query = String.format("/s-ramp/%1$s/%2$s", "ext", BrmsConstants.BRMS_PKG_DOCUMENT);
             SrampQuery srampQuery = queryManager.createQuery(query, "name", true);
             artifactSet = srampQuery.executeQuery();
             for (BaseArtifactType artifact : artifactSet) {
@@ -122,10 +122,10 @@ public class BrmsResource {
     public Assets getRestXMLAllAssetsInPackage(@PathParam("pkgName") String pkgName) throws SrampAtomException {
         Assets assets = new Assets();
         try {
-            //BRMS/Drools packages should be uploaded under UserDefinedArtifactType of BrmsPkgDocument
+            //BRMS/Drools packages should be uploaded under ExtendedArtifactType of BrmsPkgDocument
             pkgName += ".pkg";
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "user", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName);
+            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "ext", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName);
             SrampQuery srampQuery = queryManager.createQuery(query, "name", true);
             ArtifactSet artifactSet = srampQuery.executeQuery();
             if (artifactSet.iterator().hasNext()) {
@@ -162,10 +162,10 @@ public class BrmsResource {
        throws SrampAtomException {
 
         try {
-            //BRMS/Drools packages should be uploaded under UserDefinedArtifactType of BrmsPkgDocument
+            //BRMS/Drools packages should be uploaded under ExtendedArtifactType of BrmsPkgDocument
             pkgName += ".pkg";
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "user", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName);
+            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "ext", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName);
             SrampQuery srampQuery = queryManager.createQuery(query, "name", true);
             ArtifactSet artifactSet = srampQuery.executeQuery();
             if (artifactSet.iterator().hasNext()) {
@@ -242,14 +242,14 @@ public class BrmsResource {
         try {
             pkgName += ".pkg";  //S-RAMP stores the fileName not the package name
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "user", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName);
+            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "ext", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName);
             SrampQuery srampQuery = queryManager.createQuery(query, "name", true);
             ArtifactSet artifactSet = srampQuery.executeQuery();
             if (artifactSet.iterator().hasNext()) {
                 BaseArtifactType baseArtifact = artifactSet.iterator().next();
                 PersistenceManager persistenceManager = PersistenceFactory.newInstance();
                 ArtifactType artifactType = ArtifactType.valueOf(baseArtifact.getArtifactType());
-                artifactType.setUserType(BrmsConstants.BRMS_PKG_DOCUMENT);
+                artifactType.setExtendedType(BrmsConstants.BRMS_PKG_DOCUMENT);
                 final InputStream artifactContent = persistenceManager.getArtifactContent(baseArtifact.getUuid(), artifactType);
                 Object output = new StreamingOutput() {
                     @Override

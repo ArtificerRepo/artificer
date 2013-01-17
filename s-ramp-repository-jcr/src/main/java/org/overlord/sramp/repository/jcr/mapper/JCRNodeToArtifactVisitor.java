@@ -48,6 +48,7 @@ import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ElementTarget;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Fault;
 import org.s_ramp.xmlns._2010.s_ramp.FaultTarget;
 import org.s_ramp.xmlns._2010.s_ramp.Message;
@@ -69,7 +70,6 @@ import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
 import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlExtensionTarget;
@@ -131,7 +131,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 				}
 			}
 
-			// Map in all the s-ramp user-defined properties.
+			// Map in all the s-ramp extended properties.
 			String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
 			int srampPropsPrefixLen = srampPropsPrefix.length();
 			PropertyIterator properties = jcrNode.getProperties();
@@ -262,18 +262,18 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitUserDefined(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
 	 */
 	@Override
-	protected void visitUserDefined(UserDefinedArtifactType artifact) {
-        String userType = getProperty(jcrNode, "sramp:userType");
+	protected void visitExtended(ExtendedArtifactType artifact) {
+        String extendedType = getProperty(jcrNode, "sramp:extendedType");
         String contentType = getProperty(jcrNode,"jcr:content/jcr:mimeType");
         String contentLength = String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data"));
-        String userDerived = getProperty(jcrNode, "sramp:derived", "false");
+        String extendedDerived = getProperty(jcrNode, "sramp:derived", "false");
 
-        artifact.setUserType(userType);
+        artifact.setExtendedType(extendedType);
 		if (contentType != null && contentLength != null) {
             artifact.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_SIZE_QNAME, contentLength);
             artifact.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_TYPE_QNAME, contentType);
 		}
-        artifact.getOtherAttributes().put(SrampConstants.SRAMP_DERIVED_QNAME, userDerived);
+        artifact.getOtherAttributes().put(SrampConstants.SRAMP_DERIVED_QNAME, extendedDerived);
 	}
 
 	/**
