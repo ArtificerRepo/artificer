@@ -74,7 +74,7 @@ public class MimeTypes {
 	 * @param artifactType the artifact type (based on the endpoint POSTed to)
 	 */
 	public static String determineMimeType(String contentType, String fileName, ArtifactType artifactType) {
-		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.UserDefinedArtifactType) {
+		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedArtifactType) {
 			if (contentType != null && contentType.trim().length() > 0)
 				return contentType;
 			if (fileName != null) {

@@ -37,8 +37,8 @@ import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.common.SrampConstants;
 import org.s_ramp.xmlns._2010.s_ramp.Artifact;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.server.TestUtils;
@@ -184,16 +184,16 @@ public class QueryResourceTest extends AbstractResourceTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testQueriesUserDefined() throws Exception {
+	public void testQueriesExtended() throws Exception {
 		addJpegDocument("photo1.jpg");
 		addJpegDocument("photo2.jpg");
 
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp?query=user/JpgDocument"));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp?query=ext/JpgDocument"));
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		Assert.assertEquals(2, feed.getEntries().size());
 
-		request = new ClientRequest(generateURL("/s-ramp/user/JpgDocument"));
+		request = new ClientRequest(generateURL("/s-ramp/ext/JpgDocument"));
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		Assert.assertEquals(2, feed.getEntries().size());
@@ -202,9 +202,9 @@ public class QueryResourceTest extends AbstractResourceTest {
 	public void addJpegDocument(String fname) throws Exception {
 		// Add the jpg to the repository
 		String artifactFileName = "photo.jpg";
-		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/user/" + artifactFileName);
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName);
 		try {
-			ClientRequest request = new ClientRequest(generateURL("/s-ramp/user/JpgDocument"));
+			ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/JpgDocument"));
 			request.header("Slug", fname);
 			request.body("application/octet-stream", contentStream);
 
@@ -213,10 +213,10 @@ public class QueryResourceTest extends AbstractResourceTest {
 			Entry entry = response.getEntity();
 			Assert.assertEquals(fname, entry.getTitle());
 			BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
-			Assert.assertTrue(arty instanceof UserDefinedArtifactType);
-			UserDefinedArtifactType doc = (UserDefinedArtifactType) arty;
+			Assert.assertTrue(arty instanceof ExtendedArtifactType);
+			ExtendedArtifactType doc = (ExtendedArtifactType) arty;
 			Assert.assertEquals(fname, doc.getName());
-			Assert.assertEquals("JpgDocument", doc.getUserType());
+			Assert.assertEquals("JpgDocument", doc.getExtendedType());
 			Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
 			Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
 		} finally {

@@ -103,8 +103,8 @@ public class QueryCommand extends AbstractShellCommand {
     		for (ArtifactSummary summary : rset) {
     			ArtifactType type = summary.getType();
     			String displayType = type.getArtifactType().getType().toString();
-    			if (type.isUserDefinedType() && type.getUserType() != null) {
-    			    displayType = type.getUserType();
+    			if (type.isExtendedType() && type.getExtendedType() != null) {
+    			    displayType = type.getExtendedType();
     			}
                 print("  %1$3d %2$23s %3$-40s", entryIndex++, displayType,
     					summary.getName());

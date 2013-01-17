@@ -46,8 +46,8 @@ import org.overlord.sramp.shell.ShellContext;
 import org.overlord.sramp.shell.ShellContextImpl;
 import org.overlord.sramp.shell.commands.Arguments;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
 
 /**
  * BRMS command that will copy a package out of BRMS and push it into the
@@ -231,8 +231,8 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
         print("   Description .....: " + brmsPkg.getDescription());
 
         // now uploading this into s-ramp
-        UserDefinedArtifactType userDefinedArtifactType =
-            (UserDefinedArtifactType) ArtifactType.fromFileExtension("pkg").newArtifactInstance();
+        ExtendedArtifactType userDefinedArtifactType =
+            (ExtendedArtifactType) ArtifactType.fromFileExtension("pkg").newArtifactInstance();
         userDefinedArtifactType.setUuid(brmsPkg.getMetadata().getUuid());
         userDefinedArtifactType.setName(pkgName + ".pkg");
 

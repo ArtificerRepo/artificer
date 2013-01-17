@@ -81,13 +81,13 @@
 
 [sramp:derivedArtifactType] > sramp:baseArtifactType abstract mixin
 
-// Special case of a user defined type that is derived.
-[sramp:userDefinedDerivedArtifactType] > sramp:baseArtifactType
-- sramp:userType (string)
+// Special case of a extended type that is derived.
+[sramp:extendedDerivedArtifactType] > sramp:baseArtifactType
+- sramp:extendedType (string)
 
-[sramp:userDefinedArtifactType] > sramp:baseArtifactType mixin
-- sramp:userType (string) mandatory
-+ * (sramp:userDefinedDerivedArtifactType)
+[sramp:extendedArtifactType] > sramp:baseArtifactType mixin
+- sramp:extendedType (string) mandatory
++ * (sramp:extendedDerivedArtifactType)
 
 [sramp:storedQuery] > nt:query
 - sramp:propertyList (string) multiple

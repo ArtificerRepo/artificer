@@ -20,7 +20,7 @@ import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 
 /**
@@ -65,10 +65,10 @@ public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitorAdapt
 	}
 
 	/**
-	 * org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitUserDefined(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
+	 * org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitExtended(org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType)
 	 */
 	@Override
-	protected void visitUserDefined(UserDefinedArtifactType artifact) {
+	protected void visitExtended(ExtendedArtifactType artifact) {
 	    //grab the content type from an any-attribute
         setContentType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
 	    if ((artifact.getOtherAttributes().keySet().contains(SrampConstants.SRAMP_CONTENT_TYPE_QNAME))) {

@@ -65,7 +65,7 @@ import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,10 +121,10 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			artifactNode.setProperty(JCRConstants.SRAMP_UUID, uuid);
 			artifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, artifactType.getArtifactType().getModel());
 			artifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, artifactType.getArtifactType().getType());
-			// UserDefined
-			if (UserDefinedArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
+			// Extended
+			if (ExtendedArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
 				// read the encoding from the header
-				artifactNode.setProperty(JCRConstants.SRAMP_USER_TYPE, artifactType.getUserType());
+				artifactNode.setProperty(JCRConstants.SRAMP_EXTENDED_TYPE, artifactType.getExtendedType());
 			}
 			// Document
 			if (DocumentArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
@@ -221,9 +221,9 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				}
 				ArtifactType derivedArtifactType = ArtifactType.valueOf(derivedArtifact);
 				String jcrNodeType = derivedArtifactType.getArtifactType().getApiType().value();
-				if (derivedArtifactType.isUserDefinedType()) {
-				    jcrNodeType = "userDefinedDerivedArtifactType";
-				    derivedArtifactType.setUserDerivedType(true);
+				if (derivedArtifactType.isExtendedType()) {
+				    jcrNodeType = "extendedDerivedArtifactType";
+				    derivedArtifactType.setExtendedDerivedType(true);
 				}
 				jcrNodeType = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrNodeType);
 
@@ -233,10 +233,10 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				derivedArtifactNode.setProperty(JCRConstants.SRAMP_UUID, derivedArtifact.getUuid());
 				derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, derivedArtifactType.getArtifactType().getModel());
 				derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, derivedArtifactType.getArtifactType().getType());
-	            // UserDefined
-	            if (UserDefinedArtifactType.class.isAssignableFrom(derivedArtifactType.getArtifactType().getTypeClass())) {
+	            // Extended
+	            if (ExtendedArtifactType.class.isAssignableFrom(derivedArtifactType.getArtifactType().getTypeClass())) {
 	                // read the encoding from the header
-	                derivedArtifactNode.setProperty(JCRConstants.SRAMP_USER_TYPE, derivedArtifactType.getUserType());
+	                derivedArtifactNode.setProperty(JCRConstants.SRAMP_EXTENDED_TYPE, derivedArtifactType.getExtendedType());
 	            }
 
 				// Create the visitor that will be used later, once all the JCR nodes have
@@ -669,8 +669,8 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
 			if (session.nodeExists(artifactPath)) {
 				artifactNode = session.getNode(artifactPath);
-			} else if (type.isUserDefinedType()) {
-			    // Might be a user-defined derived type, so try searching for it by UUID
+			} else if (type.isExtendedType()) {
+			    // Might be a extended derived type, so try searching for it by UUID
 	            artifactNode = findArtifactNodeByUuid(session, uuid);
 			}
 		}

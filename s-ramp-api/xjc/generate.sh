@@ -17,7 +17,7 @@ XSDDIR=$PARENTDIR/src/main/resources/s-ramp
 # Directory where java classes will be generated
 JAVADIR=$PARENTDIR/src/main/java
 # The classpath with the compiled version of the generated java classes
-CP=$PARENTDIR/target/s-ramp-api-0.0.2-SNAPSHOT.jar
+CP=$PARENTDIR/target/s-ramp-api-0.0.3-SNAPSHOT.jar
 ########## CONFIG PARAMS ############################
 
 echo Generating java classes in $JAVADIR using $CURDIR/jaxb-bindings.xml ...
@@ -44,7 +44,7 @@ done < "tmpOutputFile"
 rm tmpOutputFile
 
 echo Building ...
-mvn clean package
+mvn clean package -DskipTests=true
 
 index=0
 for className in "${classList[@]}"
