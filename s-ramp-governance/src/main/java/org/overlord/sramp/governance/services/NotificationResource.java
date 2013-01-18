@@ -57,7 +57,6 @@ public class NotificationResource {
     private static Logger logger = LoggerFactory.getLogger(NotificationResource.class);
     private Governance governance = new Governance();
     
-
     /**
      * Constructor.
      */
@@ -106,6 +105,7 @@ public class NotificationResource {
                 }
                 m.setFrom(from);
                 m.setRecipients(Message.RecipientType.TO, to);
+                
                 String subject = "/governance-email-templates/" + template  + ".subject.tmpl";
                 URL subjectUrl = Governance.class.getClassLoader().getResource(subject);
                 if (subjectUrl!=null) subject=IOUtils.toString(subjectUrl);
