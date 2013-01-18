@@ -15,21 +15,17 @@
  */
 package org.overlord.sramp.governance;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.governance.workflow.BpmManager;
-import org.overlord.sramp.governance.workflow.WorkflowException;
 import org.overlord.sramp.governance.workflow.WorkflowFactory;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
@@ -43,22 +39,21 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class QueryExecutor {
-    
+
     private static String WORKFLOW_PROCESS_ID = "workflowProcessId=";
     private static String WORKFLOW_PARAMETERS = "workflowParameters=";
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private Governance governance = new Governance();
     private BpmManager bpmManager = WorkflowFactory.newInstance();
 
-	public synchronized void execute() throws SrampClientException, MalformedURLException, ConfigException {
-	    SrampAtomApiClient client = new SrampAtomApiClient(governance.getSrampUrl().toExternalForm());
-	    //for all queries defined in the governance.properties file
-	    Iterator<Query> queryIterator = governance.getQueries().iterator();
-	    
-	    while (queryIterator.hasNext()) {
-	        try {
-    	        Query query = queryIterator.next();
-    	        String srampQuery = query.getSrampQuery();
+    public synchronized void execute() throws SrampClientException, MalformedURLException, ConfigException {
+        SrampAtomApiClient client = new SrampAtomApiClient(governance.getSrampUrl().toExternalForm());
+        //for all queries defined in the governance.properties file
+        Iterator<Query> queryIterator = governance.getQueries().iterator();
+        while (queryIterator.hasNext()) {
+            Query query = queryIterator.next();
+            try {
+                String srampQuery = query.getSrampQuery();
                 QueryResultSet queryResultSet = client.query(srampQuery);
                 if (queryResultSet.size() > 0) {
                     Iterator<ArtifactSummary> queryResultIterator = queryResultSet.iterator();
@@ -100,23 +95,11 @@ public class QueryExecutor {
                             client.updateArtifactMetaData(artifact);
                         }
                     }
-               
                 }
-                
-	        } catch (SrampClientException sce) {
-                
-            } catch (SrampAtomException sce) {
-                
-            } catch (WorkflowException sce) {
-                
-            } catch (URISyntaxException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (Exception e) {
+                logger.error("Exception for " + query.getSrampQuery() + ". " + e.getMessage(),e);
             }
-	    }
-	}
+        }
+    }
 
 }
