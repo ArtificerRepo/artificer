@@ -231,10 +231,10 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
         print("   Description .....: " + brmsPkg.getDescription());
 
         // now uploading this into s-ramp
-        ExtendedArtifactType userDefinedArtifactType =
+        ExtendedArtifactType extendedArtifactType =
             (ExtendedArtifactType) ArtifactType.fromFileExtension("pkg").newArtifactInstance();
-        userDefinedArtifactType.setUuid(brmsPkg.getMetadata().getUuid());
-        userDefinedArtifactType.setName(pkgName + ".pkg");
+        extendedArtifactType.setUuid(brmsPkg.getMetadata().getUuid());
+        extendedArtifactType.setName(pkgName + ".pkg");
 
         Property assetsProperty = new Property();
         assetsProperty.setPropertyName(BrmsConstants.ASSET_INFO_XML);
@@ -243,13 +243,13 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
         String srampUrl = client.getEndpoint().substring(0,client.getEndpoint().lastIndexOf("/"));
         assetsXml = assetsXml.replaceAll(brmsBaseUrl, srampUrl + "/brms");
         assetsProperty.setPropertyValue(assetsXml);
-        userDefinedArtifactType.getProperty().add(assetsProperty);
+        extendedArtifactType.getProperty().add(assetsProperty);
 
         print("Reading " + pkgName + " from url " + urlStr);
         ClientResponse<InputStream> pkgResponse = getInputStream(urlStr);
         InputStream content = pkgResponse.getEntity();
 
-        BaseArtifactType artifact = client.uploadArtifact(userDefinedArtifactType, content);
+        BaseArtifactType artifact = client.uploadArtifact(extendedArtifactType, content);
         IOUtils.closeQuietly(content);
         print("Uploaded " + pkgName + " UUID=" + artifact.getUuid());
 
