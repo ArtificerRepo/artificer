@@ -259,7 +259,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitUserDefined(org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType)
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitExtended(org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType)
 	 */
 	@Override
 	protected void visitExtended(ExtendedArtifactType artifact) {
