@@ -37,7 +37,7 @@ import org.junit.Test;
 
 
 /**
- * Tests the Deployment API.
+ * Tests the Notification API.
  *
  * @author kurt.stam@redhat.com
  */
