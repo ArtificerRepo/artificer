@@ -117,7 +117,7 @@ public class NotificationResource {
                 m.setSentDate(new java.util.Date());
                 String content = "/governance-email-templates/" + template + ".body.tmpl";
                 URL contentUrl = Governance.class.getClassLoader().getResource(content);
-                if (subjectUrl!=null) subject=IOUtils.toString(contentUrl);
+                if (contentUrl!=null) content=IOUtils.toString(contentUrl);
                 content = content.replaceAll("\\$\\{uuid}", uuid);
                 content = content.replaceAll("\\$\\{name}", artifactSummary.getName());
                 content = content.replaceAll("\\$\\{environment}", environment);
