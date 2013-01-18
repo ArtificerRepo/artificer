@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
 public class Governance {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
-    public static String QUERY_ERROR = GovernanceConstants.GOVERNANCE_QUERIES + " should be of the format <query>|<processId>|<param::param>>\nCheck\n";
+    public static String QUERY_ERROR  = GovernanceConstants.GOVERNANCE_QUERIES + " should be of the format <query>|<processId>|<param::param>\nCheck\n";
     public static String TARGET_ERROR = GovernanceConstants.GOVERNANCE_TARGETS + " should be of the format <targetName>|<directory>\nCheck\n";
-
+    public static String NOTIFICATION_ERROR  = GovernanceConstants.GOVERNANCE + ".<email|..> should be of the format <groupName>|<fromAddress>|<destination1>,<destination2>\nCheck\n";
     
     public Governance() {
         super();
@@ -158,6 +158,28 @@ public class Governance {
             throw new ConfigException(errors.toString());
         }
         return queries;
+    }
+    
+    public Map<String,NotificationDestinations> getNotificationDestinations(String channel) throws ConfigException {
+        Map<String,NotificationDestinations> destinationMap = new HashMap<String,NotificationDestinations>();
+        String[] destinationStrings = configuration.getStringArray(GovernanceConstants.GOVERNANCE + channel);
+        StringBuffer errors = new StringBuffer(NOTIFICATION_ERROR);
+        boolean hasErrors = false;
+        for (String destinationString : destinationStrings) {
+            String[] info = destinationString.split("\\|");
+            if (info.length != 3) {
+                hasErrors = true;
+                errors.append(destinationString).append("\n");
+            }
+            if (!hasErrors) {
+                NotificationDestinations destination = new NotificationDestinations(info[0],info[1], info[2]);
+                destinationMap.put(destination.getName(), destination);
+            }
+        }
+        if (hasErrors) {
+            throw new ConfigException(errors.toString());
+        }
+        return destinationMap;
     }
     
     public long getQueryInterval() {
