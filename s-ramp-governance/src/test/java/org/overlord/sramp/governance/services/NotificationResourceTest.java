@@ -42,7 +42,7 @@ public class NotificationResourceTest extends BaseResourceTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Test
+	@Test @Ignore
 	public void testNotify() {
 	    try {
 	        String notificationUrl = "http://localhost:8080/s-ramp-governance/notify/email/dev/deployed/dev/${uuid}";
