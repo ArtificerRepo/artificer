@@ -18,6 +18,16 @@ package org.overlord.sramp.governance.services;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Properties;
+
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.test.BaseResourceTest;
@@ -33,6 +43,30 @@ import org.junit.Test;
  */
 public class NotificationResourceTest extends BaseResourceTest {
 	
+    @Test
+    public void testMail() {
+        try {
+            Properties properties = new Properties();
+            properties.setProperty("mail.smtp.host", "smtp.mailinator.com");
+            Session mailSession = Session.getDefaultInstance(properties);
+            MimeMessage m = new MimeMessage(mailSession);
+            Address from = new InternetAddress("me@gmail.com");
+            Address[] to = new InternetAddress[1];
+            to[0] = new InternetAddress("dev@mailinator.com");
+            m.setFrom(from);
+            m.setRecipients(Message.RecipientType.TO, to);
+            m.setSubject("test");
+            m.setContent("test","text/plain");
+            Transport.send(m);
+        } catch (AddressException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (MessagingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
 	/**
 	 * This is an integration test, and only works if artifact 'e67e1b09-1de7-4945-a47f-45646752437a'
      * exists in the repo; check the following urls to find out:
