@@ -28,8 +28,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import jline.internal.Log;
-
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
@@ -61,15 +59,14 @@ public class DeploymentResource {
     /**
      * Governance POST to deploy an artifact by copying it onto the file system.
      * 
-     * @param fileName
-     * @param model
-     * @param type
-     * @param content
+     * @param environment
+     * @param uuid
+     * 
      * @throws SrampAtomException
      */
     @POST
     @Path("copy/{environment}/{uuid}")
-    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+    @Produces(MediaType.APPLICATION_XML)
     public Response copy(@Context HttpServletRequest request,
             @PathParam("environment") String environment,
             @PathParam("uuid") String uuid) throws Exception {
@@ -89,7 +86,7 @@ public class DeploymentResource {
             // 2. get the deployment environment settings
             Target target = governance.getTargets().get(environment);
             if (target==null) {
-                Log.error("No target could be found for environment '"+ environment + "'");
+                logger.error("No target could be found for environment '"+ environment + "'");
                 throw new SrampAtomException("No target could be found for environment '"+ environment + "'");
             }
             File deployDir = new File(target.getDeployDir());
@@ -109,7 +106,7 @@ public class DeploymentResource {
             InputStream reply = IOUtils.toInputStream("success");
             return Response.ok(reply, MediaType.APPLICATION_OCTET_STREAM).build();
         } catch (Exception e) {
-            logger.error("Error deploying artifact.", e);
+            logger.error("Error deploying artifact. " + e.getMessage(), e);
             throw new SrampAtomException(e);
         } finally {
             IOUtils.closeQuietly(os);

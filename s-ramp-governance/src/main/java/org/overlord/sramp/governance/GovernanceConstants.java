@@ -33,7 +33,8 @@ public interface GovernanceConstants {
     public static final String GOVERNANCE_JBPM_PASSWORD = "governance.jbpm.password";
     public static final String GOVERNANCE_JBPM_URL      = "governance.jbpm.url";
     
-    //governance.targets
+    //governance resource configuration
     public static final String GOVERNANCE_TARGETS       = "governance.targets";
     public static final String GOVERNANCE_QUERIES       = "governance.queries";
+    public static final String GOVERNANCE               = "governance.";
 }
