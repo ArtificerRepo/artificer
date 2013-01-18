@@ -29,7 +29,7 @@ import org.overlord.sramp.common.derived.ArtifactDeriver;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -112,10 +112,10 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
         NodeList nodes = (NodeList) this.query(xpath, webXml, "./jee:listener", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            UserDefinedArtifactType listener = new UserDefinedArtifactType();
-            listener.setArtifactType(BaseArtifactEnum.USER_DEFINED_ARTIFACT_TYPE);
+            ExtendedArtifactType listener = new ExtendedArtifactType();
+            listener.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
             listener.setUuid(UUID.randomUUID().toString());
-            listener.setUserType("ListenerDeclaration");
+            listener.setExtendedType("ListenerDeclaration");
 
             String listenerClass = (String) this.query(xpath, node, "string(./jee:listener-class)", XPathConstants.STRING);
             String displayName = (String) this.query(xpath, node, "string(./jee:display-name)", XPathConstants.STRING);
@@ -145,10 +145,10 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
         NodeList nodes = (NodeList) this.query(xpath, webXml, "./jee:filter", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            UserDefinedArtifactType filter = new UserDefinedArtifactType();
-            filter.setArtifactType(BaseArtifactEnum.USER_DEFINED_ARTIFACT_TYPE);
+            ExtendedArtifactType filter = new ExtendedArtifactType();
+            filter.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
             filter.setUuid(UUID.randomUUID().toString());
-            filter.setUserType("FilterDeclaration");
+            filter.setExtendedType("FilterDeclaration");
 
             String filterClass = (String) this.query(xpath, node, "string(./jee:listener-class)", XPathConstants.STRING);
             String filterName = (String) this.query(xpath, node, "string(./jee:filter-name)", XPathConstants.STRING);
@@ -181,10 +181,10 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
         NodeList nodes = (NodeList) this.query(xpath, webXml, "./jee:filter-mapping", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            UserDefinedArtifactType filterMapping = new UserDefinedArtifactType();
-            filterMapping.setArtifactType(BaseArtifactEnum.USER_DEFINED_ARTIFACT_TYPE);
+            ExtendedArtifactType filterMapping = new ExtendedArtifactType();
+            filterMapping.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
             filterMapping.setUuid(UUID.randomUUID().toString());
-            filterMapping.setUserType("FilterMapping");
+            filterMapping.setExtendedType("FilterMapping");
 
             String filterName = (String) this.query(xpath, node, "string(./jee:filter-name)", XPathConstants.STRING);
             String urlPattern = (String) this.query(xpath, node, "string(./jee:url-pattern)", XPathConstants.STRING);
@@ -195,7 +195,7 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
             SrampModelUtils.setCustomProperty(filterMapping, "url-pattern", urlPattern);
 
             WebXmlArtifactCollection index = (WebXmlArtifactCollection) derivedArtifacts;
-            UserDefinedArtifactType filter = index.lookupFilter(filterName);
+            ExtendedArtifactType filter = index.lookupFilter(filterName);
             if (filter != null) {
                 SrampModelUtils.addGenericRelationship(filterMapping, "mapsFilter", filter.getUuid());
             }
@@ -216,10 +216,10 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
         NodeList nodes = (NodeList) this.query(xpath, webXml, "./jee:servlet", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            UserDefinedArtifactType servlet = new UserDefinedArtifactType();
-            servlet.setArtifactType(BaseArtifactEnum.USER_DEFINED_ARTIFACT_TYPE);
+            ExtendedArtifactType servlet = new ExtendedArtifactType();
+            servlet.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
             servlet.setUuid(UUID.randomUUID().toString());
-            servlet.setUserType("ServletDeclaration");
+            servlet.setExtendedType("ServletDeclaration");
 
             String servletClass = (String) this.query(xpath, node, "string(./jee:listener-class)", XPathConstants.STRING);
             String servletName = (String) this.query(xpath, node, "string(./jee:servlet-name)", XPathConstants.STRING);
@@ -252,10 +252,10 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
         NodeList nodes = (NodeList) this.query(xpath, webXml, "./jee:servlet-mapping", XPathConstants.NODESET);
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            UserDefinedArtifactType servletMapping = new UserDefinedArtifactType();
-            servletMapping.setArtifactType(BaseArtifactEnum.USER_DEFINED_ARTIFACT_TYPE);
+            ExtendedArtifactType servletMapping = new ExtendedArtifactType();
+            servletMapping.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
             servletMapping.setUuid(UUID.randomUUID().toString());
-            servletMapping.setUserType("ServletMapping");
+            servletMapping.setExtendedType("ServletMapping");
 
             String servletName = (String) this.query(xpath, node, "string(./jee:servlet-name)", XPathConstants.STRING);
             String urlPattern = (String) this.query(xpath, node, "string(./jee:url-pattern)", XPathConstants.STRING);
@@ -266,7 +266,7 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
             SrampModelUtils.setCustomProperty(servletMapping, "url-pattern", urlPattern);
 
             WebXmlArtifactCollection index = (WebXmlArtifactCollection) derivedArtifacts;
-            UserDefinedArtifactType servlet = index.lookupServlet(servletName);
+            ExtendedArtifactType servlet = index.lookupServlet(servletName);
             if (servlet != null) {
                 SrampModelUtils.addGenericRelationship(servletMapping, "mapsServlet", servlet.getUuid());
             }
