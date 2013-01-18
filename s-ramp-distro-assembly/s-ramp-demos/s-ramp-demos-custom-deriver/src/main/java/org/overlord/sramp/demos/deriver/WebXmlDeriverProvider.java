@@ -23,7 +23,7 @@ import org.overlord.sramp.common.derived.DeriverProvider;
 
 /**
  * This provider contributes an {@link ArtifactDeriver} to the S-RAMP repository
- * for artifacts of type "WebXmlDocument" (a user-defined type).
+ * for artifacts of type "WebXmlDocument" (an extended artifact type).
  *
  * @author eric.wittmann@redhat.com
  */
