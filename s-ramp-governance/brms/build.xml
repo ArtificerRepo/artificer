@@ -5,11 +5,11 @@
   <property file="build.properties" />
 
   <path id="client-classpath">
-    <fileset dir="../../s-ramp-client/target/lib">
+    <fileset dir="../../s-ramp-shell/target/lib">
       <include name="**/*.jar" />
     </fileset>
-    <fileset dir="../../s-ramp-client/target/">
-      <include name="s-ramp-client-${sramp.version}.jar" />
+    <fileset dir="../../s-ramp-shell/target/">
+      <include name="s-ramp-shell-${sramp.version}.jar" />
     </fileset>
   	<fileset dir="../target/">
       <include name="s-ramp-governance-classes.jar" />
@@ -40,6 +40,7 @@
   	  <replacetoken>512m</replacetoken>
   	  <replacevalue>1024m</replacevalue>
   	</replace>
+  	
   </target>
 
   <target name="configure" depends="patch.jbpm-gwt-console-server,deploy.sramp">
@@ -72,6 +73,7 @@
 
   <target name="deploy.sramp" depends="patch.jbpm-gwt-console-server">
     <copy file="${sramp.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-server.war" failonerror="true" />
+  	<copy file="${sramp-governance.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-governance.war" failonerror="true" />
     <copy file="${sramp-ui.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-ui.war" failonerror="false" />
   </target>
 
