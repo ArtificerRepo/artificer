@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.UserDefinedArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 
 /**
  * A {@link List} implementation that also indexes the web.xml related artifacts
@@ -34,8 +34,8 @@ public class WebXmlArtifactCollection extends LinkedList<BaseArtifactType> {
 
 	private static final long serialVersionUID = WebXmlArtifactCollection.class.hashCode();
 
-	private Map<String, UserDefinedArtifactType> filterIndex = new HashMap<String, UserDefinedArtifactType>();
-    private Map<String, UserDefinedArtifactType> servletIndex = new HashMap<String, UserDefinedArtifactType>();
+	private Map<String, ExtendedArtifactType> filterIndex = new HashMap<String, ExtendedArtifactType>();
+    private Map<String, ExtendedArtifactType> servletIndex = new HashMap<String, ExtendedArtifactType>();
 
 	/**
 	 * Constructor.
@@ -57,9 +57,9 @@ public class WebXmlArtifactCollection extends LinkedList<BaseArtifactType> {
 	 * @param artifact
 	 */
 	private void indexArtifact(BaseArtifactType artifact) {
-		if (artifact instanceof UserDefinedArtifactType) {
-		    UserDefinedArtifactType uda = (UserDefinedArtifactType) artifact;
-            String userType = uda.getUserType();
+		if (artifact instanceof ExtendedArtifactType) {
+		    ExtendedArtifactType uda = (ExtendedArtifactType) artifact;
+            String userType = uda.getExtendedType();
 		    if ("FilterDeclaration".equals(userType)) {
 		        String key = artifact.getName();
 		        filterIndex.put(key, uda);
@@ -74,7 +74,7 @@ public class WebXmlArtifactCollection extends LinkedList<BaseArtifactType> {
      * Find a filter declaration by name.
      * @param name
      */
-    public UserDefinedArtifactType lookupFilter(String name) {
+    public ExtendedArtifactType lookupFilter(String name) {
         return filterIndex.get(name);
     }
 
@@ -82,7 +82,7 @@ public class WebXmlArtifactCollection extends LinkedList<BaseArtifactType> {
 	 * Find a servlet declaration by name.
 	 * @param name
 	 */
-	public UserDefinedArtifactType lookupServlet(String name) {
+	public ExtendedArtifactType lookupServlet(String name) {
 		return servletIndex.get(name);
 	}
 

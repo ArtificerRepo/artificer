@@ -23,7 +23,7 @@ import org.overlord.sramp.common.ArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
- * Demonstrates how to create a custom deriver for user-defined artifacts.  Note
+ * Demonstrates how to create a custom deriver for extended artifacts.  Note
  * that this demo assumes that you have compiled and installed the {@link WebXmlDeriver}
  * according to the instructions found in README.md.
  *
