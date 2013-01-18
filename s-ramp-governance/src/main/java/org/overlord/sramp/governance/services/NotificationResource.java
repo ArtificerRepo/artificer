@@ -17,6 +17,7 @@ package org.overlord.sramp.governance.services;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 import javax.mail.Address;
@@ -80,6 +81,13 @@ public class NotificationResource {
             @PathParam("environment") String environment,
             @PathParam("uuid") String uuid) throws Exception {
         try {
+            if (mailSession==null) {
+                // 0. Take out this workaround. Get system properties, // Setup mail server
+                Properties properties = new Properties();
+                properties.setProperty("mail.smtp.host", "smtp.mailinator.com");
+                mailSession = Session.getDefaultInstance(properties);
+            }
+            
             // 1. get the artifact from the repo
             SrampAtomApiClient client = new SrampAtomApiClient(governance.getSrampUrl().toExternalForm());
             String query = String.format("/s-ramp[@uuid='%s']", uuid);
@@ -106,6 +114,7 @@ public class NotificationResource {
                 }
                 m.setFrom(from);
                 m.setRecipients(Message.RecipientType.TO, to);
+                
                 String subject = "/governance-email-templates/" + template  + ".subject.tmpl";
                 URL subjectUrl = Governance.class.getClassLoader().getResource(subject);
                 if (subjectUrl!=null) subject=IOUtils.toString(subjectUrl);
