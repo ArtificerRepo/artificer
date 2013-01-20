@@ -151,6 +151,7 @@ public class ArtifactType {
 			ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.ExtendedArtifactType;
 			ArtifactType rval = new ArtifactType(artifactTypeEnum, null);
 			rval.setExtendedType(artifactType);
+			rval.setMimeType("application/octet-stream");
 			return rval;
 		}
 	}
