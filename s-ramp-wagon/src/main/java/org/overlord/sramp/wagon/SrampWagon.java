@@ -21,7 +21,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.JAXBException;
@@ -84,7 +86,12 @@ public class SrampWagon extends StreamWagon {
 	 * @return the endpoint to use for the s-ramp repo
 	 */
 	private String getSrampEndpoint() {
-		return getRepository().getUrl().replace("sramp:", "http:").replace("sramps:", "https:");
+		String pomUrl = getRepository().getUrl();
+		if (pomUrl.indexOf('?') > 0) {
+		    pomUrl = pomUrl.substring(0, pomUrl.indexOf('?'));
+		}
+        String replace = pomUrl.replace("sramp:", "http:").replace("sramps:", "https:");
+        return replace;
 	}
 
 	/**
@@ -290,9 +297,28 @@ public class SrampWagon extends StreamWagon {
 	 * @param gavInfo
 	 */
 	private ArtifactType getArtifactType(MavenGavInfo gavInfo) {
+	    String pomUrl = getRepository().getUrl();
+	    if (gavInfo.getType().equals("pom")) {
+	        return ArtifactType.valueOf("MavenPom");
+	    } else if (pomUrl.indexOf('?') > 0 && gavInfo.getClassifier() == null) {
+	        String query = pomUrl.substring(pomUrl.indexOf('?') + 1);
+	        String [] params = query.split("&");
+            Map<String, String> paramMap = new HashMap<String, String>(params.length);
+	        for (String paramPair : params) {
+                String [] pp = paramPair.split("=");
+                String key = pp[0];
+                String val = pp[1];
+                paramMap.put(key, val);
+            }
+	        String customAT = paramMap.get("artifactType");
+	        return ArtifactType.valueOf(customAT);
+	    }
 		String fileName = gavInfo.getName();
 		int extensionIdx = fileName.lastIndexOf('.');
 		String extension = gavInfo.getName().substring(extensionIdx + 1);
+		if ("pom".equals(extension)) {
+		    extension = "xml";
+		}
 		return ArtifactType.fromFileExtension(extension);
 	}
 
