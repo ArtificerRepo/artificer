@@ -558,6 +558,11 @@ public class WsdlDeriver extends XsdDeriver {
 				NodeList soapBindings = (NodeList) this.query(xpath, bindingElem, "./soap:binding", XPathConstants.NODESET);
 				for (int jdx = 0; jdx < bindings.getLength(); jdx++) {
 					Element soapBindingElem = (Element) soapBindings.item(jdx);
+					// Note: I ran into a case where the xpath returned some nodes but calls to item()
+					// returned null!  This is madness and I couldn't explain it.  The s-ramp-demos-switchyard
+					// demo currently causes this to happen.
+					if (soapBindingElem == null)
+					    continue;
 					SoapBinding soapBinding = new SoapBinding();
 					soapBinding.setUuid(UUID.randomUUID().toString());
 					soapBinding.setArtifactType(BaseArtifactEnum.SOAP_BINDING);
