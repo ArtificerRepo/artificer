@@ -43,11 +43,6 @@
 				<artifactId>commons-compress</artifactId>
 				<version>${commons.compress.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>${servlet.api.version}</version>
-			</dependency>
 			<!-- Logging (require SLF4J API for compiling, but use Log4J and its SLF4J 
 				binding for testing) -->
 			<dependency>
@@ -73,12 +68,6 @@
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>xmlunit</groupId>
-				<artifactId>xmlunit</artifactId>
-				<version>${xmlunit.version}</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
@@ -110,5 +99,6 @@
 		<module>s-ramp-demos-derived-artifacts</module>
 		<module>s-ramp-demos-custom-deriver</module>
 		<module>s-ramp-demos-shell-command</module>
+		<module>s-ramp-demos-switchyard</module>
 	</modules>
 </project>
