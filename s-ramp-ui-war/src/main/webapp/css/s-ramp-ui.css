@@ -19,13 +19,13 @@ input.sramp-date {
 }
 
 .sramp-navbar {
-  background-image: url("../images/header-center.png");
+  background-image: url("../images/navbar-bg.png");
   background-repeat: repeat-x;
-  background-color: #0d80b0;
+  background-color: #007ca3;
 }
 .sramp-navbar .sramp-navbar-inner {
   min-height: 72px;
-  background-image: url("../images/header-logo.png");
+  background-image: url("../images/navbar-logo.png");
   background-repeat: no-repeat;
   background-position: top left;
   background-color: transparent;
@@ -33,7 +33,8 @@ input.sramp-date {
 }
 .sramp-navbar .brand {
   text-indent: -5000px;
-  width: 175px;
+  width: 215px;
+  height: 52px;
   display: block;
   float: left;
   padding: 10px 20px 10px;
@@ -67,29 +68,28 @@ input.sramp-date {
   -moz-box-shadow: inset 0 3px 8px rgba(0,0,0,0.125);
   box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.125);
 }
-.sramp-navbar .nav li a {
-  color: #dadaff;
-}
 .sramp-navbar .nav .active a, .sramp-navbar .nav .active a:hover, .sramp-navbar .nav .active a:focus {
   background-color: transparent;
 }
 .sramp-navbar .nav li a {
   padding: 25px 15px 23px 15px;
+  margin-top: 4px;
+  color: #dadaff;
 }
 .nav-user {
   margin-top: 10px;
   margin-right: 5px;
 }
 .nav-shadowman {
-  background-image: url("../images/header-shadowman.png");
-  width: 60px;
+  background-image: url("../images/navbar-shadowman.png");
+  width: 56px;
   height: 72px;
 }
 #mobile-nav-btn {
   color: white;
   margin-top: 20px;
   margin-right: 25px;
-  background-image: url("../images/header-nav-phone.png");
+  background-image: url("../images/navbar-menu-mobile.png");
   height: 30px;
   width: 30px;
   text-indent: -3000px;
