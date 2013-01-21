@@ -81,18 +81,24 @@
         <div class="row-fluid sramp-settings-properties">
           <div class="span2 sramp-settings-property-list">
             <div class="row-fluid mobile-header mobile-only">
-              <a class="span12" data-toggle="collapse" data-target="#sramp-settings-property-list" href="#">Choose a Property [Property 2] <span class="caret pull-right"></span></a>
+              <a class="span12" data-toggle="collapse" data-target="#sramp-settings-property-list" href="#">Choose a Property [property-two] <span class="caret pull-right"></span></a>
             </div>
             <ul id="sramp-settings-property-list" class="nav nav-pills nav-stacked collapse-on-mobile collapse in">
-              <li class="sramp-settings-property"><a href="#">Property 1</a></li>
-              <li class="sramp-settings-property active"><a href="#">Property 2</a></li>
-              <li class="sramp-settings-property"><a href="#">Property 3</a></li>
-              <li class="sramp-settings-property"><a href="#">Property 4</a></li>
+              <li class="sramp-settings-property"><a href="#">property-1</a></li>
+              <li class="sramp-settings-property active"><a href="#">property-two</a></li>
+              <li class="sramp-settings-property"><a href="#">my-property</a></li>
+              <li class="sramp-settings-property"><a href="#">my-other-property</a></li>
             </ul>
             <a class="sramp-settings-add-prop btn btn-small" href="#">Add Property</a>
           </div>
           <div class="span10 sramp-settings-property-details">
             <form class="form-horizontal span9">
+              <div class="control-group">
+                <label class="control-label is-tooltip" data-placement="top" for="inputFieldName" title="The name of the S-RAMP custom property (used in the actual query).">Property Name:</label>
+                <div class="controls">
+                  <input type="text" id="inputFieldName" placeholder="Name" value="property-two">
+                </div>
+              </div>
               <div class="control-group">
                 <label class="control-label is-tooltip" data-placement="top" for="inputFieldLabel" title="This will be the label shown to users when they are choosing their filter.">Property Label:</label>
                 <div class="controls">
@@ -100,15 +106,9 @@
                 </div>
               </div>
               <div class="control-group">
-                <label class="control-label is-tooltip" data-placement="top" for="inputFieldName" title="The name of the S-RAMP custom property (used in the actual query).">Property Name:</label>
-                <div class="controls">
-                  <input type="text" id="inputFieldName" placeholder="Name">
-                </div>
-              </div>
-              <div class="control-group">
                 <label class="control-label is-tooltip" data-placement="top" for="inputFieldDesc" title="This will be shown to users as a tooltip when they are configuring their filters.">Description:</label>
                 <div class="controls">
-                  <textarea class="span12" id="inputFieldDesc" rows="2"></textarea>
+                  <textarea class="span12" id="inputFieldDesc" rows="2" placeholder="Description"></textarea>
                 </div>
               </div>
               <div class="control-group">

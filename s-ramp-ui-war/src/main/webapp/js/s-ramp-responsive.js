@@ -4,7 +4,7 @@ $(document).ready(function() {
 	$(window).resize(function(e) { onResize(); });
 	onResize();
 	if (!isMobile()) {
-		$('#accordion-filters-core').collapse();
+		$('.collapse-on-mobile-load').collapse();
 	}
 	$('.is-tooltip').tooltip();
 });
