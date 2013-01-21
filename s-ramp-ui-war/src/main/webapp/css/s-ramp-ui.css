@@ -197,18 +197,18 @@ input.sramp-date {
   padding: 0px;
 }
 
-.sramp-artifacts-actions {
+.sramp-artifacts-actions, .sramp-artifact-actions {
   border: 1px solid #d3d3d3;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  background-image: url("../images/sramp-artifacts-actions-bg.png");
+  background-image: url("../images/s-ramp-actions-bg.png");
   background-position: bottom left;
   background-repeat: repeat-x;
   background-color: #f2f2f2;
   padding: 10px;
   border-bottom: 1px solid #d3d3d3;
 }
-.sramp-artifacts-actions .sramp-sp4n-label {
+.sramp-artifacts-actions .sramp-sp4n-label, .sramp-artifact-actions .sramp-sp4n-label {
   text-shadow: 0px 1px 0px white;
   padding: 4px 12px;
   line-height: 20px;
@@ -235,6 +235,31 @@ input.sramp-date {
 
 .sramp-nav-tabs {
   margin-bottom: 0px;
+  border-left: 1px solid rgb(221, 221, 221);
+  border-right: 1px solid rgb(221, 221, 221);
+  background-color: white;
+}
+
+.sramp-nav-tabs li a {
+  color: #666;
+  border-radius: 0px;
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 1px solid rgb(221, 221, 221);
+  border-bottom: 1px solid rgb(221, 221, 221);
+  margin-right: 0px;
+  background-color: rgb(234, 234, 234);
+}
+.sramp-nav-tabs li a:hover {
+  border-right: 1px solid rgb(221, 221, 221);
+  background-color: rgb(234, 234, 234);
+  color: #007ca3;
+}
+.sramp-nav-tabs .active a, .sramp-nav-tabs .active a:hover {
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 1px solid rgb(221, 221, 221);
+  background-color: white;
 }
 
 .sramp-tab-content {
@@ -242,6 +267,7 @@ input.sramp-date {
   border-right: 1px solid rgb(221, 221, 221);
   border-bottom: 1px solid rgb(221, 221, 221);
   padding-bottom: 15px;
+  background-color: white;
 }
 
 .sramp-meta-data-section {
@@ -254,7 +280,6 @@ input.sramp-date {
 
 .sramp-meta-data-section-header {
   font-weight: bold;
-  border-bottom: 1px dotted #afafaf;
   float: left;
 }
 
@@ -270,11 +295,24 @@ input.sramp-date {
 
 .sramp-relationship-type {
   font-weight: bold;
+  font-size: 85%;
+  color: #666;
+  text-shadow: 0px 1px 0px white;
   background-color: #f6f6f6;
+  background-image: url("../images/s-ramp-table-subcat-bg.png");
+  background-repeat: repeat-x;
 }
 
 .sramp-relationship-table, .sramp-history-table {
   margin-top: 15px;
+}
+
+.sramp-relationship-table thead th, .sramp-history-table thead th {
+  background-image: url("../images/s-ramp-table-th-bg.png");
+  background-repeat: repeat-x;
+  color: #444;
+  text-shadow: 0px 1px 0px white;
+  padding-left: 8px;
 }
 
 .sramp-source-editor-wrapper {

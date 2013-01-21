@@ -72,5 +72,10 @@
     border-bottom: 1px solid #d3d3d3;
     min-height: 0px;
   }
+  
+  .sramp-tab-content {
+    padding-left: 8px;
+    padding-right: 8px;
+}
 
 }
