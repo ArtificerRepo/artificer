@@ -4,8 +4,6 @@
     <meta charset="utf-8">
     <title>S-RAMP Repository Browser - Artifacts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    <meta name="description" content=""></meta>
-    <meta name="author" content=""></meta>
     <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
     <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
     <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap-datepicker.css" rel="stylesheet" media="screen"></link>
@@ -97,12 +95,7 @@
                         <form class="">
                           <div class="controls">
                             <label class="sramp-filter-label">Type</label>
-                            <select class="span12" type="text">
-                              <option selected="selected">All</option>
-                              <option value="doc">Document</option>
-                              <option value="xml">XML</option>
-                              <option value="wsdl">WSDL</option>
-                            </select>
+                            <input type="text" class="span12" data-provide="typeahead" data-items="6" data-source="[&quot;BrmsDocument&quot;,&quot;ComplexTypeDeclaration&quot;,&quot;Document&quot;,&quot;ElementDeclaration&quot;,&quot;MavenPom&quot;,&quot;PolicyDocument&quot;,&quot;SimpleTypeDeclaration&quot;,&quot;SwitchyardApplication&quot;,&quot;WsdlDocument&quot;,&quot;XmlDocument&quot;,&quot;XsdDocument&quot;]">
                           </div>
                           <div class="controls controls-row">
                             <label class="sramp-filter-label">Date Created</label>
