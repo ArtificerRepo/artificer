@@ -168,6 +168,11 @@ input.sramp-date {
 .sramp-filter-list li a {
   color: rgb(51,51,51);
 }
+.sramp-filter-list li a:hover {
+  background-color: rgb(0, 136, 204);
+  color: #fdfdfd;
+  text-shadow: 0px 1px 0px #333;
+}
 
 .sramp-filter-label {
   cursor: default;
@@ -485,4 +490,39 @@ footer hr {
 }
 .modal-header .close {
   margin-top: 10px;
+}
+
+.sramp-filter-ontology-modal {
+  border-radius: 0px;
+}
+.sramp-filter-ontology-modal h4 span {
+  font-size: 75%;
+}
+.sramp-filter-ontology-modal .select-all {
+  border-bottom: 1px solid #dfdfdf;
+}
+.sramp-filter-ontology-modal .select-all .btn-group {
+  margin-bottom: 4px;
+}
+
+.sramp-filter-ontology-modal ul {
+  list-style-type: none;
+}
+.sramp-filter-ontology-modal .modal-footer {
+  padding: 5px 10px 8px 10px;
+}
+
+ul.ontology-selector {
+  margin-left: 5px;
+  margin-top: 5px;
+}
+.ontology-selector input, .ontology-selector .icon {
+  float: left;
+  margin-right: 5px;
+}
+.ontology-selector .icon {
+  margin-top: 3px;
+}
+.ontology-selector label {
+  margin-bottom: 0px;
 }

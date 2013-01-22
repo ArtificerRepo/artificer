@@ -72,6 +72,7 @@
 
       <!-- Content area with footer-->
       <div id="page-content" class="container-fluid">
+      
         <div class="row-fluid">
           <!-- The Filter Sidebar -->
           <div class="span3 sramp-filter-sidebar">
@@ -151,7 +152,7 @@
                   <div class="sramp-filter-group">
                     <div class="s-ramp-filter-header">
                       <a class="sramp-filter-toggle collapsed" data-toggle="collapse" data-target="#accordion-filters-categories">
-                        Categories
+                        Classifiers
                       </a>
                     </div>
                     <div id="accordion-filters-categories" class="sramp-filter-body collapse">
@@ -403,6 +404,111 @@
       </div>
     </div>
 
+    <!-- Classifer selection modal -->
+    <div id="classifier-dialog" class="sramp-filter-ontology-modal modal hide">
+      <div class="modal-header">
+        <h4>Species <span class="pull-right">(0 of 9)</span></h4>
+      </div>
+      <div class="modal-body">
+        <div class="select-all choice">
+            <div class="btn-group">
+              <button class="btn btn-small">Select...</button>
+              <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a href="#">Select All</a></li>
+                <li><a href="#">Select None</a></li>
+              </ul>
+            </div>
+        </div>
+        <ul class="ontology-selector">
+          <li>
+            <a href="#" data-toggle="collapse" data-target="#ul-1"><i class="icon icon-minus"></i></a>
+            <label>
+              <input type="checkbox"></input>
+              Species 1
+            </label>
+            <ul id="ul-1" class="collapse in">
+              <li>
+                <i class="icon icon-none"></i>
+                <label>
+                  <input type="checkbox"></input>
+                  Subspecies 1
+                </label>
+              </li>
+              <li>
+                <a href="#" data-toggle="collapse" data-target="#ul-2"><i class="icon icon-plus"></i></a>
+                <label>
+                  <input type="checkbox"></input>
+                  Subspecies 2
+                </label>
+                <ul id="ul-2" class="collapse out">
+                  <li>
+                    <i class="icon icon-none"></i>
+                    <label>
+                      <input type="checkbox"></input>
+                      Sub-Subspecies Alpha
+                    </label>
+                  </li>
+                  <li>
+                    <i class="icon icon-none"></i>
+                    <label>
+                      <input type="checkbox"></input>
+                      Sub-Subspecies Beta
+                    </label>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#" data-toggle="collapse" data-target="#ul-3"><i class="icon icon-minus"></i></a>
+            <label>
+              <input type="checkbox"></input>
+              Species 2
+            </label>
+            <ul id="ul-3" class="collapse in">
+              <li>
+                <i class="icon icon-none"></i>
+                <label>
+                  <input type="checkbox"></input>
+                  Subspecies 2-1
+                </label>
+              </li>
+              <li>
+                <a href="#" data-toggle="collapse" data-target="#ul-4"><i class="icon icon-minus"></i></a>
+                <label>
+                  <input type="checkbox"></input>
+                  Subspecies 2-2
+                </label>
+                <ul id="ul-4" class="collapse in">
+                  <li>
+                    <i class="icon icon-none"></i>
+                    <label>
+                      <input type="checkbox"></input>
+                      Sub-Subspecies Two Alpha
+                    </label>
+                  </li>
+                  <li>
+                    <i class="icon icon-none"></i>
+                    <label>
+                      <input type="checkbox"></input>
+                      Sub-Subspecies Two Beta
+                    </label>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-small" data-dismiss="modal">Cancel</a>
+        <a href="#" class="btn btn-focus btn-small">OK</a>
+      </div>
+    </div>
+
     <!-- Some scripting to add functionality to the live template -->
     <script>
       $(document).ready(function() {
@@ -414,6 +520,11 @@
       });
       $('#btn-import').click(function() {
         $('#import-dialog').modal();
+      });
+      $('.sramp-filter-list li:nth-child(2) a').click(function() {
+    	  $('#classifier-dialog').modal({
+    		  backdrop: false
+    	  });
       });
     </script>
 

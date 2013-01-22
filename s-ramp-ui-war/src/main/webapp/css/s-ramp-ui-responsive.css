@@ -98,6 +98,12 @@ body.no-fileupload .requires-fileupload {
 
 }
 
-/* iPhone etc */
+
+/* Phones */
+@media ( max-width : 480px) {
+}
+
+
+/* iPhone */
 @media ( max-width : 360px) {
 }
