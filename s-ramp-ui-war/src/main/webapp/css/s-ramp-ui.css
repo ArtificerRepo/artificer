@@ -469,3 +469,20 @@ footer p {
 footer hr {
   border-bottom: 1px solid #bbb;
 }
+
+.modal-header {
+  padding: 1px 15px;
+  background-color: #f5f5f5;
+  background-image: url("../images/modal-header-bg.png");
+  background-position: top left;
+  background-repeat: repeat-x;
+  border-radius: 6px 6px 0px 0px;
+  border-bottom: 1px solid #dfdfdf;
+}
+.modal-header h4 {
+  font-size: 110%;
+  text-shadow: 0px 1px 0px white;
+}
+.modal-header .close {
+  margin-top: 10px;
+}

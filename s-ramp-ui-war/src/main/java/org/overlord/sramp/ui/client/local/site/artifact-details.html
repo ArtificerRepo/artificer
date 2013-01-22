@@ -309,7 +309,7 @@
       </div>
       <div class="modal-footer">
         <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-primary">Delete</a>
+        <a href="#" class="btn btn-focus">Delete</a>
       </div>
     </div>
 
@@ -358,7 +358,7 @@
       <div class="modal-footer">
         <a href="#" class="btn pull-left" data-toggle="collapse" data-target="#delete-dialog-refs">Show References <b class="caret"></b></a>
         <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-primary">Delete</a>
+        <a href="#" class="btn btn-focus">Delete</a>
       </div>
     </div>
 
@@ -369,10 +369,10 @@
         editor.setTheme("ace/theme/eclipse");
         editor.getSession().setMode("ace/mode/xml");
       });
-      $('.sramp-artifact-header ul li:nth-child(3)').click(function() {
+      $('.sramp-artifact-actions ul li:nth-child(3)').click(function() {
         $('#delete-dialog-derived').modal();
       });
-      $('.sramp-artifact-header ul li:nth-child(4)').click(function() {
+      $('.sramp-artifact-actions ul li:nth-child(4)').click(function() {
         $('#delete-dialog-referenced').modal();
       });
     </script>

@@ -7,6 +7,7 @@
     <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
     <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
     <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap-datepicker.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap-fileupload.min.css" rel="stylesheet" media="screen"></link>
     <link href="../../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
     <link href="../../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -16,6 +17,7 @@
     <script type="text/javascript" src="../../../../../../../../webapp/js/jquery-1.8.3.min.js"></script>
     <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap-fileupload.min.js"></script>
     <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-responsive.js"></script>
     <script type="text/javascript" src="static-linkages.js"></script>
   </head>
@@ -245,7 +247,7 @@
                     <li><a href="#">Categories</a></li>
                   </ul>
                 </div>
-                <a class="btn btn-focus">Import Artifacts</a>
+                <a id="btn-import" class="btn btn-focus requires-fileupload">Import Artifacts</a>
                 <div class="pull-right sramp-sp4n-label desktop-only">
                   Displaying 1-11 of 37
                 </div>
@@ -377,6 +379,30 @@
     </div> <!-- /page -->
 
 
+    <!-- Import artifacts modal -->
+    <div id="import-dialog" class="modal hide fade">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4>Import Artifact(s)</h4>
+      </div>
+      <div class="modal-body">
+        <p>Choose a file or S-RAMP package to upload.</p>
+        <form>
+          <div id="fileupload-import" class="fileupload fileupload-new" data-provides="fileupload">
+            <div class="input-append">
+              <div class="uneditable-input"><i class="icon-file fileupload-exists"></i> 
+                <span class="fileupload-preview"></span>
+              </div><span class="btn btn-file"><span class="fileupload-new">Select</span><span class="fileupload-exists">Change</span><input type="file"></input></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+        <a href="#" class="btn btn-focus">Import</a>
+      </div>
+    </div>
+
     <!-- Some scripting to add functionality to the live template -->
     <script>
       $(document).ready(function() {
@@ -385,6 +411,9 @@
     		  todayBtn: true,
     		  todayHighlight: true
     	  });
+      });
+      $('#btn-import').click(function() {
+        $('#import-dialog').modal();
       });
     </script>
 
