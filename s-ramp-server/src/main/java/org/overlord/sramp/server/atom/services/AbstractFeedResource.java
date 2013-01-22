@@ -84,7 +84,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 			int startIdx = startIndex;
 			int endIdx = startIdx + count - 1;
 			Feed feed = createFeed(artifactSet, startIdx, endIdx, propNames, baseUrl);
-			addPaginationLinks(feed, artifactSet, query, startIndex, count, orderBy, ascending);
+			addPaginationLinks(feed, artifactSet, query, startIndex, count, orderBy, ascending, baseUrl);
 			return feed;
 		} catch (Throwable e) {
 			logError(logger, "Error trying to create an Artifact Feed.", e);
@@ -154,26 +154,26 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	 * TODO use real URLs rather than hard-coded localhost:8080 values
 	 *
 	 * @param feed
-	 * @param query
 	 * @param artifactSet
+	 * @param query
 	 * @param startIndex
 	 * @param count
 	 * @param orderBy
 	 * @param ascending
+	 * @param baseUrl
 	 * @throws UnsupportedEncodingException
 	 */
 	private void addPaginationLinks(Feed feed, ArtifactSet artifactSet, String query, int startIndex, int count,
-			String orderBy, boolean ascending) throws UnsupportedEncodingException {
-		String endpoint = "http://localhost:8080/s-ramp-server/s-ramp";
+			String orderBy, boolean ascending, String baseUrl) throws UnsupportedEncodingException {
 
 		String hrefPattern = "%1$s?query=%2$s&page=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s";
 		String encodedQuery = URLEncoder.encode(query, "UTF-8");
-		String firstHref = String.format(hrefPattern, endpoint, encodedQuery, 0, String.valueOf(count),
+		String firstHref = String.format(hrefPattern, baseUrl, encodedQuery, 0, String.valueOf(count),
 				String.valueOf(orderBy), String.valueOf(ascending));
 		int prevIndex = Math.max(0,  startIndex - count);
-		String prevHref = String.format(hrefPattern, endpoint, encodedQuery, prevIndex, String.valueOf(count),
+		String prevHref = String.format(hrefPattern, baseUrl, encodedQuery, prevIndex, String.valueOf(count),
 				String.valueOf(orderBy), String.valueOf(ascending));
-		String nextHref = String.format(hrefPattern, endpoint, encodedQuery, startIndex + count, String.valueOf(count),
+		String nextHref = String.format(hrefPattern, baseUrl, encodedQuery, startIndex + count, String.valueOf(count),
 				String.valueOf(orderBy), String.valueOf(ascending));
 
 		Link first = new Link("first", firstHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
