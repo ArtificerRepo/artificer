@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.local;
+package org.overlord.sramp.ui.client.local.pages;
 
 import javax.enterprise.context.Dependent;
 
@@ -23,13 +23,13 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- * The default "Artifacts" page.
+ * The "Settings" page.
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#page")
-@Page(path="artifacts", startingPage=true)
+@Templated("/org/overlord/sramp/ui/client/local/site/settings.html#page")
+@Page(path="settings")
 @Dependent
-public class ArtifactsPage extends Composite {
+public class SettingsPage extends Composite {
 
 }
