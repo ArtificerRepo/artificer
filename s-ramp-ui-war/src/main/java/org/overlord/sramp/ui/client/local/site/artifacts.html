@@ -22,7 +22,7 @@
   </head>
 
   <body>
-    <div data-field="page">
+    <div id="page" data-field="page">
 
       <!-- Top header/nav bar -->
       <div class="sramp-navbar sramp-navbar-fixed-top">
@@ -49,14 +49,14 @@
             </div>
             <!-- Non-desktop navigation (phones, tablets) -->
             <div class="mobile-only">
-              <a href="#" id="mobile-nav-btn" data-toggle="collapse" data-target="#mobile-nav" class="pull-right">Menu</a>
+              <a href="#" id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
             </div>
           </div>
         </div>
       </div>
       
       <!-- Mobile navigation menu -->
-      <div id="mobile-nav" class="collapse out">
+      <div id="mobile-nav" class="closed close-on-desktop">
         <ul class="nav nav-list">
           <!-- Navigation Tabs -->
           <li class="nav-header">Navigation</li>
@@ -77,10 +77,10 @@
           <div class="span3 sramp-filter-sidebar">
             <!-- Mobile-only header used to collapse the entire Filters section -->
             <div class="row-fluid mobile-header mobile-only">
-              <a class="span12" data-toggle="collapse" data-target="#sramp-filters" href="#">Filters <span class="caret pull-right"></span></a>
+              <a class="span12" data-toggle="slide" data-target="#sramp-filters" href="#">Filters <span class="caret pull-right"></span></a>
             </div>
-            <!-- The actual Filters (accordion control) -->
-            <div id="sramp-filters" class="row-fluid collapse-on-mobile collapse in">
+            <!-- The actual Filters (accordion-like control) -->
+            <div id="sramp-filters" class="row-fluid close-on-mobile closed-on-mobile open-on-desktop">
               <div class="span12">
                 <!-- Filter Accordian -->
                 <div class="" id="accordion-filters">
@@ -88,11 +88,11 @@
                   <!-- Core Property Filters -->
                   <div class="sramp-filter-group">
                     <div class="s-ramp-filter-header">
-                      <a class="sramp-filter-toggle collapsed" data-toggle="collapse" data-target="#accordion-filters-core">
+                      <a class="sramp-filter-toggle" data-toggle="slide" data-target="#accordion-filters-core">
                         Core Properties
                       </a>
                     </div>
-                    <div id="accordion-filters-core" class="sramp-filter-body collapse collapse-on-mobile-load">
+                    <div id="accordion-filters-core" class="sramp-filter-body closed-on-mobile close-on-mobile open-on-desktop">
                       <div class="sramp-filter-inner">
                         <form class="">
                           <div class="controls">
@@ -140,7 +140,7 @@
                         </form>
                       </div>
                       <div class="s-ramp-filter-footer">
-                        <a class="sramp-filter-toggle dropup" data-toggle="collapse" data-target="#accordion-filters-core">
+                        <a class="sramp-filter-toggle dropup" data-toggle="slide" data-target="#accordion-filters-core">
                           <span class="pull-right caret"></span>
                         </a>
                       </div>
@@ -150,11 +150,11 @@
                   <!-- Category Filters -->
                   <div class="sramp-filter-group">
                     <div class="s-ramp-filter-header">
-                      <a class="sramp-filter-toggle collapsed" data-toggle="collapse" data-target="#accordion-filters-categories">
+                      <a class="sramp-filter-toggle" data-toggle="slide" data-target="#accordion-filters-categories">
                         Classifiers
                       </a>
                     </div>
-                    <div id="accordion-filters-categories" class="sramp-filter-body collapse">
+                    <div id="accordion-filters-categories" class="sramp-filter-body closed">
                       <div class="sramp-filter-inner">
                         <ul class="sramp-filter-list nav nav-list span12">
                           <li>
@@ -175,7 +175,7 @@
                         </form>
                       </div>
                       <div class="s-ramp-filter-footer">
-                        <a class="sramp-filter-toggle dropup" data-toggle="collapse" data-target="#accordion-filters-categories">
+                        <a class="sramp-filter-toggle dropup" data-toggle="slide" data-target="#accordion-filters-categories">
                           <span class="pull-right caret"></span>
                         </a>
                       </div>
@@ -185,11 +185,11 @@
                   <!-- Custom Property Filter -->
                   <div class="sramp-filter-group">
                     <div class="s-ramp-filter-header">
-                      <a class="sramp-filter-toggle collapsed" data-toggle="collapse" data-target="#accordion-filters-properties">
+                      <a class="sramp-filter-toggle" data-toggle="slide" data-target="#accordion-filters-properties">
                         Custom Properties
                       </a>
                     </div>
-                    <div id="accordion-filters-properties" class="sramp-filter-body collapse">
+                    <div id="accordion-filters-properties" class="sramp-filter-body closed">
                       <div class="sramp-filter-inner">
                         <form class="">
                           <div class="controls">
@@ -215,7 +215,7 @@
                         </form>
                       </div>
                       <div class="s-ramp-filter-footer">
-                        <a class="sramp-filter-toggle dropup" data-toggle="collapse" data-target="#accordion-filters-properties">
+                        <a class="sramp-filter-toggle dropup" data-toggle="slide" data-target="#accordion-filters-properties">
                           <span class="pull-right caret"></span>
                         </a>
                       </div>

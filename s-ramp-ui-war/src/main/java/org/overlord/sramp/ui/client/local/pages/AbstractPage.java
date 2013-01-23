@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.overlord.sramp.ui.client.local.SrampJS;
 
 import com.google.gwt.user.client.ui.Composite;
 
@@ -55,7 +56,7 @@ public abstract class AbstractPage extends Composite {
      */
     @PostConstruct
     private void postConstruct() {
-
+        SrampJS.onPageLoad();
     }
 
 }

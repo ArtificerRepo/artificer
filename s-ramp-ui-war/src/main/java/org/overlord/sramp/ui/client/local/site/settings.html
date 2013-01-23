@@ -20,7 +20,7 @@
   </head>
 
   <body>
-    <div data-field="page">
+    <div id="page" data-field="page">
     
       <!-- Top header/nav bar -->
       <div class="sramp-navbar sramp-navbar-fixed-top">
@@ -47,14 +47,14 @@
             </div>
             <!-- Non-desktop navigation (phones, tablets) -->
             <div class="mobile-only">
-              <a href="#" id="mobile-nav-btn" data-toggle="collapse" data-target="#mobile-nav" class="pull-right">Menu</a>
+              <a href="#" id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
             </div>
           </div>
         </div>
       </div>
       
       <!-- Mobile navigation menu -->
-      <div id="mobile-nav" class="collapse out">
+      <div id="mobile-nav" class="closed close-on-desktop">
         <ul class="nav nav-list">
           <!-- Navigation Tabs -->
           <li class="nav-header">Navigation</li>
@@ -80,15 +80,17 @@
         <div class="row-fluid sramp-settings-properties">
           <div class="span2 sramp-settings-property-list">
             <div class="row-fluid mobile-header mobile-only">
-              <a class="span12" data-toggle="collapse" data-target="#sramp-settings-property-list" href="#">Choose a Property [property-two] <span class="caret pull-right"></span></a>
+              <a class="span12" data-toggle="slide" data-target="#sramp-settings-property-list-wrapper" href="#">Choose a Property [property-two] <span class="caret pull-right"></span></a>
             </div>
-            <ul id="sramp-settings-property-list" class="nav nav-pills nav-stacked collapse-on-mobile collapse in">
-              <li class="sramp-settings-property"><a href="#">property-1</a></li>
-              <li class="sramp-settings-property active"><a href="#">property-two</a></li>
-              <li class="sramp-settings-property"><a href="#">my-property</a></li>
-              <li class="sramp-settings-property"><a href="#">my-other-property</a></li>
-            </ul>
-            <a class="sramp-settings-add-prop btn btn-small" href="#">Add Property</a>
+            <div id="sramp-settings-property-list-wrapper" class="close-on-mobile closed-on-mobile open-on-desktop">
+              <ul id="sramp-settings-property-list" class="nav nav-pills nav-stacked">
+                <li class="sramp-settings-property"><a href="#">property-1</a></li>
+                <li class="sramp-settings-property active"><a href="#">property-two</a></li>
+                <li class="sramp-settings-property"><a href="#">my-property</a></li>
+                <li class="sramp-settings-property"><a href="#">my-other-property</a></li>
+              </ul>
+              <a class="sramp-settings-add-prop btn btn-small" href="#">Add Property</a>
+            </div>
           </div>
           <div class="span10 sramp-settings-property-details">
             <form class="form-horizontal span9">

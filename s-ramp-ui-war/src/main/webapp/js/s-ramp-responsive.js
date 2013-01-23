@@ -26,22 +26,33 @@ SRAMPi.prototype.isFileInputSupported = function() {
  * from a mobile layout to a desktop layout.
  */
 SRAMPi.prototype.onSwitchToDesktop = function() {
-	$('.collapse-on-mobile').collapse('show');
+	$('.open-on-desktop').slideDown();
+	$('.close-on-desktop').slideUp();
 };
 /**
  * Called when the browser is resized in such a way that it transitions
  * from a desktop layout to a mobile layout.
  */
 SRAMPi.prototype.onSwitchToMobile = function() {
-	$('.collapse-on-mobile').collapse('hide');
+	$('.close-on-mobile').slideUp();
+	$('.open-on-mobile').slideDown();
 };
 /**
  * Called whenever the page is loaded or reconstructed.
  */
 SRAMPi.prototype.onPageLoad = function() {
-	this.onResize();
-	if (!this.isMobile()) {
-		$('.collapse-on-mobile-load').collapse();
+	if (this.isMobile()) {
+		// Loading on a mobile device
+		$('.open-on-mobile').slideDown();
+		$('.close-on-mobile').slideUp();
+		$('.open-on-mobile-load').slideDown();
+		$('.close-on-mobile-load').slideUp();
+	} else {
+		// Loading on a desktop device
+		$('.open-on-desktop').slideDown();
+		$('.close-on-desktop').slideUp();
+		$('.open-on-desktop-load').slideDown();
+		$('.close-on-desktop-load').slideUp();
 	}
 };
 /**
@@ -58,17 +69,29 @@ SRAMPi.prototype.onResize = function() {
 };
 
 // The global SRAMP instance.
-var SRAMP = new SRAMPi();
+window.SRAMP = new SRAMPi();
 
 /**
  * Do some work when the page first loads.
  */
 $(document).ready(function() {
-	$(window).resize(function(e) { SRAMP.onResize(); });
-	if (SRAMP.isFileInputSupported()) {
+	$(window).resize(function(e) { window.SRAMP.onResize(); });
+	if (window.SRAMP.isFileInputSupported()) {
 		$('body').addClass('fileupload');
 	} else {
 		$('body').addClass('no-fileupload');
 	}
-	SRAMP.onPageLoad();
+	window.SRAMP.onPageLoad();
 });
+
+/**
+ * jQuery based slide API
+ */
+$(document).on('click.slide.data-api', '[data-toggle=slide]', function (e) {
+    var $this = $(this), href
+      , target = $this.attr('data-target')
+        || e.preventDefault()
+        || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') //??strip for ie7??
+      , option = $(target).data('collapse') ? 'toggle' : $this.data()
+    $(target).slideToggle('fast');
+  })

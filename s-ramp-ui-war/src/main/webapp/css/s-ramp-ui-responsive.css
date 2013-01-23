@@ -16,6 +16,9 @@ body.no-fileupload .requires-fileupload {
   .no-desktop {
     display: none !important;
   }
+  #page .closed-on-desktop {
+    display: none;
+  }
 
   /* Header should be fixed for desktops */
   body {
@@ -57,6 +60,11 @@ body.no-fileupload .requires-fileupload {
   .no-mobile {
     display: none !important;
   }
+  #page .closed-on-mobile {
+    display: none;
+  }
+
+  
   .navbar {
     margin-bottom: 0px;
   }

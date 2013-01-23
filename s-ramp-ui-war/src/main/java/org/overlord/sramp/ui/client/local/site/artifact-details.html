@@ -21,7 +21,7 @@
   </head>
 
   <body>
-    <div data-field="page">
+    <div id="page" data-field="page">
     
       <!-- Top header/nav bar -->
       <div class="sramp-navbar sramp-navbar-fixed-top">
@@ -48,14 +48,14 @@
             </div>
             <!-- Non-desktop navigation (phones, tablets) -->
             <div class="mobile-only">
-              <a href="#" id="mobile-nav-btn" data-toggle="collapse" data-target="#mobile-nav" class="pull-right">Menu</a>
+              <a href="#" id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
             </div>
           </div>
         </div>
       </div>
       
       <!-- Mobile navigation menu -->
-      <div id="mobile-nav" class="collapse out">
+      <div id="mobile-nav" class="closed close-on-desktop">
         <ul class="nav nav-list">
           <!-- Navigation Tabs -->
           <li class="nav-header">Navigation</li>

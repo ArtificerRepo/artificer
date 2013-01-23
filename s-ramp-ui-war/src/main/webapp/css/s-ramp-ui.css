@@ -2,6 +2,10 @@ body {
   background-color: #eaeaea;
 }
 
+#page .closed {
+  display: none;
+}
+
 input.sramp-date {
   cursor: pointer;
 }
