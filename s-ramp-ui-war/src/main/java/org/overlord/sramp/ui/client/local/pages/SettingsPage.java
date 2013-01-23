@@ -20,8 +20,6 @@ import javax.enterprise.context.Dependent;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import com.google.gwt.user.client.ui.Composite;
-
 /**
  * The "Settings" page.
  *
@@ -30,6 +28,6 @@ import com.google.gwt.user.client.ui.Composite;
 @Templated("/org/overlord/sramp/ui/client/local/site/settings.html#page")
 @Page(path="settings")
 @Dependent
-public class SettingsPage extends Composite {
+public class SettingsPage extends AbstractPage {
 
 }

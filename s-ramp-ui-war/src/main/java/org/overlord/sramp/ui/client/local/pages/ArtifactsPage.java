@@ -16,14 +16,9 @@
 package org.overlord.sramp.ui.client.local.pages;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
-import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import com.google.gwt.user.client.ui.Composite;
 
 /**
  * The default "Artifacts" page.
@@ -33,11 +28,6 @@ import com.google.gwt.user.client.ui.Composite;
 @Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#page")
 @Page(path="artifacts", startingPage=true)
 @Dependent
-public class ArtifactsPage extends Composite {
-
-    @Inject @DataField
-    private TransitionAnchor<OntologiesPage> toOntologiesPage;
-    @Inject @DataField
-    private TransitionAnchor<SettingsPage> toSettingsPage;
+public class ArtifactsPage extends AbstractPage {
 
 }

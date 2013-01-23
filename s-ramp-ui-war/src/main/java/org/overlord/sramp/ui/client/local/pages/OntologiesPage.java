@@ -20,8 +20,6 @@ import javax.enterprise.context.Dependent;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import com.google.gwt.user.client.ui.Composite;
-
 /**
  * The "Ontologies" page.
  *
@@ -30,6 +28,6 @@ import com.google.gwt.user.client.ui.Composite;
 @Templated("/org/overlord/sramp/ui/client/local/site/ontologies.html#page")
 @Page(path="ontologies")
 @Dependent
-public class OntologiesPage extends Composite {
+public class OntologiesPage extends AbstractPage {
 
 }
