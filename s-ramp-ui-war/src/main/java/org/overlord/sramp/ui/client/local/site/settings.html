@@ -26,7 +26,7 @@
       <div class="sramp-navbar sramp-navbar-fixed-top">
         <div class="sramp-navbar-inner">
           <div class="container-fluid">
-            <a class="brand" href="#">JBoss - S-RAMP</a>
+            <a class="brand">JBoss - S-RAMP</a>
             <!-- Desktop Nav Controls (tabs, shadowman, etc) -->
             <div class="desktop-only">
               <ul class="nav">
@@ -35,19 +35,19 @@
                 <li class="active"><a href="settings.html" data-field="toSettingsPage" class="sramp-hl sramp-hl-settings">Settings</a></li>
               </ul>
               <div class="pull-right nav-shadowman"></div>
-              <div class="nav-user btn-group pull-right" style="margin-left: 20px">
+              <div data-field="navbarUserMenu" class="nav-user btn-group pull-right">
                 <button class="btn">John Doe</button>
                 <button class="btn dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Logout</a></li>
+                  <li><a>Logout</a></li>
                 </ul>
               </div>
             </div>
             <!-- Non-desktop navigation (phones, tablets) -->
             <div class="mobile-only">
-              <a href="#" id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
+              <a id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@
           <li class="active"><a href="settings.html" data-field="toSettingsPageMobile" class="sramp-hl sramp-hl-settings">Settings</a></li>
           <!-- User Menu (logout, etc) -->
           <li class="nav-header">John Doe</li>
-          <li><a href="#">Logout</a></li>
+          <li><a data-field="toLogoutMobile">Logout</a></li>
         </ul>
       </div>
 
@@ -80,16 +80,16 @@
         <div class="row-fluid sramp-settings-properties">
           <div class="span2 sramp-settings-property-list">
             <div class="row-fluid mobile-header mobile-only">
-              <a class="span12" data-toggle="slide" data-target="#sramp-settings-property-list-wrapper" href="#">Choose a Property [property-two] <span class="caret pull-right"></span></a>
+              <a class="span12" data-toggle="slide" data-target="#sramp-settings-property-list-wrapper">Choose a Property [property-two] <span class="caret pull-right"></span></a>
             </div>
             <div id="sramp-settings-property-list-wrapper" class="close-on-mobile closed-on-mobile open-on-desktop">
               <ul id="sramp-settings-property-list" class="nav nav-pills nav-stacked">
-                <li class="sramp-settings-property"><a href="#">property-1</a></li>
-                <li class="sramp-settings-property active"><a href="#">property-two</a></li>
-                <li class="sramp-settings-property"><a href="#">my-property</a></li>
-                <li class="sramp-settings-property"><a href="#">my-other-property</a></li>
+                <li class="sramp-settings-property"><a>property-1</a></li>
+                <li class="sramp-settings-property active"><a>property-two</a></li>
+                <li class="sramp-settings-property"><a>my-property</a></li>
+                <li class="sramp-settings-property"><a>my-other-property</a></li>
               </ul>
-              <a class="sramp-settings-add-prop btn btn-small" href="#">Add Property</a>
+              <a class="sramp-settings-add-prop btn btn-small">Add Property</a>
             </div>
           </div>
           <div class="span10 sramp-settings-property-details">
@@ -122,7 +122,7 @@
                   <label class="radio">
                     <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
                     Pre-populated Dropdown (specify values below)
-                    <a href="#" class="btn btn-mini pull-right">Populate From Existing</a>
+                    <a class="btn btn-mini pull-right">Populate From Existing</a>
                   </label>
                   <textarea style="margin-top: 5px" class="span12" id="inputDropdownValues" rows="3"></textarea>
                 </div>

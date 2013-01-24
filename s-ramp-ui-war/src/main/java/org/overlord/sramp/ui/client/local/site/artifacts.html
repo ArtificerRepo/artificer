@@ -28,7 +28,7 @@
       <div class="sramp-navbar sramp-navbar-fixed-top">
         <div class="sramp-navbar-inner">
           <div class="container-fluid">
-            <a class="brand" href="#">JBoss - S-RAMP</a>
+            <a class="brand">JBoss - S-RAMP</a>
             <!-- Desktop Nav Controls (tabs, shadowman, etc) -->
             <div class="desktop-only">
               <ul class="nav">
@@ -37,19 +37,19 @@
                 <li><a href="settings.html" data-field="toSettingsPage" class="sramp-hl sramp-hl-settings">Settings</a></li>
               </ul>
               <div class="pull-right nav-shadowman"></div>
-              <div class="nav-user btn-group pull-right" style="margin-left: 20px">
+              <div data-field="navbarUserMenu" class="nav-user btn-group pull-right">
                 <button class="btn">John Doe</button>
                 <button class="btn dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Logout</a></li>
+                  <li><a>Logout</a></li>
                 </ul>
               </div>
             </div>
             <!-- Non-desktop navigation (phones, tablets) -->
             <div class="mobile-only">
-              <a href="#" id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
+              <a id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@
           <li><a href="settings.html" data-field="toSettingsPageMobile" class="sramp-hl sramp-hl-settings">Settings</a></li>
           <!-- User Menu (logout, etc) -->
           <li class="nav-header">John Doe</li>
-          <li><a href="#">Logout</a></li>
+          <li><a data-field="toLogoutMobile">Logout</a></li>
         </ul>
       </div>
 
@@ -77,7 +77,7 @@
           <div class="span3 sramp-filter-sidebar">
             <!-- Mobile-only header used to collapse the entire Filters section -->
             <div class="row-fluid mobile-header mobile-only">
-              <a class="span12" data-toggle="slide" data-target="#sramp-filters" href="#">Filters <span class="caret pull-right"></span></a>
+              <a class="span12" data-toggle="slide" data-target="#sramp-filters">Filters <span class="caret pull-right"></span></a>
             </div>
             <!-- The actual Filters (accordion-like control) -->
             <div id="sramp-filters" class="row-fluid close-on-mobile closed-on-mobile open-on-desktop">
@@ -158,12 +158,12 @@
                       <div class="sramp-filter-inner">
                         <ul class="sramp-filter-list nav nav-list span12">
                           <li>
-                            <a href="#"><i class="icon-chevron-right"></i>
+                            <a><i class="icon-chevron-right"></i>
                               Regions (15 of 120 selected)
                             </a>
                           </li>
                           <li>
-                            <a href="#"><i class="icon-chevron-right"></i>
+                            <a><i class="icon-chevron-right"></i>
                               Species (0 of 50 selected)
                             </a>
                           </li>
@@ -241,10 +241,10 @@
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                    <li><a href="#">Download Selected</a></li>
-                    <li><a href="#">Add to Favorites</a></li>
-                    <li><a href="#">Properties</a></li>
-                    <li><a href="#">Categories</a></li>
+                    <li><a>Download Selected</a></li>
+                    <li><a>Add to Favorites</a></li>
+                    <li><a>Properties</a></li>
+                    <li><a>Categories</a></li>
                   </ul>
                 </div>
                 <a id="btn-import" class="btn btn-focus requires-fileupload">Import Artifacts</a>
@@ -359,12 +359,12 @@
               </div>
               <div class="pagination sramp-artifacts-pager">
                 <ul>
-                  <li class="disabled"><a href="#">&#x00AB;</a></li>
-                  <li class="active"><a href="#">1</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li><a href="#">&#x00BB;</a></li>
+                  <li class="disabled"><a>&#x00AB;</a></li>
+                  <li class="active"><a>1</a></li>
+                  <li><a>2</a></li>
+                  <li><a>3</a></li>
+                  <li><a>4</a></li>
+                  <li><a>&#x00BB;</a></li>
                 </ul>
               </div>
             </div>
@@ -392,14 +392,14 @@
             <div class="input-append">
               <div class="uneditable-input"><i class="icon-file fileupload-exists"></i> 
                 <span class="fileupload-preview"></span>
-              </div><span class="btn btn-file"><span class="fileupload-new">Select</span><span class="fileupload-exists">Change</span><input type="file"></input></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+              </div><span class="btn btn-file"><span class="fileupload-new">Select</span><span class="fileupload-exists">Change</span><input type="file"></input></span><a class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-focus">Import</a>
+        <a class="btn" data-dismiss="modal">Cancel</a>
+        <a class="btn btn-focus">Import</a>
       </div>
     </div>
 
@@ -416,14 +416,14 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu">
-                <li><a href="#">Select All</a></li>
-                <li><a href="#">Select None</a></li>
+                <li><a>Select All</a></li>
+                <li><a>Select None</a></li>
               </ul>
             </div>
         </div>
         <ul class="ontology-selector">
           <li>
-            <a href="#" data-toggle="collapse" data-target="#ul-1"><i class="icon icon-minus"></i></a>
+            <a data-toggle="collapse" data-target="#ul-1"><i class="icon icon-minus"></i></a>
             <label>
               <input type="checkbox"></input>
               Species 1
@@ -437,7 +437,7 @@
                 </label>
               </li>
               <li>
-                <a href="#" data-toggle="collapse" data-target="#ul-2"><i class="icon icon-plus"></i></a>
+                <a data-toggle="collapse" data-target="#ul-2"><i class="icon icon-plus"></i></a>
                 <label>
                   <input type="checkbox"></input>
                   Subspecies 2
@@ -462,7 +462,7 @@
             </ul>
           </li>
           <li>
-            <a href="#" data-toggle="collapse" data-target="#ul-3"><i class="icon icon-minus"></i></a>
+            <a data-toggle="collapse" data-target="#ul-3"><i class="icon icon-minus"></i></a>
             <label>
               <input type="checkbox"></input>
               Species 2
@@ -476,7 +476,7 @@
                 </label>
               </li>
               <li>
-                <a href="#" data-toggle="collapse" data-target="#ul-4"><i class="icon icon-minus"></i></a>
+                <a data-toggle="collapse" data-target="#ul-4"><i class="icon icon-minus"></i></a>
                 <label>
                   <input type="checkbox"></input>
                   Subspecies 2-2
@@ -503,8 +503,8 @@
         </ul>
       </div>
       <div class="modal-footer">
-        <a href="#" class="btn btn-small" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-focus btn-small">OK</a>
+        <a class="btn btn-small" data-dismiss="modal">Cancel</a>
+        <a class="btn btn-focus btn-small">OK</a>
       </div>
     </div>
 

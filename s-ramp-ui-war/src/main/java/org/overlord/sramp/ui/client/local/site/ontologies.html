@@ -26,7 +26,7 @@
       <div class="sramp-navbar sramp-navbar-fixed-top">
         <div class="sramp-navbar-inner">
           <div class="container-fluid">
-            <a class="brand" href="#">JBoss - S-RAMP</a>
+            <a class="brand">JBoss - S-RAMP</a>
             <!-- Desktop Nav Controls (tabs, shadowman, etc) -->
             <div class="desktop-only">
               <ul class="nav">
@@ -35,19 +35,19 @@
                 <li><a href="settings.html" data-field="toSettingsPage" class="sramp-hl sramp-hl-settings">Settings</a></li>
               </ul>
               <div class="pull-right nav-shadowman"></div>
-              <div class="nav-user btn-group pull-right" style="margin-left: 20px">
+              <div data-field="navbarUserMenu" class="nav-user btn-group pull-right">
                 <button class="btn">John Doe</button>
                 <button class="btn dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Logout</a></li>
+                  <li><a>Logout</a></li>
                 </ul>
               </div>
             </div>
             <!-- Non-desktop navigation (phones, tablets) -->
             <div class="mobile-only">
-              <a href="#" id="mobile-nav-btn" data-toggle="collapse" data-target="#mobile-nav" class="pull-right">Menu</a>
+              <a id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@
           <li><a href="settings.html" data-field="toSettingsPageMobile" class="sramp-hl sramp-hl-settings">Settings</a></li>
           <!-- User Menu (logout, etc) -->
           <li class="nav-header">John Doe</li>
-          <li><a href="#">Logout</a></li>
+          <li><a data-field="toLogoutMobile">Logout</a></li>
         </ul>
       </div>
 
@@ -73,11 +73,11 @@
           <div id="ontologies" class="span2">
             <div class="sramp-ontology-box-header">Ontologies</div>
             <ul class="nav nav-pills nav-stacked">
-              <li class="active"><a href="#">Ontology 1</a></li>
-              <li><a href="#">Ontology 2</a></li>
-              <li><a href="#">Ontology 3</a></li>
+              <li class="active"><a>Ontology 1</a></li>
+              <li><a>Ontology 2</a></li>
+              <li><a>Ontology 3</a></li>
             </ul>
-            <a href="#" class="btn btn-small">Add Ontology</a>
+            <a class="btn btn-small">Add Ontology</a>
           </div>
           <div id="ontology-editor" class="span10">
             <div class="sramp-ontology-editor-canvas">
@@ -85,28 +85,28 @@
               <div class="sramp-ontology-tier">
                 <div class="sramp-ontology-tier-header"></div>
                 <ul class="nav nav-pills nav-stacked">
-                  <li><a href="#">Tier 1, Node 1</a></li>
-                  <li class="active"><a href="#">Tier 1, Node 2</a></li>
-                  <li><a href="#">Tier 1, Node 3</a></li>
-                  <li><a href="#">Tier 1, Node 4</a></li>
-                  <li><a href="#">Tier 1, Node 5</a></li>
+                  <li><a>Tier 1, Node 1</a></li>
+                  <li class="active"><a>Tier 1, Node 2</a></li>
+                  <li><a>Tier 1, Node 3</a></li>
+                  <li><a>Tier 1, Node 4</a></li>
+                  <li><a>Tier 1, Node 5</a></li>
                 </ul>
-                <a href="#" class="btn btn-small">Add Node</a>
+                <a class="btn btn-small">Add Node</a>
               </div>
               <!-- Ontology Tier 2 -->
               <div class="sramp-ontology-tier">
                 <div class="sramp-ontology-tier-header"></div>
                 <ul class="nav nav-pills nav-stacked">
-                  <li class="active"><a href="#">Tier 2, Node 1</a></li>
-                  <li><a href="#">Tier 2, Node 2</a></li>
-                  <li><a href="#">Tier 2, Node 3</a></li>
+                  <li class="active"><a>Tier 2, Node 1</a></li>
+                  <li><a>Tier 2, Node 2</a></li>
+                  <li><a>Tier 2, Node 3</a></li>
                 </ul>
-                <a href="#" class="btn btn-small">Add Node</a>
+                <a class="btn btn-small">Add Node</a>
               </div>
               <!-- Next Ontology Tier -->
               <div class="sramp-ontology-tier">
                 <div class="sramp-ontology-tier-header"></div>
-                <a href="#" class="btn btn-small">Add Level</a>
+                <a class="btn btn-small">Add Level</a>
               </div>
             </div>
           </div>

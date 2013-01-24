@@ -6,6 +6,14 @@ body {
   display: none;
 }
 
+a {
+  cursor: pointer;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
 input.sramp-date {
   cursor: pointer;
 }

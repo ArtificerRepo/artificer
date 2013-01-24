@@ -81,6 +81,7 @@
   <modules>
     <module>s-ramp-ui-war</module>
     <module>s-ramp-ui-war-jboss7</module>
+    <module>s-ramp-ui-widgets</module>
   </modules>
 
   <scm>

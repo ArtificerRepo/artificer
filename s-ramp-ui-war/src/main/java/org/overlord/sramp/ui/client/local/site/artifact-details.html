@@ -27,7 +27,7 @@
       <div class="sramp-navbar sramp-navbar-fixed-top">
         <div class="sramp-navbar-inner">
           <div class="container-fluid">
-            <a class="brand" href="#">JBoss - S-RAMP</a>
+            <a class="brand">JBoss - S-RAMP</a>
             <!-- Desktop Nav Controls (tabs, shadowman, etc) -->
             <div class="desktop-only">
               <ul class="nav">
@@ -36,19 +36,19 @@
                 <li><a href="settings.html" data-field="toSettingsPage" class="sramp-hl sramp-hl-settings">Settings</a></li>
               </ul>
               <div class="pull-right nav-shadowman"></div>
-              <div class="nav-user btn-group pull-right" style="margin-left: 20px">
+              <div data-field="navbarUserMenu" class="nav-user btn-group pull-right">
                 <button class="btn">John Doe</button>
                 <button class="btn dropdown-toggle" data-toggle="dropdown">
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Logout</a></li>
+                  <li><a>Logout</a></li>
                 </ul>
               </div>
             </div>
             <!-- Non-desktop navigation (phones, tablets) -->
             <div class="mobile-only">
-              <a href="#" id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
+              <a id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@
           <li><a href="settings.html" data-field="toSettingsPageMobile" class="sramp-hl sramp-hl-settings">Settings</a></li>
           <!-- User Menu (logout, etc) -->
           <li class="nav-header">John Doe</li>
-          <li><a href="#">Logout</a></li>
+          <li><a data-field="toLogoutMobile">Logout</a></li>
         </ul>
       </div>
 
@@ -80,10 +80,10 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu">
-                <li><a href="#">Download</a></li>
-                <li><a href="#">Add to Favorites</a></li>
-                <li><a href="#">Delete (Master)</a></li>
-                <li><a href="#">Delete (Referenced)</a></li>
+                <li><a>Download</a></li>
+                <li><a>Add to Favorites</a></li>
+                <li><a>Delete (Master)</a></li>
+                <li><a>Delete (Referenced)</a></li>
               </ul>
             </div>
             <div class="sramp-sp4n-label pull-right desktop-only">Derived from: <a href="artifact-details.html">Master Artifact 0</a></div>
@@ -105,9 +105,9 @@
                 <div class="row-fluid sramp-meta-data-section">
                   <div class="sramp-meta-data-section-header">Links</div>
                   <div class="clearfix"></div>
-                  <div class="sramp-meta-data-section-label"><a href="#">Download Content</a></div>
+                  <div class="sramp-meta-data-section-label"><a>Download Content</a></div>
                   <div class="clearfix"></div>
-                  <div class="sramp-meta-data-section-label"><a href="#">Download Meta Data</a></div>
+                  <div class="sramp-meta-data-section-label"><a>Download Meta Data</a></div>
                 </div>
                 <!-- Core and Custom Properties -->
                 <div class="row-fluid">
@@ -141,7 +141,7 @@
                     <div class="sramp-meta-data-section-label">custom-property-2:</div>
                     <div class="sramp-meta-data-section-value">Property value 2</div>
                     <div class="clearfix"></div>
-                    <a href="#" class="btn btn-mini">Add Property</a>
+                    <a class="btn btn-mini">Add Property</a>
                     <div class="clearfix"></div>
                   </div>
                 </div>
@@ -152,7 +152,7 @@
                   <div class="sramp-meta-data-section-label">Region:</div>
                   <div class="sramp-meta-data-section-value">United Kingdom</div>
                   <div class="clearfix"></div>
-                  <a href="#" class="btn btn-mini">Modify Classifiers</a>
+                  <a class="btn btn-mini">Modify Classifiers</a>
                   <div class="clearfix"></div>
                 </div>
               </div>
@@ -307,8 +307,8 @@
         </table>
       </div>
       <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-focus">Delete</a>
+        <a class="btn" data-dismiss="modal">Cancel</a>
+        <a class="btn btn-focus">Delete</a>
       </div>
     </div>
 
@@ -355,9 +355,9 @@
         </div>
       </div>
       <div class="modal-footer">
-        <a href="#" class="btn pull-left" data-toggle="collapse" data-target="#delete-dialog-refs">Show References <b class="caret"></b></a>
-        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a href="#" class="btn btn-focus">Delete</a>
+        <a class="btn pull-left" data-toggle="collapse" data-target="#delete-dialog-refs">Show References <b class="caret"></b></a>
+        <a class="btn" data-dismiss="modal">Cancel</a>
+        <a class="btn btn-focus">Delete</a>
       </div>
     </div>
 

@@ -21,7 +21,12 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.overlord.sramp.ui.client.local.SrampJS;
+import org.overlord.sramp.ui.client.local.widgets.bootstrap.SplitButtonDropdown;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -50,13 +55,41 @@ public abstract class AbstractPage extends Composite {
     protected TransitionAnchor<OntologiesPage> toOntologiesPageMobile;
     @Inject @DataField
     protected TransitionAnchor<SettingsPage> toSettingsPageMobile;
+    @Inject @DataField
+    protected Anchor toLogoutMobile;
+
+    /*
+     * Desktop: User Menu (top-right on navbar)
+     */
+    @Inject @DataField
+    protected SplitButtonDropdown navbarUserMenu;
 
     /**
      * Called after the page is constructed.
      */
     @PostConstruct
     private void postConstruct() {
+        // Call the SRAMP javascript every time the page loads.
         SrampJS.onPageLoad();
+        ClickHandler logoutClickHandler = new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                onLogout();
+                event.preventDefault();
+            }
+        };
+        // Add the Logout option to the desktop navbar action dropdown
+        navbarUserMenu.addOption("Logout", "logout").addClickHandler(logoutClickHandler);
+        // Listen for mobile logout link clicks
+        toLogoutMobile.addClickHandler(logoutClickHandler);
+    }
+
+    /**
+     * Handle the logic of logging out of the application.
+     */
+    protected void onLogout() {
+        // TODO implement logout logic here
+        Window.alert("Handle logout logic here! (TBD)");
     }
 
 }
