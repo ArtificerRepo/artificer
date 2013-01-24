@@ -23,6 +23,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.overlord.sramp.ui.client.local.SrampJS;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.SplitButtonDropdown;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -64,6 +66,12 @@ public abstract class AbstractPage extends Composite {
     @Inject @DataField
     protected SplitButtonDropdown navbarUserMenu;
 
+    /*
+     * Mobile: User Menu (slide-down)
+     */
+    @DataField
+    protected LIElement userMenuMobileLabel = Document.get().createLIElement();
+
     /**
      * Called after the page is constructed.
      */
@@ -78,6 +86,11 @@ public abstract class AbstractPage extends Composite {
                 event.preventDefault();
             }
         };
+
+        // Set the current user name in the header(s)
+        navbarUserMenu.setLabel("Eric Wittmann");
+        userMenuMobileLabel.setInnerText("Eric Wittmann");
+
         // Add the Logout option to the desktop navbar action dropdown
         navbarUserMenu.addOption("Logout", "logout").addClickHandler(logoutClickHandler);
         // Listen for mobile logout link clicks
