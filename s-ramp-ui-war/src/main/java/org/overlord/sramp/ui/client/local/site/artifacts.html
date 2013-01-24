@@ -74,7 +74,7 @@
       
         <div class="row-fluid">
           <!-- The Filter Sidebar -->
-          <div class="span3 sramp-filter-sidebar">
+          <div id="sramp-filter-sidebar" data-field="sramp-filter-sidebar" class="span3 sramp-filter-sidebar">
             <!-- Mobile-only header used to collapse the entire Filters section -->
             <div class="row-fluid mobile-header mobile-only">
               <a class="span12" data-toggle="slide" data-target="#sramp-filters">Filters <span class="caret pull-right"></span></a>
@@ -97,45 +97,45 @@
                         <form class="">
                           <div class="controls">
                             <label class="sramp-filter-label">Type</label>
-                            <input type="text" class="span12" data-provide="typeahead" data-items="6" data-source="[&quot;BrmsDocument&quot;,&quot;ComplexTypeDeclaration&quot;,&quot;Document&quot;,&quot;ElementDeclaration&quot;,&quot;MavenPom&quot;,&quot;PolicyDocument&quot;,&quot;SimpleTypeDeclaration&quot;,&quot;SwitchyardApplication&quot;,&quot;WsdlDocument&quot;,&quot;XmlDocument&quot;,&quot;XsdDocument&quot;]">
+                            <input data-field="artifactType" type="text" placeholder="Any (e.g. WsdlDocument)" class="span12">
                           </div>
                           <div class="controls controls-row">
                             <label class="sramp-filter-label">Date Created</label>
-                            <input class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
+                            <input data-field="dateCreatedFrom" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
                             <span class="span2 desktop-only" style="padding-top: 4px; text-align: center">to</span>
-                            <input class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
+                            <input data-field="dateCreatedTo" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
                           </div>
                           <div class="controls controls-row">
                             <label class="sramp-filter-label">Date Last Modified</label>
-                            <input class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
+                            <input data-field="dateModifiedFrom" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
                             <span class="span2 desktop-only" style="padding-top: 4px; text-align: center">to</span>
-                            <input class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
+                            <input data-field="dateModifiedTo" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
                           </div>
                           <div class="controls">
                             <label class="sramp-filter-label">Created By</label>
-                            <input class="span12" type="text" placeholder="Any">
+                            <input data-field="createdBy" class="span12" type="text" placeholder="Any">
                           </div>
                           <div class="controls">
                             <label class="sramp-filter-label">Last Modified By</label>
-                            <input class="span12" type="text" placeholder="Any">
+                            <input data-field="lastModifiedBy" class="span12" type="text" placeholder="Any">
                           </div>
                           <div class="controls controls-row">
                             <label class="sramp-filter-label">Origin</label>
                             <label class="radio offset1">
-                              <input type="radio" name="origin" id="origin-any" value="">
+                              <input data-field="originAny" type="radio" name="origin" id="origin-any" value="">
                               Any
                             </label>
                             <label class="radio offset1">
-                              <input type="radio" name="origin" id="origin-primary" value="primary" checked="checked">
+                              <input data-field="originPrimary" type="radio" name="origin" id="origin-primary" value="primary" checked="checked">
                               Primary
                             </label>
                             <label class="radio offset1">
-                              <input type="radio" name="origin" id="origin-derived" value="derived">
+                              <input data-field="originDerived" type="radio" name="origin" id="origin-derived" value="derived">
                               Derived
                             </label>
                           </div>
                           <div class="controls">
-                            <a class="btn btn-focus btn-clear">Clear All Filters</a>
+                            <a data-field="clearCoreFilters" class="btn btn-focus btn-clear">Clear All Filters</a>
                           </div>
                         </form>
                       </div>
