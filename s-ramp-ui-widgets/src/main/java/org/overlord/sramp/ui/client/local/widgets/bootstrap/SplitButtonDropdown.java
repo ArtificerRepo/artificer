@@ -37,7 +37,7 @@ public class SplitButtonDropdown extends FlowPanel {
      * Constructor.
      */
     public SplitButtonDropdown() {
-        this(ButtonSize.normal);
+        this(ButtonSizeEnum.normal);
     }
 
     /**
@@ -52,7 +52,7 @@ public class SplitButtonDropdown extends FlowPanel {
      * Constructor.
      * @param size
      */
-    public SplitButtonDropdown(ButtonSize size) {
+    public SplitButtonDropdown(ButtonSizeEnum size) {
         actionButton = new Button();
         actionButton.setText("John Doe");
         actionButton.getElement().setClassName(size.getButtonClasses());

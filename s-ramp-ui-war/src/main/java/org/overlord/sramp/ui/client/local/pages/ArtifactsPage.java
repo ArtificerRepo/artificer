@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.ui.client.local.pages;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -22,6 +23,11 @@ import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
+import org.overlord.sramp.ui.client.shared.ArtifactFilterBean;
+
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
 
 /**
  * The default "Artifacts" page.
@@ -35,5 +41,21 @@ public class ArtifactsPage extends AbstractPage {
 
     @Inject @DataField("sramp-filter-sidebar")
     protected ArtifactFilters filters;
+
+    /**
+     * Constructor.
+     */
+    public ArtifactsPage() {
+    }
+
+    @PostConstruct
+    protected void postConstruct() {
+        filters.addValueChangeHandler(new ValueChangeHandler<ArtifactFilterBean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<ArtifactFilterBean> event) {
+                Window.alert("Filters changed!");
+            }
+        });
+    }
 
 }

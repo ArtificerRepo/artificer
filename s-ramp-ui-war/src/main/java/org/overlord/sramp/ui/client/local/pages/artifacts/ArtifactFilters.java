@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.sramp.ui.client.local.widgets.bootstrap.DateBox;
 import org.overlord.sramp.ui.client.local.widgets.common.RadioButton;
 import org.overlord.sramp.ui.client.shared.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.ArtifactOriginEnum;
@@ -53,15 +54,15 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
 
     // Date Created
     @Inject @DataField
-    protected TextBox dateCreatedFrom;
+    protected DateBox dateCreatedFrom;
     @Inject @DataField
-    protected TextBox dateCreatedTo;
+    protected DateBox dateCreatedTo;
 
     // Date Modified
     @Inject @DataField
-    protected TextBox dateModifiedFrom;
+    protected DateBox dateModifiedFrom;
     @Inject @DataField
-    protected TextBox dateModifiedTo;
+    protected DateBox dateModifiedTo;
 
     // Create By
     @Inject @DataField
@@ -100,10 +101,10 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
             @Override
             public void onClick(ClickEvent event) {
                 artifactType.setValue("");
-                dateCreatedFrom.setValue("");
-                dateCreatedTo.setValue("");
-                dateModifiedFrom.setValue("");
-                dateModifiedTo.setValue("");
+                dateCreatedFrom.setDateValue(null);
+                dateCreatedTo.setDateValue(null);
+                dateModifiedFrom.setDateValue(null);
+                dateModifiedTo.setDateValue(null);
                 createdBy.setValue("");
                 lastModifiedBy.setValue("");
                 originPrimary.setValue(true);
@@ -135,10 +136,10 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
     protected void onFilterValueChange() {
         ArtifactFilterBean newState = new ArtifactFilterBean();
         newState.setArtifactType(artifactType.getValue())
-//            .setDateCreatedFrom(dateCreatedFrom.getValue())
-//            .setDateCreatedTo(dateCreatedTo.getValue())
-//            .setDateModifiedFrom(dateModifiedFrom.getValue())
-//            .setDateModifiedTo(dateModifiedTo.getValue())
+            .setDateCreatedFrom(dateCreatedFrom.getDateValue())
+            .setDateCreatedTo(dateCreatedTo.getDateValue())
+            .setDateModifiedFrom(dateModifiedFrom.getDateValue())
+            .setDateModifiedTo(dateModifiedTo.getDateValue())
             .setCreatedBy(createdBy.getValue())
             .setLastModifiedBy(lastModifiedBy.getValue())
             .setOrigin(ArtifactOriginEnum.valueOf(originAny.getValue(), originPrimary.getValue(), originDerived.getValue()));

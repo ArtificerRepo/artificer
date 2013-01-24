@@ -20,7 +20,7 @@ package org.overlord.sramp.ui.client.local.widgets.bootstrap;
  *
  * @author eric.wittmann@redhat.com
  */
-public enum ButtonSize {
+public enum ButtonSizeEnum {
 
     large("btn-large"),
     normal(null),
@@ -33,7 +33,7 @@ public enum ButtonSize {
      * Constructor.
      * @param c
      */
-    private ButtonSize(String c) {
+    private ButtonSizeEnum(String c) {
         this.c = c;
     }
 
