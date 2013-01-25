@@ -23,11 +23,12 @@ import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
-import org.overlord.sramp.ui.client.shared.ArtifactFilterBean;
+import org.overlord.sramp.ui.client.local.services.ArtifactSearchClientService;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The default "Artifacts" page.
@@ -39,8 +40,13 @@ import com.google.gwt.user.client.Window;
 @Dependent
 public class ArtifactsPage extends AbstractPage {
 
+    @Inject
+    protected ArtifactSearchClientService searchService;
+
     @Inject @DataField("sramp-filter-sidebar")
     protected ArtifactFilters filters;
+    @Inject @DataField("sramp-search-box")
+    protected TextBox searchBox;
 
     /**
      * Constructor.
@@ -48,14 +54,30 @@ public class ArtifactsPage extends AbstractPage {
     public ArtifactsPage() {
     }
 
+    /**
+     * Called after construction.
+     */
     @PostConstruct
     protected void postConstruct() {
         filters.addValueChangeHandler(new ValueChangeHandler<ArtifactFilterBean>() {
             @Override
             public void onValueChange(ValueChangeEvent<ArtifactFilterBean> event) {
-                Window.alert("Filters changed!");
+                doArtifactSearch();
             }
         });
+        searchBox.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                doArtifactSearch();
+            }
+        });
+    }
+
+    /**
+     * Search for artifacts based on the current filter settings and search text.
+     */
+    protected void doArtifactSearch() {
+        searchService.search(filters.getValue(), this.searchBox.getValue());
     }
 
 }

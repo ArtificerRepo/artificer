@@ -3,20 +3,44 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
 
+  <listener>
+    <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+  </listener>
+
+  <filter>
+    <filter-name>GWTCacheControl</filter-name>
+    <filter-class>org.overlord.sramp.ui.server.filters.GWTCacheControlFilter</filter-class>
+  </filter>
+  <filter>
+    <filter-name>ResourceCacheControl</filter-name>
+    <filter-class>org.overlord.sramp.ui.server.filters.ResourceCacheControlFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>GWTCacheControl</filter-name>
+    <url-pattern>/app/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ResourceCacheControl</filter-name>
+    <url-pattern>/css/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ResourceCacheControl</filter-name>
+    <url-pattern>/images/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ResourceCacheControl</filter-name>
+    <url-pattern>/js/*</url-pattern>
+  </filter-mapping>
+
   <servlet>
     <servlet-name>ErraiServlet</servlet-name>
     <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>ErraiServlet</servlet-name>
     <url-pattern>*.erraiBus</url-pattern>
   </servlet-mapping>
-
-  <listener>
-    <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
-  </listener>
 
   <resource-env-ref>
     <description>Object factory for the CDI Bean Manager</description>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.shared;
+package org.overlord.sramp.ui.client.shared.beans;
 
 import java.util.Date;
 
@@ -35,7 +35,7 @@ public class ArtifactFilterBean {
     private Date dateModifiedTo;
     private String createdBy;
     private String lastModifiedBy;
-    private ArtifactOriginEnum origin;
+    private ArtifactOriginEnum origin = ArtifactOriginEnum.primary;
 
     /**
      * Constructor.

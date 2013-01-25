@@ -23,8 +23,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.DateBox;
 import org.overlord.sramp.ui.client.local.widgets.common.RadioButton;
-import org.overlord.sramp.ui.client.shared.ArtifactFilterBean;
-import org.overlord.sramp.ui.client.shared.ArtifactOriginEnum;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactOriginEnum;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.TextBox;
 @Dependent
 public class ArtifactFilters extends Composite implements HasValueChangeHandlers<ArtifactFilterBean> {
 
-    private ArtifactFilterBean prevState = null;
+    private ArtifactFilterBean currentState = null;
 
     // Artifact Type
     @Inject @DataField
@@ -100,14 +100,7 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
         clearCoreFilters.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                artifactType.setValue("");
-                dateCreatedFrom.setDateValue(null);
-                dateCreatedTo.setDateValue(null);
-                dateModifiedFrom.setDateValue(null);
-                dateModifiedTo.setDateValue(null);
-                createdBy.setValue("");
-                lastModifiedBy.setValue("");
-                originPrimary.setValue(true);
+                setValue(new ArtifactFilterBean());
                 onFilterValueChange();
             }
         });
@@ -144,8 +137,10 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
             .setLastModifiedBy(lastModifiedBy.getValue())
             .setOrigin(ArtifactOriginEnum.valueOf(originAny.getValue(), originPrimary.getValue(), originDerived.getValue()));
 
-        ValueChangeEvent.fireIfNotEqual(this, this.prevState, newState);
-        this.prevState = newState;
+        ArtifactFilterBean oldState = this.currentState;
+        this.currentState = newState;
+        // Only fire a change event if something actually changed.
+        ValueChangeEvent.fireIfNotEqual(this, oldState, currentState);
     }
 
     /**
@@ -154,5 +149,33 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<ArtifactFilterBean> handler) {
         return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * @return the current filter settings
+     */
+    public ArtifactFilterBean getValue() {
+        return this.currentState;
+    }
+
+    /**
+     * @param value the new filter settings
+     */
+    public void setValue(ArtifactFilterBean value) {
+        artifactType.setValue(value.getArtifactType() == null ? "" : value.getArtifactType());
+        dateCreatedFrom.setDateValue(value.getDateCreatedFrom() == null ? null : value.getDateCreatedFrom());
+        dateCreatedTo.setDateValue(value.getDateCreatedTo() == null ? null : value.getDateCreatedTo());
+        dateModifiedFrom.setDateValue(value.getDateModifiedFrom() == null ? null : value.getDateModifiedFrom());
+        dateModifiedTo.setDateValue(value.getDateModifiedTo() == null ? null : value.getDateModifiedTo());
+        createdBy.setValue(value.getCreatedBy() == null ? "" : value.getCreatedBy());
+        lastModifiedBy.setValue(value.getLastModifiedBy() == null ? "" : value.getLastModifiedBy());
+        if (value.getOrigin() == ArtifactOriginEnum.any) {
+            originAny.setValue(true);
+        } else if (value.getOrigin() == ArtifactOriginEnum.derived) {
+            originDerived.setValue(true);
+        } else {
+            originPrimary.setValue(true);
+        }
+        onFilterValueChange();
     }
 }
