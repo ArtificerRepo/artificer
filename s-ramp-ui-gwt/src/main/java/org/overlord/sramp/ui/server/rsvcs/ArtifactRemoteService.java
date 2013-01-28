@@ -62,7 +62,7 @@ public class ArtifactRemoteService extends RemoteServiceServlet implements IArti
 
 			ArtifactDetails details = new ArtifactDetails();
 			details.setModel(artyType.getArtifactType().getModel());
-			details.setType(artyType.getArtifactType().getType());
+			details.setType(artyType.getType());
 			details.setUuid(artifact.getUuid());
 			details.setName(artifact.getName());
 			details.setDescription(artifact.getDescription());

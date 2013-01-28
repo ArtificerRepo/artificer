@@ -28,7 +28,7 @@ public enum ArtifactTypeFilter {
 	xsd("xsd", "/s-ramp/xsd", "views.browse.artifact.filter.xsd"),
 	wsdl("wsdl", "/s-ramp/wsdl", "views.browse.artifact.filter.wsdl"),
 	policy("policy", "/s-ramp/policy", "views.browse.artifact.filter.policy"),
-	user("user", "/s-ramp/user", "views.browse.artifact.filter.user"),
+	ext("ext", "/s-ramp/ext", "views.browse.artifact.filter.ext"),
 	doc("doc", "/s-ramp/core/Document", "views.browse.artifact.filter.doc");
 
 	private String code;
