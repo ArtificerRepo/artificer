@@ -20,10 +20,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
@@ -60,6 +62,8 @@ public class ArtifactDeriverFactory {
      * standard Java service loading mechanism.
      */
     private static void loadExtendedDerivers() {
+        // ultimately there will be two loaders - the current thread's context classloader
+        // and a single JAR loader over all JARs in the 'sramp.derivers.customDir' directory
         Collection<ClassLoader> loaders = new LinkedList<ClassLoader>();
         loaders.add(Thread.currentThread().getContextClassLoader());
 
@@ -69,15 +73,18 @@ public class ArtifactDeriverFactory {
         if (customDeriverDirPath != null && customDeriverDirPath.trim().length() > 0) {
             File directory = new File(customDeriverDirPath);
             if (directory.isDirectory()) {
+                List<URL> jarURLs = new ArrayList<URL>();
                 Collection<File> jarFiles = FileUtils.listFiles(directory, new String[] { "jar" }, false);
                 for (File jarFile : jarFiles) {
                     try {
                         URL jarUrl = jarFile.toURI().toURL();
-                        ClassLoader jarCL = new URLClassLoader(new URL[] { jarUrl }, Thread.currentThread().getContextClassLoader());
-                        loaders.add(jarCL);
+                        jarURLs.add(jarUrl);
                     } catch (MalformedURLException e) {
                     }
                 }
+                URL[] urls = jarURLs.toArray(new URL[jarURLs.size()]);
+                ClassLoader jarCL = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
+                loaders.add(jarCL);
             }
         }
 
