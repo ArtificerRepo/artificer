@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
- * The artifact filters sidebar.  Whenever the user changes any of the settings in
+ * The artifact filtersPanel sidebar.  Whenever the user changes any of the settings in
  * the filter sidebar, a ValueChangeEvent will be fired.
  *
  * @author eric.wittmann@redhat.com
@@ -80,7 +80,7 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
     @Inject @DataField
     protected RadioButton originDerived;
 
-    // Clear core filters
+    // Clear core filtersPanel
     @Inject @DataField
     protected Anchor clearCoreFilters;
 

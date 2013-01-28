@@ -21,12 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 import org.overlord.sramp.ui.client.shared.services.IArtifactSearchService;
-
-import com.google.gwt.user.client.Window;
 
 /**
  * Client-side service for making RPC calls to the remote search service.
@@ -34,7 +33,7 @@ import com.google.gwt.user.client.Window;
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class ArtifactSearchClientService {
+public class ArtifactSearchRpcService {
 
     @Inject
     private Caller<IArtifactSearchService> remoteSearchService;
@@ -42,7 +41,7 @@ public class ArtifactSearchClientService {
     /**
      * Constructor.
      */
-    public ArtifactSearchClientService() {
+    public ArtifactSearchRpcService() {
     }
 
     /**
@@ -50,14 +49,13 @@ public class ArtifactSearchClientService {
      * the caller.
      * @param filters
      * @param searchText
+     * @param handler
      */
-    public void search(ArtifactFilterBean filters, String searchText) {
-        remoteSearchService.call(new RemoteCallback<List<ArtifactSummaryBean>>() {
-            @Override
-            public void callback(List<ArtifactSummaryBean> response) {
-                Window.alert("Response from server: " + response.size() + " artifacts matched");
-            }
-        }).search(filters, searchText);
+    public void search(ArtifactFilterBean filters, String searchText,
+            final IRpcServiceInvocationHandler<List<ArtifactSummaryBean>> handler) {
+        RemoteCallback<List<ArtifactSummaryBean>> successCallback = new DelegatingRemoteCallback<List<ArtifactSummaryBean>>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        remoteSearchService.call(successCallback, errorCallback).search(filters, searchText);
     }
 
 }

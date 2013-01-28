@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.ui.client.local.pages;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -23,11 +25,15 @@ import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
-import org.overlord.sramp.ui.client.local.services.ArtifactSearchClientService;
+import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
+import org.overlord.sramp.ui.client.local.services.ArtifactSearchRpcService;
+import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -41,12 +47,15 @@ import com.google.gwt.user.client.ui.TextBox;
 public class ArtifactsPage extends AbstractPage {
 
     @Inject
-    protected ArtifactSearchClientService searchService;
+    protected ArtifactSearchRpcService searchService;
 
     @Inject @DataField("sramp-filter-sidebar")
-    protected ArtifactFilters filters;
+    protected ArtifactFilters filtersPanel;
     @Inject @DataField("sramp-search-box")
     protected TextBox searchBox;
+
+    @Inject @DataField("sramp-artifacts-table")
+    protected ArtifactsTable artifactsTable;
 
     /**
      * Constructor.
@@ -59,7 +68,7 @@ public class ArtifactsPage extends AbstractPage {
      */
     @PostConstruct
     protected void postConstruct() {
-        filters.addValueChangeHandler(new ValueChangeHandler<ArtifactFilterBean>() {
+        filtersPanel.addValueChangeHandler(new ValueChangeHandler<ArtifactFilterBean>() {
             @Override
             public void onValueChange(ValueChangeEvent<ArtifactFilterBean> event) {
                 doArtifactSearch();
@@ -71,13 +80,39 @@ public class ArtifactsPage extends AbstractPage {
                 doArtifactSearch();
             }
         });
+        // Hide columns 2-5 when in mobile mode.
+        artifactsTable.setColumnClasses(2, "desktop-only");
+        artifactsTable.setColumnClasses(3, "desktop-only");
+        artifactsTable.setColumnClasses(4, "desktop-only");
+        artifactsTable.setColumnClasses(5, "desktop-only");
     }
 
     /**
      * Search for artifacts based on the current filter settings and search text.
      */
     protected void doArtifactSearch() {
-        searchService.search(filters.getValue(), this.searchBox.getValue());
+        searchService.search(filtersPanel.getValue(), this.searchBox.getValue(), new IRpcServiceInvocationHandler<List<ArtifactSummaryBean>>() {
+            @Override
+            public void onReturn(List<ArtifactSummaryBean> data) {
+                updateArtifactTable(data);
+            }
+            @Override
+            public void onError(Throwable error) {
+                Window.alert("Error finding artifacts: " + error.getMessage());
+//                artifactsTable.setVisible(false);
+            }
+        });
+    }
+
+    /**
+     * Updates the table of artifacts with the given data.
+     * @param data
+     */
+    protected void updateArtifactTable(List<ArtifactSummaryBean> data) {
+        this.artifactsTable.clear();
+        for (ArtifactSummaryBean artifactSummaryBean : data) {
+            this.artifactsTable.addRow(artifactSummaryBean);
+        }
     }
 
 }

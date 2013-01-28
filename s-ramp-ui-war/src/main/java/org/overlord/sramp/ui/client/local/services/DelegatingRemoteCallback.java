@@ -13,27 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.shared.services;
+package org.overlord.sramp.ui.client.local.services;
 
-import java.util.List;
-
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
+import org.jboss.errai.common.client.api.RemoteCallback;
 
 /**
- * Provides a way to search for artifacts.
  *
  * @author eric.wittmann@redhat.com
  */
-@Remote
-public interface IArtifactSearchService {
+public class DelegatingRemoteCallback<T> implements RemoteCallback<T> {
+
+    private IRpcServiceInvocationHandler<T> handler;
 
     /**
-     * Search for artifacts using the given filtersPanel and search text.
-     * @param filtersPanel
-     * @param searchText
+     * Constructor.
+     * @param handler
      */
-    public List<ArtifactSummaryBean> search(ArtifactFilterBean filters, String searchText);
+    public DelegatingRemoteCallback(IRpcServiceInvocationHandler<T> handler) {
+        this.handler = handler;
+    }
+
+    /**
+     * @see org.jboss.errai.common.client.api.RemoteCallback#callback(java.lang.Object)
+     */
+    @Override
+    public void callback(T response) {
+        this.handler.onReturn(response);
+    }
 
 }

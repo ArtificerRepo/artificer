@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.shared.services;
-
-import java.util.List;
-
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
+package org.overlord.sramp.ui.client.local.services;
 
 /**
- * Provides a way to search for artifacts.
+ * An async handler interface for making service invocations.
  *
  * @author eric.wittmann@redhat.com
  */
-@Remote
-public interface IArtifactSearchService {
+public interface IRpcServiceInvocationHandler<T> {
 
     /**
-     * Search for artifacts using the given filtersPanel and search text.
-     * @param filtersPanel
-     * @param searchText
+     * Called when the RPC call successfully returns data.
+     * @param data
      */
-    public List<ArtifactSummaryBean> search(ArtifactFilterBean filters, String searchText);
+    public void onReturn(T data);
+
+    /**
+     * Called when the RPC call fails.
+     * @param error
+     */
+    public void onError(Throwable error);
 
 }
