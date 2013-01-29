@@ -22,6 +22,10 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.overlord.sramp.shell.api.ShellContext;
+import org.overlord.sramp.shell.api.ShellContextEventHandler;
+import org.overlord.sramp.shell.api.ShellContextVariableLifecycleHandler;
+
 /**
  * Implementation of the shell context.
  *
@@ -40,7 +44,7 @@ public class ShellContextImpl implements ShellContext {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContext#setVariable(javax.xml.namespace.QName, java.lang.Object)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContext#setVariable(javax.xml.namespace.QName, java.lang.Object)
 	 */
 	@Override
 	public void setVariable(QName name, Object object) {
@@ -54,7 +58,7 @@ public class ShellContextImpl implements ShellContext {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContext#setVariable(javax.xml.namespace.QName, java.lang.Object, org.overlord.sramp.common.shell.ShellContextVariableLifecycleHandler)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContext#setVariable(javax.xml.namespace.QName, java.lang.Object, org.overlord.sramp.shell.api.shell.ShellContextVariableLifecycleHandler)
 	 */
 	@Override
 	public void setVariable(QName name, Object object, ShellContextVariableLifecycleHandler lifecycleHandler) {
@@ -65,7 +69,7 @@ public class ShellContextImpl implements ShellContext {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContext#getVariable(javax.xml.namespace.QName)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContext#getVariable(javax.xml.namespace.QName)
 	 */
 	@Override
 	public Object getVariable(QName name) {
@@ -73,7 +77,7 @@ public class ShellContextImpl implements ShellContext {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContext#removeVariable(javax.xml.namespace.QName)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContext#removeVariable(javax.xml.namespace.QName)
 	 */
 	@Override
 	public Object removeVariable(QName name) {
@@ -104,7 +108,7 @@ public class ShellContextImpl implements ShellContext {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContext#addHandler(org.overlord.sramp.common.shell.ShellContextEventHandler)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContext#addHandler(org.overlord.sramp.shell.api.shell.ShellContextEventHandler)
 	 */
 	@Override
 	public void addHandler(ShellContextEventHandler handler) {
@@ -112,7 +116,7 @@ public class ShellContextImpl implements ShellContext {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContext#removeHandler(org.overlord.sramp.common.shell.ShellContextEventHandler)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContext#removeHandler(org.overlord.sramp.shell.api.shell.ShellContextEventHandler)
 	 */
 	@Override
 	public void removeHandler(ShellContextEventHandler handler) {

@@ -21,7 +21,9 @@ import java.io.Writer;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.sramp.shell.commands.Arguments;
+import org.overlord.sramp.shell.api.Arguments;
+import org.overlord.sramp.shell.api.ShellCommand;
+import org.overlord.sramp.shell.api.ShellContext;
 import org.overlord.sramp.shell.commands.NoOpCommand;
 
 /**

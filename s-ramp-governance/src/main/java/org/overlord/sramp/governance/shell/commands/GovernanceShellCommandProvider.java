@@ -18,8 +18,8 @@ package org.overlord.sramp.governance.shell.commands;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.overlord.sramp.shell.ShellCommand;
-import org.overlord.sramp.shell.ShellCommandProvider;
+import org.overlord.sramp.shell.api.ShellCommand;
+import org.overlord.sramp.shell.api.ShellCommandProvider;
 
 /**
  *

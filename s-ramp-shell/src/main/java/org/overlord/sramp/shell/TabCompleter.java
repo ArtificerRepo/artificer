@@ -21,7 +21,9 @@ import javax.xml.namespace.QName;
 
 import jline.console.completer.Completer;
 
-import org.overlord.sramp.shell.commands.Arguments;
+import org.overlord.sramp.shell.api.Arguments;
+import org.overlord.sramp.shell.api.ShellCommand;
+import org.overlord.sramp.shell.api.ShellContext;
 
 /**
  * Implements tab completion for the interactive

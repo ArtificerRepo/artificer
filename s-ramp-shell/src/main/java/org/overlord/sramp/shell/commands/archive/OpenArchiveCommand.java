@@ -20,8 +20,8 @@ import java.io.File;
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.shell.AbstractShellCommand;
 import org.overlord.sramp.shell.AbstractShellContextVariableLifecycleHandler;
+import org.overlord.sramp.shell.api.AbstractShellCommand;
 
 /**
  * Opens an existing S-RAMP batch archive.
@@ -37,7 +37,7 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printUsage()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
 	 */
 	@Override
 	public void printUsage() {
@@ -45,7 +45,7 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printHelp()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
 	 */
 	@Override
 	public void printHelp() {
@@ -55,7 +55,7 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#execute()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {

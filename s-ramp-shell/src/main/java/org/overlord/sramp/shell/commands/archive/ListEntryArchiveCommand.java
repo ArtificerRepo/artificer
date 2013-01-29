@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
-import org.overlord.sramp.shell.AbstractShellCommand;
+import org.overlord.sramp.shell.api.AbstractShellCommand;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
@@ -38,7 +38,7 @@ public class ListEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printUsage()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
 	 */
 	@Override
 	public void printUsage() {
@@ -46,7 +46,7 @@ public class ListEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printHelp()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
 	 */
 	@Override
 	public void printHelp() {
@@ -56,7 +56,7 @@ public class ListEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#execute()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {

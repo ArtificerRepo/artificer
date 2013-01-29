@@ -24,8 +24,8 @@ import javax.xml.namespace.QName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.shell.AbstractShellCommand;
-import org.overlord.sramp.shell.commands.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.util.FileNameCompleter;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
@@ -44,7 +44,7 @@ public class UpdateContentCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printUsage()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
 	 */
 	@Override
 	public void printUsage() {
@@ -52,7 +52,7 @@ public class UpdateContentCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printHelp()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
 	 */
 	@Override
 	public void printHelp() {
@@ -65,7 +65,7 @@ public class UpdateContentCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#execute()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
@@ -103,7 +103,7 @@ public class UpdateContentCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
 	 */
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {

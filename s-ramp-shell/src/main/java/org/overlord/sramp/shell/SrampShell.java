@@ -17,7 +17,8 @@ package org.overlord.sramp.shell;
 
 import java.io.IOException;
 
-import org.overlord.sramp.shell.commands.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.api.ShellCommand;
 
 
 /**

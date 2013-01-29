@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.shell.commands;
+package org.overlord.sramp.shell.api;
 
 import java.util.ArrayList;
 

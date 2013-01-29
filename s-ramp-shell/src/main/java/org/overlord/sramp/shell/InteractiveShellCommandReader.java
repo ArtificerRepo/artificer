@@ -20,6 +20,8 @@ import java.io.Writer;
 
 import javax.xml.namespace.QName;
 
+import org.overlord.sramp.shell.api.ShellContextEventHandler;
+
 import jline.console.ConsoleReader;
 
 /**
@@ -95,7 +97,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContextEventHandler#onVariableAdded(javax.xml.namespace.QName, java.lang.Object)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContextEventHandler#onVariableAdded(javax.xml.namespace.QName, java.lang.Object)
 	 */
 	@Override
 	public void onVariableAdded(QName variableName, Object value) {
@@ -105,7 +107,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContextEventHandler#onVariableChanged(javax.xml.namespace.QName, java.lang.Object)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContextEventHandler#onVariableChanged(javax.xml.namespace.QName, java.lang.Object)
 	 */
 	@Override
 	public void onVariableChanged(QName variableName, Object value) {
@@ -113,7 +115,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContextEventHandler#onVariableRemoved(javax.xml.namespace.QName)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContextEventHandler#onVariableRemoved(javax.xml.namespace.QName)
 	 */
 	@Override
 	public void onVariableRemoved(QName variableName) {
