@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.jcr;
+package org.overlord.sramp.repository.jcr.modeshape;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
 
 /**
  * Cleans the JCR repository to get it ready for a unit test.  This class
@@ -41,7 +43,7 @@ public class JCRRepositoryCleaner {
 	public void clean() {
 		Session session = null;
 		try {
-            session = JCRRepository.getSession();
+            session = JCRRepositoryFactory.getAnonymousSession();
             Node artifactContentRoot = getNode(session, "/artifact");
             if (artifactContentRoot != null) {
 	        	artifactContentRoot.remove();
@@ -56,7 +58,7 @@ public class JCRRepositoryCleaner {
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		} finally {
-			JCRRepository.logoutQuietly(session);
+			JCRRepositoryFactory.logoutQuietly(session);
 		}
 	}
 

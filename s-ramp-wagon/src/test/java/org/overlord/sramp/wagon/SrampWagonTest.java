@@ -40,7 +40,7 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepository;
-import org.overlord.sramp.repository.jcr.JCRRepositoryCleaner;
+import org.overlord.sramp.repository.jcr.modeshape.JCRRepositoryCleaner;
 import org.overlord.sramp.server.atom.services.ArtifactResource;
 import org.overlord.sramp.server.atom.services.BatchResource;
 import org.overlord.sramp.server.atom.services.FeedResource;

@@ -102,6 +102,25 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.modeshape</groupId>
+      <artifactId>modeshape-common</artifactId>
+      <version>${org.modeshape.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.modeshape</groupId>
+      <artifactId>modeshape-jcr</artifactId>
+      <version>${org.modeshape.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>tjws</artifactId>
       <version>${org.jboss.resteasy.version}</version>

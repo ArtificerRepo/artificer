@@ -28,6 +28,7 @@
 			<artifactId>s-ramp-repository</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
@@ -35,32 +36,8 @@
       <scope>provided</scope>
     </dependency>
 
-		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-jcr</artifactId>
-			<version>${org.modeshape.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-common</artifactId>
-			<version>${org.modeshape.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.infinispan</groupId>
-			<artifactId>infinispan-cachestore-bdbje</artifactId>
-			<version>${infinispan.version}</version>
-      <scope>runtime</scope>
-		</dependency>
-		<!-- Common libraries -->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
-		</dependency>
 		<!-- Testing (note the scope) -->
+    
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
