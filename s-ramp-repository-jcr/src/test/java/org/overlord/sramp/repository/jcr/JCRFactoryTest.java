@@ -23,7 +23,6 @@ import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
-import org.overlord.sramp.repository.jcr.JCRPersistence;
 
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>

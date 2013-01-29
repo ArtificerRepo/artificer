@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.shell;
+package org.overlord.sramp.shell.api;
 
 import java.io.Writer;
 import java.util.List;
-
-import org.overlord.sramp.shell.commands.Arguments;
 
 /**
  * Interface implemented by all shell commands.

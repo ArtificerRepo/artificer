@@ -17,6 +17,8 @@ package org.overlord.sramp.shell;
 
 import java.io.IOException;
 
+import org.overlord.sramp.shell.api.ShellCommand;
+
 /**
  * Interface used to read commands from the user (or some other source, like
  * an input file).

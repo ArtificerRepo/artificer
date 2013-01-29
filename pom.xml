@@ -348,6 +348,7 @@
     <module>s-ramp-wagon</module>
     <module>s-ramp-workflows</module>
     <module>s-ramp-workitems</module>
+    <module>s-ramp-shell-api</module>
   </modules>
 </project>
 
