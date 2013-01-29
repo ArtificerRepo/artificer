@@ -16,6 +16,7 @@
 package org.overlord.sramp.server.atom.services;
 
 import static org.jboss.resteasy.test.TestPortProvider.generateURL;
+import static org.jboss.resteasy.test.TestPortProvider.getPort;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.jboss.resteasy.client.ClientResponse;
@@ -39,6 +40,7 @@ public class ServiceDocumentResourceTest extends AbstractResourceTest {
 
        String actual = AbstractWorkspaceTest.marshall(appService);
        String expected = AbstractWorkspaceTest.getExpectedWorkspaceXML("servicedocument");
+       expected = expected.replace("RE_PORT", String.valueOf(getPort()));
        XMLAssert.assertXMLEqual(expected, actual);
     }
 

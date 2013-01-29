@@ -122,7 +122,9 @@ public class SrampWagonTest extends BaseResourceTest {
 		// what we intended.
 		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/"));
 		QueryResultSet rset = client.query("/s-ramp/core/Document");
-		Assert.assertEquals(2, rset.size());
+		Assert.assertEquals(1, rset.size());
+        rset = client.query("/s-ramp/ext/MavenPom");
+        Assert.assertEquals(1, rset.size());
 		rset = client.query("/s-ramp/xsd/XsdDocument");
 		Assert.assertEquals(3, rset.size());
 		rset = client.query("/s-ramp/wsdl/WsdlDocument");
