@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.jcr;
+package org.overlord.sramp.repository.jcr.modeshape;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,6 +24,7 @@ import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.QueryManager;
 import org.overlord.sramp.repository.QueryManagerFactory;
+import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public abstract class AbstractJCRPersistenceTest {
     @BeforeClass
     public static void setupPersistence() {
 		// use the in-memory config for unit tests
-		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
+		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepositoryFactory.class.getName()
 				+ "/META-INF/modeshape-configs/inmemory-sramp-config.json");
 
         persistenceManager = PersistenceFactory.newInstance();

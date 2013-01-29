@@ -41,7 +41,7 @@ import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.repository.PersistenceFactory;
-import org.overlord.sramp.repository.jcr.JCRRepository;
+import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
 import org.overlord.sramp.server.atom.services.ArtifactResource;
 import org.overlord.sramp.server.atom.services.BatchResource;
 import org.overlord.sramp.server.atom.services.FeedResource;
@@ -60,7 +60,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// use the in-memory config for unit tests
-		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
+		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepositoryFactory.class.getName()
 				+ "/META-INF/modeshape-configs/inmemory-sramp-config.json");
 
 		deployment.getProviderFactory().registerProvider(SrampAtomExceptionProvider.class);
