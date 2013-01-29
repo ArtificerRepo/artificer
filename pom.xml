@@ -342,6 +342,7 @@
     <module>s-ramp-governance</module>
     <module>s-ramp-repository</module>
     <module>s-ramp-repository-jcr</module>
+    <module>s-ramp-repository-jcr/modeshape</module>
     <module>s-ramp-server</module>
     <module>s-ramp-shell</module>
     <module>s-ramp-wagon</module>

@@ -29,7 +29,7 @@ import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.repository.jcr.JCRPersistence;
-import org.overlord.sramp.repository.jcr.JCRRepository;
+import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
 import org.overlord.sramp.repository.query.AbstractSrampQueryImpl;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.QueryExecutionException;
@@ -74,7 +74,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 	protected ArtifactSet executeQuery(Query queryModel) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepository.getSession();
+			session = JCRRepositoryFactory.getAnonymousSession();
 			javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
 			String jcrSql2Query = createSql2Query(queryModel);
 			if (log.isDebugEnabled()) {
@@ -96,12 +96,12 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 		} catch (SrampException e) {
             // Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
             // responsible for closing the session.
-            JCRRepository.logoutQuietly(session);
+            JCRRepositoryFactory.logoutQuietly(session);
 		    throw e;
 		} catch (Throwable t) {
 			// Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
 			// responsible for closing the session.
-			JCRRepository.logoutQuietly(session);
+			JCRRepositoryFactory.logoutQuietly(session);
 			throw new QueryExecutionException(t);
 		}
 	}

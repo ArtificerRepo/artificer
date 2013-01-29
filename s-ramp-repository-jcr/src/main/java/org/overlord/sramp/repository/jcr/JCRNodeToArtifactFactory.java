@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class JCRNodeToArtifactFactory {
 
-    private static Logger log = LoggerFactory.getLogger(JCRRepository.class);
+    private static Logger log = LoggerFactory.getLogger(JCRRepositoryFactory.class);
 
 	/**
 	 * Private constructor.
