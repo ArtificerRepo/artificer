@@ -33,6 +33,8 @@ import java.util.TreeSet;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
+import org.overlord.sramp.shell.api.ShellCommand;
+import org.overlord.sramp.shell.api.ShellCommandProvider;
 import org.overlord.sramp.shell.commands.CommandNotFoundCommand;
 import org.overlord.sramp.shell.commands.ExitCommand;
 import org.overlord.sramp.shell.commands.HelpCommand;

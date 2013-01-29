@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.shell;
 
+import org.overlord.sramp.shell.api.ShellContextVariableLifecycleHandler;
+
 /**
  * Base class for shell context variable lifecycle handlers.
  *
@@ -29,7 +31,7 @@ public abstract class AbstractShellContextVariableLifecycleHandler implements Sh
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContextVariableLifecycleHandler#onAdd(java.lang.Object)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContextVariableLifecycleHandler#onAdd(java.lang.Object)
 	 */
 	@Override
 	public boolean onAdd(Object object) {
@@ -37,14 +39,14 @@ public abstract class AbstractShellContextVariableLifecycleHandler implements Sh
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContextVariableLifecycleHandler#onRemove(java.lang.Object)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContextVariableLifecycleHandler#onRemove(java.lang.Object)
 	 */
 	@Override
 	public void onRemove(Object object) {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellContextVariableLifecycleHandler#onContextDestroyed(java.lang.Object)
+	 * @see org.overlord.sramp.shell.api.shell.ShellContextVariableLifecycleHandler#onContextDestroyed(java.lang.Object)
 	 */
 	@Override
 	public void onContextDestroyed(Object object) {

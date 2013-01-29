@@ -25,9 +25,9 @@ import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.shell.AbstractShellCommand;
-import org.overlord.sramp.shell.ShellContext;
-import org.overlord.sramp.shell.commands.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.api.ShellContext;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -44,7 +44,7 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printUsage()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
 	 */
 	@Override
 	public void printUsage() {
@@ -57,7 +57,7 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printHelp()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
 	 */
 	@Override
 	public void printHelp() {
@@ -75,7 +75,7 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#execute()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {

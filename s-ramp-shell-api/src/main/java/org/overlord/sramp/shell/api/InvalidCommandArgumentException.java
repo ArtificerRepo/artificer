@@ -13,32 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.shell;
+package org.overlord.sramp.shell.api;
 
 /**
- * Lifecycle handler for a shell context variable.
+ * An exception thrown when an argument to a command is invalid.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface ShellContextVariableLifecycleHandler {
+public class InvalidCommandArgumentException extends Exception {
+
+	private static final long serialVersionUID = 1720878965735759391L;
+
+	private int argumentIndex;
 
 	/**
-	 * Called before the object is added to the context.
-	 * @param object
-	 * @return boolean true if the object should be added, false to reject
+	 * Constructor.
 	 */
-	public boolean onAdd(Object object);
+	public InvalidCommandArgumentException(int argumentIndex, String message) {
+		super(message);
+		this.setArgumentIndex(argumentIndex);
+	}
 
 	/**
-	 * Called after the object has been removed from the context.
-	 * @param object
+	 * @return the argumentIndex
 	 */
-	public void onRemove(Object object);
+	public int getArgumentIndex() {
+		return argumentIndex;
+	}
 
 	/**
-	 * Called when the shell context is destroyed.
-	 * @param object
+	 * @param argumentIndex the argumentIndex to set
 	 */
-	public void onContextDestroyed(Object object);
+	public void setArgumentIndex(int argumentIndex) {
+		this.argumentIndex = argumentIndex;
+	}
 
 }

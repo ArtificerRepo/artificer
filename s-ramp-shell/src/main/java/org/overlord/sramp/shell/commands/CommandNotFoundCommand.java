@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.shell.commands;
 
-import org.overlord.sramp.shell.AbstractShellCommand;
+import org.overlord.sramp.shell.api.AbstractShellCommand;
 
 /**
  * The command used when a command does not exist for a given command name.
@@ -31,21 +31,21 @@ public class CommandNotFoundCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printUsage()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
 	 */
 	@Override
 	public void printUsage() {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printHelp()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
 	 */
 	@Override
 	public void printHelp() {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#execute()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() {
