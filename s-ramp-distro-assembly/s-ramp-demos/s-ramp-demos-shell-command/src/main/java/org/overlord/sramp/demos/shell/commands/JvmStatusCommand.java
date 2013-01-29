@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.overlord.sramp.shell.AbstractShellCommand;
+import org.overlord.sramp.shell.api.AbstractShellCommand;
 
 /**
  * Displays the status of the currently running JVM.  This command is not
@@ -35,7 +35,7 @@ public class JvmStatusCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.common.shell.ShellCommand#printUsage()
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
      */
     @Override
     public void printUsage() {
@@ -44,7 +44,7 @@ public class JvmStatusCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.common.shell.ShellCommand#printHelp()
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
      */
     @Override
     public void printHelp() {
@@ -58,7 +58,7 @@ public class JvmStatusCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.common.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
      */
     @Override
     public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
@@ -82,7 +82,7 @@ public class JvmStatusCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.common.shell.ShellCommand#execute()
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
      */
     @Override
     public void execute() throws Exception {

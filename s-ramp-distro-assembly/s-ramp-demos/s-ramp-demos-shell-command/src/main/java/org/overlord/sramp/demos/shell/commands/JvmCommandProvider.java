@@ -18,8 +18,8 @@ package org.overlord.sramp.demos.shell.commands;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.overlord.sramp.shell.ShellCommand;
-import org.overlord.sramp.shell.ShellCommandProvider;
+import org.overlord.sramp.shell.api.ShellCommand;
+import org.overlord.sramp.shell.api.ShellCommandProvider;
 
 /**
  * Demonstrates how to contribute custom commands to the S-RAMP interactive shell.
@@ -35,7 +35,7 @@ public class JvmCommandProvider implements ShellCommandProvider {
     }
 
     /**
-     * @see org.overlord.sramp.common.shell.ShellCommandProvider#getNamespace()
+     * @see org.overlord.sramp.shell.api.shell.ShellCommandProvider#getNamespace()
      */
     @Override
     public String getNamespace() {
@@ -43,7 +43,7 @@ public class JvmCommandProvider implements ShellCommandProvider {
     }
 
     /**
-     * @see org.overlord.sramp.common.shell.ShellCommandProvider#provideCommands()
+     * @see org.overlord.sramp.shell.api.shell.ShellCommandProvider#provideCommands()
      */
     @Override
     public Map<String, Class<? extends ShellCommand>> provideCommands() {

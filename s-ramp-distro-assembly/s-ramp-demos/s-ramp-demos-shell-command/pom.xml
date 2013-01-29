@@ -17,7 +17,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-shell</artifactId>
+      <artifactId>s-ramp-shell-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
