@@ -28,6 +28,7 @@
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-jcr-api</artifactId>
       <version>${org.modeshape.version}</version>
+      <scope>provided</scope>
     </dependency>
    
     <!-- may not need this later -->
