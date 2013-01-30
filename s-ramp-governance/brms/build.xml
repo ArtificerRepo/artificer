@@ -16,7 +16,7 @@
     </fileset>
   </path>
 
-  <target name="install">
+    <target name="install">
     <mkdir dir="${sramp.jbpm5.dir}" />
     <echo>Downloading the jbpm5.4 installer. This may take a while, go get some coffee</echo>
     <get src="${sramp.jbpm5.url}" dest="${sramp.jbpm5.dir}" usetimestamp="true" />
@@ -35,12 +35,9 @@
   	<get src="${sramp.modeshape.url}" dest="${sramp.jbpm5.dir}/modeshape-3.1.0.Final-jbossas-71-dist.zip" usetimestamp="true" />
   	<unzip src="${sramp.jbpm5.dir}/modeshape-3.1.0.Final-jbossas-71-dist.zip" dest="${sramp.jboss.home}" overwrite="false" />
   	<echo>Removing Modeshape wars</echo>
-  	<delete dir="${sramp.jboss.home}/standalone/deployments/modeshape-cmis.war*"/>
-  	<delete file="${sramp.jboss.home}/standalone/deployments/modeshape-cmis.war*"/>
-  	<delete dir="${sramp.jboss.home}/standalone/deployments/modeshape-rest.war"/>
-  	<delete file="${sramp.jboss.home}/standalone/deployments/modeshape-rest.war*"/>
-  	<delete dir="${sramp.jboss.home}/standalone/deployments/modeshape-webdav.war"/>
-  	<delete file="${sramp.jboss.home}/standalone/deployments/modeshape-webdav.war*"/>
+  	<delete includeEmptyDirs="true">
+  		<fileset dir="${sramp.jboss.home}/standalone/deployments" includes="modeshape*/**" />
+  	</delete>
   	<echo>Adding Modeshape S-RAMP Repository configuration</echo>
   	<copy tofile="${sramp.jboss.home}/standalone/configuration/standalone.xml" file="updates/standalone.xml" overwrite="true"/>
   	<echo>increasing memory settings</echo>
