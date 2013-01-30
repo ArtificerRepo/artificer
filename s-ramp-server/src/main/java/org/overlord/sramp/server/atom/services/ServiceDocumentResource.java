@@ -88,7 +88,8 @@ public class ServiceDocumentResource extends AbstractResource {
 	 * Gets the raw URL path from the injected {@link UriInfo}.
 	 */
 	private String getBaseUri(){
-		String uri = uriInfo.getBaseUri().toString();
+	    String uri = null;
+	    if (uriInfo!=null) uri = uriInfo.getBaseUri().toString();
 		if (uri == null) {
 			uri = "http://localhost:8080/s-ramp-server/";
 		}

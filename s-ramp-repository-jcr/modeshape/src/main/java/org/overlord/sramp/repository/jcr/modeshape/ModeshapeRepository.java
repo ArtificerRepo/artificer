@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Resource;
 import javax.jcr.Credentials;
 import javax.jcr.LoginException;
 import javax.jcr.NamespaceRegistry;
@@ -35,6 +34,8 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
@@ -53,8 +54,8 @@ import org.slf4j.LoggerFactory;
 public class ModeshapeRepository extends JCRRepository {
 
 	private static Logger log = LoggerFactory.getLogger(ModeshapeRepository.class);
+	private static String S_RAMP_JNDI = "jcr/sramp";
 
-	@Resource(mappedName="java:/jcr/sramp")
 	private Repository repository;
 	
 	private RepositoryFactory theFactory = null;
@@ -74,15 +75,37 @@ public class ModeshapeRepository extends JCRRepository {
 	}
 
 	/**
-	 * Starts up the JCR repository.
+	 * Initialized the Modeshape Service jcr/sramp, or if System parameter 'sramp.modeshape.config.url'
+	 * is defined it starts up an embedded JCR repository.
+	 * 
 	 * @throws RepositoryException
 	 */
 	@Override
 	public void startup() throws RepositoryException {
-	    if (repository==null) { //skip starting if we use the modeshape service
+	    URL configUrl = null;
+	    try {
+	        configUrl = getModeshapeConfigurationUrl();
+	    } catch (Exception e) {
+	        log.error(e.getMessage(),e);
+	    }
+	    //Using the Modeshape Service 
+	    if (configUrl==null) {
+	        log.info("Connecting to ModeShape Service " + S_RAMP_JNDI );
+            try {
+                InitialContext context = new InitialContext();
+                repository = (javax.jcr.Repository) context.lookup(S_RAMP_JNDI);
+            } catch (NamingException e) {
+                throw new RepositoryException(e.getMessage(),e);
+            }
+            if (repository==null) {
+                throw new RepositoryException("Modeshape JNDI binding '" + S_RAMP_JNDI + "' was not found.");
+            }
+	    }
+	    //Using Modeshape embedded
+	    else {
+	        log.info("Starting an embedded ModeShape");
     		try {
     			Map<String,String> parameters = new HashMap<String,String>();
-    			URL configUrl = getModeshapeConfigurationUrl();
     			RepositoryConfiguration config = RepositoryConfiguration.read(configUrl);
     			Problems problems = config.validate();
     			if (problems.hasErrors()) {
@@ -97,7 +120,6 @@ public class ModeshapeRepository extends JCRRepository {
     			if (repository == null) {
     				throw new RepositoryException("ServiceLoader could not instantiate JCR Repository");
     			}
-    			
     		} catch (RepositoryException e) {
     			throw e;
     		} catch (Exception e) {
@@ -125,7 +147,7 @@ public class ModeshapeRepository extends JCRRepository {
 
 		String configUrl = config.getString("sramp.modeshape.config.url", null);
 		if (configUrl == null) {
-			configUrl = generateConfig();
+			return null;
 		}
 		if (configUrl.startsWith("classpath:")) {
 			Pattern p = Pattern.compile("classpath:/?/?([^/]*)/(.*)$");
@@ -144,39 +166,6 @@ public class ModeshapeRepository extends JCRRepository {
 			return new URL(configUrl);
 		}
 	}
-
-	/**
-	 * Generates the configuration files used to create and initialize modeshape.
-	 */
-	private String generateConfig() throws Exception {
-		this.tempConfigDir = File.createTempFile("s-ramp-modeshape-config", "dir");
-		if (this.tempConfigDir.isFile()) {
-			this.tempConfigDir.delete();
-		}
-		this.tempConfigDir.mkdirs();
-
-		URL msConfigUrl = getClass().getResource("/META-INF/modeshape-configs/persistent-sramp-config.json");
-		URL isConfigUrl = getClass().getResource("/META-INF/modeshape-configs/infinispan-configuration.xml");
-
-		String msConfig = IOUtils.toString(msConfigUrl);
-		String isConfig = IOUtils.toString(isConfigUrl);
-
-		File dataDir = determineRuntimeDataDir();
-		File tempModeShapeConfigFile = new File(tempConfigDir, "modeshape-config.json");
-		File tempInfinispanConfigFile = new File(tempConfigDir, "infinispan-configuration.xml");
-
-		msConfig = msConfig.replace("${modeshape.jcr.datadir}", dataDir.getCanonicalPath().replace("\\", "\\\\"));
-		msConfig = msConfig.replace("${modeshape.cache.config.url}", tempInfinispanConfigFile.getCanonicalPath().replace("\\", "\\\\"));
-		isConfig = isConfig.replace("${modeshape.jcr.datadir}", dataDir.getCanonicalPath().replace("\\", "\\\\"));
-
-		FileUtils.writeStringToFile(tempModeShapeConfigFile, msConfig);
-		FileUtils.writeStringToFile(tempInfinispanConfigFile, isConfig);
-
-		return tempModeShapeConfigFile.toURI().toURL().toString();
-	}
-
-	
-
 	/**
 	 * TODO ModeShape requires shutdown to be called. However calling this after every test
 	 * leads to issues where the repo is down, on initialization of the next test. Not using
