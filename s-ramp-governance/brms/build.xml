@@ -12,6 +12,9 @@
       <include name="s-ramp-shell-${sramp.version}.jar" />
     	<include name="s-ramp-shell-api-${sramp.version}.jar" />
     </fileset>
+  	<fileset dir="../../s-ramp-workflows/target/">
+  	   <include name="s-ramp-workflows-${sramp.version}.jar" />
+  	</fileset>
   	<fileset dir="../target/">
       <include name="s-ramp-governance-classes.jar" />
     </fileset>
