@@ -1,104 +1,125 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.overlord.sramp.demos</groupId>
-	<artifactId>s-ramp-demos</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
-	<name>S-RAMP Demos</name>
-	<packaging>pom</packaging>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
-		<commons.io.version>2.4</commons.io.version>
-		<commons.lang3.version>3.1</commons.lang3.version>
-		<commons.config.version>1.8</commons.config.version>
-		<commons.compress.version>1.4.1</commons.compress.version>
-		<junit.version>4.8.2</junit.version>
-		<log4j.version>1.2.16</log4j.version>
-		<slf4j.api.version>1.5.11</slf4j.api.version>
-		<slf4j.log4j.version>1.5.11</slf4j.log4j.version>
-		<slf4j.nop.version>1.5.11</slf4j.nop.version>
-	</properties>
-	<dependencyManagement>
-		<dependencies>
-			<!-- Common libraries -->
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${commons.lang3.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>${commons.io.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-configuration</groupId>
-				<artifactId>commons-configuration</artifactId>
-				<version>${commons.config.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-compress</artifactId>
-				<version>${commons.compress.version}</version>
-			</dependency>
-			<!-- Logging (require SLF4J API for compiling, but use Log4J and its SLF4J 
-				binding for testing) -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.api.version}</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.log4j.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<!-- Testing (note the scope) -->
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
-				<scope>test</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	<build>
-		<plugins>
-			<!-- Specify the compiler options and settings -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven.compiler.plugin.version}</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<showDeprecation>false</showDeprecation>
-					<showWarnings>false</showWarnings>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<modules>
-		<module>s-ramp-demos-simple-client</module>
-		<module>s-ramp-demos-archive-package</module>
-		<module>s-ramp-demos-query</module>
-		<module>s-ramp-demos-properties</module>
-		<module>s-ramp-demos-ontologies</module>
-		<module>s-ramp-demos-classifications</module>
-		<module>s-ramp-demos-relationships</module>
-		<module>s-ramp-demos-derived-artifacts</module>
-		<module>s-ramp-demos-custom-deriver</module>
-		<module>s-ramp-demos-shell-command</module>
-		<module>s-ramp-demos-switchyard</module>
-	</modules>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.overlord.sramp.demos</groupId>
+  <artifactId>s-ramp-demos</artifactId>
+  <version>0.0.3-SNAPSHOT</version>
+  <name>S-RAMP Demos</name>
+  <packaging>pom</packaging>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+    <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+    <commons.io.version>2.4</commons.io.version>
+    <commons.lang3.version>3.1</commons.lang3.version>
+    <commons.config.version>1.8</commons.config.version>
+    <commons.compress.version>1.4.1</commons.compress.version>
+    <junit.version>4.8.2</junit.version>
+    <log4j.version>1.2.16</log4j.version>
+    <slf4j.api.version>1.5.11</slf4j.api.version>
+    <slf4j.log4j.version>1.5.11</slf4j.log4j.version>
+    <slf4j.nop.version>1.5.11</slf4j.nop.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Common libraries -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons.lang3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons.io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-configuration</groupId>
+        <artifactId>commons-configuration</artifactId>
+        <version>${commons.config.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commons.compress.version}</version>
+      </dependency>
+      <!-- Logging (require SLF4J API for compiling, but use Log4J and its SLF4J 
+        binding for testing) -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.api.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.log4j.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <!-- Testing (note the scope) -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
+  <build>
+    <plugins>
+      <!-- Specify the compiler options and settings -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <showDeprecation>false</showDeprecation>
+          <showWarnings>false</showWarnings>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <modules>
+    <module>s-ramp-demos-simple-client</module>
+    <module>s-ramp-demos-archive-package</module>
+    <module>s-ramp-demos-query</module>
+    <module>s-ramp-demos-properties</module>
+    <module>s-ramp-demos-ontologies</module>
+    <module>s-ramp-demos-classifications</module>
+    <module>s-ramp-demos-relationships</module>
+    <module>s-ramp-demos-derived-artifacts</module>
+    <module>s-ramp-demos-custom-deriver</module>
+    <module>s-ramp-demos-shell-command</module>
+    <module>s-ramp-demos-switchyard</module>
+  </modules>
 </project>
