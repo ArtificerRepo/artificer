@@ -13,5 +13,5 @@ connect
 :reload
 ./subsystem=modeshape/repository=sramp:add(cache-name="sramp",cache-container="modeshape")
 :reload 
-/subsystem=modeshape/repository=sample:read-resource(recursive=true)
+/subsystem=modeshape/repository=sramp:read-resource(recursive=true)
 /subsystem=modeshape/repository=sramp/configuration=index-storage:add()
