@@ -147,7 +147,7 @@ public class ModeshapeRepository extends JCRRepository {
 
 		String configUrl = config.getString("sramp.modeshape.config.url", null);
 		if (configUrl == null) {
-			configUrl = generateConfig();
+			return null;
 		}
 		if (configUrl.startsWith("classpath:")) {
 			Pattern p = Pattern.compile("classpath:/?/?([^/]*)/(.*)$");
@@ -166,39 +166,6 @@ public class ModeshapeRepository extends JCRRepository {
 			return new URL(configUrl);
 		}
 	}
-
-	/**
-	 * Generates the configuration files used to create and initialize modeshape.
-	 */
-	private String generateConfig() throws Exception {
-		this.tempConfigDir = File.createTempFile("s-ramp-modeshape-config", "dir");
-		if (this.tempConfigDir.isFile()) {
-			this.tempConfigDir.delete();
-		}
-		this.tempConfigDir.mkdirs();
-
-		URL msConfigUrl = getClass().getResource("/META-INF/modeshape-configs/persistent-sramp-config.json");
-		URL isConfigUrl = getClass().getResource("/META-INF/modeshape-configs/infinispan-configuration.xml");
-
-		String msConfig = IOUtils.toString(msConfigUrl);
-		String isConfig = IOUtils.toString(isConfigUrl);
-
-		File dataDir = determineRuntimeDataDir();
-		File tempModeShapeConfigFile = new File(tempConfigDir, "modeshape-config.json");
-		File tempInfinispanConfigFile = new File(tempConfigDir, "infinispan-configuration.xml");
-
-		msConfig = msConfig.replace("${modeshape.jcr.datadir}", dataDir.getCanonicalPath().replace("\\", "\\\\"));
-		msConfig = msConfig.replace("${modeshape.cache.config.url}", tempInfinispanConfigFile.getCanonicalPath().replace("\\", "\\\\"));
-		isConfig = isConfig.replace("${modeshape.jcr.datadir}", dataDir.getCanonicalPath().replace("\\", "\\\\"));
-
-		FileUtils.writeStringToFile(tempModeShapeConfigFile, msConfig);
-		FileUtils.writeStringToFile(tempInfinispanConfigFile, isConfig);
-
-		return tempModeShapeConfigFile.toURI().toURL().toString();
-	}
-
-	
-
 	/**
 	 * TODO ModeShape requires shutdown to be called. However calling this after every test
 	 * leads to issues where the repo is down, on initialization of the next test. Not using
