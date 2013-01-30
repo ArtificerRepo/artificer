@@ -101,6 +101,7 @@
             <unpack>true</unpack>
             <unpackOptions>
                 <excludes>
+                    <exclude>build.properties</exclude>
                     <exclude>build.properties-example</exclude>
                     <exclude>README.txt</exclude>
                 </excludes>
