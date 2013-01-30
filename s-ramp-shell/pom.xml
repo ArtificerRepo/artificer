@@ -16,21 +16,6 @@
     <!-- S-RAMP project dependencies -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-atom</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-client</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -38,7 +23,6 @@
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-shell-api</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Third party libraries -->
