@@ -47,7 +47,9 @@ public class JCRRepositoryFactory {
     }
     
     public static synchronized void destroy() {
-        instance.shutdown();
+        if (instance!=null) {
+            instance.shutdown();
+        }
         instance = null;
     }
     /**
