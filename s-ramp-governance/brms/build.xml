@@ -16,8 +16,8 @@
       <include name="s-ramp-governance-classes.jar" />
     </fileset>
   </path>
-
-    <target name="install">
+    
+  <target name="install">
     <mkdir dir="${sramp.jbpm5.dir}" />
     <echo>Downloading the jbpm5.4 installer. This may take a while, go get some coffee</echo>
     <get src="${sramp.jbpm5.url}" dest="${sramp.jbpm5.dir}" usetimestamp="true" />
@@ -32,7 +32,7 @@
     <unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final/resteasy-jboss-modules-2.3.5.Final.zip" dest="${sramp.jboss.home}/modules" overwrite="false" />
   	<echo>Patching ${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml in JBossAS</echo>
   	<copy file="updates/module.xml" tofile="${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml" />
-  	<echo>Installing Modeshape Service</echo>
+    <echo>Installing Modeshape Service</echo>
   	<get src="${sramp.modeshape.url}" dest="${sramp.jbpm5.dir}/modeshape-3.1.0.Final-jbossas-71-dist.zip" usetimestamp="true" />
   	<unzip src="${sramp.jbpm5.dir}/modeshape-3.1.0.Final-jbossas-71-dist.zip" dest="${sramp.jboss.home}" overwrite="false" />
   	<echo>Removing Modeshape wars</echo>
