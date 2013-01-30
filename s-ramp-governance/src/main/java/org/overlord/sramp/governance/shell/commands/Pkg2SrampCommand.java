@@ -41,10 +41,10 @@ import org.overlord.sramp.atom.services.brms.assets.Assets;
 import org.overlord.sramp.atom.services.brms.packages.Packages;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.shell.AbstractShellCommand;
-import org.overlord.sramp.shell.ShellContext;
-import org.overlord.sramp.shell.ShellContextImpl;
-import org.overlord.sramp.shell.commands.Arguments;
+import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.api.Arguments;
+import org.overlord.sramp.shell.api.ShellContext;
+import org.overlord.sramp.shell.api.SimpleShellContext;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
@@ -83,7 +83,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
         SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-server");
         QName clientVarName = new QName("s-ramp", "client");
         Pkg2SrampCommand cmd = new Pkg2SrampCommand();
-        ShellContext context = new ShellContextImpl();
+        ShellContext context = new SimpleShellContext();
         context.setVariable(clientVarName, client);
         cmd.setArguments(new Arguments(argLine.toString()));
         cmd.setContext(context);
@@ -99,7 +99,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.common.shell.ShellCommand#printUsage()
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
      */
     @Override
     public void printUsage() {
@@ -107,7 +107,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.common.shell.ShellCommand#printHelp()
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
      */
     @Override
     public void printHelp() {
@@ -119,7 +119,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.common.shell.ShellCommand#execute()
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
      */
     @Override
     public void execute() throws Exception {

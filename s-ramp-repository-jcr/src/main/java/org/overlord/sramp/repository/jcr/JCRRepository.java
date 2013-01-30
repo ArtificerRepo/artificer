@@ -16,38 +16,27 @@
 package org.overlord.sramp.repository.jcr;
 
 import java.io.File;
-import java.util.ServiceLoader;
 
 import javax.jcr.Credentials;
-import javax.jcr.LoginException;
-import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class JCRRepository {
 
-    
-	private static Logger log = LoggerFactory.getLogger(JCRRepository.class);
-    
-    
     /**
      * Method called when the JCR implementation is no longer needed.
      */
     public abstract void shutdown();
-    
+
     /**
      * Method called to start and initialize the JCR implementation.
      */
     public abstract void startup() throws RepositoryException;
-    
+
     public abstract Credentials getAnonymousCredentials();
-    
+
     public abstract Repository getRepo();
-    
+
 	/**
 	 * Figures out what the current data directory is.  The data directory will be
 	 * different depending on where we're running.  In an application server this
@@ -74,7 +63,4 @@ public abstract class JCRRepository {
 		return srampDataDir;
 	}
 
-
-
-	
 }

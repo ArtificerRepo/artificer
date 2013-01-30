@@ -18,6 +18,8 @@ package org.overlord.sramp.shell;
 import java.io.Console;
 import java.io.IOException;
 
+import org.overlord.sramp.shell.api.ShellContext;
+
 /**
  * An implementation of the {@link ShellCommandReader} that uses standard input
  * to read commands typed in by the user.  This implementation uses the Java

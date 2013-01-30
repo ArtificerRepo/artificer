@@ -17,7 +17,7 @@ package org.overlord.sramp.shell.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.overlord.sramp.shell.commands.Arguments;
+import org.overlord.sramp.shell.api.Arguments;
 
 /**
  * Unit test for {@link Arguments}.
@@ -80,7 +80,7 @@ public class ArgumentsTest {
 	};
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.shell.commands.Arguments#Arguments(java.lang.String)}.
+	 * Test method for {@link org.overlord.sramp.shell.api.shell.commands.Arguments#Arguments(java.lang.String)}.
 	 */
 	@Test
 	public void testArguments() {

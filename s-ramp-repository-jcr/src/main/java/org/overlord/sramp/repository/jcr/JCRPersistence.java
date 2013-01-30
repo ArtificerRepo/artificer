@@ -137,21 +137,6 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_ENCODING, "UTF-8");
 			}
 
-			// Derive any content (this could modify the artifact currently being persisted *and*
-			// create additional artifacts)
-			InputStream cis = null;
-			File tempFile = null;
-			Collection<BaseArtifactType> derivedArtifacts = null;
-			try {
-				Node artifactContentNode = artifactNode.getNode("jcr:content");
-				tempFile = saveToTempFile(artifactContentNode);
-				cis = FileUtils.openInputStream(tempFile);
-				derivedArtifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(metaData, cis);
-			} finally {
-				IOUtils.closeQuietly(cis);
-				FileUtils.deleteQuietly(tempFile);
-			}
-
 			// Update the JCR node with any properties included in the meta-data
 			ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(artifactType, artifactNode,
 					new JCRReferenceFactoryImpl(session), this);
@@ -162,10 +147,36 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			log.debug("Successfully saved {} to node={}", name, uuid);
 			session.save();
 
+            // Derive any content (this could modify the artifact currently being persisted *and*
+            // create additional artifacts).  So when we're done, we need to save any potential
+			// changes to the original artifact as well as persist any derived artifacts.
+            InputStream cis = null;
+            File tempFile = null;
+            Collection<BaseArtifactType> derivedArtifacts = null;
+            try {
+                Node artifactContentNode = artifactNode.getNode("jcr:content");
+                tempFile = saveToTempFile(artifactContentNode);
+                cis = FileUtils.openInputStream(tempFile);
+                derivedArtifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(metaData, cis);
+            } finally {
+                IOUtils.closeQuietly(cis);
+                FileUtils.deleteQuietly(tempFile);
+            }
+
 			// Persist any derived artifacts.
 			if (derivedArtifacts != null) {
 				persistDerivedArtifacts(session, artifactNode, derivedArtifacts);
 			}
+
+            // Update the JCR node again, this time with any properties/relationships added to the meta-data
+			// by the deriver
+            visitor = new ArtifactToJCRNodeVisitor(artifactType, artifactNode,
+                    new JCRReferenceFactoryImpl(session), this);
+            ArtifactVisitorHelper.visitArtifact(visitor, metaData);
+            if (visitor.hasError())
+                throw visitor.getError();
+
+            session.save();
 
 			// If debug is enabled, print the artifact graph
 			if (log.isDebugEnabled()) {

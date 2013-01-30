@@ -13,34 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.shell;
+package org.overlord.sramp.shell.api;
 
-import javax.xml.namespace.QName;
+import java.util.Map;
+
 
 /**
- * Implement this interface to listen for shell context events.
+ * Provides comands - used by the shell command factory when creating the map of
+ * available shell commands.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface ShellContextEventHandler {
+public interface ShellCommandProvider {
 
 	/**
-	 * Called when a variable is added to the context.
-	 * @param variableName
-	 * @param value
+	 * Returns the namespace provided by this command provider.  All commands provided
+	 * by this provider will be qualified by this namespace.
 	 */
-	public void onVariableAdded(QName variableName, Object value);
+	public String getNamespace();
 
 	/**
-	 * Called when a variable is changed.
-	 * @param variableName
+	 * Called to get the collection of commands contributed by the provider.
 	 */
-	public void onVariableChanged(QName variableName, Object value);
-
-	/***
-	 * Called when a variable is removed.
-	 * @param variableName
-	 */
-	public void onVariableRemoved(QName variableName);
+	public Map<String, Class<? extends ShellCommand>> provideCommands();
 
 }

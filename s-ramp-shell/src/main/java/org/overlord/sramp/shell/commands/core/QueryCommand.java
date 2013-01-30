@@ -26,8 +26,8 @@ import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.shell.AbstractShellCommand;
-import org.overlord.sramp.shell.commands.Arguments;
+import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.api.Arguments;
 
 /**
  * Performs a query against the s-ramp server and displays the result.
@@ -43,7 +43,7 @@ public class QueryCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printUsage()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
 	 */
 	@Override
 	public void printUsage() {
@@ -51,7 +51,7 @@ public class QueryCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#printHelp()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
 	 */
 	@Override
 	public void printHelp() {
@@ -65,7 +65,7 @@ public class QueryCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommand#execute()
+	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
@@ -117,7 +117,7 @@ public class QueryCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
 	 */
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
