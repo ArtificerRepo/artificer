@@ -19,7 +19,7 @@ To run the demo, simply do the following:
 If you are running the S-RAMP repository on some other port or deployed in some other way
 you can customize where the demo looks for the Atom API.  For example:
 
-	$ mvn -Pdemo -Dsramp.endpoint=http://myhost:8081/s-ramp-atom/s-ramp clean test
+	$ mvn -Pdemo -Dsramp.endpoint=http://myhost:8081/s-ramp-server clean test
 
 The demo should output some interesting information before completing successfully.  Please
 take a look at the code found in the ArchivePackageDemo Java class for more information.

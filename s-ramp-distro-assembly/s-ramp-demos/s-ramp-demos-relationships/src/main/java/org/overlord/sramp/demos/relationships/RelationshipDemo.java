@@ -49,13 +49,28 @@ public class RelationshipDemo {
 		System.out.println("S-RAMP Endpoint: " + endpoint);
 		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 
+        // Have we already run this demo?
+        QueryResultSet rs = client.buildQuery("/s-ramp[@from-demo = ?]")
+                .parameter(RelationshipDemo.class.getSimpleName()).count(1).query();
+        if (rs.size() > 0) {
+            System.out.println("It looks like you already ran this demo!");
+            System.out.println("I'm going to quit, because I don't want to clutter up");
+            System.out.println("your repository with duplicate stuff.");
+            System.exit(1);
+        }
+
 		// First thing to do is add a few artifacts to the S-RAMP repo.
 		ArtifactType type = ArtifactType.valueOf("Document");
 		System.out.print("Uploading three artifacts...");
-		BaseArtifactType artifact1 = client.uploadArtifact(type, RelationshipDemo.class.getResourceAsStream("sample-document-1.txt"), "relationship-document-1.txt");
-		BaseArtifactType artifact2 = client.uploadArtifact(type, RelationshipDemo.class.getResourceAsStream("sample-document-2.txt"), "relationship-document-2.txt");
-		BaseArtifactType artifact3 = client.uploadArtifact(type, RelationshipDemo.class.getResourceAsStream("sample-document-3.txt"), "relationship-document-3.txt");
+		BaseArtifactType artifact1 = client.uploadArtifact(type, RelationshipDemo.class.getResourceAsStream("relationship-demo-doc-1.txt"), "relationship-document-1.txt");
+		BaseArtifactType artifact2 = client.uploadArtifact(type, RelationshipDemo.class.getResourceAsStream("relationship-demo-doc-2.txt"), "relationship-document-2.txt");
+		BaseArtifactType artifact3 = client.uploadArtifact(type, RelationshipDemo.class.getResourceAsStream("relationship-demo-doc-3.txt"), "relationship-document-3.txt");
 		System.out.println("uploaded.");
+
+		// Tag these artifacts as coming from this demo.
+        SrampModelUtils.setCustomProperty(artifact1, "from-demo", RelationshipDemo.class.getSimpleName());
+        SrampModelUtils.setCustomProperty(artifact2, "from-demo", RelationshipDemo.class.getSimpleName());
+        SrampModelUtils.setCustomProperty(artifact3, "from-demo", RelationshipDemo.class.getSimpleName());
 
 		// Now let's set up some relationships.  Let's make artifacts 2 and 3 "relatedTo"
 		// artifact 1.
@@ -63,8 +78,9 @@ public class RelationshipDemo {
 		SrampModelUtils.addGenericRelationship(artifact3, "relatedTo", artifact1.getUuid());
 
 		// Now make sure to update the changed artifacts
-		System.out.print("Updating artifacts 2 and 3...");
-		client.updateArtifactMetaData(artifact2);
+		System.out.print("Updating artifacts...");
+        client.updateArtifactMetaData(artifact1);
+        client.updateArtifactMetaData(artifact2);
 		client.updateArtifactMetaData(artifact3);
 		System.out.println("updated.");
 

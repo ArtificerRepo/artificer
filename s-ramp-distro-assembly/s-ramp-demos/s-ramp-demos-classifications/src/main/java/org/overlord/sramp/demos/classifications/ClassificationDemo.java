@@ -24,6 +24,7 @@ import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -52,6 +53,16 @@ public class ClassificationDemo {
 		System.out.println("S-RAMP Endpoint: " + endpoint);
 		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 
+        // Have we already run this demo?
+        QueryResultSet rs = client.buildQuery("/s-ramp[@from-demo = ?]")
+                .parameter(ClassificationDemo.class.getSimpleName()).count(1).query();
+        if (rs.size() > 0) {
+            System.out.println("It looks like you already ran this demo!");
+            System.out.println("I'm going to quit, because I don't want to clutter up");
+            System.out.println("your repository with duplicate stuff.");
+            System.exit(1);
+        }
+
 		// The first thing we need to do is install the "regions.owl" ontology
 		// into the S-RAMP repository.  We can't do anything with classifications
 		// until at least one ontology (which defines the classifications/classes)
@@ -64,11 +75,13 @@ public class ClassificationDemo {
 		// upload will return the new artifact's meta data.  Once we have that,
 		// we can add classifications to it.  Note that those classifications must
 		// be defined by the ontology we installed above.
-		InputStream content = ClassificationDemo.class.getResourceAsStream("sample-document-1.txt");
+		InputStream content = ClassificationDemo.class.getResourceAsStream("classifications-demo-doc-1.txt");
 		ArtifactType type = ArtifactType.valueOf("Document");
-		BaseArtifactType metaData = client.uploadArtifact(type, content, "sample-document-1.txt");
+		BaseArtifactType metaData = client.uploadArtifact(type, content, "classifications-demo-doc-1.txt");
 		System.out.println("Artifact 1 successfully added with UUID: " + metaData.getUuid());
 		metaData.getClassifiedBy().add("http://www.example.org/regions.owl#Germany");
+		// Set a marker property so we know which demo this artifact came from
+		SrampModelUtils.setCustomProperty(metaData, "from-demo", ClassificationDemo.class.getSimpleName());
 		client.updateArtifactMetaData(metaData);
 		System.out.println("Artifact 1 successfully updated to add the #Germany classification.");
 
@@ -90,10 +103,12 @@ public class ClassificationDemo {
 		// Now let's see how to find artifacts by their classifications.  But first
 		// let's add another artifact, so we can be confident that the query is
 		// working properly.
-		content = ClassificationDemo.class.getResourceAsStream("sample-document-2.txt");
-		client.uploadArtifact(type, content, "sample-document-2.txt");
+		content = ClassificationDemo.class.getResourceAsStream("classifications-demo-doc-2.txt");
+		metaData = client.uploadArtifact(type, content, "classifications-demo-doc-2.txt");
 		System.out.println("Artifact 2 successfully added.");
-		// This time, we won't add classifications.
+		// This time, we won't add classifications, but we *will* add that marker property
+        SrampModelUtils.setCustomProperty(metaData, "from-demo", ClassificationDemo.class.getSimpleName());
+        client.updateArtifactMetaData(metaData);
 
 
 		// Now let's try to query and see what we get.  First let's query for all

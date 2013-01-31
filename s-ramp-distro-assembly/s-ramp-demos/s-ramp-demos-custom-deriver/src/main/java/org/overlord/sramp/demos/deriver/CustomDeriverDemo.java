@@ -20,6 +20,7 @@ import java.io.InputStream;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
@@ -49,6 +50,16 @@ public class CustomDeriverDemo {
 		System.out.println("S-RAMP Endpoint: " + endpoint);
 		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 
+        // Have we already run this demo?
+        QueryResultSet rs = client.buildQuery("/s-ramp[@from-demo = ?]")
+                .parameter(CustomDeriverDemo.class.getSimpleName()).count(1).query();
+        if (rs.size() > 0) {
+            System.out.println("It looks like you already ran this demo!");
+            System.out.println("I'm going to quit, because I don't want to clutter up");
+            System.out.println("your repository with duplicate stuff.");
+            System.exit(1);
+        }
+
 		// First, add the demo/sample web.xml to the repository.
 		String webXmlArtifactUUID = addWebXmlToRepository(client);
 
@@ -62,6 +73,7 @@ public class CustomDeriverDemo {
 	}
 
     /**
+     * Add a web.xml to the repository.
      * @param client
      * @throws Exception
      */
@@ -71,10 +83,15 @@ public class CustomDeriverDemo {
         ArtifactType artifactType = ArtifactType.valueOf("WebXmlDocument");
         BaseArtifactType artifact = client.uploadArtifact(artifactType, webXmlIS, "web.xml");
         System.out.println("Sample 'web.xml' artifact successfully added.");
+        SrampModelUtils.setCustomProperty(artifact, "from-demo", CustomDeriverDemo.class.getSimpleName());
+        client.updateArtifactMetaData(artifact);
+        System.out.println("Sample 'web.xml' artifact successfully updated.");
         return artifact.getUuid();
     }
 
     /**
+     * Query for the derived artifacts that *should* have been created when
+     * the web.xml file was added.
      * @param client
      * @param webXmlArtifactUUID
      * @throws Exception
@@ -82,7 +99,7 @@ public class CustomDeriverDemo {
     private static void queryForDerivedArtifacts(SrampAtomApiClient client, String webXmlArtifactUUID) throws Exception {
         // Check that we can query for the source web.xml artifact
         System.out.println("Querying the repository to verify derived web.xml content.");
-        String query = String.format("/s-ramp/user/WebXmlDocument[@uuid = '%1$s']", webXmlArtifactUUID);
+        String query = String.format("/s-ramp/ext/WebXmlDocument[@uuid = '%1$s']", webXmlArtifactUUID);
         System.out.println("\t" + query);
         QueryResultSet resultSet = client.query(query);
         if (resultSet.size() != 1) {
@@ -91,7 +108,7 @@ public class CustomDeriverDemo {
 
         // Find all derived artifacts by querying by the relatedDocument relationship
         System.out.println("Querying the repository for all web.xml derived artifacts.");
-        query = String.format("/s-ramp/user[relatedDocument[@uuid = '%1$s']]", webXmlArtifactUUID);
+        query = String.format("/s-ramp/ext[relatedDocument[@uuid = '%1$s']]", webXmlArtifactUUID);
         System.out.println("\t" + query);
         resultSet = client.query(query);
         if (resultSet.size() != 12) {

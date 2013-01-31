@@ -22,6 +22,7 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
@@ -53,6 +54,16 @@ public class ArchivePackageDemo {
 		System.out.println("S-RAMP Endpoint: " + endpoint);
 		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 
+		// Have we already run this demo?
+        QueryResultSet rs = client.buildQuery("/s-ramp[@from-demo = ?]")
+                .parameter(ArchivePackageDemo.class.getSimpleName()).count(1).query();
+        if (rs.size() > 0) {
+            System.out.println("It looks like you already ran this demo!");
+            System.out.println("I'm going to quit, because I don't want to clutter up");
+            System.out.println("your repository with duplicate stuff.");
+            System.exit(1);
+        }
+
 		// Let's create the S-RAMP archive and populate it with some artifacts.
 		System.out.println("Creating the S-RAMP package...");
 		SrampArchive archive = new SrampArchive();
@@ -68,6 +79,8 @@ public class ArchivePackageDemo {
 			metaData.setName("wss-wssecurity-utility-1.0.xsd");
 			metaData.setDescription("WS-Security: utility.xsd");
 			metaData.setVersion("1.0");
+	        // Tag this artifact as coming from this demo.
+			SrampModelUtils.setCustomProperty(metaData, "from-demo", ArchivePackageDemo.class.getSimpleName());
 			// Add the artifact (with its meta-data) to the archive.
 			System.out.print("\tAdding " + metaData.getName() + " to the archive...");
 			archive.addEntry("ws-security/schemas/wss-wssecurity-utility-1.0.xsd", metaData, contentStream);
@@ -80,6 +93,7 @@ public class ArchivePackageDemo {
 			metaData.setName("wss-wssecurity-secext-1.0.xsd");
 			metaData.setDescription("WS-Security: secext.xsd");
 			metaData.setVersion("1.0");
+            SrampModelUtils.setCustomProperty(metaData, "from-demo", ArchivePackageDemo.class.getSimpleName());
 			System.out.print("\tAdding " + metaData.getName() + " to the archive...");
 			archive.addEntry("ws-security/schemas/wss-wssecurity-secext-1.0.xsd", metaData, contentStream);
 			contentStream.close();
@@ -91,6 +105,7 @@ public class ArchivePackageDemo {
 			metaData.setName("wstx-wsba-1.1-schema-200701.xsd");
 			metaData.setDescription("WS-Transaction: ws-tx-schema.xsd");
 			metaData.setVersion("1.1");
+            SrampModelUtils.setCustomProperty(metaData, "from-demo", ArchivePackageDemo.class.getSimpleName());
 			System.out.print("\tAdding " + metaData.getName() + " to the archive...");
 			archive.addEntry("ws-tx/schemas/wstx-wsba-1.1-schema-200701.xsd", metaData, contentStream);
 			contentStream.close();
@@ -103,6 +118,7 @@ public class ArchivePackageDemo {
 			metaData.setName("wstx-wsba-1.1-wsdl-200702.wsdl");
 			metaData.setDescription("WS-Transaction: ws-tx-wsdl.wsdl");
 			metaData.setVersion("1.1");
+            SrampModelUtils.setCustomProperty(metaData, "from-demo", ArchivePackageDemo.class.getSimpleName());
 			System.out.print("\tAdding " + metaData.getName() + " to the archive...");
 			archive.addEntry("ws-tx/wsdl/wstx-wsba-1.1-wsdl-200702.wsdl", metaData, contentStream);
 			contentStream.close();

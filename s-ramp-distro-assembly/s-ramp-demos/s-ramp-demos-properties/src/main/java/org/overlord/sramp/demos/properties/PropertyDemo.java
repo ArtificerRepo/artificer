@@ -48,12 +48,22 @@ public class PropertyDemo {
 		System.out.println("S-RAMP Endpoint: " + endpoint);
 		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 
+        // Have we already run this demo?
+        QueryResultSet rs = client.buildQuery("/s-ramp[@from-demo = ?]")
+                .parameter(PropertyDemo.class.getSimpleName()).count(1).query();
+        if (rs.size() > 0) {
+            System.out.println("It looks like you already ran this demo!");
+            System.out.println("I'm going to quit, because I don't want to clutter up");
+            System.out.println("your repository with duplicate stuff.");
+            System.exit(1);
+        }
+
 		// Before we do anything else, we need to upload some artifacts to the
 		// S-RAMP repository.
 		ArtifactType type = ArtifactType.valueOf("Document");
 		System.out.print("Uploading two artifacts...");
-		BaseArtifactType artifact1 = client.uploadArtifact(type, PropertyDemo.class.getResourceAsStream("sample-document-1.txt"), "sample-document-1.txt");
-		BaseArtifactType artifact2 = client.uploadArtifact(type, PropertyDemo.class.getResourceAsStream("sample-document-2.txt"), "sample-document-2.txt");
+		BaseArtifactType artifact1 = client.uploadArtifact(type, PropertyDemo.class.getResourceAsStream("property-demo-doc-1.txt"), "property-demo-doc-1.txt");
+		BaseArtifactType artifact2 = client.uploadArtifact(type, PropertyDemo.class.getResourceAsStream("property-demo-doc-2.txt"), "property-demo-doc-2.txt");
 		System.out.println("uploaded.");
 
 		// And then we can change their names if we want!
@@ -68,6 +78,10 @@ public class PropertyDemo {
 		SrampModelUtils.setCustomProperty(artifact2, "artifact-num", "two");
 		SrampModelUtils.setCustomProperty(artifact2, "foo", "bar");
 
+        // Also tag these artifacts as coming from this demo.
+        SrampModelUtils.setCustomProperty(artifact1, "from-demo", PropertyDemo.class.getSimpleName());
+        SrampModelUtils.setCustomProperty(artifact2, "from-demo", PropertyDemo.class.getSimpleName());
+
 		// And now update both artifacts so that the repository knows about these
 		// new properties.
 		System.out.print("Updating (meta-data for) both artifacts...");
@@ -81,17 +95,17 @@ public class PropertyDemo {
 		BaseArtifactType metaData1 = client.getArtifactMetaData(type, artifact1.getUuid());
 		BaseArtifactType metaData2 = client.getArtifactMetaData(type, artifact2.getUuid());
 		System.out.println("fetched.");
-		if (metaData1.getProperty().size() != 3) {
+		if (metaData1.getProperty().size() < 3) {
 			System.out.println("Properties not found on artifact 1!  Oh noes!");
 			System.exit(1);
 		} else {
-			System.out.println("All 3 properties accounted for (artifact 1)!");
+			System.out.println("All properties accounted for (artifact 1)!");
 		}
-		if (metaData2.getProperty().size() != 3) {
+		if (metaData2.getProperty().size() < 3) {
 			System.out.println("Properties not found on artifact 2!  Oh noes!");
 			System.exit(1);
 		} else {
-			System.out.println("All 3 properties accounted for (artifact 2)!");
+			System.out.println("All properties accounted for (artifact 2)!");
 		}
 
 		// Now we know that adding properties works.  Note that of course you can also
