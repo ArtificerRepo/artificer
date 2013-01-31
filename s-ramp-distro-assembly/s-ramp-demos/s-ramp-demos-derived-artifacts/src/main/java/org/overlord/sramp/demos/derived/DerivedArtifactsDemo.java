@@ -19,6 +19,7 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 
 /**
@@ -47,6 +48,16 @@ public class DerivedArtifactsDemo {
 		System.out.println("S-RAMP Endpoint: " + endpoint);
 		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 
+        // Have we already run this demo?
+        QueryResultSet rs = client.buildQuery("/s-ramp[@from-demo = ?]")
+                .parameter(DerivedArtifactsDemo.class.getSimpleName()).count(1).query();
+        if (rs.size() > 0) {
+            System.out.println("It looks like you already ran this demo!");
+            System.out.println("I'm going to quit, because I don't want to clutter up");
+            System.out.println("your repository with duplicate stuff.");
+            System.exit(1);
+        }
+
 		// The first thing we're going to do in this demonstration is add
 		// a WSDL artifact to the repository.  This will cause the S-RAMP
 		// repo to not only add the WSDL artifact but also add a number of
@@ -57,6 +68,9 @@ public class DerivedArtifactsDemo {
 				DerivedArtifactsDemo.class.getResourceAsStream("sample.wsdl"),
 				"sample.wsdl");
 		System.out.println("uploaded.");
+		// Tag this artifact as coming from this demo.
+        SrampModelUtils.setCustomProperty(wsdlArtifact, "from-demo", DerivedArtifactsDemo.class.getSimpleName());
+        client.updateArtifactMetaData(wsdlArtifact);
 
 		// Now we should have a number of artifacts in the repo - the WSDL
 		// document and all its derived artifacts.  Let's do some querying

@@ -51,9 +51,20 @@ public class SimpleClientDemo {
 		}
 		System.out.println("S-RAMP Endpoint: " + endpoint);
 
-		// Upload some artifacts to the S-RAMP repository
-		System.out.println("Uploading some XML schemas...");
 		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
+
+        // Have we already run this demo?
+        QueryResultSet rs = client.buildQuery("/s-ramp[@from-demo = ?]")
+                .parameter(SimpleClientDemo.class.getSimpleName()).count(1).query();
+        if (rs.size() > 0) {
+            System.out.println("It looks like you already ran this demo!");
+            System.out.println("I'm going to quit, because I don't want to clutter up");
+            System.out.println("your repository with duplicate stuff.");
+            System.exit(1);
+        }
+
+        // Upload some artifacts to the S-RAMP repository
+        System.out.println("Uploading some XML schemas...");
 		for (String file : FILES) {
 			// Get an InputStream over the file content
 			InputStream is = SimpleClientDemo.class.getResourceAsStream(file);
@@ -72,7 +83,7 @@ public class SimpleClientDemo {
 
 				// Update the artifact meta-data (set the version and add a custom property)
 				artifact.setVersion("1.1");
-				SrampModelUtils.setCustomProperty(artifact, "demo", "simple-client");
+	            SrampModelUtils.setCustomProperty(artifact, "from-demo", SimpleClientDemo.class.getSimpleName());
 
 				// Tell the server about the updated meta-data
 				System.out.print("\tUpdating meta-data for artifact " + file + "...");

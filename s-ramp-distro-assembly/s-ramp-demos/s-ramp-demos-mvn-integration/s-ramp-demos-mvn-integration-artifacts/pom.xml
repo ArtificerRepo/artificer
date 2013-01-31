@@ -1,100 +1,134 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<artifactId>s-ramp-demos-mvn-integration-artifacts</artifactId>
-	<groupId>org.overlord.sramp.demos</groupId>
-	<version>0.1.0-SNAPSHOT</version>
-	<name>S-RAMP Demos: Maven Integration - Artifacts</name>
+  <artifactId>s-ramp-demos-mvn-integration-artifacts</artifactId>
+  <groupId>org.overlord.sramp.demos</groupId>
+  <version>0.1.0-SNAPSHOT</version>
+  <name>S-RAMP Demos: Maven Integration - Artifacts</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.1</version>
-		</dependency>
+  <repositories>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.1</version>
+    </dependency>
 
 		<!-- Junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<extensions>
-			<extension>
-				<groupId>org.overlord.sramp</groupId>
-				<artifactId>s-ramp-wagon</artifactId>
-				<version>${project.version}</version>
-			</extension>
-		</extensions>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<showDeprecation>false</showDeprecation>
-					<showWarnings>false</showWarnings>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jvnet.jaxb2.maven2</groupId>
-				<artifactId>maven-jaxb2-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<schemaDirectory>src/main/resources/schemas</schemaDirectory>
-					<generatePackage>org.overlord.sramp.demos.mvnintegration</generatePackage>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-wagon</artifactId>
+        <version>${project.version}</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <showDeprecation>false</showDeprecation>
+          <showWarnings>false</showWarnings>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jvnet.jaxb2.maven2</groupId>
+        <artifactId>maven-jaxb2-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <schemaDirectory>src/main/resources/schemas</schemaDirectory>
+          <generatePackage>org.overlord.sramp.demos.mvnintegration</generatePackage>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-	<profiles>
-		<profile>
-			<id>default</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-deploy-plugin</artifactId>
-						<version>2.5</version>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>demo</id>
-			<distributionManagement>
-				<repository>
-					<id>local-sramp-repo</id>
-					<name>S-RAMP Releases Repository</name>
-					<url>sramp://localhost:8080/s-ramp-server/</url>
-				</repository>
-				<snapshotRepository>
-					<id>local-sramp-repo-snapshots</id>
-					<name>S-RAMP Snapshots Repository</name>
-					<url>sramp://localhost:8080/s-ramp-server/</url>
-				</snapshotRepository>
-			</distributionManagement>
-		</profile>
-	</profiles>
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.5</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>demo</id>
+      <distributionManagement>
+        <repository>
+          <id>local-sramp-repo</id>
+          <name>S-RAMP Releases Repository</name>
+          <url>sramp://localhost:8080/s-ramp-server</url>
+        </repository>
+        <snapshotRepository>
+          <id>local-sramp-repo-snapshots</id>
+          <name>S-RAMP Snapshots Repository</name>
+          <url>sramp://localhost:8080/s-ramp-server</url>
+        </snapshotRepository>
+      </distributionManagement>
+    </profile>
+  </profiles>
 
 </project>
