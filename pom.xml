@@ -1,190 +1,197 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.overlord.sramp</groupId>
-	<artifactId>s-ramp-distro</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+  <groupId>org.overlord.sramp</groupId>
+  <artifactId>s-ramp-distro</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-	<name>S-RAMP Distribution</name>
-	<description>Builds the official S-RAMP distribution by pulling together the binaries, source, documentation, etc... into a single bundle.</description>
-	<url>http://www.jboss.org/overlord</url>
-	<inceptionYear>2011</inceptionYear>
+  <name>S-RAMP Distribution</name>
+  <description>Builds the official S-RAMP distribution by pulling together the binaries, source, documentation, etc... into a single bundle.</description>
+  <url>http://www.jboss.org/overlord</url>
+  <inceptionYear>2011</inceptionYear>
 
-	<organization>
-		<name>JBoss, a division of Red Hat</name>
-		<url>http://www.jboss.org</url>
-	</organization>
+  <organization>
+    <name>JBoss, a division of Red Hat</name>
+    <url>http://www.jboss.org</url>
+  </organization>
 
-	<licenses>
-		<license>
-			<name>Apache License Version 2.0</name>
-			<url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
-			<!--url>http://www.gnu.org/licenses/lgpl.html</url -->
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+  <licenses>
+    <license>
+      <name>Apache License Version 2.0</name>
+      <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+      <!--url>http://www.gnu.org/licenses/lgpl.html</url -->
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-	<issueManagement>
-		<system>jira</system>
-		<url>http://issues.jboss.org/browse/SRAMP</url>
-	</issueManagement>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.jboss.org/browse/SRAMP</url>
+  </issueManagement>
 
-	<scm>
-		<connection>scm:git:git@github.com:Governance/s-ramp-distro.git</connection>
-		<developerConnection>scm:git:git@github.com:Governance/s-ramp-distro.git</developerConnection>
-		<url>scm:git:git@github.com:Governance/s-ramp-distro.git</url>
-	</scm>
+  <scm>
+    <connection>scm:git:git@github.com:Governance/s-ramp-distro.git</connection>
+    <developerConnection>scm:git:git@github.com:Governance/s-ramp-distro.git</developerConnection>
+    <url>scm:git:git@github.com:Governance/s-ramp-distro.git</url>
+  </scm>
 
-	<developers>
-		<developer>
-			<name>Kurt Stam</name>
-			<id>kstam</id>
-			<email>kstam@jboss.com</email>
-			<organization>JBoss, a division of Red Hat</organization>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<name>Eric Wittmann</name>
-			<id>ewittman</id>
-			<email>eric.wittmann@redhat.com</email>
-			<organization>Red Hat</organization>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-	</developers>
+  <developers>
+    <developer>
+      <name>Kurt Stam</name>
+      <id>kstam</id>
+      <email>kstam@jboss.com</email>
+      <organization>JBoss, a division of Red Hat</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Eric Wittmann</name>
+      <id>ewittman</id>
+      <email>eric.wittmann@redhat.com</email>
+      <organization>Red Hat</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
-		<!-- Maven plugin versions -->
-		<maven.assembly.plugin.version>2.3</maven.assembly.plugin.version>
-		<maven.jar.plugin.version>2.3.1</maven.jar.plugin.version>
-		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+    <!-- Maven plugin versions -->
+    <maven.assembly.plugin.version>2.3</maven.assembly.plugin.version>
+    <maven.jar.plugin.version>2.3.1</maven.jar.plugin.version>
+    <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
 
-		<!-- Dependency versions -->
-		<log4j.version>1.2.16</log4j.version>
-		<slf4j.api.version>1.5.11</slf4j.api.version>
-		<slf4j.log4j.version>1.5.11</slf4j.log4j.version>
-		<slf4j.nop.version>1.5.11</slf4j.nop.version>
-	</properties>
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>${maven.jar.plugin.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>${maven.assembly.plugin.version}</version>
-					<dependencies>
-						<dependency>
-							<groupId>org.codehaus.plexus</groupId>
-							<artifactId>plexus-io</artifactId>
-							<version>2.0.6</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven.compiler.plugin.version}</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<showDeprecation>false</showDeprecation>
-					<showWarnings>false</showWarnings>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.api.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.log4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	<repositories>
-		<repository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/groups/developer/</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-	</repositories>
+    <!-- Dependency versions -->
+    <log4j.version>1.2.16</log4j.version>
+    <slf4j.api.version>1.5.11</slf4j.api.version>
+    <slf4j.log4j.version>1.5.11</slf4j.log4j.version>
+    <slf4j.nop.version>1.5.11</slf4j.nop.version>
+  </properties>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven.jar.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven.assembly.plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-io</artifactId>
+              <version>2.0.6</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <showDeprecation>false</showDeprecation>
+          <showWarnings>false</showWarnings>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <repositories>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/groups/developer/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
-	<dependencies>
-		<!-- Dependencies on the various WARs to include in the distro. -->
-		<dependency>
-			<groupId>org.overlord.sramp</groupId>
-			<artifactId>s-ramp-server</artifactId>
-			<type>war</type>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.overlord.sramp</groupId>
-			<artifactId>s-ramp-ui-gwt</artifactId>
-			<type>war</type>
-			<version>${project.version}</version>
-		</dependency>
-		<!-- Dependencies on the source JARs to include in the distro. -->
-		<dependency>
-			<groupId>org.overlord.sramp</groupId>
-			<artifactId>s-ramp-api</artifactId>
-			<version>${project.version}</version>
-			<classifier>sources</classifier>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <!-- Dependencies on the various WARs to include in the distro. -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server</artifactId>
+      <type>war</type>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-gwt</artifactId>
+      <type>war</type>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Dependencies on the source JARs to include in the distro. -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-api</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
+  </dependencies>
 
-	<modules>
-		<module>s-ramp-distro-shell</module>
-		<module>s-ramp-distro-assembly</module>
-	</modules>
+  <modules>
+    <module>s-ramp-distro-shell</module>
+    <module>s-ramp-distro-assembly</module>
+  </modules>
 </project>
-
