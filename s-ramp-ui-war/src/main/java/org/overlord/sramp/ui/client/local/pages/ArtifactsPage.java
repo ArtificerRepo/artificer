@@ -125,7 +125,8 @@ public class ArtifactsPage extends AbstractPage {
             @Override
             public void onError(Throwable error) {
                 Window.alert("Error finding artifacts: " + error.getMessage());
-//                artifactsTable.setVisible(false);
+                noDataMessage.setVisible(true);
+                searchInProgressMessage.setVisible(false);
             }
         });
     }

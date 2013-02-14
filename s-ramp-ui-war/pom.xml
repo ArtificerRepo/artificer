@@ -11,12 +11,15 @@
   <packaging>war</packaging>
   <name>s-ramp-ui-war</name>
   <dependencies>
+    <!-- Project Dependencies -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-widgets</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- S-RAMP client -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-client</artifactId>
@@ -31,6 +34,13 @@
           <groupId>log4j</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+    
+    <!-- Third Party Dependencies -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${commons.lang3.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -56,6 +66,7 @@
       <scope>provided</scope>
       <version>${cdi-api.version}</version>
     </dependency>
+    
     <!-- Errai -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -112,6 +123,7 @@
       <artifactId>mvel2</artifactId>
       <version>${mvel.version}</version>
     </dependency>
+    
     <!-- CDI Integration Modules -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -134,6 +146,7 @@
       <artifactId>errai-cdi-jetty</artifactId>
       <version>${errai.version}</version>
     </dependency>
+    
     <!-- CDI Development Utils -->
     <!-- This must be placed above com.google.gwt:gwt-dev to override the Jetty that is present there -->
     <dependency>
@@ -151,6 +164,7 @@
       <artifactId>jetty-naming</artifactId>
       <version>${jetty.version}</version>
     </dependency>
+    
     <!-- Weld -->
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -162,13 +176,15 @@
       <artifactId>weld-servlet</artifactId>
       <version>${weld.version}</version>
     </dependency>
-    <!-- GWT and GWT Extensions -->
+    
+    <!-- GWT -->
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <version>${gwt.version}</version>
       <scope>provided</scope>
     </dependency>
+    
     <!-- Runtime / Container dependencies -->
     <dependency>
       <groupId>org.slf4j</groupId>

@@ -28,13 +28,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class ArtifactFilterBean {
 
-    private String artifactType;
+    private String artifactType = "";
     private Date dateCreatedFrom;
     private Date dateCreatedTo;
     private Date dateModifiedFrom;
     private Date dateModifiedTo;
-    private String createdBy;
-    private String lastModifiedBy;
+    private String createdBy = "";
+    private String lastModifiedBy = "";
     private ArtifactOriginEnum origin = ArtifactOriginEnum.primary;
 
     /**

@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.TextBox;
 @Dependent
 public class ArtifactFilters extends Composite implements HasValueChangeHandlers<ArtifactFilterBean> {
 
-    private ArtifactFilterBean currentState = null;
+    private ArtifactFilterBean currentState = new ArtifactFilterBean();
 
     // Artifact Type
     @Inject @DataField
@@ -111,6 +111,12 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
                 onFilterValueChange();
             }
         };
+        ClickHandler clickHandler = new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                onFilterValueChange();
+            }
+        };
         artifactType.addValueChangeHandler(valueChangeHandler);
         dateCreatedFrom.addValueChangeHandler(valueChangeHandler);
         dateCreatedTo.addValueChangeHandler(valueChangeHandler);
@@ -118,9 +124,9 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
         dateModifiedTo.addValueChangeHandler(valueChangeHandler);
         createdBy.addValueChangeHandler(valueChangeHandler);
         lastModifiedBy.addValueChangeHandler(valueChangeHandler);
-        originAny.addValueChangeHandler(valueChangeHandler);
-        originPrimary.addValueChangeHandler(valueChangeHandler);
-        originDerived.addValueChangeHandler(valueChangeHandler);
+        originAny.addClickHandler(clickHandler);
+        originPrimary.addClickHandler(clickHandler);
+        originDerived.addClickHandler(clickHandler);
     }
 
     /**

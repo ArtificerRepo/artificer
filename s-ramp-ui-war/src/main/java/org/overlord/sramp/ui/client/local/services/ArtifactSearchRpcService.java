@@ -25,7 +25,10 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
+import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactSearchService;
+
+import com.google.gwt.user.client.Window;
 
 /**
  * Client-side service for making RPC calls to the remote search service.
@@ -55,7 +58,11 @@ public class ArtifactSearchRpcService {
             final IRpcServiceInvocationHandler<List<ArtifactSummaryBean>> handler) {
         RemoteCallback<List<ArtifactSummaryBean>> successCallback = new DelegatingRemoteCallback<List<ArtifactSummaryBean>>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
-        remoteSearchService.call(successCallback, errorCallback).search(filters, searchText);
+        try {
+            remoteSearchService.call(successCallback, errorCallback).search(filters, searchText);
+        } catch (SrampUiException e) {
+            Window.alert("Weird: " + e.getMessage());
+        }
     }
 
 }
