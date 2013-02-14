@@ -24,7 +24,12 @@
 			<artifactId>s-ramp-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- Testing (note the scope) -->
+        <!-- Third Party -->
+        <dependency>
+          <groupId>joda-time</groupId>
+          <artifactId>joda-time</artifactId>
+        </dependency>
+        <!-- Testing (note the scope) -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

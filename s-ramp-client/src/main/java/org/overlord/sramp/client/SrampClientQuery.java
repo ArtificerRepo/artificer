@@ -16,10 +16,14 @@
 package org.overlord.sramp.client;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.query.QueryResultSet;
 
@@ -94,12 +98,27 @@ public class SrampClientQuery {
 
     /**
      * Sets a parameter on the query - this should match up to a ? in the
-     * query template provided.
+     * query template provided.  Note: this will add a date to the query.  In
+     * order to be more precise and send a full DateTime, use the Calendar
+     * form of this method:  <code>parameter(Calendar param)</code>
      * @param param
      */
-//    public SrampClientQuery parameter(Date param) {
-        // TODO better support for querying by date in s-ramp
-//    }
+    public SrampClientQuery parameter(Date param) {
+        String val = ISODateTimeFormat.date().print(new DateTime(param));
+        replacementParams.add("'" + val + "'");
+        return this;
+    }
+
+    /**
+     * Sets a parameter on the query.  This should match up to a ? in the
+     * query template provided.  note: this will add a DateTime to the query.
+     * @param param
+     */
+    public SrampClientQuery parameter(Calendar param) {
+        String val = ISODateTimeFormat.dateTimeNoMillis().print(new DateTime(param));
+        replacementParams.add("'" + val + "'");
+        return this;
+    }
 
     /**
      * Sets a parameter on the query - this should match up to a ? in the
