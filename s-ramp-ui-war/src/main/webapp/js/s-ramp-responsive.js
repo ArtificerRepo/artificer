@@ -92,6 +92,7 @@ $(document).on('click.slide.data-api', '[data-toggle=slide]', function (e) {
       , target = $this.attr('data-target')
         || e.preventDefault()
         || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') //??strip for ie7??
-      , option = $(target).data('collapse') ? 'toggle' : $this.data()
+      , option = $(target).data('collapse') ? 'toggle' : $this.data();
+    option;
     $(target).slideToggle('fast');
-  })
+  });

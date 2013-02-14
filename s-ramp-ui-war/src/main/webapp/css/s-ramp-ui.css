@@ -14,6 +14,13 @@ a:hover {
   text-decoration: underline;
 }
 
+.spinner {
+  background-image: url("../images/spinner_16.gif");
+  background-position: top left;
+  background-repeat: no-repeat;
+  padding-left: 20px;
+}
+
 input.sramp-date {
   cursor: pointer;
 }
@@ -230,6 +237,28 @@ input.sramp-date {
   padding: 4px 12px;
   line-height: 20px;
   display: inline;
+}
+
+.sramp-artifacts-none, .sramp-artifacts-searching {
+  float: left;
+  width: 100%;
+  background-color: white;
+  border-left: 1px solid #d3d3d3;
+  border-right: 1px solid #d3d3d3;
+  border-bottom: 1px solid #d3d3d3;
+  margin-bottom: 20px;
+}
+.sramp-artifacts-none span {
+  padding: 10px;
+  float: left;
+  font-style: italic;
+}
+.sramp-artifacts-searching span {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 36px;
+  float: left;
+  background-position: 16px 11px;
 }
 
 .sramp-artifacts-table {

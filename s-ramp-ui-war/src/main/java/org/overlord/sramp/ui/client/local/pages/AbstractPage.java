@@ -73,6 +73,12 @@ public abstract class AbstractPage extends Composite {
     protected LIElement userMenuMobileLabel = Document.get().createLIElement();
 
     /**
+     * Constructor.
+     */
+    public AbstractPage() {
+    }
+
+    /**
      * Called after the page is constructed.
      */
     @PostConstruct

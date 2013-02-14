@@ -21,13 +21,16 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.framework.ClientMessageBus;
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
 import org.overlord.sramp.ui.client.local.services.ArtifactSearchRpcService;
 import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.widgets.common.HtmlSnippet;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 
@@ -54,8 +57,15 @@ public class ArtifactsPage extends AbstractPage {
     @Inject @DataField("sramp-search-box")
     protected TextBox searchBox;
 
+    @Inject @DataField("sramp-artifacts-none")
+    protected HtmlSnippet noDataMessage;
+    @Inject @DataField("sramp-artifacts-searching")
+    protected HtmlSnippet searchInProgressMessage;
     @Inject @DataField("sramp-artifacts-table")
     protected ArtifactsTable artifactsTable;
+
+    @Inject
+    protected ClientMessageBus bus;
 
     /**
      * Constructor.
@@ -85,12 +95,28 @@ public class ArtifactsPage extends AbstractPage {
         artifactsTable.setColumnClasses(3, "desktop-only");
         artifactsTable.setColumnClasses(4, "desktop-only");
         artifactsTable.setColumnClasses(5, "desktop-only");
+        onSearchStarting();
+    }
+
+    @PageShown
+    protected void onPageShown() {
+        // Kick off an artifact search, but do it as a post-init task
+        // of the errai bus so that the RPC endpoints are ready.  This
+        // is only necessary on initial app load, but it doesn't hurt
+        // to always do it.
+        bus.addPostInitTask(new Runnable() {
+            @Override
+            public void run() {
+                doArtifactSearch();
+            }
+        });
     }
 
     /**
      * Search for artifacts based on the current filter settings and search text.
      */
     protected void doArtifactSearch() {
+        onSearchStarting();
         searchService.search(filtersPanel.getValue(), this.searchBox.getValue(), new IRpcServiceInvocationHandler<List<ArtifactSummaryBean>>() {
             @Override
             public void onReturn(List<ArtifactSummaryBean> data) {
@@ -105,13 +131,28 @@ public class ArtifactsPage extends AbstractPage {
     }
 
     /**
+     * Called when a new artifact search is kicked off.
+     */
+    protected void onSearchStarting() {
+        this.searchInProgressMessage.setVisible(true);
+        this.artifactsTable.setVisible(false);
+        this.noDataMessage.setVisible(false);
+    }
+
+    /**
      * Updates the table of artifacts with the given data.
      * @param data
      */
     protected void updateArtifactTable(List<ArtifactSummaryBean> data) {
         this.artifactsTable.clear();
-        for (ArtifactSummaryBean artifactSummaryBean : data) {
-            this.artifactsTable.addRow(artifactSummaryBean);
+        this.searchInProgressMessage.setVisible(false);
+        if (data.size() > 0) {
+            for (ArtifactSummaryBean artifactSummaryBean : data) {
+                this.artifactsTable.addRow(artifactSummaryBean);
+            }
+            this.artifactsTable.setVisible(true);
+        } else {
+            this.noDataMessage.setVisible(true);
         }
     }
 
