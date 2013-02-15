@@ -336,7 +336,21 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
                 .parameter(endOfToday)
                 .count(1).query();
         Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0);
+    }
 
+    /**
+     * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#buildQuery(String)
+     */
+    @Test
+    public void testResultSetAttributes() throws Exception {
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        for (int i = 0; i < 20; i++) {
+            addXmlDoc();
+        }
+        QueryResultSet rs = client.buildQuery("/s-ramp/core").count(2).startIndex(5).query();
+        Assert.assertEquals(20, rs.getTotalResults());
+        Assert.assertEquals(2, rs.getItemsPerPage());
+        Assert.assertEquals(5, rs.getStartIndex());
     }
 
 	/**
@@ -462,6 +476,22 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		} finally {
 			SrampArchive.closeQuietly(archive);
 		}
+	}
+
+	/**
+	 * Adds an XML document.
+	 * @throws Exception
+	 */
+	protected void addXmlDoc() throws Exception {
+        String artifactFileName = "PO.xml";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        try {
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            client.uploadArtifact(ArtifactType.XmlDocument(), is, artifactFileName);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
 	}
 
 }
