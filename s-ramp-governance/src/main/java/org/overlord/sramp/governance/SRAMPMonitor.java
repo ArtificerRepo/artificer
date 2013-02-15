@@ -116,7 +116,7 @@ public class SRAMPMonitor extends TimerTask {
 	 */
 	private boolean isAppserverReady() throws MalformedURLException {
 	    boolean isReady = true;
-	    String serviceDocumentUrl = governance.getSrampUrl().toExternalForm() + "/s-ramp/serviceDocument";
+	    String serviceDocumentUrl = governance.getSrampUrl().toExternalForm() + "/s-ramp/servicedocument";
 	    isReady =  urlExists(serviceDocumentUrl);
 	    if (isReady) {
 	        String bpmUrl = governance.getJbpmUrl().toExternalForm();

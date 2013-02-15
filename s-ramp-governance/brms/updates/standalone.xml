@@ -191,7 +191,7 @@
             <cache-container name="modeshape">
                 <local-cache name="sramp">
                     <transaction mode="NON_XA"/>
-                    <file-store relative-to="jboss.server.data.dir" path="modeshape/store/sramp" passivation="false"/>
+                    <file-store relative-to="jboss.server.data.dir" path="modeshape/store/sramp" passivation="false" purge="false"/>
                 </local-cache>
             </cache-container>
         </subsystem>
