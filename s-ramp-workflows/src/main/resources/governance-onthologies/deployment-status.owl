@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xml:base="http://www.jboss.org/overlord/deployment-status.owl">
+  
+  <owl:Ontology rdf:ID="Status">
+    <rdfs:label>Status</rdfs:label>
+    <rdfs:comment>Deployment Status Ontology</rdfs:comment>
+  </owl:Ontology>
+  
+  <owl:Class rdf:ID="Dev">
+    <rdfs:label>dev</rdfs:label>
+    <rdfs:comment>Development Environment Status</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="Qa">
+    <rdfs:label>qa</rdfs:label>
+    <rdfs:comment>QA Environment Status</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="Stage">
+    <rdfs:label>staging</rdfs:label>
+    <rdfs:comment>Staging Environment Status</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="Prod">
+    <rdfs:label>prod</rdfs:label>
+    <rdfs:comment>Production Environment Status</rdfs:comment>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="DevTest">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Dev" />
+    <rdfs:label>devtest</rdfs:label>
+    <rdfs:comment>Artifact is undergoing testing in the Development Environment.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="DevPass">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Dev" />
+    <rdfs:label>devpass</rdfs:label>
+    <rdfs:comment>Artifact passed testing in the Development Environment.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="DevFail">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Dev" />
+    <rdfs:label>devfail</rdfs:label>
+    <rdfs:comment>Artifact failed testing in the Development Environment.</rdfs:comment>
+  </owl:Class>
+
+  <owl:Class rdf:ID="QaTest">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Qa" />
+    <rdfs:label>qatest</rdfs:label>
+    <rdfs:comment>Artifact is undergoing testing in the QA Environment.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="QaPass">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Qa" />
+    <rdfs:label>qapass</rdfs:label>
+    <rdfs:comment>Artifact passed testing in the QA Environment.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="QaFail">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Qa" />
+    <rdfs:label>qafail</rdfs:label>
+    <rdfs:comment>Artifact failed testing in the QA Environment.</rdfs:comment>
+  </owl:Class>
+
+  <owl:Class rdf:ID="StageTest">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Stage" />
+    <rdfs:label>stagetest</rdfs:label>
+    <rdfs:comment>Artifact is undergoing testing in the Staging Environment.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="StagePass">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Stage" />
+    <rdfs:label>stagepass</rdfs:label>
+    <rdfs:comment>Artifact passed testing in the Staging Environment.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="StageFail">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Stage" />
+    <rdfs:label>stagefail</rdfs:label>
+    <rdfs:comment>Artifact failed testing in the Staging Environment.</rdfs:comment>
+  </owl:Class> 
+
+  <owl:Class rdf:ID="ProdTest">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Prod" />
+    <rdfs:label>prodtest</rdfs:label>
+    <rdfs:comment>Artifact is undergoing testing in the Production Environment.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="ProdPass">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Prod" />
+    <rdfs:label>prodpass</rdfs:label>
+    <rdfs:comment>Artifact passed testing in the Production Environment.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:ID="ProdFail">
+    <rdfs:subClassOf rdf:resource="http://www.jboss.org/overlord/deployment-status.owl#Prod" />
+    <rdfs:label>prodfail</rdfs:label>
+    <rdfs:comment>Artifact failed testing in the Production Environment.</rdfs:comment>
+  </owl:Class> 
+</rdf:RDF>

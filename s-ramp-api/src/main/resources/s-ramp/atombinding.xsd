@@ -169,4 +169,26 @@
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
+  
+  <xsd:element name="errorResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="s-ramp:error" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+  </xsd:element>
+  
+  <xsd:element name="error">
+    <xsd:attribute name="responseCode" type="xsd:string" use="required" />
+    <xsd:attribute name="name" type="xsd:string" use="required" /> 
+    <xsd:attribute name="uuid" type="xsd:string" use="optional" />
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="description" type="xsd:string" minOccurs="1" maxOccurs="1"  />
+        <xsd:element name="howtofix" type="xsd:string" minOccurs="0" maxOccurs="1"  />
+        <xsd:element name="detail" type="xsd:string" minOccurs="0" maxOccurs="1"  />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
 </xsd:schema>
+

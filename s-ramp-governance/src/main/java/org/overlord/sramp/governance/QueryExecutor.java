@@ -78,11 +78,6 @@ public class QueryExecutor {
                                     + " with parameters: "       + query.getParameters());
                         } else {
                             propertyName = WORKFLOW_PROCESS_ID + query.getWorkflowId() + "_";
-                            //start workflow for this artifact
-                            logger.info("Starting workflow " + query.getWorkflowId() + " for artifact " + artifact.getUuid());
-                            Map<String,Object> parameters = query.getParsedParameters();
-                            parameters.put("ArtifactUuid", artifact.getUuid());
-                            bpmManager.newProcessInstance(query.getWorkflowId(), parameters);
                             // set this process as a property
                             int i=0;
                             while (propertyMap.keySet().contains(propertyName + i)) {
@@ -93,6 +88,11 @@ public class QueryExecutor {
                             property.setPropertyValue(WORKFLOW_PARAMETERS + query.getParameters());
                             artifact.getProperty().add(property);
                             client.updateArtifactMetaData(artifact);
+                            //start workflow for this artifact
+                            logger.info("Starting workflow " + query.getWorkflowId() + " for artifact " + artifact.getUuid());
+                            Map<String,Object> parameters = query.getParsedParameters();
+                            parameters.put("ArtifactUuid", artifact.getUuid());
+                            bpmManager.newProcessInstance(query.getWorkflowId(), parameters);
                         }
                     }
                 }

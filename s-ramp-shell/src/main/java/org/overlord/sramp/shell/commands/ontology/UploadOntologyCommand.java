@@ -25,6 +25,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.api.Arguments;
+import org.overlord.sramp.shell.api.ShellContext;
+import org.overlord.sramp.shell.api.SimpleShellContext;
 import org.overlord.sramp.shell.util.FileNameCompleter;
 
 /**
@@ -60,6 +63,25 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 		print("Example usage:");
 		print(">  ontology:upload /home/uname/files/regions.owl.xml");
 	}
+	
+	 /**
+     * Main entry point - for use outside the interactive shell.
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String [] args) throws Exception {
+        String ontologyFilePath = args[0];
+        StringBuilder argLine = new StringBuilder();
+        argLine.append(ontologyFilePath);
+        SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-server");
+        QName clientVarName = new QName("s-ramp", "client");
+        ShellContext context = new SimpleShellContext();
+        context.setVariable(clientVarName, client);
+        UploadOntologyCommand cmd = new UploadOntologyCommand();
+        cmd.setArguments(new Arguments(argLine.toString()));
+        cmd.setContext(context);
+        cmd.execute();
+    }
 
 	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()

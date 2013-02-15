@@ -53,6 +53,9 @@
   	  <replacetoken>512m</replacetoken>
   	  <replacevalue>1024m</replacevalue>
   	</replace>
+  	<echo>Adding Users and Roles</echo>
+  	<copy tofile="${sramp.jboss.home}/standalone/configuration/users.properties" file="updates/users.properties" overwrite="true"/>
+  	<copy tofile="${sramp.jboss.home}/standalone/configuration/roles.properties" file="updates/roles.properties" overwrite="true"/>
   	<echo>set mailinator as the default email server</echo>
   	<replace file="${sramp.jboss.home}/standalone/configuration/standalone.xml">
       <replacetoken>&lt;remote-destination host="localhost" port="25"/&gt;</replacetoken>
@@ -72,7 +75,7 @@
   <target name="tail">
     <exec executable="tail">
       <arg value="-f" />
-      <arg value="${sramp.jbpm5.dir}/jbpm-installer/jboss-as-7.1.1.Final/standalone/log/server.log" />
+      <arg value="${sramp.jboss.home}/standalone/log/server.log" />
     </exec>
   </target>
 

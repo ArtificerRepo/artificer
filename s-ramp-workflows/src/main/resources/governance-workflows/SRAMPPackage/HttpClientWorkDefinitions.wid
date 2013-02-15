@@ -7,6 +7,7 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
       "Url" : new StringDataType(),
       "Method" : new StringDataType(),
       "Uuid" : new StringDataType(),
+      "Target" : new StringDataType(),
     ],
     "displayName" : "Deploy",
     "icon" : "http://localhost:8080/drools-guvnor/rest/packages/SRAMPPackage/assets/run-build-install/binary",
@@ -19,9 +20,25 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
       "Url" : new StringDataType(),
       "Method" : new StringDataType(),
       "Uuid" : new StringDataType(),
+      "Target" : new StringDataType(),
+      "Group" : new StringDataType(),
     ],
     "displayName" : "Notify",
     "icon" : "http://localhost:8080/drools-guvnor/rest/packages/SRAMPPackage/assets/audio-input-microphone-3/binary",
+  ],
+ 
+    // the HttpClient work item
+  [
+    "name" : "HttpClientUpdateMetaData",
+    "parameters" : [
+      "Url" : new StringDataType(),
+      "Method" : new StringDataType(),
+      "Name" : new StringDataType(),
+      "Value" : new StringDataType(),
+      "Uuid" : new StringDataType(),
+    ],
+    "displayName" : "UpdateMetaData",
+    "icon" : "http://localhost:8080/drools-guvnor/rest/packages/SRAMPPackage/assets/user-properties/binary",
   ]
 
 ]
