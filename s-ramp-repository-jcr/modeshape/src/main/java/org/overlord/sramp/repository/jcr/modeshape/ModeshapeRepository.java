@@ -204,7 +204,7 @@ public class ModeshapeRepository extends JCRRepository {
 			NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
 
 			// Register the ModeShape S-RAMP node types ...
-			is = ModeshapeRepository.class.getResourceAsStream("/org/overlord/s-ramp/sramp.cnd");
+			is = ModeshapeRepository.class.getClassLoader().getResourceAsStream("/org/overlord/s-ramp/sramp.cnd");
 			manager.registerNodeTypes(is,true);
 		} catch (LoginException e) {
 			throw e;
