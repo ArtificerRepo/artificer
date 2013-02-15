@@ -36,6 +36,7 @@ public class GovernanceApplication extends Application {
 	public GovernanceApplication() {
 		singletons.add(new DeploymentResource());
 		singletons.add(new NotificationResource());
+		singletons.add(new UpdateMetaDataResource());
 	}
 
 	@Override

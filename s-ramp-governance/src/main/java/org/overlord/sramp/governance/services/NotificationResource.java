@@ -18,13 +18,14 @@ package org.overlord.sramp.governance.services;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.annotation.Resource;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -41,6 +42,7 @@ import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.governance.NotificationDestinations;
 import org.overlord.sramp.governance.Governance;
+import org.overlord.sramp.governance.SlashDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +53,6 @@ import org.slf4j.LoggerFactory;
 @Path("/notify")
 public class NotificationResource {
 
-    @Resource(mappedName="java:jboss/mail/Default")
     private Session mailSession;
     
     private static Logger logger = LoggerFactory.getLogger(NotificationResource.class);
@@ -59,8 +60,21 @@ public class NotificationResource {
     
     /**
      * Constructor.
+     * @throws NamingException 
      */
     public NotificationResource() {
+        InitialContext context;
+        try {
+            String jndiEmailRef = governance.getJNDIEmailName();
+            context = new InitialContext();
+            mailSession = (Session) context.lookup(jndiEmailRef);
+            if (mailSession==null) {
+                logger.error("The JNDI lookup for mailSession '" + jndiEmailRef + "' failed.");
+            }
+        } catch (NamingException e) {
+            logger.error(e.getMessage(),e);
+        }
+        
     }
 
     /**
@@ -71,14 +85,21 @@ public class NotificationResource {
      * @throws SrampAtomException
      */
     @POST
-    @Path("email/{group}/{template}/{environment}/{uuid}")
+    @Path("email/{group}/{template}/{target}/{uuid}")
     @Produces(MediaType.APPLICATION_XML)
     public Response emailNotification(@Context HttpServletRequest request,
             @PathParam("group") String group,
             @PathParam("template") String template,
-            @PathParam("environment") String environment,
+            @PathParam("target") String target,
             @PathParam("uuid") String uuid) throws Exception {
         try {
+            // 0. run the decoder on the arguments, after replacing * by % (this so parameters can 
+            //    contain slashes (%2F)
+            group = SlashDecoder.decode(group);
+            template = SlashDecoder.decode(template);
+            target = SlashDecoder.decode(target);
+            uuid = SlashDecoder.decode(uuid);
+            
             // 1. get the artifact from the repo
             SrampAtomApiClient client = new SrampAtomApiClient(governance.getSrampUrl().toExternalForm());
             String query = String.format("/s-ramp[@uuid='%s']", uuid);
@@ -91,8 +112,9 @@ public class NotificationResource {
             // 2. get the destinations for this group
             NotificationDestinations destinations = governance.getNotificationDestinations("email").get(group);
             if (destinations==null) {
-                logger.error("No emailAddresses could be found for group '"+ group + "'");
-                throw new SrampAtomException("No email addresses could be found for group '"+ group + "'");
+                destinations = new NotificationDestinations(group, 
+                        governance.getDefaultEmailFromAddress(), 
+                        group + "@" + governance.getDefaultEmailDomain());
             }
 
             // 3. send the email notification
@@ -111,7 +133,7 @@ public class NotificationResource {
                 if (subjectUrl!=null) subject=IOUtils.toString(subjectUrl);
                 subject = subject.replaceAll("\\$\\{uuid}", uuid);
                 subject = subject.replaceAll("\\$\\{name}", artifactSummary.getName());
-                subject = subject.replaceAll("\\$\\{environment}", environment);
+                subject = subject.replaceAll("\\$\\{target}", target);
                 m.setSubject(subject);
                 
                 m.setSentDate(new java.util.Date());
@@ -120,13 +142,14 @@ public class NotificationResource {
                 if (contentUrl!=null) content=IOUtils.toString(contentUrl);
                 content = content.replaceAll("\\$\\{uuid}", uuid);
                 content = content.replaceAll("\\$\\{name}", artifactSummary.getName());
-                content = content.replaceAll("\\$\\{environment}", environment);
+                content = content.replaceAll("\\$\\{target}", target);
                 m.setContent(content,"text/plain");
                 Transport.send(m);
             } catch (javax.mail.MessagingException e) {
                 logger.error(e.getMessage(),e);
             }
             
+            // 4. build the response
             InputStream reply = IOUtils.toInputStream("success");
             return Response.ok(reply, MediaType.APPLICATION_OCTET_STREAM).build();
         } catch (Exception e) {
