@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
@@ -87,6 +88,8 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	private String predicateContext = "artifact";
 	private int relationshipJoinCounter = 1;
 	private ClassificationHelper classificationHelper;
+	private String lastFPS = null;
+    private Pattern datePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d");
 	private SrampException error;
 
 	/**
@@ -231,6 +234,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 				this.whereBuilder.append(".[");
 				this.whereBuilder.append(jcrPropName);
 				this.whereBuilder.append("]");
+				this.lastFPS = jcrPropName;
 			} else {
 				throw new RuntimeException("Properties from namespace '" + property.getNamespaceURI() + "' are not supported.");
 			}
@@ -350,10 +354,18 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	@Override
 	public void visit(PrimaryExpr node) {
 		if (node.getLiteral() != null) {
+		    boolean isDate = ("jcr:lastModified".equals(this.lastFPS) || "jcr:created".equals(this.lastFPS))
+		            && this.datePattern.matcher(node.getLiteral()).find();
+		    if (isDate) {
+		        this.whereBuilder.append("CAST(");
+		    }
 			this.whereBuilder.append("'");
 			// TODO prevent injection here
 			this.whereBuilder.append(node.getLiteral());
 			this.whereBuilder.append("'");
+            if (isDate) {
+                this.whereBuilder.append(" AS DATE)");
+            }
 		} else if (node.getNumber() != null) {
 			this.whereBuilder.append(node.getNumber());
 		} else if (node.getPropertyQName() != null) {

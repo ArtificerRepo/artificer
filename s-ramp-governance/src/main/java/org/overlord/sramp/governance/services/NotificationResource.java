@@ -114,7 +114,7 @@ public class NotificationResource {
             if (destinations==null) {
                 destinations = new NotificationDestinations(group, 
                         governance.getDefaultEmailFromAddress(), 
-                        group + governance.getDefaultEmailDomain());
+                        group + "@" + governance.getDefaultEmailDomain());
             }
 
             // 3. send the email notification

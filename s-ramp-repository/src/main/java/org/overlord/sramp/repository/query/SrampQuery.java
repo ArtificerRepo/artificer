@@ -16,6 +16,8 @@
 package org.overlord.sramp.repository.query;
 
 import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.repository.QueryManager;
@@ -50,6 +52,18 @@ public interface SrampQuery {
 	 * @param paramValue the replacement parameter value
 	 */
 	public void setString(String paramValue);
+
+    /**
+     * Sets the value of the next replacement as a Date (short Date).
+     * @param date
+     */
+    public void setDate(Date date);
+
+    /**
+     * Sets the value of the next replacement as a Calendar (DateTime).
+     * @param date
+     */
+    public void setDateTime(Calendar date);
 
 	/**
 	 * Sets the value of the next replacement as a number literal.

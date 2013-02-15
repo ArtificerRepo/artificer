@@ -17,6 +17,7 @@ package org.overlord.sramp.shell.commands.ontology;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -70,9 +71,12 @@ public class UploadOntologyCommand extends AbstractShellCommand {
      * @throws Exception
      */
     public static void main(String [] args) throws Exception {
-        String ontologyFilePath = args[0];
+        String ontologyFilePath = "/governance-ontologies/deployment-status.owl";
+        if (args.length > 0) ontologyFilePath = args[0];
+        URL url = UploadOntologyCommand.class.getResource(ontologyFilePath);
+        if (url==null) throw new Exception ("Could not find " + ontologyFilePath + " on the classpath");
         StringBuilder argLine = new StringBuilder();
-        argLine.append(ontologyFilePath);
+        argLine.append(url.toExternalForm());
         SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-server");
         QName clientVarName = new QName("s-ramp", "client");
         ShellContext context = new SimpleShellContext();
@@ -98,8 +102,13 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 		}
 		InputStream content = null;
 		try {
-			File file = new File(filePathArg);
-			content = FileUtils.openInputStream(file);
+		    File file = new File(filePathArg);
+		    if (file.exists()) {
+		        content = FileUtils.openInputStream(file);
+		    } else {
+		        URL url = new URL(filePathArg);
+		        content = url.openStream();
+		    }
 			client.uploadOntology(content);
 			print("Successfully uploaded a new ontology to the S-RAMP repository.");
 		} catch (Exception e) {

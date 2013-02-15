@@ -81,7 +81,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 				XPathSerializationVisitor visitor = new XPathSerializationVisitor();
 				queryModel.accept(visitor);
 				String originalQuery = visitor.getXPath();
-				log.debug("JCR-SQL2 Query:\n---------------\n" + jcrSql2Query + "\n^^^^ FROM ^^^^\n" + originalQuery);
+				System.out.println("JCR-SQL2 Query:\n---------------\n" + jcrSql2Query + "\n^^^^ FROM ^^^^\n" + originalQuery);
 			}
 			javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, JCRConstants.JCR_SQL2);
 			long startTime = System.currentTimeMillis();

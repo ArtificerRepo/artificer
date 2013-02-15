@@ -79,7 +79,7 @@
     </exec>
   </target>
 
-  <target name="upload" depends="dist.check,upload.to.brms.fromsrc,brms.to.sramp.fromsrc,upload.to.brms.fromdist,brms.to.sramp.fromdist" />
+  <target name="upload" depends="dist.check,upload.to.brms.fromsrc,brms.to.sramp.fromsrc,upload.to.brms.fromdist,brms.to.sramp.fromdist,upload.seeddata.fromsrc" />
   
   <target name="dist.check">
     <condition property="is.dist">
@@ -121,6 +121,13 @@
       <arg value="updates/brms-to-sramp.cmds.txt" />
     </java>
   </target>
+	
+	<target name="upload.seeddata.fromsrc" unless="is.dist">
+		<echo>Seeding the S-RAMP repo</echo>
+    <java classname="org.overlord.sramp.shell.commands.ontology.UploadOntologyCommand">
+      <classpath refid="client-classpath" />
+    </java>
+	</target>
 
   <target name="patch.jbpm-gwt-console-server" depends="explode.jbpm-gwt-console-server">
     <mkdir dir="restore" />
