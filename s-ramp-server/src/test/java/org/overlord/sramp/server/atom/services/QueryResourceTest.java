@@ -137,6 +137,51 @@ public class QueryResourceTest extends AbstractResourceTest {
 	}
 
 	/**
+     * @throws Exception
+     */
+    @Test
+    public void testSearchResultAttributes() throws Exception {
+        int numEntries = 20;
+        for (int i = 0; i < numEntries; i++) {
+            addJpegDocument("photo" + i + ".jpg");
+        }
+
+        // Default query
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp?query=ext"));
+        ClientResponse<Feed> response = request.get(Feed.class);
+        Feed feed = response.getEntity();
+        Object startIndexAttr = feed.getExtensionAttributes().get(SrampConstants.SRAMP_START_INDEX_QNAME);
+        Object itemsPerPageAttr = feed.getExtensionAttributes().get(SrampConstants.SRAMP_ITEMS_PER_PAGE_QNAME);
+        Object totalResultsAttr = feed.getExtensionAttributes().get(SrampConstants.SRAMP_TOTAL_RESULTS_QNAME);
+        Assert.assertNotNull("The startIndex attribute wasn't returned!", startIndexAttr);
+        Assert.assertNotNull("The itemsPerPage attribute wasn't returned!", itemsPerPageAttr);
+        Assert.assertNotNull("The totalResults attribute wasn't returned!", totalResultsAttr);
+        int startIndex = Integer.parseInt(String.valueOf(startIndexAttr));
+        int itemsPerPage = Integer.parseInt(String.valueOf(itemsPerPageAttr));
+        int totalResults = Integer.parseInt(String.valueOf(totalResultsAttr));
+        Assert.assertEquals(0, startIndex);
+        Assert.assertEquals(100, itemsPerPage);
+        Assert.assertEquals(20, totalResults);
+
+        // Query with some params
+        request = new ClientRequest(generateURL("/s-ramp?query=ext&startIndex=5&count=2"));
+        response = request.get(Feed.class);
+        feed = response.getEntity();
+        startIndexAttr = feed.getExtensionAttributes().get(SrampConstants.SRAMP_START_INDEX_QNAME);
+        itemsPerPageAttr = feed.getExtensionAttributes().get(SrampConstants.SRAMP_ITEMS_PER_PAGE_QNAME);
+        totalResultsAttr = feed.getExtensionAttributes().get(SrampConstants.SRAMP_TOTAL_RESULTS_QNAME);
+        Assert.assertNotNull("The startIndex attribute wasn't returned!", startIndexAttr);
+        Assert.assertNotNull("The itemsPerPage attribute wasn't returned!", itemsPerPageAttr);
+        Assert.assertNotNull("The totalResults attribute wasn't returned!", totalResultsAttr);
+        startIndex = Integer.parseInt(String.valueOf(startIndexAttr));
+        itemsPerPage = Integer.parseInt(String.valueOf(itemsPerPageAttr));
+        totalResults = Integer.parseInt(String.valueOf(totalResultsAttr));
+        Assert.assertEquals(5, startIndex);
+        Assert.assertEquals(2, itemsPerPage);
+        Assert.assertEquals(20, totalResults);
+    }
+
+	/**
 	 * Adds an XSD to the repo by POSTing the content to /s-ramp/xsd/XsdDocument.
 	 */
 	private Entry doAddXsd(String ... properties) throws Exception {
@@ -199,6 +244,11 @@ public class QueryResourceTest extends AbstractResourceTest {
 		Assert.assertEquals(2, feed.getEntries().size());
 	}
 
+	/**
+	 * Adds a JPEG to the repo.
+	 * @param fname
+	 * @throws Exception
+	 */
 	public void addJpegDocument(String fname) throws Exception {
 		// Add the jpg to the repository
 		String artifactFileName = "photo.jpg";
@@ -217,7 +267,7 @@ public class QueryResourceTest extends AbstractResourceTest {
 			ExtendedArtifactType doc = (ExtendedArtifactType) arty;
 			Assert.assertEquals(fname, doc.getName());
 			Assert.assertEquals("JpgDocument", doc.getExtendedType());
-			Assert.assertEquals(Long.valueOf(2966447), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
+			Assert.assertEquals(Long.valueOf(2398), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
 			Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
 		} finally {
 			IOUtils.closeQuietly(contentStream);

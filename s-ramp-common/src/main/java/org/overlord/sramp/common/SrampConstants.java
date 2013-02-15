@@ -34,14 +34,20 @@ public class SrampConstants {
 	private static final String SRAMP_DERIVED              = "derived";
     private static final String SRAMP_EXTENDED_TYPE        = "extendedType";
     private static final String SRAMP_PROVIDER             = "provider";
+    private static final String SRAMP_START_INDEX          = "startIndex";
+    private static final String SRAMP_ITEMS_PER_PAGE_INDEX = "itemsPerPage";
+    private static final String SRAMP_TOTAL_RESULTS        = "totalResults";
 
     public static final QName SRAMP_CONTENT_SIZE_QNAME    = new QName(SRAMP_NS, SRAMP_CONTENT_SIZE, SRAMP_PREFIX);
     public static final QName SRAMP_CONTENT_TYPE_QNAME    = new QName(SRAMP_NS, SRAMP_CONTENT_TYPE, SRAMP_PREFIX);
     public static final QName SRAMP_DERIVED_QNAME         = new QName(SRAMP_NS, SRAMP_DERIVED, SRAMP_PREFIX);
     public static final QName SRAMP_PROVIDER_QNAME        = new QName(SRAMP_NS, SRAMP_PROVIDER, SRAMP_PREFIX);
     public static final QName SRAMP_EXTENDED_TYPE_QNAME   = new QName(SRAMP_NS, SRAMP_EXTENDED_TYPE, SRAMP_PREFIX);
+    public static final QName SRAMP_START_INDEX_QNAME     = new QName(SRAMP_NS, SRAMP_START_INDEX, SRAMP_PREFIX);
+    public static final QName SRAMP_ITEMS_PER_PAGE_QNAME  = new QName(SRAMP_NS, SRAMP_ITEMS_PER_PAGE_INDEX, SRAMP_PREFIX);
+    public static final QName SRAMP_TOTAL_RESULTS_QNAME   = new QName(SRAMP_NS, SRAMP_TOTAL_RESULTS, SRAMP_PREFIX);
 
-    //Configuration constants
+    // Configuration constants
     public static final String SRAMP_CONFIG_FILE_NAME     = "sramp.config.file.name";
     public static final String SRAMP_CONFIG_FILE_REFRESH  = "sramp.config.file.refresh";
     public static final String SRAMP_CONFIG_BASEURL       = "sramp.config.baseurl";

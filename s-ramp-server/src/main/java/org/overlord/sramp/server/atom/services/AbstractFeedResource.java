@@ -118,6 +118,9 @@ public abstract class AbstractFeedResource extends AbstractResource {
     private Feed createFeed(ArtifactSet artifactSet, int fromRow, int toRow, Set<String> propNames, String baseUrl) throws Exception {
 		Feed feed = new Feed();
 		feed.getExtensionAttributes().put(SrampConstants.SRAMP_PROVIDER_QNAME, "JBoss Overlord");
+        feed.getExtensionAttributes().put(SrampConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf((toRow - fromRow) + 1));
+        feed.getExtensionAttributes().put(SrampConstants.SRAMP_START_INDEX_QNAME, String.valueOf(fromRow));
+        feed.getExtensionAttributes().put(SrampConstants.SRAMP_TOTAL_RESULTS_QNAME, String.valueOf(artifactSet.size()));
 		feed.setId(new URI(UUID.randomUUID().toString()));
 		feed.setTitle("S-RAMP Feed");
 		feed.setSubtitle("Ad Hoc query feed");
