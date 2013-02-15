@@ -77,12 +77,12 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 			session = JCRRepositoryFactory.getAnonymousSession();
 			javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
 			String jcrSql2Query = createSql2Query(queryModel);
-//			if (log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				XPathSerializationVisitor visitor = new XPathSerializationVisitor();
 				queryModel.accept(visitor);
 				String originalQuery = visitor.getXPath();
 				System.out.println("JCR-SQL2 Query:\n---------------\n" + jcrSql2Query + "\n^^^^ FROM ^^^^\n" + originalQuery);
-//			}
+			}
 			javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, JCRConstants.JCR_SQL2);
 			long startTime = System.currentTimeMillis();
 			QueryResult jcrQueryResult = jcrQuery.execute();

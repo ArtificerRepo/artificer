@@ -354,7 +354,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	@Override
 	public void visit(PrimaryExpr node) {
 		if (node.getLiteral() != null) {
-		    boolean isDate = ("jcr:lastModified".equals(this.lastFPS) || "jcr:created".equals(lastFPS))
+		    boolean isDate = ("jcr:lastModified".equals(this.lastFPS) || "jcr:created".equals(this.lastFPS))
 		            && this.datePattern.matcher(node.getLiteral()).find();
 		    if (isDate) {
 		        this.whereBuilder.append("CAST(");
