@@ -37,6 +37,9 @@ public class Governance {
     public static String QUERY_ERROR  = GovernanceConstants.GOVERNANCE_QUERIES + " should be of the format <query>|<processId>|<param::param>\nCheck\n";
     public static String TARGET_ERROR = GovernanceConstants.GOVERNANCE_TARGETS + " should be of the format <targetName>|<directory>\nCheck\n";
     public static String NOTIFICATION_ERROR  = GovernanceConstants.GOVERNANCE + ".<email|..> should be of the format <groupName>|<fromAddress>|<destination1>,<destination2>\nCheck\n";
+    public static String DEFAULT_JNDI_EMAIL_REF = "java:jboss/mail/Default";
+    public static String DEFAULT_EMAIL_DOMAIN = "mailinator.com";
+    public static String DEFAULT_EMAIL_FROM = "overlord@overlord.jboss.org";
     
     public Governance() {
         super();
@@ -115,6 +118,13 @@ public class Governance {
     public URL getSrampUrl() throws MalformedURLException {
         return new URL(configuration.getString(GovernanceConstants.SRAMP_REPO_URL, "http://localhost:8080/s-ramp-server"));
     }
+    
+    /**
+     * This returns the governance baseURL, which by default is http://localhost:8080/s-ramp-server
+     */
+    public String getGovernanceUrl() {
+        return configuration.getString(GovernanceConstants.GOVERNANCE_URL, "http://localhost:8080/s-ramp-governance");
+    }
 
     public Map<String,Target> getTargets() throws ConfigException {
         Map<String,Target> targets = new HashMap<String,Target>();
@@ -150,7 +160,9 @@ public class Governance {
                 errors.append(queryString).append("\n");
             }
             if (!hasErrors) {
-                Query query = new Query(info[0],info[1],info[2]);
+                String params = info[2];
+                params = params.replaceAll("\\{governance.url\\}", getGovernanceUrl());
+                Query query = new Query(info[0],info[1],params);
                 queries.add(query);
             }
         }
@@ -189,5 +201,16 @@ public class Governance {
     public long getAcceptableLagtime() {
         return configuration.getLong(GovernanceConstants.GOVERNANCE_ACCEPTABLE_LAG, 1000l); //1 s
     }
+    
+    public String getJNDIEmailName() {
+        return configuration.getString(GovernanceConstants.GOVERNANCE_JNDI_EMAIL_REF, DEFAULT_JNDI_EMAIL_REF);
+    }
 
+    public String getDefaultEmailDomain() {
+        return configuration.getString(GovernanceConstants.GOVERNANCE_EMAIL_DOMAIN, DEFAULT_EMAIL_DOMAIN);
+    }
+    
+    public String getDefaultEmailFromAddress() {
+        return configuration.getString(GovernanceConstants.GOVERNANCE_EMAIL_FROM, DEFAULT_EMAIL_FROM);
+    }
 }

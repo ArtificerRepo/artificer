@@ -121,9 +121,9 @@ public class SRAMPMonitor extends TimerTask {
 	    if (isReady) {
 	        String bpmUrl = governance.getJbpmUrl().toExternalForm();
 	        isReady = urlExists(bpmUrl);
-	        if (!isReady) log.info("Cannot yet connect to the BPM API at: " + governance.getJbpmUrl().toExternalForm());
+	        if (!isReady) log.debug("Cannot yet connect to the BPM API at: " + governance.getJbpmUrl().toExternalForm());
 	    } else {
-	        if (!isReady) log.info("Cannot yet connect to the S-RAMP repo at: " + governance.getSrampUrl().toExternalForm());
+	        if (!isReady) log.debug("Cannot yet connect to the S-RAMP repo at: " + governance.getSrampUrl().toExternalForm());
 	    }
 	    return isReady;
 	}

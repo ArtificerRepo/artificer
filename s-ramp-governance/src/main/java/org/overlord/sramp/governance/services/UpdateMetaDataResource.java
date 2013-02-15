@@ -15,13 +15,11 @@
  */
 package org.overlord.sramp.governance.services;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -35,8 +33,8 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.governance.Governance;
-import org.overlord.sramp.governance.Target;
 import org.overlord.sramp.governance.SlashDecoder;
+import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,38 +43,38 @@ import org.slf4j.LoggerFactory;
  * 
  * 
  */
-@Path("/deploy")
-public class DeploymentResource {
+@Path("/update")
+public class UpdateMetaDataResource {
 
-    private static Logger logger = LoggerFactory.getLogger(DeploymentResource.class);
+    private static Logger logger = LoggerFactory.getLogger(UpdateMetaDataResource.class);
     private Governance governance = new Governance();
 
     /**
      * Constructor.
      */
-    public DeploymentResource() {
+    public UpdateMetaDataResource() {
     }
 
     /**
-     * Governance POST to deploy an artifact by copying it onto the file system.
+     * Governance PUT add a classification.
      * 
-     * @param environment
      * @param uuid
+     * @param classification value
      * 
      * @throws SrampAtomException
      */
-    @POST
-    @Path("copy/{target}/{uuid}")
+    @PUT
+    @Path("classification/{value}/{uuid}")
     @Produces(MediaType.APPLICATION_XML)
-    public Response copy(@Context HttpServletRequest request,
-            @PathParam("target") String targetRef,
+    public Response addClassification(@Context HttpServletRequest request,
+            @PathParam("value") String value,
             @PathParam("uuid") String uuid) throws Exception {
-        InputStream is = null;
+        
         OutputStream os = null;
         try {
-            // 0. run the decoder on the arguments
-            targetRef = SlashDecoder.decode(targetRef);
-            uuid = SlashDecoder.decode(uuid);
+            // 0. run the decoder on the argument            
+            value = SlashDecoder.decode(value);
+            uuid  = SlashDecoder.decode(uuid);
             
             // 1. get the artifact from the repo
             SrampAtomApiClient client = new SrampAtomApiClient(governance.getSrampUrl().toExternalForm());
@@ -86,36 +84,20 @@ public class DeploymentResource {
                 return Response.serverError().status(0).build();
             }
             ArtifactSummary artifactSummary = queryResultSet.iterator().next();
-            is = client.getArtifactContent(artifactSummary.getType(), uuid);
+            BaseArtifactType artifact = client.getArtifactMetaData(artifactSummary.getType(), uuid);
 
-            // 2. get the deployment environment settings
-            Target target = governance.getTargets().get(targetRef);
-            if (target==null) {
-                logger.error("No target could be found for target '"+ targetRef + "'");
-                throw new SrampAtomException("No target could be found for target '"+ targetRef + "'");
-            }
-            File deployDir = new File(target.getDeployDir());
-            if (!deployDir.exists()) {
-                logger.info("creating " + deployDir);
-                deployDir.mkdirs();
-            }
-
-            // 3. deploy the artifact
-            File file = new File(deployDir + "/" + artifactSummary.getName());
-            if (file.exists())
-                file.delete();
-            file.createNewFile();
-            os = new FileOutputStream(file);
-            IOUtils.copy(is, os);
+            // 2. add the classification
+            artifact.getClassifiedBy().add(value);
+            client.updateArtifactMetaData(artifact);
             
+            // 3. build the response
             InputStream reply = IOUtils.toInputStream("success");
             return Response.ok(reply, MediaType.APPLICATION_OCTET_STREAM).build();
         } catch (Exception e) {
-            logger.error("Error deploying artifact. " + e.getMessage(), e);
+            logger.error("Error updating metadata for artifact. " + e.getMessage(), e);
             throw new SrampAtomException(e);
         } finally {
             IOUtils.closeQuietly(os);
-            IOUtils.closeQuietly(is);
         }
     }
 
