@@ -21,6 +21,8 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -308,6 +310,33 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
         QueryResultSet rset = client.buildQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]").parameter(uuid)
                 .count(1).query();
         Assert.assertTrue("Failed to find the artifact we just added!", rset.size() == 1);
+
+        // Do a couple of date-based queries here
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp < ?]")
+                .parameter(new Date(System.currentTimeMillis() + 86400000L))
+                .count(1).query();
+        Assert.assertTrue("Failed to find an artifact by lastModifiedTimestamp!", rset.size() == 1);
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp > ?]")
+                .parameter(new Date(System.currentTimeMillis() + 86400000L))
+                .count(1).query();
+        Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0);
+
+        // Now by DateTime
+        Calendar endOfToday = Calendar.getInstance();
+        endOfToday.set(Calendar.HOUR_OF_DAY, 0);
+        endOfToday.set(Calendar.MINUTE, 0);
+        endOfToday.set(Calendar.SECOND, 0);
+        endOfToday.set(Calendar.MILLISECOND, 0);
+        endOfToday.add(Calendar.DAY_OF_YEAR, 1);
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp < ?]")
+                .parameter(endOfToday)
+                .count(1).query();
+        Assert.assertTrue("Failed to find an artifact by lastModifiedTimestamp!", rset.size() == 1);
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp > ?]")
+                .parameter(endOfToday)
+                .count(1).query();
+        Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0);
+
     }
 
 	/**
