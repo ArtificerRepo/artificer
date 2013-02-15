@@ -8,7 +8,7 @@ connect
 /subsystem=infinispan/cache-container=modeshape:add
 /subsystem=infinispan/cache-container=modeshape/local-cache=sramp:add
 /subsystem=infinispan/cache-container=modeshape/local-cache=sramp/transaction=TRANSACTION:add(mode=NON_XA)
-/subsystem=infinispan/cache-container=modeshape/local-cache=sramp/file-store=FILE_STORE:add(path="modeshape/store/sramp",relative-to="jboss.server.data.dir",passivation=false)
+/subsystem=infinispan/cache-container=modeshape/local-cache=sramp/file-store=FILE_STORE:add(path="modeshape/store/sramp",relative-to="jboss.server.data.dir",passivation=false,purge=false)
 :reload
 :reload
 ./subsystem=modeshape/repository=sramp:add(cache-name="sramp",cache-container="modeshape")

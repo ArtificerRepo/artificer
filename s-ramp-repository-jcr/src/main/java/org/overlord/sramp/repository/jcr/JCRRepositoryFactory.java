@@ -33,7 +33,7 @@ public class JCRRepositoryFactory {
 	
 	private static JCRRepository instance;
 	
-    public static JCRRepository getInstance() throws RepositoryException {
+    public synchronized static JCRRepository getInstance() throws RepositoryException {
         if (instance == null) {
             for (JCRRepository jcrRepository : ServiceLoader.load(JCRRepository.class)) {
                 log.info("Found JCR Provider " + jcrRepository.getClass());
