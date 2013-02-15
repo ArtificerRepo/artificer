@@ -17,8 +17,12 @@ package org.overlord.sramp.repository.query;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.query.xpath.XPathParser;
 import org.overlord.sramp.common.query.xpath.ast.Query;
@@ -99,6 +103,24 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	@Override
 	public void setString(String paramValue) {
 		this.replacementParams.add(new StringReplacementParam(paramValue));
+	}
+
+	/**
+	 * @see org.overlord.sramp.repository.query.SrampQuery#setDate(java.util.Date)
+	 */
+	@Override
+	public void setDate(Date date) {
+        String val = ISODateTimeFormat.date().print(new DateTime(date));
+        this.replacementParams.add(new StringReplacementParam(val));
+	}
+
+	/**
+	 * @see org.overlord.sramp.repository.query.SrampQuery#setDateTime(java.util.Calendar)
+	 */
+	@Override
+	public void setDateTime(Calendar date) {
+        String val = ISODateTimeFormat.dateTimeNoMillis().print(new DateTime(date));
+        this.replacementParams.add(new StringReplacementParam(val));
 	}
 
 	/**

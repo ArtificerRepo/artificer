@@ -105,6 +105,7 @@
     <commons.config.version>1.8</commons.config.version>
     <commons.compress.version>1.4.1</commons.compress.version>
     <jline.version>2.9</jline.version>
+    <joda-time.version>2.1</joda-time.version>
   </properties>
 
   <build>
@@ -236,6 +237,11 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
         <version>${commons.compress.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>${joda-time.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>

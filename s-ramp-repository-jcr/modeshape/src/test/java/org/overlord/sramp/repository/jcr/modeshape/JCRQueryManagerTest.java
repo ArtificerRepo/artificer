@@ -16,6 +16,7 @@
 package org.overlord.sramp.repository.jcr.modeshape;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.UUID;
 
 import junit.framework.Assert;
@@ -138,6 +139,18 @@ public class JCRQueryManagerTest extends AbstractJCRPersistenceTest {
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(3, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/core/Document[@lastModifiedTimestamp < ?]");
+        query.setDate(new Date(System.currentTimeMillis() + 86400000L));
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertTrue(artifactSet.size() >= 3);
+
+        query = queryManager.createQuery("/s-ramp/core/Document[@lastModifiedTimestamp > ?]");
+        query.setDate(new Date(System.currentTimeMillis() + 86400000L));
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(0, artifactSet.size());
     }
 
 	/**
