@@ -15,8 +15,6 @@
  */
 package org.overlord.sramp.ui.client.local.services;
 
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -24,11 +22,9 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactSearchService;
-
-import com.google.gwt.user.client.Window;
 
 /**
  * Client-side service for making RPC calls to the remote search service.
@@ -52,16 +48,17 @@ public class ArtifactSearchRpcService {
      * the caller.
      * @param filters
      * @param searchText
+     * @param page
      * @param handler
      */
     public void search(ArtifactFilterBean filters, String searchText,
-            final IRpcServiceInvocationHandler<List<ArtifactSummaryBean>> handler) {
-        RemoteCallback<List<ArtifactSummaryBean>> successCallback = new DelegatingRemoteCallback<List<ArtifactSummaryBean>>(handler);
+            int page, final IRpcServiceInvocationHandler<ArtifactResultSetBean> handler) {
+        RemoteCallback<ArtifactResultSetBean> successCallback = new DelegatingRemoteCallback<ArtifactResultSetBean>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
-            remoteSearchService.call(successCallback, errorCallback).search(filters, searchText);
+            remoteSearchService.call(successCallback, errorCallback).search(filters, searchText, page);
         } catch (SrampUiException e) {
-            Window.alert("Weird: " + e.getMessage());
+            errorCallback.error(null, e);
         }
     }
 

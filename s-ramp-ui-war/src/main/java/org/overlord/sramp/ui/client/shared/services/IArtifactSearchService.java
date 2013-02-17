@@ -15,11 +15,9 @@
  */
 package org.overlord.sramp.ui.client.shared.services;
 
-import java.util.List;
-
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 
 /**
@@ -34,8 +32,9 @@ public interface IArtifactSearchService {
      * Search for artifacts using the given filtersPanel and search text.
      * @param filtersPanel
      * @param searchText
+     * @param page
      * @throws SrampUiException
      */
-    public List<ArtifactSummaryBean> search(ArtifactFilterBean filters, String searchText) throws SrampUiException;
+    public ArtifactResultSetBean search(ArtifactFilterBean filters, String searchText, int page) throws SrampUiException;
 
 }

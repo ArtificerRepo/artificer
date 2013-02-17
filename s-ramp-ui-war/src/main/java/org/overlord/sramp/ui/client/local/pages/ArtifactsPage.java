@@ -15,8 +15,6 @@
  */
 package org.overlord.sramp.ui.client.local.pages;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -30,10 +28,14 @@ import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
 import org.overlord.sramp.ui.client.local.services.ArtifactSearchRpcService;
 import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.widgets.bootstrap.Pager;
 import org.overlord.sramp.ui.client.local.widgets.common.HtmlSnippet;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
@@ -64,6 +66,17 @@ public class ArtifactsPage extends AbstractPage {
     @Inject @DataField("sramp-artifacts-table")
     protected ArtifactsTable artifactsTable;
 
+    @Inject @DataField("sramp-artifacts-pager")
+    protected Pager pager;
+    @DataField("sramp-artifacts-range-1")
+    protected SpanElement rangeSpan1 = Document.get().createSpanElement();
+    @DataField("sramp-artifacts-total-1")
+    protected SpanElement totalSpan1 = Document.get().createSpanElement();
+    @DataField("sramp-artifacts-range-2")
+    protected SpanElement rangeSpan2 = Document.get().createSpanElement();
+    @DataField("sramp-artifacts-total-2")
+    protected SpanElement totalSpan2 = Document.get().createSpanElement();
+
     @Inject
     protected ClientMessageBus bus;
 
@@ -90,14 +103,25 @@ public class ArtifactsPage extends AbstractPage {
                 doArtifactSearch();
             }
         });
+        pager.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Integer> event) {
+                doArtifactSearch(event.getValue());
+            }
+        });
+
         // Hide columns 2-5 when in mobile mode.
         artifactsTable.setColumnClasses(2, "desktop-only");
         artifactsTable.setColumnClasses(3, "desktop-only");
         artifactsTable.setColumnClasses(4, "desktop-only");
         artifactsTable.setColumnClasses(5, "desktop-only");
-        onSearchStarting();
     }
 
+    /**
+     * Called when a page is shown (either when the app is first loaded or
+     * when navigating TO this page from another).  Kick off an artifact
+     * search at this point so that we show some data in the UI.
+     */
     @PageShown
     protected void onPageShown() {
         // Kick off an artifact search, but do it as a post-init task
@@ -116,11 +140,20 @@ public class ArtifactsPage extends AbstractPage {
      * Search for artifacts based on the current filter settings and search text.
      */
     protected void doArtifactSearch() {
+        doArtifactSearch(1);
+    }
+
+    /**
+     * Search for artifacts based on the current filter settings and search text.
+     * @param page
+     */
+    protected void doArtifactSearch(int page) {
         onSearchStarting();
-        searchService.search(filtersPanel.getValue(), this.searchBox.getValue(), new IRpcServiceInvocationHandler<List<ArtifactSummaryBean>>() {
+        searchService.search(filtersPanel.getValue(), this.searchBox.getValue(), page, new IRpcServiceInvocationHandler<ArtifactResultSetBean>() {
             @Override
-            public void onReturn(List<ArtifactSummaryBean> data) {
+            public void onReturn(ArtifactResultSetBean data) {
                 updateArtifactTable(data);
+                updatePager(data);
             }
             @Override
             public void onError(Throwable error) {
@@ -135,26 +168,53 @@ public class ArtifactsPage extends AbstractPage {
      * Called when a new artifact search is kicked off.
      */
     protected void onSearchStarting() {
+        this.pager.setVisible(false);
         this.searchInProgressMessage.setVisible(true);
         this.artifactsTable.setVisible(false);
         this.noDataMessage.setVisible(false);
+        this.rangeSpan1.setInnerText("?");
+        this.rangeSpan2.setInnerText("?");
+        this.totalSpan1.setInnerText("?");
+        this.totalSpan2.setInnerText("?");
     }
 
     /**
      * Updates the table of artifacts with the given data.
      * @param data
      */
-    protected void updateArtifactTable(List<ArtifactSummaryBean> data) {
+    protected void updateArtifactTable(ArtifactResultSetBean data) {
         this.artifactsTable.clear();
         this.searchInProgressMessage.setVisible(false);
-        if (data.size() > 0) {
-            for (ArtifactSummaryBean artifactSummaryBean : data) {
+        if (data.getArtifacts().size() > 0) {
+            for (ArtifactSummaryBean artifactSummaryBean : data.getArtifacts()) {
                 this.artifactsTable.addRow(artifactSummaryBean);
             }
             this.artifactsTable.setVisible(true);
         } else {
             this.noDataMessage.setVisible(true);
         }
+    }
+
+    /**
+     * Updates the pager with the given data.
+     * @param data
+     */
+    protected void updatePager(ArtifactResultSetBean data) {
+        int numPages = ((int) (data.getTotalResults() / data.getItemsPerPage())) + (data.getTotalResults() % data.getItemsPerPage() == 0 ? 0 : 1);
+        int thisPage = (data.getStartIndex() / data.getItemsPerPage()) + 1;
+        this.pager.setNumPages(numPages);
+        this.pager.setPage(thisPage);
+        if (numPages > 1)
+            this.pager.setVisible(true);
+
+        int startIndex = data.getStartIndex() + 1;
+        int endIndex = startIndex + data.getArtifacts().size() - 1;
+        String rangeText = "" + startIndex + "-" + endIndex;
+        String totalText = String.valueOf(data.getTotalResults());
+        this.rangeSpan1.setInnerText(rangeText);
+        this.rangeSpan2.setInnerText(rangeText);
+        this.totalSpan1.setInnerText(totalText);
+        this.totalSpan2.setInnerText(totalText);
     }
 
 }

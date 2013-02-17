@@ -62,6 +62,31 @@ public class UnorderedListPanel extends Panel implements IndexedPanel {
 	}
 
 	/**
+	 * Sets the 'class' attribute on the "li" wrapper for the
+	 * given wiget.
+	 * @param w
+	 * @param theClass
+	 */
+	public void setLiClass(Widget w, String theClass) {
+	    if (this.wrapperMap.containsKey(w)) {
+	        this.wrapperMap.get(w).setClassName(theClass);
+	    }
+	}
+
+	/**
+	 * Sets the 'class' attribute on the "li" wrapper for the
+	 * widget at the given index.
+	 * @param index
+	 * @param theClass
+	 */
+	public void setLiClass(int index, String theClass) {
+	    Widget widget = this.getWidget(index);
+	    if (widget != null) {
+	        this.setLiClass(widget, theClass);
+	    }
+	}
+
+	/**
 	 * @see com.google.gwt.user.client.ui.Panel#clear()
 	 */
 	@Override

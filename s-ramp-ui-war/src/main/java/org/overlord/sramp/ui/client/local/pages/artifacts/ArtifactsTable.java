@@ -46,15 +46,13 @@ public class ArtifactsTable extends TemplatedWidgetTable {
         InlineLabel type = new InlineLabel(artifactSummaryBean.getType());
         InlineLabel derived = new InlineLabel(artifactSummaryBean.isDerived() ? "true" : "");
         InlineLabel modified = new InlineLabel(format.format(artifactSummaryBean.getUpdatedOn()));
-        InlineLabel fav = new InlineLabel("");
         InlineLabel actions = new InlineLabel("");
 
         add(rowIdx, 0, name);
         add(rowIdx, 1, type);
         add(rowIdx, 2, derived);
         add(rowIdx, 3, modified);
-        add(rowIdx, 4, fav);
-        add(rowIdx, 5, actions);
+        add(rowIdx, 4, actions);
     }
 
 }

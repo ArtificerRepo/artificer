@@ -16,7 +16,9 @@
 package org.overlord.sramp.ui.server.services;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +32,7 @@ import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactOriginEnum;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactSearchService;
@@ -53,19 +56,23 @@ public class ArtifactSearchService implements IArtifactSearchService {
     }
 
     /**
-     * @see org.overlord.sramp.ui.client.shared.services.IArtifactSearchService#search(org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean, java.lang.String)
+     * @see org.overlord.sramp.ui.client.shared.services.IArtifactSearchService#search(org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean, java.lang.String, int)
      */
     @Override
-    public List<ArtifactSummaryBean> search(ArtifactFilterBean filters, String searchText) throws SrampUiException {
+    public ArtifactResultSetBean search(ArtifactFilterBean filters, String searchText, int page) throws SrampUiException {
+        int pageSize = 20;
         try {
+            ArtifactResultSetBean rval = new ArtifactResultSetBean();
+
+            int req_startIndex = (page - 1) * pageSize;
             SrampClientQuery query = null;
             if (searchText != null && searchText.startsWith("/")) {
                 query = clientAccessor.getClient().buildQuery(searchText);
             } else {
                 query = createQuery(filters, searchText);
             }
-            QueryResultSet resultSet = query.orderBy("name").ascending().count(25).query();
-            ArrayList<ArtifactSummaryBean> rval = new ArrayList<ArtifactSummaryBean>();
+            QueryResultSet resultSet = query.startIndex(req_startIndex).orderBy("name").ascending().count(pageSize + 1).query();
+            ArrayList<ArtifactSummaryBean> artifacts = new ArrayList<ArtifactSummaryBean>();
             for (ArtifactSummary artifactSummary : resultSet) {
                 ArtifactSummaryBean bean = new ArtifactSummaryBean();
                 ArtifactType artifactType = artifactSummary.getType();
@@ -78,8 +85,26 @@ public class ArtifactSearchService implements IArtifactSearchService {
                 bean.setCreatedOn(artifactSummary.getCreatedTimestamp());
                 bean.setUpdatedOn(artifactSummary.getLastModifiedTimestamp());
                 bean.setDerived(artifactType.getArtifactType().isDerived());
-                rval.add(bean);
+                artifacts.add(bean);
             }
+            boolean hasMorePages = false;
+            if (artifacts.size() > pageSize) {
+                artifacts.remove(artifacts.get(artifacts.size()-1));
+                hasMorePages = true;
+            }
+            // Does the server support opensearch style attributes?  If so,
+            // use that information.  Else figure it out from the request params.
+            if (resultSet.getTotalResults() != -1) {
+                rval.setItemsPerPage(pageSize);
+                rval.setStartIndex(resultSet.getStartIndex());
+                rval.setTotalResults(resultSet.getTotalResults());
+            } else {
+                rval.setItemsPerPage(pageSize);
+                rval.setTotalResults(hasMorePages ? pageSize + 1 : artifacts.size());
+                rval.setStartIndex(req_startIndex);
+            }
+
+            rval.setArtifacts(artifacts);
             return rval;
         } catch (SrampClientException e) {
             throw new SrampUiException(e.getMessage());
@@ -101,12 +126,55 @@ public class ArtifactSearchService implements IArtifactSearchService {
             queryBuilder.append("/").append(type.getModel()).append("/").append(type.getType());
         }
         List<String> criteria = new ArrayList<String>();
-        List<String> params = new ArrayList<String>();
+        List<Object> params = new ArrayList<Object>();
 
+        // Search Text
+        if (searchText != null && searchText.trim().length() > 0) {
+            criteria.add("fn:matches(@name, ?)");
+            params.add(searchText.replace("*", ".*"));
+        }
         // Created on
+        if (filters.getDateCreatedFrom() != null) {
+            criteria.add("@createdTimestamp >= ?");
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(filters.getDateCreatedFrom());
+            zeroOutTime(cal);
+            params.add(cal);
+        }
+        if (filters.getDateCreatedTo() != null) {
+            criteria.add("@createdTimestamp < ?");
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(filters.getDateCreatedTo());
+            zeroOutTime(cal);
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+            params.add(cal);
+        }
         // Last Modified on
+        if (filters.getDateModifiedFrom() != null) {
+            criteria.add("@lastModifiedTimestamp >= ?");
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(filters.getDateModifiedFrom());
+            zeroOutTime(cal);
+            params.add(cal);
+        }
+        if (filters.getDateModifiedTo() != null) {
+            criteria.add("@lastModifiedTimestamp < ?");
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(filters.getDateModifiedTo());
+            zeroOutTime(cal);
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+            params.add(cal);
+        }
         // Created By
+        if (filters.getCreatedBy() != null && filters.getCreatedBy().trim().length() > 0) {
+            criteria.add("@createdBy = ?");
+            params.add(filters.getCreatedBy());
+        }
         // Last Modified By
+        if (filters.getLastModifiedBy() != null && filters.getLastModifiedBy().trim().length() > 0) {
+            criteria.add("@lastModifiedBy = ?");
+            params.add(filters.getLastModifiedBy());
+        }
         // Origin
         if (filters.getOrigin() == ArtifactOriginEnum.primary) {
             criteria.add("@derived = 'false'");
@@ -124,10 +192,26 @@ public class ArtifactSearchService implements IArtifactSearchService {
         // Create the query, and parameterize it
         SrampAtomApiClient client = clientAccessor.getClient();
         SrampClientQuery query = client.buildQuery(queryBuilder.toString());
-        for (String param : params) {
-            query.parameter(param);
+        for (Object param : params) {
+            if (param instanceof String) {
+                query.parameter((String) param);
+            }
+            if (param instanceof Calendar) {
+                query.parameter((Calendar) param);
+            }
         }
         return query;
+    }
+
+    /**
+     * Set the time components of the given {@link Calendar} to 0's.
+     * @param cal
+     */
+    protected void zeroOutTime(Calendar cal) {
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
     }
 
 
