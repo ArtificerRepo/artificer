@@ -79,7 +79,7 @@
     </exec>
   </target>
 
-  <target name="upload" depends="dist.check,upload.to.brms.fromsrc,brms.to.sramp.fromsrc,upload.to.brms.fromdist,brms.to.sramp.fromdist,upload.seeddata.fromsrc" />
+  <target name="upload" depends="dist.check,upload.to.brms.fromsrc,brms.to.sramp.fromsrc,upload.to.brms.fromdist,brms.to.sramp.fromdist,upload.seeddata.fromsrc,upload.seeddata.fromdist" />
   
   <target name="dist.check">
     <condition property="is.dist">
@@ -126,6 +126,22 @@
     <echo>Seeding the S-RAMP repo</echo>
     <java classname="org.overlord.sramp.shell.commands.ontology.UploadOntologyCommand">
       <classpath refid="client-classpath" />
+      <arg value="-resource" />
+      <arg value="/governance-ontologies/deployment-status.owl" />
+    </java>
+  </target>
+
+  <target name="upload.seeddata.fromdist" if="is.dist">
+    <echo>Seeding the S-RAMP repo</echo>
+    <mkdir dir=".temp" />
+    <unzip src="bin/s-ramp-workflows-${project.version}.jar" dest=".temp">
+      <patternset>
+        <include name="**/deployment-status.owl" />
+      </patternset>
+    </unzip>
+    <java jar="bin/s-ramp-shell-${sramp.version}.jar" fork="true">
+      <arg value="-f" />
+      <arg value="updates/upload-seed-data.cmds.txt" />
     </java>
   </target>
 
