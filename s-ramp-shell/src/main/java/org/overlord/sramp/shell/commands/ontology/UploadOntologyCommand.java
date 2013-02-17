@@ -16,6 +16,7 @@
 package org.overlord.sramp.shell.commands.ontology;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -64,19 +65,30 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 		print("Example usage:");
 		print(">  ontology:upload /home/uname/files/regions.owl.xml");
 	}
-	
+
 	 /**
      * Main entry point - for use outside the interactive shell.
      * @param args
      * @throws Exception
      */
     public static void main(String [] args) throws Exception {
-        String ontologyFilePath = "/governance-ontologies/deployment-status.owl";
-        if (args.length > 0) ontologyFilePath = args[0];
-        URL url = UploadOntologyCommand.class.getResource(ontologyFilePath);
-        if (url==null) throw new Exception ("Could not find " + ontologyFilePath + " on the classpath");
+        if (args.length != 2) {
+            throw new Exception("Usage: " + UploadOntologyCommand.class + " [-file | -resource] [<filePath> | <resourcePath>]");
+        }
+        String type = args[0];
+        String path = args[1];
+
         StringBuilder argLine = new StringBuilder();
-        argLine.append(url.toExternalForm());
+        boolean isResource = "-resource".equals(type);
+        if (isResource) {
+            URL url = UploadOntologyCommand.class.getResource(path);
+            if (url==null) throw new Exception ("Could not find " + path + " on the classpath");
+            argLine.append(url.toExternalForm());
+        } else {
+            File file = new File(path);
+            if (!file.isFile()) throw new FileNotFoundException(path);
+            argLine.append(file.getCanonicalPath());
+        }
         SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-server");
         QName clientVarName = new QName("s-ramp", "client");
         ShellContext context = new SimpleShellContext();
