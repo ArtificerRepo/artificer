@@ -78,6 +78,7 @@ public class ClassificationDemo {
 		InputStream content = ClassificationDemo.class.getResourceAsStream("classifications-demo-doc-1.txt");
 		ArtifactType type = ArtifactType.valueOf("Document");
 		BaseArtifactType metaData = client.uploadArtifact(type, content, "classifications-demo-doc-1.txt");
+		String artifact1UUID = metaData.getUuid();
 		System.out.println("Artifact 1 successfully added with UUID: " + metaData.getUuid());
 		metaData.getClassifiedBy().add("http://www.example.org/regions.owl#Germany");
 		// Set a marker property so we know which demo this artifact came from
@@ -129,7 +130,7 @@ public class ClassificationDemo {
 		resultSet = client.query(q);
 		boolean found = false;
 		for (ArtifactSummary artifactSummary : resultSet) {
-			if (artifactSummary.getUuid().equals(metaData.getUuid())) {
+			if (artifactSummary.getUuid().equals(artifact1UUID)) {
 				found = true;
 				break;
 			}

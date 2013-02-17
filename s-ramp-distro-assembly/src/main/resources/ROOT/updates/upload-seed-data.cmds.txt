@@ -1,0 +1,2 @@
+connect http://localhost:8080/s-ramp-server
+ontology:upload .temp/governance-ontologies/deployment-status.owl
