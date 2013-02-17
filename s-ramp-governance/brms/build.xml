@@ -10,12 +10,12 @@
     </fileset>
     <fileset dir="../../s-ramp-shell/target/">
       <include name="s-ramp-shell-${sramp.version}.jar" />
-    	<include name="s-ramp-shell-api-${sramp.version}.jar" />
+      <include name="s-ramp-shell-api-${sramp.version}.jar" />
     </fileset>
-  	<fileset dir="../../s-ramp-workflows/target/">
-  	   <include name="s-ramp-workflows-${sramp.version}.jar" />
-  	</fileset>
-  	<fileset dir="../target/">
+    <fileset dir="../../s-ramp-workflows/target/">
+       <include name="s-ramp-workflows-${sramp.version}.jar" />
+    </fileset>
+    <fileset dir="../target/">
       <include name="s-ramp-governance-classes.jar" />
     </fileset>
   </path>
@@ -33,31 +33,31 @@
     <unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final-all.zip" dest="${sramp.jbpm5.dir}" overwrite="false" />
     <echo>Upgrading RESTEasy in JBossAS</echo>
     <unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final/resteasy-jboss-modules-2.3.5.Final.zip" dest="${sramp.jboss.home}/modules" overwrite="false" />
-  	<echo>Patching ${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml in JBossAS</echo>
-  	<copy file="updates/module.xml" tofile="${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml" />
+    <echo>Patching ${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml in JBossAS</echo>
+    <copy file="updates/module.xml" tofile="${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml" />
     <echo>Installing Modeshape Service</echo>
-  	<get src="${sramp.modeshape.url}" dest="${sramp.jbpm5.dir}/modeshape-3.1.0.Final-jbossas-71-dist.zip" usetimestamp="true" />
-  	<unzip src="${sramp.jbpm5.dir}/modeshape-3.1.0.Final-jbossas-71-dist.zip" dest="${sramp.jboss.home}" overwrite="false" />
-  	<echo>Removing Modeshape wars</echo>
-  	<delete includeEmptyDirs="true">
-  		<fileset dir="${sramp.jboss.home}/standalone/deployments" includes="modeshape*/**" />
-  	</delete>
-  	<echo>Adding Modeshape S-RAMP Repository configuration</echo>
-  	<copy tofile="${sramp.jboss.home}/standalone/configuration/standalone.xml" file="updates/standalone.xml" overwrite="true"/>
-  	<echo>increasing memory settings</echo>
-  	<replace file="${sramp.jbpm5.dir}/jbpm-installer/build.xml">
-  	  <replacetoken>256m</replacetoken>
-  	  <replacevalue>384m</replacevalue>
-  	</replace>
-  	<replace file="${sramp.jbpm5.dir}/jbpm-installer/build.xml">
-  	  <replacetoken>512m</replacetoken>
-  	  <replacevalue>1024m</replacevalue>
-  	</replace>
-  	<echo>Adding Users and Roles</echo>
-  	<copy tofile="${sramp.jboss.home}/standalone/configuration/users.properties" file="updates/users.properties" overwrite="true"/>
-  	<copy tofile="${sramp.jboss.home}/standalone/configuration/roles.properties" file="updates/roles.properties" overwrite="true"/>
-  	<echo>set mailinator as the default email server</echo>
-  	<replace file="${sramp.jboss.home}/standalone/configuration/standalone.xml">
+    <get src="${sramp.modeshape.url}" dest="${sramp.jbpm5.dir}/modeshape-3.1.0.Final-jbossas-71-dist.zip" usetimestamp="true" />
+    <unzip src="${sramp.jbpm5.dir}/modeshape-3.1.0.Final-jbossas-71-dist.zip" dest="${sramp.jboss.home}" overwrite="false" />
+    <echo>Removing Modeshape wars</echo>
+    <delete includeEmptyDirs="true">
+      <fileset dir="${sramp.jboss.home}/standalone/deployments" includes="modeshape*/**" />
+    </delete>
+    <echo>Adding Modeshape S-RAMP Repository configuration</echo>
+    <copy tofile="${sramp.jboss.home}/standalone/configuration/standalone.xml" file="updates/standalone.xml" overwrite="true"/>
+    <echo>increasing memory settings</echo>
+    <replace file="${sramp.jbpm5.dir}/jbpm-installer/build.xml">
+      <replacetoken>256m</replacetoken>
+      <replacevalue>384m</replacevalue>
+    </replace>
+    <replace file="${sramp.jbpm5.dir}/jbpm-installer/build.xml">
+      <replacetoken>512m</replacetoken>
+      <replacevalue>1024m</replacevalue>
+    </replace>
+    <echo>Adding Users and Roles</echo>
+    <copy tofile="${sramp.jboss.home}/standalone/configuration/users.properties" file="updates/users.properties" overwrite="true"/>
+    <copy tofile="${sramp.jboss.home}/standalone/configuration/roles.properties" file="updates/roles.properties" overwrite="true"/>
+    <echo>set mailinator as the default email server</echo>
+    <replace file="${sramp.jboss.home}/standalone/configuration/standalone.xml">
       <replacetoken>&lt;remote-destination host="localhost" port="25"/&gt;</replacetoken>
       <replacevalue>&lt;remote-destination host="smtp.mailinator.com" port="25"/&gt;</replacevalue>
     </replace>
@@ -79,7 +79,7 @@
     </exec>
   </target>
 
-  <target name="upload" depends="dist.check,upload.to.brms.fromsrc,brms.to.sramp.fromsrc,upload.to.brms.fromdist,brms.to.sramp.fromdist,upload.seeddata.fromsrc" />
+  <target name="upload" depends="dist.check,upload.to.brms.fromsrc,brms.to.sramp.fromsrc,upload.to.brms.fromdist,brms.to.sramp.fromdist,upload.seeddata.fromsrc,upload.seeddata.fromdist" />
   
   <target name="dist.check">
     <condition property="is.dist">
@@ -93,7 +93,7 @@
 
   <target name="deploy.sramp" depends="patch.jbpm-gwt-console-server">
     <copy file="${sramp.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-server.war" failonerror="true" />
-  	<copy file="${sramp-governance.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-governance.war" failonerror="true" />
+    <copy file="${sramp-governance.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-governance.war" failonerror="true" />
     <copy file="${sramp-ui.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-ui.war" failonerror="false" />
   </target>
 
@@ -110,7 +110,7 @@
   </target>
 
   <target name="brms.to.sramp.fromsrc" unless="is.dist">
-  	<echo>Load Workflows into S-RAMP</echo>
+    <echo>Load Workflows into S-RAMP</echo>
     <java classname="org.overlord.sramp.governance.shell.commands.Pkg2SrampCommand">
       <classpath refid="client-classpath" />
     </java>
@@ -121,13 +121,29 @@
       <arg value="updates/brms-to-sramp.cmds.txt" />
     </java>
   </target>
-	
-	<target name="upload.seeddata.fromsrc" unless="is.dist">
-		<echo>Seeding the S-RAMP repo</echo>
+  
+  <target name="upload.seeddata.fromsrc" unless="is.dist">
+    <echo>Seeding the S-RAMP repo</echo>
     <java classname="org.overlord.sramp.shell.commands.ontology.UploadOntologyCommand">
       <classpath refid="client-classpath" />
+      <arg value="-resource" />
+      <arg value="/governance-ontologies/deployment-status.owl" />
     </java>
-	</target>
+  </target>
+
+  <target name="upload.seeddata.fromdist" if="is.dist">
+    <echo>Seeding the S-RAMP repo</echo>
+    <mkdir dir=".temp" />
+    <unzip src="bin/s-ramp-workflows-${project.version}.jar" dest=".temp">
+      <patternset>
+        <include name="**/deployment-status.owl" />
+      </patternset>
+    </unzip>
+    <java jar="bin/s-ramp-shell-${sramp.version}.jar" fork="true">
+      <arg value="-f" />
+      <arg value="updates/upload-seed-data.cmds.txt" />
+    </java>
+  </target>
 
   <target name="patch.jbpm-gwt-console-server" depends="explode.jbpm-gwt-console-server">
     <mkdir dir="restore" />
@@ -140,7 +156,7 @@
     <move file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" todir="restore" />
     <mkdir dir="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
     <unzip src="restore/jbpm-gwt-console-server.war" dest="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war" />
-  	<touch file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war.dodeploy" />
+    <touch file="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war.dodeploy" />
   </target>
 
   <target name="dir.check">
