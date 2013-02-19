@@ -79,7 +79,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
+	 * Test method for {@link SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
 	 */
 	@Test
 	public void testUploadArtifact() throws Exception {
@@ -95,8 +95,61 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		}
 	}
 
+    /**
+     * Test method for {@link SrampAtomApiClient#getArtifactMetaData(ArtifactType, String)}
+     */
+    @Test
+    public void testGetArtifactMetaData() throws Exception {
+        String uuid = null;
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        try {
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
+            Assert.assertNotNull(artifact);
+            uuid = artifact.getUuid();
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
+        // Now test that we can fetch the meta-data using the artifact type and UUID
+        {
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            BaseArtifactType metaData = client.getArtifactMetaData(ArtifactType.XsdDocument(), uuid);
+            Assert.assertNotNull(metaData);
+            Assert.assertEquals(artifactFileName, metaData.getName());
+        }
+    }
+
+    /**
+     * Test method for {@link SrampAtomApiClient#getArtifactMetaData(String)}
+     */
+    @Test
+    public void testGetArtifactMetaDataNoType() throws Exception {
+        String uuid = null;
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        try {
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
+            Assert.assertNotNull(artifact);
+            uuid = artifact.getUuid();
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
+        // Now test that we can fetch the meta-data using just the UUID
+        {
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            BaseArtifactType metaData = client.getArtifactMetaData(uuid);
+            Assert.assertNotNull(metaData);
+            Assert.assertEquals(artifactFileName, metaData.getName());
+        }
+    }
+
+
 	/**
-     * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
+     * Test method for {@link SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
      */
     @Test
     public void testUploadArtifactAndContent() throws Exception {
@@ -117,7 +170,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
     }
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#getArtifactContent(java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link SrampAtomApiClient#getArtifactContent(java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public void testGetArtifactContent() throws Exception {
@@ -218,7 +271,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#query(java.lang.String, int, int, java.lang.String, boolean)}.
+	 * Test method for {@link SrampAtomApiClient#query(java.lang.String, int, int, java.lang.String, boolean)}.
 	 */
 	@Test
 	public void testQuery() throws Exception {
@@ -248,7 +301,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
     /**
-     * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#query(String, int, int, String, boolean, java.util.Collection)
+     * Test method for {@link SrampAtomApiClient#query(String, int, int, String, boolean, java.util.Collection)
      */
     @Test
     public void testQueryWithPropertyName() throws Exception {
@@ -287,7 +340,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
     }
 
     /**
-     * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#buildQuery(String)
+     * Test method for {@link SrampAtomApiClient#buildQuery(String)
      */
     @Test
     public void testBuildQuery() throws Exception {
@@ -339,7 +392,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
     }
 
     /**
-     * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#buildQuery(String)
+     * Test method for {@link SrampAtomApiClient#buildQuery(String)
      */
     @Test
     public void testResultSetAttributes() throws Exception {
@@ -354,7 +407,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
     }
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
+	 * Test method for {@link SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
 	 */
 	@Test
 	public void testQueryError() throws Exception {
@@ -368,7 +421,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#uploadBatch(SrampArchive)}.
+	 * Test method for {@link SrampAtomApiClient#uploadBatch(SrampArchive)}.
 	 */
 	@Test
 	public void testArchiveUpload() throws Exception {
@@ -425,7 +478,7 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.SrampAtomApiClient#uploadBatch(SrampArchive)}.
+	 * Test method for {@link SrampAtomApiClient#uploadBatch(SrampArchive)}.
 	 */
 	@Test
 	public void testArchiveUploadWithError() throws Exception {
