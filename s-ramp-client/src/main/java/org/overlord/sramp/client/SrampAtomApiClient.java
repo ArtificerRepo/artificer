@@ -170,6 +170,36 @@ public class SrampAtomApiClient {
 		}
 	}
 
+    /**
+     * Gets the full meta-data listing for an Artifact in the S-RAMP repository.  This method
+     * does not require the type of artifact.  However, it should be noted that if you
+     * <b>have</b> the artifact type, you should instead call:
+     *
+     *   {@link SrampAtomApiClient#getArtifactMetaData(ArtifactType, String)}
+     *
+     * Use this variant only if you don't know the artifact type (you only know the UUID).
+     * The reason is that the client must first do a query to determine the artifact type
+     * and then make another call to fetch the meta data.
+     *
+     * @param artifactUuid
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public BaseArtifactType getArtifactMetaData(String artifactUuid) throws SrampClientException,
+            SrampAtomException {
+        try {
+            QueryResultSet uuidRS = buildQuery("/s-ramp[@uuid = ?]").parameter(artifactUuid).count(1).query();
+            if (uuidRS.size() == 0)
+                throw new SrampClientException("Failed to find an artifact with UUID " + artifactUuid);
+            ArtifactType artifactType = uuidRS.iterator().next().getType();
+            return getArtifactMetaData(artifactType, artifactUuid);
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
+
 	/**
 	 * Gets the full meta-data listing for an Artifact in the S-RAMP repository.
 	 * @param artifactType

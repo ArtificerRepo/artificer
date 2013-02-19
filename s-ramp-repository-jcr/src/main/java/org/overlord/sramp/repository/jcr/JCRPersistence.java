@@ -198,7 +198,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.repository.DerivedArtifacts#deriveArtifacts(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
+	 * @see org.overlord.sramp.repository.DerivedArtifacts#deriveArtifacts(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
 	 */
 	@Override
 	public Collection<BaseArtifactType> deriveArtifacts(BaseArtifactType sourceArtifact,
