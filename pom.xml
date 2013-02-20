@@ -166,29 +166,6 @@
     </pluginRepository>
   </pluginRepositories>
 
-  <dependencies>
-    <!-- Dependencies on the various WARs to include in the distro. -->
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server</artifactId>
-      <type>war</type>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-gwt</artifactId>
-      <type>war</type>
-      <version>${project.version}</version>
-    </dependency>
-    <!-- Dependencies on the source JARs to include in the distro. -->
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-api</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-  </dependencies>
-
   <modules>
     <module>s-ramp-distro-shell</module>
     <module>s-ramp-distro-assembly</module>
