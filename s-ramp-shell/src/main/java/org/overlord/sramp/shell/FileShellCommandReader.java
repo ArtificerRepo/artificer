@@ -63,7 +63,13 @@ public class FileShellCommandReader extends AbstractShellCommandReader {
 	 */
 	@Override
 	protected String readLine() throws IOException {
-		return fileReader.readLine();
+	    String line = null;
+	    do {
+            line = fileReader.readLine();
+            if (line == null)
+                break;
+	    } while (line.startsWith("#") || line.trim().length() == 0);
+	    return line;
 	}
 
 	/**
