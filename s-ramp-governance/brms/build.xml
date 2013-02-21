@@ -79,7 +79,7 @@
     </exec>
   </target>
 
-  <target name="upload" depends="dist.check,upload.to.brms.fromsrc,brms.to.sramp.fromsrc,upload.to.brms.fromdist,brms.to.sramp.fromdist,upload.seeddata.fromsrc,upload.seeddata.fromdist" />
+  <target name="upload" depends="dist.check,upload.to.brms.fromsrc,upload.to.brms.fromdist" />
   
   <target name="dist.check">
     <condition property="is.dist">
@@ -98,53 +98,32 @@
   </target>
 
   <target name="upload.to.brms.fromsrc" unless="is.dist">
-    <java classname="org.overlord.sramp.governance.shell.commands.Dir2BrmsCommand">
-      <classpath refid="client-classpath" />
+  	<java classname="org.overlord.sramp.shell.SrampShell">
+  		<classpath refid="client-classpath" />
+      <arg value="-f" />
+      <arg value="updates/s-ramp-bootstrap-data.cmds.txt" />
     </java>
   </target>
   <target name="upload.to.brms.fromdist" if="is.dist">
     <java jar="bin/s-ramp-shell-${sramp.version}.jar" fork="true">
       <arg value="-f" />
-      <arg value="updates/upload-to-brms.cmds.txt" />
+      <arg value="updates/s-ramp-bootstrap-data.cmds.txt" />
     </java>
   </target>
 
-  <target name="brms.to.sramp.fromsrc" unless="is.dist">
+  <target name="sramp.bootstrap.fromsrc" unless="is.dist">
     <echo>Load Workflows into S-RAMP</echo>
     <java classname="org.overlord.sramp.governance.shell.commands.Pkg2SrampCommand">
       <classpath refid="client-classpath" />
     </java>
   </target>
-  <target name="brms.to.sramp.fromdist" if="is.dist">
+  <target name="sramp.bootstrap.fromdist" if="is.dist">
     <java jar="bin/s-ramp-shell-${sramp.version}.jar" fork="true">
       <arg value="-f" />
       <arg value="updates/brms-to-sramp.cmds.txt" />
     </java>
   </target>
-  
-  <target name="upload.seeddata.fromsrc" unless="is.dist">
-    <echo>Seeding the S-RAMP repo</echo>
-    <java classname="org.overlord.sramp.shell.commands.ontology.UploadOntologyCommand">
-      <classpath refid="client-classpath" />
-      <arg value="-resource" />
-      <arg value="/governance-ontologies/deployment-status.owl" />
-    </java>
-  </target>
-
-  <target name="upload.seeddata.fromdist" if="is.dist">
-    <echo>Seeding the S-RAMP repo</echo>
-    <mkdir dir=".temp" />
-    <unzip src="bin/s-ramp-workflows-${project.version}.jar" dest=".temp">
-      <patternset>
-        <include name="**/deployment-status.owl" />
-      </patternset>
-    </unzip>
-    <java jar="bin/s-ramp-shell-${sramp.version}.jar" fork="true">
-      <arg value="-f" />
-      <arg value="updates/upload-seed-data.cmds.txt" />
-    </java>
-  </target>
-
+	
   <target name="patch.jbpm-gwt-console-server" depends="explode.jbpm-gwt-console-server">
     <mkdir dir="restore" />
     <copy file="${sramp.workitems.path}" tofile="${sramp.jboss.home}/standalone/deployments/jbpm-gwt-console-server.war/WEB-INF/lib/s-ramp-workitems.jar" />
