@@ -15,10 +15,20 @@
  */
 package org.overlord.sramp.ui.client.local.pages.artifacts;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.jboss.errai.ui.nav.client.local.TransitionTo;
+import org.overlord.sramp.ui.client.local.pages.ArtifactDetailsPage;
 import org.overlord.sramp.ui.client.local.widgets.common.TemplatedWidgetTable;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.InlineLabel;
 
 /**
@@ -26,7 +36,11 @@ import com.google.gwt.user.client.ui.InlineLabel;
  *
  * @author eric.wittmann@redhat.com
  */
+@Dependent
 public class ArtifactsTable extends TemplatedWidgetTable {
+
+    @Inject
+    protected TransitionTo<ArtifactDetailsPage> toDetailsPage;
 
     /**
      * Constructor.
@@ -38,11 +52,11 @@ public class ArtifactsTable extends TemplatedWidgetTable {
      * Adds a single row to the table.
      * @param artifactSummaryBean
      */
-    public void addRow(ArtifactSummaryBean artifactSummaryBean) {
+    public void addRow(final ArtifactSummaryBean artifactSummaryBean) {
         int rowIdx = this.rowElements.size();
         DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy");
 
-        InlineLabel name = new InlineLabel(artifactSummaryBean.getName());
+        Anchor name = new Anchor(artifactSummaryBean.getName());
         InlineLabel type = new InlineLabel(artifactSummaryBean.getType());
         InlineLabel derived = new InlineLabel(artifactSummaryBean.isDerived() ? "true" : "");
         InlineLabel modified = new InlineLabel(format.format(artifactSummaryBean.getUpdatedOn()));
@@ -53,6 +67,16 @@ public class ArtifactsTable extends TemplatedWidgetTable {
         add(rowIdx, 2, derived);
         add(rowIdx, 3, modified);
         add(rowIdx, 4, actions);
+
+        name.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                String uuid = artifactSummaryBean.getUuid();
+                Multimap<String, String> state = HashMultimap.create(1,1);
+                state.put("uuid", uuid);
+                toDetailsPage.go(state);
+            }
+        });
     }
 
 }

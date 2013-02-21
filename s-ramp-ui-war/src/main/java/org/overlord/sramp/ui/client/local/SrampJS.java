@@ -42,5 +42,4 @@ public final class SrampJS {
     public static native void onResize() /*-{
         $wnd.SRAMP.onResize();
     }-*/;
-
 }

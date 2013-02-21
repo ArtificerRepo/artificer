@@ -53,6 +53,9 @@ public class ArtifactSearchRpcService {
      */
     public void search(ArtifactFilterBean filters, String searchText,
             int page, final IRpcServiceInvocationHandler<ArtifactResultSetBean> handler) {
+        // TODO only allow one search at a time.  If another search comes in before the previous one
+        // finished, cancel the previous one.  In other words, only return the results of the *last*
+        // search performed.
         RemoteCallback<ArtifactResultSetBean> successCallback = new DelegatingRemoteCallback<ArtifactResultSetBean>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {

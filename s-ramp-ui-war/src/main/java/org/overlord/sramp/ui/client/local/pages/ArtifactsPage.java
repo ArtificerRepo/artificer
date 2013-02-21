@@ -19,9 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.client.framework.ClientMessageBus;
 import org.jboss.errai.ui.nav.client.local.Page;
-import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
@@ -77,9 +75,6 @@ public class ArtifactsPage extends AbstractPage {
     @DataField("sramp-artifacts-total-2")
     protected SpanElement totalSpan2 = Document.get().createSpanElement();
 
-    @Inject
-    protected ClientMessageBus bus;
-
     /**
      * Constructor.
      */
@@ -115,25 +110,22 @@ public class ArtifactsPage extends AbstractPage {
         artifactsTable.setColumnClasses(3, "desktop-only");
         artifactsTable.setColumnClasses(4, "desktop-only");
         artifactsTable.setColumnClasses(5, "desktop-only");
+
+        this.rangeSpan1.setInnerText("?");
+        this.rangeSpan2.setInnerText("?");
+        this.totalSpan1.setInnerText("?");
+        this.totalSpan2.setInnerText("?");
     }
 
     /**
-     * Called when a page is shown (either when the app is first loaded or
-     * when navigating TO this page from another).  Kick off an artifact
-     * search at this point so that we show some data in the UI.
+     * Kick off an artifact search at this point so that we show some data in the UI.
+     *
+     * @see org.overlord.sramp.ui.client.local.pages.AbstractPage#onPageShowing()
      */
-    @PageShown
-    protected void onPageShown() {
-        // Kick off an artifact search, but do it as a post-init task
-        // of the errai bus so that the RPC endpoints are ready.  This
-        // is only necessary on initial app load, but it doesn't hurt
-        // to always do it.
-        bus.addPostInitTask(new Runnable() {
-            @Override
-            public void run() {
-                doArtifactSearch();
-            }
-        });
+    @Override
+    protected void onPageShowing() {
+        // Kick off an artifact search
+        doArtifactSearch();
     }
 
     /**

@@ -18,6 +18,8 @@ package org.overlord.sramp.ui.client.local.pages;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.framework.ClientMessageBus;
+import org.jboss.errai.ui.nav.client.local.PageShowing;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.overlord.sramp.ui.client.local.SrampJS;
@@ -37,6 +39,9 @@ import com.google.gwt.user.client.ui.Composite;
  * @author eric.wittmann@redhat.com
  */
 public abstract class AbstractPage extends Composite {
+
+    @Inject
+    protected ClientMessageBus bus;
 
     /*
      * Main browser header navigation links.
@@ -82,7 +87,7 @@ public abstract class AbstractPage extends Composite {
      * Called after the page is constructed.
      */
     @PostConstruct
-    private void postConstruct() {
+    private final void _onPostConstruct() {
         // Call the SRAMP javascript every time the page loads.
         SrampJS.onPageLoad();
         ClickHandler logoutClickHandler = new ClickHandler() {
@@ -101,6 +106,31 @@ public abstract class AbstractPage extends Composite {
         navbarUserMenu.addOption("Logout", "logout").addClickHandler(logoutClickHandler);
         // Listen for mobile logout link clicks
         toLogoutMobile.addClickHandler(logoutClickHandler);
+    }
+
+    /**
+     * Called when a page is about to be shown (either when the app is first loaded or
+     * when navigating TO this page from another).
+     */
+    @PageShowing
+    private final void _onPageShowing() {
+        // Do initial page loading work, but do it as a post-init task
+        // of the errai bus so that all RPC endpoints are ready.  This
+        // is only necessary on initial app load, but it doesn't hurt
+        // to always do it.
+        bus.addPostInitTask(new Runnable() {
+            @Override
+            public void run() {
+                onPageShowing();
+            }
+        });
+    }
+
+    /**
+     * Subclasses can implement this to do any work they need done when the page
+     * is about to be shown.
+     */
+    protected void onPageShowing() {
     }
 
     /**
