@@ -109,7 +109,7 @@
     <echo>Load Workflows into S-RAMP</echo>
     <java jar="bin/s-ramp-shell-${sramp.version}.jar" fork="true">
       <arg value="-f" />
-      <arg value="updates/s-ramp-bootstrap-data.cmds.txt" />
+      <arg value="updates/s-ramp-bootstrap-data.cmds.txt"/>
       <jvmarg value="-Done-jar.class.path=bin/s-ramp-workflows-${sramp.version}.jar" />
     </java>
   </target>
