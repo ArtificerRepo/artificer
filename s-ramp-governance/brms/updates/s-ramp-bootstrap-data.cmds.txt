@@ -6,17 +6,20 @@
 #################################################################################################
 #        upload the SRAMPPackage to BRMS
 
-brms:dir2brms SRAMPPackage http://localhost:8080/drools-guvnor admin admin bin/s-ramp-workflows-${project.version}.jar
+brms:dir2brms SRAMPPackage http://localhost:8080/drools-guvnor admin admin
+
+#################################################################################################
+#        connect to the s-ramp server
+
+connect http://localhost:8080/s-ramp-server
 
 #################################################################################################
 #        read the SRAMPPackage from BRMS and upload it into S-RAMP
 
-connect http://localhost:8080/s-ramp-server
 brms:pkg2sramp
 
 #################################################################################################
 #        upload seed data to S-RAMP, such as predefined ontologies
 
-connect http://localhost:8080/s-ramp-server
-ontology:upload governance-ontologies/deployment-status.owl
+ontology:upload /governance-ontologies/deployment-status.owl
 

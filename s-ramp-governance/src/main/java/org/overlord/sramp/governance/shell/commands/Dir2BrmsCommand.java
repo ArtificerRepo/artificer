@@ -135,6 +135,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        print("**********************************************************************");
     }
 
     /**
@@ -328,7 +329,7 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
                     String fileName = name.substring(name.lastIndexOf("/")+1,name.length());
                     InputStream is = this.getClass().getResourceAsStream("/" + name);
                     ClientRequest addAssetRequest = fac.createRequest(urlStr);
-                    print("uploading " + name + " -> " + urlStr );
+                    print("uploading " + name);
                     uploadToBrms(fileName, is, addAssetRequest);
                 }
             }
@@ -348,11 +349,11 @@ public class Dir2BrmsCommand extends AbstractShellCommand {
         addAssetRequest.header("Slug", fileName);
         ClientResponse<String> uploadAssetResponse = addAssetRequest.post(String.class);
         int status = uploadAssetResponse.getStatus();
+        @SuppressWarnings("unused")
         String response = uploadAssetResponse.getEntity();
-        if (200 == status) {
-            print(response);
-        } else {
+        if (200 != status) {
             System.err.println("Upload to BRMS failed with response status = " + status);
+            //print(response);
         }
     }
 
