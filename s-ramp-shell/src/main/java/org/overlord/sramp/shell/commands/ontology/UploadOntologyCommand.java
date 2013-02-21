@@ -118,8 +118,13 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 		    if (file.exists()) {
 		        content = FileUtils.openInputStream(file);
 		    } else {
-		        URL url = new URL(filePathArg);
-		        content = url.openStream();
+		        URL url = this.getClass().getResource(filePathArg);
+		        if (url!=null) {
+		            print("Reading from ontology file " + url.toExternalForm());
+		            content = url.openStream();
+		        } else {
+		            print("ERROR: Cannot find " + filePathArg);
+		        }
 		    }
 			client.uploadOntology(content);
 			print("Successfully uploaded a new ontology to the S-RAMP repository.");
@@ -130,6 +135,7 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 		} finally {
 			IOUtils.closeQuietly(content);
 		}
+		print("**********************************************************************");
 	}
 
 	/**

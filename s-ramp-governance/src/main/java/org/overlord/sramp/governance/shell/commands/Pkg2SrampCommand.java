@@ -156,6 +156,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
             print("FAILED to copy the BRMS package.");
             print("\t" + e.getMessage());
         }
+        print("**********************************************************************");
     }
 
     /**
@@ -266,7 +267,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
                 //reading the asset from disk
                 //http://localhost:8080/drools-guvnor/rest/packages/srampPackage/assets/
                 String assetURLStr = brmsBaseUrl + "/rest/packages/" + pkgName + "/assets/" + asset.getTitle() + "/binary";
-                print("Reading asset " + asset.getTitle() + " from url " + assetURLStr );
+                //print("Reading asset " + asset.getTitle() + " from url " + assetURLStr );
                 ClientResponse<InputStream> assetResponse = getInputStream(assetURLStr);
                 InputStream assetInputStream = assetResponse.getEntity();
 
@@ -278,7 +279,7 @@ public class Pkg2SrampCommand extends AbstractShellCommand {
 
                 BaseArtifactType assetArtifact = client.uploadArtifact(baseArtifactType, assetInputStream);
                 IOUtils.closeQuietly(assetInputStream);
-                print("Uploaded asset " + assetArtifact.getName() + " " + assetArtifact.getUuid());
+                print("Uploaded asset " + assetArtifact.getUuid() + " " + assetArtifact.getName());
             }
         }
 
