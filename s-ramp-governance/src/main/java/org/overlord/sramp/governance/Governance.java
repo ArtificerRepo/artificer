@@ -55,7 +55,7 @@ public class Governance {
             CompositeConfiguration config = new CompositeConfiguration();
             config.addConfiguration(new SystemConfiguration());
             //config.addConfiguration(new JNDIConfiguration("java:comp/env/overlord/s-ramp"));
-            String configFile = config.getString(GovernanceConstants.GOVERNANCE_FILE_NAME, "governance.properties");
+            String configFile = config.getString(GovernanceConstants.GOVERNANCE_FILE_NAME, "governance.config.txt");
             Long refreshDelay = config.getLong(GovernanceConstants.GOVERNANCE_FILE_REFRESH, 5000l);
             URL url = Governance.class.getClassLoader().getResource(configFile);
             if (url==null) {
