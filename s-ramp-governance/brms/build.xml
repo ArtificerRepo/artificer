@@ -98,8 +98,10 @@
   </target>
 
   <target name="upload.to.brms.fromsrc" unless="is.dist">
-    <java classname="org.overlord.sramp.governance.shell.commands.Dir2BrmsCommand">
-      <classpath refid="client-classpath" />
+  	<java jar="../../s-ramp-shell/target/s-ramp-shell-${sramp.version}.jar" fork="true">
+      <arg value="-f" />
+      <arg value="updates/s-ramp-bootstrap-data.cmds.txt" />
+  		<classpath refid="client-classpath" />
     </java>
   </target>
   <target name="upload.to.brms.fromdist" if="is.dist">
