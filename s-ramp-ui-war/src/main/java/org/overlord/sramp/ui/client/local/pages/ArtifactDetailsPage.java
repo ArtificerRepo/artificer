@@ -20,17 +20,25 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.databinding.client.api.DataBinder;
+import org.jboss.errai.databinding.client.api.InitialState;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.AutoBound;
+import org.jboss.errai.ui.shared.api.annotations.Bound;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.sramp.ui.client.local.DOMUtil;
 import org.overlord.sramp.ui.client.local.services.ArtifactRpcService;
 import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.util.DOMUtil;
+import org.overlord.sramp.ui.client.local.util.DataBindingDateConverter;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * The page shown to the user when she clicks on one of the artifacts
@@ -51,6 +59,31 @@ public class ArtifactDetailsPage extends AbstractPage {
 
     @Inject @AutoBound
     protected DataBinder<ArtifactBean> artifact;
+
+    @Inject @DataField("core-property-name") @Bound(property="name")
+    InlineLabel name;
+    @Inject @DataField("core-property-version") @Bound(property="version")
+    InlineLabel version;
+
+    @Inject @DataField("link-download-content")
+    Anchor downloadContentLink;
+    @Inject @DataField("link-download-metaData")
+    Anchor downloadMetaDataLink;
+
+    @Inject @DataField("core-property-type") @Bound(property="type")
+    Label type;
+    @Inject @DataField("core-property-uuid") @Bound(property="uuid")
+    Label uuidField;
+    @Inject @DataField("core-property-derived") @Bound(property="derived")
+    Label derived;
+    @Inject @DataField("core-property-createdOn") @Bound(property="createdOn", converter=DataBindingDateConverter.class)
+    InlineLabel createdOn;
+    @Inject @DataField("core-property-createdBy") @Bound(property="createdBy")
+    InlineLabel createdBy;
+    @Inject @DataField("core-property-modifiedOn") @Bound(property="updatedOn", converter=DataBindingDateConverter.class)
+    InlineLabel modifiedOn;
+    @Inject @DataField("core-property-modifiedBy") @Bound(property="updatedBy")
+    InlineLabel modifiedBy;
 
     protected Element pageContent;
 
@@ -93,6 +126,12 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     protected void updateArtifactMetaData(ArtifactBean artifact) {
         pageContent.removeAttribute("style");
+        this.artifact.setModel(artifact, InitialState.FROM_MODEL);
+        String contentUrl = GWT.getModuleBaseURL() + "services/artifactDownload";
+        contentUrl += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType();
+        String metaDataUrl = contentUrl + "&as=meta-data";
+        this.downloadContentLink.setHref(contentUrl);
+        this.downloadMetaDataLink.setHref(metaDataUrl);
     }
 
 }

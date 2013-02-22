@@ -22,7 +22,7 @@ import org.jboss.errai.bus.client.framework.ClientMessageBus;
 import org.jboss.errai.ui.nav.client.local.PageShowing;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.overlord.sramp.ui.client.local.SrampJS;
+import org.overlord.sramp.ui.client.local.util.SrampJS;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.SplitButtonDropdown;
 
 import com.google.gwt.dom.client.Document;

@@ -60,6 +60,7 @@ public class ArtifactService implements IArtifactService {
             bean.setUuid(artifact.getUuid());
             bean.setName(artifact.getName());
             bean.setDescription(artifact.getDescription());
+            bean.setVersion(artifact.getVersion());
             bean.setCreatedBy(artifact.getCreatedBy());
             bean.setCreatedOn(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
             bean.setUpdatedOn(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());

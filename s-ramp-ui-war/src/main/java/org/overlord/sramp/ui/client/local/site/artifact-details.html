@@ -73,7 +73,7 @@
         <!-- Action bar -->
         <div class="row-fluid">
           <div class="span12 sramp-artifact-actions">
-            <span class="sramp-sp4n-label">Artifact 1 - v1.1.2</span>
+            <span class="sramp-sp4n-label"><span data-field="core-property-name">Artifact 1</span> <span data-field="core-property-version">v1.1.2</span></span>
             <div class="btn-group" style="margin-left: 20px">
               <button class="btn">Actions</button>
               <button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -105,9 +105,9 @@
                 <div class="row-fluid sramp-meta-data-section">
                   <div class="sramp-meta-data-section-header">Links</div>
                   <div class="clearfix"></div>
-                  <div class="sramp-meta-data-section-label"><a>Download Content</a></div>
+                  <div class="sramp-meta-data-section-label"><a data-field="link-download-content">Download Content</a></div>
                   <div class="clearfix"></div>
-                  <div class="sramp-meta-data-section-label"><a>Download Meta Data</a></div>
+                  <div class="sramp-meta-data-section-label"><a data-field="link-download-metaData">Download Meta Data</a></div>
                 </div>
                 <!-- Core and Custom Properties -->
                 <div class="row-fluid">
@@ -116,19 +116,23 @@
                     <div class="sramp-meta-data-section-header">Core Properties</div>
                     <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">Type:</div>
-                    <div class="sramp-meta-data-section-value">XmlDocument</div>
+                    <div data-field="core-property-type" class="sramp-meta-data-section-value">XmlDocument</div>
                     <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">UUID:</div>
-                    <div class="sramp-meta-data-section-value">XmlDocument</div>
+                    <div data-field="core-property-uuid" class="sramp-meta-data-section-value">XmlDocument</div>
                     <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">Derived:</div>
-                    <div class="sramp-meta-data-section-value">true</div>
+                    <div data-field="core-property-derived" class="sramp-meta-data-section-value">true</div>
                     <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">Date Created:</div>
-                    <div class="sramp-meta-data-section-value">12/07/2012 by Danny Devito</div>
+                    <div class="sramp-meta-data-section-value">
+                      <span data-field="core-property-createdOn">12/07/2012</span> by <span data-field="core-property-createdBy">Danny Devito</span>
+                    </div>
                     <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">Last Modified:</div>
-                    <div class="sramp-meta-data-section-value">12/07/2012 by Danny Devito</div>
+                    <div class="sramp-meta-data-section-value">
+                      <span data-field="core-property-modifiedOn">12/07/2012</span> by <span data-field="core-property-modifiedBy">Danny Devito</span>
+                    </div>
                     <div class="clearfix"></div>
                   </div>
                   <!-- Custom Properties (right half) -->

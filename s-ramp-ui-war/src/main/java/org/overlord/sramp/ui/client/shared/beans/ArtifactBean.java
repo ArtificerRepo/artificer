@@ -34,6 +34,7 @@ public class ArtifactBean extends ArtifactSummaryBean implements Serializable {
     private static final long serialVersionUID = ArtifactBean.class.hashCode();
 
     private String updatedBy;
+    private String version;
     private List<String> classifiedBy = new ArrayList<String>();
     private int numRelationships;
 
@@ -90,6 +91,20 @@ public class ArtifactBean extends ArtifactSummaryBean implements Serializable {
      */
     public boolean hasOutgoingRelationships() {
         return this.numRelationships > 0;
+    }
+
+    /**
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * @param version the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
     }
 
 }

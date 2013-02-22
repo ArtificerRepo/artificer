@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jboss.errai.databinding.client.api.Bindable;
 
 /**
  * A simple data bean for returning summary information for an artifact. This is typically returned in search
@@ -29,6 +30,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
+@Bindable
 public class ArtifactSummaryBean {
 
     private String model;

@@ -37,9 +37,17 @@
     <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
+  <servlet>
+    <servlet-name>ArtifactDownload</servlet-name>
+    <servlet-class>org.overlord.sramp.ui.server.servlets.ArtifactDownloadServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>ErraiServlet</servlet-name>
     <url-pattern>*.erraiBus</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ArtifactDownload</servlet-name>
+    <url-pattern>/app/services/artifactDownload</url-pattern>
   </servlet-mapping>
 
   <resource-env-ref>
