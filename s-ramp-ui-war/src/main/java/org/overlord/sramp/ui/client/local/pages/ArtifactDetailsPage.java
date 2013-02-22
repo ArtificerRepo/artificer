@@ -27,6 +27,7 @@ import org.jboss.errai.ui.shared.api.annotations.AutoBound;
 import org.jboss.errai.ui.shared.api.annotations.Bound;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.sramp.ui.client.local.pages.details.SourceEditor;
 import org.overlord.sramp.ui.client.local.services.ArtifactRpcService;
 import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.util.DOMUtil;
@@ -85,6 +86,9 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject @DataField("core-property-modifiedBy") @Bound(property="updatedBy")
     InlineLabel modifiedBy;
 
+    @Inject @DataField("artifact-editor")
+    SourceEditor sourceEditor;
+
     protected Element pageContent;
 
     /**
@@ -132,6 +136,8 @@ public class ArtifactDetailsPage extends AbstractPage {
         String metaDataUrl = contentUrl + "&as=meta-data";
         this.downloadContentLink.setHref(contentUrl);
         this.downloadMetaDataLink.setHref(metaDataUrl);
+
+        this.sourceEditor.setValue("<root />");
     }
 
 }
