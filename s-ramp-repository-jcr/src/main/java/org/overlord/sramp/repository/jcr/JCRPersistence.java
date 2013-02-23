@@ -24,7 +24,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -614,12 +613,11 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		List<SrampOntology> ontologies = getOntologies();
 		for (SrampOntology ontology : ontologies) {
 			Class sclass = ontology.findClass(classification);
-			if (sclass == null) {
-	            throw new InvalidClassifiedByException(classification.toString());
+			if (sclass != null) {
+	            return sclass.normalize();
 			}
-			return sclass.normalize();
 		}
-		return Collections.emptySet();
+        throw new InvalidClassifiedByException(classification.toString());
 	}
 
 	/**
