@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.sramp</groupId>
@@ -10,7 +11,7 @@
   <packaging>pom</packaging>
   <name>S-RAMP Distribution: Assembly</name>
   <dependencies>
-		<!-- Dependencies on the various WARs to include in the distro. -->
+    <!-- Dependencies on the various WARs to include in the distro. -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server</artifactId>
@@ -29,7 +30,7 @@
       <type>war</type>
       <version>${project.version}</version>
     </dependency>
-		<!-- Dependencies on the Source JARs to include in the distro. -->
+    <!-- Dependencies on the Source JARs to include in the distro. -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-api</artifactId>
@@ -139,11 +140,26 @@
       <artifactId>s-ramp-workitems</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- The S-RAMP documentation (jdocbook) -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>sramp-wiki</artifactId>
+      <version>0.1.1</version>
+      <type>jdocbook</type>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <!-- Entry needed to enable jdocbook unzipping -->
+            <groupId>org.jboss.maven.plugins</groupId>
+            <artifactId>maven-jdocbook-plugin</artifactId>
+            <version>2.3.8</version>
+          </dependency>
+        </dependencies>
         <configuration>
           <finalName>s-ramp-${project.version}</finalName>
           <descriptors>
