@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.overlord.sramp.demos</groupId>
   <artifactId>s-ramp-demos</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2-SNAPSHOT</version>
   <name>S-RAMP Demos</name>
   <packaging>pom</packaging>
   
