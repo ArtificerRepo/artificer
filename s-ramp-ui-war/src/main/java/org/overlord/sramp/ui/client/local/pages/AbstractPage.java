@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.framework.ClientMessageBus;
+import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.jboss.errai.ui.nav.client.local.PageShowing;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -118,7 +119,7 @@ public abstract class AbstractPage extends Composite {
         // of the errai bus so that all RPC endpoints are ready.  This
         // is only necessary on initial app load, but it doesn't hurt
         // to always do it.
-        bus.addPostInitTask(new Runnable() {
+        CDI.addPostInitTask(new Runnable() {
             @Override
             public void run() {
                 onPageShowing();
