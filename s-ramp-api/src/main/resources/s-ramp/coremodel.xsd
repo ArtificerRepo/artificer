@@ -82,6 +82,7 @@
       <xsd:enumeration value="SoapBinding" />
       <!-- extended artifacts -->
       <xsd:enumeration value="ExtendedArtifactType" />
+      <xsd:enumeration value="ExtendedDocument" />
       <!-- soa model -->
       <xsd:enumeration value="SoaModelType" />
       <xsd:enumeration value="ServiceInterface" />
@@ -202,6 +203,7 @@
       <xsd:extension base="s-ramp:BaseArtifactType">
         <xsd:attribute name="contentType" type="xsd:string" />
         <xsd:attribute name="contentSize" type="xsd:long" />
+        <xsd:attribute name="contentHash" type="xsd:string" />
         <xsd:anyAttribute namespace="##any" />
       </xsd:extension>
     </xsd:complexContent>
@@ -223,10 +225,17 @@
     </xsd:complexContent>
   </xsd:complexType>
 
-  <!-- Type used for Extended Artifact Models in S-RAMP -->
+  <!-- Types used for Extended Artifact Models in S-RAMP -->
   <xsd:complexType name="ExtendedArtifactType">
     <xsd:complexContent>
       <xsd:extension base="s-ramp:BaseArtifactType">
+        <xsd:attribute name="extendedType" type="xsd:string" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="ExtendedDocument">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:DocumentArtifactType">
         <xsd:attribute name="extendedType" type="xsd:string" />
       </xsd:extension>
     </xsd:complexContent>
