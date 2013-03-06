@@ -38,7 +38,7 @@ public class InvalidClassifiedByException extends SrampUserException {
      * @param classifiedBy
      */
     public InvalidClassifiedByException(String classifiedBy) {
-        super("Invalid classified-by (it is either an invalid URI or it is not defined by an S-RAMP ontology: " + classifiedBy);
+        super("Invalid classified-by (it is either an invalid URI or it is not defined by an S-RAMP ontology): " + classifiedBy);
     }
 
 }
