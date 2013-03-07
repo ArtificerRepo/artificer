@@ -316,6 +316,10 @@ input.sramp-date {
   background-color: white;
 }
 
+.sramp-details-tab-spinner {
+  margin-top: 20px
+}
+
 .sramp-meta-data-section {
   margin-top: 15px;
 }
@@ -375,10 +379,6 @@ input.sramp-date {
   bottom: 1px;
   right: 1px;
   background: white;
-}
-
-.sramp-source-editor-spinner {
-  margin-top: 20px
 }
 
 #ontologies {

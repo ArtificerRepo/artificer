@@ -99,7 +99,6 @@ public class ArtifactDetailsPage extends AbstractPage {
     protected boolean sourceLoaded;
 
     protected Element pageContent;
-    protected Element sourceTab;
     protected Element editorWrapper;
 
     /**
@@ -114,7 +113,6 @@ public class ArtifactDetailsPage extends AbstractPage {
     @PostConstruct
     protected void onPostConstruct() {
         pageContent = DOMUtil.findElementById(getElement(), "page-content");
-        sourceTab = DOMUtil.findElementById(getElement(), "source");
         editorWrapper = DOMUtil.findElementById(getElement(), "editor-wrapper");
     }
 
@@ -126,7 +124,7 @@ public class ArtifactDetailsPage extends AbstractPage {
         sourceLoaded = false;
         currentArtifact = null;
         pageContent.setAttribute("style", "display:none");
-        sourceTab.setAttribute("style", "display:none");
+        sourceTabAnchor.setVisible(false);
         editorWrapper.setAttribute("style", "display:none");
         artifactService.get(uuid, new IRpcServiceInvocationHandler<ArtifactBean>() {
             @Override
@@ -154,6 +152,9 @@ public class ArtifactDetailsPage extends AbstractPage {
      * @param artifact
      */
     protected void loadSource(ArtifactBean artifact) {
+        if (!artifact.isTextDocument()) {
+            return;
+        }
         sourceTabProgress.setVisible(true);
         artifactService.getDocumentContent(artifact.getUuid(), artifact.getType(), new IRpcServiceInvocationHandler<String>() {
             @Override
@@ -175,8 +176,6 @@ public class ArtifactDetailsPage extends AbstractPage {
      * @param artifact
      */
     protected void updateArtifactMetaData(ArtifactBean artifact) {
-        pageContent.removeAttribute("style");
-
         this.artifact.setModel(artifact, InitialState.FROM_MODEL);
         String contentUrl = GWT.getModuleBaseURL() + "services/artifactDownload";
         contentUrl += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType();
@@ -186,8 +185,9 @@ public class ArtifactDetailsPage extends AbstractPage {
         this.sourceEditor.setValue("");
 
         if (artifact.isTextDocument()) {
-            this.sourceTab.removeAttribute("style");
+            sourceTabAnchor.setVisible(true);
         }
+        pageContent.removeAttribute("style");
     }
 
 }

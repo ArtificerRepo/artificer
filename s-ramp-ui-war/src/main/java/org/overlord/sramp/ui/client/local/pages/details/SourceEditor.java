@@ -43,6 +43,8 @@ public class SourceEditor extends Widget implements HasValue<String> {
             public void onAttachOrDetach(AttachEvent event) {
                 if (event.isAttached()) {
                     initEditor();
+                } else {
+                    destroyEditor();
                 }
             }
         });
@@ -58,15 +60,16 @@ public class SourceEditor extends Widget implements HasValue<String> {
 
     /**
      * Initializes the ACE editor.
+     *
      * @param id
      * @return the ACE javascript object
      */
     public native void initACE(String id) /*-{
-        var editor = $wnd.ace.edit(id);
-        editor.setTheme("ace/theme/eclipse");
-        editor.getSession().setMode("ace/mode/xml");
-        editor.setReadOnly(true);
-        this.@org.overlord.sramp.ui.client.local.pages.details.SourceEditor::editor = editor;
+		var editor = $wnd.ace.edit(id);
+		editor.setTheme("ace/theme/eclipse");
+		editor.getSession().setMode("ace/mode/xml");
+		editor.setReadOnly(true);
+		this.@org.overlord.sramp.ui.client.local.pages.details.SourceEditor::editor = editor;
     }-*/;
 
     /**
@@ -74,7 +77,7 @@ public class SourceEditor extends Widget implements HasValue<String> {
      */
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
-        // TODO Auto-generated method stub
+        // TODO: handle value change in SourceEditor
         return null;
     }
 
@@ -82,17 +85,18 @@ public class SourceEditor extends Widget implements HasValue<String> {
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     @Override
-    public String getValue() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    public native String getValue() /*-{
+        return this.@org.overlord.sramp.ui.client.local.pages.details.SourceEditor::editor.getValue();
+    }-*/;
 
     /**
      * Sets the value in the editor.
+     *
      * @param value
      */
     public native void setEditorValue(String value) /*-{
-        this.@org.overlord.sramp.ui.client.local.pages.details.SourceEditor::editor.setValue(value, -1);
+		this.@org.overlord.sramp.ui.client.local.pages.details.SourceEditor::editor
+				.setValue(value, -1);
     }-*/;
 
     /**
@@ -109,5 +113,12 @@ public class SourceEditor extends Widget implements HasValue<String> {
     @Override
     public void setValue(String value, boolean fireEvents) {
     }
+
+    /**
+     * Destroys the editor.
+     */
+    protected native void destroyEditor() /*-{
+		this.@org.overlord.sramp.ui.client.local.pages.details.SourceEditor::editor.destroy();
+    }-*/;
 
 }
