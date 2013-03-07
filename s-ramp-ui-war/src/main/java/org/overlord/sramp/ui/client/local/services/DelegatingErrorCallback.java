@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.ui.client.local.services;
 
-import org.jboss.errai.bus.client.api.Message;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 
 /**
