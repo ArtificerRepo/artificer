@@ -18,6 +18,7 @@ package org.overlord.sramp.common;
 import java.util.List;
 
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.s_ramp.xmlns._2010.s_ramp.Target;
@@ -120,4 +121,23 @@ public class SrampModelUtils {
 		return null;
 	}
 
+	/**
+	 * Returns true if the artifact is a Document style artifact (has content).
+	 * @param artifact
+	 */
+	public static boolean isDocumentArtifact(BaseArtifactType artifact) {
+	    return artifact instanceof DocumentArtifactType;
+	}
+
+	/**
+	 * Returns true if the artifact has text content.
+	 * @param artifact
+	 */
+	public static boolean isTextDocumentArtifact(DocumentArtifactType artifact) {
+	    String ct = artifact.getContentType();
+	    if (ct == null)
+	        return false;
+	    ct = ct.toLowerCase();
+	    return ct.contains("text/") || ct.contains("application/xml");
+	}
 }
