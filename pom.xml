@@ -1,313 +1,268 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.overlord.sramp</groupId>
-	<artifactId>s-ramp-ui</artifactId>
-	<version>0.1.2-SNAPSHOT</version>
+  <groupId>org.overlord.sramp</groupId>
+  <artifactId>s-ramp-ui</artifactId>
+  <version>0.1.2-SNAPSHOT</version>
 
-	<packaging>pom</packaging>
-	<name>S-RAMP UI</name>
-	<description>Builds the S-RAMP UI distribution.</description>
-	<url>http://www.jboss.org/overlord</url>
-	<inceptionYear>2012</inceptionYear>
+  <packaging>pom</packaging>
+  <name>S-RAMP UI</name>
+  <description>Builds the S-RAMP UI distribution.</description>
+  <url>http://www.jboss.org/overlord</url>
+  <inceptionYear>2012</inceptionYear>
 
-	<organization>
-		<name>JBoss, a division of Red Hat</name>
-		<url>http://www.jboss.org</url>
-	</organization>
+  <organization>
+    <name>JBoss, a division of Red Hat</name>
+    <url>http://www.jboss.org</url>
+  </organization>
 
-	<licenses>
-		<license>
-			<name>Apache License Version 2.0</name>
-			<url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
-			<!--url>http://www.gnu.org/licenses/lgpl.html</url -->
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+  <licenses>
+    <license>
+      <name>Apache License Version 2.0</name>
+      <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+      <!--url>http://www.gnu.org/licenses/lgpl.html</url -->
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+  <properties>
+    <!-- Global Settings -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
-		<!-- Distribution URLs -->
-		<jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-		<jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+    <!-- Distribution URLs -->
+    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
-		<junit.version>4.8.2</junit.version>
-		<log4j.version>1.2.16</log4j.version>
-		<slf4j.api.version>1.5.11</slf4j.api.version>
-		<slf4j.log4j.version>1.5.11</slf4j.log4j.version>
-		<!-- S-RAMP versions -->
-		<sramp.client.version>0.1.1</sramp.client.version>
-		<srampui.build.date>${maven.build.timestamp}</srampui.build.date>
+    <!-- S-RAMP version -->
+    <sramp.client.version>0.1.2-SNAPSHOT</sramp.client.version>
+    <srampui.build.date>${maven.build.timestamp}</srampui.build.date>
 
-		<!-- Maven plugin versions -->
-		<maven.surefire.report.plugin.version>2.4.3</maven.surefire.report.plugin.version>
-		<maven.surefire.plugin.version>2.7.1</maven.surefire.plugin.version>
-		<maven.assembly.plugin.version>2.2</maven.assembly.plugin.version>
-		<maven.install.plugin.version>2.3.1</maven.install.plugin.version>
-		<maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
-		<maven.jxr.plugin.version>2.1</maven.jxr.plugin.version>
-		<maven.jar.plugin.version>2.4</maven.jar.plugin.version>
-		<maven.war.plugin.version>2.1.1</maven.war.plugin.version>
-		<maven.bundle.plugin.version>2.1.0</maven.bundle.plugin.version>
-		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
-		<maven.source.plugin.version>2.1.2</maven.source.plugin.version>
-		<maven.deploy.plugin.version>2.5</maven.deploy.plugin.version>
-		<!-- Third party libraries -->
-		<org.jboss.resteasy.version>2.3.5.Final</org.jboss.resteasy.version>
-		<gwt.version>2.5.0-rc1</gwt.version>
-		<gwt.plugin.version>2.2.0</gwt.plugin.version>
-		<!-- Apache Commons -->
-		<commons.io.version>2.4</commons.io.version>
-		<commons.lang3.version>3.1</commons.lang3.version>
-		<commons.config.version>1.8</commons.config.version>
-		<commons.fileupload.version>1.2.2</commons.fileupload.version>
-	</properties>
+    <!-- Maven plugin versions -->
+    <maven.surefire.report.plugin.version>2.4.3</maven.surefire.report.plugin.version>
+    <maven.surefire.plugin.version>2.7.1</maven.surefire.plugin.version>
+    <maven.assembly.plugin.version>2.2</maven.assembly.plugin.version>
+    <maven.install.plugin.version>2.3.1</maven.install.plugin.version>
+    <maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
+    <maven.jxr.plugin.version>2.1</maven.jxr.plugin.version>
+    <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
+    <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
+    <maven.bundle.plugin.version>2.1.0</maven.bundle.plugin.version>
+    <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+    <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
+    <maven.deploy.plugin.version>2.5</maven.deploy.plugin.version>
+    <maven.clean.plugin.version>2.4.1</maven.clean.plugin.version>
+    
+    <!-- Third party libraries -->
+    <commons.io.version>2.4</commons.io.version>
+    <commons.lang3.version>3.1</commons.lang3.version>
+    <commons.config.version>1.8</commons.config.version>
+    <commons.fileupload.version>1.2.2</commons.fileupload.version>
+    <org.jboss.resteasy.version>2.3.5.Final</org.jboss.resteasy.version>
+    <errai.version>3.0-SNAPSHOT</errai.version>
+    <gwt.version>2.5.0</gwt.version>
+    <weld.version>1.1.6.Final</weld.version>
+    <mvel.version>2.1.Beta8</mvel.version>
+    <jetty.version>6.1.25</jetty.version>
+    <uel.impl.version>2.1.2-b04</uel.impl.version>
+    <servlet-api.version>3.0.1</servlet-api.version>
+    <jsp-api.version>2.0</jsp-api.version>
+    <jboss-ejb3-api.version>3.1.0</jboss-ejb3-api.version>
+    <cdi-api.version>1.0-SP4</cdi-api.version>
+    <jboss-logging.version>3.0.0.Beta4</jboss-logging.version>
+    <log4j.version>1.2.16</log4j.version>
+    <slf4j.version>1.6.1</slf4j.version>
+    <slf4j.api.version>1.5.11</slf4j.api.version>
+    <slf4j.log4j.version>1.5.11</slf4j.log4j.version>
+    <junit.version>4.10</junit.version>
+  </properties>
 
-	<scm>
-		<connection>scm:git:git://github.com/Governance/s-ramp-ui.git</connection>
-		<developerConnection>scm:git:git@github.com:Governance/s-ramp-ui.git</developerConnection>
-		<url>http://github.com/Governance/s-ramp-ui</url>
-	</scm>
+  <modules>
+    <module>s-ramp-ui-war</module>
+    <module>s-ramp-ui-war-jboss7</module>
+    <module>s-ramp-ui-widgets</module>
+  </modules>
 
-	<issueManagement>
-		<system>jira</system>
-		<url>http://issues.jboss.org/browse/SRAMP</url>
-	</issueManagement>
+  <scm>
+    <connection>scm:git:git://github.com/Governance/s-ramp-ui.git</connection>
+    <developerConnection>scm:git:git@github.com:Governance/s-ramp-ui.git</developerConnection>
+    <url>http://github.com/Governance/s-ramp-ui</url>
+  </scm>
 
-	<developers>
-		<developer>
-			<name>Eric Wittmann</name>
-			<id>ewittman</id>
-			<email>eric.wittmann@redhat.com</email>
-			<organization>Red Hat</organization>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-	</developers>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.jboss.org/browse/SRAMPUI</url>
+  </issueManagement>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>${maven.jar.plugin.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-war-plugin</artifactId>
-					<version>${maven.war.plugin.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>${maven.assembly.plugin.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>maven-bundle-plugin</artifactId>
-					<version>${maven.bundle.plugin.version}</version>
-					<extensions>true</extensions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+  <developers>
+    <developer>
+      <name>Eric Wittmann</name>
+      <id>ewittman</id>
+      <email>eric.wittmann@redhat.com</email>
+      <organization>Red Hat</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
 
-		<plugins>
-			<!-- Specify the compiler options and settings -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven.compiler.plugin.version}</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<showDeprecation>false</showDeprecation>
-					<showWarnings>false</showWarnings>
-				</configuration>
-			</plugin>
-			<!-- Produce source jars during the 'verify' phase -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>${maven.source.plugin.version}</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar</goal>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven.surefire.plugin.version}</version>
-				<configuration>
-					<includes>
-						<include>**/*TestCase.java</include>
-						<include>**/*Test.java</include>
-					</includes>
-					<systemProperties>
-						<property>
-							<name>java.io.tmpdir</name>
-							<value>${basedir}/target</value>
-						</property>
-					</systemProperties>
-					<argLine>-Xmx256M -XX:MaxPermSize=512m</argLine>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven.jar.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>${maven.war.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven.assembly.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>${maven.bundle.plugin.version}</version>
+          <extensions>true</extensions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${maven.clean.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>gwt-maven-plugin</artifactId>
+                    <versionRange>[2.3.0,)</versionRange>
+                    <goals>
+                      <goal>resources</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
 
-	<dependencyManagement>
-		<dependencies>
-			<!-- S-RAMP -->
-			<dependency>
-				<groupId>org.overlord.sramp</groupId>
-				<artifactId>s-ramp-client</artifactId>
-				<version>${sramp.client.version}</version>
-			</dependency>
-			<!-- GWT -->
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-servlet</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-user</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.gwt</groupId>
-				<artifactId>gwt-dev</artifactId>
-				<version>${gwt.version}</version>
-			</dependency>
-			<!-- Common libraries -->
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.3</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${commons.lang3.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>${commons.io.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-configuration</groupId>
-				<artifactId>commons-configuration</artifactId>
-				<version>${commons.config.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-fileupload</groupId>
-				<artifactId>commons-fileupload</artifactId>
-				<version>${commons.fileupload.version}</version>
-			</dependency>
-			<!-- Logging -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.api.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.log4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+    <plugins>
+      <!-- Specify the compiler options and settings -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <showDeprecation>false</showDeprecation>
+          <showWarnings>false</showWarnings>
+        </configuration>
+      </plugin>
+      <!-- Produce source jars during the 'verify' phase -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven.source.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven.surefire.plugin.version}</version>
+        <configuration>
+          <includes>
+            <include>**/*TestCase.java</include>
+            <include>**/*Test.java</include>
+          </includes>
+          <systemProperties>
+            <property>
+              <name>java.io.tmpdir</name>
+              <value>${basedir}/target</value>
+            </property>
+          </systemProperties>
+          <argLine>-Xmx256M -XX:MaxPermSize=512m</argLine>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>${maven.surefire.report.plugin.version}</version>
-			</plugin>
-		</plugins>
-	</reporting>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${maven.surefire.report.plugin.version}</version>
+      </plugin>
+    </plugins>
+  </reporting>
 
-	<repositories>
-		<repository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/groups/developer/</url>
-			<layout>default</layout>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>vaadin-snapshots</id>
-			<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>vaadin-addons</id>
-			<url>http://maven.vaadin.com/vaadin-addons</url>
-		</repository>
-	</repositories>
+  <repositories>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/groups/developer/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
-	<distributionManagement>
-		<repository>
-			<id>jboss-releases-repository</id>
-			<name>JBoss Releases Repository</name>
-			<url>${jboss.releases.repo.url}</url>
-		</repository>
-		<snapshotRepository>
-			<id>jboss-snapshots-repository</id>
-			<name>JBoss Snapshots Repository</name>
-			<url>${jboss.snapshots.repo.url}</url>
-		</snapshotRepository>
-	</distributionManagement>
-	
-	<modules>
-		<module>s-ramp-ui-gwt</module>
-	</modules>
+  <distributionManagement>
+    <repository>
+      <id>jboss-releases-repository</id>
+      <name>JBoss Releases Repository</name>
+      <url>${jboss.releases.repo.url}</url>
+    </repository>
+    <snapshotRepository>
+      <id>jboss-snapshots-repository</id>
+      <name>JBoss Snapshots Repository</name>
+      <url>${jboss.snapshots.repo.url}</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
-
