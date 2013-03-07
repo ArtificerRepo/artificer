@@ -15,17 +15,23 @@
  */
 package org.overlord.sramp.ui.server.services;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
 import javax.inject.Inject;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactService;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.Property;
 
 /**
@@ -35,6 +41,9 @@ import org.s_ramp.xmlns._2010.s_ramp.Property;
  */
 @Service
 public class ArtifactService implements IArtifactService {
+
+    // Limit content grabs to 2mb
+    private static final Long TWO_MEG = 2l * 1024l * 1024l;
 
     @Inject
     private SrampApiClientAccessor clientAccessor;
@@ -66,6 +75,14 @@ public class ArtifactService implements IArtifactService {
             bean.setUpdatedOn(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
             bean.setUpdatedBy(artifact.getLastModifiedBy());
             bean.setDerived(artifactType.getArtifactType().isDerived());
+            if (SrampModelUtils.isDocumentArtifact(artifact)) {
+                DocumentArtifactType doc = (DocumentArtifactType) artifact;
+                bean.setContentSize(doc.getContentSize());
+                bean.setContentType(doc.getContentType());
+                if  (SrampModelUtils.isTextDocumentArtifact(doc)) {
+                    bean.setTextDocument(true);
+                }
+            }
             // Properties
             for (Property property : artifact.getProperty()) {
                 bean.setProperty(property.getPropertyName(), property.getPropertyValue());
@@ -80,6 +97,36 @@ public class ArtifactService implements IArtifactService {
         } catch (SrampClientException e) {
             throw new SrampUiException(e.getMessage());
         } catch (SrampAtomException e) {
+            throw new SrampUiException(e.getMessage());
+        }
+    }
+
+    /**
+     * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#getDocumentContent(java.lang.String, java.lang.String)
+     */
+    @Override
+    public String getDocumentContent(String uuid, String artifactType) throws SrampUiException {
+        try {
+            ArtifactType at = ArtifactType.valueOf(artifactType);
+            BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(at, uuid);
+            String response = "N/A (Please download the content instead...)";
+            if (SrampModelUtils.isDocumentArtifact(artifact)) {
+                DocumentArtifactType doc = (DocumentArtifactType) artifact;
+                if (SrampModelUtils.isTextDocumentArtifact(doc) && doc.getContentSize() <= TWO_MEG) {
+                    InputStream content = null;
+                    try {
+                        content = clientAccessor.getClient().getArtifactContent(at, uuid);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        IOUtils.copy(content, baos);
+                        // TODO: obey the document's encoding here (if we can find it) but default to UTF-8
+                        response = baos.toString("UTF-8");
+                    } finally {
+                        IOUtils.closeQuietly(content);
+                    }
+                }
+            }
+            return response;
+        } catch (Exception e) {
             throw new SrampUiException(e.getMessage());
         }
     }

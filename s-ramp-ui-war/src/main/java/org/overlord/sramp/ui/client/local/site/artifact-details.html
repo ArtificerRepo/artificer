@@ -95,7 +95,7 @@
             <ul id="myTab" class="nav nav-tabs sramp-nav-tabs">
               <li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
               <li class=""><a href="#relationships" data-toggle="tab">Relationships</a></li>
-              <li class=""><a href="#source" data-toggle="tab">Source</a></li>
+              <li class=""><a href="#source" data-field="sramp-artifact-tabs-source" data-toggle="tab">Source</a></li>
               <li class=""><a href="#history" data-toggle="tab">History</a></li>
             </ul>
             <div id="tabContent" class="tab-content sramp-tab-content">
@@ -205,7 +205,7 @@
               </div>
               <!-- Source Tab -->
               <div class="tab-pane fade container-fluid" id="source">
-                <div class="sramp-source-editor-wrapper span12">
+                <div id="editor-wrapper" class="sramp-source-editor-wrapper span12">
                   <div data-field="artifact-editor" id="editor" class="sramp-source-editor">&lt;assembly
     xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -215,8 +215,10 @@
         &lt;format>zip&lt;/format>
     &lt;/formats>
     &lt;includeBaseDirectory>false&lt;/includeBaseDirectory>
-&lt;/assembly></div>
+&lt;/assembly>
+                  </div>
                 </div>
+                <div data-field="source-tab-progress" class="spinner sramp-source-editor-spinner pull-left" style="display:none">Loading content, please wait...</div>
               </div>
               <!-- History Tab -->
               <div class="tab-pane fade container-fluid" id="history">

@@ -56,6 +56,20 @@ public class ArtifactRpcService {
     }
 
     /**
+     * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#getDocumentContent(String, String)
+     */
+    public void getDocumentContent(String uuid, String artifactType,
+            final IRpcServiceInvocationHandler<String> handler) {
+        RemoteCallback<String> successCallback = new DelegatingRemoteCallback<String>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteArtifactService.call(successCallback, errorCallback).getDocumentContent(uuid, artifactType);
+        } catch (SrampUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
+    /**
      * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#update(org.overlord.sramp.ui.client.shared.beans.ArtifactBean)
      */
     public void update(ArtifactBean artifact, final IRpcServiceInvocationHandler<Void> handler) {

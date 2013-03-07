@@ -37,6 +37,9 @@ public class ArtifactBean extends ArtifactSummaryBean implements Serializable {
     private String version;
     private List<String> classifiedBy = new ArrayList<String>();
     private int numRelationships;
+    private long contentSize = -1;
+    private String contentType;
+    private boolean textDocument;
 
     /**
      * Constructor.
@@ -105,6 +108,62 @@ public class ArtifactBean extends ArtifactSummaryBean implements Serializable {
      */
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    /**
+     * @return true if this artifact has text content
+     */
+    public boolean hasSource() {
+        return false;
+    }
+
+    /**
+     * @return the contentSize
+     */
+    public long getContentSize() {
+        return contentSize;
+    }
+
+    /**
+     * @param contentSize the contentSize to set
+     */
+    public void setContentSize(long contentSize) {
+        this.contentSize = contentSize;
+    }
+
+    /**
+     * @return the contentType
+     */
+    public String getContentType() {
+        return contentType;
+    }
+
+    /**
+     * @param contentType the contentType to set
+     */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    /**
+     * @return the textDocument
+     */
+    public boolean isTextDocument() {
+        return textDocument;
+    }
+
+    /**
+     * @param textDocument the textDocument to set
+     */
+    public void setTextDocument(boolean textDocument) {
+        this.textDocument = textDocument;
+    }
+
+    /**
+     * @return true if the artifact is a document artifact
+     */
+    public boolean isDocument() {
+        return this.contentSize != -1;
     }
 
 }

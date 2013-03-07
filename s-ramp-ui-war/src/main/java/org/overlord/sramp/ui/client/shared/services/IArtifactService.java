@@ -28,13 +28,19 @@ import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 public interface IArtifactService {
 
     /**
-     * Search for artifacts using the given filtersPanel and search text.
-     * @param filtersPanel
-     * @param searchText
-     * @param page
+     * Gets the full meta data for an artifact (by UUID).
+     * @param uuid
      * @throws SrampUiException
      */
     public ArtifactBean get(String uuid) throws SrampUiException;
+
+    /**
+     * Gets the full document content for an artifact (by UUID).
+     * @param uuid
+     * @param artifactType
+     * @throws SrampUiException
+     */
+    public String getDocumentContent(String uuid, String artifactType) throws SrampUiException;
 
     /**
      * Called to update the given artifact bean.

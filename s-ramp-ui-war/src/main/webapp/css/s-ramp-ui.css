@@ -377,6 +377,10 @@ input.sramp-date {
   background: white;
 }
 
+.sramp-source-editor-spinner {
+  margin-top: 20px
+}
+
 #ontologies {
   height: 500px;
   border: 1px solid rgb(221, 221, 221);

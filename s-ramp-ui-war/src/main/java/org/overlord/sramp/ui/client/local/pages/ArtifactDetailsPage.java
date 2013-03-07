@@ -32,10 +32,13 @@ import org.overlord.sramp.ui.client.local.services.ArtifactRpcService;
 import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.util.DOMUtil;
 import org.overlord.sramp.ui.client.local.util.DataBindingDateConverter;
+import org.overlord.sramp.ui.client.local.widgets.common.HtmlSnippet;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -54,6 +57,7 @@ public class ArtifactDetailsPage extends AbstractPage {
 
     @Inject
     protected ArtifactRpcService artifactService;
+    protected ArtifactBean currentArtifact;
 
     @PageState
     private String uuid;
@@ -86,10 +90,17 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject @DataField("core-property-modifiedBy") @Bound(property="updatedBy")
     InlineLabel modifiedBy;
 
+    @Inject @DataField("sramp-artifact-tabs-source")
+    Anchor sourceTabAnchor;
+    @Inject @DataField("source-tab-progress")
+    HtmlSnippet sourceTabProgress;
     @Inject @DataField("artifact-editor")
     SourceEditor sourceEditor;
+    protected boolean sourceLoaded;
 
     protected Element pageContent;
+    protected Element sourceTab;
+    protected Element editorWrapper;
 
     /**
      * Constructor.
@@ -103,7 +114,8 @@ public class ArtifactDetailsPage extends AbstractPage {
     @PostConstruct
     protected void onPostConstruct() {
         pageContent = DOMUtil.findElementById(getElement(), "page-content");
-        pageContent.setAttribute("style", "display:none");
+        sourceTab = DOMUtil.findElementById(getElement(), "source");
+        editorWrapper = DOMUtil.findElementById(getElement(), "editor-wrapper");
     }
 
     /**
@@ -111,11 +123,45 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     @Override
     protected void onPageShowing() {
+        sourceLoaded = false;
+        currentArtifact = null;
         pageContent.setAttribute("style", "display:none");
+        sourceTab.setAttribute("style", "display:none");
+        editorWrapper.setAttribute("style", "display:none");
         artifactService.get(uuid, new IRpcServiceInvocationHandler<ArtifactBean>() {
             @Override
             public void onReturn(ArtifactBean data) {
+                currentArtifact = data;
                 updateArtifactMetaData(data);
+            }
+            @Override
+            public void onError(Throwable error) {
+                Window.alert(error.getMessage());
+            }
+        });
+        sourceTabAnchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (!sourceLoaded) {
+                    loadSource(currentArtifact);
+                }
+            }
+        });
+    }
+
+    /**
+     * Loads the artifact's source (async) into the source tab's editor control.
+     * @param artifact
+     */
+    protected void loadSource(ArtifactBean artifact) {
+        sourceTabProgress.setVisible(true);
+        artifactService.getDocumentContent(artifact.getUuid(), artifact.getType(), new IRpcServiceInvocationHandler<String>() {
+            @Override
+            public void onReturn(String data) {
+                sourceEditor.setValue(data);
+                sourceTabProgress.setVisible(false);
+                editorWrapper.removeAttribute("style");
+                sourceLoaded = true;
             }
             @Override
             public void onError(Throwable error) {
@@ -130,14 +176,18 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     protected void updateArtifactMetaData(ArtifactBean artifact) {
         pageContent.removeAttribute("style");
+
         this.artifact.setModel(artifact, InitialState.FROM_MODEL);
         String contentUrl = GWT.getModuleBaseURL() + "services/artifactDownload";
         contentUrl += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType();
         String metaDataUrl = contentUrl + "&as=meta-data";
         this.downloadContentLink.setHref(contentUrl);
         this.downloadMetaDataLink.setHref(metaDataUrl);
+        this.sourceEditor.setValue("");
 
-        this.sourceEditor.setValue("<root />");
+        if (artifact.isTextDocument()) {
+            this.sourceTab.removeAttribute("style");
+        }
     }
 
 }
