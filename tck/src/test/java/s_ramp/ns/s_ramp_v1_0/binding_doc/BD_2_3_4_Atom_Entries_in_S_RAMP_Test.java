@@ -25,7 +25,7 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.s_ramp.xmlns._2010.s_ramp.ObjectFactory;
 import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
-public class BD_2_3_4_Atom_Entries_in_S_RAMP_1 {
+public class BD_2_3_4_Atom_Entries_in_S_RAMP_Test {
 
     /**
      * An example of an S-RAMP summary (media link) 
@@ -36,9 +36,9 @@ public class BD_2_3_4_Atom_Entries_in_S_RAMP_1 {
         try {
             System.out.println("1. Marshalling the full entry which is given in Example 2");
             Assert.assertNotNull("Cannot locate file BD_2_3_4_Atom_Entries_in_S_RAMP_2.xml",
-                    this.getClass().getResourceAsStream("BD_2_3_4_Atom_Entries_in_S_RAMP_2.xml"));
+                    this.getClass().getClassLoader().getResourceAsStream("BD_2_3_4_Atom_Entries_in_S_RAMP_2.xml"));
     
-            String entryXML = new Scanner(this.getClass().getResourceAsStream("BD_2_3_4_Atom_Entries_in_S_RAMP_2.xml")).useDelimiter("\\Z").next();
+            String entryXML = new Scanner(this.getClass().getClassLoader().getResourceAsStream("BD_2_3_4_Atom_Entries_in_S_RAMP_2.xml")).useDelimiter("\\Z").next();
             JAXBContext ctx = JAXBContext.newInstance(Entry.class);
             Entry entry = (Entry) ctx.createUnmarshaller().unmarshal(new StringReader(entryXML));
             
