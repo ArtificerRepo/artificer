@@ -1,0 +1,7 @@
+POST /s-ramp/xsd/XsdDocument HTTP/1.1
+Host: example.org
+Content-Type: application/xml
+Content-Length: nnn
+Slug: accountingTypes.xsd
+
+{accountingTypes.xsd document content goes here}

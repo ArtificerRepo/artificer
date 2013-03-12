@@ -58,12 +58,11 @@ public class BD_2_3_4_Atom_Entries_in_S_RAMP_Test {
             marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://s-ramp.org/xmlns/2010/s-ramp/xsdmodel.xsd");
            
             ObjectFactory factory = new ObjectFactory();
-
             Artifact artifact = factory.createArtifact();
             artifact.setXsdDocument(xsdDocument);
+            
             StringWriter writer = new StringWriter();
             JAXBElement<Artifact> element = new JAXBElement<Artifact>(new QName("","artifact","s-ramp"),Artifact.class,artifact);
-
             marshaller.marshal(element,writer);
             String xsdDocumentXml=writer.toString();
             java.lang.System.out.println(xsdDocumentXml);

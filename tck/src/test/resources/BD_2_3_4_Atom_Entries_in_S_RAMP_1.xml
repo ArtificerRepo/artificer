@@ -13,17 +13,13 @@
   </contributor>
   <summary type="text">Accounting types schema document</summary>
   <content type="application/xml"
-           src="http://example.org/s-ramp/xsd/XsdDocument/
-                aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a/media"/>
+           src="http://example.org/s-ramp/xsd/XsdDocument/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a/media"/>
   <link type="application/atom+xml;type=entry" rel="self"
-        href="http://example.org/s-ramp/xsd/XsdDocument/
-              aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a" />
+        href="http://example.org/s-ramp/xsd/XsdDocument/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a" />
   <link type="application/atom+xml;type=entry" rel="edit-media"
-        href="http://example.org/s-ramp/xsd/XsdDocument/
-              aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a/media" />
+        href="http://example.org/s-ramp/xsd/XsdDocument/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a/media" />
   <link type="application/atom+xml;type=entry" rel="edit"
-        href="http://example.org/s-ramp/xsd/XsdDocument/
-              aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a" />
+        href="http://example.org/s-ramp/xsd/XsdDocument/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a" />
 
   <!--  
      Links to of the optional feeds provided by server implementations which

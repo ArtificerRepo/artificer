@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!--  
+HTTP/1.1 201 Created
+Date: Tues, 26 May 2009 13:13:55 GMT+2:00
+Content-Length: nnn
+Content-Type: application/atom+xml;type=entry;charset="utf-8"
+Location: http://example.org/s-ramp/xsd/XsdDocument/
+          aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a
+ETag: "c181bb840673b5"
+-->
+
+<entry xmlns="http://www.w3.org/2005/Atom"
+       xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0">
+  <id>urn:uuid:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a</id>
+  <updated>2009-05-26T13:13:55.013+02:00</updated>
+  <title type="text">accountingTypes.xsd</title>
+  <published>2009-05-26T13:13:55.013+02:00</published>
+  <author>
+    <name>Bellwood</name>
+  </author>
+  <summary type="text">accountingTypes.xsd schema document</summary>
+  <content type="application/xml;charset=utf-8"
+           src="http://example.org/s-ramp/xsd/XsdDocument/
+           aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a/media"/>
+  <link type="application/atom+xml;type=entry" rel="self"
+        href="http://example.org/s-ramp/xsd/XsdDocument/
+        aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a" />
+  <link type="application/atom+xml;type=entry" rel="edit-media"
+        href="http://example.org/s-ramp/xsd/XsdDocument/
+        aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a/media" />
+  <link type="application/atom+xml;type=entry" rel="edit"
+        href="http://example.org/s-ramp/xsd/XsdDocument/
+        aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a" />
+
+  <!-- 
+     S-RAMP defined categorizations identifying class of data represented by
+     this entry
+  -->
+  <category term="XsdDocument" label="XML Schema"
+            scheme="urn:x-s-ramp:2013urn:x-s-ramp:2013:type" />
+  <s-ramp:artifact xsi:schemaLocation="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0
+                   http://s-ramp.org/2010/specification/schemas/xsdmodel.xsd"
+                   xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <s-ramp:XsdDocument name="accountingTypes.xsd"
+                        description="accountingTypes.xsd schema document"
+                        createdBy="Bellwood" version="1.0"
+                        uuid="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a"
+                        createdTimestamp="2009-05-26T13:13:55.013+02:00"
+                        lastModifiedTimestamp="2009-05-26T13:13:55.013+02:00"
+                        lastModifiedBy="Bellwood" contentEncoding="UTF-8"
+                        contentType="application/xml" contentSize="4096" >
+    </s-ramp:XsdDocument>
+  </s-ramp:artifact>
+</entry>
