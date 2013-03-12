@@ -157,6 +157,7 @@
       <xsd:enumeration value="DocumentArtifactType" />
       <xsd:enumeration value="Document" />
       <xsd:enumeration value="XmlDocument" />
+      <xsd:enumeration value="ExtendedDocument" />
       <!-- xsd model -->
       <xsd:enumeration value="XsdDocument" />
       <!-- wsdl model -->
