@@ -13,13 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <jboss-deployment-structure>
 	<deployment>
-		<exclusions>
-		</exclusions>
-		<!-- This allows you to define additional dependencies, it is the same 
-			as using the Dependencies: manifest attribute -->
 		<dependencies>
 			<module name="org.jboss.as.naming" />
 			<module name="org.jboss.as.server" />
