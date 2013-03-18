@@ -16,6 +16,7 @@
 package org.overlord.sramp.client;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -29,7 +30,14 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HttpContext;
+import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
@@ -48,6 +56,8 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.client.auth.AuthenticationProvider;
+import org.overlord.sramp.client.auth.BasicAuthenticationProvider;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
@@ -64,6 +74,7 @@ public class SrampAtomApiClient {
 
 	private String endpoint;
 	private boolean validating;
+	private AuthenticationProvider authProvider;
 	private Set<String> enabledFeatures = new HashSet<String>();
 
 	/**
@@ -94,6 +105,38 @@ public class SrampAtomApiClient {
 			discoverAvailableFeatures();
 		}
 	}
+
+    /**
+     * Constructor.
+     * @param endpoint
+     * @param username
+     * @param password
+     * @param validating
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public SrampAtomApiClient(final String endpoint, final String username, final String password,
+            final boolean validating) throws SrampClientException, SrampAtomException {
+        this(endpoint, new BasicAuthenticationProvider(username, password), validating);
+    }
+
+    /**
+     * Constructor.
+     * @param endpoint
+     * @param authenticationProvider
+     * @param validating
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public SrampAtomApiClient(final String endpoint, AuthenticationProvider authenticationProvider,
+            final boolean validating) throws SrampClientException, SrampAtomException {
+        this(endpoint);
+        this.authProvider = authenticationProvider;
+        this.validating = validating;
+        if (this.validating) {
+            discoverAvailableFeatures();
+        }
+    }
 
 	/**
 	 * @return the s-ramp endpoint
@@ -160,7 +203,7 @@ public class SrampAtomApiClient {
 	public AppService getServiceDocument() throws SrampClientException, SrampAtomException {
 		try {
 			String atomUrl = String.format("%1$s/servicedocument", this.endpoint);
-			ClientRequest request = new ClientRequest(atomUrl);
+			ClientRequest request = createClientRequest(atomUrl);
 			ClientResponse<AppService> response = request.get(AppService.class);
 			return response.getEntity();
 		} catch (SrampAtomException e) {
@@ -214,7 +257,7 @@ public class SrampAtomApiClient {
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
 					artifactUuid);
-			ClientRequest request = new ClientRequest(atomUrl);
+			ClientRequest request = createClientRequest(atomUrl);
 			ClientResponse<Entry> response = request.get(Entry.class);
 			Entry entry = response.getEntity();
 			return SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
@@ -270,7 +313,7 @@ public class SrampAtomApiClient {
 			}
 			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), type);
-			ClientRequest request = new ClientRequest(atomUrl);
+			ClientRequest request = createClientRequest(atomUrl);
 			if (artifactFileName != null)
 				request.header("Slug", artifactFileName);
 			if (mimeType != null)
@@ -312,7 +355,7 @@ public class SrampAtomApiClient {
 			}
 			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), type);
-			ClientRequest request = new ClientRequest(atomUrl);
+			ClientRequest request = createClientRequest(atomUrl);
 
 			MultipartRelatedOutput output = new MultipartRelatedOutput();
 
@@ -358,7 +401,7 @@ public class SrampAtomApiClient {
 		try {
 			packageFile = archive.pack();
 			packageStream = FileUtils.openInputStream(packageFile);
-			ClientRequest request = new ClientRequest(this.endpoint);
+			ClientRequest request = createClientRequest(this.endpoint);
 			request.header("Content-Type", "application/zip");
 			request.body(MediaType.APPLICATION_ZIP, packageStream);
 
@@ -419,7 +462,7 @@ public class SrampAtomApiClient {
 			}
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
-			ClientRequest request = new ClientRequest(atomUrl);
+			ClientRequest request = createClientRequest(atomUrl);
 
 			Entry entry = SrampAtomUtils.wrapSrampArtifact(artifact);
 
@@ -451,7 +494,7 @@ public class SrampAtomApiClient {
 			}
 			String artifactUuid = artifact.getUuid();
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
-			ClientRequest request = new ClientRequest(atomUrl);
+			ClientRequest request = createClientRequest(atomUrl);
 			request.body(type.getMimeType(), content);
 			request.put();
 		} catch (SrampAtomException e) {
@@ -478,7 +521,7 @@ public class SrampAtomApiClient {
 			}
 			String artifactUuid = uuid;
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
-			ClientRequest request = new ClientRequest(atomUrl);
+			ClientRequest request = createClientRequest(atomUrl);
 			request.delete();
 		} catch (SrampAtomException e) {
 			throw e;
@@ -541,7 +584,7 @@ public class SrampAtomApiClient {
 			// do a POST but the RESTEasy client doesn't seem to have a way to send multiple
 			// values for a single multipart/form-data part name.
 			if (propertyNames == null || propertyNames.size() < 2) {
-    			ClientRequest request = new ClientRequest(atomUrl);
+    			ClientRequest request = createClientRequest(atomUrl);
     			MultipartFormDataOutput formData = new MultipartFormDataOutput();
     			formData.addFormData("query", xpath, MediaType.TEXT_PLAIN_TYPE);
     			formData.addFormData("startIndex", String.valueOf(startIndex), MediaType.TEXT_PLAIN_TYPE);
@@ -574,7 +617,7 @@ public class SrampAtomApiClient {
                     urlBuilder.append("&propertyName=");
                     urlBuilder.append(URLEncoder.encode(propName, "UTF8"));
                 }
-                ClientRequest request = new ClientRequest(urlBuilder.toString());
+                ClientRequest request = createClientRequest(urlBuilder.toString());
                 ClientResponse<Feed> response = request.get(Feed.class);
                 return new QueryResultSet(response.getEntity());
 			}
@@ -625,7 +668,7 @@ public class SrampAtomApiClient {
 		assertFeatureEnabled("ontology");
 		try {
 			String atomUrl = String.format("%1$s/ontology", this.endpoint);
-			ClientRequest request = new ClientRequest(atomUrl);
+			ClientRequest request = createClientRequest(atomUrl);
 			request.body(MediaType.APPLICATION_RDF_XML_TYPE, content);
 
 			ClientResponse<Entry> response = request.post(Entry.class);
@@ -650,7 +693,7 @@ public class SrampAtomApiClient {
 		assertFeatureEnabled("ontology");
 		try {
 			String atomUrl = String.format("%1$s/ontology", this.endpoint);
-			ClientRequest request = new ClientRequest(atomUrl);
+			ClientRequest request = createClientRequest(atomUrl);
 			ClientResponse<Feed> response = request.get(Feed.class);
 			Feed feed = response.getEntity();
 			List<OntologySummary> rval = new ArrayList<OntologySummary>(feed.getEntries().size());
@@ -678,7 +721,7 @@ public class SrampAtomApiClient {
 		assertFeatureEnabled("ontology");
 		try {
 			String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid);
-			ClientRequest request = new ClientRequest(atomUrl);
+			ClientRequest request = createClientRequest(atomUrl);
 			request.delete();
 		} catch (SrampAtomException e) {
 			throw e;
@@ -686,5 +729,32 @@ public class SrampAtomApiClient {
 			throw new SrampClientException(e);
 		}
 	}
+
+    /**
+     * Creates the RESTEasy client request object, configured appropriately.
+     * @param atomUrl
+     */
+    protected ClientRequest createClientRequest(String atomUrl) {
+        ClientExecutor executor = createClientExecutor();
+        ClientRequest request = new ClientRequest(atomUrl, executor);
+        return request;
+    }
+
+    /**
+     * Creates the client executor that will be used by RESTEasy when
+     * making the request.
+     */
+    private ClientExecutor createClientExecutor() {
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        if (this.authProvider != null) {
+            httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+                @Override
+                public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
+                    authProvider.provideAuthentication(request);
+                }
+            });
+        }
+        return new ApacheHttpClient4Executor(httpClient);
+    }
 
 }

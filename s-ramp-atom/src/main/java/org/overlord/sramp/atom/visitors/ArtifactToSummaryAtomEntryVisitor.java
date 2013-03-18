@@ -122,13 +122,23 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 					+ artifactType.getType() + "/" + artifact.getUuid();
 			String mediaLink = atomLink + "/media";
 
-			// Original content can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
-			ArtifactContentTypeVisitor ctVisitor = new ArtifactContentTypeVisitor();
-			ArtifactVisitorHelper.visitArtifact(ctVisitor, artifact);
-			Content content = new Content();
-			content.setType(ctVisitor.getContentType());
-			content.setSrc(new URI(mediaLink));
-			entry.setContent(content);
+			if (SrampModelUtils.isDocumentArtifact(artifact)) {
+			    // Original content can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
+	            ArtifactContentTypeVisitor ctVisitor = new ArtifactContentTypeVisitor();
+	            ArtifactVisitorHelper.visitArtifact(ctVisitor, artifact);
+	            Content content = new Content();
+	            content.setType(ctVisitor.getContentType());
+	            content.setSrc(new URI(mediaLink));
+	            entry.setContent(content);
+
+	            // Alternate can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
+	            // Only for Document style artifacts.
+	            Link linkToAlternate = new Link();
+                linkToAlternate.setType(ctVisitor.getContentType());
+                linkToAlternate.setRel("alternate");
+                linkToAlternate.setHref(new URI(mediaLink));
+                entry.getLinks().add(linkToAlternate);
+			}
 
 			// Self can be accessed at /s-ramp/{model}/{artifact-type}/{uid}
 			Link linkToSelf = new Link();
