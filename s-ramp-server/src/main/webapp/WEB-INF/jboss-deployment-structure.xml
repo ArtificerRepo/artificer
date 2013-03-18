@@ -1,8 +1,0 @@
-<jboss-deployment-structure>
-	<deployment>
-		<dependencies>
-      <module name="org.modeshape.jcr.api" />
-      <module name="org.infinispan" />
-    </dependencies>
-	</deployment>
-</jboss-deployment-structure>

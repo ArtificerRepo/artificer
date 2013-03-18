@@ -40,7 +40,7 @@ public class ConnectCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void printUsage() {
-		print("s-ramp:connect <endpointUrl> [--disableValidation]");
+		print("s-ramp:connect <endpointUrl> [username password] [--disableValidation]");
 	}
 
 	/**
@@ -56,6 +56,7 @@ public class ConnectCommand extends AbstractShellCommand {
 		print("Example usage:");
 		print(">  s-ramp:connect http://localhost:8080/s-ramp-server");
 		print(">  s-ramp:connect http://example.org/s-ramp --disableValidation");
+        print(">  s-ramp:connect http://localhost:8080/s-ramp-server admin password");
 	}
 
 	/**
@@ -64,14 +65,39 @@ public class ConnectCommand extends AbstractShellCommand {
 	@Override
 	public void execute() throws Exception {
 		String endpointUrlArg = this.requiredArgument(0, "Please specify a valid s-ramp URL.");
-		String disableValidationOptionArg = this.optionalArgument(1);
+		String opt1 = this.optionalArgument(1);
+        String opt2 = this.optionalArgument(2);
+        String opt3 = this.optionalArgument(3);
+        String username = null;
+        String password = null;
+		String disableValidationOptionArg = null;
+		boolean hasCreds = false;
+
+		if (opt3 != null) {
+		    username = opt1;
+		    password = opt2;
+		    disableValidationOptionArg = opt3;
+		    hasCreds = true;
+		} else if (opt2 != null) {
+            username = opt1;
+            password = opt2;
+            hasCreds = true;
+		} else {
+		    disableValidationOptionArg = opt1;
+		}
+
 		boolean validating = !"--disableValidation".equals(disableValidationOptionArg);
 		if (!endpointUrlArg.startsWith("http")) {
 			endpointUrlArg = "http://" + endpointUrlArg;
 		}
 		QName varName = new QName("s-ramp", "client");
 		try {
-			SrampAtomApiClient client = new SrampAtomApiClient(endpointUrlArg, validating);
+			SrampAtomApiClient client = null;
+			if (hasCreds) {
+			    client = new SrampAtomApiClient(endpointUrlArg, username, password, validating);
+			} else {
+			    client = new SrampAtomApiClient(endpointUrlArg, validating);
+			}
 			getContext().setVariable(varName, client);
 			print("Successfully connected to S-RAMP endpoint: " + endpointUrlArg);
 		} catch (Exception e) {

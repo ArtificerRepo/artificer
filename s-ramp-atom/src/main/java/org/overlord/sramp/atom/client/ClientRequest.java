@@ -58,14 +58,22 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 		return new UriBuilderImpl().uriTemplate(uriTemplate);
 	}
 
+    /**
+     * Constructor.
+     * @param uriTemplate
+     */
+    public ClientRequest(String uriTemplate) {
+        super(getBuilder(uriTemplate), getDefaultExecutor(), providerFactory);
+    }
 
-	/**
-	 * Constructor.
-	 * @param uriTemplate
-	 */
-	public ClientRequest(String uriTemplate) {
-		super(getBuilder(uriTemplate), getDefaultExecutor(), providerFactory);
-	}
+    /**
+     * Constructor.
+     * @param uriTemplate
+     * @param clientExecutor
+     */
+    public ClientRequest(String uriTemplate, ClientExecutor clientExecutor) {
+        super(getBuilder(uriTemplate), clientExecutor, providerFactory);
+    }
 
 	/**
 	 * @see org.jboss.resteasy.client.ClientRequest#post(java.lang.Class)
@@ -176,8 +184,12 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 			throw error;
 		}
 		if (response.getStatus() == 403) {
-			SrampAtomException error = new SrampAtomException("Permission failure while attempting to access the S-RAMP repository.");
+			SrampAtomException error = new SrampAtomException("Authorization (permission) failure while attempting to access the S-RAMP repository.");
 			throw error;
+		}
+		if (response.getStatus() == 401) {
+            SrampAtomException error = new SrampAtomException("Authentication failure while attempting to access the S-RAMP repository.");
+            throw error;
 		}
 	}
 

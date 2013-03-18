@@ -11,7 +11,7 @@ brms:dir2brms SRAMPPackage http://localhost:8080/drools-guvnor admin admin
 #################################################################################################
 #        connect to the s-ramp server
 
-connect http://localhost:8080/s-ramp-server
+connect http://localhost:8080/s-ramp-server admin overlord
 
 #################################################################################################
 #        read the SRAMPPackage from BRMS and upload it into S-RAMP
