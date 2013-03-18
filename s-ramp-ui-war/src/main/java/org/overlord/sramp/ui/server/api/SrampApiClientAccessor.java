@@ -22,6 +22,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.auth.AuthenticationProvider;
 
 /**
  * The class used whenever an Atom API request for data needs to be made.
@@ -31,14 +32,13 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 @ApplicationScoped
 public class SrampApiClientAccessor {
 
-    private static CompositeConfiguration config;
     static {
-        config = new CompositeConfiguration();
-        config.addConfiguration(new SystemConfiguration());
+        SrampUIConfig.config = new CompositeConfiguration();
+        SrampUIConfig.config.addConfiguration(new SystemConfiguration());
         try {
-            config.addConfiguration(new PropertiesConfiguration(SrampApiClientAccessor.class.getResource("/META-INF/config/org.overlord.sramp.ui.server.api.properties")));
+            SrampUIConfig.config.addConfiguration(new PropertiesConfiguration(SrampApiClientAccessor.class.getResource("/META-INF/config/org.overlord.sramp.ui.server.api.properties")));
         } catch (ConfigurationException e) {}
-        System.out.println("S-RAMP user interface configuration loaded.  S-RAMP Atom API endpoint: " + config.getString("s-ramp-ui.atom-api.endpoint"));
+        System.out.println("S-RAMP user interface configuration loaded.  S-RAMP Atom API endpoint: " + SrampUIConfig.config.getString("s-ramp-ui.atom-api.endpoint"));
     }
 
     private transient SrampAtomApiClient client;
@@ -47,7 +47,19 @@ public class SrampApiClientAccessor {
 	 * C'tor.
 	 */
 	public SrampApiClientAccessor() {
-		client = new SrampAtomApiClient((String) config.getProperty("s-ramp-ui.atom-api.endpoint"));
+		String endpoint = (String) SrampUIConfig.config.getProperty("s-ramp-ui.atom-api.endpoint");
+        boolean validating = "true".equals(SrampUIConfig.config.getProperty("s-ramp-ui.atom-api.validating"));
+        AuthenticationProvider authProvider = null;
+        String authProviderClass = (String) SrampUIConfig.config.getProperty("s-ramp-ui.atom-api.authentication.provider");
+        try {
+            if (authProviderClass != null && authProviderClass.trim().length() > 0) {
+                Class<?> c = Class.forName(authProviderClass);
+                authProvider = (AuthenticationProvider) c.newInstance();
+            }
+            client = new SrampAtomApiClient(endpoint, authProvider, validating);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 	/**

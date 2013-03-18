@@ -36,6 +36,7 @@
               <groupId>${project.groupId}</groupId>
               <artifactId>s-ramp-ui-war</artifactId>
               <excludes>
+                <exclude>WEB-INF/jetty-env.xml</exclude>
                 <exclude>WEB-INF/lib/jetty*.jar</exclude>
                 <exclude>WEB-INF/lib/weld*.jar</exclude>
                 <exclude>WEB-INF/lib/servlet-api*.jar</exclude>
