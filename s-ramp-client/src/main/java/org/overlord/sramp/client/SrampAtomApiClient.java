@@ -18,7 +18,6 @@ package org.overlord.sramp.client;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,9 +29,12 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.jboss.resteasy.client.ClientExecutor;
@@ -283,8 +285,19 @@ public class SrampAtomApiClient {
 			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint,
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
 					artifactUuid);
-			URL url = new URL(atomUrl);
-			return url.openStream();
+
+	        DefaultHttpClient httpClient = new DefaultHttpClient();
+	        if (this.authProvider != null) {
+	            httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+	                @Override
+	                public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
+	                    authProvider.provideAuthentication(request);
+	                }
+	            });
+	        }
+	        HttpResponse response = httpClient.execute(new HttpGet(atomUrl));
+	        HttpEntity entity = response.getEntity();
+	        return entity.getContent();
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
 		}
@@ -745,6 +758,7 @@ public class SrampAtomApiClient {
      * making the request.
      */
     private ClientExecutor createClientExecutor() {
+        // TODO I think the http client is thread safe - so let's try to create just one of these
         DefaultHttpClient httpClient = new DefaultHttpClient();
         if (this.authProvider != null) {
             httpClient.addRequestInterceptor(new HttpRequestInterceptor() {

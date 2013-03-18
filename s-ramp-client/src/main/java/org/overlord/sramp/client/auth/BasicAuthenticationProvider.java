@@ -32,11 +32,21 @@ public class BasicAuthenticationProvider extends AuthorizationHeaderAuthenticati
      * @param password
      */
     public BasicAuthenticationProvider(String username, String password) {
+        String authHeader = createBasicAuthHeader(username, password);
+        setHeaderValue(authHeader);
+    }
+
+    /**
+     * Creates the BASIC auth header value.
+     * @param username
+     * @param password
+     */
+    public static String createBasicAuthHeader(String username, String password) {
         try {
             String up = username + ":" + password;
             String base64 = new String(Base64.encodeBase64(up.getBytes("UTF-8")));
             String authHeader = "Basic " + base64;
-            setHeaderValue(authHeader);
+            return authHeader;
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
