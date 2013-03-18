@@ -66,7 +66,12 @@
       <scope>provided</scope>
       <version>${cdi-api.version}</version>
     </dependency>
-    
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+      <version>${overlord.commons.auth.version}</version>
+    </dependency>
+
     <!-- Errai -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
