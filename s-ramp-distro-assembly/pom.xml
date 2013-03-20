@@ -19,7 +19,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-gwt</artifactId>
+      <artifactId>s-ramp-ui-war-jboss7</artifactId>
       <type>war</type>
       <version>${project.version}</version>
     </dependency>

@@ -32,6 +32,8 @@ import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 public class SimpleClientDemo {
 
 	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
+    private static final String DEFAULT_USER = "admin";
+    private static final String DEFAULT_PASSWORD = "overlord";
 	private static final String[] FILES = { "ws-humantask.xsd", "ws-humantask-context.xsd",
 			"ws-humantask-policy.xsd", "ws-humantask-types.xsd", "ws-humantask-leantask-api.wsdl",
 			"ws-humantask-protocol.wsdl" };
@@ -44,14 +46,21 @@ public class SimpleClientDemo {
 	public static void main(String[] args) throws Exception {
 		System.out.println("\n*** Running S-RAMP Simple Client Demo ***\n");
 
-		// Figure out the endpoint of the S-RAMP repository's Atom API
-		String endpoint = System.getProperty("sramp.endpoint");
-		if (endpoint == null || endpoint.trim().length() == 0) {
-			endpoint = DEFAULT_ENDPOINT;
-		}
-		System.out.println("S-RAMP Endpoint: " + endpoint);
-
-		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
+        String endpoint = System.getProperty("sramp.endpoint");
+        String username = System.getProperty("sramp.auth.username");
+        String password = System.getProperty("sramp.auth.password");
+        if (endpoint == null || endpoint.trim().length() == 0) {
+            endpoint = DEFAULT_ENDPOINT;
+        }
+        if (username == null || username.trim().length() == 0) {
+            username = DEFAULT_USER;
+        }
+        if (password == null || password.trim().length() == 0) {
+            password = DEFAULT_PASSWORD;
+        }
+        System.out.println("S-RAMP Endpoint: " + endpoint);
+        System.out.println("S-RAMP User: " + username);
+        SrampAtomApiClient client = new SrampAtomApiClient(endpoint, username, password, true);
 
         // Have we already run this demo?
         QueryResultSet rs = client.buildQuery("/s-ramp[@from-demo = ?]")

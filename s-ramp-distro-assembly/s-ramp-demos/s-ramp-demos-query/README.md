@@ -19,6 +19,13 @@ you can customize where the demo looks for the Atom API.  For example:
 
 	$ mvn -Pdemo -Dsramp.endpoint=http://myhost:8081/s-ramp-server clean test
 
+In addition, the demo is configured to run against the default security settings found in
+the distribution.  If you change the security configuration you may need to set the 
+username and password when running the demo.  You can use the following -D properties:
+
+* sramp.auth.username - sets the BASIC auth username to use during the demo
+* sramp.auth.password - sets the BASIC auth password to use during the demo
+
 The demo should output some interesting information before completing successfully.  Please
 take a look at the code found in the QueryDemo Java class for more information.
 
