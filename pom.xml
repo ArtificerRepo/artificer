@@ -4,7 +4,7 @@
 
   <groupId>org.overlord.sramp</groupId>
   <artifactId>s-ramp-ui</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.1.2-SNAPSHOT</version>
 
   <packaging>pom</packaging>
   <name>S-RAMP UI</name>
@@ -55,7 +55,7 @@
     <maven.clean.plugin.version>2.4.1</maven.clean.plugin.version>
     
     <!-- Third party libraries -->
-    <overlord.commons.auth.version>1.0.0-SNAPSHOT</overlord.commons.auth.version>
+    <overlord.commons.auth.version>1.0.1</overlord.commons.auth.version>
     <commons.io.version>2.4</commons.io.version>
     <commons.lang3.version>3.1</commons.lang3.version>
     <commons.config.version>1.8</commons.config.version>

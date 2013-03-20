@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.overlord.sramp</groupId>
     <artifactId>s-ramp-ui</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>s-ramp-ui-war-jboss7</artifactId>
@@ -19,6 +19,7 @@
       <type>war</type>
     </dependency>
     
+    <!-- Other JBoss-only dependencies -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jboss-as-support</artifactId>
@@ -31,6 +32,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
+          <warName>s-ramp-ui</warName>
           <overlays>
             <overlay>
               <groupId>${project.groupId}</groupId>

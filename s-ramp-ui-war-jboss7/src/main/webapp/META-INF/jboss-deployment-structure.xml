@@ -22,6 +22,7 @@
       <module name="org.picketlink" />
       <module name="org.jboss.resteasy.resteasy-jaxrs" />
       <module name="org.apache.httpcomponents" />
+      <module name="org.overlord.commons.overlord-commons-auth" />
     </dependencies>
   </deployment>
 </jboss-deployment-structure>
