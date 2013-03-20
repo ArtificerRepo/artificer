@@ -32,22 +32,21 @@ import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
-import org.overlord.sramp.governance.Governance;
 import org.overlord.sramp.governance.SlashDecoder;
+import org.overlord.sramp.governance.SrampAtomApiClientFactory;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * The JAX-RS resource that handles deployment specific tasks.
- * 
- * 
+ *
+ *
  */
 @Path("/update")
 public class UpdateMetaDataResource {
 
     private static Logger logger = LoggerFactory.getLogger(UpdateMetaDataResource.class);
-    private Governance governance = new Governance();
 
     /**
      * Constructor.
@@ -57,10 +56,10 @@ public class UpdateMetaDataResource {
 
     /**
      * Governance PUT add a classification.
-     * 
+     *
      * @param uuid
      * @param classification value
-     * 
+     *
      * @throws SrampAtomException
      */
     @PUT
@@ -69,15 +68,15 @@ public class UpdateMetaDataResource {
     public Response addClassification(@Context HttpServletRequest request,
             @PathParam("value") String value,
             @PathParam("uuid") String uuid) throws Exception {
-        
+
         OutputStream os = null;
         try {
-            // 0. run the decoder on the argument            
+            // 0. run the decoder on the argument
             value = SlashDecoder.decode(value);
             uuid  = SlashDecoder.decode(uuid);
-            
+
             // 1. get the artifact from the repo
-            SrampAtomApiClient client = new SrampAtomApiClient(governance.getSrampUrl().toExternalForm());
+            SrampAtomApiClient client = SrampAtomApiClientFactory.createAtomApiClient();
             String query = String.format("/s-ramp[@uuid='%s']", uuid);
             QueryResultSet queryResultSet = client.query(query);
             if (queryResultSet.size() == 0) {
@@ -89,7 +88,7 @@ public class UpdateMetaDataResource {
             // 2. add the classification
             artifact.getClassifiedBy().add(value);
             client.updateArtifactMetaData(artifact);
-            
+
             // 3. build the response
             InputStream reply = IOUtils.toInputStream("success");
             return Response.ok(reply, MediaType.APPLICATION_OCTET_STREAM).build();

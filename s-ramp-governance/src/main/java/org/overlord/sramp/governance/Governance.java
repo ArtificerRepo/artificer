@@ -27,6 +27,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.overlord.sramp.client.auth.BasicAuthenticationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ public class Governance {
     public static String DEFAULT_JNDI_EMAIL_REF = "java:jboss/mail/Default";
     public static String DEFAULT_EMAIL_DOMAIN = "mailinator.com";
     public static String DEFAULT_EMAIL_FROM = "overlord@overlord.jboss.org";
-    
+
     public Governance() {
         super();
         if (configuration == null) {
@@ -73,7 +74,7 @@ public class Governance {
             throw new RuntimeException(e);
         }
     }
-    
+
     public String validate() throws ConfigException {
         StringBuffer configuration = new StringBuffer();
         try {
@@ -81,9 +82,15 @@ public class Governance {
             configuration.append(GovernanceConstants.GOVERNANCE_JBPM_URL      + ": " + getJbpmUrl()).append("\n");
             configuration.append(GovernanceConstants.GOVERNANCE_JBPM_USER     + ": " + getJbpmUser()).append("\n");
             configuration.append(GovernanceConstants.GOVERNANCE_JBPM_PASSWORD + ": " + getJbpmPassword().replaceAll(".", "*")).append("\n");
-            
-            configuration.append(GovernanceConstants.SRAMP_REPO_URL            + ": " + getSrampUrl()).append("\n");
-            
+
+            configuration.append(GovernanceConstants.SRAMP_REPO_URL           + ": " + getSrampUrl()).append("\n");
+            configuration.append(GovernanceConstants.SRAMP_REPO_USER          + ": " + getSrampUser()).append("\n");
+            configuration.append(GovernanceConstants.SRAMP_REPO_PASSWORD      + ": " + getSrampPassword()).append("\n");
+            configuration.append(GovernanceConstants.SRAMP_REPO_VALIDATING    + ": " + getSrampValidating()).append("\n");
+            configuration.append(GovernanceConstants.SRAMP_REPO_AUTH_PROVIDER + ": " + getSrampAuthProvider()).append("\n");
+            configuration.append(GovernanceConstants.SRAMP_REPO_SAML_ISSUER   + ": " + getSrampAuthProvider()).append("\n");
+            configuration.append(GovernanceConstants.SRAMP_REPO_SAML_SERVICE  + ": " + getSrampAuthProvider()).append("\n");
+
             int i=1;
             for (Query query : getQueries()) {
                 configuration.append("Query ").append(i++).append("\n");
@@ -96,7 +103,11 @@ public class Governance {
             }
             log.debug(configuration.toString());
             return configuration.toString();
+        } catch (ConfigException e) {
+            throw e;
         } catch (MalformedURLException e) {
+            throw new ConfigException(e);
+        } catch (Exception e) {
             throw new ConfigException(e);
         }
     }
@@ -112,13 +123,41 @@ public class Governance {
     public URL getJbpmUrl() throws MalformedURLException {
         return new URL(configuration.getString(GovernanceConstants.GOVERNANCE_JBPM_URL, "http://localhost:8080/gwt-console-server"));
     }
+
     /**
      * This returns the baseURL, which by default is http://localhost:8080/s-ramp-server
      */
     public URL getSrampUrl() throws MalformedURLException {
         return new URL(configuration.getString(GovernanceConstants.SRAMP_REPO_URL, "http://localhost:8080/s-ramp-server"));
     }
-    
+
+    public String getSrampUser() {
+        return configuration.getString(GovernanceConstants.SRAMP_REPO_USER, "admin");
+    }
+
+    public String getSrampPassword() {
+        return configuration.getString(GovernanceConstants.SRAMP_REPO_PASSWORD, "overlord");
+    }
+
+    public Class<?> getSrampAuthProvider() throws Exception {
+        String authProviderClassName = configuration.getString(GovernanceConstants.SRAMP_REPO_AUTH_PROVIDER, BasicAuthenticationProvider.class.getName());
+        if (authProviderClassName == null)
+            return null;
+        return Class.forName(authProviderClassName);
+    }
+
+    public boolean getSrampValidating() throws Exception {
+        return "true".equals(configuration.getString(GovernanceConstants.SRAMP_REPO_VALIDATING, "false"));
+    }
+
+    public String getSrampSamlIssuer() {
+        return configuration.getString(GovernanceConstants.SRAMP_REPO_SAML_ISSUER, "/s-ramp-governance");
+    }
+
+    public String getSrampSamlService() {
+        return configuration.getString(GovernanceConstants.SRAMP_REPO_SAML_SERVICE, "/s-ramp-server");
+    }
+
     /**
      * This returns the governance baseURL, which by default is http://localhost:8080/s-ramp-server
      */
@@ -171,7 +210,7 @@ public class Governance {
         }
         return queries;
     }
-    
+
     public Map<String,NotificationDestinations> getNotificationDestinations(String channel) throws ConfigException {
         Map<String,NotificationDestinations> destinationMap = new HashMap<String,NotificationDestinations>();
         String[] destinationStrings = configuration.getStringArray(GovernanceConstants.GOVERNANCE + channel);
@@ -193,15 +232,15 @@ public class Governance {
         }
         return destinationMap;
     }
-    
+
     public long getQueryInterval() {
         return configuration.getLong(GovernanceConstants.GOVERNANCE_QUERY_INTERVAL, 300000l); //5 min default
     }
-    
+
     public long getAcceptableLagtime() {
         return configuration.getLong(GovernanceConstants.GOVERNANCE_ACCEPTABLE_LAG, 1000l); //1 s
     }
-    
+
     public String getJNDIEmailName() {
         return configuration.getString(GovernanceConstants.GOVERNANCE_JNDI_EMAIL_REF, DEFAULT_JNDI_EMAIL_REF);
     }
@@ -209,7 +248,7 @@ public class Governance {
     public String getDefaultEmailDomain() {
         return configuration.getString(GovernanceConstants.GOVERNANCE_EMAIL_DOMAIN, DEFAULT_EMAIL_DOMAIN);
     }
-    
+
     public String getDefaultEmailFromAddress() {
         return configuration.getString(GovernanceConstants.GOVERNANCE_EMAIL_FROM, DEFAULT_EMAIL_FROM);
     }
