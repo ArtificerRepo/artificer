@@ -1,11 +1,10 @@
 <jboss-deployment-structure>
   <deployment>
     <dependencies>
-      <module name="org.modeshape.jcr.api" />
-      <module name="org.infinispan" />
       <module name="org.picketbox" />
       <module name="org.picketlink" />
       <module name="org.jboss.as.web" />
+      <module name="org.apache.httpcomponents" />
       <module name="org.overlord.commons.overlord-commons-auth" />
     </dependencies>
   </deployment>

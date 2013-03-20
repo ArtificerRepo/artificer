@@ -9,9 +9,7 @@
   </servlet>
   <servlet>
     <servlet-name>Resteasy</servlet-name>
-    <servlet-class>
-			org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
-		</servlet-class>
+    <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
     <init-param>
       <param-name>javax.ws.rs.Application</param-name>
       <param-value>org.overlord.sramp.governance.services.GovernanceApplication</param-value>
@@ -22,4 +20,24 @@
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>S-RAMP Governance</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>overlorduser</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>OverlordRealm</realm-name>
+  </login-config>
+
+  <security-role>
+    <role-name>overlorduser</role-name>
+  </security-role>
+  
 </web-app>

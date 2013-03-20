@@ -25,18 +25,24 @@ public interface GovernanceConstants {
     public static final String GOVERNANCE_FILE_NAME     = "governance.file.name";
     public static final String GOVERNANCE_FILE_REFRESH  = "governance.file.refresh";
     public static final String SRAMP_REPO_URL           = "sramp.repo.url";
+    public static final String SRAMP_REPO_AUTH_PROVIDER = "sramp.repo.auth.provider";
+    public static final String SRAMP_REPO_USER          = "sramp.repo.user";
+    public static final String SRAMP_REPO_PASSWORD      = "sramp.repo.password";
+    public static final String SRAMP_REPO_VALIDATING    = "sramp.repo.validating";
+    public static final String SRAMP_REPO_SAML_ISSUER   = "sramp.repo.auth.saml.issuer";
+    public static final String SRAMP_REPO_SAML_SERVICE  = "sramp.repo.auth.saml.service";
     public static final String GOVERNANCE_URL           = "governance.url";
     public static final String GOVERNANCE_QUERY_INTERVAL= "governance.query.interval";
     public static final String GOVERNANCE_ACCEPTABLE_LAG= "governance.acceptable.lagtime";
     public static final String GOVERNANCE_JNDI_EMAIL_REF= "governance.jndi.email.reference";
     public static final String GOVERNANCE_EMAIL_DOMAIN  = "governance.email.domain";
     public static final String GOVERNANCE_EMAIL_FROM    = "governance.email.from";
-    
+
     //JBPM connection info
     public static final String GOVERNANCE_JBPM_USER     = "governance.jbpm.user";
     public static final String GOVERNANCE_JBPM_PASSWORD = "governance.jbpm.password";
     public static final String GOVERNANCE_JBPM_URL      = "governance.jbpm.url";
-    
+
     //governance resource configuration
     public static final String GOVERNANCE_TARGETS       = "governance.targets";
     public static final String GOVERNANCE_QUERIES       = "governance.queries";
