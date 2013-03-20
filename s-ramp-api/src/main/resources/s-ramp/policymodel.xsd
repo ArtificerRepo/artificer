@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:tns="http://s-ramp.org/xmlns/2010/s-ramp" xmlns:s-ramp="http://s-ramp.org/xmlns/2010/s-ramp" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  targetNamespace="http://s-ramp.org/xmlns/2010/s-ramp" elementFormDefault="qualified" version="1.0">
+<xsd:schema xmlns:tns="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" 
+  xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" 
+  elementFormDefault="qualified" version="1.0">
   <!--
       (c) 2010 Hewlett-Packard Company (HP), International Business Machines
       Corporation (IBM), Software AG (SAG) and TIBCO Software Inc. All
@@ -13,8 +16,8 @@
       portions thereof, that you make: 
       
       1. A link or URL to this document at this location:
-      http://s-ramp.org/2010/s-ramp/specification/documents/{this document
-      name} 
+      http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0/policymodel.xsd
+       
       2. The copyright notice as shown in the Specification. 
       
       The Authors each agree to grant you a royalty-free license, under
