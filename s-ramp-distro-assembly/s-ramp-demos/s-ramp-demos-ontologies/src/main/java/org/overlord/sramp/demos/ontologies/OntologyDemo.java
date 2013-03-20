@@ -32,6 +32,8 @@ import org.overlord.sramp.client.ontology.OntologySummary;
 public class OntologyDemo {
 
 	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
+    private static final String DEFAULT_USER = "admin";
+    private static final String DEFAULT_PASSWORD = "overlord";
 
 	/**
 	 * Main.
@@ -41,13 +43,21 @@ public class OntologyDemo {
 	public static void main(String[] args) throws Exception {
 		System.out.println("\n*** Running S-RAMP Ontology Demo ***\n");
 
-		// Figure out the endpoint of the S-RAMP repository's Atom API
-		String endpoint = System.getProperty("sramp.endpoint");
-		if (endpoint == null || endpoint.trim().length() == 0) {
-			endpoint = DEFAULT_ENDPOINT;
-		}
-		System.out.println("S-RAMP Endpoint: " + endpoint);
-		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
+        String endpoint = System.getProperty("sramp.endpoint");
+        String username = System.getProperty("sramp.auth.username");
+        String password = System.getProperty("sramp.auth.password");
+        if (endpoint == null || endpoint.trim().length() == 0) {
+            endpoint = DEFAULT_ENDPOINT;
+        }
+        if (username == null || username.trim().length() == 0) {
+            username = DEFAULT_USER;
+        }
+        if (password == null || password.trim().length() == 0) {
+            password = DEFAULT_PASSWORD;
+        }
+        System.out.println("S-RAMP Endpoint: " + endpoint);
+        System.out.println("S-RAMP User: " + username);
+        SrampAtomApiClient client = new SrampAtomApiClient(endpoint, username, password, true);
 
 		// Presumably we start off without any ontologies installed in the S-RAMP repository.
 		// So we need to get the ball rolling, by adding some!  Let's check first.
