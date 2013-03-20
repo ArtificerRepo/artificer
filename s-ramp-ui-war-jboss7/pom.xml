@@ -19,6 +19,7 @@
       <type>war</type>
     </dependency>
     
+    <!-- Other JBoss-only dependencies -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jboss-as-support</artifactId>
