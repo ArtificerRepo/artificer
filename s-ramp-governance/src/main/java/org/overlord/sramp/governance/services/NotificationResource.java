@@ -43,24 +43,25 @@ import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.governance.NotificationDestinations;
 import org.overlord.sramp.governance.Governance;
 import org.overlord.sramp.governance.SlashDecoder;
+import org.overlord.sramp.governance.SrampAtomApiClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * The JAX-RS resource that handles notification specific tasks.
- * 
+ *
  */
 @Path("/notify")
 public class NotificationResource {
 
     private Session mailSession;
-    
+
     private static Logger logger = LoggerFactory.getLogger(NotificationResource.class);
     private Governance governance = new Governance();
-    
+
     /**
      * Constructor.
-     * @throws NamingException 
+     * @throws NamingException
      */
     public NotificationResource() {
         InitialContext context;
@@ -74,12 +75,12 @@ public class NotificationResource {
         } catch (NamingException e) {
             logger.error(e.getMessage(),e);
         }
-        
+
     }
 
     /**
      * POST to email a notification about an artifact.
-     * 
+     *
      * @param environment
      * @param uuid
      * @throws SrampAtomException
@@ -93,15 +94,15 @@ public class NotificationResource {
             @PathParam("target") String target,
             @PathParam("uuid") String uuid) throws Exception {
         try {
-            // 0. run the decoder on the arguments, after replacing * by % (this so parameters can 
+            // 0. run the decoder on the arguments, after replacing * by % (this so parameters can
             //    contain slashes (%2F)
             group = SlashDecoder.decode(group);
             template = SlashDecoder.decode(template);
             target = SlashDecoder.decode(target);
             uuid = SlashDecoder.decode(uuid);
-            
+
             // 1. get the artifact from the repo
-            SrampAtomApiClient client = new SrampAtomApiClient(governance.getSrampUrl().toExternalForm());
+            SrampAtomApiClient client = SrampAtomApiClientFactory.createAtomApiClient();
             String query = String.format("/s-ramp[@uuid='%s']", uuid);
             QueryResultSet queryResultSet = client.query(query);
             if (queryResultSet.size() == 0) {
@@ -112,8 +113,8 @@ public class NotificationResource {
             // 2. get the destinations for this group
             NotificationDestinations destinations = governance.getNotificationDestinations("email").get(group);
             if (destinations==null) {
-                destinations = new NotificationDestinations(group, 
-                        governance.getDefaultEmailFromAddress(), 
+                destinations = new NotificationDestinations(group,
+                        governance.getDefaultEmailFromAddress(),
                         group + "@" + governance.getDefaultEmailDomain());
             }
 
@@ -127,7 +128,7 @@ public class NotificationResource {
                 }
                 m.setFrom(from);
                 m.setRecipients(Message.RecipientType.TO, to);
-                
+
                 String subject = "/governance-email-templates/" + template  + ".subject.tmpl";
                 URL subjectUrl = Governance.class.getClassLoader().getResource(subject);
                 if (subjectUrl!=null) subject=IOUtils.toString(subjectUrl);
@@ -135,7 +136,7 @@ public class NotificationResource {
                 subject = subject.replaceAll("\\$\\{name}", artifactSummary.getName());
                 subject = subject.replaceAll("\\$\\{target}", target);
                 m.setSubject(subject);
-                
+
                 m.setSentDate(new java.util.Date());
                 String content = "/governance-email-templates/" + template + ".body.tmpl";
                 URL contentUrl = Governance.class.getClassLoader().getResource(content);
@@ -148,7 +149,7 @@ public class NotificationResource {
             } catch (javax.mail.MessagingException e) {
                 logger.error(e.getMessage(),e);
             }
-            
+
             // 4. build the response
             InputStream reply = IOUtils.toInputStream("success");
             return Response.ok(reply, MediaType.APPLICATION_OCTET_STREAM).build();

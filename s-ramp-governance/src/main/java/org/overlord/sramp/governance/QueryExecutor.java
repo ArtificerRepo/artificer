@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * 
+ *
  * @author <a href="mailto:kstam@jboss.com">Kurt T Stam</a>
  *
  */
@@ -47,7 +47,7 @@ public class QueryExecutor {
     private BpmManager bpmManager = WorkflowFactory.newInstance();
 
     public synchronized void execute() throws SrampClientException, MalformedURLException, ConfigException {
-        SrampAtomApiClient client = new SrampAtomApiClient(governance.getSrampUrl().toExternalForm());
+        SrampAtomApiClient client = SrampAtomApiClientFactory.createAtomApiClient();
         //for all queries defined in the governance.properties file
         Iterator<Query> queryIterator = governance.getQueries().iterator();
         while (queryIterator.hasNext()) {
@@ -73,8 +73,8 @@ public class QueryExecutor {
                             }
                         }
                         if (hasPropertyName) {
-                            if (logger.isDebugEnabled()) logger.debug("Artifact " + artifact.getUuid() 
-                                    + " has existing workflow: " + query.getWorkflowId() 
+                            if (logger.isDebugEnabled()) logger.debug("Artifact " + artifact.getUuid()
+                                    + " has existing workflow: " + query.getWorkflowId()
                                     + " with parameters: "       + query.getParameters());
                         } else {
                             propertyName = WORKFLOW_PROCESS_ID + query.getWorkflowId() + "_";

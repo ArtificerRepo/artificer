@@ -19,6 +19,7 @@
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-auth</artifactId>
       <version>${overlord.commons.auth.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Third Party Dependencies -->
