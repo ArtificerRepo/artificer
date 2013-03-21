@@ -45,6 +45,7 @@ import org.overlord.sramp.server.atom.services.ArtifactResource;
 import org.overlord.sramp.server.atom.services.BatchResource;
 import org.overlord.sramp.server.atom.services.FeedResource;
 import org.overlord.sramp.server.atom.services.QueryResource;
+import org.overlord.sramp.server.atom.services.ServiceDocumentResource;
 
 /**
  * Unit test for the s-ramp wagon class.
@@ -61,6 +62,7 @@ public class SrampWagonTest extends BaseResourceTest {
 
 		deployment.getProviderFactory().registerProvider(SrampAtomExceptionProvider.class);
 		deployment.getProviderFactory().registerProvider(HttpResponseProvider.class);
+        dispatcher.getRegistry().addPerRequestResource(ServiceDocumentResource.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
 		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);

@@ -27,7 +27,6 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.overlord.sramp.client.auth.BasicAuthenticationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,7 +139,9 @@ public class Governance {
     }
 
     public Class<?> getSrampAuthProvider() throws Exception {
-        String authProviderClassName = configuration.getString(GovernanceConstants.SRAMP_REPO_AUTH_PROVIDER, BasicAuthenticationProvider.class.getName());
+        String authProviderClassName = configuration.getString(
+                GovernanceConstants.SRAMP_REPO_AUTH_PROVIDER,
+                org.overlord.sramp.governance.auth.BasicAuthenticationProvider.class.getName());
         if (authProviderClassName == null)
             return null;
         return Class.forName(authProviderClassName);
