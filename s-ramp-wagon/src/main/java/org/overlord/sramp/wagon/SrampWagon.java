@@ -39,6 +39,7 @@ import org.apache.maven.wagon.StreamWagon;
 import org.apache.maven.wagon.TransferFailedException;
 import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.authentication.AuthenticationException;
+import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.events.TransferEvent;
 import org.apache.maven.wagon.resource.Resource;
@@ -75,6 +76,7 @@ public class SrampWagon extends StreamWagon {
 	private Logger logger;
 
 	private transient SrampArchive archive;
+	private transient SrampAtomApiClient client;
 
 	/**
 	 * Constructor.
@@ -104,11 +106,37 @@ public class SrampWagon extends StreamWagon {
 		// storing in the repository (along with the meta-data for those artifacts).
 		// The archive will serve as a temporary place to stash information we may
 		// need later.
+        ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
 		try {
+		    // Create the archive
 			this.archive = new SrampArchive();
+
+			// Now create and configure the client.
+            String endpoint = getSrampEndpoint();
+            // Use sensible defaults
+            String username = "admin";
+            String password = "overlord";
+            AuthenticationInfo authInfo = this.getAuthenticationInfo();
+            if (authInfo != null) {
+                if (authInfo.getUserName() != null) {
+                    username = authInfo.getUserName();
+                }
+                if (authInfo.getPassword() != null) {
+                    password = authInfo.getPassword();
+                }
+            }
+
+            this.client = new SrampAtomApiClient(endpoint, username, password, true);
 		} catch (SrampArchiveException e) {
-			throw new ConnectionException("Failed to create the s-ramp archive (temporary storage)", e);
-		}
+			throw new ConnectionException("Failed to create the s-ramp archive (temporary storage).", e);
+		} catch (SrampClientException e) {
+            throw new ConnectionException("Failed to connect to the S-RAMP repository.", e);
+        } catch (SrampAtomException e) {
+            throw new ConnectionException("Failed to connect to the S-RAMP repository.", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCtxCL);
+        }
 	}
 
 	/**
@@ -193,9 +221,6 @@ public class SrampWagon extends StreamWagon {
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
 		try {
-			String endpoint = getSrampEndpoint();
-			SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
-
 			// Query the artifact meta data using GAV info
 			BaseArtifactType artifact = findExistingArtifact(client, gavInfo);
 			if (artifact == null)
@@ -363,8 +388,6 @@ public class SrampWagon extends StreamWagon {
 			this.archive.updateEntry(entry, null);
 
 			// The meta-data has been updated in the local/temp archive - now send it to the remote repo
-			String endpoint = getSrampEndpoint();
-			SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 			// See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
 			// context classloader magic.
 			ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
@@ -389,8 +412,6 @@ public class SrampWagon extends StreamWagon {
 	 */
 	private void doPutArtifact(final MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
 		ArtifactType artifactType = getArtifactType(gavInfo);
-		String endpoint = getSrampEndpoint();
-		SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 		// See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
 		// context classloader magic.
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
