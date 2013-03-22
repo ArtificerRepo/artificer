@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * 
+ *
  *
  */
 public class SRAMPMonitor extends TimerTask {
@@ -38,37 +38,38 @@ public class SRAMPMonitor extends TimerTask {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 	private Timer timer = null;
 	Governance governance = new Governance();
-	
+
 	private long interval = governance.getQueryInterval();
 	private long acceptableLagTime = governance.getAcceptableLagtime();
-	
+
 	public SRAMPMonitor() throws ConfigurationException {
 		super();
 		timer = new Timer(true);
 		timer.scheduleAtFixedRate(this, 0, interval);
 	}
-	
+
 	@Override
 	public boolean cancel() {
 		timer.cancel();
 		return super.cancel();
 	}
-	
-	
-	public synchronized void run() 
+
+
+	@Override
+    public synchronized void run()
 	{
 	    try {
     		if (firedOnTime(scheduledExecutionTime()) && isAppserverReady()) {
     			long startTime = System.currentTimeMillis();
-    			
+
     			QueryExecutor queryExecutor = new QueryExecutor();
     			queryExecutor.execute();
-    			
+
                 long endTime   = System.currentTimeMillis();
-                
+
                 if ((endTime-startTime) > interval) {
                 	log.debug("Notification background task duration exceeds the JUDDI_NOTIFICATION_INTERVAL" +
-                			" of " + interval + ". Notification background task took " 
+                			" of " + interval + ". Notification background task took "
                 			+ (endTime - startTime) + " milliseconds.");
                 } else {
                 	log.debug("Notification background task took " + (endTime - startTime) + " milliseconds.");
@@ -91,7 +92,7 @@ public class SRAMPMonitor extends TimerTask {
 	 * is under load. The acceptableLagTime is configurable using the "juddi.notification.acceptable.lagtime"
 	 * property and is defaulted to 1000ms. A negative value means that you do not care about the lag time
 	 * and you simply always want to go do the notification work.
-	 * 
+	 *
 	 * @param scheduleExecutionTime
 	 * @return true if the server is within the acceptable latency lag.
 	 */
@@ -107,10 +108,10 @@ public class SRAMPMonitor extends TimerTask {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Checks if we can ready the S-RAMP repository as well as the BPM API.
-	 * 
+	 *
 	 * @return
 	 * @throws MalformedURLException
 	 */
@@ -127,7 +128,7 @@ public class SRAMPMonitor extends TimerTask {
 	    }
 	    return isReady;
 	}
-	
+
     /**
      * Returns true if the given URL can be accessed.
      * @param checkUrl
@@ -136,7 +137,7 @@ public class SRAMPMonitor extends TimerTask {
         try {
             URL checkURL = new URL(checkUrl);
             HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
-            checkConnection.setRequestMethod("GET");
+            checkConnection.setRequestMethod("HEAD");
             checkConnection.setConnectTimeout(10000);
             checkConnection.setReadTimeout(10000);
             checkConnection.connect();
@@ -145,6 +146,6 @@ public class SRAMPMonitor extends TimerTask {
             return false;
         }
     }
-	
+
 
 }
