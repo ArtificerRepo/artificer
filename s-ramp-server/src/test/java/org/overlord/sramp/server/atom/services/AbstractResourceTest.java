@@ -15,7 +15,6 @@
  */
 package org.overlord.sramp.server.atom.services;
 
-import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
