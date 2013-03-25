@@ -107,6 +107,7 @@
     <commons.compress.version>1.4.1</commons.compress.version>
     <jline.version>2.9</jline.version>
     <joda-time.version>2.1</joda-time.version>
+    <tika-core.version>1.2</tika-core.version> <!-- inline with version used by modeshape -->
   </properties>
 
   <build>
@@ -281,6 +282,11 @@
         <artifactId>xmlunit</artifactId>
         <version>${xmlunit.version}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tika</groupId>
+        <artifactId>tika-core</artifactId>
+        <version>${tika-core.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

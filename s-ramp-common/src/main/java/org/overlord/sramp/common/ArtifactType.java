@@ -35,6 +35,9 @@ public class ArtifactType {
     public static final ArtifactType Document() {
         return new ArtifactType(ArtifactTypeEnum.Document, "application/octet-stream");
     }
+    public static final ArtifactType Document(String mimeType) {
+        return new ArtifactType(ArtifactTypeEnum.Document, mimeType);
+    }
     public static final ArtifactType XmlDocument() {
         return new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml");
     }

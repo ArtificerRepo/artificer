@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.client;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -317,8 +318,9 @@ public class SrampAtomApiClient {
 		// Determine the mime type if it's not included in the artifact type.
 		String mimeType = artifactType.getMimeType();
 		if (mimeType == null) {
-			mimeType = MimeTypes.getContentType(artifactFileName);
-		}
+			content = ensureSupportsMark(content);
+                        mimeType = MimeTypes.getContentType(artifactFileName, content);
+                }
 		try {
 			String type = artifactType.getArtifactType().getType();
 			if ("ext".equals(artifactType.getArtifactType().getModel()) && artifactType.getExtendedType()!=null) {
@@ -358,7 +360,8 @@ public class SrampAtomApiClient {
 		// Determine the mime type if it's not included in the artifact type.
 		String mimeType = artifactType.getMimeType();
 		if (mimeType == null) {
-			mimeType = MimeTypes.getContentType(artifactFileName);
+			content = ensureSupportsMark(content);
+			mimeType = MimeTypes.getContentType(artifactFileName, content);
 			artifactType.setMimeType(mimeType);
 		}
 		try {
@@ -771,4 +774,7 @@ public class SrampAtomApiClient {
         return new ApacheHttpClient4Executor(httpClient);
     }
 
+	private InputStream ensureSupportsMark(InputStream stream) {
+		return stream.markSupported() ? stream : new BufferedInputStream(stream);
+	}
 }

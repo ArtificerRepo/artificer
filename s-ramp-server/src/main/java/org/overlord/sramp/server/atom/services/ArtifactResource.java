@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.server.atom.services;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -117,8 +118,11 @@ public class ArtifactResource extends AbstractResource {
 			if (artifactType.getArtifactType().isDerived()) {
 				throw new DerivedArtifactAccessException(artifactType.getArtifactType());
 			}
+
+			is = ensureSupportsMark(is);
+
 			// Figure out the mime type (from the http header, filename, or default by artifact type)
-			String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
+			String mimeType = MimeTypes.determineMimeType(contentType, fileName, is, artifactType);
 			artifactType.setMimeType(mimeType);
 
 			// Pick a reasonable file name if Slug is not present
@@ -199,12 +203,13 @@ public class ArtifactResource extends AbstractResource {
 			String fileName = null;
 			if (artifactMetaData.getName() != null)
 				fileName = artifactMetaData.getName();
-			String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
+
+			contentStream = ensureSupportsMark(secondpart.getBody(new GenericType<InputStream>() {
+			}));
+			String mimeType = MimeTypes.determineMimeType(contentType, fileName, contentStream, artifactType);
 			artifactType.setMimeType(mimeType);
 
 			// Processing the content itself first
-			contentStream = secondpart.getBody(new GenericType<InputStream>() {
-			});
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			// store the content
 			BaseArtifactType artifactRval = persistenceManager.persistArtifact(artifactMetaData,
@@ -263,13 +268,13 @@ public class ArtifactResource extends AbstractResource {
 	        @HeaderParam("Slug") String fileName, @PathParam("model") String model,
 	        @PathParam("type") String type, @PathParam("uuid") String uuid, InputStream content)
 	        throws SrampAtomException {
-		InputStream is = content;
+		InputStream is = ensureSupportsMark(content);
 		try {
 	        ArtifactType artifactType = ArtifactType.valueOf(model, type);
 	        if (artifactType.getArtifactType().isDerived()) {
 	            throw new DerivedArtifactAccessException(artifactType.getArtifactType());
 	        }
-	        String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
+	        String mimeType = MimeTypes.determineMimeType(contentType, fileName, is, artifactType);
 	        artifactType.setMimeType(mimeType);
 
 	        // TODO we need to update the S-RAMP metadata too (new updateDate, size, etc)?
@@ -388,4 +393,7 @@ public class ArtifactResource extends AbstractResource {
 		}
 	}
 
+	private static InputStream ensureSupportsMark(InputStream stream) {
+		return stream.markSupported() ? stream : new BufferedInputStream(stream);
+        }
 }
