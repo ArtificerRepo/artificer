@@ -48,7 +48,7 @@ public class ConfigurationTest {
      */
     @Test
     public void testBad1UrlConfiguration() throws ConfigException {
-        System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad1-governance.properties");
+        System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad1-governance.config.txt");
         Governance governance = new Governance();
         governance.read();
         try {
@@ -65,7 +65,7 @@ public class ConfigurationTest {
      */
     @Test() 
     public void testBad2QueryConfiguration() throws ConfigException {
-        System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad2-governance.properties");
+        System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad2-governance.config.txt");
         Governance governance = new Governance();
         governance.read();
         try {
@@ -82,7 +82,7 @@ public class ConfigurationTest {
      */
     @Test() 
     public void testBad3TargetConfiguration() throws ConfigException {
-        System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad3-governance.properties");
+        System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad3-governance.config.txt");
         Governance governance = new Governance();
         governance.read();
         try {
