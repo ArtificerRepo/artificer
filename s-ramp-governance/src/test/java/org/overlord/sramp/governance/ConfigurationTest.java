@@ -20,7 +20,9 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 
 /**
@@ -28,13 +30,14 @@ import org.junit.Test;
  *
  * @author kurt.stam@redhat.com
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ConfigurationTest {
 
 	/**
 	 * @throws ConfigException 
 	 */
     @Test
-	public void testConfigure() throws ConfigException {
+	public void testAConfigure() throws ConfigException {
 	    Governance governance = new Governance();
 	    Map<String,Target> targets = governance.getTargets();
 	    Assert.assertTrue(targets.size() > 0);
@@ -43,7 +46,7 @@ public class ConfigurationTest {
 	    System.out.println(governance.validate());
 	}
     /**
-     * Add a malform url
+     * Add a malformed url
      * @throws ConfigException
      */
     @Test
@@ -55,7 +58,7 @@ public class ConfigurationTest {
             System.out.println(governance.validate());
             Assert.fail("Expecting exception");
         } catch (ConfigException e) {
-            Assert.assertEquals("java.net.MalformedURLException: no protocol: http//localhost:8080/s-ramp-atom",e.getMessage());
+            Assert.assertEquals("java.net.MalformedURLException: no protocol: http//localhost:8080/s-ramp-server",e.getMessage());
         }
     }
     /**
