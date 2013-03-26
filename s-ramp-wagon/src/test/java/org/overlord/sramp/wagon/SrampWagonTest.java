@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;

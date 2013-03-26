@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.UUID;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.overlord.sramp.common.ArtifactType;

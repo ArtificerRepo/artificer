@@ -14,7 +14,7 @@
  */
 package org.s_ramp.xmlns._2010.s_ramp;
 
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -30,7 +30,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLAssert;

@@ -18,7 +18,7 @@ package org.overlord.sramp.repository.jcr.modeshape;
 import java.io.InputStream;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;

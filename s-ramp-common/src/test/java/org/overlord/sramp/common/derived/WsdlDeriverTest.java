@@ -26,7 +26,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;

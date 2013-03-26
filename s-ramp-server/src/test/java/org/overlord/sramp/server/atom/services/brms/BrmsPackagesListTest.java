@@ -14,7 +14,7 @@
  */
 package org.overlord.sramp.server.atom.services.brms;
 
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -28,7 +28,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.overlord.sramp.atom.services.brms.Format;
