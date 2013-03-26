@@ -48,7 +48,7 @@ public class Governance {
         }
     }
 
-    private static Configuration configuration = null;
+    private Configuration configuration = null;
 
     protected synchronized void read() {
         try {
