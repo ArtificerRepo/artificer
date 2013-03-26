@@ -15,6 +15,7 @@
 package org.s_ramp.xmlns._2010.s_ramp;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -30,10 +31,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Assert;
-
 import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLAssert;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -122,7 +121,7 @@ public class XsdDocumentTest {
 			java.lang.System.out.println(expectedXML);
 			Diff diff = new Diff(expectedXML, actualXml);
 			boolean isSimilar = diff.similar();
-			XMLAssert.assertTrue(isSimilar);
+			assertTrue(isSimilar);
 
 		} catch (Exception e) {
 			e.printStackTrace();

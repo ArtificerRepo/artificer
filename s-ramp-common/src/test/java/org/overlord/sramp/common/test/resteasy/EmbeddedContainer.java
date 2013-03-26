@@ -15,12 +15,11 @@
  */
 package org.overlord.sramp.common.test.resteasy;
 
-import org.jboss.resteasy.plugins.server.embedded.SecurityDomain;
-import org.jboss.resteasy.spi.ResteasyDeployment;
-
 import java.lang.reflect.Method;
 import java.util.Hashtable;
-import java.util.Map;
+
+import org.jboss.resteasy.plugins.server.embedded.SecurityDomain;
+import org.jboss.resteasy.spi.ResteasyDeployment;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -30,7 +29,7 @@ public class EmbeddedContainer
 {
    private static Class<?> bootstrap = TJWSServletContainer.class;
 
-   public static Class getBootstrap()
+   public static Class<?> getBootstrap()
    {
       return bootstrap;
    }
@@ -61,7 +60,7 @@ public class EmbeddedContainer
       }
    }
 
-   public static void setBootstrap(Class bootstrap)
+   public static void setBootstrap(Class<?> bootstrap)
    {
       EmbeddedContainer.bootstrap = bootstrap;
    }
@@ -70,12 +69,12 @@ public class EmbeddedContainer
    {
       return start("/", (Hashtable<String,String>) null);
    }
-   
+
    public static ResteasyDeployment start(String bindPath) throws Exception
    {
       return start(bindPath, null, null);
    }
-   
+
    public static ResteasyDeployment start(Hashtable<String,String> initParams) throws Exception
    {
       return start("/", initParams);
@@ -85,7 +84,7 @@ public class EmbeddedContainer
    {
       return start("/", initParams, contextParams);
    }
-   
+
    public static ResteasyDeployment start(String bindPath, Hashtable<String,String> initParams) throws Exception
    {
       Method start = bootstrap.getMethod("start", String.class, Hashtable.class);
@@ -97,7 +96,7 @@ public class EmbeddedContainer
       Method start = bootstrap.getMethod("start", String.class, Hashtable.class, Hashtable.class);
       return (ResteasyDeployment) start.invoke(null, bindPath, initParams, contextParams);
    }
-   
+
    public static ResteasyDeployment start(String bindPath, SecurityDomain domain) throws Exception
    {
       Method start = bootstrap.getMethod("start", String.class, SecurityDomain.class);
