@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.wagon.models;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.maven.wagon.resource.Resource;
 import org.junit.Test;

@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.TreeSet;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
