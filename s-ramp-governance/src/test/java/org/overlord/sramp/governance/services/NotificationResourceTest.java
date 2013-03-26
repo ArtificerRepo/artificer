@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.governance.services;
 
+import static org.overlord.sramp.common.test.resteasy.TestPortProvider.generateURL;
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -30,10 +32,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
 
 
 /**
@@ -79,9 +81,9 @@ public class NotificationResourceTest extends BaseResourceTest {
 	@Test @Ignore
 	public void testNotify() {
 	    try {
-	        String notificationUrl = "http://localhost:8080/s-ramp-governance/notify/email/dev/deployed/dev/${uuid}";
+	        String notificationUrl = "/s-ramp-governance/notify/email/dev/deployed/dev/${uuid}";
 	        String uuid="3c7bb7f7-a811-4080-82db-5ece86993a11";
-	        URL url = new URL(notificationUrl.replace("${uuid}", uuid));
+	        URL url = new URL(generateURL(notificationUrl.replace("${uuid}", uuid)));
 	        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 	        connection.setRequestMethod("POST");
 	        connection.setConnectTimeout(10000);

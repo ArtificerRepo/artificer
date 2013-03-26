@@ -21,6 +21,7 @@ import org.junit.BeforeClass;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.OntologyProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
+import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.jcr.modeshape.JCRRepositoryCleaner;

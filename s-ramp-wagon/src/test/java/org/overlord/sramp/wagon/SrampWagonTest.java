@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.wagon;
 
-import static org.jboss.resteasy.test.TestPortProvider.generateURL;
+import static org.overlord.sramp.common.test.resteasy.TestPortProvider.generateURL;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.wagon.repository.Repository;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,6 +37,7 @@ import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.QueryResultSet;
+import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.jcr.modeshape.JCRRepositoryCleaner;

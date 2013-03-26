@@ -12,6 +12,7 @@
 	<description>S-RAMP Common contains functionality that is core to S-RAMP concepts as described in the S-RAMP functional specification.</description>
 
 	<dependencies>
+ 
 		<dependency>
 			<groupId>org.overlord.sramp</groupId>
 			<artifactId>s-ramp-api</artifactId>
@@ -29,6 +30,13 @@
 		</dependency>
 
 		<!-- Testing (note the scope) -->
+    <!-- RESTEasy -->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+      <version>${org.jboss.resteasy.version}</version>
+      <scope>test</scope>
+    </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
