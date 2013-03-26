@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.client;
 
-import static org.jboss.resteasy.test.TestPortProvider.generateURL;
+import static org.overlord.sramp.common.test.resteasy.TestPortProvider.generateURL;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -30,7 +30,6 @@ import java.util.Set;
 import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,6 +41,7 @@ import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
 import org.overlord.sramp.server.atom.services.ArtifactResource;

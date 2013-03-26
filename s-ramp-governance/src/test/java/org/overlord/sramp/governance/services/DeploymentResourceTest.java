@@ -15,18 +15,18 @@
  */
 package org.overlord.sramp.governance.services;
 
-import static org.jboss.resteasy.test.TestPortProvider.generateURL;
+import static org.overlord.sramp.common.test.resteasy.TestPortProvider.generateURL;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.test.BaseResourceTest;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
 
 
 /**

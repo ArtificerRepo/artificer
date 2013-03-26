@@ -1,4 +1,19 @@
-package org.overlord.sramp.server.atom.services;
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.overlord.sramp.common.test.resteasy;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -42,13 +57,9 @@ public class TJWSServletContainer
       tjws = new TJWSEmbeddedJaxrsServer();
       tjws.setDeployment(deployment);
       tjws.setPort(TestPortProvider.getPort());
-      if (System.getenv().containsKey("OPENSHIFT_INTERNAL_IP")) {
-          String hostname = "http://" + System.getenv().get("OPENSHIFT_INTERNAL_IP");
-          System.out.println("HOSTNAME=" + hostname);
-          tjws.setBindAddress(hostname);
-      }
       tjws.setRootResourcePath("");
       tjws.setSecurityDomain(null);
+      tjws.setBindAddress(TestPortProvider.getHost());
       tjws.start();
    }
 
@@ -91,6 +102,7 @@ public class TJWSServletContainer
 
    public static ResteasyDeployment start(String bindPath, SecurityDomain domain, ResteasyDeployment deployment, Hashtable<String,String> initParams, Hashtable<String,String> contextParams) throws Exception
    {
+       System.out.println("[Embedded Container Start]");
       tjws = new TJWSEmbeddedJaxrsServer();
       tjws.setDeployment(deployment);
       tjws.setPort(TestPortProvider.getPort());
@@ -98,6 +110,7 @@ public class TJWSServletContainer
       tjws.setSecurityDomain(domain);
       tjws.setInitParameters(initParams);
       tjws.setContextParameters(contextParams);
+      tjws.setBindAddress(TestPortProvider.getHost());
       tjws.start();
       return tjws.getDeployment();
    }

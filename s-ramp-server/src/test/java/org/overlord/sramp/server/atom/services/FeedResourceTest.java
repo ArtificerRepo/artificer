@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.server.atom.services;
 
-import static org.jboss.resteasy.test.TestPortProvider.generateURL;
+import static org.overlord.sramp.common.test.resteasy.TestPortProvider.generateURL;
 
 import java.io.File;
 import java.io.InputStream;
