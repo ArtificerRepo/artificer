@@ -26,7 +26,6 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.5</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -148,7 +147,7 @@
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-common</artifactId>
       <version>${project.version}</version>
-      <type>test-jar</type>
+      <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
