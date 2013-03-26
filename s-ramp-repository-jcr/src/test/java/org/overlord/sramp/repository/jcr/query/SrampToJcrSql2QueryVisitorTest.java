@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashSet;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.overlord.sramp.common.SrampException;
