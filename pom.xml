@@ -235,7 +235,7 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
+        <updatePolicy>always</updatePolicy>
       </snapshots>
     </repository>
   </repositories>
@@ -249,7 +249,7 @@
         <enabled>true</enabled>
       </releases>
       <snapshots>
-        <enabled>true</enabled>
+        <enabled>always</enabled>
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
