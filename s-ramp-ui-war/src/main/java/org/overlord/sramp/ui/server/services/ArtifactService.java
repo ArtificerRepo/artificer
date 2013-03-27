@@ -22,6 +22,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.common.ArtifactType;
@@ -30,9 +33,6 @@ import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactService;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
 
 /**
  * Concrete implementation of the artifact service.
