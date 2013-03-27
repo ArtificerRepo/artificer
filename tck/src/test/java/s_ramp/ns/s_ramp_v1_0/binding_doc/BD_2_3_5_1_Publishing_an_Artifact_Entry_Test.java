@@ -20,10 +20,10 @@ import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.client.ClientRequest;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ObjectFactory;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ObjectFactory;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 
 public class BD_2_3_5_1_Publishing_an_Artifact_Entry_Test {
 

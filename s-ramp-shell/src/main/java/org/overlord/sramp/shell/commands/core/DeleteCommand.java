@@ -26,7 +26,7 @@ import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.shell.api.AbstractShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.util.FileNameCompleter;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * Deletes an artifact from the S-RAMP repository.

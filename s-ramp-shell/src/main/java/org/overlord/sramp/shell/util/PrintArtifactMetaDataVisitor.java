@@ -19,15 +19,15 @@ import java.util.List;
 
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
-import org.s_ramp.xmlns._2010.s_ramp.Relationship;
-import org.s_ramp.xmlns._2010.s_ramp.Target;
-import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.NamedWsdlDerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 
 /**
  * Visitor that knows how to print out details of an artifact.
@@ -43,7 +43,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitorAda
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitBase(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitBase(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType)
 	 */
 	@Override
 	protected void visitBase(BaseArtifactType artifact) {
@@ -90,7 +90,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitorAda
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitDerived(org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType)
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitDerived(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType)
 	 */
 	@Override
 	protected void visitDerived(DerivedArtifactType artifact) {
@@ -100,7 +100,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitorAda
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitDocument(org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType)
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitDocument(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType)
 	 */
 	@Override
 	protected void visitDocument(DocumentArtifactType artifact) {
@@ -110,7 +110,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitorAda
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitXmlDocument(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitXmlDocument(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument)
 	 */
 	@Override
 	protected void visitXmlDocument(XmlDocument artifact) {
@@ -119,7 +119,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitorAda
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitNamedWsdlDerived(org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType)
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitNamedWsdlDerived(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.NamedWsdlDerivedArtifactType)
 	 */
 	@Override
 	protected void visitNamedWsdlDerived(NamedWsdlDerivedArtifactType artifact) {

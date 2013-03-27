@@ -19,7 +19,7 @@ import java.io.File;
 
 import javax.xml.bind.JAXBException;
 
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * Models a single entry in an S-RAMP archive.  Each entry in a valid

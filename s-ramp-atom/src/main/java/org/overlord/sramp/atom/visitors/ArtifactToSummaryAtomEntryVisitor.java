@@ -25,16 +25,16 @@ import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.visitors.ArtifactVisitorAdapter;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
 
 /**
  * Visitor used to convert an artifact to an Atom entry.
@@ -95,7 +95,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 
 	/**
 	 * Creates the base Atom Entry, doing the stuff that's common to all types of artifacts.
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitorAdapter#visitBase(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitorAdapter#visitBase(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType)
 	 */
 	@SuppressWarnings("unchecked")
     @Override
@@ -190,7 +190,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitorAdapter#visit(org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType)
 	 */
 	@SuppressWarnings("unchecked")
     @Override

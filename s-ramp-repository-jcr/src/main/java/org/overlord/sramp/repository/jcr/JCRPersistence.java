@@ -41,6 +41,10 @@ import javax.jcr.query.QueryResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
@@ -62,10 +66,6 @@ import org.overlord.sramp.repository.jcr.mapper.JCRNodeToOntology;
 import org.overlord.sramp.repository.jcr.mapper.OntologyToJCRNode;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,7 +197,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.repository.DerivedArtifacts#deriveArtifacts(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
+	 * @see org.overlord.sramp.repository.DerivedArtifacts#deriveArtifacts(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.io.InputStream)
 	 */
 	@Override
 	public Collection<BaseArtifactType> deriveArtifacts(BaseArtifactType sourceArtifact,
@@ -332,7 +332,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.repository.PersistenceManager#updateArtifact(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.overlord.sramp.common.ArtifactType)
+	 * @see org.overlord.sramp.common.repository.PersistenceManager#updateArtifact(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.ArtifactType)
 	 */
 	@Override
 	public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampException {

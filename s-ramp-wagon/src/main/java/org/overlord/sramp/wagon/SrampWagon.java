@@ -46,6 +46,7 @@ import org.apache.maven.wagon.resource.Resource;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.archive.SrampArchiveException;
@@ -61,7 +62,6 @@ import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * Implements a wagon provider that uses the S-RAMP Atom API.

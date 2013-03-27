@@ -22,9 +22,9 @@ import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.shell.api.AbstractShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * Command used to manipulate classifications on the currently active S-RAMP artifact.  This command

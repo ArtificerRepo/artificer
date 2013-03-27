@@ -28,8 +28,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 
 import test.org.overlord.sramp.atom.AtomTestUtils;
 
@@ -105,7 +105,7 @@ public class SrampArchiveTest {
 			Collection<SrampArchiveEntry> entries = archive.getEntries();
 			Assert.assertEquals(1, entries.size());
 			SrampArchiveEntry entry = entries.iterator().next();
-			Assert.assertEquals("sample.xsd", entry.getPath());
+			Assert.assertEquals("simple-sramp-archive/sample.xsd", entry.getPath());
 			Assert.assertNotNull(entry.getMetaData());
 			Assert.assertEquals("d658b181-975c-42c5-ad5c-dc65cb9aa4a1", entry.getMetaData().getUuid());
 			Assert.assertEquals("sample.xsd", entry.getMetaData().getName());
@@ -117,7 +117,7 @@ public class SrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.atom.archive.SrampArchive#addEntry(String, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, InputStream)}.
+	 * Test method for {@link org.overlord.sramp.common.atom.archive.SrampArchive#addEntry(String, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, InputStream)}.
 	 */
 	@Test
 	public void testAddEntry() throws Exception {

@@ -22,15 +22,15 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Binding;
-import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.Message;
-import org.s_ramp.xmlns._2010.s_ramp.Operation;
-import org.s_ramp.xmlns._2010.s_ramp.PortType;
-import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.XsdType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Operation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType;
 
 /**
  * A {@link List} implementation that also indexes the WSDL related artifacts

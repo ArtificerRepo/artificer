@@ -22,13 +22,13 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.shell.api.AbstractShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.api.ShellContext;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * Removes an entry from the current S-RAMP batch archive.

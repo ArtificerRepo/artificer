@@ -26,8 +26,8 @@ import javax.xml.namespace.QName;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.shell.api.AbstractShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 
 /**
  * Command used to manipulate properties on the currently active S-RAMP artifact.  This command

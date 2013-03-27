@@ -17,7 +17,7 @@ package org.overlord.sramp.common.visitors;
 
 import java.lang.reflect.Method;
 
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * Helper class used to visit S-RAMP artifacts.  This should be replaced by "accept" methods implemented

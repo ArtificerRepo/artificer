@@ -7,12 +7,12 @@ import javax.xml.bind.Marshaller;
 public class XmlUtil {
 
     public Marshaller getSrampMarshaller() throws JAXBException {
-        JAXBContext jaxbContext=JAXBContext.newInstance("org.s_ramp.xmlns._2010.s_ramp");
+        JAXBContext jaxbContext=JAXBContext.newInstance("org.oasis_open.docs.s_ramp.ns.s_ramp_v1");
         Marshaller marshaller = jaxbContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-        marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://s-ramp.org/xmlns/2010/s-ramp/xsdmodel.xsd");
+        marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0/xsdmodel.xsd");
         return marshaller;
     }
 }

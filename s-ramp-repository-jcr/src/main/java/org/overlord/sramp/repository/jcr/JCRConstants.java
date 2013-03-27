@@ -23,11 +23,11 @@ public class JCRConstants {
     public static final String JCR_SQL2 = "JCR-SQL2";
     
     public static final String SRAMP                  = "sramp";
-	public static final String SRAMP_NS               = "http://s-ramp.org/xmlns/2010/s-ramp";
+	public static final String SRAMP_NS               = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0";
 	public static final String SRAMP_PROPERTIES       = "sramp-properties";
-	public static final String SRAMP_PROPERTIES_NS    = "http://s-ramp.org/xmlns/2010/s-ramp#properties";
+	public static final String SRAMP_PROPERTIES_NS    = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0#properties";
 	public static final String SRAMP_RELATIONSHIPS    = "sramp-relationships";
-	public static final String SRAMP_RELATIONSHIPS_NS = "http://s-ramp.org/xmlns/2010/s-ramp#relationships";
+	public static final String SRAMP_RELATIONSHIPS_NS = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0#relationships";
 
     public static final String SRAMP_                    = SRAMP + ":";
     public static final String SRAMP_BASE_ARTIFACT_TYPE  = SRAMP_ + "baseArtifactType";

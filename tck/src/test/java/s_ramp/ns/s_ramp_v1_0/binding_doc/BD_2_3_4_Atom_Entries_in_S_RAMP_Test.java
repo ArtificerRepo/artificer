@@ -20,10 +20,10 @@ import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.client.ClientRequest;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ObjectFactory;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ObjectFactory;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 
 public class BD_2_3_4_Atom_Entries_in_S_RAMP_Test {
 
@@ -50,12 +50,12 @@ public class BD_2_3_4_Atom_Entries_in_S_RAMP_Test {
             
             System.out.println("2. Now POST this as XsdDocument as new entry into the repo");
             
-            JAXBContext jaxbContext=JAXBContext.newInstance("org.s_ramp.xmlns._2010.s_ramp");
+            JAXBContext jaxbContext=JAXBContext.newInstance("org.oasis_open.docs.s_ramp.ns.s_ramp_v1");
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
             marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-            marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://s-ramp.org/xmlns/2010/s-ramp/xsdmodel.xsd");
+            marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "org.oasis_open.docs.s_ramp.ns.s_ramp_v1/xsdmodel.xsd");
            
             ObjectFactory factory = new ObjectFactory();
             Artifact artifact = factory.createArtifact();

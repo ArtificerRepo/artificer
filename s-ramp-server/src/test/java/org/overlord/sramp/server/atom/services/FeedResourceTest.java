@@ -29,11 +29,11 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.junit.Assert;
 import org.junit.Test;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.client.ClientRequest;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 import test.org.overlord.sramp.server.TestUtils;
 

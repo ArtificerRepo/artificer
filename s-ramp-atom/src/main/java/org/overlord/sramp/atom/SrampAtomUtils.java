@@ -27,10 +27,10 @@ import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * Some useful static utils for users of the s-ramp client.

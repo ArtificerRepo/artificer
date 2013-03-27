@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.client.jar;
 
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * Factory responsible for creating artifact meta data.

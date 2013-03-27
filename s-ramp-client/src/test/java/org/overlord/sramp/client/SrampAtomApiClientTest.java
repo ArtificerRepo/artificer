@@ -33,6 +33,9 @@ import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
@@ -48,9 +51,6 @@ import org.overlord.sramp.server.atom.services.ArtifactResource;
 import org.overlord.sramp.server.atom.services.BatchResource;
 import org.overlord.sramp.server.atom.services.FeedResource;
 import org.overlord.sramp.server.atom.services.QueryResource;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
  * Unit test for the

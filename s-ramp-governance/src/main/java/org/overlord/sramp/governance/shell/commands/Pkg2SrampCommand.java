@@ -36,6 +36,9 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.overlord.sramp.atom.services.brms.BrmsConstants;
 import org.overlord.sramp.atom.services.brms.assets.Assets;
 import org.overlord.sramp.atom.services.brms.packages.Packages;
@@ -45,9 +48,6 @@ import org.overlord.sramp.shell.api.AbstractShellCommand;
 import org.overlord.sramp.shell.api.Arguments;
 import org.overlord.sramp.shell.api.ShellContext;
 import org.overlord.sramp.shell.api.SimpleShellContext;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
 
 /**
  * BRMS command that will copy a package out of BRMS and push it into the

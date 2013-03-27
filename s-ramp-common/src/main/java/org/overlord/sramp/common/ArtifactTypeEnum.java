@@ -19,61 +19,61 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.s_ramp.xmlns._2010.s_ramp.Actor;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
-import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Binding;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFault;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInput;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutput;
-import org.s_ramp.xmlns._2010.s_ramp.Choreography;
-import org.s_ramp.xmlns._2010.s_ramp.ChoreographyProcess;
-import org.s_ramp.xmlns._2010.s_ramp.Collaboration;
-import org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess;
-import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.Composition;
-import org.s_ramp.xmlns._2010.s_ramp.Document;
-import org.s_ramp.xmlns._2010.s_ramp.Effect;
-import org.s_ramp.xmlns._2010.s_ramp.Element;
-import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.Event;
-import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Fault;
-import org.s_ramp.xmlns._2010.s_ramp.InformationType;
-import org.s_ramp.xmlns._2010.s_ramp.Message;
-import org.s_ramp.xmlns._2010.s_ramp.Operation;
-import org.s_ramp.xmlns._2010.s_ramp.OperationInput;
-import org.s_ramp.xmlns._2010.s_ramp.OperationOutput;
-import org.s_ramp.xmlns._2010.s_ramp.Orchestration;
-import org.s_ramp.xmlns._2010.s_ramp.OrchestrationProcess;
-import org.s_ramp.xmlns._2010.s_ramp.Organization;
-import org.s_ramp.xmlns._2010.s_ramp.Part;
-import org.s_ramp.xmlns._2010.s_ramp.Policy;
-import org.s_ramp.xmlns._2010.s_ramp.PolicyAttachment;
-import org.s_ramp.xmlns._2010.s_ramp.PolicyDocument;
-import org.s_ramp.xmlns._2010.s_ramp.PolicyExpression;
-import org.s_ramp.xmlns._2010.s_ramp.PolicySubject;
-import org.s_ramp.xmlns._2010.s_ramp.Port;
-import org.s_ramp.xmlns._2010.s_ramp.PortType;
-import org.s_ramp.xmlns._2010.s_ramp.Service;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceComposition;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceContract;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceEndpoint;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceInstance;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceInterface;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceOperation;
-import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
-import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
-import org.s_ramp.xmlns._2010.s_ramp.Task;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlExtension;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
-import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationFault;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Choreography;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ChoreographyProcess;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Collaboration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.CollaborationProcess;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Composition;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Effect;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Element;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Event;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.InformationType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Operation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Orchestration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OrchestrationProcess;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Organization;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Part;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Policy;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyAttachment;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyExpression;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicySubject;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Port;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Service;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceComposition;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContract;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceEndpoint;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstance;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterface;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceOperation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Task;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtension;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 
 /**
  * An enum representing all of the Artifact Types defined by S-RAMP.
@@ -137,12 +137,12 @@ public enum ArtifactTypeEnum {
 	OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class, BaseArtifactEnum.ORCHESTRATION_PROCESS, true),
 	Policy("soa", "SOA Policy", Policy.class, BaseArtifactEnum.POLICY, true),
 	PolicySubject("soa", "SOA Policy Subject", PolicySubject.class, BaseArtifactEnum.POLICY_SUBJECT, true),
-	Process("soa", "SOA Process", org.s_ramp.xmlns._2010.s_ramp.Process.class, BaseArtifactEnum.PROCESS, true),
+	Process("soa", "SOA Process", org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Process.class, BaseArtifactEnum.PROCESS, true),
 	Service("soa", "SOA Service", Service.class, BaseArtifactEnum.SERVICE, true),
 	ServiceContract("soa", "SOA Service Contract", ServiceContract.class, BaseArtifactEnum.SERVICE_CONTRACT, true),
 	ServiceComposition("soa", "SOA Service Composition", ServiceComposition.class, BaseArtifactEnum.SERVICE_COMPOSITION, true),
 	ServiceInterface("soa", "SOA Service Interface", ServiceInterface.class, BaseArtifactEnum.SERVICE_INTERFACE, true),
-	System("soa", "SOA System", org.s_ramp.xmlns._2010.s_ramp.System.class, BaseArtifactEnum.SYSTEM, true),
+	System("soa", "SOA System", org.oasis_open.docs.s_ramp.ns.s_ramp_v1.System.class, BaseArtifactEnum.SYSTEM, true),
 	Task("soa", "SOA Task", Task.class, BaseArtifactEnum.TASK, true)
 	;
 
