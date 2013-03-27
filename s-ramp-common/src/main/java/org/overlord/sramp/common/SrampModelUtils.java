@@ -17,11 +17,11 @@ package org.overlord.sramp.common;
 
 import java.util.List;
 
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
-import org.s_ramp.xmlns._2010.s_ramp.Relationship;
-import org.s_ramp.xmlns._2010.s_ramp.Target;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
 
 /**
  * A collection of utilities for dealing with the s-ramp models.

@@ -18,10 +18,10 @@ package org.overlord.sramp.client.query;
 import java.util.Date;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * Models a summary of a single S-RAMP artifact from a Feed (result of an

@@ -30,10 +30,10 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.apache.commons.io.FileUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampConstants;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * Factory used to create an {@link ArtifactDeriver} for a particular type of artifact.

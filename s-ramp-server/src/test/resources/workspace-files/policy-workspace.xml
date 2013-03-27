@@ -6,30 +6,30 @@
             <atom:title>Policy Model Objects</atom:title>
             <app:accept>application/zip</app:accept>
             <app:categories fixed="yes">
-                <atom:category label="Policy" scheme="urn:x-s-ramp:2010:type" term="PolicyDocument"/>
-                <atom:category label="Policy Expression" scheme="urn:x-s-ramp:2010:type" term="PolicyExpression"/>
-                <atom:category label="Policy Attachment" scheme="urn:x-s-ramp:2010:type" term="PolicyAttachment"/>
+                <atom:category label="Policy" scheme="urn:x-s-ramp:v1:type" term="PolicyDocument"/>
+                <atom:category label="Policy Expression" scheme="urn:x-s-ramp:v1:type" term="PolicyExpression"/>
+                <atom:category label="Policy Attachment" scheme="urn:x-s-ramp:v1:type" term="PolicyAttachment"/>
             </app:categories>
         </app:collection>
         <app:collection href="http://example.org/s-ramp/policy/PolicyDocument">
             <atom:title>Policy Documents</atom:title>
             <app:accept>application/xml</app:accept>
             <app:categories fixed="yes">
-                <atom:category label="Policy" scheme="urn:x-s-ramp:2010:type" term="PolicyDocument"/>
+                <atom:category label="Policy" scheme="urn:x-s-ramp:v1:type" term="PolicyDocument"/>
             </app:categories>
         </app:collection>
         <app:collection href="http://example.org/s-ramp/policy/PolicyExpression">
             <atom:title>Policy Expressions</atom:title>
             <app:accept></app:accept>
             <app:categories fixed="yes">
-                <atom:category label="Policy Expression" scheme="urn:x-s-ramp:2010:type" term="PolicyExpression"/>
+                <atom:category label="Policy Expression" scheme="urn:x-s-ramp:v1:type" term="PolicyExpression"/>
             </app:categories>
         </app:collection>
         <app:collection href="http://example.org/s-ramp/policy/PolicyAttachment">
             <atom:title>Policy Attachments</atom:title>
             <app:accept></app:accept>
             <app:categories fixed="yes">
-                <atom:category label="Policy Attachment" scheme="urn:x-s-ramp:2010:type" term="PolicyAttachment"/>
+                <atom:category label="Policy Attachment" scheme="urn:x-s-ramp:v1:type" term="PolicyAttachment"/>
             </app:categories>
         </app:collection>
     </app:workspace>

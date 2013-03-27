@@ -21,10 +21,10 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.repository.jcr.JCRNodeToArtifactFactory;
 import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
 import org.overlord.sramp.repository.query.ArtifactSet;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * A JCR implementation of an {@link ArtifactSet}.

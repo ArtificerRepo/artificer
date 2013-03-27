@@ -31,6 +31,10 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedOutput;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.client.ClientRequest;
@@ -41,10 +45,6 @@ import org.overlord.sramp.atom.services.brms.packages.Packages;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.server.atom.services.AbstractResourceTest;
 import org.overlord.sramp.server.atom.services.brms.BrmsResource;
-import org.s_ramp.xmlns._2010.s_ramp.Artifact;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
 
 import test.org.overlord.sramp.server.TestUtils;
 

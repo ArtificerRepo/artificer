@@ -21,14 +21,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.governance.workflow.BpmManager;
 import org.overlord.sramp.governance.workflow.WorkflowFactory;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

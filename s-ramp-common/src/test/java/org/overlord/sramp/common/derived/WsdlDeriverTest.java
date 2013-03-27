@@ -30,30 +30,30 @@ import org.junit.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Binding;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInput;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutput;
-import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.Message;
-import org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Operation;
-import org.s_ramp.xmlns._2010.s_ramp.OperationInput;
-import org.s_ramp.xmlns._2010.s_ramp.OperationOutput;
-import org.s_ramp.xmlns._2010.s_ramp.Part;
-import org.s_ramp.xmlns._2010.s_ramp.Port;
-import org.s_ramp.xmlns._2010.s_ramp.PortType;
-import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
-import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlExtension;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.NamedWsdlDerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Operation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Part;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Port;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtension;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
 
 /**
  * Unit test for the {@link WsdlDeriver} class.
@@ -63,7 +63,7 @@ import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
 public class WsdlDeriverTest {
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.repository.derived.XsdDeriver#derive(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)}.
+	 * Test method for {@link org.overlord.sramp.common.repository.derived.XsdDeriver#derive(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.io.InputStream)}.
 	 */
 	@Test
 	public void testDeriverWsdl() throws Exception {
@@ -287,7 +287,7 @@ public class WsdlDeriverTest {
 
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.repository.derived.XsdDeriver#derive(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)}.
+	 * Test method for {@link org.overlord.sramp.common.repository.derived.XsdDeriver#derive(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.io.InputStream)}.
 	 */
 	@Test
 	public void testHumanTaskWsdl() throws Exception {

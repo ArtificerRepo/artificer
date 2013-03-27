@@ -26,7 +26,7 @@ public class SrampConstants {
 
     public static final String DATE_FORMAT  = "EEE, d MMM yyyy HH:mm:ss Z";
 
-	public static final String SRAMP_NS     = "http://s-ramp.org/xmlns/2010/s-ramp";
+	public static final String SRAMP_NS     = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0";
 	public static final String SRAMP_PREFIX = "s-ramp";
 
 	private static final String SRAMP_CONTENT_SIZE         = "contentSize";
