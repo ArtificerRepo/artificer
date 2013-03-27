@@ -365,6 +365,7 @@
     <module>s-ramp-shell</module>
     <module>s-ramp-wagon</module>
     <module>s-ramp-shell-api</module>
+    <module>s-ramp-integration-switchyard</module>
   </modules>
 </project>
 
