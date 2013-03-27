@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema targetNamespace="http://s-ramp.org/xmlns/2010/s-ramp"
-	version="1.0" xmlns:tns="http://s-ramp.org/xmlns/2010/s-ramp"
-	xmlns:s-ramp="http://s-ramp.org/xmlns/2010/s-ramp" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+<xsd:schema targetNamespace="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
+	version="1.0" xmlns:tns="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
+	xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified">
 	<!--
 		(c) 2010 Hewlett-Packard Company (HP), International Business Machines

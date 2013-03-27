@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.repository.query;
 
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * A set of s-ramp artifacts returned by 

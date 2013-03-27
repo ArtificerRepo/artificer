@@ -31,7 +31,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * Models the archive format defined in the S-RAMP Atom Binding document.

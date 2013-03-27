@@ -15,68 +15,68 @@
  */
 package org.overlord.sramp.common.visitors;
 
-import org.s_ramp.xmlns._2010.s_ramp.Actor;
-import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Binding;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperation;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperationFault;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperationInput;
-import org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutput;
-import org.s_ramp.xmlns._2010.s_ramp.Choreography;
-import org.s_ramp.xmlns._2010.s_ramp.ChoreographyProcess;
-import org.s_ramp.xmlns._2010.s_ramp.Collaboration;
-import org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess;
-import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.Composition;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Document;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Effect;
-import org.s_ramp.xmlns._2010.s_ramp.Element;
-import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.Event;
-import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Fault;
-import org.s_ramp.xmlns._2010.s_ramp.InformationType;
-import org.s_ramp.xmlns._2010.s_ramp.Message;
-import org.s_ramp.xmlns._2010.s_ramp.NamedWsdlDerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Operation;
-import org.s_ramp.xmlns._2010.s_ramp.OperationInput;
-import org.s_ramp.xmlns._2010.s_ramp.OperationOutput;
-import org.s_ramp.xmlns._2010.s_ramp.Orchestration;
-import org.s_ramp.xmlns._2010.s_ramp.OrchestrationProcess;
-import org.s_ramp.xmlns._2010.s_ramp.Organization;
-import org.s_ramp.xmlns._2010.s_ramp.Part;
-import org.s_ramp.xmlns._2010.s_ramp.Policy;
-import org.s_ramp.xmlns._2010.s_ramp.PolicyAttachment;
-import org.s_ramp.xmlns._2010.s_ramp.PolicyDocument;
-import org.s_ramp.xmlns._2010.s_ramp.PolicyExpression;
-import org.s_ramp.xmlns._2010.s_ramp.PolicySubject;
-import org.s_ramp.xmlns._2010.s_ramp.Port;
-import org.s_ramp.xmlns._2010.s_ramp.PortType;
-import org.s_ramp.xmlns._2010.s_ramp.Process;
-import org.s_ramp.xmlns._2010.s_ramp.Service;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceComposition;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceContract;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceEndpoint;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceImplementationModelType;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceInstance;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceInterface;
-import org.s_ramp.xmlns._2010.s_ramp.ServiceOperation;
-import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.SoaModelType;
-import org.s_ramp.xmlns._2010.s_ramp.SoapAddress;
-import org.s_ramp.xmlns._2010.s_ramp.SoapBinding;
-import org.s_ramp.xmlns._2010.s_ramp.System;
-import org.s_ramp.xmlns._2010.s_ramp.Task;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlDerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlExtension;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlService;
-import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
-import org.s_ramp.xmlns._2010.s_ramp.XsdType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationFault;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Choreography;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ChoreographyProcess;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Collaboration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.CollaborationProcess;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Composition;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Effect;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Element;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Event;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.InformationType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.NamedWsdlDerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Operation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Orchestration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OrchestrationProcess;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Organization;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Part;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Policy;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyAttachment;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyExpression;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicySubject;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Port;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Process;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Service;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceComposition;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContract;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceEndpoint;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceImplementationModelType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstance;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterface;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceOperation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoaModelType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.System;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Task;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtension;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType;
 
 /**
  * A base class for visitors that are interested in specific sections of the
@@ -174,7 +174,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
     }
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Document)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document)
 	 */
 	@Override
 	public void visit(Document artifact) {
@@ -183,7 +183,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument)
 	 */
 	@Override
 	public void visit(XmlDocument artifact) {
@@ -193,7 +193,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.XsdDocument)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument)
 	 */
 	@Override
 	public void visit(XsdDocument artifact) {
@@ -203,7 +203,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration)
 	 */
 	@Override
 	public void visit(AttributeDeclaration artifact) {
@@ -212,7 +212,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration)
 	 */
 	@Override
 	public void visit(ElementDeclaration artifact) {
@@ -221,7 +221,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration)
 	 */
 	@Override
 	public void visit(SimpleTypeDeclaration artifact) {
@@ -231,7 +231,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration)
 	 */
 	@Override
 	public void visit(ComplexTypeDeclaration artifact) {
@@ -241,7 +241,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicyDocument)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyDocument)
 	 */
 	@Override
 	public void visit(PolicyDocument artifact) {
@@ -251,7 +251,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicyExpression)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyExpression)
 	 */
 	@Override
 	public void visit(PolicyExpression artifact) {
@@ -260,7 +260,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicyAttachment)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyAttachment)
 	 */
 	@Override
 	public void visit(PolicyAttachment artifact) {
@@ -269,7 +269,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.SoapAddress)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress)
 	 */
 	@Override
 	public void visit(SoapAddress artifact) {
@@ -278,7 +278,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.SoapBinding)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding)
 	 */
 	@Override
 	public void visit(SoapBinding artifact) {
@@ -287,7 +287,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlDocument)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument)
 	 */
 	@Override
 	public void visit(WsdlDocument artifact) {
@@ -297,7 +297,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlService)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService)
 	 */
 	@Override
 	public void visit(WsdlService artifact) {
@@ -308,7 +308,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Port)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Port)
 	 */
 	@Override
 	public void visit(Port artifact) {
@@ -319,7 +319,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.WsdlExtension)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtension)
 	 */
 	@Override
 	public void visit(WsdlExtension artifact) {
@@ -328,7 +328,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Part)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Part)
 	 */
 	@Override
 	public void visit(Part artifact) {
@@ -339,7 +339,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Message)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message)
 	 */
 	@Override
 	public void visit(Message artifact) {
@@ -350,7 +350,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Fault)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault)
 	 */
 	@Override
 	public void visit(Fault artifact) {
@@ -361,7 +361,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PortType)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType)
 	 */
 	@Override
 	public void visit(PortType artifact) {
@@ -372,7 +372,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Operation)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Operation)
 	 */
 	@Override
 	public void visit(Operation artifact) {
@@ -383,7 +383,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.OperationInput)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInput)
 	 */
 	@Override
 	public void visit(OperationInput artifact) {
@@ -394,7 +394,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.OperationOutput)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutput)
 	 */
 	@Override
 	public void visit(OperationOutput artifact) {
@@ -405,7 +405,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Binding)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding)
 	 */
 	@Override
 	public void visit(Binding artifact) {
@@ -416,7 +416,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperation)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperation)
 	 */
 	@Override
 	public void visit(BindingOperation artifact) {
@@ -427,7 +427,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperationInput)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInput)
 	 */
 	@Override
 	public void visit(BindingOperationInput artifact) {
@@ -438,7 +438,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperationOutput)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutput)
 	 */
 	@Override
 	public void visit(BindingOperationOutput artifact) {
@@ -449,7 +449,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.BindingOperationFault)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationFault)
 	 */
 	@Override
 	public void visit(BindingOperationFault artifact) {
@@ -460,7 +460,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Organization)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Organization)
 	 */
 	@Override
 	public void visit(Organization artifact) {
@@ -469,7 +469,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceEndpoint)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceEndpoint)
 	 */
 	@Override
 	public void visit(ServiceEndpoint artifact) {
@@ -478,7 +478,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceInstance)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstance)
 	 */
 	@Override
 	public void visit(ServiceInstance artifact) {
@@ -487,7 +487,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceOperation)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceOperation)
 	 */
 	@Override
 	public void visit(ServiceOperation artifact) {
@@ -496,7 +496,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType)
 	 */
 	@Override
 	public void visit(ExtendedArtifactType artifact) {
@@ -505,7 +505,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Actor)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor)
 	 */
 	@Override
 	public void visit(Actor artifact) {
@@ -514,7 +514,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Choreography)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Choreography)
 	 */
 	@Override
 	public void visit(Choreography artifact) {
@@ -523,7 +523,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ChoreographyProcess)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ChoreographyProcess)
 	 */
 	@Override
 	public void visit(ChoreographyProcess artifact) {
@@ -532,7 +532,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Collaboration)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Collaboration)
 	 */
 	@Override
 	public void visit(Collaboration artifact) {
@@ -541,7 +541,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.CollaborationProcess)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.CollaborationProcess)
 	 */
 	@Override
 	public void visit(CollaborationProcess artifact) {
@@ -550,7 +550,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Composition)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Composition)
 	 */
 	@Override
 	public void visit(Composition artifact) {
@@ -559,7 +559,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Effect)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Effect)
 	 */
 	@Override
 	public void visit(Effect artifact) {
@@ -568,7 +568,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Element)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Element)
 	 */
 	@Override
 	public void visit(Element artifact) {
@@ -577,7 +577,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Event)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Event)
 	 */
 	@Override
 	public void visit(Event artifact) {
@@ -586,7 +586,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.InformationType)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.InformationType)
 	 */
 	@Override
 	public void visit(InformationType artifact) {
@@ -595,7 +595,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Orchestration)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Orchestration)
 	 */
 	@Override
 	public void visit(Orchestration artifact) {
@@ -604,7 +604,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.OrchestrationProcess)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OrchestrationProcess)
 	 */
 	@Override
 	public void visit(OrchestrationProcess artifact) {
@@ -613,7 +613,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Policy)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Policy)
 	 */
 	@Override
 	public void visit(Policy artifact) {
@@ -622,7 +622,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.PolicySubject)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicySubject)
 	 */
 	@Override
 	public void visit(PolicySubject artifact) {
@@ -631,7 +631,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Process)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Process)
 	 */
 	@Override
 	public void visit(Process artifact) {
@@ -640,7 +640,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Service)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Service)
 	 */
 	@Override
 	public void visit(Service artifact) {
@@ -649,7 +649,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceContract)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContract)
 	 */
 	@Override
 	public void visit(ServiceContract artifact) {
@@ -658,7 +658,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceComposition)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceComposition)
 	 */
 	@Override
 	public void visit(ServiceComposition artifact) {
@@ -667,7 +667,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.ServiceInterface)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterface)
 	 */
 	@Override
 	public void visit(ServiceInterface artifact) {
@@ -676,7 +676,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.System)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.System)
 	 */
 	@Override
 	public void visit(System artifact) {
@@ -685,7 +685,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.s_ramp.xmlns._2010.s_ramp.Task)
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Task)
 	 */
 	@Override
 	public void visit(Task artifact) {

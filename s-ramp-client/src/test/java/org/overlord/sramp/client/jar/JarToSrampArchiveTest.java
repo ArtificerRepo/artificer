@@ -28,11 +28,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Document;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
  * Unit test for the {@link JarToSrampArchive} class.

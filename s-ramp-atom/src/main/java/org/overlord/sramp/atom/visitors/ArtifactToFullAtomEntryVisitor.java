@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.atom.visitors;
 
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * Visitor used to convert an artifact to an Atom entry.
@@ -40,7 +40,7 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.atom.models.ArtifactToSummaryAtomEntryVisitor#createIncludedArtifact(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
+	 * @see org.overlord.sramp.common.atom.models.ArtifactToSummaryAtomEntryVisitor#createIncludedArtifact(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType)
 	 */
 	@Override
 	protected BaseArtifactType createIncludedArtifact(BaseArtifactType artifact)

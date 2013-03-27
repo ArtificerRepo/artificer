@@ -21,15 +21,15 @@ import org.junit.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 
 /**

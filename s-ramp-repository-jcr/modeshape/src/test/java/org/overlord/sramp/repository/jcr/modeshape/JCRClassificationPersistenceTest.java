@@ -20,12 +20,12 @@ import java.io.InputStream;
 import org.junit.Assert;
 
 import org.junit.Test;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.ontology.SrampOntology;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.Document;
 
 
 /**

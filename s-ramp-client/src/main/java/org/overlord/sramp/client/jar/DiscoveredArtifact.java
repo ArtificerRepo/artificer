@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * An artifact that will be incuded in the final S-RAMP archive.

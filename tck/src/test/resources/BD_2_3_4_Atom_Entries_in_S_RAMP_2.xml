@@ -1,5 +1,5 @@
 <entry xmlns="http://www.w3.org/2005/Atom"
-       xmlns:s-ramp="http://s-ramp.org/xmlns/2010/s-ramp"
+       xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
        xmlns:xlink="http://www.w3.org/1999/xlink" >
   <id>urn:uuid:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa6a</id>
   <updated>2009-05-26T13:13:55.013+02:00</updated>
@@ -27,9 +27,9 @@
   -->
   <category term="XsdDocument" label="XML Schema"
             scheme="urn:x-s-ramp:2013urn:x-s-ramp:2013:type" />
-  <s-ramp:artifact xsi:schemaLocation="http://s-ramp.org/xmlns/2010/s-ramp/xsdmodel.xsd" 
+  <s-ramp:artifact xsi:schemaLocation="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0/xsdmodel.xsd" 
                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                   xmlns:s-ramp="http://s-ramp.org/xmlns/2010/s-ramp"
+                   xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <s-ramp:XsdDocument name="accountingTypes.xsd"
                         description="accountingTypes.xsd"

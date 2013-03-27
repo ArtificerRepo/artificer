@@ -28,13 +28,13 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactTarget;
-import org.s_ramp.xmlns._2010.s_ramp.Relationship;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -54,7 +54,7 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.repository.derived.ArtifactDeriver#derive(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)
+	 * @see org.overlord.sramp.common.repository.derived.ArtifactDeriver#derive(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.io.InputStream)
 	 */
 	@Override
 	public Collection<BaseArtifactType> derive(BaseArtifactType artifact, InputStream content) throws IOException {

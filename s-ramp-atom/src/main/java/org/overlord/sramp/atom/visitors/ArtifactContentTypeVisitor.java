@@ -15,13 +15,13 @@
  */
 package org.overlord.sramp.atom.visitors;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.XmlDocument;
 
 /**
  * A simple artifact visitor that determines the content type of an S-RAMP
@@ -40,7 +40,7 @@ public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitorAdapt
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitBase(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType)
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitBase(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType)
 	 */
 	@Override
 	protected void visitBase(BaseArtifactType artifact) {
@@ -48,7 +48,7 @@ public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitorAdapt
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitDocument(org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactType)
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitDocument(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType)
 	 */
 	@Override
 	protected void visitDocument(DocumentArtifactType artifact) {
@@ -57,7 +57,7 @@ public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitorAdapt
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitXmlDocument(org.s_ramp.xmlns._2010.s_ramp.XmlDocument)
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitXmlDocument(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument)
 	 */
 	@Override
 	protected void visitXmlDocument(XmlDocument artifact) {
@@ -65,7 +65,7 @@ public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitorAdapt
 	}
 
 	/**
-	 * org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitExtended(org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType)
+	 * org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitExtended(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType)
 	 */
 	@Override
 	protected void visitExtended(ExtendedArtifactType artifact) {

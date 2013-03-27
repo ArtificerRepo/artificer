@@ -29,15 +29,15 @@ import org.junit.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import org.s_ramp.xmlns._2010.s_ramp.AttributeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ComplexTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.DerivedArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.DocumentArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.ElementDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.SimpleTypeDeclaration;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 
 /**
  * Unit test for the {@link XsdDeriver} class.
@@ -68,7 +68,7 @@ public class XsdDeriverTest {
 			"tCompletionBehavior", "tGenericHumanRoleAssignment", "tLiteral", "tTaskBase");
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.repository.derived.XsdDeriver#derive(org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, java.io.InputStream)}.
+	 * Test method for {@link org.overlord.sramp.common.repository.derived.XsdDeriver#derive(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.io.InputStream)}.
 	 */
 	@Test
 	public void testDerive() throws Exception {

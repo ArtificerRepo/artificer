@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema targetNamespace="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" version="1.0" 
+<xsd:schema targetNamespace="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" version="1.0"
   xmlns:tns="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
   xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" 
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
@@ -179,18 +179,19 @@
       <xsd:sequence>
         <xsd:element ref="s-ramp:error" minOccurs="1" maxOccurs="unbounded" />
       </xsd:sequence>
+    </xsd:complexType>
   </xsd:element>
-  
+
   <xsd:element name="error">
-    <xsd:attribute name="responseCode" type="xsd:string" use="required" />
-    <xsd:attribute name="name" type="xsd:string" use="required" /> 
-    <xsd:attribute name="uuid" type="xsd:string" use="optional" />
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element name="description" type="xsd:string" minOccurs="1" maxOccurs="1"  />
         <xsd:element name="howtofix" type="xsd:string" minOccurs="0" maxOccurs="1"  />
         <xsd:element name="detail" type="xsd:string" minOccurs="0" maxOccurs="1"  />
       </xsd:sequence>
+      <xsd:attribute name="responseCode" type="xsd:string" use="required" />
+      <xsd:attribute name="name" type="xsd:string" use="required" /> 
+      <xsd:attribute name="uuid" type="xsd:string" use="optional" />
     </xsd:complexType>
   </xsd:element>
   
