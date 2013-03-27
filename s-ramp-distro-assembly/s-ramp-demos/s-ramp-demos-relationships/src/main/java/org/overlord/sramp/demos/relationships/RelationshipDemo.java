@@ -15,11 +15,11 @@
  */
 package org.overlord.sramp.demos.relationships;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * Demonstrates how user defined relationships between artifacts can be

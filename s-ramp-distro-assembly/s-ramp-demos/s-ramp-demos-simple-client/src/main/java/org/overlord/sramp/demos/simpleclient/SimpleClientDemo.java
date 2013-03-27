@@ -17,12 +17,12 @@ package org.overlord.sramp.demos.simpleclient;
 
 import java.io.InputStream;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 
 /**
  * A simple S-RAMP client demo. This class strives to demonstrate how to use the S-RAMP client.

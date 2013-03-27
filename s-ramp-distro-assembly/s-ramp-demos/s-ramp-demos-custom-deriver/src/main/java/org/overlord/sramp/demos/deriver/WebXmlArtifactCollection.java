@@ -20,8 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 
 /**
  * A {@link List} implementation that also indexes the web.xml related artifacts

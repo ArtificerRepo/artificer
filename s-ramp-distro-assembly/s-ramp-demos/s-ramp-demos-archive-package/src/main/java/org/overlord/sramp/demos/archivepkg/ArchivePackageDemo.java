@@ -18,14 +18,14 @@ package org.overlord.sramp.demos.archivepkg;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
-import org.s_ramp.xmlns._2010.s_ramp.XsdDocument;
 
 /**
  * Demonstrates the S-RAMP package archive feature.  The S-RAMP specification defines

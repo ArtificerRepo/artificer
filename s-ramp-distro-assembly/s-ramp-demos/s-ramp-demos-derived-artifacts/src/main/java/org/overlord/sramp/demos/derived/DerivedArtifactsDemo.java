@@ -15,12 +15,12 @@
  */
 package org.overlord.sramp.demos.derived;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.s_ramp.xmlns._2010.s_ramp.WsdlDocument;
 
 /**
  * Demonstrates how to get and set artifact classifications.  Also shows how to query
