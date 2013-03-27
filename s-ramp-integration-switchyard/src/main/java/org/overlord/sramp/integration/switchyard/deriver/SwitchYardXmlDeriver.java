@@ -22,12 +22,12 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.derived.AbstractXmlDeriver;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

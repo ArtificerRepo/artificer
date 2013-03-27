@@ -15,9 +15,9 @@
  */
 package org.overlord.sramp.integration.switchyard.model;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.common.ArtifactType;
-import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactEnum;
-import org.s_ramp.xmlns._2010.s_ramp.ExtendedArtifactType;
 
 /**
  * Information about the SwitchYard model implemented in S-RAMP by the
