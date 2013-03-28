@@ -17,6 +17,11 @@
       <artifactId>s-ramp-common</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-atom</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- Third party libraries -->
     <dependency>
@@ -25,12 +30,6 @@
     </dependency>
 
     <!-- Testing (note the scope) -->
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-      <version>${org.jboss.resteasy.version}</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

@@ -51,12 +51,7 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
     @Override
     protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
         super.configureNamespaceMappings(namespaceContext);
-        namespaceContext.addMapping("sca", SwitchYardModel.SCA_NS);
-        namespaceContext.addMapping("swyd", SwitchYardModel.SWITCHYARD_NS);
-        namespaceContext.addMapping("bean", SwitchYardModel.BEAN_NS);
-        namespaceContext.addMapping("tf", SwitchYardModel.TRANSFORM_NS);
-        namespaceContext.addMapping("val", SwitchYardModel.VALIDATE_NS);
-        namespaceContext.addMapping("soap", SwitchYardModel.SOAP_NS);
+        SwitchYardModel.addNamespaceMappings(namespaceContext);
     }
 
     /**

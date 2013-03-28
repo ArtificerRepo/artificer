@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.client.jar;
+package org.overlord.sramp.atom.archive.jar;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,6 +96,19 @@ public class DiscoveredArtifact {
 	 */
 	public String getName() {
 		return file.getName();
+	}
+
+	/**
+	 * @return the artifact's file extension, or null if none found
+	 */
+	public String getExtension() {
+	    String name = getName();
+	    int idx = name.lastIndexOf('.');
+	    if (idx > 0) {
+	        return name.substring(idx+1);
+	    } else {
+	        return null;
+	    }
 	}
 
 }

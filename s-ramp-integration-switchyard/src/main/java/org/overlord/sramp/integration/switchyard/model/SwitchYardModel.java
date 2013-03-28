@@ -18,6 +18,7 @@ package org.overlord.sramp.integration.switchyard.model;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 
 /**
  * Information about the SwitchYard model implemented in S-RAMP by the
@@ -34,6 +35,8 @@ public class SwitchYardModel {
     public static final String VALIDATE_NS = "urn:switchyard-config:validate:1.0";
     public static final String SOAP_NS = "urn:switchyard-component-soap:config:1.0";
 
+    public static final String SwitchYardXmlDocument = "SwitchYardXmlDocument";
+    public static final ArtifactType SwitchYardXmlDocumentType = ArtifactType.valueOf(SwitchYardXmlDocument);
     public static final String SwitchYardService = "SwitchYardService";
     public static final ArtifactType SwitchYardServiceType = ArtifactType.valueOf(SwitchYardService);
 
@@ -48,6 +51,19 @@ public class SwitchYardModel {
         artifact.setExtendedType(SwitchYardService);
         artifact.setName(name);
         return artifact;
+    }
+
+    /**
+     * Adds some namespace mappings to the given namespace context.
+     * @param namespaceContext
+     */
+    public static void addNamespaceMappings(StaticNamespaceContext namespaceContext) {
+        namespaceContext.addMapping("sca", SwitchYardModel.SCA_NS);
+        namespaceContext.addMapping("swyd", SwitchYardModel.SWITCHYARD_NS);
+        namespaceContext.addMapping("bean", SwitchYardModel.BEAN_NS);
+        namespaceContext.addMapping("tf", SwitchYardModel.TRANSFORM_NS);
+        namespaceContext.addMapping("val", SwitchYardModel.VALIDATE_NS);
+        namespaceContext.addMapping("soap", SwitchYardModel.SOAP_NS);
     }
 
 }

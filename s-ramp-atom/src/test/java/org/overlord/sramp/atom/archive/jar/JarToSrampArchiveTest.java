@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.client.jar;
+package org.overlord.sramp.atom.archive.jar;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,6 +33,11 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
+import org.overlord.sramp.atom.archive.jar.ArtifactFilter;
+import org.overlord.sramp.atom.archive.jar.CandidateArtifact;
+import org.overlord.sramp.atom.archive.jar.DiscoveredArtifact;
+import org.overlord.sramp.atom.archive.jar.JarToSrampArchive;
+import org.overlord.sramp.atom.archive.jar.MetaDataFactory;
 
 /**
  * Unit test for the {@link JarToSrampArchive} class.
@@ -42,7 +47,7 @@ import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 public class JarToSrampArchiveTest {
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#JarToSrampArchive(java.io.File)}.
+	 * Test method for {@link org.overlord.sramp.atom.archive.jar.client.jar.JarToSrampArchive#JarToSrampArchive(java.io.File)}.
 	 */
 	@Test
 	public void testJarToSrampArchiveFile() throws Exception {
@@ -82,7 +87,7 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#JarToSrampArchive(java.io.InputStream)}.
+	 * Test method for {@link org.overlord.sramp.atom.archive.jar.client.jar.JarToSrampArchive#JarToSrampArchive(java.io.InputStream)}.
 	 */
 	@Test
 	public void testJarToSrampArchiveInputStream() throws Exception {
@@ -110,7 +115,7 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#createSrampArchive()}.
+	 * Test method for {@link org.overlord.sramp.atom.archive.jar.client.jar.JarToSrampArchive#createSrampArchive()}.
 	 */
 	@Test
 	public void testCreateSrampArchive() throws Exception {
@@ -138,7 +143,7 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#setArtifactFilter(ArtifactFilter)}.
+	 * Test method for {@link org.overlord.sramp.atom.archive.jar.client.jar.JarToSrampArchive#setArtifactFilter(ArtifactFilter)}.
 	 */
 	@Test
 	public void testCustomArtifactFilter() throws Exception {
@@ -149,6 +154,9 @@ public class JarToSrampArchiveTest {
 		try {
 			j2sramp = new JarToSrampArchive(resourceAsStream);
 			j2sramp.setArtifactFilter(new ArtifactFilter() {
+			    @Override
+			    public void setContext(JarToSrampArchiveContext context) {
+			    }
 				@Override
 				public boolean accepts(CandidateArtifact artifact) {
 					return true;
@@ -174,7 +182,7 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#createSrampArchive()}.
+	 * Test method for {@link org.overlord.sramp.atom.archive.jar.client.jar.JarToSrampArchive#createSrampArchive()}.
 	 */
 	@Test
 	public void testMetaData() throws Exception {
@@ -201,7 +209,7 @@ public class JarToSrampArchiveTest {
 	}
 
 	/**
-	 * Test method for {@link org.overlord.sramp.common.client.jar.JarToSrampArchive#createSrampArchive()}.
+	 * Test method for {@link org.overlord.sramp.atom.archive.jar.client.jar.JarToSrampArchive#createSrampArchive()}.
 	 */
 	@Test
 	public void testMetaDataFactory() throws Exception {
@@ -212,6 +220,9 @@ public class JarToSrampArchiveTest {
 		try {
 			j2sramp = new JarToSrampArchive(resourceAsStream);
 			j2sramp.setMetaDataFactory(new MetaDataFactory() {
+			    @Override
+			    public void setContext(JarToSrampArchiveContext context) {
+			    }
 				@Override
 				public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
 					BaseArtifactType md = new Document();

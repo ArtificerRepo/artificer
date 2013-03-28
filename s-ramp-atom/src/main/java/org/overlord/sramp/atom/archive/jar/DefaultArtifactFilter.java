@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.client.jar;
+package org.overlord.sramp.atom.archive.jar;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -47,7 +47,15 @@ public class DefaultArtifactFilter implements ArtifactFilter {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.client.jar.ArtifactFilter#accepts(org.overlord.sramp.common.client.jar.CandidateArtifact)
+	 * @see org.overlord.sramp.atom.archive.jar.ArtifactFilter#setContext(org.overlord.sramp.atom.archive.jar.JarToSrampArchiveContext)
+	 */
+	@Override
+	public void setContext(JarToSrampArchiveContext context) {
+	    // Don't need it
+	}
+
+	/**
+	 * @see org.overlord.sramp.atom.archive.jar.client.jar.ArtifactFilter#accepts(org.overlord.sramp.atom.archive.jar.client.jar.CandidateArtifact)
 	 */
 	@Override
 	public boolean accepts(CandidateArtifact artifact) {

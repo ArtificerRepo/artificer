@@ -13,33 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.client.jar;
-
-import java.io.File;
+package org.overlord.sramp.atom.archive.jar;
 
 /**
- * An artifact that *may* get included in the S-RAMP archive being created from a
- * source JAR archive.
+ * Interface used by the {@link JarToSrampArchive} class when discovering artifacts in the
+ * source archive that should be included in the target S-RAMP archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class CandidateArtifact {
+public interface ArtifactFilter {
 
-	private File file;
-
-	/**
-	 * Constructor.
-	 * @param file
-	 */
-	public CandidateArtifact(File file) {
-		this.file = file;
-	}
+    /**
+     * Called prior to creating the s-ramp archive.  This is invoked once per
+     * archive creation.
+     * @param context
+     */
+    public void setContext(JarToSrampArchiveContext context);
 
 	/**
-	 * Gets the name of the candidate artifact.
+	 * Called to determine if a given artifact from the source archive should be included
+	 *  in the target S-RAMP archive.
+	 * @param artifact
 	 */
-	public String getName() {
-		return file.getName();
-	}
+	public boolean accepts(CandidateArtifact artifact);
 
 }

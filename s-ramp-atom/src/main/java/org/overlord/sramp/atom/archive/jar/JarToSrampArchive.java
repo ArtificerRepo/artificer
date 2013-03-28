@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.client.jar;
+package org.overlord.sramp.atom.archive.jar;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,16 +44,18 @@ import org.overlord.sramp.atom.archive.SrampArchive;
  */
 public class JarToSrampArchive {
 
+    private static final ArtifactFilter DEFAULT_ARTIFACT_FILTER = new DefaultArtifactFilter();
+    private static final MetaDataFactory DEFAULT_META_DATA_FACTORY = new DefaultMetaDataFactory();
+
 	private File originalJar;
 	private boolean shouldDeleteOriginalJar;
 	private File jarWorkDir;
 
 	/* Customizable handlers for various phases of the create. */
 
-	private static final ArtifactFilter DEFAULT_ARTIFACT_FILTER = new DefaultArtifactFilter();
 	private ArtifactFilter artifactFilter = DEFAULT_ARTIFACT_FILTER;
-	private static final MetaDataFactory DEFAULT_META_DATA_FACTORY = new DefaultMetaDataFactory();
 	private MetaDataFactory metaDataFactory = DEFAULT_META_DATA_FACTORY;
+	private JarToSrampArchiveContext context;
 
 	/**
 	 * Constructor.
@@ -68,6 +70,7 @@ public class JarToSrampArchive {
 		try {
 			jarWorkDir = createJarWorkDir();
 			ArchiveUtils.unpackToWorkDir(this.originalJar, this.jarWorkDir);
+			context = new JarToSrampArchiveContext(this.jarWorkDir);
 		} catch (IOException e) {
 			if (this.jarWorkDir != null) {
 				try { FileUtils.deleteDirectory(this.jarWorkDir); } catch (IOException e1) { }
@@ -91,6 +94,7 @@ public class JarToSrampArchive {
 			copyJarStream(jarStream, this.originalJar);
 			jarWorkDir = createJarWorkDir();
 			ArchiveUtils.unpackToWorkDir(this.originalJar, this.jarWorkDir);
+            context = new JarToSrampArchiveContext(this.jarWorkDir);
 		} catch (IOException e) {
 			if (this.jarWorkDir != null) {
 				try { FileUtils.deleteDirectory(this.jarWorkDir); } catch (IOException e1) { }
@@ -136,6 +140,8 @@ public class JarToSrampArchive {
 	 * @throws JarToSrampArchiveException
 	 */
 	public SrampArchive createSrampArchive() throws JarToSrampArchiveException {
+	    this.artifactFilter.setContext(this.context);
+	    this.metaDataFactory.setContext(this.context);
 		DiscoveredArtifacts discoveredArtifacts = discoverArtifacts();
 		discoveredArtifacts.index(jarWorkDir);
 		generateMetaData(discoveredArtifacts);
@@ -171,7 +177,7 @@ public class JarToSrampArchive {
 		DiscoveredArtifacts artifacts = new DiscoveredArtifacts();
 		Collection<File> files = FileUtils.listFiles(jarWorkDir, null, true);
 		for (File file : files) {
-			CandidateArtifact candidate = new CandidateArtifact(file);
+			CandidateArtifact candidate = new CandidateArtifact(file, jarWorkDir);
 			if (this.artifactFilter.accepts(candidate)) {
 				artifacts.add(file);
 			}
@@ -200,10 +206,24 @@ public class JarToSrampArchive {
 	}
 
 	/**
+	 * @return the configured artifact filter
+	 */
+	public ArtifactFilter getArtifactFilter() {
+	    return this.artifactFilter;
+	}
+
+	/**
 	 * @param metaDataFactory the metaDataFactory to set
 	 */
 	public void setMetaDataFactory(MetaDataFactory metaDataFactory) {
 		this.metaDataFactory = metaDataFactory;
+	}
+
+	/**
+	 * @return the configured meta-data factory
+	 */
+	public MetaDataFactory getMetaDataFactory() {
+	    return this.metaDataFactory;
 	}
 
 	/**

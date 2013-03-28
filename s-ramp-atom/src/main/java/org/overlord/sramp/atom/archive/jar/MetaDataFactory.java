@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.client.jar;
+package org.overlord.sramp.atom.archive.jar;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
@@ -23,6 +23,13 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
  * @author eric.wittmann@redhat.com
  */
 public interface MetaDataFactory {
+
+    /**
+     * Called prior to creating the s-ramp archive.  This is invoked once per
+     * archive creation.
+     * @param context
+     */
+    public void setContext(JarToSrampArchiveContext context);
 
 	/**
 	 * Creates the meta-data object (S-RAMP specific) for the given artifact that
