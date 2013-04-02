@@ -51,7 +51,7 @@ import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.common.MimeTypes;
+import org.overlord.sramp.server.mime.MimeTypes;
 import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
@@ -102,23 +102,26 @@ public class ArtifactResource extends AbstractResource {
 	 * @param fileName
 	 * @param model
 	 * @param type
-	 * @param content
+	 * @param is
 	 * @throws SrampAtomException
 	 */
 	@POST
 	@Path("{model}/{type}")
 	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public Entry create(@Context HttpServletRequest request, @HeaderParam("Content-Type") String contentType,
-	        @HeaderParam("Slug") String fileName, @PathParam("model") String model,
-	        @PathParam("type") String type, InputStream is) throws SrampAtomException {
+	public Entry create(@Context HttpServletRequest request, @HeaderParam("Slug") String fileName,
+		@PathParam("model") String model, @PathParam("type") String type, InputStream is)
+		throws SrampAtomException {
 		try {
 			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
 			ArtifactType artifactType = ArtifactType.valueOf(model, type);
 			if (artifactType.getArtifactType().isDerived()) {
 				throw new DerivedArtifactAccessException(artifactType.getArtifactType());
 			}
+
+			is = ensureSupportsMark(is);
+
 			// Figure out the mime type (from the http header, filename, or default by artifact type)
-			String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
+			String mimeType = MimeTypes.determineMimeType(fileName, is, artifactType);
 			artifactType.setMimeType(mimeType);
 
 			// Pick a reasonable file name if Slug is not present
@@ -154,7 +157,6 @@ public class ArtifactResource extends AbstractResource {
 	 * Handles multi-part creates. In S-RAMP, an HTTP multi-part request can be POST'd to the endpoint, which
 	 * allows Atom Entry formatted meta-data to be included in the same request as the artifact content.
 	 *
-	 * @param contentType
 	 * @param model
 	 * @param type
 	 * @param input
@@ -165,8 +167,7 @@ public class ArtifactResource extends AbstractResource {
 	@Path("{model}/{type}")
 	@Consumes(MultipartConstants.MULTIPART_RELATED)
 	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public Entry createMultiPart(@Context HttpServletRequest request,
-	        @HeaderParam("Content-Type") String contentType, @PathParam("model") String model,
+	public Entry createMultiPart(@Context HttpServletRequest request, @PathParam("model") String model,
 	        @PathParam("type") String type, MultipartRelatedInput input) throws SrampAtomException {
 		InputStream contentStream = null;
 		try {
@@ -199,12 +200,13 @@ public class ArtifactResource extends AbstractResource {
 			String fileName = null;
 			if (artifactMetaData.getName() != null)
 				fileName = artifactMetaData.getName();
-			String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
+
+			contentStream = ensureSupportsMark(secondpart.getBody(new GenericType<InputStream>() {
+			}));
+			String mimeType = MimeTypes.determineMimeType(fileName, contentStream, artifactType);
 			artifactType.setMimeType(mimeType);
 
 			// Processing the content itself first
-			contentStream = secondpart.getBody(new GenericType<InputStream>() {
-			});
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			// store the content
 			BaseArtifactType artifactRval = persistenceManager.persistArtifact(artifactMetaData,
@@ -259,17 +261,16 @@ public class ArtifactResource extends AbstractResource {
 	 */
 	@PUT
 	@Path("{model}/{type}/{uuid}/media")
-	public void updateContent(@HeaderParam("Content-Type") String contentType,
-	        @HeaderParam("Slug") String fileName, @PathParam("model") String model,
+	public void updateContent(@HeaderParam("Slug") String fileName, @PathParam("model") String model,
 	        @PathParam("type") String type, @PathParam("uuid") String uuid, InputStream content)
 	        throws SrampAtomException {
-		InputStream is = content;
+		InputStream is = ensureSupportsMark(content);
 		try {
 	        ArtifactType artifactType = ArtifactType.valueOf(model, type);
 	        if (artifactType.getArtifactType().isDerived()) {
 	            throw new DerivedArtifactAccessException(artifactType.getArtifactType());
 	        }
-	        String mimeType = MimeTypes.determineMimeType(contentType, fileName, artifactType);
+	        String mimeType = MimeTypes.determineMimeType(fileName, is, artifactType);
 	        artifactType.setMimeType(mimeType);
 
 	        // TODO we need to update the S-RAMP metadata too (new updateDate, size, etc)?

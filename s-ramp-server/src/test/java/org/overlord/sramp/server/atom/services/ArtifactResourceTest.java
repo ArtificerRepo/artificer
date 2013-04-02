@@ -223,7 +223,7 @@ public class ArtifactResourceTest extends AbstractResourceTest {
             Assert.assertEquals(artifactFileName, doc.getName());
             Assert.assertEquals("JpgDocument", doc.getExtendedType());
             Assert.assertEquals(Long.valueOf(2398), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
-            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+            Assert.assertEquals("image/jpeg", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
             uuid = doc.getUuid();
         } finally {
             IOUtils.closeQuietly(contentStream);
@@ -240,7 +240,7 @@ public class ArtifactResourceTest extends AbstractResourceTest {
         Assert.assertEquals(artifactFileName, doc.getName());
         Assert.assertEquals(Long.valueOf(2398), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
         Assert.assertEquals("photo.jpg", doc.getName());
-        Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+        Assert.assertEquals("image/jpeg", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
 
         //Obtain the content for visual inspection
         ClientRequest request2 = new ClientRequest(generateURL("/s-ramp/ext/JpgDocument/" + uuid + "/media"));
