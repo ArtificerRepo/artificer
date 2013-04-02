@@ -45,6 +45,7 @@ import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.server.atom.services.errors.DerivedArtifactAccessException;
+import org.overlord.sramp.server.mime.MimeTypes;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,8 +97,12 @@ public class BatchResource extends AbstractResource {
             Collection<SrampArchiveEntry> entries = archive.getEntries();
             for (SrampArchiveEntry entry: entries) {
         		BaseArtifactType metaData = entry.getMetaData();
-            	InputStream contentStream = archive.getInputStream(entry);
+            	InputStream contentStream = ensureSupportsMark(archive.getInputStream(entry));
+                try {
         		processBatchEntry(output, entry.getPath(), metaData, contentStream, baseUrl);
+                } finally {
+                    IOUtils.closeQuietly(contentStream);
+                }
             }
 
             return output;
@@ -127,9 +132,7 @@ public class BatchResource extends AbstractResource {
 				throw new DerivedArtifactAccessException(artifactType.getArtifactType());
 			}
 			// Figure out the mime type
-			ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
-			ArtifactVisitorHelper.visitArtifact(ctVizzy, metaData);
-			String mimeType = ctVizzy.getContentType().toString();
+                        String mimeType = MimeTypes.determineMimeType(metaData.getName(), contentStream, artifactType);
 			artifactType.setMimeType(mimeType);
 
 			if (metaData.getUuid() == null && contentStream != null) {

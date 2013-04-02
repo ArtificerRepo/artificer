@@ -85,10 +85,6 @@
       <artifactId>jline</artifactId>
       <version>${jline.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-core</artifactId>
-    </dependency>
 
     <!-- Test dependencies -->
     <dependency>

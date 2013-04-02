@@ -64,7 +64,6 @@ import org.overlord.sramp.client.auth.BasicAuthenticationProvider;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.MimeTypes;
 import org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
@@ -315,12 +314,6 @@ public class SrampAtomApiClient {
 	public BaseArtifactType uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
 			throws SrampClientException, SrampAtomException {
 		assertFeatureEnabled(artifactType);
-		// Determine the mime type if it's not included in the artifact type.
-		String mimeType = artifactType.getMimeType();
-		if (mimeType == null) {
-			content = ensureSupportsMark(content);
-                        mimeType = MimeTypes.getContentType(artifactFileName, content);
-                }
 		try {
 			String type = artifactType.getArtifactType().getType();
 			if ("ext".equals(artifactType.getArtifactType().getModel()) && artifactType.getExtendedType()!=null) {
@@ -331,8 +324,6 @@ public class SrampAtomApiClient {
 			ClientRequest request = createClientRequest(atomUrl);
 			if (artifactFileName != null)
 				request.header("Slug", artifactFileName);
-			if (mimeType != null)
-				request.header("Content-Type", mimeType);
 			request.body(artifactType.getMimeType(), content);
 
 			ClientResponse<Entry> response = request.post(Entry.class);
@@ -356,14 +347,6 @@ public class SrampAtomApiClient {
 			throws SrampClientException, SrampAtomException {
 		ArtifactType artifactType = ArtifactType.valueOf(baseArtifactType);
 		assertFeatureEnabled(artifactType);
-		String artifactFileName = baseArtifactType.getName();
-		// Determine the mime type if it's not included in the artifact type.
-		String mimeType = artifactType.getMimeType();
-		if (mimeType == null) {
-			content = ensureSupportsMark(content);
-			mimeType = MimeTypes.getContentType(artifactFileName, content);
-			artifactType.setMimeType(mimeType);
-		}
 		try {
 			String type = artifactType.getArtifactType().getType();
 			if ("ext".equals(artifactType.getArtifactType().getModel()) && artifactType.getExtendedType()!=null) {

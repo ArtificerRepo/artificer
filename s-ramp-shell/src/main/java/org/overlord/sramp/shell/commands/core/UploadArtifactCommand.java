@@ -15,10 +15,7 @@
  */
 package org.overlord.sramp.shell.commands.core;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -30,7 +27,6 @@ import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.common.MimeTypes;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.shell.api.AbstractShellCommand;
 import org.overlord.sramp.shell.util.FileNameCompleter;
@@ -127,8 +123,7 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 		} else if ("xml".equals(extension)) {
 			type = ArtifactType.XmlDocument();
 		} else {
-                        String mimeType = MimeTypes.getContentType(file);
-			type = ArtifactType.Document(mimeType);
+			type = ArtifactType.Document();
 		}
 		return type;
 	}

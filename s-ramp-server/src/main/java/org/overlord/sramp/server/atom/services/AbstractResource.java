@@ -15,6 +15,9 @@
  */
 package org.overlord.sramp.server.atom.services;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+
 import org.overlord.sramp.common.SrampUserException;
 import org.slf4j.Logger;
 
@@ -36,4 +39,11 @@ public abstract class AbstractResource {
         }
     }
 
+    protected static InputStream ensureSupportsMark(InputStream stream) {
+        if (stream != null) {
+            return stream.markSupported() ? stream : new BufferedInputStream(stream);
+        } else {
+            return null;
+        }
+}
 }

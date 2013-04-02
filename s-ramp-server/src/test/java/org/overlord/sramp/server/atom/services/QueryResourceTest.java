@@ -268,7 +268,7 @@ public class QueryResourceTest extends AbstractResourceTest {
 			Assert.assertEquals(fname, doc.getName());
 			Assert.assertEquals("JpgDocument", doc.getExtendedType());
 			Assert.assertEquals(Long.valueOf(2398), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
-			Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+			Assert.assertEquals("image/jpeg", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}

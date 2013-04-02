@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
+package org.overlord.sramp.server.mime;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -23,10 +23,11 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.Tika;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.ArtifactTypeEnum;
 
 /**
- * Helps figure out mime types for artifacts.  Used by the client and the
- * server.
+ * Helps figure out mime types for artifacts.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -65,21 +66,20 @@ public class MimeTypes {
 	}
 
 	/**
-	 * Figures out the mime type of the new artifact given the POSTed Content-Type, the name
-	 * of the uploaded file, and the S-RAMP arifact type.  If the artifact type is Document
-	 * then the other three pieces of information are used to determine an appropriate mime type.
+	 * Figures out the mime type of the new artifact given the name of the uploaded file, its content and
+         * the S-RAMP artifact type.  If the artifact type is Document or ExtendedArtifactType
+	 * then the other two pieces of information are used to determine an appropriate mime type, all other artifact
+         * types in S-RAMP are XML (application/xml).
 	 * If no appropriate mime type can be determined for core/Document, then binary is returned.
          *
-	 * @param contentType the content type request header
-	 * @param fileName the slug request header
-	 * @param stream the input stream with the file's data. Consult {@link #getContentType(String, java.io.InputStream)}
-	 * for restrictions on the stream.
-	 * @param artifactType the artifact type (based on the endpoint POSTed to)
-	 */
-	public static String determineMimeType(String contentType, String fileName, InputStream stream, ArtifactType artifactType) {
+         * @param fileName the slug request header
+         * @param stream the input stream with the file's data. Consult {@link #getContentType(String, java.io.InputStream)}
+         * for restrictions on the stream.
+         * @param artifactType the artifact type (based on the endpoint POSTed to)
+         */
+	public static String determineMimeType(String fileName, InputStream stream,
+            ArtifactType artifactType) {
 		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedArtifactType) {
-			if (contentType != null && contentType.trim().length() > 0)
-				return contentType;
 			String ct = getContentType(fileName, stream);
 			return ct == null ? "application/octet-stream" : ct;
 		} else {
