@@ -185,7 +185,7 @@
               <value>${basedir}/target</value>
             </property>
           </systemProperties>
-          <argLine>-Xmx256m -XX:MaxPermSize=128m</argLine>
+          <argLine>-Xmx368m -XX:MaxPermSize=256m</argLine>
         </configuration>
       </plugin>
       <!-- Build a test-jar for each project, so that src/test/* resources and 
