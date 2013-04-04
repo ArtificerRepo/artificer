@@ -348,7 +348,6 @@
   <!-- modules in alphabetical order -->
   <modules>
     <module>s-ramp-api</module>
-    <!--
     <module>s-ramp-atom</module>
     <module>s-ramp-client</module>
     <module>s-ramp-common</module>
@@ -362,7 +361,6 @@
     <module>s-ramp-workflows</module>
     <module>s-ramp-workitems</module>
     <module>s-ramp-shell-api</module>
-    -->
   </modules>
 </project>
 
