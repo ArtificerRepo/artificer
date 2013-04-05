@@ -202,6 +202,14 @@
       <artifactId>jboss-logging</artifactId>
       <version>${jboss-logging.version}</version>
     </dependency>
+    
+    <!-- Required for errai-ui to generate i18n reports -->
+    <dependency>
+      <groupId>net.sf.jtidy</groupId>
+      <artifactId>jtidy</artifactId>
+      <version>r938</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
