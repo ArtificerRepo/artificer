@@ -36,7 +36,6 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
