@@ -139,12 +139,14 @@
                   <div class="span6 sramp-meta-data-section">
                     <div class="sramp-meta-data-section-header">Custom Properties</div>
                     <div class="clearfix"></div>
-                    <div class="sramp-meta-data-section-label">custom-property-1:</div>
-                    <div class="sramp-meta-data-section-value">Property value 1</div>
-                    <div class="clearfix"></div>
-                    <div class="sramp-meta-data-section-label">custom-property-2:</div>
-                    <div class="sramp-meta-data-section-value">Property value 2</div>
-                    <div class="clearfix"></div>
+                    <div data-field="custom-properties-container" id="custom-properties-container">
+                      <div class="sramp-meta-data-section-label">custom-property-1:</div>
+                      <div class="sramp-meta-data-section-value">Property value 1</div>
+                      <div class="clearfix"></div>
+                      <div class="sramp-meta-data-section-label">custom-property-2:</div>
+                      <div class="sramp-meta-data-section-value">Property value 2</div>
+                      <div class="clearfix"></div>
+                    </div>
                     <a class="btn btn-mini">Add Property</a>
                     <div class="clearfix"></div>
                   </div>
@@ -164,7 +166,7 @@
               <div class="tab-pane fade container-fluid" id="relationships">
                 <div class="row-fluid">
                   <div class="span12">
-                    <table class="sramp-relationship-table table table-condensed table-bordered">
+                    <table data-i18n-skip="true" class="sramp-relationship-table table table-condensed table-bordered">
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -206,7 +208,7 @@
               <!-- Source Tab -->
               <div class="tab-pane fade container-fluid" id="source">
                 <div id="editor-wrapper" class="sramp-source-editor-wrapper span12">
-                  <div data-field="artifact-editor" id="editor" class="sramp-source-editor">&lt;assembly
+                  <div data-i18n-skip="true" data-field="artifact-editor" id="editor" class="sramp-source-editor">&lt;assembly
     xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">

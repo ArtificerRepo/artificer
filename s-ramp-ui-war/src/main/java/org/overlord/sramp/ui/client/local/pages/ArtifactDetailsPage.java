@@ -27,6 +27,7 @@ import org.jboss.errai.ui.shared.api.annotations.AutoBound;
 import org.jboss.errai.ui.shared.api.annotations.Bound;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.sramp.ui.client.local.pages.details.CustomPropertiesPanel;
 import org.overlord.sramp.ui.client.local.pages.details.SourceEditor;
 import org.overlord.sramp.ui.client.local.services.ArtifactRpcService;
 import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
@@ -89,6 +90,9 @@ public class ArtifactDetailsPage extends AbstractPage {
     InlineLabel modifiedOn;
     @Inject @DataField("core-property-modifiedBy") @Bound(property="updatedBy")
     InlineLabel modifiedBy;
+
+    @Inject @DataField("custom-properties-container")
+    CustomPropertiesPanel customProperties;
 
     @Inject @DataField("sramp-artifact-tabs-source")
     Anchor sourceTabAnchor;
@@ -183,6 +187,7 @@ public class ArtifactDetailsPage extends AbstractPage {
         this.downloadContentLink.setHref(contentUrl);
         this.downloadMetaDataLink.setHref(metaDataUrl);
         this.sourceEditor.setValue("");
+        this.customProperties.setValue(artifact.getProperties());
 
         if (artifact.isTextDocument()) {
             sourceTabAnchor.setVisible(true);
