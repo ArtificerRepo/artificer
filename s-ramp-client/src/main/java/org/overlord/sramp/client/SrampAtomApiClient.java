@@ -15,7 +15,6 @@
  */
 package org.overlord.sramp.client;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -756,8 +755,4 @@ public class SrampAtomApiClient {
         }
         return new ApacheHttpClient4Executor(httpClient);
     }
-
-	private InputStream ensureSupportsMark(InputStream stream) {
-		return stream.markSupported() ? stream : new BufferedInputStream(stream);
-	}
 }
