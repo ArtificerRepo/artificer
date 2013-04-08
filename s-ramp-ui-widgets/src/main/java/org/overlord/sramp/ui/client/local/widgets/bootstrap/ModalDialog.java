@@ -41,18 +41,32 @@ public abstract class ModalDialog extends Composite {
     /**
      * Displays the dialog.
      */
-    public void modal() {
+    public void show() {
         rootPanel.add(this);
         addHiddenHandler(getElement());
         modal(getElement());
     }
 
     /**
+     * Hides/closes the dialog.
+     */
+    public void hide() {
+        hide(getElement());
+    }
+
+    /**
      * Remove this dialog from the root panel when it is hidden.
      */
-    protected void onHidden() {
+    protected final void onHidden() {
         removeHiddenHandler(getElement());
         rootPanel.remove(this);
+        onDialogHidden();
+    }
+
+    /**
+     * Subclasses can override this to do post-hide logic.
+     */
+    protected void onDialogHidden() {
     }
 
     /**
@@ -61,6 +75,14 @@ public abstract class ModalDialog extends Composite {
      */
     private static native final void modal(Element element) /*-{
         $wnd.jQuery(element).modal();
+    }-*/;
+
+    /**
+     * Display the dialog using the native Bootstrap function.
+     * @param element
+     */
+    private static native final void hide(Element element) /*-{
+        $wnd.jQuery(element).modal('hide');
     }-*/;
 
     /**

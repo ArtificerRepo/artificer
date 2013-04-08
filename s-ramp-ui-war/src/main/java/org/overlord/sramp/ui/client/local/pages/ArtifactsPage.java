@@ -17,6 +17,7 @@ package org.overlord.sramp.ui.client.local.pages;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
@@ -64,7 +65,7 @@ public class ArtifactsPage extends AbstractPage {
     @Inject @DataField("btn-import")
     protected Anchor importDialogButton;
     @Inject
-    protected ImportArtifactDialog importDialog;
+    protected Instance<ImportArtifactDialog> importDialog;
 
     @Inject @DataField("sramp-artifacts-none")
     protected HtmlSnippet noDataMessage;
@@ -132,7 +133,7 @@ public class ArtifactsPage extends AbstractPage {
      */
     @EventHandler("btn-import")
     public void onImportClick(ClickEvent event) {
-        importDialog.modal();
+        importDialog.get().show();
     }
 
     /**

@@ -15,10 +15,24 @@
  */
 package org.overlord.sramp.ui.client.local.pages.artifacts;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
+import org.overlord.sramp.ui.client.local.widgets.common.TemplatedFormPanel;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
+import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 
 /**
  * A modal dialog used to import artifacts into S-RAMP.
@@ -28,10 +42,52 @@ import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 @Dependent
 public class ImportArtifactDialog extends ModalDialog {
 
+    @Inject @DataField("import-dialog-form")
+    private TemplatedFormPanel form;
+    @Inject @DataField("import-dialog-submit-button")
+    private Anchor submitButton;
+
     /**
      * Constructor.
      */
     public ImportArtifactDialog() {
+    }
+
+    /**
+     * Post construct.
+     */
+    @PostConstruct
+    protected void onPostConstruct() {
+        form.addSubmitHandler(new SubmitHandler() {
+            @Override
+            public void onSubmit(SubmitEvent event) {
+            }
+        });
+        form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
+            @Override
+            public void onSubmitComplete(SubmitCompleteEvent event) {
+                Window.alert("Result: " + event.getResults());
+            }
+        });
+    }
+
+    /**
+     * @see org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog#show()
+     */
+    @Override
+    public void show() {
+        form.setAction(GWT.getModuleBaseURL() + "services/artifactUpload");
+        super.show();
+    }
+
+    /**
+     * Called when the user clicks the 'submit' (Import) button.
+     * @param event
+     */
+    @EventHandler("import-dialog-submit-button")
+    public void onSubmitClick(ClickEvent event) {
+        form.submit();
+        hide();
     }
 
 }

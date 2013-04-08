@@ -381,8 +381,8 @@
       </div>
       <div class="modal-body">
         <p>Choose a file or S-RAMP package to upload.</p>
-        <form>
-          <div id="fileupload-import" class="fileupload fileupload-new" data-provides="fileupload">
+        <form data-field="import-dialog-form" method="post" enctype="multipart/form-data">
+          <div id="fileupload-import" class="fileupload fileupload-new" data-provides="fileupload" data-name="artifact-file">
             <div class="input-append">
               <div class="uneditable-input"><i class="icon-file fileupload-exists"></i> 
                 <span class="fileupload-preview"></span>
@@ -393,7 +393,7 @@
       </div>
       <div class="modal-footer">
         <a class="btn" data-dismiss="modal">Cancel</a>
-        <a class="btn btn-focus">Import</a>
+        <a data-field="import-dialog-submit-button" class="btn btn-focus">Import</a>
       </div>
     </div>
 
