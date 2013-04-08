@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactService;
 
@@ -64,6 +65,20 @@ public class ArtifactRpcService {
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
             remoteArtifactService.call(successCallback, errorCallback).getDocumentContent(uuid, artifactType);
+        } catch (SrampUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
+    /**
+     * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#getRelationships(String, String)
+     */
+    public void getRelationships(String uuid, String artifactType,
+            IRpcServiceInvocationHandler<ArtifactRelationshipsBean> handler) {
+        RemoteCallback<ArtifactRelationshipsBean> successCallback = new DelegatingRemoteCallback<ArtifactRelationshipsBean>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteArtifactService.call(successCallback, errorCallback).getRelationships(uuid, artifactType);
         } catch (SrampUiException e) {
             errorCallback.error(null, e);
         }

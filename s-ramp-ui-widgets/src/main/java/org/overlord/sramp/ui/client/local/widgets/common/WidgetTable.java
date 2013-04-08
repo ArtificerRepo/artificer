@@ -88,7 +88,7 @@ public class WidgetTable extends Panel {
      * @param colIndex which column to add to (0 based)
      * @param widget the widget to add to the table
      */
-    public void add(int rowIndex, int colIndex, Widget widget) {
+    public Element add(int rowIndex, int colIndex, Widget widget) {
         if (widget == null)
             throw new NullPointerException("Cannot add a null widget.");
         if (colIndex >= this.columnCount || colIndex < 0)
@@ -101,6 +101,15 @@ public class WidgetTable extends Panel {
         wrapperMap.put(widget, td);
         DOM.appendChild(td, widget.getElement());
         adopt(widget);
+        return td;
+    }
+
+    /**
+     * Gets the row element at a given index.
+     * @param rowIndex
+     */
+    public Element getRow(int rowIndex) {
+        return ensureRow(rowIndex);
     }
 
     /**

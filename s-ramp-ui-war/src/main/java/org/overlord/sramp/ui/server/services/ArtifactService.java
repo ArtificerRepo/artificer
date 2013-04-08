@@ -17,7 +17,6 @@ package org.overlord.sramp.ui.server.services;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
@@ -30,9 +29,11 @@ import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactService;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
+import org.overlord.sramp.ui.server.services.util.RelationshipResolver;
 
 /**
  * Concrete implementation of the artifact service.
@@ -65,7 +66,7 @@ public class ArtifactService implements IArtifactService {
 
             ArtifactBean bean = new ArtifactBean();
             bean.setModel(artifactType.getArtifactType().getModel());
-            bean.setType(artifactType.getArtifactType().getType());
+            bean.setType(artifactType.getType());
             bean.setUuid(artifact.getUuid());
             bean.setName(artifact.getName());
             bean.setDescription(artifact.getDescription());
@@ -129,6 +130,27 @@ public class ArtifactService implements IArtifactService {
         } catch (Exception e) {
             throw new SrampUiException(e.getMessage());
         }
+    }
+
+    /**
+     * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#getRelationships(java.lang.String, java.lang.String)
+     */
+    @Override
+    public ArtifactRelationshipsBean getRelationships(String uuid, String artifactType)
+            throws SrampUiException {
+        ArtifactRelationshipsBean rval = new ArtifactRelationshipsBean();
+        try {
+            ArtifactType at = ArtifactType.valueOf(artifactType);
+            BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(at, uuid);
+            RelationshipResolver relResolver = new RelationshipResolver(clientAccessor.getClient(), rval);
+            relResolver.resolveAll(artifact);
+        } catch (SrampClientException e) {
+            throw new SrampUiException(e.getMessage());
+        } catch (SrampAtomException e) {
+            throw new SrampUiException(e.getMessage());
+        }
+
+        return rval;
     }
 
     /**
