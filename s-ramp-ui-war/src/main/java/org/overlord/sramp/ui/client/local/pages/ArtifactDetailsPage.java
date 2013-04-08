@@ -29,6 +29,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.details.ClassifiersPanel;
 import org.overlord.sramp.ui.client.local.pages.details.CustomPropertiesPanel;
+import org.overlord.sramp.ui.client.local.pages.details.RelationshipsTable;
 import org.overlord.sramp.ui.client.local.pages.details.SourceEditor;
 import org.overlord.sramp.ui.client.local.services.ArtifactRpcService;
 import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
@@ -36,6 +37,7 @@ import org.overlord.sramp.ui.client.local.util.DOMUtil;
 import org.overlord.sramp.ui.client.local.util.DataBindingDateConverter;
 import org.overlord.sramp.ui.client.local.widgets.common.HtmlSnippet;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -67,16 +69,15 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject @AutoBound
     protected DataBinder<ArtifactBean> artifact;
 
+    // Overview tab
     @Inject @DataField("core-property-name") @Bound(property="name")
     InlineLabel name;
     @Inject @DataField("core-property-version") @Bound(property="version")
     InlineLabel version;
-
     @Inject @DataField("link-download-content")
     Anchor downloadContentLink;
     @Inject @DataField("link-download-metaData")
     Anchor downloadMetaDataLink;
-
     @Inject @DataField("core-property-type") @Bound(property="type")
     Label type;
     @Inject @DataField("core-property-uuid") @Bound(property="uuid")
@@ -96,6 +97,16 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject @DataField("classifiers-container") @Bound(property="classifiedBy")
     ClassifiersPanel classifiers;
 
+    // Relationships tab
+    @Inject @DataField("sramp-artifact-tabs-relationships")
+    Anchor relationshipsTabAnchor;
+    @Inject @DataField("relationship-tab-progress")
+    HtmlSnippet relationshipsTabProgress;
+    @Inject @DataField("relationships-table")
+    RelationshipsTable relationships;
+    protected boolean relationshipsLoaded;
+
+    // Source tab
     @Inject @DataField("sramp-artifact-tabs-source")
     Anchor sourceTabAnchor;
     @Inject @DataField("source-tab-progress")
@@ -143,12 +154,42 @@ public class ArtifactDetailsPage extends AbstractPage {
                 Window.alert(error.getMessage());
             }
         });
+        relationshipsTabAnchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (!relationshipsLoaded) {
+                    loadRelationships(currentArtifact);
+                }
+            }
+        });
         sourceTabAnchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 if (!sourceLoaded) {
                     loadSource(currentArtifact);
                 }
+            }
+        });
+    }
+
+    /**
+     * Loads the artifact's relationships and displays them in the proper table.
+     * @param artifact
+     */
+    protected void loadRelationships(ArtifactBean artifact) {
+        relationships.setVisible(false);
+        relationshipsTabProgress.setVisible(true);
+        artifactService.getRelationships(artifact.getUuid(), artifact.getType(), new IRpcServiceInvocationHandler<ArtifactRelationshipsBean>() {
+            @Override
+            public void onReturn(ArtifactRelationshipsBean data) {
+                relationships.setValue(data.getRelationships());
+                relationshipsTabProgress.setVisible(false);
+                relationships.setVisible(true);
+                relationshipsLoaded = true;
+            }
+            @Override
+            public void onError(Throwable error) {
+                Window.alert(error.getMessage());
             }
         });
     }

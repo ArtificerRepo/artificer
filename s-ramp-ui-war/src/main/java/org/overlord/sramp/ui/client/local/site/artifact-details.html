@@ -94,7 +94,7 @@
           <div class="span12 sramp-artifact-tabs">
             <ul id="myTab" class="nav nav-tabs sramp-nav-tabs">
               <li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
-              <li class=""><a href="#relationships" data-toggle="tab">Relationships</a></li>
+              <li class=""><a href="#relationships" data-field="sramp-artifact-tabs-relationships" data-toggle="tab">Relationships</a></li>
               <li class=""><a href="#source" data-field="sramp-artifact-tabs-source" data-toggle="tab">Source</a></li>
               <li class=""><a href="#history" data-toggle="tab">History</a></li>
             </ul>
@@ -167,7 +167,7 @@
               <div class="tab-pane fade container-fluid" id="relationships">
                 <div class="row-fluid">
                   <div class="span12">
-                    <table data-i18n-skip="true" class="sramp-relationship-table table table-condensed table-bordered">
+                    <table data-field="relationships-table" style="" class="sramp-relationship-table table table-condensed table-bordered">
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -203,6 +203,7 @@
                         </tr>
                       </tbody>
                     </table>
+                    <div data-field="relationship-tab-progress" style="display:none" class="spinner sramp-details-tab-spinner pull-left">Loading relationships, please wait...</div>
                   </div>
                 </div>
               </div>
@@ -221,7 +222,7 @@
 &lt;/assembly>
                   </div>
                 </div>
-                <div data-field="source-tab-progress" class="spinner sramp-details-tab-spinner pull-left" style="display:none">Loading content, please wait...</div>
+                <div data-field="source-tab-progress" class="spinner sramp-details-tab-spinner pull-left" style="display:none">Loading artifact source, please wait...</div>
               </div>
               <!-- History Tab -->
               <div class="tab-pane fade container-fluid" id="history">
@@ -264,7 +265,7 @@
                       </tbody>
                     </table>
                   </div>
-                  <div data-field="source-tab-progress" class="spinner sramp-details-tab-spinner pull-left" style="">Loading content, please wait...</div>
+                  <div data-field="history-tab-progress" class="spinner sramp-details-tab-spinner pull-left" style="display:none">Loading history, please wait...</div>
                 </div>
               </div>
             </div>

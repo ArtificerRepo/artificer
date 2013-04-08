@@ -17,6 +17,7 @@ package org.overlord.sramp.ui.client.shared.services;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 
 /**
@@ -41,6 +42,14 @@ public interface IArtifactService {
      * @throws SrampUiException
      */
     public String getDocumentContent(String uuid, String artifactType) throws SrampUiException;
+
+    /**
+     * Gets all of the relationships (resolved) for an artifact.
+     * @param uuid
+     * @param artifactType
+     * @throws SrampUiException
+     */
+    public ArtifactRelationshipsBean getRelationships(String uuid, String artifactType) throws SrampUiException;
 
     /**
      * Called to update the given artifact bean.
