@@ -21,9 +21,11 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
+import org.overlord.sramp.ui.client.local.pages.artifacts.ImportArtifactDialog;
 import org.overlord.sramp.ui.client.local.services.ArtifactSearchRpcService;
 import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.Pager;
@@ -34,9 +36,11 @@ import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -56,6 +60,11 @@ public class ArtifactsPage extends AbstractPage {
     protected ArtifactFilters filtersPanel;
     @Inject @DataField("sramp-search-box")
     protected TextBox searchBox;
+
+    @Inject @DataField("btn-import")
+    protected Anchor importDialogButton;
+    @Inject
+    protected ImportArtifactDialog importDialog;
 
     @Inject @DataField("sramp-artifacts-none")
     protected HtmlSnippet noDataMessage;
@@ -115,6 +124,15 @@ public class ArtifactsPage extends AbstractPage {
         this.rangeSpan2.setInnerText("?");
         this.totalSpan1.setInnerText("?");
         this.totalSpan2.setInnerText("?");
+    }
+
+    /**
+     * Event handler that fires when the user clicks the Import Artifacts button.
+     * @param event
+     */
+    @EventHandler("btn-import")
+    public void onImportClick(ClickEvent event) {
+        importDialog.modal();
     }
 
     /**
