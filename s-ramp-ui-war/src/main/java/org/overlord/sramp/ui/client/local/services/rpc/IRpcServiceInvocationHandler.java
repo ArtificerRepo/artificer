@@ -13,32 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.local.services;
-
-import org.jboss.errai.common.client.api.RemoteCallback;
+package org.overlord.sramp.ui.client.local.services.rpc;
 
 /**
+ * An async handler interface for making service invocations.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DelegatingRemoteCallback<T> implements RemoteCallback<T> {
-
-    private IRpcServiceInvocationHandler<T> handler;
+public interface IRpcServiceInvocationHandler<T> {
 
     /**
-     * Constructor.
-     * @param handler
+     * Called when the RPC call successfully returns data.
+     * @param data
      */
-    public DelegatingRemoteCallback(IRpcServiceInvocationHandler<T> handler) {
-        this.handler = handler;
-    }
+    public void onReturn(T data);
 
     /**
-     * @see org.jboss.errai.common.client.api.RemoteCallback#callback(java.lang.Object)
+     * Called when the RPC call fails.
+     * @param error
      */
-    @Override
-    public void callback(T response) {
-        this.handler.onReturn(response);
-    }
+    public void onError(Throwable error);
 
 }

@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.ui.client.local.pages;
 
+import java.util.Date;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
@@ -28,12 +30,15 @@ import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ImportArtifactDialog;
 import org.overlord.sramp.ui.client.local.services.ArtifactSearchRpcService;
-import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.NotificationService;
+import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.Pager;
 import org.overlord.sramp.ui.client.local.widgets.common.HtmlSnippet;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
+import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
+import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
@@ -61,6 +66,46 @@ public class ArtifactsPage extends AbstractPage {
     protected ArtifactFilters filtersPanel;
     @Inject @DataField("sramp-search-box")
     protected TextBox searchBox;
+
+
+    @Inject @DataField("btn-test-1")
+    protected Anchor testButton1;
+    @Inject @DataField("btn-test-2")
+    protected Anchor testButton2;
+    @Inject @DataField("btn-test-3")
+    protected Anchor testButton3;
+
+
+    @Inject
+    NotificationService notificationService;
+    @EventHandler("btn-test-1")
+    public void test1Click(ClickEvent event) {
+        String msg = new Date() + ": This is a test message from the test notification button on the Artifacts page.";
+        if (new Date().getTime() % 4 == 0) {
+            msg = "This is a really long message that happened because the millis of the current time had the right modulo value.  This is intended to make the notification widget much larger than the other notifiaction windows so that we can see if the height sizing works.  I really hope it does so that I don't have to go back to statically sized notifications.  Those are the worst.";
+        }
+        notificationService.send("Test Notification", msg);
+    }
+    @EventHandler("btn-test-2")
+    public void test2Click(ClickEvent event) {
+        try {
+            throw new SrampUiException("Something bad happened! (test)");
+        } catch (SrampUiException e) {
+            String message = e.getMessage();
+            notificationService.send("Test Error Notification", message, e);
+        }
+    }
+    NotificationBean bean = null;
+    @EventHandler("btn-test-3")
+    public void test3Click(ClickEvent event) {
+        if (bean != null) {
+            notificationService.complete(bean.getUuid(), "Test Progress Notification - Error!", "Event handler that fires when the user clicks the Import Artifacts button. Event handler that fires when the user clicks the Import Artifacts button. Event handler that fires when the user clicks the Import Artifacts button. Event handler that fires when the user clicks the Import Artifacts button.");
+            bean = null;
+        } else {
+            bean = notificationService.start("Test Progress Notification", "Please wait while we do a thing...");
+        }
+    }
+
 
     @Inject @DataField("btn-import")
     protected Anchor importDialogButton;

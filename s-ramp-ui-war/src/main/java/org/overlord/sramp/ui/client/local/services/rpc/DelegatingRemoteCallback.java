@@ -13,36 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.local.services;
+package org.overlord.sramp.ui.client.local.services.rpc;
 
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 
 /**
- * Reusable error callback that bridges the gap between the Errai
- * RPC mechanism and the {@link IRpcServiceInvocationHandler}.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DelegatingErrorCallback implements ErrorCallback<Message> {
+public class DelegatingRemoteCallback<T> implements RemoteCallback<T> {
 
-    private IRpcServiceInvocationHandler<?> handler;
+    private IRpcServiceInvocationHandler<T> handler;
 
     /**
      * Constructor.
      * @param handler
      */
-    public DelegatingErrorCallback(IRpcServiceInvocationHandler<?> handler) {
+    public DelegatingRemoteCallback(IRpcServiceInvocationHandler<T> handler) {
         this.handler = handler;
     }
 
     /**
-     * @see org.jboss.errai.common.client.api.ErrorCallback#error(java.lang.Object, java.lang.Throwable)
+     * @see org.jboss.errai.common.client.api.RemoteCallback#callback(java.lang.Object)
      */
     @Override
-    public boolean error(Message message, Throwable throwable) {
-        this.handler.onError(throwable);
-        return false;
+    public void callback(T response) {
+        this.handler.onReturn(response);
     }
 
 }

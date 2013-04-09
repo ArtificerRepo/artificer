@@ -248,6 +248,14 @@
                   </ul>
                 </div>
                 <a data-field="btn-import" id="btn-import" class="btn btn-focus requires-fileupload">Import Artifacts</a>
+
+
+                <a data-field="btn-test-1" id="btn-test-1" class="btn">NOTIFICATION</a>
+                <a data-field="btn-test-2" id="btn-test-2" class="btn">ERROR</a>
+                <a data-field="btn-test-3" id="btn-test-3" class="btn">PROGRESS</a>
+
+
+
                 <div class="pull-right sramp-sp4n-label desktop-only">
                   Displaying <span data-field="sramp-artifacts-range-1">1-11</span> of <span data-field="sramp-artifacts-total-1">37</span>
                 </div>
@@ -397,6 +405,7 @@
       </div>
     </div>
 
+
     <!-- Classifer selection modal -->
     <div id="classifier-dialog" class="sramp-filter-ontology-modal modal hide">
       <div class="modal-header">
@@ -501,6 +510,18 @@
         <a class="btn btn-focus btn-small">OK</a>
       </div>
     </div>
+    
+    
+    <!-- Growl modeless dialog -->
+    <div data-field="growl-dialog" class="growl-dialog">
+      <div class="growl-dialog-header">
+        <button data-field="growl-dialog-header-closeButton" type="button" class="close" aria-hidden="true">&times;</button>
+        <div data-field="growl-dialog-header-title" class="growl-dialog-header-title">Sample Growl Dialog</div>
+      </div>
+      <div data-field="growl-dialog-body" class="growl-dialog-body">
+        <p>This is the message that is the body of my notification.  Some real interesting information would presumably be here.
+      </div>
+    </div>
 
     <!-- Some scripting to add functionality to the live template -->
     <script>
@@ -518,6 +539,9 @@
     	  $('#classifier-dialog').modal({
     		  backdrop: false
     	  });
+      });
+      $('.sramp-filter-list li:nth-child(1) a').click(function() {
+          $('.growl-dialog').attr('style', 'position: fixed; width: 300px; right: 10px; bottom: 10px;');
       });
     </script>
 

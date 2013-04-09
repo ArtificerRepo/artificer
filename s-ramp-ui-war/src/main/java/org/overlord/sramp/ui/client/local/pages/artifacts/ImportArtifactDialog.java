@@ -22,12 +22,11 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 import org.overlord.sramp.ui.client.local.widgets.common.TemplatedFormPanel;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
@@ -41,6 +40,9 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 @Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#import-dialog")
 @Dependent
 public class ImportArtifactDialog extends ModalDialog {
+
+    @Inject
+    private NotificationService notificationService;
 
     @Inject @DataField("import-dialog-form")
     private TemplatedFormPanel form;
@@ -66,7 +68,6 @@ public class ImportArtifactDialog extends ModalDialog {
         form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
             @Override
             public void onSubmitComplete(SubmitCompleteEvent event) {
-                Window.alert("Result: " + event.getResults());
             }
         });
     }

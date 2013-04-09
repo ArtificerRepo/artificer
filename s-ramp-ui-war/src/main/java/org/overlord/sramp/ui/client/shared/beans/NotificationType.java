@@ -13,25 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.local.services;
+package org.overlord.sramp.ui.client.shared.beans;
 
 /**
- * An async handler interface for making service invocations.
+ * An enumeration listing the types of growls.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IRpcServiceInvocationHandler<T> {
-
-    /**
-     * Called when the RPC call successfully returns data.
-     * @param data
-     */
-    public void onReturn(T data);
-
-    /**
-     * Called when the RPC call fails.
-     * @param error
-     */
-    public void onError(Throwable error);
-
+public enum NotificationType {
+    notification, error, progress, progressCompleted, progressErrored;
 }
