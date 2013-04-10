@@ -155,15 +155,15 @@ public class NotificationService {
     /**
      * Completes an in-progress (progress-style) notification.
      * @param title
-     * @param message
+     * @param widget
      * @param exception
      */
-    public final void complete(String uuid, String title, Widget message) {
+    public final void complete(String uuid, String title, Widget widget) {
         NotificationBean bean = new NotificationBean();
         bean.setUuid(uuid);
         bean.setType(NotificationType.progressCompleted);
         bean.setTitle(title);
-        bean.setBody(message);
+        bean.setMessageWidget(widget);
         sendNotification(bean);
     }
 
@@ -318,8 +318,8 @@ public class NotificationService {
         String additionalClass = "growl-dialog-" + notification.getData().getType();
         widget.addStyleName(additionalClass);
         widget.setNotificationTitle(notification.getData().getTitle());
-        if (notification.getData().getBody() != null) {
-            widget.setNotificationMessage(notification.getData().getBody());
+        if (notification.getData().getMessageWidget() != null) {
+            widget.setNotificationMessage((Widget) notification.getData().getMessageWidget());
         } else if (notification.getData().getType() == NotificationType.error) {
             FlowPanel errorDetails = new FlowPanel();
             if (notification.getData().getMessage() != null) {
@@ -426,11 +426,11 @@ public class NotificationService {
         if (notification != null) {
             notification.getData().setTitle(notificationBean.getTitle());
             notification.getData().setMessage(notificationBean.getMessage());
-            notification.getData().setBody(notificationBean.getBody());
+            notification.getData().setMessageWidget(notificationBean.getMessageWidget());
             notification.getData().setType(NotificationType.notification);
             notification.getWidget().setNotificationTitle(notificationBean.getTitle());
-            if (notificationBean.getBody() != null) {
-                notification.getWidget().setNotificationMessage(notificationBean.getBody());
+            if (notificationBean.getMessageWidget() != null) {
+                notification.getWidget().setNotificationMessage((Widget) notificationBean.getMessageWidget());
             } else {
                 notification.getWidget().setNotificationMessage(notificationBean.getMessage(), NotificationType.notification);
             }
@@ -451,11 +451,11 @@ public class NotificationService {
         if (notification != null) {
             notification.getData().setTitle(notificationBean.getTitle());
             notification.getData().setMessage(notificationBean.getMessage());
-            notification.getData().setBody(notificationBean.getBody());
+            notification.getData().setMessageWidget(notificationBean.getMessageWidget());
             notification.getData().setType(NotificationType.error);
             notification.getWidget().setNotificationTitle(notificationBean.getTitle());
-            if (notificationBean.getBody() != null) {
-                notification.getWidget().setNotificationMessage(notificationBean.getBody());
+            if (notificationBean.getMessageWidget() != null) {
+                notification.getWidget().setNotificationMessage((Widget) notificationBean.getMessageWidget());
             } else {
                 FlowPanel errorDetails = new FlowPanel();
                 if (notification.getData().getMessage() != null) {
