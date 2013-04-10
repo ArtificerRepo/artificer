@@ -39,6 +39,8 @@ public class DateBox extends TextBox {
         return "cid-" + cidCounter++;
     }
 
+    private String cid;
+
     /**
      * Constructor.
      */
@@ -54,9 +56,11 @@ public class DateBox extends TextBox {
             @Override
             public void onAttachOrDetach(AttachEvent event) {
                 if (event.isAttached()) {
-                    String cid = generateUniqueCid();
+                    cid = generateUniqueCid();
                     getElement().addClassName(cid);
                     initPicker(cid);
+                } else {
+                    removePicker(cid);
                 }
             }
         });
@@ -72,6 +76,14 @@ public class DateBox extends TextBox {
               todayBtn: true,
               todayHighlight: true
           });
+    }-*/;
+
+    /**
+     * Removes the bootstrap-datepicker from the DOM and cleans up all events.
+     */
+    protected native void removePicker(String cid) /*-{
+        var selector = '.' + cid;
+        $wnd.jQuery(selector).datepicker('remove');
     }-*/;
 
     /**

@@ -247,7 +247,8 @@
                     <li><a>Categories</a></li>
                   </ul>
                 </div>
-                <a id="btn-import" class="btn btn-focus requires-fileupload">Import Artifacts</a>
+                <a data-field="btn-import" id="btn-import" class="btn btn-focus requires-fileupload">Import Artifacts</a>
+                <a data-field="btn-refresh" class="btn pull-right"><i class="icon-refresh"></i></a>
                 <div class="pull-right sramp-sp4n-label desktop-only">
                   Displaying <span data-field="sramp-artifacts-range-1">1-11</span> of <span data-field="sramp-artifacts-total-1">37</span>
                 </div>
@@ -374,28 +375,34 @@
 
 
     <!-- Import artifacts modal -->
-    <div id="import-dialog" class="modal hide fade">
+    <div data-field="import-dialog" id="import-dialog" class="modal hide fade">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4>Import Artifact(s)</h4>
       </div>
       <div class="modal-body">
-        <p>Choose a file or S-RAMP package to upload.</p>
-        <form>
-          <div id="fileupload-import" class="fileupload fileupload-new" data-provides="fileupload">
+        <p>Choose a file to upload (may be a simple file or an S-RAMP package).</p>
+        <form data-field="import-dialog-form" method="post" enctype="multipart/form-data">
+          <div id="fileupload-import" class="fileupload fileupload-new" data-provides="fileupload" data-name="artifact-file">
             <div class="input-append">
               <div class="uneditable-input"><i class="icon-file fileupload-exists"></i> 
                 <span class="fileupload-preview"></span>
               </div><span class="btn btn-file"><span class="fileupload-new">Select</span><span class="fileupload-exists">Change</span><input type="file"></input></span><a class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
             </div>
           </div>
+          <p>
+            Choose the artifact type  (optional - only specify for custom artifact types - if 
+            ommitted, the server will do its best to guess the type) 
+          </p>
+          <input type="text" name="artifactType" value="" placeholder="e.g. PdfDocument"></input>
         </form>
       </div>
       <div class="modal-footer">
         <a class="btn" data-dismiss="modal">Cancel</a>
-        <a class="btn btn-focus">Import</a>
+        <a data-field="import-dialog-submit-button" class="btn btn-focus">Import</a>
       </div>
     </div>
+
 
     <!-- Classifer selection modal -->
     <div id="classifier-dialog" class="sramp-filter-ontology-modal modal hide">
@@ -501,6 +508,18 @@
         <a class="btn btn-focus btn-small">OK</a>
       </div>
     </div>
+    
+    
+    <!-- Growl modeless dialog -->
+    <div data-field="growl-dialog" class="growl-dialog">
+      <div class="growl-dialog-header">
+        <button data-field="growl-dialog-header-closeButton" type="button" class="close" aria-hidden="true">&times;</button>
+        <div data-field="growl-dialog-header-title" class="growl-dialog-header-title">Sample Growl Dialog</div>
+      </div>
+      <div data-field="growl-dialog-body" class="growl-dialog-body">
+        <p>This is the message that is the body of my notification.  Some real interesting information would presumably be here.
+      </div>
+    </div>
 
     <!-- Some scripting to add functionality to the live template -->
     <script>
@@ -518,6 +537,9 @@
     	  $('#classifier-dialog').modal({
     		  backdrop: false
     	  });
+      });
+      $('.sramp-filter-list li:nth-child(1) a').click(function() {
+          $('.growl-dialog').attr('style', 'position: fixed; width: 300px; right: 10px; bottom: 10px;');
       });
     </script>
 

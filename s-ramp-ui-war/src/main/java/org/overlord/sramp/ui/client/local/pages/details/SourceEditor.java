@@ -95,8 +95,7 @@ public class SourceEditor extends Widget implements HasValue<String> {
      * @param value
      */
     public native void setEditorValue(String value) /*-{
-		this.@org.overlord.sramp.ui.client.local.pages.details.SourceEditor::editor
-				.setValue(value, -1);
+		this.@org.overlord.sramp.ui.client.local.pages.details.SourceEditor::editor.setValue(value, -1);
     }-*/;
 
     /**

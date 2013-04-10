@@ -37,6 +37,47 @@ input.sramp-date {
   width: 100%;
 }
 
+.growl-dialog {
+  position: fixed;
+  z-index: 1000;
+  width: 350px;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 4px 4px 0px 0px;
+  outline: 0px none;
+  box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.3);
+  background-clip: padding-box;
+}
+.growl-dialog-error {
+  color: #d00000;
+}
+.growl-dialog-hover {
+  background-color: #fefefe;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.5);
+}
+.growl-dialog-header {
+  padding: 1px 8px;
+  background-color: rgb(245, 245, 245);
+  background-image: url("../images/modal-header-bg.png");
+  background-position: left top;
+  background-repeat: repeat-x;
+  border-radius: 6px 6px 0px 0px;
+  border-bottom: 1px solid rgb(223, 223, 223);
+}
+.growl-dialog-header-title {
+  font-size: 11px;
+  font-weight: bold;
+}
+.growl-dialog-body {
+  position: relative;
+  max-height: 200px;
+  padding: 8px;
+  overflow-y: auto;
+  line-height: normal;
+  font-size: 12px;
+}
+
 .sramp-navbar {
   background-image: url("../images/navbar-bg.png");
   background-repeat: repeat-x;

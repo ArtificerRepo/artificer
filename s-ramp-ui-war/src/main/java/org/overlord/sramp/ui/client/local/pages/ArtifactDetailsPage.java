@@ -32,7 +32,7 @@ import org.overlord.sramp.ui.client.local.pages.details.CustomPropertiesPanel;
 import org.overlord.sramp.ui.client.local.pages.details.RelationshipsTable;
 import org.overlord.sramp.ui.client.local.pages.details.SourceEditor;
 import org.overlord.sramp.ui.client.local.services.ArtifactRpcService;
-import org.overlord.sramp.ui.client.local.services.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.util.DOMUtil;
 import org.overlord.sramp.ui.client.local.util.DataBindingDateConverter;
 import org.overlord.sramp.ui.client.local.widgets.common.HtmlSnippet;
