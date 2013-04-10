@@ -31,6 +31,7 @@ public abstract class ModalDialog extends Composite {
 
     @Inject
     private RootPanel rootPanel;
+    private boolean destroyOnHide;
 
     /**
      * Constructor.
@@ -51,6 +52,14 @@ public abstract class ModalDialog extends Composite {
      * Hides/closes the dialog.
      */
     public void hide() {
+    }
+
+    /**
+     * Hides/closes the dialog.
+     * @param destroyOnHide false if the dialog should *not* be removed from the root panel
+     */
+    public void hide(boolean destroyOnHide) {
+        this.destroyOnHide = destroyOnHide;
         hide(getElement());
     }
 
@@ -59,8 +68,16 @@ public abstract class ModalDialog extends Composite {
      */
     protected final void onHidden() {
         removeHiddenHandler(getElement());
-        rootPanel.remove(this);
+        if (destroyOnHide)
+            destroy();
         onDialogHidden();
+    }
+
+    /**
+     * Called to remove the dialog from the root panel.
+     */
+    public void destroy() {
+        rootPanel.remove(this);
     }
 
     /**

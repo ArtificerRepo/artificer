@@ -17,21 +17,18 @@ package org.overlord.sramp.ui.client.local.pages.artifacts;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 import org.overlord.sramp.ui.client.local.widgets.common.TemplatedFormPanel;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
-import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 
 /**
  * A modal dialog used to import artifacts into S-RAMP.
@@ -41,13 +38,12 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 @Dependent
 public class ImportArtifactDialog extends ModalDialog {
 
-    @Inject
-    private NotificationService notificationService;
-
     @Inject @DataField("import-dialog-form")
     private TemplatedFormPanel form;
     @Inject @DataField("import-dialog-submit-button")
     private Anchor submitButton;
+    @Inject
+    private Instance<ImportArtifactFormSubmitHandler> formHandlerFactory;
 
     /**
      * Constructor.
@@ -60,16 +56,10 @@ public class ImportArtifactDialog extends ModalDialog {
      */
     @PostConstruct
     protected void onPostConstruct() {
-        form.addSubmitHandler(new SubmitHandler() {
-            @Override
-            public void onSubmit(SubmitEvent event) {
-            }
-        });
-        form.addSubmitCompleteHandler(new SubmitCompleteHandler() {
-            @Override
-            public void onSubmitComplete(SubmitCompleteEvent event) {
-            }
-        });
+        ImportArtifactFormSubmitHandler formHandler = formHandlerFactory.get();
+        formHandler.setDialog(this);
+        form.addSubmitHandler(formHandler);
+        form.addSubmitCompleteHandler(formHandler);
     }
 
     /**
@@ -88,7 +78,6 @@ public class ImportArtifactDialog extends ModalDialog {
     @EventHandler("import-dialog-submit-button")
     public void onSubmitClick(ClickEvent event) {
         form.submit();
-        hide();
     }
 
 }

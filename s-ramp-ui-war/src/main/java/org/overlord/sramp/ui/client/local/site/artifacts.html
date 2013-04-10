@@ -248,14 +248,7 @@
                   </ul>
                 </div>
                 <a data-field="btn-import" id="btn-import" class="btn btn-focus requires-fileupload">Import Artifacts</a>
-
-
-                <a data-field="btn-test-1" id="btn-test-1" class="btn">NOTIFICATION</a>
-                <a data-field="btn-test-2" id="btn-test-2" class="btn">ERROR</a>
-                <a data-field="btn-test-3" id="btn-test-3" class="btn">PROGRESS</a>
-
-
-
+                <a data-field="btn-refresh" class="btn pull-right"><i class="icon-refresh"></i></a>
                 <div class="pull-right sramp-sp4n-label desktop-only">
                   Displaying <span data-field="sramp-artifacts-range-1">1-11</span> of <span data-field="sramp-artifacts-total-1">37</span>
                 </div>
@@ -390,6 +383,7 @@
       <div class="modal-body">
         <p>Choose a file or S-RAMP package to upload.</p>
         <form data-field="import-dialog-form" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="artifactType" value="Document"></input>
           <div id="fileupload-import" class="fileupload fileupload-new" data-provides="fileupload" data-name="artifact-file">
             <div class="input-append">
               <div class="uneditable-input"><i class="icon-file fileupload-exists"></i> 
