@@ -21,8 +21,6 @@ import java.util.Date;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * A notification - can be sent either from the client or the server.
  *
@@ -38,7 +36,7 @@ public class NotificationBean implements Serializable {
     private final Date date = new Date();
     private String title;
     private String message;
-    private transient Widget body;
+    private transient Object messageWidget;
     private SrampUiException exception;
 
     /**
@@ -125,17 +123,17 @@ public class NotificationBean implements Serializable {
     }
 
     /**
-     * @return the body
+     * @return the message widget
      */
-    public Widget getBody() {
-        return body;
+    public Object getMessageWidget() {
+        return messageWidget;
     }
 
     /**
-     * @param body the body to set
+     * @param widget the message widget to set
      */
-    public void setBody(Widget body) {
-        this.body = body;
+    public void setMessageWidget(Object widget) {
+        this.messageWidget = widget;
     }
 
 }
