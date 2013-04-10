@@ -381,9 +381,8 @@
         <h4>Import Artifact(s)</h4>
       </div>
       <div class="modal-body">
-        <p>Choose a file or S-RAMP package to upload.</p>
+        <p>Choose a file to upload (may be a simple file or an S-RAMP package).</p>
         <form data-field="import-dialog-form" method="post" enctype="multipart/form-data">
-          <input type="hidden" name="artifactType" value="Document"></input>
           <div id="fileupload-import" class="fileupload fileupload-new" data-provides="fileupload" data-name="artifact-file">
             <div class="input-append">
               <div class="uneditable-input"><i class="icon-file fileupload-exists"></i> 
@@ -391,6 +390,11 @@
               </div><span class="btn btn-file"><span class="fileupload-new">Select</span><span class="fileupload-exists">Change</span><input type="file"></input></span><a class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
             </div>
           </div>
+          <p>
+            Choose the artifact type  (optional - only specify for custom artifact types - if 
+            ommitted, the server will do its best to guess the type) 
+          </p>
+          <input type="text" name="artifactType" value="" placeholder="e.g. PdfDocument"></input>
         </form>
       </div>
       <div class="modal-footer">

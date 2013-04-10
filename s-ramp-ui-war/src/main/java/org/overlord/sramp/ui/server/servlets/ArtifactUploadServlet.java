@@ -46,6 +46,7 @@ import org.overlord.sramp.client.jar.JarToSrampArchive;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
+import org.overlord.sramp.ui.server.services.ArtifactTypeGuessingService;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
 
 /**
@@ -60,6 +61,8 @@ public class ArtifactUploadServlet extends HttpServlet {
 
     @Inject
     private SrampApiClientAccessor clientAccessor;
+    @Inject
+    private ArtifactTypeGuessingService artifactTypeGuesser;
 
 	/**
 	 * Constructor.
@@ -118,7 +121,6 @@ public class ArtifactUploadServlet extends HttpServlet {
 		} else {
 			response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
 					"Request contents type is not supported by the servlet.");
-			return;
 		}
 	}
 
@@ -136,6 +138,10 @@ public class ArtifactUploadServlet extends HttpServlet {
 		InputStream contentStream = null;
 		String uuid = null;
 		Map<String, String> responseParams = new HashMap<String, String>();
+
+		if (artifactType == null || artifactType.trim().length() == 0) {
+		    artifactType = artifactTypeGuesser.guess(fileName);
+		}
 
 		try {
 			// First, upload the artifact, no matter what kind
@@ -216,6 +222,9 @@ public class ArtifactUploadServlet extends HttpServlet {
 	/**
 	 * Writes the response values back to the http response.  This allows the calling code to
 	 * parse the response values for display to the user.
+	 *
+	 * TODO replace with Jackson!
+	 *
 	 * @param responseMap the response params to write to the http response
 	 * @param response the http response
 	 * @throws IOException
