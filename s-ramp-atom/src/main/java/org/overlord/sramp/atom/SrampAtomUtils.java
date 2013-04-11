@@ -31,6 +31,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
+import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
  * Some useful static utils for users of the s-ramp client.
@@ -214,4 +215,18 @@ public final class SrampAtomUtils {
 		}
 		return object;
 	}
+
+
+    /**
+     * Unwraps the Ontology from the Atom Entry.
+     * @param entry
+     */
+    public static RDF unwrapRDF(Entry entry) {
+        try {
+            return unwrap(entry, RDF.class);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
