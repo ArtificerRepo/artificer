@@ -84,15 +84,30 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
     public void onSubmitComplete(SubmitCompleteEvent event) {
         dialog.destroy();
 
+        // TODO !!i18n!!
+
         ImportResult results = ImportResult.fromResult(event.getResults());
         if (results.isError()) {
-            // TODO i18n
+            if (results.getError() != null) {
+                notificationService.complete(
+                        notification.getUuid(),
+                        "Importing Artifact(s) [!Error!]",
+                        results.getError());
+            } else {
+                notificationService.complete(
+                        notification.getUuid(),
+                        "Importing Artifact(s) [!Error!]",
+                        "Uh oh, something went wrong with your import!  Please contact your system administrator.");
+            }
+        } else if (results.isBatch()) {
+            String message = "The S-RAMP archive was uploaded and processed, with " +
+                    results.getBatchNumSuccess() + " artifact(s) successfully processed and " +
+                    results.getBatchNumFailed() + " failed.";
             notificationService.complete(
                     notification.getUuid(),
-                    "Importing Artifact(s) [!Error!]",
-                    "Uh oh, something went wrong with your import!  Please contact your system administrator.");
+                    "S-RAMP Archive (batch) Complete",
+                    message);
         } else {
-            // TODO i18n
             Widget ty = new InlineLabel("Thank you for waiting - your import has completed successfully.  ");
             TransitionAnchor<ArtifactDetailsPage> clickHere = toDetailsFactory.get("uuid", results.getUuid());
             clickHere.setText("Click here");
@@ -172,6 +187,34 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
          */
         public final boolean isError() {
             return "true".equals(get("exception"));
+        }
+
+        /**
+         * @return true if the response is due to a s-ramp package upload
+         */
+        public final boolean isBatch() {
+            return "true".equals(get("batch"));
+        }
+
+        /**
+         * @return the total number of items in the s-ramp package
+         */
+        public final int getBatchTotal() {
+            return new Integer(get("batchTotal"));
+        }
+
+        /**
+         * @return the number of successful items in the package
+         */
+        public final int getBatchNumSuccess() {
+            return new Integer(get("batchNumSuccess"));
+        }
+
+        /**
+         * @return the number of failed items in the package
+         */
+        public final int getBatchNumFailed() {
+            return new Integer(get("batchNumFailed"));
         }
 
         /**
