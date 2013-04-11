@@ -39,7 +39,6 @@ import org.apache.commons.io.IOUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.jar.DefaultMetaDataFactory;
 import org.overlord.sramp.client.jar.DiscoveredArtifact;
 import org.overlord.sramp.client.jar.JarToSrampArchive;
@@ -133,10 +132,7 @@ public class ArtifactUploadServlet extends HttpServlet {
 	 */
 	private Map<String, String> uploadArtifact(String artifactType, String fileName,
 			InputStream artifactContent) throws Exception {
-		SrampAtomApiClient client = clientAccessor.getClient();
 		File tempFile = stashResourceContent(artifactContent);
-		InputStream contentStream = null;
-		String uuid = null;
 		Map<String, String> responseParams = new HashMap<String, String>();
 
 		if (artifactType == null || artifactType.trim().length() == 0) {
@@ -144,47 +140,98 @@ public class ArtifactUploadServlet extends HttpServlet {
 		}
 
 		try {
-			// First, upload the artifact, no matter what kind
-			try {
-				contentStream = FileUtils.openInputStream(tempFile);
-				ArtifactType at = ArtifactType.valueOf(artifactType);
-				BaseArtifactType artifact = client.uploadArtifact(at, contentStream, fileName);
-				responseParams.put("model", at.getArtifactType().getModel());
-				responseParams.put("type", at.getArtifactType().getType());
-				responseParams.put("uuid", artifact.getUuid());
-				uuid = artifact.getUuid();
-			} finally {
-				IOUtils.closeQuietly(contentStream);
-			}
+		    if ("SrampArchive".equals(artifactType)) {
+		        uploadPackage(tempFile, responseParams);
+		    } else {
+		        uploadSingleArtifact(artifactType, fileName, tempFile, responseParams);
+		    }
+        } finally {
+            FileUtils.deleteQuietly(tempFile);
+        }
 
-			// Check if this is an expandable file type.  If it is, then expand it!
-			if (isExpandable(fileName)) {
-				JarToSrampArchive j2sramp = null;
-				SrampArchive archive = null;
-				try {
-					final String parentUUID = uuid;
-					j2sramp = new JarToSrampArchive(tempFile);
-					j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
-						@Override
-						public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
-							BaseArtifactType metaData = super.createMetaData(artifact);
-							SrampModelUtils.addGenericRelationship(metaData, "expandedFromDocument", parentUUID);
-							return metaData;
-						}
-					});
-					archive = j2sramp.createSrampArchive();
-					client.uploadBatch(archive);
-				} finally {
-					SrampArchive.closeQuietly(archive);
-					JarToSrampArchive.closeQuietly(j2sramp);
-				}
-			}
-
-			return responseParams;
-		} finally {
-			FileUtils.deleteQuietly(tempFile);
-		}
+		return responseParams;
 	}
+
+    /**
+     * Uploads an S-RAMP package to the repository.
+     * @param tempFile
+     * @param responseParams
+     */
+    private void uploadPackage(File tempFile, Map<String, String> responseParams) throws Exception {
+        SrampArchive archive = null;
+        try {
+            archive = new SrampArchive(tempFile);
+            Map<String, ?> batch = clientAccessor.getClient().uploadBatch(archive);
+            int numSuccess = 0;
+            int numFailed = 0;
+            for (String key : batch.keySet()) {
+                Object object = batch.get(key);
+                if (object instanceof BaseArtifactType) {
+                    numSuccess++;
+                } else {
+                    numFailed++;
+                }
+            }
+            // TODO turn these things into constants
+            responseParams.put("batch", "true");
+            responseParams.put("batchTotal", String.valueOf(numSuccess + numFailed));
+            responseParams.put("batchNumSuccess", String.valueOf(numSuccess));
+            responseParams.put("batchNumFailed", String.valueOf(numFailed));
+        } finally {
+            SrampArchive.closeQuietly(archive);
+        }
+
+    }
+
+    /**
+     * Uploads a single artifact to the S-RAMP repository.
+     * @param artifactType
+     * @param fileName
+     * @param client
+     * @param tempFile
+     * @param responseParams
+     * @throws Exception
+     */
+    private void uploadSingleArtifact(String artifactType, String fileName,
+            File tempFile, Map<String, String> responseParams) throws Exception {
+        String uuid = null;
+		// First, upload the artifact, no matter what kind
+        InputStream contentStream = null;
+		try {
+			contentStream = FileUtils.openInputStream(tempFile);
+			ArtifactType at = ArtifactType.valueOf(artifactType);
+			BaseArtifactType artifact = clientAccessor.getClient().uploadArtifact(at, contentStream, fileName);
+			responseParams.put("model", at.getArtifactType().getModel());
+			responseParams.put("type", at.getArtifactType().getType());
+			responseParams.put("uuid", artifact.getUuid());
+			uuid = artifact.getUuid();
+		} finally {
+			IOUtils.closeQuietly(contentStream);
+		}
+
+		// Check if this is an expandable file type.  If it is, then expand it!
+		if (isExpandable(fileName)) {
+			JarToSrampArchive j2sramp = null;
+			SrampArchive archive = null;
+			try {
+				final String parentUUID = uuid;
+				j2sramp = new JarToSrampArchive(tempFile);
+				j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
+					@Override
+					public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
+						BaseArtifactType metaData = super.createMetaData(artifact);
+						SrampModelUtils.addGenericRelationship(metaData, "expandedFromDocument", parentUUID);
+						return metaData;
+					}
+				});
+				archive = j2sramp.createSrampArchive();
+				clientAccessor.getClient().uploadBatch(archive);
+			} finally {
+				SrampArchive.closeQuietly(archive);
+				JarToSrampArchive.closeQuietly(j2sramp);
+			}
+		}
+    }
 
 	/**
 	 * Make a temporary copy of the resource by saving the content to a temp file.
