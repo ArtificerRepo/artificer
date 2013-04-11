@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -64,6 +66,7 @@ import org.overlord.sramp.client.auth.BasicAuthenticationProvider;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampConstants;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
@@ -672,6 +675,7 @@ public class SrampAtomApiClient {
 			ClientResponse<Entry> response = request.post(Entry.class);
 			Entry entry = response.getEntity();
 			RDF rdf = SrampAtomUtils.unwrap(entry, RDF.class);
+			rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString());
 			return rdf;
 		} catch (SrampAtomException e) {
 			throw e;
@@ -705,6 +709,30 @@ public class SrampAtomApiClient {
 		} catch (Throwable e) {
 			throw new SrampClientException(e);
 		}
+	}
+
+	/**
+	 * Gets a single ontology by UUID.  This returns all of the ontology meta-data
+	 * as well as all of the classes.
+	 * @param ontologyUuid
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+	public RDF getOntology(String ontologyUuid) throws SrampClientException, SrampAtomException {
+	    assertFeatureEnabled("ontology");
+        try {
+            String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid);
+            ClientRequest request = createClientRequest(atomUrl);
+            ClientResponse<Entry> response = request.get(Entry.class);
+            Entry entry = response.getEntity();
+            RDF rdf = SrampAtomUtils.unwrapRDF(entry);
+            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString());
+            return rdf;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
 	}
 
 	/**

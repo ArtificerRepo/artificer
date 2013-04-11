@@ -15,8 +15,8 @@
  */
 package org.overlord.sramp.client;
 
-import static org.overlord.sramp.common.test.resteasy.TestPortProvider.generateURL;
 import static org.junit.Assert.fail;
+import static org.overlord.sramp.common.test.resteasy.TestPortProvider.generateURL;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -24,13 +24,14 @@ import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -40,17 +41,23 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
+import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
+import org.overlord.sramp.repository.jcr.modeshape.JCRRepositoryCleaner;
+import org.overlord.sramp.server.atom.mappers.RdfToOntologyMapper;
 import org.overlord.sramp.server.atom.services.ArtifactResource;
 import org.overlord.sramp.server.atom.services.BatchResource;
 import org.overlord.sramp.server.atom.services.FeedResource;
+import org.overlord.sramp.server.atom.services.OntologyResource;
 import org.overlord.sramp.server.atom.services.QueryResource;
+import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
  * Unit test for the
@@ -70,8 +77,14 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
 		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);
-		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
+        dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
+        dispatcher.getRegistry().addPerRequestResource(OntologyResource.class);
 	}
+
+    @Before
+    public void cleanRepository() {
+        new JCRRepositoryCleaner().clean();
+    }
 
 	@AfterClass
 	public static void cleanup() {
@@ -544,7 +557,85 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
         } finally {
             IOUtils.closeQuietly(is);
         }
-
 	}
+
+	/**
+     * Test method for {@link SrampAtomApiClient#uploadOntology(InputStream)}.
+     */
+    @Test
+    public void testUploadOntology() throws Exception {
+        String ontologyFileName = "colors.owl.xml";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/ontologies/" + ontologyFileName);
+        Assert.assertNotNull(is);
+        try {
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            RDF rdf = client.uploadOntology(is);
+            Assert.assertNotNull(rdf);
+            SrampOntology ontology = RdfToOntologyMapper.rdf2ontology(rdf);
+            Assert.assertNotNull(ontology);
+            Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase());
+            Assert.assertNotNull(ontology.getUuid());
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    /**
+     * Test method for {@link SrampAtomApiClient#getOntologies()}.
+     */
+    @Test
+    public void testGetOntologies() throws Exception {
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        List<OntologySummary> ontologies = client.getOntologies();
+        Assert.assertNotNull(ontologies);
+        Assert.assertTrue(ontologies.isEmpty());
+        // Re-use another test to upload an ontology
+        testUploadOntology();
+
+        // Now go again with data there.
+        ontologies = client.getOntologies();
+        Assert.assertNotNull(ontologies);
+        Assert.assertFalse(ontologies.isEmpty());
+        Assert.assertEquals(1, ontologies.size());
+        OntologySummary ontologySummary = ontologies.get(0);
+        Assert.assertEquals("http://www.example.org/colors.owl", ontologySummary.getBase());
+        Assert.assertEquals("Colors ontology", ontologySummary.getComment());
+        Assert.assertEquals("Colors", ontologySummary.getId());
+        Assert.assertEquals("Colors", ontologySummary.getLabel());
+        Assert.assertNotNull(ontologySummary.getUuid());
+    }
+
+    /**
+     * Test method for {@link SrampAtomApiClient#getOntology(String)}.
+     */
+    @Test
+    public void testGetOntology() throws Exception {
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        RDF rdf = null;
+        try {
+            rdf = client.getOntology("INVALID_UUID");
+        } catch (Exception e) {
+            Assert.assertEquals("No ontology found with UUID: INVALID_UUID", e.getMessage());
+        }
+        Assert.assertNull(rdf);
+
+        // Re-use another test to upload an ontology
+        testUploadOntology();
+
+        // Now go again with data there.
+        List<OntologySummary> ontologies = client.getOntologies();
+        Assert.assertNotNull(ontologies);
+        Assert.assertFalse(ontologies.isEmpty());
+        Assert.assertEquals(1, ontologies.size());
+        OntologySummary ontologySummary = ontologies.get(0);
+        String uuid = ontologySummary.getUuid();
+
+        rdf = client.getOntology(uuid);
+        Assert.assertNotNull(rdf);
+        SrampOntology ontology = RdfToOntologyMapper.rdf2ontology(rdf);
+        Assert.assertNotNull(ontology);
+        Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase());
+        Assert.assertNotNull(ontology.getUuid());
+    }
 
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xml:base="http://www.example.org/regional.owl">
+	
+	<owl:Ontology rdf:ID="Regional">
+		<rdfs:label>Regional</rdfs:label>
+		<rdfs:comment>Regional ontology</rdfs:comment>
+	</owl:Ontology>
+	
+	<owl:Class rdf:ID="World">
+		<rdfs:label>World</rdfs:label>
+		<rdfs:comment>The whole world.</rdfs:comment>
+	</owl:Class>
+	
+	<owl:Class rdf:ID="Asia">
+		<rdfs:subClassOf rdf:resource="http://www.example.org/regional.owl#World" />
+		<rdfs:label>Asia</rdfs:label>
+		<rdfs:comment>The continent of Asia.</rdfs:comment>
+	</owl:Class>
+	<owl:Class rdf:ID="Europe">
+		<rdfs:subClassOf rdf:resource="http://www.example.org/regional.owl#World" />
+		<rdfs:label>Europe</rdfs:label>
+		<rdfs:comment>The continent of Europe.</rdfs:comment>
+	</owl:Class>
+
+	<owl:Class rdf:ID="Japan">
+		<rdfs:subClassOf rdf:resource="http://www.example.org/regional.owl#Asia" />
+		<rdfs:label>Japan</rdfs:label>
+		<rdfs:comment>The empire of Japan.</rdfs:comment>
+	</owl:Class>
+	<owl:Class rdf:ID="China">
+		<rdfs:subClassOf rdf:resource="http://www.example.org/regional.owl#Asia" />
+		<rdfs:label>China</rdfs:label>
+		<rdfs:comment>The people's republic of China.</rdfs:comment>
+	</owl:Class>
+
+	<owl:Class rdf:ID="UnitedKingdom">
+		<rdfs:subClassOf rdf:resource="http://www.example.org/regional.owl#Europe" />
+		<rdfs:label>United Kingdom</rdfs:label>
+		<rdfs:comment>The UK.</rdfs:comment>
+	</owl:Class>
+	<owl:Class rdf:ID="Germany">
+		<rdfs:subClassOf rdf:resource="http://www.example.org/regional.owl#Europe" />
+		<rdfs:label>Germany</rdfs:label>
+	</owl:Class>
+	
+</rdf:RDF>

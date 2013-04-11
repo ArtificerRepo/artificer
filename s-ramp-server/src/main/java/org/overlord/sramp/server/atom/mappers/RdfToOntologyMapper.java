@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 import org.w3._2002._07.owl_.Ontology;
@@ -33,6 +34,19 @@ import org.w3._2002._07.owl_.Ontology;
  * @author eric.wittmann@redhat.com
  */
 public class RdfToOntologyMapper {
+
+    private static final RdfToOntologyMapper instance = new RdfToOntologyMapper();
+
+    /**
+     * Converts an RDF to an S-RAMP Ontology.
+     * @param rdf
+     * @throws Exception
+     */
+    public static SrampOntology rdf2ontology(RDF rdf) throws Exception {
+        SrampOntology ontology = new SrampOntology();
+        instance.map(rdf, ontology);
+        return ontology;
+    }
 
 	/**
 	 * Constructor.
@@ -47,7 +61,12 @@ public class RdfToOntologyMapper {
 	 * @throws Exception
 	 */
 	public void map(RDF rdf, SrampOntology ontology) throws Exception {
-		Ontology rdfOntology = rdf.getOntology();
+        String uuid = rdf.getOtherAttributes().get(new QName(SrampConstants.SRAMP_NS, "uuid"));
+        if (uuid != null && uuid.trim().length() > 0) {
+            ontology.setUuid(uuid);
+        }
+
+        Ontology rdfOntology = rdf.getOntology();
 
 		String base = rdf.getOtherAttributes().get(new QName("http://www.w3.org/XML/1998/namespace", "base"));
 		ontology.setBase(base);
