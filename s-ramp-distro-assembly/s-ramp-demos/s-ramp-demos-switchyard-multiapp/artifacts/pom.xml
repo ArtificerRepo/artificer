@@ -26,7 +26,7 @@
     </parent>
     <artifactId>switchyard-quickstart-demo-multi-artifacts</artifactId>
     <packaging>jar</packaging>
-    <name>Quickstart Demo: Multiple Applications - Service Artifacts</name>
+    <name>S-RAMP Demos: Switchyard Multi App Deployment - Service Artifacts</name>
  
     <build>
         <finalName>OrderService</finalName>

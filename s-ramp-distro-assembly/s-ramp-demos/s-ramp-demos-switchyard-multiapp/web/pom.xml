@@ -26,7 +26,7 @@
     </parent>
     <artifactId>switchyard-quickstart-demo-multi-web</artifactId>
     <packaging>war</packaging>
-    <name>Quickstart Demo: Multiple Applications - Web App</name>
+    <name>S-RAMP Demos: Switchyard Multi App Deployment - Web App</name>
     <dependencies>
         <dependency>
             <groupId>org.switchyard</groupId>
