@@ -129,7 +129,7 @@ public class SrampOntology {
 	}
 
 	/**
-	 * @return a list of all clases in the ontology
+	 * @return a list of all classes in the ontology
 	 */
 	public List<SrampOntology.Class> getAllClasses() {
 		List<SrampOntology.Class> allClasses = new ArrayList<SrampOntology.Class>();
