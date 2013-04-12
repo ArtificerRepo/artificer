@@ -26,7 +26,7 @@
     </parent>
     <artifactId>s-ramp-demos-switchyard-multiapp</artifactId>
     <groupId>org.overlord.sramp.demos.switchyard.multiapp</groupId>
-    <name>Quickstart Demo: Multiple Applications</name>
+    <name>S-RAMP Demos: Switchyard Multi App Deployment</name>
     <packaging>pom</packaging>
     <modules>
         <module>artifacts</module>

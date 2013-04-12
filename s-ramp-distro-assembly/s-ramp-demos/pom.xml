@@ -154,6 +154,6 @@
     <module>s-ramp-demos-custom-deriver</module>
     <module>s-ramp-demos-shell-command</module>
     <module>s-ramp-demos-switchyard</module>
-    <module>s-ramp-demos-switchyard-mulitApp</module>
+    <module>s-ramp-demos-switchyard-multiapp</module>
   </modules>
 </project>
