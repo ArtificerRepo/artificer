@@ -16,9 +16,9 @@
     <commons.compress.version>1.4.1</commons.compress.version>
     <junit.version>4.8.2</junit.version>
     <log4j.version>1.2.16</log4j.version>
-    <slf4j.api.version>1.5.11</slf4j.api.version>
-    <slf4j.log4j.version>1.5.11</slf4j.log4j.version>
-    <slf4j.nop.version>1.5.11</slf4j.nop.version>
+    <slf4j.api.version>1.6.1</slf4j.api.version>
+    <slf4j.log4j.version>1.6.1</slf4j.log4j.version>
+    <slf4j.nop.version>1.6.1</slf4j.nop.version>
   </properties>
 
   <repositories>
@@ -137,5 +137,6 @@
     <module>s-ramp-demos-custom-deriver</module>
     <module>s-ramp-demos-shell-command</module>
     <module>s-ramp-demos-switchyard</module>
+    <module>s-ramp-demos-switchyard-mulitApp</module>
   </modules>
 </project>
