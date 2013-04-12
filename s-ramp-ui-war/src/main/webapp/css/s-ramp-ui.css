@@ -612,3 +612,10 @@ ul.ontology-selector {
 .ontology-selector label {
   margin-bottom: 0px;
 }
+
+#fileupload-import .input-append {
+  width: 100%;
+}
+#fileupload-import .uneditable-input {
+  width: 60%;
+}

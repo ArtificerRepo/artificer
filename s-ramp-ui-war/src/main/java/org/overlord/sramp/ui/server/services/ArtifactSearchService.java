@@ -18,6 +18,7 @@ package org.overlord.sramp.ui.server.services;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -180,6 +181,22 @@ public class ArtifactSearchService implements IArtifactSearchService {
             criteria.add("@derived = 'false'");
         } else if (filters.getOrigin() == ArtifactOriginEnum.derived) {
             criteria.add("@derived = 'true'");
+        }
+        // Classifiers
+        if (!filters.getClassifiers().isEmpty()) {
+            Set<String> ontologyBases = filters.getClassifiers().keySet();
+            StringBuilder classifierCriteria = new StringBuilder();
+            classifierCriteria.append("s-ramp:classifiedByAllOf(.");
+            for (String base : ontologyBases) {
+                Set<String> ids = filters.getClassifiers().get(base);
+                for (String id : ids) {
+                    String classifierUri = base + "#" + id;
+                    classifierCriteria.append(",?");
+                    params.add(classifierUri);
+                }
+            }
+            classifierCriteria.append(")");
+            criteria.add(classifierCriteria.toString());
         }
 
         // Now create the query predicate from the generated criteria

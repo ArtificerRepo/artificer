@@ -16,6 +16,9 @@
 package org.overlord.sramp.ui.client.shared.beans;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -36,6 +39,13 @@ public class ArtifactFilterBean {
     private String createdBy = "";
     private String lastModifiedBy = "";
     private ArtifactOriginEnum origin = ArtifactOriginEnum.primary;
+    /**
+     * The classifiers selected by the user in the 'Classifiers' filter section.  This is
+     * a simple map of Ontology Base (URI) to Set of Ontology Class IDs.  In other words,
+     * each ontology in the UI will be a key, and the values will be the IDs of the classes
+     * selected in the classifier selection dialog.
+     */
+    private Map<String, Set<String>> classifiers = new HashMap<String, Set<String>>();
 
     /**
      * Constructor.
@@ -164,6 +174,21 @@ public class ArtifactFilterBean {
     }
 
     /**
+     * @return the classifiers
+     */
+    public Map<String, Set<String>> getClassifiers() {
+        return classifiers;
+    }
+
+    /**
+     * Sets the classifiers.
+     */
+    public ArtifactFilterBean setClassifiers(Map<String, Set<String>> classifiers) {
+        this.classifiers = classifiers;
+        return this;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -178,6 +203,7 @@ public class ArtifactFilterBean {
         result = prime * result + ((dateModifiedTo == null) ? 0 : dateModifiedTo.hashCode());
         result = prime * result + ((lastModifiedBy == null) ? 0 : lastModifiedBy.hashCode());
         result = prime * result + ((origin == null) ? 0 : origin.hashCode());
+        result = prime * result + ((classifiers == null) ? 0 : classifiers.hashCode());
         return result;
     }
 
@@ -229,6 +255,11 @@ public class ArtifactFilterBean {
         } else if (!lastModifiedBy.equals(other.lastModifiedBy))
             return false;
         if (origin != other.origin)
+            return false;
+        if (classifiers == null) {
+            if (other.classifiers != null)
+                return false;
+        } else if (!classifiers.equals(other.classifiers))
             return false;
         return true;
     }

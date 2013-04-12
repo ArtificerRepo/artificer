@@ -31,12 +31,19 @@ public abstract class ModalDialog extends Composite {
 
     @Inject
     private RootPanel rootPanel;
-    private boolean destroyOnHide;
+    private boolean destroyOnHide = true;
 
     /**
      * Constructor.
      */
     public ModalDialog() {
+    }
+
+    /**
+     * @param flag
+     */
+    public void setDestroyOnHide(boolean flag) {
+        this.destroyOnHide = flag;
     }
 
     /**
@@ -91,7 +98,7 @@ public abstract class ModalDialog extends Composite {
      * @param element
      */
     private static native final void modal(Element element) /*-{
-        $wnd.jQuery(element).modal();
+        $wnd.jQuery(element).modal({backdrop:'static',keyboard:false});
     }-*/;
 
     /**
@@ -122,7 +129,6 @@ public abstract class ModalDialog extends Composite {
      * @param element
      */
     private native final void removeHiddenHandler(Element element) /*-{
-        var dis = this;
         $wnd.jQuery(element).off('hidden');
     }-*/;
 

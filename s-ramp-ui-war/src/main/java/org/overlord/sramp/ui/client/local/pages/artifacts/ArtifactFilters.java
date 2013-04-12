@@ -84,6 +84,9 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
     @Inject @DataField
     protected Anchor clearCoreFilters;
 
+    @Inject @DataField("classifier-filter-container")
+    protected ClassifierFilterContainer classifierFilters;
+
     /**
      * Constructor.
      */
@@ -127,6 +130,7 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
         originAny.addClickHandler(clickHandler);
         originPrimary.addClickHandler(clickHandler);
         originDerived.addClickHandler(clickHandler);
+        classifierFilters.addValueChangeHandler(valueChangeHandler);
     }
 
     /**
@@ -141,7 +145,8 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
             .setDateModifiedTo(dateModifiedTo.getDateValue())
             .setCreatedBy(createdBy.getValue())
             .setLastModifiedBy(lastModifiedBy.getValue())
-            .setOrigin(ArtifactOriginEnum.valueOf(originAny.getValue(), originPrimary.getValue(), originDerived.getValue()));
+            .setOrigin(ArtifactOriginEnum.valueOf(originAny.getValue(), originPrimary.getValue(), originDerived.getValue()))
+            .setClassifiers(classifierFilters.getValue());
 
         ArtifactFilterBean oldState = this.currentState;
         this.currentState = newState;
@@ -182,6 +187,14 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
         } else {
             originPrimary.setValue(true);
         }
+        classifierFilters.setValue(value.getClassifiers());
         onFilterValueChange();
+    }
+
+    /**
+     * Refresh any data (e.g. ontology selectors) in the artifact filter panel.
+     */
+    public void refresh() {
+        classifierFilters.refresh();
     }
 }

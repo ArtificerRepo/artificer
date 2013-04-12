@@ -95,7 +95,7 @@ public class NotificationService {
      * @param title
      * @param message
      */
-    public final void send(String title, String message) {
+    public final void sendNotification(String title, String message) {
         NotificationBean bean = new NotificationBean();
         bean.setUuid(String.valueOf(notificationCounter++));
         bean.setType(NotificationType.notification);
@@ -110,7 +110,7 @@ public class NotificationService {
      * @param message
      * @param exception
      */
-    public final void send(String title, String message, SrampUiException exception) {
+    public final void sendErrorNotification(String title, String message, SrampUiException exception) {
         NotificationBean bean = new NotificationBean();
         bean.setUuid(String.valueOf(notificationCounter++));
         bean.setType(NotificationType.error);
@@ -121,13 +121,22 @@ public class NotificationService {
     }
 
     /**
+     * Sends an error notification to the user.
+     * @param title
+     * @param exception
+     */
+    public final void sendErrorNotification(String title, SrampUiException exception) {
+        sendErrorNotification(title, exception.getMessage(), exception);
+    }
+
+    /**
      * Starts a progress style notification.  This displays the message to the user, along
      * with displaying a spinner indicating that a background task is running.
      * @param title
      * @param message
      * @param exception
      */
-    public final NotificationBean start(String title, String message) {
+    public final NotificationBean startProgressNotification(String title, String message) {
         NotificationBean bean = new NotificationBean();
         bean.setUuid(String.valueOf(notificationCounter++));
         bean.setType(NotificationType.progress);
@@ -143,7 +152,7 @@ public class NotificationService {
      * @param message
      * @param exception
      */
-    public final void complete(String uuid, String title, String message) {
+    public final void completeProgressNotification(String uuid, String title, String message) {
         NotificationBean bean = new NotificationBean();
         bean.setUuid(uuid);
         bean.setType(NotificationType.progressCompleted);
@@ -158,7 +167,7 @@ public class NotificationService {
      * @param widget
      * @param exception
      */
-    public final void complete(String uuid, String title, Widget widget) {
+    public final void completeProgressNotification(String uuid, String title, Widget widget) {
         NotificationBean bean = new NotificationBean();
         bean.setUuid(uuid);
         bean.setType(NotificationType.progressCompleted);
@@ -173,7 +182,7 @@ public class NotificationService {
      * @param message
      * @param exception
      */
-    public final void complete(String uuid, String title, SrampUiException error) {
+    public final void completeProgressNotification(String uuid, String title, SrampUiException error) {
         NotificationBean bean = new NotificationBean();
         bean.setUuid(uuid);
         bean.setType(NotificationType.progressErrored);
@@ -186,7 +195,7 @@ public class NotificationService {
      * Sends a notification (local/client only).
      * @param notification
      */
-    public void sendNotification(NotificationBean notification) {
+    protected void sendNotification(NotificationBean notification) {
         MessageBuilder.createMessage()
             .toSubject("NotificationService")
             .signalling()

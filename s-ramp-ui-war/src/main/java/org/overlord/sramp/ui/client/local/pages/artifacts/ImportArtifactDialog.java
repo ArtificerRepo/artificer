@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Anchor;
  * A modal dialog used to import artifacts into S-RAMP.
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#import-dialog")
+@Templated("/org/overlord/sramp/ui/client/local/site/artifacts_dialogs.html#import-dialog")
 @Dependent
 public class ImportArtifactDialog extends ModalDialog {
 

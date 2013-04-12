@@ -157,6 +157,8 @@ public class ArtifactsPage extends AbstractPage {
     protected void onPageShowing() {
         // Kick off an artifact search
         doArtifactSearch();
+        // Refresh the artifact filters
+        filtersPanel.refresh();
     }
 
     /**

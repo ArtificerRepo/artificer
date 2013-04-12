@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <title>S-RAMP Repository Browser - Artifacts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
-    <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
-    <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap-datepicker.css" rel="stylesheet" media="screen"></link>
-    <link href="../../../../../../../../webapp/bootstrap-2.2.2/css/bootstrap-fileupload.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-datepicker.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-fileupload.min.css" rel="stylesheet" media="screen"></link>
     <link href="../../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
     <link href="../../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -15,9 +15,9 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <script type="text/javascript" src="../../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap-datepicker.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.2.2/js/bootstrap-fileupload.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-fileupload.min.js"></script>
     <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-responsive.js"></script>
   </head>
 
@@ -156,16 +156,23 @@
                     </div>
                     <div id="accordion-filters-categories" class="sramp-filter-body closed">
                       <div class="sramp-filter-inner">
-                        <ul class="sramp-filter-list nav nav-list span12">
-                          <li>
-                            <a><i class="icon-chevron-right"></i>
-                              Regions (15 of 120 selected)
+                        <ul data-field="classifier-filter-container" class="sramp-filter-list nav nav-list span12">
+                          <li data-field="classifier-filter">
+                            <a data-field="classifier-filter-anchor">
+                              <i class="icon-chevron-right"></i>
+                              <span data-field="classifier-filter-label">Regions (15 of 120 selected)</span>
                             </a>
                           </li>
                           <li>
                             <a><i class="icon-chevron-right"></i>
                               Species (0 of 50 selected)
                             </a>
+                          </li>
+                          <li data-field="classifier-filter-spinner"">
+                            <span class="spinner">Loading ontologies...</span>
+                          </li>
+                          <li data-field="classifier-filter-none-found"">
+                            <span>No ontologies found.</span>
                           </li>
                         </ul>
                         <form class="">
@@ -374,153 +381,6 @@
     </div> <!-- /page -->
 
 
-    <!-- Import artifacts modal -->
-    <div data-field="import-dialog" id="import-dialog" class="modal hide fade">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4>Import Artifact(s)</h4>
-      </div>
-      <div class="modal-body">
-        <p>Choose a file to upload (may be a simple file or an S-RAMP package).</p>
-        <form data-field="import-dialog-form" method="post" enctype="multipart/form-data">
-          <div id="fileupload-import" class="fileupload fileupload-new" data-provides="fileupload" data-name="artifact-file">
-            <div class="input-append">
-              <div class="uneditable-input"><i class="icon-file fileupload-exists"></i> 
-                <span class="fileupload-preview"></span>
-              </div><span class="btn btn-file"><span class="fileupload-new">Select</span><span class="fileupload-exists">Change</span><input type="file"></input></span><a class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
-            </div>
-          </div>
-          <p>
-            Choose the artifact type  (optional - only specify for custom artifact types - if 
-            ommitted, the server will do its best to guess the type) 
-          </p>
-          <input type="text" name="artifactType" value="" placeholder="e.g. PdfDocument"></input>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <a class="btn" data-dismiss="modal">Cancel</a>
-        <a data-field="import-dialog-submit-button" class="btn btn-focus">Import</a>
-      </div>
-    </div>
-
-
-    <!-- Classifer selection modal -->
-    <div id="classifier-dialog" class="sramp-filter-ontology-modal modal hide">
-      <div class="modal-header">
-        <h4>Species <span class="pull-right">(0 of 9)</span></h4>
-      </div>
-      <div class="modal-body">
-        <div class="select-all choice">
-            <div class="btn-group">
-              <button class="btn btn-small">Select...</button>
-              <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a>Select All</a></li>
-                <li><a>Select None</a></li>
-              </ul>
-            </div>
-        </div>
-        <ul class="ontology-selector">
-          <li>
-            <a data-toggle="collapse" data-target="#ul-1"><i class="icon icon-minus"></i></a>
-            <label>
-              <input type="checkbox"></input>
-              Species 1
-            </label>
-            <ul id="ul-1" class="collapse in">
-              <li>
-                <i class="icon icon-none"></i>
-                <label>
-                  <input type="checkbox"></input>
-                  Subspecies 1
-                </label>
-              </li>
-              <li>
-                <a data-toggle="collapse" data-target="#ul-2"><i class="icon icon-plus"></i></a>
-                <label>
-                  <input type="checkbox"></input>
-                  Subspecies 2
-                </label>
-                <ul id="ul-2" class="collapse out">
-                  <li>
-                    <i class="icon icon-none"></i>
-                    <label>
-                      <input type="checkbox"></input>
-                      Sub-Subspecies Alpha
-                    </label>
-                  </li>
-                  <li>
-                    <i class="icon icon-none"></i>
-                    <label>
-                      <input type="checkbox"></input>
-                      Sub-Subspecies Beta
-                    </label>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a data-toggle="collapse" data-target="#ul-3"><i class="icon icon-minus"></i></a>
-            <label>
-              <input type="checkbox"></input>
-              Species 2
-            </label>
-            <ul id="ul-3" class="collapse in">
-              <li>
-                <i class="icon icon-none"></i>
-                <label>
-                  <input type="checkbox"></input>
-                  Subspecies 2-1
-                </label>
-              </li>
-              <li>
-                <a data-toggle="collapse" data-target="#ul-4"><i class="icon icon-minus"></i></a>
-                <label>
-                  <input type="checkbox"></input>
-                  Subspecies 2-2
-                </label>
-                <ul id="ul-4" class="collapse in">
-                  <li>
-                    <i class="icon icon-none"></i>
-                    <label>
-                      <input type="checkbox"></input>
-                      Sub-Subspecies Two Alpha
-                    </label>
-                  </li>
-                  <li>
-                    <i class="icon icon-none"></i>
-                    <label>
-                      <input type="checkbox"></input>
-                      Sub-Subspecies Two Beta
-                    </label>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <a class="btn btn-small" data-dismiss="modal">Cancel</a>
-        <a class="btn btn-focus btn-small">OK</a>
-      </div>
-    </div>
-    
-    
-    <!-- Growl modeless dialog -->
-    <div data-field="growl-dialog" class="growl-dialog">
-      <div class="growl-dialog-header">
-        <button data-field="growl-dialog-header-closeButton" type="button" class="close" aria-hidden="true">&times;</button>
-        <div data-field="growl-dialog-header-title" class="growl-dialog-header-title">Sample Growl Dialog</div>
-      </div>
-      <div data-field="growl-dialog-body" class="growl-dialog-body">
-        <p>This is the message that is the body of my notification.  Some real interesting information would presumably be here.
-      </div>
-    </div>
-
     <!-- Some scripting to add functionality to the live template -->
     <script>
       $(document).ready(function() {
@@ -529,17 +389,6 @@
     		  todayBtn: true,
     		  todayHighlight: true
     	  });
-      });
-      $('#btn-import').click(function() {
-        $('#import-dialog').modal();
-      });
-      $('.sramp-filter-list li:nth-child(2) a').click(function() {
-    	  $('#classifier-dialog').modal({
-    		  backdrop: false
-    	  });
-      });
-      $('.sramp-filter-list li:nth-child(1) a').click(function() {
-          $('.growl-dialog').attr('style', 'position: fixed; width: 300px; right: 10px; bottom: 10px;');
       });
     </script>
 
