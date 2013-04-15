@@ -79,7 +79,7 @@ public class MimeTypes {
          */
 	public static String determineMimeType(String fileName, InputStream stream,
             ArtifactType artifactType) {
-		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedArtifactType) {
+		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedDocument) {
 			String ct = getContentType(fileName, stream);
 			return ct == null ? "application/octet-stream" : ct;
 		} else {

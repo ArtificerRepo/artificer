@@ -42,6 +42,7 @@ import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedInput;
 import org.jboss.resteasy.util.GenericType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
@@ -51,13 +52,15 @@ import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.server.mime.MimeTypes;
+import org.overlord.sramp.common.InvalidArtifactCreationException;
 import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampConstants;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.server.atom.services.errors.DerivedArtifactAccessException;
+import org.overlord.sramp.server.mime.MimeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,6 +99,40 @@ public class ArtifactResource extends AbstractResource {
 	public ArtifactResource() {
 	}
 
+    @POST
+    @Path("{model}/{type}")
+    @Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
+    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+    public Entry create(@Context HttpServletRequest request,
+        @PathParam("model") String model, @PathParam("type") String type, Entry entry)
+        throws SrampAtomException {
+        try {
+            String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+            ArtifactType artifactType = ArtifactType.valueOf(model, type);
+            if (artifactType.getArtifactType().isDerived()) {
+                throw new DerivedArtifactAccessException(artifactType.getArtifactType());
+            }
+            BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
+            if (SrampModelUtils.isDocumentArtifact(artifact)) {
+                throw new InvalidArtifactCreationException("Attempted to directly create a document style artifact.  Please upload a document instead.");
+            }
+
+            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+            // store the content
+            BaseArtifactType persistedArtifact = persistenceManager.persistArtifact(artifact, null);
+
+            // return the entry containing the s-ramp artifact
+            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
+            ArtifactVisitorHelper.visitArtifact(visitor, persistedArtifact);
+            return visitor.getAtomEntry();
+        } catch (Exception e) {
+            logError(logger, "Error creating an artifact.", e);
+            throw new SrampAtomException(e);
+        }
+    }
+
+
+
 	/**
 	 * S-RAMP atom POST to upload an artifact to the repository. The artifact content should be POSTed raw.
 	 *
@@ -114,6 +151,11 @@ public class ArtifactResource extends AbstractResource {
 		try {
 			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
 			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+			// Switch from extended artifact type to extended document if appropriate.
+			if (artifactType.isExtendedType()) {
+			    artifactType = ArtifactType.valueOf(BaseArtifactEnum.EXTENDED_DOCUMENT);
+			    artifactType.setExtendedType(type);
+			}
 			if (artifactType.getArtifactType().isDerived()) {
 				throw new DerivedArtifactAccessException(artifactType.getArtifactType());
 			}
@@ -138,6 +180,9 @@ public class ArtifactResource extends AbstractResource {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			// store the content
 			BaseArtifactType baseArtifactType = artifactType.newArtifactInstance();
+            if (!SrampModelUtils.isDocumentArtifact(baseArtifactType)) {
+                throw new InvalidArtifactCreationException("Attempted to upload content for a non-Document artifact type.  Please directly create an artifact of this type instead.");
+            }
 			baseArtifactType.setName(fileName);
 			BaseArtifactType artifact = persistenceManager.persistArtifact(baseArtifactType, is);
 

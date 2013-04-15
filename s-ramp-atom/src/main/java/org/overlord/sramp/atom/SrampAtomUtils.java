@@ -22,16 +22,23 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 
 import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Some useful static utils for users of the s-ramp client.
@@ -81,7 +88,11 @@ public final class SrampAtomUtils {
 		try {
 			Artifact artifact = getArtifactWrapper(entry);
 			if (artifact != null) {
-                return unwrapSrampArtifact(artifactType, artifact);
+			    // Don't trust the extended types - there is some ambiguity there.
+			    if (artifactType.isExtendedType()) {
+			        artifactType = disambiguateExtendedType(entry, artifactType);
+			    }
+		        return unwrapSrampArtifact(artifactType, artifact);
 			} else {
                 return null;
 			}
@@ -163,12 +174,30 @@ public final class SrampAtomUtils {
      * @param entry
      */
     protected static ArtifactType getArtifactTypeFromEntry(Entry entry) {
+        // Take a look at what's in the JAXB artifact wrapper (if one exists).
+        try {
+            Artifact artifactWrapper = getArtifactWrapper(entry);
+            if (artifactWrapper != null) {
+                String hint = null;
+                Element wrapperNode = getArtifactWrapperNode(entry);
+                if (wrapperNode != null) {
+                    hint = getArtifactWrappedElementName(wrapperNode);
+                }
+                return ArtifactType.valueOf(artifactWrapper, hint);
+            }
+        } catch (JAXBException e) {
+        }
+
         // Try the Category
 		List<Category> categories = entry.getCategories();
 		for (Category cat : categories) {
 			if ("x-s-ramp:2010:type".equals(cat.getScheme().toString())) {
 				String atype = cat.getTerm();
-				return ArtifactType.valueOf(atype);
+				ArtifactType artifactType = ArtifactType.valueOf(atype);
+		        if (artifactType.isExtendedType()) {
+		            artifactType = disambiguateExtendedType(entry, artifactType);
+		        }
+                return artifactType;
 			}
 		}
 
@@ -180,20 +209,44 @@ public final class SrampAtomUtils {
 			String [] split = path.split("/");
 			String atype = split[split.length - 2];
 			//String amodel = split[split.length - 3];
-			return ArtifactType.valueOf(atype);
-		}
-
-		// Finally, try to figure it out by introspecting the 'artifact' extension element
-		try {
-			Artifact artifactWrapper = getArtifactWrapper(entry);
-			if (artifactWrapper != null) {
-				return ArtifactType.valueOf(artifactWrapper);
-			}
-		} catch (JAXBException e) {
+			ArtifactType artifactType = ArtifactType.valueOf(atype);
+            if (artifactType.isExtendedType()) {
+                artifactType = disambiguateExtendedType(entry, artifactType);
+            }
+            return artifactType;
 		}
 
 		// If all else fails!
 		return ArtifactType.valueOf("Document");
+    }
+
+    /**
+     * Attempts to figure out whether we're dealing with an {@link ExtendedArtifactType} or a
+     * {@link ExtendedDocument} by looking for clues in the {@link Entry}.
+     * @param entry
+     * @param artifactType
+     */
+    protected static ArtifactType disambiguateExtendedType(Entry entry, ArtifactType artifactType) {
+        String et = artifactType.getExtendedType();
+        boolean convertToDocument = false;
+        // Dis-ambiguate the extended types (or try to)
+        if (entry.getContent() != null) {
+            convertToDocument = true;
+        } else {
+            Element node = getArtifactWrapperNode(entry);
+            if (node != null) {
+                String type = getArtifactWrappedElementName(node);
+                if (ExtendedDocument.class.getSimpleName().equals(type)) {
+                    convertToDocument = true;
+                }
+            }
+        }
+
+        if (convertToDocument) {
+            artifactType = ArtifactType.valueOf(BaseArtifactEnum.EXTENDED_DOCUMENT);
+            artifactType.setExtendedType(et);
+        }
+        return artifactType;
     }
 
 	/**
@@ -216,6 +269,48 @@ public final class SrampAtomUtils {
 		return object;
 	}
 
+	/**
+	 * Gets the XML node for the wrapper 'artifact' element from the {@link Entry}.
+	 * @param entry
+	 */
+	protected static Element getArtifactWrapperNode(Entry entry) {
+	    Element element = entry.getAnyOtherElement();
+	    if (isWrapperElement(element)) {
+	        return element;
+	    }
+        for (Object anyOther : entry.getAnyOther()) {
+            if (anyOther instanceof Element && isWrapperElement((Element) anyOther)) {
+                return (Element) anyOther;
+            }
+        }
+	    return null;
+	}
+
+	/**
+	 * @param artifactWrapperElement
+	 * @return the local name of the artifact that is wrapped by the {@link Artifact} wrapper
+	 */
+	protected static String getArtifactWrappedElementName(Element artifactWrapperElement) {
+	    NodeList nodes = artifactWrapperElement.getChildNodes();
+	    for (int i = 0; i < nodes.getLength(); i++) {
+	        Node item = nodes.item(i);
+	        if (item.getNodeType() == Node.ELEMENT_NODE) {
+	            return item.getLocalName();
+	        }
+	    }
+	    return null;
+	}
+
+    /**
+     * @param element
+     * @return true if the {@link Element} is the artifact wrapper element
+     */
+    private static boolean isWrapperElement(Element element) {
+        if (element == null)
+            return false;
+        QName qname = new QName(element.getNamespaceURI(), element.getLocalName());
+        return qname.equals(SrampConstants.S_RAMP_WRAPPER_ELEM);
+    }
 
     /**
      * Unwraps the Ontology from the Atom Entry.

@@ -21,9 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.JAXBException;
@@ -46,7 +44,9 @@ import org.apache.maven.wagon.resource.Resource;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.archive.SrampArchiveException;
@@ -326,16 +326,7 @@ public class SrampWagon extends StreamWagon {
 	    if (gavInfo.getType().equals("pom")) {
 	        return ArtifactType.valueOf("MavenPom");
 	    } else if (pomUrl.indexOf('?') > 0 && gavInfo.getClassifier() == null) {
-	        String query = pomUrl.substring(pomUrl.indexOf('?') + 1);
-	        String [] params = query.split("&");
-            Map<String, String> paramMap = new HashMap<String, String>(params.length);
-	        for (String paramPair : params) {
-                String [] pp = paramPair.split("=");
-                String key = pp[0];
-                String val = pp[1];
-                paramMap.put(key, val);
-            }
-	        String customAT = paramMap.get("artifactType");
+	        String customAT = getParamFromRepositoryUrl("artifactType");
 	        return ArtifactType.valueOf(customAT);
 	    }
 		String fileName = gavInfo.getName();
@@ -419,10 +410,16 @@ public class SrampWagon extends StreamWagon {
 		File tempResourceFile = null;
 		SrampArchive archive = null;
 		JarToSrampArchive j2sramp = null;
+		BaseArtifactType artifactGrouping = null;
 		try {
 			// First, stash the content in a temp file - we may need it multiple times.
 			tempResourceFile = stashResourceContent(resourceInputStream);
 			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
+
+			// Is the artifact grouping option enabled?
+			if (gavInfo.getClassifier() == null && getRepository().getUrl().contains("artifactGrouping")) {
+			    artifactGrouping = ensureArtifactGrouping();
+			}
 
 			// Only search for existing artifacts by GAV info here
 			BaseArtifactType artifact = findExistingArtifactByGAV(client, gavInfo);
@@ -445,6 +442,11 @@ public class SrampWagon extends StreamWagon {
 				if (gavInfo.getClassifier() != null)
 					SrampModelUtils.setCustomProperty(artifact, "maven.classifier", gavInfo.getClassifier());
 				SrampModelUtils.setCustomProperty(artifact, "maven.type", gavInfo.getType());
+				// Also create a relationship to the artifact grouping, if necessary
+				if (artifactGrouping != null) {
+				    SrampModelUtils.addGenericRelationship(artifact, "groupedBy", artifactGrouping.getUuid());
+				}
+
 				client.updateArtifactMetaData(artifact);
 				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
 			}
@@ -479,6 +481,34 @@ public class SrampWagon extends StreamWagon {
 	}
 
 	/**
+     * Ensures that the required ArtifactGrouping is present in the repository.
+	 * @throws SrampAtomException
+	 * @throws SrampClientException
+     */
+    private BaseArtifactType ensureArtifactGrouping() throws SrampClientException, SrampAtomException {
+        String groupingName = getParamFromRepositoryUrl("artifactGrouping");
+        if (groupingName == null || groupingName.trim().length() == 0) {
+            logger.warn("No Artifact Grouping name configured.");
+            return null;
+        }
+        QueryResultSet query = client.buildQuery("/s-ramp/ext/ArtifactGrouping[@name = ?]").parameter(groupingName).count(2).query();
+        if (query.size() > 1) {
+            logger.warn("Multiple Artifact Groupings found with the same name: " + groupingName);
+            return null;
+        } else if (query.size() == 1) {
+            ArtifactSummary summary = query.get(0);
+            return client.getArtifactMetaData(summary.getType(), summary.getUuid());
+        } else {
+            ExtendedArtifactType groupingArtifact = new ExtendedArtifactType();
+            groupingArtifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
+            groupingArtifact.setExtendedType("ArtifactGrouping");
+            groupingArtifact.setName(groupingName);
+            groupingArtifact.setDescription("An Artifact Grouping automatically created by the S-RAMP Maven Wagon (integration between S-RAMP and Maven).");
+            return client.createArtifact(groupingArtifact);
+        }
+    }
+
+    /**
 	 * Deletes the 'expanded' artifacts from the s-ramp repository.
 	 * @param client
 	 * @param parentUUID
@@ -627,4 +657,22 @@ public class SrampWagon extends StreamWagon {
 		throw new RuntimeException("Should never get here!");
 	}
 
+	/**
+	 * Gets a URL parameter by name from the repository URL.
+	 * @param paramName
+	 */
+	protected String getParamFromRepositoryUrl(String paramName) {
+	    String url = getRepository().getUrl();
+	    String query = url.substring(url.indexOf('?') + 1);
+	    String [] params = query.split("&");
+	    for (String paramPair : params) {
+	        String [] pp = paramPair.split("=");
+	        String key = pp[0];
+	        String val = pp[1];
+	        if (key.equals(paramName)) {
+	            return val;
+	        }
+	    }
+	    return null;
+	}
 }

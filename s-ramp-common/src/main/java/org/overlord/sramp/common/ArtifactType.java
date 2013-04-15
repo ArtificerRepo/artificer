@@ -24,6 +24,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 
 /**
  * A class representing all of the Artifact Types defined by S-RAMP.
@@ -50,10 +51,15 @@ public class ArtifactType {
     public static final ArtifactType PolicyDocument() {
         return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml");
     }
-    public static final ArtifactType Extended(String extendedType, boolean derived) {
+    public static final ArtifactType ExtendedArtifactType(String extendedType, boolean derived) {
         ArtifactType at = new ArtifactType(ArtifactTypeEnum.ExtendedArtifactType, null);
         at.setExtendedType(extendedType);
         at.setExtendedDerivedType(derived);
+        return at;
+    }
+    public static final ArtifactType ExtendedDocument(String extendedType) {
+        ArtifactType at = new ArtifactType(ArtifactTypeEnum.ExtendedDocument, null);
+        at.setExtendedType(extendedType);
         return at;
     }
 
@@ -134,7 +140,7 @@ public class ArtifactType {
 			return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml");
 		} else if (extendedArtifactTypes.containsKey(ext)){
 		    ModelMime modelMime = extendedArtifactTypes.get(ext);
-		    ArtifactType artifactType = ArtifactType.Extended(modelMime.extendedModel, false);
+		    ArtifactType artifactType = ArtifactType.ExtendedArtifactType(modelMime.extendedModel, false);
 		    artifactType.setMimeType(modelMime.mimeType);
 		    return artifactType;
 		} else {
@@ -187,15 +193,20 @@ public class ArtifactType {
 		    if (DocumentArtifactType.class.isAssignableFrom(artifact.getClass())) {
 		        artifactType.setMimeType(((DocumentArtifactType)artifact).getContentType());
 		    }
-		    if (artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedArtifactType) {
+            if (artifactType.isExtendedType()) {
 		        if ((artifact.getOtherAttributes().keySet().contains(SrampConstants.SRAMP_CONTENT_TYPE_QNAME))) {
 		            String contentTypeStr = artifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME);
 		            artifactType.setMimeType(contentTypeStr);
 		        }
-                String extendedType = ((ExtendedArtifactType) artifact).getExtendedType();
                 String extendedDerived = artifact.getOtherAttributes().get(SrampConstants.SRAMP_DERIVED_QNAME);
-                artifactType.setExtendedType(extendedType);
                 artifactType.setExtendedDerivedType("true".equals(extendedDerived));
+            }
+            if (artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedArtifactType) {
+                String extendedType = ((ExtendedArtifactType) artifact).getExtendedType();
+                artifactType.setExtendedType(extendedType);
+            } else if (artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedDocument) {
+                String extendedType = ((ExtendedDocument) artifact).getExtendedType();
+                artifactType.setExtendedType(extendedType);
             }
 			return artifactType;
 		}
@@ -235,6 +246,10 @@ public class ArtifactType {
                 baseArtifactType.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_TYPE_QNAME, getMimeType());
                 ((ExtendedArtifactType) baseArtifactType).setExtendedType(getExtendedType());
             }
+            if (getArtifactType() == ArtifactTypeEnum.ExtendedDocument) {
+                baseArtifactType.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_TYPE_QNAME, getMimeType());
+                ((ExtendedDocument) baseArtifactType).setExtendedType(getExtendedType());
+            }
             return baseArtifactType;
         } catch (Exception e) {
             throw new RuntimeException("Could not instantiate Artifact " + getArtifactType().getTypeClass(),e);
@@ -266,7 +281,7 @@ public class ArtifactType {
 	 * @return true if the type is a {@link ExtendedArtifactType}.
 	 */
 	public boolean isExtendedType() {
-	    return getArtifactType() == ArtifactTypeEnum.ExtendedArtifactType;
+	    return getArtifactType() == ArtifactTypeEnum.ExtendedArtifactType || getArtifactType() == ArtifactTypeEnum.ExtendedDocument;
 	}
 
 	/**
@@ -294,7 +309,7 @@ public class ArtifactType {
 	 * @return the artifact type
 	 */
 	public String getType() {
-	    if (getArtifactType().equals(ArtifactTypeEnum.ExtendedArtifactType)) {
+	    if (getArtifactType() == ArtifactTypeEnum.ExtendedArtifactType || getArtifactType() == ArtifactTypeEnum.ExtendedDocument) {
             return getExtendedType();
         } else {
             return getArtifactType().getType();
@@ -352,21 +367,39 @@ public class ArtifactType {
 	 * What kind of artifact is inside that wrapper?
 	 * @param artifactWrapper
 	 */
-	public static ArtifactType valueOf(Artifact artifactWrapper) {
+	public static ArtifactType valueOf(Artifact artifactWrapper, String hint) {
 		ArtifactType type = null;
-		Method[] methods = artifactWrapper.getClass().getMethods();
-		try {
-			for (Method method : methods) {
-				if (method.getName().startsWith("get")) {
-					Object o = method.invoke(artifactWrapper);
-					if (o != null && BaseArtifactType.class.isAssignableFrom(o.getClass())) {
-						Class<? extends BaseArtifactType> artyClass = ((BaseArtifactType) o).getClass();
-						return valueOf(artyClass);
-					}
-				}
-			}
-		} catch (Exception e) {
-			// eat it
+		// We were given a hint - try using that first.
+		if (hint != null) {
+		    String methodName = "get" + hint;
+		    try {
+                Method method = artifactWrapper.getClass().getMethod(methodName);
+                Object o = method.invoke(artifactWrapper);
+                if (o != null && BaseArtifactType.class.isAssignableFrom(o.getClass())) {
+                    Class<? extends BaseArtifactType> artyClass = ((BaseArtifactType) o).getClass();
+                    return valueOf(artyClass);
+                }
+            } catch (Exception e) {
+                // eat it
+            }
+		}
+
+		// Didn't find it based on the hint - try them all!
+		if (type == null) {
+    		Method[] methods = artifactWrapper.getClass().getMethods();
+    		try {
+    			for (Method method : methods) {
+    				if (method.getName().startsWith("get")) {
+    					Object o = method.invoke(artifactWrapper);
+    					if (o != null && BaseArtifactType.class.isAssignableFrom(o.getClass())) {
+    						Class<? extends BaseArtifactType> artyClass = ((BaseArtifactType) o).getClass();
+    						return valueOf(artyClass);
+    					}
+    				}
+    			}
+    		} catch (Exception e) {
+    			// eat it
+    		}
 		}
 		return type;
 	}

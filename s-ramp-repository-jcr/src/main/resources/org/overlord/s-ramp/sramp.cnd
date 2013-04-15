@@ -50,6 +50,8 @@
 // S-RAMP Core Model Artifacts
 // -------------------------------------------------------
 
+[sramp:nonDocumentArtifactType] > nt:hierarchyNode
+
 [sramp:relationship]
 - sramp:relationshipType (string)
 - sramp:generic (boolean)
@@ -73,6 +75,7 @@
 [sramp:documentArtifactType] > sramp:baseArtifactType abstract mixin
 - sramp:contentType (string)
 - sramp:contentSize (long)
+- sramp:contentHash (string)
 
 [sramp:document] > sramp:documentArtifactType mixin
 
@@ -86,6 +89,9 @@
 - sramp:extendedType (string)
 
 [sramp:extendedArtifactType] > sramp:baseArtifactType mixin
+- sramp:extendedType (string) mandatory
+
+[sramp:extendedDocument] > sramp:documentArtifactType mixin
 - sramp:extendedType (string) mandatory
 + * (sramp:extendedDerivedArtifactType)
 

@@ -32,10 +32,12 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
 import org.overlord.sramp.repository.PersistenceFactory;
@@ -159,8 +161,138 @@ public class SrampWagonTest extends BaseResourceTest {
 		rset = client.query("/s-ramp[mavenParent]");
 		Assert.assertEquals(4, rset.size());
 		*/
-
 	}
+
+    /**
+     * Unit test.
+     */
+    @Test
+    public void testWagonPushWithArtifactName() throws Exception {
+        SrampWagon wagon = new SrampWagon();
+        setLogger(wagon);
+        Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/?artifactType=FooApplication").replaceAll("http", "sramp"));
+        wagon.connect(repo);
+        InputStream artifactStream = null;
+        InputStream pomStream = null;
+        InputStream artifactSHA1Stream = null;
+        InputStream pomSHA1Stream = null;
+        try {
+            artifactStream = getClass().getResourceAsStream("foo-artifact-0.0.3.txt");
+            pomStream = getClass().getResourceAsStream("artifact-0.0.3.pom");
+            artifactSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1");
+            pomSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1");
+
+            Assert.assertNotNull(artifactStream);
+            Assert.assertNotNull(pomStream);
+            Assert.assertNotNull(artifactSHA1Stream);
+            Assert.assertNotNull(pomSHA1Stream);
+
+            wagon.putFromStream(artifactStream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.txt");
+            wagon.putFromStream(artifactSHA1Stream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.txt.sha1");
+            wagon.putFromStream(pomStream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.pom");
+            wagon.putFromStream(pomSHA1Stream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.pom.sha1");
+        } finally {
+            wagon.disconnect();
+            IOUtils.closeQuietly(artifactStream);
+            IOUtils.closeQuietly(pomStream);
+            IOUtils.closeQuietly(artifactSHA1Stream);
+            IOUtils.closeQuietly(pomSHA1Stream);
+        }
+
+        // Now that we've deployed the artifacts, do some queries to make sure we put away
+        // what we intended.
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/"));
+        QueryResultSet rset = client.query("/s-ramp/core/Document");
+        Assert.assertEquals(0, rset.size());
+        rset = client.query("/s-ramp/ext/FooApplication");
+        Assert.assertEquals(1, rset.size());
+        rset = client.query("/s-ramp/ext/MavenPom");
+        Assert.assertEquals(1, rset.size());
+
+        rset = client.query("/s-ramp[@maven.groupId = 'org.overlord.sramp.test']");
+        Assert.assertEquals(2, rset.size());
+    }
+
+    /**
+     * Unit test.
+     */
+    @Test
+    public void testWagonPushWithArtifactGrouping() throws Exception {
+        SrampWagon wagon = new SrampWagon();
+        setLogger(wagon);
+        Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/?artifactGrouping=MyArtifactGrouping").replaceAll("http", "sramp"));
+        InputStream artifact1Stream = null;
+        InputStream artifact2Stream = null;
+        InputStream pom1Stream = null;
+        InputStream pom2Stream = null;
+        InputStream artifactSHA1Stream = null;
+        InputStream artifactSHA2Stream = null;
+        InputStream pomSHA1Stream = null;
+        InputStream pomSHA2Stream = null;
+        try {
+            artifact1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar");
+            artifact2Stream = getClass().getResourceAsStream("foo-artifact-0.0.3.txt");
+            pom1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom");
+            pom2Stream = getClass().getResourceAsStream("artifact-0.0.3.pom");
+            artifactSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1");
+            artifactSHA2Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1");
+            pomSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1");
+            pomSHA2Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1");
+
+            Assert.assertNotNull(artifact1Stream);
+            Assert.assertNotNull(artifact2Stream);
+            Assert.assertNotNull(pom1Stream);
+            Assert.assertNotNull(pom2Stream);
+            Assert.assertNotNull(artifactSHA1Stream);
+            Assert.assertNotNull(artifactSHA2Stream);
+            Assert.assertNotNull(pomSHA1Stream);
+            Assert.assertNotNull(pomSHA2Stream);
+
+            // Maven module/project 1
+            wagon.connect(repo);
+            wagon.putFromStream(artifact1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.jar");
+            wagon.putFromStream(artifactSHA1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.jar.sha1");
+            wagon.putFromStream(pom1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.pom");
+            wagon.putFromStream(pomSHA1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.pom.sha1");
+            wagon.disconnect();
+
+            // Maven module/project 2
+            wagon.connect(repo);
+            wagon.putFromStream(artifact2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.txt");
+            wagon.putFromStream(artifactSHA2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.txt.sha1");
+            wagon.putFromStream(pom2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.pom");
+            wagon.putFromStream(pomSHA2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.pom.sha1");
+        } finally {
+            wagon.disconnect();
+            IOUtils.closeQuietly(artifact1Stream);
+            IOUtils.closeQuietly(artifact2Stream);
+            IOUtils.closeQuietly(pom1Stream);
+            IOUtils.closeQuietly(pom2Stream);
+            IOUtils.closeQuietly(artifactSHA1Stream);
+            IOUtils.closeQuietly(artifactSHA2Stream);
+            IOUtils.closeQuietly(pomSHA1Stream);
+            IOUtils.closeQuietly(pomSHA2Stream);
+        }
+
+        // Now that we've deployed the artifacts, do some queries to make sure we put away
+        // what we intended.
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/"));
+        QueryResultSet rset = client.query("/s-ramp[@maven.groupId = 'org.overlord.sramp.test']");
+        Assert.assertEquals(4, rset.size());
+
+        rset = client.query("/s-ramp/ext/ArtifactGrouping");
+        Assert.assertEquals(1, rset.size());
+
+        rset = client.query("/s-ramp/ext/ArtifactGrouping[@name = 'MyArtifactGrouping']");
+        Assert.assertEquals(1, rset.size());
+        ArtifactSummary artifactSummary = rset.get(0);
+        Assert.assertEquals("MyArtifactGrouping", artifactSummary.getName());
+        BaseArtifactType artifact = client.getArtifactMetaData(artifactSummary.getUuid());
+        Assert.assertNotNull(artifact);
+
+        rset = client.query("/s-ramp[groupedBy[@name = 'MyArtifactGrouping']]");
+        Assert.assertEquals(2, rset.size());
+    }
 
 	/**
 	 * Unit test.
@@ -194,9 +326,8 @@ public class SrampWagonTest extends BaseResourceTest {
 			wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar.sha1", tempFile);
 			assertContents("artifact-0.0.3.jar.sha1", tempFile);
 			tempFile.delete();
-			wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom", tempFile);
-			assertContents("artifact-0.0.3.pom", tempFile);
-			tempFile.delete();
+            wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom", tempFile);
+            tempFile.delete();
 			wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom.sha1", tempFile);
 			assertContents("artifact-0.0.3.pom.sha1", tempFile);
 			tempFile.delete();

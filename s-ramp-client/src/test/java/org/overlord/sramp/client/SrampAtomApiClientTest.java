@@ -34,7 +34,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.archive.SrampArchive;
@@ -107,6 +110,42 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 			IOUtils.closeQuietly(is);
 		}
 	}
+
+    /**
+     * Test method for {@link SrampAtomApiClient#createArtifact(BaseArtifactType)}.
+     */
+    @Test
+    public void testCreateArtifact() throws Exception {
+        ExtendedArtifactType artifact = new ExtendedArtifactType();
+        artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
+        artifact.setExtendedType("TestArtifact");
+        artifact.setName("My Test Artifact");
+        artifact.setDescription("Description of my test artifact.");
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        BaseArtifactType createdArtifact = client.createArtifact(artifact);
+        Assert.assertNotNull(artifact);
+        Assert.assertEquals("My Test Artifact", createdArtifact.getName());
+        Assert.assertEquals("Description of my test artifact.", createdArtifact.getDescription());
+    }
+
+    /**
+     * Test method for {@link SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
+     */
+    @Test
+    public void testExtendedDocumentArtifact() throws Exception {
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        try {
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            BaseArtifactType artifact = client.uploadArtifact(ArtifactType.ExtendedDocument("TestDocument"), is, artifactFileName);
+            Assert.assertNotNull(artifact);
+            Assert.assertEquals(artifactFileName, artifact.getName());
+            Assert.assertEquals(BaseArtifactEnum.EXTENDED_DOCUMENT, artifact.getArtifactType());
+            Assert.assertEquals(ExtendedDocument.class, artifact.getClass());
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
 
     /**
      * Test method for {@link SrampAtomApiClient#getArtifactMetaData(ArtifactType, String)}
