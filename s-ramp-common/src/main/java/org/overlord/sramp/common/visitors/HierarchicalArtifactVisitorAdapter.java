@@ -519,6 +519,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	@Override
 	public void visit(ExtendedDocument artifact) {
         visitBase(artifact);
+        visitDocument(artifact);
         visitExtendedDocument(artifact);
 	}
 

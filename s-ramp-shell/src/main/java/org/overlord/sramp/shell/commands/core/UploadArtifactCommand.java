@@ -89,6 +89,9 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 			ArtifactType artifactType = null;
 			if (artifactTypeArg != null) {
 				artifactType = ArtifactType.valueOf(artifactTypeArg);
+				if (artifactType.isExtendedType()) {
+				    artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
+				}
 			} else {
 				artifactType = determineArtifactType(file);
 			}
