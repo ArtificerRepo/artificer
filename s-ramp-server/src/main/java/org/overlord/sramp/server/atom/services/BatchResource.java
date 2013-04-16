@@ -87,7 +87,7 @@ public class BatchResource extends AbstractResource {
     	SrampArchive archive = null;
     	String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
         try {
-        	archive = new SrampArchive(content);
+            archive = new SrampArchive(content);
 
             MultipartOutput output = new MultipartOutput();
             output.setBoundary("package");
@@ -95,10 +95,10 @@ public class BatchResource extends AbstractResource {
             // Process all of the entries in the s-ramp package.
             Collection<SrampArchiveEntry> entries = archive.getEntries();
             for (SrampArchiveEntry entry: entries) {
-        		BaseArtifactType metaData = entry.getMetaData();
-            	InputStream contentStream = ensureSupportsMark(archive.getInputStream(entry));
+                BaseArtifactType metaData = entry.getMetaData();
+                InputStream contentStream = ensureSupportsMark(archive.getInputStream(entry));
                 try {
-        		processBatchEntry(output, entry.getPath(), metaData, contentStream, baseUrl);
+                    processBatchEntry(output, entry.getPath(), metaData, contentStream, baseUrl);
                 } finally {
                     IOUtils.closeQuietly(contentStream);
                 }
@@ -126,32 +126,33 @@ public class BatchResource extends AbstractResource {
 			InputStream contentStream, String baseUrl) {
 		String contentId = String.format("<%1$s@package>", path);
     	try {
-			ArtifactType artifactType = ArtifactType.valueOf(metaData);
-			if (artifactType.getArtifactType().isDerived()) {
-				throw new DerivedArtifactAccessException(artifactType.getArtifactType());
-			}
-			// Figure out the mime type
-                        String mimeType = MimeTypes.determineMimeType(metaData.getName(), contentStream, artifactType);
-			artifactType.setMimeType(mimeType);
+    	    ArtifactType artifactType = ArtifactType.valueOf(metaData);
+    	    if (artifactType.getArtifactType().isDerived()) {
+    	        throw new DerivedArtifactAccessException(artifactType.getArtifactType());
+    	    }
+    	    // Figure out the mime type
+    	    String mimeType = MimeTypes.determineMimeType(metaData.getName(), contentStream, artifactType);
+    	    artifactType.setMimeType(mimeType);
 
-			if (metaData.getUuid() == null && contentStream != null) {
-				// The normal "create" case - no UUID specified + artifact content included
-				Entry atomEntry = processCreate(artifactType, metaData, contentStream, baseUrl);
-				addCreatedPart(output, contentId, atomEntry);
-			} else if (metaData.getUuid() != null && contentStream != null) {
-				// Either an "update" case or a "create" case - depends on if we find an existing
-				// artifact with the supplied UUID.  Content has been supplied, so it *may* be
-				// a create.
-				Entry atomEntry = processUpdateOrCreate(artifactType, metaData, contentStream, baseUrl);
-		        addCreatedPart(output, contentId, atomEntry);
-			} else if (metaData.getUuid() != null && contentStream == null) {
-				// This is the "update" only case - metadata has been supplied but
-				// no content is included.  Thus, this cannot be a create.
-				Entry atomEntry = processUpdate(artifactType, metaData, baseUrl);
-		        addCreatedPart(output, contentId, atomEntry);
-			} else {
-				throw new SrampServerException("Unsupported path (TBD).");
-			}
+    	    if (metaData.getUuid() == null) {
+    	        // The "create" case - no UUID specified
+    	        Entry atomEntry = processCreate(artifactType, metaData, contentStream, baseUrl);
+    	        addCreatedPart(output, contentId, atomEntry);
+    	    } else if (metaData.getUuid() != null && contentStream != null) {
+    	        // Either an "update" case or a "create" case - depends on if we find an existing
+    	        // artifact with the supplied UUID.  Content has been supplied, so it *may* be
+    	        // a create.
+    	        Entry atomEntry = processUpdateOrCreate(artifactType, metaData, contentStream, baseUrl);
+    	        addCreatedPart(output, contentId, atomEntry);
+    	    } else if (metaData.getUuid() != null && contentStream == null) {
+    	        // This is the "update" only case - metadata has been supplied but
+    	        // no content is included.  Thus, this cannot be a create.
+    	        Entry atomEntry = processUpdate(artifactType, metaData, baseUrl);
+    	        addCreatedPart(output, contentId, atomEntry);
+    	    } else {
+    	        // This is a "create" of a non-Document artifact.
+    	        throw new SrampServerException("Unsupported path (TBD).");
+    	    }
 		} catch (Exception e) {
 	        HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict");
 	        SrampAtomException error = new SrampAtomException(e);
