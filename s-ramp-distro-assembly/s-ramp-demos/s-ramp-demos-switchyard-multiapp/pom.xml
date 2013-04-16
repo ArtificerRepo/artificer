@@ -16,42 +16,72 @@
 * limitations under the License.
 */
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-      <groupId>org.overlord.sramp.demos</groupId>
-      <artifactId>s-ramp-demos</artifactId>
-      <version>0.1.2-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-    </parent>
-    <artifactId>s-ramp-demos-switchyard-multiapp</artifactId>
-    <groupId>org.overlord.sramp.demos.switchyard.multiapp</groupId>
-    <name>S-RAMP Demos: Switchyard Multi App Deployment</name>
-    <packaging>pom</packaging>
-    <modules>
-        <module>artifacts</module>
-        <module>order-service</module>
-        <module>order-consumer</module>
-        <module>web</module>
-    </modules>
-    
-    <properties>
-      <org.switchyard.version>0.8.0.Final</org.switchyard.version>
-      <javax.jms.version>1.1</javax.jms.version>
-      <org.hornetq.version>2.2.13.Final</org.hornetq.version>
-    </properties>
-    
-    <build>
-     <extensions>
-       <extension>
-         <groupId>org.overlord.sramp</groupId>
-         <artifactId>s-ramp-wagon</artifactId>
-         <version>${project.version}</version>
-       </extension>
-     </extensions>
-    </build>
-    
-    <profiles>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord.sramp.demos</groupId>
+    <artifactId>s-ramp-demos</artifactId>
+    <version>0.1.2-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>s-ramp-demos-switchyard-multiapp</artifactId>
+  <groupId>org.overlord.sramp.demos.switchyard.multiapp</groupId>
+  <name>S-RAMP Demos: Switchyard Multi App Deployment</name>
+  <packaging>pom</packaging>
+  <modules>
+    <module>artifacts</module>
+    <module>order-service</module>
+    <module>order-consumer</module>
+    <module>web</module>
+  </modules>
+
+  <properties>
+    <org.switchyard.version>0.8.0.Final</org.switchyard.version>
+    <javax.jms.version>1.1</javax.jms.version>
+    <org.hornetq.version>2.2.13.Final</org.hornetq.version>
+  </properties>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-wagon</artifactId>
+        <version>${project.version}</version>
+      </extension>
+    </extensions>
+    <pluginManagement>
+      <plugins>
+         <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.switchyard</groupId>
+                    <artifactId>switchyard-plugin</artifactId>
+                    <versionRange>[0.8.0.Final,)</versionRange>
+                    <goals>
+                      <goal>configure</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
     <profile>
       <id>default</id>
       <activation>
@@ -76,12 +106,12 @@
         <repository>
           <id>local-sramp-repo</id>
           <name>S-RAMP Releases Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchyardApplication</url>
+          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchyardApplication&amp;artifactGrouping=${project.groupId}</url>
         </repository>
         <snapshotRepository>
           <id>local-sramp-repo-snapshots</id>
           <name>S-RAMP Snapshots Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchyardApplication</url>
+          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchyardApplication&amp;artifactGrouping=${project.groupId}</url>
         </snapshotRepository>
       </distributionManagement>
     </profile>
