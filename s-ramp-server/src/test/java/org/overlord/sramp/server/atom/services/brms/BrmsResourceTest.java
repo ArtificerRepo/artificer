@@ -33,7 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
@@ -44,7 +44,6 @@ import org.overlord.sramp.atom.services.brms.assets.Assets;
 import org.overlord.sramp.atom.services.brms.packages.Packages;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.server.atom.services.AbstractResourceTest;
-import org.overlord.sramp.server.atom.services.brms.BrmsResource;
 
 import test.org.overlord.sramp.server.TestUtils;
 
@@ -73,7 +72,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
 	    }
 
 	}
-	
+
 	/**
 	 * Tests the BRMS packages.
 	 * @throws Exception
@@ -120,8 +119,8 @@ public class BrmsResourceTest extends AbstractResourceTest {
 
 		//Now adding the assetInfo and then asking for the assets of this package
 		//Update the entry by adding the asset info, for now in a property (later as a dependent artifact)
-        Assert.assertTrue(arty instanceof ExtendedArtifactType);
-        ExtendedArtifactType brmsPkgDocument = (ExtendedArtifactType) arty;
+        Assert.assertTrue(arty instanceof ExtendedDocument);
+        ExtendedDocument brmsPkgDocument = (ExtendedDocument) arty;
         Property assetsProperty = new Property();
         assetsProperty.setPropertyName(BrmsConstants.ASSET_INFO_XML);
         //in real life we'd get the asset info from BRMS, and we should update the links so that they
@@ -137,7 +136,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
         Entry entry3 = new Entry();
         ClientRequest request3 = new ClientRequest(generateURL("/s-ramp/ext/BrmsPkgDocument/" + brmsPkgDocument.getUuid()));
         Artifact artifact = new Artifact();
-        artifact.setExtendedArtifactType(brmsPkgDocument);
+        artifact.setExtendedDocument(brmsPkgDocument);
         entry3.setAnyOtherJAXBObject(artifact);
         request3.body(MediaType.APPLICATION_ATOM_XML_ENTRY, entry3);
         request3.put(Void.class);
@@ -218,7 +217,8 @@ public class BrmsResourceTest extends AbstractResourceTest {
         IOUtils.closeQuietly(in7);
         IOUtils.closeQuietly(out7);
         Assert.assertTrue(file7.exists());
-        Assert.assertEquals(12483l,file7.length());
+        long size = file7.length();
+        Assert.assertTrue(size >= 12483L);
         //also check if we can retrieve the image
         ClientRequest request8 = new ClientRequest(generateURL("/brms/rest/packages/srampPackage/assets/Evaluation-image/binary"));
         ClientResponse<InputStream> response8 = request8.get(InputStream.class);

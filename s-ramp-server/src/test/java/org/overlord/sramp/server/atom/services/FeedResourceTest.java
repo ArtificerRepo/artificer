@@ -100,9 +100,6 @@ public class FeedResourceTest extends AbstractResourceTest {
 		ClientResponse<Entry> response = request.post(Entry.class);
 
 		Entry entry = response.getEntity();
-		Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
-		Assert.assertEquals(Long.valueOf(2376), artifact.getXsdDocument().getContentSize());
-
 		if (properties.length > 0) {
 			Artifact srampArtifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
 			XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();

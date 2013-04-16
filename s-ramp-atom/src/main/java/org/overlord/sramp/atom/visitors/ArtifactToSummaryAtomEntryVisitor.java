@@ -28,6 +28,7 @@ import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.common.ArtifactType;
@@ -201,6 +202,20 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	        String extendedType = artifact.getExtendedType();
 	        this.atomEntry.getExtensionAttributes().put(SrampConstants.SRAMP_EXTENDED_TYPE_QNAME, extendedType);
 	    }
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument)
+	 */
+    @SuppressWarnings("unchecked")
+	@Override
+	public void visit(ExtendedDocument artifact) {
+        super.visit(artifact);
+
+        if (this.atomEntry != null) {
+            String extendedType = artifact.getExtendedType();
+            this.atomEntry.getExtensionAttributes().put(SrampConstants.SRAMP_EXTENDED_TYPE_QNAME, extendedType);
+        }
 	}
 
 	/**

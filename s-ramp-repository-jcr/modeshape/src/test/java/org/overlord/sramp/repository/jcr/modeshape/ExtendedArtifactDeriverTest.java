@@ -22,7 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 
@@ -36,17 +36,17 @@ public class ExtendedArtifactDeriverTest extends AbstractJCRPersistenceTest {
     public void testExtendedArtifactDeriver() throws Exception {
         String artifactFileName = "gtgjrdih.xml";
         InputStream pdf = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName);
-        ExtendedArtifactType artifact = new ExtendedArtifactType();
+        ExtendedDocument artifact = new ExtendedDocument();
+        artifact.setArtifactType(BaseArtifactEnum.EXTENDED_DOCUMENT);
         artifact.setExtendedType("ExtendedArtifactDeriverTestDocument");
         artifact.setName("jrd");
-        artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
 
         BaseArtifactType pa = persistenceManager.persistArtifact(artifact, pdf);
 
         Assert.assertNotNull(pa);
         log.info("persisted gtgjrdih.xml to JCR, returned artifact uuid=" + pa.getUuid());
 
-        Assert.assertEquals(ExtendedArtifactType.class, artifact.getClass());
+        Assert.assertEquals(ExtendedDocument.class, artifact.getClass());
 
         // Four derived ActingCredit artifacts should have been created.
         SrampQuery query = queryManager.createQuery("/s-ramp/ext/ActingCredit");

@@ -17,7 +17,7 @@ package org.overlord.sramp.atom.visitors;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.common.SrampConstants;
@@ -65,10 +65,10 @@ public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitorAdapt
 	}
 
 	/**
-	 * org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitExtended(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType)
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitExtendedDocument(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument)
 	 */
 	@Override
-	protected void visitExtended(ExtendedArtifactType artifact) {
+	protected void visitExtendedDocument(ExtendedDocument artifact) {
 	    //grab the content type from an any-attribute
         setContentType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
 	    if ((artifact.getOtherAttributes().keySet().contains(SrampConstants.SRAMP_CONTENT_TYPE_QNAME))) {

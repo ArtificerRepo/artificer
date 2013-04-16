@@ -37,6 +37,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Element;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Event;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.InformationType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
@@ -165,11 +166,19 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		// Subclasses can do common visit logic here
 	}
 
-	/**
+    /**
      * Common visit method for Extended artifacts.
      * @param artifact
      */
     protected void visitExtended(ExtendedArtifactType artifact) {
+        // Subclasses can do common visit logic here
+    }
+
+    /**
+     * Common visit method for Extended document artifacts.
+     * @param artifact
+     */
+    protected void visitExtendedDocument(ExtendedDocument artifact) {
         // Subclasses can do common visit logic here
     }
 
@@ -502,6 +511,15 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(ExtendedArtifactType artifact) {
 		visitBase(artifact);
 		visitExtended(artifact);
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument)
+	 */
+	@Override
+	public void visit(ExtendedDocument artifact) {
+        visitBase(artifact);
+        visitExtendedDocument(artifact);
 	}
 
 	/**

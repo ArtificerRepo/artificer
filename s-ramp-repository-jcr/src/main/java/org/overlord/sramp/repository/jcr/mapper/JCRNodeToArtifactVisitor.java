@@ -45,6 +45,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.FaultTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
@@ -264,16 +265,26 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	protected void visitExtended(ExtendedArtifactType artifact) {
         String extendedType = getProperty(jcrNode, "sramp:extendedType");
-        String contentType = getProperty(jcrNode,"jcr:content/jcr:mimeType");
-        String contentLength = String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data"));
         String extendedDerived = getProperty(jcrNode, "sramp:derived", "false");
 
         artifact.setExtendedType(extendedType);
-		if (contentType != null && contentLength != null) {
+        artifact.getOtherAttributes().put(SrampConstants.SRAMP_DERIVED_QNAME, extendedDerived);
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitExtendedDocument(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument)
+	 */
+	@Override
+	protected void visitExtendedDocument(ExtendedDocument artifact) {
+        String extendedType = getProperty(jcrNode, "sramp:extendedType");
+        String contentType = getProperty(jcrNode,"jcr:content/jcr:mimeType");
+        String contentLength = String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data"));
+
+        artifact.setExtendedType(extendedType);
+        if (contentType != null && contentLength != null) {
             artifact.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_SIZE_QNAME, contentLength);
             artifact.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_TYPE_QNAME, contentType);
-		}
-        artifact.getOtherAttributes().put(SrampConstants.SRAMP_DERIVED_QNAME, extendedDerived);
+        }
 	}
 
 	/**

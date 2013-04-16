@@ -67,6 +67,7 @@ import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
@@ -305,8 +306,38 @@ public class SrampAtomApiClient {
 		}
 	}
 
+    /**
+     * Creates a new artifact in the S-RAMP repository.  Use this method when creating
+     * logical artifacts in the repository (i.e. artifacts without document content).
+     * @param artifact
+     */
+    public BaseArtifactType createArtifact(BaseArtifactType artifact) throws SrampClientException, SrampAtomException {
+        ArtifactType artifactType = ArtifactType.valueOf(artifact);
+        if (SrampModelUtils.isDocumentArtifact(artifact)) {
+            throw new SrampClientException("Cannot create an artifact of this type without document content.  Please call uploadArtifact() instead.");
+        }
+
+        assertFeatureEnabled(artifactType);
+        try {
+            String type = artifactType.getType();
+            String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
+                    artifactType.getModel(), type);
+            ClientRequest request = createClientRequest(atomUrl);
+            request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, SrampAtomUtils.wrapSrampArtifact(artifact));
+
+            ClientResponse<Entry> response = request.post(Entry.class);
+            Entry entry = response.getEntity();
+            return SrampAtomUtils.unwrapSrampArtifact(artifactType, entry);
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
+
 	/**
-	 * Please refer to javadoc in  {@link SrampAtomApiClient#uploadArtifact(String, String, InputStream, String)}
+	 * Creates a new artifact in the repository by uploading a document.  The document will
+	 * become the core of a new S-RAMP artifact.
 	 * @param artifactType
 	 * @param content
 	 * @param artifactFileName
@@ -317,10 +348,7 @@ public class SrampAtomApiClient {
 			throws SrampClientException, SrampAtomException {
 		assertFeatureEnabled(artifactType);
 		try {
-			String type = artifactType.getArtifactType().getType();
-			if ("ext".equals(artifactType.getArtifactType().getModel()) && artifactType.getExtendedType()!=null) {
-				type = artifactType.getExtendedType();
-			}
+			String type = artifactType.getType();
 			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), type);
 			ClientRequest request = createClientRequest(atomUrl);
@@ -339,7 +367,8 @@ public class SrampAtomApiClient {
 	}
 
 	/**
-	 * Please refer to javadoc in  {@link SrampAtomApiClient#uploadArtifact(String, String, InputStream, String)}
+     * Creates a new artifact in the repository by uploading a document.  The document will
+     * become the core of a new S-RAMP artifact.
 	 * @param baseArtifactType
 	 * @param content
 	 * @throws SrampClientException
@@ -350,10 +379,7 @@ public class SrampAtomApiClient {
 		ArtifactType artifactType = ArtifactType.valueOf(baseArtifactType);
 		assertFeatureEnabled(artifactType);
 		try {
-			String type = artifactType.getArtifactType().getType();
-			if ("ext".equals(artifactType.getArtifactType().getModel()) && artifactType.getExtendedType()!=null) {
-				type = artifactType.getExtendedType();
-			}
+			String type = artifactType.getType();
 			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
 					artifactType.getArtifactType().getModel(), type);
 			ClientRequest request = createClientRequest(atomUrl);
@@ -467,7 +493,7 @@ public class SrampAtomApiClient {
 
 			Entry entry = SrampAtomUtils.wrapSrampArtifact(artifact);
 
-			request.body("application/atom+xml;type=entry", entry);
+			request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, entry);
 			request.put();
 		} catch (SrampAtomException e) {
 			throw e;

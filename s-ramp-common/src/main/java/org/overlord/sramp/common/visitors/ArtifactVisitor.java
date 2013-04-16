@@ -34,6 +34,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Element;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Event;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.InformationType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
@@ -122,6 +123,7 @@ public interface ArtifactVisitor {
 
 	// Extended
 	public void visit(ExtendedArtifactType artifact);
+    public void visit(ExtendedDocument artifact);
 
 	// SOA
 	public void visit(Actor artifact);
