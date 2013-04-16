@@ -322,7 +322,7 @@ public class BatchResourceTest extends AbstractResourceTest {
 			XmlDocument doc = (XmlDocument) arty;
 			Assert.assertEquals(artifactFileName, doc.getName());
 			Long size = doc.getContentSize();
-            Assert.assertTrue(size > 825L);
+            Assert.assertTrue(size >= 825L);
 			Assert.assertEquals("application/xml", doc.getContentType());
 			return doc;
 		} finally {
