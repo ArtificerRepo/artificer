@@ -426,7 +426,11 @@ public class SrampAtomApiClient {
 		InputStream packageStream = null;
 
 		try {
-			packageFile = archive.pack();
+	        if (archive.getEntries().isEmpty()) {
+	            return new HashMap<String, Object>();
+	        }
+
+	        packageFile = archive.pack();
 			packageStream = FileUtils.openInputStream(packageFile);
 			ClientRequest request = createClientRequest(this.endpoint);
 			request.header("Content-Type", "application/zip");
