@@ -322,19 +322,15 @@ public class SrampWagon extends StreamWagon {
 	 * @param gavInfo
 	 */
 	private ArtifactType getArtifactType(MavenGavInfo gavInfo) {
-	    String pomUrl = getRepository().getUrl();
+        String customAT = getParamFromRepositoryUrl("artifactType");
 	    if (gavInfo.getType().equals("pom")) {
 	        return ArtifactType.valueOf("MavenPom");
-	    } else if (pomUrl.indexOf('?') > 0 && gavInfo.getClassifier() == null) {
-	        String customAT = getParamFromRepositoryUrl("artifactType");
+	    } else if (isPrimaryArtifact(gavInfo) && customAT != null) {
 	        return ArtifactType.valueOf(customAT);
 	    }
 		String fileName = gavInfo.getName();
 		int extensionIdx = fileName.lastIndexOf('.');
 		String extension = gavInfo.getName().substring(extensionIdx + 1);
-		if ("pom".equals(extension)) {
-		    extension = "xml";
-		}
 		return ArtifactType.fromFileExtension(extension);
 	}
 
@@ -417,7 +413,7 @@ public class SrampWagon extends StreamWagon {
 			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
 
 			// Is the artifact grouping option enabled?
-			if (gavInfo.getClassifier() == null && getRepository().getUrl().contains("artifactGrouping")) {
+			if (isPrimaryArtifact(gavInfo) && getParamFromRepositoryUrl("artifactGrouping") != null) {
 			    artifactGrouping = ensureArtifactGrouping();
 			}
 
@@ -445,6 +441,8 @@ public class SrampWagon extends StreamWagon {
 				// Also create a relationship to the artifact grouping, if necessary
 				if (artifactGrouping != null) {
 				    SrampModelUtils.addGenericRelationship(artifact, "groupedBy", artifactGrouping.getUuid());
+				    SrampModelUtils.addGenericRelationship(artifactGrouping, "groups", artifact.getUuid());
+				    client.updateArtifactMetaData(artifactGrouping);
 				}
 
 				client.updateArtifactMetaData(artifact);
@@ -480,7 +478,7 @@ public class SrampWagon extends StreamWagon {
 		}
 	}
 
-	/**
+    /**
      * Ensures that the required ArtifactGrouping is present in the repository.
 	 * @throws SrampAtomException
 	 * @throws SrampClientException
@@ -663,16 +661,32 @@ public class SrampWagon extends StreamWagon {
 	 */
 	protected String getParamFromRepositoryUrl(String paramName) {
 	    String url = getRepository().getUrl();
-	    String query = url.substring(url.indexOf('?') + 1);
+	    int idx = url.indexOf('?');
+	    if (idx == -1)
+	        return null;
+        String query = url.substring(idx + 1);
 	    String [] params = query.split("&");
 	    for (String paramPair : params) {
 	        String [] pp = paramPair.split("=");
-	        String key = pp[0];
-	        String val = pp[1];
-	        if (key.equals(paramName)) {
-	            return val;
+	        if (pp.length == 2) {
+    	        String key = pp[0];
+    	        String val = pp[1];
+    	        if (key.equals(paramName)) {
+    	            return val;
+    	        }
+	        } else {
+	            System.out.println("WTF");
 	        }
 	    }
 	    return null;
 	}
+
+    /**
+     * Returns true if this represents the primary artifact in the Maven module.
+     * @param gavInfo
+     */
+	protected boolean isPrimaryArtifact(MavenGavInfo gavInfo) {
+        return gavInfo.getClassifier() == null && !gavInfo.getType().equals("pom");
+    }
+
 }

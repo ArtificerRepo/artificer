@@ -188,6 +188,7 @@ public class ArtifactType {
 	 */
 	public static ArtifactType valueOf(BaseArtifactType artifact) {
 		BaseArtifactEnum apiType = artifact.getArtifactType();
+		// First, figure it out by the ArtifactType enum on the object
 		if (apiType != null) {
 		    ArtifactType artifactType = valueOf(apiType);
 		    if (DocumentArtifactType.class.isAssignableFrom(artifact.getClass())) {
@@ -210,16 +211,18 @@ public class ArtifactType {
             }
 			return artifactType;
 		}
+		// If that didn't work, then iterate through and test against all possible artifact types.
 		ArtifactTypeEnum[] values = ArtifactTypeEnum.values();
 		for (ArtifactTypeEnum artifactTypeEnum : values) {
 			if (artifactTypeEnum.getTypeClass().equals(artifact.getClass())) {
 			    ArtifactType artifactType = new ArtifactType(artifactTypeEnum, null);
-			    if (artifactTypeEnum == ArtifactTypeEnum.ExtendedArtifactType) {
+			    if (artifactTypeEnum == ArtifactTypeEnum.ExtendedArtifactType || artifactTypeEnum == ArtifactTypeEnum.ExtendedDocument) {
 	                if ((artifact.getOtherAttributes().keySet().contains(SrampConstants.SRAMP_CONTENT_TYPE_QNAME))) {
 	                    String contentTypeStr = artifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME);
 	                    artifactType.setMimeType(contentTypeStr);
 	                }
-			        String extendedType = ((ExtendedArtifactType) artifact).getExtendedType();
+                    String extendedType = (artifact instanceof ExtendedArtifactType) ? ((ExtendedArtifactType) artifact)
+                            .getExtendedType() : ((ExtendedDocument) artifact).getExtendedType();
 	                String extendedDerived = artifact.getOtherAttributes().get(SrampConstants.SRAMP_DERIVED_QNAME);
                     artifactType.setExtendedType(extendedType);
                     artifactType.setExtendedDerivedType("true".equals(extendedDerived));

@@ -22,23 +22,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 
-import org.junit.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.wagon.repository.Repository;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.JCRRepository;
@@ -287,8 +288,11 @@ public class SrampWagonTest extends BaseResourceTest {
         Assert.assertEquals(1, rset.size());
         ArtifactSummary artifactSummary = rset.get(0);
         Assert.assertEquals("MyArtifactGrouping", artifactSummary.getName());
-        BaseArtifactType artifact = client.getArtifactMetaData(artifactSummary.getUuid());
-        Assert.assertNotNull(artifact);
+        BaseArtifactType groupingArtifact = client.getArtifactMetaData(artifactSummary.getUuid());
+        Assert.assertNotNull(groupingArtifact);
+        Relationship relationship = SrampModelUtils.getGenericRelationship(groupingArtifact, "groups");
+        Assert.assertNotNull(relationship);
+        Assert.assertEquals(2, relationship.getRelationshipTarget().size());
 
         rset = client.query("/s-ramp[groupedBy[@name = 'MyArtifactGrouping']]");
         Assert.assertEquals(2, rset.size());

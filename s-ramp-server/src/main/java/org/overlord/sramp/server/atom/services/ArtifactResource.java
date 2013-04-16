@@ -286,6 +286,9 @@ public class ArtifactResource extends AbstractResource {
 	        @PathParam("uuid") String uuid, Entry atomEntry) throws SrampAtomException {
 		try {
 			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+			if (artifactType.isExtendedType()) {
+			    artifactType = SrampAtomUtils.getArtifactType(atomEntry);
+			}
 			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateArtifact(artifact, artifactType);
@@ -312,8 +315,11 @@ public class ArtifactResource extends AbstractResource {
 		InputStream is = ensureSupportsMark(content);
 		try {
 	        ArtifactType artifactType = ArtifactType.valueOf(model, type);
-	        if (artifactType.getArtifactType().isDerived()) {
+	        if (artifactType.isDerived()) {
 	            throw new DerivedArtifactAccessException(artifactType.getArtifactType());
+	        }
+	        if (artifactType.isExtendedType()) {
+	            artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
 	        }
 	        String mimeType = MimeTypes.determineMimeType(fileName, is, artifactType);
 	        artifactType.setMimeType(mimeType);
@@ -379,6 +385,9 @@ public class ArtifactResource extends AbstractResource {
 	        @PathParam("uuid") String uuid) throws SrampAtomException {
 		try {
 			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+            if (artifactType.isExtendedType()) {
+                artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
+            }
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			BaseArtifactType baseArtifact = persistenceManager.getArtifact(uuid, artifactType);
 			ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();

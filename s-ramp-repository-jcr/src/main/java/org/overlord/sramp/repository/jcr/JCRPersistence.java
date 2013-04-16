@@ -409,25 +409,21 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	@Override
 	public void updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws SrampException {
 		Session session = null;
-		String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
-
 		try {
 			session = JCRRepositoryFactory.getAnonymousSession();
-			if (!session.nodeExists(artifactPath)) {
+            Node artifactNode = findArtifactNode(uuid, artifactType, session);
+            if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
-			}
-			Node artifactNode = session.getNode(artifactPath);
-			if (artifactNode == null) {
-                throw new ArtifactNotFoundException(uuid);
-			}
+            }
 			JCRUtils tools = new JCRUtils();
-			tools.uploadFile(session, artifactPath, content);
+			tools.uploadFile(session, artifactNode.getPath(), content);
 			JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
 
 			// Document
 			if (DocumentArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
 				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, artifactType.getMimeType());
 				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty("jcr:content/jcr:data").getLength());
+				// TODO also handle the hash here
 			}
 
 			// TODO delete and re-create the derived artifacts?  what if some of them have properties or classifications?
@@ -450,15 +446,13 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	@Override
 	public void deleteArtifact(String uuid, ArtifactType artifactType) throws SrampException {
 		Session session = null;
-		String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
-
 		try {
 			session = JCRRepositoryFactory.getAnonymousSession();
-			if (session.nodeExists(artifactPath)) {
-				session.getNode(artifactPath).remove();
-			} else {
+            Node artifactNode = findArtifactNode(uuid, artifactType, session);
+            if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
-			}
+            }
+            artifactNode.remove();
 			session.save();
 			log.debug("Successfully deleted artifact {}.", uuid);
         } catch (SrampException se) {

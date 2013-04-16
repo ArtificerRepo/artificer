@@ -257,6 +257,8 @@ public final class SrampAtomUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T unwrap(Entry entry, Class<T> clazz) throws JAXBException {
+	    if (entry.getAnyOtherElement() == null && entry.getAnyOther().isEmpty())
+	        return null;
 		T object = entry.getAnyOtherJAXBObject(clazz);
 		if (object == null) {
 			for (Object anyOther : entry.getAnyOther()) {
