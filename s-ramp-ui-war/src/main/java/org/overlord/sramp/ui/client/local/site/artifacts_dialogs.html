@@ -15,10 +15,11 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <script type="text/javascript" src="../../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.js"></script>
     <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-datepicker.js"></script>
     <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-fileupload.min.js"></script>
     <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-responsive.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-widgets.js"></script>
   </head>
 
   <body>
@@ -68,7 +69,7 @@
       </div>
       <div data-field="classifier-dialog-body" class="modal-body">
         <div data-field="classifier-dialog-spinner" class="hide"><span class="spinner">Loading full ontology, please wait...</span></div>
-        <div data-field="ontology-selector-with-toolbar" class="">
+        <div data-field="ontology-selector-with-toolbar">
           <div class="btn-toolbar">
             <div class="btn-group">
               <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -76,8 +77,8 @@
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                <li><a>Select All</a></li>
-                <li><a>Select None</a></li>
+                <li><a onClick="$('#classifier-dialog').find(':checkbox').prop('checked', true)">Select All</a></li>
+                <li><a onClick="$('#classifier-dialog').find(':checkbox').prop('checked', false)">Select None</a></li>
               </ul>
             </div>
             <div class="btn-group">
@@ -86,48 +87,50 @@
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                <li><a>Expand All</a></li>
-                <li><a>Collapse All</a></li>
+                <li><a onClick="expandAllTreeNodes('classifier-dialog')">Expand All</a></li>
+                <li><a onClick="collapseAllTreeNodes('classifier-dialog')">Collapse All</a></li>
               </ul>
             </div>
             <div class="pull-right hide">
-              <input class="" type="text" value="" placeholder="Filter by name..."></input>
+              <input type="text" name="filter" value="" placeholder="Filter by name..."></input>
             </div>
           </div>
-          <ul class="ontology-selector">
-            <li>
-              <a data-toggle="collapse" data-target="#ul-1"><i class="icon icon-minus"></i></a>
+          <ul data-field="ontology-selector" class="ontology-selector">
+            <li data-field="ontology-selector-node">
+              <button data-field="ontology-selector-node-toggle-btn" onClick="toggleTreeIcon($(this))" 
+                  data-toggle="collapse" data-target="#ul-1" 
+                  type="button" class="tree" aria-hidden="true">+</button>
               <label>
-                <input type="checkbox"></input>
-                Species 1
+                <input data-field="ontology-selector-node-checkbox" type="checkbox" name="Species1"></input>
+                <span data-field="ontology-selector-node-label">Species 1</span>
               </label>
-              <ul id="ul-1" class="collapse in">
+              <ul data-field="ontology-selector-node-childPanel" id="ul-1" class="out collapse">
                 <li>
                   <i class="icon icon-none"></i>
                   <label>
-                    <input type="checkbox"></input>
-                    Subspecies 1
+                    <input type="checkbox" name="Subspecies1"></input>
+                    <span>Subspecies 1</span>
                   </label>
                 </li>
                 <li>
-                  <a data-toggle="collapse" data-target="#ul-2"><i class="icon icon-plus"></i></a>
+                  <button onClick="toggleTreeIcon($(this))" data-toggle="collapse" data-target="#ul-2" type="button" class="tree" aria-hidden="true">+</button>
                   <label>
-                    <input type="checkbox"></input>
-                    Subspecies 2
+                    <input type="checkbox" name="Subspecies2"></input>
+                    <span>Subspecies 2</span>
                   </label>
-                  <ul id="ul-2" class="collapse out">
+                  <ul id="ul-2" class="out collapse">
                     <li>
                       <i class="icon icon-none"></i>
                       <label>
                         <input type="checkbox"></input>
-                        Sub-Subspecies Alpha
+                        <span>Sub-Subspecies Alpha</span>
                       </label>
                     </li>
                     <li>
                       <i class="icon icon-none"></i>
                       <label>
                         <input type="checkbox"></input>
-                        Sub-Subspecies Beta
+                        <span>Sub-Subspecies Beta</span>
                       </label>
                     </li>
                   </ul>
@@ -135,38 +138,38 @@
               </ul>
             </li>
             <li>
-              <a data-toggle="collapse" data-target="#ul-3"><i class="icon icon-minus"></i></a>
+              <button onClick="toggleTreeIcon($(this))" data-toggle="collapse" data-target="#ul-3" type="button" class="tree" aria-hidden="true">+</button>
               <label>
                 <input type="checkbox"></input>
-                Species 2
+                <span>Species 2</span>
               </label>
-              <ul id="ul-3" class="collapse in">
+              <ul id="ul-3" class="out collapse">
                 <li>
                   <i class="icon icon-none"></i>
                   <label>
                     <input type="checkbox"></input>
-                    Subspecies 2-1
+                    <span>Subspecies 2-1</span>
                   </label>
                 </li>
                 <li>
-                  <a data-toggle="collapse" data-target="#ul-4"><i class="icon icon-minus"></i></a>
+                  <button onClick="toggleTreeIcon($(this))" data-toggle="collapse" data-target="#ul-4" type="button" class="tree" aria-hidden="true">+</button>
                   <label>
                     <input type="checkbox"></input>
-                    Subspecies 2-2
+                    <span>Subspecies 2-2</span>
                   </label>
-                  <ul id="ul-4" class="collapse in">
+                  <ul id="ul-4" class="out collapse">
                     <li>
                       <i class="icon icon-none"></i>
                       <label>
                         <input type="checkbox"></input>
-                        Sub-Subspecies Two Alpha
+                        <span>Sub-Subspecies Two Alpha</span>
                       </label>
                     </li>
                     <li>
                       <i class="icon icon-none"></i>
                       <label>
                         <input type="checkbox"></input>
-                        Sub-Subspecies Two Beta
+                        <span>Sub-Subspecies Two Beta
                       </label>
                     </li>
                   </ul>
@@ -178,7 +181,7 @@
       </div>
       <div class="modal-footer">
         <a class="btn btn-small" data-dismiss="modal">Cancel</a>
-        <a data-field="classifier-dialog-ok" class="btn btn-focus btn-small">OK</a>
+        <a data-field="classifier-dialog-btn-ok" class="btn btn-focus btn-small">OK</a>
       </div>
     </div>
     

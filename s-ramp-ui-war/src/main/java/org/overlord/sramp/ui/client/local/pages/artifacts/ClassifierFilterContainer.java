@@ -36,6 +36,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 
@@ -82,8 +83,14 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
      * Adds a classifier filter for a specific ontology.
      * @param ontologySummary
      */
-    public void addClassifierFilterFor(OntologySummaryBean ontologySummary) {
+    public void addClassifierFilterFor(final OntologySummaryBean ontologySummary) {
         ClassifierFilter classifierFilter = classifierFilterFactory.get();
+        classifierFilter.addValueChangeHandler(new ValueChangeHandler<Set<String>>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Set<String>> event) {
+                onClassifierFilterValueChange(ontologySummary.getBase(), event.getValue());
+            }
+        });
         classifierFilter.setOntology(ontologySummary);
         classifierFilter.setLabel(ontologySummary.getLabel());
         filters.add(classifierFilter);
@@ -91,6 +98,19 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
         if (getValue() != null) {
             Set<String> cfValue = getValue().get(ontologySummary.getBase());
             classifierFilter.setValue(cfValue);
+        }
+    }
+
+    /**
+     * Called when the value of one of the classifier filters changes.
+     * @param base
+     * @param newValue
+     */
+    protected void onClassifierFilterValueChange(String base, Set<String> newValue) {
+        Window.alert("Value from filter widget changed: " + base);
+        if (this.value != null && this.value.containsKey(base)) {
+            this.value.put(base, newValue);
+            ValueChangeEvent.fire(this, this.value);
         }
     }
 

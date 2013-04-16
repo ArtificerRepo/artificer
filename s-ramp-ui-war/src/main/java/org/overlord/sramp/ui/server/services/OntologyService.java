@@ -109,6 +109,7 @@ public class OntologyService implements IOntologyService {
                 OntologyClassBean parentBean = bean.findClassById(cl4ss.getParent().getId());
                 if (parentBean != null) {
                     classBean.setParent(parentBean);
+                    parentBean.getChildren().add(classBean);
                 }
             } else {
                 bean.getRootClasses().add(classBean);

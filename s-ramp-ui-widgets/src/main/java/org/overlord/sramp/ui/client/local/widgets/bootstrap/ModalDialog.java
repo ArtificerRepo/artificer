@@ -59,6 +59,7 @@ public abstract class ModalDialog extends Composite {
      * Hides/closes the dialog.
      */
     public void hide() {
+        hide(true);
     }
 
     /**
@@ -113,11 +114,15 @@ public abstract class ModalDialog extends Composite {
      * Connects to the Bootstrap "hidden" event.
      * @param element
      */
-    private native final void addHiddenHandler(Element element) /*-{
+    private native final void addHiddenHandler(final Element element) /*-{
         var dis = this;
-        $wnd.jQuery(element).on('hidden', function () {
+        $wnd.jQuery(element).on('hidden', function(event) {
             try {
-                dis.@org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog::onHidden()();
+                // Only callback if the event actually fired due to the dialog being hidden (this
+                // event handler will get called for anything hidden *within* the dialog too).
+                if (event.target == element) {
+                    dis.@org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog::onHidden()();
+                }
             } catch (e) {
                 alert(e);
             }

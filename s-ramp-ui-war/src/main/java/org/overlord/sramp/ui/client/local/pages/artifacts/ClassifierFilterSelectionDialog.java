@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.ui.client.local.pages.artifacts;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -22,15 +24,23 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
+import org.overlord.sramp.ui.client.shared.beans.OntologyClassBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 
@@ -41,7 +51,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
  */
 @Templated("/org/overlord/sramp/ui/client/local/site/artifacts_dialogs.html#classifier-dialog")
 @Dependent
-public class ClassifierFilterSelectionDialog extends ModalDialog {
+public class ClassifierFilterSelectionDialog extends ModalDialog implements HasValueChangeHandlers<Set<String>> {
 
     @Inject
     private OntologyRpcService ontologyRpcService;
@@ -54,6 +64,13 @@ public class ClassifierFilterSelectionDialog extends ModalDialog {
     private FlowPanel body;
     @Inject
     private Instance<LoadingOntology> loading;
+    @Inject
+    private OntologySelectorWithToolbar selector;
+    @Inject
+    private Instance<OntologySelectorNode> nodeFactory;
+
+    @Inject @DataField("classifier-dialog-btn-ok")
+    private Anchor okButton;
 
     private Set<String> value;
 
@@ -70,7 +87,9 @@ public class ClassifierFilterSelectionDialog extends ModalDialog {
     public void setOntology(final OntologySummaryBean ontology) {
         title.setText(ontology.getLabel());
         body.clear();
-        body.add(loading.get());
+        LoadingOntology w = loading.get();
+        w.getElement().removeClassName("hide");
+        body.add(w);
         // TODO load the ontology
         ontologyRpcService.get(ontology.getUuid(), new IRpcServiceInvocationHandler<OntologyBean>() {
             @Override
@@ -99,17 +118,99 @@ public class ClassifierFilterSelectionDialog extends ModalDialog {
      * @param ontology
      */
     protected void renderSelectionTree(OntologyBean ontology) {
-        // TODO Auto-generated method stub
-        body.add(new InlineLabel("Data loaded!"));
+        body.add(selector);
+
+        List<OntologyClassBean> rootClasses = ontology.getRootClasses();
+        for (OntologyClassBean ontologyClass : rootClasses) {
+            createAndAddNode(ontologyClass, this.selector.getNodePanel());
+        }
+    }
+
+    /**
+     * Method to create and add tree nodes.
+     * @param ontologyClass
+     * @param nodePanel
+     */
+    private void createAndAddNode(OntologyClassBean ontologyClass, OntologySelectorNodePanel nodePanel) {
+        OntologySelectorNode node = nodeFactory.get();
+        String label = ontologyClass.getId();
+        if (ontologyClass.getLabel() != null) {
+            label = ontologyClass.getLabel();
+        }
+        node.setLabel(label);
+        node.setClassId(ontologyClass.getId());
+        List<OntologyClassBean> children = ontologyClass.getChildren();
+        for (OntologyClassBean childClass : children) {
+            createAndAddNode(childClass, node);
+        }
+        nodePanel.add(node);
+    }
+
+    /**
+     * Method to create and add tree nodes.
+     * @param ontologyClass
+     * @param parentNode
+     */
+    private void createAndAddNode(OntologyClassBean ontologyClass, OntologySelectorNode parentNode) {
+        OntologySelectorNode node = nodeFactory.get();
+        String label = ontologyClass.getId();
+        if (ontologyClass.getLabel() != null) {
+            label = ontologyClass.getLabel();
+        }
+        node.setLabel(label);
+        node.setClassId(ontologyClass.getId());
+        List<OntologyClassBean> children = ontologyClass.getChildren();
+        for (OntologyClassBean childClass : children) {
+            createAndAddNode(childClass, node);
+        }
+        parentNode.addChild(node);
     }
 
     public Set<String> getValue() {
-        // TODO Auto-generated method stub
-        return null;
+        return value;
     }
 
     public void setValue(Set<String> value) {
         this.value = value;
+    }
+
+    @EventHandler("classifier-dialog-btn-ok")
+    public void onOkClick(ClickEvent event) {
+        // Gather up everything that was checked in the UI
+        this.value = new HashSet<String>();
+        getCheckedNodes();
+        ValueChangeEvent.fire(this, this.value);
+        hide();
+    }
+
+    /**
+     * Native JS to gather up the values of all the nodes in the dialog.
+     */
+    public native final void getCheckedNodes() /*-{
+        var dis = this;
+        $wnd.jQuery('#classifier-dialog :checkbox').each(function() {
+            if ($wnd.jQuery(this).attr('checked')) {
+                var name = $wnd.jQuery(this).attr('name');
+                if (name) {
+                    dis.@org.overlord.sramp.ui.client.local.pages.artifacts.ClassifierFilterSelectionDialog::addValue(Ljava/lang/String;)(name);
+                }
+            }
+        });
+    }-*/;
+
+    /**
+     * @param v
+     */
+    protected void addValue(String v) {
+        this.value.add(v);
+    }
+
+    /**
+     * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+     */
+    @Override
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Set<String>> handler) {
+        return addHandler(handler, ValueChangeEvent.getType());
     }
 
 }

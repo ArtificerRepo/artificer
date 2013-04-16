@@ -32,6 +32,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
@@ -133,9 +134,25 @@ public class ClassifierFilter extends Composite implements HasClickHandlers, Has
     @EventHandler("classifier-filter-anchor")
     public void onClick(ClickEvent event) {
         ClassifierFilterSelectionDialog dialog = dialogFactory.get();
+        dialog.addValueChangeHandler(new ValueChangeHandler<Set<String>>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Set<String>> event) {
+                doDialogOk(event.getValue());
+            }
+        });
         dialog.setValue(this.value);
         dialog.setOntology(ontology);
         dialog.show();
+    }
+
+    /**
+     * Called when the user clicks OK on the dialog.
+     * @param data
+     */
+    protected void doDialogOk(Set<String> data) {
+        Window.alert("Value from dialog: " + data);
+        this.value = data;
+        ValueChangeEvent.fire(this, data);
     }
 
 
