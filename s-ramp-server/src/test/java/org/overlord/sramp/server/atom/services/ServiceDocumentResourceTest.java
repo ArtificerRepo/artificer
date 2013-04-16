@@ -34,16 +34,21 @@ public class ServiceDocumentResourceTest extends AbstractResourceTest {
 
     @Test
     public void testServiceDocument() throws Exception {
-       ClientRequest request = new ClientRequest(generateURL("/s-ramp/servicedocument"));
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/servicedocument"));
 
-       ClientResponse<AppService> response = request.get(AppService.class);
-       AppService appService = response.getEntity();
+        ClientResponse<AppService> response = request.get(AppService.class);
+        AppService appService = response.getEntity();
 
-       String actual = AbstractWorkspaceTest.marshall(appService);
-       String expected = AbstractWorkspaceTest.getExpectedWorkspaceXML("servicedocument");
-       expected = expected.replace("RE_PORT", String.valueOf(getPort()));
-       expected = expected.replace("RE_HOST", getHost());
-       XMLAssert.assertXMLEqual(expected, actual);
+        String actual = AbstractWorkspaceTest.marshall(appService);
+        String expected = AbstractWorkspaceTest.getExpectedWorkspaceXML("servicedocument");
+        expected = expected.replace("RE_PORT", String.valueOf(getPort()));
+        expected = expected.replace("RE_HOST", getHost());
+        try {
+            XMLAssert.assertXMLEqual(expected, actual);
+        } catch (Error e) {
+            System.out.println(actual);
+            throw e;
+        }
     }
 
 }

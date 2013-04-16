@@ -35,6 +35,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Element;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Event;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.InformationType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
@@ -355,6 +356,14 @@ public abstract class ArtifactVisitorAdapter implements ArtifactVisitor {
 	@Override
 	public void visit(ExtendedArtifactType artifact) {
 		visitBase(artifact);
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument)
+	 */
+	@Override
+	public void visit(ExtendedDocument artifact) {
+        visitBase(artifact);
 	}
 
 	/**

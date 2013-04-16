@@ -71,8 +71,7 @@ public final class JCRNodeToArtifactFactory {
     public static BaseArtifactType createArtifact(final Session session, Node jcrNode,
             ArtifactType artifactType) throws SrampException {
 		try {
-			Class<?> artifactClass = artifactType.getArtifactType().getTypeClass();
-			BaseArtifactType artifact = (BaseArtifactType) artifactClass.newInstance();
+			BaseArtifactType artifact = artifactType.newArtifactInstance();
 			ArtifactVisitor visitor = new JCRNodeToArtifactVisitor(jcrNode, new JCRReferenceResolver() {
 				@Override
 				public String resolveReference(Value reference) {
@@ -88,10 +87,6 @@ public final class JCRNodeToArtifactFactory {
 			});
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return artifact;
-		} catch (InstantiationException e) {
-			throw new SrampServerException(e);
-		} catch (IllegalAccessException e) {
-			throw new SrampServerException(e);
 		} catch (RuntimeException e) {
 			if (e.getCause() != null) {
 				throw new SrampServerException(e.getCause());

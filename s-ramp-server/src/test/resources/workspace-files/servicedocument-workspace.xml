@@ -275,7 +275,8 @@
             <atom:title>Extended Model Objects</atom:title>
             <app:accept>application/octet-stream</app:accept>
             <app:categories fixed="yes">
-                <atom:category label="Extended" scheme="urn:x-s-ramp:v1:type" term="ExtendedArtifactType"/>
+                <atom:category label="Extended Artifact Type" scheme="urn:x-s-ramp:v1:type" term="ExtendedArtifactType"/>
+                <atom:category label="Extended Document" scheme="urn:x-s-ramp:v1:type" term="ExtendedDocument"/>
             </app:categories>
         </app:collection>
     </app:workspace>

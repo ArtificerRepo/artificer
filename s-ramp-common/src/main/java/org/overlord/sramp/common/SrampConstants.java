@@ -38,6 +38,8 @@ public class SrampConstants {
     private static final String SRAMP_ITEMS_PER_PAGE_INDEX = "itemsPerPage";
     private static final String SRAMP_TOTAL_RESULTS        = "totalResults";
 
+    public static final QName S_RAMP_WRAPPER_ELEM         = new QName(SRAMP_NS, "artifact");
+
     public static final QName SRAMP_CONTENT_SIZE_QNAME    = new QName(SRAMP_NS, SRAMP_CONTENT_SIZE, SRAMP_PREFIX);
     public static final QName SRAMP_CONTENT_TYPE_QNAME    = new QName(SRAMP_NS, SRAMP_CONTENT_TYPE, SRAMP_PREFIX);
     public static final QName SRAMP_DERIVED_QNAME         = new QName(SRAMP_NS, SRAMP_DERIVED, SRAMP_PREFIX);

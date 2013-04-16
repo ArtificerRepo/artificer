@@ -41,13 +41,16 @@ import javax.jcr.query.QueryResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.SrampServerException;
 import org.overlord.sramp.common.derived.ArtifactDeriver;
 import org.overlord.sramp.common.derived.ArtifactDeriverFactory;
@@ -110,8 +113,14 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
 			log.debug("Uploading file {} to JCR.",name);
 
-			Node artifactNode = tools.uploadFile(session, artifactPath, content);
-			JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
+			Node artifactNode = null;
+			boolean isDocumentArtifact = SrampModelUtils.isDocumentArtifact(metaData);
+            if (content == null && !isDocumentArtifact) {
+			    artifactNode = tools.findOrCreateNode(session, artifactPath, "nt:folder", JCRConstants.SRAMP_NON_DOCUMENT_TYPE);
+			} else {
+			    artifactNode = tools.uploadFile(session, artifactPath, content);
+	            JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
+			}
 
 			String jcrMixinName = artifactType.getArtifactType().getApiType().value();
 			jcrMixinName = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrMixinName);
@@ -125,10 +134,16 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				// read the encoding from the header
 				artifactNode.setProperty(JCRConstants.SRAMP_EXTENDED_TYPE, artifactType.getExtendedType());
 			}
+			// Extended Document
+            if (ExtendedDocument.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
+                // read the encoding from the header
+                artifactNode.setProperty(JCRConstants.SRAMP_EXTENDED_TYPE, artifactType.getExtendedType());
+            }
 			// Document
 			if (DocumentArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
 				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, artifactType.getMimeType());
 				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty("jcr:content/jcr:data").getLength());
+				// TODO add content hash here - SHA1
 			}
 			// XMLDocument
 			if (XmlDocument.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
@@ -148,23 +163,26 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 
             // Derive any content (this could modify the artifact currently being persisted *and*
             // create additional artifacts).  So when we're done, we need to save any potential
-			// changes to the original artifact as well as persist any derived artifacts.
-            InputStream cis = null;
-            File tempFile = null;
-            Collection<BaseArtifactType> derivedArtifacts = null;
-            try {
-                Node artifactContentNode = artifactNode.getNode("jcr:content");
-                tempFile = saveToTempFile(artifactContentNode);
-                cis = FileUtils.openInputStream(tempFile);
-                derivedArtifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(metaData, cis);
-            } finally {
-                IOUtils.closeQuietly(cis);
-                FileUtils.deleteQuietly(tempFile);
-            }
+			// changes to the original artifact as well as persist any derived artifacts.  Only
+			// do this for document style artifacts.
+			if (isDocumentArtifact) {
+                InputStream cis = null;
+                File tempFile = null;
+                Collection<BaseArtifactType> derivedArtifacts = null;
+                try {
+                    Node artifactContentNode = artifactNode.getNode("jcr:content");
+                    tempFile = saveToTempFile(artifactContentNode);
+                    cis = FileUtils.openInputStream(tempFile);
+                    derivedArtifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(metaData, cis);
+                } finally {
+                    IOUtils.closeQuietly(cis);
+                    FileUtils.deleteQuietly(tempFile);
+                }
 
-			// Persist any derived artifacts.
-			if (derivedArtifacts != null) {
-				persistDerivedArtifacts(session, artifactNode, derivedArtifacts);
+    			// Persist any derived artifacts.
+    			if (derivedArtifacts != null) {
+    				persistDerivedArtifacts(session, artifactNode, derivedArtifacts);
+    			}
 			}
 
             // Update the JCR node again, this time with any properties/relationships added to the meta-data
@@ -294,7 +312,16 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			session = JCRRepositoryFactory.getAnonymousSession();
 			Node artifactNode = findArtifactNode(uuid, type, session);
 			if (artifactNode != null) {
-				// Create an artifact from the sequenced node
+			    // In the case of an extended type, we might be wrong about which one...
+			    if (type.isExtendedType()) {
+                    String t = artifactNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getString();
+                    if (ExtendedDocument.class.getSimpleName().equals(t)) {
+                        String e = type.getExtendedType();
+                        type = ArtifactType.valueOf(BaseArtifactEnum.EXTENDED_DOCUMENT);
+                        type.setExtendedType(e);
+                    }
+			    }
+                // Create an artifact from the sequenced node
 				return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
 			} else {
 				return null;
@@ -314,11 +341,23 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	@Override
 	public InputStream getArtifactContent(String uuid, ArtifactType type) throws SrampException {
 		Session session = null;
-		String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
 
 		try {
 			session = JCRRepositoryFactory.getAnonymousSession();
-			Node artifactNode = session.getNode(artifactPath);
+
+			Node artifactNode = findArtifactNode(uuid, type, session);
+			if (artifactNode == null) {
+			    throw new ArtifactNotFoundException(uuid);
+			}
+		    // In the case of an extended type, we might be wrong about which one...
+		    if (type.isExtendedType()) {
+		        String t = artifactNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getString();
+		        if (ExtendedDocument.class.getSimpleName().equals(t)) {
+		            String e = type.getExtendedType();
+		            type = ArtifactType.valueOf(BaseArtifactEnum.EXTENDED_DOCUMENT);
+		            type.setExtendedType(e);
+		        }
+		    }
 			Node artifactContentNode = artifactNode.getNode("jcr:content");
 			File tempFile = saveToTempFile(artifactContentNode);
 			return new DeleteOnCloseFileInputStream(tempFile);
@@ -370,25 +409,21 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	@Override
 	public void updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws SrampException {
 		Session session = null;
-		String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
-
 		try {
 			session = JCRRepositoryFactory.getAnonymousSession();
-			if (!session.nodeExists(artifactPath)) {
+            Node artifactNode = findArtifactNode(uuid, artifactType, session);
+            if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
-			}
-			Node artifactNode = session.getNode(artifactPath);
-			if (artifactNode == null) {
-                throw new ArtifactNotFoundException(uuid);
-			}
+            }
 			JCRUtils tools = new JCRUtils();
-			tools.uploadFile(session, artifactPath, content);
+			tools.uploadFile(session, artifactNode.getPath(), content);
 			JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
 
 			// Document
 			if (DocumentArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
 				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, artifactType.getMimeType());
 				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty("jcr:content/jcr:data").getLength());
+				// TODO also handle the hash here
 			}
 
 			// TODO delete and re-create the derived artifacts?  what if some of them have properties or classifications?
@@ -411,15 +446,13 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	@Override
 	public void deleteArtifact(String uuid, ArtifactType artifactType) throws SrampException {
 		Session session = null;
-		String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
-
 		try {
 			session = JCRRepositoryFactory.getAnonymousSession();
-			if (session.nodeExists(artifactPath)) {
-				session.getNode(artifactPath).remove();
-			} else {
+            Node artifactNode = findArtifactNode(uuid, artifactType, session);
+            if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
-			}
+            }
+            artifactNode.remove();
 			session.save();
 			log.debug("Successfully deleted artifact {}.", uuid);
         } catch (SrampException se) {

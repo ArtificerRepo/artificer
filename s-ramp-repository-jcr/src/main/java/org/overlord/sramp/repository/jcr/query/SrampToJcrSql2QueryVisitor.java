@@ -136,7 +136,9 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		if (node.getArtifactType() != null) {
 			// If this is explicitely *or* implicitely a extended type search...
 			if ("ext".equals(node.getArtifactModel()) || !ArtifactTypeEnum.hasEnum(node.getArtifactType())) {
-				this.whereBuilder.append("artifact.[sramp:artifactType] = '" + ArtifactTypeEnum.ExtendedArtifactType + "'");
+                this.whereBuilder.append("artifact.[sramp:artifactType] IN ('"
+                        + ArtifactTypeEnum.ExtendedArtifactType + "', '" + ArtifactTypeEnum.ExtendedDocument
+                        + "')");
 				this.whereBuilder.append(" AND ");
 				this.whereBuilder.append("artifact.[sramp:extendedType] = '" + escapeStringLiteral(node.getArtifactType()) + "'");
 			} else {

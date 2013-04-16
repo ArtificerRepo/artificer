@@ -33,7 +33,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.MediaType;
@@ -201,9 +201,6 @@ public class QueryResourceTest extends AbstractResourceTest {
 		ClientResponse<Entry> response = request.post(Entry.class);
 
 		Entry entry = response.getEntity();
-		Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
-		Assert.assertEquals(Long.valueOf(2376), artifact.getXsdDocument().getContentSize());
-
 		if (properties.length > 0) {
 			Artifact srampArtifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
 			XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
@@ -263,8 +260,8 @@ public class QueryResourceTest extends AbstractResourceTest {
 			Entry entry = response.getEntity();
 			Assert.assertEquals(fname, entry.getTitle());
 			BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
-			Assert.assertTrue(arty instanceof ExtendedArtifactType);
-			ExtendedArtifactType doc = (ExtendedArtifactType) arty;
+			Assert.assertTrue(arty instanceof ExtendedDocument);
+			ExtendedDocument doc = (ExtendedDocument) arty;
 			Assert.assertEquals(fname, doc.getName());
 			Assert.assertEquals("JpgDocument", doc.getExtendedType());
 			Assert.assertEquals(Long.valueOf(2398), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));

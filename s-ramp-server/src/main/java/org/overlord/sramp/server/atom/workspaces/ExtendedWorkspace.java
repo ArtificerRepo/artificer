@@ -44,5 +44,6 @@ public class ExtendedWorkspace extends AbstractWorkspace {
         AppCollection extCollection = addCollection("/s-ramp/ext", "Extended Model Objects", MediaType.APPLICATION_OCTET_STREAM);
 
         addTypeCategory(extCollection, ArtifactTypeEnum.ExtendedArtifactType);
+        addTypeCategory(extCollection, ArtifactTypeEnum.ExtendedDocument);
     }
 }
