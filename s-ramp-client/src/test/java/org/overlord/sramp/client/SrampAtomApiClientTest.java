@@ -529,6 +529,75 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 		}
 	}
 
+    /**
+     * Test method for {@link SrampAtomApiClient#uploadBatch(SrampArchive)}.
+     */
+    @Test
+    public void testArchiveUpload_Empty() throws Exception {
+        // First, create an s-ramp archive
+        SrampArchive archive = null;
+        try {
+            archive = new SrampArchive();
+        } catch (Exception e) {
+            SrampArchive.closeQuietly(archive);
+            throw e;
+        } finally {
+        }
+
+        try {
+            // Now use the s-ramp atom api client to upload the s-ramp archive
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            Map<String, ?> results = client.uploadBatch(archive);
+            Assert.assertTrue(results.isEmpty());
+        } finally {
+            SrampArchive.closeQuietly(archive);
+        }
+    }
+
+    /**
+     * Test method for {@link SrampAtomApiClient#uploadBatch(SrampArchive)}.
+     */
+    @Test
+    public void testArchiveUpload_AtomOnly() throws Exception {
+        // First, create an s-ramp archive
+        SrampArchive archive = null;
+        try {
+            archive = new SrampArchive();
+            ExtendedArtifactType nonDocArtifact = new ExtendedArtifactType();
+            nonDocArtifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
+            nonDocArtifact.setExtendedType("TestArtifact");
+            nonDocArtifact.setName("My Test Artifact");
+
+            archive.addEntry("myLogicalArtifact", nonDocArtifact, null);
+        } catch (Exception e) {
+            SrampArchive.closeQuietly(archive);
+            throw e;
+        } finally {
+        }
+
+        try {
+            // Now use the s-ramp atom api client to upload the s-ramp archive
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            Map<String, ?> results = client.uploadBatch(archive);
+            Assert.assertFalse(results.isEmpty());
+            Assert.assertEquals(1, results.size());
+
+            QueryResultSet resultSet = client.buildQuery("/s-ramp/ext").query();
+            Assert.assertNotNull(resultSet);
+            Assert.assertEquals(1, resultSet.getTotalResults());
+
+            resultSet = client.buildQuery("/s-ramp/ext/TestArtifact").query();
+            Assert.assertNotNull(resultSet);
+            Assert.assertEquals(1, resultSet.getTotalResults());
+
+            resultSet = client.buildQuery("/s-ramp/ext/TestArtifact[@name = 'My Test Artifact']").query();
+            Assert.assertNotNull(resultSet);
+            Assert.assertEquals(1, resultSet.getTotalResults());
+        } finally {
+            SrampArchive.closeQuietly(archive);
+        }
+    }
+
 	/**
 	 * Test method for {@link SrampAtomApiClient#uploadBatch(SrampArchive)}.
 	 */
