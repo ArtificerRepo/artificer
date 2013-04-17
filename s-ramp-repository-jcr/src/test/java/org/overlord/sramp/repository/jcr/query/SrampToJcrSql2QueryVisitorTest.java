@@ -40,157 +40,190 @@ public class SrampToJcrSql2QueryVisitorTest {
 	private static final String [][] TEST_DATA = {
 		{
 			"/s-ramp/xsd/XsdDocument",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactType] = 'XsdDocument'"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactType] = 'XsdDocument'"
 		},
 		{
 			"/s-ramp/xsd",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactModel] = 'xsd'"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactModel] = 'xsd'"
 		},
         {
             "/s-ramp/xsd[@derived = 'true']",
-            "SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactModel] = 'xsd' AND (artifact.[sramp:derived] = 'true')"
+            "SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactModel] = 'xsd' AND (artifact1.[sramp:derived] = 'true')"
         },
 		{
 			"/s-ramp",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactModel] LIKE '%'"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactModel] LIKE '%'"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@name = 'foo']",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactType] = 'XsdDocument' AND (artifact.[sramp:name] = 'foo')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactType] = 'XsdDocument' AND (artifact1.[sramp:name] = 'foo')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@createdBy = 'lincoln73']",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactType] = 'XsdDocument' AND (artifact.[jcr:createdBy] = 'lincoln73')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactType] = 'XsdDocument' AND (artifact1.[jcr:createdBy] = 'lincoln73')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@prop1]",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactType] = 'XsdDocument' AND (artifact.[sramp-properties:prop1] LIKE '%')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactType] = 'XsdDocument' AND (artifact1.[sramp-properties:prop1] LIKE '%')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@version = '1.0' and @prop1 = 'value1']",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
-			" AND (artifact.[version] = '1.0'" +
-			" AND artifact.[sramp-properties:prop1] = 'value1')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+			" AND (artifact1.[version] = '1.0'" +
+			" AND artifact1.[sramp-properties:prop1] = 'value1')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@version = '1.0' or @prop1 = 'value1']",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
-			" AND (artifact.[version] = '1.0'" +
-			" OR artifact.[sramp-properties:prop1] = 'value1')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+			" AND (artifact1.[version] = '1.0'" +
+			" OR artifact1.[sramp-properties:prop1] = 'value1')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@maven.groupId = 'ggg' and @maven.artifactId = 'aaa' and @maven.version = '1.0.0']",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
-			" AND (artifact.[sramp-properties:maven.groupId] = 'ggg'" +
-			" AND artifact.[sramp-properties:maven.artifactId] = 'aaa'" +
-			" AND artifact.[sramp-properties:maven.version] = '1.0.0')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+			" AND (artifact1.[sramp-properties:maven.groupId] = 'ggg'" +
+			" AND artifact1.[sramp-properties:maven.artifactId] = 'aaa'" +
+			" AND artifact1.[sramp-properties:maven.version] = '1.0.0')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[relatedDocument]",
-			"SELECT artifact.*" +
-			" FROM [sramp:baseArtifactType] AS artifact" +
-			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact) " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
+			"SELECT artifact1.*" +
+			" FROM [sramp:baseArtifactType] AS artifact1" +
+			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1) " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
 			" AND (relationship1.[sramp:relationshipType] = 'relatedDocument')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[relatedDocument and includedXsds]",
-			"SELECT artifact.*" +
-			" FROM [sramp:baseArtifactType] AS artifact" +
-			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact)" +
-			" JOIN [sramp:relationship] AS relationship2 ON ISCHILDNODE(relationship2, artifact) " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
+			"SELECT artifact1.*" +
+			" FROM [sramp:baseArtifactType] AS artifact1" +
+			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1)" +
+			" JOIN [sramp:relationship] AS relationship2 ON ISCHILDNODE(relationship2, artifact1) " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
 			" AND (relationship1.[sramp:relationshipType] = 'relatedDocument' AND relationship2.[sramp:relationshipType] = 'includedXsds')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[relatedDocument[@name = 'foo']]",
-			"SELECT artifact.*" +
-			" FROM [sramp:baseArtifactType] AS artifact" +
-			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact) " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
+			"SELECT artifact1.*" +
+			" FROM [sramp:baseArtifactType] AS artifact1" +
+			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1) " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
 			" AND ((relationship1.[sramp:relationshipType] = 'relatedDocument'" +
-			" AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS target WHERE target.[sramp:name] = 'foo')))"
+			" AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS artifact2 WHERE artifact2.[sramp:name] = 'foo')))"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[relatedDocument[@name = 'foo'] and importedBy[@uuid = '12345']]",
-			"SELECT artifact.*" +
-			" FROM [sramp:baseArtifactType] AS artifact" +
-			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact)" +
-			" JOIN [sramp:relationship] AS relationship2 ON ISCHILDNODE(relationship2, artifact) " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
+			"SELECT artifact1.*" +
+			" FROM [sramp:baseArtifactType] AS artifact1" +
+			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1)" +
+			" JOIN [sramp:relationship] AS relationship2 ON ISCHILDNODE(relationship2, artifact1) " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
 			" AND ((relationship1.[sramp:relationshipType] = 'relatedDocument'" +
-			" AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS target WHERE target.[sramp:name] = 'foo'))" +
+			" AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS artifact2 WHERE artifact2.[sramp:name] = 'foo'))" +
 			" AND (relationship2.[sramp:relationshipType] = 'importedBy'" +
-			" AND relationship2.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS target WHERE target.[sramp:uuid] = '12345')))"
+			" AND relationship2.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS artifact3 WHERE artifact3.[sramp:uuid] = '12345')))"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[relatedDocument[@name = 'foo'] or importedBy[@uuid = '12345']]",
-			"SELECT artifact.*" +
-			" FROM [sramp:baseArtifactType] AS artifact" +
-			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact)" +
-			" JOIN [sramp:relationship] AS relationship2 ON ISCHILDNODE(relationship2, artifact) " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
+			"SELECT artifact1.*" +
+			" FROM [sramp:baseArtifactType] AS artifact1" +
+			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1)" +
+			" JOIN [sramp:relationship] AS relationship2 ON ISCHILDNODE(relationship2, artifact1) " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
 			" AND ((relationship1.[sramp:relationshipType] = 'relatedDocument'" +
-			" AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS target WHERE target.[sramp:name] = 'foo'))" +
+			" AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS artifact2 WHERE artifact2.[sramp:name] = 'foo'))" +
 			" OR (relationship2.[sramp:relationshipType] = 'importedBy'" +
-			" AND relationship2.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS target WHERE target.[sramp:uuid] = '12345')))"
+			" AND relationship2.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS artifact3 WHERE artifact3.[sramp:uuid] = '12345')))"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[s-ramp:exactlyClassifiedByAllOf(., '#China')]",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument' AND (artifact.[sramp:classifiedBy] = '#China')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument' AND (artifact1.[sramp:classifiedBy] = '#China')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[s-ramp:exactlyClassifiedByAllOf(., '#Spicy', '#Sweet')]",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
-			" AND ((artifact.[sramp:classifiedBy] = '#Spicy' AND artifact.[sramp:classifiedBy] = '#Sweet'))"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+			" AND ((artifact1.[sramp:classifiedBy] = '#Spicy' AND artifact1.[sramp:classifiedBy] = '#Sweet'))"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[s-ramp:exactlyClassifiedByAnyOf(., '#China')]",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument' AND (artifact.[sramp:classifiedBy] = '#China')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument' AND (artifact1.[sramp:classifiedBy] = '#China')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[s-ramp:exactlyClassifiedByAnyOf(., '#Spicy', '#Sweet')]",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
-			" AND ((artifact.[sramp:classifiedBy] = '#Spicy' OR artifact.[sramp:classifiedBy] = '#Sweet'))"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+			" AND ((artifact1.[sramp:classifiedBy] = '#Spicy' OR artifact1.[sramp:classifiedBy] = '#Sweet'))"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[s-ramp:classifiedByAnyOf(., '#Spicy', '#Sweet')]",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
-			" AND ((artifact.[sramp:normalizedClassifiedBy] = '#Spicy' OR artifact.[sramp:normalizedClassifiedBy] = '#Sweet'))"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+			" AND ((artifact1.[sramp:normalizedClassifiedBy] = '#Spicy' OR artifact1.[sramp:normalizedClassifiedBy] = '#Sweet'))"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[xp2:matches(@name, '.*account.*')]",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact" +
-			" WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
-			" AND (artifact.[sramp:name] LIKE '%account%')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1" +
+			" WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+			" AND (artifact1.[sramp:name] LIKE '%account%')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[xp2:matches(@description, 'Hello.*')]",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact" +
-			" WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
-			" AND (artifact.[sramp:description] LIKE 'Hello%')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1" +
+			" WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+			" AND (artifact1.[sramp:description] LIKE 'Hello%')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[xp2:matches(@description, 'Hello.*') and xp2:matches(@version, '.*')]",
-			"SELECT artifact.* FROM [sramp:baseArtifactType] AS artifact" +
-			" WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
-			" AND (artifact.[sramp:description] LIKE 'Hello%' AND artifact.[version] LIKE '%')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1" +
+			" WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+			" AND (artifact1.[sramp:description] LIKE 'Hello%' AND artifact1.[version] LIKE '%')"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[relatedDocument[fn:matches(@name, 'fo.*')]]",
-			"SELECT artifact.*" +
-			" FROM [sramp:baseArtifactType] AS artifact" +
-			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact) " +
-			"WHERE artifact.[sramp:artifactType] = 'XsdDocument'" +
+			"SELECT artifact1.*" +
+			" FROM [sramp:baseArtifactType] AS artifact1" +
+			" JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1) " +
+			"WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
 			" AND ((relationship1.[sramp:relationshipType] = 'relatedDocument'" +
-			" AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS target WHERE target.[sramp:name] LIKE 'fo%')))"
+			" AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS artifact2 WHERE artifact2.[sramp:name] LIKE 'fo%')))"
 		},
+        {
+            "/s-ramp/wsdl/PortType[@name = 'OrderServicePT']/operation",
+            "SELECT artifact2.*" +
+            " FROM [sramp:baseArtifactType] AS artifact1" +
+            " JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1)" +
+            " JOIN [sramp:baseArtifactType] AS artifact2 ON relationship1.[sramp:relationshipTarget] = artifact2.[jcr:uuid] " +
+            "WHERE artifact1.[sramp:artifactType] = 'PortType'" +
+            " AND (artifact1.[sramp:name] = 'OrderServicePT')" +
+            " AND relationship1.[sramp:relationshipType] = 'operation'"
+        },
+        {
+            "/s-ramp/wsdl/PortType[@name = 'OrderServicePT']/operation[@name = 'newOrder']",
+            "SELECT artifact2.*" +
+            " FROM [sramp:baseArtifactType] AS artifact1" +
+            " JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1)" +
+            " JOIN [sramp:baseArtifactType] AS artifact2 ON relationship1.[sramp:relationshipTarget] = artifact2.[jcr:uuid] " +
+            "WHERE artifact1.[sramp:artifactType] = 'PortType'" +
+            " AND (artifact1.[sramp:name] = 'OrderServicePT')" +
+            " AND relationship1.[sramp:relationshipType] = 'operation'" +
+            " AND (artifact2.[sramp:name] = 'newOrder')"
+        },
+        {
+            "/s-ramp/wsdl/PortType[relatedDocument[@name = 'OrderServicePT']]/operation[@name = 'newOrder']",
+            "SELECT artifact3.*" +
+            " FROM [sramp:baseArtifactType] AS artifact1" +
+            " JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1)" +
+            " JOIN [sramp:relationship] AS relationship2 ON ISCHILDNODE(relationship2, artifact1)" +
+            " JOIN [sramp:baseArtifactType] AS artifact3 ON relationship2.[sramp:relationshipTarget] = artifact3.[jcr:uuid] " +
+            "WHERE artifact1.[sramp:artifactType] = 'PortType'" +
+            " AND ((relationship1.[sramp:relationshipType] = 'relatedDocument' AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS artifact2 WHERE artifact2.[sramp:name] = 'OrderServicePT')))" +
+            " AND relationship2.[sramp:relationshipType] = 'operation'" +
+            " AND (artifact3.[sramp:name] = 'newOrder')"
+        },
 	};
 
 	/**
