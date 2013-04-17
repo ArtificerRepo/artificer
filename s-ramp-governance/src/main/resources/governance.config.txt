@@ -1,5 +1,7 @@
 governance.query.interval=5000
+
 governance.queries=/s-ramp/ext/SwitchyardApplication|overlord.demo.SimpleReleaseProcess|DeploymentUrl={governance.url}/deploy/copy/{target}/{uuid}::NotificationUrl={governance.url}/notify/email/{group}/deployed/{target}/{uuid}::UpdateMetaDataUrl={governance.url}/update/{name}/{value}/{uuid}
+governance.queries=/s-ramp/ext/MavenPom[@maven.artifactId='project']|overlord.demo.ProjectLifeCycle|UpdateMetaDataUrl={governance.url}/create/project/relatedto/{uuid}
 governance.targets=  dev|/tmp/dev/jbossas7/standalone/deployments
 governance.targets=   qa|/tmp/qa/jbossas7/standalone/deployments
 governance.targets=stage|/tmp/stage/jbossas7/standalone/deployments
