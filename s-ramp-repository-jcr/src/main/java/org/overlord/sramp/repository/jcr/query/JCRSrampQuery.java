@@ -122,8 +122,9 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 		SrampToJcrSql2QueryVisitor visitor = new SrampToJcrSql2QueryVisitor((ClassificationHelper) PersistenceFactory.newInstance());
 		queryModel.accept(visitor);
 		String sql2Query = visitor.getSql2Query();
+		String alias = visitor.getSelectAlias();
 		if (jcrOrderBy != null) {
-			sql2Query += " ORDER BY artifact.[" + jcrOrderBy + "] " + (isOrderAscending() ? "ASC" : "DESC");
+			sql2Query += " ORDER BY " + alias + ".[" + jcrOrderBy + "] " + (isOrderAscending() ? "ASC" : "DESC");
 		}
 		return sql2Query;
 	}
