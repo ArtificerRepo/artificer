@@ -321,6 +321,20 @@ button.tree:hover {
   background-position: 16px 11px;
 }
 
+.sramp-artifact-details-title {
+  font-weight: bold;
+  font-size: 16px;
+  text-shadow: 1px 1px 2px #aaa;
+}
+
+.sramp-artifact-details-version {
+  margin-left: 8px;
+}
+
+.sramp-artifact-details-type {
+  margin-left: 8px;
+}
+
 .sramp-artifacts-table {
   border-left: 1px solid #d3d3d3;
   border-right: 1px solid #d3d3d3;

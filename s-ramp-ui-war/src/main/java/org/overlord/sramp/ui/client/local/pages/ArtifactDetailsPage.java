@@ -74,6 +74,8 @@ public class ArtifactDetailsPage extends AbstractPage {
     InlineLabel name;
     @Inject @DataField("core-property-version") @Bound(property="version")
     InlineLabel version;
+    @Inject @DataField("core-property-type") @Bound(property="type")
+    InlineLabel htype;
     @Inject @DataField("link-download-content")
     Anchor downloadContentLink;
     @Inject @DataField("link-download-metaData")

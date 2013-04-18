@@ -74,8 +74,12 @@
         <!-- Action bar -->
         <div class="row-fluid">
           <div class="span12 sramp-artifact-actions">
-            <span class="sramp-sp4n-label"><span data-field="core-property-name">Artifact 1</span> <span data-field="core-property-version">v1.1.2</span></span>
-            <div class="btn-group" style="margin-left: 20px">
+            <span class="sramp-sp4n-label">
+              <span class="sramp-artifact-details-title" data-field="core-property-name">Artifact 1</span>
+              <span class="sramp-artifact-details-version" data-field="core-property-version">v1.1.2</span>
+              <span class="sramp-artifact-details-type">[<span data-field="core-property-type">XmlDocument</span>]</span>
+            </span>
+            <div class="btn-group" style="margin-left: 20px; visibility: hidden">
               <button class="btn">Actions</button>
               <button class="btn dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
@@ -87,7 +91,10 @@
                 <li><a>Delete (Referenced)</a></li>
               </ul>
             </div>
-            <div class="sramp-sp4n-label pull-right desktop-only">Derived from: <a href="artifact-details.html">Master Artifact 0</a></div>
+            <div data-field="derived-from" class="sramp-sp4n-label sramp-artifact-details-derivedFrom pull-right desktop-only">
+              <span>Derived from: </span>
+              <a href="artifact-details.html">Master Artifact 0</a>
+            </div>
           </div>
         </div>
         <!-- Tabs -->
@@ -174,7 +181,7 @@
                           <th>Name</th>
                           <th>Type</th>
                           <th class="desktop-only">Last Modified</th>
-                          <th class="desktop-only">Actions</th>
+<!--                           <th class="desktop-only">Actions</th> -->
                         </tr>
                       </thead>
                       <tbody>
@@ -185,7 +192,7 @@
                           <td><a href="artifact-details.html">Master Artifact 0</a></td>
                           <td>WsdlDocument</td>
                           <td class="desktop-only">02/12/2011</td>
-                          <td class="desktop-only"></td>
+<!--                           <td class="desktop-only"></td> -->
                         </tr>
                         <tr class="sramp-relationship-type">
                           <td colspan="4">Documented By</td>
@@ -194,13 +201,13 @@
                           <td><a href="artifact-details.html">Documentation Alpha</a></td>
                           <td>OfficeDocument</td>
                           <td class="desktop-only">03/17/2012</td>
-                          <td class="desktop-only"></td>
+<!--                           <td class="desktop-only"></td> -->
                         </tr>
                         <tr>
                           <td><a href="artifact-details.html">Documentation Beta</a></td>
                           <td>OfficeDocument</td>
                           <td class="desktop-only">08/21/2012</td>
-                          <td class="desktop-only"></td>
+<!--                           <td class="desktop-only"></td> -->
                         </tr>
                       </tbody>
                     </table>
