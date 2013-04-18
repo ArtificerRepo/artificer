@@ -25,6 +25,25 @@ input.sramp-date {
   cursor: pointer;
 }
 
+button.tree {
+  float: left;
+  width: 15px;
+  padding: 0px;
+  margin-right: 4px;
+  cursor: pointer;
+  background: none repeat scroll 0% 0% transparent;
+  border: 0px none;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 20px;
+  color: rgb(0, 0, 0);
+  text-shadow: 0px 1px 0px rgb(255, 255, 255);
+  opacity: 0.4;
+}
+button.tree:hover {
+  opacity: 0.7;
+}
+
 .btn-focus {
   color: #2da0db;
   text-shadow: 0px 1px 0px white;
@@ -611,4 +630,11 @@ ul.ontology-selector {
 }
 .ontology-selector label {
   margin-bottom: 0px;
+}
+
+#fileupload-import .input-append {
+  width: 100%;
+}
+#fileupload-import .uneditable-input {
+  width: 60%;
 }

@@ -18,6 +18,8 @@ package org.overlord.sramp.ui.server.services;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -181,6 +183,22 @@ public class ArtifactSearchService implements IArtifactSearchService {
         } else if (filters.getOrigin() == ArtifactOriginEnum.derived) {
             criteria.add("@derived = 'true'");
         }
+        // Classifiers
+        if (hasClassifiers(filters)) {
+            Set<String> ontologyBases = filters.getClassifiers().keySet();
+            StringBuilder classifierCriteria = new StringBuilder();
+            classifierCriteria.append("s-ramp:classifiedByAllOf(.");
+            for (String base : ontologyBases) {
+                Set<String> ids = filters.getClassifiers().get(base);
+                for (String id : ids) {
+                    String classifierUri = base + "#" + id;
+                    classifierCriteria.append(",?");
+                    params.add(classifierUri);
+                }
+            }
+            classifierCriteria.append(")");
+            criteria.add(classifierCriteria.toString());
+        }
 
         // Now create the query predicate from the generated criteria
         if (criteria.size() > 0) {
@@ -201,6 +219,23 @@ public class ArtifactSearchService implements IArtifactSearchService {
             }
         }
         return query;
+    }
+
+    /**
+     * Returns true if the filters has *at least* one classifier configured.
+     * @param filters
+     */
+    protected boolean hasClassifiers(ArtifactFilterBean filters) {
+        Map<String, Set<String>> classifiers = filters.getClassifiers();
+        if (classifiers == null)
+            return false;
+        for (String key : classifiers.keySet()) {
+            Set<String> oclasses = classifiers.get(key);
+            if (oclasses != null && !oclasses.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

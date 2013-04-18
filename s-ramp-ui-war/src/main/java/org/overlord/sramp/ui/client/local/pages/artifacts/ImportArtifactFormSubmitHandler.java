@@ -72,7 +72,7 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
     public void onSubmit(SubmitEvent event) {
         dialog.hide(false);
         // TODO i18n
-        notification = notificationService.start(
+        notification = notificationService.startProgressNotification(
                 "Importing Artifact(s)",
                 "Please wait while your import is processed...");
     }
@@ -89,12 +89,12 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
         ImportResult results = ImportResult.fromResult(event.getResults());
         if (results.isError()) {
             if (results.getError() != null) {
-                notificationService.complete(
+                notificationService.completeProgressNotification(
                         notification.getUuid(),
                         "Importing Artifact(s) [!Error!]",
                         results.getError());
             } else {
-                notificationService.complete(
+                notificationService.completeProgressNotification(
                         notification.getUuid(),
                         "Importing Artifact(s) [!Error!]",
                         "Uh oh, something went wrong with your import!  Please contact your system administrator.");
@@ -103,7 +103,7 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
             String message = "The S-RAMP archive was uploaded and processed, with " +
                     results.getBatchNumSuccess() + " artifact(s) successfully processed and " +
                     results.getBatchNumFailed() + " failed.";
-            notificationService.complete(
+            notificationService.completeProgressNotification(
                     notification.getUuid(),
                     "S-RAMP Archive (batch) Complete",
                     message);
@@ -116,7 +116,7 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
             body.add(ty);
             body.add(clickHere);
             body.add(postAmble);
-            notificationService.complete(
+            notificationService.completeProgressNotification(
                     notification.getUuid(),
                     "Importing Artifact(s) [Complete]",
                     body);

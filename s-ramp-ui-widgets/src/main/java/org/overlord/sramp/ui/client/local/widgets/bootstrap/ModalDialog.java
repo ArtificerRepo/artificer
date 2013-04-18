@@ -31,12 +31,19 @@ public abstract class ModalDialog extends Composite {
 
     @Inject
     private RootPanel rootPanel;
-    private boolean destroyOnHide;
+    private boolean destroyOnHide = true;
 
     /**
      * Constructor.
      */
     public ModalDialog() {
+    }
+
+    /**
+     * @param flag
+     */
+    public void setDestroyOnHide(boolean flag) {
+        this.destroyOnHide = flag;
     }
 
     /**
@@ -52,6 +59,7 @@ public abstract class ModalDialog extends Composite {
      * Hides/closes the dialog.
      */
     public void hide() {
+        hide(true);
     }
 
     /**
@@ -91,7 +99,7 @@ public abstract class ModalDialog extends Composite {
      * @param element
      */
     private static native final void modal(Element element) /*-{
-        $wnd.jQuery(element).modal();
+        $wnd.jQuery(element).modal({backdrop:'static',keyboard:false});
     }-*/;
 
     /**
@@ -106,11 +114,15 @@ public abstract class ModalDialog extends Composite {
      * Connects to the Bootstrap "hidden" event.
      * @param element
      */
-    private native final void addHiddenHandler(Element element) /*-{
+    private native final void addHiddenHandler(final Element element) /*-{
         var dis = this;
-        $wnd.jQuery(element).on('hidden', function () {
+        $wnd.jQuery(element).on('hidden', function(event) {
             try {
-                dis.@org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog::onHidden()();
+                // Only callback if the event actually fired due to the dialog being hidden (this
+                // event handler will get called for anything hidden *within* the dialog too).
+                if (event.target == element) {
+                    dis.@org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog::onHidden()();
+                }
             } catch (e) {
                 alert(e);
             }
@@ -122,7 +134,6 @@ public abstract class ModalDialog extends Composite {
      * @param element
      */
     private native final void removeHiddenHandler(Element element) /*-{
-        var dis = this;
         $wnd.jQuery(element).off('hidden');
     }-*/;
 

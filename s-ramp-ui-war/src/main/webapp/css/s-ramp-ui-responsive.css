@@ -47,9 +47,6 @@ body.no-fileupload .requires-fileupload {
     border-top: 1px solid #d3d3d3;
   }
   
-  #fileupload-import .uneditable-input {
-    width: 60%;
-  }
 }
 
 /* Mobile */
@@ -100,15 +97,14 @@ body.no-fileupload .requires-fileupload {
     display: none;
   }
 
-  #fileupload-import .uneditable-input {
-    width: 42%;
-  }
-
 }
 
 
 /* Phones */
 @media ( max-width : 480px) {
+  #fileupload-import .uneditable-input {
+    width: 42%;
+  }
 }
 
 
