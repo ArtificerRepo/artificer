@@ -35,6 +35,7 @@ public class ArtifactSummaryBean {
 
     private String model;
     private String type;
+    private String rawType;
     private String uuid;
     private String name;
     private String description;
@@ -243,6 +244,20 @@ public class ArtifactSummaryBean {
         } else if (!uuid.equals(other.uuid))
             return false;
         return true;
+    }
+
+    /**
+     * @return the rawType
+     */
+    public String getRawType() {
+        return rawType;
+    }
+
+    /**
+     * @param rawType the rawType to set
+     */
+    public void setRawType(String rawType) {
+        this.rawType = rawType;
     }
 
 }

@@ -130,6 +130,19 @@ public class NotificationService {
     }
 
     /**
+     * Sends an error notification to the user.
+     * @param title
+     * @param exception
+     */
+    public final void sendErrorNotification(String title, Throwable exception) {
+        if (exception instanceof SrampUiException) {
+            sendErrorNotification(title, (SrampUiException) exception);
+        } else {
+            sendErrorNotification(title, exception.getMessage(), null);
+        }
+    }
+
+    /**
      * Starts a progress style notification.  This displays the message to the user, along
      * with displaying a spinner indicating that a background task is running.
      * @param title

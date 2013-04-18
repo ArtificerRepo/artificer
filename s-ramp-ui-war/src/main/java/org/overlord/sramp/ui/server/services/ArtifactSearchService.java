@@ -80,6 +80,7 @@ public class ArtifactSearchService implements IArtifactSearchService {
                 ArtifactType artifactType = artifactSummary.getType();
                 bean.setModel(artifactType.getArtifactType().getModel());
                 bean.setType(artifactType.getType());
+                bean.setRawType(artifactType.getArtifactType().getType());
                 bean.setUuid(artifactSummary.getUuid());
                 bean.setName(artifactSummary.getName());
                 bean.setDescription(artifactSummary.getDescription());
