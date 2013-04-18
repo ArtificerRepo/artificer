@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.ui.client.local.pages.artifacts;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -32,7 +33,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
@@ -52,6 +52,8 @@ public class ClassifierFilter extends Composite implements HasClickHandlers, Has
     private Anchor anchor;
     @Inject @DataField("classifier-filter-label")
     private InlineLabel label;
+    @Inject @DataField("number-selected-label")
+    private InlineLabel numSelected;
     @Inject
     private Instance<ClassifierFilterSelectionDialog> dialogFactory;
 
@@ -70,6 +72,16 @@ public class ClassifierFilter extends Composite implements HasClickHandlers, Has
      */
     public void setLabel(String label) {
         this.label.setText(label);
+    }
+
+    /**
+     * Sets the # selected information in the UI.
+     * @param selected
+     * @param outOf
+     */
+    public void setNumSelected(int selected) {
+        // TODO i18n
+        this.numSelected.setText("(" + String.valueOf(selected) + " selected)");
     }
 
     /**
@@ -123,6 +135,8 @@ public class ClassifierFilter extends Composite implements HasClickHandlers, Has
      */
     @Override
     public void setValue(Set<String> value, boolean fireEvents) {
+        if (value == null)
+            value = new HashSet<String>();
         this.value = value;
     }
 
@@ -150,7 +164,6 @@ public class ClassifierFilter extends Composite implements HasClickHandlers, Has
      * @param data
      */
     protected void doDialogOk(Set<String> data) {
-        Window.alert("Value from dialog: " + data);
         this.value = data;
         ValueChangeEvent.fire(this, data);
     }

@@ -36,7 +36,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 
@@ -93,6 +92,7 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
         });
         classifierFilter.setOntology(ontologySummary);
         classifierFilter.setLabel(ontologySummary.getLabel());
+        classifierFilter.setNumSelected(0);
         filters.add(classifierFilter);
         add(classifierFilter);
         if (getValue() != null) {
@@ -107,11 +107,31 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
      * @param newValue
      */
     protected void onClassifierFilterValueChange(String base, Set<String> newValue) {
-        Window.alert("Value from filter widget changed: " + base);
-        if (this.value != null && this.value.containsKey(base)) {
-            this.value.put(base, newValue);
-            ValueChangeEvent.fire(this, this.value);
+        if (this.value == null) {
+            this.value = new HashMap<String, Set<String>>();
+        } else {
+            this.value = new HashMap<String, Set<String>>(this.value);
         }
+        this.value.put(base, newValue);
+        ValueChangeEvent.fire(this, this.value);
+        // Now update the UI to reflect the # selected
+        ClassifierFilter classifierFilter = getClassifierFilter(base);
+        if (classifierFilter != null) {
+            classifierFilter.setNumSelected(newValue.size());
+        }
+    }
+
+    /**
+     * Returns the child widget for the given ontology.
+     * @param base
+     */
+    private ClassifierFilter getClassifierFilter(String base) {
+        for (ClassifierFilter cf : filters) {
+            if (cf.getOntologyBase().equals(base)) {
+                return cf;
+            }
+        }
+        return null;
     }
 
     /**
@@ -183,6 +203,9 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
      */
     @Override
     public void setValue(Map<String, Set<String>> value, boolean fireEvents) {
+        if (value == null) {
+            value = new HashMap<String, Set<String>>();
+        }
         this.value = new HashMap<String, Set<String>>(value.size());
         for (String k : value.keySet()) {
             Set<String> v = value.get(k);
@@ -194,6 +217,10 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
             String base = classifierFilter.getOntologyBase();
             Set<String> cfValue = getValue().get(base);
             classifierFilter.setValue(cfValue);
+            if (cfValue == null)
+                classifierFilter.setNumSelected(0);
+            else
+                classifierFilter.setNumSelected(cfValue.size());
         }
     }
 }

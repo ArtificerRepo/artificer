@@ -20,7 +20,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- *
+ * Container for the children of a given ontology node (if it has any).
  * @author eric.wittmann@redhat.com
  */
 public class OntologySelectorNodePanel extends FlowPanel {

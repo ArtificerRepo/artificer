@@ -90,12 +90,12 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
         LoadingOntology w = loading.get();
         w.getElement().removeClassName("hide");
         body.add(w);
-        // TODO load the ontology
         ontologyRpcService.get(ontology.getUuid(), new IRpcServiceInvocationHandler<OntologyBean>() {
             @Override
             public void onReturn(OntologyBean data) {
                 body.clear();
                 renderSelectionTree(data);
+                updateTreeItemCheckedStates();
             }
             @Override
             public void onError(Throwable error) {
@@ -110,6 +110,19 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
                 hide();
             }
         });
+    }
+
+    /**
+     * Updates the checked state of the various checkboxes in the tree.  Make sure the
+     * right checkboxes are checked based on the current values.
+     */
+    protected void updateTreeItemCheckedStates() {
+        if (getValue() != null && !getValue().isEmpty()) {
+            for (String oclass : getValue()) {
+                ensureChecked(oclass);
+            }
+            expandAll();
+        }
     }
 
     /**
@@ -186,7 +199,7 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
     /**
      * Native JS to gather up the values of all the nodes in the dialog.
      */
-    public native final void getCheckedNodes() /*-{
+    protected native final void getCheckedNodes() /*-{
         var dis = this;
         $wnd.jQuery('#classifier-dialog :checkbox').each(function() {
             if ($wnd.jQuery(this).attr('checked')) {
@@ -196,6 +209,35 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
                 }
             }
         });
+    }-*/;
+
+    /**
+     * Ensures that the given ontology class is checked in the tree.
+     * @param className
+     */
+    protected native final void ensureChecked(String className) /*-{
+        var dis = this;
+        $wnd.jQuery('#classifier-dialog :checkbox').each(function() {
+            if ($wnd.jQuery(this).attr('name') == className) {
+                $wnd.jQuery(this).attr('checked', 'checked');
+            }
+        });
+    }-*/;
+
+    /**
+     * Expands all nodes in the tree
+     * @param className
+     */
+    protected native final void expandAll() /*-{
+        $wnd.expandAllTreeNodes('classifier-dialog');
+    }-*/;
+
+    /**
+     * Collapses all nodes in the tree
+     * @param className
+     */
+    protected native final void collapseAll() /*-{
+        $wnd.collapseAllTreeNodes('classifier-dialog');
     }-*/;
 
     /**

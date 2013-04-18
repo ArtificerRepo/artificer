@@ -80,9 +80,12 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
     @Inject @DataField
     protected RadioButton originDerived;
 
-    // Clear core filtersPanel
     @Inject @DataField
     protected Anchor clearCoreFilters;
+    @Inject @DataField
+    protected Anchor clearClassifierFilters;
+    @Inject @DataField
+    protected Anchor clearCustomPropertyFilters;
 
     @Inject @DataField("classifier-filter-container")
     protected ClassifierFilterContainer classifierFilters;
@@ -100,13 +103,16 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
     @PostConstruct
     protected void postConstruct() {
         originPrimary.setValue(true);
-        clearCoreFilters.addClickHandler(new ClickHandler() {
+        ClickHandler clearFilterHandler = new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 setValue(new ArtifactFilterBean());
                 onFilterValueChange();
             }
-        });
+        };
+        clearCoreFilters.addClickHandler(clearFilterHandler);
+        clearClassifierFilters.addClickHandler(clearFilterHandler);
+        clearCustomPropertyFilters.addClickHandler(clearFilterHandler);
         @SuppressWarnings("rawtypes")
         ValueChangeHandler valueChangeHandler = new ValueChangeHandler() {
             @Override

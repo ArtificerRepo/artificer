@@ -18,6 +18,7 @@ package org.overlord.sramp.ui.server.services;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -183,7 +184,7 @@ public class ArtifactSearchService implements IArtifactSearchService {
             criteria.add("@derived = 'true'");
         }
         // Classifiers
-        if (!filters.getClassifiers().isEmpty()) {
+        if (hasClassifiers(filters)) {
             Set<String> ontologyBases = filters.getClassifiers().keySet();
             StringBuilder classifierCriteria = new StringBuilder();
             classifierCriteria.append("s-ramp:classifiedByAllOf(.");
@@ -218,6 +219,23 @@ public class ArtifactSearchService implements IArtifactSearchService {
             }
         }
         return query;
+    }
+
+    /**
+     * Returns true if the filters has *at least* one classifier configured.
+     * @param filters
+     */
+    protected boolean hasClassifiers(ArtifactFilterBean filters) {
+        Map<String, Set<String>> classifiers = filters.getClassifiers();
+        if (classifiers == null)
+            return false;
+        for (String key : classifiers.keySet()) {
+            Set<String> oclasses = classifiers.get(key);
+            if (oclasses != null && !oclasses.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
