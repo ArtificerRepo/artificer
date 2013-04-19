@@ -39,8 +39,8 @@ import com.google.gwt.user.client.ui.InlineLabel;
 public class EditableInlineLabel extends InlineLabel implements HasValue<String>, IMouseInOutWidget {
 
     @Inject
-    private Instance<PropertyValuePopover> popoverFactory;
-    private PropertyValuePopover popover = null;
+    private Instance<EditableInlineLabelPopover> popoverFactory;
+    private EditableInlineLabelPopover popover = null;
     @Inject
     private Instance<EditCustomPropertyDialog> editDialogFactory;
     private boolean supportsRemove;
