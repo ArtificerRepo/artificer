@@ -58,6 +58,18 @@ public class PropertyValuePopover extends Composite implements IMouseInOutWidget
     public PropertyValuePopover() {
     }
 
+    /**
+     * Whether the "remove" button should be shown.
+     * @param flag
+     */
+    public void setSupportsRemove(boolean flag) {
+        if (flag) {
+            remove.getElement().removeClassName("hide");
+        } else {
+            remove.getElement().addClassName("hide");
+        }
+    }
+
     @PostConstruct
     protected void onPostConstruct() {
         WidgetUtil.initMouseInOutWidget(this);

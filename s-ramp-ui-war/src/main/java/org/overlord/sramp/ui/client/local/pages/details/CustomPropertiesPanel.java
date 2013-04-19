@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
 public class CustomPropertiesPanel extends FlowPanel implements HasValue<Map<String, String>> {
 
     @Inject
-    private Instance<PropertyValueWidget> propValueLabelFactory;
+    private Instance<CustomPropertyEditableInlineLabel> propValueLabelFactory;
     private HashMap<String, String> value;
 
     /**
@@ -87,7 +87,7 @@ public class CustomPropertiesPanel extends FlowPanel implements HasValue<Map<Str
                 String propValue = value.get(propName);
                 InlineLabel propLabel = new InlineLabel(propName + ":");
                 propLabel.setStyleName("sramp-meta-data-section-label");
-                PropertyValueWidget propValueWidget = propValueLabelFactory.get();
+                CustomPropertyEditableInlineLabel propValueWidget = propValueLabelFactory.get();
                 propValueWidget.addValueChangeHandler(new ValueChangeHandler<String>() {
                     @Override
                     public void onValueChange(ValueChangeEvent<String> event) {
