@@ -26,7 +26,12 @@
     <div>
       <div class="btn-group" style="margin: 20px">
         <button id="btn-add-property" class="btn">Add Property</button>
+        <button id="btn-edit-property" class="btn">Edit Property</button>
       </div>
+      <div></div>
+      <p style="padding: 10px;">
+        <span id="span-property-value" class="">This is a property value</span>
+      </p>
     </div>
 
 
@@ -37,7 +42,7 @@
         <h4>Add Custom Property</h4>
       </div>
       <div class="modal-body">
-        <form>
+        <form onsubmit="return false;">
           <fieldset>
             <label>Property Name:</label>
             <input data-field="name" class="input-name" name="property-name" type="text"></input>
@@ -53,11 +58,64 @@
     </div>
 
 
+    <!-- Edit Custom Property Value modal -->
+    <div data-field="edit-property-dialog" id="edit-property-dialog" class="modal hide">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4>Edit Custom Property</h4>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="return false;">
+          <fieldset>
+            <label>New Property Value:</label>
+            <input data-field="value" class="input-value" name="property-value" type="text"></input>
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button data-field="edit-property-submit-button" class="btn btn-focus" disabled="">Edit</button>
+      </div>
+    </div>
+
+
+    <!-- The popup shown over an editable field -->
+    <div data-field="propval-editor-popover" class="propval-editor-popover hide">
+      <div class="overlay">
+      </div>
+      <div class="actions">
+        <a data-field="edit" class="action" title="Click to edit this property."><i class="icon-pencil"></i></a>
+        <a data-field="remove" class="action" title="Click to remove this property."><i class="icon-remove"></i></a>
+      </div>
+    </div>
+
+
     <!-- Some scripting to add functionality to the live template -->
     <script>
       $('#btn-add-property').click(function() {
         $('#add-property-dialog').modal({keyboard:false,backdrop:'static'});
         $('#add-property-dialog .input-name').focus();
+      });
+      $('#btn-edit-property').click(function() {
+          $('#edit-property-dialog').modal({keyboard:false,backdrop:'static'});
+          $('#edit-property-dialog .input-value').focus();
+        });
+      
+      $('#span-property-value').mouseenter(function() {
+          $('.propval-editor-popover').removeClass('hide');
+    	  var offset = $(this).offset();
+    	  var height = $(this).height() + 8;
+    	  var width = $(this).width() + 8;
+          $('.propval-editor-popover .overlay').width(width);
+          $('.propval-editor-popover .overlay').height(height);
+          $('.propval-editor-popover').offset({
+        	  top: offset.top - 4,
+        	  left: offset.left - 4
+          });
+          
+      });
+      $('.propval-editor-popover').mouseleave(function() {
+          $('.propval-editor-popover').addClass('hide');
       });
     </script>
 

@@ -26,6 +26,8 @@ import javax.inject.Inject;
 
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.databinding.client.api.InitialState;
+import org.jboss.errai.databinding.client.api.PropertyChangeEvent;
+import org.jboss.errai.databinding.client.api.PropertyChangeHandler;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.shared.api.annotations.AutoBound;
@@ -46,6 +48,7 @@ import org.overlord.sramp.ui.client.local.util.DataBindingDateConverter;
 import org.overlord.sramp.ui.client.local.widgets.common.HtmlSnippet;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
+import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -149,6 +152,12 @@ public class ArtifactDetailsPage extends AbstractPage {
     protected void onPostConstruct() {
         pageContent = DOMUtil.findElementById(getElement(), "page-content");
         editorWrapper = DOMUtil.findElementById(getElement(), "editor-wrapper");
+        artifact.addPropertyChangeHandler(new PropertyChangeHandler<Object>() {
+            @Override
+            public void onPropertyChange(PropertyChangeEvent<Object> event) {
+                pushModelToServer();
+            }
+        });
     }
 
     /**
@@ -204,11 +213,9 @@ public class ArtifactDetailsPage extends AbstractPage {
                 if (value != null) {
                     String propName = value.getKey();
                     String propValue = value.getValue();
-                    // TODO store on the model and publish it back to the server
                     Map<String, String> newProps = new HashMap<String,String>(artifact.getModel().getProperties());
                     newProps.put(propName, propValue);
-                    artifact.getModel().setProperties(newProps);
-                    pushModelToServer();
+                    customProperties.setValue(newProps, true);
                 }
             }
         });
@@ -285,14 +292,20 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     // TODO i18n
     protected void pushModelToServer() {
+        final NotificationBean notificationBean = notificationService.startProgressNotification(
+                "Updating Artifact", "Updating artifact '" + artifact.getModel().getName() + "', please wait...");
         artifactService.update(artifact.getModel(), new IRpcServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
-                notificationService.sendNotification("Update Complete", "You have successfully updated artifact '" + artifact.getModel().getName() + "'.");
+                notificationService.completeProgressNotification(notificationBean.getUuid(),
+                        "Update Complete",
+                        "You have successfully updated artifact '" + artifact.getModel().getName() + "'.");
             }
             @Override
             public void onError(Throwable error) {
-                notificationService.sendErrorNotification("Error Updating Artifact", error);
+                notificationService.completeProgressNotification(notificationBean.getUuid(),
+                        "Error Updating Artifact",
+                        error);
             }
         });
     }

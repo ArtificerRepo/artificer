@@ -205,6 +205,20 @@ public class NotificationService {
     }
 
     /**
+     * Completes an in-progress (progress-style) notification.
+     * @param uuid
+     * @param title
+     * @param error
+     */
+    public void completeProgressNotification(String uuid, String title, Throwable error) {
+        if (error instanceof SrampUiException) {
+            completeProgressNotification(uuid, title, (SrampUiException) error);
+        } else {
+            completeProgressNotification(uuid, title, new SrampUiException(error));
+        }
+    }
+
+    /**
      * Sends a notification (local/client only).
      * @param notification
      */
