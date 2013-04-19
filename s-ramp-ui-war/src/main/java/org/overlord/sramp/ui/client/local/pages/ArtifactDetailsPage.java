@@ -38,6 +38,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.details.AddCustomPropertyDialog;
 import org.overlord.sramp.ui.client.local.pages.details.ClassifiersPanel;
 import org.overlord.sramp.ui.client.local.pages.details.CustomPropertiesPanel;
+import org.overlord.sramp.ui.client.local.pages.details.EditableInlineLabel;
 import org.overlord.sramp.ui.client.local.pages.details.RelationshipsTable;
 import org.overlord.sramp.ui.client.local.pages.details.SourceEditor;
 import org.overlord.sramp.ui.client.local.services.ArtifactRpcService;
@@ -86,7 +87,7 @@ public class ArtifactDetailsPage extends AbstractPage {
 
     // Overview tab
     @Inject @DataField("core-property-name") @Bound(property="name")
-    InlineLabel name;
+    EditableInlineLabel name;
     @Inject @DataField("core-property-version") @Bound(property="version")
     InlineLabel version;
     @Inject @DataField("core-property-type") @Bound(property="type")

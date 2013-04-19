@@ -123,6 +123,15 @@ button.tree:hover {
   font-size: 12px;
 }
 
+.input-name {
+  width: 80%;
+  min-width: 200px;
+}
+.input-value {
+  width: 80%;
+  min-width: 200px;
+}
+
 .sramp-navbar {
   background-image: url("../images/navbar-bg.png");
   background-repeat: repeat-x;

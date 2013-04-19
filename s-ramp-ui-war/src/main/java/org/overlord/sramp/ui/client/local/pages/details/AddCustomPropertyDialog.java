@@ -28,6 +28,8 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -63,6 +65,14 @@ public class AddCustomPropertyDialog extends ModalDialog implements HasValueChan
     @PostConstruct
     protected void onPostConstruct() {
         submitButton.setEnabled(false);
+        name.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                String val = name.getValue();
+                boolean shouldEnable = val != null && val.trim().length() > 0;
+                submitButton.setEnabled(shouldEnable);
+            }
+        });
         name.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {

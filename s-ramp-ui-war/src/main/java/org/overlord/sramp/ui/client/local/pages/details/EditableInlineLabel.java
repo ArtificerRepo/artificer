@@ -32,25 +32,29 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
 
 /**
- * Widget used to display the value of a property.
+ * Widget used to display an editable value in a SPAN.
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class PropertyValueWidget extends InlineLabel implements HasValue<String>, IMouseInOutWidget {
+public class EditableInlineLabel extends InlineLabel implements HasValue<String>, IMouseInOutWidget {
 
     @Inject
     private Instance<PropertyValuePopover> popoverFactory;
     private PropertyValuePopover popover = null;
     @Inject
     private Instance<EditCustomPropertyDialog> editDialogFactory;
+    private boolean supportsRemove;
     private String value;
 
     /**
      * Constructor.
      */
-    public PropertyValueWidget() {
+    public EditableInlineLabel() {
     }
 
+    /**
+     * Post construct.
+     */
     @PostConstruct
     protected void onPostConstruct() {
         WidgetUtil.initMouseInOutWidget(this);
@@ -64,13 +68,16 @@ public class PropertyValueWidget extends InlineLabel implements HasValue<String>
         // Guard against possibly getting the event multiple times.
         if (popover == null || !popover.isAttached()) {
             popover = popoverFactory.get();
-            popover.getRemoveButton().addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    setValue(null, true);
-                    popover.close();
-                }
-            });
+            popover.setSupportsRemove(supportsRemove);
+            if (supportsRemove) {
+                popover.getRemoveButton().addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        setValue(null, true);
+                        popover.close();
+                    }
+                });
+            }
             popover.getEditButton().addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
@@ -91,7 +98,7 @@ public class PropertyValueWidget extends InlineLabel implements HasValue<String>
         dialog.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
-                ValueChangeEvent.fire(PropertyValueWidget.this, event.getValue());
+                setValue(event.getValue(), true);
             }
         });
         dialog.show();
@@ -103,6 +110,13 @@ public class PropertyValueWidget extends InlineLabel implements HasValue<String>
     @Override
     public void onMouseOut() {
         // Nothing to do.
+    }
+
+    /**
+     * @param flag indicates whether 'remove' is supported for this property
+     */
+    public void setSupportsRemove(boolean flag) {
+        this.supportsRemove = flag;
     }
 
     /**
@@ -118,14 +132,7 @@ public class PropertyValueWidget extends InlineLabel implements HasValue<String>
      */
     @Override
     public void setValue(String value, boolean fireEvents) {
-        if (value == null || value.trim().length() == 0) {
-            // TODO i18n
-            this.setText("<no value>");
-        } else if (value.length() > 64) {
-            this.setText(value.substring(0, 64) + "...");
-        } else {
-            this.setText(value);
-        }
+        this.setText(value);
         this.value = value;
         if (fireEvents) {
             ValueChangeEvent.fire(this, value);

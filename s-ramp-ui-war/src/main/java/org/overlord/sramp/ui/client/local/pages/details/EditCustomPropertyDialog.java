@@ -25,6 +25,8 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -68,12 +70,23 @@ public class EditCustomPropertyDialog extends ModalDialog implements HasValueCha
     @PostConstruct
     protected void onPostConstruct() {
         submitButton.setEnabled(false);
+        value.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                String val = value.getValue();
+                boolean shouldEnable = val != null &&
+                        val.trim().length() > 0 &&
+                        !val.equals(originalValue);
+                submitButton.setEnabled(shouldEnable);
+            }
+        });
         value.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
-                boolean shouldEnable = event.getValue() != null &&
-                        event.getValue().trim().length() > 0 &&
-                        !event.getValue().equals(originalValue);
+                String val = event.getValue();
+                boolean shouldEnable = val != null &&
+                        val.trim().length() > 0 &&
+                        !val.equals(originalValue);
                 submitButton.setEnabled(shouldEnable);
             }
         });
