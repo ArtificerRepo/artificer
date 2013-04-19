@@ -17,6 +17,7 @@ package org.overlord.sramp.ui.server.services;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
@@ -67,6 +68,7 @@ public class ArtifactService implements IArtifactService {
             ArtifactBean bean = new ArtifactBean();
             bean.setModel(artifactType.getArtifactType().getModel());
             bean.setType(artifactType.getType());
+            bean.setRawType(artifactType.getArtifactType().getType());
             bean.setUuid(artifact.getUuid());
             bean.setName(artifact.getName());
             bean.setDescription(artifact.getDescription());
@@ -110,6 +112,7 @@ public class ArtifactService implements IArtifactService {
         try {
             ArtifactType at = ArtifactType.valueOf(artifactType);
             BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(at, uuid);
+            // TODO i18n
             String response = "N/A (Please download the content instead...)";
             if (SrampModelUtils.isDocumentArtifact(artifact)) {
                 DocumentArtifactType doc = (DocumentArtifactType) artifact;
@@ -157,9 +160,30 @@ public class ArtifactService implements IArtifactService {
      * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#update(org.overlord.sramp.ui.client.shared.beans.ArtifactBean)
      */
     @Override
-    public void update(ArtifactBean artifact) throws SrampUiException {
-        // TODO implement this!
-        throw new SrampUiException("Not yet implemented.");
+    public void update(ArtifactBean bean) throws SrampUiException {
+        try {
+            ArtifactType artifactType = ArtifactType.valueOf(bean.getModel(), bean.getRawType());
+            // Grab the latest from the server
+            BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(artifactType, bean.getUuid());
+            // Update it with new data from the bean
+            artifact.setName(bean.getName());
+            artifact.setDescription(bean.getDescription());
+            artifact.setVersion(bean.getVersion());
+            artifact.getProperty().clear();
+            for (String propName : bean.getPropertyNames()) {
+                SrampModelUtils.setCustomProperty(artifact, propName, bean.getProperty(propName));
+            }
+            artifact.getClassifiedBy().clear();
+            for (String classifier : bean.getClassifiedBy()) {
+                artifact.getClassifiedBy().add(classifier);
+            }
+            // Push the changes back to the server
+            clientAccessor.getClient().updateArtifactMetaData(artifact);
+        } catch (SrampClientException e) {
+            throw new SrampUiException(e.getMessage());
+        } catch (SrampAtomException e) {
+            throw new SrampUiException(e.getMessage());
+        }
     }
 
 }

@@ -116,12 +116,12 @@ public class RelationshipsTable extends TemplatedWidgetTable implements HasValue
         name.setText(relationship.getTargetName());
         InlineLabel type = new InlineLabel(relationship.getTargetType());
         InlineLabel modified = new InlineLabel(format.format(relationship.getTargetLastModified()));
-        InlineLabel actions = new InlineLabel("");
+//        InlineLabel actions = new InlineLabel("");
 
         add(rowIdx, 0, name);
         add(rowIdx, 1, type);
         add(rowIdx, 2, modified);
-        add(rowIdx, 3, actions);
+//        add(rowIdx, 3, actions);
     }
 
 }

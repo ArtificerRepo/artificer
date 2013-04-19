@@ -15,9 +15,13 @@
  */
 package org.overlord.sramp.ui.client.local.pages.details;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -32,6 +36,10 @@ import com.google.gwt.user.client.ui.InlineLabel;
  * @author eric.wittmann@redhat.com
  */
 public class CustomPropertiesPanel extends FlowPanel implements HasValue<Map<String, String>> {
+
+    @Inject
+    private Instance<PropertyValueWidget> propValueLabelFactory;
+    private HashMap<String, String> value;
 
     /**
      * Constructor.
@@ -69,22 +77,41 @@ public class CustomPropertiesPanel extends FlowPanel implements HasValue<Map<Str
      */
     @Override
     public void setValue(Map<String, String> value, boolean fireEvents) {
+        this.value = new HashMap<String, String>(value);
         clear();
         if (value == null || value.isEmpty()) {
             // Put something here?  "No Properties found..." ?
         } else {
             Set<String> keys = new TreeSet<String>(value.keySet());
-            for (String key : keys) {
-                InlineLabel propLabel = new InlineLabel(key + ":");
+            for (final String propName : keys) {
+                String propValue = value.get(propName);
+                InlineLabel propLabel = new InlineLabel(propName + ":");
                 propLabel.setStyleName("sramp-meta-data-section-label");
-                InlineLabel propValue = new InlineLabel(value.get(key)); // TODO trim down the value if it's really big
-                propValue.setStyleName("sramp-meta-data-section-value");
+                PropertyValueWidget propValueWidget = propValueLabelFactory.get();
+                propValueWidget.addValueChangeHandler(new ValueChangeHandler<String>() {
+                    @Override
+                    public void onValueChange(ValueChangeEvent<String> event) {
+                        Map<String, String> newValue = new HashMap<String, String>(CustomPropertiesPanel.this.value);
+                        String val = event.getValue();
+                        if (val == null) {
+                            newValue.remove(propName);
+                        } else {
+                            newValue.put(propName, val);
+                        }
+                        setValue(newValue, true);
+                    }
+                });
+                propValueWidget.setValue(propValue);
+                propValueWidget.setStyleName("sramp-meta-data-section-value");
                 InlineLabel clearFix = new InlineLabel();
                 clearFix.setStyleName("clearfix");
                 add(propLabel);
-                add(propValue);
+                add(propValueWidget);
                 add(clearFix);
             }
+        }
+        if (fireEvents) {
+            ValueChangeEvent.fire(this, this.value);
         }
     }
 

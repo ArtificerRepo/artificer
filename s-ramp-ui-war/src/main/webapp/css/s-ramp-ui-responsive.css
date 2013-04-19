@@ -105,6 +105,9 @@ body.no-fileupload .requires-fileupload {
   #fileupload-import .uneditable-input {
     width: 42%;
   }
+  .growl-dialog {
+    width: 320px;
+  }
 }
 
 
