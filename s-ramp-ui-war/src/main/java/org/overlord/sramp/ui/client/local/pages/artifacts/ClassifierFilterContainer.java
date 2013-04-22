@@ -28,6 +28,8 @@ import javax.inject.Inject;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.widgets.ontologies.LoadingOntologies;
+import org.overlord.sramp.ui.client.local.widgets.ontologies.NoOntologiesFound;
 import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 

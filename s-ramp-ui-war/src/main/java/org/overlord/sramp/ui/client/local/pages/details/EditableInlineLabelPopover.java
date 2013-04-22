@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 @Templated("/org/overlord/sramp/ui/client/local/site/artifact-details_dialogs.html#propval-editor-popover")
 @Dependent
-public class PropertyValuePopover extends Composite implements IMouseInOutWidget {
+public class EditableInlineLabelPopover extends Composite implements IMouseInOutWidget {
 
     @Inject
     private RootPanel rootPanel;
@@ -55,7 +55,7 @@ public class PropertyValuePopover extends Composite implements IMouseInOutWidget
     /**
      * Constructor.
      */
-    public PropertyValuePopover() {
+    public EditableInlineLabelPopover() {
     }
 
     /**
@@ -67,6 +67,18 @@ public class PropertyValuePopover extends Composite implements IMouseInOutWidget
             remove.getElement().removeClassName("hide");
         } else {
             remove.getElement().addClassName("hide");
+        }
+    }
+
+    /**
+     * Whether the "edit" button should be shown.
+     * @param flag
+     */
+    public void setSupportsEdit(boolean flag) {
+        if (flag) {
+            edit.getElement().removeClassName("hide");
+        } else {
+            edit.getElement().addClassName("hide");
         }
     }
 

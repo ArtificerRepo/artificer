@@ -647,24 +647,40 @@ footer hr {
 }
 
 .sramp-filter-ontology-modal {
-  border-radius: 0px;
 }
 .sramp-filter-ontology-modal h4 span {
   font-size: 75%;
 }
-.sramp-filter-ontology-modal .select-all {
-  border-bottom: 1px solid #dfdfdf;
-}
-.sramp-filter-ontology-modal .select-all .btn-group {
-  margin-bottom: 4px;
-}
-
-.sramp-filter-ontology-modal ul {
-  list-style-type: none;
-}
 .sramp-filter-ontology-modal .modal-footer {
   padding: 5px 10px 8px 10px;
 }
+
+.classifiers-modal .modal-footer {
+  padding: 5px 10px 8px 10px;
+}
+
+.modify-classifiers-dialog-ontology-selector hr {
+  margin-top: 5px;
+}
+.modify-classifiers-dialog-ontology-selector .sramp-sp4n-label {
+  text-shadow: 0px 1px 0px white;
+  padding: 4px 12px;
+  line-height: 20px;
+  display: inline;
+}
+
+
+.ontology-selector-with-toolbar .select-all {
+  border-bottom: 1px solid #dfdfdf;
+}
+.ontology-selector-with-toolbar .select-all .btn-group {
+  margin-bottom: 4px;
+}
+.ontology-selector-with-toolbar ul {
+  list-style-type: none;
+}
+
+
 
 ul.ontology-selector {
   margin-left: 5px;

@@ -15,9 +15,13 @@
  */
 package org.overlord.sramp.ui.client.local.pages.details;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -32,6 +36,11 @@ import com.google.gwt.user.client.ui.InlineLabel;
  * @author eric.wittmann@redhat.com
  */
 public class ClassifiersPanel extends FlowPanel implements HasValue<List<String>> {
+
+    @Inject
+    private Instance<EditableInlineLabel> editableLabelFactory;
+
+    private List<String> value;
 
     /**
      * Constructor.
@@ -52,8 +61,7 @@ public class ClassifiersPanel extends FlowPanel implements HasValue<List<String>
      */
     @Override
     public List<String> getValue() {
-        // TODO Implement getValue()
-        return null;
+        return value;
     }
 
     /**
@@ -71,17 +79,36 @@ public class ClassifiersPanel extends FlowPanel implements HasValue<List<String>
     public void setValue(List<String> value, boolean fireEvents) {
         clear();
         if (value == null || value.isEmpty()) {
-            // Put something here?  "No Properties found..." ?
+            this.value = null;
         } else {
+            this.value = new ArrayList<String>(value);
             Set<String> classifiers = new TreeSet<String>(value);
-            for (String classifier : classifiers) {
-                InlineLabel classifierLabel = new InlineLabel(classifier);
+            for (final String classifier : classifiers) {
+                EditableInlineLabel classifierLabel = editableLabelFactory.get();
+                classifierLabel.setValue(classifier);
+                classifierLabel.setSupportsEdit(false);
+                classifierLabel.setSupportsRemove(true);
                 classifierLabel.setStyleName("sramp-meta-data-section-label");
+                classifierLabel.addValueChangeHandler(new ValueChangeHandler<String>() {
+                    @Override
+                    public void onValueChange(ValueChangeEvent<String> event) {
+                        if (event.getValue() == null) {
+                            List<String> newValue = new ArrayList<String>(ClassifiersPanel.this.value);
+                            newValue.remove(classifier);
+                            setValue(newValue, true);
+                        }
+                        // Editing an existing classifier is not currently supported - instead users
+                        // must remove and then add.
+                    }
+                });
                 InlineLabel clearFix = new InlineLabel();
                 clearFix.setStyleName("clearfix");
                 add(classifierLabel);
                 add(clearFix);
             }
+        }
+        if (fireEvents) {
+            ValueChangeEvent.fire(this, this.value);
         }
     }
 

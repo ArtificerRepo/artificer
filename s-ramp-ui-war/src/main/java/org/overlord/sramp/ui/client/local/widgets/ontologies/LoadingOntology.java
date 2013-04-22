@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.local.pages.artifacts;
+package org.overlord.sramp.ui.client.local.widgets.ontologies;
 
 import javax.enterprise.context.Dependent;
 
@@ -22,16 +22,16 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- *
+ * "Loading ontology" spinner.
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#classifier-filter-spinner")
+@Templated("/org/overlord/sramp/ui/client/local/site/artifacts_dialogs.html#classifier-dialog-spinner")
 @Dependent
-public class LoadingOntologies extends Composite {
+public class LoadingOntology extends Composite {
 
     /**
      * Constructor.
      */
-    public LoadingOntologies() {
+    public LoadingOntology() {
     }
 }

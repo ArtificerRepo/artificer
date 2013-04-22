@@ -69,6 +69,14 @@ public class ArtifactBean extends ArtifactSummaryBean implements Serializable {
     }
 
     /**
+     * Sets the classified by.
+     * @param classifiedBy
+     */
+    public void setClassifiedBy(List<String> classifiedBy) {
+        this.classifiedBy = classifiedBy;
+    }
+
+    /**
      * @param classification
      */
     public void addClassifiedBy(String classification) {

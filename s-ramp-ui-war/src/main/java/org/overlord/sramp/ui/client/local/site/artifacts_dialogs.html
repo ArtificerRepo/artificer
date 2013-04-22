@@ -69,28 +69,26 @@
       </div>
       <div data-field="classifier-dialog-body" class="modal-body">
         <div data-field="classifier-dialog-spinner" class="hide"><span class="spinner">Loading full ontology, please wait...</span></div>
-        <div data-field="ontology-selector-with-toolbar">
-          Please select the classifiers you wish to filter by from the tree below.  You may use
-          the drop-downs to select all/none and expand/collapse all nodes in the tree.
+        <div data-field="ontology-selector-with-toolbar" class="ontology-selector-with-toolbar">
           <div class="btn-toolbar">
             <div class="btn-group">
-              <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+              <a class="btn-small btn dropdown-toggle" data-toggle="dropdown" href="#">
                 <span>Select...</span>
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                <li><a onClick="$('#classifier-dialog').find(':checkbox').prop('checked', true)">Select All</a></li>
-                <li><a onClick="$('#classifier-dialog').find(':checkbox').prop('checked', false)">Select None</a></li>
+                <li><a onClick="$(this).closest('.ontology-selector-with-toolbar').find(':checkbox').prop('checked', true)">Select All</a></li>
+                <li><a onClick="$(this).closest('.ontology-selector-with-toolbar').find(':checkbox').prop('checked', false)">Select None</a></li>
               </ul>
             </div>
             <div class="btn-group">
-              <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+              <a class="btn-small btn dropdown-toggle" data-toggle="dropdown" href="#">
                 <span>Expand...</span>
                 <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                <li><a onClick="expandAllTreeNodes('classifier-dialog')">Expand All</a></li>
-                <li><a onClick="collapseAllTreeNodes('classifier-dialog')">Collapse All</a></li>
+                <li><a onClick="expandAllTreeNodes($(this).closest('.ontology-selector-with-toolbar'))">Expand All</a></li>
+                <li><a onClick="collapseAllTreeNodes($(this).closest('.ontology-selector-with-toolbar'))">Collapse All</a></li>
               </ul>
             </div>
             <div class="pull-right hide">

@@ -97,10 +97,21 @@ public class OntologyService implements IOntologyService {
     private OntologyBean ontologyToBean(SrampOntology ontology) {
         OntologyBean bean = new OntologyBean();
         bean.setLastModifiedBy(ontology.getLastModifiedBy());
+        bean.setBase(ontology.getBase());
+        bean.setComment(ontology.getComment());
+        bean.setCreatedBy(ontology.getCreatedBy());
+        bean.setCreatedOn(ontology.getCreatedOn());
+        bean.setId(ontology.getId());
+        bean.setLabel(ontology.getLabel());
+        bean.setLastModifiedBy(ontology.getLastModifiedBy());
+        bean.setLastModifiedOn(ontology.getLastModifiedOn());
+        bean.setUuid(ontology.getUuid());
         List<Class> allClasses = ontology.getAllClasses();
         // Create and index all the classes first
         for (Class cl4ss : allClasses) {
-            bean.createClass(cl4ss.getId());
+            OntologyClassBean classBean = bean.createClass(cl4ss.getId());
+            classBean.setComment(cl4ss.getComment());
+            classBean.setLabel(cl4ss.getLabel());
         }
         // Then go back through and set up the tree.
         for (Class cl4ss : allClasses) {

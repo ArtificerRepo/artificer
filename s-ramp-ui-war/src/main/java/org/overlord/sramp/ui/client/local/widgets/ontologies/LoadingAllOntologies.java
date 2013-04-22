@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.local.pages.artifacts;
+package org.overlord.sramp.ui.client.local.widgets.ontologies;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -22,16 +23,24 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- *
+ * "Loading all ontologies" spinner.
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#classifier-filter-none-found")
+@Templated("/org/overlord/sramp/ui/client/local/site/artifact-details_dialogs.html#modify-classifiers-dialog-spinner-all")
 @Dependent
-public class NoOntologiesFound extends Composite {
+public class LoadingAllOntologies extends Composite {
 
     /**
      * Constructor.
      */
-    public NoOntologiesFound() {
+    public LoadingAllOntologies() {
+    }
+
+    /**
+     * Called when the dialog is constructed by Errai.
+     */
+    @PostConstruct
+    protected void onPostConstruct() {
+        getElement().removeClassName("hide");
     }
 }
