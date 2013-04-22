@@ -70,6 +70,18 @@ public class EditableInlineLabelPopover extends Composite implements IMouseInOut
         }
     }
 
+    /**
+     * Whether the "edit" button should be shown.
+     * @param flag
+     */
+    public void setSupportsEdit(boolean flag) {
+        if (flag) {
+            edit.getElement().removeClassName("hide");
+        } else {
+            edit.getElement().addClassName("hide");
+        }
+    }
+
     @PostConstruct
     protected void onPostConstruct() {
         WidgetUtil.initMouseInOutWidget(this);

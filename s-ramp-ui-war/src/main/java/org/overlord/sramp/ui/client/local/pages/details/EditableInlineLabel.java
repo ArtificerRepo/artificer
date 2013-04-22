@@ -43,7 +43,8 @@ public class EditableInlineLabel extends InlineLabel implements HasValue<String>
     private EditableInlineLabelPopover popover = null;
     @Inject
     private Instance<EditCustomPropertyDialog> editDialogFactory;
-    private boolean supportsRemove;
+    private boolean supportsEdit = true;
+    private boolean supportsRemove = false;
     private String value;
 
     /**
@@ -68,6 +69,7 @@ public class EditableInlineLabel extends InlineLabel implements HasValue<String>
         // Guard against possibly getting the event multiple times.
         if (popover == null || !popover.isAttached()) {
             popover = popoverFactory.get();
+            popover.setSupportsEdit(supportsEdit);
             popover.setSupportsRemove(supportsRemove);
             if (supportsRemove) {
                 popover.getRemoveButton().addClickHandler(new ClickHandler() {
@@ -78,13 +80,15 @@ public class EditableInlineLabel extends InlineLabel implements HasValue<String>
                     }
                 });
             }
-            popover.getEditButton().addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    onEditProperty();
-                    popover.close();
-                }
-            });
+            if (supportsEdit) {
+                popover.getEditButton().addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        onEditProperty();
+                        popover.close();
+                    }
+                });
+            }
             popover.showOver(getElement());
         }
     }
@@ -117,6 +121,13 @@ public class EditableInlineLabel extends InlineLabel implements HasValue<String>
      */
     public void setSupportsRemove(boolean flag) {
         this.supportsRemove = flag;
+    }
+
+    /**
+     * @param flag indicates whether 'remove' is supported for this property
+     */
+    public void setSupportsEdit(boolean flag) {
+        this.supportsEdit = flag;
     }
 
     /**

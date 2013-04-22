@@ -105,6 +105,47 @@ public class OntologyRpcService {
     }
 
     /**
+     * Gets all of the ontologies in a single async shot.
+     * @param handler
+     */
+    public void getAll(final IRpcServiceInvocationHandler<List<OntologyBean>> handler) {
+        list(new IRpcServiceInvocationHandler<List<OntologySummaryBean>>() {
+            int ontologyIndex = 0;
+            List<OntologyBean> allOntologies = new ArrayList<OntologyBean>();
+            @Override
+            public void onReturn(final List<OntologySummaryBean> summaries) {
+                if (summaries.isEmpty()) {
+                    handler.onReturn(allOntologies);
+                } else {
+                    final IRpcServiceInvocationHandler<OntologyBean> handy = new IRpcServiceInvocationHandler<OntologyBean>() {
+                        @Override
+                        public void onReturn(OntologyBean ontology) {
+                            // add the ontology to the rval
+                            allOntologies.add(ontology);
+                            // get the next ontology in the list (unless we've got them all)
+                            ontologyIndex++;
+                            if (ontologyIndex >= summaries.size()) {
+                                handler.onReturn(allOntologies);
+                            } else {
+                                get(summaries.get(ontologyIndex).getUuid(), this);
+                            }
+                        }
+                        @Override
+                        public void onError(Throwable error) {
+                            handler.onError(error);
+                        }
+                    };
+                    get(summaries.get(ontologyIndex).getUuid(), handy);
+                }
+            }
+            @Override
+            public void onError(Throwable error) {
+                handler.onError(error);
+            }
+        });
+    }
+
+    /**
      * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#update(OntologyBean)
      */
     public void update(OntologyBean ontology, final IRpcServiceInvocationHandler<Void> handler) {

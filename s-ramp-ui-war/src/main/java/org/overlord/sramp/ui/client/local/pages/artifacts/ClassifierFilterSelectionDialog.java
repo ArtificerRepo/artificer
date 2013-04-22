@@ -15,8 +15,6 @@
  */
 package org.overlord.sramp.ui.client.local.pages.artifacts;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -30,8 +28,9 @@ import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
+import org.overlord.sramp.ui.client.local.widgets.ontologies.LoadingOntology;
+import org.overlord.sramp.ui.client.local.widgets.ontologies.OntologySelectorWithToolbar;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
-import org.overlord.sramp.ui.client.shared.beans.OntologyClassBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 
@@ -66,8 +65,6 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
     private Instance<LoadingOntology> loading;
     @Inject
     private OntologySelectorWithToolbar selector;
-    @Inject
-    private Instance<OntologySelectorNode> nodeFactory;
 
     @Inject @DataField("classifier-dialog-btn-ok")
     private Anchor okButton;
@@ -117,12 +114,8 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
      * right checkboxes are checked based on the current values.
      */
     protected void updateTreeItemCheckedStates() {
-        if (getValue() != null && !getValue().isEmpty()) {
-            for (String oclass : getValue()) {
-                ensureChecked(oclass);
-            }
-            expandAll();
-        }
+        selector.setSelection(value);
+        selector.expandAll();
     }
 
     /**
@@ -132,119 +125,33 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
      */
     protected void renderSelectionTree(OntologyBean ontology) {
         body.add(selector);
-
-        List<OntologyClassBean> rootClasses = ontology.getRootClasses();
-        for (OntologyClassBean ontologyClass : rootClasses) {
-            createAndAddNode(ontologyClass, this.selector.getNodePanel());
-        }
+        selector.refresh(ontology);
     }
 
     /**
-     * Method to create and add tree nodes.
-     * @param ontologyClass
-     * @param nodePanel
+     * @return the current value
      */
-    private void createAndAddNode(OntologyClassBean ontologyClass, OntologySelectorNodePanel nodePanel) {
-        OntologySelectorNode node = nodeFactory.get();
-        String label = ontologyClass.getId();
-        if (ontologyClass.getLabel() != null) {
-            label = ontologyClass.getLabel();
-        }
-        node.setLabel(label);
-        node.setClassId(ontologyClass.getId());
-        List<OntologyClassBean> children = ontologyClass.getChildren();
-        for (OntologyClassBean childClass : children) {
-            createAndAddNode(childClass, node);
-        }
-        nodePanel.add(node);
-    }
-
-    /**
-     * Method to create and add tree nodes.
-     * @param ontologyClass
-     * @param parentNode
-     */
-    private void createAndAddNode(OntologyClassBean ontologyClass, OntologySelectorNode parentNode) {
-        OntologySelectorNode node = nodeFactory.get();
-        String label = ontologyClass.getId();
-        if (ontologyClass.getLabel() != null) {
-            label = ontologyClass.getLabel();
-        }
-        node.setLabel(label);
-        node.setClassId(ontologyClass.getId());
-        List<OntologyClassBean> children = ontologyClass.getChildren();
-        for (OntologyClassBean childClass : children) {
-            createAndAddNode(childClass, node);
-        }
-        parentNode.addChild(node);
-    }
-
     public Set<String> getValue() {
         return value;
     }
 
+    /**
+     * @param value a new value
+     */
     public void setValue(Set<String> value) {
         this.value = value;
     }
 
+    /**
+     * Called when the user clicks the OK button.
+     * @param event
+     */
     @EventHandler("classifier-dialog-btn-ok")
     public void onOkClick(ClickEvent event) {
         // Gather up everything that was checked in the UI
-        this.value = new HashSet<String>();
-        getCheckedNodes();
+        this.value = selector.getSelection();
         ValueChangeEvent.fire(this, this.value);
         hide();
-    }
-
-    /**
-     * Native JS to gather up the values of all the nodes in the dialog.
-     */
-    protected native final void getCheckedNodes() /*-{
-        var dis = this;
-        $wnd.jQuery('#classifier-dialog :checkbox').each(function() {
-            if ($wnd.jQuery(this).attr('checked')) {
-                var name = $wnd.jQuery(this).attr('name');
-                if (name) {
-                    dis.@org.overlord.sramp.ui.client.local.pages.artifacts.ClassifierFilterSelectionDialog::addValue(Ljava/lang/String;)(name);
-                }
-            }
-        });
-    }-*/;
-
-    /**
-     * Ensures that the given ontology class is checked in the tree.
-     * @param className
-     */
-    protected native final void ensureChecked(String className) /*-{
-        var dis = this;
-        $wnd.jQuery('#classifier-dialog :checkbox').each(function() {
-            if ($wnd.jQuery(this).attr('name') == className) {
-                $wnd.jQuery(this).attr('checked', 'checked');
-            }
-        });
-    }-*/;
-
-    /**
-     * Expands all nodes in the tree
-     * @param className
-     */
-    protected native final void expandAll() /*-{
-        $wnd.expandAllTreeNodes('classifier-dialog');
-    }-*/;
-
-    /**
-     * Collapses all nodes in the tree
-     * @param className
-     */
-    protected native final void collapseAll() /*-{
-        $wnd.collapseAllTreeNodes('classifier-dialog');
-    }-*/;
-
-    /**
-     * @param v
-     */
-    protected void addValue(String v) {
-        this.value.add(v);
     }
 
     /**

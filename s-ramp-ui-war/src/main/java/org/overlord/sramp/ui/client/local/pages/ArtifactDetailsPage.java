@@ -15,7 +15,9 @@
  */
 package org.overlord.sramp.ui.client.local.pages;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -39,6 +41,7 @@ import org.overlord.sramp.ui.client.local.pages.details.AddCustomPropertyDialog;
 import org.overlord.sramp.ui.client.local.pages.details.ClassifiersPanel;
 import org.overlord.sramp.ui.client.local.pages.details.CustomPropertiesPanel;
 import org.overlord.sramp.ui.client.local.pages.details.EditableInlineLabel;
+import org.overlord.sramp.ui.client.local.pages.details.ModifyClassifiersDialog;
 import org.overlord.sramp.ui.client.local.pages.details.RelationshipsTable;
 import org.overlord.sramp.ui.client.local.pages.details.SourceEditor;
 import org.overlord.sramp.ui.client.local.services.ArtifactRpcService;
@@ -118,6 +121,10 @@ public class ArtifactDetailsPage extends AbstractPage {
     Instance<AddCustomPropertyDialog> addPropertyDialogFactory;
     @Inject @DataField("classifiers-container") @Bound(property="classifiedBy")
     ClassifiersPanel classifiers;
+    @Inject @DataField("modify-classifiers-button")
+    Anchor modifyClassifier;
+    @Inject
+    Instance<ModifyClassifiersDialog> modifyClassifiersDialogFactory;
 
     // Relationships tab
     @Inject @DataField("sramp-artifact-tabs-relationships")
@@ -220,6 +227,27 @@ public class ArtifactDetailsPage extends AbstractPage {
                 }
             }
         });
+        dialog.show();
+    }
+
+    /**
+     * Called when the user clicks the Add Property button.
+     * @param event
+     */
+    @EventHandler("modify-classifiers-button")
+    protected void onModifyClassifiers(ClickEvent event) {
+        ModifyClassifiersDialog dialog = modifyClassifiersDialogFactory.get();
+        dialog.addValueChangeHandler(new ValueChangeHandler<List<String>>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<List<String>> event) {
+                List<String> value = event.getValue();
+                if (value != null) {
+                    List<String> newValue = new ArrayList<String>(value);
+                    classifiers.setValue(newValue, true);
+                }
+            }
+        });
+        dialog.setValue(artifact.getModel().getClassifiedBy());
         dialog.show();
     }
 

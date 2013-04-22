@@ -58,6 +58,8 @@ import com.google.gwt.user.client.ui.Widget;
 @ApplicationScoped
 public class NotificationService {
 
+    // TODO (i18n) find all consumers of this service to check for hard-coded strings that should be i18n'd
+
     @Inject
     private MessageBus bus;
     @Inject

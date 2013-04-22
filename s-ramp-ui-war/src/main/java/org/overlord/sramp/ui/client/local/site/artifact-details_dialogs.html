@@ -27,6 +27,7 @@
       <div class="btn-group" style="margin: 20px">
         <button id="btn-add-property" class="btn">Add Property</button>
         <button id="btn-edit-property" class="btn">Edit Property</button>
+        <button id="btn-modify-classifiers" class="btn">Modify Classifiers</button>
       </div>
       <div></div>
       <p style="padding: 10px;">
@@ -79,6 +80,139 @@
     </div>
 
 
+    <!-- Modify Classifers Dialog -->
+    <div data-field="modify-classifiers-dialog" id="modify-classifiers-dialog" class="classifiers-modal modal hide">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4>Modify Classifiers</h4>
+      </div>
+      <div data-field="modify-classifiers-dialog-body" class="modal-body">
+        <div data-field="modify-classifiers-dialog-spinner-all" class="hide"><span class="spinner">Loading ontologies, please wait...</span></div>
+        <div data-field="modify-classifiers-dialog-ontology-selector" class="modify-classifiers-dialog-ontology-selector">
+          <span class="clearfix">Choose an ontology</span>
+          <select data-field="ontology-select" name="ontology" title="Select an ontology...">
+            <option>Regions</option>
+            <option>Colors</option>
+          </select>
+          <hr />
+        </div>
+        <div data-field="ontology-selector-with-toolbar" class="ontology-selector-with-toolbar">
+          <div class="btn-toolbar">
+            <div class="btn-group">
+              <a class="btn-small btn dropdown-toggle" data-toggle="dropdown" href="#">
+                <span>Select...</span>
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a onClick="$(this).closest('.ontology-selector-with-toolbar').find(':checkbox').prop('checked', true)">Select All</a></li>
+                <li><a onClick="$(this).closest('.ontology-selector-with-toolbar').find(':checkbox').prop('checked', false)">Select None</a></li>
+              </ul>
+            </div>
+            <div class="btn-group">
+              <a class="btn-small btn dropdown-toggle" data-toggle="dropdown" href="#">
+                <span>Expand...</span>
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a onClick="expandAllTreeNodes($(this).closest('.ontology-selector-with-toolbar'))">Expand All</a></li>
+                <li><a onClick="collapseAllTreeNodes($(this).closest('.ontology-selector-with-toolbar'))">Collapse All</a></li>
+              </ul>
+            </div>
+            <div class="pull-right hide">
+              <input type="text" name="filter" value="" placeholder="Filter by name..."></input>
+            </div>
+          </div>
+          <ul data-field="ontology-selector" class="ontology-selector">
+            <li data-field="ontology-selector-node">
+              <button data-field="ontology-selector-node-toggle-btn" onClick="toggleTreeIcon($(this))" 
+                  data-toggle="collapse" data-target="#ul-1" 
+                  type="button" class="tree" aria-hidden="true">+</button>
+              <label>
+                <input data-field="ontology-selector-node-checkbox" type="checkbox" name="Species1"></input>
+                <span data-field="ontology-selector-node-label">Species 1</span>
+              </label>
+              <ul data-field="ontology-selector-node-childPanel" id="ul-1" class="out collapse">
+                <li>
+                  <i class="icon icon-none"></i>
+                  <label>
+                    <input type="checkbox" name="Subspecies1"></input>
+                    <span>Subspecies 1</span>
+                  </label>
+                </li>
+                <li>
+                  <button onClick="toggleTreeIcon($(this))" data-toggle="collapse" data-target="#ul-2" type="button" class="tree" aria-hidden="true">+</button>
+                  <label>
+                    <input type="checkbox" name="Subspecies2"></input>
+                    <span>Subspecies 2</span>
+                  </label>
+                  <ul id="ul-2" class="out collapse">
+                    <li>
+                      <i class="icon icon-none"></i>
+                      <label>
+                        <input type="checkbox"></input>
+                        <span>Sub-Subspecies Alpha</span>
+                      </label>
+                    </li>
+                    <li>
+                      <i class="icon icon-none"></i>
+                      <label>
+                        <input type="checkbox"></input>
+                        <span>Sub-Subspecies Beta</span>
+                      </label>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <button onClick="toggleTreeIcon($(this))" data-toggle="collapse" data-target="#ul-3" type="button" class="tree" aria-hidden="true">+</button>
+              <label>
+                <input type="checkbox"></input>
+                <span>Species 2</span>
+              </label>
+              <ul id="ul-3" class="out collapse">
+                <li>
+                  <i class="icon icon-none"></i>
+                  <label>
+                    <input type="checkbox"></input>
+                    <span>Subspecies 2-1</span>
+                  </label>
+                </li>
+                <li>
+                  <button onClick="toggleTreeIcon($(this))" data-toggle="collapse" data-target="#ul-4" type="button" class="tree" aria-hidden="true">+</button>
+                  <label>
+                    <input type="checkbox"></input>
+                    <span>Subspecies 2-2</span>
+                  </label>
+                  <ul id="ul-4" class="out collapse">
+                    <li>
+                      <i class="icon icon-none"></i>
+                      <label>
+                        <input type="checkbox"></input>
+                        <span>Sub-Subspecies Two Alpha</span>
+                      </label>
+                    </li>
+                    <li>
+                      <i class="icon icon-none"></i>
+                      <label>
+                        <input type="checkbox"></input>
+                        <span>Sub-Subspecies Two Beta
+                      </label>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-small" data-dismiss="modal">Cancel</a>
+        <a data-field="modify-classifiers-dialog-btn-ok" class="btn btn-focus btn-small">OK</a>
+      </div>
+    </div>
+    
+
     <!-- The popup shown over an editable custom property -->
     <div data-field="propval-editor-popover" class="propval-editor-popover hide">
       <div class="overlay">
@@ -97,9 +231,12 @@
         $('#add-property-dialog .input-name').focus();
       });
       $('#btn-edit-property').click(function() {
-          $('#edit-property-dialog').modal({keyboard:false,backdrop:'static'});
-          $('#edit-property-dialog .input-value').focus();
-        });
+        $('#edit-property-dialog').modal({keyboard:false,backdrop:'static'});
+        $('#edit-property-dialog .input-value').focus();
+      });
+      $('#btn-modify-classifiers').click(function() {
+        $('#modify-classifiers-dialog').modal({keyboard:false,backdrop:'static'});
+      });
       
       $('#span-property-value').mouseenter(function() {
           $('.propval-editor-popover').removeClass('hide');
