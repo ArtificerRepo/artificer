@@ -53,6 +53,7 @@
                 <exclude>WEB-INF/lib/mail*.jar</exclude>
                 <exclude>WEB-INF/lib/xml-apis*.jar</exclude>
                 <exclude>WEB-INF/lib/resteasy*.jar</exclude>
+                <exclude>WEB-INF/lib/jaxb-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>
