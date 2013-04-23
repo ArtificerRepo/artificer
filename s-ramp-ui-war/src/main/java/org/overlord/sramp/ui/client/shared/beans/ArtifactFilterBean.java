@@ -46,6 +46,11 @@ public class ArtifactFilterBean {
      * selected in the classifier selection dialog.
      */
     private Map<String, Set<String>> classifiers = new HashMap<String, Set<String>>();
+    /**
+     * The custom property filters.  This is just a name/value pair.  The user can specify
+     * as many of these as she likes.
+     */
+    private Map<String, String> customProperties = new HashMap<String, String>();
 
     /**
      * Constructor.
@@ -189,6 +194,20 @@ public class ArtifactFilterBean {
     }
 
     /**
+     * @return the customProperties
+     */
+    public Map<String, String> getCustomProperties() {
+        return customProperties;
+    }
+
+    /**
+     * @param customProperties the customProperties to set
+     */
+    public void setCustomProperties(Map<String, String> customProperties) {
+        this.customProperties = customProperties;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -204,6 +223,7 @@ public class ArtifactFilterBean {
         result = prime * result + ((lastModifiedBy == null) ? 0 : lastModifiedBy.hashCode());
         result = prime * result + ((origin == null) ? 0 : origin.hashCode());
         result = prime * result + ((classifiers == null) ? 0 : classifiers.hashCode());
+        result = prime * result + ((customProperties == null) ? 0 : customProperties.hashCode());
         return result;
     }
 
@@ -260,6 +280,11 @@ public class ArtifactFilterBean {
             if (other.classifiers != null)
                 return false;
         } else if (!classifiers.equals(other.classifiers))
+            return false;
+        if (customProperties == null) {
+            if (other.customProperties != null)
+                return false;
+        } else if (!customProperties.equals(other.customProperties))
             return false;
         return true;
     }

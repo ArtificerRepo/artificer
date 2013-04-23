@@ -95,7 +95,7 @@
                     </div>
                     <div id="accordion-filters-core" class="sramp-filter-body closed-on-mobile close-on-mobile open-on-desktop">
                       <div class="sramp-filter-inner">
-                        <form class="">
+                        <form class="" onSubmit="return false;">
                           <div class="controls">
                             <label class="sramp-filter-label">Type</label>
                             <input data-field="artifactType" type="text" placeholder="Any (e.g. WsdlDocument)" class="span12">
@@ -178,7 +178,7 @@
                             <span>No ontologies found.</span>
                           </li>
                         </ul>
-                        <form class="">
+                        <form class="" onSubmit="return false;">
                           <div class="controls">
                             <a data-field="clearClassifierFilters" class="btn btn-focus btn-clear">Clear All Filters</a>
                           </div>
@@ -201,27 +201,32 @@
                     </div>
                     <div id="accordion-filters-properties" class="sramp-filter-body closed">
                       <div class="sramp-filter-inner">
-                        <form class="">
-                          <div class="controls">
-                            <label class="sramp-filter-label">Property 1:</label>
-                            <input class="span12" type="text" placeholder="Any">
-                          </div>
-                          <div class="controls">
-                            <label class="sramp-filter-label">Property 2:</label>
-                            <input class="span12" type="text" placeholder="Any">
-                          </div>
-                          <div class="controls">
-                            <label class="sramp-filter-label">Property 3:</label>
-                            <select class="span12" type="text">
-                              <option selected="selected">Any</option>
-                              <option value="one">Configured Value 1</option>
-                              <option value="two">Configured Value 2</option>
-                              <option value="three">Configured Value 3</option>
-                            </select>
-                          </div>
-                          <div class="controls">
-                            <a data-field="clearCustomPropertyFilters" class="btn btn-focus btn-clear">Clear All Filters</a>
-                          </div>
+                        <form class="" onSubmit="return false;">
+                          <div data-field="filter-custom-properties" class="filter-custom-properties">
+                            <div data-field="filter-custom-property" class="controls">
+                              <label data-field="filter-custom-property-label" class="sramp-filter-label">Property 1:</label>
+                              <input data-field="filter-custom-property-input" class="span12" type="text" placeholder="Any">
+                            </div>
+                            <div class="controls">
+                              <label class="sramp-filter-label">Property 2:</label>
+                              <input class="span12" type="text" placeholder="Any">
+                            </div>
+                            <div class="controls">
+                              <label class="sramp-filter-label">Property 3:</label>
+                              <select class="span12" type="text">
+                                <option selected="selected">Any</option>
+                                <option value="one">Configured Value 1</option>
+                                <option value="two">Configured Value 2</option>
+                                <option value="three">Configured Value 3</option>
+                              </select>
+                            </div>
+                        </div>
+                        <div class="controls">
+                          <button data-field="addCustomPropertyFilter" class="btn btn-focus btn-filter">Add Property Filter</button>
+                        </div>
+                        <div class="controls">
+                          <a data-field="clearCustomPropertyFilters" class="btn btn-focus btn-clear">Clear All Filters</a>
+                        </div>
                         </form>
                       </div>
                       <div class="s-ramp-filter-footer">

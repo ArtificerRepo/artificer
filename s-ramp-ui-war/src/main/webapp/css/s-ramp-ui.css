@@ -60,6 +60,12 @@ button.tree:hover {
   width: 100%;
 }
 
+.btn-filter {
+  padding: 5px 0px 5px 0px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
 .propval-editor-popover {
   position: fixed;
 }
