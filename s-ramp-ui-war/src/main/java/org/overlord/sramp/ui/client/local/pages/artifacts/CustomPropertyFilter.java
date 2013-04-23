@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
- *
+ * A single custom property filter in the UI (Artifacts page).
  * @author eric.wittmann@redhat.com
  */
 @Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#filter-custom-property")

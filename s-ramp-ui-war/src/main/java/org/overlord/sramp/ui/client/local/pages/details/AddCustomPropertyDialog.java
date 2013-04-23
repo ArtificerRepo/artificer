@@ -35,6 +35,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -49,7 +50,7 @@ public class AddCustomPropertyDialog extends ModalDialog implements HasValueChan
     @Inject @DataField
     protected TextBox name;
     @Inject @DataField
-    protected TextBox value;
+    protected TextArea value;
     @Inject @DataField("add-property-submit-button")
     protected Button submitButton;
 

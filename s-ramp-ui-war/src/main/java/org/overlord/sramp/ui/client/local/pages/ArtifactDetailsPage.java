@@ -40,6 +40,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.details.AddCustomPropertyDialog;
 import org.overlord.sramp.ui.client.local.pages.details.ClassifiersPanel;
 import org.overlord.sramp.ui.client.local.pages.details.CustomPropertiesPanel;
+import org.overlord.sramp.ui.client.local.pages.details.DescriptionInlineLabel;
 import org.overlord.sramp.ui.client.local.pages.details.ModifyClassifiersDialog;
 import org.overlord.sramp.ui.client.local.pages.details.RelationshipsTable;
 import org.overlord.sramp.ui.client.local.pages.details.SourceEditor;
@@ -125,6 +126,8 @@ public class ArtifactDetailsPage extends AbstractPage {
     Anchor modifyClassifier;
     @Inject
     Instance<ModifyClassifiersDialog> modifyClassifiersDialogFactory;
+    @Inject @DataField("core-property-description") @Bound(property="description")
+    DescriptionInlineLabel description;
 
     // Relationships tab
     @Inject @DataField("sramp-artifact-tabs-relationships")
