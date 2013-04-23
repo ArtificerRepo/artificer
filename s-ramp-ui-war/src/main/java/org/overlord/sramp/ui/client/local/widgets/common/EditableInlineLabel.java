@@ -16,7 +16,6 @@
 package org.overlord.sramp.ui.client.local.widgets.common;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -36,7 +35,6 @@ import com.google.gwt.user.client.ui.InlineLabel;
  * Widget used to display an editable value in a SPAN.
  * @author eric.wittmann@redhat.com
  */
-@Dependent
 public class EditableInlineLabel extends InlineLabel implements HasValue<String>, IMouseInOutWidget {
 
     @Inject

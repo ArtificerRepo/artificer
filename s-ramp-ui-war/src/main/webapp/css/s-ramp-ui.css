@@ -130,12 +130,10 @@ button.tree:hover {
 }
 
 .input-name {
-  width: 80%;
-  min-width: 200px;
+  width: 95%;
 }
 .input-value {
-  width: 80%;
-  min-width: 200px;
+  width: 95%;
 }
 
 .sramp-navbar {
