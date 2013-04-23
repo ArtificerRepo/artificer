@@ -683,12 +683,13 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	@Override
 	public void printArtifactGraph(String uuid, ArtifactType type) {
 		Session session = null;
-		String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
 		try {
 			session = JCRRepositoryFactory.getAnonymousSession();
-			Node artifactNode = session.getNode(artifactPath);
-			JCRUtils tools = new JCRUtils();
-			tools.printSubgraph(artifactNode);
+			Node artifactNode = findArtifactNode(uuid, type, session);
+			if (artifactNode != null) {
+    			JCRUtils tools = new JCRUtils();
+    			tools.printSubgraph(artifactNode);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -711,8 +712,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
 			if (session.nodeExists(artifactPath)) {
 				artifactNode = session.getNode(artifactPath);
-			} else if (type.isExtendedType()) {
-			    // Might be a extended derived type, so try searching for it by UUID
+			} else {
 	            artifactNode = findArtifactNodeByUuid(session, uuid);
 			}
 		}
