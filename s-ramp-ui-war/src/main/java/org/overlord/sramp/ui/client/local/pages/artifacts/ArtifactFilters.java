@@ -17,9 +17,11 @@ package org.overlord.sramp.ui.client.local.pages.artifacts;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.DateBox;
 import org.overlord.sramp.ui.client.local.widgets.common.RadioButton;
@@ -33,6 +35,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -90,6 +93,13 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
     @Inject @DataField("classifier-filter-container")
     protected ClassifierFilterContainer classifierFilters;
 
+    @Inject @DataField
+    protected Button addCustomPropertyFilter;
+    @Inject @DataField("filter-custom-properties")
+    protected CustomPropertyFilters customPropertyFilters;
+    @Inject
+    protected Instance<AddPropertyFilterDialog> addPropertyFilterDialogFactory;
+
     /**
      * Constructor.
      */
@@ -137,6 +147,7 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
         originPrimary.addClickHandler(clickHandler);
         originDerived.addClickHandler(clickHandler);
         classifierFilters.addValueChangeHandler(valueChangeHandler);
+        customPropertyFilters.addValueChangeHandler(valueChangeHandler);
     }
 
     /**
@@ -152,12 +163,29 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
             .setCreatedBy(createdBy.getValue())
             .setLastModifiedBy(lastModifiedBy.getValue())
             .setOrigin(ArtifactOriginEnum.valueOf(originAny.getValue(), originPrimary.getValue(), originDerived.getValue()))
-            .setClassifiers(classifierFilters.getValue());
+            .setClassifiers(classifierFilters.getValue())
+            .setCustomProperties(customPropertyFilters.getValue());
 
         ArtifactFilterBean oldState = this.currentState;
         this.currentState = newState;
         // Only fire a change event if something actually changed.
         ValueChangeEvent.fireIfNotEqual(this, oldState, currentState);
+    }
+
+    /**
+     * Called when the Add Filter button is clicked (to add a custom property filter).
+     * @param event
+     */
+    @EventHandler("addCustomPropertyFilter")
+    protected void onAddPropertyFilter(ClickEvent event) {
+        AddPropertyFilterDialog dialog = addPropertyFilterDialogFactory.get();
+        dialog.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                customPropertyFilters.addPropertyFilter(event.getValue());
+            }
+        });
+        dialog.show();
     }
 
     /**
@@ -194,6 +222,7 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
             originPrimary.setValue(true);
         }
         classifierFilters.setValue(value.getClassifiers());
+        customPropertyFilters.setValue(value.getCustomProperties());
         onFilterValueChange();
     }
 

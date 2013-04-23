@@ -23,6 +23,8 @@ import java.util.TreeSet;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.overlord.sramp.ui.client.local.widgets.common.EditableInlineLabel;
+
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;

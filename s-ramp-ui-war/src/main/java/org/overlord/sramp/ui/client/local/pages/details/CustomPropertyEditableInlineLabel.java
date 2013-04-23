@@ -17,6 +17,8 @@ package org.overlord.sramp.ui.client.local.pages.details;
 
 import javax.enterprise.context.Dependent;
 
+import org.overlord.sramp.ui.client.local.widgets.common.EditableInlineLabel;
+
 /**
  * Widget used to display the value of a property.
  * @author eric.wittmann@redhat.com

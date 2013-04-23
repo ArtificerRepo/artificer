@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -180,9 +181,11 @@ public class ArtifactSearchService implements IArtifactSearchService {
         }
         // Origin
         if (filters.getOrigin() == ArtifactOriginEnum.primary) {
-            criteria.add("@derived = 'false'");
+            criteria.add("@derived = ?");
+            params.add("false");
         } else if (filters.getOrigin() == ArtifactOriginEnum.derived) {
-            criteria.add("@derived = 'true'");
+            criteria.add("@derived = ?");
+            params.add("true");
         }
         // Classifiers
         if (hasClassifiers(filters)) {
@@ -199,6 +202,23 @@ public class ArtifactSearchService implements IArtifactSearchService {
             }
             classifierCriteria.append(")");
             criteria.add(classifierCriteria.toString());
+        }
+        // Custom properties
+        if (!filters.getCustomProperties().isEmpty()) {
+            for (Entry<String, String> entry : filters.getCustomProperties().entrySet()) {
+                String propName = entry.getKey();
+                String propVal = entry.getValue();
+                // Note: this looks dangerous (injection) but know that
+                // S-RAMP queries are read-only.  Also, the UI allows
+                // the user to input any query they want anyway (via the
+                // query text box)...
+                if (propVal == null || propVal.trim().length() == 0) {
+                    criteria.add("@" + propName);
+                } else {
+                    criteria.add("@" + propName + " = ?");
+                    params.add(propVal);
+                }
+            }
         }
 
         // Now create the query predicate from the generated criteria
