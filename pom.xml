@@ -97,7 +97,7 @@
     <xmlunit.version>1.3</xmlunit.version>
     <servlet.api.version>2.5</servlet.api.version>
     <org.jboss.resteasy.version>2.3.5.Final</org.jboss.resteasy.version>
-    <org.modeshape.version>3.1.3.Final</org.modeshape.version>
+    <org.modeshape.version>3.2.0.Final</org.modeshape.version>
     <infinispan.version>5.1.6.FINAL</infinispan.version>
     <overlord.commons.auth.version>1.0.1</overlord.commons.auth.version>
     <commons.io.version>2.4</commons.io.version>
