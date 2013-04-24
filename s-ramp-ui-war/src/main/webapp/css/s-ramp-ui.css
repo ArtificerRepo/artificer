@@ -239,6 +239,18 @@ button.tree:hover {
   border-top: 4px solid white;
 }
 
+.hero-unit {
+  background-color: transparent;
+  border-bottom: 1px solid rgb(187, 187, 187);
+}
+
+.breadcrumb {
+  border: 1px solid rgb(211, 211, 211);
+  background-image: url("../images/s-ramp-actions-bg.png");
+  background-position: top left;
+  background-repeat: repeat-x;
+}
+
 #sramp-filters {
   margin-bottom: 5px;
 }
@@ -427,6 +439,11 @@ button.tree:hover {
   border-bottom: 1px solid rgb(221, 221, 221);
   padding-bottom: 15px;
   background-color: white;
+}
+
+.artifact-details-loading {
+  margin: 20px;
+  padding-bottom: 20px;
 }
 
 .sramp-details-tab-spinner {

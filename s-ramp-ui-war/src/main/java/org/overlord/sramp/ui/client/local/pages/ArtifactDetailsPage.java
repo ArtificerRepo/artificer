@@ -32,6 +32,7 @@ import org.jboss.errai.databinding.client.api.PropertyChangeEvent;
 import org.jboss.errai.databinding.client.api.PropertyChangeHandler;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageState;
+import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.AutoBound;
 import org.jboss.errai.ui.shared.api.annotations.Bound;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -88,6 +89,12 @@ public class ArtifactDetailsPage extends AbstractPage {
 
     @Inject @AutoBound
     protected DataBinder<ArtifactBean> artifact;
+
+    // Breadcrumbs
+    @Inject @DataField("back-to-dashboard")
+    TransitionAnchor<DashboardPage> backToDashboard;
+    @Inject @DataField("back-to-artifacts")
+    TransitionAnchor<ArtifactsPage> backToArtifacts;
 
     // Overview tab
     @Inject @DataField("core-property-name") @Bound(property="name")
@@ -147,6 +154,8 @@ public class ArtifactDetailsPage extends AbstractPage {
     SourceEditor sourceEditor;
     protected boolean sourceLoaded;
 
+    @Inject @DataField("artifact-details-loading-spinner")
+    protected HtmlSnippet artifactLoading;
     protected Element pageContent;
     protected Element editorWrapper;
 
@@ -161,7 +170,7 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     @PostConstruct
     protected void onPostConstruct() {
-        pageContent = DOMUtil.findElementById(getElement(), "page-content");
+        pageContent = DOMUtil.findElementById(getElement(), "artifact-details-content-wrapper");
         editorWrapper = DOMUtil.findElementById(getElement(), "editor-wrapper");
         artifact.addPropertyChangeHandler(new PropertyChangeHandler<Object>() {
             @Override
@@ -178,7 +187,8 @@ public class ArtifactDetailsPage extends AbstractPage {
     protected void onPageShowing() {
         sourceLoaded = false;
         currentArtifact = null;
-        pageContent.setAttribute("style", "display:none");
+        pageContent.addClassName("hide");
+        artifactLoading.getElement().removeClassName("hide");
         sourceTabAnchor.setVisible(false);
         editorWrapper.setAttribute("style", "display:none");
         artifactService.get(uuid, new IRpcServiceInvocationHandler<ArtifactBean>() {
@@ -310,13 +320,15 @@ public class ArtifactDetailsPage extends AbstractPage {
         contentUrl += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType();
         String metaDataUrl = contentUrl + "&as=meta-data";
         this.downloadContentLink.setHref(contentUrl);
+        this.downloadContentLink.setVisible(!artifact.isDerived());
         this.downloadMetaDataLink.setHref(metaDataUrl);
         this.sourceEditor.setValue("");
 
         if (artifact.isTextDocument()) {
             sourceTabAnchor.setVisible(true);
         }
-        pageContent.removeAttribute("style");
+        artifactLoading.getElement().addClassName("hide");
+        pageContent.removeClassName("hide");
     }
 
     /**
