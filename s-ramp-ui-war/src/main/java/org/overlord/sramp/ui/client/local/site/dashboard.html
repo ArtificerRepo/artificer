@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>S-RAMP Repository Browser - Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet"></link>
+    <link href="../../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
+    <link href="../../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.min.js"></script>
+    <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-responsive.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-widgets.js"></script>
+  </head>
+
+  <body>
+    <div id="page" data-field="page">
+    
+      <!-- Top header/nav bar -->
+      <div class="sramp-navbar sramp-navbar-fixed-top">
+        <div class="sramp-navbar-inner">
+          <div class="container-fluid">
+            <a class="brand">JBoss - S-RAMP</a>
+            <!-- Desktop Nav Controls (tabs, shadowman, etc) -->
+            <div class="desktop-only">
+              <div class="pull-right nav-shadowman"></div>
+              <div data-field="navbarUserMenu" class="nav-user btn-group pull-right">
+                <button class="btn">John Doe</button>
+                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a>Logout</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content area with footer-->
+      <div id="page-content" class="container">
+        <div class="hero-unit desktop-only">
+          <h1>S-RAMP Browser</h1>
+          <p>
+            Welcome to the S-RAMP browser.  This browser is intended to allow you to manage the 
+            content in your S-RAMP repository.  It provides a low level view of the data - you
+            may want to learn more about S-RAMP by reviewing the specification.
+          </p>
+          <p><a href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=s-ramp" class="btn btn-focus btn-large">More about S-RAMP &raquo;</a></p>
+        </div>
+  
+        <!-- Example row of columns -->
+        <div class="row">
+          <div class="span6">
+            <h2>Manage Artifacts</h2>
+            <p>
+              Begin here if you're looking to manage the artifacts in your S-RAMP repository.  The Manage 
+              Artifacts page allows you to search for artifacts by a variety of criteria, as well as manage 
+              artifact content and meta-data.
+            </p>
+            <p><a data-field="to-artifacts-page" class="btn" href="artifacts.html">Artifacts &raquo;</a></p>
+          </div>
+          <div class="span6">
+            <h2>Manage Ontologies</h2>
+            <div class="alert alert-info"><strong>Coming Soon!</strong></div>
+            <p>
+              Go here if you're interested in managing the OWL ontologies currently installed in your
+              S-RAMP repository.  The Manage Ontologies page allows you to add and update the ontologies
+              used for artifact classification.
+            </p>
+            <p><a data-field="to-ontologies-page" class="btn" href="ontologies.html">Ontologies &raquo;</a></p>
+         </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+          <hr />
+          <p>&copy; JBoss Overlord 2012</p>
+        </footer>
+      </div> <!-- /container -->
+      
+    </div> <!-- /page -->
+
+    <!-- Delete artifact with derived content modal -->
+    <div id="delete-dialog-derived" class="modal hide fade">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4>Delete Artifact</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete Artifact 1?</p>
+        <p>Deleting Artifact 1 will also remove its 3 derived artifacts.</p>
+        <table id="delete-dialog-children" class="sramp-delete-artifacts-table table table-condensed table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PurchaseOrder</td>
+              <td>ElementDeclaration</td>
+            </tr>
+            <tr>
+              <td>PurchaseOrderResponse</td>
+              <td>ElementDeclaration</td>
+            </tr>
+            <tr>
+              <td>InvoiceType</td>
+              <td>ComplexTypeDeclaration</td>
+            </tr>
+            <tr>
+              <td>InvoiceId</td>
+              <td>SimpleTypeDeclaration</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <a class="btn" data-dismiss="modal">Cancel</a>
+        <a class="btn btn-focus">Delete</a>
+      </div>
+    </div>
+
+    <!-- Delete artifact with references modal -->
+    <div id="delete-dialog-referenced" class="modal hide fade">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4>Delete Warning</h4>
+      </div>
+      <div class="modal-body">
+        <p>Warning: Artifact 1 is referenced by 5 artifacts.</p>
+        <p>Deleting Artifact 1 will cause problems for these artifacts.</p>
+        <div id="delete-dialog-refs" class="collapse out">
+          <table class="sramp-delete-artifacts-table table table-condensed table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>invoice.xsd</td>
+                <td>XsdDocument</td>
+              </tr>
+              <tr>
+                <td>po.xsd</td>
+                <td>XsdDocument</td>
+              </tr>
+              <tr>
+                <td>invoice-ws.wsdl</td>
+                <td>WsdlDocument</td>
+              </tr>
+              <tr>
+                <td>po-ws.wsdl</td>
+                <td>WsdlDocument</td>
+              </tr>
+              <tr>
+                <td>ws-all.wsdl</td>
+                <td>WsdlDocument</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="btn pull-left" data-toggle="collapse" data-target="#delete-dialog-refs">Show References <b class="caret"></b></a>
+        <a class="btn" data-dismiss="modal">Cancel</a>
+        <a class="btn btn-focus">Delete</a>
+      </div>
+    </div>
+
+    <!-- Some scripting to add functionality to the live template -->
+    <script>
+      $(document).ready(function() {
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/eclipse");
+        editor.getSession().setMode("ace/mode/xml");
+      });
+      $('.sramp-artifact-actions ul li:nth-child(3)').click(function() {
+        $('#delete-dialog-derived').modal();
+      });
+      $('.sramp-artifact-actions ul li:nth-child(4)').click(function() {
+        $('#delete-dialog-referenced').modal();
+      });
+    </script>
+  </body>
+</html>

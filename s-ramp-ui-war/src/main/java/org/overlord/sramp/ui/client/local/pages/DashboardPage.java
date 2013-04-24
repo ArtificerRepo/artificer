@@ -19,22 +19,35 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 /**
- * The "Ontologies" page.
+ * The "Dashboard" page.
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/ontologies.html#page")
-@Page(path="ontologies")
+@Templated("/org/overlord/sramp/ui/client/local/site/dashboard.html#page")
+@Page(path="dashboard", startingPage=true)
 @Dependent
-public class OntologiesPage extends AbstractPage {
+public class DashboardPage extends AbstractPage {
 
-    // Breadcrumbs
-    @Inject @DataField("back-to-dashboard")
-    TransitionAnchor<DashboardPage> backToDashboard;
+    @Inject @DataField("to-artifacts-page")
+    private TransitionAnchor<ArtifactsPage> toArtifactsPage;
+    @Inject @DataField("to-ontologies-page")
+    private TransitionAnchor<OntologiesPage> toOntologiesPage;
+
+    /**
+     * Constructor.
+     */
+    public DashboardPage() {
+    }
+
+    @PageShown
+    public void onPageShown() {
+        toOntologiesPage.getElement().setAttribute("disabled", "true");
+    }
 
 }

@@ -21,6 +21,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -49,12 +50,16 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author eric.wittmann@redhat.com
  */
 @Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#page")
-@Page(path="artifacts", startingPage=true)
+@Page(path="artifacts")
 @Dependent
 public class ArtifactsPage extends AbstractPage {
 
     @Inject
     protected ArtifactSearchRpcService searchService;
+
+    // Breadcrumbs
+    @Inject @DataField("back-to-dashboard")
+    TransitionAnchor<DashboardPage> backToDashboard;
 
     @Inject @DataField("sramp-filter-sidebar")
     protected ArtifactFilters filtersPanel;

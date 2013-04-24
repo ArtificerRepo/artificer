@@ -23,7 +23,7 @@
 
   <body>
     <div id="page" data-field="page">
-    
+
       <!-- Top header/nav bar -->
       <div class="sramp-navbar sramp-navbar-fixed-top">
         <div class="sramp-navbar-inner">
@@ -31,11 +31,6 @@
             <a class="brand">JBoss - S-RAMP</a>
             <!-- Desktop Nav Controls (tabs, shadowman, etc) -->
             <div class="desktop-only">
-              <ul class="nav">
-                <li class="active"><a href="artifacts.html" data-field="toArtifactsPage" class="sramp-hl sramp-hl-artifacts">Artifacts</a></li>
-                <li><a href="ontologies.html" data-field="toOntologiesPage" class="sramp-hl sramp-hl-ontologies">Ontologies</a></li>
-                <li><a href="settings.html" data-field="toSettingsPage" class="sramp-hl sramp-hl-settings">Settings</a></li>
-              </ul>
               <div class="pull-right nav-shadowman"></div>
               <div data-field="navbarUserMenu" class="nav-user btn-group pull-right">
                 <button class="btn">John Doe</button>
@@ -47,30 +42,26 @@
                 </ul>
               </div>
             </div>
-            <!-- Non-desktop navigation (phones, tablets) -->
-            <div class="mobile-only">
-              <a id="mobile-nav-btn" data-toggle="slide" data-target="#mobile-nav" class="pull-right">Menu</a>
-            </div>
           </div>
         </div>
-      </div>
-      
-      <!-- Mobile navigation menu -->
-      <div id="mobile-nav" class="closed close-on-desktop">
-        <ul class="nav nav-list">
-          <!-- Navigation Tabs -->
-          <li class="nav-header">Navigation</li>
-          <li class="active"><a href="artifacts.html" data-field="toArtifactsPageMobile" class="sramp-hl sramp-hl-artifacts">Artifacts</a></li>
-          <li><a href="ontologies.html" data-field="toOntologiesPageMobile" class="sramp-hl sramp-hl-ontologies">Ontologies</a></li>
-          <li><a href="settings.html" data-field="toSettingsPageMobile" class="sramp-hl sramp-hl-settings">Settings</a></li>
-          <!-- User Menu (logout, etc) -->
-          <li data-field="userMenuMobileLabel" class="nav-header">John Doe</li>
-          <li><a data-field="toLogoutMobile">Logout</a></li>
-        </ul>
       </div>
 
       <!-- Content area with footer-->
       <div id="page-content" class="container-fluid">
+
+        <!-- Breadcrumbs -->
+        <div class="row-fluid">
+          <ul class="breadcrumb">
+            <li><a data-field="back-to-dashboard" href="dashboard.html">S-RAMP Dashboard</a> <span class="divider">/</span></li>
+            <li><a data-field="back-to-artifacts" href="artifacts.html">Artifacts</a> <span class="divider">/</span></li>
+            <li class="active">Artifact Details</li>
+          </ul>
+        </div>
+
+        <!-- Loading spinner -->
+        <div data-field="artifact-details-loading-spinner" class="spinner artifact-details-loading hide">Loading artifact, please wait...</div>
+
+        <div id="artifact-details-content-wrapper">
         <!-- Action bar -->
         <div class="row-fluid">
           <div class="span12 sramp-artifact-actions">
@@ -97,6 +88,7 @@
             </div>
           </div>
         </div>
+        
         <!-- Tabs -->
         <div class="row-fluid">
           <div class="span12 sramp-artifact-tabs">
@@ -291,6 +283,8 @@
               </div>
             </div>
           </div>
+        </div>
+        
         </div>
         
         <!-- Footer -->

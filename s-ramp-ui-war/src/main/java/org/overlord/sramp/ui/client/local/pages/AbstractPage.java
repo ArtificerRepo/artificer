@@ -21,17 +21,8 @@ import javax.inject.Inject;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.jboss.errai.ui.nav.client.local.PageShowing;
-import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.overlord.sramp.ui.client.local.util.SrampJS;
-import org.overlord.sramp.ui.client.local.widgets.bootstrap.SplitButtonDropdown;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.LIElement;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -43,40 +34,6 @@ public abstract class AbstractPage extends Composite {
 
     @Inject
     protected ClientMessageBus bus;
-
-    /*
-     * Main browser header navigation links.
-     */
-    @Inject @DataField
-    protected TransitionAnchor<ArtifactsPage> toArtifactsPage;
-    @Inject @DataField
-    protected TransitionAnchor<OntologiesPage> toOntologiesPage;
-    @Inject @DataField
-    protected TransitionAnchor<SettingsPage> toSettingsPage;
-
-    /*
-     * Mobile browser header navigation links.
-     */
-    @Inject @DataField
-    protected TransitionAnchor<ArtifactsPage> toArtifactsPageMobile;
-    @Inject @DataField
-    protected TransitionAnchor<OntologiesPage> toOntologiesPageMobile;
-    @Inject @DataField
-    protected TransitionAnchor<SettingsPage> toSettingsPageMobile;
-    @Inject @DataField
-    protected Anchor toLogoutMobile;
-
-    /*
-     * Desktop: User Menu (top-right on navbar)
-     */
-    @Inject @DataField
-    protected SplitButtonDropdown navbarUserMenu;
-
-    /*
-     * Mobile: User Menu (slide-down)
-     */
-    @DataField
-    protected LIElement userMenuMobileLabel = Document.get().createLIElement();
 
     /**
      * Constructor.
@@ -91,22 +48,6 @@ public abstract class AbstractPage extends Composite {
     private final void _onPostConstruct() {
         // Call the SRAMP javascript every time the page loads.
         SrampJS.onPageLoad();
-        ClickHandler logoutClickHandler = new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                onLogout();
-                event.preventDefault();
-            }
-        };
-
-        // Set the current user name in the header(s)
-        navbarUserMenu.setLabel("Eric Wittmann");
-        userMenuMobileLabel.setInnerText("Eric Wittmann");
-
-        // Add the Logout option to the desktop navbar action dropdown
-        navbarUserMenu.addOption("Logout", "logout").addClickHandler(logoutClickHandler);
-        // Listen for mobile logout link clicks
-        toLogoutMobile.addClickHandler(logoutClickHandler);
     }
 
     /**
@@ -132,14 +73,6 @@ public abstract class AbstractPage extends Composite {
      * is about to be shown.
      */
     protected void onPageShowing() {
-    }
-
-    /**
-     * Handle the logic of logging out of the application.
-     */
-    protected void onLogout() {
-        // TODO implement logout logic here
-        Window.alert("Handle logout logic here! (TBD)");
     }
 
 }
