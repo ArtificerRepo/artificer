@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-  version="2.5">
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0"> 
 
   <!-- Filters -->
   <filter>
@@ -37,6 +37,10 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet>
+    <servlet-name>OverlordHeaderDataJS</servlet-name>
+    <servlet-class>org.overlord.commons.ui.header.OverlordHeaderDataJS</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>ArtifactDownload</servlet-name>
     <servlet-class>org.overlord.sramp.ui.server.servlets.ArtifactDownloadServlet</servlet-class>
   </servlet>
@@ -47,6 +51,10 @@
   <servlet-mapping>
     <servlet-name>ErraiServlet</servlet-name>
     <url-pattern>*.erraiBus</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>OverlordHeaderDataJS</servlet-name>
+    <url-pattern>/js/overlord-header-data.js</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ArtifactDownload</servlet-name>

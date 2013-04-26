@@ -37,7 +37,6 @@ import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHand
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.LoadingAllOntologies;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.OntologyDropDown;
-import org.overlord.sramp.ui.client.local.widgets.ontologies.OntologySelectorNode;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.OntologySelectorWithToolbar;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
 
@@ -72,8 +71,6 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
     private Instance<LoadingAllOntologies> loading;
     @Inject
     private Instance<OntologySelectorWithToolbar> selectorFactory;
-    @Inject
-    private Instance<OntologySelectorNode> nodeFactory;
     @Inject @DataField("modify-classifiers-dialog-btn-ok")
     private Button submitButton;
 
