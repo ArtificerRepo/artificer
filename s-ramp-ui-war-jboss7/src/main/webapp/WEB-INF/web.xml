@@ -39,6 +39,10 @@
   <servlet>
     <servlet-name>OverlordHeaderDataJS</servlet-name>
     <servlet-class>org.overlord.commons.ui.header.OverlordHeaderDataJS</servlet-class>
+    <init-param>
+        <param-name>app-id</param-name>
+        <param-value>s-ramp-ui</param-value>
+    </init-param>
   </servlet>
   <servlet>
     <servlet-name>ArtifactDownload</servlet-name>
