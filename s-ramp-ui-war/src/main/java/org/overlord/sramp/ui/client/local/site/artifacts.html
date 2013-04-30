@@ -25,28 +25,6 @@
   <body>
     <div id="page" data-field="page">
 
-      <!-- Top header/nav bar -->
-      <div class="sramp-navbar sramp-navbar-fixed-top">
-        <div class="sramp-navbar-inner">
-          <div class="container-fluid">
-            <a class="brand">JBoss - S-RAMP</a>
-            <!-- Desktop Nav Controls (tabs, shadowman, etc) -->
-            <div class="desktop-only">
-              <div class="pull-right nav-shadowman"></div>
-              <div data-field="navbarUserMenu" class="nav-user btn-group pull-right">
-                <button class="btn">John Doe</button>
-                <button class="btn dropdown-toggle" data-toggle="dropdown">
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a>Logout</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Content area with footer-->
       <div id="page-content" class="container-fluid">
       
@@ -159,10 +137,10 @@
                               <span data-field="number-selected-label">(0/50)</span>
                             </a>
                           </li>
-                          <li data-field="classifier-filter-spinner"">
+                          <li data-field="classifier-filter-spinner">
                             <span class="spinner">Loading ontologies...</span>
                           </li>
-                          <li data-field="classifier-filter-none-found"">
+                          <li data-field="classifier-filter-none-found">
                             <span>No ontologies found.</span>
                           </li>
                         </ul>
@@ -201,7 +179,7 @@
                             </div>
                             <div class="controls">
                               <label class="sramp-filter-label">Property 3:</label>
-                              <select class="span12" type="text">
+                              <select class="span12">
                                 <option selected="selected">Any</option>
                                 <option value="one">Configured Value 1</option>
                                 <option value="two">Configured Value 2</option>

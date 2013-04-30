@@ -24,28 +24,6 @@
   <body>
     <div id="page" data-field="page">
 
-      <!-- Top header/nav bar -->
-      <div class="sramp-navbar sramp-navbar-fixed-top">
-        <div class="sramp-navbar-inner">
-          <div class="container-fluid">
-            <a class="brand">JBoss - S-RAMP</a>
-            <!-- Desktop Nav Controls (tabs, shadowman, etc) -->
-            <div class="desktop-only">
-              <div class="pull-right nav-shadowman"></div>
-              <div data-field="navbarUserMenu" class="nav-user btn-group pull-right">
-                <button class="btn">John Doe</button>
-                <button class="btn dropdown-toggle" data-toggle="dropdown">
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a>Logout</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Content area with footer-->
       <div id="page-content" class="container-fluid">
 
@@ -226,13 +204,13 @@
                   <div data-i18n-skip="true" data-field="artifact-editor" id="editor" class="sramp-source-editor">&lt;assembly
     xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
-    &lt;id>brms&lt;/id>
-    &lt;formats>
-        &lt;format>zip&lt;/format>
-    &lt;/formats>
-    &lt;includeBaseDirectory>false&lt;/includeBaseDirectory>
-&lt;/assembly>
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd"&gt;
+    &lt;id&gt;brms&lt;/id&gt;
+    &lt;formats&gt;
+        &lt;format&gt;zip&lt;/format&gt;
+    &lt;/formats&gt;
+    &lt;includeBaseDirectory&gt;false&lt;/includeBaseDirectory&gt;
+&lt;/assembly&gt;
                   </div>
                 </div>
                 <div data-field="source-tab-progress" class="spinner sramp-details-tab-spinner pull-left" style="display:none">Loading artifact source, please wait...</div>
