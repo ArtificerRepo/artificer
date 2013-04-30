@@ -217,6 +217,8 @@
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
+          <attachClasses>true</attachClasses>
+          <classesClassifier>classes</classesClassifier>
           <warName>${project.artifactId}</warName>
           <outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
           <packagingExcludes>**/javax/**/*.*,**/client/local/**/*.class</packagingExcludes>
@@ -262,6 +264,7 @@
                 <include>www-test/**</include>
                 <include>.gwt/**</include>
                 <include>.errai/**</include>
+                <include>src/main/webapp/.errai/**</include>
                 <include>src/main/webapp/app/**</include>
                 <include>src/main/webapp/WEB-INF/deploy/**</include>
                 <include>src/main/webapp/WEB-INF/lib/**</include>

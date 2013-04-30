@@ -40,9 +40,9 @@ public class CustomPropertyEditableInlineLabel extends EditableInlineLabel {
     public void setText(String text) {
         if (text == null || text.trim().length() == 0) {
             // TODO i18n
-            this.setText("<no value>");
+            super.setText("<no value>");
         } else if (text.length() > 64) {
-            this.setText(text.substring(0, 64) + "...");
+            super.setText(text.substring(0, 64) + "...");
         } else {
             super.setText(text);
         }
