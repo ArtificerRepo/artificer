@@ -85,31 +85,6 @@
       <artifactId>jline</artifactId>
       <version>${jline.version}</version>
     </dependency>
-
-    <!-- Test dependencies -->
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server</artifactId>
-      <version>${project.version}</version>
-      <classifier>classes</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>tjws</artifactId>
-      <version>${org.jboss.resteasy.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
   
   <build>

@@ -28,19 +28,30 @@ public class Arguments extends ArrayList<String> {
 
 	private static final long serialVersionUID = 4475521615147664784L;
 
+	private boolean partialLastArgumentAllowed = false;
+
 	/**
 	 * Constructor.
 	 * @param arguments
 	 */
-	public Arguments(String arguments) {
-		parseArguments(arguments);
+	public Arguments(String arguments) throws InvalidCommandArgumentException {
+	    this(arguments, false);
 	}
+
+    /**
+     * Constructor.
+     * @param arguments
+     */
+    public Arguments(String arguments, boolean partialLastArgumentAllowed) throws InvalidCommandArgumentException {
+        this.partialLastArgumentAllowed = partialLastArgumentAllowed;
+        parseArguments(arguments);
+    }
 
 	/**
 	 * Parses the arguments from the given string.
 	 * @param arguments
 	 */
-	private void parseArguments(String arguments) {
+	private void parseArguments(String arguments) throws InvalidCommandArgumentException {
 		ScannerState state = ScannerState.scanningForStart;
 		char quotChar = '\'';
 		int startPos = -1;
@@ -72,6 +83,10 @@ public class Arguments extends ArrayList<String> {
 		}
 		if (state == ScannerState.scanningForEnd) {
 			add(arguments.substring(startPos));
+		} else if (state == ScannerState.scanningForEndQuote && partialLastArgumentAllowed) {
+            add(arguments.substring(startPos+1));
+		} else if (state == ScannerState.scanningForEndQuote && !partialLastArgumentAllowed) {
+		    throw new InvalidCommandArgumentException(size(), "Invalid final argument - did you forget to close your quotes?");
 		}
 	}
 

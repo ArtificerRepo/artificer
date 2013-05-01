@@ -27,7 +27,7 @@ import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.shell.api.AbstractShellCommand;
-import org.overlord.sramp.shell.api.Arguments;
+import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 
 /**
  * Performs a query against the s-ramp server and displays the result.
@@ -70,15 +70,9 @@ public class QueryCommand extends AbstractShellCommand {
 	@Override
 	public void execute() throws Exception {
 		String queryArg = this.requiredArgument(0, "Please specify a valid S-RAMP query.");
-
-		// Now process any additiona args - if there are any, then the user didn't
-		// surround the query with quotes - so mash them all together.
-		Arguments args = getArguments();
-		args.remove(0);
-		if (!args.isEmpty()) {
-    		for (String queryFragment : args) {
-                queryArg += " " + queryFragment;
-            }
+		String tooManyArgs = this.optionalArgument(1);
+		if (tooManyArgs != null) {
+            throw new InvalidCommandArgumentException(1, "Too many arguments: did you perhaps forget to surround your S-RAMP query in quotes?");
 		}
 
 		// Get the client out of the context and exec the query
@@ -123,12 +117,12 @@ public class QueryCommand extends AbstractShellCommand {
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
 		if (getArguments().isEmpty()) {
 			if (lastArgument == null) {
-				candidates.add("/s-ramp/");
+				candidates.add("\"/s-ramp/");
 				return 0;
 			} else {
 				String [] split = lastArgument.split("/");
 				if (split.length == 0 || split.length == 1 || (split.length == 2 && !lastArgument.endsWith("/"))) {
-					candidates.add("/s-ramp/");
+					candidates.add("\"/s-ramp/");
 					return 0;
 				}
 				// All artifact models

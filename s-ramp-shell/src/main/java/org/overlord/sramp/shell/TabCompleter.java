@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 import jline.console.completer.Completer;
 
 import org.overlord.sramp.shell.api.Arguments;
+import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.api.ShellCommand;
 import org.overlord.sramp.shell.api.ShellContext;
 
@@ -101,7 +102,13 @@ public class TabCompleter implements Completer {
 		// Case 5 - a full command name has been entered, delegate further procesing
 		// to the specific command
 		String args = buffer.substring(0, cursor);
-		Arguments arguments = new Arguments(args);
+		Arguments arguments = null;
+        try {
+            arguments = new Arguments(args, true);
+        } catch (InvalidCommandArgumentException e1) {
+            // should never happen...but if it does, just bail
+            return cursor;
+        }
 		QName commandName = arguments.removeCommandName();
 		String lastArgument = null;
 		if (arguments.size() > 0 && !args.endsWith(" ")) {
