@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.jcr.Credentials;
 import javax.jcr.LoginException;
 import javax.jcr.NamespaceRegistry;
 import javax.jcr.NoSuchWorkspaceException;
@@ -43,7 +42,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
-import org.modeshape.jcr.api.AnonymousCredentials;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.repository.jcr.JCRRepository;
@@ -57,7 +55,7 @@ public class ModeshapeRepository extends JCRRepository {
 	private static String S_RAMP_JNDI = "jcr/sramp";
 
 	private Repository repository;
-	
+
 	private RepositoryFactory theFactory = null;
 	private File tempConfigDir;
 
@@ -70,14 +68,15 @@ public class ModeshapeRepository extends JCRRepository {
 	/**
 	 * Gets the underlying JCR repository.
 	 */
-	public Repository getRepo() {
+	@Override
+    public Repository getRepo() {
 		return repository;
 	}
 
 	/**
 	 * Initialized the Modeshape Service jcr/sramp, or if System parameter 'sramp.modeshape.config.url'
 	 * is defined it starts up an embedded JCR repository.
-	 * 
+	 *
 	 * @throws RepositoryException
 	 */
 	@Override
@@ -88,7 +87,7 @@ public class ModeshapeRepository extends JCRRepository {
 	    } catch (Exception e) {
 	        log.error(e.getMessage(),e);
 	    }
-	    //Using the Modeshape Service 
+	    //Using the Modeshape Service
 	    if (configUrl==null) {
 	        log.info("Connecting to ModeShape Service " + S_RAMP_JNDI );
             try {
@@ -171,7 +170,8 @@ public class ModeshapeRepository extends JCRRepository {
 	 * leads to issues where the repo is down, on initialization of the next test. Not using
 	 * it leads to a successful build. We need to look into this.
 	 */
-	public void shutdown() {
+	@Override
+    public void shutdown() {
 		if (theFactory!=null && theFactory instanceof org.modeshape.jcr.JcrRepositoryFactory) {
 			try {
 				org.modeshape.jcr.api.RepositoryFactory modeRepo = (org.modeshape.jcr.api.RepositoryFactory) theFactory;
@@ -193,7 +193,7 @@ public class ModeshapeRepository extends JCRRepository {
 		Session session = null;
 		InputStream is = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 
 			// Register some namespaces.
 			NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
@@ -221,10 +221,4 @@ public class ModeshapeRepository extends JCRRepository {
 			JCRRepositoryFactory.logoutQuietly(session);
 		}
 	}
-
-    @Override
-    public Credentials getAnonymousCredentials() {
-        AnonymousCredentials cred = new AnonymousCredentials();
-        return cred;
-    }
 }

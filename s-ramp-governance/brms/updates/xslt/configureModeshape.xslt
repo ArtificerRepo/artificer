@@ -17,7 +17,10 @@
     <profile>
         <xsl:apply-templates select="@* | *" />
         <subsystem xmlns="urn:jboss:domain:modeshape:1.0">
-            <repository name="sramp" cache-name="sramp" cache-container="modeshape"/>
+            <repository name="sramp" cache-name="sramp" cache-container="modeshape" 
+                        security-domain="overlord-idp" use-anonymous-upon-failed-authentication="false"
+                        anonymous-roles="readonly">
+            </repository>
         </subsystem>
     </profile>
   </xsl:template>

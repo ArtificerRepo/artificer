@@ -102,7 +102,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public BaseArtifactType persistArtifact(BaseArtifactType metaData, InputStream content) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			JCRUtils tools = new JCRUtils();
 			if (metaData.getUuid() == null) {
 				metaData.setUuid(UUID.randomUUID().toString());
@@ -309,7 +309,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public BaseArtifactType getArtifact(String uuid, ArtifactType type) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			Node artifactNode = findArtifactNode(uuid, type, session);
 			if (artifactNode != null) {
 			    // In the case of an extended type, we might be wrong about which one...
@@ -343,7 +343,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		Session session = null;
 
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 
 			Node artifactNode = findArtifactNode(uuid, type, session);
 			if (artifactNode == null) {
@@ -377,7 +377,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			Node artifactNode = findArtifactNode(artifact.getUuid(), type, session);
 			if (artifactNode == null) {
 				throw new ArtifactNotFoundException(artifact.getUuid());
@@ -410,7 +410,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public void updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
             Node artifactNode = findArtifactNode(uuid, artifactType, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
@@ -447,7 +447,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public void deleteArtifact(String uuid, ArtifactType artifactType) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
             Node artifactNode = findArtifactNode(uuid, artifactType, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
@@ -476,7 +476,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		String ontologyPath = "/s-ramp/ontology/" + ontology.getUuid();
 
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			if (session.nodeExists(ontologyPath)) {
 			    throw new OntologyAlreadyExistsException(ontology.getUuid());
 			} else {
@@ -507,7 +507,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 
 		try {
 			SrampOntology ontology = null;
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			if (session.nodeExists(ontologyPath)) {
 				Node ontologyNode = session.getNode(ontologyPath);
 				ontology = new SrampOntology();
@@ -536,7 +536,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		Session session = null;
 
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			JCRUtils tools = new JCRUtils();
 			Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", "nt:folder");
 			NodeIterator nodes = ontologiesNode.getNodes();
@@ -564,7 +564,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		String ontologyPath = "/s-ramp/ontology/" + ontology.getUuid();
 
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			if (session.nodeExists(ontologyPath)) {
 				Node ontologyNode = session.getNode(ontologyPath);
 				NodeIterator nodes = ontologyNode.getNodes();
@@ -596,7 +596,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		String ontologyPath = "/s-ramp/ontology/" + uuid;
 
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			if (session.nodeExists(ontologyPath)) {
 				Node ontologyNode = session.getNode(ontologyPath);
 				ontologyNode.remove();
@@ -684,7 +684,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public void printArtifactGraph(String uuid, ArtifactType type) {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			Node artifactNode = findArtifactNode(uuid, type, session);
 			if (artifactNode != null) {
     			JCRUtils tools = new JCRUtils();

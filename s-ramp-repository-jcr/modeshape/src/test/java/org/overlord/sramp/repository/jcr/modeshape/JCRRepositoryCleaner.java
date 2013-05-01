@@ -43,7 +43,7 @@ public class JCRRepositoryCleaner {
 	public void clean() {
 		Session session = null;
 		try {
-            session = JCRRepositoryFactory.getAnonymousSession();
+            session = JCRRepositoryFactory.getSession();
             Node artifactContentRoot = getNode(session, "/artifact");
             if (artifactContentRoot != null) {
 	        	artifactContentRoot.remove();

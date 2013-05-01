@@ -17,10 +17,12 @@ package org.overlord.sramp.repository.jcr;
 
 import java.io.File;
 
-import javax.jcr.Credentials;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 
+/**
+ * Base class for the JCR repository.
+ */
 public abstract class JCRRepository {
 
     /**
@@ -33,8 +35,9 @@ public abstract class JCRRepository {
      */
     public abstract void startup() throws RepositoryException;
 
-    public abstract Credentials getAnonymousCredentials();
-
+    /**
+     * @return the JCR repository
+     */
     public abstract Repository getRepo();
 
 	/**

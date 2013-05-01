@@ -74,7 +74,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 	protected ArtifactSet executeQuery(Query queryModel) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
 			String jcrSql2Query = createSql2Query(queryModel);
 			if (log.isDebugEnabled()) {
