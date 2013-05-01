@@ -69,8 +69,9 @@ public class SrampShell {
 		displayWelcomeMessage();
 		boolean done = false;
 		while (!done) {
-			ShellCommand command = reader.read();
+			ShellCommand command = null;
 			try {
+	            command = reader.read();
 				if (command == null) {
 					done = true;
 				} else {
@@ -78,8 +79,10 @@ public class SrampShell {
 				}
 			} catch (InvalidCommandArgumentException e) {
 				System.out.println("Invalid argument:  " + e.getMessage());
-				System.out.print("Usage:  ");
-				command.printUsage();
+				if (command != null) {
+    				System.out.print("Usage:  ");
+    				command.printUsage();
+				}
 			} catch (Exception e) {
 				e.printStackTrace(System.err);
 			}
