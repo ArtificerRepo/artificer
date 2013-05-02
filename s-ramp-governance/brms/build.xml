@@ -130,6 +130,10 @@
     <copy file="${sramp.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-server.war" failonerror="true" />
     <copy file="${sramp-governance.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-governance.war" failonerror="true" />
     <copy file="${sramp-ui.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-ui.war" failonerror="false" />
+    <!-- Deploy the Overlord Apps config file for s-ramp -->
+    <property name="overlord-apps.dir" value="${sramp.jboss.home}/standalone/configuration/overlord-apps" />
+    <mkdir dir="${overlord-apps.dir}" />
+    <copy file="updates/srampui-overlord-app.properties" todir="${overlord-apps.dir}" overwrite="true" />
   </target>
 
   <target name="sramp.bootstrap.fromsrc" unless="is.dist">
