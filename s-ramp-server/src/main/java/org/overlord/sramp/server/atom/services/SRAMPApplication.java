@@ -46,7 +46,8 @@ public class SRAMPApplication extends Application {
 		singletons.add(new FeedResource());
 		singletons.add(new QueryResource());
 		singletons.add(new BatchResource());
-		singletons.add(new OntologyResource());
+        singletons.add(new OntologyResource());
+        singletons.add(new AuditResource());
 
 		classes.add(HttpResponseProvider.class);
 		classes.add(SrampAtomExceptionProvider.class);

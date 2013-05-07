@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.client.audit;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -62,5 +63,16 @@ public class AuditEntrySummary {
      */
     public Date getWhen() {
         return this.entry.getPublished();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM);
+        return String.format("%1$s by '%2$s' on %3$s at %4$s.", getType(), getWho(),
+                dateFormat.format(getWhen()), timeFormat.format(getWhen()));
     }
 }
