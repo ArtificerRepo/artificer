@@ -74,13 +74,10 @@ public class ModeshapeRepository extends JCRRepository {
 	}
 
 	/**
-	 * Initialized the Modeshape Service jcr/sramp, or if System parameter 'sramp.modeshape.config.url'
-	 * is defined it starts up an embedded JCR repository.
-	 *
-	 * @throws RepositoryException
+	 * @see org.overlord.sramp.repository.jcr.JCRRepository#doStartup()
 	 */
 	@Override
-	public void startup() throws RepositoryException {
+	protected void doStartup() throws RepositoryException {
 	    URL configUrl = null;
 	    try {
 	        configUrl = getModeshapeConfigurationUrl();
@@ -89,7 +86,7 @@ public class ModeshapeRepository extends JCRRepository {
 	    }
 	    //Using the Modeshape Service
 	    if (configUrl==null) {
-	        log.info("Connecting to ModeShape Service " + S_RAMP_JNDI );
+	        log.info("Connecting to ModeShape Service " + S_RAMP_JNDI);
             try {
                 InitialContext context = new InitialContext();
                 repository = (javax.jcr.Repository) context.lookup(S_RAMP_JNDI);
@@ -132,7 +129,7 @@ public class ModeshapeRepository extends JCRRepository {
 		configureNodeTypes();
 	}
 
-	/**
+    /**
 	 * Gets the configuration to use for the JCR repository.
 	 * @throws Exception
 	 */
@@ -165,26 +162,6 @@ public class ModeshapeRepository extends JCRRepository {
 			return new URL(configUrl);
 		}
 	}
-	/**
-	 * TODO ModeShape requires shutdown to be called. However calling this after every test
-	 * leads to issues where the repo is down, on initialization of the next test. Not using
-	 * it leads to a successful build. We need to look into this.
-	 */
-	@Override
-    public void shutdown() {
-		if (theFactory!=null && theFactory instanceof org.modeshape.jcr.JcrRepositoryFactory) {
-			try {
-				org.modeshape.jcr.api.RepositoryFactory modeRepo = (org.modeshape.jcr.api.RepositoryFactory) theFactory;
-				Boolean state = modeRepo.shutdown().get();
-				log.info("called shutdown on ModeShape, with resulting state=" + state);
-				repository = null;
-			} catch (InterruptedException e) {
-				log.error(e.getMessage(), e);
-			} catch (ExecutionException e) {
-				log.error(e.getMessage(), e);
-			}
-		}
-	}
 
 	/**
 	 * Called to configure the custom JCR node types.
@@ -200,6 +177,7 @@ public class ModeshapeRepository extends JCRRepository {
 			namespaceRegistry.registerNamespace(JCRConstants.SRAMP, JCRConstants.SRAMP_NS);
 			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_PROPERTIES, JCRConstants.SRAMP_PROPERTIES_NS);
 			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_RELATIONSHIPS, JCRConstants.SRAMP_RELATIONSHIPS_NS);
+			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_AUDIT, JCRConstants.SRAMP_AUDIT_NS);
 
 			NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
 
@@ -221,4 +199,23 @@ public class ModeshapeRepository extends JCRRepository {
 			JCRRepositoryFactory.logoutQuietly(session);
 		}
 	}
+
+	/**
+	 * @see org.overlord.sramp.repository.jcr.JCRRepository#doShutdown()
+	 */
+	@Override
+	protected void doShutdown() {
+        if (theFactory!=null && theFactory instanceof org.modeshape.jcr.JcrRepositoryFactory) {
+            try {
+                org.modeshape.jcr.api.RepositoryFactory modeRepo = (org.modeshape.jcr.api.RepositoryFactory) theFactory;
+                Boolean state = modeRepo.shutdown().get();
+                log.info("called shutdown on ModeShape, with resulting state=" + state);
+                repository = null;
+            } catch (InterruptedException e) {
+                log.error(e.getMessage(), e);
+            } catch (ExecutionException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
 }

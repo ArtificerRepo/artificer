@@ -13,9 +13,9 @@
         "providers" : [
             {
                 "classname" : "JAAS",
-                "policyName" : "overlord-idp",
+                "policyName" : "overlord-idp"
             }
-    ]
+        ]
     },
     "storage" : {
         "cacheConfiguration" : "${modeshape.cache.config.url}",

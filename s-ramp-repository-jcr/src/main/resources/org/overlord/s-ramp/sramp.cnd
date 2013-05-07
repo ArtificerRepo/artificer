@@ -21,6 +21,7 @@
 <nt='http://www.jcp.org/jcr/nt/1.0'>
 <mix='http://www.jcp.org/jcr/mix/1.0'>
 <sramp='http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0'>
+<audit='http://downloads.jboss.org/overlord/sramp/2013/auditing.xsd'>
 
 //------------------------------------------------------------------------------
 // N O D E T Y P E S
@@ -44,6 +45,24 @@
 - sramp:base (string)
 - sramp:id (string)
 + * (sramp:class)
+
+
+// -------------------------------------------------------
+// Auditing
+// -------------------------------------------------------
+
+[audit:auditItem]
+- audit:type (string)
+- * (string)
+- * (string) multiple
+
+[audit:auditEntry] > nt:hierarchyNode
+- audit:uuid (string) mandatory
+- audit:sortId (long)
+- audit:type (string)
+- audit:who (string)
+- audit:when (date)
++ * (audit:auditItem)
 
 
 // -------------------------------------------------------
@@ -71,6 +90,7 @@
 - * (string)
 - * (string) multiple
 + * (sramp:relationship)
++ * (audit:auditEntry)
 
 [sramp:documentArtifactType] > sramp:baseArtifactType abstract mixin
 - sramp:contentType (string)

@@ -90,7 +90,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 			long endTime = System.currentTimeMillis();
 
 			log.debug("Successfully executed JCR-SQL2 query: {}", jcrSql2Query);
-			log.debug("Query exectued in {} ms", endTime - startTime);
+			log.debug("Query executed in {} ms", endTime - startTime);
 
 			return new JCRArtifactSet(session, jcrNodes);
 		} catch (SrampException e) {

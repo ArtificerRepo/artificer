@@ -75,11 +75,7 @@ public class JCRRepositoryFactory {
      */
     public static void logoutQuietly(Session session) {
         if (session != null) {
-            try {
-                session.logout();
-            } catch (Throwable t) {
-                // eat it
-            }
+            try { session.logout(); } catch (Throwable t) { }
         }
     }
 

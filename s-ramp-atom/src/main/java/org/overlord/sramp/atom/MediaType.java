@@ -51,6 +51,10 @@ public class MediaType extends javax.ws.rs.core.MediaType {
     public final static String APPLICATION_RDF_XML = "application/rdf+xml";
     public final static MediaType APPLICATION_RDF_XML_TYPE = new MediaType("application", "rdf+xml");
 
+    /** "application/auditEntry+xml" */
+    public final static String APPLICATION_AUDIT_ENTRY_XML = "application/auditEntry+xml";
+    public final static MediaType APPLICATION_AUDIT_ENTRY_XML_TYPE = new MediaType("application", "auditEntry+xml");
+
     /**
      * Creates a parameter map.
      *

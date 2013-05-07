@@ -18,10 +18,6 @@ package org.overlord.sramp.server.atom.workspaces;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.jboss.resteasy.plugins.providers.atom.app.AppService;
 import org.junit.Test;
-import org.overlord.sramp.server.atom.workspaces.CoreWorkspace;
-import org.overlord.sramp.server.atom.workspaces.PolicyWorkspace;
-import org.overlord.sramp.server.atom.workspaces.WsdlWorkspace;
-import org.overlord.sramp.server.atom.workspaces.XsdWorkspace;
 
 /**
  * Unit test for the core workspace.
@@ -38,6 +34,8 @@ public class AllWorkspaceTest extends AbstractWorkspaceTest {
 		appService.getWorkspace().add(new XsdWorkspace(hrefBase));
 		appService.getWorkspace().add(new PolicyWorkspace(hrefBase));
 		appService.getWorkspace().add(new WsdlWorkspace(hrefBase));
+        appService.getWorkspace().add(new OntologyWorkspace(hrefBase));
+        appService.getWorkspace().add(new AuditWorkspace(hrefBase));
 
         String actual = marshall(appService);
         String expected = getExpectedWorkspaceXML("all");
