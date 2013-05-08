@@ -39,6 +39,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
+import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
@@ -61,6 +62,7 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.client.audit.AuditResultSet;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
 import org.overlord.sramp.client.auth.BasicAuthenticationProvider;
 import org.overlord.sramp.client.ontology.OntologySummary;
@@ -785,6 +787,148 @@ public class SrampAtomApiClient {
 			throw new SrampClientException(e);
 		}
 	}
+
+	/**
+	 * Adds a new audit entry on the artifact with the given UUID.
+	 * @param artifactUuid
+	 * @param auditEntry
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+    public AuditEntry addAuditEntry(String artifactUuid, AuditEntry auditEntry) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("audit");
+        try {
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s", this.endpoint, artifactUuid);
+            ClientRequest request = createClientRequest(atomUrl);
+            request.body(MediaType.APPLICATION_AUDIT_ENTRY_XML_TYPE, auditEntry);
+
+            ClientResponse<Entry> response = request.post(Entry.class);
+            Entry entry = response.getEntity();
+            if (entry == null)
+                throw new SrampAtomException("Failed to add audit entry: reason is unknown.");
+            return SrampAtomUtils.unwrap(entry, AuditEntry.class);
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
+
+    /**
+     * Gets the audit trail for the artifact with the given UUID.
+     * @param artifactUuid
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public AuditResultSet getAuditTrailForArtifact(String artifactUuid) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("audit");
+        try {
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s", this.endpoint, artifactUuid);
+            ClientRequest request = createClientRequest(atomUrl);
+            ClientResponse<Feed> response = request.get(Feed.class);
+            Feed feed = response.getEntity();
+            AuditResultSet rs = new AuditResultSet(feed);
+            return rs;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
+
+    /**
+     * Gets the audit trail for the artifact with the given UUID.
+     * @param artifactUuid
+     * @param startIndex
+     * @param count
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public AuditResultSet getAuditTrailForArtifact(String artifactUuid, int startIndex, int count) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("audit");
+        try {
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s?startIndex=%3$s&count=%4$s",
+                    this.endpoint, artifactUuid, String.valueOf(startIndex), String.valueOf(count));
+            ClientRequest request = createClientRequest(atomUrl);
+            ClientResponse<Feed> response = request.get(Feed.class);
+            Feed feed = response.getEntity();
+            AuditResultSet rs = new AuditResultSet(feed);
+            return rs;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
+
+    /**
+     * Gets the audit trail for the artifact with the given UUID.
+     * @param username
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public AuditResultSet getAuditTrailForUser(String username) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("audit");
+        try {
+            String atomUrl = String.format("%1$s/audit/user/%2$s", this.endpoint, username);
+            ClientRequest request = createClientRequest(atomUrl);
+            ClientResponse<Feed> response = request.get(Feed.class);
+            Feed feed = response.getEntity();
+            AuditResultSet rs = new AuditResultSet(feed);
+            return rs;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
+
+    /**
+     * Gets the audit trail for the artifact with the given UUID.
+     * @param username
+     * @param startIndex
+     * @param count
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public AuditResultSet getAuditTrailForUser(String username, int startIndex, int count) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("audit");
+        try {
+            String atomUrl = String.format("%1$s/audit/user/%2$s?startIndex=%3$s&count=%4$s",
+                    this.endpoint, username, String.valueOf(startIndex), String.valueOf(count));
+            ClientRequest request = createClientRequest(atomUrl);
+            ClientResponse<Feed> response = request.get(Feed.class);
+            Feed feed = response.getEntity();
+            AuditResultSet rs = new AuditResultSet(feed);
+            return rs;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
+
+    /**
+     * Gets the full audit entry for the given artifact + audit event pair.
+     * @param artifactUuid
+     * @param auditEntryUuid
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public AuditEntry getAuditEntry(String artifactUuid, String auditEntryUuid) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("audit");
+        try {
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s/%3$s", this.endpoint, artifactUuid, auditEntryUuid);
+            ClientRequest request = createClientRequest(atomUrl);
+            ClientResponse<Entry> response = request.get(Entry.class);
+            Entry entry = response.getEntity();
+            return SrampAtomUtils.unwrapAuditEntry(entry);
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
 
     /**
      * Creates the RESTEasy client request object, configured appropriately.

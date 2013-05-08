@@ -17,7 +17,6 @@ package org.overlord.sramp.repository.jcr;
 
 import java.util.ServiceLoader;
 
-import javax.jcr.Credentials;
 import javax.jcr.LoginException;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.RepositoryException;
@@ -30,9 +29,9 @@ public class JCRRepositoryFactory {
 
     public static String WORKSPACE_NAME = "default";
 	private static Logger log = LoggerFactory.getLogger(JCRRepositoryFactory.class);
-	
+
 	private static JCRRepository instance;
-	
+
     public synchronized static JCRRepository getInstance() throws RepositoryException {
         if (instance == null) {
             for (JCRRepository jcrRepository : ServiceLoader.load(JCRRepository.class)) {
@@ -45,37 +44,40 @@ public class JCRRepositoryFactory {
         }
         return instance;
     }
-    
+
+    /**
+     * Destroys the factory.  This causes the instance to be shut down.
+     */
     public static synchronized void destroy() {
-        if (instance!=null) {
+        if (instance != null) {
             instance.shutdown();
         }
         instance = null;
     }
+
     /**
      * Convenience method for getting a JCR session from the repo singleton.
      * @throws LoginException
      * @throws NoSuchWorkspaceException
      * @throws RepositoryException
      */
-    public static Session getAnonymousSession() throws RepositoryException {
-        Credentials credentials = getInstance().getAnonymousCredentials();
-        return getInstance().getRepo().login(credentials, WORKSPACE_NAME);
+    public static Session getSession() throws RepositoryException {
+        // Login with null credentials.  This forces ModeShape to authenticate with either
+        // the anonymous auth provider (if configured) or any other auth provider that might
+        // be configured *and* can accept null creds.  Typically this means the JAAS provider,
+        // which should use the current JAAS subject in the absence of credentials.
+        return getInstance().getRepo().login(null, WORKSPACE_NAME);
     }
-    
+
     /**
      * Quietly logs out of the JCR session.
      * @param session
      */
     public static void logoutQuietly(Session session) {
         if (session != null) {
-            try {
-                session.logout();
-            } catch (Throwable t) {
-                // eat it
-            }
+            try { session.logout(); } catch (Throwable t) { }
         }
     }
- 
-	
+
+
 }

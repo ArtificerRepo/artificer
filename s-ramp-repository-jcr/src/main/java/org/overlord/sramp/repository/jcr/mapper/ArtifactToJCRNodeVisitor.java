@@ -168,14 +168,14 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	private void updateArtifactMetaData(BaseArtifactType artifact) throws Exception {
 		if (artifact.getName() != null)
-			this.jcrNode.setProperty("sramp:name", artifact.getName());
+			setProperty("sramp:name", artifact.getName());
 		else
-		    this.jcrNode.setProperty("sramp:name", artifact.getClass().getSimpleName());
+		    setProperty("sramp:name", artifact.getClass().getSimpleName());
 		if (artifact.getDescription() != null)
-			this.jcrNode.setProperty("sramp:description", artifact.getDescription());
+			setProperty("sramp:description", artifact.getDescription());
 		if (artifact.getVersion() != null)
-			this.jcrNode.setProperty("version", artifact.getVersion());
-		this.jcrNode.setProperty("sramp:derived", this.artifactType.isDerived());
+			setProperty("version", artifact.getVersion());
+		setProperty("sramp:derived", this.artifactType.isDerived());
 	}
 
 	/**
@@ -194,7 +194,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		for (URI classification : classifications) {
 			values[idx++] = classification.toString();
 		}
-		this.jcrNode.setProperty("sramp:classifiedBy", values);
+		setProperty("sramp:classifiedBy", values);
 
 		// Store the normalized classifications
 		values = new String[normalizedClassifications.size()];
@@ -202,7 +202,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		for (URI classification : normalizedClassifications) {
 			values[idx++] = classification.toString();
 		}
-		this.jcrNode.setProperty("sramp:normalizedClassifiedBy", values);
+		setProperty("sramp:normalizedClassifiedBy", values);
 	}
 
 	/**
@@ -230,7 +230,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 			String name = prop.getKey();
 			String qname = srampPropsPrefix + name;
 			String val = prop.getValue();
-			this.jcrNode.setProperty(qname, val);
+			setProperty(qname, val);
 		}
 	}
 
@@ -272,7 +272,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(WsdlDocument artifact) {
 		super.visit(artifact);
 		try {
-			this.jcrNode.setProperty("sramp:targetNamespace", artifact.getTargetNamespace());
+			setProperty("sramp:targetNamespace", artifact.getTargetNamespace());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -403,8 +403,8 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(SoapBinding artifact) {
 		super.visit(artifact);
 		try {
-			this.jcrNode.setProperty("sramp:style", artifact.getStyle());
-			this.jcrNode.setProperty("sramp:transport", artifact.getTransport());
+			setProperty("sramp:style", artifact.getStyle());
+			setProperty("sramp:transport", artifact.getTransport());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -459,7 +459,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(SoapAddress artifact) {
 		super.visit(artifact);
 		try {
-			this.jcrNode.setProperty("sramp:soapLocation", artifact.getSoapLocation());
+			setProperty("sramp:soapLocation", artifact.getSoapLocation());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -592,6 +592,80 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		}
 		return relationshipNode;
 	}
+
+	/**
+	 * Sets the named property.  Only sets the value if it has changed.  Call this method
+	 * rather than directly setting the property on the node so that auditing can work
+	 * properly.
+	 * @param propertyName
+	 * @param propertyValue
+	 * @throws RepositoryException
+	 * @throws PathNotFoundException
+	 */
+	protected void setProperty(String propertyName, String propertyValue) throws PathNotFoundException, RepositoryException {
+	    if (!this.jcrNode.hasProperty(propertyName)) {
+	        this.jcrNode.setProperty(propertyName, propertyValue);
+	    } else {
+	        Property prop = this.jcrNode.getProperty(propertyName);
+	        String currentValue = prop.getValue().getString();
+	        if (!currentValue.equals(propertyValue)) {
+	            prop.setValue(propertyValue);
+	        }
+	    }
+	}
+
+    /**
+     * Sets the named property.  Only sets the value if it has changed.  Call this method
+     * rather than directly setting the property on the node so that auditing can work
+     * properly.
+     * @param propertyName
+     * @param propertyValue
+     * @throws RepositoryException
+     * @throws PathNotFoundException
+     */
+    protected void setProperty(String propertyName, boolean propertyValue) throws PathNotFoundException, RepositoryException {
+        if (!this.jcrNode.hasProperty(propertyName)) {
+            this.jcrNode.setProperty(propertyName, propertyValue);
+        } else {
+            Property prop = this.jcrNode.getProperty(propertyName);
+            boolean currentValue = prop.getValue().getBoolean();
+            if (currentValue != propertyValue) {
+                prop.setValue(propertyValue);
+            }
+        }
+    }
+
+    /**
+     * Sets the named property.  Only sets the value if it has changed.  Call this method
+     * rather than directly setting the property on the node so that auditing can work
+     * properly.
+     * @param propertyName
+     * @param propertyValue
+     * @throws RepositoryException
+     * @throws PathNotFoundException
+     */
+    protected void setProperty(String propertyName, String [] propertyValue) throws PathNotFoundException, RepositoryException {
+        if (!this.jcrNode.hasProperty(propertyName)) {
+            this.jcrNode.setProperty(propertyName, propertyValue);
+        } else {
+            Set<String> newValues = new HashSet<String>();
+            for (String v : propertyValue) {
+                newValues.add(v);
+            }
+            Property prop = this.jcrNode.getProperty(propertyName);
+            Value[] currentValue = prop.getValues();
+            boolean identical = newValues.size() == currentValue.length;
+            for (Value value : currentValue) {
+                if (!newValues.contains(value)) {
+                    identical = false;
+                    break;
+                }
+            }
+            if (!identical) {
+                this.jcrNode.setProperty(propertyName, propertyValue);
+            }
+        }
+    }
 
 	/**
 	 * Returns true if this visitor encountered an error during visitation.

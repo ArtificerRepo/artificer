@@ -74,7 +74,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 	protected ArtifactSet executeQuery(Query queryModel) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
 			String jcrSql2Query = createSql2Query(queryModel);
 			if (log.isDebugEnabled()) {
@@ -90,7 +90,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 			long endTime = System.currentTimeMillis();
 
 			log.debug("Successfully executed JCR-SQL2 query: {}", jcrSql2Query);
-			log.debug("Query exectued in {} ms", endTime - startTime);
+			log.debug("Query executed in {} ms", endTime - startTime);
 
 			return new JCRArtifactSet(session, jcrNodes);
 		} catch (SrampException e) {

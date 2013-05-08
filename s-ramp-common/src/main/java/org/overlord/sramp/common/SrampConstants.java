@@ -26,8 +26,9 @@ public class SrampConstants {
 
     public static final String DATE_FORMAT  = "EEE, d MMM yyyy HH:mm:ss Z";
 
-	public static final String SRAMP_NS     = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0";
-	public static final String SRAMP_PREFIX = "s-ramp";
+	public static final String SRAMP_NS        = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0";
+	public static final String SRAMP_PREFIX    = "s-ramp";
+    public static final String SRAMP_AUDIT_NS  = "http://downloads.jboss.org/overlord/sramp/2013/auditing.xsd";
 
 	private static final String SRAMP_CONTENT_SIZE         = "contentSize";
 	private static final String SRAMP_CONTENT_TYPE         = "contentType";
@@ -50,9 +51,11 @@ public class SrampConstants {
     public static final QName SRAMP_TOTAL_RESULTS_QNAME   = new QName(SRAMP_NS, SRAMP_TOTAL_RESULTS, SRAMP_PREFIX);
 
     // Configuration constants
-    public static final String SRAMP_CONFIG_FILE_NAME     = "sramp.config.file.name";
-    public static final String SRAMP_CONFIG_FILE_REFRESH  = "sramp.config.file.refresh";
-    public static final String SRAMP_CONFIG_BASEURL       = "sramp.config.baseurl";
+    public static final String SRAMP_CONFIG_FILE_NAME         = "sramp.config.file.name";
+    public static final String SRAMP_CONFIG_FILE_REFRESH      = "sramp.config.file.refresh";
+    public static final String SRAMP_CONFIG_BASEURL           = "sramp.config.baseurl";
+    public static final String SRAMP_CONFIG_AUDITING          = "sramp.config.auditingEnabled";
+    public static final String SRAMP_CONFIG_DERIVED_AUDITING  = "sramp.config.auditingEnabled.derived";
 
     // Location of a directory containing JARs which provide custom derivers
     public static final String SRAMP_CUSTOM_DERIVER_DIR   = "sramp.derivers.customDir";

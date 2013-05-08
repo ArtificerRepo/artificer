@@ -1,0 +1,21 @@
+{
+    "name" : "S-RAMP-Repository",
+    "jndiName" : "",
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        },
+        "providers" : [
+            {
+                "classname" : "org.overlord.sramp.repository.jcr.modeshape.auth.MockAuthenticationProvider",
+                "policyName" : "overlord-idp"
+            }
+         ]
+    }
+}

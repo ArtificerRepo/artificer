@@ -18,19 +18,14 @@ package org.overlord.sramp.server.atom.services;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.overlord.sramp.atom.providers.AuditEntryProvider;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.OntologyProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
 import org.overlord.sramp.repository.PersistenceFactory;
-import org.overlord.sramp.repository.jcr.JCRRepository;
+import org.overlord.sramp.repository.jcr.modeshape.AbstractJCRPersistenceTest;
 import org.overlord.sramp.repository.jcr.modeshape.JCRRepositoryCleaner;
-import org.overlord.sramp.server.atom.services.ArtifactResource;
-import org.overlord.sramp.server.atom.services.BatchResource;
-import org.overlord.sramp.server.atom.services.FeedResource;
-import org.overlord.sramp.server.atom.services.OntologyResource;
-import org.overlord.sramp.server.atom.services.QueryResource;
-import org.overlord.sramp.server.atom.services.ServiceDocumentResource;
 
 /**
  * Base class for s-ramp resource tests. Handles some of the setup boilerplate.
@@ -42,19 +37,21 @@ public abstract class AbstractResourceTest extends BaseResourceTest {
 	@BeforeClass
 	public static void setUpResTest() throws Exception {
 		// use the in-memory config for unit tests
-		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
-				+ "/META-INF/modeshape-configs/inmemory-sramp-config.json");
+        System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractJCRPersistenceTest.class.getName()
+                + "/META-INF/modeshape-configs/junit-sramp-config.json");
 
 		dispatcher.getRegistry().addPerRequestResource(ServiceDocumentResource.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
 		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
 		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
 		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);
-		dispatcher.getRegistry().addPerRequestResource(OntologyResource.class);
+        dispatcher.getRegistry().addPerRequestResource(OntologyResource.class);
+        dispatcher.getRegistry().addPerRequestResource(AuditResource.class);
 
 		deployment.getProviderFactory().registerProvider(SrampAtomExceptionProvider.class);
 		deployment.getProviderFactory().registerProvider(HttpResponseProvider.class);
-		deployment.getProviderFactory().registerProvider(OntologyProvider.class);
+        deployment.getProviderFactory().registerProvider(OntologyProvider.class);
+        deployment.getProviderFactory().registerProvider(AuditEntryProvider.class);
 	}
 
 	@Before
