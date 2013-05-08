@@ -43,7 +43,7 @@
     <echo>Upgrading RESTEasy in JBossAS</echo>
     <unzip src="${sramp.jbpm5.dir}/resteasy-jaxrs-2.3.5.Final/resteasy-jboss-modules-2.3.5.Final.zip" dest="${sramp.jboss.home}/modules" overwrite="false" />
     <echo>Patching ${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml in JBossAS</echo>
-    <copy file="updates/module.xml" tofile="${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml" />
+    <copy file="updates/resteasy-jaxrs-module.xml" tofile="${sramp.jboss.home}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml" />
     <!-- Overlord Commons -->
     <echo>Downloading overlord-commons-installer-${overlord-commons.version}.jar</echo>
     <get src="${overlord-commons-installer.download.url}" dest="${sramp.jbpm5.dir}/overlord-commons-installer-${overlord-commons.version}.jar" usetimestamp="true" />
@@ -69,6 +69,8 @@
       out="${sramp.jbpm5.dir}/_tmp_standalone-ms.xml" />
     <copy file="${sramp.jbpm5.dir}/_tmp_standalone-ms.xml" tofile="${sramp.jboss.home}/standalone/configuration/standalone.xml" overwrite="true" />
     <delete file="${sramp.jbpm5.dir}/_tmp_standalone-ms.xml" />
+    <echo>Patching ${sramp.jboss.home}/modules/org/modeshape/main/module.xml in JBossAS</echo>
+    <copy file="updates/modeshape-module.xml" tofile="${sramp.jboss.home}/modules/org/modeshape/main/module.xml" />
     <!-- Memory Settings -->
     <echo>Increasing memory settings</echo>
     <replace file="${sramp.jbpm5.dir}/jbpm-installer/build.xml">
@@ -128,6 +130,10 @@
     <copy file="${sramp.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-server.war" failonerror="true" />
     <copy file="${sramp-governance.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-governance.war" failonerror="true" />
     <copy file="${sramp-ui.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-ui.war" failonerror="false" />
+    <!-- Deploy the Overlord Apps config file for s-ramp -->
+    <property name="overlord-apps.dir" value="${sramp.jboss.home}/standalone/configuration/overlord-apps" />
+    <mkdir dir="${overlord-apps.dir}" />
+    <copy file="updates/srampui-overlord-app.properties" todir="${overlord-apps.dir}" overwrite="true" />
   </target>
 
   <target name="sramp.bootstrap.fromsrc" unless="is.dist">

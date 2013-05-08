@@ -47,6 +47,7 @@ import org.overlord.sramp.shell.commands.archive.OpenArchiveCommand;
 import org.overlord.sramp.shell.commands.archive.PackArchiveCommand;
 import org.overlord.sramp.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.shell.commands.archive.UpdateEntryArchiveCommand;
+import org.overlord.sramp.shell.commands.audit.ShowAuditTrailCommand;
 import org.overlord.sramp.shell.commands.core.ClassificationCommand;
 import org.overlord.sramp.shell.commands.core.ConnectCommand;
 import org.overlord.sramp.shell.commands.core.DeleteCommand;
@@ -122,6 +123,9 @@ public class ShellCommandFactory {
 		registry.put(new QName("ontology", "upload"), UploadOntologyCommand.class);
 		registry.put(new QName("ontology", "list"), ListOntologiesCommand.class);
 		registry.put(new QName("ontology", "delete"), DeleteOntologyCommand.class);
+
+        // Audit commands
+        registry.put(new QName("audit", "showAuditTrail"), ShowAuditTrailCommand.class);
 
 		discoverContributedCommands();
 	}

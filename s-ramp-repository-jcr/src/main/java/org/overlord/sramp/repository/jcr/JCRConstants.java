@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.repository.jcr;
 
+import org.overlord.sramp.common.SrampConstants;
+
 
 public class JCRConstants {
 
@@ -23,13 +25,17 @@ public class JCRConstants {
     public static final String JCR_SQL2 = "JCR-SQL2";
 
     public static final String SRAMP                  = "sramp";
-	public static final String SRAMP_NS               = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0";
+	public static final String SRAMP_NS               = SrampConstants.SRAMP_NS;
 	public static final String SRAMP_PROPERTIES       = "sramp-properties";
-	public static final String SRAMP_PROPERTIES_NS    = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0#properties";
+	public static final String SRAMP_PROPERTIES_NS    = SRAMP_NS + "#properties";
 	public static final String SRAMP_RELATIONSHIPS    = "sramp-relationships";
-	public static final String SRAMP_RELATIONSHIPS_NS = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0#relationships";
+	public static final String SRAMP_RELATIONSHIPS_NS = SRAMP_NS + "#relationships";
+    public static final String SRAMP_AUDIT            = "audit";
+    public static final String SRAMP_AUDIT_NS         = SrampConstants.SRAMP_AUDIT_NS;
 
     public static final String SRAMP_                    = SRAMP + ":";
+    public static final String SRAMP_AUDIT_ENTRY         = SRAMP_AUDIT + ":auditEntry";
+    public static final String SRAMP_AUDIT_ITEM          = SRAMP_AUDIT + ":auditItem";
     public static final String SRAMP_BASE_ARTIFACT_TYPE  = SRAMP_ + "baseArtifactType";
     public static final String SRAMP_CONTENT_TYPE        = SRAMP_ + "contentType";
     public static final String SRAMP_CONTENT_SIZE        = SRAMP_ + "contentSize";
@@ -37,6 +43,7 @@ public class JCRConstants {
     public static final String SRAMP_CONTENT_ENCODING    = SRAMP_ + "contentEncoding";
     public static final String SRAMP_UUID                = SRAMP_ + "uuid";
     public static final String SRAMP_NAME                = SRAMP_ + "name";
+    public static final String SRAMP_DERIVED             = SRAMP_ + "derived";
     public static final String SRAMP_ARTIFACT_MODEL      = SRAMP_ + "artifactModel";
     public static final String SRAMP_ARTIFACT_TYPE       = SRAMP_ + "artifactType";
     public static final String SRAMP_EXTENDED_TYPE       = SRAMP_ + "extendedType";

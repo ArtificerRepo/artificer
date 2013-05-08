@@ -36,7 +36,6 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.Value;
-import javax.jcr.query.QueryResult;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -63,6 +62,7 @@ import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceManager;
+import org.overlord.sramp.repository.jcr.audit.JCRAuditConstants;
 import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
 import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToOntology;
@@ -80,7 +80,7 @@ import org.slf4j.LoggerFactory;
  * This particular implementation leverages the ModeShape sequencing feature to assist with the
  * creation of the S-RAMP derived artifacts.
  */
-public class JCRPersistence implements PersistenceManager, DerivedArtifacts, ClassificationHelper {
+public class JCRPersistence extends AbstractJCRManager implements PersistenceManager, DerivedArtifacts, ClassificationHelper {
 
 	private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
 
@@ -102,7 +102,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public BaseArtifactType persistArtifact(BaseArtifactType metaData, InputStream content) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			JCRUtils tools = new JCRUtils();
 			if (metaData.getUuid() == null) {
 				metaData.setUuid(UUID.randomUUID().toString());
@@ -159,6 +159,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				throw visitor.getError();
 
 			log.debug("Successfully saved {} to node={}", name, uuid);
+            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE1);
 			session.save();
 
             // Derive any content (this could modify the artifact currently being persisted *and*
@@ -193,6 +194,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
             if (visitor.hasError())
                 throw visitor.getError();
 
+            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE2);
             session.save();
 
 			// If debug is enabled, print the artifact graph
@@ -237,7 +239,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	 * @param derivedArtifacts
 	 * @throws SrampException
 	 */
-	protected void persistDerivedArtifacts(Session session, Node sourceArtifactNode, Collection<BaseArtifactType> derivedArtifacts)
+    protected void persistDerivedArtifacts(Session session, Node sourceArtifactNode, Collection<BaseArtifactType> derivedArtifacts)
 			throws SrampException {
 		try {
 			// Persist each of the derived nodes
@@ -267,6 +269,9 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	                derivedArtifactNode.setProperty(JCRConstants.SRAMP_EXTENDED_TYPE, derivedArtifactType.getExtendedType());
 	            }
 
+	            // It's definitely derived.
+	            derivedArtifactNode.setProperty("sramp:derived", true);
+
 				// Create the visitor that will be used later, once all the JCR nodes have
 				// been created (to ensure that references can be resolved during the visit).
                 ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(derivedArtifactType,
@@ -278,6 +283,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 
 			// Save current changes so that references to nodes can be found.  Note that if
 			// transactions are enabled, this will not actually persist to final storage.
+			session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE1);
 			session.save();
 
 			// Now run the Artifact->JCR Node visitor for each JCR node we created.  This will
@@ -294,6 +300,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 
 			log.debug("Successfully saved {} artifacts.", derivedArtifacts.size());
 
+            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE2);
 			session.save();
 		} catch (SrampException e) {
 			throw e;
@@ -309,7 +316,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public BaseArtifactType getArtifact(String uuid, ArtifactType type) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			Node artifactNode = findArtifactNode(uuid, type, session);
 			if (artifactNode != null) {
 			    // In the case of an extended type, we might be wrong about which one...
@@ -343,7 +350,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		Session session = null;
 
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 
 			Node artifactNode = findArtifactNode(uuid, type, session);
 			if (artifactNode == null) {
@@ -377,7 +384,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			Node artifactNode = findArtifactNode(artifact.getUuid(), type, session);
 			if (artifactNode == null) {
 				throw new ArtifactNotFoundException(artifact.getUuid());
@@ -387,6 +394,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			if (visitor.hasError())
 				throw visitor.getError();
+            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_UPDATED);
 			session.save();
 
 			log.debug("Successfully updated meta-data for artifact {}.", artifact.getUuid());
@@ -410,7 +418,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public void updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
             Node artifactNode = findArtifactNode(uuid, artifactType, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
@@ -428,6 +436,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 
 			// TODO delete and re-create the derived artifacts?  what if some of them have properties or classifications?
 
+            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_CONTENT_UPDATED);
 			session.save();
 			log.debug("Successfully updated content for artifact {}.", uuid);
         } catch (SrampException se) {
@@ -447,12 +456,13 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public void deleteArtifact(String uuid, ArtifactType artifactType) throws SrampException {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
             Node artifactNode = findArtifactNode(uuid, artifactType, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
             }
             artifactNode.remove();
+            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_DELETED);
 			session.save();
 			log.debug("Successfully deleted artifact {}.", uuid);
         } catch (SrampException se) {
@@ -476,7 +486,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		String ontologyPath = "/s-ramp/ontology/" + ontology.getUuid();
 
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			if (session.nodeExists(ontologyPath)) {
 			    throw new OntologyAlreadyExistsException(ontology.getUuid());
 			} else {
@@ -484,6 +494,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 				Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", "nt:folder");
 				Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology");
 				o2jcr.write(ontology, ontologyNode);
+	            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ONTOLOGY_ADDED);
 				session.save();
 				log.debug("Successfully saved ontology {}.", ontology.getUuid());
 				return ontology;
@@ -507,7 +518,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 
 		try {
 			SrampOntology ontology = null;
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			if (session.nodeExists(ontologyPath)) {
 				Node ontologyNode = session.getNode(ontologyPath);
 				ontology = new SrampOntology();
@@ -516,7 +527,6 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 			} else {
 			    throw new OntologyNotFoundException(uuid);
 			}
-			session.save();
 			return ontology;
         } catch (SrampException se) {
             throw se;
@@ -536,7 +546,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		Session session = null;
 
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			JCRUtils tools = new JCRUtils();
 			Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", "nt:folder");
 			NodeIterator nodes = ontologiesNode.getNodes();
@@ -564,7 +574,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		String ontologyPath = "/s-ramp/ontology/" + ontology.getUuid();
 
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			if (session.nodeExists(ontologyPath)) {
 				Node ontologyNode = session.getNode(ontologyPath);
 				NodeIterator nodes = ontologyNode.getNodes();
@@ -577,6 +587,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
                 throw new OntologyNotFoundException(ontology.getUuid());
 			}
 			log.debug("Successfully updated ontology {}.", ontology.getUuid());
+            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ONTOLOGY_UPDATED);
 			session.save();
         } catch (SrampException se) {
             throw se;
@@ -596,13 +607,14 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		String ontologyPath = "/s-ramp/ontology/" + uuid;
 
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			if (session.nodeExists(ontologyPath)) {
 				Node ontologyNode = session.getNode(ontologyPath);
 				ontologyNode.remove();
 			} else {
                 throw new OntologyNotFoundException(uuid);
 			}
+            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ONTOLOGY_DELETED);
 			session.save();
 			log.debug("Successfully deleted ontology {}.", uuid);
         } catch (SrampException se) {
@@ -684,7 +696,7 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 	public void printArtifactGraph(String uuid, ArtifactType type) {
 		Session session = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 			Node artifactNode = findArtifactNode(uuid, type, session);
 			if (artifactNode != null) {
     			JCRUtils tools = new JCRUtils();
@@ -695,28 +707,6 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		} finally {
 			JCRRepositoryFactory.logoutQuietly(session);
 		}
-	}
-
-	/**
-	 * Finds the JCR node for the given artifact (UUID + type).
-	 * @param uuid
-	 * @param type
-	 * @param session
-	 * @throws Exception
-	 */
-	private Node findArtifactNode(String uuid, ArtifactType type, Session session) throws Exception {
-		Node artifactNode = null;
-		if (type.getArtifactType().isDerived()) {
-			artifactNode = findArtifactNodeByUuid(session, uuid);
-		} else {
-			String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
-			if (session.nodeExists(artifactPath)) {
-				artifactNode = session.getNode(artifactPath);
-			} else {
-	            artifactNode = findArtifactNodeByUuid(session, uuid);
-			}
-		}
-		return artifactNode;
 	}
 
 	/**
@@ -745,30 +735,6 @@ public class JCRPersistence implements PersistenceManager, DerivedArtifacts, Cla
 		}
 
 		return file;
-	}
-
-	/**
-	 * Utility method to find an s-ramp artifact node by its UUID.  Returns null if
-	 * not found.  Throws an exception if too many JCR nodes are found with the given
-	 * UUID.
-	 * @param session
-	 * @param artifactUuid
-	 * @throws Exception
-	 */
-	private static Node findArtifactNodeByUuid(Session session, String artifactUuid) throws Exception {
-		javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
-		String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", artifactUuid);
-		javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, JCRConstants.JCR_SQL2);
-		QueryResult jcrQueryResult = jcrQuery.execute();
-		NodeIterator jcrNodes = jcrQueryResult.getNodes();
-		if (!jcrNodes.hasNext()) {
-			return null;
-		}
-		if (jcrNodes.getSize() > 1) {
-			throw new Exception("Too many artifacts found with UUID: " + artifactUuid);
-		}
-		Node node = jcrNodes.nextNode();
-		return node;
 	}
 
 	/**

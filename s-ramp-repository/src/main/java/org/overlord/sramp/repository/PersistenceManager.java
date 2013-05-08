@@ -126,5 +126,10 @@ public interface PersistenceManager {
 	 */
     public void printArtifactGraph(String uuid, ArtifactType type);
 
+    /**
+     * Called to shutdown the persistence manager, cleaning up any resources
+     * being held open.  This is typically called when the container hosting
+     * the s-ramp repository is shut down.
+     */
     public void shutdown();
 }

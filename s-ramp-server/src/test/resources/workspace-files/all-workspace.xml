@@ -244,5 +244,24 @@
             </app:categories>
         </app:collection>
     </app:workspace>
+    <app:workspace>
+        <atom:title>Ontology Model</atom:title>
+        <app:collection href="http://example.org/s-ramp/ontology">
+            <atom:title>Ontology Objects</atom:title>
+            <app:accept>application/rdf+xml</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Ontology" scheme="urn:x-s-ramp:v1:type" term="ontology"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+    <app:workspace>
+        <atom:title>Auditing Model</atom:title>
+        <app:collection href="http://example.org/s-ramp/audit">
+            <atom:title>Audit Entries</atom:title>
+            <app:accept>application/auditEntry+xml</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Audit" scheme="urn:x-s-ramp:v1:type" term="audit"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
 </app:service>
-

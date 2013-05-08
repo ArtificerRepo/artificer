@@ -9,7 +9,7 @@
     "security" : {
         "anonymous" : {
             "roles" : ["readonly","readwrite","admin"],
-            "useOnFailedLogin" : false
+            "useOnFailedLogin" : true
         }
     }
 }

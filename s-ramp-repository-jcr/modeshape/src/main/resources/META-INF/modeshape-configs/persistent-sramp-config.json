@@ -8,9 +8,14 @@
     },
     "security" : {
         "anonymous" : {
-            "roles" : ["readonly","readwrite","admin"],
             "useOnFailedLogin" : false
-        }
+        },
+        "providers" : [
+            {
+                "classname" : "JAAS",
+                "policyName" : "overlord-idp"
+            }
+        ]
     },
     "storage" : {
         "cacheConfiguration" : "${modeshape.cache.config.url}",

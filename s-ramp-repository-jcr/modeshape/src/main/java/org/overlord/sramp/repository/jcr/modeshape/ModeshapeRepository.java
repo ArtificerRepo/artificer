@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.jcr.Credentials;
 import javax.jcr.LoginException;
 import javax.jcr.NamespaceRegistry;
 import javax.jcr.NoSuchWorkspaceException;
@@ -43,7 +42,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
-import org.modeshape.jcr.api.AnonymousCredentials;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.repository.jcr.JCRRepository;
@@ -57,7 +55,7 @@ public class ModeshapeRepository extends JCRRepository {
 	private static String S_RAMP_JNDI = "jcr/sramp";
 
 	private Repository repository;
-	
+
 	private RepositoryFactory theFactory = null;
 	private File tempConfigDir;
 
@@ -70,27 +68,25 @@ public class ModeshapeRepository extends JCRRepository {
 	/**
 	 * Gets the underlying JCR repository.
 	 */
-	public Repository getRepo() {
+	@Override
+    public Repository getRepo() {
 		return repository;
 	}
 
 	/**
-	 * Initialized the Modeshape Service jcr/sramp, or if System parameter 'sramp.modeshape.config.url'
-	 * is defined it starts up an embedded JCR repository.
-	 * 
-	 * @throws RepositoryException
+	 * @see org.overlord.sramp.repository.jcr.JCRRepository#doStartup()
 	 */
 	@Override
-	public void startup() throws RepositoryException {
+	protected void doStartup() throws RepositoryException {
 	    URL configUrl = null;
 	    try {
 	        configUrl = getModeshapeConfigurationUrl();
 	    } catch (Exception e) {
 	        log.error(e.getMessage(),e);
 	    }
-	    //Using the Modeshape Service 
+	    //Using the Modeshape Service
 	    if (configUrl==null) {
-	        log.info("Connecting to ModeShape Service " + S_RAMP_JNDI );
+	        log.info("Connecting to ModeShape Service " + S_RAMP_JNDI);
             try {
                 InitialContext context = new InitialContext();
                 repository = (javax.jcr.Repository) context.lookup(S_RAMP_JNDI);
@@ -133,7 +129,7 @@ public class ModeshapeRepository extends JCRRepository {
 		configureNodeTypes();
 	}
 
-	/**
+    /**
 	 * Gets the configuration to use for the JCR repository.
 	 * @throws Exception
 	 */
@@ -166,25 +162,6 @@ public class ModeshapeRepository extends JCRRepository {
 			return new URL(configUrl);
 		}
 	}
-	/**
-	 * TODO ModeShape requires shutdown to be called. However calling this after every test
-	 * leads to issues where the repo is down, on initialization of the next test. Not using
-	 * it leads to a successful build. We need to look into this.
-	 */
-	public void shutdown() {
-		if (theFactory!=null && theFactory instanceof org.modeshape.jcr.JcrRepositoryFactory) {
-			try {
-				org.modeshape.jcr.api.RepositoryFactory modeRepo = (org.modeshape.jcr.api.RepositoryFactory) theFactory;
-				Boolean state = modeRepo.shutdown().get();
-				log.info("called shutdown on ModeShape, with resulting state=" + state);
-				repository = null;
-			} catch (InterruptedException e) {
-				log.error(e.getMessage(), e);
-			} catch (ExecutionException e) {
-				log.error(e.getMessage(), e);
-			}
-		}
-	}
 
 	/**
 	 * Called to configure the custom JCR node types.
@@ -193,13 +170,14 @@ public class ModeshapeRepository extends JCRRepository {
 		Session session = null;
 		InputStream is = null;
 		try {
-			session = JCRRepositoryFactory.getAnonymousSession();
+			session = JCRRepositoryFactory.getSession();
 
 			// Register some namespaces.
 			NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
 			namespaceRegistry.registerNamespace(JCRConstants.SRAMP, JCRConstants.SRAMP_NS);
 			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_PROPERTIES, JCRConstants.SRAMP_PROPERTIES_NS);
 			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_RELATIONSHIPS, JCRConstants.SRAMP_RELATIONSHIPS_NS);
+			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_AUDIT, JCRConstants.SRAMP_AUDIT_NS);
 
 			NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
 
@@ -222,9 +200,22 @@ public class ModeshapeRepository extends JCRRepository {
 		}
 	}
 
-    @Override
-    public Credentials getAnonymousCredentials() {
-        AnonymousCredentials cred = new AnonymousCredentials();
-        return cred;
+	/**
+	 * @see org.overlord.sramp.repository.jcr.JCRRepository#doShutdown()
+	 */
+	@Override
+	protected void doShutdown() {
+        if (theFactory!=null && theFactory instanceof org.modeshape.jcr.JcrRepositoryFactory) {
+            try {
+                org.modeshape.jcr.api.RepositoryFactory modeRepo = (org.modeshape.jcr.api.RepositoryFactory) theFactory;
+                Boolean state = modeRepo.shutdown().get();
+                log.info("called shutdown on ModeShape, with resulting state=" + state);
+                repository = null;
+            } catch (InterruptedException e) {
+                log.error(e.getMessage(), e);
+            } catch (ExecutionException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
     }
 }

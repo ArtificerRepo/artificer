@@ -24,6 +24,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
+import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
 import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
@@ -321,6 +322,18 @@ public final class SrampAtomUtils {
     public static RDF unwrapRDF(Entry entry) {
         try {
             return unwrap(entry, RDF.class);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Unwraps the audit entry from the Atom Entry.
+     * @param entry
+     */
+    public static AuditEntry unwrapAuditEntry(Entry entry) {
+        try {
+            return unwrap(entry, AuditEntry.class);
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }

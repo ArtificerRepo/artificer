@@ -17,25 +17,104 @@ package org.overlord.sramp.repository.jcr;
 
 import java.io.File;
 
-import javax.jcr.Credentials;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.ObservationManager;
 
+import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.repository.jcr.audit.AuditEventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Base class for the JCR repository.
+ */
 public abstract class JCRRepository {
 
+    private static Logger log = LoggerFactory.getLogger(JCRRepository.class);
+    private static Sramp sramp = new Sramp();
+
+    private Session auditingSession;
+    private AuditEventListener auditingEventListener;
+
     /**
-     * Method called when the JCR implementation is no longer needed.
+     * Constructor.
      */
-    public abstract void shutdown();
+    public JCRRepository() {
+    }
 
     /**
      * Method called to start and initialize the JCR implementation.
      */
-    public abstract void startup() throws RepositoryException;
+    public final void startup() throws RepositoryException {
+        doStartup();
+        if (sramp.isAuditingEnabled())
+            enableAuditing();
+    }
 
-    public abstract Credentials getAnonymousCredentials();
+    /**
+     * Starts up the repository.
+     */
+    protected abstract void doStartup() throws RepositoryException;
 
+    /**
+     * Method called when the JCR implementation is no longer needed.
+     */
+    public final void shutdown() {
+        disableAuditing();
+        doShutdown();
+    }
+
+    /**
+     * Shuts down the repository.
+     */
+    protected abstract void doShutdown();
+
+    /**
+     * @return the JCR repository
+     */
     public abstract Repository getRepo();
+
+    /**
+     * Enables auditing for the JCR repository.
+     * @throws RepositoryException
+     */
+    private void enableAuditing() throws RepositoryException {
+        // TODO option to disable auditing?
+        // TODO ensure that the auditor user can be found in overlord-idp.properties
+        // TODO need configurable values for auditor user creds
+        auditingSession = getRepo().login(new SimpleCredentials("auditor", "overlord-auditor".toCharArray()));
+        ObservationManager observationManager = auditingSession.getWorkspace().getObservationManager();
+        auditingEventListener = new AuditEventListener(sramp, auditingSession);
+        observationManager.addEventListener(
+                auditingEventListener,
+                Event.NODE_ADDED | Event.PROPERTY_ADDED | Event.PROPERTY_CHANGED | Event.PROPERTY_REMOVED,
+                "/s-ramp/", true, null, null, false);
+        log.info("JCR Auditor installed successfully.");
+    }
+
+    /**
+     * Turns off auditing.
+     */
+    private void disableAuditing() {
+        try {
+            if (auditingSession != null && auditingEventListener != null) {
+                // Wait for a bit to let any async tasks finish up (auditing)
+                try { Thread.sleep(300); } catch (InterruptedException e) { }
+                auditingSession.getWorkspace().getObservationManager().removeEventListener(auditingEventListener);
+                auditingEventListener = null;
+            }
+        } catch (Exception e) {
+            log.error("Error turning off auditing.", e);
+        }
+        if (auditingSession != null) {
+            auditingSession.logout();
+            auditingSession = null;
+        }
+    }
 
 	/**
 	 * Figures out what the current data directory is.  The data directory will be
