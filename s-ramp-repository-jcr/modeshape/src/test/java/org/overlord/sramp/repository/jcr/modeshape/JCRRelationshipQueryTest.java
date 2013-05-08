@@ -81,6 +81,18 @@ public class JCRRelationshipQueryTest extends AbstractJCRPersistenceTest {
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(2, artifactSet.size());
+
+        // Get all operations for the port type (sub-artifact-set query)
+        query = queryManager.createQuery("/s-ramp/wsdl/PortType[@name = 'SamplePortType']/operation");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(2, artifactSet.size());
+
+        // Get just one operation for the port type (sub-artifact-set query with predicate)
+        query = queryManager.createQuery("/s-ramp/wsdl/PortType[@name = 'SamplePortType']/operation[@name = 'findSimple']");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(1, artifactSet.size());
     }
 
     /**
