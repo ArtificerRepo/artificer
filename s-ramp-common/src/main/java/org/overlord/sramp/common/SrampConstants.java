@@ -51,9 +51,11 @@ public class SrampConstants {
     public static final QName SRAMP_TOTAL_RESULTS_QNAME   = new QName(SRAMP_NS, SRAMP_TOTAL_RESULTS, SRAMP_PREFIX);
 
     // Configuration constants
-    public static final String SRAMP_CONFIG_FILE_NAME     = "sramp.config.file.name";
-    public static final String SRAMP_CONFIG_FILE_REFRESH  = "sramp.config.file.refresh";
-    public static final String SRAMP_CONFIG_BASEURL       = "sramp.config.baseurl";
+    public static final String SRAMP_CONFIG_FILE_NAME         = "sramp.config.file.name";
+    public static final String SRAMP_CONFIG_FILE_REFRESH      = "sramp.config.file.refresh";
+    public static final String SRAMP_CONFIG_BASEURL           = "sramp.config.baseurl";
+    public static final String SRAMP_CONFIG_AUDITING          = "sramp.config.auditingEnabled";
+    public static final String SRAMP_CONFIG_DERIVED_AUDITING  = "sramp.config.auditingEnabled.derived";
 
     // Location of a directory containing JARs which provide custom derivers
     public static final String SRAMP_CUSTOM_DERIVER_DIR   = "sramp.derivers.customDir";

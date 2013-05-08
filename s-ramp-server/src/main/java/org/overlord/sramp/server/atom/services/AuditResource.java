@@ -114,12 +114,22 @@ public class AuditResource extends AbstractResource {
             @QueryParam("startPage") Integer startPage,
             @QueryParam("startIndex") Integer startIndex,
             @QueryParam("count") Integer count) throws SrampAtomException {
+        if (startIndex == null && startPage != null) {
+            int c = count != null ? count.intValue() : 100;
+            startIndex = (startPage.intValue() - 1) * c;
+        }
+        if (startIndex == null)
+            startIndex = 0;
+        if (count == null)
+            count = 100;
+        int startIdx = startIndex;
+        int endIdx = startIdx + count - 1;
         try {
             AuditManager auditManager = AuditManagerFactory.newInstance();
 
             // Get all audit entries by artifact uuid
             AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifactUuid);
-            return createFeed(entries, 0, (int) entries.size() - 1);
+            return createAuditFeed(entries, startIdx, endIdx);
         } catch (Throwable e) {
             logError(logger, "Error getting audit entries for artifact: " + artifactUuid, e);
             throw new SrampAtomException(e);
@@ -138,12 +148,22 @@ public class AuditResource extends AbstractResource {
             @QueryParam("startPage") Integer startPage,
             @QueryParam("startIndex") Integer startIndex,
             @QueryParam("count") Integer count) throws SrampAtomException {
+        if (startIndex == null && startPage != null) {
+            int c = count != null ? count.intValue() : 100;
+            startIndex = (startPage.intValue() - 1) * c;
+        }
+        if (startIndex == null)
+            startIndex = 0;
+        if (count == null)
+            count = 100;
+        int startIdx = startIndex;
+        int endIdx = startIdx + count - 1;
         try {
             AuditManager auditManager = AuditManagerFactory.newInstance();
 
             // Get all audit entries by artifact uuid
             AuditEntrySet entries = auditManager.getUserAuditEntries(username);
-            return createFeed(entries, 0, (int) entries.size() - 1);
+            return createAuditFeed(entries, startIdx, endIdx);
         } catch (Throwable e) {
             logError(logger, "Error getting audit entries for user: " + username, e);
             throw new SrampAtomException(e);
@@ -158,7 +178,7 @@ public class AuditResource extends AbstractResource {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    private Feed createFeed(AuditEntrySet auditEntrySet, int fromRow, int toRow) throws Exception {
+    private Feed createAuditFeed(AuditEntrySet auditEntrySet, int fromRow, int toRow) throws Exception {
         Feed feed = new Feed();
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_PROVIDER_QNAME, "JBoss Overlord");
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf((toRow - fromRow) + 1));

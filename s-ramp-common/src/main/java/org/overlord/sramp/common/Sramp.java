@@ -63,6 +63,11 @@ public class Sramp {
         }
     }
 
+    /**
+     * Gets the base URL of the S-RAMP server.  This can be used to override the automatic
+     * detection of the base URL when calling the Atom API endpoints.
+     * @param requestUrl
+     */
     public String getBaseUrl(String requestUrl) {
         String baseUrl = "http://localhost:8080/s-ramp-server";
         if (requestUrl!=null) {
@@ -75,5 +80,18 @@ public class Sramp {
         return configuration.getString(SrampConstants.SRAMP_CONFIG_BASEURL, baseUrl);
     }
 
+    /**
+     * @return true if auditing is enabled
+     */
+    public boolean isAuditingEnabled() {
+        return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_AUDITING, true);
+    }
+
+    /**
+     * @return true if auditing is enabled for derived artifacts
+     */
+    public boolean isDerivedArtifactAuditingEnabled() {
+        return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_DERIVED_AUDITING, true);
+    }
 
 }

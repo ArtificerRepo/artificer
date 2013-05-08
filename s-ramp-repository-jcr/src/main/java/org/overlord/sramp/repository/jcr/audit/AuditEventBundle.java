@@ -17,6 +17,7 @@ package org.overlord.sramp.repository.jcr.audit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.ItemNotFoundException;
@@ -147,6 +148,25 @@ public class AuditEventBundle extends ArrayList<Event> {
     }
 
     /**
+     * For derived artifact based events, returns a list of all of them.  An event bundle
+     * may contain multiple derived-artifact-added events.
+     * @throws RepositoryException
+     * @throws ItemNotFoundException
+     */
+    public List<Event> getDerivedArtifactAddEvents() throws ItemNotFoundException, RepositoryException {
+        List<Event> rval = new ArrayList<Event>();
+        for (Event event : this) {
+            if (event.getType() == Event.NODE_ADDED) {
+                Node node = getNode(event);
+                if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE) && node.getProperty("sramp:derived").getBoolean()) {
+                    rval.add(event);
+                }
+            }
+        }
+        return rval;
+    }
+
+    /**
      * For Artifact based events, returns the event representing the adding of the JCR node for the
      * artifact.  This will only work if isArtifactAdd() returned true.
      * @throws RepositoryException
@@ -156,7 +176,7 @@ public class AuditEventBundle extends ArrayList<Event> {
         for (Event event : this) {
             if (event.getType() == Event.PROPERTY_ADDED || event.getType() == Event.PROPERTY_CHANGED || event.getType() == Event.PROPERTY_REMOVED) {
                 Node node = getNode(event);
-                if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE) && !node.getProperty("sramp:derived").getBoolean()) {
+                if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE)) {
                     return event;
                 }
             }

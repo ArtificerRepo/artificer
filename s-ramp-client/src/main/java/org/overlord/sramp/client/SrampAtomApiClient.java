@@ -838,6 +838,31 @@ public class SrampAtomApiClient {
 
     /**
      * Gets the audit trail for the artifact with the given UUID.
+     * @param artifactUuid
+     * @param startIndex
+     * @param count
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public AuditResultSet getAuditTrailForArtifact(String artifactUuid, int startIndex, int count) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("audit");
+        try {
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s?startIndex=%3$s&count=%4$s",
+                    this.endpoint, artifactUuid, String.valueOf(startIndex), String.valueOf(count));
+            ClientRequest request = createClientRequest(atomUrl);
+            ClientResponse<Feed> response = request.get(Feed.class);
+            Feed feed = response.getEntity();
+            AuditResultSet rs = new AuditResultSet(feed);
+            return rs;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
+
+    /**
+     * Gets the audit trail for the artifact with the given UUID.
      * @param username
      * @throws SrampClientException
      * @throws SrampAtomException
@@ -846,6 +871,31 @@ public class SrampAtomApiClient {
         assertFeatureEnabled("audit");
         try {
             String atomUrl = String.format("%1$s/audit/user/%2$s", this.endpoint, username);
+            ClientRequest request = createClientRequest(atomUrl);
+            ClientResponse<Feed> response = request.get(Feed.class);
+            Feed feed = response.getEntity();
+            AuditResultSet rs = new AuditResultSet(feed);
+            return rs;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
+
+    /**
+     * Gets the audit trail for the artifact with the given UUID.
+     * @param username
+     * @param startIndex
+     * @param count
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public AuditResultSet getAuditTrailForUser(String username, int startIndex, int count) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("audit");
+        try {
+            String atomUrl = String.format("%1$s/audit/user/%2$s?startIndex=%3$s&count=%4$s",
+                    this.endpoint, username, String.valueOf(startIndex), String.valueOf(count));
             ClientRequest request = createClientRequest(atomUrl);
             ClientResponse<Feed> response = request.get(Feed.class);
             Feed feed = response.getEntity();

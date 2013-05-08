@@ -16,7 +16,12 @@
 package org.overlord.sramp.repository.jcr.modeshape;
 
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType;
@@ -184,11 +189,40 @@ public class JCRAuditTest extends AbstractJCRPersistenceTest {
         Assert.assertNotNull(entries);
         Assert.assertEquals(1, entries.size());
 
-        // Get all audit entries for the user.  There should only be one, since we're
-        // not currently auditing the creation of derived artifacts.
+        // Get all audit entries for the user.  There should only be 7 because the
+        // source document has 6 derived artifacts.
         entries = auditManager.getUserAuditEntries("junituser");
         Assert.assertNotNull(entries);
-        Assert.assertEquals(1, entries.size());
+        Assert.assertEquals(7, entries.size());
+    }
+
+    @Test
+    public void testCustomAuditEntry() throws Exception {
+        DatatypeFactory dtFactory = DatatypeFactory.newInstance();
+
+        BaseArtifactType artifact = createXsdArtifact();
+        // Allow some time for the async auditor to complete
+        Thread.sleep(250);
+
+        // Create another audit entry
+        XMLGregorianCalendar now = dtFactory.newXMLGregorianCalendar((GregorianCalendar)Calendar.getInstance());
+        AuditEntry auditEntry = new AuditEntry();
+        auditEntry.setType("junit:test1");
+        auditEntry.setWhen(now);
+        auditEntry.setWho("junituser");
+        AuditItemType item = AuditUtils.getOrCreateAuditItem(auditEntry, "junit:item");
+        AuditUtils.setAuditItemProperty(item, "foo", "bar");
+        AuditUtils.setAuditItemProperty(item, "hello", "world");
+        String auditEntryUuid = auditManager.addAuditEntry(artifact.getUuid(), auditEntry).getUuid();
+
+        // Now fetch it back and assert
+        AuditEntry re = auditManager.getArtifactAuditEntry(artifact.getUuid(), auditEntryUuid);
+        Assert.assertNotNull(re);
+        Assert.assertNotNull(re.getUuid());
+        Assert.assertEquals("junituser", re.getWho());
+        Assert.assertEquals(1, re.getAuditItem().size());
+        Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType());
+        Assert.assertEquals(2, re.getAuditItem().iterator().next().getProperty().size());
     }
 
     /**

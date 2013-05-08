@@ -19,6 +19,7 @@ import javax.jcr.Session;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 
+import org.overlord.sramp.common.Sramp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +33,16 @@ public class AuditEventListener implements EventListener {
 
     private static Logger log = LoggerFactory.getLogger(AuditEventListener.class);
 
+    private final Sramp sramp;
     private final Session session;
 
     /**
      * Constructor.
+     * @param sramp
      * @param session
      */
-    public AuditEventListener(Session session) {
+    public AuditEventListener(Sramp sramp, Session session) {
+        this.sramp = sramp;
         this.session = session;
     }
 
@@ -50,7 +54,7 @@ public class AuditEventListener implements EventListener {
         try {
             AuditEventBundle auditingEvents = new AuditEventBundle(session, events);
             AuditEventBundleHandler handler = AuditEventBundleHandlerFactory.getHandler(auditingEvents);
-            handler.handle(auditingEvents);
+            handler.handle(sramp, auditingEvents);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

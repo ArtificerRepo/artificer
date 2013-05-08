@@ -24,6 +24,7 @@ import javax.jcr.SimpleCredentials;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.ObservationManager;
 
+import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.repository.jcr.audit.AuditEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 public abstract class JCRRepository {
 
     private static Logger log = LoggerFactory.getLogger(JCRRepository.class);
+    private static Sramp sramp = new Sramp();
 
     private Session auditingSession;
     private AuditEventListener auditingEventListener;
@@ -49,7 +51,8 @@ public abstract class JCRRepository {
      */
     public final void startup() throws RepositoryException {
         doStartup();
-        enableAuditing();
+        if (sramp.isAuditingEnabled())
+            enableAuditing();
     }
 
     /**
@@ -85,7 +88,7 @@ public abstract class JCRRepository {
         // TODO need configurable values for auditor user creds
         auditingSession = getRepo().login(new SimpleCredentials("auditor", "overlord-auditor".toCharArray()));
         ObservationManager observationManager = auditingSession.getWorkspace().getObservationManager();
-        auditingEventListener = new AuditEventListener(auditingSession);
+        auditingEventListener = new AuditEventListener(sramp, auditingSession);
         observationManager.addEventListener(
                 auditingEventListener,
                 Event.NODE_ADDED | Event.PROPERTY_ADDED | Event.PROPERTY_CHANGED | Event.PROPERTY_REMOVED,

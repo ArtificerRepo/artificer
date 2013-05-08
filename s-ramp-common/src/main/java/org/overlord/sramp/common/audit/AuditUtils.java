@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType;
+import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType.Property;
 
 /**
  * Some util methods for dealing with audit data structures.
@@ -39,6 +40,44 @@ public class AuditUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Gets an existing audit item or else creates a new one.  Returns it either way.
+     * @param auditEntry
+     * @param auditItemType
+     */
+    public static AuditItemType getOrCreateAuditItem(AuditEntry auditEntry, String auditItemType) {
+        AuditItemType ai = getAuditItem(auditEntry, auditItemType);
+        if (ai == null) {
+            ai = new AuditItemType();
+            ai.setType(auditItemType);
+            auditEntry.getAuditItem().add(ai);
+        }
+        return ai;
+    }
+
+    /**
+     * Sets a property on the audit item.
+     * @param auditItem
+     * @param name
+     * @param value
+     */
+    public static void setAuditItemProperty(AuditItemType auditItem, String name, String value) {
+        List<Property> properties = auditItem.getProperty();
+        Property theProp = null;
+        for (Property property : properties) {
+            if (name.equals(property.getName())) {
+                theProp = property;
+                break;
+            }
+        }
+        if (theProp == null) {
+            theProp = new Property();
+            theProp.setName(name);
+            auditItem.getProperty().add(theProp);
+        }
+        theProp.setValue(value);
     }
 
 }

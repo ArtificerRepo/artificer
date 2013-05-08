@@ -15,14 +15,12 @@
  */
 package org.overlord.sramp.repository.jcr.audit;
 
-import java.util.Calendar;
-import java.util.UUID;
-
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 
+import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
 import org.overlord.sramp.repository.jcr.JCRConstants;
@@ -35,10 +33,16 @@ import org.overlord.sramp.repository.jcr.JCRConstants;
 public class ArtifactUpdatedHandler extends AbstractAuditEventBundleHandler {
 
     /**
-     * @see org.overlord.sramp.repository.jcr.audit.AuditEventBundleHandler#handle(org.overlord.sramp.repository.jcr.audit.AuditEventBundle)
+     * Constructor.
+     */
+    public ArtifactUpdatedHandler() {
+    }
+
+    /**
+     * @see org.overlord.sramp.repository.jcr.audit.AuditEventBundleHandler#handle(org.overlord.sramp.common.Sramp, org.overlord.sramp.repository.jcr.audit.AuditEventBundle)
      */
     @Override
-    public void handle(AuditEventBundle eventBundle) throws Exception {
+    public void handle(Sramp sramp, AuditEventBundle eventBundle) throws Exception {
         log.debug("(AUDIT) Processing UPDATE ARTIFACT event.");
 
         if (eventBundle.isEmpty()) {
@@ -46,26 +50,19 @@ public class ArtifactUpdatedHandler extends AbstractAuditEventBundleHandler {
             return;
         }
 
-        Event artifactUpdateEvent = eventBundle.getArtifactUpdateEvent();
-        if (artifactUpdateEvent == null) {
+        Event updateEvent = eventBundle.getArtifactUpdateEvent();
+        if (updateEvent == null) {
             log.debug("No (interesting) events found for artifact update audit event bundle.");
             return;
         }
 
-        String auditUuid = UUID.randomUUID().toString();
-        Node artifactNode = eventBundle.getNode(artifactUpdateEvent);
-        Node auditEntryNode = artifactNode.addNode("audit:" + auditUuid, JCRConstants.SRAMP_AUDIT_ENTRY);
-        long eventDate = artifactUpdateEvent.getDate();
-        Calendar eventCal = Calendar.getInstance();
-        eventCal.setTimeInMillis(eventDate);
-
-        auditEntryNode.setProperty("audit:uuid", auditUuid);
-        auditEntryNode.setProperty("audit:sortId", eventDate);
-        auditEntryNode.setProperty("audit:type", AuditEntryTypes.ARTIFACT_UPDATE);
-        auditEntryNode.setProperty("audit:who", artifactUpdateEvent.getUserID());
-        auditEntryNode.setProperty("audit:when", eventCal);
-
-        log.debug("Created one audit entry for the 'update artifact' event.");
+        Node artifactNode = eventBundle.getNode(updateEvent);
+        // Perhaps we don't want to audit derived artifacts?
+        if (artifactNode.getProperty(JCRConstants.SRAMP_DERIVED).getBoolean() && !sramp.isDerivedArtifactAuditingEnabled()) {
+            return;
+        }
+        Node auditEntryNode = createAuditEntryNode(artifactNode, AuditEntryTypes.ARTIFACT_UPDATE,
+                updateEvent.getUserID(), updateEvent.getDate());
 
         Node propAddedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.PROPERTY_ADDED);
         Node propChangedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.PROPERTY_CHANGED);
@@ -79,6 +76,8 @@ public class ArtifactUpdatedHandler extends AbstractAuditEventBundleHandler {
                 addPropertyToAuditItem(eventBundle, propRemovedNode, event);
             }
         }
+
+        log.debug("Created one audit entry for the 'update artifact' event.");
 
         if (eventBundle.getSession().isLive())
             eventBundle.getSession().save();

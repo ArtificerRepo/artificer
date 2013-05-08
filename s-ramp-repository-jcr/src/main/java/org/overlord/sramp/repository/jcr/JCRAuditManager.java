@@ -16,6 +16,7 @@
 package org.overlord.sramp.repository.jcr;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -24,6 +25,8 @@ import javax.jcr.Session;
 import javax.jcr.query.QueryResult;
 
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
+import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType;
+import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType.Property;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.AuditEntryNotFoundException;
 import org.overlord.sramp.common.SrampException;
@@ -86,6 +89,20 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
                 auditEntryNode.setProperty("audit:type", entry.getType());
                 auditEntryNode.setProperty("audit:who", entry.getWho());
                 auditEntryNode.setProperty("audit:when", eventCal);
+
+                List<AuditItemType> auditItems = entry.getAuditItem();
+                for (AuditItemType auditItem : auditItems) {
+                    String type = auditItem.getType();
+                    String auditItemNodeName = "audit:" + type.replace(':', '_');
+                    Node auditItemNode = auditEntryNode.addNode(auditItemNodeName, JCRConstants.SRAMP_AUDIT_ITEM);
+                    auditItemNode.setProperty("audit:type", type);
+                    List<Property> properties = auditItem.getProperty();
+                    for (Property property : properties) {
+                        String propertyName = property.getName();
+                        String propertyValue = property.getValue();
+                        auditItemNode.setProperty(propertyName, propertyValue);
+                    }
+                }
 
                 session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_AUDITING);
                 session.save();

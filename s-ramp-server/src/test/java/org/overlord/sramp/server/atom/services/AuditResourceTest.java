@@ -121,6 +121,10 @@ public class AuditResourceTest extends AbstractResourceTest {
         auditEntry.setType("junit:test1");
         auditEntry.setWhen(now);
         auditEntry.setWho("junituser");
+        AuditItemType item = AuditUtils.getOrCreateAuditItem(auditEntry, "junit:item");
+        AuditUtils.setAuditItemProperty(item, "foo", "bar");
+        AuditUtils.setAuditItemProperty(item, "hello", "world");
+
         request.body(MediaType.APPLICATION_AUDIT_ENTRY_XML_TYPE, auditEntry);
         ClientResponse<Entry> response = request.post(Entry.class);
         Entry entry = response.getEntity();
@@ -128,6 +132,9 @@ public class AuditResourceTest extends AbstractResourceTest {
         Assert.assertNotNull(re);
         Assert.assertNotNull(re.getUuid());
         Assert.assertEquals("junituser", re.getWho());
+        Assert.assertEquals(1, re.getAuditItem().size());
+        Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType());
+        Assert.assertEquals(2, re.getAuditItem().iterator().next().getProperty().size());
 
         // List all the audit entries
         request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid()));
@@ -135,6 +142,18 @@ public class AuditResourceTest extends AbstractResourceTest {
         Assert.assertNotNull(auditEntryFeed);
         List<Entry> entries = auditEntryFeed.getEntries();
         Assert.assertEquals(2, entries.size());
+
+        // Get just the custom entry we created
+        request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid() + "/" + re.getUuid()));
+        response = request.get(Entry.class);
+        entry = response.getEntity();
+        re = SrampAtomUtils.unwrap(entry, AuditEntry.class);
+        Assert.assertNotNull(re);
+        Assert.assertNotNull(re.getUuid());
+        Assert.assertEquals("junituser", re.getWho());
+        Assert.assertEquals(1, re.getAuditItem().size());
+        Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType());
+        Assert.assertEquals(2, re.getAuditItem().iterator().next().getProperty().size());
     }
 
     /**

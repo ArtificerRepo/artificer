@@ -20,6 +20,8 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 
+import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 
@@ -30,10 +32,16 @@ import org.overlord.sramp.repository.jcr.JCRConstants;
 public class ArtifactAddedHandler extends AbstractAuditEventBundleHandler {
 
     /**
-     * @see org.overlord.sramp.repository.jcr.audit.AuditEventBundleHandler#handle(org.overlord.sramp.repository.jcr.audit.AuditEventBundle)
+     * Constructor.
+     */
+    public ArtifactAddedHandler() {
+    }
+
+    /**
+     * @see org.overlord.sramp.repository.jcr.audit.AuditEventBundleHandler#handle(org.overlord.sramp.common.Sramp, org.overlord.sramp.repository.jcr.audit.AuditEventBundle)
      */
     @Override
-    public void handle(AuditEventBundle eventBundle) throws Exception {
+    public void handle(Sramp sramp, AuditEventBundle eventBundle) throws Exception {
         log.debug("Processing ADD ARTIFACT audit event bundle.");
         Event addEvent = eventBundle.getArtifactAddEvent();
         if (addEvent == null) {
@@ -41,7 +49,8 @@ public class ArtifactAddedHandler extends AbstractAuditEventBundleHandler {
         }
 
         Node artifactNode = eventBundle.getNode(addEvent);
-        Node auditEntryNode = createAuditEntryNode(artifactNode, addEvent.getUserID(), addEvent.getDate());
+        Node auditEntryNode = createAuditEntryNode(artifactNode, AuditEntryTypes.ARTIFACT_ADD,
+                addEvent.getUserID(), addEvent.getDate());
 
         Node auditItemNode = createAuditItemNode(auditEntryNode, AuditItemTypes.PROPERTY_ADDED);
         for (Event event : eventBundle) {
@@ -49,8 +58,6 @@ public class ArtifactAddedHandler extends AbstractAuditEventBundleHandler {
                 addPropertyToAuditItem(eventBundle, auditItemNode, event);
             }
         }
-
-        // TODO add specific property details to audit entry
 
         if (eventBundle.getSession().isLive())
             eventBundle.getSession().save();

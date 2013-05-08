@@ -27,7 +27,6 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.observation.Event;
 import javax.jcr.version.VersionException;
 
-import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public abstract class AbstractAuditEventBundleHandler implements AuditEventBundl
      * @throws ConstraintViolationException
      * @throws RepositoryException
      */
-    protected Node createAuditEntryNode(Node artifactNode, String who, long when)
+    protected Node createAuditEntryNode(Node artifactNode, String type, String who, long when)
             throws ValueFormatException, VersionException, LockException, ConstraintViolationException,
             RepositoryException {
         String auditUuid = UUID.randomUUID().toString();
@@ -62,7 +61,7 @@ public abstract class AbstractAuditEventBundleHandler implements AuditEventBundl
 
         auditEntryNode.setProperty("audit:uuid", auditUuid);
         auditEntryNode.setProperty("audit:sortId", eventDate);
-        auditEntryNode.setProperty("audit:type", AuditEntryTypes.ARTIFACT_ADD);
+        auditEntryNode.setProperty("audit:type", type);
         auditEntryNode.setProperty("audit:who", who);
         auditEntryNode.setProperty("audit:when", eventCal);
 

@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.repository.jcr.audit;
 
+import org.overlord.sramp.common.Sramp;
+
 /**
  * Implement this interface to create a handler specific to a kind of bundle of
  * JCR events.
@@ -25,8 +27,9 @@ public interface AuditEventBundleHandler {
     /**
      * Called to handle the bundle of events.  This means creating an "audit:auditEntry"
      * node under an artifact node, for example.
+     * @param sramp
      * @param eventBundle
      */
-    public void handle(AuditEventBundle eventBundle) throws Exception;
+    public void handle(Sramp sramp, AuditEventBundle eventBundle) throws Exception;
 
 }

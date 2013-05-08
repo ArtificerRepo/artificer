@@ -18,6 +18,8 @@ package org.overlord.sramp.repository.jcr.audit;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.overlord.sramp.common.Sramp;
+
 /**
  * Factory for creating/getting event bundle handlers.
  *
@@ -29,10 +31,11 @@ public class AuditEventBundleHandlerFactory {
     static {
         handlers.put(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE1, new ArtifactAddedHandler());
         handlers.put(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_UPDATED, new ArtifactUpdatedHandler());
+        handlers.put(JCRAuditConstants.AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE1, new DerivedArtifactAddedHandler());
     }
     private static final AuditEventBundleHandler noopHandler = new AuditEventBundleHandler() {
         @Override
-        public void handle(AuditEventBundle eventBundle) {
+        public void handle(Sramp sramp, AuditEventBundle eventBundle) throws Exception {
         }
     };
 
