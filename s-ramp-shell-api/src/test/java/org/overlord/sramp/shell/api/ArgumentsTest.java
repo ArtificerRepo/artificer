@@ -81,7 +81,6 @@ public class ArgumentsTest {
 	public void testArguments() throws Exception {
 		for (String [] testCaseData : TEST_DATA) {
 			String argumentsLine = testCaseData[0];
-			System.out.println(argumentsLine);
 			Arguments arguments = new Arguments(argumentsLine);
 			Assert.assertEquals(testCaseData.length - 1, arguments.size());
 			for (int idx = 0; idx < arguments.size(); idx++) {

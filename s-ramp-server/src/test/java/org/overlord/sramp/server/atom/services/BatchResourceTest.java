@@ -55,7 +55,7 @@ import org.overlord.sramp.common.SrampModelUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class BatchResourceTest extends AbstractResourceTest {
+public class BatchResourceTest extends AbstractNoAuditingResourceTest {
 
 	/**
 	 * Test method for {@link org.overlord.sramp.common.server.atom.services.BatchResource#zipPackage(java.lang.String, java.io.InputStream)}.

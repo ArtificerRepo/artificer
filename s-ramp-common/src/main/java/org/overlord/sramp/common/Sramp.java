@@ -20,7 +20,6 @@ import java.net.URL;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +41,7 @@ public class Sramp {
     public synchronized void read() {
         try {
             CompositeConfiguration config = new CompositeConfiguration();
-            config.addConfiguration(new SystemConfiguration());
+            config.addConfiguration(new SystemPropertiesConfiguration());
             //config.addConfiguration(new JNDIConfiguration("java:comp/env/overlord/s-ramp"));
             String configFile = config.getString(SrampConstants.SRAMP_CONFIG_FILE_NAME, "/sramp.properties");
             Long refreshDelay = config.getLong(SrampConstants.SRAMP_CONFIG_FILE_REFRESH, 5000l);

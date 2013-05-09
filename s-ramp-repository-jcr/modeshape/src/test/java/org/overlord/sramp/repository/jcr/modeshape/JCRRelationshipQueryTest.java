@@ -36,7 +36,7 @@ import org.overlord.sramp.repository.query.SrampQuery;
  * Tests that relationships can be queried.
  * @author eric.wittmann@redhat.com
  */
-public class JCRRelationshipQueryTest extends AbstractJCRPersistenceTest {
+public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTest {
 
     /**
      * Tests the query manager + derived relationships.

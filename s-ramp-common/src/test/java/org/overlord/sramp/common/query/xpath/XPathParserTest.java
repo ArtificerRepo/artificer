@@ -75,7 +75,7 @@ public class XPathParserTest {
 				Assert.fail("Case [" + testCaseName + "] Got unexpected error: " + t.getMessage());
 			}
 		}
-		System.out.println("All " + testCases.size() + " XPath parser test cases passed.");
+//		System.out.println("All " + testCases.size() + " XPath parser test cases passed.");
 	}
 
 	/**

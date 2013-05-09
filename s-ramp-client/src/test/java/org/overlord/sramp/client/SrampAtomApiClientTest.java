@@ -23,21 +23,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.apache.commons.io.IOUtils;
-import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -48,60 +40,20 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
-import org.overlord.sramp.atom.providers.HttpResponseProvider;
-import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
-import org.overlord.sramp.client.audit.AuditEntrySummary;
-import org.overlord.sramp.client.audit.AuditResultSet;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.ontology.SrampOntology;
-import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
-import org.overlord.sramp.repository.PersistenceFactory;
-import org.overlord.sramp.repository.jcr.modeshape.AbstractJCRPersistenceTest;
-import org.overlord.sramp.repository.jcr.modeshape.JCRRepositoryCleaner;
-import org.overlord.sramp.server.atom.services.ArtifactResource;
-import org.overlord.sramp.server.atom.services.AuditResource;
-import org.overlord.sramp.server.atom.services.BatchResource;
-import org.overlord.sramp.server.atom.services.FeedResource;
-import org.overlord.sramp.server.atom.services.OntologyResource;
-import org.overlord.sramp.server.atom.services.QueryResource;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
- * Unit test for the
+ * Unit test for the bulk of the s-ramp client features.
  *
  * @author eric.wittmann@redhat.com
  */
-public class SrampAtomApiClientTest extends BaseResourceTest {
-
-	@BeforeClass
-	public static void setUp() throws Exception {
-		// use the in-memory config for unit tests
-        System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractJCRPersistenceTest.class.getName()
-                + "/META-INF/modeshape-configs/junit-sramp-config.json");
-
-		deployment.getProviderFactory().registerProvider(SrampAtomExceptionProvider.class);
-		deployment.getProviderFactory().registerProvider(HttpResponseProvider.class);
-		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
-		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
-		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);
-        dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
-        dispatcher.getRegistry().addPerRequestResource(OntologyResource.class);
-        dispatcher.getRegistry().addPerRequestResource(AuditResource.class);
-	}
-
-    @Before
-    public void cleanRepository() {
-        new JCRRepositoryCleaner().clean();
-    }
-
-	@AfterClass
-	public static void cleanup() {
-		PersistenceFactory.newInstance().shutdown();
-	}
+public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 
 	/**
 	 * Test method for {@link SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
@@ -662,21 +614,6 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
 	}
 
 	/**
-	 * Adds an XML document.
-	 * @throws Exception
-	 */
-	protected BaseArtifactType addXmlDoc() throws Exception {
-        String artifactFileName = "PO.xml";
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
-        try {
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
-            return client.uploadArtifact(ArtifactType.XmlDocument(), is, artifactFileName);
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-	}
-
-	/**
      * Test method for {@link SrampAtomApiClient#uploadOntology(InputStream)}.
      */
     @Test
@@ -753,63 +690,5 @@ public class SrampAtomApiClientTest extends BaseResourceTest {
         Assert.assertNotNull(ontology);
         Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase());
         Assert.assertNotNull(ontology.getUuid());
-    }
-
-    @Test
-    public void testAuditing() throws Exception {
-        DatatypeFactory dtFactory = DatatypeFactory.newInstance();
-        BaseArtifactType doc = addXmlDoc();
-        // Add a second artifact.
-        addXmlDoc();
-        String artifactUuid = doc.getUuid();
-        // Wait for a bit to let the async audit events persist
-        Thread.sleep(250);
-
-        // Checking auditing - should be 1 event (artifact:add)
-        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
-        AuditResultSet resultSet = client.getAuditTrailForArtifact(artifactUuid);
-        Assert.assertNotNull(resultSet);
-        Assert.assertEquals(1, resultSet.getTotalResults());
-        AuditEntrySummary summary = resultSet.get(0);
-        Assert.assertNotNull(summary);
-        Assert.assertEquals("junituser", summary.getWho());
-        Assert.assertEquals("artifact:add", summary.getType());
-
-        // Add a custom entry
-        AuditEntry auditEntry = new AuditEntry();
-        XMLGregorianCalendar now = dtFactory.newXMLGregorianCalendar((GregorianCalendar)Calendar.getInstance());
-        auditEntry.setType("junit:test1");
-        auditEntry.setWhen(now);
-        auditEntry.setWho("junituser");
-        AuditEntry newEntry = client.addAuditEntry(artifactUuid, auditEntry );
-        Assert.assertNotNull(newEntry);
-        Assert.assertEquals("junituser", newEntry.getWho());
-        Assert.assertEquals("junit:test1", newEntry.getType());
-
-        // Get the audit trail again
-        resultSet = client.getAuditTrailForArtifact(artifactUuid);
-        Assert.assertNotNull(resultSet);
-        Assert.assertEquals(2, resultSet.getTotalResults());
-        summary = resultSet.get(0);
-        Assert.assertNotNull(summary);
-        System.out.println(summary.getUuid());
-        Assert.assertEquals("junituser", summary.getWho());
-        Assert.assertEquals("junit:test1", summary.getType());
-        summary = resultSet.get(1);
-        Assert.assertNotNull(summary);
-        System.out.println(summary.getUuid());
-        Assert.assertEquals("junituser", summary.getWho());
-        Assert.assertEquals("artifact:add", summary.getType());
-
-        // Get the full audit entry
-        auditEntry = client.getAuditEntry(artifactUuid, summary.getUuid());
-        Assert.assertNotNull(newEntry);
-        Assert.assertEquals("junituser", auditEntry.getWho());
-        Assert.assertEquals("artifact:add", auditEntry.getType());
-
-        // Get all audit entries by user
-        resultSet = client.getAuditTrailForUser("junituser");
-        Assert.assertNotNull(resultSet);
-        Assert.assertEquals(3, resultSet.getTotalResults());
     }
 }

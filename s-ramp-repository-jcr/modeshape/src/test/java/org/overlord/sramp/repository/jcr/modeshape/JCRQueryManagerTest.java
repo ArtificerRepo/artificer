@@ -35,7 +35,7 @@ import org.overlord.sramp.repository.query.SrampQuery;
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  */
-public class JCRQueryManagerTest extends AbstractJCRPersistenceTest {
+public class JCRQueryManagerTest extends AbstractNoAuditingJCRPersistenceTest {
 
     /**
      * Tests the query manager.

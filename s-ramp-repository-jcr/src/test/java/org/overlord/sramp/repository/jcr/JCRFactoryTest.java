@@ -32,7 +32,7 @@ public class JCRFactoryTest {
     @Test
     public void testFindServiceConfig() {
         URL url = this.getClass().getClassLoader().getResource("META-INF/services/org.overlord.sramp.repository.DerivedArtifacts");
-        System.out.println("URL=" + url);
+//        System.out.println("URL=" + url);
         Assert.assertNotNull(url);
     }
 

@@ -43,7 +43,7 @@ import org.overlord.sramp.atom.services.brms.BrmsConstants;
 import org.overlord.sramp.atom.services.brms.assets.Assets;
 import org.overlord.sramp.atom.services.brms.packages.Packages;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.server.atom.services.AbstractResourceTest;
+import org.overlord.sramp.server.atom.services.AbstractNoAuditingResourceTest;
 
 import test.org.overlord.sramp.server.TestUtils;
 
@@ -53,7 +53,7 @@ import test.org.overlord.sramp.server.TestUtils;
  *
  * @author kurt.stam@redhat.com
  */
-public class BrmsResourceTest extends AbstractResourceTest {
+public class BrmsResourceTest extends AbstractNoAuditingResourceTest {
 
 	@BeforeClass
 	public static void setUpBrms() throws Exception {
@@ -90,7 +90,7 @@ public class BrmsResourceTest extends AbstractResourceTest {
         Entry entry = response.getEntity();
         BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
 
-        System.out.println(arty.getUuid() + " " + arty.getArtifactType().value());
+//        System.out.println(arty.getUuid() + " " + arty.getArtifactType().value());
 
         //check that we can download this package's content
         ClientRequest request1 = new ClientRequest(generateURL("/brms/rest/packages/srampPackage/binary"));
