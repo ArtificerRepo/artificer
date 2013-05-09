@@ -30,7 +30,7 @@ import org.overlord.sramp.server.atom.workspaces.AbstractWorkspaceTest;
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  * @version $Revision: 1 $
  */
-public class ServiceDocumentResourceTest extends AbstractResourceTest {
+public class ServiceDocumentResourceTest extends AbstractNoAuditingResourceTest {
 
     @Test
     public void testServiceDocument() throws Exception {

@@ -42,7 +42,7 @@ import test.org.overlord.sramp.server.TestUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class FeedResourceTest extends AbstractResourceTest {
+public class FeedResourceTest extends AbstractNoAuditingResourceTest {
 
 	/**
 	 * Tests the artifact feed.

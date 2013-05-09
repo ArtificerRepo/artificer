@@ -29,7 +29,6 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 import org.overlord.sramp.atom.services.brms.Format;
 import org.overlord.sramp.atom.services.brms.assets.Assets;

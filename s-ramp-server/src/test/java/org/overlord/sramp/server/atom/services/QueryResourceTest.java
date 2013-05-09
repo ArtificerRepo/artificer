@@ -48,7 +48,7 @@ import test.org.overlord.sramp.server.TestUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class QueryResourceTest extends AbstractResourceTest {
+public class QueryResourceTest extends AbstractNoAuditingResourceTest {
 
 	/**
 	 * @throws Exception

@@ -51,8 +51,9 @@ public abstract class JCRRepository {
      */
     public final void startup() throws RepositoryException {
         doStartup();
-        if (sramp.isAuditingEnabled())
+        if (sramp.isAuditingEnabled()) {
             enableAuditing();
+        }
     }
 
     /**
@@ -64,7 +65,8 @@ public abstract class JCRRepository {
      * Method called when the JCR implementation is no longer needed.
      */
     public final void shutdown() {
-        disableAuditing();
+        if (sramp.isAuditingEnabled())
+            disableAuditing();
         doShutdown();
     }
 
@@ -102,8 +104,8 @@ public abstract class JCRRepository {
     private void disableAuditing() {
         try {
             if (auditingSession != null && auditingEventListener != null) {
-                // Wait for a bit to let any async tasks finish up (auditing)
-                try { Thread.sleep(300); } catch (InterruptedException e) { }
+                // Wait for a bit to let any async audit tasks finish up
+                try { Thread.sleep(2000); } catch (InterruptedException e) { }
                 auditingSession.getWorkspace().getObservationManager().removeEventListener(auditingEventListener);
                 auditingEventListener = null;
             }

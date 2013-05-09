@@ -675,7 +675,7 @@ public class SrampWagon extends StreamWagon {
     	            return val;
     	        }
 	        } else {
-	            System.out.println("WTF");
+	            throw new RuntimeException("Invalid query parameter in repository URL (param name without value).");
 	        }
 	    }
 	    return null;

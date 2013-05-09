@@ -41,7 +41,7 @@ import org.w3._2002._07.owl_.Ontology;
  *
  * @author eric.wittmann@redhat.com
  */
-public class OntologyResourceTest extends AbstractResourceTest {
+public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 
 	@Test
 	public void testCreate() throws Exception {

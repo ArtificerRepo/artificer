@@ -13,55 +13,79 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.server.atom.services;
+package org.overlord.sramp.client;
 
+import static org.overlord.sramp.common.test.resteasy.TestPortProvider.generateURL;
+
+import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.overlord.sramp.atom.providers.AuditEntryProvider;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
-import org.overlord.sramp.atom.providers.OntologyProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
+import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.test.resteasy.BaseResourceTest;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.jcr.modeshape.AbstractNoAuditingJCRPersistenceTest;
 import org.overlord.sramp.repository.jcr.modeshape.JCRRepositoryCleaner;
+import org.overlord.sramp.server.atom.services.ArtifactResource;
+import org.overlord.sramp.server.atom.services.AuditResource;
+import org.overlord.sramp.server.atom.services.BatchResource;
+import org.overlord.sramp.server.atom.services.FeedResource;
+import org.overlord.sramp.server.atom.services.OntologyResource;
+import org.overlord.sramp.server.atom.services.QueryResource;
 
 /**
- * Base class for s-ramp resource tests. Handles some of the setup boilerplate.
+ * Base class for client tests.
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractResourceTest extends BaseResourceTest {
+public abstract class AbstractClientTest extends BaseResourceTest {
 
-	public static void setUpResourceTest() throws Exception {
-		// use the in-memory config for unit tests
+	/**
+	 * @throws Exception
+	 */
+	public static void registerServices() throws Exception {
+        // use the in-memory config for unit tests
         System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractNoAuditingJCRPersistenceTest.class.getName()
                 + "/META-INF/modeshape-configs/junit-sramp-config.json");
-
-		dispatcher.getRegistry().addPerRequestResource(ServiceDocumentResource.class);
-		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
-		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
-		dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
-		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);
-        dispatcher.getRegistry().addPerRequestResource(OntologyResource.class);
-        dispatcher.getRegistry().addPerRequestResource(AuditResource.class);
-
 		deployment.getProviderFactory().registerProvider(SrampAtomExceptionProvider.class);
 		deployment.getProviderFactory().registerProvider(HttpResponseProvider.class);
-        deployment.getProviderFactory().registerProvider(OntologyProvider.class);
-        deployment.getProviderFactory().registerProvider(AuditEntryProvider.class);
+		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
+		dispatcher.getRegistry().addPerRequestResource(FeedResource.class);
+		dispatcher.getRegistry().addPerRequestResource(BatchResource.class);
+        dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
+        dispatcher.getRegistry().addPerRequestResource(OntologyResource.class);
+        dispatcher.getRegistry().addPerRequestResource(AuditResource.class);
 	}
 
-	@Before
-	public void cleanRepository() {
-		new JCRRepositoryCleaner().clean();
-	}
+    @Before
+    public void cleanRepository() {
+        new JCRRepositoryCleaner().clean();
+    }
 
 	@AfterClass
 	public static void cleanup() {
 		PersistenceFactory.newInstance().shutdown();
         System.clearProperty(SrampConstants.SRAMP_CONFIG_AUDITING);
 	}
+
+    /**
+     * Adds an XML document.
+     * @throws Exception
+     */
+    protected BaseArtifactType addXmlDoc() throws Exception {
+        String artifactFileName = "PO.xml";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        try {
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            return client.uploadArtifact(ArtifactType.XmlDocument(), is, artifactFileName);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
 
 }
