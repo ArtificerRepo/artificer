@@ -17,7 +17,7 @@ package org.overlord.sramp.repository.jcr.modeshape;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.repository.AuditManager;
 import org.overlord.sramp.repository.AuditManagerFactory;
 import org.overlord.sramp.repository.DerivedArtifacts;
@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
+ * Base class for all JCR persistence tests.
+ * @author eric.wittmann@redhat.com
  */
 public abstract class AbstractJCRPersistenceTest {
 
@@ -41,12 +42,10 @@ public abstract class AbstractJCRPersistenceTest {
     protected static QueryManager queryManager = null;
     protected static AuditManager auditManager = null;
 
-    @BeforeClass
     public static void setupPersistence() {
 		// use the in-memory config for unit tests
 		System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractJCRPersistenceTest.class.getName()
 				+ "/META-INF/modeshape-configs/junit-sramp-config.json");
-
         persistenceManager = PersistenceFactory.newInstance();
         derivedArtifacts = DerivedArtifactsFactory.newInstance();
         queryManager = QueryManagerFactory.newInstance();
@@ -61,6 +60,7 @@ public abstract class AbstractJCRPersistenceTest {
     @AfterClass
     public static void cleanup() {
         persistenceManager.shutdown();
+        System.clearProperty(SrampConstants.SRAMP_CONFIG_AUDITING);
     }
 
 }

@@ -33,7 +33,7 @@ import org.junit.runners.MethodSorters;
 public class ConfigurationTest {
 
 	/**
-	 * @throws ConfigException 
+	 * @throws ConfigException
 	 */
     @Test
 	public void testAConfigure() throws ConfigException {
@@ -62,10 +62,10 @@ public class ConfigurationTest {
     }
     /**
      * Add a bad query
-     * 
+     *
      * @throws ConfigException
      */
-    @Test() 
+    @Test()
     public void testBad2QueryConfiguration() throws ConfigException {
         System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad2-governance.config.txt");
         Governance governance = new Governance();
@@ -79,10 +79,10 @@ public class ConfigurationTest {
     }
     /**
      * Add a bad target
-     * 
+     *
      * @throws ConfigException
      */
-    @Test() 
+    @Test()
     public void testBad3TargetConfiguration() throws ConfigException {
         System.setProperty(GovernanceConstants.GOVERNANCE_FILE_NAME, "bad3-governance.config.txt");
         Governance governance = new Governance();

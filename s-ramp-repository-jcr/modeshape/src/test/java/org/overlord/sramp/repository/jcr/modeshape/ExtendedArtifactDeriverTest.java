@@ -30,7 +30,7 @@ import org.overlord.sramp.repository.query.SrampQuery;
 /**
  * @author eric.wittmann@redhat.com
  */
-public class ExtendedArtifactDeriverTest extends AbstractJCRPersistenceTest {
+public class ExtendedArtifactDeriverTest extends AbstractNoAuditingJCRPersistenceTest {
 
     @Test
     public void testExtendedArtifactDeriver() throws Exception {

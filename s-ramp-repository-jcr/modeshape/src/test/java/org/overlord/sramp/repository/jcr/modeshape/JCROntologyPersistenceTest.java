@@ -31,7 +31,7 @@ import org.overlord.sramp.common.ontology.SrampOntology;
  *
  * @author eric.wittmann@redhat.com
  */
-public class JCROntologyPersistenceTest extends AbstractJCRPersistenceTest {
+public class JCROntologyPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
     @Test
     public void testPersistOntology_Empty() throws Exception {

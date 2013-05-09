@@ -60,7 +60,7 @@ import org.overlord.sramp.repository.query.SrampQuery;
  *
  * @author eric.wittmann@redhat.com
  */
-public class JCRWsdlDocumentPersistenceTest extends AbstractJCRPersistenceTest {
+public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
 	@Test
 	public void testWsdlDocument() throws Exception {

@@ -120,13 +120,13 @@ public class XsdDocumentTest {
 
 			marshaller.marshal(element,writer);
 			String actualXml=writer.toString();
-			java.lang.System.out.println(actualXml);
+//			java.lang.System.out.println(actualXml);
 
 			Assert.assertNotNull("Cannot locate file XsdDocument-entry.xml",
 			        this.getClass().getResourceAsStream("XsdDocument-entry.xml"));
 
 			String expectedXML = new Scanner(this.getClass().getResourceAsStream("XsdDocument-entry.xml")).useDelimiter("\\Z").next();
-			java.lang.System.out.println(expectedXML);
+//			java.lang.System.out.println(expectedXML);
 			Diff diff = new Diff(expectedXML, actualXml);
 			boolean isSimilar = diff.similar();
 			assertTrue(isSimilar);

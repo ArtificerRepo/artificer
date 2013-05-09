@@ -64,7 +64,7 @@ import test.org.overlord.sramp.server.TestUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactResourceTest extends AbstractResourceTest {
+public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 
     String uuid = null;
 
@@ -342,7 +342,9 @@ public class ArtifactResourceTest extends AbstractResourceTest {
         Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
 
         ClientResponse<String> content = request.get(String.class);
-        System.out.println("Content=" + content.getEntity());
+        String c = content.getEntity();
+        Assert.assertNotNull(c);
+//        System.out.println("Content=" + content.getEntity());
     }
 
 	/**

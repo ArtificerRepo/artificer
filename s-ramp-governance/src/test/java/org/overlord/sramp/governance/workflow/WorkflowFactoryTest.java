@@ -34,7 +34,7 @@ public class WorkflowFactoryTest {
     @Test
     public void testFindServiceConfig() {
         URL url = this.getClass().getClassLoader().getResource("META-INF/services/org.overlord.sramp.governance.workflow.BpmManager");
-        System.out.println("URL=" + url);
+//        System.out.println("URL=" + url);
         Assert.assertNotNull(url);
     }
 

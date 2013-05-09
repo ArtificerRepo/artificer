@@ -34,7 +34,7 @@ import org.overlord.sramp.repository.query.SrampQuery;
  *
  * @author eric.wittmann@redhat.com
  */
-public class JCRClassificationQueryTest extends AbstractJCRPersistenceTest {
+public class JCRClassificationQueryTest extends AbstractNoAuditingJCRPersistenceTest {
 
 	@Test
 	public void testDerivedRelationshipQueries() throws Exception {

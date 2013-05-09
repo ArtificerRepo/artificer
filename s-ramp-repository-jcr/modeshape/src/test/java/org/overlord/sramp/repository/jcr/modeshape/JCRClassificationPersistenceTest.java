@@ -33,7 +33,7 @@ import org.overlord.sramp.common.ontology.SrampOntology;
  *
  * @author eric.wittmann@redhat.com
  */
-public class JCRClassificationPersistenceTest extends AbstractJCRPersistenceTest {
+public class JCRClassificationPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
     @Test
     public void testPersistClassifications() throws Exception {

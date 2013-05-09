@@ -33,12 +33,14 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.client.ClientRequest;
+import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
 import org.overlord.sramp.common.audit.AuditUtils;
@@ -48,7 +50,12 @@ import org.overlord.sramp.common.audit.AuditUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class AuditResourceTest extends AbstractResourceTest {
+public class AuditResourceTest extends AbstractAuditingResourceTest {
+
+    @BeforeClass
+    public static void enableAuditing() {
+        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "true");
+    }
 
 	@Test
 	public void testListAndGet() throws Exception {
@@ -56,7 +63,7 @@ public class AuditResourceTest extends AbstractResourceTest {
         // Add another document
         addPdf();
 		// Wait for the audit entries to be persisted.
-		Thread.sleep(250);
+		Thread.sleep(500);
 
 		// List all the audit entries
         ClientRequest request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid()));
@@ -110,7 +117,7 @@ public class AuditResourceTest extends AbstractResourceTest {
     public void testCreate() throws Exception {
         Document pdf = addPdf();
         // Wait for the audit entries to be persisted.
-        Thread.sleep(250);
+        Thread.sleep(500);
 
         DatatypeFactory dtFactory = DatatypeFactory.newInstance();
 

@@ -27,12 +27,14 @@ import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType.Property;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.audit.AuditItemTypes;
@@ -45,7 +47,12 @@ import org.overlord.sramp.repository.jcr.modeshape.auth.MockSecurityContext;
  * Tests all things auditing related.
  * @author eric.wittmann@redhat.com
  */
-public class JCRAuditTest extends AbstractJCRPersistenceTest {
+public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
+
+    @BeforeClass
+    public static void enableAuditing() {
+        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "true");
+    }
 
     @Test
     public void testCreatedBy() throws Exception {
@@ -84,7 +91,7 @@ public class JCRAuditTest extends AbstractJCRPersistenceTest {
         persistenceManager.updateArtifact(artifact, ArtifactType.Document());
 
         // Allow some time for the async auditor to complete
-        Thread.sleep(250);
+        Thread.sleep(500);
 
         // Now do some assertions.
         AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
@@ -184,7 +191,7 @@ public class JCRAuditTest extends AbstractJCRPersistenceTest {
     public void testWithDerivedArtifacts() throws Exception {
         BaseArtifactType artifact = createXsdArtifact();
         // Allow some time for the async auditor to complete
-        Thread.sleep(250);
+        Thread.sleep(500);
         AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
         Assert.assertNotNull(entries);
         Assert.assertEquals(1, entries.size());
@@ -202,7 +209,7 @@ public class JCRAuditTest extends AbstractJCRPersistenceTest {
 
         BaseArtifactType artifact = createXsdArtifact();
         // Allow some time for the async auditor to complete
-        Thread.sleep(250);
+        Thread.sleep(500);
 
         // Create another audit entry
         XMLGregorianCalendar now = dtFactory.newXMLGregorianCalendar((GregorianCalendar)Calendar.getInstance());

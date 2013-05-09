@@ -39,7 +39,7 @@ import org.overlord.sramp.common.SrampModelUtils;
 /**
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  */
-public class JCRPersistenceTest extends AbstractJCRPersistenceTest {
+public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
     @Test
     public void testPersistArtifact_PDF() throws Exception {
