@@ -10,11 +10,11 @@
 
   <filter>
     <filter-name>GWTCacheControl</filter-name>
-    <filter-class>org.overlord.sramp.ui.server.filters.GWTCacheControlFilter</filter-class>
+    <filter-class>org.overlord.commons.gwt.server.filters.GWTCacheControlFilter</filter-class>
   </filter>
   <filter>
     <filter-name>ResourceCacheControl</filter-name>
-    <filter-class>org.overlord.sramp.ui.server.filters.ResourceCacheControlFilter</filter-class>
+    <filter-class>org.overlord.commons.gwt.server.filters.ResourceCacheControlFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>GWTCacheControl</filter-name>
