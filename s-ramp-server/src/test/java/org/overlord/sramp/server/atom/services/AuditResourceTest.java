@@ -63,7 +63,7 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
         // Add another document
         addPdf();
 		// Wait for the audit entries to be persisted.
-		Thread.sleep(500);
+		Thread.sleep(1000);
 
 		// List all the audit entries
         ClientRequest request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid()));
@@ -117,7 +117,7 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
     public void testCreate() throws Exception {
         Document pdf = addPdf();
         // Wait for the audit entries to be persisted.
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         DatatypeFactory dtFactory = DatatypeFactory.newInstance();
 

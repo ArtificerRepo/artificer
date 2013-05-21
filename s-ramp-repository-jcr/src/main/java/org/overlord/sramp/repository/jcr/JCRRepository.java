@@ -17,6 +17,7 @@ package org.overlord.sramp.repository.jcr;
 
 import java.io.File;
 
+import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -85,17 +86,21 @@ public abstract class JCRRepository {
      * @throws RepositoryException
      */
     private void enableAuditing() throws RepositoryException {
-        // TODO option to disable auditing?
-        // TODO ensure that the auditor user can be found in overlord-idp.properties
-        // TODO need configurable values for auditor user creds
-        auditingSession = getRepo().login(new SimpleCredentials("auditor", "overlord-auditor".toCharArray()));
-        ObservationManager observationManager = auditingSession.getWorkspace().getObservationManager();
-        auditingEventListener = new AuditEventListener(sramp, auditingSession);
-        observationManager.addEventListener(
-                auditingEventListener,
-                Event.NODE_ADDED | Event.PROPERTY_ADDED | Event.PROPERTY_CHANGED | Event.PROPERTY_REMOVED,
-                "/s-ramp/", true, null, null, false);
-        log.info("JCR Auditor installed successfully.");
+        try {
+            auditingSession = getRepo().login(new SimpleCredentials(sramp.getAuditUser(), sramp.getAuditPassword().toCharArray()));
+            ObservationManager observationManager = auditingSession.getWorkspace().getObservationManager();
+            auditingEventListener = new AuditEventListener(sramp, auditingSession);
+            observationManager.addEventListener(
+                    auditingEventListener,
+                    Event.NODE_ADDED | Event.PROPERTY_ADDED | Event.PROPERTY_CHANGED | Event.PROPERTY_REMOVED,
+                    "/s-ramp/", true, null, null, false);
+            log.info("JCR Auditor installed successfully.");
+        } catch (LoginException e) {
+            log.error(e.getMessage(), e);
+            log.warn("\n**********\nFailed to install auditing listener (see error above):  automatic auditing is disabled!!\n**********");
+            auditingSession = null;
+            auditingEventListener = null;
+        }
     }
 
     /**
