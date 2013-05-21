@@ -189,17 +189,25 @@ public class SrampWagon extends StreamWagon {
 			hashPropName = "maven.hash.sha1";
 			artyPath = artyPath.substring(0, artyPath.length() - 5);
 		}
-		SrampArchiveEntry entry = this.archive.getEntry(artyPath);
-		if (entry == null) {
-			throw new ResourceDoesNotExistException("Failed to find resource hash: " + gavInfo.getName());
-		}
-		BaseArtifactType metaData = entry.getMetaData();
+        // See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
+        // context classloader magic.
+        ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
+        try {
+    		SrampArchiveEntry entry = this.archive.getEntry(artyPath);
+    		if (entry == null) {
+    			throw new ResourceDoesNotExistException("Failed to find resource hash: " + gavInfo.getName());
+    		}
+    		BaseArtifactType metaData = entry.getMetaData();
 
-		String hashValue = SrampModelUtils.getCustomProperty(metaData, hashPropName);
-		if (hashValue == null) {
-			throw new ResourceDoesNotExistException("Failed to find resource hash: " + gavInfo.getName());
-		}
-		inputData.setInputStream(IOUtils.toInputStream(hashValue));
+    		String hashValue = SrampModelUtils.getCustomProperty(metaData, hashPropName);
+    		if (hashValue == null) {
+    			throw new ResourceDoesNotExistException("Failed to find resource hash: " + gavInfo.getName());
+    		}
+    		inputData.setInputStream(IOUtils.toInputStream(hashValue));
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCtxCL);
+        }
 	}
 
 	/***
@@ -369,17 +377,19 @@ public class SrampWagon extends StreamWagon {
 			}
 			String hashValue = IOUtils.toString(resourceInputStream);
 
-			SrampArchiveEntry entry = this.archive.getEntry(artyPath);
-			BaseArtifactType metaData = entry.getMetaData();
-			SrampModelUtils.setCustomProperty(metaData, hashPropName, hashValue);
-			this.archive.updateEntry(entry, null);
+            // See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
+            // context classloader magic.
+            ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
+            try {
+    			SrampArchiveEntry entry = this.archive.getEntry(artyPath);
+    			BaseArtifactType metaData = entry.getMetaData();
+    			SrampModelUtils.setCustomProperty(metaData, hashPropName, hashValue);
+    			this.archive.updateEntry(entry, null);
 
-			// The meta-data has been updated in the local/temp archive - now send it to the remote repo
-			// See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
-			// context classloader magic.
-			ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
-			Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
-			try {
+    			// The meta-data has been updated in the local/temp archive - now send it to the remote repo
+    			String endpoint = getSrampEndpoint();
+    			SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 				client.updateArtifactMetaData(metaData);
 			} catch (Throwable t) {
 				throw new TransferFailedException(t.getMessage(), t);
