@@ -91,7 +91,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         persistenceManager.updateArtifact(artifact, ArtifactType.Document());
 
         // Allow some time for the async auditor to complete
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         // Now do some assertions.
         AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
@@ -191,7 +191,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
     public void testWithDerivedArtifacts() throws Exception {
         BaseArtifactType artifact = createXsdArtifact();
         // Allow some time for the async auditor to complete
-        Thread.sleep(500);
+        Thread.sleep(1000);
         AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
         Assert.assertNotNull(entries);
         Assert.assertEquals(1, entries.size());
@@ -209,7 +209,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
 
         BaseArtifactType artifact = createXsdArtifact();
         // Allow some time for the async auditor to complete
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         // Create another audit entry
         XMLGregorianCalendar now = dtFactory.newXMLGregorianCalendar((GregorianCalendar)Calendar.getInstance());
