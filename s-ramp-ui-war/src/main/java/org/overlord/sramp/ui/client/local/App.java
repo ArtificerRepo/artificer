@@ -24,7 +24,7 @@ import org.jboss.errai.ui.nav.client.local.Navigation;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * The main entry point into the Overlord:DTR ui app.
+ * The main entry point into the S-RAMP browser UI app.
  *
  * @author eric.wittmann@redhat.com
  */

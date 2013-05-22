@@ -44,7 +44,13 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-uiheader</artifactId>
-      <version>${overlord.commons.uiheader.version}</version>
+      <version>${overlord-commons.version}</version>
+    </dependency>
+    <!-- Overlord Commons GWT -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-gwt</artifactId>
+      <version>${overlord-commons.version}</version>
     </dependency>
     
     <!-- Third Party Dependencies -->
@@ -85,7 +91,7 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-auth</artifactId>
-      <version>${overlord.commons.auth.version}</version>
+      <version>${overlord-commons.version}</version>
       <scope>provided</scope>
     </dependency>
 
@@ -221,7 +227,7 @@
           <classesClassifier>classes</classesClassifier>
           <warName>${project.artifactId}</warName>
           <outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
-          <packagingExcludes>**/javax/**/*.*,**/client/local/**/*.class</packagingExcludes>
+          <packagingExcludes>**/javax/**/*.*,**/client/local/**/*.class,**/rebel.xml</packagingExcludes>
         </configuration>
       </plugin>
       <plugin>
