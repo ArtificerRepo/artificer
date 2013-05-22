@@ -136,6 +136,24 @@ button.tree:hover {
   width: 95%;
 }
 
+.mobile-header {
+  text-indent: 15px;
+  background-color: #1f97d8;
+  border-bottom: 2px solid #d3d3d3;
+}
+.mobile-header a {
+  padding-top: 5px;
+  color: white;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+.mobile-header span.caret {
+  color: white;
+  margin-top: 8px;
+  margin-right: 8px;
+  border-top: 4px solid white;
+}
+
 .hero-unit {
   background-color: transparent;
   border-bottom: 1px solid rgb(187, 187, 187);
