@@ -5,7 +5,7 @@
   <artifactId>s-ramp-tck</artifactId>
   <packaging>jar</packaging>
   <name>S-RAMP TCK</name>
-  <version>0.1.2-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
   <description>S-RAMP Technical Compatibility Kit module.</description>
 
   <properties>
