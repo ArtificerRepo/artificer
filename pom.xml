@@ -30,9 +30,9 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:git:https://github.com/Governance/s-ramp.git</connection>
-    <developerConnection>scm:git:https://github.com/Governance/s-ramp.git</developerConnection>
-    <url>scm:git:https://github.com/Governance/s-ramp.git</url>
+    <connection>scm:git:git@github.com:Governance/s-ramp.git</connection>
+    <developerConnection>scm:git:git@github.com:Governance/s-ramp.git</developerConnection>
+    <url>scm:git:git@github.com:Governance/s-ramp.git</url>
   </scm>
 
   <developers>
