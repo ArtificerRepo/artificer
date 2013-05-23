@@ -56,8 +56,8 @@
          target="install-all" />
     <!-- ModeShape -->
     <echo>Installing Modeshape Service</echo>
-    <get src="${sramp.modeshape.url}" dest="${sramp.jbpm5.dir}/modeshape-3.1.0.Final-jbossas-71-dist.zip" usetimestamp="true" />
-    <unzip src="${sramp.jbpm5.dir}/modeshape-3.1.0.Final-jbossas-71-dist.zip" dest="${sramp.jboss.home}" overwrite="false" />
+    <get src="${sramp.modeshape.url}" dest="${sramp.jbpm5.dir}/modeshape-jbossas-71-dist.zip" usetimestamp="true" />
+    <unzip src="${sramp.jbpm5.dir}/modeshape-jbossas-71-dist.zip" dest="${sramp.jboss.home}" overwrite="false" />
     <echo>Removing Modeshape wars</echo>
     <delete includeEmptyDirs="true">
       <fileset dir="${sramp.jboss.home}/standalone/deployments" includes="modeshape*/**" />
@@ -131,7 +131,7 @@
     <copy file="${sramp-governance.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-governance.war" failonerror="true" />
     <copy file="${sramp-ui.war.path}" tofile="${sramp.jboss.home}/standalone/deployments/s-ramp-ui.war" failonerror="false" />
     <!-- Deploy the S-RAMP config file -->
-    <copy file="updates/sramp.properties" todir="${overlord-apps.dir}" overwrite="true" />
+    <copy file="updates/sramp.properties" todir="${sramp.jboss.home}/standalone/configuration/" overwrite="true" />
     <!-- Deploy the Overlord Apps config file for S-RAMP -->
     <property name="overlord-apps.dir" value="${sramp.jboss.home}/standalone/configuration/overlord-apps" />
     <mkdir dir="${overlord-apps.dir}" />
