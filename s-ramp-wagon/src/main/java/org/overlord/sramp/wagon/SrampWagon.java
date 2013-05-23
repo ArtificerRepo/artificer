@@ -388,8 +388,6 @@ public class SrampWagon extends StreamWagon {
     			this.archive.updateEntry(entry, null);
 
     			// The meta-data has been updated in the local/temp archive - now send it to the remote repo
-    			String endpoint = getSrampEndpoint();
-    			SrampAtomApiClient client = new SrampAtomApiClient(endpoint);
 				client.updateArtifactMetaData(metaData);
 			} catch (Throwable t) {
 				throw new TransferFailedException(t.getMessage(), t);
