@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.overlord.sramp.demos.switchyard.multiapp</groupId>
         <artifactId>s-ramp-demos-switchyard-multiapp</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>0.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>switchyard-quickstart-demo-multi-web</artifactId>
