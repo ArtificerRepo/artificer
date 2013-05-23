@@ -3,7 +3,7 @@
 
   <groupId>org.overlord.sramp</groupId>
   <artifactId>s-ramp-distro</artifactId>
-  <version>0.2.0</version>
+  <version>0.2.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>S-RAMP Distribution</name>
