@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.overlord.sramp</groupId>
     <artifactId>s-ramp-distro</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>s-ramp-distro-assembly</artifactId>
@@ -116,11 +116,11 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-gwt</artifactId>
+      <artifactId>s-ramp-ui-war</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-        <!-- Dependency on s-ramp-governance BRMS install package -->
+    <!-- Dependency on s-ramp-governance BRMS install package -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-governance</artifactId>
@@ -128,7 +128,7 @@
       <classifier>brms</classifier>
       <type>zip</type>
     </dependency>
-        <!-- Dependency on workitems and workflows to include them in the assembly -->
+    <!-- Dependency on workitems and workflows to include them in the assembly -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-workflows</artifactId>

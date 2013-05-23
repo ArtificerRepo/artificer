@@ -3,14 +3,14 @@
   <parent>
     <groupId>org.overlord.sramp.demos</groupId>
     <artifactId>s-ramp-demos</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>s-ramp-demos-switchyard</artifactId>
   <name>S-RAMP Demos: Switchyard Deployment</name>
 
   <properties>
-    <switchyard.version>0.7.0.Final</switchyard.version>
+    <switchyard.version>0.8.0.Final</switchyard.version>
   </properties>
 
   <repositories>
@@ -123,7 +123,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.switchyard</groupId>
                     <artifactId>switchyard-plugin</artifactId>
-                    <versionRange>[0.5.0.Final,)</versionRange>
+                    <versionRange>[0.8.0.Final,)</versionRange>
                     <goals>
                       <goal>configure</goal>
                     </goals>
