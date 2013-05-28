@@ -36,6 +36,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingEnum;
@@ -44,7 +45,9 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationFaultEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInputEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutputEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.FaultEnum;
@@ -64,6 +67,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTypeEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
@@ -71,6 +75,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDerivedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeEnum;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
@@ -92,6 +97,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	private Exception error;
 	private JCRReferenceFactory referenceFactory;
 	private ClassificationHelper classificationHelper;
+	private boolean processRelationships = true;
 
 	/**
 	 * Constructor.
@@ -263,6 +269,75 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 				}
 			}
 		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument)
+	 */
+	@Override
+	public void visit(XsdDocument artifact) {
+	    super.visit(artifact);
+        try {
+            setProperty("sramp:targetNamespace", artifact.getTargetNamespace());
+        } catch (Exception e) {
+            error = e;
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration)
+	 */
+	@Override
+	public void visit(AttributeDeclaration artifact) {
+        super.visit(artifact);
+        try {
+            setProperty("sramp:namespace", artifact.getNamespace());
+            setProperty("sramp:ncName", artifact.getNCName());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration)
+	 */
+	@Override
+	public void visit(ComplexTypeDeclaration artifact) {
+        super.visit(artifact);
+        try {
+            setProperty("sramp:namespace", artifact.getNamespace());
+            setProperty("sramp:ncName", artifact.getNCName());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration)
+	 */
+	@Override
+	public void visit(ElementDeclaration artifact) {
+        super.visit(artifact);
+        try {
+            setProperty("sramp:namespace", artifact.getNamespace());
+            setProperty("sramp:ncName", artifact.getNCName());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration)
+	 */
+	@Override
+	public void visit(SimpleTypeDeclaration artifact) {
+        super.visit(artifact);
+        try {
+            setProperty("sramp:namespace", artifact.getNamespace());
+            setProperty("sramp:ncName", artifact.getNCName());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 	/**
@@ -511,6 +586,8 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	private void setRelationship(String relationshipType, int maxCardinality, int minCardinality,
 			String targetType, boolean isGeneric, Target target) throws Exception {
+	    if (!isProcessRelationships())
+	        return;
 		if (target != null || minCardinality == 0) {
 			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType, maxCardinality,
 					targetType, isGeneric);
@@ -536,6 +613,8 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,
 			String targetType, boolean isGeneric, List<? extends Target> targets) throws Exception {
+        if (!isProcessRelationships())
+            return;
 		if ((targets != null && targets.size() > 0) || minCardinality == 0) {
 			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType, maxCardinality,
 					targetType, isGeneric);
@@ -682,6 +761,20 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	}
 
 	/**
+     * @return the processRelationships
+     */
+    public boolean isProcessRelationships() {
+        return processRelationships;
+    }
+
+    /**
+     * @param processRelationships the processRelationships to set
+     */
+    public void setProcessRelationships(boolean processRelationships) {
+        this.processRelationships = processRelationships;
+    }
+
+    /**
 	 * Interface used by this visitor to resolve JCR node references by s-ramp
 	 * UUID.  In other words, given an s-ramp UUID, this interface will create a
 	 * reference to the appropriate JCR node.

@@ -30,6 +30,7 @@ import javax.jcr.ValueFormatException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
@@ -39,10 +40,12 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInputTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutputTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
@@ -64,6 +67,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTypeTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
@@ -72,6 +76,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeTarget;
 import org.overlord.sramp.common.ArtifactType;
@@ -288,17 +293,63 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	}
 
 	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument)
+	 */
+	@Override
+	public void visit(XsdDocument artifact) {
+	    super.visit(artifact);
+
+        artifact.setTargetNamespace(getProperty(jcrNode, "sramp:targetNamespace"));
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration)
+	 */
+	@Override
+	public void visit(AttributeDeclaration artifact) {
+	    super.visit(artifact);
+
+        artifact.setNamespace(getProperty(jcrNode, "sramp:namespace"));
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration)
+	 */
+	@Override
+	public void visit(ComplexTypeDeclaration artifact) {
+	    super.visit(artifact);
+
+        artifact.setNamespace(getProperty(jcrNode, "sramp:namespace"));
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration)
+	 */
+	@Override
+	public void visit(ElementDeclaration artifact) {
+	    super.visit(artifact);
+
+        artifact.setNamespace(getProperty(jcrNode, "sramp:namespace"));
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration)
+	 */
+	@Override
+	public void visit(SimpleTypeDeclaration artifact) {
+	    super.visit(artifact);
+
+        artifact.setNamespace(getProperty(jcrNode, "sramp:namespace"));
+	}
+
+	/**
 	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument)
 	 */
 	@Override
 	public void visit(WsdlDocument artifact) {
 		super.visit(artifact);
 
-		try {
-			artifact.setTargetNamespace(getProperty(jcrNode, "sramp:targetNamespace"));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		artifact.setTargetNamespace(getProperty(jcrNode, "sramp:targetNamespace"));
 	}
 
 	/**

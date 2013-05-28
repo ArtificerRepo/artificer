@@ -20,6 +20,8 @@ import java.util.Collection;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.derived.ArtifactDeriver;
+import org.overlord.sramp.common.derived.LinkerContext;
 
 /**
  * A service that can rip apart an artifact (previously persisted) and create all of its Derived Artifacts.
@@ -34,5 +36,17 @@ public interface DerivedArtifacts {
 	 */
 	public Collection<BaseArtifactType> deriveArtifacts(BaseArtifactType sourceArtifact,
 			InputStream sourceArtifactContent) throws SrampException;
+
+	/**
+	 * Creates any relationships for the given artifacts.  This phase of the deriver provides
+	 * an opportunity for the {@link ArtifactDeriver} to create relationships between the
+	 * derived artifacts.
+     * @param context
+     * @param sourceArtifact
+     * @param derivedArtifacts
+     * @throws SrampException
+     */
+    public void linkArtifacts(LinkerContext context, BaseArtifactType sourceArtifact,
+            Collection<BaseArtifactType> derivedArtifacts) throws SrampException;
 
 }

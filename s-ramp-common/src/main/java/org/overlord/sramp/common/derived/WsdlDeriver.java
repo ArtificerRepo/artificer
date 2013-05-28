@@ -115,6 +115,13 @@ import org.w3c.dom.NodeList;
  */
 public class WsdlDeriver extends XsdDeriver {
 
+    // Property added to some targets if the target artifact reference cannot be resolved during
+    // the derivation phase.  When this happens we mark it as unresolved and try to resolve it
+    // during the link phase.
+    public static final QName UNRESOLVED_REF = new QName("urn:s-ramp:wsdl-deriver", "unresolvedRef");
+
+    private final WsdlLinker linker = new WsdlLinker();
+
 	/**
 	 * Constructor.
 	 */
@@ -249,22 +256,26 @@ public class WsdlDeriver extends XsdDeriver {
 					String encodedQName = partElem.getAttribute("element");
 					QName qname = resolveQName(partElem, targetNS, encodedQName);
 					ElementDeclaration elementRef = derivedArtifacts.lookupElement(qname);
+                    ElementTarget elementTarget = new ElementTarget();
+                    elementTarget.setArtifactType(ElementEnum.ELEMENT);
 					if (elementRef != null) {
-						ElementTarget elementTarget = new ElementTarget();
 						elementTarget.setValue(elementRef.getUuid());
-						elementTarget.setArtifactType(ElementEnum.ELEMENT);
-						part.setElement(elementTarget);
+					} else {
+					    elementTarget.getOtherAttributes().put(UNRESOLVED_REF, qname.toString());
 					}
+                    part.setElement(elementTarget);
 				} else if (partElem.hasAttribute("type")) {
 					String encodedQName = partElem.getAttribute("type");
 					QName qname = resolveQName(partElem, targetNS, encodedQName);
 					XsdType typeRef = derivedArtifacts.lookupType(qname);
+                    XsdTypeTarget typeTarget = new XsdTypeTarget();
+                    typeTarget.setArtifactType(XsdTypeEnum.XSD_TYPE);
 					if (typeRef != null) {
-						XsdTypeTarget typeTarget = new XsdTypeTarget();
 						typeTarget.setValue(typeRef.getUuid());
-						typeTarget.setArtifactType(XsdTypeEnum.XSD_TYPE);
-						part.setType(typeTarget);
+					} else {
+					    typeTarget.getOtherAttributes().put(UNRESOLVED_REF, qname.toString());
 					}
+                    part.setType(typeTarget);
 				}
 			}
 		}
@@ -391,12 +402,14 @@ public class WsdlDeriver extends XsdDeriver {
 				QName msgQname = resolveQName(inputElem, targetNS, encodedMsgQname);
 				name = msgQname.getLocalPart();
 				Message message = derivedArtifacts.lookupMessage(msgQname);
+                MessageTarget target = new MessageTarget();
+                target.setArtifactType(MessageEnum.MESSAGE);
 				if (message != null) {
-					MessageTarget target = new MessageTarget();
 					target.setValue(message.getUuid());
-					target.setArtifactType(MessageEnum.MESSAGE);
-					input.setMessage(target);
+				} else {
+				    target.getOtherAttributes().put(UNRESOLVED_REF, msgQname.toString());
 				}
+                input.setMessage(target);
 			}
 			if (inputElem.hasAttribute("name")) {
 				name = inputElem.getAttribute("name");
@@ -437,12 +450,14 @@ public class WsdlDeriver extends XsdDeriver {
 				QName msgQname = resolveQName(outputElem, targetNS, encodedMsgQname);
 				name = msgQname.getLocalPart();
 				Message message = derivedArtifacts.lookupMessage(msgQname);
+                MessageTarget target = new MessageTarget();
+                target.setArtifactType(MessageEnum.MESSAGE);
 				if (message != null) {
-					MessageTarget target = new MessageTarget();
 					target.setValue(message.getUuid());
-					target.setArtifactType(MessageEnum.MESSAGE);
-					output.setMessage(target);
+				} else {
+                    target.getOtherAttributes().put(UNRESOLVED_REF, msgQname.toString());
 				}
+                output.setMessage(target);
 			}
 			if (outputElem.hasAttribute("name")) {
 				name = outputElem.getAttribute("name");
@@ -486,12 +501,14 @@ public class WsdlDeriver extends XsdDeriver {
 				QName msgQname = resolveQName(faultElem, targetNS, encodedMsgQname);
 				name = msgQname.getLocalPart();
 				Message message = derivedArtifacts.lookupMessage(msgQname);
+                MessageTarget target = new MessageTarget();
+                target.setArtifactType(MessageEnum.MESSAGE);
 				if (message != null) {
-					MessageTarget target = new MessageTarget();
 					target.setValue(message.getUuid());
-					target.setArtifactType(MessageEnum.MESSAGE);
-					fault.setMessage(target);
+				} else {
+                    target.getOtherAttributes().put(UNRESOLVED_REF, msgQname.toString());
 				}
+                fault.setMessage(target);
 			}
 			if (faultElem.hasAttribute("name")) {
 				name = faultElem.getAttribute("name");
@@ -536,12 +553,14 @@ public class WsdlDeriver extends XsdDeriver {
 					String portTypeEncodedQName = bindingElem.getAttribute("type");
 					QName portTypeQName = resolveQName(bindingElem, targetNS, portTypeEncodedQName);
 					portType = derivedArtifacts.lookupPortType(portTypeQName);
+                    PortTypeTarget target = new PortTypeTarget();
+                    target.setArtifactType(PortTypeEnum.PORT_TYPE);
 					if (portType != null) {
-						PortTypeTarget target = new PortTypeTarget();
 						target.setValue(portType.getUuid());
-						target.setArtifactType(PortTypeEnum.PORT_TYPE);
-						binding.setPortType(target);
+					} else {
+	                    target.getOtherAttributes().put(UNRESOLVED_REF, portTypeQName.toString());
 					}
+                    binding.setPortType(target);
 				}
 
 				// Process all the wsdl:operation children
@@ -817,12 +836,14 @@ public class WsdlDeriver extends XsdDeriver {
 				String bindingEncodedQName = portElem.getAttribute("binding");
 				QName bindingQName = resolveQName(portElem, targetNS, bindingEncodedQName);
 				Binding binding = derivedArtifacts.lookupBinding(bindingQName);
+                BindingTarget target = new BindingTarget();
+                target.setArtifactType(BindingEnum.BINDING);
 				if (binding != null) {
-					BindingTarget target = new BindingTarget();
 					target.setValue(binding.getUuid());
-					target.setArtifactType(BindingEnum.BINDING);
-					port.setBinding(target);
+				} else {
+                    target.getOtherAttributes().put(UNRESOLVED_REF, bindingQName.toString());
 				}
+                port.setBinding(target);
 			}
 
 			derivedArtifacts.add(port);
@@ -892,6 +913,18 @@ public class WsdlDeriver extends XsdDeriver {
 			}
 		}
 		return ns;
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.derived.XsdDeriver#link(org.overlord.sramp.common.derived.LinkerContext, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.util.Collection)
+	 */
+	@Override
+	public void link(LinkerContext context, BaseArtifactType sourceArtifact,
+	        Collection<BaseArtifactType> derivedArtifacts) {
+	    super.link(context, sourceArtifact, derivedArtifacts);
+	    for (BaseArtifactType derivedArtifact : derivedArtifacts) {
+	        linker.link(context, derivedArtifact);
+        }
 	}
 
 }

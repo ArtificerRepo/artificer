@@ -54,6 +54,7 @@ public class JCRAuditConstants {
     public static final String AUDIT_BUNDLE_ONTOLOGY_DELETED = "audit:ontology-deleted";
     public static final String AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE1 = "audit:artifact-added-1";
     public static final String AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE2 = "audit:artifact-added-2";
+    public static final String AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE3 = "audit:artifact-added-3";
     public static final String AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE1 = "audit:derived-artifacts-added-1";
     public static final String AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE2 = "audit:derived-artifacts-added-2";
     public static final String AUDIT_BUNDLE_ONTOLOGY_ADDED = "audit:ontology-added";

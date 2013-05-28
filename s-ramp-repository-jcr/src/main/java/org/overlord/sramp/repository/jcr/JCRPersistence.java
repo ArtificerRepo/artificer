@@ -24,10 +24,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -53,6 +51,7 @@ import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.SrampServerException;
 import org.overlord.sramp.common.derived.ArtifactDeriver;
 import org.overlord.sramp.common.derived.ArtifactDeriverFactory;
+import org.overlord.sramp.common.derived.LinkerContext;
 import org.overlord.sramp.common.ontology.InvalidClassifiedByException;
 import org.overlord.sramp.common.ontology.OntologyAlreadyExistsException;
 import org.overlord.sramp.common.ontology.OntologyNotFoundException;
@@ -166,10 +165,10 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             // create additional artifacts).  So when we're done, we need to save any potential
 			// changes to the original artifact as well as persist any derived artifacts.  Only
 			// do this for document style artifacts.
+            Collection<BaseArtifactType> derivedArtifacts = null;
 			if (isDocumentArtifact) {
                 InputStream cis = null;
                 File tempFile = null;
-                Collection<BaseArtifactType> derivedArtifacts = null;
                 try {
                     Node artifactContentNode = artifactNode.getNode("jcr:content");
                     tempFile = saveToTempFile(artifactContentNode);
@@ -184,18 +183,32 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
     			if (derivedArtifacts != null) {
     				persistDerivedArtifacts(session, artifactNode, derivedArtifacts);
     			}
+
+                // Update the JCR node again, this time with any properties/relationships added to the meta-data
+                // by the deriver
+                visitor = new ArtifactToJCRNodeVisitor(artifactType, artifactNode,
+                        new JCRReferenceFactoryImpl(session), this);
+                ArtifactVisitorHelper.visitArtifact(visitor, metaData);
+                if (visitor.hasError())
+                    throw visitor.getError();
+
+                // JCR persist point - phase 2 of artifact create
+                session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE2);
+                session.save();
+
+                // Now execute the derived artifact linker phase, creating relationships between the various
+                // artifacts derived above.
+                if (derivedArtifacts != null && !derivedArtifacts.isEmpty()) {
+                    LinkerContext context = new JCRLinkerContext(session);
+                    DerivedArtifactsFactory.newInstance().linkArtifacts(context, metaData, derivedArtifacts);
+                    persistDerivedArtifactsRelationships(session, artifactNode, derivedArtifacts);
+                }
+
+                // JCR persist point - phase 3 of artifact create (only for document style artifacts
+                // with derived content)
+                session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE3);
+                session.save();
 			}
-
-            // Update the JCR node again, this time with any properties/relationships added to the meta-data
-			// by the deriver
-            visitor = new ArtifactToJCRNodeVisitor(artifactType, artifactNode,
-                    new JCRReferenceFactoryImpl(session), this);
-            ArtifactVisitorHelper.visitArtifact(visitor, metaData);
-            if (visitor.hasError())
-                throw visitor.getError();
-
-            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE2);
-            session.save();
 
 			// If debug is enabled, print the artifact graph
 			if (log.isDebugEnabled()) {
@@ -216,7 +229,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 		}
 	}
 
-	/**
+    /**
 	 * @see org.overlord.sramp.repository.DerivedArtifacts#deriveArtifacts(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.io.InputStream)
 	 */
 	@Override
@@ -233,6 +246,21 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	}
 
 	/**
+	 * @see org.overlord.sramp.repository.DerivedArtifacts#linkArtifacts(org.overlord.sramp.common.derived.LinkerContext, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.util.Collection)
+	 */
+	@Override
+	public void linkArtifacts(LinkerContext context, BaseArtifactType sourceArtifact,
+	        Collection<BaseArtifactType> derivedArtifacts) throws SrampException {
+        try {
+            ArtifactDeriver deriver = ArtifactDeriverFactory.createArtifactDeriver(ArtifactType.valueOf(sourceArtifact));
+            deriver.link(context, sourceArtifact, derivedArtifacts);
+            log.debug("Successfully linked {} artifacts from {}.", derivedArtifacts.size(), sourceArtifact.getUuid());
+        } catch (Exception e) {
+            throw new SrampServerException(e);
+        }
+	}
+
+	/**
 	 * Persist any derived artifacts to JCR.
 	 * @param session
 	 * @param sourceArtifactNode
@@ -243,8 +271,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			throws SrampException {
 		try {
 			// Persist each of the derived nodes
-			JCRReferenceFactoryImpl referenceFactory = new JCRReferenceFactoryImpl(session);
-			Map<BaseArtifactType, ArtifactToJCRNodeVisitor> deferredVisitors = new HashMap<BaseArtifactType, ArtifactToJCRNodeVisitor>(derivedArtifacts.size());
 			for (BaseArtifactType derivedArtifact : derivedArtifacts) {
 				if (derivedArtifact.getUuid() == null) {
 					throw new SrampServerException("Missing UUID for derived artifact: " + derivedArtifact.getName());
@@ -272,11 +298,13 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	            // It's definitely derived.
 	            derivedArtifactNode.setProperty("sramp:derived", true);
 
-				// Create the visitor that will be used later, once all the JCR nodes have
-				// been created (to ensure that references can be resolved during the visit).
+				// Create the visitor that will be used to write the artifact information to the JCR node
                 ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(derivedArtifactType,
-                        derivedArtifactNode, referenceFactory, this);
-				deferredVisitors.put(derivedArtifact, visitor);
+                        derivedArtifactNode, null, this);
+                visitor.setProcessRelationships(false);
+                ArtifactVisitorHelper.visitArtifact(visitor, derivedArtifact);
+                if (visitor.hasError())
+                    throw visitor.getError();
 
 				log.debug("Successfully saved derived artifact {} to node={}", derivedArtifact.getName(), derivedArtifact.getUuid());
 			}
@@ -286,28 +314,55 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE1);
 			session.save();
 
-			// Now run the Artifact->JCR Node visitor for each JCR node we created.  This will
-			// cause the rest of the meta-data to be populated on the JCR node, including
-			// properties and relationships (for example).  This is deferred so that references
-			// created during processing of Relationships can be successful.
-			for (Map.Entry<BaseArtifactType, ArtifactToJCRNodeVisitor> entry : deferredVisitors.entrySet()) {
-			    BaseArtifactType derivedArtifact = entry.getKey();
-				ArtifactToJCRNodeVisitor visitor = entry.getValue();
-				ArtifactVisitorHelper.visitArtifact(visitor, derivedArtifact);
-				if (visitor.hasError())
-					throw visitor.getError();
-			}
-
 			log.debug("Successfully saved {} artifacts.", derivedArtifacts.size());
-
-            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE2);
-			session.save();
 		} catch (SrampException e) {
 			throw e;
 		} catch (Throwable t) {
 			throw new SrampServerException(t);
 		}
 	}
+
+    /**
+     * Perists the derived artifacts again due to
+     * @param session
+     * @param artifactNode
+     * @param derivedArtifacts
+     */
+    private void persistDerivedArtifactsRelationships(Session session, Node sourceArtifactNode,
+            Collection<BaseArtifactType> derivedArtifacts) throws SrampException {
+        try {
+            // Persist each of the derived nodes
+            JCRReferenceFactoryImpl referenceFactory = new JCRReferenceFactoryImpl(session);
+            for (BaseArtifactType derivedArtifact : derivedArtifacts) {
+                ArtifactType derivedArtifactType = ArtifactType.valueOf(derivedArtifact);
+                if (derivedArtifactType.isExtendedType()) {
+                    derivedArtifactType.setExtendedDerivedType(true);
+                }
+                Node derivedArtifactNode = sourceArtifactNode.getNode(derivedArtifact.getUuid());
+
+                // Create the visitor that will be used to write the artifact information to the JCR node
+                ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(derivedArtifactType,
+                        derivedArtifactNode, referenceFactory, this);
+                visitor.setProcessRelationships(true);
+                ArtifactVisitorHelper.visitArtifact(visitor, derivedArtifact);
+                if (visitor.hasError())
+                    throw visitor.getError();
+
+                log.debug("Successfully saved derived artifact {}'s relationships.", derivedArtifact.getName());
+            }
+
+            // Perist phase 2 (the relationships)
+            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE2);
+            session.save();
+
+            log.debug("Successfully saved {} artifacts (phase 2).", derivedArtifacts.size());
+        } catch (SrampException e) {
+            throw e;
+        } catch (Throwable t) {
+            throw new SrampServerException(t);
+        }
+
+    }
 
 	/**
 	 * @see org.overlord.sramp.common.repository.PersistenceManager#getArtifact(java.lang.String, org.overlord.sramp.common.ArtifactType)

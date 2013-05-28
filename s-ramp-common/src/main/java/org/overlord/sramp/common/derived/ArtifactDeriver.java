@@ -41,4 +41,15 @@ public interface ArtifactDeriver {
 	public Collection<BaseArtifactType> derive(BaseArtifactType artifact, InputStream contentStream)
 			throws IOException;
 
+	/**
+	 * This method represents the "linker" phase of deriving artifact content.  The
+	 * linker phase is responsible for creating any relationships between and among
+	 * the derived artifacts.
+	 *
+	 * @param context
+	 * @param sourceArtifact
+	 * @param derivedArtifacts
+	 */
+	public void link(LinkerContext context, BaseArtifactType sourceArtifact, Collection<BaseArtifactType> derivedArtifacts);
+
 }

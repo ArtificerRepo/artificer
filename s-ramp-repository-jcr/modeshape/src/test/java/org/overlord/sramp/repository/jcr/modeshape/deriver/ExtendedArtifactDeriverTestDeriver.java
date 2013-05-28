@@ -29,6 +29,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.derived.AbstractXmlDeriver;
+import org.overlord.sramp.common.derived.LinkerContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -54,6 +55,16 @@ public class ExtendedArtifactDeriverTestDeriver extends AbstractXmlDeriver {
         } catch (Exception e) {
             throw new IOException(e);
         }
+    }
+
+    /**
+     * @see org.overlord.sramp.common.derived.ArtifactDeriver#link(org.overlord.sramp.common.derived.LinkerContext, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.util.Collection)
+     */
+    @Override
+    public void link(LinkerContext context, BaseArtifactType sourceArtifact,
+            Collection<BaseArtifactType> derivedArtifacts) {
+        // Links are created during derive() - this is OK because this test deriver
+        // doesn't need to look for references outside of itself
     }
 
     /**

@@ -108,6 +108,13 @@ public class ArtifactDeriverFactory {
 		public Collection<BaseArtifactType> derive(BaseArtifactType artifact, InputStream content) {
 			return Collections.EMPTY_SET;
 		}
+		/**
+		 * @see org.overlord.sramp.common.derived.ArtifactDeriver#link(org.overlord.sramp.common.derived.LinkerContext, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.util.Collection)
+		 */
+		@Override
+		public void link(LinkerContext context, BaseArtifactType sourceArtifact,
+		        Collection<BaseArtifactType> derivedArtifacts) {
+		}
 	};
 
 	/**
