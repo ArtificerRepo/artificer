@@ -357,15 +357,12 @@
     <module>s-ramp-atom</module>
     <module>s-ramp-client</module>
     <module>s-ramp-common</module>
-    <module>s-ramp-governance</module>
     <module>s-ramp-repository</module>
     <module>s-ramp-repository-jcr</module>
     <module>s-ramp-repository-jcr/modeshape</module>
     <module>s-ramp-server</module>
     <module>s-ramp-shell</module>
     <module>s-ramp-wagon</module>
-    <module>s-ramp-workflows</module>
-    <module>s-ramp-workitems</module>
     <module>s-ramp-shell-api</module>
   </modules>
 </project>

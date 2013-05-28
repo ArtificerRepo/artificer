@@ -1,4 +1,0 @@
-sramp.repo.url = http//localhost:8080/s-ramp-server
-governance.queries=/s-ramp[@name='photo.jpg']|overlord.demo.ReleaseProcess|DevDeploymentUrl=http://localhost:8080/s-ramp-governance/deploy/copy/dev/${uuid}::DevDeploymentUrlMethod=POST
-governance.targets=dev|/tmp/dev
-governance.targets=stage|/tmp/stage
