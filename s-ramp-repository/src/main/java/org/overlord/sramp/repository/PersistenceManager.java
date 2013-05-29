@@ -16,7 +16,9 @@
 package org.overlord.sramp.repository;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
@@ -27,6 +29,15 @@ import org.overlord.sramp.common.ontology.SrampOntology;
  * Service used to persist artifacts to some (permanent?) storage.
  */
 public interface PersistenceManager {
+
+    /**
+     * Persists a batch of artifacts.  For each item in the batch, either a {@link BaseArtifactType}
+     * or {@link SrampException} is returned in the result list.  Note that any content streams
+     * provided in the list of batch items will be closed.
+     * @param items
+     * @throws SrampException
+     */
+    public List<Object> persistBatch(List<BatchItem> items) throws SrampException;
 
     /**
      * Persists a single artifact.
@@ -132,4 +143,26 @@ public interface PersistenceManager {
      * the s-ramp repository is shut down.
      */
     public void shutdown();
+
+    /**
+     * An item in a batch of items to be processed by persistBatch().
+     */
+    public static class BatchItem {
+        public String batchItemId;
+        public BaseArtifactType baseArtifactType;
+        public InputStream content;
+        public Map<String, Object> attributes = new HashMap<String, Object>();
+
+        /**
+         * Constructor.
+         * @param batchItemId
+         * @param baseArtifactType
+         * @param content
+         */
+        public BatchItem(String batchItemId, BaseArtifactType baseArtifactType, InputStream content) {
+            this.batchItemId = batchItemId;
+            this.baseArtifactType = baseArtifactType;
+            this.content = content;
+        }
+    }
 }

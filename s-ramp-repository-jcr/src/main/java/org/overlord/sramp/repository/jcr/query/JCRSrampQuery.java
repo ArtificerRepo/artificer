@@ -57,6 +57,8 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 		sOrderByMappings.put("name", "sramp:name");
 	}
 
+    private Session session;
+
 	/**
 	 * Constructor.
 	 * @param xpathTemplate
@@ -73,8 +75,15 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 	@Override
 	protected ArtifactSet executeQuery(Query queryModel) throws SrampException {
 		Session session = null;
+        boolean logoutOnClose = true;
 		try {
-			session = JCRRepositoryFactory.getSession();
+		    if (this.session != null) {
+		        session = this.session;
+		        logoutOnClose = false;
+		    } else {
+		        session = JCRRepositoryFactory.getSession();
+                logoutOnClose = true;
+		    }
 			javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
 			String jcrSql2Query = createSql2Query(queryModel);
 			if (log.isDebugEnabled()) {
@@ -92,16 +101,18 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 			log.debug("Successfully executed JCR-SQL2 query: {}", jcrSql2Query);
 			log.debug("Query exectued in {} ms", endTime - startTime);
 
-			return new JCRArtifactSet(session, jcrNodes);
+			return new JCRArtifactSet(session, jcrNodes, logoutOnClose);
 		} catch (SrampException e) {
             // Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
             // responsible for closing the session.
-            JCRRepositoryFactory.logoutQuietly(session);
+		    if (logoutOnClose)
+		        JCRRepositoryFactory.logoutQuietly(session);
 		    throw e;
 		} catch (Throwable t) {
 			// Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
 			// responsible for closing the session.
-			JCRRepositoryFactory.logoutQuietly(session);
+            if (logoutOnClose)
+                JCRRepositoryFactory.logoutQuietly(session);
 			throw new QueryExecutionException(t);
 		}
 	}
@@ -128,5 +139,12 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 		}
 		return sql2Query;
 	}
+
+    /**
+     * @param session the session to set
+     */
+    public void setSession(Session session) {
+        this.session = session;
+    }
 
 }

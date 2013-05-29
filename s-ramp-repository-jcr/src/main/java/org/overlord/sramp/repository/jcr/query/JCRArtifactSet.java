@@ -35,6 +35,7 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 
 	private Session session;
 	private NodeIterator jcrNodes;
+	private boolean logoutOnClose = true;
 
 	/**
 	 * Constructor.
@@ -45,6 +46,17 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 		this.session = session;
 		this.jcrNodes = jcrNodes;
 	}
+
+    /**
+     * Constructor.
+     * @param session
+     * @param jcrNodes
+     * @param logoutOnClose
+     */
+    public JCRArtifactSet(Session session, NodeIterator jcrNodes, boolean logoutOnClose) {
+        this(session, jcrNodes);
+        this.logoutOnClose = logoutOnClose;
+    }
 
 	/**
 	 * @see java.lang.Iterable#iterator()
@@ -67,7 +79,8 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 	 */
 	@Override
 	public void close() {
-		JCRRepositoryFactory.logoutQuietly(this.session);
+	    if (logoutOnClose)
+	        JCRRepositoryFactory.logoutQuietly(this.session);
 	}
 
 	/**

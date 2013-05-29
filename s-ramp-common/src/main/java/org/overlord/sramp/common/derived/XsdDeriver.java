@@ -29,6 +29,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -89,7 +90,11 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 */
 	public void processSchema(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType artifact, Element schema, XPath xpath) throws XPathExpressionException {
-		processElementDeclarations(derivedArtifacts, artifact, schema, xpath);
+        String targetNS = schema.getAttribute("targetNamespace");
+	    if (artifact instanceof XsdDocument)
+	        ((XsdDocument) artifact).setTargetNamespace(targetNS);
+
+        processElementDeclarations(derivedArtifacts, artifact, schema, xpath);
 		processAttributeDeclarations(derivedArtifacts, artifact, schema, xpath);
 		processSimpleTypeDeclarations(derivedArtifacts, artifact, schema, xpath);
 		processComplexTypeDeclarations(derivedArtifacts, artifact, schema, xpath);
@@ -211,6 +216,14 @@ public class XsdDeriver extends AbstractXmlDeriver {
 				derivedArtifacts.add(complexTypeDecl);
 			}
 		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.derived.ArtifactDeriver#link(org.overlord.sramp.common.derived.LinkerContext, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.util.Collection)
+	 */
+	@Override
+	public void link(LinkerContext context, BaseArtifactType sourceArtifact,
+	        Collection<BaseArtifactType> derivedArtifacts) {
 	}
 
 }
