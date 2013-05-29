@@ -18,7 +18,7 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-auth</artifactId>
-      <version>${overlord.commons.auth.version}</version>
+      <version>${overlord-commons.version}</version>
       <scope>provided</scope>
     </dependency>
 
