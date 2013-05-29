@@ -109,7 +109,7 @@ public class BatchResourceTest extends AbstractNoAuditingResourceTest {
 			Assert.assertTrue(artyMap.keySet().contains("<schemas/PO.xsd@package>"));
 			Assert.assertTrue(artyMap.keySet().contains("<schemas/XMLSchema.xsd@package>"));
 
-			// Asertions for artifact 1
+			// Assertions for artifact 1
 			BaseArtifactType arty = artyMap.get("<schemas/PO.xsd@package>");
 			Assert.assertNotNull(arty);
 			Assert.assertEquals("PO.xsd", arty.getName());
@@ -212,7 +212,7 @@ public class BatchResourceTest extends AbstractNoAuditingResourceTest {
 			Assert.assertTrue(respMap.keySet().contains("<wsdl/sample.wsdl@package>"));
 			Assert.assertTrue(respMap.keySet().contains("<core/PO.xml@package>"));
 
-			// Asertions for artifact 1 (PO.xsd)
+			// Assertions for artifact 1 (PO.xsd)
 			HttpResponseBean httpResp = respMap.get("<schemas/PO.xsd@package>");
 			Assert.assertEquals(201, httpResp.getCode());
 			Assert.assertEquals("Created", httpResp.getStatus());
@@ -224,20 +224,20 @@ public class BatchResourceTest extends AbstractNoAuditingResourceTest {
             Assert.assertTrue(size >= 2376L);
 			xsdUuid = artifact.getUuid();
 
-			// Asertions for artifact 2 (sample.wsdl)
+			// Assertions for artifact 2 (sample.wsdl)
 			httpResp = respMap.get("<wsdl/sample.wsdl@package>");
-			Assert.assertEquals(201, httpResp.getCode());
-			Assert.assertEquals("Created", httpResp.getStatus());
+			Assert.assertEquals(200, httpResp.getCode());
+			Assert.assertEquals("OK", httpResp.getStatus());
 			entry = (Entry) httpResp.getBody();
 			artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
 			Assert.assertEquals("sample.wsdl", artifact.getName());
 			Assert.assertEquals("2.0", artifact.getVersion());
 			wsdlUuid = artifact.getUuid();
 
-			// Asertions for artifact 3 (PO.xml)
+			// Assertions for artifact 3 (PO.xml)
 			httpResp = respMap.get("<core/PO.xml@package>");
-			Assert.assertEquals(201, httpResp.getCode());
-			Assert.assertEquals("Created", httpResp.getStatus());
+			Assert.assertEquals(200, httpResp.getCode());
+			Assert.assertEquals("OK", httpResp.getStatus());
 			entry = (Entry) httpResp.getBody();
 			artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
 			Assert.assertEquals("PO.xml", artifact.getName());
@@ -284,17 +284,17 @@ public class BatchResourceTest extends AbstractNoAuditingResourceTest {
 
 		Assert.assertEquals(3, artyMap.size());
 
-		// Asertions for artifact 1 (PO.xsd)
+		// Assertions for artifact 1 (PO.xsd)
 		BaseArtifactType artifact = artyMap.get(xsdUuid);
 		Assert.assertEquals("PO.xsd", artifact.getName());
 		Assert.assertNull(artifact.getVersion());
 
-		// Asertions for artifact 2 (sample.wsdl)
+		// Assertions for artifact 2 (sample.wsdl)
 		artifact = artyMap.get(wsdlUuid);
 		Assert.assertEquals("sample.wsdl", artifact.getName());
 		Assert.assertEquals("2.0", artifact.getVersion());
 
-		// Asertions for artifact 3 (PO.xml)
+		// Assertions for artifact 3 (PO.xml)
 		artifact = artyMap.get(xmlUuid);
 		Assert.assertEquals("PO.xml", artifact.getName());
 		Assert.assertEquals("3.0", artifact.getVersion());

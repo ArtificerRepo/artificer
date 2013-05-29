@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0"
+  targetNamespace="urn:s-ramp:test:jcr-sample-externalrefs:types" xmlns:tns="urn:s-ramp:test:jcr-sample-externalrefs:types"
+  elementFormDefault="qualified">
+
+  <xsd:element name="extInput" type="tns:extInputType" />
+
+  <xsd:complexType name="extInputType">
+    <xsd:sequence>
+      <xsd:element name="child1" type="xsd:string" />
+      <xsd:element name="child2" type="xsd:string" />
+      <xsd:element name="child3" type="xsd:string" />
+    </xsd:sequence>
+    <xsd:attribute name="attribute1" type="xsd:string" />
+    <xsd:attribute name="attribute2" type="xsd:string" />
+  </xsd:complexType>
+
+  <xsd:complexType name="extOutputType">
+    <xsd:sequence>
+      <xsd:element name="child1" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Stock Keeping Unit, a code for identifying products -->
+  <xsd:simpleType name="extSimpleType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\d{3}-[A-Z]{2}" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>

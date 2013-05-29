@@ -35,57 +35,60 @@ public class MimeTypes {
 
 	private static final org.apache.tika.Tika tika = new Tika();
 
+	/**
+	 * Gets the content type from the given file.
+	 * @param file
+	 */
 	public static String getContentType(File file) {
-                BufferedInputStream is = null;
-                try {
-                        is = new BufferedInputStream(new FileInputStream(file));
-                        return getContentType(file.getName(), is);
-                } catch (IOException e) {
-                        return null;
-                } finally {
-                        IOUtils.closeQuietly(is);
-                }
-        }
+	    BufferedInputStream is = null;
+	    try {
+	        is = new BufferedInputStream(new FileInputStream(file));
+	        return getContentType(file.getName(), is);
+	    } catch (IOException e) {
+	        return null;
+	    } finally {
+	        IOUtils.closeQuietly(is);
+	    }
+	}
 
 	/**
 	 * Returns the content-type for the given file/resource/artifact name and/or contents.
-         *
+	 *
 	 * @param name the name of the file/resource/artifact or null if not known.
-         * @param stream the stream containing the data of the file/resource/artifact
-         *               or null if none can be provided. Note that the stream <b>MUST</b> support
-         *               mark ({@link java.io.InputStream#markSupported()}. For example the {@link java.io.BufferedInputStream}
-         *               supports this.
+	 * @param stream the stream containing the data of the file/resource/artifact
+	 *               or null if none can be provided. Note that the stream <b>MUST</b> support
+	 *               mark ({@link java.io.InputStream#markSupported()}. For example the {@link java.io.BufferedInputStream}
+	 *               supports this.
 	 * @return an appropriate content-type
 	 */
-	public static String getContentType(String name, InputStream stream) {
-                try {
-		        return tika.detect(stream, name);
-                } catch (IOException e) {
-                        return null;
-                }
-	}
+    public static String getContentType(String name, InputStream stream) {
+        try {
+            return tika.detect(stream, name);
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
-	/**
-	 * Figures out the mime type of the new artifact given the name of the uploaded file, its content and
-         * the S-RAMP artifact type.  If the artifact type is Document or ExtendedArtifactType
-	 * then the other two pieces of information are used to determine an appropriate mime type, all other artifact
-         * types in S-RAMP are XML (application/xml).
-	 * If no appropriate mime type can be determined for core/Document, then binary is returned.
-         *
-         * @param fileName the slug request header
-         * @param stream the input stream with the file's data. Consult {@link #getContentType(String, java.io.InputStream)}
-         * for restrictions on the stream.
-         * @param artifactType the artifact type (based on the endpoint POSTed to)
-         */
-	public static String determineMimeType(String fileName, InputStream stream,
-            ArtifactType artifactType) {
-		if (artifactType.getArtifactType() == ArtifactTypeEnum.Document || artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedDocument) {
-			String ct = getContentType(fileName, stream);
-			return ct == null ? "application/octet-stream" : ct;
-		} else {
-			// Everything else is an XML file
-			return "application/xml";
-		}
-	}
+    /**
+     * Figures out the mime type of the new artifact given the name of the uploaded file, its content and
+     * the S-RAMP artifact type.  If the artifact type is Document or ExtendedArtifactType
+     * then the other two pieces of information are used to determine an appropriate mime type, all other artifact
+     * types in S-RAMP are XML (application/xml).
+     * If no appropriate mime type can be determined for core/Document, then binary is returned.
+     *
+     * @param fileName the slug request header
+     * @param stream the input stream with the file's data. Consult {@link #getContentType(String, java.io.InputStream)} for restrictions on the stream.
+     * @param artifactType the artifact type (based on the endpoint POSTed to)
+     */
+    public static String determineMimeType(String fileName, InputStream stream, ArtifactType artifactType) {
+        if (artifactType.getArtifactType() == ArtifactTypeEnum.Document
+                || artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedDocument) {
+            String ct = getContentType(fileName, stream);
+            return ct == null ? "application/octet-stream" : ct;
+        } else {
+            // Everything else is an XML file
+            return "application/xml";
+        }
+    }
 
 }

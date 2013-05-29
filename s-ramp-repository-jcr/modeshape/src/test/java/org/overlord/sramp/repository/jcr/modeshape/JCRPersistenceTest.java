@@ -66,7 +66,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
     public void testPersistArtifactPO_XSD() throws Exception {
         String artifactFileName = "PO.xsd";
         InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        Document document = new Document();
+        XsdDocument document = new XsdDocument();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
 
