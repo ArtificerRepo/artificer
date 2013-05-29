@@ -8,9 +8,9 @@
   <relativePath>../pom.xml</relativePath>
  </parent>
 
- <artifactId>s-ramp-as</artifactId>
- <name>S-RAMP AS Install</name>
- <description>Writes out version properties needed for AS install</description>
+ <artifactId>s-ramp-installer</artifactId>
+ <name>S-RAMP AS Installer</name>
+ <description>Scripts to install to an Application Server</description>
 
  <properties>
   <installdir>${project.build.directory}</installdir>
