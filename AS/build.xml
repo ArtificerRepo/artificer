@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Install S-RAMP and S-RAMP-UI" default="install">
+
+  <property file="target/build.properties" />
+  <property name="dist.dir" value="${installdir}/jboss-eap-6.1" />
+   
+  <target name="install">
+    <echo message=" " />
+    <echo message="#############################################" />
+    <echo message="# Running the S-RAMP installer. This will   #" />
+    <echo message="# install S-RAMP into EAP                   #" />
+    <echo message="#############################################" />
+
+    <echo>__________________________________</echo>
+    <echo>Unzipping EAP</echo>
+    <echo>__________________________________ </echo>
+    <unzip src="${eap.zipfile}" 
+           dest="target" overwrite="false" />
+
+    <echo>__________________________________</echo>
+    <echo>Unzipping Overlord Commons Installer</echo>
+    <echo>__________________________________ </echo>
+    <unzip src="${overlord-commons-installer.jar.path}" 
+           dest="target/overlord-commons-installer-${overlord-commons.version}" overwrite="false" />
+    
+    <ant antfile="build.xml" 
+         dir="target/overlord-commons-installer-${overlord-commons.version}"  inheritall="true"
+         target="install-all" />
+
+    <echo>__________________________________</echo>
+    <echo>Installing Modeshape Service</echo>
+    <echo>__________________________________</echo>
+    <unzip src="${modeshape-distribution.zip.path}"  dest="target/modeshape" overwrite="false" />
+    <move file="target/modeshape/modules/org"   todir="${dist.dir}/modules/system/layers/soa" />
+    <move file="target/modeshape/modules/javax" todir="${dist.dir}/modules/system/layers/soa" />
+    <move file="target/modeshape/docs"  todir="${dist.dir}/" />
+
+    
+    <echo>__________________________________</echo>
+    <echo>Configuring Modeshape Service</echo>
+    <echo>__________________________________</echo>
+    <xslt 
+      style="updates/xslt/configureModeshape.xslt"
+      in="${dist.dir}/standalone/configuration/standalone.xml"
+      out="${installdir}/_tmp_standalone-ms.xml" />
+    <copy file="${installdir}/_tmp_standalone-ms.xml" tofile="${dist.dir}/standalone/configuration/standalone.xml" overwrite="true" />
+    <delete file="${installdir}/_tmp_standalone-ms.xml" />
+    <copy file="updates/modeshape-module.xml" tofile="${dist.dir}/modules/org/modeshape/main/module.xml" />
+
+    <!--
+    <echo>__________________________________</echo>
+    <echo>Deploying S-RAMP and S-RAMP UI</echo>
+    <echo>__________________________________</echo>
+    <copy file="${project.build.directory}/s-ramp-server-${s-ramp.version}.war" 
+          tofile="${jboss.as.dist.dir}/standalone/deployments/s-ramp-server.war" overwrite="true" />
+    <copy file="${project.build.directory}/s-ramp-ui-${s-ramp-ui.version}.war" 
+          tofile="${jboss.as.dist.dir}/standalone/deployments/s-ramp-ui.war" overwrite="true" />
+
+    <echo>__________________________________</echo>
+    <echo>Configuring Overlord Apps</echo>
+    <echo>__________________________________</echo>
+    <property name="overlord-apps.dir" value="${jboss.as.dist.dir}/standalone/configuration/overlord-apps" />
+    <mkdir dir="${overlord-apps.dir}" />
+    <copy file="updates/srampui-overlordapp.properties" todir="${jboss.as.dist.dir}/standalone/configuration/" overwrite="true" />
+    <copy file="updates/sramp.properties" todir="${overlord-apps.dir}" overwrite="true" />
+
+-->
+    <echo message=" " />
+    <echo message="########" />
+    <echo message="# DONE #" />
+    <echo message="########" />
+    <echo message=" " />
+  </target>
+
+</project>

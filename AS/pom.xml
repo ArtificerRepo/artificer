@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ <parent>
+  <groupId>org.overlord.sramp</groupId>
+  <artifactId>s-ramp</artifactId>
+  <version>0.2.1-SNAPSHOT</version>
+  <relativePath>../pom.xml</relativePath>
+ </parent>
+
+ <artifactId>s-ramp-as</artifactId>
+ <name>S-RAMP AS Properties</name>
+ <description>Writes out version properties needed for EAP install</description>
+
+ <properties>
+  <eap.zipfile>jboss-eap-6.1.0.zip</eap.zipfile>
+  <installdir>${project.build.directory}</installdir>
+ </properties>
+
+ <build>
+  <plugins>
+   <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>properties-maven-plugin</artifactId>
+    <version>1.0-alpha-2</version>
+    <executions>
+     <execution>
+      <phase>initialize</phase>
+      <goals>
+       <goal>write-project-properties</goal>
+      </goals>
+      <configuration>
+       <outputFile>target/build.properties</outputFile>
+      </configuration>
+     </execution>
+    </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-antrun-plugin</artifactId>
+    <dependencies>
+     <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant-trax</artifactId>
+      <version>1.6.5</version>
+     </dependency>
+    </dependencies>
+    <executions>
+     <execution>
+      <id>test</id>
+      <phase>package</phase>
+      <configuration>
+       <tasks>
+        <property name="overlord-commons-installer.jar.path"
+         value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+         <echo>${overlord-commons-installer.jar.path}</echo>
+        <property name="modeshape-distribution.zip.path"
+         value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-61-dist.zip.path}" />
+         <echo>${modeshape-distribution.zip.path}</echo>
+        <ant antfile="${basedir}/build.xml">
+         <target name="install" />
+        </ant>
+       </tasks>
+      </configuration>
+      <goals>
+       <goal>run</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+  </plugins>
+ </build>
+ <dependencies>
+  <dependency>
+   <groupId>org.overlord</groupId>
+   <artifactId>overlord-commons-installer</artifactId>
+   <version>${overlord-commons.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>org.modeshape</groupId>
+   <artifactId>modeshape-distribution</artifactId>
+   <version>${org.modeshape.version}</version>
+   <type>zip</type>
+   <classifier>jbosseap-61-dist</classifier>
+  </dependency>
+ </dependencies>
+</project>
