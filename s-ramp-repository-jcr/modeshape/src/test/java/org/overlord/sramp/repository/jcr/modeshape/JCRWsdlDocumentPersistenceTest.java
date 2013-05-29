@@ -379,7 +379,7 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
         try {
             document.setArtifactType(type);
             document.setName(artifactFileName);
-            document.setContentEncoding("application/xml");
+            document.setContentType("application/xml");
             // Persist the artifact
             BaseArtifactType artifact = persistenceManager.persistArtifact(document, contentStream);
             Assert.assertNotNull(artifact);

@@ -106,7 +106,8 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @param referenceFactory a resolver to find JCR nodes by UUID
 	 * @param classificationHelper helps resolve, verify, and normalize classifications
 	 */
-	public ArtifactToJCRNodeVisitor(ArtifactType artifactType, Node jcrNode, JCRReferenceFactory referenceFactory, ClassificationHelper classificationHelper) {
+    public ArtifactToJCRNodeVisitor(ArtifactType artifactType, Node jcrNode,
+            JCRReferenceFactory referenceFactory, ClassificationHelper classificationHelper) {
 	    this.artifactType = artifactType;
 		this.jcrNode = jcrNode;
 		this.referenceFactory = referenceFactory;
