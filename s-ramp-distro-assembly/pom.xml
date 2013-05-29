@@ -143,7 +143,7 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>sramp-wiki</artifactId>
-      <version>0.1.1</version>
+      <version>${project.version}</version>
       <type>jdocbook</type>
     </dependency>
   </dependencies>
