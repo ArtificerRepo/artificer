@@ -53,8 +53,7 @@
       out="${installdir}/_tmp_standalone-ms.xml" />
     <copy file="${installdir}/_tmp_standalone-ms.xml" tofile="${dist.dir}/standalone/configuration/standalone.xml" overwrite="true" />
     <delete file="${installdir}/_tmp_standalone-ms.xml" />
-  
-    
+
     <echo>__________________________________</echo>
     <echo>Deploying S-RAMP and S-RAMP UI</echo>
     <echo>__________________________________</echo>
@@ -66,6 +65,7 @@
     <echo>__________________________________</echo>
     <echo>Configuring Overlord Apps</echo>
     <echo>__________________________________</echo>
+
     <property name="overlord-apps.dir" value="${dist.dir}/standalone/configuration/overlord-apps" />
     <mkdir dir="${overlord-apps.dir}" />
     <copy file="updates/srampui-overlordapp.properties" todir="${dist.dir}/standalone/configuration/" overwrite="true" />
