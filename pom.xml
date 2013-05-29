@@ -99,7 +99,7 @@
     <org.jboss.resteasy.version>2.3.5.Final</org.jboss.resteasy.version>
     <org.modeshape.version>3.2.0.Final</org.modeshape.version>
     <infinispan.version>5.1.6.FINAL</infinispan.version>
-    <overlord.commons.auth.version>1.0.6</overlord.commons.auth.version>
+    <overlord-commons.version>1.0.7</overlord-commons.version>
     <commons.io.version>2.4</commons.io.version>
     <commons.lang3.version>3.1</commons.lang3.version>
     <commons.config.version>1.8</commons.config.version>
@@ -353,6 +353,7 @@
 
   <!-- modules in alphabetical order -->
   <modules>
+    <module>AS</module>
     <module>s-ramp-api</module>
     <module>s-ramp-atom</module>
     <module>s-ramp-client</module>
