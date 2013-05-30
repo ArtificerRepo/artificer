@@ -96,12 +96,10 @@ public final class JCRArtifactPersister {
         artifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, artifactType.getArtifactType().getType());
         // Extended
         if (ExtendedArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
-            // read the encoding from the header
             artifactNode.setProperty(JCRConstants.SRAMP_EXTENDED_TYPE, artifactType.getExtendedType());
         }
         // Extended Document
         if (ExtendedDocument.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
-            // read the encoding from the header
             artifactNode.setProperty(JCRConstants.SRAMP_EXTENDED_TYPE, artifactType.getExtendedType());
         }
         // Document
