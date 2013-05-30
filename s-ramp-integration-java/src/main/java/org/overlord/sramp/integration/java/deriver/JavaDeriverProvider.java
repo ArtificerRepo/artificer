@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.integration.switchyard.deriver;
+package org.overlord.sramp.integration.java.deriver;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.overlord.sramp.common.derived.ArtifactDeriver;
 import org.overlord.sramp.common.derived.DeriverProvider;
-import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
+import org.overlord.sramp.integration.java.model.JavaModel;
 
 /**
- * Provides all SwitchYard artifact/content derivers.
+ * Provides all Java artifact/content derivers.
  *
  * @author eric.wittmann@redhat.com
  */
-public class SwitchYardDeriverProvider implements DeriverProvider {
+public class JavaDeriverProvider implements DeriverProvider {
 
     /**
      * Constructor.
      */
-    public SwitchYardDeriverProvider() {
+    public JavaDeriverProvider() {
     }
 
     /**
@@ -41,7 +41,9 @@ public class SwitchYardDeriverProvider implements DeriverProvider {
     @Override
     public Map<String, ArtifactDeriver> createArtifactDerivers() {
         Map<String, ArtifactDeriver> derivers = new HashMap<String, ArtifactDeriver>();
-        derivers.put(SwitchYardModel.SwitchYardXmlDocument, new SwitchYardXmlDeriver());
+        derivers.put(JavaModel.TYPE_JAVA_CLASS, new JavaClassDeriver());
+        derivers.put(JavaModel.TYPE_JAVA_INTERFACE, new JavaClassDeriver());
+        derivers.put(JavaModel.TYPE_JAVA_ENUM, new JavaClassDeriver());
         return derivers;
     }
 

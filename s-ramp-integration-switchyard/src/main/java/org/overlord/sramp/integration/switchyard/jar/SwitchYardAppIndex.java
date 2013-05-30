@@ -84,8 +84,6 @@ public class SwitchYardAppIndex {
      * @throws XPathExpressionException
      */
     private void index(XPath xpath, Element rootElement) throws XPathExpressionException {
-        indexJavaClassesFromAttributes(xpath, rootElement, "//bean:implementation.bean/@class");
-        indexJavaClassesFromAttributes(xpath, rootElement, "//sca:interface.java/@interface");
         AttributeValueParser attrParser = new AttributeValueParser() {
             @Override
             public String parse(String attributeValue) {
@@ -95,11 +93,16 @@ public class SwitchYardAppIndex {
                 return null;
             }
         };
+
+        indexJavaClassesFromAttributes(xpath, rootElement, "//bean:implementation.bean/@class");
+        indexJavaClassesFromAttributes(xpath, rootElement, "//sca:interface.java/@interface");
         indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@from", attrParser);
         indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@to", attrParser);
+        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@class");
         indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@bean");
         indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@from", attrParser);
         indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@to", attrParser);
+        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@class");
         indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@bean");
     }
 

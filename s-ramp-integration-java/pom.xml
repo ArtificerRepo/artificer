@@ -6,9 +6,9 @@
     <artifactId>s-ramp</artifactId>
     <version>0.2.1-SNAPSHOT</version>
   </parent>
-  <artifactId>s-ramp-integration-switchyard</artifactId>
-  <name>S-RAMP Integration: SwitchYard</name>
-  <description>S-RAMP Integration: SwitchYard contains classes used when tightly integrating the S-RAMP repository with SwitchYard.</description>
+  <artifactId>s-ramp-integration-java</artifactId>
+  <name>S-RAMP Integration: Java</name>
+  <description>S-RAMP Integration: Java contains classes used when integrating the S-RAMP repository with Java projects.</description>
 
   <dependencies>
     <!-- Project Dependencies -->
@@ -22,13 +22,13 @@
       <artifactId>s-ramp-atom</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-integration-java</artifactId>
-      <version>${project.version}</version>
-    </dependency>
 
     <!-- Third party libraries -->
+    <dependency>
+      <groupId>org.apache.bcel</groupId>
+      <artifactId>bcel</artifactId>
+      <version>5.2</version>
+    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -55,5 +55,4 @@
       <artifactId>log4j</artifactId>
     </dependency>
   </dependencies>
-
 </project>

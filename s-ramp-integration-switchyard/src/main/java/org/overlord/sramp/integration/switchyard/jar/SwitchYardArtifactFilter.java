@@ -39,6 +39,7 @@ public class SwitchYardArtifactFilter implements ArtifactFilter {
         validExtensions.add("wsdl");
         validExtensions.add("wspolicy");
         validExtensions.add("class");
+        validExtensions.add("xsl");
     }
     private static Set<String> exclusions = new HashSet<String>();
     static {

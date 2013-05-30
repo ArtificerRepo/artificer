@@ -49,6 +49,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.FaultEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
@@ -270,6 +272,34 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 				}
 			}
 		}
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType)
+	 */
+	@Override
+	public void visit(ExtendedArtifactType artifact) {
+	    super.visit(artifact);
+        try {
+            if (artifact.getExtendedType() != null)
+                setProperty(JCRConstants.SRAMP_EXTENDED_TYPE, artifact.getExtendedType());
+        } catch (Exception e) {
+            error = e;
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument)
+	 */
+	@Override
+	public void visit(ExtendedDocument artifact) {
+	    super.visit(artifact);
+        try {
+            if (artifact.getExtendedType() != null)
+                setProperty(JCRConstants.SRAMP_EXTENDED_TYPE, artifact.getExtendedType());
+        } catch (Exception e) {
+            error = e;
+        }
 	}
 
 	/**
