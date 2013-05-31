@@ -37,6 +37,7 @@ import org.overlord.sramp.server.atom.services.BatchResource;
 import org.overlord.sramp.server.atom.services.FeedResource;
 import org.overlord.sramp.server.atom.services.OntologyResource;
 import org.overlord.sramp.server.atom.services.QueryResource;
+import org.overlord.sramp.server.atom.services.ServiceDocumentResource;
 
 /**
  * Base class for client tests.
@@ -60,6 +61,7 @@ public abstract class AbstractClientTest extends BaseResourceTest {
         dispatcher.getRegistry().addPerRequestResource(QueryResource.class);
         dispatcher.getRegistry().addPerRequestResource(OntologyResource.class);
         dispatcher.getRegistry().addPerRequestResource(AuditResource.class);
+        dispatcher.getRegistry().addPerRequestResource(ServiceDocumentResource.class);
 	}
 
     @Before
