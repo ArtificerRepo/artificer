@@ -87,6 +87,7 @@ public class ArtifactType {
 	    extendedArtifactTypes.put("wid",        new ModelMime("TextDocument",    "text/plain"));
 	    extendedArtifactTypes.put("gif",        new ModelMime("ImageDocument",   "application/octet-stream"));
 	    extendedArtifactTypes.put("png",        new ModelMime("ImageDocument",   "application/octet-stream"));
+	    extendedArtifactTypes.put("wsla",       new ModelMime("WslaDocument",    "application/xml"));
 	}
 
 	/**
