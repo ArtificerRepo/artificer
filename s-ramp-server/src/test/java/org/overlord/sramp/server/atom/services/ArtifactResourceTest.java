@@ -346,6 +346,56 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
         Assert.assertNotNull(c);
 //        System.out.println("Content=" + content.getEntity());
     }
+    
+    /**
+     * Tests adding a BPMN Process Definition document.
+     * @throws Exception
+     */
+    @Test
+    public void testWslaExtendedDocumentCreate() throws Exception {
+        // Add the BPMN process to the repository
+        String artifactFileName = "Sample.wsla";
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName);
+        String uuid = null;
+        try {
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/WslaDocument"));
+            request.header("Slug", artifactFileName);
+            request.body("application/xml", contentStream);
+
+            ClientResponse<Entry> response = request.post(Entry.class);
+
+            Entry entry = response.getEntity();
+            Assert.assertEquals(artifactFileName, entry.getTitle());
+            BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+            Assert.assertTrue(arty instanceof ExtendedDocument);
+            ExtendedDocument doc = (ExtendedDocument) arty;
+            Assert.assertEquals(artifactFileName, doc.getName());
+            Assert.assertEquals("WslaDocument", doc.getExtendedType());
+            long size = Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME));
+            Assert.assertTrue(size >= 6556L);
+            Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+            uuid = doc.getUuid();
+        } finally {
+            IOUtils.closeQuietly(contentStream);
+        }
+
+        // Make sure we can query it now
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/WslaDocument/" + uuid));
+        ClientResponse<Entry> response = request.get(Entry.class);
+
+        Entry entry = response.getEntity();
+        BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
+        Assert.assertTrue(arty instanceof ExtendedDocument);
+        ExtendedDocument doc = (ExtendedDocument) arty;
+        Assert.assertEquals(artifactFileName, doc.getName());
+        Assert.assertEquals("Sample.wsla", doc.getName());
+        Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+
+        ClientResponse<String> content = request.get(String.class);
+        String c = content.getEntity();
+        Assert.assertNotNull(c);
+//        System.out.println("Content=" + content.getEntity());
+    }
 
 	/**
 	 * Tests adding a wsdl document.
