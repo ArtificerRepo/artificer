@@ -10,7 +10,7 @@
     <echo message="# Running the S-RAMP installer. This will   #" />
     <echo message="# install S-RAMP into EAP                   #" />
     <echo message="#############################################" />
-
+<!--
     <echo>__________________________________</echo>
     <echo>Unzipping EAP</echo>
     <echo>__________________________________ </echo>
@@ -43,7 +43,7 @@
         <include name="**/META-INF"/>
       </dirset>
     </delete>
-    
+    -->
     <echo>__________________________________</echo>
     <echo>Configuring Modeshape Service</echo>
     <echo>__________________________________</echo>
@@ -53,7 +53,7 @@
       out="${installdir}/_tmp_standalone-ms.xml" />
     <copy file="${installdir}/_tmp_standalone-ms.xml" tofile="${dist.dir}/standalone/configuration/standalone.xml" overwrite="true" />
     <delete file="${installdir}/_tmp_standalone-ms.xml" />
-
+<!--
     <echo>__________________________________</echo>
     <echo>Deploying S-RAMP and S-RAMP UI</echo>
     <echo>__________________________________</echo>
@@ -70,7 +70,7 @@
     <mkdir dir="${overlord-apps.dir}" />
     <copy file="updates/srampui-overlordapp.properties" todir="${dist.dir}/standalone/configuration/" overwrite="true" />
     <copy file="updates/sramp.properties" todir="${overlord-apps.dir}" overwrite="true" />
-
+-->
     <echo message=" " />
     <echo message="########" />
     <echo message="# DONE #" />

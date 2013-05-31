@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<!-- Service Deployment Information for a Condition Evaluation Service Authors: Heiko 
+ Ludwig, hludwig@us.ibm.com Richard P. King, rpk@us.ibm.com Date: December 6, 2001 -->
+<SDIConditionEvaluationService xmlns="http://www.ibm.com/wsla"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ibm.com/wsla WSLASDI.xsd"
+ name="DemoSLA123">
+ <!-- Definition of the Involved Parties, the signatory parties as well as the supporting 
+  ones -->
+ <Party name="ZAuditing" xsi:type="SupportingParty" role=”ConditionEvaluationService”>
+  <Action name="notification" partyName="YMeasurement"
+   xsi:type="wsla:WSDLGetPostActionDescriptionType">
+   <Address>http://localhost:8080/wsla/
+    servlet/Condlet?com.ibm.wsla.cm.WSNotifier
+   </Address>
+  </Action>
+  <Party>
+   <Action name="notification" partyName="ZAuditing" xsi:type="WSDLSOAPActionDescriptionType">
+    <WSDLFile>notification.wsdl</WSDLFile>
+    <SOAPBindingName>soapnotification</SOAPBindingName>
+    <SOAPOperationName>notification</SOAPOperationName>
+   </Action>
+   <Action name="notification" partyName="ZAuditing" xsi:type="WSDLSOAPActionDescriptionType">
+    <WSDLFile>notification.wsdl</WSDLFile>
+    <SOAPBindingName>soapnotification</SOAPBindingName>
+    <SOAPOperationName>notification</SOAPOperationName>
+   </Action>
+   <SLAParameter name="ResponseTimeThroughPutRatio" type="float"
+    unit="milisconds / transactions">
+    <Metric>ResponseTimeThroughPutRatioMetric</Metric>
+   </SLAParameter>
+   <SLAParameter name="TransactionRate" type="float" unit="transactions / hour">
+    <Metric>Transactions</Metric>
+   </SLAParameter>
+   <SLAParameter name="Availability_CurrentDownTime" type="long"
+    unit="minutes">
+    <Metric>CurrentDownTime</Metric>
+    <Communication>
+     <Service>YMeasurement</Service>
+     <Push>ZAuditing</Push>
+    </Communication>
+   </SLAParameter>
+   <SLAParameter name="Availability_UpTimeRatio" type="float" unit="">
+    <Metric>UpTimeRatio</Metric>
+    <Communication>
+     <Service>YMeasurement</Service>
+     <Push>ZAuditing</Push>
+    </Communication>
+   </SLAParameter>
+   <Obligations>
+    <ServiceLevelObjective name="g1">
+     <Obliged>ACMEProvider</Obliged>
+     <Validity>
+      <Start>2001-11-30T14:00:00.000-05:00</Start>
+      <End>2001-12-31T14:00:00.000-05:00</End>
+     </Validity>
+     <Expression>
+      <Or>
+       <Expression>
+        <Predicate xsi:type="Less">
+         <SLAParameter>ResponseTimeThroughPutRatio</SLAParameter>
+         <Value>0.5</Value>
+        </Predicate>
+       </Expression>
+       <Expression>
+        <Predicate xsi:type="Greater">
+         <SLAParameter>TransactionRate</SLAParameter>
+         <Value>10000</Value>
+        </Predicate>
+       </Expression>
+      </Or>
+     </Expression>
+     <EvaluationEvent>NewValue</EvaluationEvent>
+    </ServiceLevelObjective>
+    <ServiceLevelObjective name="ga1">
+     <Obliged>ACMEProvider</Obliged>
+     <Validity>
+      <Start>2001-11-30T14:00:00.000-05:00</Start>
+      <End>2001-12-31T14:00:00.000-05:00</End>
+     </Validity>
+     <Expression>
+      <Predicate xsi:type="Greater">
+       <SLAParameter>Availability_UpTimeRatio</SLAParameter>
+       <Value>0.97</Value>
+      </Predicate>
+     </Expression>
+     <EvaluationEvent>NewValue</EvaluationEvent>
+    </ServiceLevelObjective>
+    <ServiceLevelObjective name="ga2">
+     <Obliged>ACMEProvider</Obliged>
+     <Validity>
+      <Start>2001-11-30T14:00:00.000-05:00</Start>
+      <End>2001-12-31T14:00:00.000-05:00</End>
+     </Validity>
+     <Expression>
+      <Predicate xsi:type="Less">
+       <SLAParameter>Availability_CurrentDownTime</SLAParameter>
+       <Value>10</Value>
+      </Predicate>
+     </Expression>
+     <EvaluationEvent>NewValue</EvaluationEvent>
+    </ServiceLevelObjective>
+    <ActionGuarantee name="ga3">
+     <Obliged>ZAuditing</Obliged>
+     <Expression>
+      <Predicate xsi:type="Violation">
+       <ServiceLevelObjective>ga1</ServiceLevelObjective>
+      </Predicate>
+     </Expression>
+     <EvaluationEvent>NewValue</EvaluationEvent>
+     <QualifiedAction>
+      <Party>XInc</Party>
+      <Action actionName="notification" xsi:type="Notification">
+       <NotificationType>Violation</NotificationType>
+       <CausingGuarantee>ga1</CausingGuarantee>
+       <SLAParameter>Availability_UpTimeRatio</SLAParameter>
+      </Action>
+     </QualifiedAction>
+     <ExecutionModality>Always</ExecutionModality>
+    </ActionGuarantee>
+    <ActionGuarantee name="ga4">
+     <Obliged>ZAuditing</Obliged>
+     <Expression>
+      <Predicate xsi:type="Violation">
+       <ServiceLevelObjective>ga2</ServiceLevelObjective>
+      </Predicate>
+     </Expression>
+     <EvaluationEvent>NewValue</EvaluationEvent>
+     <QualifiedAction>
+      <Party>XInc</Party>
+      <Action actionName="notification" xsi:type="Notification">
+       <NotificationType>Violation</NotificationType>
+       <CausingGuarantee>ga2</CausingGuarantee>
+       <SLAParameter>Availability_CurrentDownTime</SLAParameter>
+      </Action>
+     </QualifiedAction>
+     <ExecutionModality>Always</ExecutionModality>
+    </ActionGuarantee>
+    <ActionGuarantee name="g2">
+     <Obliged>YAuditing</Obliged>
+     <Expression>
+      <Predicate xsi:type="Violation">
+       <ServiceLevelObjective>g1</ServiceLevelObjective>
+      </Predicate>
+     </Expression>
+     <EvaluationEvent>NewValue</EvaluationEvent>
+     <QualifiedAction>
+      <Party>XInc</Party>
+      <Action actionName="notification" xsi:type="Notification">
+       <NotificationType>Violation</NotificationType>
+       <CausingGuarantee>g2</CausingGuarantee>
+       <SLAParameter>ResponseTimeThroughPutRatio
+        TransactionRate
+       </SLAParameter>
+      </Action>
+     </QualifiedAction>
+     <ExecutionModality>Always</ExecutionModality>
+    </ActionGuarantee>
+    <ActionGuarantee name="g3">
+     <Obliged>YAuditing</Obliged>
+     <Expression>
+      <Predicate xsi:type="Greater">
+       <SLAParameter>ResponseTimeThroughPutRatio</SLAParameter>
+       <Value>0.4</Value>
+      </Predicate>
+     </Expression>
+     <EvaluationEvent>NewValue</EvaluationEvent>
+     <QualifiedAction>
+      <Party>XInc</Party>
+      <Action actionName="notification" xsi:type="Notification">
+       <NotificationType>Information</NotificationType>
+       <CausingGuarantee>g3</CausingGuarantee>
+       <SLAParameter>ResponseTimeThroughPutRatio</SLAParameter>
+      </Action>
+     </QualifiedAction>
+     <ExecutionModality>Always</ExecutionModality>
+    </ActionGuarantee>
+   </Obligations>
+</SDIConditionEvaluationService>
