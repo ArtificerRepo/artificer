@@ -7,7 +7,7 @@ directory issue
 mvn clean package -Peap61
 
 This will create a fully configured application server in the target/jbosseap-6.1 directory.
-You can start the server by going into the targat/jbosseap-6.1/bin directory and issuing
+You can start the server by going into the targat/jboss-eap-6.1/bin directory and by issueing
 
 ./standalone.sh
 
