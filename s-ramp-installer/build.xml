@@ -2,15 +2,16 @@
 <project name="Install S-RAMP and S-RAMP-UI" default="install">
 
   <property file="target/build.properties" />
-  <property name="dist.dir" value="${installdir}/jboss-eap-6.1" />
+  <property name="appserver.id" value="jboss-eap-6.1" />
+  <property name="dist.dir" value="${installdir}/${appserver.id}" />
    
   <target name="install">
     <echo message=" " />
     <echo message="#############################################" />
     <echo message="# Running the S-RAMP installer. This will   #" />
-    <echo message="# install S-RAMP into EAP                   #" />
+    <echo message="# install S-RAMP onto ${appserver.id}                   #" />
     <echo message="#############################################" />
-<!--
+
     <echo>__________________________________</echo>
     <echo>Unzipping EAP</echo>
     <echo>__________________________________ </echo>
@@ -30,6 +31,15 @@
     <ant antfile="build.xml" 
          dir="target/overlord-commons-installer-${overlord-commons.version}"  inheritall="true"
          target="install-all" />
+    <echo>__________________________________</echo>
+    <echo>Enable PicketLink Service</echo>
+    <echo>__________________________________</echo>
+    <xslt 
+      style="updates/xslt/enablePicketlink-${appserver.id}.xslt"
+      in="${dist.dir}/standalone/configuration/standalone.xml"
+      out="${installdir}/_tmp_standalone-pl.xml" />
+    <copy file="${installdir}/_tmp_standalone-pl.xml" tofile="${dist.dir}/standalone/configuration/standalone.xml" overwrite="true" />
+    <delete file="${installdir}/_tmp_standalone-pl.xml" />
 
     <echo>__________________________________</echo>
     <echo>Installing Modeshape Service</echo>
@@ -43,7 +53,6 @@
         <include name="**/META-INF"/>
       </dirset>
     </delete>
-    -->
     <echo>__________________________________</echo>
     <echo>Configuring Modeshape Service</echo>
     <echo>__________________________________</echo>

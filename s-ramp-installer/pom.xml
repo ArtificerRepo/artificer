@@ -60,6 +60,7 @@
   <profile>
     <id>eap61</id>
      <properties>
+      <appserver.id>jboss-eap-6.1</appserver.id>
       <eap.zipfile>jboss-eap-6.1.0.zip</eap.zipfile>
      </properties>
       <build>
