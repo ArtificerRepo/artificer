@@ -9,7 +9,7 @@
     <echo message=" " />
     <echo message="#############################################" />
     <echo message="# Running the S-RAMP installer. This will   #" />
-    <echo message="# install S-RAMP onto ${appserver.id}                   #" />
+    <echo message="# install S-RAMP onto ${appserver.id}       #" />
     <echo message="#############################################" />
 
     <echo>__________________________________</echo>
@@ -68,10 +68,8 @@
     <echo>Configuring Overlord Apps</echo>
     <echo>__________________________________</echo>
 
-    <property name="overlord-apps.dir" value="${dist.dir}/standalone/configuration/overlord-apps" />
-    <mkdir dir="${overlord-apps.dir}" />
     <copy file="updates/srampui-overlordapp.properties" todir="${dist.dir}/standalone/configuration/" overwrite="true" />
-    <copy file="updates/sramp.properties" todir="${overlord-apps.dir}" overwrite="true" />
+    <copy file="updates/sramp.properties" todir="${dist.dir}/standalone/configuration/" overwrite="true" />
 
     <echo message=" " />
     <echo message="########" />
