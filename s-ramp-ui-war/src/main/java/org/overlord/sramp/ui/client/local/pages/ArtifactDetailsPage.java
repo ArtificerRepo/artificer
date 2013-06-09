@@ -373,6 +373,11 @@ public class ArtifactDetailsPage extends AbstractPage {
         if (artifact.isTextDocument()) {
             sourceTabAnchor.setVisible(true);
         }
+        if (artifact.isDocument()) {
+            this.downloadContentLink.getElement().removeClassName("hidden");
+        } else {
+            this.downloadContentLink.getElement().addClassName("hidden");
+        }
         artifactLoading.getElement().addClassName("hide");
         pageContent.removeClassName("hide");
     }
