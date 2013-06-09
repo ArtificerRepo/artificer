@@ -186,4 +186,19 @@ public class ArtifactService implements IArtifactService {
         }
     }
 
+    /**
+     * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#delete(org.overlord.sramp.ui.client.shared.beans.ArtifactBean)
+     */
+    @Override
+    public void delete(ArtifactBean bean) throws SrampUiException {
+        try {
+            ArtifactType artifactType = ArtifactType.valueOf(bean.getModel(), bean.getRawType());
+            clientAccessor.getClient().deleteArtifact(bean.getUuid(), artifactType);
+        } catch (SrampClientException e) {
+            throw new SrampUiException(e.getMessage());
+        } catch (SrampAtomException e) {
+            throw new SrampUiException(e.getMessage());
+        }
+    }
+
 }

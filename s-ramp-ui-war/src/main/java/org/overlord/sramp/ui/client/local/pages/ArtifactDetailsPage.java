@@ -41,6 +41,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.details.AddCustomPropertyDialog;
 import org.overlord.sramp.ui.client.local.pages.details.ClassifiersPanel;
 import org.overlord.sramp.ui.client.local.pages.details.CustomPropertiesPanel;
+import org.overlord.sramp.ui.client.local.pages.details.DeleteArtifactDialog;
 import org.overlord.sramp.ui.client.local.pages.details.DescriptionInlineLabel;
 import org.overlord.sramp.ui.client.local.pages.details.ModifyClassifiersDialog;
 import org.overlord.sramp.ui.client.local.pages.details.RelationshipsTable;
@@ -62,8 +63,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -96,18 +97,24 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject @DataField("back-to-artifacts")
     TransitionAnchor<ArtifactsPage> backToArtifacts;
 
+    // Actions
+    @Inject  @DataField("btn-delete")
+    Button deleteButton;
+    @Inject
+    DeleteArtifactDialog deleteDialog;
+
     // Overview tab
     @Inject @DataField("core-property-name") @Bound(property="name")
     EditableInlineLabel name;
     @Inject @DataField("core-property-version") @Bound(property="version")
     InlineLabel version;
-    @Inject @DataField("core-property-type") @Bound(property="type")
+    @Inject @DataField("core-property-type-1") @Bound(property="type")
     InlineLabel htype;
     @Inject @DataField("link-download-content")
     Anchor downloadContentLink;
     @Inject @DataField("link-download-metaData")
     Anchor downloadMetaDataLink;
-    @Inject @DataField("core-property-type") @Bound(property="type")
+    @Inject @DataField("core-property-type-2") @Bound(property="type")
     Label type;
     @Inject @DataField("core-property-uuid") @Bound(property="uuid")
     Label uuidField;
@@ -178,6 +185,12 @@ public class ArtifactDetailsPage extends AbstractPage {
                 pushModelToServer();
             }
         });
+        deleteDialog.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                onDeleteConfirm();
+            }
+        });
     }
 
     /**
@@ -199,7 +212,7 @@ public class ArtifactDetailsPage extends AbstractPage {
             }
             @Override
             public void onError(Throwable error) {
-                Window.alert(error.getMessage());
+                notificationService.sendErrorNotification("Error getting artifact details.", error);
             }
         });
         relationshipsTabAnchor.addClickHandler(new ClickHandler() {
@@ -244,6 +257,39 @@ public class ArtifactDetailsPage extends AbstractPage {
     }
 
     /**
+     * Called when the user clicks the Delete button.
+     * @param event
+     */
+    @EventHandler("btn-delete")
+    protected void onDeleteClick(ClickEvent event) {
+        deleteDialog.setArtifactName(artifact.getModel().getName());
+        deleteDialog.show();
+    }
+
+    /**
+     * Called when the user confirms the artifact deletion.
+     */
+    protected void onDeleteConfirm() {
+        final NotificationBean notificationBean = notificationService.startProgressNotification(
+                "Deleting Artifact", "Deleting artifact '" + artifact.getModel().getName() + "', please wait...");
+        artifactService.delete(artifact.getModel(), new IRpcServiceInvocationHandler<Void>() {
+            @Override
+            public void onReturn(Void data) {
+                notificationService.completeProgressNotification(notificationBean.getUuid(),
+                        "Artifact Deleted",
+                        "You have successfully deleted artifact '" + artifact.getModel().getName() + "'.");
+                backToArtifacts.click();
+            }
+            @Override
+            public void onError(Throwable error) {
+                notificationService.completeProgressNotification(notificationBean.getUuid(),
+                        "Error Deleting Artifact",
+                        error);
+            }
+        });
+    }
+
+    /**
      * Called when the user clicks the Add Property button.
      * @param event
      */
@@ -281,7 +327,7 @@ public class ArtifactDetailsPage extends AbstractPage {
             }
             @Override
             public void onError(Throwable error) {
-                Window.alert(error.getMessage());
+                notificationService.sendErrorNotification("Error getting artifact relationships.", error);
             }
         });
     }
@@ -305,7 +351,7 @@ public class ArtifactDetailsPage extends AbstractPage {
             }
             @Override
             public void onError(Throwable error) {
-                Window.alert(error.getMessage());
+                notificationService.sendErrorNotification("Error getting artifact content.", error);
             }
         });
     }

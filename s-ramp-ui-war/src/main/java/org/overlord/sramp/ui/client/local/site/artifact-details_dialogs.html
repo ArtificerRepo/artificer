@@ -29,6 +29,7 @@
         <button id="btn-add-property" class="btn">Add Property</button>
         <button id="btn-edit-property" class="btn">Edit Property</button>
         <button id="btn-modify-classifiers" class="btn">Modify Classifiers</button>
+        <button class="btn" id="btn-delete-artifact">Delete Artifact</button>
       </div>
       <div></div>
       <p style="padding: 10px;">
@@ -212,7 +213,21 @@
         <a data-field="modify-classifiers-dialog-btn-ok" class="btn btn-focus btn-small">OK</a>
       </div>
     </div>
-    
+
+    <!-- Delete Artifact dialog -->
+    <div class="modal hide" data-field="delete-artifact-dialog" id="delete-artifact-dialog">
+      <div class="modal-header">
+        <button aria-hidden="true" class="close" data-dismiss="modal" type="button">&times;</button>
+        <h4>Delete Artifact</h4>
+      </div>
+      <div class="modal-body">
+        <p> Are you sure you want to delete artifact <span data-field="artifact-name">Artifact Name</span>? </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-focus" data-field="delete-artifact-submit-button">Delete</button>
+      </div> 
+    </div>
 
     <!-- The popup shown over an editable custom property -->
     <div data-field="propval-editor-popover" class="propval-editor-popover hide">
@@ -238,6 +253,9 @@
       $('#btn-modify-classifiers').click(function() {
         $('#modify-classifiers-dialog').modal({keyboard:false,backdrop:'static'});
       });
+      $('#btn-delete-artifact').click(function() {
+          $('#delete-artifact-dialog').modal({keyboard:false,backdrop:'static'});
+        });
       
       $('#span-property-value').mouseenter(function() {
           $('.propval-editor-popover').removeClass('hide');

@@ -46,8 +46,9 @@
             <span class="sramp-sp4n-label">
               <span class="sramp-artifact-details-title" data-field="core-property-name">Artifact 1</span>
               <span class="sramp-artifact-details-version" data-field="core-property-version">v1.1.2</span>
-              <span class="sramp-artifact-details-type">[<span data-field="core-property-type">XmlDocument</span>]</span>
+              <span class="sramp-artifact-details-type">[<span data-field="core-property-type-1">XmlDocument</span>]</span>
             </span>
+            <!-- 
             <div class="btn-group" style="margin-left: 20px; visibility: hidden">
               <button class="btn">Actions</button>
               <button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -60,7 +61,9 @@
                 <li><a>Delete (Referenced)</a></li>
               </ul>
             </div>
-            <div data-field="derived-from" class="sramp-sp4n-label sramp-artifact-details-derivedFrom pull-right desktop-only">
+             -->
+            <button data-field="btn-delete" class="btn" name="Delete">Delete</button>
+            <div data-field="derived-from" class="sramp-sp4n-label sramp-artifact-details-derivedFrom pull-right desktop-only hidden">
               <span>Derived from: </span>
               <a href="artifact-details.html">Master Artifact 0</a>
             </div>
@@ -74,7 +77,7 @@
               <li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
               <li class=""><a href="#relationships" data-field="sramp-artifact-tabs-relationships" data-toggle="tab">Relationships</a></li>
               <li class=""><a href="#source" data-field="sramp-artifact-tabs-source" data-toggle="tab">Source</a></li>
-              <li class=""><a href="#history" data-toggle="tab">History</a></li>
+<!--               <li class=""><a href="#history" data-toggle="tab">History</a></li> -->
             </ul>
             <div id="tabContent" class="tab-content sramp-tab-content">
               <!-- Overview Tab -->
@@ -94,7 +97,7 @@
                     <div class="sramp-meta-data-section-header">Core Properties</div>
                     <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">Type:</div>
-                    <div data-field="core-property-type" class="sramp-meta-data-section-value">XmlDocument</div>
+                    <div data-field="core-property-type-2" class="sramp-meta-data-section-value">XmlDocument</div>
                     <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-label">UUID:</div>
                     <div data-field="core-property-uuid" class="sramp-meta-data-section-value">283783-2348982-1243983-23234</div>
@@ -216,6 +219,7 @@
                 <div data-field="source-tab-progress" class="spinner sramp-details-tab-spinner pull-left" style="display:none">Loading artifact source, please wait...</div>
               </div>
               <!-- History Tab -->
+              <!-- 
               <div class="tab-pane fade container-fluid" id="history">
                 <div class="row-fluid">
                   <div class="span12">
@@ -259,6 +263,7 @@
                   <div data-field="history-tab-progress" class="spinner sramp-details-tab-spinner pull-left" style="display:none">Loading history, please wait...</div>
                 </div>
               </div>
+              -->
             </div>
           </div>
         </div>

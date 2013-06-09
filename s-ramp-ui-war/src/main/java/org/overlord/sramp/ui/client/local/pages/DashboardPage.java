@@ -18,6 +18,7 @@ package org.overlord.sramp.ui.client.local.pages;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.ui.nav.client.local.DefaultPage;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
@@ -30,7 +31,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
  * @author eric.wittmann@redhat.com
  */
 @Templated("/org/overlord/sramp/ui/client/local/site/dashboard.html#page")
-@Page(path="dashboard", startingPage=true)
+@Page(path="dashboard", role=DefaultPage.class)
 @Dependent
 public class DashboardPage extends AbstractPage {
 
