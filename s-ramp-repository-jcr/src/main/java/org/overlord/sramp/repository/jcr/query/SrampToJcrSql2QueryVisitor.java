@@ -58,7 +58,8 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	private static QName CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAllOf");
 	private static QName EXACTLY_CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAnyOf");
 	private static QName EXACTLY_CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAllOf");
-	private static QName MATCHES = new QName("http://www.w3.org/2005/xpath-functions", "matches");
+    private static QName MATCHES = new QName("http://www.w3.org/2005/xpath-functions", "matches");
+    private static QName NOT = new QName("http://www.w3.org/2005/xpath-functions", "not");
 	private static Map<QName, String> corePropertyMap = new HashMap<QName, String>();
 	static {
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "createdBy"), "jcr:createdBy");
@@ -118,7 +119,20 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	    if (this.error != null) {
 	        throw this.error;
 	    }
-		String query = "SELECT " + selectAlias + ".* FROM " + fromBuilder.toString() + " WHERE " + whereBuilder.toString();
+		String query = "SELECT " + selectAlias + ".* FROM " + fromBuilder.toString();
+		String where = whereBuilder.toString();
+		if (where.length() > 0) {
+		    if (where.startsWith("AND")) {
+		        where = where.substring(4);
+		    } else if (where.startsWith(" AND")) {
+                where = where.substring(5);
+            } else if (where.startsWith("OR")) {
+                where = where.substring(3);
+            } else if (where.startsWith(" OR")) {
+                where = where.substring(4);
+		    }
+		    query = query  + " WHERE " + where;
+		}
 		return query;
 	}
 
@@ -202,9 +216,6 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		} else if (node.getArtifactModel() != null) {
             this.whereBuilder.append(artifactPredicateContext);
 			this.whereBuilder.append(".[sramp:artifactModel] = '" + escapeStringLiteral(node.getArtifactModel()) + "'");
-		} else {
-            this.whereBuilder.append(artifactPredicateContext);
-			this.whereBuilder.append(".[sramp:artifactModel] LIKE '%'");
 		}
 	}
 
@@ -254,7 +265,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			this.whereBuilder.append(" ) ");
 		} else if (node.getOperator() == null) {
 			node.getLeft().accept(this);
-			this.whereBuilder.append(" LIKE '%'");
+			this.whereBuilder.append(" IS NOT NULL");
 		} else {
 			node.getLeft().accept(this);
 			this.whereBuilder.append(" ");
@@ -321,6 +332,10 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 				propertyName = "sramp:classifiedBy";
 				operator = "OR";
 			} else {
+			    if (node.getFunctionName().getLocalPart().equals("matches") || node.getFunctionName().getLocalPart().equals("not")) {
+                    throw new RuntimeException("Incorrect function namespace - try 'xp2:"
+                            + node.getFunctionName().getLocalPart() + "()' instead.");
+			    }
 				throw new RuntimeException("Function not supported: " + node.getFunctionName().toString());
 			}
 
@@ -360,6 +375,18 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			this.whereBuilder.append(" LIKE '");
 			this.whereBuilder.append(escapeStringLiteral(pattern));
 			this.whereBuilder.append("'");
+		} else if (NOT.equals(node.getFunctionName())) {
+		    if (node.getArguments().size() != 1) {
+		        throw new RuntimeException("The xp2:not() function requires exactly one argument, but found " + node.getArguments().size() + ".");
+		    }
+		    this.whereBuilder.append("NOT (");
+		    Argument argument = node.getArguments().get(0);
+		    if (argument.getExpr() != null) {
+		        argument.getExpr().accept(this);
+		    } else {
+		        argument.accept(this);
+		    }
+		    this.whereBuilder.append(")");
 		} else {
 			throw new RuntimeException("Function not supported: " + node.getFunctionName().toString());
 		}
