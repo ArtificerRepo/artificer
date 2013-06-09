@@ -66,6 +66,7 @@ import org.overlord.sramp.client.audit.AuditResultSet;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
 import org.overlord.sramp.client.auth.BasicAuthenticationProvider;
 import org.overlord.sramp.client.ontology.OntologySummary;
+import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
@@ -250,6 +251,18 @@ public class SrampAtomApiClient {
         }
     }
 
+    /**
+     * Convenience method to get the artifact meta-data given an artifact summary (which are typically
+     * returned when performing s-ramp queries).
+     * @param artifact
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public BaseArtifactType getArtifactMetaData(ArtifactSummary artifact) throws SrampClientException,
+            SrampAtomException {
+        return getArtifactMetaData(artifact.getType(), artifact.getUuid());
+    }
+
 	/**
 	 * Gets the full meta-data listing for an Artifact in the S-RAMP repository.
 	 * @param artifactType
@@ -307,6 +320,18 @@ public class SrampAtomApiClient {
 			throw new SrampClientException(e);
 		}
 	}
+
+    /**
+     * Convenience method for getting the artifact content given an artifact summary (which are typically
+     * returned when performing s-ramp queries).
+     * @param artifact
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public InputStream getArtifactContent(ArtifactSummary artifact) throws SrampClientException, SrampAtomException {
+        return getArtifactContent(artifact.getType(), artifact.getUuid());
+    }
+
 
     /**
      * Creates a new artifact in the S-RAMP repository.  Use this method when creating
