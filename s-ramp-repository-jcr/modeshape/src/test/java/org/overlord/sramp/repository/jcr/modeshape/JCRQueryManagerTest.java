@@ -151,6 +151,28 @@ public class JCRQueryManagerTest extends AbstractNoAuditingJCRPersistenceTest {
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(0, artifactSet.size());
+
+        // Negation by property existence
+        query = queryManager.createQuery("/s-ramp/core/Document[xp2:not(@prop1)]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(2, artifactSet.size());
+
+        // Negation by property value
+        query = queryManager.createQuery("/s-ramp/core/Document[xp2:not(@prop1 = ?)]");
+        query.setString("nomatches");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(3, artifactSet.size());
+
+        // AND'd negation by property value
+        query = queryManager.createQuery("/s-ramp/core/Document[xp2:not(@prop1 = ? and @prop2 = ?)]");
+        query.setString(uniquePropVal1);
+        query.setString(uniquePropVal2);
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(2, artifactSet.size());
+
     }
 
 	/**

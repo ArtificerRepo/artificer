@@ -52,8 +52,12 @@ public class SrampToJcrSql2QueryVisitorTest {
         },
 		{
 			"/s-ramp",
-			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactModel] LIKE '%'"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1"
 		},
+        {
+            "/s-ramp[@prop1 = 'value1']",
+            "SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE (artifact1.[sramp-properties:prop1] = 'value1')"
+        },
 		{
 			"/s-ramp/xsd/XsdDocument[@name = 'foo']",
 			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactType] = 'XsdDocument' AND (artifact1.[sramp:name] = 'foo')"
@@ -64,7 +68,7 @@ public class SrampToJcrSql2QueryVisitorTest {
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@prop1]",
-			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactType] = 'XsdDocument' AND (artifact1.[sramp-properties:prop1] LIKE '%')"
+			"SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1 WHERE artifact1.[sramp:artifactType] = 'XsdDocument' AND (artifact1.[sramp-properties:prop1] IS NOT NULL)"
 		},
 		{
 			"/s-ramp/xsd/XsdDocument[@version = '1.0' and @prop1 = 'value1']",
@@ -223,6 +227,33 @@ public class SrampToJcrSql2QueryVisitorTest {
             " AND ((relationship1.[sramp:relationshipType] = 'relatedDocument' AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS artifact2 WHERE artifact2.[sramp:name] = 'OrderServicePT')))" +
             " AND relationship2.[sramp:relationshipType] = 'operation'" +
             " AND (artifact3.[sramp:name] = 'newOrder')"
+        },
+        {
+            "/s-ramp/xsd/XsdDocument[xp2:not(@prop1)]",
+            "SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1" +
+            " WHERE artifact1.[sramp:artifactType] = 'XsdDocument' AND (NOT (artifact1.[sramp-properties:prop1] IS NOT NULL))"
+        },
+        {
+            "/s-ramp/xsd/XsdDocument[xp2:not(@name = 'foo')]",
+            "SELECT artifact1.* FROM [sramp:baseArtifactType] AS artifact1" +
+            " WHERE artifact1.[sramp:artifactType] = 'XsdDocument' AND (NOT (artifact1.[sramp:name] = 'foo'))"
+        },
+        {
+            "/s-ramp/xsd/XsdDocument[xp2:not(relatedDocument)]",
+            "SELECT artifact1.*" +
+            " FROM [sramp:baseArtifactType] AS artifact1" +
+            " JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1) " +
+            "WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+            " AND (NOT (relationship1.[sramp:relationshipType] = 'relatedDocument'))"
+        },
+        {
+            "/s-ramp/xsd/XsdDocument[xp2:not(relatedDocument[@name = 'foo'])]",
+            "SELECT artifact1.*" +
+            " FROM [sramp:baseArtifactType] AS artifact1" +
+            " JOIN [sramp:relationship] AS relationship1 ON ISCHILDNODE(relationship1, artifact1) " +
+            "WHERE artifact1.[sramp:artifactType] = 'XsdDocument'" +
+            " AND (NOT ((relationship1.[sramp:relationshipType] = 'relatedDocument'" +
+            " AND relationship1.[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS artifact2 WHERE artifact2.[sramp:name] = 'foo'))))"
         },
 	};
 
