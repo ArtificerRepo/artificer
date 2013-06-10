@@ -100,4 +100,17 @@ public class ArtifactRpcService {
         }
     }
 
+    /**
+     * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#delete(org.overlord.sramp.ui.client.shared.beans.ArtifactBean)
+     */
+    public void delete(ArtifactBean artifact, final IRpcServiceInvocationHandler<Void> handler) {
+        RemoteCallback<Void> successCallback = new DelegatingRemoteCallback<Void>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteArtifactService.call(successCallback, errorCallback).delete(artifact);
+        } catch (SrampUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
 }

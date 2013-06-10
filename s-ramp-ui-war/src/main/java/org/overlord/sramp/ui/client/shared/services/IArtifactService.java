@@ -58,4 +58,11 @@ public interface IArtifactService {
      */
     public void update(ArtifactBean artifact) throws SrampUiException;
 
+    /**
+     * Called to delete an artifact.
+     * @param artifact
+     * @throws SrampUiException
+     */
+    public void delete(ArtifactBean artifact) throws SrampUiException;
+
 }

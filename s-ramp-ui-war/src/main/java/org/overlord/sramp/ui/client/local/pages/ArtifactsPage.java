@@ -29,18 +29,19 @@ import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ImportArtifactDialog;
 import org.overlord.sramp.ui.client.local.services.ArtifactSearchRpcService;
+import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.Pager;
 import org.overlord.sramp.ui.client.local.widgets.common.HtmlSnippet;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -56,6 +57,8 @@ public class ArtifactsPage extends AbstractPage {
 
     @Inject
     protected ArtifactSearchRpcService searchService;
+    @Inject
+    protected NotificationService notificationService;
 
     // Breadcrumbs
     @Inject @DataField("back-to-dashboard")
@@ -188,7 +191,7 @@ public class ArtifactsPage extends AbstractPage {
             }
             @Override
             public void onError(Throwable error) {
-                Window.alert("Error finding artifacts: " + error.getMessage());
+                notificationService.sendErrorNotification("Error searching for artifacts.", error);
                 noDataMessage.setVisible(true);
                 searchInProgressMessage.setVisible(false);
             }
