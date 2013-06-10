@@ -99,6 +99,15 @@ public class AuditEventBundle extends ArrayList<Event> {
     }
 
     /**
+     * @return true if the set of events represents adding an artifact delete
+     * @throws RepositoryException
+     * @throws ItemNotFoundException
+     */
+    public boolean isArtifactDelete() throws ItemNotFoundException, RepositoryException {
+        return JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_DELETED.equals(this.getEventBundleType());
+    }
+
+    /**
      * @return true if the set of events represents adding deived artifacts
      * @throws ItemNotFoundException
      * @throws RepositoryException
@@ -175,6 +184,24 @@ public class AuditEventBundle extends ArrayList<Event> {
     public Event getArtifactUpdateEvent() throws ItemNotFoundException, RepositoryException {
         for (Event event : this) {
             if (event.getType() == Event.PROPERTY_ADDED || event.getType() == Event.PROPERTY_CHANGED || event.getType() == Event.PROPERTY_REMOVED) {
+                Node node = getNode(event);
+                if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE)) {
+                    return event;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * For Artifact based events, returns the event representing the deleting of the JCR node for the
+     * artifact.  This will only work if isArtifactDelete() returned true.
+     * @throws RepositoryException
+     * @throws ItemNotFoundException
+     */
+    public Event getArtifactDeleteEvent() throws ItemNotFoundException, RepositoryException {
+        for (Event event : this) {
+            if (event.getType() == Event.NODE_MOVED) {
                 Node node = getNode(event);
                 if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE)) {
                     return event;

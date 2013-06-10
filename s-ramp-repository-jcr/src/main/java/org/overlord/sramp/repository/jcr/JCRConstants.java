@@ -48,4 +48,5 @@ public class JCRConstants {
     public static final String SRAMP_ARTIFACT_TYPE       = SRAMP_ + "artifactType";
     public static final String SRAMP_EXTENDED_TYPE       = SRAMP_ + "extendedType";
     public static final String SRAMP_NON_DOCUMENT_TYPE   = SRAMP_ + "nonDocumentArtifactType";
+    public static final String SRAMP_DERIVED_PRIMARY_TYPE     = SRAMP_ + "derivedArtifactPrimaryType";
 }

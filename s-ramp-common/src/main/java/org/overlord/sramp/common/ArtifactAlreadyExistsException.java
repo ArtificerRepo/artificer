@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common.audit;
+package org.overlord.sramp.common;
+
 
 /**
- * Some basic built-in audit entry types.
+ * Exception thrown when the user attempts add a new artifact with a duplicate UUID.
+ *
  * @author eric.wittmann@redhat.com
  */
-public final class AuditEntryTypes {
+public class ArtifactAlreadyExistsException extends SrampUserException {
 
-    public static final String ARTIFACT_ADD = "artifact:add";
-    public static final String ARTIFACT_UPDATE = "artifact:update";
-    public static final String ARTIFACT_DELETE = "artifact:delete";
+    private static final long serialVersionUID = 1131976536249817281L;
+
+    /**
+     * Constructor.
+     */
+    public ArtifactAlreadyExistsException() {
+    }
+
+    /**
+     * Constructor.
+     * @param message
+     */
+    public ArtifactAlreadyExistsException(String uuid) {
+        super("Artifact with UUID " + uuid + " already exists.");
+    }
 
 }

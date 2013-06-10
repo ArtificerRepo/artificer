@@ -15,12 +15,24 @@
  */
 package org.overlord.sramp.repository.jcr;
 
+import javax.jcr.RepositoryException;
+
 import org.overlord.sramp.common.ArtifactType;
 
 public class MapToJCRPath {
 
     private static int folderDepth     = 3;
     private static String PATH         = "/s-ramp/%1$s/%2$s";
+
+    /**
+     * Given an artifact path, return the path to where that artifact would live if it were to
+     * be put in the trash.
+     * @param artifactNode
+     * @throws RepositoryException
+     */
+    public static String getTrashPath(String nodePath) throws RepositoryException {
+        return nodePath.replace("/s-ramp", "/s-ramp-trash");
+    }
 
     /**
      * "/artifact/<model>/<type>"

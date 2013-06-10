@@ -40,7 +40,7 @@ import javax.jcr.version.VersionException;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 
 /**
- * Some common utils for working with JCR. 
+ * Some common utils for working with JCR.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -51,21 +51,22 @@ public class JCRUtils {
      * must be set on the nt:resource node, which is a child of the given artifact node.
      * @param artifactNode
      * @param mimeType
-     * @throws RepositoryException 
-     * @throws ConstraintViolationException 
-     * @throws LockException 
-     * @throws VersionException 
-     * @throws ValueFormatException 
+     * @throws RepositoryException
+     * @throws ConstraintViolationException
+     * @throws LockException
+     * @throws VersionException
+     * @throws ValueFormatException
      */
-    public static void setArtifactContentMimeType(Node artifactNode, String mimeType) throws ValueFormatException,
-    VersionException, LockException, ConstraintViolationException, RepositoryException {
+    public static void setArtifactContentMimeType(Node artifactNode, String mimeType)
+            throws ValueFormatException, VersionException, LockException, ConstraintViolationException,
+            RepositoryException {
         Node resourceNode = artifactNode.getNode(JCRConstants.JCR_CONTENT);
         resourceNode.setProperty(JCRConstants.JCR_MIME_TYPE, mimeType);
     }
 
     /**
      * Get or create a node at the specified path.
-     * 
+     *
      * @param parentNode the parent node. may not be null
      * @param path the path of the desired child node. may not be null
      * @param defaultNodeType the default node type. may be null
@@ -116,7 +117,7 @@ public class JCRUtils {
     }
     /**
      * Get or create a node with the specified node and node type under the specified parent node.
-     * 
+     *
      * @param parent the parent node. may not be null
      * @param name the name of the child node. may not be null
      * @param nodeType the node type. may be null
@@ -130,7 +131,7 @@ public class JCRUtils {
     }
     /**
      * Get or create a node at the specified path and node type.
-     * 
+     *
      * @param session the JCR session. may not be null
      * @param path the path of the desired node to be found or created. may not be null
      * @param nodeType the node type. may be null
@@ -145,7 +146,7 @@ public class JCRUtils {
     }
     /**
      * Get or create a node at the specified path.
-     * 
+     *
      * @param session the JCR session. may not be null
      * @param path the path of the desired node to be found or created. may not be null
      * @param defaultNodeType the default node type. may be null
@@ -170,7 +171,7 @@ public class JCRUtils {
      * <p>
      * This method always closes the supplied stream.
      * </p>
-     * 
+     *
      * @param session the JCR session
      * @param path the path to the file
      * @param stream the stream containing the content to be uploaded
@@ -216,10 +217,10 @@ public class JCRUtils {
             throw new IllegalArgumentException("The argument \"" + name + "\" may not be null");
         }
     }
-    
+
     /**
      * Load the subgraph below this node, and print it to System.out if printing is enabled.
-     * 
+     *
      * @param node the root of the subgraph
      * @throws RepositoryException
      */
@@ -229,7 +230,7 @@ public class JCRUtils {
 
     /**
      * Load the subgraph below this node, and print it to System.out if printing is enabled.
-     * 
+     *
      * @param node the root of the subgraph
      * @param maxDepth the maximum depth of the subgraph that should be printed
      * @throws RepositoryException
@@ -241,7 +242,7 @@ public class JCRUtils {
 
     /**
      * Print this node and its properties to System.out if printing is enabled.
-     * 
+     *
      * @param node the node to be printed
      * @throws RepositoryException
      */
@@ -251,7 +252,7 @@ public class JCRUtils {
 
     /**
      * Load the subgraph below this node, and print it to System.out if printing is enabled.
-     * 
+     *
      * @param node the root of the subgraph
      * @param lead the string that each line should begin with; may be null if there is no such string
      * @param depthOfSubgraph the depth of this subgraph's root node

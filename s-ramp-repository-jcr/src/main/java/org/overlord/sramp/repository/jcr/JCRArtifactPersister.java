@@ -34,6 +34,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.overlord.sramp.common.ArtifactAlreadyExistsException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
@@ -76,6 +77,9 @@ public final class JCRArtifactPersister {
         ArtifactType artifactType = ArtifactType.valueOf(metaData);
         String name = metaData.getName();
         String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
+        if (session.nodeExists(artifactPath)) {
+            throw new ArtifactAlreadyExistsException(uuid);
+        }
         log.debug("Uploading file {} to JCR.",name);
 
         Node artifactNode = null;
@@ -240,16 +244,17 @@ public final class JCRArtifactPersister {
                     throw new SrampServerException("Missing UUID for derived artifact: " + derivedArtifact.getName());
                 }
                 ArtifactType derivedArtifactType = ArtifactType.valueOf(derivedArtifact);
-                String jcrNodeType = derivedArtifactType.getArtifactType().getApiType().value();
+                String jcrMixinName = derivedArtifactType.getArtifactType().getApiType().value();
                 if (derivedArtifactType.isExtendedType()) {
-                    jcrNodeType = "extendedDerivedArtifactType";
+                    jcrMixinName = "extendedDerivedArtifactType";
                     derivedArtifactType.setExtendedDerivedType(true);
                 }
-                jcrNodeType = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrNodeType);
+                jcrMixinName = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrMixinName);
 
                 // Create the JCR node and set some basic properties first.
                 String nodeName = derivedArtifact.getUuid();
-                Node derivedArtifactNode = sourceArtifactNode.addNode(nodeName, jcrNodeType);
+                Node derivedArtifactNode = sourceArtifactNode.addNode(nodeName, JCRConstants.SRAMP_DERIVED_PRIMARY_TYPE);
+                derivedArtifactNode.addMixin(jcrMixinName);
                 derivedArtifactNode.setProperty(JCRConstants.SRAMP_UUID, derivedArtifact.getUuid());
                 derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_MODEL, derivedArtifactType.getArtifactType().getModel());
                 derivedArtifactNode.setProperty(JCRConstants.SRAMP_ARTIFACT_TYPE, derivedArtifactType.getArtifactType().getType());
