@@ -34,6 +34,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.repository.query.ArtifactSet;
+import org.overlord.sramp.repository.query.SrampQuery;
 
 
 /**
@@ -468,6 +470,35 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 		    Assert.assertEquals(ArtifactNotFoundException.class, e.getClass());
 			Assert.assertEquals("No artifact found with UUID: not-a-valid-uuid", e.getMessage());
 		}
+    }
+
+    @Test
+    public void testDeleteArtifact() throws Exception {
+        String artifactFileName = "s-ramp-press-release.pdf";
+        InputStream pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.DOCUMENT);
+
+        // Add an artifact
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, pdf);
+        Assert.assertNotNull(artifact);
+        Assert.assertEquals(Document.class, artifact.getClass());
+        Assert.assertEquals(new Long(18873l), ((DocumentArtifactType) artifact).getContentSize());
+        log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid());
+
+        // Now delete that artifact
+        ArtifactType at = ArtifactType.valueOf(artifact);
+        persistenceManager.deleteArtifact(document.getUuid(), at);
+
+        // Now make sure we can't load it back up
+        BaseArtifactType deleted = persistenceManager.getArtifact(document.getUuid(), at);
+        Assert.assertNull(deleted);
+
+        SrampQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]");
+        query.setString(document.getUuid());
+        ArtifactSet artifactSet = query.executeQuery();
+        Assert.assertEquals(0, artifactSet.size());
     }
 
 

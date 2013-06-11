@@ -39,7 +39,8 @@ public abstract class JCRRepository {
     private static Sramp sramp = new Sramp();
 
     private Session auditingSession;
-    private AuditEventListener auditingEventListener;
+    private AuditEventListener auditingEventListener1;
+    private AuditEventListener auditingEventListener2;
 
     /**
      * Constructor.
@@ -89,17 +90,23 @@ public abstract class JCRRepository {
         try {
             auditingSession = getRepo().login(new SimpleCredentials(sramp.getAuditUser(), sramp.getAuditPassword().toCharArray()));
             ObservationManager observationManager = auditingSession.getWorkspace().getObservationManager();
-            auditingEventListener = new AuditEventListener(sramp, auditingSession);
+            auditingEventListener1 = new AuditEventListener(sramp, auditingSession);
             observationManager.addEventListener(
-                    auditingEventListener,
-                    Event.NODE_ADDED | Event.PROPERTY_ADDED | Event.PROPERTY_CHANGED | Event.PROPERTY_REMOVED,
+                    auditingEventListener1,
+                    Event.NODE_ADDED | Event.PROPERTY_ADDED | Event.PROPERTY_CHANGED | Event.PROPERTY_REMOVED | Event.NODE_MOVED,
                     "/s-ramp/", true, null, null, false);
+            auditingEventListener2 = new AuditEventListener(sramp, auditingSession);
+            observationManager.addEventListener(
+                    auditingEventListener2,
+                    Event.NODE_MOVED,
+                    "/s-ramp-trash/", true, null, null, false);
             log.info("JCR Auditor installed successfully.");
         } catch (LoginException e) {
             log.error(e.getMessage(), e);
             log.warn("\n**********\nFailed to install auditing listener (see error above):  automatic auditing is disabled!!\n**********");
             auditingSession = null;
-            auditingEventListener = null;
+            auditingEventListener1 = null;
+            auditingEventListener2 = null;
         }
     }
 
@@ -108,11 +115,13 @@ public abstract class JCRRepository {
      */
     private void disableAuditing() {
         try {
-            if (auditingSession != null && auditingEventListener != null) {
+            if (auditingSession != null && auditingEventListener1 != null) {
                 // Wait for a bit to let any async audit tasks finish up
                 try { Thread.sleep(2000); } catch (InterruptedException e) { }
-                auditingSession.getWorkspace().getObservationManager().removeEventListener(auditingEventListener);
-                auditingEventListener = null;
+                auditingSession.getWorkspace().getObservationManager().removeEventListener(auditingEventListener1);
+                auditingEventListener1 = null;
+                auditingSession.getWorkspace().getObservationManager().removeEventListener(auditingEventListener2);
+                auditingEventListener2 = null;
             }
         } catch (Exception e) {
             log.error("Error turning off auditing.", e);
