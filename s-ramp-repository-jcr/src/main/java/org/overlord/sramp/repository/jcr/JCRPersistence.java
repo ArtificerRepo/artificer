@@ -181,9 +181,9 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			}
 
 			// If debug is enabled, print the artifact graph
-//			if (log.isDebugEnabled()) {
+			if (log.isDebugEnabled()) {
 				printArtifactGraph(metaData.getUuid(), artifactType);
-//			}
+			}
 
 			// Create the S-RAMP Artifact object from the JCR node
 			return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, artifactType);
