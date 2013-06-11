@@ -48,7 +48,7 @@ import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.PersistenceManager.BatchItem;
-import org.overlord.sramp.server.atom.services.errors.DerivedArtifactAccessException;
+import org.overlord.sramp.repository.errors.DerivedArtifactCreateException;
 import org.overlord.sramp.server.mime.MimeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +112,7 @@ public class BatchResource extends AbstractResource {
                     // Figure out the mime type
                     ArtifactType artifactType = ArtifactType.valueOf(metaData);
                     if (artifactType.isDerived()) {
-                        throw new DerivedArtifactAccessException(artifactType.getArtifactType());
+                        throw new DerivedArtifactCreateException(artifactType.getArtifactType());
                     }
                     String mimeType = MimeTypes.determineMimeType(metaData.getName(), contentStream, artifactType);
                     artifactType.setMimeType(mimeType);

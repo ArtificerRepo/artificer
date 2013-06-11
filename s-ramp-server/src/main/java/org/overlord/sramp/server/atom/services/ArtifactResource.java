@@ -59,7 +59,8 @@ import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
-import org.overlord.sramp.server.atom.services.errors.DerivedArtifactAccessException;
+import org.overlord.sramp.repository.errors.DerivedArtifactCreateException;
+import org.overlord.sramp.repository.errors.DerivedArtifactDeleteException;
 import org.overlord.sramp.server.mime.MimeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +111,7 @@ public class ArtifactResource extends AbstractResource {
             String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
             ArtifactType artifactType = ArtifactType.valueOf(model, type);
             if (artifactType.getArtifactType().isDerived()) {
-                throw new DerivedArtifactAccessException(artifactType.getArtifactType());
+                throw new DerivedArtifactCreateException(artifactType.getArtifactType());
             }
             BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
             if (SrampModelUtils.isDocumentArtifact(artifact)) {
@@ -157,7 +158,7 @@ public class ArtifactResource extends AbstractResource {
 			    artifactType.setExtendedType(type);
 			}
 			if (artifactType.getArtifactType().isDerived()) {
-				throw new DerivedArtifactAccessException(artifactType.getArtifactType());
+				throw new DerivedArtifactCreateException(artifactType.getArtifactType());
 			}
 
 			is = ensureSupportsMark(is);
@@ -219,7 +220,7 @@ public class ArtifactResource extends AbstractResource {
 			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
 			ArtifactType artifactType = ArtifactType.valueOf(model, type);
 			if (artifactType.getArtifactType().isDerived()) {
-				throw new DerivedArtifactAccessException(artifactType.getArtifactType());
+				throw new DerivedArtifactCreateException(artifactType.getArtifactType());
 			}
 
 			List<InputPart> list = input.getParts();
@@ -316,7 +317,7 @@ public class ArtifactResource extends AbstractResource {
 		try {
 	        ArtifactType artifactType = ArtifactType.valueOf(model, type);
 	        if (artifactType.isDerived()) {
-	            throw new DerivedArtifactAccessException(artifactType.getArtifactType());
+	            throw new DerivedArtifactCreateException(artifactType.getArtifactType());
 	        }
 	        if (artifactType.isExtendedType()) {
 	            artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
@@ -433,6 +434,9 @@ public class ArtifactResource extends AbstractResource {
 	        @PathParam("uuid") String uuid) throws SrampAtomException {
 		try {
 			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+            if (artifactType.getArtifactType().isDerived()) {
+                throw new DerivedArtifactDeleteException(artifactType.getArtifactType());
+            }
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
 			// Delete the artifact by UUID

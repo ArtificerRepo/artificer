@@ -32,7 +32,7 @@ public class SrampConstants {
 
 	private static final String SRAMP_CONTENT_SIZE         = "contentSize";
 	private static final String SRAMP_CONTENT_TYPE         = "contentType";
-	private static final String SRAMP_DERIVED              = "derived";
+    private static final String SRAMP_DERIVED              = "derived";
     private static final String SRAMP_EXTENDED_TYPE        = "extendedType";
     private static final String SRAMP_PROVIDER             = "provider";
     private static final String SRAMP_START_INDEX          = "startIndex";

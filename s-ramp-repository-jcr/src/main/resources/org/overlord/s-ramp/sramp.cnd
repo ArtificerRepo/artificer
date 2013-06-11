@@ -71,6 +71,8 @@
 
 [sramp:nonDocumentArtifactType] > nt:hierarchyNode
 
+[sramp:derivedArtifactPrimaryType] > nt:hierarchyNode
+
 [sramp:relationship]
 - sramp:relationshipType (string)
 - sramp:generic (boolean)
@@ -96,6 +98,7 @@
 - sramp:contentType (string)
 - sramp:contentSize (long)
 - sramp:contentHash (string)
++ * (sramp:derivedArtifactPrimaryType)
 
 [sramp:document] > sramp:documentArtifactType mixin
 
@@ -105,7 +108,7 @@
 [sramp:derivedArtifactType] > sramp:baseArtifactType abstract mixin
 
 // Special case of a extended type that is derived.
-[sramp:extendedDerivedArtifactType] > sramp:baseArtifactType
+[sramp:extendedDerivedArtifactType] > sramp:baseArtifactType mixin
 - sramp:extendedType (string)
 
 [sramp:extendedArtifactType] > sramp:baseArtifactType mixin
@@ -122,17 +125,17 @@
 // -------------------------------------------------------
 // S-RAMP XSD Model Artifacts
 // -------------------------------------------------------
-[sramp:xsdDerivedArtifactType] > sramp:derivedArtifactType abstract
+[sramp:xsdDerivedArtifactType] > sramp:derivedArtifactType abstract mixin
 - sramp:ncName (string)
 - sramp:namespace (string)
 
-[sramp:elementDeclaration] > sramp:xsdDerivedArtifactType
+[sramp:elementDeclaration] > sramp:xsdDerivedArtifactType mixin
 
-[sramp:attributeDeclaration] > sramp:xsdDerivedArtifactType
+[sramp:attributeDeclaration] > sramp:xsdDerivedArtifactType mixin
 
-[sramp:simpleTypeDeclaration] > sramp:xsdDerivedArtifactType
+[sramp:simpleTypeDeclaration] > sramp:xsdDerivedArtifactType mixin
 
-[sramp:complexTypeDeclaration] > sramp:xsdDerivedArtifactType
+[sramp:complexTypeDeclaration] > sramp:xsdDerivedArtifactType mixin
 
 [sramp:xsdDocument] > sramp:xmlDocument mixin
 + * (sramp:elementDeclaration)
@@ -144,41 +147,41 @@
 // -------------------------------------------------------
 // S-RAMP WSDL Model Artifacts
 // -------------------------------------------------------
-[sramp:wsdlDerivedArtifactType] > sramp:derivedArtifactType abstract
+[sramp:wsdlDerivedArtifactType] > sramp:derivedArtifactType abstract mixin
 - sramp:namespace (string)
 
-[sramp:namedWsdlDerivedArtifactType] > sramp:wsdlDerivedArtifactType abstract
+[sramp:namedWsdlDerivedArtifactType] > sramp:wsdlDerivedArtifactType abstract mixin
 - sramp:ncName (string)
 
-[sramp:wsdlService] > sramp:namedWsdlDerivedArtifactType
+[sramp:wsdlService] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:port] > sramp:namedWsdlDerivedArtifactType
+[sramp:port] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:part] > sramp:namedWsdlDerivedArtifactType
+[sramp:part] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:message] > sramp:namedWsdlDerivedArtifactType
+[sramp:message] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:fault] > sramp:namedWsdlDerivedArtifactType
+[sramp:fault] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:portType] > sramp:namedWsdlDerivedArtifactType
+[sramp:portType] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:operation] > sramp:namedWsdlDerivedArtifactType
+[sramp:operation] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:operationInput] > sramp:namedWsdlDerivedArtifactType
+[sramp:operationInput] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:operationOutput] > sramp:namedWsdlDerivedArtifactType
+[sramp:operationOutput] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:binding] > sramp:namedWsdlDerivedArtifactType
+[sramp:binding] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:bindingOperation] > sramp:namedWsdlDerivedArtifactType
+[sramp:bindingOperation] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:bindingOperationInput] > sramp:namedWsdlDerivedArtifactType
+[sramp:bindingOperationInput] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:bindingOperationOutput] > sramp:namedWsdlDerivedArtifactType
+[sramp:bindingOperationOutput] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:bindingOperationFault] > sramp:namedWsdlDerivedArtifactType
+[sramp:bindingOperationFault] > sramp:namedWsdlDerivedArtifactType mixin
 
-[sramp:wsdlExtension] > sramp:derivedArtifactType abstract
+[sramp:wsdlExtension] > sramp:derivedArtifactType abstract mixin
 - sramp:namespace (string)
 - sramp:ncName (string)
 
@@ -208,11 +211,11 @@
 // -------------------------------------------------------
 // S-RAMP SOAP WSDL Model Artifacts
 // -------------------------------------------------------
-[sramp:soapBinding] > sramp:wsdlExtension
+[sramp:soapBinding] > sramp:wsdlExtension mixin
 - sramp:style (string)
 - sramp:transport (string)
 
-[sramp:soapAddress] > sramp:wsdlExtension
+[sramp:soapAddress] > sramp:wsdlExtension mixin
 - sramp:soapLocation (string)
 
 // -------------------------------------------------------
@@ -220,3 +223,16 @@
 // -------------------------------------------------------
 [sramp:policyDocument] > sramp:xmlDocument mixin
 
+
+// -------------------------------------------------------
+// Type used for deleted artifacts
+// -------------------------------------------------------
+[sramp:deletedArtifact] > mix:created, mix:lastModified, mix:referenceable, mix:versionable mixin
+- sramp:uuid (string)
+- * (string)
+- * (boolean)
+- * (long)
+- * (string) multiple
++ * (sramp:relationship)
++ * (audit:auditEntry)
++ * (sramp:derivedArtifactPrimaryType)
