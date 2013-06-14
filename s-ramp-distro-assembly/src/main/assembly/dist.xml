@@ -54,59 +54,6 @@
 			<directoryMode>0755</directoryMode>
 			<fileMode>0755</fileMode>
 		</dependencySet>
-        <!-- The s-ramp-workitems JAR -->
-        <dependencySet>
-            <outputDirectory>bin</outputDirectory>
-            <includes>
-                <include>org.overlord.sramp:s-ramp-workitems:jar</include>
-            </includes>
-            <excludes>
-                <exclude>org.overlord.sramp:s-ramp-workitems:jar:sources</exclude>
-            </excludes>
-            <useProjectArtifact>false</useProjectArtifact>
-            <useProjectAttachments>false</useProjectAttachments>
-            <useTransitiveDependencies>false</useTransitiveDependencies>
-            <useTransitiveFiltering>false</useTransitiveFiltering>
-            <directoryMode>0755</directoryMode>
-            <fileMode>0755</fileMode>
-        </dependencySet>
-        <!-- The s-ramp-workflows JAR -->
-        <dependencySet>
-            <outputDirectory>bin</outputDirectory>
-            <includes>
-                <include>org.overlord.sramp:s-ramp-workflows:jar</include>
-            </includes>
-            <excludes>
-                <exclude>org.overlord.sramp:s-ramp-workflows:jar:sources</exclude>
-            </excludes>
-            <useProjectArtifact>false</useProjectArtifact>
-            <useProjectAttachments>false</useProjectAttachments>
-            <useTransitiveDependencies>false</useTransitiveDependencies>
-            <useTransitiveFiltering>false</useTransitiveFiltering>
-            <directoryMode>0755</directoryMode>
-            <fileMode>0755</fileMode>
-        </dependencySet>
-        <!-- The governance BRMS package/installer -->
-        <dependencySet>
-            <outputDirectory></outputDirectory>
-            <includes>
-                <include>org.overlord.sramp:s-ramp-governance:zip:brms</include>
-            </includes>
-            <useProjectArtifact>false</useProjectArtifact>
-            <useProjectAttachments>false</useProjectAttachments>
-            <useTransitiveDependencies>false</useTransitiveDependencies>
-            <useTransitiveFiltering>false</useTransitiveFiltering>
-            <directoryMode>0755</directoryMode>
-            <fileMode>0755</fileMode>
-            <unpack>true</unpack>
-            <unpackOptions>
-                <excludes>
-                    <exclude>build.properties</exclude>
-                    <exclude>build.properties-example</exclude>
-                    <exclude>README.txt</exclude>
-                </excludes>
-            </unpackOptions>
-        </dependencySet>
         <!-- The S-RAMP documentation -->
         <dependencySet>
             <outputDirectory>docs</outputDirectory>
