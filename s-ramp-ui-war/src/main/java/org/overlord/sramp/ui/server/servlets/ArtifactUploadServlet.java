@@ -244,15 +244,15 @@ public class ArtifactUploadServlet extends HttpServlet {
 		try {
 			resourceTempFile = File.createTempFile("s-ramp-ui-upload", ".tmp");
 			oStream = FileUtils.openOutputStream(resourceTempFile);
+            IOUtils.copy(resourceInputStream, oStream);
+            return resourceTempFile;
 		} catch (IOException e) {
 			FileUtils.deleteQuietly(resourceTempFile);
 			throw e;
 		} finally {
-			IOUtils.copy(resourceInputStream, oStream);
 			IOUtils.closeQuietly(resourceInputStream);
 			IOUtils.closeQuietly(oStream);
 		}
-		return resourceTempFile;
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class ArtifactUploadServlet extends HttpServlet {
 	 * Writes the response values back to the http response.  This allows the calling code to
 	 * parse the response values for display to the user.
 	 *
-	 * TODO replace with Jackson!
+	 * TODO replace with Jackson! see DeploymentUploadServlet in dtgovui
 	 *
 	 * @param responseMap the response params to write to the http response
 	 * @param response the http response

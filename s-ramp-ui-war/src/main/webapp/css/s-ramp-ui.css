@@ -157,6 +157,14 @@ button.tree:hover {
 .hero-unit {
   background-color: transparent;
   border-bottom: 1px solid rgb(187, 187, 187);
+  border-radius: 0px;
+  padding-bottom: 20px;
+}
+.hero-unit .link-list {
+  font-size: 16px;
+}
+.hero-unit .link-list li {
+  line-height: 22px;
 }
 
 .breadcrumb {
