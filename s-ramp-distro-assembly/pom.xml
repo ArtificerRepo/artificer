@@ -138,6 +138,7 @@
             </goals>
             <configuration>
               <finalName>s-ramp-${project.version}</finalName>
+              <attach>false</attach>
               <descriptors>
                 <descriptor>src/main/assembly/dist.xml</descriptor>
               </descriptors>
@@ -156,6 +157,7 @@
             </goals>
             <configuration>
               <finalName>s-ramp-cli-${project.version}</finalName>
+              <attach>false</attach>
               <descriptors>
                 <descriptor>src/main/assembly/dist-cli.xml</descriptor>
               </descriptors>
@@ -174,6 +176,7 @@
             </goals>
             <configuration>
               <finalName>s-ramp-demos-${project.version}</finalName>
+              <attach>false</attach>
               <descriptors>
                 <descriptor>src/main/assembly/dist-demos.xml</descriptor>
               </descriptors>
