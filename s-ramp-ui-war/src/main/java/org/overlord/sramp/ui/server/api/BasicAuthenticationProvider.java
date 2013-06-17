@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.ui.server.api;
 
+import org.overlord.sramp.ui.server.SrampUIConfig;
+
 
 /**
  * An authentication provider that uses simple BASIC authentication.

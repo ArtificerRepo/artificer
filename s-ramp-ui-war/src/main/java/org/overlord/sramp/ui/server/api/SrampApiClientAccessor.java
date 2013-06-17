@@ -15,42 +15,32 @@
  */
 package org.overlord.sramp.ui.server.api;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import org.apache.commons.configuration.CompositeConfiguration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.configuration.SystemConfiguration;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
+import org.overlord.sramp.ui.server.SrampUIConfig;
 
 /**
  * The class used whenever an Atom API request for data needs to be made.
  *
  * @author eric.wittmann@redhat.com
  */
-@ApplicationScoped
+@Singleton
 public class SrampApiClientAccessor {
-
-    static {
-        SrampUIConfig.config = new CompositeConfiguration();
-        SrampUIConfig.config.addConfiguration(new SystemConfiguration());
-        try {
-            SrampUIConfig.config.addConfiguration(new PropertiesConfiguration(SrampApiClientAccessor.class.getResource("/META-INF/config/org.overlord.sramp.ui.server.api.properties")));
-        } catch (ConfigurationException e) {}
-        System.out.println("S-RAMP user interface configuration loaded.  S-RAMP Atom API endpoint: " + SrampUIConfig.config.getString("s-ramp-ui.atom-api.endpoint"));
-    }
 
     private transient SrampAtomApiClient client;
 
 	/**
 	 * C'tor.
 	 */
-	public SrampApiClientAccessor() {
-		String endpoint = (String) SrampUIConfig.config.getProperty("s-ramp-ui.atom-api.endpoint");
-        boolean validating = "true".equals(SrampUIConfig.config.getProperty("s-ramp-ui.atom-api.validating"));
+    @Inject
+	public SrampApiClientAccessor(SrampUIConfig config) {
+		String endpoint = (String) config.getConfig().getProperty("s-ramp-ui.atom-api.endpoint");
+        boolean validating = "true".equals(config.getConfig().getProperty("s-ramp-ui.atom-api.validating"));
         AuthenticationProvider authProvider = null;
-        String authProviderClass = (String) SrampUIConfig.config.getProperty("s-ramp-ui.atom-api.authentication.provider");
+        String authProviderClass = (String) config.getConfig().getProperty("s-ramp-ui.atom-api.authentication.provider");
         try {
             if (authProviderClass != null && authProviderClass.trim().length() > 0) {
                 Class<?> c = Class.forName(authProviderClass);
