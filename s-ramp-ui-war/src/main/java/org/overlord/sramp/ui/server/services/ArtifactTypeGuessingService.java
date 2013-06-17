@@ -19,14 +19,14 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Singleton;
 
 /**
  * Service used to guess artifact types from filenames.
  *
  * @author eric.wittmann@redhat.com
  */
-@ApplicationScoped
+@Singleton
 public class ArtifactTypeGuessingService {
 
     private static Map<String, String> nameMap = new HashMap<String, String>();

@@ -20,6 +20,7 @@ import org.overlord.commons.auth.jboss7.SAMLBearerTokenLoginModule;
 import org.overlord.commons.auth.jboss7.SAMLBearerTokenUtil;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
 import org.overlord.sramp.client.auth.BasicAuthenticationProvider;
+import org.overlord.sramp.ui.server.SrampUIConfig;
 
 /**
  * An authentication provider that uses SAML Bearer Tokens.  The S-RAMP
