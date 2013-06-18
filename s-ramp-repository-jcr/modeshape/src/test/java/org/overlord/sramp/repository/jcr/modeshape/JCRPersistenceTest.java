@@ -31,6 +31,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.overlord.sramp.common.ArtifactAlreadyExistsException;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
@@ -62,6 +63,47 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         }
         Assert.assertEquals(Document.class, artifact.getClass());
         Assert.assertEquals(new Long(18873l), ((DocumentArtifactType) artifact).getContentSize());
+    }
+
+    @Test
+    public void testPersistDuplicateArtifact() throws Exception {
+        String artifactFileName = "s-ramp-press-release.pdf";
+        InputStream pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        Document document = new Document();
+        document.setName(artifactFileName);
+        document.setArtifactType(BaseArtifactEnum.DOCUMENT);
+        document.setUuid("12345"); // amazing - that's the same UUID as my luggage!
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, pdf);
+        Assert.assertNotNull(artifact);
+
+        // Now try to persist another artifact of the same type with the same UUID.
+        pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        document = new Document();
+        document.setName(artifactFileName + "-2");
+        document.setArtifactType(BaseArtifactEnum.DOCUMENT);
+        document.setUuid("12345"); // amazing - that's the same UUID as my luggage!
+        try {
+            persistenceManager.persistArtifact(document, pdf);
+            Assert.fail("Expected an ArtifactAlreadyExistsException.");
+        } catch (ArtifactAlreadyExistsException e) {
+            // Expected this!
+            Assert.assertEquals("Artifact with UUID 12345 already exists.", e.getMessage());
+        }
+
+        // Now try to persist another artifact with a *different* type but the same UUID.
+        pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        ExtendedArtifactType extendedArtifact = new ExtendedArtifactType();
+        extendedArtifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
+        extendedArtifact.setExtendedType("FooArtifactType");
+        extendedArtifact.setName("MyExtendedArtifact");
+        extendedArtifact.setUuid("12345");
+        try {
+            persistenceManager.persistArtifact(document, pdf);
+            Assert.fail("Expected an ArtifactAlreadyExistsException.");
+        } catch (ArtifactAlreadyExistsException e) {
+            // Expected this!
+            Assert.assertEquals("Artifact with UUID 12345 already exists.", e.getMessage());
+        }
     }
 
     @Test
