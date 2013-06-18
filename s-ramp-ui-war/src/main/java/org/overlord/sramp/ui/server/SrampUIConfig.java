@@ -40,6 +40,15 @@ public class SrampUIConfig {
     public static final String SRAMP_UI_CONFIG_FILE_NAME     = "sramp-ui.config.file.name";
     public static final String SRAMP_UI_CONFIG_FILE_REFRESH  = "sramp-ui.config.file.refresh";
 
+    public static final String SRAMP_API_ENDPOINT = "s-ramp-ui.atom-api.endpoint";
+    public static final String SRAMP_API_VALIDATING = "s-ramp-ui.atom-api.validating";
+    public static final String SRAMP_API_AUTH_PROVIDER = "s-ramp-ui.atom-api.authentication.provider";
+    public static final String SRAMP_API_BASIC_AUTH_USER = "s-ramp-ui.atom-api.authentication.basic.user";
+    public static final String SRAMP_API_BASIC_AUTH_PASS = "s-ramp-ui.atom-api.authentication.basic.password";
+    public static final String SRAMP_API_SAML_AUTH_ISSUER = "s-ramp-ui.atom-api.authentication.saml.issuer";
+    public static final String SRAMP_API_SAML_AUTH_SERVICE = "s-ramp-ui.atom-api.authentication.saml.service";
+
+
     public static CompositeConfiguration config;
     static {
         SrampUIConfig.config = new CompositeConfiguration();
@@ -59,7 +68,7 @@ public class SrampUIConfig {
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
-        System.out.println("S-RAMP user interface configuration loaded.  S-RAMP Atom API endpoint: " + SrampUIConfig.config.getString("s-ramp-ui.atom-api.endpoint"));
+        System.out.println("S-RAMP user interface configuration loaded.  S-RAMP Atom API endpoint: " + SrampUIConfig.config.getString(SRAMP_API_ENDPOINT));
     }
 
     /**

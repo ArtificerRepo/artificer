@@ -38,12 +38,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
+import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
+import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
+import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.client.jar.DefaultMetaDataFactory;
-import org.overlord.sramp.client.jar.DiscoveredArtifact;
-import org.overlord.sramp.client.jar.JarToSrampArchive;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
 import org.overlord.sramp.ui.server.services.ArtifactTypeGuessingService;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
@@ -194,12 +193,12 @@ public class ArtifactUploadServlet extends HttpServlet {
      */
     private void uploadSingleArtifact(String artifactType, String fileName,
             File tempFile, Map<String, String> responseParams) throws Exception {
+        ArtifactType at = ArtifactType.valueOf(artifactType);
         String uuid = null;
 		// First, upload the artifact, no matter what kind
         InputStream contentStream = null;
 		try {
 			contentStream = FileUtils.openInputStream(tempFile);
-			ArtifactType at = ArtifactType.valueOf(artifactType);
 			BaseArtifactType artifact = clientAccessor.getClient().uploadArtifact(at, contentStream, fileName);
 			responseParams.put("model", at.getArtifactType().getModel());
 			responseParams.put("type", at.getArtifactType().getType());
@@ -210,27 +209,19 @@ public class ArtifactUploadServlet extends HttpServlet {
 		}
 
 		// Check if this is an expandable file type.  If it is, then expand it!
-		if (isExpandable(fileName)) {
-			JarToSrampArchive j2sramp = null;
-			SrampArchive archive = null;
-			try {
-				final String parentUUID = uuid;
-				j2sramp = new JarToSrampArchive(tempFile);
-				j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
-					@Override
-					public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
-						BaseArtifactType metaData = super.createMetaData(artifact);
-						SrampModelUtils.addGenericRelationship(metaData, "expandedFromDocument", parentUUID);
-						return metaData;
-					}
-				});
-				archive = j2sramp.createSrampArchive();
-				clientAccessor.getClient().uploadBatch(archive);
-			} finally {
-				SrampArchive.closeQuietly(archive);
-				JarToSrampArchive.closeQuietly(j2sramp);
-			}
-		}
+        ZipToSrampArchive expander = null;
+        SrampArchive archive = null;
+        try {
+            expander = ZipToSrampArchiveRegistry.createExpander(at, tempFile);
+            if (expander != null) {
+                expander.setContextParam(DefaultMetaDataFactory.PARENT_UUID, uuid);
+                archive = expander.createSrampArchive();
+                clientAccessor.getClient().uploadBatch(archive);
+            }
+        } finally {
+            SrampArchive.closeQuietly(archive);
+            ZipToSrampArchive.closeQuietly(expander);
+        }
     }
 
 	/**
@@ -253,17 +244,6 @@ public class ArtifactUploadServlet extends HttpServlet {
 			IOUtils.closeQuietly(resourceInputStream);
 			IOUtils.closeQuietly(oStream);
 		}
-	}
-
-	/**
-	 * Returns true if the uploaded file should be expanded.  We support expanding JAR, WAR,
-	 * and EAR files.
-	 * @param fileName the name of the uploaded file
-	 * @return true if the file should be expanded
-	 */
-	private boolean isExpandable(String fileName) {
-		String name = fileName.toLowerCase();
-		return name.endsWith(".jar") || name.endsWith(".war") || name.endsWith(".ear");
 	}
 
 	/**
