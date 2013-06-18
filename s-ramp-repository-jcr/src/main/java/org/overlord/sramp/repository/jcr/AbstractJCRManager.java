@@ -47,7 +47,7 @@ public class AbstractJCRManager {
         if (type.getArtifactType().isDerived()) {
             artifactNode = findArtifactNodeByUuid(session, uuid);
         } else {
-            String artifactPath = MapToJCRPath.getArtifactPath(uuid, type);
+            String artifactPath = MapToJCRPath.getArtifactPath(uuid);
             if (session.nodeExists(artifactPath)) {
                 artifactNode = session.getNode(artifactPath);
             } else {
