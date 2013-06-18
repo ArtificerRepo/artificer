@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.atom.archive.jar;
+package org.overlord.sramp.atom.archive.expand;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
@@ -29,7 +29,7 @@ public interface MetaDataFactory {
      * archive creation.
      * @param context
      */
-    public void setContext(JarToSrampArchiveContext context);
+    public void setContext(ZipToSrampArchiveContext context);
 
 	/**
 	 * Creates the meta-data object (S-RAMP specific) for the given artifact that

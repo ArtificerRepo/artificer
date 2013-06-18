@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.integration.switchyard.jar;
+package org.overlord.sramp.integration.switchyard.expand;
 
 import java.io.File;
 import java.util.HashSet;

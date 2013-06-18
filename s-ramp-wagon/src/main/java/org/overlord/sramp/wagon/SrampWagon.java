@@ -21,8 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
@@ -50,9 +48,10 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.archive.SrampArchiveException;
-import org.overlord.sramp.atom.archive.jar.DefaultMetaDataFactory;
-import org.overlord.sramp.atom.archive.jar.DiscoveredArtifact;
-import org.overlord.sramp.atom.archive.jar.JarToSrampArchive;
+import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
+import org.overlord.sramp.atom.archive.expand.MetaDataProvider;
+import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
+import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
@@ -412,8 +411,8 @@ public class SrampWagon extends StreamWagon {
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
 		File tempResourceFile = null;
+        ZipToSrampArchive expander = null;
 		SrampArchive archive = null;
-		JarToSrampArchive j2sramp = null;
 		BaseArtifactType artifactGrouping = null;
 		try {
 			// First, stash the content in a temp file - we may need it multiple times.
@@ -432,7 +431,7 @@ public class SrampWagon extends StreamWagon {
 			if (artifact != null) {
 				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
 				client.updateArtifactContent(artifact, resourceInputStream);
-				if (shouldExpand(gavInfo)) {
+				if (ZipToSrampArchiveRegistry.canExpand(artifactType)) {
 					final String parentUUID = artifact.getUuid();
 					cleanExpandedArtifacts(client, parentUUID);
 				}
@@ -458,30 +457,27 @@ public class SrampWagon extends StreamWagon {
 			}
 
 			// Now also add "expanded" content to the s-ramp repository
-			if (shouldExpand(gavInfo)) {
-				final String parentUUID = artifact.getUuid();
-				j2sramp = new JarToSrampArchive(tempResourceFile);
-				j2sramp.setMetaDataFactory(new DefaultMetaDataFactory() {
-					@Override
-					public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
-						BaseArtifactType metaData = super.createMetaData(artifact);
-						SrampModelUtils.setCustomProperty(metaData, "maven.parent-groupId", gavInfo.getGroupId());
-						SrampModelUtils.setCustomProperty(metaData, "maven.parent-artifactId", gavInfo.getArtifactId());
-						SrampModelUtils.setCustomProperty(metaData, "maven.parent-version", gavInfo.getVersion());
-						SrampModelUtils.setCustomProperty(metaData, "maven.parent-type", gavInfo.getType());
-						SrampModelUtils.addGenericRelationship(metaData, "expandedFromDocument", parentUUID);
-						return metaData;
-					}
-				});
-				archive = j2sramp.createSrampArchive();
-				client.uploadBatch(archive);
-			}
+            expander = ZipToSrampArchiveRegistry.createExpander(artifactType, tempResourceFile);
+            if (expander != null) {
+                expander.setContextParam(DefaultMetaDataFactory.PARENT_UUID, artifact.getUuid());
+                expander.addMetaDataProvider(new MetaDataProvider() {
+                    @Override
+                    public void provideMetaData(BaseArtifactType artifact) {
+                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-groupId", gavInfo.getGroupId());
+                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-artifactId", gavInfo.getArtifactId());
+                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-version", gavInfo.getVersion());
+                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-type", gavInfo.getType());
+                    }
+                });
+                archive = expander.createSrampArchive();
+                client.uploadBatch(archive);
+            }
 		} catch (Throwable t) {
 			throw new TransferFailedException(t.getMessage(), t);
 		} finally {
 			Thread.currentThread().setContextClassLoader(oldCtxCL);
 			SrampArchive.closeQuietly(archive);
-			JarToSrampArchive.closeQuietly(j2sramp);
+            ZipToSrampArchive.closeQuietly(expander);
 			FileUtils.deleteQuietly(tempResourceFile);
 		}
 	}
@@ -536,19 +532,6 @@ public class SrampWagon extends StreamWagon {
 				}
 			}
 		}
-	}
-
-	/**
-	 * @param gavInfo resource GAV information
-	 * @return true if this maven artifact should be expanded in s-ramp (its contents exploded)
-	 */
-	private boolean shouldExpand(MavenGavInfo gavInfo) {
-		// TODO this should be configurable in the pom.xml
-		Set<String> expandedTypes = new HashSet<String>();
-		expandedTypes.add("jar");
-		expandedTypes.add("war");
-		expandedTypes.add("ear");
-		return expandedTypes.contains(gavInfo.getType()) && gavInfo.getClassifier() == null;
 	}
 
 	/**

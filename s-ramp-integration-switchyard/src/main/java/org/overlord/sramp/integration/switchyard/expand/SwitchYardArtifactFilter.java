@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.integration.switchyard.jar;
+package org.overlord.sramp.integration.switchyard.expand;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.overlord.sramp.atom.archive.jar.ArtifactFilter;
-import org.overlord.sramp.atom.archive.jar.CandidateArtifact;
-import org.overlord.sramp.atom.archive.jar.JarToSrampArchiveContext;
+import org.overlord.sramp.atom.archive.expand.ArtifactFilter;
+import org.overlord.sramp.atom.archive.expand.CandidateArtifact;
+import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveContext;
 
 /**
  * The artifact filter used when expanding a SwitchYard application JAR or WAR.  This
@@ -55,10 +55,10 @@ public class SwitchYardArtifactFilter implements ArtifactFilter {
     }
 
     /**
-     * @see org.overlord.sramp.atom.archive.jar.ArtifactFilter#setContext(org.overlord.sramp.atom.archive.jar.JarToSrampArchiveContext)
+     * @see org.overlord.sramp.atom.archive.expand.ArtifactFilter#setContext(org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveContext)
      */
     @Override
-    public void setContext(JarToSrampArchiveContext context) {
+    public void setContext(ZipToSrampArchiveContext context) {
         syIndex = (SwitchYardAppIndex) context.get("switchyard.index");
         if (syIndex == null) {
             File switchyardXmlFile = context.getJarEntry("META-INF/switchyard.xml");
@@ -70,7 +70,7 @@ public class SwitchYardArtifactFilter implements ArtifactFilter {
     }
 
     /**
-     * @see org.overlord.sramp.atom.archive.jar.ArtifactFilter#accepts(org.overlord.sramp.atom.archive.jar.CandidateArtifact)
+     * @see org.overlord.sramp.atom.archive.expand.ArtifactFilter#accepts(org.overlord.sramp.atom.archive.expand.CandidateArtifact)
      */
     @Override
     public boolean accepts(CandidateArtifact artifact) {
