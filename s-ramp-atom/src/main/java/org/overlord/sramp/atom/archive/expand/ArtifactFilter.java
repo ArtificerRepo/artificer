@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.atom.archive.jar;
+package org.overlord.sramp.atom.archive.expand;
 
 /**
- * Interface used by the {@link JarToSrampArchive} class when discovering artifacts in the
+ * Interface used by the {@link ZipToSrampArchive} class when discovering artifacts in the
  * source archive that should be included in the target S-RAMP archive.
  *
  * @author eric.wittmann@redhat.com
@@ -28,7 +28,7 @@ public interface ArtifactFilter {
      * archive creation.
      * @param context
      */
-    public void setContext(JarToSrampArchiveContext context);
+    public void setContext(ZipToSrampArchiveContext context);
 
 	/**
 	 * Called to determine if a given artifact from the source archive should be included

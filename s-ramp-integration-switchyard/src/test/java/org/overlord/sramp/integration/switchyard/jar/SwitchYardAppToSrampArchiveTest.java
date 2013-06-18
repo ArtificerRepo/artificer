@@ -27,7 +27,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.archive.SrampArchiveException;
-import org.overlord.sramp.atom.archive.jar.JarToSrampArchive;
+import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
+import org.overlord.sramp.integration.switchyard.expand.SwitchYardAppToSrampArchive;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
 
 
@@ -49,7 +50,7 @@ public class SwitchYardAppToSrampArchiveTest {
 	    } finally {
 	        IOUtils.closeQuietly(stream);
             SrampArchive.closeQuietly(archive);
-            JarToSrampArchive.closeQuietly(sy2archive);
+            ZipToSrampArchive.closeQuietly(sy2archive);
 	    }
 	}
 

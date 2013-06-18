@@ -92,7 +92,7 @@ public class SrampWagonTest extends BaseResourceTest {
 	public void testWagonPush() throws Exception {
 		SrampWagon wagon = new SrampWagon();
 		setLogger(wagon);
-		Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/").replaceAll("http", "sramp"));
+		Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/?artifactType=JavaArchive").replaceAll("http", "sramp"));
 		wagon.connect(repo);
 		InputStream metaDataStream = null;
 		InputStream artifactStream = null;
@@ -129,7 +129,7 @@ public class SrampWagonTest extends BaseResourceTest {
 		// Now that we've deployed the artifacts, do some queries to make sure we put away
 		// what we intended.
 		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/"));
-		QueryResultSet rset = client.query("/s-ramp/core/Document");
+		QueryResultSet rset = client.query("/s-ramp/ext/JavaArchive");
 		Assert.assertEquals(1, rset.size());
         rset = client.query("/s-ramp/ext/MavenPom");
         Assert.assertEquals(1, rset.size());
