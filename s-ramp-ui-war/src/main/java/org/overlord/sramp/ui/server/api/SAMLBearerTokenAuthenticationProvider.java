@@ -51,8 +51,8 @@ public class SAMLBearerTokenAuthenticationProvider implements AuthenticationProv
      * S-RAMP Atom API.
      */
     private static String createSAMLBearerTokenAssertion() {
-        String issuer = (String) SrampUIConfig.config.getProperty("s-ramp-ui.atom-api.authentication.saml.issuer");
-        String service = (String) SrampUIConfig.config.getProperty("s-ramp-ui.atom-api.authentication.saml.service");
+        String issuer = (String) SrampUIConfig.config.getProperty(SrampUIConfig.SRAMP_API_SAML_AUTH_ISSUER);
+        String service = (String) SrampUIConfig.config.getProperty(SrampUIConfig.SRAMP_API_SAML_AUTH_SERVICE);
         return SAMLBearerTokenUtil.createSAMLAssertion(issuer, service);
     }
 

@@ -37,10 +37,10 @@ public class SrampApiClientAccessor {
 	 */
     @Inject
 	public SrampApiClientAccessor(SrampUIConfig config) {
-		String endpoint = (String) config.getConfig().getProperty("s-ramp-ui.atom-api.endpoint");
-        boolean validating = "true".equals(config.getConfig().getProperty("s-ramp-ui.atom-api.validating"));
+		String endpoint = (String) config.getConfig().getProperty(SrampUIConfig.SRAMP_API_ENDPOINT);
+        boolean validating = "true".equals(config.getConfig().getProperty(SrampUIConfig.SRAMP_API_VALIDATING));
         AuthenticationProvider authProvider = null;
-        String authProviderClass = (String) config.getConfig().getProperty("s-ramp-ui.atom-api.authentication.provider");
+        String authProviderClass = (String) config.getConfig().getProperty(SrampUIConfig.SRAMP_API_AUTH_PROVIDER);
         try {
             if (authProviderClass != null && authProviderClass.trim().length() > 0) {
                 Class<?> c = Class.forName(authProviderClass);

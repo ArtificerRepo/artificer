@@ -21,6 +21,10 @@ import java.util.Map;
 
 import javax.inject.Singleton;
 
+import org.overlord.sramp.common.ArtifactTypeEnum;
+import org.overlord.sramp.integration.java.model.JavaModel;
+import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
+
 /**
  * Service used to guess artifact types from filenames.
  *
@@ -32,17 +36,17 @@ public class ArtifactTypeGuessingService {
     private static Map<String, String> nameMap = new HashMap<String, String>();
     private static Map<String, String> extensionMap = new HashMap<String, String>();
     static {
-        nameMap.put("switchyard.xml", "SwitchYardXmlDocument");
+        nameMap.put("switchyard.xml", SwitchYardModel.SwitchYardXmlDocument);
         nameMap.put("pom.xml", "MavenPom");
-        nameMap.put("beans.xml", "BeanArchiveDescriptor");
-        extensionMap.put("xml", "XmlDocument");
-        extensionMap.put("wsdl", "WsdlDocument");
-        extensionMap.put("xsd", "XsdDocument");
-        extensionMap.put("wspolicy", "PolicyDocument");
+        nameMap.put("beans.xml", JavaModel.TYPE_BEANS_XML);
+        extensionMap.put("xml", ArtifactTypeEnum.XmlDocument.getType());
+        extensionMap.put("wsdl", ArtifactTypeEnum.WsdlDocument.getType());
+        extensionMap.put("xsd", ArtifactTypeEnum.XsdDocument.getType());
+        extensionMap.put("wspolicy", ArtifactTypeEnum.PolicyDocument.getType());
         extensionMap.put("zip", "ZipArchive");
-        extensionMap.put("jar", "JarArchive");
-        extensionMap.put("war", "WarArchive");
-        extensionMap.put("ear", "EarArchive");
+        extensionMap.put("jar", JavaModel.TYPE_ARCHIVE);
+        extensionMap.put("war", JavaModel.TYPE_WEB_APPLICATION);
+        extensionMap.put("ear", JavaModel.TYPE_ENTERPRISE_APPLICATION);
         extensionMap.put("sramp", "SrampArchive");
     }
 
