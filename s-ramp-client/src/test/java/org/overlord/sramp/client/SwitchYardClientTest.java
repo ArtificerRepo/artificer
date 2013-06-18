@@ -23,10 +23,10 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.atom.archive.jar.JarToSrampArchive;
+import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.query.QueryResultSet;
-import org.overlord.sramp.integration.switchyard.jar.SwitchYardAppToSrampArchive;
+import org.overlord.sramp.integration.switchyard.expand.SwitchYardAppToSrampArchive;
 
 /**
  * Unit test for uploading SwitchYard applications.
@@ -49,7 +49,7 @@ public class SwitchYardClientTest extends AbstractNoAuditingClientTest {
 		    client.uploadBatch(archive);
 		} finally {
 			IOUtils.closeQuietly(artifactsIS);
-			JarToSrampArchive.closeQuietly(sy2archive);
+			ZipToSrampArchive.closeQuietly(sy2archive);
 			SrampArchive.closeQuietly(archive);
 		}
 
@@ -65,7 +65,7 @@ public class SwitchYardClientTest extends AbstractNoAuditingClientTest {
             client.uploadBatch(archive);
         } finally {
             IOUtils.closeQuietly(artifactsIS);
-            JarToSrampArchive.closeQuietly(sy2archive);
+            ZipToSrampArchive.closeQuietly(sy2archive);
             SrampArchive.closeQuietly(archive);
         }
 
@@ -81,7 +81,7 @@ public class SwitchYardClientTest extends AbstractNoAuditingClientTest {
             client.uploadBatch(archive);
         } finally {
             IOUtils.closeQuietly(artifactsIS);
-            JarToSrampArchive.closeQuietly(sy2archive);
+            ZipToSrampArchive.closeQuietly(sy2archive);
             SrampArchive.closeQuietly(archive);
         }
 

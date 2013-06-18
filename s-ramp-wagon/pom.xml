@@ -50,6 +50,16 @@
       <artifactId>s-ramp-client</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-integration-java</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-integration-switchyard</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- Third party libraries -->
     <dependency>

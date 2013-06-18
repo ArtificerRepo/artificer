@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.atom.archive.jar;
+package org.overlord.sramp.atom.archive.expand;
 
 import java.util.UUID;
 
@@ -34,6 +34,10 @@ import org.overlord.sramp.common.SrampModelUtils;
  */
 public class DefaultMetaDataFactory implements MetaDataFactory {
 
+    public static final String PARENT_UUID = "parent.uuid";
+
+    private ZipToSrampArchiveContext context;
+
 	/**
 	 * Constructor.
 	 */
@@ -41,11 +45,11 @@ public class DefaultMetaDataFactory implements MetaDataFactory {
 	}
 
 	/**
-	 * @see org.overlord.sramp.atom.archive.jar.MetaDataFactory#setContext(org.overlord.sramp.atom.archive.jar.JarToSrampArchiveContext)
+	 * @see org.overlord.sramp.atom.archive.expand.MetaDataFactory#setContext(org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveContext)
 	 */
 	@Override
-	public void setContext(JarToSrampArchiveContext context) {
-	    // Don't need it.
+	public void setContext(ZipToSrampArchiveContext context) {
+	    this.context = context;
 	}
 
 	/**
@@ -67,6 +71,11 @@ public class DefaultMetaDataFactory implements MetaDataFactory {
         artifact.setUuid(UUID.randomUUID().toString());
 		artifact.setName(discoveredArtifact.getName());
 		SrampModelUtils.setCustomProperty(artifact, "batch.archive-path", discoveredArtifact.getArchivePath());
+		if (this.context != null) {
+    		String parentUUID = (String) this.context.get(PARENT_UUID);
+    		if (parentUUID != null)
+    		    SrampModelUtils.addGenericRelationship(artifact, "expandedFromDocument", parentUUID);
+		}
     }
 
     /**
@@ -79,13 +88,13 @@ public class DefaultMetaDataFactory implements MetaDataFactory {
 		if (archivePath.endsWith(".xml")) {
 			metaData = new XmlDocument();
 			metaData.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
-		} else if (discoveredArtifact.getArchivePath().endsWith(".wsdl")) {
+		} else if (archivePath.endsWith(".wsdl")) {
 			metaData = new WsdlDocument();
 			metaData.setArtifactType(BaseArtifactEnum.WSDL_DOCUMENT);
-		} else if (discoveredArtifact.getArchivePath().endsWith(".xsd")) {
+		} else if (archivePath.endsWith(".xsd")) {
 			metaData = new XsdDocument();
 			metaData.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-		} else if (discoveredArtifact.getArchivePath().endsWith(".wspolicy")) {
+		} else if (archivePath.endsWith(".wspolicy")) {
 			metaData = new XsdDocument();
 			metaData.setArtifactType(BaseArtifactEnum.POLICY_DOCUMENT);
 		} else {

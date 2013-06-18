@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.atom.archive.jar;
+package org.overlord.sramp.atom.archive.expand;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -42,7 +44,7 @@ import org.overlord.sramp.atom.archive.SrampArchive;
  *
  * @author eric.wittmann@redhat.com
  */
-public class JarToSrampArchive {
+public abstract class ZipToSrampArchive {
 
     private static final ArtifactFilter DEFAULT_ARTIFACT_FILTER = new DefaultArtifactFilter();
     private static final MetaDataFactory DEFAULT_META_DATA_FACTORY = new DefaultMetaDataFactory();
@@ -55,14 +57,15 @@ public class JarToSrampArchive {
 
 	private ArtifactFilter artifactFilter = DEFAULT_ARTIFACT_FILTER;
 	private MetaDataFactory metaDataFactory = DEFAULT_META_DATA_FACTORY;
-	private JarToSrampArchiveContext context;
+	private List<MetaDataProvider> metaDataProviders = new ArrayList<MetaDataProvider>();
+	private ZipToSrampArchiveContext context;
 
 	/**
 	 * Constructor.
 	 * @param jar
-	 * @throws JarToSrampArchiveException
+	 * @throws ZipToSrampArchiveException
 	 */
-	public JarToSrampArchive(File jar) throws JarToSrampArchiveException {
+	public ZipToSrampArchive(File jar) throws ZipToSrampArchiveException {
 		this.originalJar = jar;
 		this.shouldDeleteOriginalJar = false;
 		this.jarWorkDir = null;
@@ -70,21 +73,21 @@ public class JarToSrampArchive {
 		try {
 			jarWorkDir = createJarWorkDir();
 			ArchiveUtils.unpackToWorkDir(this.originalJar, this.jarWorkDir);
-			context = new JarToSrampArchiveContext(this.jarWorkDir);
+			context = new ZipToSrampArchiveContext(this.jarWorkDir);
 		} catch (IOException e) {
 			if (this.jarWorkDir != null) {
 				try { FileUtils.deleteDirectory(this.jarWorkDir); } catch (IOException e1) { }
 			}
-			throw new JarToSrampArchiveException(e);
+			throw new ZipToSrampArchiveException(e);
 		}
 	}
 
 	/**
 	 * Constructor from JAR input stream.  Note, this will consume and close the given {@link InputStream}.
 	 * @param jarStream
-	 * @throws JarToSrampArchiveException
+	 * @throws ZipToSrampArchiveException
 	 */
-	public JarToSrampArchive(InputStream jarStream) throws JarToSrampArchiveException {
+	public ZipToSrampArchive(InputStream jarStream) throws ZipToSrampArchiveException {
 		this.originalJar = null;
 		this.shouldDeleteOriginalJar = true;
 		this.jarWorkDir = null;
@@ -94,7 +97,7 @@ public class JarToSrampArchive {
 			copyJarStream(jarStream, this.originalJar);
 			jarWorkDir = createJarWorkDir();
 			ArchiveUtils.unpackToWorkDir(this.originalJar, this.jarWorkDir);
-            context = new JarToSrampArchiveContext(this.jarWorkDir);
+            context = new ZipToSrampArchiveContext(this.jarWorkDir);
 		} catch (IOException e) {
 			if (this.jarWorkDir != null) {
 				try { FileUtils.deleteDirectory(this.jarWorkDir); } catch (IOException e1) { }
@@ -102,8 +105,17 @@ public class JarToSrampArchive {
 			if (this.originalJar != null && this.originalJar.exists()) {
 				this.originalJar.delete();
 			}
-			throw new JarToSrampArchiveException(e);
+			throw new ZipToSrampArchiveException(e);
 		}
+	}
+
+	/**
+	 * Sets a context parameter.
+	 * @param name
+	 * @param value
+	 */
+	public void setContextParam(String name, Object value) {
+	    this.context.put(name, value);
 	}
 
 	/**
@@ -137,9 +149,9 @@ public class JarToSrampArchive {
 	/**
 	 * Creates an S-RAMP archive from this JAR.
 	 * @return an S-RAMP archive
-	 * @throws JarToSrampArchiveException
+	 * @throws ZipToSrampArchiveException
 	 */
-	public SrampArchive createSrampArchive() throws JarToSrampArchiveException {
+	public SrampArchive createSrampArchive() throws ZipToSrampArchiveException {
 	    this.artifactFilter.setContext(this.context);
 	    this.metaDataFactory.setContext(this.context);
 		DiscoveredArtifacts discoveredArtifacts = discoverArtifacts();
@@ -153,7 +165,7 @@ public class JarToSrampArchive {
 			}
 			return archive;
 		} catch (Exception e) {
-			throw new JarToSrampArchiveException(e);
+			throw new ZipToSrampArchiveException(e);
 		}
 	}
 
@@ -164,6 +176,9 @@ public class JarToSrampArchive {
 	private void generateMetaData(DiscoveredArtifacts discoveredArtifacts) {
 		for (DiscoveredArtifact artifact : discoveredArtifacts) {
 			BaseArtifactType metaData = this.metaDataFactory.createMetaData(artifact);
+			for (MetaDataProvider metaDataProvider : this.metaDataProviders) {
+			    metaDataProvider.provideMetaData(metaData);
+			}
 			artifact.setMetaData(metaData);
 		}
 	}
@@ -220,6 +235,13 @@ public class JarToSrampArchive {
 	}
 
 	/**
+	 * @param metaDataProvider
+	 */
+	public void addMetaDataProvider(MetaDataProvider metaDataProvider) {
+	    this.metaDataProviders.add(metaDataProvider);
+	}
+
+	/**
 	 * @return the configured meta-data factory
 	 */
 	public MetaDataFactory getMetaDataFactory() {
@@ -229,7 +251,7 @@ public class JarToSrampArchive {
 	/**
 	 * @param j2sramp
 	 */
-	public static void closeQuietly(JarToSrampArchive j2sramp) {
+	public static void closeQuietly(ZipToSrampArchive j2sramp) {
 		try {
 			if (j2sramp != null)
 				j2sramp.close();
