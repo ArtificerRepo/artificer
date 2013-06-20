@@ -60,7 +60,7 @@
     <commons.config.version>1.8</commons.config.version>
     <commons.fileupload.version>1.2.2</commons.fileupload.version>
     <org.jboss.resteasy.version>2.3.5.Final</org.jboss.resteasy.version>
-    <errai.version>3.0-SNAPSHOT</errai.version>
+    <errai.version>2.4.0.Beta1</errai.version>
     <gwt.version>2.5.0</gwt.version>
     <weld.version>1.1.6.Final</weld.version>
     <mvel.version>2.1.Beta8</mvel.version>
