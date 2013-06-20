@@ -57,7 +57,7 @@ public final class ZipToSrampArchiveRegistry {
      * @param artifactType
      * @param zipStream
      */
-    public static ZipToSrampArchive createExtractor(ArtifactType artifactType, InputStream zipStream) throws ZipToSrampArchiveException {
+    public static ZipToSrampArchive createExpander(ArtifactType artifactType, InputStream zipStream) throws ZipToSrampArchiveException {
         ZipToSrampArchiveProvider provider = getProvider(artifactType);
         if (provider == null) {
             return null;
