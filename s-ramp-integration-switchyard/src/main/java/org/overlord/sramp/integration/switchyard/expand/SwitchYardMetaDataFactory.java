@@ -20,7 +20,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
 import org.overlord.sramp.atom.archive.expand.DiscoveredArtifact;
-import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveContext;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
 
 /**
@@ -35,13 +34,6 @@ public class SwitchYardMetaDataFactory extends DefaultMetaDataFactory {
      * Constructor.
      */
     public SwitchYardMetaDataFactory() {
-    }
-
-    /**
-     * @see org.overlord.sramp.atom.archive.expand.MetaDataFactory#setContext(org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveContext)
-     */
-    @Override
-    public void setContext(ZipToSrampArchiveContext context) {
     }
 
     /**
