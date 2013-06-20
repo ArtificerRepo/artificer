@@ -69,8 +69,12 @@ public class WidgetTable extends Panel {
      * @param labels
      */
     public void setColumnLabels(String ... labels) {
-        // TODO implement this
         this.columnCount = labels.length;
+        for (String label : labels) {
+            Element thElement = Document.get().createTHElement().cast();
+            thElement.setInnerText(label);
+            DOM.appendChild(thead, thElement);
+        }
     }
 
     /**
