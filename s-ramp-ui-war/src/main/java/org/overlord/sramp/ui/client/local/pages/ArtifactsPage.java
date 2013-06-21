@@ -27,6 +27,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
+import org.overlord.sramp.ui.client.local.pages.artifacts.IImportCompletionHandler;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ImportArtifactDialog;
 import org.overlord.sramp.ui.client.local.services.ArtifactSearchRpcService;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
@@ -144,7 +145,16 @@ public class ArtifactsPage extends AbstractPage {
      */
     @EventHandler("btn-import")
     public void onImportClick(ClickEvent event) {
-        importDialog.get().show();
+        ImportArtifactDialog dialog = importDialog.get();
+        dialog.setCompletionHandler(new IImportCompletionHandler() {
+            @Override
+            public void onImportComplete() {
+                if (isAttached()) {
+                    refreshButton.click();
+                }
+            }
+        });
+        dialog.show();
     }
 
     /**
