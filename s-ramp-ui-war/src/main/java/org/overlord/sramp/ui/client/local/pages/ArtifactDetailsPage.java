@@ -178,6 +178,7 @@ public class ArtifactDetailsPage extends AbstractPage {
     @PostConstruct
     protected void onPostConstruct() {
         pageContent = DOMUtil.findElementById(getElement(), "artifact-details-content-wrapper");
+        pageContent.addClassName("hide");
         editorWrapper = DOMUtil.findElementById(getElement(), "editor-wrapper");
         artifact.addPropertyChangeHandler(new PropertyChangeHandler<Object>() {
             @Override
@@ -208,7 +209,7 @@ public class ArtifactDetailsPage extends AbstractPage {
             @Override
             public void onReturn(ArtifactBean data) {
                 currentArtifact = data;
-                updateArtifactMetaData(data);
+                update(data);
             }
             @Override
             public void onError(Throwable error) {
@@ -360,7 +361,7 @@ public class ArtifactDetailsPage extends AbstractPage {
      * Called when the artifact meta data is loaded.
      * @param artifact
      */
-    protected void updateArtifactMetaData(ArtifactBean artifact) {
+    protected void update(ArtifactBean artifact) {
         this.artifact.setModel(artifact, InitialState.FROM_MODEL);
         String contentUrl = GWT.getModuleBaseURL() + "services/artifactDownload";
         contentUrl += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType();
@@ -378,6 +379,9 @@ public class ArtifactDetailsPage extends AbstractPage {
         } else {
             this.downloadContentLink.getElement().addClassName("hidden");
         }
+
+        deleteButton.setVisible(!artifact.isDerived());
+
         artifactLoading.getElement().addClassName("hide");
         pageContent.removeClassName("hide");
     }
