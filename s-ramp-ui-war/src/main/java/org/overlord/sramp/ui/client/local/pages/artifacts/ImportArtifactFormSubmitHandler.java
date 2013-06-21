@@ -51,6 +51,7 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
 
     private ModalDialog dialog;
     private NotificationBean notification;
+    private IImportCompletionHandler completionHandler;
 
     /**
      * Constructor.
@@ -120,7 +121,24 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
                     notification.getUuid(),
                     "Importing Artifact(s) [Complete]",
                     body);
+            if (completionHandler != null) {
+                completionHandler.onImportComplete();
+            }
         }
+    }
+
+    /**
+     * @return the completionHandler
+     */
+    public IImportCompletionHandler getCompletionHandler() {
+        return completionHandler;
+    }
+
+    /**
+     * @param completionHandler the completionHandler to set
+     */
+    public void setCompletionHandler(IImportCompletionHandler completionHandler) {
+        this.completionHandler = completionHandler;
     }
 
     /**

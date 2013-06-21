@@ -45,6 +45,9 @@ public class ImportArtifactDialog extends ModalDialog {
     @Inject
     private Instance<ImportArtifactFormSubmitHandler> formHandlerFactory;
 
+    private ImportArtifactFormSubmitHandler formHandler;
+    private IImportCompletionHandler completionHandler;
+
     /**
      * Constructor.
      */
@@ -56,7 +59,7 @@ public class ImportArtifactDialog extends ModalDialog {
      */
     @PostConstruct
     protected void onPostConstruct() {
-        ImportArtifactFormSubmitHandler formHandler = formHandlerFactory.get();
+        formHandler = formHandlerFactory.get();
         formHandler.setDialog(this);
         form.addSubmitHandler(formHandler);
         form.addSubmitCompleteHandler(formHandler);
@@ -77,7 +80,22 @@ public class ImportArtifactDialog extends ModalDialog {
      */
     @EventHandler("import-dialog-submit-button")
     public void onSubmitClick(ClickEvent event) {
+        formHandler.setCompletionHandler(this.completionHandler);
         form.submit();
+    }
+
+    /**
+     * @return the completionHandler
+     */
+    public IImportCompletionHandler getCompletionHandler() {
+        return completionHandler;
+    }
+
+    /**
+     * @param completionHandler the completionHandler to set
+     */
+    public void setCompletionHandler(IImportCompletionHandler completionHandler) {
+        this.completionHandler = completionHandler;
     }
 
 }
