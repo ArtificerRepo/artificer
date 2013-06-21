@@ -34,7 +34,6 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
@@ -84,11 +83,11 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
     protected RadioButton originDerived;
 
     @Inject @DataField
-    protected Anchor clearCoreFilters;
+    protected Button clearCoreFilters;
     @Inject @DataField
-    protected Anchor clearClassifierFilters;
+    protected Button clearClassifierFilters;
     @Inject @DataField
-    protected Anchor clearCustomPropertyFilters;
+    protected Button clearCustomPropertyFilters;
 
     @Inject @DataField("classifier-filter-container")
     protected ClassifierFilterContainer classifierFilters;

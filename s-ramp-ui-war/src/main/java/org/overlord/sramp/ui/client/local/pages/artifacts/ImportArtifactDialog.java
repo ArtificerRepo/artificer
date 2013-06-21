@@ -28,7 +28,7 @@ import org.overlord.sramp.ui.client.local.widgets.common.TemplatedFormPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 
 /**
  * A modal dialog used to import artifacts into S-RAMP.
@@ -41,7 +41,7 @@ public class ImportArtifactDialog extends ModalDialog {
     @Inject @DataField("import-dialog-form")
     private TemplatedFormPanel form;
     @Inject @DataField("import-dialog-submit-button")
-    private Anchor submitButton;
+    private Button submitButton;
     @Inject
     private Instance<ImportArtifactFormSubmitHandler> formHandlerFactory;
 

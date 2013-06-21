@@ -39,7 +39,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 
@@ -67,7 +67,7 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
     private OntologySelectorWithToolbar selector;
 
     @Inject @DataField("classifier-dialog-btn-ok")
-    private Anchor okButton;
+    private Button okButton;
 
     private Set<String> value;
 

@@ -91,12 +91,12 @@ button.tree:hover {
 .growl-dialog {
   position: fixed;
   z-index: 1000;
-  width: 350px;
+  width: 400px;
   background-color: white;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 4px 4px 0px 0px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 4px 4px 2px 2px;
   outline: 0px none;
-  box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.4);
   background-clip: padding-box;
 }
 .growl-dialog-error {
@@ -104,11 +104,11 @@ button.tree:hover {
 }
 .growl-dialog-hover {
   background-color: #fefefe;
-  border: 1px solid rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.6);
   box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.5);
 }
 .growl-dialog-header {
-  padding: 1px 8px;
+  padding: 3px 8px;
   background-color: rgb(245, 245, 245);
   background-image: url("../images/modal-header-bg.png");
   background-position: left top;
@@ -117,7 +117,7 @@ button.tree:hover {
   border-bottom: 1px solid rgb(223, 223, 223);
 }
 .growl-dialog-header-title {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: bold;
 }
 .growl-dialog-body {
