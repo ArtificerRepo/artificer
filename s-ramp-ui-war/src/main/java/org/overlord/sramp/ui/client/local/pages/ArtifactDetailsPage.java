@@ -131,13 +131,13 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject @DataField("custom-properties-container") @Bound(property="properties")
     CustomPropertiesPanel customProperties;
     @Inject @DataField("add-property-button")
-    Anchor addProperty;
+    Button addProperty;
     @Inject
     Instance<AddCustomPropertyDialog> addPropertyDialogFactory;
     @Inject @DataField("classifiers-container") @Bound(property="classifiedBy")
     ClassifiersPanel classifiers;
     @Inject @DataField("modify-classifiers-button")
-    Anchor modifyClassifier;
+    Button modifyClassifier;
     @Inject
     Instance<ModifyClassifiersDialog> modifyClassifiersDialogFactory;
     @Inject @DataField("core-property-description") @Bound(property="description")
