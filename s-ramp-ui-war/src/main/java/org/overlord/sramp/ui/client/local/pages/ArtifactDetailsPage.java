@@ -192,6 +192,12 @@ public class ArtifactDetailsPage extends AbstractPage {
                 onDeleteConfirm();
             }
         });
+
+        name.setDialogTitle("Edit Name");
+        name.setDialogLabel("New Name");
+
+        description.setDialogTitle("Edit Description");
+        description.setDialogLabel("New Description");
     }
 
     /**

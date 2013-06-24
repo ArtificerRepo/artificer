@@ -24,6 +24,9 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.HeadingElement;
+import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -43,6 +46,11 @@ import com.google.gwt.user.client.ui.TextArea;
 @Dependent
 public class EditCustomPropertyDialog extends ModalDialog implements HasValueChangeHandlers<String> {
 
+    @DataField
+    protected HeadingElement title = Document.get().createHElement(4);
+    @DataField
+    protected LabelElement label = Document.get().createLabelElement();
+
     @Inject @DataField
     protected TextArea value;
     @Inject @DataField("edit-property-submit-button")
@@ -53,6 +61,21 @@ public class EditCustomPropertyDialog extends ModalDialog implements HasValueCha
      * Constructor.
      */
     public EditCustomPropertyDialog() {
+    }
+
+    /**
+     * @param label
+     */
+    public void setLabel(String label) {
+        this.label.setInnerText(label + ":");
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.UIObject#setTitle(java.lang.String)
+     */
+    @Override
+    public void setTitle(String title) {
+        this.title.setInnerText(title);
     }
 
     /**

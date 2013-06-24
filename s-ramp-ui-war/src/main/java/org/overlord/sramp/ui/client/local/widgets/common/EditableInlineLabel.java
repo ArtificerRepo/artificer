@@ -46,6 +46,9 @@ public class EditableInlineLabel extends InlineLabel implements HasValue<String>
     private boolean supportsRemove = false;
     private String value;
 
+    private String dialogTitle;
+    private String dialogLabel;
+
     /**
      * Constructor.
      */
@@ -97,6 +100,11 @@ public class EditableInlineLabel extends InlineLabel implements HasValue<String>
      */
     protected void onEditProperty() {
         EditCustomPropertyDialog dialog = editDialogFactory.get();
+        if (this.getDialogLabel() != null)
+            dialog.setLabel(getDialogLabel());
+        if (this.getDialogTitle() != null) {
+            dialog.setTitle(getDialogTitle());
+        }
         dialog.setValue(getValue());
         dialog.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
@@ -163,5 +171,33 @@ public class EditableInlineLabel extends InlineLabel implements HasValue<String>
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) {
         return addHandler(handler, ValueChangeEvent.getType());
+    }
+
+    /**
+     * @return the dialogTitle
+     */
+    public String getDialogTitle() {
+        return dialogTitle;
+    }
+
+    /**
+     * @param dialogTitle the dialogTitle to set
+     */
+    public void setDialogTitle(String dialogTitle) {
+        this.dialogTitle = dialogTitle;
+    }
+
+    /**
+     * @return the dialogLabel
+     */
+    public String getDialogLabel() {
+        return dialogLabel;
+    }
+
+    /**
+     * @param dialogLabel the dialogLabel to set
+     */
+    public void setDialogLabel(String dialogLabel) {
+        this.dialogLabel = dialogLabel;
     }
 }
