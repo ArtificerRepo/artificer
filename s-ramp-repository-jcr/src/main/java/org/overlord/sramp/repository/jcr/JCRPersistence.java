@@ -435,7 +435,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
      * @throws RepositoryException
      */
     private void markNodeDeleted(Node childNode) throws RepositoryException {
-        System.out.println("Deleting child: " + childNode);
         childNode.addMixin("sramp:deletedArtifact");
         NodeType[] mixinNodeTypes = childNode.getMixinNodeTypes();
         for (NodeType nodeType : mixinNodeTypes) {
