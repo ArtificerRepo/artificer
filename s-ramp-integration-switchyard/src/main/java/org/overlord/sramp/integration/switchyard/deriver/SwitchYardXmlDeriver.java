@@ -26,6 +26,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.derived.AbstractXmlDeriver;
 import org.overlord.sramp.common.derived.LinkerContext;
@@ -77,8 +78,9 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
                 artifact.setName(name);
             }
 
-            processServices(derivedArtifacts, artifact, rootElement, xpath);
             processComponents(derivedArtifacts, artifact, rootElement, xpath);
+            // Note - process services after components so that components can be promoted easily.
+            processServices(derivedArtifacts, artifact, rootElement, xpath);
             processTransformers(derivedArtifacts, artifact, rootElement, xpath);
             processValidators(derivedArtifacts, artifact, rootElement, xpath);
         } catch (XPathExpressionException e) {
@@ -103,6 +105,14 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
             String name = node.getAttribute("name");
             ExtendedArtifactType serviceArtifact = SwitchYardModel.newServiceArtifact(name);
             derivedArtifacts.add(serviceArtifact);
+
+            if (node.hasAttribute("promote")) {
+                String promote = node.getAttribute("promote");
+                BaseArtifactType component = findComponentByName(derivedArtifacts, promote);
+                if (component != null) {
+                    SrampModelUtils.addGenericRelationship(serviceArtifact, SwitchYardModel.REL_PROMOTES, component.getUuid());
+                }
+            }
         }
     }
 
@@ -130,7 +140,25 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
                     Relationship relationship = SrampModelUtils.addGenericRelationship(componentArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
                     relationship.getOtherAttributes().put(UNRESOLVED_REF, "class:" + implClassName);
                 }
+                if (implBean.hasAttribute("requires")) {
+                    String requires = implBean.getAttribute("requires");
+                    SrampModelUtils.setCustomProperty(componentArtifact, "requires", requires);
+                }
             }
+            Element implCamel = (Element) this.query(xpath, node, "camel:implementation.camel", XPathConstants.NODE);
+            if (implCamel != null) {
+                Element xml = (Element) this.query(xpath, implCamel, "camel:xml", XPathConstants.NODE);
+                if (xml != null) {
+                    String path = xml.getAttribute("path");
+                    Relationship relationship = SrampModelUtils.addGenericRelationship(componentArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
+                    relationship.getOtherAttributes().put(UNRESOLVED_REF, "camel:" + path);
+                }
+                if (implCamel.hasAttribute("requires")) {
+                    String requires = implCamel.getAttribute("requires");
+                    SrampModelUtils.setCustomProperty(componentArtifact, "requires", requires);
+                }
+            }
+
 
             NodeList refs = (NodeList) this.query(xpath, node, "sca:reference", XPathConstants.NODESET);
             for (int jdx = 0; jdx < refs.getLength(); jdx++) {
@@ -277,6 +305,21 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
         for (BaseArtifactType derivedArtifact : derivedArtifacts) {
             linker.link(context, (ExtendedArtifactType) derivedArtifact);
         }
+    }
+
+    /**
+     * Finds a component artifact (previously created) with the given name.
+     * @param derivedArtifacts
+     * @param componentName
+     */
+    private BaseArtifactType findComponentByName(Collection<BaseArtifactType> derivedArtifacts, String componentName) {
+        for (BaseArtifactType artifact : derivedArtifacts) {
+            ArtifactType at = ArtifactType.valueOf(artifact);
+            if (at.getType().equals(SwitchYardModel.SwitchYardComponent) && artifact.getName().equals(componentName)) {
+                return artifact;
+            }
+        }
+        return null;
     }
 
 }
