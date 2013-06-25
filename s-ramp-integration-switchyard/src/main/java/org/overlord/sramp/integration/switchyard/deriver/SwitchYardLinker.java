@@ -144,6 +144,14 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
                     target.setValue(artifactRef.getUuid());
                     relationship.getRelationshipTarget().add(target);
                 }
+            } else if (ref.startsWith("camel:")) {
+                String camelPath = ref.substring(6);
+                BaseArtifactType artifactRef = findCamelArtifact(camelPath);
+                if (artifactRef != null) {
+                    Target target = new Target();
+                    target.setValue(artifactRef.getUuid());
+                    relationship.getRelationshipTarget().add(target);
+                }
             }
         }
         // Handle unresolved "transformsFrom" relationships
@@ -311,6 +319,15 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
      * @param smooksConfig
      */
     private BaseArtifactType findSmooksArtifact(String smooksConfig) {
+        // TODO Implement finding a smooks config artifact in the repository
+        return null;
+    }
+
+    /**
+     * Finds a camel route.xml artifact by path.
+     * @param camelXmlPath
+     */
+    private BaseArtifactType findCamelArtifact(String camelXmlPath) {
         // TODO Implement finding a smooks config artifact in the repository
         return null;
     }

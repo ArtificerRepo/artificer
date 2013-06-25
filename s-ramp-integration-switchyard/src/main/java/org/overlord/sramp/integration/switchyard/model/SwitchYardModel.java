@@ -36,6 +36,7 @@ public class SwitchYardModel {
     public static final String TRANSFORM_NS = "urn:switchyard-config:transform:1.0";
     public static final String VALIDATE_NS = "urn:switchyard-config:validate:1.0";
     public static final String SOAP_NS = "urn:switchyard-component-soap:config:1.0";
+    public static final String CAMEL_NS = "urn:switchyard-component-camel:config:1.0";
 
     public static final String REL_IMPLEMENTS = "implements";
     public static final String REL_PROMOTES = "promotes";
@@ -117,6 +118,7 @@ public class SwitchYardModel {
         namespaceContext.addMapping("tf", SwitchYardModel.TRANSFORM_NS);
         namespaceContext.addMapping("val", SwitchYardModel.VALIDATE_NS);
         namespaceContext.addMapping("soap", SwitchYardModel.SOAP_NS);
+        namespaceContext.addMapping("camel", SwitchYardModel.CAMEL_NS);
     }
 
 }
