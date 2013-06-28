@@ -11,7 +11,32 @@
   <packaging>pom</packaging>
   <name>S-RAMP Distribution: Assembly</name>
   <dependencies>
-    <!-- Dependencies on the various WARs to include in the distro. -->
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-installer</artifactId>
+      <version>${overlord-commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+      <version>${overlord-commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp</artifactId>
+      <version>${overlord-commons.version}</version>
+      <type>war</type>
+    </dependency>
+    
+    <!-- S-RAMP Installer -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-installer</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <!-- S-RAMP WARs -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server</artifactId>
@@ -24,7 +49,8 @@
       <type>war</type>
       <version>${project.version}</version>
     </dependency>
-    <!-- Dependencies on the Source JARs to include in the distro. -->
+    
+    <!-- S-RAMP Sources -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-api</artifactId>
@@ -97,7 +123,8 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    <!-- The S-RAMP documentation (jdocbook) -->
+    
+    <!-- S-RAMP documentation (jdocbook) -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>sramp-wiki</artifactId>
@@ -105,6 +132,7 @@
       <type>jdocbook</type>
     </dependency>
   </dependencies>
+  
   <build>
     <plugins>
       <plugin>
