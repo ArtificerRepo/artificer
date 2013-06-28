@@ -3,7 +3,7 @@
 
   <groupId>org.overlord.sramp</groupId>
   <artifactId>s-ramp</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>S-RAMP</name>
@@ -99,7 +99,7 @@
     <org.jboss.resteasy.version>2.3.6.Final</org.jboss.resteasy.version>
     <org.modeshape.version>3.2.0.Final</org.modeshape.version>
     <infinispan.version>5.1.6.FINAL</infinispan.version>
-    <overlord-commons.version>1.0.7</overlord-commons.version>
+    <overlord-commons.version>1.0.9</overlord-commons.version>
     <commons.io.version>2.4</commons.io.version>
     <commons.lang3.version>3.1</commons.lang3.version>
     <commons.config.version>1.8</commons.config.version>
