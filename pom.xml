@@ -3,7 +3,7 @@
 
   <groupId>org.overlord.sramp</groupId>
   <artifactId>s-ramp-distro</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>S-RAMP Distribution</name>
@@ -71,6 +71,7 @@
     <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
 
     <!-- Dependency versions -->
+    <overlord-commons.version>1.0.9</overlord-commons.version>
     <log4j.version>1.2.16</log4j.version>
     <slf4j.api.version>1.5.11</slf4j.api.version>
     <slf4j.log4j.version>1.5.11</slf4j.log4j.version>

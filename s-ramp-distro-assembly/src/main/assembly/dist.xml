@@ -5,7 +5,6 @@
 	<id>dist</id>
 	<formats>
 		<format>zip</format>
-		<format>tar.gz</format>
 	</formats>
 	<includeBaseDirectory>true</includeBaseDirectory>
 	<moduleSets>
@@ -27,6 +26,20 @@
 		</moduleSet>
 	</moduleSets>
 	<dependencySets>
+        <!-- Overlord Commons components -->
+        <dependencySet>
+            <outputDirectory>bin</outputDirectory>
+            <includes>
+                <include>org.overlord:overlord-commons-*:war</include>
+                <include>org.overlord:overlord-commons-*:jar</include>
+            </includes>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useProjectAttachments>false</useProjectAttachments>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <useTransitiveFiltering>false</useTransitiveFiltering>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0755</fileMode>
+        </dependencySet>
 		<!-- All of the S-RAMP WARs -->
 		<dependencySet>
 			<outputDirectory>bin</outputDirectory>
@@ -41,7 +54,7 @@
 			<directoryMode>0755</directoryMode>
 			<fileMode>0755</fileMode>
 		</dependencySet>
-		<!-- The source archives for all S-RAMP JARs -->
+		<!-- The source archives for all S-RAMP modules -->
 		<dependencySet>
 			<outputDirectory>src</outputDirectory>
 			<includes>
@@ -59,6 +72,24 @@
             <outputDirectory>docs</outputDirectory>
             <includes>
                 <include>org.overlord.sramp:sramp-wiki:jdocbook</include>
+            </includes>
+            <useProjectArtifact>false</useProjectArtifact>
+            <useProjectAttachments>false</useProjectAttachments>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <useTransitiveFiltering>false</useTransitiveFiltering>
+            <directoryMode>0755</directoryMode>
+            <fileMode>0755</fileMode>
+            <unpack>true</unpack>
+            <unpackOptions>
+              <excludes>
+                <exclude>**/META-INF/**</exclude>
+              </excludes>
+            </unpackOptions>
+        </dependencySet>
+        <!-- The S-RAMP Installer -->
+        <dependencySet>
+            <includes>
+                <include>org.overlord.sramp:s-ramp-installer:jar</include>
             </includes>
             <useProjectArtifact>false</useProjectArtifact>
             <useProjectAttachments>false</useProjectAttachments>
