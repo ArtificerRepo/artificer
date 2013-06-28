@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.overlord.sramp</groupId>
     <artifactId>s-ramp</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>s-ramp-integration-java</artifactId>
   <name>S-RAMP Integration: Java</name>
