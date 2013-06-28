@@ -100,13 +100,11 @@
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-common</artifactId>
-      <version>${org.modeshape.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-jcr</artifactId>
-      <version>${org.modeshape.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
