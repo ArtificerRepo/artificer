@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.overlord.sramp</groupId>
     <artifactId>s-ramp</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-jboss7</artifactId>
-      <version>${project.version}</version>
+      <version>0.2.0</version>
       <type>war</type>
     </dependency>
   </dependencies>
@@ -71,7 +71,7 @@
                     <property name="appserver.id" value="jboss-eap-6.1" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="overlord-commons.installer.jar"
+                    <property name="s-ramp.overlord-commons.installer.jar"
                       value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="overlord-commons.idp.download.url"
                       value="file:///${maven.dependency.org.overlord.overlord-commons-idp.war.path}" />
@@ -139,7 +139,7 @@
                     <property name="appserver.id" value="jboss-as-7.1.1.Final" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="overlord-commons.installer.jar"
+                    <property name="s-ramp.overlord-commons.installer.jar"
                       value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="overlord-commons.idp.download.url"
                       value="file:///${maven.dependency.org.overlord.overlord-commons-idp.war.path}" />
