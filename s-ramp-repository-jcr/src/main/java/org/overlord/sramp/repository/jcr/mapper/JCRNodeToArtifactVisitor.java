@@ -254,6 +254,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	protected void visitDocument(DocumentArtifactType artifact) {
 		artifact.setContentSize(getPropertyLong(jcrNode,"sramp:contentSize"));
 		artifact.setContentType(getProperty(jcrNode, "sramp:contentType"));
+		artifact.setContentHash(getProperty(jcrNode, "sramp:contentHash"));
 	}
 
 	/**
