@@ -26,6 +26,7 @@ import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.Session;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -110,7 +111,8 @@ public final class JCRArtifactPersister {
         if (DocumentArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
             artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, artifactType.getMimeType());
             artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty("jcr:content/jcr:data").getLength());
-            // TODO add content hash here - SHA1
+            String shaHex = DigestUtils.shaHex(artifactNode.getProperty("jcr:content/jcr:data").getBinary().getStream());
+            artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_HASH, shaHex);
         }
         // XMLDocument
         if (XmlDocument.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {

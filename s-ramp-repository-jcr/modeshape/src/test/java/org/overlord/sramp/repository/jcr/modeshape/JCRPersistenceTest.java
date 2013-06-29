@@ -63,6 +63,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         }
         Assert.assertEquals(Document.class, artifact.getClass());
         Assert.assertEquals(new Long(18873l), ((DocumentArtifactType) artifact).getContentSize());
+        Assert.assertEquals("4ee67f4c9f12ebe58c0c6d55d20d9dab91d8ab39", ((DocumentArtifactType) artifact).getContentHash());
     }
 
     @Test
