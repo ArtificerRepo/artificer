@@ -136,7 +136,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
                 Assert.fail("No assertion for audited property: " + name);
             }
         }
-        Assert.assertEquals(3, properties.size());
+        Assert.assertEquals(4, properties.size());
 
         // Get the full audit entry for the "artifact:update" entry
         auditEntry = auditManager.getArtifactAuditEntry(artifact.getUuid(), updateEntryUuid);
