@@ -98,6 +98,8 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
                 Assert.assertEquals("sample.pdf", value);
             } else if (name.equals("sramp:contentSize")) {
                 Assert.assertEquals("218882", value);
+            } else if (name.equals("sramp:contentHash")) {
+                Assert.assertEquals("12e5f2da18960dc085ca27bec1ae9e3245389cb1", value);
             } else if (name.equals("sramp:contentType")) {
                 Assert.assertEquals("application/pdf", value);
             } else {
