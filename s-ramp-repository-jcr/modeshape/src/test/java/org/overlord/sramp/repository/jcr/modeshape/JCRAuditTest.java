@@ -128,6 +128,8 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
                 Assert.assertEquals("s-ramp-press-release.pdf", value);
             } else if (name.equals("sramp:contentSize")) {
                 Assert.assertEquals("18873", value);
+            } else if (name.equals("sramp:contentHash")) {
+                Assert.assertEquals("4ee67f4c9f12ebe58c0c6d55d20d9dab91d8ab39", value);
             } else if (name.equals("sramp:description")) {
                 Assert.assertEquals("Sample description.", value);
             } else {
