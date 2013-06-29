@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.atom.archive.jar;
+package org.overlord.sramp.atom.archive.expand;
 
 
 /**
- * Exception thrown when a problem with the {@link JarToSrampArchive} class encounters an
+ * Exception thrown when a problem with the {@link ZipToSrampArchive} class encounters an
  * error.
  *
  * @author eric.wittmann@redhat.com
  */
-public class JarToSrampArchiveException extends Exception {
+public class ZipToSrampArchiveException extends Exception {
 
 	private static final long serialVersionUID = -5084985969972561772L;
 
 	/**
 	 * Constructor.
 	 */
-	public JarToSrampArchiveException() {
+	public ZipToSrampArchiveException() {
 	}
 
 	/**
 	 * Constructor.
 	 * @param message
 	 */
-	public JarToSrampArchiveException(String message) {
+	public ZipToSrampArchiveException(String message) {
 		super(message);
 	}
 
@@ -45,7 +45,7 @@ public class JarToSrampArchiveException extends Exception {
 	 * @param message
 	 * @param cause
 	 */
-	public JarToSrampArchiveException(String message, Throwable cause) {
+	public ZipToSrampArchiveException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
@@ -53,7 +53,7 @@ public class JarToSrampArchiveException extends Exception {
 	 * Constructor.
 	 * @param cause
 	 */
-	public JarToSrampArchiveException(Throwable cause) {
+	public ZipToSrampArchiveException(Throwable cause) {
 		super(cause);
 	}
 

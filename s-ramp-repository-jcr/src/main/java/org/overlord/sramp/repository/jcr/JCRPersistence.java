@@ -435,7 +435,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
      * @throws RepositoryException
      */
     private void markNodeDeleted(Node childNode) throws RepositoryException {
-        System.out.println("Deleting child: " + childNode);
         childNode.addMixin("sramp:deletedArtifact");
         NodeType[] mixinNodeTypes = childNode.getMixinNodeTypes();
         for (NodeType nodeType : mixinNodeTypes) {
@@ -454,7 +453,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 		if (ontology.getUuid() == null) {
 			ontology.setUuid(UUID.randomUUID().toString());
 		}
-		String ontologyPath = "/s-ramp/ontology/" + ontology.getUuid();
+		String ontologyPath = MapToJCRPath.getOntologyPath(ontology.getUuid());
 
 		try {
 			session = JCRRepositoryFactory.getSession();
@@ -462,7 +461,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			    throw new OntologyAlreadyExistsException(ontology.getUuid());
 			} else {
 			    JCRUtils tools = new JCRUtils();
-				Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", "nt:folder");
+				Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", "nt:folder");
 				Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology");
 				o2jcr.write(ontology, ontologyNode);
 	            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ONTOLOGY_ADDED);
@@ -485,7 +484,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	@Override
 	public SrampOntology getOntology(String uuid) throws SrampException {
 		Session session = null;
-		String ontologyPath = "/s-ramp/ontology/" + uuid;
+        String ontologyPath = MapToJCRPath.getOntologyPath(uuid);
 
 		try {
 			SrampOntology ontology = null;
@@ -519,7 +518,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 		try {
 			session = JCRRepositoryFactory.getSession();
 			JCRUtils tools = new JCRUtils();
-			Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontology", "nt:folder");
+			Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", "nt:folder");
 			NodeIterator nodes = ontologiesNode.getNodes();
 			List<SrampOntology> ontologies = new ArrayList<SrampOntology>();
 			while (nodes.hasNext()) {
@@ -542,7 +541,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	@Override
 	public void updateOntology(SrampOntology ontology) throws SrampException {
 		Session session = null;
-		String ontologyPath = "/s-ramp/ontology/" + ontology.getUuid();
+        String ontologyPath = MapToJCRPath.getOntologyPath(ontology.getUuid());
 
 		try {
 			session = JCRRepositoryFactory.getSession();
@@ -575,7 +574,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	@Override
 	public void deleteOntology(String uuid) throws SrampException {
 		Session session = null;
-		String ontologyPath = "/s-ramp/ontology/" + uuid;
+        String ontologyPath = MapToJCRPath.getOntologyPath(uuid);
 
 		try {
 			session = JCRRepositoryFactory.getSession();

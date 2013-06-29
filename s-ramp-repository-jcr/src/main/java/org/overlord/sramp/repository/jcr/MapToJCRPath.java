@@ -17,12 +17,9 @@ package org.overlord.sramp.repository.jcr;
 
 import javax.jcr.RepositoryException;
 
-import org.overlord.sramp.common.ArtifactType;
-
 public class MapToJCRPath {
 
     private static int folderDepth     = 3;
-    private static String PATH         = "/s-ramp/%1$s/%2$s";
 
     /**
      * Given an artifact path, return the path to where that artifact would live if it were to
@@ -35,34 +32,52 @@ public class MapToJCRPath {
     }
 
     /**
-     * "/artifact/<model>/<type>"
+     * "/s-ramp/artifacts/[btree]"
      *
-     * @param type - artifact type
-     * @return path: "/artifact/<model>/<type>"
+     * @param uuid - Universally Unique ID
+     * @return path: "/s-ramp/artifacts/[btree]"
      */
-    public static String getArtifactTypePath(ArtifactType artifactType) {
-        String type = artifactType.getArtifactType().getType();
-        //if (artifactType.getExtendedType()!=null) type = artifactType.getExtendedType();
-        return String.format(PATH, artifactType.getArtifactType().getModel(), type);
+    public static String getArtifactPath(String uuid) {
+        return "/s-ramp/artifacts/" + bTreePath(uuid);
     }
 
     /**
-     * "/artifact/<model>/<type>/[btree]"
+     * "/s-ramp/artifacts/[UUID]"
      *
      * @param uuid - Universally Unique ID
-     * @param type - artifact type
-     * @return path: "/artifact/<model>/<type>/[btree]"
+     * @return path: "/s-ramp/ontologies/[UUID]"
      */
-    public static String getArtifactPath(String uuid, ArtifactType type) {
-        return getArtifactTypePath(type) + "/" + bTreePath(uuid);
+    public static String getOntologyPath(String uuid) {
+        return "/s-ramp/ontologies/" + uuid;
     }
 
+    /**
+     * "/s-ramp/queries/[UUID]"
+     *
+     * @param uuid - Universally Unique ID
+     * @return path: "/s-ramp/ontologies/[UUID]"
+     */
+    public static String getStoredQueryPath(String uuid) {
+        return "/s-ramp/queries/" + uuid;
+    }
+
+    /**
+     * Creates a b-tree path out of the given UUID.  This should add depth to the tree and
+     * spread out the nodes within JCR.
+     * @param uuid
+     */
     private static String bTreePath (String uuid) {
         String bTreePath = "";
+        int segmentStartIdx = 0;
         for (int i=0; i < folderDepth; i++) {
-            bTreePath += uuid.substring(2*i, 2*i+2) + "/";
+            int segmentEndIdx = segmentStartIdx + 2;
+            if (segmentEndIdx > uuid.length()) {
+                break;
+            }
+            bTreePath += uuid.substring(segmentStartIdx, segmentEndIdx) + "/";
+            segmentStartIdx += 2;
         }
-        bTreePath += uuid.substring(folderDepth * 2);
+        bTreePath += uuid.substring(segmentStartIdx);
         return bTreePath;
     }
 

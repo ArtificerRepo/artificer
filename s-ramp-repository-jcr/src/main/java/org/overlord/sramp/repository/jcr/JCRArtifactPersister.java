@@ -76,7 +76,7 @@ public final class JCRArtifactPersister {
         String uuid = metaData.getUuid();
         ArtifactType artifactType = ArtifactType.valueOf(metaData);
         String name = metaData.getName();
-        String artifactPath = MapToJCRPath.getArtifactPath(uuid, artifactType);
+        String artifactPath = MapToJCRPath.getArtifactPath(uuid);
         if (session.nodeExists(artifactPath)) {
             throw new ArtifactAlreadyExistsException(uuid);
         }

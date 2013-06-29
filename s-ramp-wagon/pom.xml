@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.overlord.sramp</groupId>
     <artifactId>s-ramp</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -50,6 +50,16 @@
       <artifactId>s-ramp-client</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-integration-java</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-integration-switchyard</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- Third party libraries -->
     <dependency>
@@ -90,13 +100,11 @@
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-common</artifactId>
-      <version>${org.modeshape.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-jcr</artifactId>
-      <version>${org.modeshape.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

@@ -58,7 +58,7 @@ public class SwitchYardXmlDeriverTest {
 
         // Asserts
         Assert.assertNotNull(derivedArtifacts);
-        Assert.assertEquals(8, derivedArtifacts.size());
+        Assert.assertEquals(9, derivedArtifacts.size());
         Assert.assertEquals("orders", artifact.getName());
         Assert.assertEquals("urn:switchyard-quickstart:bean-service:0.1.0", SrampModelUtils.getCustomProperty(artifact, "targetNamespace"));
 
@@ -66,14 +66,17 @@ public class SwitchYardXmlDeriverTest {
         Assert.assertNotNull(orderService);
         Assert.assertEquals("OrderService", orderService.getName());
 
+
         BaseArtifactType inventoryServiceComponent = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardComponentType, "InventoryService");
         Assert.assertNotNull(inventoryServiceComponent);
+        Assert.assertEquals("managedTransaction.Global", SrampModelUtils.getCustomProperty(inventoryServiceComponent, "requires"));
         Relationship relationship = SrampModelUtils.getGenericRelationship(inventoryServiceComponent, SwitchYardModel.REL_IMPLEMENTED_BY);
         Assert.assertNotNull(relationship);
         Assert.assertTrue(relationship.getRelationshipTarget().isEmpty());
         Assert.assertTrue(relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF));
         relationship = SrampModelUtils.getGenericRelationship(inventoryServiceComponent, SwitchYardModel.REL_REFERENCES);
         Assert.assertNull(relationship);
+
 
         BaseArtifactType orderServiceComponent = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardComponentType, "OrderService");
         Assert.assertNotNull(orderServiceComponent);
@@ -85,6 +88,23 @@ public class SwitchYardXmlDeriverTest {
         Assert.assertNotNull(relationship);
         Assert.assertTrue(relationship.getRelationshipTarget().isEmpty());
         Assert.assertTrue(relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF));
+        relationship = SrampModelUtils.getGenericRelationship(orderService, SwitchYardModel.REL_PROMOTES);
+        Assert.assertNotNull(relationship);
+        Assert.assertNotNull(relationship.getRelationshipTarget());
+        Assert.assertFalse(relationship.getRelationshipTarget().isEmpty());
+        Assert.assertEquals(orderServiceComponent.getUuid(), relationship.getRelationshipTarget().iterator().next().getValue());
+
+
+        BaseArtifactType camelServiceComponent = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardComponentType, "CamelService");
+        Assert.assertNotNull(camelServiceComponent);
+        Assert.assertEquals("noManagedTransaction", SrampModelUtils.getCustomProperty(camelServiceComponent, "requires"));
+        relationship = SrampModelUtils.getGenericRelationship(camelServiceComponent, SwitchYardModel.REL_IMPLEMENTED_BY);
+        Assert.assertNotNull(relationship);
+        Assert.assertTrue(relationship.getRelationshipTarget().isEmpty());
+        Assert.assertTrue(relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF));
+        relationship = SrampModelUtils.getGenericRelationship(camelServiceComponent, SwitchYardModel.REL_REFERENCES);
+        Assert.assertNull(relationship);
+
 
         BaseArtifactType transformJava = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardTransformerType, "OrderAck->submitOrderResponse");
         Assert.assertNotNull(transformJava);
@@ -102,6 +122,7 @@ public class SwitchYardXmlDeriverTest {
         Assert.assertTrue(relationship.getRelationshipTarget().isEmpty());
         Assert.assertTrue(relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF));
 
+
         BaseArtifactType transformXslt = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardTransformerType, "CDM->S1");
         Assert.assertNotNull(transformXslt);
         Assert.assertEquals("xslt", SrampModelUtils.getCustomProperty(transformXslt, SwitchYardModel.PROP_TRANSFORMER_TYPE));
@@ -118,6 +139,7 @@ public class SwitchYardXmlDeriverTest {
         Assert.assertTrue(relationship.getRelationshipTarget().isEmpty());
         Assert.assertTrue(relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF));
 
+
         BaseArtifactType validateJava = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardValidatorType, "java:org.switchyard.quickstarts.bean.service.Order");
         Assert.assertNotNull(validateJava);
         Assert.assertEquals("java", SrampModelUtils.getCustomProperty(validateJava, SwitchYardModel.PROP_VALIDATE_TYPE));
@@ -129,6 +151,7 @@ public class SwitchYardXmlDeriverTest {
         Assert.assertNotNull(relationship);
         Assert.assertTrue(relationship.getRelationshipTarget().isEmpty());
         Assert.assertTrue(relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF));
+
 
         // Now pretend to do the linking (ensure we always find a match for every unresolved reference).
         LinkerContext context = new LinkerContext() {
@@ -143,6 +166,7 @@ public class SwitchYardXmlDeriverTest {
         };
         deriver.link(context , artifact, derivedArtifacts);
 
+
         inventoryServiceComponent = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardComponentType, "InventoryService");
         relationship = SrampModelUtils.getGenericRelationship(inventoryServiceComponent, SwitchYardModel.REL_IMPLEMENTED_BY);
         Assert.assertNotNull(relationship);
@@ -150,6 +174,7 @@ public class SwitchYardXmlDeriverTest {
         Assert.assertFalse(relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF));
         relationship = SrampModelUtils.getGenericRelationship(inventoryServiceComponent, SwitchYardModel.REL_REFERENCES);
         Assert.assertNull(relationship);
+
 
         orderServiceComponent = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardComponentType, "OrderService");
         relationship = SrampModelUtils.getGenericRelationship(orderServiceComponent, SwitchYardModel.REL_IMPLEMENTED_BY);
@@ -160,6 +185,15 @@ public class SwitchYardXmlDeriverTest {
         Assert.assertNotNull(relationship);
         Assert.assertEquals(1, relationship.getRelationshipTarget().size());
         Assert.assertFalse(relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF));
+
+
+        camelServiceComponent = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardComponentType, "CamelService");
+        relationship = SrampModelUtils.getGenericRelationship(camelServiceComponent, SwitchYardModel.REL_IMPLEMENTED_BY);
+        Assert.assertNotNull(relationship);
+        // TODO Note - looking up a camel xml is not yet implemented
+//        Assert.assertEquals(1, relationship.getRelationshipTarget().size());
+        Assert.assertFalse(relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF));
+
 
         transformJava = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardTransformerType, "OrderAck->submitOrderResponse");
         relationship = SrampModelUtils.getGenericRelationship(transformJava, SwitchYardModel.REL_IMPLEMENTED_BY);
@@ -174,6 +208,7 @@ public class SwitchYardXmlDeriverTest {
         Assert.assertNotNull(relationship);
         Assert.assertEquals(1, relationship.getRelationshipTarget().size());
         Assert.assertFalse(relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF));
+
 
         transformXslt = getDerivedArtifact(derivedArtifacts, SwitchYardModel.SwitchYardTransformerType, "CDM->S1");
         relationship = SrampModelUtils.getGenericRelationship(transformXslt, SwitchYardModel.REL_IMPLEMENTED_BY);

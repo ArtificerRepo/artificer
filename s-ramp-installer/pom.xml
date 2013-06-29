@@ -1,116 +1,187 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
- <modelVersion>4.0.0</modelVersion>
- <parent>
-  <groupId>org.overlord.sramp</groupId>
-  <artifactId>s-ramp</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
-  <relativePath>../pom.xml</relativePath>
- </parent>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord.sramp</groupId>
+    <artifactId>s-ramp</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
- <artifactId>s-ramp-installer</artifactId>
- <name>S-RAMP AS Installer</name>
- <description>Scripts to install to an Application Server</description>
+  <artifactId>s-ramp-installer</artifactId>
+  <name>S-RAMP AS Installer</name>
+  <description>Scripts to install to an Application Server</description>
 
- <properties>
-  <installdir>${project.build.directory}</installdir>
- </properties>
+  <dependencies>
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-installer</artifactId>
+      <version>${overlord-commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+      <version>${overlord-commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp</artifactId>
+      <version>${overlord-commons.version}</version>
+      <type>war</type>
+    </dependency>
+    
+    <!-- S-RAMP -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war-jboss7</artifactId>
+      <version>0.2.0</version>
+      <type>war</type>
+    </dependency>
+  </dependencies>
 
- <build>
-  <plugins>
-   <plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>properties-maven-plugin</artifactId>
-    <version>1.0-alpha-2</version>
-    <executions>
-     <execution>
-      <phase>initialize</phase>
-      <goals>
-       <goal>write-project-properties</goal>
-      </goals>
-      <configuration>
-       <outputFile>target/build.properties</outputFile>
-      </configuration>
-     </execution>
-    </executions>
-   </plugin>
-  </plugins>
- </build>
- <dependencies>
-  <dependency>
-   <groupId>org.overlord</groupId>
-   <artifactId>overlord-commons-installer</artifactId>
-   <version>${overlord-commons.version}</version>
-  </dependency>
-  <dependency>
-   <groupId>org.overlord.sramp</groupId>
-   <artifactId>s-ramp-server</artifactId>
-   <version>${project.version}</version>
-   <type>war</type>
-  </dependency>
-  <dependency>
-   <groupId>org.overlord.sramp</groupId>
-   <artifactId>s-ramp-ui-war-jboss7</artifactId>
-   <version>0.2.0</version>
-   <type>war</type>
-  </dependency>
- </dependencies>
- 
- <profiles>
-  <profile>
-    <id>eap61</id>
-     <properties>
-      <appserver.id>jboss-eap-6.1</appserver.id>
-      <eap.zipfile>jboss-eap-6.1.0.zip</eap.zipfile>
-     </properties>
+  <profiles>
+    <profile>
+      <id>eap61</id>
       <build>
-  <plugins>
-   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-antrun-plugin</artifactId>
-    <dependencies>
-     <dependency>
-      <groupId>ant</groupId>
-      <artifactId>ant-trax</artifactId>
-      <version>1.6.5</version>
-     </dependency>
-    </dependencies>
-    <executions>
-     <execution>
-      <id>test</id>
-      <phase>package</phase>
-      <configuration>
-       <tasks>
-        <property name="overlord-commons-installer.jar.path"
-         value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
-        <property name="modeshape-distribution.zip.path"
-         value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-61-dist.zip.path}" />
-        <property name="s-ramp-server.war.path"
-         value="${maven.dependency.org.overlord.sramp.s-ramp-server.war.path}" />
-        <property name="s-ramp-ui.war.path"
-         value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-jboss7.war.path}" />
-        <ant antfile="${basedir}/build.xml">
-         <target name="install" />
-        </ant>
-       </tasks>
-      </configuration>
-      <goals>
-       <goal>run</goal>
-      </goals>
-     </execution>
-    </executions>
-   </plugin>
-  </plugins>
- </build>
- <dependencies>
-  <dependency>
-   <groupId>org.modeshape</groupId>
-   <artifactId>modeshape-distribution</artifactId>
-   <version>${org.modeshape.version}</version>
-   <type>zip</type>
-   <classifier>jbosseap-61-dist</classifier>
-  </dependency>
- </dependencies>
-  </profile>
- </profiles>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <dependencies>
+              <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-trax</artifactId>
+                <version>1.6.5</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>install-eap61</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <property name="appserver.id" value="jboss-eap-6.1" />
+
+                    <!-- Overlord Commons Installer and Dependencies -->
+                    <property name="s-ramp.overlord-commons.installer.jar"
+                      value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+                    <property name="overlord-commons.idp.download.url"
+                      value="file:///${maven.dependency.org.overlord.overlord-commons-idp.war.path}" />
+                    <property name="overlord-commons.auth.download.url"
+                      value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
+
+                    <!-- S-RAMP WARs -->
+                    <property name="s-ramp.s-ramp-server.war.path" 
+                      value="${maven.dependency.org.overlord.sramp.s-ramp-server.war.path}" />
+                    <property name="s-ramp.s-ramp-ui.war.path"
+                      value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-jboss7.war.path}" />
+
+                    <!-- ModeShape Distribution -->
+                    <property name="s-ramp.modeshape-distribution.zip.path"
+                      value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-61-dist.zip.path}" />
+
+                    <property file="build.properties" />
+                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
+                    <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.1.0.zip" />
+
+                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
+                      <target name="install" />
+                    </ant>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.modeshape</groupId>
+          <artifactId>modeshape-distribution</artifactId>
+          <version>${org.modeshape.version}</version>
+          <type>zip</type>
+          <classifier>jbosseap-61-dist</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>jboss7</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <dependencies>
+              <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-trax</artifactId>
+                <version>1.6.5</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>install-eap61</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <property name="appserver.id" value="jboss-as-7.1.1.Final" />
+
+                    <!-- Overlord Commons Installer and Dependencies -->
+                    <property name="s-ramp.overlord-commons.installer.jar"
+                      value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+                    <property name="overlord-commons.idp.download.url"
+                      value="file:///${maven.dependency.org.overlord.overlord-commons-idp.war.path}" />
+                    <property name="overlord-commons.auth.download.url"
+                      value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
+
+                    <!-- S-RAMP WARs -->
+                    <property name="s-ramp.s-ramp-server.war.path" 
+                      value="${maven.dependency.org.overlord.sramp.s-ramp-server.war.path}" />
+                    <property name="s-ramp.s-ramp-ui.war.path"
+                      value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-jboss7.war.path}" />
+
+                    <!-- ModeShape Distribution -->
+                    <property name="s-ramp.modeshape-distribution.zip.path"
+                      value="${maven.dependency.org.modeshape.modeshape-distribution.jbossas-71-dist.zip.path}" />
+
+                    <property file="build.properties" />
+                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
+                    <property name="s-ramp.appserver.zip" value="${basedir}/jboss-as-7.1.1.Final.zip" />
+
+                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
+                      <target name="install" />
+                    </ant>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.modeshape</groupId>
+          <artifactId>modeshape-distribution</artifactId>
+          <version>3.1.3.Final</version>
+          <type>zip</type>
+          <classifier>jbossas-71-dist</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 </project>
