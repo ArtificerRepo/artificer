@@ -34,6 +34,12 @@
       <artifactId>jcr</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- Common libraries -->
+   	<dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+	</dependency>
 
     <!-- Testing (note the scope) -->
 
