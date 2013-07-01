@@ -16,38 +16,35 @@
 * limitations under the License.
 */
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-      <groupId>org.overlord.sramp.demos</groupId>
-      <artifactId>s-ramp-demos</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
-    </parent>
-    <artifactId>s-ramp-demos-project</artifactId>
-    <groupId>org.overlord.sramp.demos.project</groupId>
-    <name>S-RAMP Demos: Project Lifecycle Management</name>
-    <packaging>pom</packaging>
-    <modules>
-        <module>project</module>
-        <module>service</module>
-    </modules>
-    
-    <properties>
-      
-    </properties>
-    
-    <build>
-     <extensions>
-       <extension>
-         <groupId>org.overlord.sramp</groupId>
-         <artifactId>s-ramp-wagon</artifactId>
-         <version>${project.version}</version>
-       </extension>
-     </extensions>
-    </build>
-    
-    <profiles>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord.sramp.demos</groupId>
+    <artifactId>s-ramp-demos</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>s-ramp-demos-project</artifactId>
+  <groupId>org.overlord.sramp.demos.project</groupId>
+  <name>S-RAMP Demos: Project Lifecycle Management</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>project</module>
+    <module>service</module>
+  </modules>
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-wagon</artifactId>
+      </extension>
+    </extensions>
+  </build>
+
+  <profiles>
     <profile>
       <id>default</id>
       <activation>
