@@ -1,16 +1,42 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.sramp</groupId>
     <artifactId>s-ramp-distro</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>s-ramp-distro-assembly</artifactId>
   <packaging>pom</packaging>
   <name>S-RAMP Distribution: Assembly</name>
   <dependencies>
-    <!-- Dependencies on the various WARs to include in the distro. -->
+    <!-- Overlord Commons -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-installer</artifactId>
+      <version>${overlord-commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+      <version>${overlord-commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp</artifactId>
+      <version>${overlord-commons.version}</version>
+      <type>war</type>
+    </dependency>
+    
+    <!-- S-RAMP Installer -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-installer</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <!-- S-RAMP WARs -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server</artifactId>
@@ -23,13 +49,8 @@
       <type>war</type>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-governance</artifactId>
-      <type>war</type>
-      <version>${project.version}</version>
-    </dependency>
-    <!-- Dependencies on the Source JARs to include in the distro. -->
+    
+    <!-- S-RAMP Sources -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-api</artifactId>
@@ -51,12 +72,6 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-common</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-governance</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
@@ -104,49 +119,20 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-workflows</artifactId>
+      <artifactId>s-ramp-ui-war</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-workitems</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-gwt</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-        <!-- Dependency on s-ramp-governance BRMS install package -->
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-governance</artifactId>
-      <version>${project.version}</version>
-      <classifier>brms</classifier>
-      <type>zip</type>
-    </dependency>
-        <!-- Dependency on workitems and workflows to include them in the assembly -->
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-workflows</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-workitems</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <!-- The S-RAMP documentation (jdocbook) -->
+    
+    <!-- S-RAMP documentation (jdocbook) -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>sramp-wiki</artifactId>
-      <version>0.1.1</version>
+      <version>${project.version}</version>
       <type>jdocbook</type>
     </dependency>
   </dependencies>
+  
   <build>
     <plugins>
       <plugin>
@@ -159,29 +145,125 @@
             <version>2.3.8</version>
           </dependency>
         </dependencies>
-        <configuration>
-          <finalName>s-ramp-${project.version}</finalName>
-          <descriptors>
-            <descriptor>src/main/assembly/dist.xml</descriptor>
-          </descriptors>
-          <tarLongFileMode>gnu</tarLongFileMode>
-          <appendAssemblyId>false</appendAssemblyId>
-          <archiverConfig>
-            <defaultDirectoryMode>0755</defaultDirectoryMode>
-          </archiverConfig>
-        </configuration>
         <executions>
           <execution>
-            <id>make-assembly</id>
+            <id>make-dist</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+            <configuration>
+              <finalName>s-ramp-${project.version}</finalName>
+              <attach>false</attach>
+              <descriptors>
+                <descriptor>src/main/assembly/dist.xml</descriptor>
+              </descriptors>
+              <tarLongFileMode>gnu</tarLongFileMode>
+              <appendAssemblyId>false</appendAssemblyId>
+              <archiverConfig>
+                <defaultDirectoryMode>0755</defaultDirectoryMode>
+              </archiverConfig>
+            </configuration>
+          </execution>
+          <execution>
+            <id>make-dist-cli</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>s-ramp-cli-${project.version}</finalName>
+              <attach>false</attach>
+              <descriptors>
+                <descriptor>src/main/assembly/dist-cli.xml</descriptor>
+              </descriptors>
+              <tarLongFileMode>gnu</tarLongFileMode>
+              <appendAssemblyId>false</appendAssemblyId>
+              <archiverConfig>
+                <defaultDirectoryMode>0755</defaultDirectoryMode>
+              </archiverConfig>
+            </configuration>
+          </execution>
+          <execution>
+            <id>make-dist-demos</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>s-ramp-demos-${project.version}</finalName>
+              <attach>false</attach>
+              <descriptors>
+                <descriptor>src/main/assembly/dist-demos.xml</descriptor>
+              </descriptors>
+              <tarLongFileMode>gnu</tarLongFileMode>
+              <appendAssemblyId>false</appendAssemblyId>
+              <archiverConfig>
+                <defaultDirectoryMode>0755</defaultDirectoryMode>
+              </archiverConfig>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <id>deploy-cli</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy-file</goal>
+            </goals>
+            <configuration>
+              <file>target/s-ramp-cli-${project.version}.zip</file>
+              <url>${deployFileUrl}</url>
+              <repositoryId>${deployFileRepositoryId}</repositoryId>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>${project.artifactId}-cli</artifactId>
+              <version>${project.version}</version>
+            </configuration>
+          </execution>
+          <execution>
+            <id>deploy-demos</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy-file</goal>
+            </goals>
+            <configuration>
+              <file>target/s-ramp-demos-${project.version}.zip</file>
+              <url>${deployFileUrl}</url>
+              <repositoryId>${deployFileRepositoryId}</repositoryId>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>${project.artifactId}-demos</artifactId>
+              <version>${project.version}</version>
+            </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <deployFileUrl>${jboss.snapshots.repo.url}</deployFileUrl>
+        <deployFileRepositoryId>jboss-snapshots-repository</deployFileRepositoryId>
+      </properties>
+    </profile>
+    <profile>
+      <id>release</id>
+      <properties>
+        <deployFileUrl>${jboss.releases.repo.url}</deployFileUrl>
+        <deployFileRepositoryId>jboss-releases-repository</deployFileRepositoryId>
+      </properties>
+    </profile>
+  </profiles>
+
   <modules>
     <module>s-ramp-demos</module>
   </modules>

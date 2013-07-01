@@ -29,6 +29,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.derived.AbstractXmlDeriver;
 import org.overlord.sramp.common.derived.ArtifactDeriver;
+import org.overlord.sramp.common.derived.LinkerContext;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -76,6 +77,14 @@ public class WebXmlDeriver extends AbstractXmlDeriver {
         } catch (Exception e) {
             throw new IOException(e);
         }
+    }
+
+    /**
+     * @see org.overlord.sramp.common.derived.ArtifactDeriver#link(org.overlord.sramp.common.derived.LinkerContext, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.util.Collection)
+     */
+    @Override
+    public void link(LinkerContext context, BaseArtifactType sourceArtifact,
+            Collection<BaseArtifactType> derivedArtifacts) {
     }
 
     /**
