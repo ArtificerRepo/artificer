@@ -26,7 +26,6 @@ import org.overlord.sramp.common.ArtifactType;
 public class KieJarModel {
 
     public static final String TYPE_ARCHIVE = "KieJarArchive";
-    public static final String TYPE_BEANS_XML = "BeanArchiveDescriptor";
 
     public static final String KieXmlDocument = "KieXmlDocument";
     public static final ArtifactType KieXmlDocumentType = ArtifactType.valueOf(KieXmlDocument);
