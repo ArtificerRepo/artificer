@@ -57,6 +57,11 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-integration-kie</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-integration-switchyard</artifactId>
       <version>${project.version}</version>
     </dependency>
