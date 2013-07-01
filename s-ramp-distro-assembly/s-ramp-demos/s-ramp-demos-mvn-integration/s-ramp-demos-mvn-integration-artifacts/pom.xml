@@ -19,7 +19,6 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
       </snapshots>
     </repository>
   </repositories>
@@ -36,7 +35,6 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
@@ -62,7 +60,6 @@
       <extension>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-wagon</artifactId>
-        <version>${project.version}</version>
       </extension>
     </extensions>
     <plugins>
