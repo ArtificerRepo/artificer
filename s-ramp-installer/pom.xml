@@ -132,7 +132,7 @@
             </dependencies>
             <executions>
               <execution>
-                <id>install-eap61</id>
+                <id>install-jboss7</id>
                 <phase>install</phase>
                 <configuration>
                   <tasks>
