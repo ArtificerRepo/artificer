@@ -28,7 +28,7 @@ import java.util.Set;
  */
 public class DefaultArtifactFilter implements ArtifactFilter {
 
-	private static Set<String> validExtensions = new HashSet<String>();
+	public static Set<String> validExtensions = new HashSet<String>();
 	static {
 		validExtensions.add("xml");
 		validExtensions.add("xsd");
@@ -84,7 +84,7 @@ public class DefaultArtifactFilter implements ArtifactFilter {
 	/**
 	 * Returns the {@link Set} of valid extensions.
 	 */
-	private Set<String> getValidExtensions() {
+	public Set<String> getValidExtensions() {
 		return validExtensions;
 	}
 

@@ -369,8 +369,9 @@
     <module>s-ramp-client</module>
     <module>s-ramp-common</module>
     <module>s-ramp-installer</module>
-    <module>s-ramp-integration-switchyard</module>
     <module>s-ramp-integration-java</module>
+    <module>s-ramp-integration-kie</module>
+    <module>s-ramp-integration-switchyard</module>
     <module>s-ramp-repository</module>
     <module>s-ramp-repository-jcr</module>
     <module>s-ramp-repository-jcr/modeshape</module>
