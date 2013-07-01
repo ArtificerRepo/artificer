@@ -19,7 +19,6 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
       </snapshots>
     </repository>
   </repositories>
@@ -36,20 +35,19 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
 
   <dependencies>
-		<!-- Depends on the Artifacts library -->
+    <!-- Depends on the Artifacts library -->
     <dependency>
       <groupId>org.overlord.sramp.demos</groupId>
       <artifactId>s-ramp-demos-mvn-integration-artifacts</artifactId>
       <version>${project.version}</version>
     </dependency>
 
-		<!-- Junit -->
+    <!-- Junit -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -63,11 +61,10 @@
       <extension>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-wagon</artifactId>
-        <version>${project.version}</version>
       </extension>
     </extensions>
     <plugins>
-			<!-- Specify the compiler options and settings -->
+      <!-- Specify the compiler options and settings -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
