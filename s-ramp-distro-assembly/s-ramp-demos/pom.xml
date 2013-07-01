@@ -176,6 +176,7 @@
     <module>s-ramp-demos-properties</module>
     <module>s-ramp-demos-ontologies</module>
     <module>s-ramp-demos-classifications</module>
+    <module>s-ramp-demos-mvn-integration</module>
     <module>s-ramp-demos-relationships</module>
     <module>s-ramp-demos-derived-artifacts</module>
     <module>s-ramp-demos-custom-deriver</module>
