@@ -91,7 +91,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         persistenceManager.updateArtifact(artifact, ArtifactType.Document());
 
         // Allow some time for the async auditor to complete
-        Thread.sleep(2000);
+        Thread.sleep(5000);
 
         // Now do some assertions.
         AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
