@@ -17,6 +17,7 @@ package org.overlord.sramp.repository.jcr.modeshape;
 
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -90,8 +91,20 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         SrampModelUtils.setCustomProperty(artifact, "foo", "bar");
         persistenceManager.updateArtifact(artifact, ArtifactType.Document());
 
-        // Allow some time for the async auditor to complete
-        Thread.sleep(5000);
+        Date start = new Date();
+        while (true) {
+        	AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
+        	long elapsedTime = new Date().getTime() - start.getTime();
+        	if (entries!=null && entries.size()==2) {
+        		System.out.println("Waited " + elapsedTime + "ms for 2 audits");
+        		break;
+        	}
+        	if (elapsedTime > 20000l) {
+        		System.out.println("Timing out waiting for Audits");
+        		break;
+        	}
+        	Thread.sleep(100); 
+        }
 
         // Now do some assertions.
         AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
