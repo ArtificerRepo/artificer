@@ -99,12 +99,11 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         		System.out.println("Waited " + elapsedTime + "ms for 2 audits");
         		break;
         	}
-      
         	if (elapsedTime > 20000l) {
         		System.out.println("Timing out waiting for Audits");
         		break;
         	}
-        	
+        	Thread.sleep(100); 
         }
 
         // Now do some assertions.
