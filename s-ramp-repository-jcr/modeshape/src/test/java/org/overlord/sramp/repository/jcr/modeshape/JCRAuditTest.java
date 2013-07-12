@@ -29,7 +29,9 @@ import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType.Property;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
@@ -48,6 +50,7 @@ import org.overlord.sramp.repository.jcr.modeshape.auth.MockSecurityContext;
  * Tests all things auditing related.
  * @author eric.wittmann@redhat.com
  */
+@FixMethodOrder(MethodSorters.DEFAULT)
 public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
 
     @BeforeClass
@@ -91,11 +94,12 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         SrampModelUtils.setCustomProperty(artifact, "foo", "bar");
         persistenceManager.updateArtifact(artifact, ArtifactType.Document());
 
+        int expectedEntries = 2;
         Date start = new Date();
         while (true) {
         	AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
         	long elapsedTime = new Date().getTime() - start.getTime();
-        	if (entries!=null && entries.size()==2) {
+        	if (entries!=null && entries.size()==expectedEntries) {
         		System.out.println("Waited " + elapsedTime + "ms for 2 audits");
         		break;
         	}
@@ -109,7 +113,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         // Now do some assertions.
         AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
         Assert.assertNotNull(entries);
-        Assert.assertEquals(2, entries.size());
+        Assert.assertEquals(expectedEntries, entries.size());
         AuditEntry entry = entries.iterator().next();
         Assert.assertNotNull(entry.getUuid());
         Assert.assertEquals("artifact:update", entry.getType());
