@@ -32,7 +32,8 @@
             <cache-container name="modeshape">
                 <local-cache name="sramp">
                     <transaction mode="NON_XA"/>
-                    <file-store relative-to="jboss.server.data.dir" path="modeshape/store/sramp" passivation="false" purge="false"/>
+                    <locking isolation="NONE" />
+                    <mixed-keyed-jdbc-store datasource="java:jboss/datasources/srampDS" />
                 </local-cache>
             </cache-container>
         </subsystem>
