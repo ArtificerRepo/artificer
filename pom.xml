@@ -35,7 +35,7 @@
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
     <!-- S-RAMP version -->
-    <sramp.client.version>0.3.0-SNAPSHOT</sramp.client.version>
+    <sramp.client.version>0.3.0.Final</sramp.client.version>
     <srampui.build.date>${maven.build.timestamp}</srampui.build.date>
 
     <!-- Maven plugin versions -->
