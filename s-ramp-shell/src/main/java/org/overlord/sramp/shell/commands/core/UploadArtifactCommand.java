@@ -24,6 +24,10 @@ import javax.xml.namespace.QName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.overlord.sramp.atom.archive.SrampArchive;
+import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
+import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
+import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
@@ -84,6 +88,8 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 			return;
 		}
 		InputStream content = null;
+        ZipToSrampArchive expander = null;
+        SrampArchive archive = null;
 		try {
 			File file = new File(filePathArg);
 			ArtifactType artifactType = null;
@@ -97,6 +103,16 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 			}
 			content = FileUtils.openInputStream(file);
 			BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
+            IOUtils.closeQuietly(content);
+
+            // Now also add "expanded" content to the s-ramp repository
+            expander = ZipToSrampArchiveRegistry.createExpander(artifactType, file);
+            if (expander != null) {
+                expander.setContextParam(DefaultMetaDataFactory.PARENT_UUID, artifact.getUuid());
+                archive = expander.createSrampArchive();
+                client.uploadBatch(archive);
+            }
+
 			// Put the artifact in the session as the active artifact
 			QName artifactVarName = new QName("s-ramp", "artifact");
 			getContext().setVariable(artifactVarName, artifact);
