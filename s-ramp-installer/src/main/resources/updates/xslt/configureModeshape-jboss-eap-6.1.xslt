@@ -33,7 +33,7 @@
                 <local-cache name="sramp">
                     <transaction mode="NON_XA"/>
                     <locking isolation="NONE" />
-                    <mixed-keyed-jdbc-store datasource="java:jboss/datasources/srampDS" />
+                    <mixed-keyed-jdbc-store datasource="java:jboss/datasources/srampDS" passivation="false" purge="false" />
                 </local-cache>
             </cache-container>
         </subsystem>
