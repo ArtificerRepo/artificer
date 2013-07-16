@@ -3,7 +3,7 @@
 
   <groupId>org.overlord.sramp</groupId>
   <artifactId>s-ramp</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.3.0.Final</version>
   <packaging>pom</packaging>
 
   <name>S-RAMP</name>
