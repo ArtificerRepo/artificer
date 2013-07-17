@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.overlord.sramp</groupId>
+  <artifactId>s-ramp-distro-assembly-cli</artifactId>
+  <version>${project.version}</version>
+  <packaging>zip</packaging>
+
+  <name>S-RAMP Distribution: CLI</name>
+  <description>A slimmed down version of the s-ramp distribution that contains only the CLI.</description>
+  <url>http://www.jboss.org/overlord</url>
+  <inceptionYear>2013</inceptionYear>
+
+  <organization>
+    <name>JBoss, a division of Red Hat</name>
+    <url>http://www.jboss.org</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache License Version 2.0</name>
+      <url>http://repository.jboss.org/licenses/apache-2.0.txt</url>
+      <!--url>http://www.gnu.org/licenses/lgpl.html</url -->
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://issues.jboss.org/browse/SRAMP</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:git@github.com:Governance/s-ramp-distro.git</connection>
+    <developerConnection>scm:git:git@github.com:Governance/s-ramp-distro.git</developerConnection>
+    <url>scm:git:git@github.com:Governance/s-ramp-distro.git</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Kurt Stam</name>
+      <id>kstam</id>
+      <email>kstam@jboss.com</email>
+      <organization>JBoss, a division of Red Hat</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Eric Wittmann</name>
+      <id>ewittman</id>
+      <email>eric.wittmann@redhat.com</email>
+      <organization>Red Hat</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+</project>

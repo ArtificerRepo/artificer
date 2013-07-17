@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.sramp</groupId>
@@ -131,9 +132,31 @@
       <type>jdocbook</type>
     </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven.resources.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>generate-poms</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/poms</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources/poms</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <dependencies>
@@ -218,9 +241,7 @@
               <file>target/s-ramp-cli-${project.version}.zip</file>
               <url>${deployFileUrl}</url>
               <repositoryId>${deployFileRepositoryId}</repositoryId>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>${project.artifactId}-cli</artifactId>
-              <version>${project.version}</version>
+              <pomFile>${project.build.directory}/poms/s-ramp-distro-assembly-cli.pom.xml</pomFile>
             </configuration>
           </execution>
           <execution>
@@ -233,9 +254,7 @@
               <file>target/s-ramp-demos-${project.version}.zip</file>
               <url>${deployFileUrl}</url>
               <repositoryId>${deployFileRepositoryId}</repositoryId>
-              <groupId>${project.groupId}</groupId>
-              <artifactId>${project.artifactId}-demos</artifactId>
-              <version>${project.version}</version>
+              <pomFile>${project.build.directory}/poms/s-ramp-distro-assembly-demos.pom.xml</pomFile>
             </configuration>
           </execution>
         </executions>
