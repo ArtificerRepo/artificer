@@ -62,6 +62,9 @@ public class SwitchYardArtifactFilter implements ArtifactFilter {
         syIndex = (SwitchYardAppIndex) context.get("switchyard.index");
         if (syIndex == null) {
             File switchyardXmlFile = context.getJarEntry("META-INF/switchyard.xml");
+            if (switchyardXmlFile == null) {
+                switchyardXmlFile = context.getJarEntry("WEB-INF/switchyard.xml");
+            }
             if (switchyardXmlFile != null) {
                 syIndex = new SwitchYardAppIndex(switchyardXmlFile);
                 context.put("switchyard.index", switchyardXmlFile);
