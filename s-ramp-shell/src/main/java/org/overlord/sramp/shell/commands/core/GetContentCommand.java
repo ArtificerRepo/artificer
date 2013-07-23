@@ -119,7 +119,8 @@ public class GetContentCommand extends AbstractShellCommand {
 			String fileName = artifact.getName();
 			outFile = new File(outFile, fileName);
 		}
-		outFile.getParentFile().mkdirs();
+		if (outFile.getParentFile() != null)
+		    outFile.getParentFile().mkdirs();
 
 		InputStream artifactContent = null;
 		OutputStream outputStream = null;
