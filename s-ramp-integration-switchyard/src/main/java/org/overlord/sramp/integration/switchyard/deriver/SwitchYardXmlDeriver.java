@@ -210,7 +210,7 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
                     if (to.startsWith("{")) {
                         name = name + "->" + to.substring(to.lastIndexOf("}")+1);
                     } else if (to.startsWith("java:")) {
-                        name = name + "->" + to.substring(from.lastIndexOf('.')+1);
+                        name = name + "->" + to.substring(to.lastIndexOf('.')+1);
                     }
                 } else {
                     name = node.getLocalName();
