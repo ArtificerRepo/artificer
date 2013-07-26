@@ -442,6 +442,7 @@ public class SrampWagon extends StreamWagon {
 				SrampModelUtils.setCustomProperty(artifact, "maven.groupId", gavInfo.getGroupId());
 				SrampModelUtils.setCustomProperty(artifact, "maven.artifactId", gavInfo.getArtifactId());
 				SrampModelUtils.setCustomProperty(artifact, "maven.version", gavInfo.getVersion());
+				artifact.setVersion(gavInfo.getVersion());
 				if (gavInfo.getClassifier() != null)
 					SrampModelUtils.setCustomProperty(artifact, "maven.classifier", gavInfo.getClassifier());
 				SrampModelUtils.setCustomProperty(artifact, "maven.type", gavInfo.getType());
