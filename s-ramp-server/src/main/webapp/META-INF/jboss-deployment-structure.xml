@@ -1,8 +1,8 @@
 <jboss-deployment-structure>
   <deployment>
     <dependencies>
-      <module name="org.modeshape.jcr.api" />
-      <module name="org.infinispan" />
+      <module name="org.modeshape" />
+      <module name="org.jboss.as.clustering.infinispan" />
       <module name="org.picketbox" />
       <module name="org.picketlink" />
       <module name="org.jboss.as.web" />
