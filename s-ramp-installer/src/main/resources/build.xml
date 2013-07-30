@@ -120,8 +120,12 @@
     </delete>
     <copy file="updates/modeshape-module-${appserver.id}.xml" 
           tofile="${s-ramp.appserver.module.path}/org/modeshape/main/module.xml" overwrite="true" />
-    <copy file="updates/infinispan-module-${appserver.id}.xml" 
-          tofile="${s-ramp.appserver.base-module.path}/org/infinispan/main/module.xml" overwrite="true" />
+    <xslt 
+      style="updates/xslt/patchSolr-jboss.xslt"
+      in="${s-ramp.appserver.module.path}/org/apache/solr/3.6.2/module.xml"
+      out="${s-ramp.install.dir}/_tmp_solr_module.xml" />
+    <copy file="${s-ramp.install.dir}/_tmp_solr_module.xml" tofile="${s-ramp.appserver.module.path}/org/apache/solr/3.6.2/module.xml" overwrite="true" />
+    <delete file="${s-ramp.install.dir}/_tmp_solr_module.xml" />
 
     <echo>-----------------------------------</echo>
     <echo>Configuring Modeshape Service</echo>
