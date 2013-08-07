@@ -34,47 +34,47 @@ public class ExtendedArtifactDeriverTest extends AbstractNoAuditingJCRPersistenc
 
     @Test
     public void testExtendedArtifactDeriver() throws Exception {
-        String artifactFileName = "gtgjrdih.xml";
-        InputStream pdf = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName);
+        String artifactFileName = "gtgjrdih.xml"; //$NON-NLS-1$
+        InputStream pdf = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName); //$NON-NLS-1$
         ExtendedDocument artifact = new ExtendedDocument();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_DOCUMENT);
-        artifact.setExtendedType("ExtendedArtifactDeriverTestDocument");
-        artifact.setName("jrd");
+        artifact.setExtendedType("ExtendedArtifactDeriverTestDocument"); //$NON-NLS-1$
+        artifact.setName("jrd"); //$NON-NLS-1$
 
         BaseArtifactType pa = persistenceManager.persistArtifact(artifact, pdf);
 
         Assert.assertNotNull(pa);
-        log.info("persisted gtgjrdih.xml to JCR, returned artifact uuid=" + pa.getUuid());
+        log.info("persisted gtgjrdih.xml to JCR, returned artifact uuid=" + pa.getUuid()); //$NON-NLS-1$
 
         Assert.assertEquals(ExtendedDocument.class, artifact.getClass());
 
         // Four derived ActingCredit artifacts should have been created.
-        SrampQuery query = queryManager.createQuery("/s-ramp/ext/ActingCredit");
+        SrampQuery query = queryManager.createQuery("/s-ramp/ext/ActingCredit"); //$NON-NLS-1$
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertEquals(4, artifactSet.size());
 
         // Four total derived artifacts should have been created.
-        query = queryManager.createQuery("/s-ramp[@derived='true']");
+        query = queryManager.createQuery("/s-ramp[@derived='true']"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertEquals(4, artifactSet.size());
 
         // Also there are four derived arifacts that are related to the original
-        query = queryManager.createQuery("/s-ramp/ext[relatedDocument[@name='jrd']]");
+        query = queryManager.createQuery("/s-ramp/ext[relatedDocument[@name='jrd']]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertEquals(4, artifactSet.size());
 
         // But only one named 'Rising Storm'
-        query = queryManager.createQuery("/s-ramp/ext[relatedDocument[@name='jrd'] and @name='Rising Storm']");
+        query = queryManager.createQuery("/s-ramp/ext[relatedDocument[@name='jrd'] and @name='Rising Storm']"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertEquals(1, artifactSet.size());
 
         // Find the original artifact by one of the credits inside it
-        query = queryManager.createQuery("/s-ramp/ext[hasCredit[@name='Rising Storm']]");
+        query = queryManager.createQuery("/s-ramp/ext[hasCredit[@name='Rising Storm']]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertEquals(1, artifactSet.size());
 
         // But don't find it when looking for a credit that's not there
-        query = queryManager.createQuery("/s-ramp/ext[hasCredit[@name='Army of Darkness']]");
+        query = queryManager.createQuery("/s-ramp/ext[hasCredit[@name='Army of Darkness']]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertEquals(0, artifactSet.size());
     }

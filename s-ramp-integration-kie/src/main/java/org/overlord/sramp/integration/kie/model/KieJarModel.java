@@ -25,9 +25,9 @@ import org.overlord.sramp.common.ArtifactType;
  */
 public class KieJarModel {
 
-    public static final String TYPE_ARCHIVE = "KieJarArchive";
+    public static final String TYPE_ARCHIVE = "KieJarArchive"; //$NON-NLS-1$
 
-    public static final String KieXmlDocument = "KieXmlDocument";
+    public static final String KieXmlDocument = "KieXmlDocument"; //$NON-NLS-1$
     public static final ArtifactType KieXmlDocumentType = ArtifactType.valueOf(KieXmlDocument);
 
 }

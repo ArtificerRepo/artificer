@@ -23,15 +23,16 @@ import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.ShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Implements the 'help' command.
  *
  * @author eric.wittmann@redhat.com
  */
-public class HelpCommand extends AbstractShellCommand {
+public class HelpCommand extends BuiltInShellCommand {
 
 	private Map<QName, Class<? extends ShellCommand>> commands;
 
@@ -82,7 +83,7 @@ public class HelpCommand extends AbstractShellCommand {
 	 * Prints the generic help (lists all commands, etc).
 	 */
 	private void printHelpAll() {
-		print("The S-RAMP Shell supports the following commands:");
+		print(Messages.i18n.format("Help.COMMAND_LIST_MSG")); //$NON-NLS-1$
 		String currentNamespace = null;
 		int colCount = 0;
 		StringBuilder builder = new StringBuilder();
@@ -91,28 +92,25 @@ public class HelpCommand extends AbstractShellCommand {
 			String namespace = cmdName.getNamespaceURI();
 			String name = cmdName.getLocalPart();
 			if (!namespace.equals(currentNamespace)) {
-				builder.append(String.format("\n\nNamespace: %1$s\n-----------------------\n", namespace));
+				builder.append(String.format("\n\nNamespace: %1$s\n-----------------------\n", namespace)); //$NON-NLS-1$
 				currentNamespace = namespace;
-				builder.append(String.format("  %1$-18s", name));
+				builder.append(String.format("  %1$-18s", name)); //$NON-NLS-1$
 				colCount = 0;
 			} else {
-				builder.append(String.format("%1$-18s", name));
+				builder.append(String.format("%1$-18s", name)); //$NON-NLS-1$
 				colCount++;
 			}
 			if (colCount == 3) {
-				builder.append("\n  ");
+				builder.append("\n  "); //$NON-NLS-1$
 				colCount = 0;
 			}
 		}
 		print(builder.toString());
-		print("\n");
-		print("To get help for a specific command, try 'help <cmdNamespace>:<cmdName>'.");
-		print("");
-		print("To execute a specific command, try '<namespace>:<commandName> <args>'.");
-		print("Some examples:");
-		print("   s-ramp:connect http://localhost:8080/s-ramp-server");
-		print("   archive:open /home/uname/files/my-package.sramp");
-		print("");
+		print("\n"); //$NON-NLS-1$
+		print(Messages.i18n.format("Help.GET_HELP_1")); //$NON-NLS-1$
+		print(""); //$NON-NLS-1$
+		print(Messages.i18n.format("Help.GET_HELP_2")); //$NON-NLS-1$
+		print(""); //$NON-NLS-1$
 	}
 
 	/**
@@ -120,17 +118,17 @@ public class HelpCommand extends AbstractShellCommand {
 	 * @param namespace
 	 */
 	private void printHelpForNamespace(String namespace) {
-		print("The S-RAMP Shell supports the following commands for the '%1$s' namespace:", namespace);
+		print(Messages.i18n.format("Help.COMMAND_LIST_MSG_2", namespace)); //$NON-NLS-1$
 		for (Entry<QName,Class<? extends ShellCommand>> entry : this.commands.entrySet()) {
 			QName cmdName = entry.getKey();
 			String ns = cmdName.getNamespaceURI();
 			String name = cmdName.getLocalPart();
 			if (ns.equals(namespace)) {
-				print("   " + name);
+				print("   " + name); //$NON-NLS-1$
 			}
 		}
-		print("");
-		print("To get help for a specific command, try 'help <cmdNamespace>:<cmdName>'.");
+		print(""); //$NON-NLS-1$
+		print(Messages.i18n.format("Help.HELP_PER_CMD_MSG")); //$NON-NLS-1$
 	}
 
 	/**
@@ -141,14 +139,14 @@ public class HelpCommand extends AbstractShellCommand {
 	private void printHelpForCommand(QName cmdName) throws Exception {
 		Class<? extends ShellCommand> commandClass = this.commands.get(cmdName);
 		if (commandClass == null) {
-			print("No help available:  not a valid command.");
+			print(Messages.i18n.format("Help.INVALID_COMMAND")); //$NON-NLS-1$
 		} else {
 			ShellCommand command = commandClass.newInstance();
-			print("USAGE");
+			print(Messages.i18n.format("Help.USAGE")); //$NON-NLS-1$
 			command.printUsage();
-			print("");
+			print(""); //$NON-NLS-1$
 			command.printHelp();
-			print("");
+			print(""); //$NON-NLS-1$
 		}
 	}
 
@@ -175,7 +173,7 @@ public class HelpCommand extends AbstractShellCommand {
 	private Collection<String> generateHelpCandidates() {
 		TreeSet<String> candidates = new TreeSet<String>();
 		for (QName key : this.commands.keySet()) {
-			String candidate = key.getNamespaceURI() + ":" + key.getLocalPart();
+			String candidate = key.getNamespaceURI() + ":" + key.getLocalPart(); //$NON-NLS-1$
 			candidates.add(candidate);
 		}
 		return candidates;

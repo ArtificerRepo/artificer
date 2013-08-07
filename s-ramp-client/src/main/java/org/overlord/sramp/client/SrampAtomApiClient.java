@@ -65,6 +65,7 @@ import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.audit.AuditResultSet;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
 import org.overlord.sramp.client.auth.BasicAuthenticationProvider;
+import org.overlord.sramp.client.i18n.Messages;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
@@ -91,11 +92,11 @@ public class SrampAtomApiClient {
 	 */
 	public SrampAtomApiClient(String endpoint) {
 		this.endpoint = endpoint;
-		if (this.endpoint.endsWith("/")) {
+		if (this.endpoint.endsWith("/")) { //$NON-NLS-1$
 			this.endpoint = this.endpoint.substring(0, this.endpoint.length()-1);
 		}
-		if (!this.endpoint.endsWith("/s-ramp")) {
-		    this.endpoint += "/s-ramp";
+		if (!this.endpoint.endsWith("/s-ramp")) { //$NON-NLS-1$
+		    this.endpoint += "/s-ramp"; //$NON-NLS-1$
 		}
 	}
 
@@ -183,7 +184,7 @@ public class SrampAtomApiClient {
 	private void assertFeatureEnabled(String feature) throws SrampClientException {
 		if (this.validating) {
 			if (!this.enabledFeatures.contains(feature)) {
-				throw new SrampClientException("The S-RAMP repository does not appear to support this feature.");
+				throw new SrampClientException(Messages.i18n.format("FEATURE_NOT_SUPPORTED")); //$NON-NLS-1$
 			}
 		}
 	}
@@ -198,7 +199,7 @@ public class SrampAtomApiClient {
 	private void assertFeatureEnabled(ArtifactType feature) throws SrampClientException {
 		if (this.validating) {
 			if (!this.enabledFeatures.contains(feature.getArtifactType().getType())) {
-				throw new SrampClientException("The S-RAMP repository does not appear to support this feature.");
+                throw new SrampClientException(Messages.i18n.format("FEATURE_NOT_SUPPORTED")); //$NON-NLS-1$
 			}
 		}
 	}
@@ -210,7 +211,7 @@ public class SrampAtomApiClient {
 	 */
 	public AppService getServiceDocument() throws SrampClientException, SrampAtomException {
 		try {
-			String atomUrl = String.format("%1$s/servicedocument", this.endpoint);
+			String atomUrl = String.format("%1$s/servicedocument", this.endpoint); //$NON-NLS-1$
 			ClientRequest request = createClientRequest(atomUrl);
 			ClientResponse<AppService> response = request.get(AppService.class);
 			return response.getEntity();
@@ -239,9 +240,9 @@ public class SrampAtomApiClient {
     public BaseArtifactType getArtifactMetaData(String artifactUuid) throws SrampClientException,
             SrampAtomException {
         try {
-            QueryResultSet uuidRS = buildQuery("/s-ramp[@uuid = ?]").parameter(artifactUuid).count(1).query();
+            QueryResultSet uuidRS = buildQuery("/s-ramp[@uuid = ?]").parameter(artifactUuid).count(1).query(); //$NON-NLS-1$
             if (uuidRS.size() == 0)
-                throw new SrampClientException("Failed to find an artifact with UUID " + artifactUuid);
+                throw new SrampClientException(Messages.i18n.format("ARTIFACT_NOT_FOUND", artifactUuid)); //$NON-NLS-1$
             ArtifactType artifactType = uuidRS.iterator().next().getType();
             return getArtifactMetaData(artifactType, artifactUuid);
         } catch (SrampAtomException e) {
@@ -274,7 +275,7 @@ public class SrampAtomApiClient {
 			throws SrampClientException, SrampAtomException {
 		assertFeatureEnabled(artifactType);
 		try {
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint,
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, //$NON-NLS-1$
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
 					artifactUuid);
 			ClientRequest request = createClientRequest(atomUrl);
@@ -300,7 +301,7 @@ public class SrampAtomApiClient {
 			throws SrampClientException, SrampAtomException {
 		assertFeatureEnabled(artifactType);
 		try {
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint,
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, //$NON-NLS-1$
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
 					artifactUuid);
 
@@ -341,13 +342,13 @@ public class SrampAtomApiClient {
     public BaseArtifactType createArtifact(BaseArtifactType artifact) throws SrampClientException, SrampAtomException {
         ArtifactType artifactType = ArtifactType.valueOf(artifact);
         if (SrampModelUtils.isDocumentArtifact(artifact)) {
-            throw new SrampClientException("Cannot create an artifact of this type without document content.  Please call uploadArtifact() instead.");
+            throw new SrampClientException(Messages.i18n.format("MISSING_ARTIFACT_CONTEN")); //$NON-NLS-1$
         }
 
         assertFeatureEnabled(artifactType);
         try {
             String type = artifactType.getType();
-            String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
+            String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, //$NON-NLS-1$
                     artifactType.getModel(), type);
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, SrampAtomUtils.wrapSrampArtifact(artifact));
@@ -376,11 +377,11 @@ public class SrampAtomApiClient {
 		assertFeatureEnabled(artifactType);
 		try {
 			String type = artifactType.getType();
-			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
+			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, //$NON-NLS-1$
 					artifactType.getArtifactType().getModel(), type);
 			ClientRequest request = createClientRequest(atomUrl);
 			if (artifactFileName != null)
-				request.header("Slug", artifactFileName);
+				request.header("Slug", artifactFileName); //$NON-NLS-1$
 			request.body(artifactType.getMimeType(), content);
 
 			ClientResponse<Entry> response = request.post(Entry.class);
@@ -407,7 +408,7 @@ public class SrampAtomApiClient {
 		assertFeatureEnabled(artifactType);
 		try {
 			String type = artifactType.getType();
-			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint,
+			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, //$NON-NLS-1$
 					artifactType.getArtifactType().getModel(), type);
 			ClientRequest request = createClientRequest(atomUrl);
 
@@ -416,7 +417,7 @@ public class SrampAtomApiClient {
 			//1. Add first part, the S-RAMP entry
 			Entry atomEntry = SrampAtomUtils.wrapSrampArtifact(baseArtifactType);
 
-			MediaType mediaType = new MediaType("application", "atom+xml");
+			MediaType mediaType = new MediaType("application", "atom+xml"); //$NON-NLS-1$ //$NON-NLS-2$
 			output.addPart(atomEntry, mediaType);
 
 			//2. Add second part, the content
@@ -460,7 +461,7 @@ public class SrampAtomApiClient {
 	        packageFile = archive.pack();
 			packageStream = FileUtils.openInputStream(packageFile);
 			ClientRequest request = createClientRequest(this.endpoint);
-			request.header("Content-Type", "application/zip");
+			request.header("Content-Type", "application/zip"); //$NON-NLS-1$ //$NON-NLS-2$
 			request.body(MediaType.APPLICATION_ZIP, packageStream);
 
 			ClientResponse<MultipartInput> clientResponse = request.post(MultipartInput.class);
@@ -469,7 +470,7 @@ public class SrampAtomApiClient {
 
 			Map<String, Object> rval = new HashMap<String, Object>(parts.size());
 			for (InputPart part : parts) {
-				String contentId = part.getHeaders().getFirst("Content-ID");
+				String contentId = part.getHeaders().getFirst("Content-ID"); //$NON-NLS-1$
 				String path = contentId.substring(1, contentId.lastIndexOf('@'));
 				HttpResponseBean rbean = part.getBody(HttpResponseBean.class, null);
 				if (rbean.getCode() == 201) {
@@ -477,7 +478,7 @@ public class SrampAtomApiClient {
 					BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
 					rval.put(path, artifact);
 				} else if (rbean.getCode() == 409) {
-					if (MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION.equals(rbean.getHeaders().get("Content-Type"))) {
+					if (MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION.equals(rbean.getHeaders().get("Content-Type"))) { //$NON-NLS-1$
 						SrampAtomException exception = (SrampAtomException) rbean.getBody();
 						rval.put(path, exception);
 					} else {
@@ -487,7 +488,7 @@ public class SrampAtomApiClient {
 					}
 				} else {
 					// Only a non-compliant s-ramp impl could cause this
-					SrampAtomException exception = new SrampAtomException("Unexpected return code '" + rbean.getCode() + "' for ID '" + contentId + "'.  The S-RAMP server is non-compliant.");
+					SrampAtomException exception = new SrampAtomException(Messages.i18n.format("BAD_RETURN_CODE", rbean.getCode(), contentId));  //$NON-NLS-1$
 					rval.put(path, exception);
 				}
 			}
@@ -515,11 +516,11 @@ public class SrampAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) { //$NON-NLS-1$
 				artifactType = type.getExtendedType();
 			}
 			String artifactUuid = artifact.getUuid();
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid); //$NON-NLS-1$
 			ClientRequest request = createClientRequest(atomUrl);
 
 			Entry entry = SrampAtomUtils.wrapSrampArtifact(artifact);
@@ -547,11 +548,11 @@ public class SrampAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) { //$NON-NLS-1$
 				artifactType = type.getExtendedType();
 			}
 			String artifactUuid = artifact.getUuid();
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid);
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid); //$NON-NLS-1$
 			ClientRequest request = createClientRequest(atomUrl);
 			request.body(type.getMimeType(), content);
 			request.put();
@@ -574,11 +575,11 @@ public class SrampAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) { //$NON-NLS-1$
 				artifactType = type.getExtendedType();
 			}
 			String artifactUuid = uuid;
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid);
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid); //$NON-NLS-1$
 			ClientRequest request = createClientRequest(atomUrl);
 			request.delete();
 		} catch (SrampAtomException e) {
@@ -595,7 +596,7 @@ public class SrampAtomApiClient {
 	 * @throws SrampAtomException
 	 */
 	public QueryResultSet query(String srampQuery) throws SrampClientException, SrampAtomException {
-		return query(srampQuery, 0, 20, "name", true);
+		return query(srampQuery, 0, 20, "name", true); //$NON-NLS-1$
 	}
 
     /**
@@ -632,9 +633,9 @@ public class SrampAtomApiClient {
 		try {
 			String xpath = srampQuery;
 			if (xpath == null)
-				throw new Exception("Please supply an S-RAMP x-path formatted query.");
+				throw new Exception(Messages.i18n.format("INVALID_QUERY_FORMAT")); //$NON-NLS-1$
 			// Remove the leading /s-ramp/ prior to POSTing to the atom endpoint
-			if (xpath.startsWith("/s-ramp/"))
+			if (xpath.startsWith("/s-ramp/")) //$NON-NLS-1$
 				xpath = xpath.substring(8);
 			String atomUrl = this.endpoint;
 
@@ -644,14 +645,14 @@ public class SrampAtomApiClient {
 			if (propertyNames == null || propertyNames.size() < 2) {
     			ClientRequest request = createClientRequest(atomUrl);
     			MultipartFormDataOutput formData = new MultipartFormDataOutput();
-    			formData.addFormData("query", xpath, MediaType.TEXT_PLAIN_TYPE);
-    			formData.addFormData("startIndex", String.valueOf(startIndex), MediaType.TEXT_PLAIN_TYPE);
-    			formData.addFormData("count", String.valueOf(count), MediaType.TEXT_PLAIN_TYPE);
-    			formData.addFormData("orderBy", orderBy, MediaType.TEXT_PLAIN_TYPE);
-    			formData.addFormData("ascending", String.valueOf(ascending), MediaType.TEXT_PLAIN_TYPE);
+    			formData.addFormData("query", xpath, MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
+    			formData.addFormData("startIndex", String.valueOf(startIndex), MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
+    			formData.addFormData("count", String.valueOf(count), MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
+    			formData.addFormData("orderBy", orderBy, MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
+    			formData.addFormData("ascending", String.valueOf(ascending), MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
     			if (propertyNames != null) {
     			    for (String propertyName : propertyNames) {
-                        formData.addFormData("propertyName", propertyName, MediaType.TEXT_PLAIN_TYPE);
+                        formData.addFormData("propertyName", propertyName, MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
                     }
     			}
 
@@ -661,19 +662,19 @@ public class SrampAtomApiClient {
 			} else {
 			    StringBuilder urlBuilder = new StringBuilder();
 			    urlBuilder.append(atomUrl);
-                urlBuilder.append("?query=");
-                urlBuilder.append(URLEncoder.encode(srampQuery, "UTF8"));
-                urlBuilder.append("&startIndex=");
+                urlBuilder.append("?query="); //$NON-NLS-1$
+                urlBuilder.append(URLEncoder.encode(srampQuery, "UTF8")); //$NON-NLS-1$
+                urlBuilder.append("&startIndex="); //$NON-NLS-1$
                 urlBuilder.append(String.valueOf(startIndex));
-                urlBuilder.append("&count=");
+                urlBuilder.append("&count="); //$NON-NLS-1$
                 urlBuilder.append(String.valueOf(count));
-                urlBuilder.append("&orderBy=");
-                urlBuilder.append(URLEncoder.encode(orderBy, "UTF8"));
-                urlBuilder.append("&ascending=");
+                urlBuilder.append("&orderBy="); //$NON-NLS-1$
+                urlBuilder.append(URLEncoder.encode(orderBy, "UTF8")); //$NON-NLS-1$
+                urlBuilder.append("&ascending="); //$NON-NLS-1$
                 urlBuilder.append(String.valueOf(ascending));
                 for (String propName : propertyNames) {
-                    urlBuilder.append("&propertyName=");
-                    urlBuilder.append(URLEncoder.encode(propName, "UTF8"));
+                    urlBuilder.append("&propertyName="); //$NON-NLS-1$
+                    urlBuilder.append(URLEncoder.encode(propName, "UTF8")); //$NON-NLS-1$
                 }
                 ClientRequest request = createClientRequest(urlBuilder.toString());
                 ClientResponse<Feed> response = request.get(Feed.class);
@@ -723,16 +724,16 @@ public class SrampAtomApiClient {
 	 * @throws SrampAtomException
 	 */
 	public RDF uploadOntology(InputStream content) throws SrampClientException, SrampAtomException {
-		assertFeatureEnabled("ontology");
+		assertFeatureEnabled("ontology"); //$NON-NLS-1$
 		try {
-			String atomUrl = String.format("%1$s/ontology", this.endpoint);
+			String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
 			ClientRequest request = createClientRequest(atomUrl);
 			request.body(MediaType.APPLICATION_RDF_XML_TYPE, content);
 
 			ClientResponse<Entry> response = request.post(Entry.class);
 			Entry entry = response.getEntity();
 			RDF rdf = SrampAtomUtils.unwrap(entry, RDF.class);
-			rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString());
+			rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString()); //$NON-NLS-1$
 			return rdf;
 		} catch (SrampAtomException e) {
 			throw e;
@@ -749,9 +750,9 @@ public class SrampAtomApiClient {
 	 * @throws SrampAtomException
 	 */
 	public List<OntologySummary> getOntologies() throws SrampClientException, SrampAtomException {
-		assertFeatureEnabled("ontology");
+		assertFeatureEnabled("ontology"); //$NON-NLS-1$
 		try {
-			String atomUrl = String.format("%1$s/ontology", this.endpoint);
+			String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
 			ClientRequest request = createClientRequest(atomUrl);
 			ClientResponse<Feed> response = request.get(Feed.class);
 			Feed feed = response.getEntity();
@@ -776,14 +777,14 @@ public class SrampAtomApiClient {
 	 * @throws SrampAtomException
 	 */
 	public RDF getOntology(String ontologyUuid) throws SrampClientException, SrampAtomException {
-	    assertFeatureEnabled("ontology");
+	    assertFeatureEnabled("ontology"); //$NON-NLS-1$
         try {
-            String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid);
+            String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
             ClientRequest request = createClientRequest(atomUrl);
             ClientResponse<Entry> response = request.get(Entry.class);
             Entry entry = response.getEntity();
             RDF rdf = SrampAtomUtils.unwrapRDF(entry);
-            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString());
+            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString()); //$NON-NLS-1$
             return rdf;
         } catch (SrampAtomException e) {
             throw e;
@@ -801,9 +802,9 @@ public class SrampAtomApiClient {
 	 * @throws SrampAtomException
 	 */
 	public void deleteOntology(String ontologyUuid) throws SrampClientException, SrampAtomException {
-		assertFeatureEnabled("ontology");
+		assertFeatureEnabled("ontology"); //$NON-NLS-1$
 		try {
-			String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid);
+			String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
 			ClientRequest request = createClientRequest(atomUrl);
 			request.delete();
 		} catch (SrampAtomException e) {
@@ -821,16 +822,16 @@ public class SrampAtomApiClient {
 	 * @throws SrampAtomException
 	 */
     public AuditEntry addAuditEntry(String artifactUuid, AuditEntry auditEntry) throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("audit");
+        assertFeatureEnabled("audit"); //$NON-NLS-1$
         try {
-            String atomUrl = String.format("%1$s/audit/artifact/%2$s", this.endpoint, artifactUuid);
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s", this.endpoint, artifactUuid); //$NON-NLS-1$
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_AUDIT_ENTRY_XML_TYPE, auditEntry);
 
             ClientResponse<Entry> response = request.post(Entry.class);
             Entry entry = response.getEntity();
             if (entry == null)
-                throw new SrampAtomException("Failed to add audit entry: reason is unknown.");
+                throw new SrampAtomException(Messages.i18n.format("AUDIT_ENTRY_ADD_FAILED")); //$NON-NLS-1$
             return SrampAtomUtils.unwrap(entry, AuditEntry.class);
         } catch (SrampAtomException e) {
             throw e;
@@ -846,9 +847,9 @@ public class SrampAtomApiClient {
      * @throws SrampAtomException
      */
     public AuditResultSet getAuditTrailForArtifact(String artifactUuid) throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("audit");
+        assertFeatureEnabled("audit"); //$NON-NLS-1$
         try {
-            String atomUrl = String.format("%1$s/audit/artifact/%2$s", this.endpoint, artifactUuid);
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s", this.endpoint, artifactUuid); //$NON-NLS-1$
             ClientRequest request = createClientRequest(atomUrl);
             ClientResponse<Feed> response = request.get(Feed.class);
             Feed feed = response.getEntity();
@@ -870,9 +871,9 @@ public class SrampAtomApiClient {
      * @throws SrampAtomException
      */
     public AuditResultSet getAuditTrailForArtifact(String artifactUuid, int startIndex, int count) throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("audit");
+        assertFeatureEnabled("audit"); //$NON-NLS-1$
         try {
-            String atomUrl = String.format("%1$s/audit/artifact/%2$s?startIndex=%3$s&count=%4$s",
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s?startIndex=%3$s&count=%4$s", //$NON-NLS-1$
                     this.endpoint, artifactUuid, String.valueOf(startIndex), String.valueOf(count));
             ClientRequest request = createClientRequest(atomUrl);
             ClientResponse<Feed> response = request.get(Feed.class);
@@ -893,9 +894,9 @@ public class SrampAtomApiClient {
      * @throws SrampAtomException
      */
     public AuditResultSet getAuditTrailForUser(String username) throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("audit");
+        assertFeatureEnabled("audit"); //$NON-NLS-1$
         try {
-            String atomUrl = String.format("%1$s/audit/user/%2$s", this.endpoint, username);
+            String atomUrl = String.format("%1$s/audit/user/%2$s", this.endpoint, username); //$NON-NLS-1$
             ClientRequest request = createClientRequest(atomUrl);
             ClientResponse<Feed> response = request.get(Feed.class);
             Feed feed = response.getEntity();
@@ -917,9 +918,9 @@ public class SrampAtomApiClient {
      * @throws SrampAtomException
      */
     public AuditResultSet getAuditTrailForUser(String username, int startIndex, int count) throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("audit");
+        assertFeatureEnabled("audit"); //$NON-NLS-1$
         try {
-            String atomUrl = String.format("%1$s/audit/user/%2$s?startIndex=%3$s&count=%4$s",
+            String atomUrl = String.format("%1$s/audit/user/%2$s?startIndex=%3$s&count=%4$s", //$NON-NLS-1$
                     this.endpoint, username, String.valueOf(startIndex), String.valueOf(count));
             ClientRequest request = createClientRequest(atomUrl);
             ClientResponse<Feed> response = request.get(Feed.class);
@@ -941,9 +942,9 @@ public class SrampAtomApiClient {
      * @throws SrampAtomException
      */
     public AuditEntry getAuditEntry(String artifactUuid, String auditEntryUuid) throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("audit");
+        assertFeatureEnabled("audit"); //$NON-NLS-1$
         try {
-            String atomUrl = String.format("%1$s/audit/artifact/%2$s/%3$s", this.endpoint, artifactUuid, auditEntryUuid);
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s/%3$s", this.endpoint, artifactUuid, auditEntryUuid); //$NON-NLS-1$
             ClientRequest request = createClientRequest(atomUrl);
             ClientResponse<Entry> response = request.get(Entry.class);
             Entry entry = response.getEntity();

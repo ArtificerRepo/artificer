@@ -50,7 +50,7 @@ public class PolicyDeriver extends AbstractXmlDeriver {
 	@Override
 	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
 		super.configureNamespaceMappings(namespaceContext);
-		namespaceContext.addMapping("wsp", "http://www.w3.org/ns/ws-policy");
+		namespaceContext.addMapping("wsp", "http://www.w3.org/ns/ws-policy"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**

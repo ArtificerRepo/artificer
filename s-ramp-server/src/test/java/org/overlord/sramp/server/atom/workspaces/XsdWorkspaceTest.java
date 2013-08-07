@@ -33,9 +33,9 @@ public class XsdWorkspaceTest extends AbstractWorkspaceTest {
     @Test
     public void testWorkspace() throws Exception {
         AppService appService = new AppService();
-        appService.getWorkspace().add(new XsdWorkspace("http://example.org"));
+        appService.getWorkspace().add(new XsdWorkspace("http://example.org")); //$NON-NLS-1$
         String actual = marshall(appService);
-        String expected = getExpectedWorkspaceXML("xsd");
+        String expected = getExpectedWorkspaceXML("xsd"); //$NON-NLS-1$
 
         XMLAssert.assertXMLEqual(expected, actual);
     }

@@ -33,9 +33,9 @@ public class PolicyWorkspaceTest extends AbstractWorkspaceTest {
     @Test
     public void testWorkspace() throws Exception {
         AppService appService = new AppService();
-        appService.getWorkspace().add(new PolicyWorkspace("http://example.org"));
+        appService.getWorkspace().add(new PolicyWorkspace("http://example.org")); //$NON-NLS-1$
         String actual = marshall(appService);
-        String expected = getExpectedWorkspaceXML("policy");
+        String expected = getExpectedWorkspaceXML("policy"); //$NON-NLS-1$
 
         XMLAssert.assertXMLEqual(expected, actual);
     }

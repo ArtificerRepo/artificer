@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.overlord.sramp.atom.i18n.Messages;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
@@ -61,14 +62,14 @@ public class RdfToOntologyMapper {
 	 * @throws Exception
 	 */
 	public void map(RDF rdf, SrampOntology ontology) throws Exception {
-        String uuid = rdf.getOtherAttributes().get(new QName(SrampConstants.SRAMP_NS, "uuid"));
+        String uuid = rdf.getOtherAttributes().get(new QName(SrampConstants.SRAMP_NS, "uuid")); //$NON-NLS-1$
         if (uuid != null && uuid.trim().length() > 0) {
             ontology.setUuid(uuid);
         }
 
         Ontology rdfOntology = rdf.getOntology();
 
-		String base = rdf.getOtherAttributes().get(new QName("http://www.w3.org/XML/1998/namespace", "base"));
+		String base = rdf.getOtherAttributes().get(new QName("http://www.w3.org/XML/1998/namespace", "base")); //$NON-NLS-1$ //$NON-NLS-2$
 		ontology.setBase(base);
 		ontology.setId(rdfOntology.getID());
 		ontology.setLabel(rdfOntology.getLabel());
@@ -83,7 +84,7 @@ public class RdfToOntologyMapper {
 			oclass.setId(rdfClass.getID());
 			oclass.setLabel(rdfClass.getLabel());
 			oclass.setComment(rdfClass.getComment());
-			String uri = base + "#" + rdfClass.getID();
+			String uri = base + "#" + rdfClass.getID(); //$NON-NLS-1$
 			oclass.setUri(new URI(uri));
 			Object[] classData = new Object[] {
 					oclass, rdfClass.getSubClassOf() != null ? rdfClass.getSubClassOf().getResource() : null
@@ -105,7 +106,7 @@ public class RdfToOntologyMapper {
 					parent = uriIndex.get(resourceRef);
 				}
 				if (parent == null) {
-					throw new Exception("Failed to resolve parent class reference: " + resourceRef);
+					throw new Exception(Messages.i18n.format("FAILED_TO_RESOLVE_PARENT", resourceRef)); //$NON-NLS-1$
 				}
 				parent.getChildren().add(oclass);
 				oclass.setParent(parent);

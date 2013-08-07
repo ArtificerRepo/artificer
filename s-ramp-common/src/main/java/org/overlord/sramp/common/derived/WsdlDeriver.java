@@ -118,7 +118,7 @@ public class WsdlDeriver extends XsdDeriver {
     // Property added to some targets if the target artifact reference cannot be resolved during
     // the derivation phase.  When this happens we mark it as unresolved and try to resolve it
     // during the link phase.
-    public static final QName UNRESOLVED_REF = new QName("urn:s-ramp:wsdl-deriver", "unresolvedRef");
+    public static final QName UNRESOLVED_REF = new QName("urn:s-ramp:wsdl-deriver", "unresolvedRef"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private final WsdlLinker linker = new WsdlLinker();
 
@@ -135,8 +135,8 @@ public class WsdlDeriver extends XsdDeriver {
 	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
 		super.configureNamespaceMappings(namespaceContext);
 
-		namespaceContext.addMapping("wsdl", "http://schemas.xmlsoap.org/wsdl/");
-		namespaceContext.addMapping("soap", "http://schemas.xmlsoap.org/wsdl/soap/");
+		namespaceContext.addMapping("wsdl", "http://schemas.xmlsoap.org/wsdl/"); //$NON-NLS-1$ //$NON-NLS-2$
+		namespaceContext.addMapping("soap", "http://schemas.xmlsoap.org/wsdl/soap/"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class WsdlDeriver extends XsdDeriver {
 	@Override
 	protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
 			Element rootElement, XPath xpath) throws IOException {
-		String targetNS = rootElement.getAttribute("targetNamespace");
+		String targetNS = rootElement.getAttribute("targetNamespace"); //$NON-NLS-1$
 		((WsdlDocument) artifact).setTargetNamespace(targetNS);
 
 		try {
@@ -175,7 +175,7 @@ public class WsdlDeriver extends XsdDeriver {
 			BaseArtifactType artifact, Element definitions, XPath xpath) throws XPathExpressionException {
 
 		// Get derived content from all of the schemas embedded in this WSDL
-		NodeList schemas = (NodeList) this.query(xpath, definitions, "./wsdl:types/xsd:schema", XPathConstants.NODESET);
+		NodeList schemas = (NodeList) this.query(xpath, definitions, "./wsdl:types/xsd:schema", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < schemas.getLength(); idx++) {
 			Element schema = (Element) schemas.item(idx);
 			processSchema(derivedArtifacts, artifact, schema, xpath);
@@ -197,14 +197,14 @@ public class WsdlDeriver extends XsdDeriver {
 	 */
 	private void processMessages(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element definitions, XPath xpath) throws XPathExpressionException {
-		String targetNS = definitions.getAttribute("targetNamespace");
+		String targetNS = definitions.getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// Get all the WSDL messages and add them (and their parts) to the list
-		NodeList messages = (NodeList) this.query(xpath, definitions, "./wsdl:message", XPathConstants.NODESET);
+		NodeList messages = (NodeList) this.query(xpath, definitions, "./wsdl:message", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < messages.getLength(); idx++) {
 			Element messageElem = (Element) messages.item(idx);
-			if (messageElem.hasAttribute("name")) {
-				String name = messageElem.getAttribute("name");
+			if (messageElem.hasAttribute("name")) { //$NON-NLS-1$
+				String name = messageElem.getAttribute("name"); //$NON-NLS-1$
 				Message message = new Message();
 				message.setUuid(UUID.randomUUID().toString());
 				message.setArtifactType(BaseArtifactEnum.MESSAGE);
@@ -235,14 +235,14 @@ public class WsdlDeriver extends XsdDeriver {
 	private Collection<Part> processParts(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element messageElem, XPath xpath) throws XPathExpressionException {
 		Collection<Part> rval = new LinkedList<Part>();
-		String targetNS = messageElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+		String targetNS = messageElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// Get all the parts and add them to the list
-		NodeList parts = (NodeList) this.query(xpath, messageElem, "./wsdl:part", XPathConstants.NODESET);
+		NodeList parts = (NodeList) this.query(xpath, messageElem, "./wsdl:part", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < parts.getLength(); idx++) {
 			Element partElem = (Element) parts.item(idx);
-			if (partElem.hasAttribute("name")) {
-				String name = partElem.getAttribute("name");
+			if (partElem.hasAttribute("name")) { //$NON-NLS-1$
+				String name = partElem.getAttribute("name"); //$NON-NLS-1$
 				Part part = new Part();
 				part.setUuid(UUID.randomUUID().toString());
 				part.setArtifactType(BaseArtifactEnum.PART);
@@ -252,8 +252,8 @@ public class WsdlDeriver extends XsdDeriver {
 				derivedArtifacts.add(part);
 				rval.add(part);
 
-				if (partElem.hasAttribute("element")) {
-					String encodedQName = partElem.getAttribute("element");
+				if (partElem.hasAttribute("element")) { //$NON-NLS-1$
+					String encodedQName = partElem.getAttribute("element"); //$NON-NLS-1$
 					QName qname = resolveQName(partElem, targetNS, encodedQName);
 					ElementDeclaration elementRef = derivedArtifacts.lookupElement(qname);
                     ElementTarget elementTarget = new ElementTarget();
@@ -264,8 +264,8 @@ public class WsdlDeriver extends XsdDeriver {
 					    elementTarget.getOtherAttributes().put(UNRESOLVED_REF, qname.toString());
 					}
                     part.setElement(elementTarget);
-				} else if (partElem.hasAttribute("type")) {
-					String encodedQName = partElem.getAttribute("type");
+				} else if (partElem.hasAttribute("type")) { //$NON-NLS-1$
+					String encodedQName = partElem.getAttribute("type"); //$NON-NLS-1$
 					QName qname = resolveQName(partElem, targetNS, encodedQName);
 					XsdType typeRef = derivedArtifacts.lookupType(qname);
                     XsdTypeTarget typeTarget = new XsdTypeTarget();
@@ -292,14 +292,14 @@ public class WsdlDeriver extends XsdDeriver {
 	 */
 	private void processPortTypes(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element definitions, XPath xpath) throws XPathExpressionException {
-		String targetNS = definitions.getAttribute("targetNamespace");
+		String targetNS = definitions.getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// Get all the port types and add them to the list
-		NodeList portTypes = (NodeList) this.query(xpath, definitions, "./wsdl:portType", XPathConstants.NODESET);
+		NodeList portTypes = (NodeList) this.query(xpath, definitions, "./wsdl:portType", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < portTypes.getLength(); idx++) {
 			Element portTypeElem = (Element) portTypes.item(idx);
-			if (portTypeElem.hasAttribute("name")) {
-				String name = portTypeElem.getAttribute("name");
+			if (portTypeElem.hasAttribute("name")) { //$NON-NLS-1$
+				String name = portTypeElem.getAttribute("name"); //$NON-NLS-1$
 				PortType portType = new PortType();
 				portType.setUuid(UUID.randomUUID().toString());
 				portType.setArtifactType(BaseArtifactEnum.PORT_TYPE);
@@ -330,14 +330,14 @@ public class WsdlDeriver extends XsdDeriver {
 	private Collection<Operation> processOperations(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element portTypeElem, XPath xpath) throws XPathExpressionException {
 		Collection<Operation> rval = new LinkedList<Operation>();
-		String targetNS = portTypeElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+		String targetNS = portTypeElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// Get all the operations and add them to the list
-		NodeList operations = (NodeList) this.query(xpath, portTypeElem, "./wsdl:operation", XPathConstants.NODESET);
+		NodeList operations = (NodeList) this.query(xpath, portTypeElem, "./wsdl:operation", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < operations.getLength(); idx++) {
 			Element operationElem = (Element) operations.item(idx);
-			if (operationElem.hasAttribute("name")) {
-				String name = operationElem.getAttribute("name");
+			if (operationElem.hasAttribute("name")) { //$NON-NLS-1$
+				String name = operationElem.getAttribute("name"); //$NON-NLS-1$
 				Operation operation = new Operation();
 				operation.setUuid(UUID.randomUUID().toString());
 				operation.setArtifactType(BaseArtifactEnum.OPERATION);
@@ -387,9 +387,9 @@ public class WsdlDeriver extends XsdDeriver {
 	private OperationInput processOperationInput(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
 		OperationInput rval = null;
-		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 
-		Element inputElem = (Element) this.query(xpath, operationElem, "./wsdl:input", XPathConstants.NODE);
+		Element inputElem = (Element) this.query(xpath, operationElem, "./wsdl:input", XPathConstants.NODE); //$NON-NLS-1$
 		if (inputElem != null) {
 			OperationInput input = new OperationInput();
 			input.setUuid(UUID.randomUUID().toString());
@@ -397,8 +397,8 @@ public class WsdlDeriver extends XsdDeriver {
 			String name = null;
 			derivedArtifacts.add(input);
 
-			if (inputElem.hasAttribute("message")) {
-				String encodedMsgQname = inputElem.getAttribute("message");
+			if (inputElem.hasAttribute("message")) { //$NON-NLS-1$
+				String encodedMsgQname = inputElem.getAttribute("message"); //$NON-NLS-1$
 				QName msgQname = resolveQName(inputElem, targetNS, encodedMsgQname);
 				name = msgQname.getLocalPart();
 				Message message = derivedArtifacts.lookupMessage(msgQname);
@@ -411,8 +411,8 @@ public class WsdlDeriver extends XsdDeriver {
 				}
                 input.setMessage(target);
 			}
-			if (inputElem.hasAttribute("name")) {
-				name = inputElem.getAttribute("name");
+			if (inputElem.hasAttribute("name")) { //$NON-NLS-1$
+				name = inputElem.getAttribute("name"); //$NON-NLS-1$
 				input.setNCName(name);
 			}
 
@@ -435,9 +435,9 @@ public class WsdlDeriver extends XsdDeriver {
 	private OperationOutput processOperationOutput(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
 		OperationOutput rval = null;
-		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 
-		Element outputElem = (Element) this.query(xpath, operationElem, "./wsdl:output", XPathConstants.NODE);
+		Element outputElem = (Element) this.query(xpath, operationElem, "./wsdl:output", XPathConstants.NODE); //$NON-NLS-1$
 		if (outputElem != null) {
 			OperationOutput output = new OperationOutput();
 			output.setUuid(UUID.randomUUID().toString());
@@ -445,8 +445,8 @@ public class WsdlDeriver extends XsdDeriver {
 			String name = null;
 			derivedArtifacts.add(output);
 
-			if (outputElem.hasAttribute("message")) {
-				String encodedMsgQname = outputElem.getAttribute("message");
+			if (outputElem.hasAttribute("message")) { //$NON-NLS-1$
+				String encodedMsgQname = outputElem.getAttribute("message"); //$NON-NLS-1$
 				QName msgQname = resolveQName(outputElem, targetNS, encodedMsgQname);
 				name = msgQname.getLocalPart();
 				Message message = derivedArtifacts.lookupMessage(msgQname);
@@ -459,8 +459,8 @@ public class WsdlDeriver extends XsdDeriver {
 				}
                 output.setMessage(target);
 			}
-			if (outputElem.hasAttribute("name")) {
-				name = outputElem.getAttribute("name");
+			if (outputElem.hasAttribute("name")) { //$NON-NLS-1$
+				name = outputElem.getAttribute("name"); //$NON-NLS-1$
 				output.setNCName(name);
 			}
 
@@ -483,9 +483,9 @@ public class WsdlDeriver extends XsdDeriver {
 	private Collection<Fault> processOperationFaults(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
 		Collection<Fault> rval = new LinkedList<Fault>();
-		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 
-		NodeList faults = (NodeList) this.query(xpath, operationElem, "./wsdl:fault", XPathConstants.NODESET);
+		NodeList faults = (NodeList) this.query(xpath, operationElem, "./wsdl:fault", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < faults.getLength(); idx++) {
 			Element faultElem = (Element) faults.item(idx);
 			Fault fault = new Fault();
@@ -496,8 +496,8 @@ public class WsdlDeriver extends XsdDeriver {
 			derivedArtifacts.add(fault);
 			rval.add(fault);
 
-			if (faultElem.hasAttribute("message")) {
-				String encodedMsgQname = faultElem.getAttribute("message");
+			if (faultElem.hasAttribute("message")) { //$NON-NLS-1$
+				String encodedMsgQname = faultElem.getAttribute("message"); //$NON-NLS-1$
 				QName msgQname = resolveQName(faultElem, targetNS, encodedMsgQname);
 				name = msgQname.getLocalPart();
 				Message message = derivedArtifacts.lookupMessage(msgQname);
@@ -510,8 +510,8 @@ public class WsdlDeriver extends XsdDeriver {
 				}
                 fault.setMessage(target);
 			}
-			if (faultElem.hasAttribute("name")) {
-				name = faultElem.getAttribute("name");
+			if (faultElem.hasAttribute("name")) { //$NON-NLS-1$
+				name = faultElem.getAttribute("name"); //$NON-NLS-1$
 				fault.setNCName(name);
 			}
 
@@ -531,14 +531,14 @@ public class WsdlDeriver extends XsdDeriver {
 	 */
 	private void processBindings(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element definitions, XPath xpath) throws XPathExpressionException {
-		String targetNS = definitions.getAttribute("targetNamespace");
+		String targetNS = definitions.getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// Get all the bindings and add them to the list
-		NodeList bindings = (NodeList) this.query(xpath, definitions, "./wsdl:binding", XPathConstants.NODESET);
+		NodeList bindings = (NodeList) this.query(xpath, definitions, "./wsdl:binding", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < bindings.getLength(); idx++) {
 			Element bindingElem = (Element) bindings.item(idx);
-			if (bindingElem.hasAttribute("name")) {
-				String name = bindingElem.getAttribute("name");
+			if (bindingElem.hasAttribute("name")) { //$NON-NLS-1$
+				String name = bindingElem.getAttribute("name"); //$NON-NLS-1$
 				Binding binding = new Binding();
 				binding.setUuid(UUID.randomUUID().toString());
 				binding.setArtifactType(BaseArtifactEnum.BINDING);
@@ -549,8 +549,8 @@ public class WsdlDeriver extends XsdDeriver {
 
 				// Resolve the referenced port type and create a relationship to it.
 				PortType portType = null;
-				if (bindingElem.hasAttribute("type")) {
-					String portTypeEncodedQName = bindingElem.getAttribute("type");
+				if (bindingElem.hasAttribute("type")) { //$NON-NLS-1$
+					String portTypeEncodedQName = bindingElem.getAttribute("type"); //$NON-NLS-1$
 					QName portTypeQName = resolveQName(bindingElem, targetNS, portTypeEncodedQName);
 					portType = derivedArtifacts.lookupPortType(portTypeQName);
                     PortTypeTarget target = new PortTypeTarget();
@@ -574,7 +574,7 @@ public class WsdlDeriver extends XsdDeriver {
 				}
 
 				// Process soap extensions
-				NodeList soapBindings = (NodeList) this.query(xpath, bindingElem, "./soap:binding", XPathConstants.NODESET);
+				NodeList soapBindings = (NodeList) this.query(xpath, bindingElem, "./soap:binding", XPathConstants.NODESET); //$NON-NLS-1$
 				for (int jdx = 0; jdx < bindings.getLength(); jdx++) {
 					Element soapBindingElem = (Element) soapBindings.item(jdx);
 					// Note: I ran into a case where the xpath returned some nodes but calls to item()
@@ -585,11 +585,11 @@ public class WsdlDeriver extends XsdDeriver {
 					SoapBinding soapBinding = new SoapBinding();
 					soapBinding.setUuid(UUID.randomUUID().toString());
 					soapBinding.setArtifactType(BaseArtifactEnum.SOAP_BINDING);
-					soapBinding.setName("soap:binding");
+					soapBinding.setName("soap:binding"); //$NON-NLS-1$
 					soapBinding.setNamespace(soapBindingElem.getNamespaceURI());
 					soapBinding.setNCName(soapBindingElem.getLocalName());
-					soapBinding.setStyle(soapBindingElem.getAttribute("style"));
-					soapBinding.setTransport(soapBindingElem.getAttribute("transport"));
+					soapBinding.setStyle(soapBindingElem.getAttribute("style")); //$NON-NLS-1$
+					soapBinding.setTransport(soapBindingElem.getAttribute("transport")); //$NON-NLS-1$
 					derivedArtifacts.add(soapBinding);
 
 					WsdlExtensionTarget target = new WsdlExtensionTarget();
@@ -612,14 +612,14 @@ public class WsdlDeriver extends XsdDeriver {
 	private Collection<BindingOperation> processBindingOperations(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element bindingElem, PortType portType, XPath xpath) throws XPathExpressionException {
 		Collection<BindingOperation> rval = new LinkedList<BindingOperation>();
-		String targetNS = bindingElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+		String targetNS = bindingElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// Get all the binding operations and add them to the list
-		NodeList bindingOperations = (NodeList) this.query(xpath, bindingElem, "./wsdl:operation", XPathConstants.NODESET);
+		NodeList bindingOperations = (NodeList) this.query(xpath, bindingElem, "./wsdl:operation", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < bindingOperations.getLength(); idx++) {
 			Element bindingOperationElem = (Element) bindingOperations.item(idx);
-			if (bindingOperationElem.hasAttribute("name")) {
-				String name = bindingOperationElem.getAttribute("name");
+			if (bindingOperationElem.hasAttribute("name")) { //$NON-NLS-1$
+				String name = bindingOperationElem.getAttribute("name"); //$NON-NLS-1$
 				BindingOperation bindingOperation = new BindingOperation();
 				bindingOperation.setUuid(UUID.randomUUID().toString());
 				bindingOperation.setArtifactType(BaseArtifactEnum.BINDING_OPERATION);
@@ -676,16 +676,16 @@ public class WsdlDeriver extends XsdDeriver {
 	private BindingOperationInput processBindingOperationInput(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
 		BindingOperationInput rval = null;
-		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 
-		Element inputElem = (Element) this.query(xpath, operationElem, "./wsdl:input", XPathConstants.NODE);
+		Element inputElem = (Element) this.query(xpath, operationElem, "./wsdl:input", XPathConstants.NODE); //$NON-NLS-1$
 		if (inputElem != null) {
 			BindingOperationInput bindingOperationInput = new BindingOperationInput();
 			bindingOperationInput.setUuid(UUID.randomUUID().toString());
 			bindingOperationInput.setArtifactType(BaseArtifactEnum.BINDING_OPERATION_INPUT);
-			String name = "wsdl:input";
-			if (inputElem.hasAttribute("name")) {
-				name = inputElem.getAttribute("name");
+			String name = "wsdl:input"; //$NON-NLS-1$
+			if (inputElem.hasAttribute("name")) { //$NON-NLS-1$
+				name = inputElem.getAttribute("name"); //$NON-NLS-1$
 				bindingOperationInput.setNCName(name);
 			}
 			bindingOperationInput.setName(name);
@@ -708,16 +708,16 @@ public class WsdlDeriver extends XsdDeriver {
 	private BindingOperationOutput processBindingOperationOutput(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
 		BindingOperationOutput rval = null;
-		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 
-		Element outputElem = (Element) this.query(xpath, operationElem, "./wsdl:output", XPathConstants.NODE);
+		Element outputElem = (Element) this.query(xpath, operationElem, "./wsdl:output", XPathConstants.NODE); //$NON-NLS-1$
 		if (outputElem != null) {
 			BindingOperationOutput bindingOperationOutput = new BindingOperationOutput();
 			bindingOperationOutput.setUuid(UUID.randomUUID().toString());
 			bindingOperationOutput.setArtifactType(BaseArtifactEnum.BINDING_OPERATION_OUTPUT);
-			String name = "wsdl:output";
-			if (outputElem.hasAttribute("name")) {
-				name = outputElem.getAttribute("name");
+			String name = "wsdl:output"; //$NON-NLS-1$
+			if (outputElem.hasAttribute("name")) { //$NON-NLS-1$
+				name = outputElem.getAttribute("name"); //$NON-NLS-1$
 				bindingOperationOutput.setNCName(name);
 			}
 			bindingOperationOutput.setName(name);
@@ -740,18 +740,18 @@ public class WsdlDeriver extends XsdDeriver {
 	private Collection<BindingOperationFault> processBindingOperationFaults(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element operationElem, XPath xpath) throws XPathExpressionException {
 		Collection<BindingOperationFault> rval = new LinkedList<BindingOperationFault>();
-		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+		String targetNS = operationElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 
-		NodeList faults = (NodeList) this.query(xpath, operationElem, "./wsdl:fault", XPathConstants.NODESET);
+		NodeList faults = (NodeList) this.query(xpath, operationElem, "./wsdl:fault", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < faults.getLength(); idx++) {
 			Element faultElem = (Element) faults.item(idx);
 			BindingOperationFault bindingOperationFault = new BindingOperationFault();
 			bindingOperationFault.setUuid(UUID.randomUUID().toString());
 			bindingOperationFault.setArtifactType(BaseArtifactEnum.BINDING_OPERATION_FAULT);
 
-			String name = "wsdl:fault";
-			if (faultElem.hasAttribute("name")) {
-				name = faultElem.getAttribute("name");
+			String name = "wsdl:fault"; //$NON-NLS-1$
+			if (faultElem.hasAttribute("name")) { //$NON-NLS-1$
+				name = faultElem.getAttribute("name"); //$NON-NLS-1$
 				bindingOperationFault.setNCName(name);
 			}
 
@@ -774,22 +774,22 @@ public class WsdlDeriver extends XsdDeriver {
 	 */
 	private void processServices(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element definitions, XPath xpath) throws XPathExpressionException {
-		String targetNS = definitions.getAttribute("targetNamespace");
+		String targetNS = definitions.getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// Get all the bindings and add them to the list
-		NodeList services = (NodeList) this.query(xpath, definitions, "./wsdl:service", XPathConstants.NODESET);
+		NodeList services = (NodeList) this.query(xpath, definitions, "./wsdl:service", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < services.getLength(); idx++) {
 			Element serviceElem = (Element) services.item(idx);
 			WsdlService service = new WsdlService();
 			service.setUuid(UUID.randomUUID().toString());
 			service.setArtifactType(BaseArtifactEnum.WSDL_SERVICE);
 			service.setNamespace(targetNS);
-			if (serviceElem.hasAttribute("name")) {
-				String name = serviceElem.getAttribute("name");
+			if (serviceElem.hasAttribute("name")) { //$NON-NLS-1$
+				String name = serviceElem.getAttribute("name"); //$NON-NLS-1$
 				service.setName(name);
 				service.setNCName(name);
 			} else {
-				service.setName("wsdl:service");
+				service.setName("wsdl:service"); //$NON-NLS-1$
 			}
 			derivedArtifacts.add(service);
 
@@ -814,9 +814,9 @@ public class WsdlDeriver extends XsdDeriver {
 	private Collection<Port> processPorts(IndexedArtifactCollection derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element serviceElem, XPath xpath) throws XPathExpressionException {
 		Collection<Port> rval = new LinkedList<Port>();
-		String targetNS = serviceElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace");
+		String targetNS = serviceElem.getOwnerDocument().getDocumentElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 
-		NodeList ports = (NodeList) this.query(xpath, serviceElem, "./wsdl:port", XPathConstants.NODESET);
+		NodeList ports = (NodeList) this.query(xpath, serviceElem, "./wsdl:port", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < ports.getLength(); idx++) {
 			Element portElem = (Element) ports.item(idx);
 			Port port = new Port();
@@ -824,16 +824,16 @@ public class WsdlDeriver extends XsdDeriver {
 			port.setArtifactType(BaseArtifactEnum.PORT);
 			port.setNamespace(targetNS);
 
-			if (portElem.hasAttribute("name")) {
-				String name = portElem.getAttribute("name");
+			if (portElem.hasAttribute("name")) { //$NON-NLS-1$
+				String name = portElem.getAttribute("name"); //$NON-NLS-1$
 				port.setNCName(name);
 				port.setName(name);
 			} else {
-				port.setName("wsdl:port");
+				port.setName("wsdl:port"); //$NON-NLS-1$
 			}
 
-			if (portElem.hasAttribute("binding")) {
-				String bindingEncodedQName = portElem.getAttribute("binding");
+			if (portElem.hasAttribute("binding")) { //$NON-NLS-1$
+				String bindingEncodedQName = portElem.getAttribute("binding"); //$NON-NLS-1$
 				QName bindingQName = resolveQName(portElem, targetNS, bindingEncodedQName);
 				Binding binding = derivedArtifacts.lookupBinding(bindingQName);
                 BindingTarget target = new BindingTarget();
@@ -849,16 +849,16 @@ public class WsdlDeriver extends XsdDeriver {
 			derivedArtifacts.add(port);
 			rval.add(port);
 
-			NodeList soapAddresses = (NodeList) this.query(xpath, portElem, "./soap:address", XPathConstants.NODESET);
+			NodeList soapAddresses = (NodeList) this.query(xpath, portElem, "./soap:address", XPathConstants.NODESET); //$NON-NLS-1$
 			for (int jdx = 0; jdx < soapAddresses.getLength(); jdx++) {
 				Element soapAddressElem = (Element) soapAddresses.item(jdx);
 				SoapAddress soapAddress = new SoapAddress();
 				soapAddress.setUuid(UUID.randomUUID().toString());
 				soapAddress.setArtifactType(BaseArtifactEnum.SOAP_ADDRESS);
-				soapAddress.setName("soap:address");
+				soapAddress.setName("soap:address"); //$NON-NLS-1$
 				soapAddress.setNCName(soapAddressElem.getLocalName());
 				soapAddress.setNamespace(soapAddressElem.getNamespaceURI());
-				soapAddress.setSoapLocation(soapAddressElem.getAttribute("location"));
+				soapAddress.setSoapLocation(soapAddressElem.getAttribute("location")); //$NON-NLS-1$
 				derivedArtifacts.add(soapAddress);
 
 				WsdlExtensionTarget target = new WsdlExtensionTarget();
@@ -877,7 +877,7 @@ public class WsdlDeriver extends XsdDeriver {
 	 * @param encodedQName
 	 */
 	private QName resolveQName(Element context, String defaultNamespace, String encodedQName) {
-		int idx = encodedQName.indexOf(":");
+		int idx = encodedQName.indexOf(":"); //$NON-NLS-1$
 		if (idx == -1) {
 			return new QName(defaultNamespace, encodedQName);
 		}
@@ -898,7 +898,7 @@ public class WsdlDeriver extends XsdDeriver {
 	 * @param prefix
 	 */
 	private String resolveNamespaceByPrefix(Element context, String prefix) {
-		String nsDecl = "xmlns:" + prefix;
+		String nsDecl = "xmlns:" + prefix; //$NON-NLS-1$
 		Element elem = context;
 		String ns = null;
 		while (elem != null) {

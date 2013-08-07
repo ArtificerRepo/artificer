@@ -51,23 +51,23 @@ public class JCRLinkerContext implements LinkerContext {
     public Collection<BaseArtifactType> findArtifacts(String model, String type,
             Map<String, String> criteria) {
         StringBuilder builder = new StringBuilder();
-        builder.append("/s-ramp/").append(model).append("/").append(type);
+        builder.append("/s-ramp/").append(model).append("/").append(type); //$NON-NLS-1$ //$NON-NLS-2$
         if (!criteria.isEmpty()) {
-            builder.append("[");
+            builder.append("["); //$NON-NLS-1$
             boolean first = true;
             for (String key : criteria.keySet()) {
                 String value = criteria.get(key);
                 if (first) {
                     first = false;
                 } else {
-                    builder.append(" and ");
+                    builder.append(" and "); //$NON-NLS-1$
                 }
-                builder.append("@").append(key.replace("'", "\\'")).append(" = '").append(value.replace("'", "\\'")).append("'");
+                builder.append("@").append(key.replace("'", "\\'")).append(" = '").append(value.replace("'", "\\'")).append("'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
             }
-            builder.append("]");
+            builder.append("]"); //$NON-NLS-1$
         }
         String xpath = builder.toString();
-        JCRSrampQuery query = new JCRSrampQuery(xpath, "createdTimestamp", false);
+        JCRSrampQuery query = new JCRSrampQuery(xpath, "createdTimestamp", false); //$NON-NLS-1$
         query.setSession(session);
         try {
             ArtifactSet artifactSet = query.executeQuery();

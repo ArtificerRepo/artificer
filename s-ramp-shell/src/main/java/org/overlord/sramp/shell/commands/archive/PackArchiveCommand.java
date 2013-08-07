@@ -21,14 +21,15 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Removes an entry from the current S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class PackArchiveCommand extends AbstractShellCommand {
+public class PackArchiveCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -37,46 +38,28 @@ public class PackArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("archive:pack <outputLocation>");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'pack' command packages up the currently open S-RAMP batch");
-		print("archive file.  The S-RAMP batch archive is zip'd up and then");
-		print("copied to the output file location provided.");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String outputLocationArg = requiredArgument(0, "Please include the output location (file path).");
+		String outputLocationArg = requiredArgument(0, Messages.i18n.format("PackArchive.InvalidArgMsg.OutputLocation")); //$NON-NLS-1$
 
-		QName varName = new QName("archive", "active-archive");
+		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
-			print("No S-RAMP archive is currently open.");
+			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
 		} else {
 			File outputFile = new File(outputLocationArg);
 			if (outputFile.exists()) {
-				print("Output location already exists!");
+				print(Messages.i18n.format("PackArchive.OutputLocAlreadyExists")); //$NON-NLS-1$
 			}
 			if (!outputFile.getParentFile().exists()) {
 				outputFile.mkdirs();
 			}
 			File packedFile = archive.pack();
 			FileUtils.copyFile(packedFile, outputFile);
-			print("S-RAMP archive packaged and copied to: " + outputFile.getCanonicalPath());
+			print(Messages.i18n.format("PackArchive.Packaged", outputFile.getCanonicalPath())); //$NON-NLS-1$
 		}
 	}
 

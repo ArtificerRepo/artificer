@@ -67,7 +67,7 @@ public class FeedResource extends AbstractFeedResource {
 			@QueryParam("orderBy") String orderBy,
 			@QueryParam("ascending") Boolean asc,
 			@QueryParam("propertyName") Set<String> propNames) throws Exception {
-		String xpath = String.format("/s-ramp/%1$s", model);
+		String xpath = String.format("/s-ramp/%1$s", model); //$NON-NLS-1$
 		String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
 		if (startIndex == null && startPage != null) {
 			int c = count != null ? count.intValue() : 100;
@@ -94,7 +94,7 @@ public class FeedResource extends AbstractFeedResource {
 			@QueryParam("orderBy") String orderBy,
 			@QueryParam("ascending") Boolean asc,
 			@QueryParam("propertyName") Set<String> propNames) throws Exception {
-		String xpath = String.format("/s-ramp/%1$s/%2$s", model, type);
+		String xpath = String.format("/s-ramp/%1$s/%2$s", model, type); //$NON-NLS-1$
 		String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
 		if (startIndex == null && startPage != null) {
 			int c = count != null ? count.intValue() : 100;

@@ -17,6 +17,8 @@ package org.overlord.sramp.repository;
 
 import java.util.ServiceLoader;
 
+import org.overlord.sramp.repository.i18n.Messages;
+
 
 /**
  * Factory for creating a {@link AuditManager}.
@@ -29,6 +31,6 @@ public class AuditManagerFactory {
         for (AuditManager manager : ServiceLoader.load(AuditManager.class)) {
             return manager;
         }
-        throw new RuntimeException("Failed to find a AuditManager provider.");
+        throw new RuntimeException(Messages.i18n.format("MISSING_AUDIT_MANAGER_PROVIDER")); //$NON-NLS-1$
     }
 }

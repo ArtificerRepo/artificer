@@ -61,9 +61,9 @@ public class SrampWagonTest extends BaseResourceTest {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		// use the in-memory config for unit tests
-		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
-				+ "/META-INF/modeshape-configs/inmemory-sramp-config.json");
-        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "false");
+		System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName() //$NON-NLS-1$ //$NON-NLS-2$
+				+ "/META-INF/modeshape-configs/inmemory-sramp-config.json"); //$NON-NLS-1$
+        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "false"); //$NON-NLS-1$
 
 		deployment.getProviderFactory().registerProvider(SrampAtomExceptionProvider.class);
 		deployment.getProviderFactory().registerProvider(HttpResponseProvider.class);
@@ -92,7 +92,7 @@ public class SrampWagonTest extends BaseResourceTest {
 	public void testWagonPush() throws Exception {
 		SrampWagon wagon = new SrampWagon();
 		setLogger(wagon);
-		Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/?artifactType=JavaArchive").replaceAll("http", "sramp"));
+		Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/?artifactType=JavaArchive").replaceAll("http", "sramp")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		wagon.connect(repo);
 		InputStream metaDataStream = null;
 		InputStream artifactStream = null;
@@ -100,11 +100,11 @@ public class SrampWagonTest extends BaseResourceTest {
 		InputStream artifactSHA1Stream = null;
 		InputStream pomSHA1Stream = null;
 		try {
-			metaDataStream = getClass().getResourceAsStream("maven-metadata.xml");
-			artifactStream = getClass().getResourceAsStream("artifact-0.0.3.jar");
-			pomStream = getClass().getResourceAsStream("artifact-0.0.3.pom");
-			artifactSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1");
-			pomSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1");
+			metaDataStream = getClass().getResourceAsStream("maven-metadata.xml"); //$NON-NLS-1$
+			artifactStream = getClass().getResourceAsStream("artifact-0.0.3.jar"); //$NON-NLS-1$
+			pomStream = getClass().getResourceAsStream("artifact-0.0.3.pom"); //$NON-NLS-1$
+			artifactSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1"); //$NON-NLS-1$
+			pomSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1"); //$NON-NLS-1$
 
 			Assert.assertNotNull(metaDataStream);
 			Assert.assertNotNull(artifactStream);
@@ -112,11 +112,11 @@ public class SrampWagonTest extends BaseResourceTest {
 			Assert.assertNotNull(artifactSHA1Stream);
 			Assert.assertNotNull(pomSHA1Stream);
 
-			wagon.putFromStream(metaDataStream, "org/overlord/sramp/test/archive/0.0.3/maven-metadata.xml");
-			wagon.putFromStream(artifactStream, "org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar");
-			wagon.putFromStream(artifactSHA1Stream, "org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar.sha1");
-			wagon.putFromStream(pomStream, "org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom");
-			wagon.putFromStream(pomSHA1Stream, "org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom.sha1");
+			wagon.putFromStream(metaDataStream, "org/overlord/sramp/test/archive/0.0.3/maven-metadata.xml"); //$NON-NLS-1$
+			wagon.putFromStream(artifactStream, "org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar"); //$NON-NLS-1$
+			wagon.putFromStream(artifactSHA1Stream, "org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar.sha1"); //$NON-NLS-1$
+			wagon.putFromStream(pomStream, "org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom"); //$NON-NLS-1$
+			wagon.putFromStream(pomSHA1Stream, "org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom.sha1"); //$NON-NLS-1$
 		} finally {
 			wagon.disconnect();
 			IOUtils.closeQuietly(metaDataStream);
@@ -128,16 +128,16 @@ public class SrampWagonTest extends BaseResourceTest {
 
 		// Now that we've deployed the artifacts, do some queries to make sure we put away
 		// what we intended.
-		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/"));
-		QueryResultSet rset = client.query("/s-ramp/ext/JavaArchive");
+		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/")); //$NON-NLS-1$
+		QueryResultSet rset = client.query("/s-ramp/ext/JavaArchive"); //$NON-NLS-1$
 		Assert.assertEquals(1, rset.size());
-        rset = client.query("/s-ramp/ext/MavenPom");
+        rset = client.query("/s-ramp/ext/MavenPom"); //$NON-NLS-1$
         Assert.assertEquals(1, rset.size());
-		rset = client.query("/s-ramp/xsd/XsdDocument");
+		rset = client.query("/s-ramp/xsd/XsdDocument"); //$NON-NLS-1$
 		Assert.assertEquals(3, rset.size());
-		rset = client.query("/s-ramp/wsdl/WsdlDocument");
+		rset = client.query("/s-ramp/wsdl/WsdlDocument"); //$NON-NLS-1$
 		Assert.assertEquals(1, rset.size());
-		rset = client.query("/s-ramp[expandedFromDocument]");
+		rset = client.query("/s-ramp[expandedFromDocument]"); //$NON-NLS-1$
 		Assert.assertEquals(4, rset.size());
 
 		// Upload the content again (to make sure the expanded artifacts get deleted and re-added)
@@ -174,27 +174,27 @@ public class SrampWagonTest extends BaseResourceTest {
     public void testWagonPushWithArtifactName() throws Exception {
         SrampWagon wagon = new SrampWagon();
         setLogger(wagon);
-        Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/?artifactType=FooApplication").replaceAll("http", "sramp"));
+        Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/?artifactType=FooApplication").replaceAll("http", "sramp")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         wagon.connect(repo);
         InputStream artifactStream = null;
         InputStream pomStream = null;
         InputStream artifactSHA1Stream = null;
         InputStream pomSHA1Stream = null;
         try {
-            artifactStream = getClass().getResourceAsStream("foo-artifact-0.0.3.txt");
-            pomStream = getClass().getResourceAsStream("artifact-0.0.3.pom");
-            artifactSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1");
-            pomSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1");
+            artifactStream = getClass().getResourceAsStream("foo-artifact-0.0.3.txt"); //$NON-NLS-1$
+            pomStream = getClass().getResourceAsStream("artifact-0.0.3.pom"); //$NON-NLS-1$
+            artifactSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1"); //$NON-NLS-1$
+            pomSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1"); //$NON-NLS-1$
 
             Assert.assertNotNull(artifactStream);
             Assert.assertNotNull(pomStream);
             Assert.assertNotNull(artifactSHA1Stream);
             Assert.assertNotNull(pomSHA1Stream);
 
-            wagon.putFromStream(artifactStream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.txt");
-            wagon.putFromStream(artifactSHA1Stream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.txt.sha1");
-            wagon.putFromStream(pomStream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.pom");
-            wagon.putFromStream(pomSHA1Stream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.pom.sha1");
+            wagon.putFromStream(artifactStream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.txt"); //$NON-NLS-1$
+            wagon.putFromStream(artifactSHA1Stream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.txt.sha1"); //$NON-NLS-1$
+            wagon.putFromStream(pomStream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.pom"); //$NON-NLS-1$
+            wagon.putFromStream(pomSHA1Stream, "org/overlord/sramp/test/foo/0.0.3/foo-artifact-0.0.3.pom.sha1"); //$NON-NLS-1$
         } finally {
             wagon.disconnect();
             IOUtils.closeQuietly(artifactStream);
@@ -205,15 +205,15 @@ public class SrampWagonTest extends BaseResourceTest {
 
         // Now that we've deployed the artifacts, do some queries to make sure we put away
         // what we intended.
-        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/"));
-        QueryResultSet rset = client.query("/s-ramp/core/Document");
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/")); //$NON-NLS-1$
+        QueryResultSet rset = client.query("/s-ramp/core/Document"); //$NON-NLS-1$
         Assert.assertEquals(0, rset.size());
-        rset = client.query("/s-ramp/ext/FooApplication");
+        rset = client.query("/s-ramp/ext/FooApplication"); //$NON-NLS-1$
         Assert.assertEquals(1, rset.size());
-        rset = client.query("/s-ramp/ext/MavenPom");
+        rset = client.query("/s-ramp/ext/MavenPom"); //$NON-NLS-1$
         Assert.assertEquals(1, rset.size());
 
-        rset = client.query("/s-ramp[@maven.groupId = 'org.overlord.sramp.test']");
+        rset = client.query("/s-ramp[@maven.groupId = 'org.overlord.sramp.test']"); //$NON-NLS-1$
         Assert.assertEquals(2, rset.size());
     }
 
@@ -224,7 +224,7 @@ public class SrampWagonTest extends BaseResourceTest {
     public void testWagonPushWithArtifactGrouping() throws Exception {
         SrampWagon wagon = new SrampWagon();
         setLogger(wagon);
-        Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/?artifactGrouping=MyArtifactGrouping").replaceAll("http", "sramp"));
+        Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/?artifactGrouping=MyArtifactGrouping").replaceAll("http", "sramp")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         InputStream artifact1Stream = null;
         InputStream artifact2Stream = null;
         InputStream pom1Stream = null;
@@ -234,14 +234,14 @@ public class SrampWagonTest extends BaseResourceTest {
         InputStream pomSHA1Stream = null;
         InputStream pomSHA2Stream = null;
         try {
-            artifact1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar");
-            artifact2Stream = getClass().getResourceAsStream("foo-artifact-0.0.3.txt");
-            pom1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom");
-            pom2Stream = getClass().getResourceAsStream("artifact-0.0.3.pom");
-            artifactSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1");
-            artifactSHA2Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1");
-            pomSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1");
-            pomSHA2Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1");
+            artifact1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar"); //$NON-NLS-1$
+            artifact2Stream = getClass().getResourceAsStream("foo-artifact-0.0.3.txt"); //$NON-NLS-1$
+            pom1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom"); //$NON-NLS-1$
+            pom2Stream = getClass().getResourceAsStream("artifact-0.0.3.pom"); //$NON-NLS-1$
+            artifactSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1"); //$NON-NLS-1$
+            artifactSHA2Stream = getClass().getResourceAsStream("artifact-0.0.3.jar.sha1"); //$NON-NLS-1$
+            pomSHA1Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1"); //$NON-NLS-1$
+            pomSHA2Stream = getClass().getResourceAsStream("artifact-0.0.3.pom.sha1"); //$NON-NLS-1$
 
             Assert.assertNotNull(artifact1Stream);
             Assert.assertNotNull(artifact2Stream);
@@ -254,18 +254,18 @@ public class SrampWagonTest extends BaseResourceTest {
 
             // Maven module/project 1
             wagon.connect(repo);
-            wagon.putFromStream(artifact1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.jar");
-            wagon.putFromStream(artifactSHA1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.jar.sha1");
-            wagon.putFromStream(pom1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.pom");
-            wagon.putFromStream(pomSHA1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.pom.sha1");
+            wagon.putFromStream(artifact1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.jar"); //$NON-NLS-1$
+            wagon.putFromStream(artifactSHA1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.jar.sha1"); //$NON-NLS-1$
+            wagon.putFromStream(pom1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.pom"); //$NON-NLS-1$
+            wagon.putFromStream(pomSHA1Stream, "org/overlord/sramp/test/artifact/0.0.3/artifact-0.0.3.pom.sha1"); //$NON-NLS-1$
             wagon.disconnect();
 
             // Maven module/project 2
             wagon.connect(repo);
-            wagon.putFromStream(artifact2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.txt");
-            wagon.putFromStream(artifactSHA2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.txt.sha1");
-            wagon.putFromStream(pom2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.pom");
-            wagon.putFromStream(pomSHA2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.pom.sha1");
+            wagon.putFromStream(artifact2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.txt"); //$NON-NLS-1$
+            wagon.putFromStream(artifactSHA2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.txt.sha1"); //$NON-NLS-1$
+            wagon.putFromStream(pom2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.pom"); //$NON-NLS-1$
+            wagon.putFromStream(pomSHA2Stream, "org/overlord/sramp/test/bar/0.0.3/bar-0.0.3.pom.sha1"); //$NON-NLS-1$
         } finally {
             wagon.disconnect();
             IOUtils.closeQuietly(artifact1Stream);
@@ -280,24 +280,24 @@ public class SrampWagonTest extends BaseResourceTest {
 
         // Now that we've deployed the artifacts, do some queries to make sure we put away
         // what we intended.
-        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/"));
-        QueryResultSet rset = client.query("/s-ramp[@maven.groupId = 'org.overlord.sramp.test']");
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/")); //$NON-NLS-1$
+        QueryResultSet rset = client.query("/s-ramp[@maven.groupId = 'org.overlord.sramp.test']"); //$NON-NLS-1$
         Assert.assertEquals(4, rset.size());
 
-        rset = client.query("/s-ramp/ext/ArtifactGrouping");
+        rset = client.query("/s-ramp/ext/ArtifactGrouping"); //$NON-NLS-1$
         Assert.assertEquals(1, rset.size());
 
-        rset = client.query("/s-ramp/ext/ArtifactGrouping[@name = 'MyArtifactGrouping']");
+        rset = client.query("/s-ramp/ext/ArtifactGrouping[@name = 'MyArtifactGrouping']"); //$NON-NLS-1$
         Assert.assertEquals(1, rset.size());
         ArtifactSummary artifactSummary = rset.get(0);
-        Assert.assertEquals("MyArtifactGrouping", artifactSummary.getName());
+        Assert.assertEquals("MyArtifactGrouping", artifactSummary.getName()); //$NON-NLS-1$
         BaseArtifactType groupingArtifact = client.getArtifactMetaData(artifactSummary.getUuid());
         Assert.assertNotNull(groupingArtifact);
-        Relationship relationship = SrampModelUtils.getGenericRelationship(groupingArtifact, "groups");
+        Relationship relationship = SrampModelUtils.getGenericRelationship(groupingArtifact, "groups"); //$NON-NLS-1$
         Assert.assertNotNull(relationship);
         Assert.assertEquals(2, relationship.getRelationshipTarget().size());
 
-        rset = client.query("/s-ramp[groupedBy[@name = 'MyArtifactGrouping']]");
+        rset = client.query("/s-ramp[groupedBy[@name = 'MyArtifactGrouping']]"); //$NON-NLS-1$
         Assert.assertEquals(2, rset.size());
     }
 
@@ -308,11 +308,11 @@ public class SrampWagonTest extends BaseResourceTest {
 	@Test
 	public void testWagonPull() throws Exception {
 		// First, deploy some maven annotated artifacts
-		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/"));
+		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp/")); //$NON-NLS-1$
 		InputStream archiveStream = null;
 		SrampArchive archive = null;
 		try {
-			archiveStream = getClass().getResourceAsStream("sramp-archive.zip");
+			archiveStream = getClass().getResourceAsStream("sramp-archive.zip"); //$NON-NLS-1$
 			archive = new SrampArchive(archiveStream);
 			client.uploadBatch(archive);
 		} finally {
@@ -322,21 +322,21 @@ public class SrampWagonTest extends BaseResourceTest {
 		// Now test that the wagon can pull down the artifacts
 		SrampWagon wagon = new SrampWagon();
 		setLogger(wagon);
-		Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/").replaceAll("http", "sramp"));
+		Repository repo = new Repository("sramp.repo", generateURL("/s-ramp/").replaceAll("http", "sramp")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		wagon.connect(repo);
 
-		File tempFile = File.createTempFile("s-ramp-wagon-test", ".tmp");
+		File tempFile = File.createTempFile("s-ramp-wagon-test", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 		try {
-			wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar", tempFile);
-			assertContents("artifact-0.0.3.jar", tempFile);
+			wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar", tempFile); //$NON-NLS-1$
+			assertContents("artifact-0.0.3.jar", tempFile); //$NON-NLS-1$
 			tempFile.delete();
-			wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar.sha1", tempFile);
-			assertContents("artifact-0.0.3.jar.sha1", tempFile);
+			wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar.sha1", tempFile); //$NON-NLS-1$
+			assertContents("artifact-0.0.3.jar.sha1", tempFile); //$NON-NLS-1$
 			tempFile.delete();
-            wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom", tempFile);
+            wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom", tempFile); //$NON-NLS-1$
             tempFile.delete();
-			wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom.sha1", tempFile);
-			assertContents("artifact-0.0.3.pom.sha1", tempFile);
+			wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.pom.sha1", tempFile); //$NON-NLS-1$
+			assertContents("artifact-0.0.3.pom.sha1", tempFile); //$NON-NLS-1$
 			tempFile.delete();
 		} finally {
 			if (tempFile.exists())
@@ -356,7 +356,7 @@ public class SrampWagonTest extends BaseResourceTest {
 		try {
 			expectedStream = getClass().getResourceAsStream(expected);
 			actualStream = FileUtils.openInputStream(actual);
-			Assert.assertTrue("File contents failed to match: " + actual.getName(),
+			Assert.assertTrue("File contents failed to match: " + actual.getName(), //$NON-NLS-1$
 					IOUtils.contentEquals(expectedStream, actualStream));
 		} finally {
 			IOUtils.closeQuietly(actualStream);
@@ -369,9 +369,9 @@ public class SrampWagonTest extends BaseResourceTest {
 	 * @param wagon
 	 */
 	private void setLogger(SrampWagon wagon) throws Exception {
-		Field field = wagon.getClass().getDeclaredField("logger");
+		Field field = wagon.getClass().getDeclaredField("logger"); //$NON-NLS-1$
 		field.setAccessible(true);
-		field.set(wagon, new ConsoleLogger(0, "logger"));
+		field.set(wagon, new ConsoleLogger(0, "logger")); //$NON-NLS-1$
 	}
 
 }

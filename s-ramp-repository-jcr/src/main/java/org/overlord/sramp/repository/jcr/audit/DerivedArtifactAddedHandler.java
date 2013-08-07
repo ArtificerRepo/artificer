@@ -22,6 +22,7 @@ import javax.jcr.observation.Event;
 
 import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 /**
  * Handles an event bundle containing (potentially) multiple "derived artifact added" events.
@@ -42,7 +43,7 @@ public class DerivedArtifactAddedHandler extends AbstractAuditEventBundleHandler
     public void handle(Sramp sramp, AuditEventBundle eventBundle) throws Exception {
         if (!sramp.isDerivedArtifactAuditingEnabled())
             return;
-        log.debug("Processing DERIVED ARTIFACTS ADDED audit event bundle.");
+        log.debug(Messages.i18n.format("DBG_DERIVED_ARTIFACTS_PROCESSING")); //$NON-NLS-1$
         List<Event> derivedArtifactAddedEvents = eventBundle.getDerivedArtifactAddEvents();
         if (derivedArtifactAddedEvents.isEmpty()) {
             return;

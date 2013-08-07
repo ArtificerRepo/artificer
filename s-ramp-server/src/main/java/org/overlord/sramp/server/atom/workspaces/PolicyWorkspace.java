@@ -33,7 +33,7 @@ public class PolicyWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public PolicyWorkspace(String hrefBase) {
-		super(hrefBase, "Policy Model");
+		super(hrefBase, "Policy Model"); //$NON-NLS-1$
 	}
 
 	/**
@@ -41,10 +41,10 @@ public class PolicyWorkspace extends AbstractWorkspace {
 	 */
 	@Override
 	protected void configureWorkspace() {
-        AppCollection policyCollection = addCollection("/s-ramp/policy", "Policy Model Objects", MediaType.APPLICATION_ZIP);
-        AppCollection policyDocumentCollection = addCollection("/s-ramp/policy/PolicyDocument", "Policy Documents", MediaType.APPLICATION_XML);
-        AppCollection policyExpressionCollection = addCollection("/s-ramp/policy/PolicyExpression", "Policy Expressions", "");
-        AppCollection policyAttachmentCollection = addCollection("/s-ramp/policy/PolicyAttachment", "Policy Attachments", "");
+        AppCollection policyCollection = addCollection("/s-ramp/policy", "Policy Model Objects", MediaType.APPLICATION_ZIP); //$NON-NLS-1$ //$NON-NLS-2$
+        AppCollection policyDocumentCollection = addCollection("/s-ramp/policy/PolicyDocument", "Policy Documents", MediaType.APPLICATION_XML); //$NON-NLS-1$ //$NON-NLS-2$
+        AppCollection policyExpressionCollection = addCollection("/s-ramp/policy/PolicyExpression", "Policy Expressions", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        AppCollection policyAttachmentCollection = addCollection("/s-ramp/policy/PolicyAttachment", "Policy Attachments", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         addTypeCategory(policyCollection, ArtifactTypeEnum.PolicyDocument);
         addTypeCategory(policyCollection, ArtifactTypeEnum.PolicyExpression);

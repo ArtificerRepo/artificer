@@ -46,7 +46,7 @@ public class OntologyToRdfMapper {
 		rdfOntology.setID(ontology.getId());
 		rdfOntology.setLabel(ontology.getLabel());
 		rdfOntology.setComment(ontology.getComment());
-		rdf.getOtherAttributes().put(new QName("http://www.w3.org/XML/1998/namespace", "base"), ontology.getBase());
+		rdf.getOtherAttributes().put(new QName("http://www.w3.org/XML/1998/namespace", "base"), ontology.getBase()); //$NON-NLS-1$ //$NON-NLS-2$
 		rdf.setOntology(rdfOntology);
 
 		for (SrampOntology.Class oclass : ontology.getAllClasses()) {

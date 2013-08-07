@@ -23,8 +23,9 @@ import java.util.TreeSet;
 import javax.xml.namespace.QName;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Command used to manipulate classifications on the currently active S-RAMP artifact.  This command
@@ -32,13 +33,13 @@ import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ClassificationCommand extends AbstractShellCommand {
+public class ClassificationCommand extends BuiltInShellCommand {
 
 	private static final Set<String> subcommands = new HashSet<String>();
 	{
-		subcommands.add("add");
-		subcommands.add("remove");
-		subcommands.add("clear");
+		subcommands.add("add"); //$NON-NLS-1$
+		subcommands.add("remove"); //$NON-NLS-1$
+		subcommands.add("clear"); //$NON-NLS-1$
 	}
 
 	/**
@@ -48,74 +49,48 @@ public class ClassificationCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("s-ramp:classification <subCommand> <subCommandArguments>");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'classification' command manipulates the classifications of the");
-		print("currently active S-RAMP artifact.  The artifact must first be in the");
-		print("current session through the s-ramp:getMetaData command.  This command");
-		print("adds or removes classifications on that active artifact.");
-		print("");
-		print("Supported sub-commands:  add, remove, clear");
-		print("");
-		print("Example usage:");
-		print(">  s-ramp:classification add http://www.example.org/regions.owl#China");
-		print(">  s-ramp:classification remove http://www.example.org/regions.owl#China");
-		print(">  s-ramp:classification clear");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String subcmdArg = requiredArgument(0, "Please specify a sub-command (add, remove, clear).");
+		String subcmdArg = requiredArgument(0, Messages.i18n.format("Classification.InvalidArgMsg")); //$NON-NLS-1$
 		String classificationArg = null;
-		if ("add".equals(subcmdArg) || "remove".equals(subcmdArg)) {
-			classificationArg = requiredArgument(1, "Please specify a classification URI.");
+		if ("add".equals(subcmdArg) || "remove".equals(subcmdArg)) { //$NON-NLS-1$ //$NON-NLS-2$
+			classificationArg = requiredArgument(1, Messages.i18n.format("Classification.InvalidArgMsg.ClassificationUri")); //$NON-NLS-1$
 		}
 
-		QName artifactVarName = new QName("s-ramp", "artifact");
+		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		if (artifact == null) {
-			print("No active S-RAMP artifact exists.  Use s-ramp:getMetaData.");
+			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
 			return;
 		}
 
 		try {
-			if ("add".equals(subcmdArg)) {
+			if ("add".equals(subcmdArg)) { //$NON-NLS-1$
 				artifact.getClassifiedBy().add(classificationArg);
-				print("Successfully added classification '%1$s'.", classificationArg);
-			} else if ("remove".equals(subcmdArg)) {
+				print(Messages.i18n.format("Classification.ClassificationAdded", classificationArg)); //$NON-NLS-1$
+			} else if ("remove".equals(subcmdArg)) { //$NON-NLS-1$
 				if (artifact.getClassifiedBy().remove(classificationArg)) {
-					print("Successfully removed classification '%1$s'.", classificationArg);
+					print(Messages.i18n.format("Classification.ClassificationRemoved"), classificationArg); //$NON-NLS-1$
 				} else {
-					print("Classification '%1$s' does not exist on the active artifact.", classificationArg);
+					print(Messages.i18n.format("Classification.ClassificationDoesNotExist"), classificationArg); //$NON-NLS-1$
 				}
-			} else if ("clear".equals(subcmdArg)) {
+			} else if ("clear".equals(subcmdArg)) { //$NON-NLS-1$
 				if (!artifact.getClassifiedBy().isEmpty()) {
 					artifact.getClassifiedBy().clear();
-					print("Successfully removed all classifications.");
+					print(Messages.i18n.format("Classification.AllRemoved")); //$NON-NLS-1$
 				} else {
-					print("No classifications exist on the active artifact.");
+					print(Messages.i18n.format("Classification.NoneExist")); //$NON-NLS-1$
 				}
 			} else {
-				throw new InvalidCommandArgumentException(0, "Invalid sub-command, must be one of ['add', 'remove', 'clear'].");
+				throw new InvalidCommandArgumentException(0, Messages.i18n.format("Classification.InvalidSubCommand")); //$NON-NLS-1$
 			}
 		} catch (InvalidCommandArgumentException e) {
 			throw e;
 		} catch (Exception e) {
-			print("FAILED to modify the artifact's classifications.");
-			print("\t" + e.getMessage());
+			print(Messages.i18n.format("Classification.ModificationFailed")); //$NON-NLS-1$
+			print("\t" + e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
@@ -124,16 +99,16 @@ public class ClassificationCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		QName artifactVarName = new QName("s-ramp", "artifact");
+		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		if (getArguments().isEmpty()) {
 			for (String subcmd : subcommands) {
 				if (lastArgument == null || subcmd.startsWith(lastArgument)) {
-					candidates.add(subcmd + " ");
+					candidates.add(subcmd + " "); //$NON-NLS-1$
 				}
 			}
 			return 0;
-		} else if (getArguments().size() == 1 && getArguments().contains("remove")) {
+		} else if (getArguments().size() == 1 && getArguments().contains("remove")) { //$NON-NLS-1$
 			BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 			if (artifact != null) {
 				Set<String> classifications = new TreeSet<String>();

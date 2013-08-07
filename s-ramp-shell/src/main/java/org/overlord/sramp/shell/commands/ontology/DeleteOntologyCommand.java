@@ -21,15 +21,16 @@ import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.ontology.OntologySummary;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Deletes an ontology.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DeleteOntologyCommand extends AbstractShellCommand {
+public class DeleteOntologyCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -38,75 +39,51 @@ public class DeleteOntologyCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("ontology:delete <ontologyId>");
-		print("\tValid formats for ontologyId:");
-		print("\t  feed:<feedIndex> - an index into the most recent list of ontologies");
-		print("\t  uuid:<ontologyUUID> - the UUID of an ontology");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'delete' command removes a single ontology from the S-RAMP");
-		print("repository.");
-		print("");
-		print("Example usage:");
-		print("> ontology:delete feed:2");
-		print("> ontology:delete uuid:2763-2382-39293-382873");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void execute() throws Exception {
-		String ontologyIdArg = this.requiredArgument(0, "Please specify a valid ontology identifier.");
+		String ontologyIdArg = this.requiredArgument(0, Messages.i18n.format("DeleteOntology.InvalidArgMsg.OntologyId")); //$NON-NLS-1$
 
-		QName feedVarName = new QName("ontology", "feed");
-		QName clientVarName = new QName("s-ramp", "client");
+		QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
+		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
-			print("No S-RAMP repository connection is currently open.");
+            print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return;
 		}
 
-		if (!ontologyIdArg.contains(":") || ontologyIdArg.endsWith(":")) {
-			throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
+		if (!ontologyIdArg.contains(":") || ontologyIdArg.endsWith(":")) { //$NON-NLS-1$ //$NON-NLS-2$
+            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidOntologyIdFormat")); //$NON-NLS-1$
 		}
 		String ontologyUuid = null;
 		int colonIdx = ontologyIdArg.indexOf(':');
 		String idType = ontologyIdArg.substring(0, colonIdx);
 		String idValue = ontologyIdArg.substring(colonIdx + 1);
-		if ("feed".equals(idType)) {
+		if ("feed".equals(idType)) { //$NON-NLS-1$
 			List<OntologySummary> ontologies = (List<OntologySummary>) getContext().getVariable(feedVarName);
 			if (ontologies == null) {
-				throw new InvalidCommandArgumentException(0, "There is no ontology feed available, try 'ontology:list' first.");
+				throw new InvalidCommandArgumentException(0, Messages.i18n.format("DeleteOntology.NoOntologyFeed")); //$NON-NLS-1$
 			}
 			int feedIdx = Integer.parseInt(idValue) - 1;
 			if (feedIdx < 0 || feedIdx >= ontologies.size()) {
-				throw new InvalidCommandArgumentException(0, "Feed index out of range.");
+                throw new InvalidCommandArgumentException(0, Messages.i18n.format("FeedIndexOutOfRange")); //$NON-NLS-1$
 			}
 			OntologySummary summary = ontologies.get(feedIdx);
 			ontologyUuid = summary.getUuid();
-		} else if ("uuid".equals(idType)) {
+		} else if ("uuid".equals(idType)) { //$NON-NLS-1$
 			ontologyUuid = idValue;
 		} else {
-			throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
+            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidIdFormat")); //$NON-NLS-1$
 		}
 
 		try {
 			client.deleteOntology(ontologyUuid);
-			print("Successfully deleted the ontology.");
+			print(Messages.i18n.format("DeleteOntology.Deleted")); //$NON-NLS-1$
 		} catch (Exception e) {
-			print("FAILED to get the list of ontologies.");
-			print("\t" + e.getMessage());
+			print(Messages.i18n.format("DeleteOntology.DeleteFailed")); //$NON-NLS-1$
+			print("\t" + e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
@@ -115,13 +92,13 @@ public class DeleteOntologyCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) {
-			QName feedVarName = new QName("ontology", "feed");
+		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
+			QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
 			@SuppressWarnings("unchecked")
 			List<OntologySummary> ontologies = (List<OntologySummary>) getContext().getVariable(feedVarName);
 			if (ontologies != null) {
 				for (int idx = 0; idx < ontologies.size(); idx++) {
-					String candidate = "feed:" + (idx+1);
+					String candidate = "feed:" + (idx+1); //$NON-NLS-1$
 					if (lastArgument == null) {
 						candidates.add(candidate);
 					}

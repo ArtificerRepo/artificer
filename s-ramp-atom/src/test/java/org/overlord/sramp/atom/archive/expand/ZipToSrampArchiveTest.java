@@ -52,8 +52,8 @@ public class ZipToSrampArchiveTest {
 		ZipToSrampArchive j2sramp = null;
 
 		try {
-			resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar");
-			tempFile = File.createTempFile("j2sramp_test", ".jar");
+			resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar"); //$NON-NLS-1$
+			tempFile = File.createTempFile("j2sramp_test", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 			tempFileStream = FileUtils.openOutputStream(tempFile);
 			IOUtils.copy(resourceAsStream, tempFileStream);
 		} finally {
@@ -67,14 +67,14 @@ public class ZipToSrampArchiveTest {
 			File jarWorkDir = getJarWorkDir(j2sramp);
 			Assert.assertNotNull(jarWorkDir);
 			Assert.assertTrue(jarWorkDir.isDirectory());
-			Collection<File> files = FileUtils.listFiles(jarWorkDir, new String[] {"xsd", "wsdl"}, true);
+			Collection<File> files = FileUtils.listFiles(jarWorkDir, new String[] {"xsd", "wsdl"}, true); //$NON-NLS-1$ //$NON-NLS-2$
 			Assert.assertEquals(2, files.size());
 			Set<String> fnames = new HashSet<String>();
 			for (File f : files) {
 				fnames.add(f.getName());
 			}
-			Assert.assertTrue(fnames.contains("teetime.xsd"));
-			Assert.assertTrue(fnames.contains("teetime.wsdl"));
+			Assert.assertTrue(fnames.contains("teetime.xsd")); //$NON-NLS-1$
+			Assert.assertTrue(fnames.contains("teetime.wsdl")); //$NON-NLS-1$
 		} finally {
 			FileUtils.deleteQuietly(tempFile);
 			ZipToSrampArchive.closeQuietly(j2sramp);
@@ -86,7 +86,7 @@ public class ZipToSrampArchiveTest {
 	 */
 	@Test
 	public void testJarToSrampArchiveInputStream() throws Exception {
-		InputStream resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar");
+		InputStream resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar"); //$NON-NLS-1$
 		ZipToSrampArchive j2sramp = null;
 
 		try {
@@ -95,14 +95,14 @@ public class ZipToSrampArchiveTest {
 			File jarWorkDir = getJarWorkDir(j2sramp);
 			Assert.assertNotNull(jarWorkDir);
 			Assert.assertTrue(jarWorkDir.isDirectory());
-			Collection<File> files = FileUtils.listFiles(jarWorkDir, new String[] {"xsd", "wsdl"}, true);
+			Collection<File> files = FileUtils.listFiles(jarWorkDir, new String[] {"xsd", "wsdl"}, true); //$NON-NLS-1$ //$NON-NLS-2$
 			Assert.assertEquals(2, files.size());
 			Set<String> fnames = new HashSet<String>();
 			for (File f : files) {
 				fnames.add(f.getName());
 			}
-			Assert.assertTrue(fnames.contains("teetime.xsd"));
-			Assert.assertTrue(fnames.contains("teetime.wsdl"));
+			Assert.assertTrue(fnames.contains("teetime.xsd")); //$NON-NLS-1$
+			Assert.assertTrue(fnames.contains("teetime.wsdl")); //$NON-NLS-1$
 		} finally {
 			if (j2sramp != null)
 				j2sramp.close();
@@ -114,7 +114,7 @@ public class ZipToSrampArchiveTest {
 	 */
 	@Test
 	public void testCreateSrampArchive() throws Exception {
-		InputStream resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar");
+		InputStream resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar"); //$NON-NLS-1$
 		ZipToSrampArchive j2sramp = null;
 		SrampArchive archive = null;
 
@@ -129,8 +129,8 @@ public class ZipToSrampArchiveTest {
 				paths.add(entry.getPath());
 			}
 			Assert.assertEquals(2, entries.size());
-			Assert.assertTrue(paths.contains("schema/teetime.xsd"));
-			Assert.assertTrue(paths.contains("wsdl/teetime.wsdl"));
+			Assert.assertTrue(paths.contains("schema/teetime.xsd")); //$NON-NLS-1$
+			Assert.assertTrue(paths.contains("wsdl/teetime.wsdl")); //$NON-NLS-1$
 		} finally {
 			ZipToSrampArchive.closeQuietly(j2sramp);
 			SrampArchive.closeQuietly(archive);
@@ -142,7 +142,7 @@ public class ZipToSrampArchiveTest {
 	 */
 	@Test
 	public void testCustomArtifactFilter() throws Exception {
-		InputStream resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar");
+		InputStream resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar"); //$NON-NLS-1$
 		ZipToSrampArchive j2sramp = null;
 		SrampArchive archive = null;
 
@@ -166,10 +166,10 @@ public class ZipToSrampArchiveTest {
 				paths.add(entry.getPath());
 			}
 			Assert.assertEquals(16, entries.size());
-			Assert.assertTrue(paths.contains("schema/teetime.xsd"));
-			Assert.assertTrue(paths.contains("wsdl/teetime.wsdl"));
-			Assert.assertTrue(paths.contains("com/redhat/ewittman/teetime/_2012/_09/wsdl/teetime_wsdl/TeeTimePortType.class"));
-			Assert.assertTrue(paths.contains("META-INF/maven/com.redhat.ewittman/sample-web-service/pom.properties"));
+			Assert.assertTrue(paths.contains("schema/teetime.xsd")); //$NON-NLS-1$
+			Assert.assertTrue(paths.contains("wsdl/teetime.wsdl")); //$NON-NLS-1$
+			Assert.assertTrue(paths.contains("com/redhat/ewittman/teetime/_2012/_09/wsdl/teetime_wsdl/TeeTimePortType.class")); //$NON-NLS-1$
+			Assert.assertTrue(paths.contains("META-INF/maven/com.redhat.ewittman/sample-web-service/pom.properties")); //$NON-NLS-1$
 		} finally {
 			ZipToSrampArchive.closeQuietly(j2sramp);
 			SrampArchive.closeQuietly(archive);
@@ -181,7 +181,7 @@ public class ZipToSrampArchiveTest {
 	 */
 	@Test
 	public void testMetaData() throws Exception {
-		InputStream resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar");
+		InputStream resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar"); //$NON-NLS-1$
 		ZipToSrampArchive j2sramp = null;
 		SrampArchive archive = null;
 
@@ -189,13 +189,13 @@ public class ZipToSrampArchiveTest {
 			j2sramp = new ZipToSrampArchive(resourceAsStream){};
 			archive = j2sramp.createSrampArchive();
 			Assert.assertNotNull(archive);
-			SrampArchiveEntry entry = archive.getEntry("schema/teetime.xsd");
+			SrampArchiveEntry entry = archive.getEntry("schema/teetime.xsd"); //$NON-NLS-1$
 			Assert.assertNotNull(entry);
 			BaseArtifactType metaData = entry.getMetaData();
 			Assert.assertNotNull(metaData);
 			Assert.assertTrue(metaData instanceof XsdDocument);
 			XsdDocument md = (XsdDocument) metaData;
-			Assert.assertEquals("teetime.xsd", md.getName());
+			Assert.assertEquals("teetime.xsd", md.getName()); //$NON-NLS-1$
 			Assert.assertNotNull(md.getUuid());
 		} finally {
 			ZipToSrampArchive.closeQuietly(j2sramp);
@@ -208,7 +208,7 @@ public class ZipToSrampArchiveTest {
 	 */
 	@Test
 	public void testMetaDataFactory() throws Exception {
-		InputStream resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar");
+		InputStream resourceAsStream = ZipToSrampArchiveTest.class.getResourceAsStream("sample-webservice-0.0.1.jar"); //$NON-NLS-1$
 		ZipToSrampArchive j2sramp = null;
 		SrampArchive archive = null;
 
@@ -222,19 +222,19 @@ public class ZipToSrampArchiveTest {
 				public BaseArtifactType createMetaData(DiscoveredArtifact artifact) {
 					BaseArtifactType md = new Document();
 					md.setUuid(UUID.randomUUID().toString());
-					md.setName("custom-" + artifact.getName());
+					md.setName("custom-" + artifact.getName()); //$NON-NLS-1$
 					return md;
 				}
 			});
 			archive = j2sramp.createSrampArchive();
 			Assert.assertNotNull(archive);
-			SrampArchiveEntry entry = archive.getEntry("schema/teetime.xsd");
+			SrampArchiveEntry entry = archive.getEntry("schema/teetime.xsd"); //$NON-NLS-1$
 			Assert.assertNotNull(entry);
 			BaseArtifactType metaData = entry.getMetaData();
 			Assert.assertNotNull(metaData);
 			Assert.assertTrue(metaData instanceof Document);
 			Document md = (Document) metaData;
-			Assert.assertEquals("custom-teetime.xsd", md.getName());
+			Assert.assertEquals("custom-teetime.xsd", md.getName()); //$NON-NLS-1$
 			Assert.assertNotNull(md.getUuid());
 		} finally {
 			ZipToSrampArchive.closeQuietly(j2sramp);
@@ -267,7 +267,7 @@ public class ZipToSrampArchiveTest {
         Class<?> from = j2sramp.getClass();
         while (!found) {
             try {
-                return from.getDeclaredField("jarWorkDir");
+                return from.getDeclaredField("jarWorkDir"); //$NON-NLS-1$
             } catch (NoSuchFieldException nsfe) {
                 from = from.getSuperclass();
                 if (from == null) {
@@ -275,7 +275,7 @@ public class ZipToSrampArchiveTest {
                 }
             }
         }
-        throw new NoSuchFieldException("jarWorkDir");
+        throw new NoSuchFieldException("jarWorkDir"); //$NON-NLS-1$
     }
 
 }

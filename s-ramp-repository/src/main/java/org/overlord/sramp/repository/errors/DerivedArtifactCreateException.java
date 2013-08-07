@@ -17,6 +17,7 @@ package org.overlord.sramp.repository.errors;
 
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.repository.i18n.Messages;
 
 /**
  * Exception thrown the user attempts to create a derived artifact.
@@ -38,7 +39,7 @@ public class DerivedArtifactCreateException extends SrampUserException {
      * @param artifactType
      */
     public DerivedArtifactCreateException(ArtifactTypeEnum artifactType) {
-        super("Failed to create artifact because '" + artifactType + "' is a derived type.");
+        super(Messages.i18n.format("CANNOT_CREATE_DERIVED_ARTY", artifactType)); //$NON-NLS-1$
     }
 
 }

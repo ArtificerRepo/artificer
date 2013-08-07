@@ -39,7 +39,7 @@ public class KieJarMetaDataFactory extends DefaultMetaDataFactory {
      */
     @Override
     protected BaseArtifactType createArtifact(DiscoveredArtifact discoveredArtifact) {
-        if (discoveredArtifact.getName().equals("kmodule.xml")) {
+        if (discoveredArtifact.getName().equals("kmodule.xml")) { //$NON-NLS-1$
             ExtendedDocument artifact = new ExtendedDocument();
             artifact.setArtifactType(BaseArtifactEnum.EXTENDED_DOCUMENT);
             artifact.setExtendedType(KieJarModel.KieXmlDocument);

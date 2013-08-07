@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
+import org.overlord.sramp.shell.api.i18n.Messages;
+
 /**
  * A class that can parse the arguments that should be passed to a command.
  *
@@ -86,7 +88,7 @@ public class Arguments extends ArrayList<String> {
 		} else if (state == ScannerState.scanningForEndQuote && partialLastArgumentAllowed) {
             add(arguments.substring(startPos+1));
 		} else if (state == ScannerState.scanningForEndQuote && !partialLastArgumentAllowed) {
-		    throw new InvalidCommandArgumentException(size(), "Invalid final argument - did you forget to close your quotes?");
+		    throw new InvalidCommandArgumentException(size(), Messages.i18n.format("INVALID_FINAL_ARG")); //$NON-NLS-1$
 		}
 	}
 
@@ -100,11 +102,11 @@ public class Arguments extends ArrayList<String> {
 		String encodedCommandName = remove(0);
 		QName commandName = null;
 		if (encodedCommandName != null) {
-			if (encodedCommandName.contains(":") && !encodedCommandName.endsWith(":")) {
-				String [] nameSplit = encodedCommandName.split(":");
+			if (encodedCommandName.contains(":") && !encodedCommandName.endsWith(":")) { //$NON-NLS-1$ //$NON-NLS-2$
+				String [] nameSplit = encodedCommandName.split(":"); //$NON-NLS-1$
 				commandName = new QName(nameSplit[0], nameSplit[1]);
 			} else {
-				commandName = new QName("s-ramp", encodedCommandName);
+				commandName = new QName("s-ramp", encodedCommandName); //$NON-NLS-1$
 			}
 		}
 

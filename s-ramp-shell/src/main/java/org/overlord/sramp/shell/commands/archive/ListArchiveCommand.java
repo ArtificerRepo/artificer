@@ -21,14 +21,15 @@ import javax.xml.namespace.QName;
 
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Opens an existing S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ListArchiveCommand extends AbstractShellCommand {
+public class ListArchiveCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -37,47 +38,30 @@ public class ListArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("archive:list");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("This command display a list of the entries in the currently");
-		print("open S-RAMP archive.");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		QName varName = new QName("archive", "active-archive");
+		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
-			print("No S-RAMP archive is currently open.");
+			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
 		} else {
 			Collection<SrampArchiveEntry> entries = archive.getEntries();
-			print("  Entry Path");
-			print("  ----------");
+			print(Messages.i18n.format("ENTRY_PATH")); //$NON-NLS-1$
+			print("  ----------"); //$NON-NLS-1$
 			for (SrampArchiveEntry entry : entries) {
 				String modifier = null;
 				if (entry.hasContent()) {
-					modifier = "  C ";
+					modifier = "  C "; //$NON-NLS-1$
 				} else {
-					modifier = "  E ";
+					modifier = "  E "; //$NON-NLS-1$
 				}
 				print(modifier + entry.getPath());
 			}
-			print("  ----------");
-			print("  " + entries.size() + " entries");
+			print("  ----------"); //$NON-NLS-1$
+            print(Messages.i18n.format("ENTRY_LIST_SUMMARY", entries.size())); //$NON-NLS-1$
 		}
 	}
 

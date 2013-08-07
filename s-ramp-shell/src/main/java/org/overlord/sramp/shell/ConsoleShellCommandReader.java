@@ -53,7 +53,7 @@ public class ConsoleShellCommandReader extends AbstractShellCommandReader {
 	 */
 	@Override
 	protected String readLine() throws IOException {
-		return console.readLine("s-ramp> ");
+		return console.readLine("s-ramp> "); //$NON-NLS-1$
 	}
 
 	/**

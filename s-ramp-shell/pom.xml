@@ -15,6 +15,11 @@
     <!-- S-RAMP project dependencies -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-client</artifactId>
       <version>${project.version}</version>
     </dependency>

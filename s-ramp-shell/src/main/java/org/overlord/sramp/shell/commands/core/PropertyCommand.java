@@ -23,11 +23,12 @@ import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
-import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
+import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Command used to manipulate properties on the currently active S-RAMP artifact.  This command
@@ -35,13 +36,13 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
  *
  * @author eric.wittmann@redhat.com
  */
-public class PropertyCommand extends AbstractShellCommand {
+public class PropertyCommand extends BuiltInShellCommand {
 
 	private static final Set<String> CORE_PROPERTIES = new HashSet<String>();
 	{
-		CORE_PROPERTIES.add("name");
-		CORE_PROPERTIES.add("description");
-		CORE_PROPERTIES.add("version");
+		CORE_PROPERTIES.add("name"); //$NON-NLS-1$
+		CORE_PROPERTIES.add("description"); //$NON-NLS-1$
+		CORE_PROPERTIES.add("version"); //$NON-NLS-1$
 	}
 
 	/**
@@ -51,67 +52,39 @@ public class PropertyCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("s-ramp:property <subCommand> <subCommandArguments>");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'property' command manipulates the properties of the currently");
-		print("active S-RAMP artifact.  The artifact must first be in the current");
-		print("session through the s-ramp:getMetaData command.  This command sets");
-		print("or unsets properties on that active artifact.  Both core meta-data");
-		print("properties and custom (user-defined) properties can be manipulated");
-		print("using this command.");
-		print("");
-		print("Supported sub-commands:  set, unset");
-		print("");
-		print("Example usage:");
-		print(">  s-ramp:property set name MyArtifactName");
-		print(">  s-ramp:property set customProp customVal");
-		print(">  s-ramp:property unset customProp");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String subcmdArg = requiredArgument(0, "Please specify a sub-command (set, unset).");
-		String propNameArg = requiredArgument(1, "Please specify a property name.");
+		String subcmdArg = requiredArgument(0, Messages.i18n.format("Property.InvalidArgMsg.SubCommand")); //$NON-NLS-1$
+		String propNameArg = requiredArgument(1, Messages.i18n.format("Property.InvalidArgMsg.PropertyName")); //$NON-NLS-1$
 		String propValueArg = null;
-		if ("set".equals(subcmdArg)) {
-			propValueArg = requiredArgument(2, "Please specify a property value.");
+		if ("set".equals(subcmdArg)) { //$NON-NLS-1$
+			propValueArg = requiredArgument(2, Messages.i18n.format("Property.InvalidArgMsg.PropertyValue")); //$NON-NLS-1$
 		}
 
-		QName artifactVarName = new QName("s-ramp", "artifact");
+		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		if (artifact == null) {
-			print("No active S-RAMP artifact exists.  Use s-ramp:getMetaData.");
+			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
 			return;
 		}
 
 		try {
-			if ("set".equals(subcmdArg)) {
+			if ("set".equals(subcmdArg)) { //$NON-NLS-1$
 				setProperty(artifact, propNameArg, propValueArg);
-				print("Successfully set property %1$s.", propNameArg);
-			} else if ("unset".equals(subcmdArg)) {
+				print(Messages.i18n.format("Property.PropertySet", propNameArg)); //$NON-NLS-1$
+			} else if ("unset".equals(subcmdArg)) { //$NON-NLS-1$
 				unsetProperty(artifact, propNameArg);
-				print("Successfully unset property %1$s.", propNameArg);
+				print(Messages.i18n.format("Property.PropertyUnset", propNameArg)); //$NON-NLS-1$
 			} else {
-				throw new InvalidCommandArgumentException(0, "Invalid sub-command, must be either 'set' or 'unset'.");
+				throw new InvalidCommandArgumentException(0, Messages.i18n.format("Property.InvalidSubCommand")); //$NON-NLS-1$
 			}
 		} catch (InvalidCommandArgumentException e) {
 			throw e;
 		} catch (Exception e) {
-			print("FAILED to change the artifact property.");
-			print("\t" + e.getMessage());
+			print(Messages.i18n.format("Property.Failure")); //$NON-NLS-1$
+			print("\t" + e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
@@ -124,11 +97,11 @@ public class PropertyCommand extends AbstractShellCommand {
 	private void setProperty(BaseArtifactType artifact, String propName, String propValue) {
 		String propNameLC = propName.toLowerCase();
 		if (CORE_PROPERTIES.contains(propNameLC)) {
-			if (propNameLC.equals("name")) {
+			if (propNameLC.equals("name")) { //$NON-NLS-1$
 				artifact.setName(propValue);
-			} else if (propNameLC.equals("description")) {
+			} else if (propNameLC.equals("description")) { //$NON-NLS-1$
 				artifact.setDescription(propValue);
-			} else if (propNameLC.equals("version")) {
+			} else if (propNameLC.equals("version")) { //$NON-NLS-1$
 				artifact.setVersion(propValue);
 			}
 		} else {
@@ -150,29 +123,29 @@ public class PropertyCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		QName artifactVarName = new QName("s-ramp", "artifact");
+		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		if (getArguments().isEmpty()) {
 			if (lastArgument == null) {
-				candidates.add("set ");
-				candidates.add("unset ");
+				candidates.add("set "); //$NON-NLS-1$
+				candidates.add("unset "); //$NON-NLS-1$
 				return 0;
-			} else if ("set".startsWith(lastArgument)) {
-				candidates.add("set ");
+			} else if ("set".startsWith(lastArgument)) { //$NON-NLS-1$
+				candidates.add("set "); //$NON-NLS-1$
 				return 0;
-			} else if ("unset".startsWith(lastArgument)) {
-				candidates.add("unset ");
+			} else if ("unset".startsWith(lastArgument)) { //$NON-NLS-1$
+				candidates.add("unset "); //$NON-NLS-1$
 				return 0;
 			}
-		} else if (getArguments().size() == 1 && (getArguments().contains("set") || getArguments().contains("unset"))) {
+		} else if (getArguments().size() == 1 && (getArguments().contains("set") || getArguments().contains("unset"))) { //$NON-NLS-1$ //$NON-NLS-2$
 			BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 			if (artifact != null) {
 				Set<String> props = new TreeSet<String>();
 				props.addAll(CORE_PROPERTIES);
 				props.addAll(getCustomPropertyNames(artifact));
-				String candidatePostfix = " ";
-				if (getArguments().contains("unset")) {
-					candidatePostfix = "";
+				String candidatePostfix = " "; //$NON-NLS-1$
+				if (getArguments().contains("unset")) { //$NON-NLS-1$
+					candidatePostfix = ""; //$NON-NLS-1$
 				}
 				for (String prop : props) {
 					if (lastArgument == null || prop.startsWith(lastArgument)) {

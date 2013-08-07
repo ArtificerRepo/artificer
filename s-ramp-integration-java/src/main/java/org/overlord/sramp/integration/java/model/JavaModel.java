@@ -23,16 +23,16 @@ package org.overlord.sramp.integration.java.model;
  */
 public class JavaModel {
 
-    public static final String TYPE_ARCHIVE = "JavaArchive";
-    public static final String TYPE_WEB_APPLICATION = "JavaWebApplication";
-    public static final String TYPE_ENTERPRISE_APPLICATION = "JavaEnterpriseApplication";
-    public static final String TYPE_BEANS_XML = "BeanArchiveDescriptor";
+    public static final String TYPE_ARCHIVE = "JavaArchive"; //$NON-NLS-1$
+    public static final String TYPE_WEB_APPLICATION = "JavaWebApplication"; //$NON-NLS-1$
+    public static final String TYPE_ENTERPRISE_APPLICATION = "JavaEnterpriseApplication"; //$NON-NLS-1$
+    public static final String TYPE_BEANS_XML = "BeanArchiveDescriptor"; //$NON-NLS-1$
 
-    public static final String TYPE_JAVA_CLASS = "JavaClass";
-    public static final String TYPE_JAVA_INTERFACE = "JavaInterface";
-    public static final String TYPE_JAVA_ENUM = "JavaEnum";
+    public static final String TYPE_JAVA_CLASS = "JavaClass"; //$NON-NLS-1$
+    public static final String TYPE_JAVA_INTERFACE = "JavaInterface"; //$NON-NLS-1$
+    public static final String TYPE_JAVA_ENUM = "JavaEnum"; //$NON-NLS-1$
 
-    public static final String PROP_PACKAGE_NAME = "packageName";
-    public static final String PROP_CLASS_NAME = "className";
+    public static final String PROP_PACKAGE_NAME = "packageName"; //$NON-NLS-1$
+    public static final String PROP_CLASS_NAME = "className"; //$NON-NLS-1$
 
 }

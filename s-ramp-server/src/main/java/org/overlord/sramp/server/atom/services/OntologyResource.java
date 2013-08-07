@@ -40,6 +40,7 @@ import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
+import org.overlord.sramp.server.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
@@ -104,7 +105,7 @@ public class OntologyResource extends AbstractResource {
 			entry.setAnyOtherJAXBObject(responseRDF);
 			return entry;
         } catch (Exception e) {
-        	logError(logger, "Error creating a new ontology.", e);
+        	logError(logger, Messages.i18n.format("ERROR_CREATING_ONTOLOGY"), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
         }
     }
@@ -128,7 +129,7 @@ public class OntologyResource extends AbstractResource {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateOntology(ontology);
         } catch (Exception e) {
-        	logError(logger, "Error updating an ontology with UUID: " + uuid, e);
+        	logError(logger, Messages.i18n.format("ERROR_UPDATING_ONTOLOGY", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
         }
     }
@@ -162,7 +163,7 @@ public class OntologyResource extends AbstractResource {
 			entry.setAnyOtherJAXBObject(responseRDF);
 			return entry;
         } catch (Exception e) {
-        	logError(logger, "Error getting an ontology with UUID: " + uuid, e);
+        	logError(logger, Messages.i18n.format("ERROR_GETTING_ONTOLOGY", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
         }
     }
@@ -181,7 +182,7 @@ public class OntologyResource extends AbstractResource {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.deleteOntology(uuid);
         } catch (Exception e) {
-        	logError(logger, "Error deleting an ontology with UUID: " + uuid, e);
+        	logError(logger, Messages.i18n.format("ERROR_DELETING_ONTOLOGY", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
         }
     }
@@ -200,7 +201,7 @@ public class OntologyResource extends AbstractResource {
 			List<SrampOntology> ontologies = persistenceManager.getOntologies();
 
 			Feed feed = new Feed();
-			feed.setTitle("S-RAMP ontology feed");
+			feed.setTitle("S-RAMP ontology feed"); //$NON-NLS-1$
 			feed.setUpdated(new Date());
 
 			for (SrampOntology ontology : ontologies) {
@@ -221,7 +222,7 @@ public class OntologyResource extends AbstractResource {
 
 			return feed;
         } catch (Exception e) {
-        	logError(logger, "Error getting the list of ontologies.", e);
+        	logError(logger, Messages.i18n.format("ERROR_GETTING_ONTOLOGIES"), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
         }
 	}

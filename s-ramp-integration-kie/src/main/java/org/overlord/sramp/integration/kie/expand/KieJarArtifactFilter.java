@@ -24,9 +24,9 @@ import org.overlord.sramp.atom.archive.expand.DefaultArtifactFilter;
 public class KieJarArtifactFilter extends DefaultArtifactFilter {
 
 	static {
-		validExtensions.add("bpmn");
-		validExtensions.add("bpmn2");
-		validExtensions.add("drl");
+		validExtensions.add("bpmn"); //$NON-NLS-1$
+		validExtensions.add("bpmn2"); //$NON-NLS-1$
+		validExtensions.add("drl"); //$NON-NLS-1$
 	}
     /**
      * Constructor.

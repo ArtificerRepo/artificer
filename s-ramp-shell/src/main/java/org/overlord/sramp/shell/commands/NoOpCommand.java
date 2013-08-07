@@ -15,14 +15,14 @@
  */
 package org.overlord.sramp.shell.commands;
 
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
 
 /**
  * The command about nothing.  The Seinfeld command.
  *
  * @author eric.wittmann@redhat.com
  */
-public class NoOpCommand extends AbstractShellCommand {
+public class NoOpCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.

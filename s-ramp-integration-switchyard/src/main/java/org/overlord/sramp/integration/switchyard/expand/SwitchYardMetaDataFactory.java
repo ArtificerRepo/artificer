@@ -20,6 +20,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
 import org.overlord.sramp.atom.archive.expand.DiscoveredArtifact;
+import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
 
 /**
@@ -41,16 +42,16 @@ public class SwitchYardMetaDataFactory extends DefaultMetaDataFactory {
      */
     @Override
     protected BaseArtifactType createArtifact(DiscoveredArtifact discoveredArtifact) {
-        if (discoveredArtifact.getName().equals("switchyard.xml")) {
+        if (discoveredArtifact.getName().equals("switchyard.xml")) { //$NON-NLS-1$
             ExtendedDocument artifact = new ExtendedDocument();
             artifact.setArtifactType(BaseArtifactEnum.EXTENDED_DOCUMENT);
             artifact.setExtendedType(SwitchYardModel.SwitchYardXmlDocument);
             return artifact;
         }
-        if ("class".equals(discoveredArtifact.getExtension())) {
+        if ("class".equals(discoveredArtifact.getExtension())) { //$NON-NLS-1$
             ExtendedDocument artifact = new ExtendedDocument();
             artifact.setArtifactType(BaseArtifactEnum.EXTENDED_DOCUMENT);
-            artifact.setExtendedType("JavaClass");
+            artifact.setExtendedType(JavaModel.TYPE_JAVA_CLASS);
             return artifact;
         }
         return super.createArtifact(discoveredArtifact);

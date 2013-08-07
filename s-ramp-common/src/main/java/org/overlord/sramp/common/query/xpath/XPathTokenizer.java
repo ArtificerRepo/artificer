@@ -17,6 +17,8 @@ package org.overlord.sramp.common.query.xpath;
 
 import java.text.ParseException;
 
+import org.overlord.sramp.common.i18n.Messages;
+
 /**
  * This class tokenizes an input string into a stream of tokens.
  */
@@ -98,7 +100,7 @@ public class XPathTokenizer {
                         }
                     }
                     if (!foundClosingQuote) {
-                    	throw new ParseException("No matching closing quote was found.", stream.index());
+                    	throw new ParseException(Messages.i18n.format("XPATH_TOK_MISSING_QUOTE"), stream.index()); //$NON-NLS-1$
                     }
                     endIndex = stream.index() + 1; // beyond last character read
                     tokens.addToken(stream.get(startIndex, endIndex), TokenType.quotedString);

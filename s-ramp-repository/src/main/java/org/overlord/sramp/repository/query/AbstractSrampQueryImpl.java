@@ -26,6 +26,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.query.xpath.XPathParser;
 import org.overlord.sramp.common.query.xpath.ast.Query;
+import org.overlord.sramp.repository.i18n.Messages;
 
 /**
  * A base class for concrete implementations of the {@link SrampQuery} interface.  This
@@ -184,21 +185,21 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 	protected static final String formatQuery(String xpathTemplate, List<QueryReplacementParam<?>> replacementParams)
 			throws InvalidQueryException {
 		StringBuilder builder = new StringBuilder();
-		String [] xpathSegments = xpathTemplate.split("\\?");
+		String [] xpathSegments = xpathTemplate.split("\\?"); //$NON-NLS-1$
 		int paramCounter = 0;
 		for (String segment : xpathSegments) {
 			builder.append(segment);
 			boolean isLastSegment = segment == xpathSegments[xpathSegments.length - 1];
 			if (!isLastSegment) {
 				if (paramCounter >= replacementParams.size())
-					throw new InvalidQueryException("Not enough query replacement parameters provided.");
+					throw new InvalidQueryException(Messages.i18n.format("TOO_FEW_QUERY_PARAMS")); //$NON-NLS-1$
 				QueryReplacementParam<?> param = replacementParams.get(paramCounter);
 				builder.append(param.getFormattedValue());
 				paramCounter++;
 			}
 		}
 		if (replacementParams.size() > paramCounter)
-			throw new InvalidQueryException("Too many query replacement parameters provided.");
+			throw new InvalidQueryException(Messages.i18n.format("TOO_MANY_QUERY_PARAMS")); //$NON-NLS-1$
 
 		return builder.toString();
 	}
@@ -213,7 +214,7 @@ public abstract class AbstractSrampQueryImpl implements SrampQuery {
 		try {
 			return sParser.parseXPath(xpath);
 		} catch (Throwable e) {
-			throw new InvalidQueryException("Query failed to parse.", e);
+			throw new InvalidQueryException(Messages.i18n.format("QUERY_PARSE_FAILED"), e); //$NON-NLS-1$
 		}
 	}
 

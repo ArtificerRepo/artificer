@@ -73,21 +73,21 @@ public class WsdlDeriverTest {
 		WsdlDocument testSrcArtifact = new WsdlDocument();
 		testSrcArtifact.setArtifactType(BaseArtifactEnum.WSDL_DOCUMENT);
 		testSrcArtifact.setUuid(UUID.randomUUID().toString());
-		testSrcArtifact.setName("sample.wsdl");
-		testSrcArtifact.setVersion("2012/09");
-		testSrcArtifact.setContentEncoding("UTF-8");
-		testSrcArtifact.setContentType("application/xml");
+		testSrcArtifact.setName("sample.wsdl"); //$NON-NLS-1$
+		testSrcArtifact.setVersion("2012/09"); //$NON-NLS-1$
+		testSrcArtifact.setContentEncoding("UTF-8"); //$NON-NLS-1$
+		testSrcArtifact.setContentType("application/xml"); //$NON-NLS-1$
 		testSrcArtifact.setContentSize(92779L);
-		testSrcArtifact.setCreatedBy("anonymous");
+		testSrcArtifact.setCreatedBy("anonymous"); //$NON-NLS-1$
 		XMLGregorianCalendar xmlGC = dtFactory.newXMLGregorianCalendar(new GregorianCalendar());
 		testSrcArtifact.setCreatedTimestamp(xmlGC);
-		testSrcArtifact.setDescription("Sample WSDL.");
-		testSrcArtifact.setLastModifiedBy("anonymous");
+		testSrcArtifact.setDescription("Sample WSDL."); //$NON-NLS-1$
+		testSrcArtifact.setLastModifiedBy("anonymous"); //$NON-NLS-1$
 		testSrcArtifact.setLastModifiedTimestamp(xmlGC);
 
 		InputStream testSrcContent = null;
 		try {
-			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/deriver.wsdl");
+			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/deriver.wsdl"); //$NON-NLS-1$
 			Collection<BaseArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
 			Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(35, derivedArtifacts.size());
@@ -122,112 +122,112 @@ public class WsdlDeriverTest {
 			////////////////////////////////////////////
 
 			// Find the message named 'findRequest'
-			DerivedArtifactType artifact = index.get(new QName(BaseArtifactEnum.MESSAGE.toString(), "findRequest"));
+			DerivedArtifactType artifact = index.get(new QName(BaseArtifactEnum.MESSAGE.toString(), "findRequest")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("findRequest", artifact.getName());
-			Assert.assertEquals("findRequest", ((Message) artifact).getNCName());
-			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((Message) artifact).getNamespace());
+			Assert.assertEquals("findRequest", artifact.getName()); //$NON-NLS-1$
+			Assert.assertEquals("findRequest", ((Message) artifact).getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((Message) artifact).getNamespace()); //$NON-NLS-1$
 			Message message = (Message) artifact;
 			Assert.assertEquals(1, message.getPart().size());
 
 			// Find the element decl named 'findResponse'
-			artifact = index.get(new QName(BaseArtifactEnum.ELEMENT_DECLARATION.toString(), "findResponse"));
+			artifact = index.get(new QName(BaseArtifactEnum.ELEMENT_DECLARATION.toString(), "findResponse")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("findResponse", artifact.getName());
-			Assert.assertEquals("findResponse", ((ElementDeclaration) artifact).getNCName());
-			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl/types", ((ElementDeclaration) artifact).getNamespace());
+			Assert.assertEquals("findResponse", artifact.getName()); //$NON-NLS-1$
+			Assert.assertEquals("findResponse", ((ElementDeclaration) artifact).getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl/types", ((ElementDeclaration) artifact).getNamespace()); //$NON-NLS-1$
 
 			// Find the simple type named 'keywordType'
-			artifact = index.get(new QName(BaseArtifactEnum.SIMPLE_TYPE_DECLARATION.toString(), "keywordType"));
+			artifact = index.get(new QName(BaseArtifactEnum.SIMPLE_TYPE_DECLARATION.toString(), "keywordType")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("keywordType", artifact.getName());
-			Assert.assertEquals("keywordType", ((SimpleTypeDeclaration) artifact).getNCName());
-			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl/types", ((SimpleTypeDeclaration) artifact).getNamespace());
+			Assert.assertEquals("keywordType", artifact.getName()); //$NON-NLS-1$
+			Assert.assertEquals("keywordType", ((SimpleTypeDeclaration) artifact).getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl/types", ((SimpleTypeDeclaration) artifact).getNamespace()); //$NON-NLS-1$
 			String typeUuid = artifact.getUuid();
 
 			// Find the part named 'keyword'
-			artifact = index.get(new QName(BaseArtifactEnum.PART.toString(), "keyword"));
+			artifact = index.get(new QName(BaseArtifactEnum.PART.toString(), "keyword")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("keyword", artifact.getName());
+			Assert.assertEquals("keyword", artifact.getName()); //$NON-NLS-1$
 			Part part = (Part) artifact;
-			Assert.assertEquals("keyword", part.getNCName());
-			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", part.getNamespace());
+			Assert.assertEquals("keyword", part.getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", part.getNamespace()); //$NON-NLS-1$
 			Assert.assertNotNull(part.getType());
 			Assert.assertEquals(typeUuid, part.getType().getValue());
 
 			// Find the port type named 'SamplePortType'
-			artifact = index.get(new QName(BaseArtifactEnum.PORT_TYPE.toString(), "SamplePortType"));
+			artifact = index.get(new QName(BaseArtifactEnum.PORT_TYPE.toString(), "SamplePortType")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("SamplePortType", artifact.getName());
-			Assert.assertEquals("SamplePortType", ((PortType) artifact).getNCName());
-			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((PortType) artifact).getNamespace());
+			Assert.assertEquals("SamplePortType", artifact.getName()); //$NON-NLS-1$
+			Assert.assertEquals("SamplePortType", ((PortType) artifact).getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((PortType) artifact).getNamespace()); //$NON-NLS-1$
 			PortType portType = (PortType) artifact;
 			Assert.assertEquals(2, portType.getOperation().size());
 
 			// Find the operation named 'find'
-			artifact = index.get(new QName(BaseArtifactEnum.OPERATION.toString(), "find"));
+			artifact = index.get(new QName(BaseArtifactEnum.OPERATION.toString(), "find")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("find", artifact.getName());
+			Assert.assertEquals("find", artifact.getName()); //$NON-NLS-1$
 			Operation operation = (Operation) artifact;
-			Assert.assertEquals("find", operation.getNCName());
-			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", operation.getNamespace());
+			Assert.assertEquals("find", operation.getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", operation.getNamespace()); //$NON-NLS-1$
 			Assert.assertNotNull(operation.getInput());
 			Assert.assertNotNull(operation.getOutput());
 			Assert.assertNotNull(operation.getFault());
 			Assert.assertEquals(2, operation.getFault().size());
 
 			// Find the operation input named 'findRequest'
-			artifact = index.get(new QName(BaseArtifactEnum.OPERATION_INPUT.toString(), "findRequest"));
+			artifact = index.get(new QName(BaseArtifactEnum.OPERATION_INPUT.toString(), "findRequest")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("findRequest", artifact.getName());
+			Assert.assertEquals("findRequest", artifact.getName()); //$NON-NLS-1$
 			OperationInput operationInput = (OperationInput) artifact;
-			Assert.assertEquals("findRequest", operationInput.getNCName());
+			Assert.assertEquals("findRequest", operationInput.getNCName()); //$NON-NLS-1$
 			Assert.assertNotNull(operationInput.getMessage());
 			Assert.assertNotNull(operationInput.getMessage().getValue());
 			Assert.assertEquals(
-					index.get(new QName(BaseArtifactEnum.MESSAGE.toString(), "findRequest")).getUuid(),
+					index.get(new QName(BaseArtifactEnum.MESSAGE.toString(), "findRequest")).getUuid(), //$NON-NLS-1$
 					operationInput.getMessage().getValue());
 
 			// Find the operation output named 'findResponse'
-			artifact = index.get(new QName(BaseArtifactEnum.OPERATION_OUTPUT.toString(), "findResponse"));
+			artifact = index.get(new QName(BaseArtifactEnum.OPERATION_OUTPUT.toString(), "findResponse")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("findResponse", artifact.getName());
+			Assert.assertEquals("findResponse", artifact.getName()); //$NON-NLS-1$
 			OperationOutput operationOutput = (OperationOutput) artifact;
-			Assert.assertEquals("findResponse", operationOutput.getNCName());
+			Assert.assertEquals("findResponse", operationOutput.getNCName()); //$NON-NLS-1$
 			Assert.assertNotNull(operationOutput.getMessage());
 			Assert.assertNotNull(operationOutput.getMessage().getValue());
 			Assert.assertEquals(
-					index.get(new QName(BaseArtifactEnum.MESSAGE.toString(), "findResponse")).getUuid(),
+					index.get(new QName(BaseArtifactEnum.MESSAGE.toString(), "findResponse")).getUuid(), //$NON-NLS-1$
 					operationOutput.getMessage().getValue());
 
 			// Find the binding named 'SampleBinding'
-			artifact = index.get(new QName(BaseArtifactEnum.BINDING.toString(), "SampleBinding"));
+			artifact = index.get(new QName(BaseArtifactEnum.BINDING.toString(), "SampleBinding")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("SampleBinding", artifact.getName());
-			Assert.assertEquals("SampleBinding", ((Binding) artifact).getNCName());
-			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((Binding) artifact).getNamespace());
+			Assert.assertEquals("SampleBinding", artifact.getName()); //$NON-NLS-1$
+			Assert.assertEquals("SampleBinding", ((Binding) artifact).getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((Binding) artifact).getNamespace()); //$NON-NLS-1$
 			Binding binding = (Binding) artifact;
 			Assert.assertEquals(2, binding.getBindingOperation().size());
 			Assert.assertEquals(1, binding.getExtension().size());
 
 			// Find the document style soap:binding
-			artifact = index.get(new QName(BaseArtifactEnum.SOAP_BINDING.toString(), "binding"));
+			artifact = index.get(new QName(BaseArtifactEnum.SOAP_BINDING.toString(), "binding")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("soap:binding", artifact.getName());
-			Assert.assertEquals("binding", ((SoapBinding) artifact).getNCName());
-			Assert.assertEquals("http://schemas.xmlsoap.org/wsdl/soap/", ((SoapBinding) artifact).getNamespace());
+			Assert.assertEquals("soap:binding", artifact.getName()); //$NON-NLS-1$
+			Assert.assertEquals("binding", ((SoapBinding) artifact).getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://schemas.xmlsoap.org/wsdl/soap/", ((SoapBinding) artifact).getNamespace()); //$NON-NLS-1$
 			SoapBinding soapBinding = (SoapBinding) artifact;
-			Assert.assertEquals("document", soapBinding.getStyle());
-			Assert.assertEquals("http://schemas.xmlsoap.org/soap/http", soapBinding.getTransport());
+			Assert.assertEquals("document", soapBinding.getStyle()); //$NON-NLS-1$
+			Assert.assertEquals("http://schemas.xmlsoap.org/soap/http", soapBinding.getTransport()); //$NON-NLS-1$
 			Assert.assertEquals(binding.getExtension().get(0).getValue(), soapBinding.getUuid());
 
 			// Find the binding operation named 'find'
-			artifact = index.get(new QName(BaseArtifactEnum.BINDING_OPERATION.toString(), "find"));
+			artifact = index.get(new QName(BaseArtifactEnum.BINDING_OPERATION.toString(), "find")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("find", artifact.getName());
+			Assert.assertEquals("find", artifact.getName()); //$NON-NLS-1$
 			BindingOperation bindingOperation = (BindingOperation) artifact;
-			Assert.assertEquals("find", bindingOperation.getNCName());
-			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", bindingOperation.getNamespace());
+			Assert.assertEquals("find", bindingOperation.getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", bindingOperation.getNamespace()); //$NON-NLS-1$
 			Assert.assertNotNull(bindingOperation.getInput());
 			Assert.assertNotNull(bindingOperation.getOutput());
 			Assert.assertNotNull(bindingOperation.getFault());
@@ -236,48 +236,48 @@ public class WsdlDeriverTest {
 			Assert.assertEquals(operation.getUuid(), bindingOperation.getOperation().getValue());
 
 			// Find the binding operation input named 'findRequest'
-			artifact = index.get(new QName(BaseArtifactEnum.BINDING_OPERATION_INPUT.toString(), "findRequest"));
+			artifact = index.get(new QName(BaseArtifactEnum.BINDING_OPERATION_INPUT.toString(), "findRequest")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("findRequest", artifact.getName());
+			Assert.assertEquals("findRequest", artifact.getName()); //$NON-NLS-1$
 			BindingOperationInput bindingOperationInput = (BindingOperationInput) artifact;
-			Assert.assertEquals("findRequest", bindingOperationInput.getNCName());
+			Assert.assertEquals("findRequest", bindingOperationInput.getNCName()); //$NON-NLS-1$
 			Assert.assertEquals(bindingOperation.getInput().getValue(), bindingOperationInput.getUuid());
 
 			// Find the binding operation output named 'findResponse'
-			artifact = index.get(new QName(BaseArtifactEnum.BINDING_OPERATION_OUTPUT.toString(), "findResponse"));
+			artifact = index.get(new QName(BaseArtifactEnum.BINDING_OPERATION_OUTPUT.toString(), "findResponse")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("findResponse", artifact.getName());
+			Assert.assertEquals("findResponse", artifact.getName()); //$NON-NLS-1$
 			BindingOperationOutput bindingOperationOutput = (BindingOperationOutput) artifact;
-			Assert.assertEquals("findResponse", bindingOperationOutput.getNCName());
+			Assert.assertEquals("findResponse", bindingOperationOutput.getNCName()); //$NON-NLS-1$
 			Assert.assertEquals(bindingOperation.getOutput().getValue(), bindingOperationOutput.getUuid());
 
 			// Find the service named 'SampleService'
-			artifact = index.get(new QName(BaseArtifactEnum.WSDL_SERVICE.toString(), "SampleService"));
+			artifact = index.get(new QName(BaseArtifactEnum.WSDL_SERVICE.toString(), "SampleService")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("SampleService", artifact.getName());
-			Assert.assertEquals("SampleService", ((WsdlService) artifact).getNCName());
-			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((WsdlService) artifact).getNamespace());
+			Assert.assertEquals("SampleService", artifact.getName()); //$NON-NLS-1$
+			Assert.assertEquals("SampleService", ((WsdlService) artifact).getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", ((WsdlService) artifact).getNamespace()); //$NON-NLS-1$
 			WsdlService service = (WsdlService) artifact;
 			Assert.assertEquals(1, service.getPort().size());
 
 			// Find the port named 'SamplePort'
-			artifact = index.get(new QName(BaseArtifactEnum.PORT.toString(), "SamplePort"));
+			artifact = index.get(new QName(BaseArtifactEnum.PORT.toString(), "SamplePort")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("SamplePort", artifact.getName());
-			Assert.assertEquals("SamplePort", ((Port) artifact).getNCName());
+			Assert.assertEquals("SamplePort", artifact.getName()); //$NON-NLS-1$
+			Assert.assertEquals("SamplePort", ((Port) artifact).getNCName()); //$NON-NLS-1$
 			Port port = (Port) artifact;
 			Assert.assertNotNull(port.getBinding());
 			Assert.assertEquals(port.getBinding().getValue(), binding.getUuid());
 			Assert.assertEquals(1, port.getExtension().size());
 
 			// Find the soap:address
-			artifact = index.get(new QName(BaseArtifactEnum.SOAP_ADDRESS.toString(), "address"));
+			artifact = index.get(new QName(BaseArtifactEnum.SOAP_ADDRESS.toString(), "address")); //$NON-NLS-1$
 			Assert.assertNotNull(artifact);
-			Assert.assertEquals("soap:address", artifact.getName());
-			Assert.assertEquals("address", ((SoapAddress) artifact).getNCName());
-			Assert.assertEquals("http://schemas.xmlsoap.org/wsdl/soap/", ((SoapAddress) artifact).getNamespace());
+			Assert.assertEquals("soap:address", artifact.getName()); //$NON-NLS-1$
+			Assert.assertEquals("address", ((SoapAddress) artifact).getNCName()); //$NON-NLS-1$
+			Assert.assertEquals("http://schemas.xmlsoap.org/wsdl/soap/", ((SoapAddress) artifact).getNamespace()); //$NON-NLS-1$
 			SoapAddress soapAddress = (SoapAddress) artifact;
-			Assert.assertEquals("http://localhost:8080/sample/sampleEP", soapAddress.getSoapLocation());
+			Assert.assertEquals("http://localhost:8080/sample/sampleEP", soapAddress.getSoapLocation()); //$NON-NLS-1$
 			Assert.assertEquals(port.getExtension().get(0).getValue(), soapAddress.getUuid());
 
 		} finally {
@@ -297,21 +297,21 @@ public class WsdlDeriverTest {
 		WsdlDocument testSrcArtifact = new WsdlDocument();
 		testSrcArtifact.setArtifactType(BaseArtifactEnum.WSDL_DOCUMENT);
 		testSrcArtifact.setUuid(UUID.randomUUID().toString());
-		testSrcArtifact.setName("ws-humantask-api.wsdl");
-		testSrcArtifact.setVersion("200803");
-		testSrcArtifact.setContentEncoding("UTF-8");
-		testSrcArtifact.setContentType("application/xml");
+		testSrcArtifact.setName("ws-humantask-api.wsdl"); //$NON-NLS-1$
+		testSrcArtifact.setVersion("200803"); //$NON-NLS-1$
+		testSrcArtifact.setContentEncoding("UTF-8"); //$NON-NLS-1$
+		testSrcArtifact.setContentType("application/xml"); //$NON-NLS-1$
 		testSrcArtifact.setContentSize(92779L);
-		testSrcArtifact.setCreatedBy("anonymous");
+		testSrcArtifact.setCreatedBy("anonymous"); //$NON-NLS-1$
 		XMLGregorianCalendar xmlGC = dtFactory.newXMLGregorianCalendar(new GregorianCalendar());
 		testSrcArtifact.setCreatedTimestamp(xmlGC);
-		testSrcArtifact.setDescription("Human Task WSDL.");
-		testSrcArtifact.setLastModifiedBy("anonymous");
+		testSrcArtifact.setDescription("Human Task WSDL."); //$NON-NLS-1$
+		testSrcArtifact.setLastModifiedBy("anonymous"); //$NON-NLS-1$
 		testSrcArtifact.setLastModifiedTimestamp(xmlGC);
 
 		InputStream testSrcContent = null;
 		try {
-			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/ws-humantask-api.wsdl");
+			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/ws-humantask-api.wsdl"); //$NON-NLS-1$
 			Collection<BaseArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
 			Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(850, derivedArtifacts.size());

@@ -16,6 +16,7 @@
 package org.overlord.sramp.common.ontology;
 
 import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.common.i18n.Messages;
 
 /**
  * Exception thrown when the user attempts to add a classified-by value to an
@@ -38,7 +39,7 @@ public class InvalidClassifiedByException extends SrampUserException {
      * @param classifiedBy
      */
     public InvalidClassifiedByException(String classifiedBy) {
-        super("Invalid classified-by (it is either an invalid URI or it is not defined by an S-RAMP ontology): " + classifiedBy);
+        super(Messages.i18n.format("INVALID_CLASSIFIED_BY", classifiedBy)); //$NON-NLS-1$
     }
 
 }

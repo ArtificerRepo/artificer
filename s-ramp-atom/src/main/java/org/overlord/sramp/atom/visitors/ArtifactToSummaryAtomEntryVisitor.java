@@ -44,7 +44,7 @@ import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
  */
 public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 
-    protected String baseUrl = "";
+    protected String baseUrl = ""; //$NON-NLS-1$
 	protected Entry atomEntry;
 	protected Exception failure;
 	protected Set<String> propertyNames;
@@ -118,10 +118,10 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 				entry.setSummary(artifact.getDescription());
 			entry.getExtensionAttributes().put(SrampConstants.SRAMP_DERIVED_QNAME, String.valueOf(artifactType.isDerived()));
 
-			String atomLink = baseUrl + "/s-ramp/"
-					+ artifactType.getModel() + "/"
-					+ artifactType.getType() + "/" + artifact.getUuid();
-			String mediaLink = atomLink + "/media";
+			String atomLink = baseUrl + "/s-ramp/" //$NON-NLS-1$
+					+ artifactType.getModel() + "/" //$NON-NLS-1$
+					+ artifactType.getType() + "/" + artifact.getUuid(); //$NON-NLS-1$
+			String mediaLink = atomLink + "/media"; //$NON-NLS-1$
 
 			if (SrampModelUtils.isDocumentArtifact(artifact)) {
 			    // Original content can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
@@ -136,7 +136,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	            // Only for Document style artifacts.
 	            Link linkToAlternate = new Link();
                 linkToAlternate.setType(ctVisitor.getContentType());
-                linkToAlternate.setRel("alternate");
+                linkToAlternate.setRel("alternate"); //$NON-NLS-1$
                 linkToAlternate.setHref(new URI(mediaLink));
                 entry.getLinks().add(linkToAlternate);
 			}
@@ -144,21 +144,21 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			// Self can be accessed at /s-ramp/{model}/{artifact-type}/{uid}
 			Link linkToSelf = new Link();
 			linkToSelf.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-			linkToSelf.setRel("self");
+			linkToSelf.setRel("self"); //$NON-NLS-1$
 			linkToSelf.setHref(new URI(atomLink));
 			entry.getLinks().add(linkToSelf);
 
 			// Link to edit-media can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/edit-media
 			Link linkToEditMedia = new Link();
 			linkToEditMedia.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-			linkToEditMedia.setRel("edit-media");
+			linkToEditMedia.setRel("edit-media"); //$NON-NLS-1$
 			linkToEditMedia.setHref(new URI(mediaLink));
 			entry.getLinks().add(linkToEditMedia);
 
 			// Link to edit can be accessed at /s-ramp/{model}/{artifact-type}/{uid}
 			Link linkToEdit = new Link();
 			linkToEdit.setType(MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-			linkToEdit.setRel("edit");
+			linkToEdit.setRel("edit"); //$NON-NLS-1$
 			linkToEdit.setHref(new URI(atomLink));
 			entry.getLinks().add(linkToEdit);
 
@@ -166,14 +166,14 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			Category typeCat = new Category();
 			typeCat.setTerm(artifactType.getType());
 			typeCat.setLabel(artifactType.getLabel());
-			typeCat.setScheme(new URI("x-s-ramp:2010:type"));
+			typeCat.setScheme(new URI("x-s-ramp:2010:type")); //$NON-NLS-1$
 			entry.getCategories().add(typeCat);
 
 			// Model category
 			Category modelCat = new Category();
 			modelCat.setTerm(artifactType.getModel());
 			modelCat.setLabel(artifactType.getLabel());
-			modelCat.setScheme(new URI("x-s-ramp:2010:model"));
+			modelCat.setScheme(new URI("x-s-ramp:2010:model")); //$NON-NLS-1$
 			entry.getCategories().add(modelCat);
 
 			setAtomEntry(entry);
@@ -181,7 +181,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			if (includeArtifact()) {
 				Artifact artifactWrapper = new Artifact();
 				BaseArtifactType includedArtifact = createIncludedArtifact(artifact);
-				Method method = Artifact.class.getMethod("set" + includedArtifact.getClass().getSimpleName(), includedArtifact.getClass());
+				Method method = Artifact.class.getMethod("set" + includedArtifact.getClass().getSimpleName(), includedArtifact.getClass()); //$NON-NLS-1$
 				method.invoke(artifactWrapper, includedArtifact);
 				entry.setAnyOtherJAXBObject(artifactWrapper);
 			}

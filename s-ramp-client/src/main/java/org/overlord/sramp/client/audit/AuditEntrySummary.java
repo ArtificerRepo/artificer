@@ -72,7 +72,7 @@ public class AuditEntrySummary {
     public String toString() {
         DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
         DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-        return String.format("%1$s by '%2$s' on %3$s at %4$s.", getType(), getWho(),
+        return String.format("%1$s by '%2$s' on %3$s at %4$s.", getType(), getWho(), //$NON-NLS-1$
                 dateFormat.format(getWhen()), timeFormat.format(getWhen()));
     }
 }

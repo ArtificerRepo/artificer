@@ -56,7 +56,7 @@ public class Sramp {
             Long refreshDelay = config.getLong(SrampConstants.SRAMP_CONFIG_FILE_REFRESH, 5000l);
             URL url = findSrampConfig(configFile);
             if (url == null) {
-                log.warn("Cannot find " + configFile);
+                log.warn("Cannot find " + configFile); //$NON-NLS-1$
             } else {
                 PropertiesConfiguration propertiesConfiguration = new PropertiesConfiguration(url);
                 FileChangedReloadingStrategy fileChangedReloadingStrategy = new FileChangedReloadingStrategy();
@@ -93,31 +93,31 @@ public class Sramp {
                 return file.toURI().toURL();
         } else {
             // Check the current user's home directory
-            String userHomeDir = System.getProperty("user.home");
+            String userHomeDir = System.getProperty("user.home"); //$NON-NLS-1$
             if (userHomeDir != null) {
                 File dirFile = new File(userHomeDir);
                 if (dirFile.isDirectory()) {
-                    File cfile = new File(dirFile, "sramp.properties");
+                    File cfile = new File(dirFile, "sramp.properties"); //$NON-NLS-1$
                     if (cfile.isFile())
                         return cfile.toURI().toURL();
                 }
             }
 
             // Next, check for JBoss
-            String jbossConfigDir = System.getProperty("jboss.server.config.dir");
+            String jbossConfigDir = System.getProperty("jboss.server.config.dir"); //$NON-NLS-1$
             if (jbossConfigDir != null) {
                 File dirFile = new File(jbossConfigDir);
                 if (dirFile.isDirectory()) {
-                    File cfile = new File(dirFile, "sramp.properties");
+                    File cfile = new File(dirFile, "sramp.properties"); //$NON-NLS-1$
                     if (cfile.isFile())
                         return cfile.toURI().toURL();
                 }
             }
-            String jbossConfigUrl = System.getProperty("jboss.server.config.url");
+            String jbossConfigUrl = System.getProperty("jboss.server.config.url"); //$NON-NLS-1$
             if (jbossConfigUrl != null) {
                 File dirFile = new File(jbossConfigUrl);
                 if (dirFile.isDirectory()) {
-                    File cfile = new File(dirFile, "sramp.properties");
+                    File cfile = new File(dirFile, "sramp.properties"); //$NON-NLS-1$
                     if (cfile.isFile())
                         return cfile.toURI().toURL();
                 }
@@ -133,10 +133,10 @@ public class Sramp {
      * @param requestUrl
      */
     public String getBaseUrl(String requestUrl) {
-        String baseUrl = "http://localhost:8080/s-ramp-server";
+        String baseUrl = "http://localhost:8080/s-ramp-server"; //$NON-NLS-1$
         if (requestUrl!=null) {
-            int index = requestUrl.indexOf("/s-ramp/");
-            if (index < 0) index = requestUrl.indexOf("/s-ramp");
+            int index = requestUrl.indexOf("/s-ramp/"); //$NON-NLS-1$
+            if (index < 0) index = requestUrl.indexOf("/s-ramp"); //$NON-NLS-1$
             if (index > 0) {
                 baseUrl = requestUrl.substring(0, index);
             }
@@ -162,14 +162,14 @@ public class Sramp {
      * @return the user to login as to perform auditing tasks
      */
     public String getAuditUser() {
-        return configuration.getString(SrampConstants.SRAMP_CONFIG_AUDIT_USER, "auditor");
+        return configuration.getString(SrampConstants.SRAMP_CONFIG_AUDIT_USER, "auditor"); //$NON-NLS-1$
     }
 
     /**
      * @return the auditing user's password
      */
     public String getAuditPassword() {
-        return configuration.getString(SrampConstants.SRAMP_CONFIG_AUDIT_PASS, "overlord-auditor");
+        return configuration.getString(SrampConstants.SRAMP_CONFIG_AUDIT_PASS, "overlord-auditor"); //$NON-NLS-1$
     }
 
 }

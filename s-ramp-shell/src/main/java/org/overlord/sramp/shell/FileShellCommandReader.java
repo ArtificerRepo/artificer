@@ -68,7 +68,7 @@ public class FileShellCommandReader extends AbstractShellCommandReader {
             line = fileReader.readLine();
             if (line == null)
                 break;
-	    } while (line.startsWith("#") || line.trim().length() == 0);
+	    } while (line.startsWith("#") || line.trim().length() == 0); //$NON-NLS-1$
 	    return line;
 	}
 

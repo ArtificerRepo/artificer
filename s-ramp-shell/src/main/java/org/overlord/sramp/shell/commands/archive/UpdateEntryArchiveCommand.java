@@ -26,16 +26,17 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.api.ShellContext;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Removes an entry from the current S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UpdateEntryArchiveCommand extends AbstractShellCommand {
+public class UpdateEntryArchiveCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -44,61 +45,30 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("archive:updateEntry <archivePath> <subCommand> <subCommandArgs>");
-		print("\tSub-Commands");
-		print("\t------------");
-		print("\tsetContent <pathToFileContent>");
-		print("\tsetProperty <propertyName> <propertyValue>");
-		print("\tsetRelationship <relationshipType> <targetUUID>");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'updateEntry' command is used to modify entries in the");
-		print("currently open S-RAMP batch archive.  The path to the entry");
-		print("must be specified, along with details about how the entry is");
-		print("to be modified.");
-		print("");
-		print(" setContent: a sub-command that sets the file content on a ");
-		print("      particular entry");
-		print(" setProperty: a sub-command that sets a single custom S-RAMP");
-		print("      property on the entry");
-		print(" setRelationship: a sub-command that sets a single generic");
-		print("      S-RAMP relationship on the entry");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String archivePathArg = requiredArgument(0, "Please include an entry path (relative archive path).");
-		String subCommandArg = requiredArgument(1, "Please specify a sub-command.");
+		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg.EntryPath")); //$NON-NLS-1$
+		String subCommandArg = requiredArgument(1, Messages.i18n.format("UpdateEntry.InvalidArgMsg.SubCommand")); //$NON-NLS-1$
 
-		QName varName = new QName("archive", "active-archive");
+		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
-			print("No S-RAMP archive is currently open.");
+			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
 		} else {
 			if (!archive.containsEntry(archivePathArg)) {
-				throw new InvalidCommandArgumentException(0, "Archive Entry not found: " + archivePathArg);
+				throw new InvalidCommandArgumentException(0, Messages.i18n.format("UpdateEntry.EntryNotFound", archivePathArg)); //$NON-NLS-1$
 			}
 
-			if ("setContent".equals(subCommandArg)) {
+			if ("setContent".equals(subCommandArg)) { //$NON-NLS-1$
 				executeSetContent(archive, archivePathArg, getContext());
 			}
-			if ("setProperty".equals(subCommandArg)) {
+			if ("setProperty".equals(subCommandArg)) { //$NON-NLS-1$
 				executeSetProperty(archive, archivePathArg, getContext());
 			}
-			if ("setRelationship".equals(subCommandArg)) {
+			if ("setRelationship".equals(subCommandArg)) { //$NON-NLS-1$
 				executeSetRelationship(archive, archivePathArg, getContext());
 			}
 		}
@@ -112,10 +82,10 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 	 * @throws Exception
 	 */
 	private void executeSetContent(SrampArchive archive, String entryPath, ShellContext context) throws Exception {
-		String pathToContentArg = requiredArgument(2, "Please specify a path to the content file.");
+		String pathToContentArg = requiredArgument(2, Messages.i18n.format("UpdateEntry.InvalidArgMsg.MissingPath")); //$NON-NLS-1$
 		File file = new File(pathToContentArg);
 		if (!file.isFile()) {
-			throw new InvalidCommandArgumentException(2, "File not found: " + pathToContentArg);
+			throw new InvalidCommandArgumentException(2, Messages.i18n.format("UpdateEntry.FileNotFound", pathToContentArg)); //$NON-NLS-1$
 		}
 
 		InputStream contentStream = null;
@@ -123,7 +93,7 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 			contentStream = FileUtils.openInputStream(file);
 			SrampArchiveEntry entry = archive.getEntry(entryPath);
 			archive.updateEntry(entry, contentStream);
-			print("Entry (content) successfully set.");
+			print(Messages.i18n.format("UpdateEntry.SuccessMsg")); //$NON-NLS-1$
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}
@@ -137,31 +107,31 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 	 * @throws Exception
 	 */
 	private void executeSetProperty(SrampArchive archive, String entryPath, ShellContext context) throws Exception {
-		String propNameArg = requiredArgument(2, "Please specify the name of the property.");
-		String propValArg = requiredArgument(3, "Please specify the property value.");
+		String propNameArg = requiredArgument(2, Messages.i18n.format("UpdateEntry.InvalidArgMsg.PropertyName")); //$NON-NLS-1$
+		String propValArg = requiredArgument(3, Messages.i18n.format("UpdateEntry.InvalidArgMsg.PropertyValue")); //$NON-NLS-1$
 
 		SrampArchiveEntry entry = archive.getEntry(entryPath);
 		BaseArtifactType metaData = entry.getMetaData();
 
-		if ("name".equals(propNameArg)) {
+		if ("name".equals(propNameArg)) { //$NON-NLS-1$
 			metaData.setName(propValArg);
-		} else if ("description".equals(propNameArg)) {
+		} else if ("description".equals(propNameArg)) { //$NON-NLS-1$
 			metaData.setDescription(propValArg);
-		} else if ("version".equals(propNameArg)) {
+		} else if ("version".equals(propNameArg)) { //$NON-NLS-1$
 			metaData.setVersion(propValArg);
-		} else if ("createdBy".equals(propNameArg)) {
+		} else if ("createdBy".equals(propNameArg)) { //$NON-NLS-1$
 			metaData.setCreatedBy(propValArg);
-		} else if ("lastModifiedBy".equals(propNameArg)) {
+		} else if ("lastModifiedBy".equals(propNameArg)) { //$NON-NLS-1$
 			metaData.setLastModifiedBy(propValArg);
-		} else if ("uuid".equals(propNameArg)) {
+		} else if ("uuid".equals(propNameArg)) { //$NON-NLS-1$
 			metaData.setUuid(propValArg);
-		} else if ("createdTimestamp".equals(propNameArg)) {
-		} else if ("lastModifiedTimestamp".equals(propNameArg)) {
+		} else if ("createdTimestamp".equals(propNameArg)) { //$NON-NLS-1$
+		} else if ("lastModifiedTimestamp".equals(propNameArg)) { //$NON-NLS-1$
 		}
 
 		SrampModelUtils.setCustomProperty(metaData, propNameArg, propValArg);
 		archive.updateEntry(entry, null);
-		print("Entry (meta-data) successfully set.");
+		print(Messages.i18n.format("UpdateEntry.MetaDataSuccessMsg")); //$NON-NLS-1$
 	}
 
 	/**
@@ -172,7 +142,7 @@ public class UpdateEntryArchiveCommand extends AbstractShellCommand {
 	 * @throws Exception
 	 */
 	private void executeSetRelationship(SrampArchive archive, String entryPath, ShellContext context) throws Exception {
-		throw new InvalidCommandArgumentException(0, "setRelationship sub-command not yet implemented.");
+		throw new InvalidCommandArgumentException(0, Messages.i18n.format("UpdateEntry.NotYetImplemented.Relationships")); //$NON-NLS-1$
 	}
 
 }

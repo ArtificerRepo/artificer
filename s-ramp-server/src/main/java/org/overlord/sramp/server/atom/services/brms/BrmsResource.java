@@ -92,12 +92,12 @@ public class BrmsResource {
             ArtifactSet artifactSet = null;
             Packages brmsPackages = new Packages();
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            String query = String.format("/s-ramp/%1$s/%2$s", "ext", BrmsConstants.BRMS_PKG_DOCUMENT);
-            SrampQuery srampQuery = queryManager.createQuery(query, "name", true);
+            String query = String.format("/s-ramp/%1$s/%2$s", "ext", BrmsConstants.BRMS_PKG_DOCUMENT); //$NON-NLS-1$ //$NON-NLS-2$
+            SrampQuery srampQuery = queryManager.createQuery(query, "name", true); //$NON-NLS-1$
             artifactSet = srampQuery.executeQuery();
             for (BaseArtifactType artifact : artifactSet) {
                 Packages.Package brmsPackage = new Packages.Package();
-                brmsPackage.setTitle(artifact.getName().substring(0,artifact.getName().lastIndexOf(".")));
+                brmsPackage.setTitle(artifact.getName().substring(0,artifact.getName().lastIndexOf("."))); //$NON-NLS-1$
                 brmsPackage.setPublished(artifact.getCreatedTimestamp());
                 brmsPackage.setAuthor(artifact.getCreatedBy());
                 brmsPackage.setDescription(artifact.getDescription());
@@ -123,14 +123,14 @@ public class BrmsResource {
         Assets assets = new Assets();
         try {
             //BRMS/Drools packages should be uploaded under ExtendedArtifactType of BrmsPkgDocument
-            pkgName += ".pkg";
+            pkgName += ".pkg"; //$NON-NLS-1$
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "ext", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName);
-            SrampQuery srampQuery = queryManager.createQuery(query, "name", true);
+            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "ext", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName); //$NON-NLS-1$ //$NON-NLS-2$
+            SrampQuery srampQuery = queryManager.createQuery(query, "name", true); //$NON-NLS-1$
             ArtifactSet artifactSet = srampQuery.executeQuery();
             if (artifactSet.iterator().hasNext()) {
                 BaseArtifactType baseArtifact = artifactSet.iterator().next();
-                String assetsString = "";
+                String assetsString = ""; //$NON-NLS-1$
                 for (Property property : baseArtifact.getProperty()) {
                     if (BrmsConstants.ASSET_INFO_XML.equals(property.getPropertyName())) {
                         assetsString = property.getPropertyValue();
@@ -138,7 +138,7 @@ public class BrmsResource {
                     }
                 }
                 if (assetsString.length() > 0) {
-                    JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
+                    JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms"); //$NON-NLS-1$
                     Unmarshaller unMarshaller = jaxbContext.createUnmarshaller();
                     StringReader reader = new StringReader(assetsString);
                     JAXBElement<Assets> element = unMarshaller.unmarshal(new StreamSource(reader),Assets.class);
@@ -163,14 +163,14 @@ public class BrmsResource {
 
         try {
             //BRMS/Drools packages should be uploaded under ExtendedArtifactType of BrmsPkgDocument
-            pkgName += ".pkg";
+            pkgName += ".pkg"; //$NON-NLS-1$
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "ext", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName);
-            SrampQuery srampQuery = queryManager.createQuery(query, "name", true);
+            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "ext", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName); //$NON-NLS-1$ //$NON-NLS-2$
+            SrampQuery srampQuery = queryManager.createQuery(query, "name", true); //$NON-NLS-1$
             ArtifactSet artifactSet = srampQuery.executeQuery();
             if (artifactSet.iterator().hasNext()) {
                 BaseArtifactType baseArtifact = artifactSet.iterator().next();
-                String assetsString = "";
+                String assetsString = ""; //$NON-NLS-1$
                 for (Property property : baseArtifact.getProperty()) {
                     if (BrmsConstants.ASSET_INFO_XML.equals(property.getPropertyName())) {
                         assetsString = property.getPropertyValue();
@@ -178,7 +178,7 @@ public class BrmsResource {
                     }
                 }
                 if (assetsString.length() > 0) {
-                    JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
+                    JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms"); //$NON-NLS-1$
                     Unmarshaller unMarshaller = jaxbContext.createUnmarshaller();
                     StringReader reader = new StringReader(assetsString);
                     JAXBElement<Assets> element = unMarshaller.unmarshal(new StreamSource(reader),Assets.class);
@@ -240,10 +240,10 @@ public class BrmsResource {
     @Path("rest/packages/{pkgName}/binary")
     public Response getRestPackage(@PathParam("pkgName") String pkgName) throws SrampAtomException {
         try {
-            pkgName += ".pkg";  //S-RAMP stores the fileName not the package name
+            pkgName += ".pkg";  //S-RAMP stores the fileName not the package name //$NON-NLS-1$
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "ext", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName);
-            SrampQuery srampQuery = queryManager.createQuery(query, "name", true);
+            String query = String.format("/s-ramp/%1$s/%2$s[@name='%3$s']", "ext", BrmsConstants.BRMS_PKG_DOCUMENT, pkgName); //$NON-NLS-1$ //$NON-NLS-2$
+            SrampQuery srampQuery = queryManager.createQuery(query, "name", true); //$NON-NLS-1$
             ArtifactSet artifactSet = srampQuery.executeQuery();
             if (artifactSet.iterator().hasNext()) {
                 BaseArtifactType baseArtifact = artifactSet.iterator().next();
@@ -262,10 +262,10 @@ public class BrmsResource {
                     }
                 };
                 String lastModifiedDate = simpleDateFormat.format(baseArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
-                return Response.ok(output, "application/octet-stream")
-                    .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
-                    .header("Content-Length", baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME))
-                    .header("Last-Modified", lastModifiedDate)
+                return Response.ok(output, "application/octet-stream") //$NON-NLS-1$
+                    .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName()) //$NON-NLS-1$ //$NON-NLS-2$
+                    .header("Content-Length", baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)) //$NON-NLS-1$
+                    .header("Last-Modified", lastModifiedDate) //$NON-NLS-1$
                     .build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND).build();
@@ -281,10 +281,10 @@ public class BrmsResource {
                              @PathParam("version")  String version,
                              @PathParam("fileName") String fileName) throws SrampAtomException {
         String assetName = fileName;
-        if (fileName.contains(".")) {
-            assetName = fileName.substring(0, fileName.lastIndexOf("."));
+        if (fileName.contains(".")) { //$NON-NLS-1$
+            assetName = fileName.substring(0, fileName.lastIndexOf(".")); //$NON-NLS-1$
         }
-        return getRestAsset("application/octet-stream",pkgName, assetName);
+        return getRestAsset("application/octet-stream",pkgName, assetName); //$NON-NLS-1$
     }
     /**
      * Returns the content of a Brms/Drools Package in the s-ramp repository. Note that
@@ -338,14 +338,14 @@ public class BrmsResource {
                 String lastModifiedDate = simpleDateFormat.format(baseArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
                 if (accept!=null && (accept.contains(MediaType.APPLICATION_ATOM_XML) || accept.contains(MediaType.APPLICATION_XML) )) {
                     return Response.ok(output, MediaType.APPLICATION_XML)
-                    .header("Content-Length", baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME))
-                    .header("Last-Modified", lastModifiedDate)
+                    .header("Content-Length", baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)) //$NON-NLS-1$
+                    .header("Last-Modified", lastModifiedDate) //$NON-NLS-1$
                     .build();
                 } else {
-                     return Response.ok(output, "application/octet-stream")
-                        .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
-                        .header("Content-Length", baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME))
-                        .header("Last-Modified", lastModifiedDate)
+                     return Response.ok(output, "application/octet-stream") //$NON-NLS-1$
+                        .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName()) //$NON-NLS-1$ //$NON-NLS-2$
+                        .header("Content-Length", baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)) //$NON-NLS-1$
+                        .header("Last-Modified", lastModifiedDate) //$NON-NLS-1$
                         .build();
                 }
             } else {

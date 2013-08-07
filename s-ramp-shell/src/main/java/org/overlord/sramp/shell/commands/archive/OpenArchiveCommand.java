@@ -21,14 +21,15 @@ import javax.xml.namespace.QName;
 
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.shell.AbstractShellContextVariableLifecycleHandler;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Opens an existing S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class OpenArchiveCommand extends AbstractShellCommand {
+public class OpenArchiveCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -37,35 +38,17 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("archive:open <pathToArchive>");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'open' operation opens an existing S-RAMP batch archive");
-		print("file.  Once open, the contents of the archive can be modified");
-		print("or just listed.");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String pathToArchive = requiredArgument(0, "Please supply the path to an S-RAMP batch archive file.");
+		String pathToArchive = requiredArgument(0, Messages.i18n.format("OpenArchive.InvalidArgMsg.PathToArchive")); //$NON-NLS-1$
 
 		SrampArchive archive = null;
-		QName varName = new QName("archive", "active-archive");
+		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		archive = (SrampArchive) getContext().getVariable(varName);
 		if (archive != null) {
-			print("An S-RAMP archive is already open.  Please archive:close it before creating a new one.");
+			print(Messages.i18n.format("OpenArchive.AlreadyOpen")); //$NON-NLS-1$
 			return;
 		}
 
@@ -82,7 +65,7 @@ public class OpenArchiveCommand extends AbstractShellCommand {
 				SrampArchive.closeQuietly((SrampArchive) object);
 			}
 		});
-		print("S-RAMP batch archive opened from " + archiveFile.getCanonicalPath());
+		print(Messages.i18n.format("OpenArchive.Opened", archiveFile.getCanonicalPath())); //$NON-NLS-1$
 	}
 
 }

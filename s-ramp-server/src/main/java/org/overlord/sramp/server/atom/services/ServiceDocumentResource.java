@@ -93,7 +93,7 @@ public class ServiceDocumentResource extends AbstractResource {
 	    String uri = null;
 	    if (uriInfo!=null) uri = uriInfo.getBaseUri().toString();
 		if (uri == null) {
-			uri = "http://localhost:8080/s-ramp-server/";
+			uri = "http://localhost:8080/s-ramp-server/"; //$NON-NLS-1$
 		}
 		return uri;
 	}

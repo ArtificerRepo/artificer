@@ -37,6 +37,7 @@ import org.overlord.sramp.repository.QueryManager;
 import org.overlord.sramp.repository.QueryManagerFactory;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
+import org.overlord.sramp.server.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +73,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 		if (count == null)
 			count = 100;
 		if (orderBy == null)
-			orderBy = "name";
+			orderBy = "name"; //$NON-NLS-1$
 		if (ascending == null)
 			ascending = true;
 
@@ -87,7 +88,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 			addPaginationLinks(feed, artifactSet, query, startIndex, count, orderBy, ascending, baseUrl);
 			return feed;
 		} catch (Throwable e) {
-			logError(logger, "Error trying to create an Artifact Feed.", e);
+			logError(logger, Messages.i18n.format("Error trying to create an Artifact Feed."), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		} finally {
 			if (artifactSet != null)
@@ -117,15 +118,15 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	@SuppressWarnings("unchecked")
     private Feed createFeed(ArtifactSet artifactSet, int fromRow, int toRow, Set<String> propNames, String baseUrl) throws Exception {
 		Feed feed = new Feed();
-		feed.getExtensionAttributes().put(SrampConstants.SRAMP_PROVIDER_QNAME, "JBoss Overlord");
+		feed.getExtensionAttributes().put(SrampConstants.SRAMP_PROVIDER_QNAME, "JBoss Overlord"); //$NON-NLS-1$
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf((toRow - fromRow) + 1));
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_START_INDEX_QNAME, String.valueOf(fromRow));
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_TOTAL_RESULTS_QNAME, String.valueOf(artifactSet.size()));
 		feed.setId(new URI(UUID.randomUUID().toString()));
-		feed.setTitle("S-RAMP Feed");
-		feed.setSubtitle("Ad Hoc query feed");
+		feed.setTitle("S-RAMP Feed"); //$NON-NLS-1$
+		feed.setSubtitle("Ad Hoc query feed"); //$NON-NLS-1$
 		feed.setUpdated(new Date());
-		feed.getAuthors().add(new Person("anonymous"));
+		feed.getAuthors().add(new Person("anonymous")); //$NON-NLS-1$
 
 		Iterator<BaseArtifactType> iterator = artifactSet.iterator();
 
@@ -169,8 +170,8 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	private void addPaginationLinks(Feed feed, ArtifactSet artifactSet, String query, int startIndex, int count,
 			String orderBy, boolean ascending, String baseUrl) throws UnsupportedEncodingException {
 
-		String hrefPattern = "%1$s?query=%2$s&page=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s";
-		String encodedQuery = URLEncoder.encode(query, "UTF-8");
+		String hrefPattern = "%1$s?query=%2$s&page=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s"; //$NON-NLS-1$
+		String encodedQuery = URLEncoder.encode(query, "UTF-8"); //$NON-NLS-1$
 		String firstHref = String.format(hrefPattern, baseUrl, encodedQuery, 0, String.valueOf(count),
 				String.valueOf(orderBy), String.valueOf(ascending));
 		int prevIndex = Math.max(0,  startIndex - count);
@@ -179,9 +180,9 @@ public abstract class AbstractFeedResource extends AbstractResource {
 		String nextHref = String.format(hrefPattern, baseUrl, encodedQuery, startIndex + count, String.valueOf(count),
 				String.valueOf(orderBy), String.valueOf(ascending));
 
-		Link first = new Link("first", firstHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
-		Link prev = new Link("prev", prevHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
-		Link next = new Link("next", nextHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
+		Link first = new Link("first", firstHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE); //$NON-NLS-1$
+		Link prev = new Link("prev", prevHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE); //$NON-NLS-1$
+		Link next = new Link("next", nextHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE); //$NON-NLS-1$
 
 		if (startIndex > 0) {
 			feed.getLinks().add(first);

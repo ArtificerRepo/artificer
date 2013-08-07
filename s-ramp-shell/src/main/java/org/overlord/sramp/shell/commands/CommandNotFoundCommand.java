@@ -16,6 +16,7 @@
 package org.overlord.sramp.shell.commands;
 
 import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * The command used when a command does not exist for a given command name.
@@ -49,7 +50,7 @@ public class CommandNotFoundCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void execute() {
-		print("Command not found.  Try 'help' for a list of available commands.");
+		print(Messages.i18n.format("COMMAND_NOT_FOUND")); //$NON-NLS-1$
 	}
 
 }
