@@ -25,14 +25,15 @@ import org.apache.commons.io.IOUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Adds an entry to the current S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class AddEntryArchiveCommand extends AbstractShellCommand {
+public class AddEntryArchiveCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -41,40 +42,19 @@ public class AddEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("archive:addEntry <archivePath> <srampArtifactType> [<pathToFileContent>]");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'addEntry' command provides a way to add a single entry to the ");
-		print("currently open S-RAMP batch archive.  The command requires a path");
-		print("within the archive to be specified.  In addition, the type of ");
-		print("artifact must be included along with an optional path to a file");
-		print("representing the content.");
-
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String archivePathArg = requiredArgument(0, "Please include an entry path (relative archive path).");
-		String artifactTypeArg = requiredArgument(1, "Please include an entry path (relative archive path).");
+		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg.EntryPath")); //$NON-NLS-1$
+		String artifactTypeArg = requiredArgument(1, Messages.i18n.format("AddEntry.InvalidArgMsg.ArtifactType")); //$NON-NLS-1$
 		String pathToContent = optionalArgument(2);
 
-		QName varName = new QName("archive", "active-archive");
+		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
-			print("No S-RAMP archive is currently open.");
+			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
 		} else {
 			InputStream contentStream = null;
 			try {
@@ -87,7 +67,7 @@ public class AddEntryArchiveCommand extends AbstractShellCommand {
 				BaseArtifactType artifact = type.newArtifactInstance();
 				artifact.setName(name);
 				archive.addEntry(archivePathArg, artifact, contentStream);
-				print("Entry added to S-RAMP archive:  " + archivePathArg);
+				print(Messages.i18n.format("AddEntry.Added", archivePathArg)); //$NON-NLS-1$
 			} finally {
 				IOUtils.closeQuietly(contentStream);
 			}

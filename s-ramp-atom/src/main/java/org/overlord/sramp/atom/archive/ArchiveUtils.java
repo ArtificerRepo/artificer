@@ -25,6 +25,7 @@ import java.util.Enumeration;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.IOUtils;
+import org.overlord.sramp.atom.i18n.Messages;
 
 /**
  * Some general porpoise utils for working with archives.
@@ -50,13 +51,13 @@ public class ArchiveUtils {
 				File outFile = new File(toDir, entryName);
 				if (!outFile.getParentFile().exists()) {
 					if (!outFile.getParentFile().mkdirs()) {
-						throw new IOException("Failed to create parent directory: " + outFile.getParentFile().getCanonicalPath());
+						throw new IOException(Messages.i18n.format("FAILED_TO_CREATE_PARENT_DIR", outFile.getParentFile().getCanonicalPath())); //$NON-NLS-1$
 					}
 				}
 
 				if (entry.isDirectory()) {
 					if (!outFile.mkdir()) {
-						throw new IOException("Failed to create directory: " + outFile.getCanonicalPath());
+						throw new IOException(Messages.i18n.format("FAILED_TO_CREATE_DIR", outFile.getCanonicalPath())); //$NON-NLS-1$
 					}
 				} else {
 					InputStream zipStream = null;

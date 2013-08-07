@@ -38,7 +38,7 @@ public class ExtendedArtifactDeriverTestProvider implements DeriverProvider {
     @Override
     public Map<String, ArtifactDeriver> createArtifactDerivers() {
         Map<String, ArtifactDeriver> derivers = new HashMap<String, ArtifactDeriver>();
-        derivers.put("ExtendedArtifactDeriverTestDocument", new ExtendedArtifactDeriverTestDeriver());
+        derivers.put("ExtendedArtifactDeriverTestDocument", new ExtendedArtifactDeriverTestDeriver()); //$NON-NLS-1$
         return derivers;
     }
 

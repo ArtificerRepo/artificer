@@ -54,7 +54,7 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
 
     @BeforeClass
     public static void enableAuditing() {
-        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "true");
+        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "true"); //$NON-NLS-1$
     }
 
 	@Test
@@ -66,7 +66,7 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
 		Thread.sleep(1000);
 
 		// List all the audit entries
-        ClientRequest request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid()));
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid())); //$NON-NLS-1$
 		Feed auditEntryFeed = request.get(Feed.class).getEntity();
 		Assert.assertNotNull(auditEntryFeed);
 		List<Entry> entries = auditEntryFeed.getEntries();
@@ -77,11 +77,11 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
         }
 
 		// GET the audit entry (the last one in the list - the artifact:add)
-		request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid() + "/" + auditEntryUuid));
+		request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid() + "/" + auditEntryUuid)); //$NON-NLS-1$ //$NON-NLS-2$
 		Entry entry = request.get(Entry.class).getEntity();
 		AuditEntry auditEntry = SrampAtomUtils.unwrap(entry, AuditEntry.class);
 		Assert.assertNotNull(auditEntry);
-        Assert.assertEquals("junituser", auditEntry.getWho());
+        Assert.assertEquals("junituser", auditEntry.getWho()); //$NON-NLS-1$
         Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD, auditEntry.getType());
         List<AuditItemType> auditItems = auditEntry.getAuditItem();
         Assert.assertEquals(1, auditItems.size());
@@ -94,21 +94,21 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
             Assert.assertNotNull(property);
             String name = property.getName();
             String value = property.getValue();
-            if (name.equals("sramp:name")) {
-                Assert.assertEquals("sample.pdf", value);
-            } else if (name.equals("sramp:contentSize")) {
-                Assert.assertEquals("218882", value);
-            } else if (name.equals("sramp:contentHash")) {
-                Assert.assertEquals("12e5f2da18960dc085ca27bec1ae9e3245389cb1", value);
-            } else if (name.equals("sramp:contentType")) {
-                Assert.assertEquals("application/pdf", value);
+            if (name.equals("sramp:name")) { //$NON-NLS-1$
+                Assert.assertEquals("sample.pdf", value); //$NON-NLS-1$
+            } else if (name.equals("sramp:contentSize")) { //$NON-NLS-1$
+                Assert.assertEquals("218882", value); //$NON-NLS-1$
+            } else if (name.equals("sramp:contentHash")) { //$NON-NLS-1$
+                Assert.assertEquals("12e5f2da18960dc085ca27bec1ae9e3245389cb1", value); //$NON-NLS-1$
+            } else if (name.equals("sramp:contentType")) { //$NON-NLS-1$
+                Assert.assertEquals("application/pdf", value); //$NON-NLS-1$
             } else {
-                Assert.fail("No assertion for audited property: " + name);
+                Assert.fail("No assertion for audited property: " + name); //$NON-NLS-1$
             }
         }
 
         // List all the audit entries by user
-        request = new ClientRequest(generateURL("/s-ramp/audit/user/junituser"));
+        request = new ClientRequest(generateURL("/s-ramp/audit/user/junituser")); //$NON-NLS-1$
         auditEntryFeed = request.get(Feed.class).getEntity();
         Assert.assertNotNull(auditEntryFeed);
         entries = auditEntryFeed.getEntries();
@@ -124,15 +124,15 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
         DatatypeFactory dtFactory = DatatypeFactory.newInstance();
 
         // Create another audit entry
-        ClientRequest request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid()));
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid())); //$NON-NLS-1$
         XMLGregorianCalendar now = dtFactory.newXMLGregorianCalendar((GregorianCalendar)Calendar.getInstance());
         AuditEntry auditEntry = new AuditEntry();
-        auditEntry.setType("junit:test1");
+        auditEntry.setType("junit:test1"); //$NON-NLS-1$
         auditEntry.setWhen(now);
-        auditEntry.setWho("junituser");
-        AuditItemType item = AuditUtils.getOrCreateAuditItem(auditEntry, "junit:item");
-        AuditUtils.setAuditItemProperty(item, "foo", "bar");
-        AuditUtils.setAuditItemProperty(item, "hello", "world");
+        auditEntry.setWho("junituser"); //$NON-NLS-1$
+        AuditItemType item = AuditUtils.getOrCreateAuditItem(auditEntry, "junit:item"); //$NON-NLS-1$
+        AuditUtils.setAuditItemProperty(item, "foo", "bar"); //$NON-NLS-1$ //$NON-NLS-2$
+        AuditUtils.setAuditItemProperty(item, "hello", "world"); //$NON-NLS-1$ //$NON-NLS-2$
 
         request.body(MediaType.APPLICATION_AUDIT_ENTRY_XML_TYPE, auditEntry);
         ClientResponse<Entry> response = request.post(Entry.class);
@@ -140,28 +140,28 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
         AuditEntry re = SrampAtomUtils.unwrap(entry, AuditEntry.class);
         Assert.assertNotNull(re);
         Assert.assertNotNull(re.getUuid());
-        Assert.assertEquals("junituser", re.getWho());
+        Assert.assertEquals("junituser", re.getWho()); //$NON-NLS-1$
         Assert.assertEquals(1, re.getAuditItem().size());
-        Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType());
+        Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType()); //$NON-NLS-1$
         Assert.assertEquals(2, re.getAuditItem().iterator().next().getProperty().size());
 
         // List all the audit entries
-        request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid()));
+        request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid())); //$NON-NLS-1$
         Feed auditEntryFeed = request.get(Feed.class).getEntity();
         Assert.assertNotNull(auditEntryFeed);
         List<Entry> entries = auditEntryFeed.getEntries();
         Assert.assertEquals(2, entries.size());
 
         // Get just the custom entry we created
-        request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid() + "/" + re.getUuid()));
+        request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid() + "/" + re.getUuid())); //$NON-NLS-1$ //$NON-NLS-2$
         response = request.get(Entry.class);
         entry = response.getEntity();
         re = SrampAtomUtils.unwrap(entry, AuditEntry.class);
         Assert.assertNotNull(re);
         Assert.assertNotNull(re.getUuid());
-        Assert.assertEquals("junituser", re.getWho());
+        Assert.assertEquals("junituser", re.getWho()); //$NON-NLS-1$
         Assert.assertEquals(1, re.getAuditItem().size());
-        Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType());
+        Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType()); //$NON-NLS-1$
         Assert.assertEquals(2, re.getAuditItem().iterator().next().getProperty().size());
     }
 
@@ -171,13 +171,13 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
      */
     private Document addPdf() throws Exception {
         // Add the PDF to the repository
-        String artifactFileName = "sample.pdf";
-        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        String artifactFileName = "sample.pdf"; //$NON-NLS-1$
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
         //String uuid = null;
         try {
-            ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document"));
-            request.header("Slug", artifactFileName);
-            request.body("application/pdf", contentStream);
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document")); //$NON-NLS-1$
+            request.header("Slug", artifactFileName); //$NON-NLS-1$
+            request.body("application/pdf", contentStream); //$NON-NLS-1$
 
             ClientResponse<Entry> response = request.post(Entry.class);
 

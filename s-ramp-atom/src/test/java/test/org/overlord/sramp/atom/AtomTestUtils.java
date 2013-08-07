@@ -35,7 +35,7 @@ public class AtomTestUtils {
 	 * @throws Exception
 	 */
 	public static File getArchiveWorkDir(SrampArchive archive) throws Exception {
-		Field field = archive.getClass().getDeclaredField("workDir");
+		Field field = archive.getClass().getDeclaredField("workDir"); //$NON-NLS-1$
 		boolean oldAccessible = field.isAccessible();
 		field.setAccessible(true);
 		File workDir = (File) field.get(archive);

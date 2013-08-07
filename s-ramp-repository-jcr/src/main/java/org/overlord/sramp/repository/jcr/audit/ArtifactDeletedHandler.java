@@ -21,6 +21,7 @@ import javax.jcr.observation.Event;
 import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.repository.jcr.JCRConstants;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 /**
  * Handles artifact deleted event bundles.
@@ -40,16 +41,16 @@ public class ArtifactDeletedHandler extends AbstractAuditEventBundleHandler {
      */
     @Override
     public void handle(Sramp sramp, AuditEventBundle eventBundle) throws Exception {
-        log.debug("(AUDIT) Processing DELETE ARTIFACT event.");
+        log.debug(Messages.i18n.format("DBG_PROCESSING_DELETE_ARTY")); //$NON-NLS-1$
 
         if (eventBundle.isEmpty()) {
-            log.debug("No events found for artifact delete audit event bundle.");
+            log.debug(Messages.i18n.format("DBG_NO_EVENTS_FOUND_DELETE")); //$NON-NLS-1$
             return;
         }
 
         Event deleteEvent = eventBundle.getArtifactDeleteEvent();
         if (deleteEvent == null) {
-            log.debug("No (interesting) events found for artifact delete audit event bundle.");
+            log.debug(Messages.i18n.format("DBG_NO_DELETE_EVENT_FOUND")); //$NON-NLS-1$
             return;
         }
 
@@ -61,7 +62,7 @@ public class ArtifactDeletedHandler extends AbstractAuditEventBundleHandler {
         createAuditEntryNode(artifactNode, AuditEntryTypes.ARTIFACT_DELETE,
                 deleteEvent.getUserID(), deleteEvent.getDate());
 
-        log.debug("Created one audit entry for the 'delete artifact' event.");
+        log.debug(Messages.i18n.format("DBG_DELETE_AUDIT_ENTRY_CREATED")); //$NON-NLS-1$
 
         if (eventBundle.getSession().isLive())
             eventBundle.getSession().save();

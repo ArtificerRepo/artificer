@@ -64,8 +64,8 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware(true);
 			factory.setValidating(false);
-			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false); //$NON-NLS-1$
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false); //$NON-NLS-1$
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.parse(content);
 			XPathFactory xPathfactory = XPathFactory.newInstance();
@@ -88,9 +88,9 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 			            dat.setRelatedDocument(related);
 			        }
 			    } else {
-			        Relationship genericRelationship = SrampModelUtils.getGenericRelationship(derivedArtifact, "relatedDocument");
+			        Relationship genericRelationship = SrampModelUtils.getGenericRelationship(derivedArtifact, "relatedDocument"); //$NON-NLS-1$
 			        if (genericRelationship == null) {
-			            SrampModelUtils.addGenericRelationship(derivedArtifact, "relatedDocument", artifact.getUuid());
+			            SrampModelUtils.addGenericRelationship(derivedArtifact, "relatedDocument", artifact.getUuid()); //$NON-NLS-1$
 			        }
 			    }
 			}

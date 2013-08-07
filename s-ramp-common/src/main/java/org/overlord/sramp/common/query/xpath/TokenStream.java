@@ -18,6 +18,8 @@ package org.overlord.sramp.common.query.xpath;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.overlord.sramp.common.i18n.Messages;
+
 /**
  * A stream of tokens produced by the tokenizer.
  *
@@ -43,7 +45,7 @@ public class TokenStream {
 	 */
 	public void addToken(String value, TokenType type) {
 		if (tokens == null) {
-			throw new RuntimeException("Attempt to add a token after the stream was built.");
+			throw new RuntimeException(Messages.i18n.format("TOKEN_STREAM_ALREADY_BUILT")); //$NON-NLS-1$
 		}
 		tokens.add(new Token(type, value));
 	}
@@ -53,7 +55,7 @@ public class TokenStream {
 	 */
 	public TokenStream build() {
 		if (tokens == null) {
-			throw new RuntimeException("Token stream already built.");
+			throw new RuntimeException(Messages.i18n.format("TOKEN_STREAM_ALREADY_BUILT_2")); //$NON-NLS-1$
 		}
 		stream = tokens.toArray(new Token[tokens.size()]);
 		tokens = null;
@@ -193,8 +195,8 @@ public class TokenStream {
 			boolean first = true;
 			for (Token token : this.stream) {
 				if (!first) {
-					builder.append(" ");
-					pbuilder.append(" ");
+					builder.append(" "); //$NON-NLS-1$
+					pbuilder.append(" "); //$NON-NLS-1$
 				} else {
 					first = false;
 				}
@@ -209,7 +211,7 @@ public class TokenStream {
 				count++;
 			}
 		}
-		return builder.toString() + "\n" + pbuilder.toString();
+		return builder.toString() + "\n" + pbuilder.toString(); //$NON-NLS-1$
 	}
 
 }

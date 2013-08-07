@@ -42,8 +42,8 @@ public class JavaClassDeriverTest {
         JavaClassDeriver deriver = new JavaClassDeriver();
         ExtendedDocument artifact = new ExtendedDocument();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-        artifact.setName("MyClass.class");
-        InputStream is = getClass().getResourceAsStream("MyClass.class");
+        artifact.setName("MyClass.class"); //$NON-NLS-1$
+        InputStream is = getClass().getResourceAsStream("MyClass.class"); //$NON-NLS-1$
 
         // Derive
         Collection<BaseArtifactType> derivedArtifacts = deriver.derive(artifact, is);
@@ -51,16 +51,16 @@ public class JavaClassDeriverTest {
         // Assert
         Assert.assertNotNull(derivedArtifacts);
         Assert.assertEquals(0, derivedArtifacts.size());
-        Assert.assertEquals("org.overlord.sramp.integration.java.deriver.MyClass", artifact.getName());
-        Assert.assertEquals("org.overlord.sramp.integration.java.deriver", SrampModelUtils.getCustomProperty(artifact, JavaModel.PROP_PACKAGE_NAME));
-        Assert.assertEquals("MyClass", SrampModelUtils.getCustomProperty(artifact, JavaModel.PROP_CLASS_NAME));
+        Assert.assertEquals("org.overlord.sramp.integration.java.deriver.MyClass", artifact.getName()); //$NON-NLS-1$
+        Assert.assertEquals("org.overlord.sramp.integration.java.deriver", SrampModelUtils.getCustomProperty(artifact, JavaModel.PROP_PACKAGE_NAME)); //$NON-NLS-1$
+        Assert.assertEquals("MyClass", SrampModelUtils.getCustomProperty(artifact, JavaModel.PROP_CLASS_NAME)); //$NON-NLS-1$
         Assert.assertEquals(JavaModel.TYPE_JAVA_CLASS, artifact.getExtendedType());
 
 
         artifact = new ExtendedDocument();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-        artifact.setName("MyInterface.class");
-        is = getClass().getResourceAsStream("MyInterface.class");
+        artifact.setName("MyInterface.class"); //$NON-NLS-1$
+        is = getClass().getResourceAsStream("MyInterface.class"); //$NON-NLS-1$
 
         // Derive
         derivedArtifacts = deriver.derive(artifact, is);
@@ -68,9 +68,9 @@ public class JavaClassDeriverTest {
         // Assert
         Assert.assertNotNull(derivedArtifacts);
         Assert.assertEquals(0, derivedArtifacts.size());
-        Assert.assertEquals("org.overlord.sramp.integration.java.deriver.MyInterface", artifact.getName());
-        Assert.assertEquals("org.overlord.sramp.integration.java.deriver", SrampModelUtils.getCustomProperty(artifact, JavaModel.PROP_PACKAGE_NAME));
-        Assert.assertEquals("MyInterface", SrampModelUtils.getCustomProperty(artifact, JavaModel.PROP_CLASS_NAME));
+        Assert.assertEquals("org.overlord.sramp.integration.java.deriver.MyInterface", artifact.getName()); //$NON-NLS-1$
+        Assert.assertEquals("org.overlord.sramp.integration.java.deriver", SrampModelUtils.getCustomProperty(artifact, JavaModel.PROP_PACKAGE_NAME)); //$NON-NLS-1$
+        Assert.assertEquals("MyInterface", SrampModelUtils.getCustomProperty(artifact, JavaModel.PROP_CLASS_NAME)); //$NON-NLS-1$
         Assert.assertEquals(JavaModel.TYPE_JAVA_INTERFACE, artifact.getExtendedType());
     }
 

@@ -28,7 +28,7 @@ public class AuthorizationHeaderAuthenticationProvider extends HttpHeaderAuthent
      * @param headerName
      */
     public AuthorizationHeaderAuthenticationProvider() {
-        super("Authorization");
+        super("Authorization"); //$NON-NLS-1$
     }
 
     /**
@@ -36,7 +36,7 @@ public class AuthorizationHeaderAuthenticationProvider extends HttpHeaderAuthent
      * @param headerValue
      */
     public AuthorizationHeaderAuthenticationProvider(String headerValue) {
-        super("Authorization", headerValue);
+        super("Authorization", headerValue); //$NON-NLS-1$
     }
 
 }

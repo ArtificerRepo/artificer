@@ -74,7 +74,7 @@ public class ArtifactDeriverFactory {
             File directory = new File(customDeriverDirPath);
             if (directory.isDirectory()) {
                 List<URL> jarURLs = new ArrayList<URL>();
-                Collection<File> jarFiles = FileUtils.listFiles(directory, new String[] { "jar" }, false);
+                Collection<File> jarFiles = FileUtils.listFiles(directory, new String[] { "jar" }, false); //$NON-NLS-1$
                 for (File jarFile : jarFiles) {
                     try {
                         URL jarUrl = jarFile.toURI().toURL();

@@ -47,7 +47,7 @@ public class FileNameCompleter extends jline.console.completer.FileNameCompleter
 		// when this is *not* done (the cygwin shell will treat the backlashes as escape sequences).
 		if (Configuration.isWindows()) {
 			for (CharSequence candidate : fileCandidates) {
-				candidates.add(candidate.toString().replace("\\", "/"));
+				candidates.add(candidate.toString().replace("\\", "/")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 		return rval;

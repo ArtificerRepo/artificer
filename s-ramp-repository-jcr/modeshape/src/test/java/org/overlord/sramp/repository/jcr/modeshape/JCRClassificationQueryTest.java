@@ -40,62 +40,62 @@ public class JCRClassificationQueryTest extends AbstractNoAuditingJCRPersistence
 	public void testDerivedRelationshipQueries() throws Exception {
 		createOntology();
 
-		addDocument("no-classifications");
-		addDocument("one-classification: china", "China");
-		addDocument("one-classification: japan", "Japan");
-		addDocument("one-classification: germany", "Germany");
+		addDocument("no-classifications"); //$NON-NLS-1$
+		addDocument("one-classification: china", "China"); //$NON-NLS-1$ //$NON-NLS-2$
+		addDocument("one-classification: japan", "Japan"); //$NON-NLS-1$ //$NON-NLS-2$
+		addDocument("one-classification: germany", "Germany"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Verify that both docs are available
-		SrampQuery query = queryManager.createQuery("/s-ramp/core/Document");
+		SrampQuery query = queryManager.createQuery("/s-ramp/core/Document"); //$NON-NLS-1$
 		ArtifactSet artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(4, artifactSet.size());
 
 		// Make sure there's only one with the given name
-		query = queryManager.createQuery("/s-ramp/core/Document[@name = ?]");
-		query.setString("no-classifications");
+		query = queryManager.createQuery("/s-ramp/core/Document[@name = ?]"); //$NON-NLS-1$
+		query.setString("no-classifications"); //$NON-NLS-1$
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(1, artifactSet.size());
 
 		// Should get just the one classified by China
-		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'China')]");
+		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'China')]"); //$NON-NLS-1$
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(1, artifactSet.size());
 
 		// Should get zero artifacts
-		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'Asia')]");
+		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'Asia')]"); //$NON-NLS-1$
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(0, artifactSet.size());
 
 		// Should get just the one classified by Germany
-		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'Germany')]");
+		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'Germany')]"); //$NON-NLS-1$
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(1, artifactSet.size());
 
 		// Should get zero artifacts
-		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'China', 'Germany')]");
+		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'China', 'Germany')]"); //$NON-NLS-1$
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(0, artifactSet.size());
 
 		// Should get all classified artifacts
-		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:classifiedByAllOf(., 'World')]");
+		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:classifiedByAllOf(., 'World')]"); //$NON-NLS-1$
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(3, artifactSet.size());
 
 		// Should get two artifacts - japan and china
-		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:classifiedByAllOf(., 'Asia')]");
+		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:classifiedByAllOf(., 'Asia')]"); //$NON-NLS-1$
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(2, artifactSet.size());
 
 		// Should get two artifacts - japan and china
-		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:classifiedByAnyOf(., 'Japan', 'China')]");
+		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:classifiedByAnyOf(., 'Japan', 'China')]"); //$NON-NLS-1$
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(2, artifactSet.size());
@@ -107,17 +107,17 @@ public class JCRClassificationQueryTest extends AbstractNoAuditingJCRPersistence
 	 */
 	private SrampOntology createOntology() throws SrampException {
 		SrampOntology ontology = new SrampOntology();
-		ontology.setBase("urn:example.org/test2");
-		ontology.setLabel("Test Ontology #2");
-		ontology.setComment("This is my second test ontology.");
+		ontology.setBase("urn:example.org/test2"); //$NON-NLS-1$
+		ontology.setLabel("Test Ontology #2"); //$NON-NLS-1$
+		ontology.setComment("This is my second test ontology."); //$NON-NLS-1$
 
-		SrampOntology.Class world = createClass(ontology, null, "World", "World", "The entire world");
-		SrampOntology.Class asia = createClass(ontology, world, "Asia", "Asia", null);
-		SrampOntology.Class europe = createClass(ontology, world, "Europe", "Europe", "Two world wars");
-		SrampOntology.Class japan = createClass(ontology, asia, "Japan", "Japan", "Samurai *and* ninja?  Not fair.");
-		SrampOntology.Class china = createClass(ontology, asia, "China", "China", "Gunpowder!");
-		SrampOntology.Class uk = createClass(ontology, europe, "UnitedKingdom", "United Kingdom", "The food could be better");
-		SrampOntology.Class germany = createClass(ontology, europe, "Germany", "Germany", "The fatherland");
+		SrampOntology.Class world = createClass(ontology, null, "World", "World", "The entire world"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		SrampOntology.Class asia = createClass(ontology, world, "Asia", "Asia", null); //$NON-NLS-1$ //$NON-NLS-2$
+		SrampOntology.Class europe = createClass(ontology, world, "Europe", "Europe", "Two world wars"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		SrampOntology.Class japan = createClass(ontology, asia, "Japan", "Japan", "Samurai *and* ninja?  Not fair."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		SrampOntology.Class china = createClass(ontology, asia, "China", "China", "Gunpowder!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		SrampOntology.Class uk = createClass(ontology, europe, "UnitedKingdom", "United Kingdom", "The food could be better"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		SrampOntology.Class germany = createClass(ontology, europe, "Germany", "Germany", "The fatherland"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		ontology.getRootClasses().add(world);
 
@@ -153,8 +153,8 @@ public class JCRClassificationQueryTest extends AbstractNoAuditingJCRPersistence
 	private Document addDocument(String name, String ... classifications) throws SrampException {
 		InputStream contentStream = null;
 		try {
-			String artifactFileName = "s-ramp-press-release.pdf";
-			contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+			String artifactFileName = "s-ramp-press-release.pdf"; //$NON-NLS-1$
+			contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
 			Document document = new Document();
 			document.setName(name);
 			document.setArtifactType(BaseArtifactEnum.DOCUMENT);

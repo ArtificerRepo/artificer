@@ -29,7 +29,7 @@ public class SrampAtomException extends Exception {
 
 	private static final long serialVersionUID = -4954468657023096910L;
 
-	private static final Pattern ST_PATTERN = Pattern.compile("([a-zA-Z0-9_\\.]*)\\.([a-zA-Z0-9_\\.]*)\\(([a-zA-Z0-9_\\.]*):([\\d]*)\\)");
+	private static final Pattern ST_PATTERN = Pattern.compile("([a-zA-Z0-9_\\.]*)\\.([a-zA-Z0-9_\\.]*)\\(([a-zA-Z0-9_\\.]*):([\\d]*)\\)"); //$NON-NLS-1$
 
 	/**
 	 * Constructor.
@@ -86,7 +86,7 @@ public class SrampAtomException extends Exception {
 		    String className = matcher.group(1);
 		    String methodName = matcher.group(2);
 		    String fileName = matcher.group(3);
-		    int lineNumber = Integer.parseInt(matcher.group(4) == null ? "0" : matcher.group(4));
+		    int lineNumber = Integer.parseInt(matcher.group(4) == null ? "0" : matcher.group(4)); //$NON-NLS-1$
 		    stElements.add(new StackTraceElement(className, methodName, fileName, lineNumber));
 		}
 

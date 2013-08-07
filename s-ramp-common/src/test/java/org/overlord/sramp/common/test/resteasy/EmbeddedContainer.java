@@ -46,7 +46,7 @@ public class EmbeddedContainer
 
    static
    {
-      String boot = System.getProperty("org.resteasy.test.embedded.container");
+      String boot = System.getProperty("org.resteasy.test.embedded.container"); //$NON-NLS-1$
       if (boot != null)
       {
          try
@@ -67,7 +67,7 @@ public class EmbeddedContainer
 
    public static ResteasyDeployment start() throws Exception
    {
-      return start("/", (Hashtable<String,String>) null);
+      return start("/", (Hashtable<String,String>) null); //$NON-NLS-1$
    }
 
    public static ResteasyDeployment start(String bindPath) throws Exception
@@ -77,43 +77,43 @@ public class EmbeddedContainer
 
    public static ResteasyDeployment start(Hashtable<String,String> initParams) throws Exception
    {
-      return start("/", initParams);
+      return start("/", initParams); //$NON-NLS-1$
    }
 
    public static ResteasyDeployment start(Hashtable<String,String> initParams, Hashtable<String,String> contextParams) throws Exception
    {
-      return start("/", initParams, contextParams);
+      return start("/", initParams, contextParams); //$NON-NLS-1$
    }
 
    public static ResteasyDeployment start(String bindPath, Hashtable<String,String> initParams) throws Exception
    {
-      Method start = bootstrap.getMethod("start", String.class, Hashtable.class);
+      Method start = bootstrap.getMethod("start", String.class, Hashtable.class); //$NON-NLS-1$
       return (ResteasyDeployment) start.invoke(null, bindPath, initParams);
    }
 
    public static ResteasyDeployment start(String bindPath, Hashtable<String,String> initParams, Hashtable<String,String> contextParams) throws Exception
    {
-      Method start = bootstrap.getMethod("start", String.class, Hashtable.class, Hashtable.class);
+      Method start = bootstrap.getMethod("start", String.class, Hashtable.class, Hashtable.class); //$NON-NLS-1$
       return (ResteasyDeployment) start.invoke(null, bindPath, initParams, contextParams);
    }
 
    public static ResteasyDeployment start(String bindPath, SecurityDomain domain) throws Exception
    {
-      Method start = bootstrap.getMethod("start", String.class, SecurityDomain.class);
+      Method start = bootstrap.getMethod("start", String.class, SecurityDomain.class); //$NON-NLS-1$
       return (ResteasyDeployment) start.invoke(null, bindPath, domain);
 
    }
 
    public static void start(ResteasyDeployment deployment) throws Exception
    {
-      Method start = bootstrap.getMethod("start", ResteasyDeployment.class);
+      Method start = bootstrap.getMethod("start", ResteasyDeployment.class); //$NON-NLS-1$
       start.invoke(null, deployment);
 
    }
 
    public static void stop() throws Exception
    {
-      Method stop = bootstrap.getMethod("stop");
+      Method stop = bootstrap.getMethod("stop"); //$NON-NLS-1$
       stop.invoke(null);
    }
 }

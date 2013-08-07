@@ -19,21 +19,22 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.i18n.Messages;
 import org.overlord.sramp.shell.util.FileNameCompleter;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * Deletes an artifact from the S-RAMP repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DeleteCommand extends AbstractShellCommand {
+public class DeleteCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -42,48 +43,17 @@ public class DeleteCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-        print("s-ramp:delete [<artifactId>]");
-        print("\tValid formats for artifactId:");
-        print("\t  feed:<feedIndex> - an index into the most recent feed");
-        print("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-        print("The 'delete' command removes an artifact from the S-RAMP");
-        print("repository.  The artifact can be identified either by its");
-        print("unique S-RAMP uuid or else by an index into the most recent");
-        print("Feed.  Additionally, the currently active artifact can be");
-        print("deleted by omitting the <artifactId> argument.");
-        print("");
-        print("Note: a Feed can be obtained, for example, by using the ");
-        print("s-ramp:query command.");
-        print("");
-        print("Example usage:");
-        print(">  s-ramp:delete");
-        print(">  s-ramp:delete feed:1");
-        print(">  s-ramp:delete uuid:2832-3183-2937-9983");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		QName clientVarName = new QName("s-ramp", "client");
-		QName artifactVarName = new QName("s-ramp", "artifact");
-        QName feedVarName = new QName("s-ramp", "feed");
+		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
+		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
+        QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
-			print("No S-RAMP repository connection is currently open.");
+			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return;
 		}
 
@@ -92,33 +62,33 @@ public class DeleteCommand extends AbstractShellCommand {
         if (artifactIdArg == null) {
             artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
             if (artifact == null) {
-                print("No active S-RAMP artifact exists.  Use s-ramp:getMetaData.");
+                print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
                 return;
             }
         } else {
     		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
-    		if ("feed".equals(idType)) {
+    		if ("feed".equals(idType)) { //$NON-NLS-1$
     		    QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
     		    int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
     		    if (feedIdx < 0 || feedIdx >= rset.size()) {
-    		        throw new InvalidCommandArgumentException(0, "Feed index out of range.");
+    		        throw new InvalidCommandArgumentException(0, Messages.i18n.format("FeedIndexOutOfRange")); //$NON-NLS-1$
     		    }
     		    ArtifactSummary summary = rset.get(feedIdx);
     		    String artifactUUID = summary.getUuid();
     		    artifact = client.getArtifactMetaData(summary.getType(), artifactUUID);
-    		} else if ("uuid".equals(idType)) {
-    		    throw new InvalidCommandArgumentException(0, "uuid: style artifact identifiers not yet implemented.");
+    		} else if ("uuid".equals(idType)) { //$NON-NLS-1$
+    		    throw new InvalidCommandArgumentException(0, Messages.i18n.format("UuidNotImplemented")); //$NON-NLS-1$
     		} else {
-    		    throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
+    		    throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
     		}
 		}
 
 		try {
 			client.deleteArtifact(artifact.getUuid(), ArtifactType.valueOf(artifact));
-			print("Successfully deleted artifact '%1$s'.", artifact.getName());
+			print(Messages.i18n.format("Delete.Success", artifact.getName())); //$NON-NLS-1$
 		} catch (Exception e) {
-			print("FAILED to delete the artifact.");
-			print("\t" + e.getMessage());
+			print(Messages.i18n.format("Delete.Failure")); //$NON-NLS-1$
+			print("\t" + e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
@@ -127,12 +97,12 @@ public class DeleteCommand extends AbstractShellCommand {
      */
     @Override
     public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-        if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) {
-            QName feedVarName = new QName("s-ramp", "feed");
+        if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
+            QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
             QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
             if (rset != null) {
                 for (int idx = 0; idx < rset.size(); idx++) {
-                    String candidate = "feed:" + (idx+1);
+                    String candidate = "feed:" + (idx+1); //$NON-NLS-1$
                     if (lastArgument == null) {
                         candidates.add(candidate);
                     }
@@ -144,7 +114,7 @@ public class DeleteCommand extends AbstractShellCommand {
             return 0;
         } else if (getArguments().size() == 1) {
             if (lastArgument == null)
-                lastArgument = "";
+                lastArgument = ""; //$NON-NLS-1$
             FileNameCompleter delegate = new FileNameCompleter();
             return delegate.complete(lastArgument, lastArgument.length(), candidates);
         } else {

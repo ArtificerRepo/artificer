@@ -16,6 +16,7 @@
 package org.overlord.sramp.common.ontology;
 
 import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.common.i18n.Messages;
 
 /**
  * Exception thrown when the user attempts to add an ontology that already exists.
@@ -37,7 +38,7 @@ public class OntologyAlreadyExistsException extends SrampUserException {
      * @param ontologyUuid
      */
     public OntologyAlreadyExistsException(String ontologyUuid) {
-        super("Ontology with UUID '" + ontologyUuid + "' already exists.");
+        super(Messages.i18n.format("ONTOLOGY_ALREADY_EXISTS", ontologyUuid)); //$NON-NLS-1$
     }
 
 }

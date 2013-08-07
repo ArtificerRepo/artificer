@@ -17,10 +17,11 @@ package org.overlord.sramp.shell.commands.core;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
-import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
+import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
 
 /**
  * Shows the full meta-data for the artifact currently active in the
@@ -28,7 +29,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ShowMetaDataCommand extends AbstractShellCommand {
+public class ShowMetaDataCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -37,40 +38,20 @@ public class ShowMetaDataCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("s-ramp:showMetaData");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'showMetaData' command prints out the meta-data for the");
-		print("artifact currently active in the session.");
-		print("");
-		print("Example usage:");
-		print(">  s-ramp:showMetaData");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		QName artifactVarName = new QName("s-ramp", "artifact");
+		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		if (artifact == null) {
-			print("No active S-RAMP artifact exists.  Use s-ramp:getMetaData.");
+			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
 			return;
 		}
 
 		// Print out the meta-data information
-		print("Meta Data for: " + artifact.getUuid());
-		print("--------------");
+		print(Messages.i18n.format("RefreshMetaData.MetaDataFor", artifact.getUuid())); //$NON-NLS-1$
+		print("--------------"); //$NON-NLS-1$
 		PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 		ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 	}

@@ -29,6 +29,7 @@ import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.derived.LinkerContext;
 import org.overlord.sramp.integration.java.model.JavaModel;
+import org.overlord.sramp.integration.switchyard.i18n.Messages;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardArtifactVisitor;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardArtifactVisitorHelper;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
@@ -68,7 +69,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
         Relationship relationship = SrampModelUtils.getGenericRelationship(artifact, SwitchYardModel.REL_IMPLEMENTED_BY);
         if (relationship != null && relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF)) {
             String ref = relationship.getOtherAttributes().remove(SwitchYardXmlDeriver.UNRESOLVED_REF);
-            if (ref.startsWith("class:")) {
+            if (ref.startsWith("class:")) { //$NON-NLS-1$
                 String refClassName = ref.substring(6);
                 BaseArtifactType artifactRef = findJavaClassArtifact(refClassName);
                 if (artifactRef != null) {
@@ -83,7 +84,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
         relationship = SrampModelUtils.getGenericRelationship(artifact, SwitchYardModel.REL_REFERENCES);
         if (relationship != null && relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF)) {
             String ref = relationship.getOtherAttributes().remove(SwitchYardXmlDeriver.UNRESOLVED_REF);
-            if (ref.startsWith("java:")) {
+            if (ref.startsWith("java:")) { //$NON-NLS-1$
                 String refInterfaceName = ref.substring(5);
                 BaseArtifactType artifactRef = findJavaInterfaceArtifact(refInterfaceName);
                 if (artifactRef != null) {
@@ -91,7 +92,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
                     target.setValue(artifactRef.getUuid());
                     relationship.getRelationshipTarget().add(target);
                 }
-            } else if (ref.startsWith("wsdl:")) {
+            } else if (ref.startsWith("wsdl:")) { //$NON-NLS-1$
                 String refWsdl = ref.substring(5);
                 BaseArtifactType artifactRef = findWsdlArtifact(refWsdl);
                 if (artifactRef != null) {
@@ -112,7 +113,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
         Relationship relationship = SrampModelUtils.getGenericRelationship(artifact, SwitchYardModel.REL_IMPLEMENTED_BY);
         if (relationship != null && relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF)) {
             String ref = relationship.getOtherAttributes().remove(SwitchYardXmlDeriver.UNRESOLVED_REF);
-            if (ref.startsWith("class:")) {
+            if (ref.startsWith("class:")) { //$NON-NLS-1$
                 String refClassName = ref.substring(6);
                 BaseArtifactType artifactRef = findJavaClassArtifact(refClassName);
                 if (artifactRef != null) {
@@ -120,7 +121,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
                     target.setValue(artifactRef.getUuid());
                     relationship.getRelationshipTarget().add(target);
                 }
-            } else if (ref.startsWith("bean:")) {
+            } else if (ref.startsWith("bean:")) { //$NON-NLS-1$
                 String refBeanName = ref.substring(5);
                 BaseArtifactType artifactRef = findCDIBeanArtifact(refBeanName);
                 if (artifactRef != null) {
@@ -128,7 +129,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
                     target.setValue(artifactRef.getUuid());
                     relationship.getRelationshipTarget().add(target);
                 }
-            } else if (ref.startsWith("xslt:")) {
+            } else if (ref.startsWith("xslt:")) { //$NON-NLS-1$
                 String refXsltFile = ref.substring(5);
                 BaseArtifactType artifactRef = findXsltArtifact(refXsltFile);
                 if (artifactRef != null) {
@@ -136,7 +137,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
                     target.setValue(artifactRef.getUuid());
                     relationship.getRelationshipTarget().add(target);
                 }
-            } else if (ref.startsWith("smooks:")) {
+            } else if (ref.startsWith("smooks:")) { //$NON-NLS-1$
                 String smooksConfig = ref.substring(7);
                 BaseArtifactType artifactRef = findSmooksArtifact(smooksConfig);
                 if (artifactRef != null) {
@@ -144,7 +145,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
                     target.setValue(artifactRef.getUuid());
                     relationship.getRelationshipTarget().add(target);
                 }
-            } else if (ref.startsWith("camel:")) {
+            } else if (ref.startsWith("camel:")) { //$NON-NLS-1$
                 String camelPath = ref.substring(6);
                 BaseArtifactType artifactRef = findCamelArtifact(camelPath);
                 if (artifactRef != null) {
@@ -158,7 +159,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
         relationship = SrampModelUtils.getGenericRelationship(artifact, SwitchYardModel.REL_TRANSFORMS_FROM);
         if (relationship != null && relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF)) {
             String ref = relationship.getOtherAttributes().remove(SwitchYardXmlDeriver.UNRESOLVED_REF);
-            if (ref.startsWith("java:")) { // java class
+            if (ref.startsWith("java:")) { // java class //$NON-NLS-1$
                 String refClassName = ref.substring(5);
                 BaseArtifactType artifactRef = findJavaClassArtifact(refClassName);
                 if (artifactRef != null) {
@@ -166,7 +167,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
                     target.setValue(artifactRef.getUuid());
                     relationship.getRelationshipTarget().add(target);
                 }
-            } else if (ref.startsWith("{")) { // xml type (qname)
+            } else if (ref.startsWith("{")) { // xml type (qname) //$NON-NLS-1$
                 QName refQName = QName.valueOf(ref);
                 BaseArtifactType artifactRef = findElementDeclarationArtifact(refQName);
                 if (artifactRef != null) {
@@ -180,7 +181,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
         relationship = SrampModelUtils.getGenericRelationship(artifact, SwitchYardModel.REL_TRANSFORMS_TO);
         if (relationship != null && relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF)) {
             String ref = relationship.getOtherAttributes().remove(SwitchYardXmlDeriver.UNRESOLVED_REF);
-            if (ref.startsWith("java:")) { // java class
+            if (ref.startsWith("java:")) { // java class //$NON-NLS-1$
                 String refClassName = ref.substring(5);
                 BaseArtifactType artifactRef = findJavaClassArtifact(refClassName);
                 if (artifactRef != null) {
@@ -188,7 +189,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
                     target.setValue(artifactRef.getUuid());
                     relationship.getRelationshipTarget().add(target);
                 }
-            } else if (ref.startsWith("{")) { // xml type (qname)
+            } else if (ref.startsWith("{")) { // xml type (qname) //$NON-NLS-1$
                 QName refQName = QName.valueOf(ref);
                 BaseArtifactType artifactRef = findElementDeclarationArtifact(refQName);
                 if (artifactRef != null) {
@@ -209,7 +210,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
         Relationship relationship = SrampModelUtils.getGenericRelationship(artifact, SwitchYardModel.REL_IMPLEMENTED_BY);
         if (relationship != null && relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF)) {
             String ref = relationship.getOtherAttributes().remove(SwitchYardXmlDeriver.UNRESOLVED_REF);
-            if (ref.startsWith("class:")) {
+            if (ref.startsWith("class:")) { //$NON-NLS-1$
                 String refClassName = ref.substring(6);
                 BaseArtifactType artifactRef = findJavaClassArtifact(refClassName);
                 if (artifactRef != null) {
@@ -217,7 +218,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
                     target.setValue(artifactRef.getUuid());
                     relationship.getRelationshipTarget().add(target);
                 }
-            } else if (ref.startsWith("bean:")) {
+            } else if (ref.startsWith("bean:")) { //$NON-NLS-1$
                 String refBeanName = ref.substring(5);
                 BaseArtifactType artifactRef = findCDIBeanArtifact(refBeanName);
                 if (artifactRef != null) {
@@ -231,7 +232,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
         relationship = SrampModelUtils.getGenericRelationship(artifact, SwitchYardModel.REL_VALIDATES);
         if (relationship != null && relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF)) {
             String ref = relationship.getOtherAttributes().remove(SwitchYardXmlDeriver.UNRESOLVED_REF);
-            if (ref.startsWith("java:")) { // java class
+            if (ref.startsWith("java:")) { // java class //$NON-NLS-1$
                 String refClassName = ref.substring(5);
                 BaseArtifactType artifactRef = findJavaClassArtifact(refClassName);
                 if (artifactRef != null) {
@@ -239,7 +240,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
                     target.setValue(artifactRef.getUuid());
                     relationship.getRelationshipTarget().add(target);
                 }
-            } else if (ref.startsWith("{")) { // xml type (qname)
+            } else if (ref.startsWith("{")) { // xml type (qname) //$NON-NLS-1$
                 QName refQName = QName.valueOf(ref);
                 BaseArtifactType artifactRef = findElementDeclarationArtifact(refQName);
                 if (artifactRef != null) {
@@ -263,11 +264,11 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
         Map<String, String> criteria = new HashMap<String, String>();;
         criteria.put(JavaModel.PROP_PACKAGE_NAME, packageName);
         criteria.put(JavaModel.PROP_CLASS_NAME, shortName);
-        Collection<BaseArtifactType> artifacts = context.findArtifacts("ext", JavaModel.TYPE_JAVA_CLASS, criteria);
+        Collection<BaseArtifactType> artifacts = context.findArtifacts("ext", JavaModel.TYPE_JAVA_CLASS, criteria); //$NON-NLS-1$
         if (artifacts != null && !artifacts.isEmpty()) {
             return artifacts.iterator().next();
         } else {
-            log.debug("No java class found for: " + className);
+            log.debug(Messages.i18n.format("NO_JAVA_CLASS", className)); //$NON-NLS-1$
             return null;
         }
     }
@@ -284,11 +285,11 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
         Map<String, String> criteria = new HashMap<String, String>();;
         criteria.put(JavaModel.PROP_PACKAGE_NAME, packageName);
         criteria.put(JavaModel.PROP_CLASS_NAME, shortName);
-        Collection<BaseArtifactType> artifacts = context.findArtifacts("ext", JavaModel.TYPE_JAVA_INTERFACE, criteria);
+        Collection<BaseArtifactType> artifacts = context.findArtifacts("ext", JavaModel.TYPE_JAVA_INTERFACE, criteria); //$NON-NLS-1$
         if (artifacts != null && !artifacts.isEmpty()) {
             return artifacts.iterator().next();
         } else {
-            log.debug("No java interface found for: " + interfaceName);
+            log.debug(Messages.i18n.format("NO_JAVA_INTERFACE", interfaceName)); //$NON-NLS-1$
             return null;
         }
     }
@@ -300,8 +301,8 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
     private BaseArtifactType findElementDeclarationArtifact(QName refQName) {
         LinkerContext context = linkerContext.get();
         Map<String, String> criteria = new HashMap<String, String>();;
-        criteria.put("namespace", refQName.getNamespaceURI());
-        criteria.put("ncName", refQName.getLocalPart());
+        criteria.put("namespace", refQName.getNamespaceURI()); //$NON-NLS-1$
+        criteria.put("ncName", refQName.getLocalPart()); //$NON-NLS-1$
         Collection<BaseArtifactType> artifacts = context.findArtifacts(
                 ArtifactTypeEnum.ElementDeclaration.getModel(),
                 ArtifactTypeEnum.ElementDeclaration.getType(),
@@ -309,7 +310,7 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
         if (artifacts != null && !artifacts.isEmpty()) {
             return artifacts.iterator().next();
         } else {
-            log.debug("No element declaration found for: " + refQName);
+            log.debug(Messages.i18n.format("NO_ELEMENT_DECL", refQName)); //$NON-NLS-1$
             return null;
         }
     }

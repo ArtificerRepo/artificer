@@ -32,6 +32,7 @@ import javax.xml.bind.JAXBException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.sramp.atom.i18n.Messages;
 
 /**
  * Models the archive format defined in the S-RAMP Atom Binding document.
@@ -57,7 +58,7 @@ public class SrampArchive {
 			if (workDir != null && workDir.exists()) {
 				try { FileUtils.deleteDirectory(workDir); } catch (IOException e1) { }
 			}
-			throw new SrampArchiveException("Failed to create archive work directory", e);
+			throw new SrampArchiveException(Messages.i18n.format("FAILED_TO_CREATE_WORK_DIR"), e); //$NON-NLS-1$
 		}
 	}
 
@@ -76,7 +77,7 @@ public class SrampArchive {
 			if (this.workDir != null) {
 				try { FileUtils.deleteDirectory(this.workDir); } catch (IOException e1) { }
 			}
-			throw new SrampArchiveException("Failed to unpack S-RAMP archive into work directory", e);
+			throw new SrampArchiveException(Messages.i18n.format("FAILED_TO_UNPACK_ARCHIVE_TO_WORK_DIR"), e); //$NON-NLS-1$
 		}
 	}
 
@@ -93,7 +94,7 @@ public class SrampArchive {
 		this.shouldDeleteOriginalFile = true;
 
 		try {
-			this.originalFile = File.createTempFile("s-ramp-archive", ".zip");
+			this.originalFile = File.createTempFile("s-ramp-archive", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
 			copyZipStream(input, this.originalFile);
 			ArchiveUtils.unpackToWorkDir(this.originalFile, this.workDir);
 		} catch (IOException e) {
@@ -103,7 +104,7 @@ public class SrampArchive {
 			if (this.originalFile != null && this.originalFile.exists()) {
 				this.originalFile.delete();
 			}
-			throw new SrampArchiveException("Failed to unpack S-RAMP archive into work directory", e);
+			throw new SrampArchiveException(Messages.i18n.format("FAILED_TO_UNPACK_ARCHIVE_TO_WORK_DIR"), e); //$NON-NLS-1$
 		}
 	}
 
@@ -112,7 +113,7 @@ public class SrampArchive {
 	 * @throws IOException
 	 */
 	private static File createWorkDir() throws IOException {
-		File tempFile = File.createTempFile("s-ramp-archive", ".work");
+		File tempFile = File.createTempFile("s-ramp-archive", ".work"); //$NON-NLS-1$ //$NON-NLS-2$
 		tempFile.delete();
 		tempFile.mkdir();
 		return tempFile;
@@ -167,7 +168,7 @@ public class SrampArchive {
 	 * @throws SrampArchiveException
 	 */
 	public Collection<SrampArchiveEntry> getEntries() throws SrampArchiveException {
-		Collection<File> files = FileUtils.listFiles(workDir, new String[] { "atom" }, true);
+		Collection<File> files = FileUtils.listFiles(workDir, new String[] { "atom" }, true); //$NON-NLS-1$
 		Collection<SrampArchiveEntry> entries = new ArrayList<SrampArchiveEntry>(files.size());
 		for (File metaDataFile : files) {
 			String metaDataAbsPath = metaDataFile.getAbsolutePath();
@@ -204,13 +205,13 @@ public class SrampArchive {
 	 */
 	public void addEntry(String path, BaseArtifactType metaData, InputStream content) throws SrampArchiveException {
 		if (path == null)
-			throw new SrampArchiveException("Invalid entry path.");
+			throw new SrampArchiveException(Messages.i18n.format("INVALID_ENTRY_PATH")); //$NON-NLS-1$
 		if (metaData == null)
-			throw new SrampArchiveException("Missing artifact meta-data.");
-		File metaDataFile = new File(this.workDir, path + ".atom");
+			throw new SrampArchiveException(Messages.i18n.format("MISSING_META_DATA")); //$NON-NLS-1$
+		File metaDataFile = new File(this.workDir, path + ".atom"); //$NON-NLS-1$
 		File contentFile = new File(this.workDir, path);
 		if (metaDataFile.exists())
-			throw new SrampArchiveException("Archive entry already exists.");
+			throw new SrampArchiveException(Messages.i18n.format("ARCHIVE_ALREADY_EXISTS")); //$NON-NLS-1$
 		// Create any required parent directories
 		metaDataFile.getParentFile().mkdirs();
 		if (content != null)
@@ -231,9 +232,9 @@ public class SrampArchive {
 	 */
 	public void updateEntry(SrampArchiveEntry entry, InputStream content) throws SrampArchiveException {
 		if (entry.getPath() == null)
-			throw new SrampArchiveException("Invalid entry path.");
+			throw new SrampArchiveException(Messages.i18n.format("INVALID_ENTRY_PATH")); //$NON-NLS-1$
 		File contentFile = new File(this.workDir, entry.getPath());
-		File metaDataFile = new File(this.workDir, entry.getPath() + ".atom");
+		File metaDataFile = new File(this.workDir, entry.getPath() + ".atom"); //$NON-NLS-1$
 
 		if (content != null)
 			writeContent(contentFile, content);
@@ -258,7 +259,7 @@ public class SrampArchive {
 			outStream = new FileOutputStream(workPath);
 			IOUtils.copy(content, outStream);
 		} catch (Throwable t) {
-			throw new SrampArchiveException("Error writing content to archive work directory.", t);
+			throw new SrampArchiveException(Messages.i18n.format("ERROR_WRITING_CONTENT"), t); //$NON-NLS-1$
 		} finally {
 			IOUtils.closeQuietly(content);
 			IOUtils.closeQuietly(outStream);
@@ -276,7 +277,7 @@ public class SrampArchive {
 		try {
 			File archiveFile = null;
 			try {
-				archiveFile = File.createTempFile("s-ramp-archive", ".sramp");
+				archiveFile = File.createTempFile("s-ramp-archive", ".sramp"); //$NON-NLS-1$ //$NON-NLS-2$
 				FileOutputStream outputStream = FileUtils.openOutputStream(archiveFile);
 				ZipOutputStream zipOutputStream = null;
 				try {
@@ -297,7 +298,7 @@ public class SrampArchive {
 			}
 			return archiveFile;
 		} catch (Throwable t) {
-			throw new SrampArchiveException("Error packing up the S-RAMP archive.", t);
+			throw new SrampArchiveException(Messages.i18n.format("ERROR_PACKING_ARCHIVE"), t); //$NON-NLS-1$
 		}
 	}
 
@@ -328,7 +329,7 @@ public class SrampArchive {
 		}
 
 		// Store the meta-data in the ZIP
-		zipOutputStream.putNextEntry(new ZipEntry(entry.getPath() + ".atom"));
+		zipOutputStream.putNextEntry(new ZipEntry(entry.getPath() + ".atom")); //$NON-NLS-1$
 		try {
 			SrampArchiveJaxbUtils.writeMetaData(zipOutputStream, entry.getMetaData());
 		} finally {
@@ -343,7 +344,7 @@ public class SrampArchive {
 	 */
 	public SrampArchiveEntry getEntry(String archivePath) {
 		File contentFile = new File(this.workDir, archivePath);
-		File metaDataFile = new File(this.workDir, archivePath + ".atom");
+		File metaDataFile = new File(this.workDir, archivePath + ".atom"); //$NON-NLS-1$
 		SrampArchiveEntry rval = null;
 		if (metaDataFile.exists()) {
 			rval = new SrampArchiveEntry(archivePath, metaDataFile, contentFile);
@@ -357,7 +358,7 @@ public class SrampArchive {
 	 * @return true if an entry exists at the path
 	 */
 	public boolean containsEntry(String archivePath) {
-		File metaDataFile = new File(this.workDir, archivePath + ".atom");
+		File metaDataFile = new File(this.workDir, archivePath + ".atom"); //$NON-NLS-1$
 		return metaDataFile.exists();
 	}
 
@@ -367,7 +368,7 @@ public class SrampArchive {
 	 * @return true if an entry existed and was removed
 	 */
 	public boolean removeEntry(String archivePath) {
-		File metaDataFile = new File(this.workDir, archivePath + ".atom");
+		File metaDataFile = new File(this.workDir, archivePath + ".atom"); //$NON-NLS-1$
 		File contentFile = new File(this.workDir, archivePath);
 		if (metaDataFile.isFile()) {
 			metaDataFile.delete();

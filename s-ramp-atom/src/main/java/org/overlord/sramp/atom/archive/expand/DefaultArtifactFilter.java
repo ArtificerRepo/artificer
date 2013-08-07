@@ -30,14 +30,14 @@ public class DefaultArtifactFilter implements ArtifactFilter {
 
 	public static Set<String> validExtensions = new HashSet<String>();
 	static {
-		validExtensions.add("xml");
-		validExtensions.add("xsd");
-		validExtensions.add("wsdl");
-		validExtensions.add("wspolicy");
+		validExtensions.add("xml"); //$NON-NLS-1$
+		validExtensions.add("xsd"); //$NON-NLS-1$
+		validExtensions.add("wsdl"); //$NON-NLS-1$
+		validExtensions.add("wspolicy"); //$NON-NLS-1$
 	}
 	private static Set<String> exclusions = new HashSet<String>();
 	static {
-		exclusions.add("pom.xml");
+		exclusions.add("pom.xml"); //$NON-NLS-1$
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class DefaultArtifactFilter implements ArtifactFilter {
 			return false;
 		}
 		String ext = null;
-		if (name.contains(".")) {
+		if (name.contains(".")) { //$NON-NLS-1$
 			ext = name.substring(name.lastIndexOf('.') + 1);
 		}
 		if (ext != null) {

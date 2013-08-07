@@ -33,7 +33,7 @@ import jline.console.ConsoleReader;
  */
 public class InteractiveShellCommandReader extends AbstractShellCommandReader implements ShellContextEventHandler {
 
-	private static final QName CLIENT_NAME = new QName("s-ramp", "client");
+	private static final QName CLIENT_NAME = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	private ConsoleReader consoleReader;
 
@@ -62,14 +62,14 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 * Creates the ANSI compatible prompt.
 	 */
 	private String defaultAnsiPrompt() {
-		return "\033[1m\033[31ms-ramp>\033[0m ";
+		return "\033[1m\033[31ms-ramp>\033[0m "; //$NON-NLS-1$
 	}
 
 	/**
 	 * Creates the ANSI compatible prompt.
 	 */
 	private String connectedAnsiPrompt() {
-		return "\033[1m\033[32ms-ramp>\033[0m ";
+		return "\033[1m\033[32ms-ramp>\033[0m "; //$NON-NLS-1$
 	}
 
 	/**

@@ -24,6 +24,7 @@ import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
 import org.overlord.sramp.repository.jcr.JCRConstants;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 /**
  * Handles an artifact add event bundle.
@@ -42,7 +43,7 @@ public class ArtifactAddedHandler extends AbstractAuditEventBundleHandler {
      */
     @Override
     public void handle(Sramp sramp, AuditEventBundle eventBundle) throws Exception {
-        log.debug("Processing ADD ARTIFACT audit event bundle.");
+        log.debug(Messages.i18n.format("DBG_PROCESSING_ADD_ARTY")); //$NON-NLS-1$
         Event addEvent = eventBundle.getArtifactAddEvent();
         if (addEvent == null) {
             throw new ItemNotFoundException();

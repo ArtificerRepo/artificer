@@ -35,6 +35,7 @@ import org.overlord.sramp.repository.AuditManager;
 import org.overlord.sramp.repository.audit.AuditEntrySet;
 import org.overlord.sramp.repository.jcr.audit.JCRAuditConstants;
 import org.overlord.sramp.repository.jcr.audit.JCRAuditEntrySet;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToAuditEntryFactory;
 import org.overlord.sramp.repository.query.InvalidQueryException;
 import org.slf4j.Logger;
@@ -49,17 +50,17 @@ import org.slf4j.LoggerFactory;
 public class JCRAuditManager extends AbstractJCRManager implements AuditManager {
 
     private static Logger log = LoggerFactory.getLogger(JCRAuditManager.class);
-    private static final String AUDIT_ENTRY_QUERY = "SELECT auditEntry.*"
-            + " FROM [sramp:baseArtifactType] AS artifact"
-            + " JOIN [audit:auditEntry] AS auditEntry ON ISCHILDNODE(auditEntry, artifact) "
-            + "WHERE artifact.[sramp:uuid] = '%1$s' AND auditEntry.[audit:uuid] = '%2$s'";
-    private static final String ARTIFACT_AUDIT_TRAIL_QUERY = "SELECT auditEntry.*"
-            + " FROM [sramp:baseArtifactType] AS artifact"
-            + " JOIN [audit:auditEntry] AS auditEntry ON ISCHILDNODE(auditEntry, artifact) "
-            + "WHERE artifact.[sramp:uuid] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC";
-    private static final String USER_AUDIT_TRAIL_QUERY = "SELECT auditEntry.*"
-            + " FROM [audit:auditEntry] AS auditEntry "
-            + "WHERE auditEntry.[audit:who] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC";
+    private static final String AUDIT_ENTRY_QUERY = "SELECT auditEntry.*" //$NON-NLS-1$
+            + " FROM [sramp:baseArtifactType] AS artifact" //$NON-NLS-1$
+            + " JOIN [audit:auditEntry] AS auditEntry ON ISCHILDNODE(auditEntry, artifact) " //$NON-NLS-1$
+            + "WHERE artifact.[sramp:uuid] = '%1$s' AND auditEntry.[audit:uuid] = '%2$s'"; //$NON-NLS-1$
+    private static final String ARTIFACT_AUDIT_TRAIL_QUERY = "SELECT auditEntry.*" //$NON-NLS-1$
+            + " FROM [sramp:baseArtifactType] AS artifact" //$NON-NLS-1$
+            + " JOIN [audit:auditEntry] AS auditEntry ON ISCHILDNODE(auditEntry, artifact) " //$NON-NLS-1$
+            + "WHERE artifact.[sramp:uuid] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC"; //$NON-NLS-1$
+    private static final String USER_AUDIT_TRAIL_QUERY = "SELECT auditEntry.*" //$NON-NLS-1$
+            + " FROM [audit:auditEntry] AS auditEntry " //$NON-NLS-1$
+            + "WHERE auditEntry.[audit:who] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC"; //$NON-NLS-1$
 
 	/**
 	 * Default constructor.
@@ -78,24 +79,24 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
             Node artifactNode = findArtifactNodeByUuid(session, artifactUuid);
             if (artifactNode != null) {
                 String auditEntryUuid = UUID.randomUUID().toString();
-                Node auditEntryNode = artifactNode.addNode("audit:" + auditEntryUuid, JCRConstants.SRAMP_AUDIT_ENTRY);
+                Node auditEntryNode = artifactNode.addNode("audit:" + auditEntryUuid, JCRConstants.SRAMP_AUDIT_ENTRY); //$NON-NLS-1$
                 long eventDate = entry.getWhen().toGregorianCalendar().getTimeInMillis();
                 Calendar eventCal = Calendar.getInstance();
                 eventCal.setTimeInMillis(eventDate);
                 entry.setUuid(auditEntryUuid);
 
-                auditEntryNode.setProperty("audit:uuid", entry.getUuid());
-                auditEntryNode.setProperty("audit:sortId", eventDate);
-                auditEntryNode.setProperty("audit:type", entry.getType());
-                auditEntryNode.setProperty("audit:who", entry.getWho());
-                auditEntryNode.setProperty("audit:when", eventCal);
+                auditEntryNode.setProperty("audit:uuid", entry.getUuid()); //$NON-NLS-1$
+                auditEntryNode.setProperty("audit:sortId", eventDate); //$NON-NLS-1$
+                auditEntryNode.setProperty("audit:type", entry.getType()); //$NON-NLS-1$
+                auditEntryNode.setProperty("audit:who", entry.getWho()); //$NON-NLS-1$
+                auditEntryNode.setProperty("audit:when", eventCal); //$NON-NLS-1$
 
                 List<AuditItemType> auditItems = entry.getAuditItem();
                 for (AuditItemType auditItem : auditItems) {
                     String type = auditItem.getType();
-                    String auditItemNodeName = "audit:" + type.replace(':', '_');
+                    String auditItemNodeName = "audit:" + type.replace(':', '_'); //$NON-NLS-1$
                     Node auditItemNode = auditEntryNode.addNode(auditItemNodeName, JCRConstants.SRAMP_AUDIT_ITEM);
-                    auditItemNode.setProperty("audit:type", type);
+                    auditItemNode.setProperty("audit:type", type); //$NON-NLS-1$
                     List<Property> properties = auditItem.getProperty();
                     for (Property property : properties) {
                         String propertyName = property.getName();
@@ -138,8 +139,8 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
             QueryResult jcrQueryResult = jcrQuery.execute();
             NodeIterator jcrNodes = jcrQueryResult.getNodes();
             long endTime = System.currentTimeMillis();
-            log.debug("Successfully executed JCR-SQL2 query: {}", jcrSql2Query);
-            log.debug("Query executed in {} ms", endTime - startTime);
+            log.debug(Messages.i18n.format("QUERY_EXECUTED", jcrSql2Query)); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime)); //$NON-NLS-1$
             if (jcrNodes.getSize() == 1) {
                 Node node = jcrNodes.nextNode();
                 return JCRNodeToAuditEntryFactory.createAuditEntry(session, node);
@@ -191,8 +192,8 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
             QueryResult jcrQueryResult = jcrQuery.execute();
             NodeIterator jcrNodes = jcrQueryResult.getNodes();
             long endTime = System.currentTimeMillis();
-            log.debug("Successfully executed JCR-SQL2 query: {}", query);
-            log.debug("Query executed in {} ms", endTime - startTime);
+            log.debug(Messages.i18n.format("QUERY_EXECUTED", query)); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime)); //$NON-NLS-1$
             return new JCRAuditEntrySet(session, jcrNodes);
         } catch (Throwable t) {
             JCRRepositoryFactory.logoutQuietly(session);

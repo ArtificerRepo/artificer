@@ -17,6 +17,8 @@ package org.overlord.sramp.repository;
 
 import java.util.ServiceLoader;
 
+import org.overlord.sramp.repository.i18n.Messages;
+
 
 /**
  * Factory for creating a {@link QueryManager}.
@@ -29,6 +31,6 @@ public class QueryManagerFactory {
         for (QueryManager manager : ServiceLoader.load(QueryManager.class)) {
             return manager;
         }
-        throw new RuntimeException("Failed to find a QueryManager provider.");
+        throw new RuntimeException(Messages.i18n.format("MISSING_QUERYMAN_PROVIDER")); //$NON-NLS-1$
     }
 }

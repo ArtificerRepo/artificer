@@ -41,25 +41,25 @@ public class MavenGavInfo {
 	 */
 	public static MavenGavInfo fromResource(Resource resource) {
 		String resourceName = resource.getName();
-		List<String> segments = new ArrayList<String>(Arrays.asList(resourceName.split("/")));
+		List<String> segments = new ArrayList<String>(Arrays.asList(resourceName.split("/"))); //$NON-NLS-1$
 		String filename = segments.remove(segments.size() - 1);
 		String type = filename.substring(filename.lastIndexOf('.') + 1);
 		boolean hash = false;
-		if (filename.endsWith(".sha1")) {
+		if (filename.endsWith(".sha1")) { //$NON-NLS-1$
 			type = filename.substring(0, filename.length() - 5);
-			type = type.substring(type.lastIndexOf('.') + 1) + ".sha1";
+			type = type.substring(type.lastIndexOf('.') + 1) + ".sha1"; //$NON-NLS-1$
 			hash = true;
 		}
-		if (filename.endsWith(".md5")) {
+		if (filename.endsWith(".md5")) { //$NON-NLS-1$
 			type = filename.substring(0, filename.length() - 4);
-			type = type.substring(type.lastIndexOf('.') + 1) + ".md5";
+			type = type.substring(type.lastIndexOf('.') + 1) + ".md5"; //$NON-NLS-1$
 			hash = true;
 		}
 		String version = segments.remove(segments.size() - 1);
 		String artifactId = segments.remove(segments.size() - 1);
-		String groupId = StringUtils.join(segments, ".");
+		String groupId = StringUtils.join(segments, "."); //$NON-NLS-1$
 		String classifier = extractClassifier(filename, version, type);
-		boolean snapshot = version.endsWith("-SNAPSHOT");
+		boolean snapshot = version.endsWith("-SNAPSHOT"); //$NON-NLS-1$
 		String snapshotId = null;
 		if (snapshot && !filename.contains(version)) {
 			snapshotId = extractSnapshotId(filename, version, type, classifier);
@@ -110,16 +110,16 @@ public class MavenGavInfo {
 				// Give me everything between the version and type (exclusive).  What is left,
 				// if anything, should be the classifier.
 				w = w.substring(vidx);
-				if (w.startsWith("-")) {
+				if (w.startsWith("-")) { //$NON-NLS-1$
 					classifier = w.substring(1);
 				}
 			}
-		} else if (version.endsWith("-SNAPSHOT")) {
-			String v2 = version.substring(0, version.indexOf("-SNAPSHOT"));
+		} else if (version.endsWith("-SNAPSHOT")) { //$NON-NLS-1$
+			String v2 = version.substring(0, version.indexOf("-SNAPSHOT")); //$NON-NLS-1$
 			int vidx = w.indexOf(v2) + v2.length() + 1;
 			if (vidx < w.length()) {
 				w = w.substring(vidx);
-				String [] split = w.split("-");
+				String [] split = w.split("-"); //$NON-NLS-1$
 				if (split.length == 3) {
 					classifier = split[2];
 				}
@@ -138,10 +138,10 @@ public class MavenGavInfo {
 	 * @return a snapshot id or null if not found
 	 */
 	private static String extractSnapshotId(String filename, String version, String type, String classifier) {
-		String front = version.substring(0, version.indexOf("-SNAPSHOT"));
-		String back = "." + type;
+		String front = version.substring(0, version.indexOf("-SNAPSHOT")); //$NON-NLS-1$
+		String back = "." + type; //$NON-NLS-1$
 		if (classifier != null) {
-			back = "-" + classifier + back;
+			back = "-" + classifier + back; //$NON-NLS-1$
 		}
 		int idx1 = filename.indexOf(front) + front.length() + 1;
 		int idx2 = filename.indexOf(back);
@@ -232,21 +232,21 @@ public class MavenGavInfo {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(getName()).append("\n");
-		builder.append("  groupId: ");
-		builder.append(getGroupId()).append("\n");
-		builder.append("  artifactId: ");
-		builder.append(getArtifactId()).append("\n");
-		builder.append("  version: ");
-		builder.append(getVersion()).append("\n");
-		builder.append("  classifier: ");
-		builder.append(getClassifier()).append("\n");
-		builder.append("  type: ");
-		builder.append(getType()).append("\n");
-		builder.append("  isHash: ");
-		builder.append(isHash()).append("\n");
-		builder.append("  isSnapshot: ");
-		builder.append(isSnapshot()).append("\n");
+		builder.append(getName()).append("\n"); //$NON-NLS-1$
+		builder.append("  groupId: "); //$NON-NLS-1$
+		builder.append(getGroupId()).append("\n"); //$NON-NLS-1$
+		builder.append("  artifactId: "); //$NON-NLS-1$
+		builder.append(getArtifactId()).append("\n"); //$NON-NLS-1$
+		builder.append("  version: "); //$NON-NLS-1$
+		builder.append(getVersion()).append("\n"); //$NON-NLS-1$
+		builder.append("  classifier: "); //$NON-NLS-1$
+		builder.append(getClassifier()).append("\n"); //$NON-NLS-1$
+		builder.append("  type: "); //$NON-NLS-1$
+		builder.append(getType()).append("\n"); //$NON-NLS-1$
+		builder.append("  isHash: "); //$NON-NLS-1$
+		builder.append(isHash()).append("\n"); //$NON-NLS-1$
+		builder.append("  isSnapshot: "); //$NON-NLS-1$
+		builder.append(isSnapshot()).append("\n"); //$NON-NLS-1$
 		return builder.toString();
 	}
 

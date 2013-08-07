@@ -43,9 +43,9 @@ public class BasicAuthenticationProvider extends AuthorizationHeaderAuthenticati
      */
     public static String createBasicAuthHeader(String username, String password) {
         try {
-            String up = username + ":" + password;
-            String base64 = new String(Base64.encodeBase64(up.getBytes("UTF-8")));
-            String authHeader = "Basic " + base64;
+            String up = username + ":" + password; //$NON-NLS-1$
+            String base64 = new String(Base64.encodeBase64(up.getBytes("UTF-8"))); //$NON-NLS-1$
+            String authHeader = "Basic " + base64; //$NON-NLS-1$
             return authHeader;
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);

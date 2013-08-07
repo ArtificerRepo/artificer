@@ -36,7 +36,7 @@ public class OntologyWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public OntologyWorkspace(String hrefBase) {
-		super(hrefBase, "Ontology Model");
+		super(hrefBase, "Ontology Model"); //$NON-NLS-1$
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class OntologyWorkspace extends AbstractWorkspace {
 	 */
 	@Override
 	protected void configureWorkspace() {
-		AppCollection collection = addCollection("/s-ramp/ontology", "Ontology Objects", MediaType.APPLICATION_RDF_XML);
+		AppCollection collection = addCollection("/s-ramp/ontology", "Ontology Objects", MediaType.APPLICATION_RDF_XML); //$NON-NLS-1$ //$NON-NLS-2$
 
 		AppCategories categories = new AppCategories();
 		categories.setFixed(true);
@@ -52,8 +52,8 @@ public class OntologyWorkspace extends AbstractWorkspace {
 
 		Category category = new Category();
 		category.setScheme(SrampAtomConstants.URN_X_S_RAMP_TYPE);
-		category.setTerm("ontology");
-		category.setLabel("Ontology");
+		category.setTerm("ontology"); //$NON-NLS-1$
+		category.setLabel("Ontology"); //$NON-NLS-1$
 		categories.getCategory().add(category);
 	}
 }

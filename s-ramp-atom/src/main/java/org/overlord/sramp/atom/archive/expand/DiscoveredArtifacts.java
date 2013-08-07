@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.overlord.sramp.atom.i18n.Messages;
+
 /**
  * The collection of artifacts found during the discovery process.
  *
@@ -69,7 +71,7 @@ public class DiscoveredArtifacts implements Iterable<DiscoveredArtifact> {
 		String absWorkDirPath = workDir.getAbsolutePath();
 		String absFilePath = file.getAbsolutePath();
 		if (!absFilePath.startsWith(absFilePath)) {
-			throw new RuntimeException("Failed to determine archive path for: " + file.getName());
+			throw new RuntimeException(Messages.i18n.format("BAD_ARCHIVE_PATH", file.getName())); //$NON-NLS-1$
 		}
 		String relativeFilePath = absFilePath.substring(absWorkDirPath.length());
 		return relativeFilePath.replace('\\', '/');

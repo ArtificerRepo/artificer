@@ -44,7 +44,7 @@ public class HttpResponseBean {
 	public HttpResponseBean(int code, String status) {
 		this.code = code;
 		this.status = status;
-		setHeader("Date", (new Date()).toString());
+		setHeader("Date", (new Date()).toString()); //$NON-NLS-1$
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class HttpResponseBean {
 	public void setBody(Object body, MediaType type) {
 		this.body = body;
 		this.bodyType = type;
-		setHeader("Content-Type", type.toString());
+		setHeader("Content-Type", type.toString()); //$NON-NLS-1$
 	}
 
 	/**

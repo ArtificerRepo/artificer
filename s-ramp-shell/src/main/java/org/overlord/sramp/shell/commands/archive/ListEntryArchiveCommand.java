@@ -21,7 +21,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
 
 /**
@@ -29,7 +30,7 @@ import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ListEntryArchiveCommand extends AbstractShellCommand {
+public class ListEntryArchiveCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -38,40 +39,22 @@ public class ListEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("archive:listEntry <archivePath>");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'listEntry' command is used to display information about");
-		print("a single entry in the currently open S-RAMP archive.  The");
-		print("path within the archive must be specified.");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String archivePathArg = requiredArgument(0, "Please include an entry path (relative archive path).");
+		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg")); //$NON-NLS-1$
 
-		QName varName = new QName("archive", "active-archive");
+		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
-			print("No S-RAMP archive is currently open.");
+			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
 		} else {
 			SrampArchiveEntry entry = archive.getEntry(archivePathArg);
 			BaseArtifactType metaData = entry.getMetaData();
-			print("Entry: " + archivePathArg);
-			print("-----");
+			print(Messages.i18n.format("ENTRY", archivePathArg)); //$NON-NLS-1$
+			print("-----"); //$NON-NLS-1$
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, metaData);
 		}

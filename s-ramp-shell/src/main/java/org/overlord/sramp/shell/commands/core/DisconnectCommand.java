@@ -18,14 +18,15 @@ package org.overlord.sramp.shell.commands.core;
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Disconnects from the current S-RAMP repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DisconnectCommand extends AbstractShellCommand {
+public class DisconnectCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -34,38 +35,18 @@ public class DisconnectCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("s-ramp:disconnect");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'disconnect' command disconnects from the currently");
-		print("active S-RAMP repository.");
-		print("");
-		print("Example usage:");
-		print(">  s-ramp:disconnect");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		QName varName = new QName("s-ramp", "client");
+		QName varName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(varName);
 		if (client == null) {
-			print("No S-RAMP repository connection is currently open.");
+            print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return;
 		}
 		getContext().removeVariable(varName);
-		print("Successfully disconnected from the S-RAMP repository.");
+		print(Messages.i18n.format("Disconnect.Success")); //$NON-NLS-1$
 	}
 
 }

@@ -32,7 +32,7 @@ public class XsdWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public XsdWorkspace(String hrefBase) {
-		super(hrefBase, "XSD Model");
+		super(hrefBase, "XSD Model"); //$NON-NLS-1$
 	}
 
 	/**
@@ -40,17 +40,17 @@ public class XsdWorkspace extends AbstractWorkspace {
 	 */
 	@Override
 	protected void configureWorkspace() {
-        AppCollection xsdCollection = addCollection("/s-ramp/xsd", "XSD Model Objects", MediaType.APPLICATION_ZIP);
-        AppCollection xsdDocumentCollection = addCollection("/s-ramp/xsd/XsdDocument", "XSD Documents", MediaType.APPLICATION_XML);
+        AppCollection xsdCollection = addCollection("/s-ramp/xsd", "XSD Model Objects", MediaType.APPLICATION_ZIP); //$NON-NLS-1$ //$NON-NLS-2$
+        AppCollection xsdDocumentCollection = addCollection("/s-ramp/xsd/XsdDocument", "XSD Documents", MediaType.APPLICATION_XML); //$NON-NLS-1$ //$NON-NLS-2$
 
         AppCollection attributeDeclarationCollection =
-        		addCollection("/s-ramp/xsd/AttributeDeclation", "Attribute Declarations", "");
+        		addCollection("/s-ramp/xsd/AttributeDeclation", "Attribute Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         AppCollection elementDeclarationCollection =
-        		addCollection("/s-ramp/xsd/ElementDeclation", "Element Declarations", "");
+        		addCollection("/s-ramp/xsd/ElementDeclation", "Element Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         AppCollection simpleTypeDeclarationCollection =
-        		addCollection("/s-ramp/xsd/SimpleTypeDeclation", "Simple Type Declarations", "");
+        		addCollection("/s-ramp/xsd/SimpleTypeDeclation", "Simple Type Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         AppCollection complexTypeDeclarationCollection =
-        		addCollection("/s-ramp/xsd/ComplexTypeDeclation", "Complex Type Declarations", "");
+        		addCollection("/s-ramp/xsd/ComplexTypeDeclation", "Complex Type Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         addTypeCategory(xsdCollection, ArtifactTypeEnum.XsdDocument);
         addTypeCategory(xsdCollection, ArtifactTypeEnum.AttributeDeclaration);

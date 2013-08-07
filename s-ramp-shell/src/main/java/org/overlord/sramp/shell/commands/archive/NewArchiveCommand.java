@@ -19,14 +19,15 @@ import javax.xml.namespace.QName;
 
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.shell.AbstractShellContextVariableLifecycleHandler;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Creates a new, empty s-ramp batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class NewArchiveCommand extends AbstractShellCommand {
+public class NewArchiveCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -35,32 +36,16 @@ public class NewArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("archive:new");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'new' operation creates and opens an empty S-RAMP archive.");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
 		SrampArchive archive = null;
-		QName varName = new QName("archive", "active-archive");
+		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive != null) {
-			print("An S-RAMP archive is already open.  Please archive:close it before creating a new one.");
+			print(Messages.i18n.format("NewArchive.AlreadyOpen")); //$NON-NLS-1$
 			return;
 		}
 
@@ -75,7 +60,7 @@ public class NewArchiveCommand extends AbstractShellCommand {
 				SrampArchive.closeQuietly((SrampArchive) object);
 			}
 		});
-		print("New S-RAMP batch archive opened.");
+		print(Messages.i18n.format("NewArchive.Opened")); //$NON-NLS-1$
 	}
 
 }

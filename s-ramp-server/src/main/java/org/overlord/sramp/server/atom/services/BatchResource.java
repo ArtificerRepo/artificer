@@ -49,6 +49,7 @@ import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.PersistenceManager.BatchItem;
 import org.overlord.sramp.repository.errors.DerivedArtifactCreateException;
+import org.overlord.sramp.server.i18n.Messages;
 import org.overlord.sramp.server.mime.MimeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +97,7 @@ public class BatchResource extends AbstractResource {
             archive = new SrampArchive(content);
 
             MultipartOutput output = new MultipartOutput();
-            output.setBoundary("package");
+            output.setBoundary("package"); //$NON-NLS-1$
 
             // Process all of the entries in the s-ramp package.  First, do all the create
             // entries.  Once the creates are done, do the updates.
@@ -105,7 +106,7 @@ public class BatchResource extends AbstractResource {
             List<SrampArchiveEntry> updates = new ArrayList<SrampArchiveEntry>();
             for (SrampArchiveEntry entry : entries) {
                 String path = entry.getPath();
-                String contentId = String.format("<%1$s@package>", path);
+                String contentId = String.format("<%1$s@package>", path); //$NON-NLS-1$
                 BaseArtifactType metaData = entry.getMetaData();
                 if (isCreate(metaData)) {
                     InputStream contentStream = ensureSupportsMark(archive.getInputStream(entry));
@@ -146,7 +147,7 @@ public class BatchResource extends AbstractResource {
             for (SrampArchiveEntry updateEntry : updates) {
                 InputStream contentStream = ensureSupportsMark(archive.getInputStream(updateEntry));
                 String path = updateEntry.getPath();
-                String contentId = String.format("<%1$s@package>", path);
+                String contentId = String.format("<%1$s@package>", path); //$NON-NLS-1$
                 BaseArtifactType metaData = updateEntry.getMetaData();
                 ArtifactType artifactType = ArtifactType.valueOf(metaData);
                 Entry atomEntry = processUpdate(artifactType, metaData, contentStream, baseUrl);
@@ -155,7 +156,7 @@ public class BatchResource extends AbstractResource {
 
             return output;
         } catch (Exception e) {
-        	logError(logger, "Error consuming S-RAMP batch zip package.", e);
+        	logError(logger, Messages.i18n.format("ERROR_CONSUMING_ZIP"), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
         } finally {
         	IOUtils.closeQuietly(is);
@@ -233,9 +234,9 @@ public class BatchResource extends AbstractResource {
 	 * @param atomEntry
 	 */
 	private void addCreatedPart(MultipartOutput output, String contentId, Entry atomEntry) {
-		HttpResponseBean createdResponse = new HttpResponseBean(201, "Created");
+		HttpResponseBean createdResponse = new HttpResponseBean(201, "Created"); //$NON-NLS-1$
 		createdResponse.setBody(atomEntry, MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-		output.addPart(createdResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
+		output.addPart(createdResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId); //$NON-NLS-1$
 	}
 
     /**
@@ -246,9 +247,9 @@ public class BatchResource extends AbstractResource {
      * @param atomEntry
      */
     private void addUpdatedPart(MultipartOutput output, String contentId, Entry atomEntry) {
-        HttpResponseBean createdResponse = new HttpResponseBean(200, "OK");
+        HttpResponseBean createdResponse = new HttpResponseBean(200, "OK"); //$NON-NLS-1$
         createdResponse.setBody(atomEntry, MediaType.APPLICATION_ATOM_XML_ENTRY_TYPE);
-        output.addPart(createdResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
+        output.addPart(createdResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId); //$NON-NLS-1$
     }
 
 	/**
@@ -259,10 +260,10 @@ public class BatchResource extends AbstractResource {
 	 * @param error
 	 */
 	private void addErrorPart(MultipartOutput output, String contentId, Exception error) {
-        HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict");
+        HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict"); //$NON-NLS-1$
         SrampAtomException e = new SrampAtomException(error);
         errorResponse.setBody(e, MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION_TYPE);
-        output.addPart(errorResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId);
+        output.addPart(errorResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId); //$NON-NLS-1$
 	}
 
 }

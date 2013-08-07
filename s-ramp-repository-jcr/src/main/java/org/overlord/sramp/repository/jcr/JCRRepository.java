@@ -94,16 +94,16 @@ public abstract class JCRRepository {
             observationManager.addEventListener(
                     auditingEventListener1,
                     Event.NODE_ADDED | Event.PROPERTY_ADDED | Event.PROPERTY_CHANGED | Event.PROPERTY_REMOVED | Event.NODE_MOVED,
-                    "/s-ramp/", true, null, null, false);
+                    "/s-ramp/", true, null, null, false); //$NON-NLS-1$
             auditingEventListener2 = new AuditEventListener(sramp, auditingSession);
             observationManager.addEventListener(
                     auditingEventListener2,
                     Event.NODE_MOVED,
-                    "/s-ramp-trash/", true, null, null, false);
-            log.info("JCR Auditor installed successfully.");
+                    "/s-ramp-trash/", true, null, null, false); //$NON-NLS-1$
+            log.info("JCR Auditor installed successfully."); //$NON-NLS-1$
         } catch (LoginException e) {
             log.error(e.getMessage(), e);
-            log.warn("\n**********\nFailed to install auditing listener (see error above):  automatic auditing is disabled!!\n**********");
+            log.warn("\n**********\nFailed to install auditing listener (see error above):  automatic auditing is disabled!!\n**********"); //$NON-NLS-1$
             auditingSession = null;
             auditingEventListener1 = null;
             auditingEventListener2 = null;
@@ -124,7 +124,7 @@ public abstract class JCRRepository {
                 auditingEventListener2 = null;
             }
         } catch (Exception e) {
-            log.error("Error turning off auditing.", e);
+            log.error("Error turning off auditing.", e); //$NON-NLS-1$
         }
         if (auditingSession != null) {
             auditingSession.logout();
@@ -139,18 +139,18 @@ public abstract class JCRRepository {
 	 */
 	public File determineRuntimeDataDir() {
 		// Our property takes precedent if present
-		String rootDataDir = System.getProperty("s-ramp.jcr.data.dir");
+		String rootDataDir = System.getProperty("s-ramp.jcr.data.dir"); //$NON-NLS-1$
 		// Check for JBoss
 		if (rootDataDir == null) {
-			rootDataDir = System.getProperty("jboss.server.data.dir");
+			rootDataDir = System.getProperty("jboss.server.data.dir"); //$NON-NLS-1$
 		}
 		// Default to "data/"
 		if (rootDataDir == null) {
-			rootDataDir = "data";
+			rootDataDir = "data"; //$NON-NLS-1$
 		}
 
 		File root = new File(rootDataDir);
-		File srampDataDir = new File(root, "s-ramp");
+		File srampDataDir = new File(root, "s-ramp"); //$NON-NLS-1$
 		if (!srampDataDir.exists()) {
 			srampDataDir.mkdirs();
 		}

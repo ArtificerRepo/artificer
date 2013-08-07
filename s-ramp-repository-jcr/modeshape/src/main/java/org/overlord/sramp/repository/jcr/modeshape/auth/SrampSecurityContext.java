@@ -43,7 +43,7 @@ public class SrampSecurityContext implements SecurityContext, AuthorizationProvi
     public boolean hasPermission(ExecutionContext context, String repositoryName,
             String repositorySourceName, String workspaceName, Path path, String... actions) {
         // Overlord users can do anything.
-        return hasRole("overlorduser");
+        return hasRole("overlorduser"); //$NON-NLS-1$
     }
 
     /**

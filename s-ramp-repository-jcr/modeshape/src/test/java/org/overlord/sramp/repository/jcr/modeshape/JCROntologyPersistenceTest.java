@@ -36,9 +36,9 @@ public class JCROntologyPersistenceTest extends AbstractNoAuditingJCRPersistence
     @Test
     public void testPersistOntology_Empty() throws Exception {
     	SrampOntology ontology = new SrampOntology();
-    	ontology.setBase("urn:example.org/test1");
-    	ontology.setLabel("Test Ontology #1");
-    	ontology.setComment("This is my first test ontology.");
+    	ontology.setBase("urn:example.org/test1"); //$NON-NLS-1$
+    	ontology.setLabel("Test Ontology #1"); //$NON-NLS-1$
+    	ontology.setComment("This is my first test ontology."); //$NON-NLS-1$
     	String uuid = persistenceManager.persistOntology(ontology).getUuid();
     	Assert.assertNotNull(uuid);
 
@@ -53,17 +53,17 @@ public class JCROntologyPersistenceTest extends AbstractNoAuditingJCRPersistence
     @Test
     public void testPersistOntology_Full() throws Exception {
     	SrampOntology ontology = new SrampOntology();
-    	ontology.setBase("urn:example.org/test2");
-    	ontology.setLabel("Test Ontology #2");
-    	ontology.setComment("This is my second test ontology.");
+    	ontology.setBase("urn:example.org/test2"); //$NON-NLS-1$
+    	ontology.setLabel("Test Ontology #2"); //$NON-NLS-1$
+    	ontology.setComment("This is my second test ontology."); //$NON-NLS-1$
 
-    	SrampOntology.Class world = createClass(ontology, null, "World", "World", "The entire world");
-    	SrampOntology.Class asia = createClass(ontology, world, "Asia", "Asia", null);
-    	SrampOntology.Class europe = createClass(ontology, world, "Europe", "Europe", "Two world wars");
-    	SrampOntology.Class japan = createClass(ontology, asia, "Japan", "Japan", "Samurai *and* ninja?  Not fair.");
-    	SrampOntology.Class china = createClass(ontology, asia, "China", "China", "Gunpowder!");
-    	SrampOntology.Class uk = createClass(ontology, europe, "UnitedKingdom", "United Kingdom", "The food could be better");
-    	SrampOntology.Class germany = createClass(ontology, europe, "Germany", "Germany", "The fatherland");
+    	SrampOntology.Class world = createClass(ontology, null, "World", "World", "The entire world"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class asia = createClass(ontology, world, "Asia", "Asia", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class europe = createClass(ontology, world, "Europe", "Europe", "Two world wars"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class japan = createClass(ontology, asia, "Japan", "Japan", "Samurai *and* ninja?  Not fair."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class china = createClass(ontology, asia, "China", "China", "Gunpowder!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class uk = createClass(ontology, europe, "UnitedKingdom", "United Kingdom", "The food could be better"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class germany = createClass(ontology, europe, "Germany", "Germany", "The fatherland"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     	ontology.getRootClasses().add(world);
 
@@ -127,17 +127,17 @@ public class JCROntologyPersistenceTest extends AbstractNoAuditingJCRPersistence
 
     	// Now add one
     	SrampOntology ontology = new SrampOntology();
-    	ontology.setBase("urn:example.org/test3");
-    	ontology.setLabel("Test Ontology #3");
-    	ontology.setComment("This is my third test ontology.");
+    	ontology.setBase("urn:example.org/test3"); //$NON-NLS-1$
+    	ontology.setLabel("Test Ontology #3"); //$NON-NLS-1$
+    	ontology.setComment("This is my third test ontology."); //$NON-NLS-1$
 
-    	SrampOntology.Class world = createClass(ontology, null, "World", "World", "The entire world");
-    	SrampOntology.Class asia = createClass(ontology, world, "Asia", "Asia", null);
-    	SrampOntology.Class europe = createClass(ontology, world, "Europe", "Europe", "Two world wars");
-    	SrampOntology.Class japan = createClass(ontology, asia, "Japan", "Japan", "Samurai *and* ninja?  Not fair.");
-    	SrampOntology.Class china = createClass(ontology, asia, "China", "China", "Gunpowder!");
-    	SrampOntology.Class uk = createClass(ontology, europe, "UnitedKingdom", "United Kingdom", "The food could be better");
-    	SrampOntology.Class germany = createClass(ontology, europe, "Germany", "Germany", "The fatherland");
+    	SrampOntology.Class world = createClass(ontology, null, "World", "World", "The entire world"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class asia = createClass(ontology, world, "Asia", "Asia", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class europe = createClass(ontology, world, "Europe", "Europe", "Two world wars"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class japan = createClass(ontology, asia, "Japan", "Japan", "Samurai *and* ninja?  Not fair."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class china = createClass(ontology, asia, "China", "China", "Gunpowder!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class uk = createClass(ontology, europe, "UnitedKingdom", "United Kingdom", "The food could be better"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class germany = createClass(ontology, europe, "Germany", "Germany", "The fatherland"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     	ontology.getRootClasses().add(world);
 
@@ -164,17 +164,17 @@ public class JCROntologyPersistenceTest extends AbstractNoAuditingJCRPersistence
 
     	// Now add another one
     	ontology = new SrampOntology();
-    	ontology.setBase("urn:example.org/test4");
-    	ontology.setLabel("Test Ontology #4");
+    	ontology.setBase("urn:example.org/test4"); //$NON-NLS-1$
+    	ontology.setLabel("Test Ontology #4"); //$NON-NLS-1$
 
-    	SrampOntology.Class colors = createClass(ontology, null, "Colors", "Colors", null);
-    	SrampOntology.Class numbers = createClass(ontology, null, "Numbers", "Numbers", null);
-    	SrampOntology.Class red = createClass(ontology, colors, "Red", "Red", null);
-    	SrampOntology.Class green = createClass(ontology, colors, "Green", "Green", null);
-    	SrampOntology.Class blue = createClass(ontology, colors, "Blue", "Blue", null);
-    	SrampOntology.Class one = createClass(ontology, numbers, "One", "One", null);
-    	SrampOntology.Class two = createClass(ontology, numbers, "Two", "Two", null);
-    	SrampOntology.Class three = createClass(ontology, numbers, "Three", "Three", null);
+    	SrampOntology.Class colors = createClass(ontology, null, "Colors", "Colors", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class numbers = createClass(ontology, null, "Numbers", "Numbers", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class red = createClass(ontology, colors, "Red", "Red", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class green = createClass(ontology, colors, "Green", "Green", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class blue = createClass(ontology, colors, "Blue", "Blue", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class one = createClass(ontology, numbers, "One", "One", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class two = createClass(ontology, numbers, "Two", "Two", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class three = createClass(ontology, numbers, "Three", "Three", null); //$NON-NLS-1$ //$NON-NLS-2$
 
     	ontology.getRootClasses().add(colors);
     	ontology.getRootClasses().add(numbers);
@@ -203,13 +203,13 @@ public class JCROntologyPersistenceTest extends AbstractNoAuditingJCRPersistence
 
     	// Now add one
     	SrampOntology ontology = new SrampOntology();
-    	ontology.setBase("urn:example.org/test6");
-    	ontology.setLabel("Test Ontology #6");
-    	ontology.setComment("This is my sixth test ontology.");
-    	SrampOntology.Class world = createClass(ontology, null, "World", "World", "The entire world");
-    	SrampOntology.Class asia = createClass(ontology, world, "Asia", "Asia", null);
-    	SrampOntology.Class japan = createClass(ontology, asia, "Japan", "Japan", "Samurai *and* ninja?  Not fair.");
-    	SrampOntology.Class china = createClass(ontology, asia, "China", "China", "Gunpowder!");
+    	ontology.setBase("urn:example.org/test6"); //$NON-NLS-1$
+    	ontology.setLabel("Test Ontology #6"); //$NON-NLS-1$
+    	ontology.setComment("This is my sixth test ontology."); //$NON-NLS-1$
+    	SrampOntology.Class world = createClass(ontology, null, "World", "World", "The entire world"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class asia = createClass(ontology, world, "Asia", "Asia", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class japan = createClass(ontology, asia, "Japan", "Japan", "Samurai *and* ninja?  Not fair."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    	SrampOntology.Class china = createClass(ontology, asia, "China", "China", "Gunpowder!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     	ontology.getRootClasses().add(world);
     	world.getChildren().add(asia);
     	asia.getChildren().add(japan);
@@ -223,12 +223,12 @@ public class JCROntologyPersistenceTest extends AbstractNoAuditingJCRPersistence
 
     	// Now add another one
     	ontology = new SrampOntology();
-    	ontology.setBase("urn:example.org/test4");
-    	ontology.setLabel("Test Ontology #4");
-    	SrampOntology.Class colors = createClass(ontology, null, "Colors", "Colors", null);
-    	SrampOntology.Class red = createClass(ontology, colors, "Red", "Red", null);
-    	SrampOntology.Class green = createClass(ontology, colors, "Green", "Green", null);
-    	SrampOntology.Class blue = createClass(ontology, colors, "Blue", "Blue", null);
+    	ontology.setBase("urn:example.org/test4"); //$NON-NLS-1$
+    	ontology.setLabel("Test Ontology #4"); //$NON-NLS-1$
+    	SrampOntology.Class colors = createClass(ontology, null, "Colors", "Colors", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class red = createClass(ontology, colors, "Red", "Red", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class green = createClass(ontology, colors, "Green", "Green", null); //$NON-NLS-1$ //$NON-NLS-2$
+    	SrampOntology.Class blue = createClass(ontology, colors, "Blue", "Blue", null); //$NON-NLS-1$ //$NON-NLS-2$
     	ontology.getRootClasses().add(colors);
     	colors.getChildren().add(red);
     	colors.getChildren().add(green);

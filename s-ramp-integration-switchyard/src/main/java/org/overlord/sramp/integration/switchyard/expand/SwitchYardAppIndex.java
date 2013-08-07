@@ -60,8 +60,8 @@ public class SwitchYardAppIndex {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             factory.setValidating(false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false); //$NON-NLS-1$
+            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false); //$NON-NLS-1$
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(switchyardXml);
             XPathFactory xPathfactory = XPathFactory.newInstance();
@@ -87,23 +87,23 @@ public class SwitchYardAppIndex {
         AttributeValueParser attrParser = new AttributeValueParser() {
             @Override
             public String parse(String attributeValue) {
-                if (attributeValue.startsWith("java:")) {
+                if (attributeValue.startsWith("java:")) { //$NON-NLS-1$
                     return attributeValue.substring(5);
                 }
                 return null;
             }
         };
 
-        indexJavaClassesFromAttributes(xpath, rootElement, "//bean:implementation.bean/@class");
-        indexJavaClassesFromAttributes(xpath, rootElement, "//sca:interface.java/@interface");
-        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@from", attrParser);
-        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@to", attrParser);
-        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@class");
-        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@bean");
-        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@from", attrParser);
-        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@to", attrParser);
-        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@class");
-        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@bean");
+        indexJavaClassesFromAttributes(xpath, rootElement, "//bean:implementation.bean/@class"); //$NON-NLS-1$
+        indexJavaClassesFromAttributes(xpath, rootElement, "//sca:interface.java/@interface"); //$NON-NLS-1$
+        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@from", attrParser); //$NON-NLS-1$
+        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@to", attrParser); //$NON-NLS-1$
+        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@class"); //$NON-NLS-1$
+        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:transform.java/@bean"); //$NON-NLS-1$
+        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@from", attrParser); //$NON-NLS-1$
+        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@to", attrParser); //$NON-NLS-1$
+        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@class"); //$NON-NLS-1$
+        indexJavaClassesFromAttributes(xpath, rootElement, "//tf:validate.java/@bean"); //$NON-NLS-1$
     }
 
     /**

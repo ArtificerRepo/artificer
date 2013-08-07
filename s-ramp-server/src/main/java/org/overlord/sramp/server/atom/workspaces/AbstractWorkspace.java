@@ -40,10 +40,10 @@ public abstract class AbstractWorkspace extends AppWorkspace {
 	 * @param title
 	 */
 	public AbstractWorkspace(String hrefBase, String title) {
-		if (hrefBase.endsWith("/")) {
+		if (hrefBase.endsWith("/")) { //$NON-NLS-1$
 			hrefBase = hrefBase.substring(0, hrefBase.length() - 1);
 		}
-		if (hrefBase.endsWith("/s-ramp")) {
+		if (hrefBase.endsWith("/s-ramp")) { //$NON-NLS-1$
 			hrefBase = hrefBase.substring(0, hrefBase.length() - 8);
 		}
 		this.hrefBase = hrefBase;

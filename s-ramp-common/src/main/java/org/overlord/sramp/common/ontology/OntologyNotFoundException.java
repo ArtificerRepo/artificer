@@ -16,6 +16,7 @@
 package org.overlord.sramp.common.ontology;
 
 import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.common.i18n.Messages;
 
 /**
  * Exception thrown when the user attempts to access or modify an ontology that
@@ -38,7 +39,7 @@ public class OntologyNotFoundException extends SrampUserException {
      * @param ontologyUuid
      */
     public OntologyNotFoundException(String ontologyUuid) {
-        super("No ontology found with UUID: " + ontologyUuid);
+        super(Messages.i18n.format("ONTOLOGY_NOT_FOUND", ontologyUuid)); //$NON-NLS-1$
     }
 
 }

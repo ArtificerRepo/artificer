@@ -19,7 +19,7 @@ import java.net.URI;
 
 public class SrampAtomConstants {
 
-    public static final URI URN_X_S_RAMP_TYPE    = URIHelper.create("urn:x-s-ramp:v1:type");
+    public static final URI URN_X_S_RAMP_TYPE    = URIHelper.create("urn:x-s-ramp:v1:type"); //$NON-NLS-1$
 
     private static class URIHelper {
         static URI create(String uriStr) {

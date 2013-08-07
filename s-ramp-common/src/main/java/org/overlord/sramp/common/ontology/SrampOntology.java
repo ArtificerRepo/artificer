@@ -163,7 +163,7 @@ public class SrampOntology {
 	public SrampOntology.Class createClass(String id) {
 		SrampOntology.Class c = new SrampOntology.Class();
 		c.setId(id);
-		String uri = this.getBase() + "#" + id;
+		String uri = this.getBase() + "#" + id; //$NON-NLS-1$
 		try {
 			c.setUri(new URI(uri));
 		} catch (URISyntaxException e) {

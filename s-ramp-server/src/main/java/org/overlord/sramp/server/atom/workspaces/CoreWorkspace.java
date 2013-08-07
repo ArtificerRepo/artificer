@@ -32,7 +32,7 @@ public class CoreWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public CoreWorkspace(String hrefBase) {
-		super(hrefBase, "Core Model");
+		super(hrefBase, "Core Model"); //$NON-NLS-1$
 	}
 
 	/**
@@ -40,9 +40,9 @@ public class CoreWorkspace extends AbstractWorkspace {
 	 */
 	@Override
 	protected void configureWorkspace() {
-        AppCollection coreCollection = addCollection("/s-ramp/core", "Core Model Objects", MediaType.APPLICATION_ZIP);
-        AppCollection documentCollection = addCollection("/s-ramp/core/Document", "Documents", MediaType.APPLICATION_OCTET_STREAM);
-        AppCollection xmlDocumentCollection = addCollection("/s-ramp/core/XmlDocument", "XML Documents", MediaType.APPLICATION_XML);
+        AppCollection coreCollection = addCollection("/s-ramp/core", "Core Model Objects", MediaType.APPLICATION_ZIP); //$NON-NLS-1$ //$NON-NLS-2$
+        AppCollection documentCollection = addCollection("/s-ramp/core/Document", "Documents", MediaType.APPLICATION_OCTET_STREAM); //$NON-NLS-1$ //$NON-NLS-2$
+        AppCollection xmlDocumentCollection = addCollection("/s-ramp/core/XmlDocument", "XML Documents", MediaType.APPLICATION_XML); //$NON-NLS-1$ //$NON-NLS-2$
 
         addTypeCategory(coreCollection, ArtifactTypeEnum.Document);
         addTypeCategory(coreCollection, ArtifactTypeEnum.XmlDocument);

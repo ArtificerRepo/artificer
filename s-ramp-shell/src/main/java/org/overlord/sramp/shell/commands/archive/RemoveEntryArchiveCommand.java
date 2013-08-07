@@ -18,14 +18,15 @@ package org.overlord.sramp.shell.commands.archive;
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Removes an entry from the current S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class RemoveEntryArchiveCommand extends AbstractShellCommand {
+public class RemoveEntryArchiveCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -34,41 +35,23 @@ public class RemoveEntryArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("archive:removeEntry <archivePath>");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'removeEntry' command will remove a single entry from the");
-		print("currently open S-RAMP batch archive.  The path to the entry");
-		print("must be specified.");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String archivePathArg = requiredArgument(0, "Please include an entry path (relative archive path).");
+		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg.EntryPath")); //$NON-NLS-1$
 
-		QName varName = new QName("archive", "active-archive");
+		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
-			print("No S-RAMP archive is currently open.");
+			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
 		} else {
 			boolean success = archive.removeEntry(archivePathArg);
 			if (success) {
-				print("The S-RAMP archive entry was successfully delete.");
+				print(Messages.i18n.format("RemoveEntry.EntryDeleted")); //$NON-NLS-1$
 			} else {
-				print("No S-RAMP archive entry could be found at path: " + archivePathArg);
+				print(Messages.i18n.format("RemoveEntry.NoEntryFound", archivePathArg)); //$NON-NLS-1$
 			}
 		}
 	}

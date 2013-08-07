@@ -138,6 +138,6 @@ public class SrampModelUtils {
 	    if (ct == null)
 	        return false;
 	    ct = ct.toLowerCase();
-	    return ct.contains("text/") || ct.contains("application/xml");
+	    return ct.contains("text/") || ct.contains("application/xml"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

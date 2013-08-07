@@ -15,6 +15,9 @@
  */
 package org.overlord.sramp.common;
 
+import org.overlord.sramp.common.i18n.Messages;
+
+
 
 /**
  * Exception thrown when the user attempts add a new artifact with a duplicate UUID.
@@ -36,7 +39,7 @@ public class ArtifactAlreadyExistsException extends SrampUserException {
      * @param message
      */
     public ArtifactAlreadyExistsException(String uuid) {
-        super("Artifact with UUID " + uuid + " already exists.");
+        super(Messages.i18n.format("ARTIFACT_ALREADY_EXISTS", uuid)); //$NON-NLS-1$
     }
 
 }

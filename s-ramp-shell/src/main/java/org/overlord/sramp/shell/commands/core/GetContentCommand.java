@@ -24,21 +24,22 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.IOUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.i18n.Messages;
 import org.overlord.sramp.shell.util.FileNameCompleter;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * Gets the content for a single artifact in the s-ramp repo.
  *
  * @author eric.wittmann@redhat.com
  */
-public class GetContentCommand extends AbstractShellCommand {
+public class GetContentCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -47,74 +48,45 @@ public class GetContentCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("s-ramp:getContent <artifactId> <outputFilePath>");
-		print("\tValid formats for artifactId:");
-		print("\t  feed:<feedIndex> - an index into the most recent feed");
-		print("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'getContent' command downloads the file content for");
-		print("a single artifact from the S-RAMP repository.  The artifact");
-		print("can be identified either by its unique S-RAMP uuid or else");
-		print("by an index into the most recent Feed.");
-		print("");
-		print("Note: a Feed can be obtained, for example, by using the ");
-		print("s-ramp:query command.");
-		print("");
-		print("Example usage:");
-		print(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
-		print(">  s-ramp:getContent feed:1 /home/user/files/");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String artifactIdArg = this.requiredArgument(0, "Please specify a valid artifact identifier.");
-		String outputFilePathArg = this.requiredArgument(1, "Please specify an output path (file or directory).");
-		if (!artifactIdArg.contains(":")) {
-			throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
+		String artifactIdArg = this.requiredArgument(0, Messages.i18n.format("InvalidArgMsg.ArtifactId")); //$NON-NLS-1$
+		String outputFilePathArg = this.requiredArgument(1, Messages.i18n.format("GetContent.InvalidArgMsg.OutputPath")); //$NON-NLS-1$
+		if (!artifactIdArg.contains(":")) { //$NON-NLS-1$
+			throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
 		}
-		QName clientVarName = new QName("s-ramp", "client");
-		QName feedVarName = new QName("s-ramp", "feed");
+		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
+		QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
-			print("No S-RAMP repository connection is currently open.");
+            print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return;
 		}
 
 		BaseArtifactType artifact = null;
 		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
-		if ("feed".equals(idType)) {
+		if ("feed".equals(idType)) { //$NON-NLS-1$
 			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
 			int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
 			if (feedIdx < 0 || feedIdx >= rset.size()) {
-				throw new InvalidCommandArgumentException(0, "Feed index out of range.");
+                throw new InvalidCommandArgumentException(0, Messages.i18n.format("FeedIndexOutOfRange")); //$NON-NLS-1$
 			}
 			ArtifactSummary summary = rset.get(feedIdx);
 			String artifactUUID = summary.getUuid();
 			artifact = client.getArtifactMetaData(summary.getType(), artifactUUID);
-		} else if ("uuid".equals(idType)) {
+		} else if ("uuid".equals(idType)) { //$NON-NLS-1$
 //			String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
 //			artifact = getArtifactMetaDataByUUID(client, artifactUUID);
-			throw new InvalidCommandArgumentException(0, "uuid: style artifact identifiers not yet implemented.");
+            throw new InvalidCommandArgumentException(0, Messages.i18n.format("UuidNotImplemented")); //$NON-NLS-1$
 		} else {
-			throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
+            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
 		}
 
 		File outFile = new File(outputFilePathArg);
 		if (outFile.isFile()) {
-			throw new InvalidCommandArgumentException(1, "Output file already exists: " + outFile.getCanonicalPath());
+			throw new InvalidCommandArgumentException(1, Messages.i18n.format("GetContent.OutputFileExists", outFile.getCanonicalPath())); //$NON-NLS-1$
 		} else if (outFile.isDirectory()) {
 			String fileName = artifact.getName();
 			outFile = new File(outFile, fileName);
@@ -129,7 +101,7 @@ public class GetContentCommand extends AbstractShellCommand {
 			artifactContent = client.getArtifactContent(ArtifactType.valueOf(artifact), artifact.getUuid());
 			outputStream = new FileOutputStream(outFile);
 			IOUtils.copy(artifactContent, outputStream);
-			print("Artifact content saved to " + outFile.getCanonicalPath());
+			print(Messages.i18n.format("GetContent.ContentSaved", outFile.getCanonicalPath())); //$NON-NLS-1$
 		} finally {
 			IOUtils.closeQuietly(artifactContent);
 			IOUtils.closeQuietly(outputStream);
@@ -141,12 +113,12 @@ public class GetContentCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) {
-			QName feedVarName = new QName("s-ramp", "feed");
+		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
+			QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
 			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
 			if (rset != null) {
 				for (int idx = 0; idx < rset.size(); idx++) {
-					String candidate = "feed:" + (idx+1);
+					String candidate = "feed:" + (idx+1); //$NON-NLS-1$
 					if (lastArgument == null) {
 						candidates.add(candidate);
 					}
@@ -158,7 +130,7 @@ public class GetContentCommand extends AbstractShellCommand {
 			return 0;
 		} else if (getArguments().size() == 1) {
 			if (lastArgument == null)
-				lastArgument = "";
+				lastArgument = ""; //$NON-NLS-1$
 			FileNameCompleter delegate = new FileNameCompleter();
 			return delegate.complete(lastArgument, lastArgument.length(), candidates);
 		} else {

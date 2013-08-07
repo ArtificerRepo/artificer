@@ -24,22 +24,22 @@ import javax.xml.namespace.QName;
  */
 public class SrampConstants {
 
-    public static final String DATE_FORMAT  = "EEE, d MMM yyyy HH:mm:ss Z";
+    public static final String DATE_FORMAT  = "EEE, d MMM yyyy HH:mm:ss Z"; //$NON-NLS-1$
 
-	public static final String SRAMP_NS        = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0";
-	public static final String SRAMP_PREFIX    = "s-ramp";
-    public static final String SRAMP_AUDIT_NS  = "http://downloads.jboss.org/overlord/sramp/2013/auditing.xsd";
+	public static final String SRAMP_NS        = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"; //$NON-NLS-1$
+	public static final String SRAMP_PREFIX    = "s-ramp"; //$NON-NLS-1$
+    public static final String SRAMP_AUDIT_NS  = "http://downloads.jboss.org/overlord/sramp/2013/auditing.xsd"; //$NON-NLS-1$
 
-	private static final String SRAMP_CONTENT_SIZE         = "contentSize";
-	private static final String SRAMP_CONTENT_TYPE         = "contentType";
-    private static final String SRAMP_DERIVED              = "derived";
-    private static final String SRAMP_EXTENDED_TYPE        = "extendedType";
-    private static final String SRAMP_PROVIDER             = "provider";
-    private static final String SRAMP_START_INDEX          = "startIndex";
-    private static final String SRAMP_ITEMS_PER_PAGE_INDEX = "itemsPerPage";
-    private static final String SRAMP_TOTAL_RESULTS        = "totalResults";
+	private static final String SRAMP_CONTENT_SIZE         = "contentSize"; //$NON-NLS-1$
+	private static final String SRAMP_CONTENT_TYPE         = "contentType"; //$NON-NLS-1$
+    private static final String SRAMP_DERIVED              = "derived"; //$NON-NLS-1$
+    private static final String SRAMP_EXTENDED_TYPE        = "extendedType"; //$NON-NLS-1$
+    private static final String SRAMP_PROVIDER             = "provider"; //$NON-NLS-1$
+    private static final String SRAMP_START_INDEX          = "startIndex"; //$NON-NLS-1$
+    private static final String SRAMP_ITEMS_PER_PAGE_INDEX = "itemsPerPage"; //$NON-NLS-1$
+    private static final String SRAMP_TOTAL_RESULTS        = "totalResults"; //$NON-NLS-1$
 
-    public static final QName S_RAMP_WRAPPER_ELEM         = new QName(SRAMP_NS, "artifact");
+    public static final QName S_RAMP_WRAPPER_ELEM         = new QName(SRAMP_NS, "artifact"); //$NON-NLS-1$
 
     public static final QName SRAMP_CONTENT_SIZE_QNAME    = new QName(SRAMP_NS, SRAMP_CONTENT_SIZE, SRAMP_PREFIX);
     public static final QName SRAMP_CONTENT_TYPE_QNAME    = new QName(SRAMP_NS, SRAMP_CONTENT_TYPE, SRAMP_PREFIX);
@@ -51,14 +51,14 @@ public class SrampConstants {
     public static final QName SRAMP_TOTAL_RESULTS_QNAME   = new QName(SRAMP_NS, SRAMP_TOTAL_RESULTS, SRAMP_PREFIX);
 
     // Configuration constants
-    public static final String SRAMP_CONFIG_FILE_NAME         = "sramp.config.file.name";
-    public static final String SRAMP_CONFIG_FILE_REFRESH      = "sramp.config.file.refresh";
-    public static final String SRAMP_CONFIG_BASEURL           = "sramp.config.baseurl";
-    public static final String SRAMP_CONFIG_AUDITING          = "sramp.config.auditing.enabled";
-    public static final String SRAMP_CONFIG_DERIVED_AUDITING  = "sramp.config.auditing.enabled-derived";
-    public static final String SRAMP_CONFIG_AUDIT_USER        = "sramp.config.auditing.user";
-    public static final String SRAMP_CONFIG_AUDIT_PASS        = "sramp.config.auditing.password";
+    public static final String SRAMP_CONFIG_FILE_NAME         = "sramp.config.file.name"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_FILE_REFRESH      = "sramp.config.file.refresh"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_BASEURL           = "sramp.config.baseurl"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_AUDITING          = "sramp.config.auditing.enabled"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_DERIVED_AUDITING  = "sramp.config.auditing.enabled-derived"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_AUDIT_USER        = "sramp.config.auditing.user"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_AUDIT_PASS        = "sramp.config.auditing.password"; //$NON-NLS-1$
 
     // Location of a directory containing JARs which provide custom derivers
-    public static final String SRAMP_CUSTOM_DERIVER_DIR   = "sramp.derivers.customDir";
+    public static final String SRAMP_CUSTOM_DERIVER_DIR   = "sramp.derivers.customDir"; //$NON-NLS-1$
 }

@@ -17,6 +17,8 @@ package org.overlord.sramp.repository;
 
 import java.util.ServiceLoader;
 
+import org.overlord.sramp.repository.i18n.Messages;
+
 
 /**
  * Factory used to create an instance of an S-RAMP {@link PersistenceManager}.
@@ -30,6 +32,6 @@ public class PersistenceFactory {
         for (PersistenceManager manager : ServiceLoader.load(PersistenceManager.class)) {
             return manager;
         }
-        throw new RuntimeException("Failed to find a PersistenceManager provider.");
+        throw new RuntimeException(Messages.i18n.format("MISSING_PERSISTENCEMAN_PROVIDER")); //$NON-NLS-1$
     }
 }

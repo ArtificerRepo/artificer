@@ -36,8 +36,8 @@ public abstract class AbstractResourceTest extends BaseResourceTest {
 
 	public static void setUpResourceTest() throws Exception {
 		// use the in-memory config for unit tests
-        System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractNoAuditingJCRPersistenceTest.class.getName()
-                + "/META-INF/modeshape-configs/junit-sramp-config.json");
+        System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractNoAuditingJCRPersistenceTest.class.getName() //$NON-NLS-1$ //$NON-NLS-2$
+                + "/META-INF/modeshape-configs/junit-sramp-config.json"); //$NON-NLS-1$
 
 		dispatcher.getRegistry().addPerRequestResource(ServiceDocumentResource.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);

@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
@@ -32,17 +33,17 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 import org.overlord.sramp.shell.util.FileNameCompleter;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
  * Uploads an artifact to the s-ramp repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UploadArtifactCommand extends AbstractShellCommand {
+public class UploadArtifactCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -51,40 +52,17 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("s-ramp:upload <pathToArtifactContent> [<artifactType>]");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'upload' command uploads the content of a local file to");
-		print("the S-RAMP repository, creating a new artifact.  The artifact");
-		print("type can optionally be provided.  If excluded, the artifact");
-		print("type will be determined based on file extension.");
-		print("");
-		print("Example usages:");
-		print(">  s-ramp:upload /home/uname/files/mytypes.xsd");
-		print(">  s-ramp:upload /home/uname/files/myservice.wsdl WsdlDocument");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String filePathArg = this.requiredArgument(0, "Please specify a path to a local file.");
+		String filePathArg = this.requiredArgument(0, Messages.i18n.format("Upload.InvalidArgMsg.LocalFile")); //$NON-NLS-1$
 		String artifactTypeArg = this.optionalArgument(1);
 
-		QName clientVarName = new QName("s-ramp", "client");
+		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
-			print("No S-RAMP repository connection is currently open.");
+			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return;
 		}
 		InputStream content = null;
@@ -114,14 +92,14 @@ public class UploadArtifactCommand extends AbstractShellCommand {
             }
 
 			// Put the artifact in the session as the active artifact
-			QName artifactVarName = new QName("s-ramp", "artifact");
+			QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 			getContext().setVariable(artifactVarName, artifact);
-			print("Successfully uploaded an artifact.");
+			print(Messages.i18n.format("Upload.Success")); //$NON-NLS-1$
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 		} catch (Exception e) {
-			print("FAILED to upload an artifact.");
-			print("\t" + e.getMessage());
+			print(Messages.i18n.format("Upload.Failure")); //$NON-NLS-1$
+			print("\t" + e.getMessage()); //$NON-NLS-1$
 			IOUtils.closeQuietly(content);
 		}
 	}
@@ -133,13 +111,13 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 	private ArtifactType determineArtifactType(File file) {
 		ArtifactType type = null;
 		String extension = FilenameUtils.getExtension(file.getName());
-		if ("wsdl".equals(extension)) {
+		if ("wsdl".equals(extension)) { //$NON-NLS-1$
 			type = ArtifactType.WsdlDocument();
-		} else if ("xsd".equals(extension)) {
+		} else if ("xsd".equals(extension)) { //$NON-NLS-1$
 			type = ArtifactType.XsdDocument();
-		} else if ("wspolicy".equals(extension)) {
+		} else if ("wspolicy".equals(extension)) { //$NON-NLS-1$
 			type = ArtifactType.PolicyDocument();
-		} else if ("xml".equals(extension)) {
+		} else if ("xml".equals(extension)) { //$NON-NLS-1$
 			type = ArtifactType.XmlDocument();
 		} else {
 			type = ArtifactType.Document();
@@ -154,7 +132,7 @@ public class UploadArtifactCommand extends AbstractShellCommand {
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
 		if (getArguments().isEmpty()) {
 			if (lastArgument == null)
-				lastArgument = "";
+				lastArgument = ""; //$NON-NLS-1$
 			FileNameCompleter delegate = new FileNameCompleter();
 			return delegate.complete(lastArgument, lastArgument.length(), candidates);
 		} else if (getArguments().size() == 1) {
