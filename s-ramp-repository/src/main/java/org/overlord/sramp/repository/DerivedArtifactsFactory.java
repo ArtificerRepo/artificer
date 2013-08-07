@@ -17,6 +17,8 @@ package org.overlord.sramp.repository;
 
 import java.util.ServiceLoader;
 
+import org.overlord.sramp.repository.i18n.Messages;
+
 
 public class DerivedArtifactsFactory {
 
@@ -25,6 +27,6 @@ public class DerivedArtifactsFactory {
         for (DerivedArtifacts manager : ServiceLoader.load(DerivedArtifacts.class)) {
             return manager;
         }
-        throw new RuntimeException("Failed to find a DerivedArtifacts provider.");
+        throw new RuntimeException(Messages.i18n.format("MISSING_DERIVED_ARTIFACTS_PROVIDER")); //$NON-NLS-1$
     }
 }

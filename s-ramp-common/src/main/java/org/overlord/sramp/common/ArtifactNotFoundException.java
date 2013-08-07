@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.common;
 
+import org.overlord.sramp.common.i18n.Messages;
+
 
 /**
  * Exception thrown when the user attempts to access an artifact that does not exist.
@@ -36,7 +38,7 @@ public class ArtifactNotFoundException extends SrampUserException {
      * @param message
      */
     public ArtifactNotFoundException(String uuid) {
-        super("No artifact found with UUID: " + uuid);
+        super(Messages.i18n.format("ARTIFACT_NOT_FOUND", uuid)); //$NON-NLS-1$
     }
 
 }

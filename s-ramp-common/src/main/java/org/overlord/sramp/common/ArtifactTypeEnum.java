@@ -75,6 +75,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtension;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.overlord.sramp.common.i18n.Messages;
 
 /**
  * An enum representing all of the Artifact Types defined by S-RAMP.
@@ -84,68 +85,68 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 public enum ArtifactTypeEnum {
 
 	// Core
-	Document("core", "Document", Document.class, BaseArtifactEnum.DOCUMENT, false),
-	XmlDocument("core", "XML Document", XmlDocument.class, BaseArtifactEnum.XML_DOCUMENT, false),
+	Document("core", "Document", Document.class, BaseArtifactEnum.DOCUMENT, false), //$NON-NLS-1$ //$NON-NLS-2$
+	XmlDocument("core", "XML Document", XmlDocument.class, BaseArtifactEnum.XML_DOCUMENT, false), //$NON-NLS-1$ //$NON-NLS-2$
 	// XSD
-	XsdDocument("xsd", "XML Schema", XsdDocument.class, BaseArtifactEnum.XSD_DOCUMENT, false),
-	AttributeDeclaration("xsd", "XML Schema Attribute Declaration", AttributeDeclaration.class, BaseArtifactEnum.ATTRIBUTE_DECLARATION, true),
-	ElementDeclaration("xsd", "XML Schema Element Declaration", ElementDeclaration.class, BaseArtifactEnum.ELEMENT_DECLARATION, true),
-	SimpleTypeDeclaration("xsd", "XML Schema Simple Type Declaration", SimpleTypeDeclaration.class, BaseArtifactEnum.SIMPLE_TYPE_DECLARATION, true),
-	ComplexTypeDeclaration("xsd", "XML Schema Complex Type Declaration", ComplexTypeDeclaration.class, BaseArtifactEnum.COMPLEX_TYPE_DECLARATION, true),
+	XsdDocument("xsd", "XML Schema", XsdDocument.class, BaseArtifactEnum.XSD_DOCUMENT, false), //$NON-NLS-1$ //$NON-NLS-2$
+	AttributeDeclaration("xsd", "XML Schema Attribute Declaration", AttributeDeclaration.class, BaseArtifactEnum.ATTRIBUTE_DECLARATION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	ElementDeclaration("xsd", "XML Schema Element Declaration", ElementDeclaration.class, BaseArtifactEnum.ELEMENT_DECLARATION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	SimpleTypeDeclaration("xsd", "XML Schema Simple Type Declaration", SimpleTypeDeclaration.class, BaseArtifactEnum.SIMPLE_TYPE_DECLARATION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	ComplexTypeDeclaration("xsd", "XML Schema Complex Type Declaration", ComplexTypeDeclaration.class, BaseArtifactEnum.COMPLEX_TYPE_DECLARATION, true), //$NON-NLS-1$ //$NON-NLS-2$
 	// Policy
-	PolicyDocument("policy", "Policy", PolicyDocument.class, BaseArtifactEnum.POLICY_DOCUMENT, false),
-	PolicyExpression("policy", "Policy Expression", PolicyExpression.class, BaseArtifactEnum.POLICY_EXPRESSION, true),
-	PolicyAttachment("policy", "Policy Attachment", PolicyAttachment.class, BaseArtifactEnum.POLICY_ATTACHMENT, true),
+	PolicyDocument("policy", "Policy", PolicyDocument.class, BaseArtifactEnum.POLICY_DOCUMENT, false), //$NON-NLS-1$ //$NON-NLS-2$
+	PolicyExpression("policy", "Policy Expression", PolicyExpression.class, BaseArtifactEnum.POLICY_EXPRESSION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	PolicyAttachment("policy", "Policy Attachment", PolicyAttachment.class, BaseArtifactEnum.POLICY_ATTACHMENT, true), //$NON-NLS-1$ //$NON-NLS-2$
 	// SOAP
-	SoapAddress("soapWsdl", "SOAP Address", SoapAddress.class, BaseArtifactEnum.SOAP_ADDRESS, true),
-	SoapBinding("soapWsdl", "SOAP Binding", SoapBinding.class, BaseArtifactEnum.SOAP_BINDING, true),
+	SoapAddress("soapWsdl", "SOAP Address", SoapAddress.class, BaseArtifactEnum.SOAP_ADDRESS, true), //$NON-NLS-1$ //$NON-NLS-2$
+	SoapBinding("soapWsdl", "SOAP Binding", SoapBinding.class, BaseArtifactEnum.SOAP_BINDING, true), //$NON-NLS-1$ //$NON-NLS-2$
 	// WSDL
-	WsdlDocument("wsdl", "WSDL", WsdlDocument.class, BaseArtifactEnum.WSDL_DOCUMENT, false),
-	WsdlService("wsdl", "WSDL Service", WsdlService.class, BaseArtifactEnum.WSDL_SERVICE, true),
-	Port("wsdl", "WSDL Port", Port.class, BaseArtifactEnum.PORT, true),
-	WsdlExtension("wsdl", "WSDL Extension", WsdlExtension.class, BaseArtifactEnum.WSDL_EXTENSION, true),
-	Part("wsdl", "WSDL Part", Part.class, BaseArtifactEnum.PART, true),
-	Message("wsdl", "WSDL Message", Message.class, BaseArtifactEnum.MESSAGE, true),
-	Fault("wsdl", "WSDL Fault", Fault.class, BaseArtifactEnum.FAULT, true),
-	PortType("wsdl", "WSDL Port Type", PortType.class, BaseArtifactEnum.PORT_TYPE, true),
-	Operation("wsdl", "WSDL Operation", Operation.class, BaseArtifactEnum.OPERATION, true),
-	OperationInput("wsdl", "WSDL Operation Input", OperationInput.class, BaseArtifactEnum.OPERATION_INPUT, true),
-	OperationOutput("wsdl", "WSDL Operation Output", OperationOutput.class, BaseArtifactEnum.OPERATION_OUTPUT, true),
-	Binding("wsdl", "WSDL Binding", Binding.class, BaseArtifactEnum.BINDING, true),
-	BindingOperation("wsdl", "WSDL Binding Operation", BindingOperation.class, BaseArtifactEnum.BINDING_OPERATION, true),
-	BindingOperationInput("wsdl", "WSDL Binding Operation Input", BindingOperationInput.class, BaseArtifactEnum.BINDING_OPERATION_INPUT, true),
-	BindingOperationOutput("wsdl", "WSDL Binding Operation Output", BindingOperationOutput.class, BaseArtifactEnum.BINDING_OPERATION_OUTPUT, true),
-	BindingOperationFault("wsdl", "WSDL Binding Operation Fault", BindingOperationFault.class, BaseArtifactEnum.BINDING_OPERATION_FAULT, true),
+	WsdlDocument("wsdl", "WSDL", WsdlDocument.class, BaseArtifactEnum.WSDL_DOCUMENT, false), //$NON-NLS-1$ //$NON-NLS-2$
+	WsdlService("wsdl", "WSDL Service", WsdlService.class, BaseArtifactEnum.WSDL_SERVICE, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Port("wsdl", "WSDL Port", Port.class, BaseArtifactEnum.PORT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	WsdlExtension("wsdl", "WSDL Extension", WsdlExtension.class, BaseArtifactEnum.WSDL_EXTENSION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Part("wsdl", "WSDL Part", Part.class, BaseArtifactEnum.PART, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Message("wsdl", "WSDL Message", Message.class, BaseArtifactEnum.MESSAGE, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Fault("wsdl", "WSDL Fault", Fault.class, BaseArtifactEnum.FAULT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	PortType("wsdl", "WSDL Port Type", PortType.class, BaseArtifactEnum.PORT_TYPE, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Operation("wsdl", "WSDL Operation", Operation.class, BaseArtifactEnum.OPERATION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	OperationInput("wsdl", "WSDL Operation Input", OperationInput.class, BaseArtifactEnum.OPERATION_INPUT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	OperationOutput("wsdl", "WSDL Operation Output", OperationOutput.class, BaseArtifactEnum.OPERATION_OUTPUT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Binding("wsdl", "WSDL Binding", Binding.class, BaseArtifactEnum.BINDING, true), //$NON-NLS-1$ //$NON-NLS-2$
+	BindingOperation("wsdl", "WSDL Binding Operation", BindingOperation.class, BaseArtifactEnum.BINDING_OPERATION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	BindingOperationInput("wsdl", "WSDL Binding Operation Input", BindingOperationInput.class, BaseArtifactEnum.BINDING_OPERATION_INPUT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	BindingOperationOutput("wsdl", "WSDL Binding Operation Output", BindingOperationOutput.class, BaseArtifactEnum.BINDING_OPERATION_OUTPUT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	BindingOperationFault("wsdl", "WSDL Binding Operation Fault", BindingOperationFault.class, BaseArtifactEnum.BINDING_OPERATION_FAULT, true), //$NON-NLS-1$ //$NON-NLS-2$
 	// Service Implementation
-	Organization("serviceImplementation", "Organization", Organization.class, BaseArtifactEnum.ORGANIZATION, true),
-	ServiceEndpoint("serviceImplementation", "Service Endpoint", ServiceEndpoint.class, BaseArtifactEnum.SERVICE_ENDPOINT, true),
-	ServiceInstance("serviceImplementation", "Service Instance", ServiceInstance.class, BaseArtifactEnum.SERVICE_INSTANCE, true),
-	ServiceOperation("serviceImplementation", "Service Operation", ServiceOperation.class, BaseArtifactEnum.SERVICE_OPERATION, true),
+	Organization("serviceImplementation", "Organization", Organization.class, BaseArtifactEnum.ORGANIZATION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	ServiceEndpoint("serviceImplementation", "Service Endpoint", ServiceEndpoint.class, BaseArtifactEnum.SERVICE_ENDPOINT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	ServiceInstance("serviceImplementation", "Service Instance", ServiceInstance.class, BaseArtifactEnum.SERVICE_INSTANCE, true), //$NON-NLS-1$ //$NON-NLS-2$
+	ServiceOperation("serviceImplementation", "Service Operation", ServiceOperation.class, BaseArtifactEnum.SERVICE_OPERATION, true), //$NON-NLS-1$ //$NON-NLS-2$
 	// Extended
-	ExtendedArtifactType("ext", "Extended Artifact Type", ExtendedArtifactType.class, BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE, false),
-    ExtendedDocument("ext", "Extended Document", ExtendedDocument.class, BaseArtifactEnum.EXTENDED_DOCUMENT, false),
+	ExtendedArtifactType("ext", "Extended Artifact Type", ExtendedArtifactType.class, BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE, false), //$NON-NLS-1$ //$NON-NLS-2$
+    ExtendedDocument("ext", "Extended Document", ExtendedDocument.class, BaseArtifactEnum.EXTENDED_DOCUMENT, false), //$NON-NLS-1$ //$NON-NLS-2$
 	// SOA
-	HumanActor("soa", "SOA Human Actor", Actor.class, BaseArtifactEnum.ACTOR, true),
-	Choreography("soa", "SOA Choreography", Choreography.class, BaseArtifactEnum.CHOREOGRAPHY, true),
-	ChoreographyProcess("soa", "SOA Choreography Process", ChoreographyProcess.class, BaseArtifactEnum.CHOREOGRAPHY_PROCESS, true),
-	Collaboration("soa", "SOA Collaboration", Collaboration.class, BaseArtifactEnum.COLLABORATION, true),
-	CollaborationProcess("soa", "SOA Collaboration Process", CollaborationProcess.class, BaseArtifactEnum.COLLABORATION_PROCESS, true),
-	Composition("soa", "SOA Composition", Composition.class, BaseArtifactEnum.COMPOSITION, true),
-	Effect("soa", "SOA Effect", Effect.class, BaseArtifactEnum.EFFECT, true),
-	Element("soa", "SOA Element", Element.class, BaseArtifactEnum.ELEMENT, true),
-	Event("soa", "SOA Event", Event.class, BaseArtifactEnum.EVENT, true),
-	InformationType("soa", "SOA Information Type", InformationType.class, BaseArtifactEnum.INFORMATION_TYPE, true),
-	Orchestration("soa", "SOA Orchestration", Orchestration.class, BaseArtifactEnum.ORCHESTRATION, true),
-	OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class, BaseArtifactEnum.ORCHESTRATION_PROCESS, true),
-	Policy("soa", "SOA Policy", Policy.class, BaseArtifactEnum.POLICY, true),
-	PolicySubject("soa", "SOA Policy Subject", PolicySubject.class, BaseArtifactEnum.POLICY_SUBJECT, true),
-	Process("soa", "SOA Process", org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Process.class, BaseArtifactEnum.PROCESS, true),
-	Service("soa", "SOA Service", Service.class, BaseArtifactEnum.SERVICE, true),
-	ServiceContract("soa", "SOA Service Contract", ServiceContract.class, BaseArtifactEnum.SERVICE_CONTRACT, true),
-	ServiceComposition("soa", "SOA Service Composition", ServiceComposition.class, BaseArtifactEnum.SERVICE_COMPOSITION, true),
-	ServiceInterface("soa", "SOA Service Interface", ServiceInterface.class, BaseArtifactEnum.SERVICE_INTERFACE, true),
-	System("soa", "SOA System", org.oasis_open.docs.s_ramp.ns.s_ramp_v1.System.class, BaseArtifactEnum.SYSTEM, true),
-	Task("soa", "SOA Task", Task.class, BaseArtifactEnum.TASK, true)
+	HumanActor("soa", "SOA Human Actor", Actor.class, BaseArtifactEnum.ACTOR, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Choreography("soa", "SOA Choreography", Choreography.class, BaseArtifactEnum.CHOREOGRAPHY, true), //$NON-NLS-1$ //$NON-NLS-2$
+	ChoreographyProcess("soa", "SOA Choreography Process", ChoreographyProcess.class, BaseArtifactEnum.CHOREOGRAPHY_PROCESS, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Collaboration("soa", "SOA Collaboration", Collaboration.class, BaseArtifactEnum.COLLABORATION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	CollaborationProcess("soa", "SOA Collaboration Process", CollaborationProcess.class, BaseArtifactEnum.COLLABORATION_PROCESS, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Composition("soa", "SOA Composition", Composition.class, BaseArtifactEnum.COMPOSITION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Effect("soa", "SOA Effect", Effect.class, BaseArtifactEnum.EFFECT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Element("soa", "SOA Element", Element.class, BaseArtifactEnum.ELEMENT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Event("soa", "SOA Event", Event.class, BaseArtifactEnum.EVENT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	InformationType("soa", "SOA Information Type", InformationType.class, BaseArtifactEnum.INFORMATION_TYPE, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Orchestration("soa", "SOA Orchestration", Orchestration.class, BaseArtifactEnum.ORCHESTRATION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class, BaseArtifactEnum.ORCHESTRATION_PROCESS, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Policy("soa", "SOA Policy", Policy.class, BaseArtifactEnum.POLICY, true), //$NON-NLS-1$ //$NON-NLS-2$
+	PolicySubject("soa", "SOA Policy Subject", PolicySubject.class, BaseArtifactEnum.POLICY_SUBJECT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Process("soa", "SOA Process", org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Process.class, BaseArtifactEnum.PROCESS, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Service("soa", "SOA Service", Service.class, BaseArtifactEnum.SERVICE, true), //$NON-NLS-1$ //$NON-NLS-2$
+	ServiceContract("soa", "SOA Service Contract", ServiceContract.class, BaseArtifactEnum.SERVICE_CONTRACT, true), //$NON-NLS-1$ //$NON-NLS-2$
+	ServiceComposition("soa", "SOA Service Composition", ServiceComposition.class, BaseArtifactEnum.SERVICE_COMPOSITION, true), //$NON-NLS-1$ //$NON-NLS-2$
+	ServiceInterface("soa", "SOA Service Interface", ServiceInterface.class, BaseArtifactEnum.SERVICE_INTERFACE, true), //$NON-NLS-1$ //$NON-NLS-2$
+	System("soa", "SOA System", org.oasis_open.docs.s_ramp.ns.s_ramp_v1.System.class, BaseArtifactEnum.SYSTEM, true), //$NON-NLS-1$ //$NON-NLS-2$
+	Task("soa", "SOA Task", Task.class, BaseArtifactEnum.TASK, true) //$NON-NLS-1$ //$NON-NLS-2$
 	;
 
 	private final static Set<String> enumValueIndex = new HashSet<String>();
@@ -213,10 +214,10 @@ public enum ArtifactTypeEnum {
 	 */
 	public BaseArtifactType unwrap(Artifact artifactWrapper) {
 		try {
-			Method method = Artifact.class.getMethod("get" + this.name());
+			Method method = Artifact.class.getMethod("get" + this.name()); //$NON-NLS-1$
 			return (BaseArtifactType) method.invoke(artifactWrapper);
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to unwrap artifact for type: " + this.name(), e);
+			throw new RuntimeException(Messages.i18n.format("ARTIFACT_UNWRAP_ERROR", this.name()), e); //$NON-NLS-1$
 		}
 	}
 
@@ -249,7 +250,7 @@ public enum ArtifactTypeEnum {
 				return artifactType;
 			}
 		}
-		throw new RuntimeException("Could not determine Artifact Type from artifact class: " + artifact.getClass());
+		throw new RuntimeException(Messages.i18n.format("ARTIFACT_TYPE_FROM_CLASS_ERROR", artifact.getClass())); //$NON-NLS-1$
 	}
 
 	/**
@@ -263,7 +264,7 @@ public enum ArtifactTypeEnum {
 				return artifactType;
 			}
 		}
-		throw new RuntimeException("Could not determine Artifact Type from S-RAMP API type: " + apiType.value());
+		throw new RuntimeException(Messages.i18n.format("ARTIFACT_TYPE_FROM_APITYPE_ERROR", apiType.value())); //$NON-NLS-1$
 	}
 
 	/**

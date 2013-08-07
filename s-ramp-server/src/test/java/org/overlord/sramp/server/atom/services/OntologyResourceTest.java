@@ -45,9 +45,9 @@ public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 
 	@Test
 	public void testCreate() throws Exception {
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/ontology"));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/ontology")); //$NON-NLS-1$
 
-		RDF rdf = loadTestRDF("regional");
+		RDF rdf = loadTestRDF("regional"); //$NON-NLS-1$
 
 		request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
 		ClientResponse<Entry> response = request.post(Entry.class);
@@ -61,17 +61,17 @@ public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 
 	@Test
 	public void testGet() throws Exception {
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/ontology"));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/ontology")); //$NON-NLS-1$
 
 		// POST the ontology
-		RDF rdf = loadTestRDF("regional");
+		RDF rdf = loadTestRDF("regional"); //$NON-NLS-1$
 		request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
 		ClientResponse<Entry> response = request.post(Entry.class);
 		Entry entry = response.getEntity();
 		String uuid = entry.getId().toString();
 
 		// GET the ontology
-		request = new ClientRequest(generateURL("/s-ramp/ontology/" + uuid));
+		request = new ClientRequest(generateURL("/s-ramp/ontology/" + uuid)); //$NON-NLS-1$
 		entry = request.get(Entry.class).getEntity();
 		RDF ontology = SrampAtomUtils.unwrap(entry, RDF.class);
 
@@ -82,18 +82,18 @@ public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 	@Test
 	public void testFeed() throws Exception {
 		// POST the regional ontology
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/ontology"));
-		RDF rdf = loadTestRDF("regional");
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/ontology")); //$NON-NLS-1$
+		RDF rdf = loadTestRDF("regional"); //$NON-NLS-1$
 		request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
 		request.post(Entry.class).getEntity();
 		// POST the colors ontology
-		request = new ClientRequest(generateURL("/s-ramp/ontology"));
-		rdf = loadTestRDF("colors");
+		request = new ClientRequest(generateURL("/s-ramp/ontology")); //$NON-NLS-1$
+		rdf = loadTestRDF("colors"); //$NON-NLS-1$
 		request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
 		request.post(Entry.class).getEntity();
 
 		// GET the ontology feed
-		request = new ClientRequest(generateURL("/s-ramp/ontology"));
+		request = new ClientRequest(generateURL("/s-ramp/ontology")); //$NON-NLS-1$
 		Feed feed = request.get(Feed.class).getEntity();
 		Assert.assertNotNull(feed);
 		Assert.assertEquals(2, feed.getEntries().size());
@@ -161,7 +161,7 @@ public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 	 * @param testOwlName
 	 */
 	private RDF loadTestRDF(String testOwlName) throws Exception {
-		URL resourceUrl = getClass().getResource("/ontology-files/" + testOwlName + ".owl.xml");
+		URL resourceUrl = getClass().getResource("/ontology-files/" + testOwlName + ".owl.xml"); //$NON-NLS-1$ //$NON-NLS-2$
 		Assert.assertNotNull(resourceUrl);
 		JAXBContext jaxbContext = JAXBContext.newInstance(RDF.class);
 		Unmarshaller unMarshaller = jaxbContext.createUnmarshaller();

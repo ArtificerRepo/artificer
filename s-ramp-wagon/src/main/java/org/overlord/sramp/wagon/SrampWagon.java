@@ -59,6 +59,7 @@ import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.wagon.i18n.Messages;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
 
@@ -91,7 +92,7 @@ public class SrampWagon extends StreamWagon {
 		if (pomUrl.indexOf('?') > 0) {
 		    pomUrl = pomUrl.substring(0, pomUrl.indexOf('?'));
 		}
-        String replace = pomUrl.replace("sramp:", "http:").replace("sramps:", "https:");
+        String replace = pomUrl.replace("sramp:", "http:").replace("sramps:", "https:"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         return replace;
 	}
 
@@ -114,8 +115,8 @@ public class SrampWagon extends StreamWagon {
 			// Now create and configure the client.
             String endpoint = getSrampEndpoint();
             // Use sensible defaults
-            String username = "admin";
-            String password = "overlord";
+            String username = "admin"; //$NON-NLS-1$
+            String password = "overlord"; //$NON-NLS-1$
             AuthenticationInfo authInfo = this.getAuthenticationInfo();
             if (authInfo != null) {
                 if (authInfo.getUserName() != null) {
@@ -128,11 +129,11 @@ public class SrampWagon extends StreamWagon {
 
             this.client = new SrampAtomApiClient(endpoint, username, password, true);
 		} catch (SrampArchiveException e) {
-			throw new ConnectionException("Failed to create the s-ramp archive (temporary storage).", e);
+			throw new ConnectionException(Messages.i18n.format("FAILED_TO_CREATE_ARCHIVE"), e); //$NON-NLS-1$
 		} catch (SrampClientException e) {
-            throw new ConnectionException("Failed to connect to the S-RAMP repository.", e);
+            throw new ConnectionException(Messages.i18n.format("FAILED_TO_CONNECT_TO_SRAMP"), e); //$NON-NLS-1$
         } catch (SrampAtomException e) {
-            throw new ConnectionException("Failed to connect to the S-RAMP repository.", e);
+            throw new ConnectionException(Messages.i18n.format("FAILED_TO_CONNECT_TO_SRAMP"), e); //$NON-NLS-1$
         } finally {
             Thread.currentThread().setContextClassLoader(oldCtxCL);
         }
@@ -154,10 +155,10 @@ public class SrampWagon extends StreamWagon {
 			ResourceDoesNotExistException, AuthorizationException {
 		Resource resource = inputData.getResource();
 		// Skip maven-metadata.xml files - they are not (yet?) supported
-		if (resource.getName().contains("maven-metadata.xml"))
-			throw new ResourceDoesNotExistException("Could not find file: '" + resource + "'");
+		if (resource.getName().contains("maven-metadata.xml")) //$NON-NLS-1$
+			throw new ResourceDoesNotExistException(Messages.i18n.format("FILE_NOT_FOUND", resource)); //$NON-NLS-1$
 
-		logger.debug("Looking up resource from s-ramp repository: " + resource);
+		logger.debug(Messages.i18n.format("LOOKING_UP_RESOURCE_IN_SRAMP", resource)); //$NON-NLS-1$
 
 		MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
 		if (gavInfo.isHash()) {
@@ -181,11 +182,11 @@ public class SrampWagon extends StreamWagon {
 			ResourceDoesNotExistException, AuthorizationException {
 		String artyPath = gavInfo.getFullName();
 		String hashPropName;
-		if (gavInfo.getType().endsWith(".md5")) {
-			hashPropName = "maven.hash.md5";
+		if (gavInfo.getType().endsWith(".md5")) { //$NON-NLS-1$
+			hashPropName = "maven.hash.md5"; //$NON-NLS-1$
 			artyPath = artyPath.substring(0, artyPath.length() - 4);
 		} else {
-			hashPropName = "maven.hash.sha1";
+			hashPropName = "maven.hash.sha1"; //$NON-NLS-1$
 			artyPath = artyPath.substring(0, artyPath.length() - 5);
 		}
         // See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
@@ -195,13 +196,13 @@ public class SrampWagon extends StreamWagon {
         try {
     		SrampArchiveEntry entry = this.archive.getEntry(artyPath);
     		if (entry == null) {
-    			throw new ResourceDoesNotExistException("Failed to find resource hash: " + gavInfo.getName());
+    			throw new ResourceDoesNotExistException(Messages.i18n.format("MISSING_RESOURCE_HASH", gavInfo.getName())); //$NON-NLS-1$
     		}
     		BaseArtifactType metaData = entry.getMetaData();
 
     		String hashValue = SrampModelUtils.getCustomProperty(metaData, hashPropName);
     		if (hashValue == null) {
-    			throw new ResourceDoesNotExistException("Failed to find resource hash: " + gavInfo.getName());
+    			throw new ResourceDoesNotExistException(Messages.i18n.format("MISSING_RESOURCE_HASH", gavInfo.getName())); //$NON-NLS-1$
     		}
     		inputData.setInputStream(IOUtils.toInputStream(hashValue));
         } finally {
@@ -231,7 +232,7 @@ public class SrampWagon extends StreamWagon {
 			// Query the artifact meta data using GAV info
 			BaseArtifactType artifact = findExistingArtifact(client, gavInfo);
 			if (artifact == null)
-				throw new ResourceDoesNotExistException("Artifact not found in s-ramp repository: '" + gavInfo.getName() + "'");
+				throw new ResourceDoesNotExistException(Messages.i18n.format("ARTIFACT_NOT_FOUND", gavInfo.getName())); //$NON-NLS-1$
 			this.archive.addEntry(gavInfo.getFullName(), artifact, null);
 			ArtifactType type = ArtifactType.valueOf(artifact);
 
@@ -242,11 +243,11 @@ public class SrampWagon extends StreamWagon {
 			throw e;
 		} catch (SrampClientException e) {
 			if (e.getCause() instanceof HttpHostConnectException) {
-				this.logger.debug("Could not connect to s-ramp repository: " + e.getMessage());
+				this.logger.debug(Messages.i18n.format("SRAMP_CONNECTION_FAILED", e.getMessage())); //$NON-NLS-1$
 			} else {
 				this.logger.error(e.getMessage(), e);
 			}
-			throw new ResourceDoesNotExistException("Failed to get resource from s-ramp: " + gavInfo.getName());
+			throw new ResourceDoesNotExistException(Messages.i18n.format("FAILED_TO_GET_RESOURCE_FROM_SRAMP", gavInfo.getName())); //$NON-NLS-1$
 		} catch (Throwable t) {
 			this.logger.error(t.getMessage(), t);
 		} finally {
@@ -307,12 +308,12 @@ public class SrampWagon extends StreamWagon {
 	 */
 	private void putCommon(Resource resource, File source, InputStream content)
 			throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
-		logger.info("Uploading s-ramp artifact: " + resource.getName());
+		logger.info(Messages.i18n.format("UPLOADING_TO_SRAMP", resource.getName())); //$NON-NLS-1$
 		firePutInitiated(resource, source);
 
 		firePutStarted(resource, source);
-		if (resource.getName().contains("maven-metadata.xml")) {
-			logger.info("Skipping unsupported artifact: " + resource.getName());
+		if (resource.getName().contains("maven-metadata.xml")) { //$NON-NLS-1$
+			logger.info(Messages.i18n.format("SKIPPING_ARTY", resource.getName())); //$NON-NLS-1$
 			try {
 				transfer(resource, content, new DevNullOutputStream(), TransferEvent.REQUEST_PUT);
 			} catch (IOException e) {
@@ -329,9 +330,9 @@ public class SrampWagon extends StreamWagon {
 	 * @param gavInfo
 	 */
 	private ArtifactType getArtifactType(MavenGavInfo gavInfo) {
-        String customAT = getParamFromRepositoryUrl("artifactType");
-	    if (gavInfo.getType().equals("pom")) {
-	        return ArtifactType.valueOf("MavenPom");
+        String customAT = getParamFromRepositoryUrl("artifactType"); //$NON-NLS-1$
+	    if (gavInfo.getType().equals("pom")) { //$NON-NLS-1$
+	        return ArtifactType.valueOf("MavenPom"); //$NON-NLS-1$
 	    } else if (isPrimaryArtifact(gavInfo) && customAT != null) {
 	        return ArtifactType.valueOf(customAT);
 	    }
@@ -363,15 +364,15 @@ public class SrampWagon extends StreamWagon {
 	 * @throws TransferFailedException
 	 */
 	private void doPutHash(MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
-		logger.info("Storing hash value as s-ramp property: " + gavInfo.getName());
+		logger.info(Messages.i18n.format("STORING_HASH_AS_PROP", gavInfo.getName())); //$NON-NLS-1$
 		try {
 			String artyPath = gavInfo.getFullName();
 			String hashPropName;
-			if (gavInfo.getType().endsWith(".md5")) {
-				hashPropName = "maven.hash.md5";
+			if (gavInfo.getType().endsWith(".md5")) { //$NON-NLS-1$
+				hashPropName = "maven.hash.md5"; //$NON-NLS-1$
 				artyPath = artyPath.substring(0, artyPath.length() - 4);
 			} else {
-				hashPropName = "maven.hash.sha1";
+				hashPropName = "maven.hash.sha1"; //$NON-NLS-1$
 				artyPath = artyPath.substring(0, artyPath.length() - 5);
 			}
 			String hashValue = IOUtils.toString(resourceInputStream);
@@ -394,7 +395,7 @@ public class SrampWagon extends StreamWagon {
 				Thread.currentThread().setContextClassLoader(oldCtxCL);
 			}
 		} catch (Exception e) {
-			throw new TransferFailedException("Failed to store a hash: " + gavInfo.getName(), e);
+			throw new TransferFailedException(Messages.i18n.format("FAILED_TO_STORE_HASH", gavInfo.getName()), e); //$NON-NLS-1$
 		}
 	}
 
@@ -420,7 +421,7 @@ public class SrampWagon extends StreamWagon {
 			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
 
 			// Is the artifact grouping option enabled?
-			if (isPrimaryArtifact(gavInfo) && getParamFromRepositoryUrl("artifactGrouping") != null) {
+			if (isPrimaryArtifact(gavInfo) && getParamFromRepositoryUrl("artifactGrouping") != null) { //$NON-NLS-1$
 			    artifactGrouping = ensureArtifactGrouping();
 			}
 
@@ -439,17 +440,17 @@ public class SrampWagon extends StreamWagon {
 				// Upload the content, then add the maven properties to the artifact
 				// as meta-data
 				artifact = client.uploadArtifact(artifactType, resourceInputStream, gavInfo.getName());
-				SrampModelUtils.setCustomProperty(artifact, "maven.groupId", gavInfo.getGroupId());
-				SrampModelUtils.setCustomProperty(artifact, "maven.artifactId", gavInfo.getArtifactId());
-				SrampModelUtils.setCustomProperty(artifact, "maven.version", gavInfo.getVersion());
+				SrampModelUtils.setCustomProperty(artifact, "maven.groupId", gavInfo.getGroupId()); //$NON-NLS-1$
+				SrampModelUtils.setCustomProperty(artifact, "maven.artifactId", gavInfo.getArtifactId()); //$NON-NLS-1$
+				SrampModelUtils.setCustomProperty(artifact, "maven.version", gavInfo.getVersion()); //$NON-NLS-1$
 				artifact.setVersion(gavInfo.getVersion());
 				if (gavInfo.getClassifier() != null)
-					SrampModelUtils.setCustomProperty(artifact, "maven.classifier", gavInfo.getClassifier());
-				SrampModelUtils.setCustomProperty(artifact, "maven.type", gavInfo.getType());
+					SrampModelUtils.setCustomProperty(artifact, "maven.classifier", gavInfo.getClassifier()); //$NON-NLS-1$
+				SrampModelUtils.setCustomProperty(artifact, "maven.type", gavInfo.getType()); //$NON-NLS-1$
 				// Also create a relationship to the artifact grouping, if necessary
 				if (artifactGrouping != null) {
-				    SrampModelUtils.addGenericRelationship(artifact, "groupedBy", artifactGrouping.getUuid());
-				    SrampModelUtils.addGenericRelationship(artifactGrouping, "groups", artifact.getUuid());
+				    SrampModelUtils.addGenericRelationship(artifact, "groupedBy", artifactGrouping.getUuid()); //$NON-NLS-1$
+				    SrampModelUtils.addGenericRelationship(artifactGrouping, "groups", artifact.getUuid()); //$NON-NLS-1$
 				    client.updateArtifactMetaData(artifactGrouping);
 				}
 
@@ -464,10 +465,10 @@ public class SrampWagon extends StreamWagon {
                 expander.addMetaDataProvider(new MetaDataProvider() {
                     @Override
                     public void provideMetaData(BaseArtifactType artifact) {
-                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-groupId", gavInfo.getGroupId());
-                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-artifactId", gavInfo.getArtifactId());
-                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-version", gavInfo.getVersion());
-                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-type", gavInfo.getType());
+                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-groupId", gavInfo.getGroupId()); //$NON-NLS-1$
+                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-artifactId", gavInfo.getArtifactId()); //$NON-NLS-1$
+                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-version", gavInfo.getVersion()); //$NON-NLS-1$
+                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-type", gavInfo.getType()); //$NON-NLS-1$
                     }
                 });
                 archive = expander.createSrampArchive();
@@ -489,14 +490,14 @@ public class SrampWagon extends StreamWagon {
 	 * @throws SrampClientException
      */
     private BaseArtifactType ensureArtifactGrouping() throws SrampClientException, SrampAtomException {
-        String groupingName = getParamFromRepositoryUrl("artifactGrouping");
+        String groupingName = getParamFromRepositoryUrl("artifactGrouping"); //$NON-NLS-1$
         if (groupingName == null || groupingName.trim().length() == 0) {
-            logger.warn("No Artifact Grouping name configured.");
+            logger.warn(Messages.i18n.format("NO_ARTIFACT_GROUPING_NAME")); //$NON-NLS-1$
             return null;
         }
-        QueryResultSet query = client.buildQuery("/s-ramp/ext/ArtifactGrouping[@name = ?]").parameter(groupingName).count(2).query();
+        QueryResultSet query = client.buildQuery("/s-ramp/ext/ArtifactGrouping[@name = ?]").parameter(groupingName).count(2).query(); //$NON-NLS-1$
         if (query.size() > 1) {
-            logger.warn("Multiple Artifact Groupings found with the same name: " + groupingName);
+            logger.warn(Messages.i18n.format("MULTIPLE_ARTIFACT_GROUPSING_FOUND", groupingName)); //$NON-NLS-1$
             return null;
         } else if (query.size() == 1) {
             ArtifactSummary summary = query.get(0);
@@ -504,9 +505,9 @@ public class SrampWagon extends StreamWagon {
         } else {
             ExtendedArtifactType groupingArtifact = new ExtendedArtifactType();
             groupingArtifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-            groupingArtifact.setExtendedType("ArtifactGrouping");
+            groupingArtifact.setExtendedType("ArtifactGrouping"); //$NON-NLS-1$
             groupingArtifact.setName(groupingName);
-            groupingArtifact.setDescription("An Artifact Grouping automatically created by the S-RAMP Maven Wagon (integration between S-RAMP and Maven).");
+            groupingArtifact.setDescription(Messages.i18n.format("ARTIFACT_GROUPING_DESCRIPTION")); //$NON-NLS-1$
             return client.createArtifact(groupingArtifact);
         }
     }
@@ -519,10 +520,10 @@ public class SrampWagon extends StreamWagon {
 	 * @throws SrampAtomException
 	 */
 	private void cleanExpandedArtifacts(SrampAtomApiClient client, String parentUUID) throws SrampAtomException, SrampClientException {
-		String query = String.format("/s-ramp[mavenParent[@uuid = '%1$s']]", parentUUID);
+		String query = String.format("/s-ramp[mavenParent[@uuid = '%1$s']]", parentUUID); //$NON-NLS-1$
 		boolean done = false;
 		while (!done) {
-			QueryResultSet rset = client.query(query, 0, 20, "name", true);
+			QueryResultSet rset = client.query(query, 0, 20, "name", true); //$NON-NLS-1$
 			if (rset.size() == 0) {
 				done = true;
 			} else {
@@ -544,7 +545,7 @@ public class SrampWagon extends StreamWagon {
 		File resourceTempFile = null;
 		OutputStream oStream = null;
 		try {
-			resourceTempFile = File.createTempFile("s-ramp-wagon-resource", ".tmp");
+			resourceTempFile = File.createTempFile("s-ramp-wagon-resource", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 			oStream = FileUtils.openOutputStream(resourceTempFile);
 		} finally {
 			IOUtils.copy(resourceInputStream, oStream);
@@ -586,10 +587,10 @@ public class SrampWagon extends StreamWagon {
 		String query = null;
 		// Search by classifier if we have one...
 		if (gavInfo.getClassifier() == null) {
-			query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s' and @maven.type = '%4$s']",
+			query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s' and @maven.type = '%4$s']", //$NON-NLS-1$
 					gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion(), gavInfo.getType());
 		} else {
-			query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s' and @maven.classifier = '%4$s' and @maven.type = '%5$s']",
+			query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s' and @maven.classifier = '%4$s' and @maven.type = '%5$s']", //$NON-NLS-1$
 					gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion(), gavInfo.getClassifier(), gavInfo.getType());
 		}
 		QueryResultSet rset = client.query(query);
@@ -600,7 +601,7 @@ public class SrampWagon extends StreamWagon {
 				BaseArtifactType arty = client.getArtifactMetaData(artifactType, uuid);
 				// If no classifier in the GAV info, only return the artifact that also has no classifier
 				if (gavInfo.getClassifier() == null) {
-					String artyClassifier = SrampModelUtils.getCustomProperty(arty, "maven.classifier");
+					String artyClassifier = SrampModelUtils.getCustomProperty(arty, "maven.classifier"); //$NON-NLS-1$
 					if (artyClassifier == null) {
 						return arty;
 					}
@@ -644,7 +645,7 @@ public class SrampWagon extends StreamWagon {
 	public void fillOutputData(OutputData outputData) throws TransferFailedException {
 		// Since the wagon is implementing the put method directly, the StreamWagon's
 		// implementation is never called.
-		throw new RuntimeException("Should never get here!");
+		throw new RuntimeException("Should never get here!"); //$NON-NLS-1$
 	}
 
 	/**
@@ -657,9 +658,9 @@ public class SrampWagon extends StreamWagon {
 	    if (idx == -1)
 	        return null;
         String query = url.substring(idx + 1);
-	    String [] params = query.split("&");
+	    String [] params = query.split("&"); //$NON-NLS-1$
 	    for (String paramPair : params) {
-	        String [] pp = paramPair.split("=");
+	        String [] pp = paramPair.split("="); //$NON-NLS-1$
 	        if (pp.length == 2) {
     	        String key = pp[0];
     	        String val = pp[1];
@@ -667,7 +668,7 @@ public class SrampWagon extends StreamWagon {
     	            return val;
     	        }
 	        } else {
-	            throw new RuntimeException("Invalid query parameter in repository URL (param name without value).");
+	            throw new RuntimeException(Messages.i18n.format("INVALID_QUERY_PARAM")); //$NON-NLS-1$
 	        }
 	    }
 	    return null;
@@ -678,7 +679,7 @@ public class SrampWagon extends StreamWagon {
      * @param gavInfo
      */
 	protected boolean isPrimaryArtifact(MavenGavInfo gavInfo) {
-        return gavInfo.getClassifier() == null && !gavInfo.getType().equals("pom");
+        return gavInfo.getClassifier() == null && !gavInfo.getType().equals("pom"); //$NON-NLS-1$
     }
 
 }

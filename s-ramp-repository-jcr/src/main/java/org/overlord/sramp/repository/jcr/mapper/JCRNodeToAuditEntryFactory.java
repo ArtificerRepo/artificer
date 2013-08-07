@@ -43,10 +43,10 @@ public class JCRNodeToAuditEntryFactory {
         try {
             DatatypeFactory dtFactory = DatatypeFactory.newInstance();
 
-            String uuid = jcrNode.getProperty("audit:uuid").getString();
-            String type = jcrNode.getProperty("audit:type").getString();
-            String who = jcrNode.getProperty("audit:who").getString();
-            XMLGregorianCalendar when = dtFactory.newXMLGregorianCalendar((GregorianCalendar)jcrNode.getProperty("audit:when").getDate());
+            String uuid = jcrNode.getProperty("audit:uuid").getString(); //$NON-NLS-1$
+            String type = jcrNode.getProperty("audit:type").getString(); //$NON-NLS-1$
+            String who = jcrNode.getProperty("audit:who").getString(); //$NON-NLS-1$
+            XMLGregorianCalendar when = dtFactory.newXMLGregorianCalendar((GregorianCalendar)jcrNode.getProperty("audit:when").getDate()); //$NON-NLS-1$
 
             AuditEntry entry = new AuditEntry();
             entry.setUuid(uuid);
@@ -64,9 +64,9 @@ public class JCRNodeToAuditEntryFactory {
                     Property property = properties.nextProperty();
                     String propName = property.getName();
                     String propValue = property.getString();
-                    if (propName.equals("audit:type")) {
+                    if (propName.equals("audit:type")) { //$NON-NLS-1$
                         auditItem.setType(propValue);
-                    } else if (propName.equals("jcr:primaryType")) {
+                    } else if (propName.equals("jcr:primaryType")) { //$NON-NLS-1$
                         // Skip this one
                     } else {
                         org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType.Property p =

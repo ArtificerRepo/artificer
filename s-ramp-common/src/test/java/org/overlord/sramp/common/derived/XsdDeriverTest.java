@@ -46,26 +46,26 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
  */
 public class XsdDeriverTest {
 
-	private static final Set<String> EXPECTED_ELEMENT_NAMES = set("excludedOwners", "taskStakeholders",
-			"recipients", "task", "leanTask", "potentialOwners", "businessAdministrators", "tasks",
-			"logicalPeopleGroups", "genericHumanRole", "notifications", "priority", "taskInitiator",
-			"notification", "import", "peopleAssignments", "humanInteractions");
+	private static final Set<String> EXPECTED_ELEMENT_NAMES = set("excludedOwners", "taskStakeholders", //$NON-NLS-1$ //$NON-NLS-2$
+			"recipients", "task", "leanTask", "potentialOwners", "businessAdministrators", "tasks", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+			"logicalPeopleGroups", "genericHumanRole", "notifications", "priority", "taskInitiator", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			"notification", "import", "peopleAssignments", "humanInteractions"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	private static final Set<String> EXPECTED_ATTRIBUTE_NAMES = set();
-	private static final Set<String> EXPECTED_SIMPLE_TYPE_NAMES = set("tPotentialDelegatees", "tPattern",
-			"tRoutingPatternType", "tBoolean", "tCompositionType");
-	private static final Set<String> EXPECTED_COMPLEX_TYPE_NAMES = set("tFrom", "tAggregate",
-			"tMessageSchema", "tToPart", "tText", "tComposition", "tParameter", "tPeopleAssignments",
-			"tExtension", "tRendering", "tPriority-expr", "tTask", "tReassignment", "tNotification",
-			"tMessageField", "tDeadlines", "tCopy", "tDocumentation", "tDuration-expr",
-			"tNotificationInterface", "tCompletion", "tExtensibleElements", "tHumanInteractions",
-			"tTaskInterface", "tPotentialOwnerAssignment", "tNotifications", "tExtensions",
-			"tPresentationParameter", "tPresentationElements", "tDeadline-expr", "tTasks",
-			"tLogicalPeopleGroups", "tDescription", "tQuery", "tLocalNotification", "tLogicalPeopleGroup",
-			"tSubtask", "tExtensibleMixedContentElements", "tSequence", "tExpression", "tToParts", "tResult",
-			"tRenderings", "tGenericHumanRoleAssignmentBase", "tParallel", "tDeadline",
-			"tPresentationParameters", "tArgument", "tMessageChoice", "tDelegation", "tLocalTask",
-			"tBoolean-expr", "tEscalation", "tLeanTask", "tImport", "tDefaultCompletion", "tMessageDisplay",
-			"tCompletionBehavior", "tGenericHumanRoleAssignment", "tLiteral", "tTaskBase");
+	private static final Set<String> EXPECTED_SIMPLE_TYPE_NAMES = set("tPotentialDelegatees", "tPattern", //$NON-NLS-1$ //$NON-NLS-2$
+			"tRoutingPatternType", "tBoolean", "tCompositionType"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	private static final Set<String> EXPECTED_COMPLEX_TYPE_NAMES = set("tFrom", "tAggregate", //$NON-NLS-1$ //$NON-NLS-2$
+			"tMessageSchema", "tToPart", "tText", "tComposition", "tParameter", "tPeopleAssignments", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+			"tExtension", "tRendering", "tPriority-expr", "tTask", "tReassignment", "tNotification", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+			"tMessageField", "tDeadlines", "tCopy", "tDocumentation", "tDuration-expr", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			"tNotificationInterface", "tCompletion", "tExtensibleElements", "tHumanInteractions", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			"tTaskInterface", "tPotentialOwnerAssignment", "tNotifications", "tExtensions", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			"tPresentationParameter", "tPresentationElements", "tDeadline-expr", "tTasks", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			"tLogicalPeopleGroups", "tDescription", "tQuery", "tLocalNotification", "tLogicalPeopleGroup", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			"tSubtask", "tExtensibleMixedContentElements", "tSequence", "tExpression", "tToParts", "tResult", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+			"tRenderings", "tGenericHumanRoleAssignmentBase", "tParallel", "tDeadline", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			"tPresentationParameters", "tArgument", "tMessageChoice", "tDelegation", "tLocalTask", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			"tBoolean-expr", "tEscalation", "tLeanTask", "tImport", "tDefaultCompletion", "tMessageDisplay", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+			"tCompletionBehavior", "tGenericHumanRoleAssignment", "tLiteral", "tTaskBase"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 	/**
 	 * Test method for {@link org.overlord.sramp.common.repository.derived.XsdDeriver#derive(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.io.InputStream)}.
@@ -78,21 +78,21 @@ public class XsdDeriverTest {
 		XsdDocument testSrcArtifact = new XsdDocument();
 		testSrcArtifact.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
 		testSrcArtifact.setUuid(UUID.randomUUID().toString());
-		testSrcArtifact.setName("ws-humantask.xsd");
-		testSrcArtifact.setVersion("1.0");
-		testSrcArtifact.setContentEncoding("UTF-8");
-		testSrcArtifact.setContentType("application/xml");
+		testSrcArtifact.setName("ws-humantask.xsd"); //$NON-NLS-1$
+		testSrcArtifact.setVersion("1.0"); //$NON-NLS-1$
+		testSrcArtifact.setContentEncoding("UTF-8"); //$NON-NLS-1$
+		testSrcArtifact.setContentType("application/xml"); //$NON-NLS-1$
 		testSrcArtifact.setContentSize(31723L);
-		testSrcArtifact.setCreatedBy("anonymous");
+		testSrcArtifact.setCreatedBy("anonymous"); //$NON-NLS-1$
 		XMLGregorianCalendar xmlGC = dtFactory.newXMLGregorianCalendar(new GregorianCalendar());
 		testSrcArtifact.setCreatedTimestamp(xmlGC);
-		testSrcArtifact.setDescription("Hello world.");
-		testSrcArtifact.setLastModifiedBy("anonymous");
+		testSrcArtifact.setDescription("Hello world."); //$NON-NLS-1$
+		testSrcArtifact.setLastModifiedBy("anonymous"); //$NON-NLS-1$
 		testSrcArtifact.setLastModifiedTimestamp(xmlGC);
 
 		InputStream testSrcContent = null;
 		try {
-			testSrcContent = getClass().getResourceAsStream("/sample-files/xsd/ws-humantask.xsd");
+			testSrcContent = getClass().getResourceAsStream("/sample-files/xsd/ws-humantask.xsd"); //$NON-NLS-1$
 			Collection<BaseArtifactType> derivedArtifacts = deriver.derive(testSrcArtifact, testSrcContent);
 			Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(83, derivedArtifacts.size());

@@ -24,15 +24,16 @@ import org.overlord.sramp.client.audit.AuditEntrySummary;
 import org.overlord.sramp.client.audit.AuditResultSet;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Displays the audit trail for an artifact.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ShowAuditTrailCommand extends AbstractShellCommand {
+public class ShowAuditTrailCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -41,74 +42,49 @@ public class ShowAuditTrailCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-        print("audit:showAuditTrail <artifactId>");
-        print("\tValid formats for artifactId:");
-        print("\t  feed:<feedIndex> - an index into the most recent feed");
-        print("\t  uuid:<srampUUID> - the UUID of an s-ramp artifact");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'showAuditTrail' command displays a list of all the audit");
-		print("entries for a given artifact.  Use this command to see how an");
-        print("artifact has been modified over time.");
-		print("");
-		print("Example usage:");
-        print("> audit:showAuditTrail feed:3");
-        print("> audit:showAuditTrail uuid:7387-28732-9183-92737");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-        String artifactIdArg = this.requiredArgument(0, "Please specify a valid artifact identifier.");
-        if (!artifactIdArg.contains(":")) {
-            throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
+        String artifactIdArg = this.requiredArgument(0, Messages.i18n.format("AuditTrail.InvalidArgMsg.ArtifactId")); //$NON-NLS-1$
+        if (!artifactIdArg.contains(":")) { //$NON-NLS-1$
+            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
         }
-        QName clientVarName = new QName("s-ramp", "client");
-        QName feedVarName = new QName("s-ramp", "feed");
+        QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
+        QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
         SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
         if (client == null) {
-            print("No S-RAMP repository connection is currently open.");
+            print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
             return;
         }
 
         String artifactUuid = null;
         String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
-        if ("feed".equals(idType)) {
+        if ("feed".equals(idType)) { //$NON-NLS-1$
             QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
             int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
             if (feedIdx < 0 || feedIdx >= rset.size()) {
-                throw new InvalidCommandArgumentException(0, "Feed index out of range.");
+                throw new InvalidCommandArgumentException(0, Messages.i18n.format("FeedIndexOutOfRange")); //$NON-NLS-1$
             }
             ArtifactSummary summary = rset.get(feedIdx);
             artifactUuid = summary.getUuid();
-        } else if ("uuid".equals(idType)) {
+        } else if ("uuid".equals(idType)) { //$NON-NLS-1$
 //          String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
 //          artifact = getArtifactMetaDataByUUID(client, artifactUUID);
-            throw new InvalidCommandArgumentException(0, "uuid: style artifact identifiers not yet implemented.");
+            throw new InvalidCommandArgumentException(0, Messages.i18n.format("UuidNotImplemented")); //$NON-NLS-1$
         } else {
-            throw new InvalidCommandArgumentException(0, "Invalid artifact id format.");
+            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidIdFormat")); //$NON-NLS-1$
         }
 
         AuditResultSet auditTrail = client.getAuditTrailForArtifact(artifactUuid);
-        QName artifactVarName = new QName("audit", "auditTrail");
+        QName artifactVarName = new QName("audit", "auditTrail"); //$NON-NLS-1$ //$NON-NLS-2$
         getContext().setVariable(artifactVarName, auditTrail);
-        print("Artifact Audit Trail (%1$d entries)", auditTrail.size());
-        print("  Idx  Audit Entry");
-        print("  ---  -----------");
+        print(Messages.i18n.format("ShowAuditTrail.EntriesSummary", auditTrail.size())); //$NON-NLS-1$
+        print("  Idx  " + Messages.i18n.format("AuditEntryLabel")); //$NON-NLS-1$ //$NON-NLS-2$
+        print("  ---  -----------"); //$NON-NLS-1$
         int idx = 1;
         for (AuditEntrySummary auditEntrySummary : auditTrail) {
-            print("  %1$3d  %2$s", idx++, auditEntrySummary.toString());
+            print("  %1$3d  %2$s", idx++, auditEntrySummary.toString()); //$NON-NLS-1$
         }
 	}
 
@@ -117,12 +93,12 @@ public class ShowAuditTrailCommand extends AbstractShellCommand {
      */
     @Override
     public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-        if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) {
-            QName feedVarName = new QName("s-ramp", "feed");
+        if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
+            QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
             QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
             if (rset != null) {
                 for (int idx = 0; idx < rset.size(); idx++) {
-                    String candidate = "feed:" + (idx+1);
+                    String candidate = "feed:" + (idx+1); //$NON-NLS-1$
                     if (lastArgument == null) {
                         candidates.add(candidate);
                     }

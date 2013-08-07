@@ -85,7 +85,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
     @Override
     protected void visitDerived(DerivedArtifactType artifact) {
         DocumentArtifactTarget relatedDocument = artifact.getRelatedDocument();
-        visitRelationship("relatedDocument", relatedDocument);
+        visitRelationship("relatedDocument", relatedDocument); //$NON-NLS-1$
         super.visitDerived(artifact);
     }
 
@@ -94,7 +94,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
-        visitRelationships("extension", artifact.getExtension());
+        visitRelationships("extension", artifact.getExtension()); //$NON-NLS-1$
         super.visitWsdlDerived(artifact);
     }
 
@@ -103,7 +103,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     protected void visitSoa(SoaModelType artifact) {
-        visitRelationships("documentation", artifact.getDocumentation());
+        visitRelationships("documentation", artifact.getDocumentation()); //$NON-NLS-1$
         super.visitSoa(artifact);
     }
 
@@ -112,7 +112,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     protected void visitServiceImplementation(ServiceImplementationModelType artifact) {
-        visitRelationships("documentation", artifact.getDocumentation());
+        visitRelationships("documentation", artifact.getDocumentation()); //$NON-NLS-1$
         super.visitServiceImplementation(artifact);
     }
 
@@ -121,8 +121,8 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(ServiceContract artifact) {
-        visitRelationships("involvesParty", artifact.getInvolvesParty());
-        visitRelationships("specifies", artifact.getSpecifies());
+        visitRelationships("involvesParty", artifact.getInvolvesParty()); //$NON-NLS-1$
+        visitRelationships("specifies", artifact.getSpecifies()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -131,10 +131,10 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(BindingOperation artifact) {
-        visitRelationships("fault", artifact.getFault());
-        visitRelationship("input", artifact.getInput());
-        visitRelationship("output", artifact.getOutput());
-        visitRelationship("operation", artifact.getOperation());
+        visitRelationships("fault", artifact.getFault()); //$NON-NLS-1$
+        visitRelationship("input", artifact.getInput()); //$NON-NLS-1$
+        visitRelationship("output", artifact.getOutput()); //$NON-NLS-1$
+        visitRelationship("operation", artifact.getOperation()); //$NON-NLS-1$
 
         super.visit(artifact);
     }
@@ -144,8 +144,8 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Actor artifact) {
-        visitRelationships("does", artifact.getDoes());
-        visitRelationships("setsPolicy", artifact.getSetsPolicy());
+        visitRelationships("does", artifact.getDoes()); //$NON-NLS-1$
+        visitRelationships("setsPolicy", artifact.getSetsPolicy()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -154,8 +154,8 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Binding artifact) {
-        visitRelationships("bindingOperation", artifact.getBindingOperation());
-        visitRelationship("portType", artifact.getPortType());
+        visitRelationships("bindingOperation", artifact.getBindingOperation()); //$NON-NLS-1$
+        visitRelationship("portType", artifact.getPortType()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -164,13 +164,13 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Element artifact) {
-        visitRelationships("represents", artifact.getRepresents());
-        visitRelationships("uses", artifact.getUses());
-        visitRelationships("performs", artifact.getPerforms());
-        visitRelationship("directsOrchestration", artifact.getDirectsOrchestration());
-        visitRelationship("directsOrchestrationProcess", artifact.getDirectsOrchestrationProcess());
-        visitRelationships("generates", artifact.getGenerates());
-        visitRelationships("respondsTo", artifact.getRespondsTo());
+        visitRelationships("represents", artifact.getRepresents()); //$NON-NLS-1$
+        visitRelationships("uses", artifact.getUses()); //$NON-NLS-1$
+        visitRelationships("performs", artifact.getPerforms()); //$NON-NLS-1$
+        visitRelationship("directsOrchestration", artifact.getDirectsOrchestration()); //$NON-NLS-1$
+        visitRelationship("directsOrchestrationProcess", artifact.getDirectsOrchestrationProcess()); //$NON-NLS-1$
+        visitRelationships("generates", artifact.getGenerates()); //$NON-NLS-1$
+        visitRelationships("respondsTo", artifact.getRespondsTo()); //$NON-NLS-1$
 
         super.visit(artifact);
     }
@@ -180,7 +180,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Fault artifact) {
-        visitRelationship("message", artifact.getMessage());
+        visitRelationship("message", artifact.getMessage()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -189,7 +189,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Message artifact) {
-        visitRelationships("part", artifact.getPart());
+        visitRelationships("part", artifact.getPart()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -198,9 +198,9 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Operation artifact) {
-        visitRelationship("input", artifact.getInput());
-        visitRelationship("output", artifact.getOutput());
-        visitRelationships("fault", artifact.getFault());
+        visitRelationship("input", artifact.getInput()); //$NON-NLS-1$
+        visitRelationship("output", artifact.getOutput()); //$NON-NLS-1$
+        visitRelationships("fault", artifact.getFault()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -209,7 +209,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(OperationInput artifact) {
-        visitRelationship("message", artifact.getMessage());
+        visitRelationship("message", artifact.getMessage()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -218,7 +218,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(OperationOutput artifact) {
-        visitRelationship("message", artifact.getMessage());
+        visitRelationship("message", artifact.getMessage()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -227,7 +227,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Organization artifact) {
-        visitRelationships("provides", artifact.getProvides());
+        visitRelationships("provides", artifact.getProvides()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -236,8 +236,8 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Part artifact) {
-        visitRelationship("type", artifact.getType());
-        visitRelationship("element", artifact.getElement());
+        visitRelationship("type", artifact.getType()); //$NON-NLS-1$
+        visitRelationship("element", artifact.getElement()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -246,7 +246,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Policy artifact) {
-        visitRelationships("appliesTo", artifact.getAppliesTo());
+        visitRelationships("appliesTo", artifact.getAppliesTo()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -255,8 +255,8 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(PolicyAttachment artifact) {
-        visitRelationships("appliesTo", artifact.getAppliesTo());
-        visitRelationships("policies", artifact.getPolicies());
+        visitRelationships("appliesTo", artifact.getAppliesTo()); //$NON-NLS-1$
+        visitRelationships("policies", artifact.getPolicies()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -265,7 +265,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Port artifact) {
-        visitRelationship("binding", artifact.getBinding());
+        visitRelationship("binding", artifact.getBinding()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -274,7 +274,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(PortType artifact) {
-        visitRelationships("operation", artifact.getOperation());
+        visitRelationships("operation", artifact.getOperation()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -283,9 +283,9 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(Service artifact) {
-        visitRelationships("hasContract", artifact.getHasContract());
-        visitRelationships("hasInterface", artifact.getHasInterface());
-        visitRelationship("hasInstance", artifact.getHasInstance());
+        visitRelationships("hasContract", artifact.getHasContract()); //$NON-NLS-1$
+        visitRelationships("hasInterface", artifact.getHasInterface()); //$NON-NLS-1$
+        visitRelationship("hasInstance", artifact.getHasInstance()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -294,7 +294,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(ServiceEndpoint artifact) {
-        visitRelationship("endpointDefinedBy", artifact.getEndpointDefinedBy());
+        visitRelationship("endpointDefinedBy", artifact.getEndpointDefinedBy()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -303,8 +303,8 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(ServiceInstance artifact) {
-        visitRelationships("uses", artifact.getUses());
-        visitRelationships("describedBy", artifact.getDescribedBy());
+        visitRelationships("uses", artifact.getUses()); //$NON-NLS-1$
+        visitRelationships("describedBy", artifact.getDescribedBy()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -313,10 +313,10 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(ServiceInterface artifact) {
-        visitRelationship("hasOperation", artifact.getHasOperation());
-        visitRelationships("hasOutput", artifact.getHasOutput());
-        visitRelationships("hasInput", artifact.getHasInput());
-        visitRelationships("isInterfaceOf", artifact.getIsInterfaceOf());
+        visitRelationship("hasOperation", artifact.getHasOperation()); //$NON-NLS-1$
+        visitRelationships("hasOutput", artifact.getHasOutput()); //$NON-NLS-1$
+        visitRelationships("hasInput", artifact.getHasInput()); //$NON-NLS-1$
+        visitRelationships("isInterfaceOf", artifact.getIsInterfaceOf()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -325,7 +325,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(ServiceOperation artifact) {
-        visitRelationship("operationDefinedBy", artifact.getOperationDefinedBy());
+        visitRelationship("operationDefinedBy", artifact.getOperationDefinedBy()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -334,10 +334,10 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(WsdlDocument artifact) {
-        visitRelationships("importedXsds", artifact.getImportedXsds());
-        visitRelationships("includedXsds", artifact.getIncludedXsds());
-        visitRelationships("redefinedXsds", artifact.getRedefinedXsds());
-        visitRelationships("importedWsdls", artifact.getImportedWsdls());
+        visitRelationships("importedXsds", artifact.getImportedXsds()); //$NON-NLS-1$
+        visitRelationships("includedXsds", artifact.getIncludedXsds()); //$NON-NLS-1$
+        visitRelationships("redefinedXsds", artifact.getRedefinedXsds()); //$NON-NLS-1$
+        visitRelationships("importedWsdls", artifact.getImportedWsdls()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -346,7 +346,7 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(WsdlService artifact) {
-        visitRelationships("port", artifact.getPort());
+        visitRelationships("port", artifact.getPort()); //$NON-NLS-1$
         super.visit(artifact);
     }
 
@@ -355,9 +355,9 @@ public abstract class RelationshipArtifactVisitor extends HierarchicalArtifactVi
      */
     @Override
     public void visit(XsdDocument artifact) {
-        visitRelationships("importedXsds", artifact.getImportedXsds());
-        visitRelationships("includedXsds", artifact.getIncludedXsds());
-        visitRelationships("redefinedXsds", artifact.getRedefinedXsds());
+        visitRelationships("importedXsds", artifact.getImportedXsds()); //$NON-NLS-1$
+        visitRelationships("includedXsds", artifact.getIncludedXsds()); //$NON-NLS-1$
+        visitRelationships("redefinedXsds", artifact.getRedefinedXsds()); //$NON-NLS-1$
         super.visit(artifact);
     }
 

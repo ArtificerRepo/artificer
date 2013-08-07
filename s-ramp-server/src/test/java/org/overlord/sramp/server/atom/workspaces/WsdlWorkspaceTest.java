@@ -33,9 +33,9 @@ public class WsdlWorkspaceTest extends AbstractWorkspaceTest {
     @Test
     public void testWorkspace() throws Exception {
         AppService appService = new AppService();
-        appService.getWorkspace().add(new WsdlWorkspace("http://example.org"));
+        appService.getWorkspace().add(new WsdlWorkspace("http://example.org")); //$NON-NLS-1$
         String actual = marshall(appService);
-        String expected = getExpectedWorkspaceXML("wsdl");
+        String expected = getExpectedWorkspaceXML("wsdl"); //$NON-NLS-1$
 
         XMLAssert.assertXMLEqual(expected, actual);
     }

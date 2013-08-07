@@ -21,14 +21,15 @@ import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.ontology.OntologySummary;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Lists all ontologies in the S-RAMP repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ListOntologiesCommand extends AbstractShellCommand {
+public class ListOntologiesCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -37,53 +38,32 @@ public class ListOntologiesCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("ontology:list");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'list' command displays a list of all the ontologies");
-		print("currently known to the S-RAMP repository.  This list may be");
-		print("empty if no ontologies have yet been added to the repository.");
-		print("");
-		print("Example usage:");
-		print("> ontology:list");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		QName clientVarName = new QName("s-ramp", "client");
-		QName feedVarName = new QName("ontology", "feed");
+		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
+		QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
-			print("No S-RAMP repository connection is currently open.");
+			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return;
 		}
 		try {
 			List<OntologySummary> ontologies = client.getOntologies();
-			print("Ontologies (%1$d entries)", ontologies.size());
-			print("  Idx  Base");
-			print("  ---  ----");
+			print(Messages.i18n.format("ListOntologies.Summary", ontologies.size())); //$NON-NLS-1$
+			print("  Idx  " + Messages.i18n.format("ListOntologies.Base")); //$NON-NLS-1$ //$NON-NLS-2$
+			print("  ---  ----"); //$NON-NLS-1$
 			int idx = 1;
 			for (OntologySummary ontology : ontologies) {
 				String base = ontology.getBase();
-				print("  %1$3d  %2$s", idx++, base);
+				print("  %1$3d  %2$s", idx++, base); //$NON-NLS-1$
 			}
 
 			getContext().setVariable(feedVarName, ontologies);
 		} catch (Exception e) {
-			print("FAILED to get the list of ontologies.");
-			print("\t" + e.getMessage());
+			print(Messages.i18n.format("ListOntologies.Failed")); //$NON-NLS-1$
+			print("\t" + e.getMessage()); //$NON-NLS-1$
 		}
 	}
 }

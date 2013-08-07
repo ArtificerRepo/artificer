@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.api.ShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 
 /**
@@ -45,7 +46,7 @@ public class SrampShell {
 			shell.run(args);
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
-			System.out.println("Exiting s-ramp shell due to an error.");
+			System.out.println(Messages.i18n.format("Shell.EXITING")); //$NON-NLS-1$
 		}
 	}
 
@@ -78,9 +79,9 @@ public class SrampShell {
 					command.execute();
 				}
 			} catch (InvalidCommandArgumentException e) {
-				System.out.println("Invalid argument:  " + e.getMessage());
+				System.out.println(Messages.i18n.format("Shell.INVALID_ARG", e.getMessage())); //$NON-NLS-1$
 				if (command != null) {
-    				System.out.print("Usage:  ");
+    				System.out.print(Messages.i18n.format("Shell.USAGE")); //$NON-NLS-1$
     				command.printUsage();
 				}
 			} catch (Exception e) {
@@ -97,10 +98,10 @@ public class SrampShell {
 	 */
 	protected ShellCommandReader createCommandReader(String[] args) throws IOException {
 		ShellCommandReader commandReader = null;
-		if (args.length >= 2 && "-f".equals(args[0])) {
+		if (args.length >= 2 && "-f".equals(args[0])) { //$NON-NLS-1$
 			String filePath = args[1];
 			commandReader = new FileShellCommandReader(factory, context, filePath);
-		} else if (args.length == 1 && "-simple".equals(args[0])) {
+		} else if (args.length == 1 && "-simple".equals(args[0])) { //$NON-NLS-1$
 			if (System.console() != null) {
 				commandReader = new ConsoleShellCommandReader(factory, context);
 			} else {
@@ -121,10 +122,10 @@ public class SrampShell {
 	 * Shuts down the shell.
 	 */
 	public void shutdown() {
-		System.out.print("S-RAMP shell shutting down...");
+		System.out.print(Messages.i18n.format("Shell.SHUTTING_DOWN")); //$NON-NLS-1$
 		try { this.reader.close(); } catch (IOException e) { }
 		this.context.destroy();
-		System.out.println("done.");
+		System.out.println(Messages.i18n.format("Shell.DONE")); //$NON-NLS-1$
 	}
 
 	/**
@@ -132,17 +133,17 @@ public class SrampShell {
 	 */
 	private void displayWelcomeMessage() {
 		System.out.println(
-				"**********************************************************************\n" +
-				"           _____       ______  ___ ___  ________  \n" +
-				"          /  ___|      | ___ \\/ _ \\|  \\/  | ___ \\ \n" +
-				"          \\ `--. ______| |_/ / /_\\ \\ .  . | |_/ / \n" +
-				"           `--. \\______|    /|  _  | |\\/| |  __/  \n" +
-				"          /\\__/ /      | |\\ \\| | | | |  | | |     \n" +
-				"          \\____/       \\_| \\_\\_| |_|_|  |_|_|     \n" +
-				"                                                  \n" +
-				"  JBoss S-RAMP Kurt Stam and Eric Wittmann, Licensed under the\n" +
-				"  Apache License, V2.0, Copyright 2012\n" +
-				"**********************************************************************"
+				"**********************************************************************\n" + //$NON-NLS-1$
+				"           _____       ______  ___ ___  ________  \n" + //$NON-NLS-1$
+				"          /  ___|      | ___ \\/ _ \\|  \\/  | ___ \\ \n" + //$NON-NLS-1$
+				"          \\ `--. ______| |_/ / /_\\ \\ .  . | |_/ / \n" + //$NON-NLS-1$
+				"           `--. \\______|    /|  _  | |\\/| |  __/  \n" + //$NON-NLS-1$
+				"          /\\__/ /      | |\\ \\| | | | |  | | |     \n" + //$NON-NLS-1$
+				"          \\____/       \\_| \\_\\_| |_|_|  |_|_|     \n" + //$NON-NLS-1$
+				"                                                  \n" + //$NON-NLS-1$
+				"  JBoss S-RAMP Kurt Stam and Eric Wittmann, Licensed under the\n" + //$NON-NLS-1$
+				"  Apache License, V2.0, Copyright 2012\n" + //$NON-NLS-1$
+				"**********************************************************************" //$NON-NLS-1$
 				);
 	}
 }

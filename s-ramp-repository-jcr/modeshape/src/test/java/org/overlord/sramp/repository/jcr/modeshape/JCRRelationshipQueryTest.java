@@ -47,49 +47,49 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         addWsdlDoc();
 
         // Get all the element style WSDL message parts
-        SrampQuery query = queryManager.createQuery("/s-ramp/wsdl/Part[element]");
+        SrampQuery query = queryManager.createQuery("/s-ramp/wsdl/Part[element]"); //$NON-NLS-1$
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(3, artifactSet.size());
 
         // Get all the element style WSDL message parts that refer to the element with name 'findRequest'
-        query = queryManager.createQuery("/s-ramp/wsdl/Part[element[@name = 'find']]");
+        query = queryManager.createQuery("/s-ramp/wsdl/Part[element[@name = 'find']]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
         // Get all the messages that have at least one part
-        query = queryManager.createQuery("/s-ramp/wsdl/Message[part]");
+        query = queryManager.createQuery("/s-ramp/wsdl/Message[part]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(5, artifactSet.size());
 
         // Get all operations that have faults
-        query = queryManager.createQuery("/s-ramp/wsdl/Operation[fault]");
+        query = queryManager.createQuery("/s-ramp/wsdl/Operation[fault]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
         // Get all operations that have faults named 'foo' (hint - there aren't any)
-        query = queryManager.createQuery("/s-ramp/wsdl/Operation[fault[@name = 'foo']]");
+        query = queryManager.createQuery("/s-ramp/wsdl/Operation[fault[@name = 'foo']]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(0, artifactSet.size());
 
         // Get all faults
-        query = queryManager.createQuery("/s-ramp/wsdl/Fault");
+        query = queryManager.createQuery("/s-ramp/wsdl/Fault"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(2, artifactSet.size());
 
         // Get all operations for the port type (sub-artifact-set query)
-        query = queryManager.createQuery("/s-ramp/wsdl/PortType[@name = 'SamplePortType']/operation");
+        query = queryManager.createQuery("/s-ramp/wsdl/PortType[@name = 'SamplePortType']/operation"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(2, artifactSet.size());
 
         // Get just one operation for the port type (sub-artifact-set query with predicate)
-        query = queryManager.createQuery("/s-ramp/wsdl/PortType[@name = 'SamplePortType']/operation[@name = 'findSimple']");
+        query = queryManager.createQuery("/s-ramp/wsdl/PortType[@name = 'SamplePortType']/operation[@name = 'findSimple']"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
@@ -104,33 +104,33 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
     	XsdDocument xsdDoc = addXsdDoc();
     	WsdlDocument wsdlDoc = addWsdlDoc();
 
-    	SrampModelUtils.addGenericRelationship(xsdDoc, "importedBy", wsdlDoc.getUuid());
-    	SrampModelUtils.addGenericRelationship(xsdDoc, "markerRel", null);
+    	SrampModelUtils.addGenericRelationship(xsdDoc, "importedBy", wsdlDoc.getUuid()); //$NON-NLS-1$
+    	SrampModelUtils.addGenericRelationship(xsdDoc, "markerRel", null); //$NON-NLS-1$
 
     	persistenceManager.updateArtifact(xsdDoc, ArtifactType.XsdDocument());
 
-        SrampQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[markerRel]");
+        SrampQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[markerRel]"); //$NON-NLS-1$
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[importedBy]");
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[importedBy]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[importedBy[@uuid = ?]]");
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[importedBy[@uuid = ?]]"); //$NON-NLS-1$
         query.setString(wsdlDoc.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[noSuchRel]");
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[noSuchRel]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(0, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/wsdl/WsdlDocument[importedBy]");
+        query = queryManager.createQuery("/s-ramp/wsdl/WsdlDocument[importedBy]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(0, artifactSet.size());
@@ -141,14 +141,14 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
 	 * @throws DerivedArtifactsCreationException
 	 */
 	private WsdlDocument addWsdlDoc() throws SrampException {
-		String artifactFileName = "jcr-sample.wsdl";
-        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
+		String artifactFileName = "jcr-sample.wsdl"; //$NON-NLS-1$
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName); //$NON-NLS-1$
 
         try {
 	        WsdlDocument wsdlDoc = new WsdlDocument();
 	        wsdlDoc.setArtifactType(BaseArtifactEnum.WSDL_DOCUMENT);
 	        wsdlDoc.setName(artifactFileName);
-	        wsdlDoc.setContentEncoding("application/xml");
+	        wsdlDoc.setContentEncoding("application/xml"); //$NON-NLS-1$
 	        // Persist the artifact
 	        BaseArtifactType artifact = persistenceManager.persistArtifact(wsdlDoc, contentStream);
 	        Assert.assertNotNull(artifact);
@@ -164,14 +164,14 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
 	 * @throws DerivedArtifactsCreationException
 	 */
 	private XsdDocument addXsdDoc() throws SrampException {
-		String artifactFileName = "PO.xsd";
-        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 
         try {
 	        XsdDocument xsdDoc = new XsdDocument();
 	        xsdDoc.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
 	        xsdDoc.setName(artifactFileName);
-	        xsdDoc.setContentEncoding("application/xml");
+	        xsdDoc.setContentEncoding("application/xml"); //$NON-NLS-1$
 	        // Persist the artifact
 	        BaseArtifactType artifact = persistenceManager.persistArtifact(xsdDoc, contentStream);
 	        Assert.assertNotNull(artifact);

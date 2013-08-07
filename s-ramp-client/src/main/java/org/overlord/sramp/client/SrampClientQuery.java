@@ -25,6 +25,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.client.i18n.Messages;
 import org.overlord.sramp.client.query.QueryResultSet;
 
 
@@ -42,7 +43,7 @@ public class SrampClientQuery {
     private List<String> replacementParams = new ArrayList<String>();
     private int startIndex = 0;
     private int count = 20;
-    private String orderBy = "name";
+    private String orderBy = "name"; //$NON-NLS-1$
     private boolean ascending = true;
     private Set<String> propertyNames = new HashSet<String>();
 
@@ -62,7 +63,7 @@ public class SrampClientQuery {
      * @param param
      */
     public SrampClientQuery parameter(String param) {
-        replacementParams.add("'" + param.replace("'", "''") + "'");
+        replacementParams.add("'" + param.replace("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         return this;
     }
 
@@ -105,7 +106,7 @@ public class SrampClientQuery {
      */
     public SrampClientQuery parameter(Date param) {
         String val = ISODateTimeFormat.date().print(new DateTime(param));
-        replacementParams.add("'" + val + "'");
+        replacementParams.add("'" + val + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         return this;
     }
 
@@ -116,7 +117,7 @@ public class SrampClientQuery {
      */
     public SrampClientQuery parameter(Calendar param) {
         String val = ISODateTimeFormat.dateTimeNoMillis().print(new DateTime(param));
-        replacementParams.add("'" + val + "'");
+        replacementParams.add("'" + val + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         return this;
     }
 
@@ -206,21 +207,21 @@ public class SrampClientQuery {
      */
     private String formatQuery() throws SrampClientException {
         StringBuilder builder = new StringBuilder();
-        String [] xpathSegments = queryTemplate.split("\\?");
+        String [] xpathSegments = queryTemplate.split("\\?"); //$NON-NLS-1$
         int paramCounter = 0;
         for (String segment : xpathSegments) {
             builder.append(segment);
             boolean isLastSegment = segment == xpathSegments[xpathSegments.length - 1];
             if (!isLastSegment) {
                 if (paramCounter >= replacementParams.size())
-                    throw new SrampClientException("Not enough query replacement parameters provided.");
+                    throw new SrampClientException(Messages.i18n.format("TOO_FEW_QUERY_PARAMS")); //$NON-NLS-1$
                 String param = replacementParams.get(paramCounter);
                 builder.append(param);
                 paramCounter++;
             }
         }
         if (replacementParams.size() > paramCounter)
-            throw new SrampClientException("Too many query replacement parameters provided.");
+            throw new SrampClientException(Messages.i18n.format("TOO_MANY_QUERY_PARAMS")); //$NON-NLS-1$
 
         return builder.toString();
     }

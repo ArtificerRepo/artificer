@@ -93,7 +93,7 @@ public abstract class ZipToSrampArchive {
 		this.jarWorkDir = null;
 
 		try {
-			this.originalJar = File.createTempFile("j2sramp", ".jar");
+			this.originalJar = File.createTempFile("j2sramp", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 			copyJarStream(jarStream, this.originalJar);
 			jarWorkDir = createJarWorkDir();
 			ArchiveUtils.unpackToWorkDir(this.originalJar, this.jarWorkDir);
@@ -140,7 +140,7 @@ public abstract class ZipToSrampArchive {
 	 * @throws IOException
 	 */
 	private static File createJarWorkDir() throws IOException {
-		File tempFile = File.createTempFile("j2sramp", ".work");
+		File tempFile = File.createTempFile("j2sramp", ".work"); //$NON-NLS-1$ //$NON-NLS-2$
 		tempFile.delete();
 		tempFile.mkdir();
 		return tempFile;

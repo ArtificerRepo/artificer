@@ -26,6 +26,7 @@ import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampServerException;
 import org.overlord.sramp.common.visitors.ArtifactVisitor;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToArtifactVisitor;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToArtifactVisitor.JCRReferenceResolver;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public final class JCRNodeToArtifactFactory {
 			String artifactType = jcrNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getValue().getString();
 			return createArtifact(session, jcrNode, ArtifactType.valueOf(artifactType));
 		} catch (PathNotFoundException e) {
-			throw new RuntimeException("JCR Node does not seem to be an s-ramp artifact node.", e);
+			throw new RuntimeException(Messages.i18n.format("INVALID_JCR_NODE"), e); //$NON-NLS-1$
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -78,9 +79,9 @@ public final class JCRNodeToArtifactFactory {
 					try {
 						String ident = reference.getString();
 						Node node = session.getNodeByIdentifier(ident);
-						return node.getProperty("sramp:uuid").getString();
+						return node.getProperty("sramp:uuid").getString(); //$NON-NLS-1$
 					} catch (Exception e) {
-						log.debug("Error resolving JCR reference.", e);
+						log.debug(Messages.i18n.format("ERROR_RESOLVING_JCR_REF"), e); //$NON-NLS-1$
 					}
 					return null;
 				}

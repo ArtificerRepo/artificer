@@ -39,7 +39,7 @@ public class SwitchYardAppToSrampArchiveTest {
 
 	@Test
 	public void testSwitchYardIntegration() throws Exception {
-	    InputStream stream = getClass().getResourceAsStream("switchyard-quickstart-bean-service.jar");
+	    InputStream stream = getClass().getResourceAsStream("switchyard-quickstart-bean-service.jar"); //$NON-NLS-1$
 	    SrampArchive archive = null;
 	    SwitchYardAppToSrampArchive sy2archive = null;
 	    try {
@@ -69,47 +69,47 @@ public class SwitchYardAppToSrampArchiveTest {
         }
         StringBuilder buff = new StringBuilder();
         for (String entryName : entryNames) {
-            buff.append(entryName).append("\n");
+            buff.append(entryName).append("\n"); //$NON-NLS-1$
         }
         Assert.assertEquals(EXPECTED_ENTRIES, buff.toString());
 
         // Now spot-check some representative entries.
 
         // Check the switchyard.xml
-        SrampArchiveEntry entry = archive.getEntry("META-INF/switchyard.xml");
+        SrampArchiveEntry entry = archive.getEntry("META-INF/switchyard.xml"); //$NON-NLS-1$
         Assert.assertNotNull(entry);
-        Assert.assertEquals("switchyard.xml", entry.getMetaData().getName());
+        Assert.assertEquals("switchyard.xml", entry.getMetaData().getName()); //$NON-NLS-1$
         Assert.assertEquals(BaseArtifactEnum.EXTENDED_DOCUMENT, entry.getMetaData().getArtifactType());
         ExtendedDocument switchyardXmlDoc = (ExtendedDocument) entry.getMetaData();
         Assert.assertEquals(SwitchYardModel.SwitchYardXmlDocument, switchyardXmlDoc.getExtendedType());
 
         // Check InventoryService.class
-        entry = archive.getEntry("org/switchyard/quickstarts/bean/service/InventoryService.class");
+        entry = archive.getEntry("org/switchyard/quickstarts/bean/service/InventoryService.class"); //$NON-NLS-1$
         Assert.assertNotNull(entry);
-        Assert.assertEquals("InventoryService.class", entry.getMetaData().getName());
+        Assert.assertEquals("InventoryService.class", entry.getMetaData().getName()); //$NON-NLS-1$
         Assert.assertEquals(BaseArtifactEnum.EXTENDED_DOCUMENT, entry.getMetaData().getArtifactType());
         ExtendedDocument inventoryServiceClass = (ExtendedDocument) entry.getMetaData();
-        Assert.assertEquals("JavaClass", inventoryServiceClass.getExtendedType());
+        Assert.assertEquals("JavaClass", inventoryServiceClass.getExtendedType()); //$NON-NLS-1$
 
         // Check OrderService.wsdl
-        entry = archive.getEntry("wsdl/OrderService.wsdl");
+        entry = archive.getEntry("wsdl/OrderService.wsdl"); //$NON-NLS-1$
         Assert.assertNotNull(entry);
-        Assert.assertEquals("OrderService.wsdl", entry.getMetaData().getName());
+        Assert.assertEquals("OrderService.wsdl", entry.getMetaData().getName()); //$NON-NLS-1$
         Assert.assertEquals(BaseArtifactEnum.WSDL_DOCUMENT, entry.getMetaData().getArtifactType());
     }
 
     private static final String EXPECTED_ENTRIES =
-            "META-INF/beans.xml\n" +
-            "META-INF/switchyard.xml\n" +
-            "org/switchyard/quickstarts/bean/service/InventoryService.class\n" +
-            "org/switchyard/quickstarts/bean/service/InventoryServiceBean.class\n" +
+            "META-INF/beans.xml\n" + //$NON-NLS-1$
+            "META-INF/switchyard.xml\n" + //$NON-NLS-1$
+            "org/switchyard/quickstarts/bean/service/InventoryService.class\n" + //$NON-NLS-1$
+            "org/switchyard/quickstarts/bean/service/InventoryServiceBean.class\n" + //$NON-NLS-1$
 //            "org/switchyard/quickstarts/bean/service/Item.class\n" +
 //            "org/switchyard/quickstarts/bean/service/ItemNotFoundException.class\n" +
-            "org/switchyard/quickstarts/bean/service/Order.class\n" +
-            "org/switchyard/quickstarts/bean/service/OrderAck.class\n" +
-            "org/switchyard/quickstarts/bean/service/OrderService.class\n" +
-            "org/switchyard/quickstarts/bean/service/OrderServiceBean.class\n" +
+            "org/switchyard/quickstarts/bean/service/Order.class\n" + //$NON-NLS-1$
+            "org/switchyard/quickstarts/bean/service/OrderAck.class\n" + //$NON-NLS-1$
+            "org/switchyard/quickstarts/bean/service/OrderService.class\n" + //$NON-NLS-1$
+            "org/switchyard/quickstarts/bean/service/OrderServiceBean.class\n" + //$NON-NLS-1$
 //            "org/switchyard/quickstarts/bean/service/Transformers.class\n" +
 //            "org/switchyard/quickstarts/bean/service/Validators.class\n" +
-            "wsdl/OrderService.wsdl\n";
+            "wsdl/OrderService.wsdl\n"; //$NON-NLS-1$
 }

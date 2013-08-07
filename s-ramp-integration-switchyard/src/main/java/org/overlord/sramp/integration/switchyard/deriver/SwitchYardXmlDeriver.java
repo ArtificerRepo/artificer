@@ -43,7 +43,7 @@ import org.w3c.dom.NodeList;
  */
 public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
 
-    public static final QName UNRESOLVED_REF = new QName("urn:s-ramp:switchyard-deriver", "unresolvedRef");
+    public static final QName UNRESOLVED_REF = new QName("urn:s-ramp:switchyard-deriver", "unresolvedRef"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private final SwitchYardLinker linker = new SwitchYardLinker();
 
@@ -70,11 +70,11 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
             Element rootElement, XPath xpath) throws IOException {
         try {
             // Pull out the target namespace and save it as a custom property
-            String targetNS = rootElement.getAttribute("targetNamespace");
-            SrampModelUtils.setCustomProperty(artifact, "targetNamespace", targetNS);
+            String targetNS = rootElement.getAttribute("targetNamespace"); //$NON-NLS-1$
+            SrampModelUtils.setCustomProperty(artifact, "targetNamespace", targetNS); //$NON-NLS-1$
             // Pull out the name and set it (unless the name has already been set)
-            if ("switchyard.xml".equals(artifact.getName()) && rootElement.hasAttribute("name")) {
-                String name = rootElement.getAttribute("name");
+            if ("switchyard.xml".equals(artifact.getName()) && rootElement.hasAttribute("name")) { //$NON-NLS-1$ //$NON-NLS-2$
+                String name = rootElement.getAttribute("name"); //$NON-NLS-1$
                 artifact.setName(name);
             }
 
@@ -99,15 +99,15 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
     private void processServices(Collection<BaseArtifactType> derivedArtifacts,
             BaseArtifactType sourceArtifact, Element rootElement, XPath xpath) throws XPathExpressionException {
         // xpath expression to find all services
-        NodeList nodes = (NodeList) this.query(xpath, rootElement, "./sca:composite/sca:service", XPathConstants.NODESET);
+        NodeList nodes = (NodeList) this.query(xpath, rootElement, "./sca:composite/sca:service", XPathConstants.NODESET); //$NON-NLS-1$
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            String name = node.getAttribute("name");
+            String name = node.getAttribute("name"); //$NON-NLS-1$
             ExtendedArtifactType serviceArtifact = SwitchYardModel.newServiceArtifact(name);
             derivedArtifacts.add(serviceArtifact);
 
-            if (node.hasAttribute("promote")) {
-                String promote = node.getAttribute("promote");
+            if (node.hasAttribute("promote")) { //$NON-NLS-1$
+                String promote = node.getAttribute("promote"); //$NON-NLS-1$
                 BaseArtifactType component = findComponentByName(derivedArtifacts, promote);
                 if (component != null) {
                     SrampModelUtils.addGenericRelationship(serviceArtifact, SwitchYardModel.REL_PROMOTES, component.getUuid());
@@ -126,57 +126,57 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
     private void processComponents(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
             Element rootElement, XPath xpath) throws XPathExpressionException {
         // xpath expression to find all services
-        NodeList nodes = (NodeList) this.query(xpath, rootElement, "./sca:composite/sca:component", XPathConstants.NODESET);
+        NodeList nodes = (NodeList) this.query(xpath, rootElement, "./sca:composite/sca:component", XPathConstants.NODESET); //$NON-NLS-1$
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            String name = node.getAttribute("name");
+            String name = node.getAttribute("name"); //$NON-NLS-1$
             ExtendedArtifactType componentArtifact = SwitchYardModel.newComponentArtifact(name);
             derivedArtifacts.add(componentArtifact);
 
-            Element implBean = (Element) this.query(xpath, node, "bean:implementation.bean", XPathConstants.NODE);
+            Element implBean = (Element) this.query(xpath, node, "bean:implementation.bean", XPathConstants.NODE); //$NON-NLS-1$
             if (implBean != null) {
-                if (implBean.hasAttribute("class")) {
-                    String implClassName = implBean.getAttribute("class");
+                if (implBean.hasAttribute("class")) { //$NON-NLS-1$
+                    String implClassName = implBean.getAttribute("class"); //$NON-NLS-1$
                     Relationship relationship = SrampModelUtils.addGenericRelationship(componentArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
-                    relationship.getOtherAttributes().put(UNRESOLVED_REF, "class:" + implClassName);
+                    relationship.getOtherAttributes().put(UNRESOLVED_REF, "class:" + implClassName); //$NON-NLS-1$
                 }
-                if (implBean.hasAttribute("requires")) {
-                    String requires = implBean.getAttribute("requires");
-                    SrampModelUtils.setCustomProperty(componentArtifact, "requires", requires);
+                if (implBean.hasAttribute("requires")) { //$NON-NLS-1$
+                    String requires = implBean.getAttribute("requires"); //$NON-NLS-1$
+                    SrampModelUtils.setCustomProperty(componentArtifact, "requires", requires); //$NON-NLS-1$
                 }
             }
-            Element implCamel = (Element) this.query(xpath, node, "camel:implementation.camel", XPathConstants.NODE);
+            Element implCamel = (Element) this.query(xpath, node, "camel:implementation.camel", XPathConstants.NODE); //$NON-NLS-1$
             if (implCamel != null) {
-                Element xml = (Element) this.query(xpath, implCamel, "camel:xml", XPathConstants.NODE);
+                Element xml = (Element) this.query(xpath, implCamel, "camel:xml", XPathConstants.NODE); //$NON-NLS-1$
                 if (xml != null) {
-                    String path = xml.getAttribute("path");
+                    String path = xml.getAttribute("path"); //$NON-NLS-1$
                     Relationship relationship = SrampModelUtils.addGenericRelationship(componentArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
-                    relationship.getOtherAttributes().put(UNRESOLVED_REF, "camel:" + path);
+                    relationship.getOtherAttributes().put(UNRESOLVED_REF, "camel:" + path); //$NON-NLS-1$
                 }
-                if (implCamel.hasAttribute("requires")) {
-                    String requires = implCamel.getAttribute("requires");
-                    SrampModelUtils.setCustomProperty(componentArtifact, "requires", requires);
+                if (implCamel.hasAttribute("requires")) { //$NON-NLS-1$
+                    String requires = implCamel.getAttribute("requires"); //$NON-NLS-1$
+                    SrampModelUtils.setCustomProperty(componentArtifact, "requires", requires); //$NON-NLS-1$
                 }
             }
 
 
-            NodeList refs = (NodeList) this.query(xpath, node, "sca:reference", XPathConstants.NODESET);
+            NodeList refs = (NodeList) this.query(xpath, node, "sca:reference", XPathConstants.NODESET); //$NON-NLS-1$
             for (int jdx = 0; jdx < refs.getLength(); jdx++) {
                 Element ref = (Element) refs.item(jdx);
-                Element iface = (Element) this.query(xpath, ref, "sca:interface.java", XPathConstants.NODE);
+                Element iface = (Element) this.query(xpath, ref, "sca:interface.java", XPathConstants.NODE); //$NON-NLS-1$
                 if (iface != null) {
-                    if (iface.hasAttribute("interface")) {
-                        String ifaceName = iface.getAttribute("interface");
+                    if (iface.hasAttribute("interface")) { //$NON-NLS-1$
+                        String ifaceName = iface.getAttribute("interface"); //$NON-NLS-1$
                         Relationship relationship = SrampModelUtils.addGenericRelationship(componentArtifact, SwitchYardModel.REL_REFERENCES, null);
-                        relationship.getOtherAttributes().put(UNRESOLVED_REF, "java:" + ifaceName);
+                        relationship.getOtherAttributes().put(UNRESOLVED_REF, "java:" + ifaceName); //$NON-NLS-1$
                     }
                 }
-                iface = (Element) this.query(xpath, ref, "sca:interface.wsdl", XPathConstants.NODE);
+                iface = (Element) this.query(xpath, ref, "sca:interface.wsdl", XPathConstants.NODE); //$NON-NLS-1$
                 if (iface != null) {
-                    if (iface.hasAttribute("interface")) {
-                        String wsdlInfo = iface.getAttribute("interface");
+                    if (iface.hasAttribute("interface")) { //$NON-NLS-1$
+                        String wsdlInfo = iface.getAttribute("interface"); //$NON-NLS-1$
                         Relationship relationship = SrampModelUtils.addGenericRelationship(componentArtifact, SwitchYardModel.REL_REFERENCES, null);
-                        relationship.getOtherAttributes().put(UNRESOLVED_REF, "wsdl:" + wsdlInfo);
+                        relationship.getOtherAttributes().put(UNRESOLVED_REF, "wsdl:" + wsdlInfo); //$NON-NLS-1$
                     }
                 }
             }
@@ -194,23 +194,23 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
     private void processTransformers(Collection<BaseArtifactType> derivedArtifacts,
             BaseArtifactType artifact, Element rootElement, XPath xpath) throws XPathExpressionException {
         // xpath expression to find all services
-        NodeList nodes = (NodeList) this.query(xpath, rootElement, "./swyd:transforms/tf:transform.java | ./swyd:transforms/tf:transform.xslt | ./swyd:transforms/tf:transform.json | ./swyd:transforms/tf:transform.smooks | ./swyd:transforms/tf:transform.jaxb", XPathConstants.NODESET);
+        NodeList nodes = (NodeList) this.query(xpath, rootElement, "./swyd:transforms/tf:transform.java | ./swyd:transforms/tf:transform.xslt | ./swyd:transforms/tf:transform.json | ./swyd:transforms/tf:transform.smooks | ./swyd:transforms/tf:transform.jaxb", XPathConstants.NODESET); //$NON-NLS-1$
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            String name = node.getAttribute("name"); // in case SY supports named transformers at some point
+            String name = node.getAttribute("name"); // in case SY supports named transformers at some point //$NON-NLS-1$
             if (name == null || name.trim().length() == 0) {
-                if (node.hasAttribute("from") && node.hasAttribute("to")) {
-                    String from = node.getAttribute("from");
-                    String to = node.getAttribute("to");
-                    if (from.startsWith("{")) {
-                        name = from.substring(from.lastIndexOf("}")+1);
-                    } else if (from.startsWith("java:")) {
+                if (node.hasAttribute("from") && node.hasAttribute("to")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    String from = node.getAttribute("from"); //$NON-NLS-1$
+                    String to = node.getAttribute("to"); //$NON-NLS-1$
+                    if (from.startsWith("{")) { //$NON-NLS-1$
+                        name = from.substring(from.lastIndexOf("}")+1); //$NON-NLS-1$
+                    } else if (from.startsWith("java:")) { //$NON-NLS-1$
                         name = from.substring(from.lastIndexOf('.')+1);
                     }
-                    if (to.startsWith("{")) {
-                        name = name + "->" + to.substring(to.lastIndexOf("}")+1);
-                    } else if (to.startsWith("java:")) {
-                        name = name + "->" + to.substring(to.lastIndexOf('.')+1);
+                    if (to.startsWith("{")) { //$NON-NLS-1$
+                        name = name + "->" + to.substring(to.lastIndexOf("}")+1); //$NON-NLS-1$ //$NON-NLS-2$
+                    } else if (to.startsWith("java:")) { //$NON-NLS-1$
+                        name = name + "->" + to.substring(to.lastIndexOf('.')+1); //$NON-NLS-1$
                     }
                 } else {
                     name = node.getLocalName();
@@ -221,29 +221,29 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
             String type = node.getLocalName();
             type = type.substring(type.lastIndexOf('.') + 1);
             SrampModelUtils.setCustomProperty(transformerArtifact, SwitchYardModel.PROP_TRANSFORMER_TYPE, type);
-            if (node.hasAttribute("class")) {
+            if (node.hasAttribute("class")) { //$NON-NLS-1$
                 Relationship relationship = SrampModelUtils.addGenericRelationship(transformerArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
-                relationship.getOtherAttributes().put(UNRESOLVED_REF, "class:" + node.getAttribute("class"));
+                relationship.getOtherAttributes().put(UNRESOLVED_REF, "class:" + node.getAttribute("class")); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            if (node.hasAttribute("bean")) {
+            if (node.hasAttribute("bean")) { //$NON-NLS-1$
                 Relationship relationship = SrampModelUtils.addGenericRelationship(transformerArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
-                relationship.getOtherAttributes().put(UNRESOLVED_REF, "bean:" + node.getAttribute("bean"));
+                relationship.getOtherAttributes().put(UNRESOLVED_REF, "bean:" + node.getAttribute("bean")); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            if (node.hasAttribute("xsltFile")) {
+            if (node.hasAttribute("xsltFile")) { //$NON-NLS-1$
                 Relationship relationship = SrampModelUtils.addGenericRelationship(transformerArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
-                relationship.getOtherAttributes().put(UNRESOLVED_REF, "xslt:" + node.getAttribute("xsltFile"));
+                relationship.getOtherAttributes().put(UNRESOLVED_REF, "xslt:" + node.getAttribute("xsltFile")); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            if (node.hasAttribute("config")) {
+            if (node.hasAttribute("config")) { //$NON-NLS-1$
                 Relationship relationship = SrampModelUtils.addGenericRelationship(transformerArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
-                relationship.getOtherAttributes().put(UNRESOLVED_REF, "smooks:" + node.getAttribute("config"));
+                relationship.getOtherAttributes().put(UNRESOLVED_REF, "smooks:" + node.getAttribute("config")); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            if (node.hasAttribute("from")) {
+            if (node.hasAttribute("from")) { //$NON-NLS-1$
                 Relationship relationship = SrampModelUtils.addGenericRelationship(transformerArtifact, SwitchYardModel.REL_TRANSFORMS_FROM, null);
-                relationship.getOtherAttributes().put(UNRESOLVED_REF, node.getAttribute("from"));
+                relationship.getOtherAttributes().put(UNRESOLVED_REF, node.getAttribute("from")); //$NON-NLS-1$
             }
-            if (node.hasAttribute("to")) {
+            if (node.hasAttribute("to")) { //$NON-NLS-1$
                 Relationship relationship = SrampModelUtils.addGenericRelationship(transformerArtifact, SwitchYardModel.REL_TRANSFORMS_TO, null);
-                relationship.getOtherAttributes().put(UNRESOLVED_REF, node.getAttribute("to"));
+                relationship.getOtherAttributes().put(UNRESOLVED_REF, node.getAttribute("to")); //$NON-NLS-1$
             }
 
             derivedArtifacts.add(transformerArtifact);
@@ -261,13 +261,13 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
     private void processValidators(Collection<BaseArtifactType> derivedArtifacts,
             BaseArtifactType artifact, Element rootElement, XPath xpath) throws XPathExpressionException {
         // xpath expression to find all services
-        NodeList nodes = (NodeList) this.query(xpath, rootElement, "./swyd:validates/val:validate.java | ./swyd:validates/val:validate.xml", XPathConstants.NODESET);
+        NodeList nodes = (NodeList) this.query(xpath, rootElement, "./swyd:validates/val:validate.java | ./swyd:validates/val:validate.xml", XPathConstants.NODESET); //$NON-NLS-1$
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            if (!node.hasAttribute("name"))
+            if (!node.hasAttribute("name")) //$NON-NLS-1$
                 continue;
 
-            String name = node.getAttribute("name");
+            String name = node.getAttribute("name"); //$NON-NLS-1$
 
             ExtendedArtifactType validatorArtifact = SwitchYardModel.newValidateArtifact(name);
             String type = node.getLocalName();
@@ -279,15 +279,15 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
             relationship.getOtherAttributes().put(UNRESOLVED_REF, name);
 
             // Unresolved 'implementedBy' reference
-            if (node.hasAttribute("class")) {
+            if (node.hasAttribute("class")) { //$NON-NLS-1$
                 relationship = SrampModelUtils.addGenericRelationship(validatorArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
-                relationship.getOtherAttributes().put(UNRESOLVED_REF, "class:" + node.getAttribute("class"));
+                relationship.getOtherAttributes().put(UNRESOLVED_REF, "class:" + node.getAttribute("class")); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            if (node.hasAttribute("bean")) {
+            if (node.hasAttribute("bean")) { //$NON-NLS-1$
                 relationship = SrampModelUtils.addGenericRelationship(validatorArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
-                relationship.getOtherAttributes().put(UNRESOLVED_REF, "bean:" + node.getAttribute("bean"));
+                relationship.getOtherAttributes().put(UNRESOLVED_REF, "bean:" + node.getAttribute("bean")); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            if (node.hasAttribute("schemaType")) {
+            if (node.hasAttribute("schemaType")) { //$NON-NLS-1$
                 // TODO handle relationships to the schemas
 //                relationship = SrampModelUtils.addGenericRelationship(validatorArtifact, SwitchYardModel.REL_IMPLEMENTED_BY, null);
 //                relationship.getOtherAttributes().put(UNRESOLVED_REF, "xml:" + node.getAttribute("schemaType"));

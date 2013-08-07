@@ -20,33 +20,33 @@ import org.overlord.sramp.common.SrampConstants;
 
 public class JCRConstants {
 
-    public static final String JCR_MIME_TYPE = "jcr:mimeType";
-    public static final String JCR_CONTENT = "jcr:content";
-    public static final String JCR_SQL2 = "JCR-SQL2";
+    public static final String JCR_MIME_TYPE = "jcr:mimeType"; //$NON-NLS-1$
+    public static final String JCR_CONTENT = "jcr:content"; //$NON-NLS-1$
+    public static final String JCR_SQL2 = "JCR-SQL2"; //$NON-NLS-1$
 
-    public static final String SRAMP                  = "sramp";
+    public static final String SRAMP                  = "sramp"; //$NON-NLS-1$
 	public static final String SRAMP_NS               = SrampConstants.SRAMP_NS;
-	public static final String SRAMP_PROPERTIES       = "sramp-properties";
-	public static final String SRAMP_PROPERTIES_NS    = SRAMP_NS + "#properties";
-	public static final String SRAMP_RELATIONSHIPS    = "sramp-relationships";
-	public static final String SRAMP_RELATIONSHIPS_NS = SRAMP_NS + "#relationships";
-    public static final String SRAMP_AUDIT            = "audit";
+	public static final String SRAMP_PROPERTIES       = "sramp-properties"; //$NON-NLS-1$
+	public static final String SRAMP_PROPERTIES_NS    = SRAMP_NS + "#properties"; //$NON-NLS-1$
+	public static final String SRAMP_RELATIONSHIPS    = "sramp-relationships"; //$NON-NLS-1$
+	public static final String SRAMP_RELATIONSHIPS_NS = SRAMP_NS + "#relationships"; //$NON-NLS-1$
+    public static final String SRAMP_AUDIT            = "audit"; //$NON-NLS-1$
     public static final String SRAMP_AUDIT_NS         = SrampConstants.SRAMP_AUDIT_NS;
 
-    public static final String SRAMP_                    = SRAMP + ":";
-    public static final String SRAMP_AUDIT_ENTRY         = SRAMP_AUDIT + ":auditEntry";
-    public static final String SRAMP_AUDIT_ITEM          = SRAMP_AUDIT + ":auditItem";
-    public static final String SRAMP_BASE_ARTIFACT_TYPE  = SRAMP_ + "baseArtifactType";
-    public static final String SRAMP_CONTENT_TYPE        = SRAMP_ + "contentType";
-    public static final String SRAMP_CONTENT_SIZE        = SRAMP_ + "contentSize";
-    public static final String SRAMP_CONTENT_HASH        = SRAMP_ + "contentHash";
-    public static final String SRAMP_CONTENT_ENCODING    = SRAMP_ + "contentEncoding";
-    public static final String SRAMP_UUID                = SRAMP_ + "uuid";
-    public static final String SRAMP_NAME                = SRAMP_ + "name";
-    public static final String SRAMP_DERIVED             = SRAMP_ + "derived";
-    public static final String SRAMP_ARTIFACT_MODEL      = SRAMP_ + "artifactModel";
-    public static final String SRAMP_ARTIFACT_TYPE       = SRAMP_ + "artifactType";
-    public static final String SRAMP_EXTENDED_TYPE       = SRAMP_ + "extendedType";
-    public static final String SRAMP_NON_DOCUMENT_TYPE   = SRAMP_ + "nonDocumentArtifactType";
-    public static final String SRAMP_DERIVED_PRIMARY_TYPE     = SRAMP_ + "derivedArtifactPrimaryType";
+    public static final String SRAMP_                    = SRAMP + ":"; //$NON-NLS-1$
+    public static final String SRAMP_AUDIT_ENTRY         = SRAMP_AUDIT + ":auditEntry"; //$NON-NLS-1$
+    public static final String SRAMP_AUDIT_ITEM          = SRAMP_AUDIT + ":auditItem"; //$NON-NLS-1$
+    public static final String SRAMP_BASE_ARTIFACT_TYPE  = SRAMP_ + "baseArtifactType"; //$NON-NLS-1$
+    public static final String SRAMP_CONTENT_TYPE        = SRAMP_ + "contentType"; //$NON-NLS-1$
+    public static final String SRAMP_CONTENT_SIZE        = SRAMP_ + "contentSize"; //$NON-NLS-1$
+    public static final String SRAMP_CONTENT_HASH        = SRAMP_ + "contentHash"; //$NON-NLS-1$
+    public static final String SRAMP_CONTENT_ENCODING    = SRAMP_ + "contentEncoding"; //$NON-NLS-1$
+    public static final String SRAMP_UUID                = SRAMP_ + "uuid"; //$NON-NLS-1$
+    public static final String SRAMP_NAME                = SRAMP_ + "name"; //$NON-NLS-1$
+    public static final String SRAMP_DERIVED             = SRAMP_ + "derived"; //$NON-NLS-1$
+    public static final String SRAMP_ARTIFACT_MODEL      = SRAMP_ + "artifactModel"; //$NON-NLS-1$
+    public static final String SRAMP_ARTIFACT_TYPE       = SRAMP_ + "artifactType"; //$NON-NLS-1$
+    public static final String SRAMP_EXTENDED_TYPE       = SRAMP_ + "extendedType"; //$NON-NLS-1$
+    public static final String SRAMP_NON_DOCUMENT_TYPE   = SRAMP_ + "nonDocumentArtifactType"; //$NON-NLS-1$
+    public static final String SRAMP_DERIVED_PRIMARY_TYPE     = SRAMP_ + "derivedArtifactPrimaryType"; //$NON-NLS-1$
 }

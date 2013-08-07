@@ -33,7 +33,7 @@ public class TJWSServletContainer
 
    public static ResteasyDeployment start() throws Exception
    {
-      return start("");
+      return start(""); //$NON-NLS-1$
    }
 
    public static ResteasyDeployment start(String bindPath) throws Exception
@@ -53,11 +53,11 @@ public class TJWSServletContainer
    
    public static void start(ResteasyDeployment deployment) throws Exception
    {
-      System.out.println("[Embedded Container Start]");
+      System.out.println("[Embedded Container Start]"); //$NON-NLS-1$
       tjws = new TJWSEmbeddedJaxrsServer();
       tjws.setDeployment(deployment);
       tjws.setPort(TestPortProvider.getPort());
-      tjws.setRootResourcePath("");
+      tjws.setRootResourcePath(""); //$NON-NLS-1$
       tjws.setSecurityDomain(null);
       tjws.setBindAddress(TestPortProvider.getHost());
       tjws.start();
@@ -75,15 +75,15 @@ public class TJWSServletContainer
       String applicationClass = null;
       if (contextParams != null)
       {
-         applicationClass = contextParams.get("javax.ws.rs.Application");
-         String mediaTypeMappingsString = contextParams.get("resteasy.media.type.mappings");
+         applicationClass = contextParams.get("javax.ws.rs.Application"); //$NON-NLS-1$
+         String mediaTypeMappingsString = contextParams.get("resteasy.media.type.mappings"); //$NON-NLS-1$
          if (mediaTypeMappingsString != null)
          {
             Map<String, String> mediaTypeMappings = new HashMap<String, String>();
-            String[] mappings = mediaTypeMappingsString.split(",");
+            String[] mappings = mediaTypeMappingsString.split(","); //$NON-NLS-1$
             for (int i = 0; i < mappings.length; i++)
             {
-               String[] mapping = mappings[i].split(":");
+               String[] mapping = mappings[i].split(":"); //$NON-NLS-1$
                mediaTypeMappings.put(mapping[0], mapping[1]);
             }
             deployment.setMediaTypeMappings(mediaTypeMappings);
@@ -91,7 +91,7 @@ public class TJWSServletContainer
       }
       if (applicationClass == null && initParams != null)
       {
-         applicationClass = initParams.get("javax.ws.rs.Application"); 
+         applicationClass = initParams.get("javax.ws.rs.Application");  //$NON-NLS-1$
       }
       if (applicationClass != null)
       {
@@ -102,7 +102,7 @@ public class TJWSServletContainer
 
    public static ResteasyDeployment start(String bindPath, SecurityDomain domain, ResteasyDeployment deployment, Hashtable<String,String> initParams, Hashtable<String,String> contextParams) throws Exception
    {
-       System.out.println("[Embedded Container Start]");
+       System.out.println("[Embedded Container Start]"); //$NON-NLS-1$
       tjws = new TJWSEmbeddedJaxrsServer();
       tjws.setDeployment(deployment);
       tjws.setPort(TestPortProvider.getPort());
@@ -117,7 +117,7 @@ public class TJWSServletContainer
 
    public static void stop() throws Exception
    {
-      System.out.println("[Embedded Container Stop]");
+      System.out.println("[Embedded Container Stop]"); //$NON-NLS-1$
       if (tjws != null)
       {
          try

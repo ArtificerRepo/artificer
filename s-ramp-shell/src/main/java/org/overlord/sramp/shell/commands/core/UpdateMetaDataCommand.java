@@ -17,9 +17,10 @@ package org.overlord.sramp.shell.commands.core;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Updates an artifact's meta-data in the s-ramp repository. This requires an active artifact to exist in the
@@ -28,7 +29,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
  *
  * @author eric.wittmann@redhat.com
  */
-public class UpdateMetaDataCommand extends AbstractShellCommand {
+public class UpdateMetaDataCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -37,52 +38,31 @@ public class UpdateMetaDataCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("s-ramp:updateMetaData");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'updateMetaData' command updates the meta-data of the currently active");
-		print("artifact in the context.  Whatever changes were made to the active");
-		print("artifact will be sent back to the S-RAMP repository.");
-		print("");
-		print("Example usage:");
-		print(">  s-ramp:updateMetaData");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		QName clientVarName = new QName("s-ramp", "client");
-		QName artifactVarName = new QName("s-ramp", "artifact");
+		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
+		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
-			print("No S-RAMP repository connection is currently open.");
+			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return;
 		}
 
 		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		if (artifact == null) {
-			print("No active S-RAMP artifact exists.  Use s-ramp:getMetaData.");
+			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
 			return;
 		}
 
 		try {
 			client.updateArtifactMetaData(artifact);
-			print("Successfully updated artifact %1$s.", artifact.getName());
+			print(Messages.i18n.format("UpdateMetaData.Success", artifact.getName())); //$NON-NLS-1$
 		} catch (Exception e) {
-			print("FAILED to update the artifact.");
-			print("\t" + e.getMessage());
+			print(Messages.i18n.format("UpdateMetaData.Success")); //$NON-NLS-1$
+			print("\t" + e.getMessage()); //$NON-NLS-1$
 		}
 	}
 

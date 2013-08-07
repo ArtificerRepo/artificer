@@ -44,8 +44,8 @@ public abstract class AbstractJCRPersistenceTest {
 
     public static void setupPersistence() {
 		// use the in-memory config for unit tests
-		System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractJCRPersistenceTest.class.getName()
-				+ "/META-INF/modeshape-configs/junit-sramp-config.json");
+		System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractJCRPersistenceTest.class.getName() //$NON-NLS-1$ //$NON-NLS-2$
+				+ "/META-INF/modeshape-configs/junit-sramp-config.json"); //$NON-NLS-1$
         persistenceManager = PersistenceFactory.newInstance();
         derivedArtifacts = DerivedArtifactsFactory.newInstance();
         queryManager = QueryManagerFactory.newInstance();

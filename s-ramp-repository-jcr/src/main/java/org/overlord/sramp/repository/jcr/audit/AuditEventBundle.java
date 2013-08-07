@@ -148,7 +148,7 @@ public class AuditEventBundle extends ArrayList<Event> {
         for (Event event : this) {
             if (event.getType() == Event.NODE_ADDED) {
                 Node node = getNode(event);
-                if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE) && !node.getProperty("sramp:derived").getBoolean()) {
+                if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE) && !node.getProperty("sramp:derived").getBoolean()) { //$NON-NLS-1$
                     return event;
                 }
             }
@@ -167,7 +167,7 @@ public class AuditEventBundle extends ArrayList<Event> {
         for (Event event : this) {
             if (event.getType() == Event.NODE_ADDED) {
                 Node node = getNode(event);
-                if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE) && node.getProperty("sramp:derived").getBoolean()) {
+                if (node.isNodeType(JCRConstants.SRAMP_BASE_ARTIFACT_TYPE) && node.getProperty("sramp:derived").getBoolean()) { //$NON-NLS-1$
                     rval.add(event);
                 }
             }

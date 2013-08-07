@@ -16,6 +16,7 @@
 package org.overlord.sramp.integration.switchyard.model;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.overlord.sramp.integration.switchyard.i18n.Messages;
 
 /**
  * Helper used to visit switchyard artifacts.
@@ -38,7 +39,7 @@ public class SwitchYardArtifactVisitorHelper {
         } else if (SwitchYardModel.SwitchYardValidator.equals(artifact.getExtendedType())) {
             visitor.visitValidator(artifact);
         } else {
-            throw new RuntimeException("Visitor pattern not implemented for SwitchYard artifact of type: " + artifact.getExtendedType());
+            throw new RuntimeException(Messages.i18n.format("VISITOR_NOT_IMPLEMENTED", artifact.getExtendedType())); //$NON-NLS-1$
         }
     }
 

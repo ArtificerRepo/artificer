@@ -27,7 +27,7 @@ public abstract class AbstractNoAuditingResourceTest extends AbstractResourceTes
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "false");
+        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "false"); //$NON-NLS-1$
         setUpResourceTest();
 	}
 }

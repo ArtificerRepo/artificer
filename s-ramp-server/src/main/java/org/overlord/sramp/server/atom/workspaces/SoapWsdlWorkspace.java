@@ -33,7 +33,7 @@ public class SoapWsdlWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public SoapWsdlWorkspace(String hrefBase) {
-		super(hrefBase, "SOAP-WSDL Model");
+		super(hrefBase, "SOAP-WSDL Model"); //$NON-NLS-1$
 	}
 
 	/**
@@ -41,9 +41,9 @@ public class SoapWsdlWorkspace extends AbstractWorkspace {
 	 */
 	@Override
 	protected void configureWorkspace() {
-        AppCollection soapWsdlCollection = addCollection("/s-ramp/soapWsdl", "SOAP-WSDL Model Objects", MediaType.APPLICATION_ZIP);
-        AppCollection soapAddressCollection = addCollection("/s-ramp/soapWsdl/SoapAddress", "SOAP Addresses", "");
-        AppCollection soapBindingCollection = addCollection("/s-ramp/soapWsdl/SoapBinding", "SOAP Bindings", "");
+        AppCollection soapWsdlCollection = addCollection("/s-ramp/soapWsdl", "SOAP-WSDL Model Objects", MediaType.APPLICATION_ZIP); //$NON-NLS-1$ //$NON-NLS-2$
+        AppCollection soapAddressCollection = addCollection("/s-ramp/soapWsdl/SoapAddress", "SOAP Addresses", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        AppCollection soapBindingCollection = addCollection("/s-ramp/soapWsdl/SoapBinding", "SOAP Bindings", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         addTypeCategory(soapWsdlCollection, ArtifactTypeEnum.SoapAddress);
         addTypeCategory(soapWsdlCollection, ArtifactTypeEnum.SoapBinding);

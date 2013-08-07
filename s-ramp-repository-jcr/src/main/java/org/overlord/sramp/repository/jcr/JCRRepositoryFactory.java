@@ -22,12 +22,13 @@ import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JCRRepositoryFactory {
 
-    public static String WORKSPACE_NAME = "default";
+    public static String WORKSPACE_NAME = "default"; //$NON-NLS-1$
 	private static Logger log = LoggerFactory.getLogger(JCRRepositoryFactory.class);
 
 	private static JCRRepository instance;
@@ -35,12 +36,12 @@ public class JCRRepositoryFactory {
     public synchronized static JCRRepository getInstance() throws RepositoryException {
         if (instance == null) {
             for (JCRRepository jcrRepository : ServiceLoader.load(JCRRepository.class)) {
-                log.info("Found JCR Provider " + jcrRepository.getClass());
+                log.info(Messages.i18n.format("JCR_PROVIDER", jcrRepository.getClass())); //$NON-NLS-1$
                 instance = jcrRepository;
                 instance.startup();
                 return instance;
             }
-            throw new RuntimeException("Failed to find a JCR Repository provider.");
+            throw new RuntimeException(Messages.i18n.format("Failed to find a JCR Repository provider.")); //$NON-NLS-1$
         }
         return instance;
     }

@@ -75,24 +75,24 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	public void testDerivedArtifactCreate() throws Exception {
 		// Making a client call to the actual XsdDocument implementation running in
 		// an embedded container.
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/ElementDeclaration"));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/ElementDeclaration")); //$NON-NLS-1$
 
 		// read the XsdDocument from file
-		String artifactFileName = "PO.xsd";
-		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 		String xmltext = TestUtils.convertStreamToString(POXsd);
 		POXsd.close();
 
-		request.header("Slug", artifactFileName);
+		request.header("Slug", artifactFileName); //$NON-NLS-1$
 		request.body(MediaType.APPLICATION_XML, xmltext);
 
 		try {
 			request.post(String.class);
-			Assert.fail("Expected an error here.");
+			Assert.fail("Expected an error here."); //$NON-NLS-1$
 		} catch (SrampAtomException e) {
-			Assert.assertEquals("Failed to create artifact because 'ElementDeclaration' is a derived type.", e.getMessage());
+			Assert.assertEquals("Failed to create artifact because \"ElementDeclaration\" is a derived type.", e.getMessage()); //$NON-NLS-1$
 			String stack = SrampAtomExceptionProvider.getRootStackTrace(e);
-			Assert.assertTrue(stack.contains("org.overlord.sramp.server.atom.services.ArtifactResource.create"));
+			Assert.assertTrue(stack.contains("org.overlord.sramp.server.atom.services.ArtifactResource.create")); //$NON-NLS-1$
 		}
 	}
 
@@ -103,13 +103,13 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	@Test
 	public void testPDFDocument() throws Exception {
 		// Add the PDF to the repository
-		String artifactFileName = "sample.pdf";
-		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+		String artifactFileName = "sample.pdf"; //$NON-NLS-1$
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
 		//String uuid = null;
 		try {
-			ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document"));
-			request.header("Slug", artifactFileName);
-			request.body("application/pdf", contentStream);
+			ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document")); //$NON-NLS-1$
+			request.header("Slug", artifactFileName); //$NON-NLS-1$
+			request.body("application/pdf", contentStream); //$NON-NLS-1$
 
 			ClientResponse<Entry> response = request.post(Entry.class);
 
@@ -120,14 +120,14 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 			Document doc = (Document) arty;
 			Assert.assertEquals(artifactFileName, doc.getName());
 			Assert.assertEquals(Long.valueOf(218882), doc.getContentSize());
-			Assert.assertEquals("application/pdf", doc.getContentType());
+			Assert.assertEquals("application/pdf", doc.getContentType()); //$NON-NLS-1$
 			uuid = doc.getUuid();
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}
 
 		// Make sure we can query it now
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document/" + uuid));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/Document/" + uuid)); //$NON-NLS-1$
 		ClientResponse<Entry> response = request.get(Entry.class);
 
 		Entry entry = response.getEntity();
@@ -136,17 +136,17 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 		Document doc = (Document) arty;
 		Assert.assertEquals(artifactFileName, doc.getName());
 		Assert.assertEquals(Long.valueOf(218882), doc.getContentSize());
-		Assert.assertEquals("sample.pdf", doc.getName());
-		Assert.assertEquals("application/pdf", doc.getContentType());
+		Assert.assertEquals("sample.pdf", doc.getName()); //$NON-NLS-1$
+		Assert.assertEquals("application/pdf", doc.getContentType()); //$NON-NLS-1$
         //Obtain the content for visual inspection
-        ClientRequest request2 = new ClientRequest(generateURL("/s-ramp/core/Document/" + uuid + "/media"));
+        ClientRequest request2 = new ClientRequest(generateURL("/s-ramp/core/Document/" + uuid + "/media")); //$NON-NLS-1$ //$NON-NLS-2$
         ClientResponse<InputStream> response2 = request2.get(InputStream.class);
         if (response2.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : "
+            throw new RuntimeException("Failed : HTTP error code : " //$NON-NLS-1$
                 + response.getStatus());
         }
         InputStream in = response2.getEntity();
-        File file = new File("target/SRAMP-sample.pdf");
+        File file = new File("target/SRAMP-sample.pdf"); //$NON-NLS-1$
         OutputStream out = new FileOutputStream(file);
         IOUtils.copy(in, out);
         out.flush();
@@ -162,34 +162,34 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
     public void testExtendedArtifactType() throws Exception {
         ExtendedArtifactType artifact = new ExtendedArtifactType();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-        artifact.setExtendedType("FooApplication");
-        artifact.setName("Extended Artifact Name");
-        artifact.setDescription("Extended Artifact Description");
-        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/FooApplication"));
+        artifact.setExtendedType("FooApplication"); //$NON-NLS-1$
+        artifact.setName("Extended Artifact Name"); //$NON-NLS-1$
+        artifact.setDescription("Extended Artifact Description"); //$NON-NLS-1$
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/FooApplication")); //$NON-NLS-1$
         Entry requestEntry = SrampAtomUtils.wrapSrampArtifact(artifact);
         request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, requestEntry);
 
         ClientResponse<Entry> response = request.post(Entry.class);
 
         Entry responseEntry = response.getEntity();
-        Assert.assertEquals("Extended Artifact Name", responseEntry.getTitle());
+        Assert.assertEquals("Extended Artifact Name", responseEntry.getTitle()); //$NON-NLS-1$
         BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(responseEntry);
         Assert.assertTrue(arty instanceof ExtendedArtifactType);
         ExtendedArtifactType extArty = (ExtendedArtifactType) arty;
-        Assert.assertEquals("Extended Artifact Name", extArty.getName());
-        Assert.assertEquals("Extended Artifact Description", extArty.getDescription());
+        Assert.assertEquals("Extended Artifact Name", extArty.getName()); //$NON-NLS-1$
+        Assert.assertEquals("Extended Artifact Description", extArty.getDescription()); //$NON-NLS-1$
         uuid = extArty.getUuid();
 
         // Make sure we can query it now
-        request = new ClientRequest(generateURL("/s-ramp/ext/FooApplication/" + uuid));
+        request = new ClientRequest(generateURL("/s-ramp/ext/FooApplication/" + uuid)); //$NON-NLS-1$
         response = request.get(Entry.class);
 
         Entry entry = response.getEntity();
         arty = SrampAtomUtils.unwrapSrampArtifact(entry);
         Assert.assertTrue(arty instanceof ExtendedArtifactType);
         extArty = (ExtendedArtifactType) arty;
-        Assert.assertEquals("Extended Artifact Name", extArty.getName());
-        Assert.assertEquals("Extended Artifact Description", extArty.getDescription());
+        Assert.assertEquals("Extended Artifact Name", extArty.getName()); //$NON-NLS-1$
+        Assert.assertEquals("Extended Artifact Description", extArty.getDescription()); //$NON-NLS-1$
     }
 
 	/**
@@ -199,13 +199,13 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
     @Test
     public void testBrmsPkgDocument() throws Exception {
         // Add the pkg to the repository
-        String artifactFileName = "defaultPackage.pkg";
-        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName);
+        String artifactFileName = "defaultPackage.pkg"; //$NON-NLS-1$
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName); //$NON-NLS-1$
         String uuid = null;
         try {
-            ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/BrmsPkgDocument"));
-            request.header("Slug", artifactFileName);
-            request.body("application/octet-stream", contentStream);
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/BrmsPkgDocument")); //$NON-NLS-1$
+            request.header("Slug", artifactFileName); //$NON-NLS-1$
+            request.body("application/octet-stream", contentStream); //$NON-NLS-1$
 
             ClientResponse<Entry> response = request.post(Entry.class);
 
@@ -215,16 +215,16 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
             Assert.assertTrue(arty instanceof ExtendedDocument);
             ExtendedDocument doc = (ExtendedDocument) arty;
             Assert.assertEquals(artifactFileName, doc.getName());
-            Assert.assertEquals("BrmsPkgDocument", doc.getExtendedType());
+            Assert.assertEquals("BrmsPkgDocument", doc.getExtendedType()); //$NON-NLS-1$
             Assert.assertEquals(Long.valueOf(17043), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
-            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+            Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME)); //$NON-NLS-1$
             uuid = doc.getUuid();
         } finally {
             IOUtils.closeQuietly(contentStream);
         }
 
         // Make sure we can query it now
-        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/BrmsPkgDocument/" + uuid));
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/BrmsPkgDocument/" + uuid)); //$NON-NLS-1$
         ClientResponse<Entry> response = request.get(Entry.class);
 
         Entry entry = response.getEntity();
@@ -233,8 +233,8 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
         ExtendedDocument doc = (ExtendedDocument) arty;
         Assert.assertEquals(artifactFileName, doc.getName());
         Assert.assertEquals(Long.valueOf(17043), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
-        Assert.assertEquals("defaultPackage.pkg", doc.getName());
-        Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+        Assert.assertEquals("defaultPackage.pkg", doc.getName()); //$NON-NLS-1$
+        Assert.assertEquals("application/octet-stream", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME)); //$NON-NLS-1$
     }
 
     /**
@@ -244,13 +244,13 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
     @Test
     public void testJPGDocument() throws Exception {
         // Add the jpg to the repository
-        String artifactFileName = "photo.jpg";
-        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName);
+        String artifactFileName = "photo.jpg"; //$NON-NLS-1$
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName); //$NON-NLS-1$
         String uuid = null;
         try {
-            ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/JpgDocument"));
-            request.header("Slug", artifactFileName);
-            request.body("application/octet-stream", contentStream);
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/JpgDocument")); //$NON-NLS-1$
+            request.header("Slug", artifactFileName); //$NON-NLS-1$
+            request.body("application/octet-stream", contentStream); //$NON-NLS-1$
 
             ClientResponse<Entry> response = request.post(Entry.class);
 
@@ -260,16 +260,16 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
             Assert.assertTrue(arty instanceof ExtendedDocument);
             ExtendedDocument doc = (ExtendedDocument) arty;
             Assert.assertEquals(artifactFileName, doc.getName());
-            Assert.assertEquals("JpgDocument", doc.getExtendedType());
+            Assert.assertEquals("JpgDocument", doc.getExtendedType()); //$NON-NLS-1$
             Assert.assertEquals(Long.valueOf(2398), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
-            Assert.assertEquals("image/jpeg", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+            Assert.assertEquals("image/jpeg", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME)); //$NON-NLS-1$
             uuid = doc.getUuid();
         } finally {
             IOUtils.closeQuietly(contentStream);
         }
 
         // Make sure we can query it now
-        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/JpgDocument/" + uuid));
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/JpgDocument/" + uuid)); //$NON-NLS-1$
         ClientResponse<Entry> response = request.get(Entry.class);
 
         Entry entry = response.getEntity();
@@ -278,18 +278,18 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
         ExtendedDocument doc = (ExtendedDocument) arty;
         Assert.assertEquals(artifactFileName, doc.getName());
         Assert.assertEquals(Long.valueOf(2398), Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME)));
-        Assert.assertEquals("photo.jpg", doc.getName());
-        Assert.assertEquals("image/jpeg", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+        Assert.assertEquals("photo.jpg", doc.getName()); //$NON-NLS-1$
+        Assert.assertEquals("image/jpeg", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME)); //$NON-NLS-1$
 
         //Obtain the content for visual inspection
-        ClientRequest request2 = new ClientRequest(generateURL("/s-ramp/ext/JpgDocument/" + uuid + "/media"));
+        ClientRequest request2 = new ClientRequest(generateURL("/s-ramp/ext/JpgDocument/" + uuid + "/media")); //$NON-NLS-1$ //$NON-NLS-2$
         ClientResponse<InputStream> response2 = request2.get(InputStream.class);
         if (response2.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : "
+            throw new RuntimeException("Failed : HTTP error code : " //$NON-NLS-1$
                 + response.getStatus());
         }
         InputStream in = response2.getEntity();
-        File file = new File("target/SRAMP-photo.jpg");
+        File file = new File("target/SRAMP-photo.jpg"); //$NON-NLS-1$
         OutputStream out = new FileOutputStream(file);
         IOUtils.copy(in, out);
         out.flush();
@@ -304,13 +304,13 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
     @Test
     public void testBpmnExtendedDocumentCreate() throws Exception {
         // Add the BPMN process to the repository
-        String artifactFileName = "Evaluation.bpmn";
-        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName);
+        String artifactFileName = "Evaluation.bpmn"; //$NON-NLS-1$
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName); //$NON-NLS-1$
         String uuid = null;
         try {
-            ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/BpmnDocument"));
-            request.header("Slug", artifactFileName);
-            request.body("application/xml", contentStream);
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/BpmnDocument")); //$NON-NLS-1$
+            request.header("Slug", artifactFileName); //$NON-NLS-1$
+            request.body("application/xml", contentStream); //$NON-NLS-1$
 
             ClientResponse<Entry> response = request.post(Entry.class);
 
@@ -320,17 +320,17 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
             Assert.assertTrue(arty instanceof ExtendedDocument);
             ExtendedDocument doc = (ExtendedDocument) arty;
             Assert.assertEquals(artifactFileName, doc.getName());
-            Assert.assertEquals("BpmnDocument", doc.getExtendedType());
+            Assert.assertEquals("BpmnDocument", doc.getExtendedType()); //$NON-NLS-1$
             long size = Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME));
             Assert.assertTrue(size >= 12482L);
-            Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+            Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME)); //$NON-NLS-1$
             uuid = doc.getUuid();
         } finally {
             IOUtils.closeQuietly(contentStream);
         }
 
         // Make sure we can query it now
-        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/BpmnDocument/" + uuid));
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/BpmnDocument/" + uuid)); //$NON-NLS-1$
         ClientResponse<Entry> response = request.get(Entry.class);
 
         Entry entry = response.getEntity();
@@ -338,15 +338,15 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
         Assert.assertTrue(arty instanceof ExtendedDocument);
         ExtendedDocument doc = (ExtendedDocument) arty;
         Assert.assertEquals(artifactFileName, doc.getName());
-        Assert.assertEquals("Evaluation.bpmn", doc.getName());
-        Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+        Assert.assertEquals("Evaluation.bpmn", doc.getName()); //$NON-NLS-1$
+        Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME)); //$NON-NLS-1$
 
         ClientResponse<String> content = request.get(String.class);
         String c = content.getEntity();
         Assert.assertNotNull(c);
 //        System.out.println("Content=" + content.getEntity());
     }
-    
+
     /**
      * Tests adding a BPMN Process Definition document.
      * @throws Exception
@@ -354,13 +354,13 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
     @Test
     public void testWslaExtendedDocumentCreate() throws Exception {
         // Add the BPMN process to the repository
-        String artifactFileName = "Sample.wsla";
-        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName);
+        String artifactFileName = "Sample.wsla"; //$NON-NLS-1$
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/ext/" + artifactFileName); //$NON-NLS-1$
         String uuid = null;
         try {
-            ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/WslaDocument"));
-            request.header("Slug", artifactFileName);
-            request.body("application/xml", contentStream);
+            ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/WslaDocument")); //$NON-NLS-1$
+            request.header("Slug", artifactFileName); //$NON-NLS-1$
+            request.body("application/xml", contentStream); //$NON-NLS-1$
 
             ClientResponse<Entry> response = request.post(Entry.class);
 
@@ -370,17 +370,17 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
             Assert.assertTrue(arty instanceof ExtendedDocument);
             ExtendedDocument doc = (ExtendedDocument) arty;
             Assert.assertEquals(artifactFileName, doc.getName());
-            Assert.assertEquals("WslaDocument", doc.getExtendedType());
+            Assert.assertEquals("WslaDocument", doc.getExtendedType()); //$NON-NLS-1$
             long size = Long.valueOf(doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME));
             Assert.assertTrue(size >= 6556L);
-            Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+            Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME)); //$NON-NLS-1$
             uuid = doc.getUuid();
         } finally {
             IOUtils.closeQuietly(contentStream);
         }
 
         // Make sure we can query it now
-        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/WslaDocument/" + uuid));
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ext/WslaDocument/" + uuid)); //$NON-NLS-1$
         ClientResponse<Entry> response = request.get(Entry.class);
 
         Entry entry = response.getEntity();
@@ -388,8 +388,8 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
         Assert.assertTrue(arty instanceof ExtendedDocument);
         ExtendedDocument doc = (ExtendedDocument) arty;
         Assert.assertEquals(artifactFileName, doc.getName());
-        Assert.assertEquals("Sample.wsla", doc.getName());
-        Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME));
+        Assert.assertEquals("Sample.wsla", doc.getName()); //$NON-NLS-1$
+        Assert.assertEquals("application/xml", doc.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_TYPE_QNAME)); //$NON-NLS-1$
 
         ClientResponse<String> content = request.get(String.class);
         String c = content.getEntity();
@@ -404,13 +404,13 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	@Test
 	public void testWsdlDocumentCreate() throws Exception {
 		// Add the PDF to the repository
-		String artifactFileName = "sample.wsdl";
-		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
+		String artifactFileName = "sample.wsdl"; //$NON-NLS-1$
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName); //$NON-NLS-1$
 		String uuid = null;
 		try {
-			ClientRequest request = new ClientRequest(generateURL("/s-ramp/wsdl/WsdlDocument"));
-			request.header("Slug", artifactFileName);
-			request.body("application/xml", contentStream);
+			ClientRequest request = new ClientRequest(generateURL("/s-ramp/wsdl/WsdlDocument")); //$NON-NLS-1$
+			request.header("Slug", artifactFileName); //$NON-NLS-1$
+			request.body("application/xml", contentStream); //$NON-NLS-1$
 
 			ClientResponse<Entry> response = request.post(Entry.class);
 
@@ -422,46 +422,46 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 			Assert.assertEquals(artifactFileName, doc.getName());
             Long size = doc.getContentSize();
             Assert.assertTrue(size >= 1642L);
-			Assert.assertEquals("application/xml", doc.getContentType());
+			Assert.assertEquals("application/xml", doc.getContentType()); //$NON-NLS-1$
 			uuid = doc.getUuid();
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}
 
 		// Make sure we can query it now
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/wsdl/WsdlDocument/" + uuid));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/wsdl/WsdlDocument/" + uuid)); //$NON-NLS-1$
 		ClientResponse<Entry> response = request.get(Entry.class);
 		Entry entry = response.getEntity();
 		BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
 		Assert.assertNotNull(arty);
 		Assert.assertTrue(arty instanceof WsdlDocument);
 		WsdlDocument wsdlDoc = (WsdlDocument) arty;
-		Assert.assertEquals("sample.wsdl", wsdlDoc.getName());
+		Assert.assertEquals("sample.wsdl", wsdlDoc.getName()); //$NON-NLS-1$
 
 		// Make sure we can query the derived content
-		ClientRequest frequest = new ClientRequest(generateURL("/s-ramp/wsdl/Message"));
+		ClientRequest frequest = new ClientRequest(generateURL("/s-ramp/wsdl/Message")); //$NON-NLS-1$
 		ClientResponse<Feed> fresponse = frequest.get(Feed.class);
 		Feed feed = fresponse.getEntity();
 		Assert.assertNotNull(feed);
 		Assert.assertEquals(2, feed.getEntries().size());
 		String findReqMsgUuid = null;
 		for (Entry atomEntry : feed.getEntries()) {
-			if ("findRequest".equals(atomEntry.getTitle())) {
+			if ("findRequest".equals(atomEntry.getTitle())) { //$NON-NLS-1$
 				findReqMsgUuid = atomEntry.getId().toString();
 			}
 		}
 		Assert.assertNotNull(findReqMsgUuid);
 
 		// Get the full meta data for the derived Message
-		request = new ClientRequest(generateURL("/s-ramp/wsdl/Message/" + findReqMsgUuid));
+		request = new ClientRequest(generateURL("/s-ramp/wsdl/Message/" + findReqMsgUuid)); //$NON-NLS-1$
 		response = request.get(Entry.class);
 		entry = response.getEntity();
 		arty = SrampAtomUtils.unwrapSrampArtifact(entry);
 		Assert.assertNotNull(arty);
 		Assert.assertTrue(arty instanceof Message);
 		Message message = (Message) arty;
-		Assert.assertEquals("findRequest", message.getNCName());
-		Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", message.getNamespace());
+		Assert.assertEquals("findRequest", message.getNCName()); //$NON-NLS-1$
+		Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", message.getNamespace()); //$NON-NLS-1$
 		DocumentArtifactTarget relatedDocumentTarget = message.getRelatedDocument();
 		Assert.assertEquals(DocumentArtifactEnum.WSDL_DOCUMENT, relatedDocumentTarget.getArtifactType());
 		Assert.assertEquals(uuid, relatedDocumentTarget.getValue());
@@ -478,29 +478,29 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	@Test
 	public void testMultiPartCreate() {
 	    try {
-	        ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/XmlDocument"));
+	        ClientRequest request = new ClientRequest(generateURL("/s-ramp/core/XmlDocument")); //$NON-NLS-1$
 
 	        MultipartRelatedOutput output = new MultipartRelatedOutput();
 
 	        XmlDocument xmlDocument = new XmlDocument();
 	        xmlDocument.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
-	        xmlDocument.setCreatedBy("kurt");
-	        xmlDocument.setDescription("In depth description of this XML document");
-	        xmlDocument.setName("PO.xml");
-	        xmlDocument.setUuid("my-uuid");
-	        xmlDocument.setVersion("1.0");
+	        xmlDocument.setCreatedBy("kurt"); //$NON-NLS-1$
+	        xmlDocument.setDescription("In depth description of this XML document"); //$NON-NLS-1$
+	        xmlDocument.setName("PO.xml"); //$NON-NLS-1$
+	        xmlDocument.setUuid("my-uuid"); //$NON-NLS-1$
+	        xmlDocument.setVersion("1.0"); //$NON-NLS-1$
 
 	        Entry atomEntry = new Entry();
 	        Artifact arty = new Artifact();
 	        arty.setXmlDocument(xmlDocument);
 	        atomEntry.setAnyOtherJAXBObject(arty);
 
-	        MediaType mediaType = new MediaType("application", "atom+xml");
+	        MediaType mediaType = new MediaType("application", "atom+xml"); //$NON-NLS-1$ //$NON-NLS-2$
 	        output.addPart(atomEntry, mediaType);
 
-	        String artifactFileName = "PO.xml";
-	        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
-	        MediaType mediaType2 = new MediaType("application", "xml");
+	        String artifactFileName = "PO.xml"; //$NON-NLS-1$
+	        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
+	        MediaType mediaType2 = new MediaType("application", "xml"); //$NON-NLS-1$ //$NON-NLS-2$
 	        output.addPart(contentStream, mediaType2);
 
 	        request.body(MultipartConstants.MULTIPART_RELATED, output);
@@ -510,7 +510,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
             Entry entry = response.getEntity();
             Assert.assertEquals(artifactFileName, entry.getTitle());
             Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
-            Assert.assertEquals("my-uuid",artifact.getXmlDocument().getUuid());
+            Assert.assertEquals("my-uuid",artifact.getXmlDocument().getUuid()); //$NON-NLS-1$
             Long size = artifact.getXmlDocument().getContentSize();
             Assert.assertTrue(size >= 825L);
             Assert.assertEquals(artifactFileName, artifact.getXmlDocument().getName());
@@ -528,20 +528,20 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	@Test
 	public void testCreateNoSlug() throws Exception {
 		// Add the PDF to the repository
-		String artifactFileName = "sample.wsdl";
-		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
+		String artifactFileName = "sample.wsdl"; //$NON-NLS-1$
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName); //$NON-NLS-1$
 		try {
-			ClientRequest request = new ClientRequest(generateURL("/s-ramp/wsdl/WsdlDocument"));
-			request.body("application/xml", contentStream);
+			ClientRequest request = new ClientRequest(generateURL("/s-ramp/wsdl/WsdlDocument")); //$NON-NLS-1$
+			request.body("application/xml", contentStream); //$NON-NLS-1$
 
 			ClientResponse<Entry> response = request.post(Entry.class);
 
 			Entry entry = response.getEntity();
-			Assert.assertEquals("newartifact.wsdl", entry.getTitle());
+			Assert.assertEquals("newartifact.wsdl", entry.getTitle()); //$NON-NLS-1$
 			BaseArtifactType arty = SrampAtomUtils.unwrapSrampArtifact(entry);
 			Assert.assertTrue(arty instanceof WsdlDocument);
 			WsdlDocument doc = (WsdlDocument) arty;
-			Assert.assertEquals("newartifact.wsdl", doc.getName());
+			Assert.assertEquals("newartifact.wsdl", doc.getName()); //$NON-NLS-1$
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}
@@ -554,11 +554,11 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	@Test
 	public void testArtifactDerivation() throws Exception {
 		// Add the PDF to the repository
-		String artifactFileName = "PO.xsd";
-		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+		InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 		try {
-			ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument"));
-			request.body("application/xml", contentStream);
+			ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument")); //$NON-NLS-1$
+			request.body("application/xml", contentStream); //$NON-NLS-1$
 			ClientResponse<Entry> response = request.post(Entry.class);
 			response.getEntity();
 		} finally {
@@ -566,7 +566,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 		}
 
 		// Now let's query for the derived artifacts
-        ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/ElementDeclaration"));
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/ElementDeclaration")); //$NON-NLS-1$
         ClientResponse<Feed> response = request.get(Feed.class);
         Feed feed = response.getEntity();
         Assert.assertEquals(2, feed.getEntries().size());
@@ -574,9 +574,9 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
         for (Entry entry : feed.getEntries()) {
         	entryMap.put(entry.getTitle(), entry);
         }
-        Entry purchaseOrder = entryMap.get("purchaseOrder");
+        Entry purchaseOrder = entryMap.get("purchaseOrder"); //$NON-NLS-1$
         Assert.assertNotNull(purchaseOrder);
-        Entry comment = entryMap.get("comment");
+        Entry comment = entryMap.get("comment"); //$NON-NLS-1$
         Assert.assertNotNull(comment);
 	}
 
@@ -617,15 +617,15 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	private Entry doAddXsd() throws Exception {
 		// Making a client call to the actual XsdDocument implementation running in
 		// an embedded container.
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument"));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument")); //$NON-NLS-1$
 
 		// read the XsdDocument from file
-		String artifactFileName = "PO.xsd";
-		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 		String xmltext = TestUtils.convertStreamToString(POXsd);
 		POXsd.close();
 
-		request.header("Slug", artifactFileName);
+		request.header("Slug", artifactFileName); //$NON-NLS-1$
 		request.body(MediaType.APPLICATION_XML, xmltext);
 
 		ClientResponse<Entry> response = request.post(Entry.class);
@@ -649,7 +649,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 		// TODO I think the entryId should be of the format urn:{uuid} and we'll need to parse it - this isn't happening right now though
 		String uuid = entryId.toString();
 
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid)); //$NON-NLS-1$
 		ClientResponse<Entry> response = request.get(Entry.class);
 
 		Entry entry = response.getEntity();
@@ -667,7 +667,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	private String doGetXsdContent(URI entryId) throws Exception {
 		String uuid = entryId.toString();
 
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid + "/media"));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid + "/media")); //$NON-NLS-1$ //$NON-NLS-2$
 		ClientResponse<String> response = request.get(String.class);
 
 		return response.getEntity();
@@ -681,8 +681,8 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	private void verifyXsdContent(String content) throws IOException {
 		Assert.assertNotNull(content);
 
-		String artifactFileName = "PO.xsd";
-		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+		InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 		try {
 			String expectedContent = TestUtils.convertStreamToString(POXsd);
 			Assert.assertEquals(expectedContent, content);
@@ -700,16 +700,16 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 		// First, make a change to the entry.
 		XsdDocument xsdDocument = (XsdDocument) SrampAtomUtils.unwrapSrampArtifact(entry);
 		String uuid = xsdDocument.getUuid();
-		xsdDocument.setDescription("** Updated description! **");
-		SrampModelUtils.setCustomProperty(xsdDocument, "my.property", "Hello World");
-		SrampModelUtils.addGenericRelationship(xsdDocument, "NoTargetRel", null);
+		xsdDocument.setDescription("** Updated description! **"); //$NON-NLS-1$
+		SrampModelUtils.setCustomProperty(xsdDocument, "my.property", "Hello World"); //$NON-NLS-1$ //$NON-NLS-2$
+		SrampModelUtils.addGenericRelationship(xsdDocument, "NoTargetRel", null); //$NON-NLS-1$
 
 		Artifact arty = new Artifact();
 		arty.setXsdDocument(xsdDocument);
 		entry.setAnyOtherJAXBObject(arty);
 
 		// Now PUT the changed entry into the repo
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid)); //$NON-NLS-1$
 		request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, entry);
 		request.put(Void.class);
 	}
@@ -723,11 +723,11 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	private void verifyEntryUpdated(Entry entry) throws Exception {
 		Artifact srampArtifactWrapper = entry.getAnyOtherJAXBObject(Artifact.class);
 		XsdDocument xsdDocument = srampArtifactWrapper.getXsdDocument();
-		Assert.assertEquals("** Updated description! **", xsdDocument.getDescription());
-		Assert.assertEquals("Hello World", SrampModelUtils.getCustomProperty(xsdDocument, "my.property"));
-		Assert.assertNull(SrampModelUtils.getCustomProperty(xsdDocument, "my.missing.property"));
-		Assert.assertNotNull(SrampModelUtils.getGenericRelationship(xsdDocument, "NoTargetRel"));
-		Assert.assertNull(SrampModelUtils.getGenericRelationship(xsdDocument, "MissingRel"));
+		Assert.assertEquals("** Updated description! **", xsdDocument.getDescription()); //$NON-NLS-1$
+		Assert.assertEquals("Hello World", SrampModelUtils.getCustomProperty(xsdDocument, "my.property")); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertNull(SrampModelUtils.getCustomProperty(xsdDocument, "my.missing.property")); //$NON-NLS-1$
+		Assert.assertNotNull(SrampModelUtils.getGenericRelationship(xsdDocument, "NoTargetRel")); //$NON-NLS-1$
+		Assert.assertNull(SrampModelUtils.getGenericRelationship(xsdDocument, "MissingRel")); //$NON-NLS-1$
 	}
 
 	/**
@@ -738,13 +738,13 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	private void doUpdateXsdContent(Entry entry) throws Exception {
 		XsdDocument xsdDocument = (XsdDocument) SrampAtomUtils.unwrapSrampArtifact(entry);
 		String uuid = xsdDocument.getUuid();
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid + "/media"));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid + "/media")); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// read the XsdDocument from file
-		String artifactFileName = "PO-updated.xsd";
+		String artifactFileName = "PO-updated.xsd"; //$NON-NLS-1$
 		InputStream xsdStream = null;
 		try {
-			xsdStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+			xsdStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 			request.body(MediaType.APPLICATION_XML, xsdStream);
 			request.put(Void.class);
 		} finally {
@@ -760,7 +760,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	private void verifyContentUpdated(String content) throws IOException {
 		Assert.assertNotNull(content);
 
-		InputStream xsdStream = this.getClass().getResourceAsStream("/sample-files/xsd/PO-updated.xsd");
+		InputStream xsdStream = this.getClass().getResourceAsStream("/sample-files/xsd/PO-updated.xsd"); //$NON-NLS-1$
 		try {
 			String expectedContent = TestUtils.convertStreamToString(xsdStream);
 			Assert.assertEquals(expectedContent, content);
@@ -776,7 +776,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	 */
 	private void deleteXsdEntry(URI entryId) throws Exception {
 		String uuid = entryId.toString();
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid)); //$NON-NLS-1$
 		request.delete(Void.class);
 	}
 
@@ -787,12 +787,12 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	private void verifyEntryDeleted(URI entryId) throws Exception {
 		String uuid = entryId.toString();
 
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid));
+		ClientRequest request = new ClientRequest(generateURL("/s-ramp/xsd/XsdDocument/" + uuid)); //$NON-NLS-1$
 		try {
 			request.get(String.class);
-			Assert.fail("Expected an 'Artifact not found.' error here.");
+			Assert.fail("Expected an 'Artifact not found.' error here."); //$NON-NLS-1$
 		} catch (SrampAtomException e) {
-			Assert.assertTrue(e.getMessage().startsWith("No artifact found with UUID:"));
+			Assert.assertTrue(e.getMessage().startsWith("No artifact found with UUID:")); //$NON-NLS-1$
 		}
 	}
 

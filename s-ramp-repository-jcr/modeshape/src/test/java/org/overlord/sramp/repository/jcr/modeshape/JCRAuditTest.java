@@ -55,7 +55,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
 
     @BeforeClass
     public static void enableAuditing() {
-        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "true");
+        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "true"); //$NON-NLS-1$
     }
 
     @Test
@@ -63,7 +63,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         BaseArtifactType artifact = createArtifact();
 
         Assert.assertEquals(Document.class, artifact.getClass());
-        Assert.assertEquals("junituser", artifact.getCreatedBy());
+        Assert.assertEquals("junituser", artifact.getCreatedBy()); //$NON-NLS-1$
     }
 
     @Test
@@ -71,15 +71,15 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         BaseArtifactType artifact = createArtifact();
 
         // Now update the artifact as a different user.
-        MockSecurityContext.currentUser = "junituser2";
-        artifact.setDescription("New description of the artifact.");
+        MockSecurityContext.currentUser = "junituser2"; //$NON-NLS-1$
+        artifact.setDescription("New description of the artifact."); //$NON-NLS-1$
         persistenceManager.updateArtifact(artifact, ArtifactType.Document());
-        MockSecurityContext.currentUser = "junituser";
+        MockSecurityContext.currentUser = "junituser"; //$NON-NLS-1$
 
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document());
 
-        Assert.assertEquals("junituser", artifact.getCreatedBy());
-        Assert.assertEquals("junituser2", artifact.getLastModifiedBy());
+        Assert.assertEquals("junituser", artifact.getCreatedBy()); //$NON-NLS-1$
+        Assert.assertEquals("junituser2", artifact.getLastModifiedBy()); //$NON-NLS-1$
     }
 
     @Test
@@ -89,9 +89,9 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         createArtifact();
 
         // Update the artifact's name, description, and add a custom property
-        artifact.setName("S-RAMP Press Release");
-        artifact.setDescription("Sample description.");
-        SrampModelUtils.setCustomProperty(artifact, "foo", "bar");
+        artifact.setName("S-RAMP Press Release"); //$NON-NLS-1$
+        artifact.setDescription("Sample description."); //$NON-NLS-1$
+        SrampModelUtils.setCustomProperty(artifact, "foo", "bar"); //$NON-NLS-1$ //$NON-NLS-2$
         persistenceManager.updateArtifact(artifact, ArtifactType.Document());
 
         int expectedEntries = 2;
@@ -100,11 +100,11 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         	AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
         	long elapsedTime = new Date().getTime() - start.getTime();
         	if (entries!=null && entries.size()==expectedEntries) {
-        		System.out.println("Waited " + elapsedTime + "ms for 2 audits");
+        		System.out.println("Waited " + elapsedTime + "ms for 2 audits"); //$NON-NLS-1$ //$NON-NLS-2$
         		break;
         	}
         	if (elapsedTime > 20000l) {
-        		System.out.println("Timing out waiting for Audits");
+        		System.out.println("Timing out waiting for Audits"); //$NON-NLS-1$
         		break;
         	}
         	Thread.sleep(100); 
@@ -116,21 +116,21 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         Assert.assertEquals(expectedEntries, entries.size());
         AuditEntry entry = entries.iterator().next();
         Assert.assertNotNull(entry.getUuid());
-        Assert.assertEquals("artifact:update", entry.getType());
+        Assert.assertEquals("artifact:update", entry.getType()); //$NON-NLS-1$
         Assert.assertNotNull(entry.getWhen());
-        Assert.assertEquals("junituser", entry.getWho());
+        Assert.assertEquals("junituser", entry.getWho()); //$NON-NLS-1$
         String updateEntryUuid = entry.getUuid();
         entry = entries.iterator().next();
         Assert.assertNotNull(entry.getUuid());
-        Assert.assertEquals("artifact:add", entry.getType());
+        Assert.assertEquals("artifact:add", entry.getType()); //$NON-NLS-1$
         Assert.assertNotNull(entry.getWhen());
-        Assert.assertEquals("junituser", entry.getWho());
+        Assert.assertEquals("junituser", entry.getWho()); //$NON-NLS-1$
 
         // Get the full audit entry for the final "artifact:add" entry
         AuditEntry auditEntry = auditManager.getArtifactAuditEntry(artifact.getUuid(), entry.getUuid());
-        Assert.assertEquals("artifact:add", auditEntry.getType());
+        Assert.assertEquals("artifact:add", auditEntry.getType()); //$NON-NLS-1$
         Assert.assertNotNull(auditEntry.getWhen());
-        Assert.assertEquals("junituser", auditEntry.getWho());
+        Assert.assertEquals("junituser", auditEntry.getWho()); //$NON-NLS-1$
         List<AuditItemType> auditItems = auditEntry.getAuditItem();
         Assert.assertNotNull(auditItems);
         AuditItemType auditItem = AuditUtils.getAuditItem(auditEntry, AuditItemTypes.PROPERTY_ADDED);
@@ -141,25 +141,25 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
             Assert.assertNotNull(property);
             String name = property.getName();
             String value = property.getValue();
-            if (name.equals("sramp:name")) {
-                Assert.assertEquals("s-ramp-press-release.pdf", value);
-            } else if (name.equals("sramp:contentSize")) {
-                Assert.assertEquals("18873", value);
-            } else if (name.equals("sramp:contentHash")) {
-                Assert.assertEquals("4ee67f4c9f12ebe58c0c6d55d20d9dab91d8ab39", value);
-            } else if (name.equals("sramp:description")) {
-                Assert.assertEquals("Sample description.", value);
+            if (name.equals("sramp:name")) { //$NON-NLS-1$
+                Assert.assertEquals("s-ramp-press-release.pdf", value); //$NON-NLS-1$
+            } else if (name.equals("sramp:contentSize")) { //$NON-NLS-1$
+                Assert.assertEquals("18873", value); //$NON-NLS-1$
+            } else if (name.equals("sramp:contentHash")) { //$NON-NLS-1$
+                Assert.assertEquals("4ee67f4c9f12ebe58c0c6d55d20d9dab91d8ab39", value); //$NON-NLS-1$
+            } else if (name.equals("sramp:description")) { //$NON-NLS-1$
+                Assert.assertEquals("Sample description.", value); //$NON-NLS-1$
             } else {
-                Assert.fail("No assertion for audited property: " + name);
+                Assert.fail("No assertion for audited property: " + name); //$NON-NLS-1$
             }
         }
         Assert.assertEquals(4, properties.size());
 
         // Get the full audit entry for the "artifact:update" entry
         auditEntry = auditManager.getArtifactAuditEntry(artifact.getUuid(), updateEntryUuid);
-        Assert.assertEquals("artifact:update", auditEntry.getType());
+        Assert.assertEquals("artifact:update", auditEntry.getType()); //$NON-NLS-1$
         Assert.assertNotNull(auditEntry.getWhen());
-        Assert.assertEquals("junituser", auditEntry.getWho());
+        Assert.assertEquals("junituser", auditEntry.getWho()); //$NON-NLS-1$
         auditItems = auditEntry.getAuditItem();
         Assert.assertNotNull(auditItems);
         Assert.assertEquals(3, auditItems.size());
@@ -176,10 +176,10 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
             Assert.assertNotNull(property);
             String name = property.getName();
             String value = property.getValue();
-            if (name.equals("sramp:name")) {
-                Assert.assertEquals("S-RAMP Press Release", value);
+            if (name.equals("sramp:name")) { //$NON-NLS-1$
+                Assert.assertEquals("S-RAMP Press Release", value); //$NON-NLS-1$
             } else {
-                Assert.fail("No assertion for audited property: " + name);
+                Assert.fail("No assertion for audited property: " + name); //$NON-NLS-1$
             }
         }
         Assert.assertEquals(1, properties.size());
@@ -190,16 +190,16 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
             Assert.assertNotNull(property);
             String name = property.getName();
             String value = property.getValue();
-            if (name.equals("sramp-properties:foo")) {
-                Assert.assertEquals("bar", value);
+            if (name.equals("sramp-properties:foo")) { //$NON-NLS-1$
+                Assert.assertEquals("bar", value); //$NON-NLS-1$
             } else {
-                Assert.fail("No assertion for audited property: " + name);
+                Assert.fail("No assertion for audited property: " + name); //$NON-NLS-1$
             }
         }
         Assert.assertEquals(1, properties.size());
 
         // Get all audit entries for the user.
-        entries = auditManager.getUserAuditEntries("junituser");
+        entries = auditManager.getUserAuditEntries("junituser"); //$NON-NLS-1$
         Assert.assertNotNull(entries);
         Assert.assertEquals(3, entries.size());
 
@@ -217,7 +217,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
 
         // Get all audit entries for the user.  There should only be 7 because the
         // source document has 6 derived artifacts.
-        entries = auditManager.getUserAuditEntries("junituser");
+        entries = auditManager.getUserAuditEntries("junituser"); //$NON-NLS-1$
         Assert.assertNotNull(entries);
         Assert.assertEquals(7, entries.size());
     }
@@ -233,21 +233,21 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         // Create another audit entry
         XMLGregorianCalendar now = dtFactory.newXMLGregorianCalendar((GregorianCalendar)Calendar.getInstance());
         AuditEntry auditEntry = new AuditEntry();
-        auditEntry.setType("junit:test1");
+        auditEntry.setType("junit:test1"); //$NON-NLS-1$
         auditEntry.setWhen(now);
-        auditEntry.setWho("junituser");
-        AuditItemType item = AuditUtils.getOrCreateAuditItem(auditEntry, "junit:item");
-        AuditUtils.setAuditItemProperty(item, "foo", "bar");
-        AuditUtils.setAuditItemProperty(item, "hello", "world");
+        auditEntry.setWho("junituser"); //$NON-NLS-1$
+        AuditItemType item = AuditUtils.getOrCreateAuditItem(auditEntry, "junit:item"); //$NON-NLS-1$
+        AuditUtils.setAuditItemProperty(item, "foo", "bar"); //$NON-NLS-1$ //$NON-NLS-2$
+        AuditUtils.setAuditItemProperty(item, "hello", "world"); //$NON-NLS-1$ //$NON-NLS-2$
         String auditEntryUuid = auditManager.addAuditEntry(artifact.getUuid(), auditEntry).getUuid();
 
         // Now fetch it back and assert
         AuditEntry re = auditManager.getArtifactAuditEntry(artifact.getUuid(), auditEntryUuid);
         Assert.assertNotNull(re);
         Assert.assertNotNull(re.getUuid());
-        Assert.assertEquals("junituser", re.getWho());
+        Assert.assertEquals("junituser", re.getWho()); //$NON-NLS-1$
         Assert.assertEquals(1, re.getAuditItem().size());
-        Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType());
+        Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType()); //$NON-NLS-1$
         Assert.assertEquals(2, re.getAuditItem().iterator().next().getProperty().size());
     }
 
@@ -256,16 +256,16 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
      * @throws SrampException
      */
     private BaseArtifactType createArtifact() throws SrampException {
-        String artifactFileName = "s-ramp-press-release.pdf";
-        InputStream pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        String artifactFileName = "s-ramp-press-release.pdf"; //$NON-NLS-1$
+        InputStream pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
         Document document = new Document();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
-        document.setDescription("Sample description.");
+        document.setDescription("Sample description."); //$NON-NLS-1$
 
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, pdf);
         Assert.assertNotNull(artifact);
-        log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid()); //$NON-NLS-1$
         return artifact;
     }
 
@@ -274,15 +274,15 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
      * @throws SrampException
      */
     private BaseArtifactType createXsdArtifact() throws SrampException {
-        String artifactFileName = "PO.xsd";
-        InputStream content = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+        InputStream content = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
         XsdDocument document = new XsdDocument();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
 
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, content);
         Assert.assertNotNull(artifact);
-        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid()); //$NON-NLS-1$
         return artifact;
     }
 

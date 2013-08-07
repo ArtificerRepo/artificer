@@ -26,15 +26,16 @@ import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Performs a query against the s-ramp server and displays the result.
  *
  * @author eric.wittmann@redhat.com
  */
-public class QueryCommand extends AbstractShellCommand {
+public class QueryCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -43,70 +44,48 @@ public class QueryCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("s-ramp:query <srampQuery>");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'query' command issues a standard S-RAMP formatted");
-		print("query against the S-RAMP server.  The query will result");
-		print("in a Feed of entries.");
-		print("");
-		print("Example usage:");
-		print(">  s-ramp:query /s-ramp/wsdl/WsdlDocument");
-		print(">  s-ramp:query \"/s-ramp/wsdl[@name = 'find']\"");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		String queryArg = this.requiredArgument(0, "Please specify a valid S-RAMP query.");
+		String queryArg = this.requiredArgument(0, Messages.i18n.format("Query.InvalidArgMsg.MissingQuery")); //$NON-NLS-1$
 		String tooManyArgs = this.optionalArgument(1);
 		if (tooManyArgs != null) {
-            throw new InvalidCommandArgumentException(1, "Too many arguments: did you perhaps forget to surround your S-RAMP query in quotes?");
+            throw new InvalidCommandArgumentException(1, Messages.i18n.format("Query.TooManyArgs")); //$NON-NLS-1$
 		}
 
 		// Get the client out of the context and exec the query
-		QName varName = new QName("s-ramp", "client");
+		QName varName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(varName);
 		if (client == null) {
-			print("No S-RAMP repository connection is currently open.");
+			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return;
 		}
-		if (queryArg.endsWith("/")) {
+		if (queryArg.endsWith("/")) { //$NON-NLS-1$
 			queryArg = queryArg.substring(0, queryArg.length() - 1);
 		}
 
-		print("Querying the S-RAMP repository:");
-		print("\t" + queryArg);
+		print(Messages.i18n.format("Query.Querying")); //$NON-NLS-1$
+		print("\t" + queryArg); //$NON-NLS-1$
 		try {
-    		QueryResultSet rset = client.query(queryArg, 0, 100, "uuid", true);
+    		QueryResultSet rset = client.query(queryArg, 0, 100, "uuid", true); //$NON-NLS-1$
     		int entryIndex = 1;
-    		print("Atom Feed (%1$d entries)", rset.size());
-    		print("  Idx                    Type Name");
-    		print("  ---                    ---- ----");
+    		print(Messages.i18n.format("Query.AtomFeedSummary", rset.size())); //$NON-NLS-1$
+    		print("  Idx                    Type Name"); //$NON-NLS-1$
+    		print("  ---                    ---- ----"); //$NON-NLS-1$
     		for (ArtifactSummary summary : rset) {
     			ArtifactType type = summary.getType();
     			String displayType = type.getArtifactType().getType().toString();
     			if (type.isExtendedType() && type.getExtendedType() != null) {
     			    displayType = type.getExtendedType();
     			}
-                print("  %1$3d %2$23s %3$-40s", entryIndex++, displayType,
+                print("  %1$3d %2$23s %3$-40s", entryIndex++, displayType, //$NON-NLS-1$
     					summary.getName());
     		}
-    		getContext().setVariable(new QName("s-ramp", "feed"), rset);
+    		getContext().setVariable(new QName("s-ramp", "feed"), rset); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (Exception e) {
-            print("FAILED to query the repository.");
-            print("\t" + e.getMessage());
+            print(Messages.i18n.format("Query.Failure")); //$NON-NLS-1$
+            print("\t" + e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
@@ -117,16 +96,16 @@ public class QueryCommand extends AbstractShellCommand {
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
 		if (getArguments().isEmpty()) {
 			if (lastArgument == null) {
-				candidates.add("\"/s-ramp/");
+				candidates.add("\"/s-ramp/"); //$NON-NLS-1$
 				return 0;
 			} else {
-				String [] split = lastArgument.split("/");
-				if (split.length == 0 || split.length == 1 || (split.length == 2 && !lastArgument.endsWith("/"))) {
-					candidates.add("\"/s-ramp/");
+				String [] split = lastArgument.split("/"); //$NON-NLS-1$
+				if (split.length == 0 || split.length == 1 || (split.length == 2 && !lastArgument.endsWith("/"))) { //$NON-NLS-1$
+					candidates.add("\"/s-ramp/"); //$NON-NLS-1$
 					return 0;
 				}
 				// All artifact models
-				if (lastArgument.equals("/s-ramp/")) {
+				if (lastArgument.equals("/s-ramp/")) { //$NON-NLS-1$
 					Set<String> modelCandidates = new TreeSet<String>();
 					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
 						modelCandidates.add(t.getModel());
@@ -135,7 +114,7 @@ public class QueryCommand extends AbstractShellCommand {
 					return lastArgument.length();
 				}
 				// Artifact models matching the partial value
-				if (split.length == 3 && !lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) {
+				if (split.length == 3 && !lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
 					String partialModel = split[2];
 					Set<String> modelCandidates = new TreeSet<String>();
 					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
@@ -143,7 +122,7 @@ public class QueryCommand extends AbstractShellCommand {
 							modelCandidates.add(t.getModel());
 					}
 					if (modelCandidates.size() == 1) {
-						candidates.add(modelCandidates.iterator().next() + "/");
+						candidates.add(modelCandidates.iterator().next() + "/"); //$NON-NLS-1$
 					} else {
 						candidates.addAll(modelCandidates);
 					}
@@ -151,7 +130,7 @@ public class QueryCommand extends AbstractShellCommand {
 					return lastArgument.length() - partialModel.length();
 				}
 				// All artifact types
-				if (split.length == 3 && lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) {
+				if (split.length == 3 && lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
 					String model = split[2];
 					Set<String> typeCandidates = new TreeSet<String>();
 					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
@@ -163,7 +142,7 @@ public class QueryCommand extends AbstractShellCommand {
 					return lastArgument.length();
 				}
 				// Artifact types matching the partial value
-				if (split.length == 4 && !lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) {
+				if (split.length == 4 && !lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
 					String model = split[2];
 					String partialType = split[3];
 					Set<String> typeCandidates = new TreeSet<String>();

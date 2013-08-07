@@ -34,7 +34,7 @@ import org.overlord.sramp.common.SrampModelUtils;
  */
 public class DefaultMetaDataFactory implements MetaDataFactory {
 
-    public static final String PARENT_UUID = "parent.uuid";
+    public static final String PARENT_UUID = "parent.uuid"; //$NON-NLS-1$
 
     private ZipToSrampArchiveContext context;
 
@@ -70,11 +70,11 @@ public class DefaultMetaDataFactory implements MetaDataFactory {
     protected void addStandardMetaData(DiscoveredArtifact discoveredArtifact, BaseArtifactType artifact) {
         artifact.setUuid(UUID.randomUUID().toString());
 		artifact.setName(discoveredArtifact.getName());
-		SrampModelUtils.setCustomProperty(artifact, "batch.archive-path", discoveredArtifact.getArchivePath());
+		SrampModelUtils.setCustomProperty(artifact, "batch.archive-path", discoveredArtifact.getArchivePath()); //$NON-NLS-1$
 		if (this.context != null) {
     		String parentUUID = (String) this.context.get(PARENT_UUID);
     		if (parentUUID != null)
-    		    SrampModelUtils.addGenericRelationship(artifact, "expandedFromDocument", parentUUID);
+    		    SrampModelUtils.addGenericRelationship(artifact, "expandedFromDocument", parentUUID); //$NON-NLS-1$
 		}
     }
 
@@ -85,16 +85,16 @@ public class DefaultMetaDataFactory implements MetaDataFactory {
     protected BaseArtifactType createArtifact(DiscoveredArtifact discoveredArtifact) {
         BaseArtifactType metaData = null;
 		String archivePath = discoveredArtifact.getArchivePath().toLowerCase();
-		if (archivePath.endsWith(".xml")) {
+		if (archivePath.endsWith(".xml")) { //$NON-NLS-1$
 			metaData = new XmlDocument();
 			metaData.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
-		} else if (archivePath.endsWith(".wsdl")) {
+		} else if (archivePath.endsWith(".wsdl")) { //$NON-NLS-1$
 			metaData = new WsdlDocument();
 			metaData.setArtifactType(BaseArtifactEnum.WSDL_DOCUMENT);
-		} else if (archivePath.endsWith(".xsd")) {
+		} else if (archivePath.endsWith(".xsd")) { //$NON-NLS-1$
 			metaData = new XsdDocument();
 			metaData.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-		} else if (archivePath.endsWith(".wspolicy")) {
+		} else if (archivePath.endsWith(".wspolicy")) { //$NON-NLS-1$
 			metaData = new XsdDocument();
 			metaData.setArtifactType(BaseArtifactEnum.POLICY_DOCUMENT);
 		} else {

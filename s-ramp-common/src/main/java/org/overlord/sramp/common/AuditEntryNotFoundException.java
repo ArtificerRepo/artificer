@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.common;
 
+import org.overlord.sramp.common.i18n.Messages;
+
 
 /**
  * Exception thrown when the user attempts to access an audit entry that does not exist.
@@ -31,7 +33,7 @@ public class AuditEntryNotFoundException extends SrampUserException {
      * @param artifactUuid
      */
     public AuditEntryNotFoundException(String artifactUuid, String auditEntryUuid) {
-        super("No audit entry for artifact '" + artifactUuid + "' found with UUID: " + auditEntryUuid);
+        super(Messages.i18n.format("AUDIT_ENTRY_NOT_FOUND", artifactUuid, auditEntryUuid)); //$NON-NLS-1$
     }
 
 }

@@ -30,33 +30,33 @@ import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
  */
 public class SwitchYardModel {
 
-    public static final String SCA_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912";
-    public static final String SWITCHYARD_NS = "urn:switchyard-config:switchyard:1.0";
-    public static final String BEAN_NS = "urn:switchyard-component-bean:config:1.0";
-    public static final String TRANSFORM_NS = "urn:switchyard-config:transform:1.0";
-    public static final String VALIDATE_NS = "urn:switchyard-config:validate:1.0";
-    public static final String SOAP_NS = "urn:switchyard-component-soap:config:1.0";
-    public static final String CAMEL_NS = "urn:switchyard-component-camel:config:1.0";
+    public static final String SCA_NS = "http://docs.oasis-open.org/ns/opencsa/sca/200912"; //$NON-NLS-1$
+    public static final String SWITCHYARD_NS = "urn:switchyard-config:switchyard:1.0"; //$NON-NLS-1$
+    public static final String BEAN_NS = "urn:switchyard-component-bean:config:1.0"; //$NON-NLS-1$
+    public static final String TRANSFORM_NS = "urn:switchyard-config:transform:1.0"; //$NON-NLS-1$
+    public static final String VALIDATE_NS = "urn:switchyard-config:validate:1.0"; //$NON-NLS-1$
+    public static final String SOAP_NS = "urn:switchyard-component-soap:config:1.0"; //$NON-NLS-1$
+    public static final String CAMEL_NS = "urn:switchyard-component-camel:config:1.0"; //$NON-NLS-1$
 
-    public static final String REL_IMPLEMENTS = "implements";
-    public static final String REL_PROMOTES = "promotes";
-    public static final String REL_USES = "uses";
-    public static final String REL_TRANSFORMS_FROM = "transformsFrom";
-    public static final String REL_TRANSFORMS_TO = "transformsTo";
-    public static final String REL_IMPLEMENTED_BY = "implementedBy";
-    public static final String REL_REFERENCES = "references";
-    public static final String REL_VALIDATES = "validates";
+    public static final String REL_IMPLEMENTS = "implements"; //$NON-NLS-1$
+    public static final String REL_PROMOTES = "promotes"; //$NON-NLS-1$
+    public static final String REL_USES = "uses"; //$NON-NLS-1$
+    public static final String REL_TRANSFORMS_FROM = "transformsFrom"; //$NON-NLS-1$
+    public static final String REL_TRANSFORMS_TO = "transformsTo"; //$NON-NLS-1$
+    public static final String REL_IMPLEMENTED_BY = "implementedBy"; //$NON-NLS-1$
+    public static final String REL_REFERENCES = "references"; //$NON-NLS-1$
+    public static final String REL_VALIDATES = "validates"; //$NON-NLS-1$
 
-    public static final String PROP_TRANSFORMER_TYPE = "transformer-type";
-    public static final String PROP_VALIDATE_TYPE = "validator-type";
-    public static final String PROP_GATEWAY_TYPE = "gateway-type";
+    public static final String PROP_TRANSFORMER_TYPE = "transformer-type"; //$NON-NLS-1$
+    public static final String PROP_VALIDATE_TYPE = "validator-type"; //$NON-NLS-1$
+    public static final String PROP_GATEWAY_TYPE = "gateway-type"; //$NON-NLS-1$
 
-    public static final String SwitchYardXmlDocument = "SwitchYardXmlDocument";
+    public static final String SwitchYardXmlDocument = "SwitchYardXmlDocument"; //$NON-NLS-1$
     public static final ArtifactType SwitchYardXmlDocumentType = ArtifactType.valueOf(SwitchYardXmlDocument);
-    public static final String SwitchYardService = "SwitchYardService";
-    public static final String SwitchYardComponent = "SwitchYardComponent";
-    public static final String SwitchYardTransformer = "SwitchYardTransformer";
-    public static final String SwitchYardValidator = "SwitchYardValidator";
+    public static final String SwitchYardService = "SwitchYardService"; //$NON-NLS-1$
+    public static final String SwitchYardComponent = "SwitchYardComponent"; //$NON-NLS-1$
+    public static final String SwitchYardTransformer = "SwitchYardTransformer"; //$NON-NLS-1$
+    public static final String SwitchYardValidator = "SwitchYardValidator"; //$NON-NLS-1$
     public static final ArtifactType SwitchYardServiceType = ArtifactType.valueOf(SwitchYardService);
     public static final ArtifactType SwitchYardComponentType = ArtifactType.valueOf(SwitchYardComponent);
     public static final ArtifactType SwitchYardTransformerType = ArtifactType.valueOf(SwitchYardTransformer);
@@ -112,13 +112,13 @@ public class SwitchYardModel {
      * @param namespaceContext
      */
     public static void addNamespaceMappings(StaticNamespaceContext namespaceContext) {
-        namespaceContext.addMapping("sca", SwitchYardModel.SCA_NS);
-        namespaceContext.addMapping("swyd", SwitchYardModel.SWITCHYARD_NS);
-        namespaceContext.addMapping("bean", SwitchYardModel.BEAN_NS);
-        namespaceContext.addMapping("tf", SwitchYardModel.TRANSFORM_NS);
-        namespaceContext.addMapping("val", SwitchYardModel.VALIDATE_NS);
-        namespaceContext.addMapping("soap", SwitchYardModel.SOAP_NS);
-        namespaceContext.addMapping("camel", SwitchYardModel.CAMEL_NS);
+        namespaceContext.addMapping("sca", SwitchYardModel.SCA_NS); //$NON-NLS-1$
+        namespaceContext.addMapping("swyd", SwitchYardModel.SWITCHYARD_NS); //$NON-NLS-1$
+        namespaceContext.addMapping("bean", SwitchYardModel.BEAN_NS); //$NON-NLS-1$
+        namespaceContext.addMapping("tf", SwitchYardModel.TRANSFORM_NS); //$NON-NLS-1$
+        namespaceContext.addMapping("val", SwitchYardModel.VALIDATE_NS); //$NON-NLS-1$
+        namespaceContext.addMapping("soap", SwitchYardModel.SOAP_NS); //$NON-NLS-1$
+        namespaceContext.addMapping("camel", SwitchYardModel.CAMEL_NS); //$NON-NLS-1$
     }
 
 }

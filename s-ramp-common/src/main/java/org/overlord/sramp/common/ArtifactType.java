@@ -25,6 +25,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.overlord.sramp.common.i18n.Messages;
 
 /**
  * A class representing all of the Artifact Types defined by S-RAMP.
@@ -34,22 +35,22 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 public class ArtifactType {
 
     public static final ArtifactType Document() {
-        return new ArtifactType(ArtifactTypeEnum.Document, "application/octet-stream");
+        return new ArtifactType(ArtifactTypeEnum.Document, "application/octet-stream"); //$NON-NLS-1$
     }
     public static final ArtifactType Document(String mimeType) {
         return new ArtifactType(ArtifactTypeEnum.Document, mimeType);
     }
     public static final ArtifactType XmlDocument() {
-        return new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml");
+        return new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml"); //$NON-NLS-1$
     }
     public static final ArtifactType XsdDocument() {
-        return new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml");
+        return new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml"); //$NON-NLS-1$
     }
     public static final ArtifactType WsdlDocument() {
-        return new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml");
+        return new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml"); //$NON-NLS-1$
     }
     public static final ArtifactType PolicyDocument() {
-        return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml");
+        return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml"); //$NON-NLS-1$
     }
     public static final ArtifactType ExtendedArtifactType(String extendedType, boolean derived) {
         ArtifactType at = new ArtifactType(ArtifactTypeEnum.ExtendedArtifactType, null);
@@ -73,21 +74,21 @@ public class ArtifactType {
         extendedArtifactTypes = new ConcurrentHashMap<String, ModelMime>();
         //TODO use SRAMP documents to store SRAMP internal information? We would put this one in here as
         // an hard coded ExtendedArtifactType (Extended by us)
-        extendedArtifactTypes.put("sramp",      new ModelMime("SRAMPDocument",   "application/xml"));
+        extendedArtifactTypes.put("sramp",      new ModelMime("SRAMPDocument",   "application/xml")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         //TODO read this from the repo instead (store as an Artifact, can we do TextDocument?)
-        extendedArtifactTypes.put("pkg",        new ModelMime("BrmsPkgDocument", "application/octet-stream"));
-        extendedArtifactTypes.put("package",    new ModelMime("BrmsPkgDocument", "application/octet-stream"));
-        extendedArtifactTypes.put("bpmn",       new ModelMime("BpmnDocument",    "application/xml"));
-        extendedArtifactTypes.put("bpmn2",      new ModelMime("BpmnDocument",    "application/xml"));
-        extendedArtifactTypes.put("txt",        new ModelMime("TextDocument",    "text/plain"));
-        extendedArtifactTypes.put("properties", new ModelMime("TextDocument",    "text/plain"));
-        extendedArtifactTypes.put("css",        new ModelMime("CssDocument",     "text/css"));
-        extendedArtifactTypes.put("html",       new ModelMime("HtmlDocument",    "text/html"));
-        extendedArtifactTypes.put("ftl",        new ModelMime("FtlDocument",     "text/html"));
-        extendedArtifactTypes.put("wid",        new ModelMime("TextDocument",    "text/plain"));
-        extendedArtifactTypes.put("gif",        new ModelMime("ImageDocument",   "application/octet-stream"));
-        extendedArtifactTypes.put("png",        new ModelMime("ImageDocument",   "application/octet-stream"));
-	extendedArtifactTypes.put("wsla",       new ModelMime("WslaDocument",    "application/xml"));
+        extendedArtifactTypes.put("pkg",        new ModelMime("BrmsPkgDocument", "application/octet-stream")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("package",    new ModelMime("BrmsPkgDocument", "application/octet-stream")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("bpmn",       new ModelMime("BpmnDocument",    "application/xml")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("bpmn2",      new ModelMime("BpmnDocument",    "application/xml")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("txt",        new ModelMime("TextDocument",    "text/plain")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("properties", new ModelMime("TextDocument",    "text/plain")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("css",        new ModelMime("CssDocument",     "text/css")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("html",       new ModelMime("HtmlDocument",    "text/html")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("ftl",        new ModelMime("FtlDocument",     "text/html")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("wid",        new ModelMime("TextDocument",    "text/plain")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("gif",        new ModelMime("ImageDocument",   "application/octet-stream")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("png",        new ModelMime("ImageDocument",   "application/octet-stream")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        extendedArtifactTypes.put("wsla",       new ModelMime("WslaDocument",    "application/xml")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**
@@ -100,9 +101,9 @@ public class ArtifactType {
         // Might need something more interesting than this in the future.
         if (mimeType == null) {
             if (artifactType == ArtifactTypeEnum.Document) {
-                mimeType = "application/octet-stream";
+                mimeType = "application/octet-stream"; //$NON-NLS-1$
             } else {
-                mimeType = "application/xml";
+                mimeType = "application/xml"; //$NON-NLS-1$
             }
         }
         setMimeType(mimeType);
@@ -115,12 +116,12 @@ public class ArtifactType {
      */
     public BaseArtifactType unwrap(Artifact artifactWrapper) {
         try {
-            Method method = Artifact.class.getMethod("get" + getArtifactType().getType());
+            Method method = Artifact.class.getMethod("get" + getArtifactType().getType()); //$NON-NLS-1$
             BaseArtifactType artifact = (BaseArtifactType) method.invoke(artifactWrapper);
             artifact.setArtifactType(this.getArtifactType().getApiType());
             return artifact;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to unwrap artifact for type: " + getArtifactType().getType(), e);
+            throw new RuntimeException(Messages.i18n.format("ARTIFACT_UNWRAP_ERROR", getArtifactType().getType()), e); //$NON-NLS-1$
         }
     }
 
@@ -131,14 +132,14 @@ public class ArtifactType {
      */
     public static ArtifactType fromFileExtension(String extension) {
         String ext = extension.toLowerCase();
-        if (ext.equals("xml")) {
-            return new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml");
-        } else if (ext.equals("xsd")) {
-            return new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml");
-        } else if (ext.equals("wsdl")) {
-            return new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml");
-        } else if (ext.equals("wspolicy")) {
-            return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml");
+        if (ext.equals("xml")) { //$NON-NLS-1$
+            return new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml"); //$NON-NLS-1$
+        } else if (ext.equals("xsd")) { //$NON-NLS-1$
+            return new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml"); //$NON-NLS-1$
+        } else if (ext.equals("wsdl")) { //$NON-NLS-1$
+            return new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml"); //$NON-NLS-1$
+        } else if (ext.equals("wspolicy")) { //$NON-NLS-1$
+            return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml"); //$NON-NLS-1$
         } else if (extendedArtifactTypes.containsKey(ext)){
             ModelMime modelMime = extendedArtifactTypes.get(ext);
             ArtifactType artifactType = ArtifactType.ExtendedArtifactType(modelMime.extendedModel, false);
@@ -161,7 +162,7 @@ public class ArtifactType {
             ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.ExtendedArtifactType;
             ArtifactType rval = new ArtifactType(artifactTypeEnum, null);
             rval.setExtendedType(artifactType);
-            rval.setMimeType("application/octet-stream");
+            rval.setMimeType("application/octet-stream"); //$NON-NLS-1$
             return rval;
         }
     }
@@ -172,7 +173,7 @@ public class ArtifactType {
      */
     public static ArtifactType valueOf(String model, String type) {
         ArtifactType artifactType = null;
-        if ("ext".equals(model)) {
+        if ("ext".equals(model)) { //$NON-NLS-1$
             ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.ExtendedArtifactType;
             artifactType = new ArtifactType(artifactTypeEnum, null);
             artifactType.setExtendedType(type);
@@ -201,7 +202,7 @@ public class ArtifactType {
                     artifactType.setMimeType(contentTypeStr);
                 }
                 String extendedDerived = artifact.getOtherAttributes().get(SrampConstants.SRAMP_DERIVED_QNAME);
-                artifactType.setExtendedDerivedType("true".equals(extendedDerived));
+                artifactType.setExtendedDerivedType("true".equals(extendedDerived)); //$NON-NLS-1$
             }
             if (artifactType.getArtifactType() == ArtifactTypeEnum.ExtendedArtifactType) {
                 String extendedType = ((ExtendedArtifactType) artifact).getExtendedType();
@@ -226,12 +227,12 @@ public class ArtifactType {
                             .getExtendedType() : ((ExtendedDocument) artifact).getExtendedType();
                     String extendedDerived = artifact.getOtherAttributes().get(SrampConstants.SRAMP_DERIVED_QNAME);
                     artifactType.setExtendedType(extendedType);
-                    artifactType.setExtendedDerivedType("true".equals(extendedDerived));
+                    artifactType.setExtendedDerivedType("true".equals(extendedDerived)); //$NON-NLS-1$
                 }
                 return artifactType;
             }
         }
-        throw new RuntimeException("Could not determine Artifact Type from artifact class: " + artifact.getClass());
+        throw new RuntimeException(Messages.i18n.format("ARTIFACT_TYPE_FROM_CLASS_ERROR", artifact.getClass())); //$NON-NLS-1$
     }
 
     /**
@@ -256,7 +257,7 @@ public class ArtifactType {
             }
             return baseArtifactType;
         } catch (Exception e) {
-            throw new RuntimeException("Could not instantiate Artifact " + getArtifactType().getTypeClass(),e);
+            throw new RuntimeException(Messages.i18n.format("ARTIFACT_INSTANTIATION_ERROR", getArtifactType().getTypeClass()), e); //$NON-NLS-1$
         }
     }
 
@@ -271,7 +272,7 @@ public class ArtifactType {
                 return new ArtifactType(artifactType, null);
             }
         }
-        throw new RuntimeException("Could not determine Artifact Type from S-RAMP API type: " + apiType.value());
+        throw new RuntimeException(Messages.i18n.format("ARTIFACT_TYPE_FROM_APITYPE_ERROR", apiType.value())); //$NON-NLS-1$
     }
 
     /**
@@ -346,7 +347,7 @@ public class ArtifactType {
      */
     @Override
     public String toString() {
-        return String.format("/s-ramp/%1$s/%2$s (%3$s)", getArtifactType().getModel(), getArtifactType()
+        return String.format("/s-ramp/%1$s/%2$s (%3$s)", getArtifactType().getModel(), getArtifactType() //$NON-NLS-1$
                 .getType(), getMimeType());
     }
 
@@ -375,7 +376,7 @@ public class ArtifactType {
         ArtifactType type = null;
         // We were given a hint - try using that first.
         if (hint != null) {
-            String methodName = "get" + hint;
+            String methodName = "get" + hint; //$NON-NLS-1$
             try {
                 Method method = artifactWrapper.getClass().getMethod(methodName);
                 Object o = method.invoke(artifactWrapper);
@@ -393,7 +394,7 @@ public class ArtifactType {
             Method[] methods = artifactWrapper.getClass().getMethods();
             try {
                 for (Method method : methods) {
-                    if (method.getName().startsWith("get")) {
+                    if (method.getName().startsWith("get")) { //$NON-NLS-1$
                         Object o = method.invoke(artifactWrapper);
                         if (o != null && BaseArtifactType.class.isAssignableFrom(o.getClass())) {
                             Class<? extends BaseArtifactType> artyClass = ((BaseArtifactType) o).getClass();

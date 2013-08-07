@@ -17,11 +17,12 @@ package org.overlord.sramp.shell.commands.core;
 
 import javax.xml.namespace.QName;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Displays a summary of the current status, including what repository the
@@ -29,7 +30,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
  *
  * @author eric.wittmann@redhat.com
  */
-public class StatusCommand extends AbstractShellCommand {
+public class StatusCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -38,54 +39,35 @@ public class StatusCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("s-ramp:status");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'status' command displays the current S-RAMP status.");
-		print("");
-		print("Example usage:");
-		print(">  s-ramp:status");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		QName clientVarName = new QName("s-ramp", "client");
-		QName artifactVarName = new QName("s-ramp", "artifact");
-		QName feedVarName = new QName("s-ramp", "feed");
+		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
+		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
+		QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		QueryResultSet feed = (QueryResultSet) getContext().getVariable(feedVarName);
 
 		if (client == null) {
-			print (" S-RAMP Connection: <not currently connected>");
+			print (Messages.i18n.format("Status.Status1")); //$NON-NLS-1$
 		} else {
-			print (" S-RAMP Connection: %1$s", client.getEndpoint());
+			print (Messages.i18n.format("Status.Status2", client.getEndpoint())); //$NON-NLS-1$
 		}
 
 		if (artifact == null) {
-			print("   S-RAMP Artifact: <none currently active>");
+			print(Messages.i18n.format("Status.Status3")); //$NON-NLS-1$
 		} else {
 			ArtifactType type = ArtifactType.valueOf(artifact);
-			print("   S-RAMP Artifact: %1$s (%2$s)", artifact.getName(), type.getType());
+			print(Messages.i18n.format("Status.Status4", artifact.getName(), type.getType())); //$NON-NLS-1$
 		}
 
 		if (feed == null) {
-			print("     Artifact Feed: <none currently active>");
+			print(Messages.i18n.format("Status.Status5")); //$NON-NLS-1$
 		} else {
-			print("     Artifact Feed: %1$d items", feed.size());
+			print(Messages.i18n.format("Status.Status6", feed.size())); //$NON-NLS-1$
 		}
 	}
 

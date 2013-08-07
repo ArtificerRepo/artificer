@@ -31,44 +31,44 @@ public class MavenGavInfoTest {
 		// Resource path,
 		// groupId, artifactId, version, classifier, type, name, isHash, isSnapshot, snapshotTimestamp
 		{
-			"org/example/schema/my-schema/1.3/my-schema-1.3.xsd",
-			"org.example.schema", "my-schema", "1.3", null, "xsd", "my-schema-1.3.xsd", "false", "false", null
+			"org/example/schema/my-schema/1.3/my-schema-1.3.xsd", //$NON-NLS-1$
+			"org.example.schema", "my-schema", "1.3", null, "xsd", "my-schema-1.3.xsd", "false", "false", null //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 		},
 		{
-			"xsd/XsdDocument/29873-21983-2497822-1989/1.0/29873-21983-2497822-1989-1.0.pom",
-			"xsd.XsdDocument", "29873-21983-2497822-1989", "1.0", null, "pom", "29873-21983-2497822-1989-1.0.pom", "false", "false", null
+			"xsd/XsdDocument/29873-21983-2497822-1989/1.0/29873-21983-2497822-1989-1.0.pom", //$NON-NLS-1$
+			"xsd.XsdDocument", "29873-21983-2497822-1989", "1.0", null, "pom", "29873-21983-2497822-1989-1.0.pom", "false", "false", null //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 		},
 		{
-			"org/apache/commons/commons-io/1.3.2/commons-io-1.3.2.jar",
-			"org.apache.commons", "commons-io", "1.3.2", null, "jar", "commons-io-1.3.2.jar", "false", "false", null
+			"org/apache/commons/commons-io/1.3.2/commons-io-1.3.2.jar", //$NON-NLS-1$
+			"org.apache.commons", "commons-io", "1.3.2", null, "jar", "commons-io-1.3.2.jar", "false", "false", null //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 		},
 		{
-			"org/apache/commons/commons-io/1.3.2/commons-io-1.3.2.pom.sha1",
-			"org.apache.commons", "commons-io", "1.3.2", null, "pom.sha1", "commons-io-1.3.2.pom.sha1", "true", "false", null
+			"org/apache/commons/commons-io/1.3.2/commons-io-1.3.2.pom.sha1", //$NON-NLS-1$
+			"org.apache.commons", "commons-io", "1.3.2", null, "pom.sha1", "commons-io-1.3.2.pom.sha1", "true", "false", null //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 		},
 		{
-			"org/apache/commons/commons-io/1.3.2/commons-io-1.3.2.jar.sha1",
-			"org.apache.commons", "commons-io", "1.3.2", null, "jar.sha1", "commons-io-1.3.2.jar.sha1", "true", "false", null
+			"org/apache/commons/commons-io/1.3.2/commons-io-1.3.2.jar.sha1", //$NON-NLS-1$
+			"org.apache.commons", "commons-io", "1.3.2", null, "jar.sha1", "commons-io-1.3.2.jar.sha1", "true", "false", null //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 		},
 		{
-			"org/apache/commons/commons-io/1.3.2/commons-io-1.3.2-sources.jar",
-			"org.apache.commons", "commons-io", "1.3.2", "sources", "jar", "commons-io-1.3.2-sources.jar", "false", "false", null
+			"org/apache/commons/commons-io/1.3.2/commons-io-1.3.2-sources.jar", //$NON-NLS-1$
+			"org.apache.commons", "commons-io", "1.3.2", "sources", "jar", "commons-io-1.3.2-sources.jar", "false", "false", null //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 		},
 		{
-			"org/apache/commons/commons-io/1.3.2/commons-io-1.3.2-sources.jar.md5",
-			"org.apache.commons", "commons-io", "1.3.2", "sources", "jar.md5", "commons-io-1.3.2-sources.jar.md5", "true", "false", null
+			"org/apache/commons/commons-io/1.3.2/commons-io-1.3.2-sources.jar.md5", //$NON-NLS-1$
+			"org.apache.commons", "commons-io", "1.3.2", "sources", "jar.md5", "commons-io-1.3.2-sources.jar.md5", "true", "false", null //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 		},
 		{
-			"org/overlord/sramp/test/test-wagon-push/0.0.1-SNAPSHOT/test-wagon-push-0.0.1-20120921.113704-1.jar",
-			"org.overlord.sramp.test", "test-wagon-push", "0.0.1-SNAPSHOT", null, "jar", "test-wagon-push-0.0.1-20120921.113704-1.jar", "false", "true", "20120921.113704-1"
+			"org/overlord/sramp/test/test-wagon-push/0.0.1-SNAPSHOT/test-wagon-push-0.0.1-20120921.113704-1.jar", //$NON-NLS-1$
+			"org.overlord.sramp.test", "test-wagon-push", "0.0.1-SNAPSHOT", null, "jar", "test-wagon-push-0.0.1-20120921.113704-1.jar", "false", "true", "20120921.113704-1" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 		},
 		{
-			"org/overlord/sramp/test/test-wagon-push/0.0.1-SNAPSHOT/test-wagon-push-0.0.1-20120921.113704-1-sources.jar.md5",
-			"org.overlord.sramp.test", "test-wagon-push", "0.0.1-SNAPSHOT", "sources", "jar.md5", "test-wagon-push-0.0.1-20120921.113704-1-sources.jar.md5", "true", "true", "20120921.113704-1"
+			"org/overlord/sramp/test/test-wagon-push/0.0.1-SNAPSHOT/test-wagon-push-0.0.1-20120921.113704-1-sources.jar.md5", //$NON-NLS-1$
+			"org.overlord.sramp.test", "test-wagon-push", "0.0.1-SNAPSHOT", "sources", "jar.md5", "test-wagon-push-0.0.1-20120921.113704-1-sources.jar.md5", "true", "true", "20120921.113704-1" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
 		},
 		{
-			"org/overlord/sramp/test/test-wagon-push/0.0.1-SNAPSHOT/test-wagon-push-0.0.1-20120921.113704-1.pom.sha1",
-			"org.overlord.sramp.test", "test-wagon-push", "0.0.1-SNAPSHOT", null, "pom.sha1", "test-wagon-push-0.0.1-20120921.113704-1.pom.sha1", "true", "true", "20120921.113704-1"
+			"org/overlord/sramp/test/test-wagon-push/0.0.1-SNAPSHOT/test-wagon-push-0.0.1-20120921.113704-1.pom.sha1", //$NON-NLS-1$
+			"org.overlord.sramp.test", "test-wagon-push", "0.0.1-SNAPSHOT", null, "pom.sha1", "test-wagon-push-0.0.1-20120921.113704-1.pom.sha1", "true", "true", "20120921.113704-1" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 		},
 	};
 
@@ -91,7 +91,7 @@ public class MavenGavInfoTest {
 
 			MavenGavInfo gavInfo = MavenGavInfo.fromResource(new Resource(resourcePath));
 
-			String helpfulMsg = "Failure in test case: " + resourcePath;
+			String helpfulMsg = "Failure in test case: " + resourcePath; //$NON-NLS-1$
 			Assert.assertEquals(helpfulMsg, expectedGroupId, gavInfo.getGroupId());
 			Assert.assertEquals(helpfulMsg, expectedArtifactId, gavInfo.getArtifactId());
 			Assert.assertEquals(helpfulMsg, expectedVersion, gavInfo.getVersion());

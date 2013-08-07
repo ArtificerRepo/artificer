@@ -38,7 +38,7 @@ public class KieJarToSrampArchiveTest {
 
 	@Test
 	public void testKieIntegration() throws Exception {
-	    InputStream stream = getClass().getResourceAsStream("kie.jar");
+	    InputStream stream = getClass().getResourceAsStream("kie.jar"); //$NON-NLS-1$
 	    SrampArchive archive = null;
 	    KieJarToSrampArchive kie2archive = null;
 	    try {
@@ -68,16 +68,16 @@ public class KieJarToSrampArchiveTest {
         }
         StringBuilder buff = new StringBuilder();
         for (String entryName : entryNames) {
-            buff.append(entryName).append("\n");
+            buff.append(entryName).append("\n"); //$NON-NLS-1$
         }
         Assert.assertEquals(EXPECTED_ENTRIES, buff.toString());
 
         // Now spot-check some representative entries.
 
         // Check the kmodule.xml
-        SrampArchiveEntry entry = archive.getEntry("META-INF/kmodule.xml");
+        SrampArchiveEntry entry = archive.getEntry("META-INF/kmodule.xml"); //$NON-NLS-1$
         Assert.assertNotNull(entry);
-        Assert.assertEquals("kmodule.xml", entry.getMetaData().getName());
+        Assert.assertEquals("kmodule.xml", entry.getMetaData().getName()); //$NON-NLS-1$
         Assert.assertEquals(BaseArtifactEnum.EXTENDED_DOCUMENT, entry.getMetaData().getArtifactType());
         ExtendedDocument kieXmlDoc = (ExtendedDocument) entry.getMetaData();
         Assert.assertEquals(KieJarModel.KieXmlDocument, kieXmlDoc.getExtendedType());
@@ -85,8 +85,8 @@ public class KieJarToSrampArchiveTest {
     }
 
     private static final String EXPECTED_ENTRIES =
-            "META-INF/kmodule.xml\n" +
-            "SRAMPPackage/overlord.demo.CheckDeployment-taskform.xml\n" +
-            "SRAMPPackage/overlord.demo.ProjectLifeCycle.bpmn2\n" +
-            "SRAMPPackage/overlord.demo.SimpleReleaseProcess.bpmn\n";
+            "META-INF/kmodule.xml\n" + //$NON-NLS-1$
+            "SRAMPPackage/overlord.demo.CheckDeployment-taskform.xml\n" + //$NON-NLS-1$
+            "SRAMPPackage/overlord.demo.ProjectLifeCycle.bpmn2\n" + //$NON-NLS-1$
+            "SRAMPPackage/overlord.demo.SimpleReleaseProcess.bpmn\n"; //$NON-NLS-1$
 }

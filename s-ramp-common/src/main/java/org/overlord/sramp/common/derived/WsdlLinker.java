@@ -210,8 +210,8 @@ public class WsdlLinker extends ArtifactVisitorAdapter {
     private BaseArtifactType findArtifact(ArtifactTypeEnum artifactType, QName reference) {
         LinkerContext lcontext = linkerContext.get();
         Map<String, String> criteria = new HashMap<String, String>();
-        criteria.put("namespace", reference.getNamespaceURI());
-        criteria.put("ncName", reference.getLocalPart());
+        criteria.put("namespace", reference.getNamespaceURI()); //$NON-NLS-1$
+        criteria.put("ncName", reference.getLocalPart()); //$NON-NLS-1$
         Collection<BaseArtifactType> artifacts = lcontext.findArtifacts(artifactType.getModel(), artifactType.getType(), criteria);
         if (artifacts != null && !artifacts.isEmpty()) {
             // TODO need a more interesting way to dis-ambiguate the results

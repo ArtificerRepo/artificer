@@ -34,11 +34,11 @@ public class OntologyToJCRNode {
 	 * @throws RepositoryException
 	 */
 	public void write(SrampOntology ontology, Node jcrNode) throws RepositoryException {
-		jcrNode.setProperty("sramp:uuid", ontology.getUuid());
-		jcrNode.setProperty("sramp:label", ontology.getLabel());
-		jcrNode.setProperty("sramp:comment", ontology.getComment());
-		jcrNode.setProperty("sramp:base", ontology.getBase());
-		jcrNode.setProperty("sramp:id", ontology.getId());
+		jcrNode.setProperty("sramp:uuid", ontology.getUuid()); //$NON-NLS-1$
+		jcrNode.setProperty("sramp:label", ontology.getLabel()); //$NON-NLS-1$
+		jcrNode.setProperty("sramp:comment", ontology.getComment()); //$NON-NLS-1$
+		jcrNode.setProperty("sramp:base", ontology.getBase()); //$NON-NLS-1$
+		jcrNode.setProperty("sramp:id", ontology.getId()); //$NON-NLS-1$
 
 		for (SrampOntology.Class sclass : ontology.getRootClasses()) {
 			addClass(jcrNode, sclass);
@@ -52,11 +52,11 @@ public class OntologyToJCRNode {
 	 * @throws RepositoryException
 	 */
 	private void addClass(Node parentNode, SrampOntology.Class sclass) throws RepositoryException {
-		Node classNode = parentNode.addNode(sclass.getId(), "sramp:class");
-		classNode.setProperty("sramp:uri", sclass.getUri().toString());
-		classNode.setProperty("sramp:id", sclass.getId());
-		classNode.setProperty("sramp:label", sclass.getLabel());
-		classNode.setProperty("sramp:comment", sclass.getComment());
+		Node classNode = parentNode.addNode(sclass.getId(), "sramp:class"); //$NON-NLS-1$
+		classNode.setProperty("sramp:uri", sclass.getUri().toString()); //$NON-NLS-1$
+		classNode.setProperty("sramp:id", sclass.getId()); //$NON-NLS-1$
+		classNode.setProperty("sramp:label", sclass.getLabel()); //$NON-NLS-1$
+		classNode.setProperty("sramp:comment", sclass.getComment()); //$NON-NLS-1$
 
 		for (SrampOntology.Class childClass : sclass.getChildren()) {
 			addClass(classNode, childClass);

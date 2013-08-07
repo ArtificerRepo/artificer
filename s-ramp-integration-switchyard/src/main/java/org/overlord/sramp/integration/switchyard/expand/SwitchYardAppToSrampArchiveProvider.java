@@ -34,7 +34,7 @@ public class SwitchYardAppToSrampArchiveProvider implements ZipToSrampArchivePro
 
     private static final Set<String> acceptedTypes = new HashSet<String>();
     static {
-        acceptedTypes.add("SwitchYardApplication");
+        acceptedTypes.add("SwitchYardApplication"); //$NON-NLS-1$
     }
 
     /**

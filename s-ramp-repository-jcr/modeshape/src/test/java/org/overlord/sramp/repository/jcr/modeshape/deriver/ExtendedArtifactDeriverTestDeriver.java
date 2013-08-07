@@ -76,29 +76,29 @@ public class ExtendedArtifactDeriverTestDeriver extends AbstractXmlDeriver {
      */
     private void processRoot(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
             Element rootElement, XPath xpath) throws XPathExpressionException {
-        NodeList nodes = (NodeList) this.query(xpath, rootElement, "./credit", XPathConstants.NODESET);
+        NodeList nodes = (NodeList) this.query(xpath, rootElement, "./credit", XPathConstants.NODESET); //$NON-NLS-1$
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
             ExtendedArtifactType credit = new ExtendedArtifactType();
             credit.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
             credit.setUuid(UUID.randomUUID().toString());
 
-            String type = node.getAttribute("type");
-            String name = node.getAttribute("name");
-            String part = node.getAttribute("part");
-            String year = node.getAttribute("year");
+            String type = node.getAttribute("type"); //$NON-NLS-1$
+            String name = node.getAttribute("name"); //$NON-NLS-1$
+            String part = node.getAttribute("part"); //$NON-NLS-1$
+            String year = node.getAttribute("year"); //$NON-NLS-1$
 
-            credit.setExtendedType(StringUtils.capitalize(type) + "Credit");
+            credit.setExtendedType(StringUtils.capitalize(type) + "Credit"); //$NON-NLS-1$
             credit.setName(name);
 
-            SrampModelUtils.setCustomProperty(credit, "part", part);
-            SrampModelUtils.setCustomProperty(credit, "year", year);
+            SrampModelUtils.setCustomProperty(credit, "part", part); //$NON-NLS-1$
+            SrampModelUtils.setCustomProperty(credit, "year", year); //$NON-NLS-1$
 
             derivedArtifacts.add(credit);
 
             // Set a relationship from original artifact to the listener
             credit.setUuid(UUID.randomUUID().toString());
-            SrampModelUtils.addGenericRelationship(artifact, "hasCredit", credit.getUuid());
+            SrampModelUtils.addGenericRelationship(artifact, "hasCredit", credit.getUuid()); //$NON-NLS-1$
         }
     }
 

@@ -25,6 +25,7 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.atom.i18n.Messages;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
 
@@ -167,7 +168,7 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 	private <T> void handlePotentialServerError(ClientResponse<T> response) throws Exception {
 		String contentType = String.valueOf(response.getMetadata().getFirst(HttpHeaderNames.CONTENT_TYPE));
 		if (response.getStatus() == 500) {
-			Exception error = new Exception("An unexpected (and unknown) error was sent by the S-RAMP repository.");
+			Exception error = new Exception(Messages.i18n.format("UNKNOWN_SRAMP_ERROR")); //$NON-NLS-1$
 			if (MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION.equals(contentType)) {
 				try {
 					SrampAtomException entity = response.getEntity(SrampAtomException.class);
@@ -180,15 +181,15 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 			throw error;
 		}
 		if (response.getStatus() == 404) {
-			SrampAtomException error = new SrampAtomException("The S-RAMP endpoint and/or method could not be found.");
+			SrampAtomException error = new SrampAtomException(Messages.i18n.format("ENDPOINT_NOT_FOUND")); //$NON-NLS-1$
 			throw error;
 		}
 		if (response.getStatus() == 403) {
-			SrampAtomException error = new SrampAtomException("Authorization (permission) failure while attempting to access the S-RAMP repository.");
+			SrampAtomException error = new SrampAtomException(Messages.i18n.format("AUTHORIZATION_FAILED")); //$NON-NLS-1$
 			throw error;
 		}
 		if (response.getStatus() == 401) {
-            SrampAtomException error = new SrampAtomException("Authentication failure while attempting to access the S-RAMP repository.");
+            SrampAtomException error = new SrampAtomException(Messages.i18n.format("AUTHENTICATION_FAILED")); //$NON-NLS-1$
             throw error;
 		}
 	}

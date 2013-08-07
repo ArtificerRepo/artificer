@@ -61,6 +61,7 @@ import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.errors.DerivedArtifactCreateException;
 import org.overlord.sramp.repository.errors.DerivedArtifactDeleteException;
+import org.overlord.sramp.server.i18n.Messages;
 import org.overlord.sramp.server.mime.MimeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +116,7 @@ public class ArtifactResource extends AbstractResource {
             }
             BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
             if (SrampModelUtils.isDocumentArtifact(artifact)) {
-                throw new InvalidArtifactCreationException("Attempted to directly create a document style artifact.  Please upload a document instead.");
+                throw new InvalidArtifactCreationException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
             }
 
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
@@ -127,7 +128,7 @@ public class ArtifactResource extends AbstractResource {
             ArtifactVisitorHelper.visitArtifact(visitor, persistedArtifact);
             return visitor.getAtomEntry();
         } catch (Exception e) {
-            logError(logger, "Error creating an artifact.", e);
+            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
             throw new SrampAtomException(e);
         }
     }
@@ -170,11 +171,11 @@ public class ArtifactResource extends AbstractResource {
 			// Pick a reasonable file name if Slug is not present
 			if (fileName == null) {
 				if (artifactType.getArtifactType() == ArtifactTypeEnum.Document) {
-					fileName = "newartifact.bin";
+					fileName = "newartifact.bin"; //$NON-NLS-1$
 				} else if (artifactType.getArtifactType() == ArtifactTypeEnum.XmlDocument) {
-					fileName = "newartifact.xml";
+					fileName = "newartifact.xml"; //$NON-NLS-1$
 				} else {
-					fileName = "newartifact." + artifactType.getArtifactType().getModel();
+					fileName = "newartifact." + artifactType.getArtifactType().getModel(); //$NON-NLS-1$
 				}
 			}
 
@@ -182,7 +183,7 @@ public class ArtifactResource extends AbstractResource {
 			// store the content
 			BaseArtifactType baseArtifactType = artifactType.newArtifactInstance();
             if (!SrampModelUtils.isDocumentArtifact(baseArtifactType)) {
-                throw new InvalidArtifactCreationException("Attempted to upload content for a non-Document artifact type.  Please directly create an artifact of this type instead.");
+                throw new InvalidArtifactCreationException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
             }
 			baseArtifactType.setName(fileName);
 			BaseArtifactType artifact = persistenceManager.persistArtifact(baseArtifactType, is);
@@ -192,7 +193,7 @@ public class ArtifactResource extends AbstractResource {
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return visitor.getAtomEntry();
 		} catch (Exception e) {
-		    logError(logger, "Error creating an artifact.", e);
+		    logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		} finally {
 			IOUtils.closeQuietly(is);
@@ -226,8 +227,7 @@ public class ArtifactResource extends AbstractResource {
 			List<InputPart> list = input.getParts();
 			// Expecting 2 parts
 			if (list.size() != 2) {
-				throw new SrampAtomException("Invalid multi-part POST - expected two parts but got "
-				        + list.size());
+				throw new SrampAtomException(Messages.i18n.format("INVALID_MULTIPART_POST", list.size())); //$NON-NLS-1$
 			}
 			InputPart firstPart = list.get(0);
 			InputPart secondpart = list.get(1);
@@ -238,8 +238,7 @@ public class ArtifactResource extends AbstractResource {
 			BaseArtifactType artifactMetaData = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
 			ArtifactType metaDataType = ArtifactType.valueOf(artifactMetaData);
 			if (metaDataType.getArtifactType() != artifactType.getArtifactType()) {
-				String errorMsg = String.format(
-				        "Invalid multi-part POST - attempted to POST a '%1$s' to the '%2$s' endpoint.",
+				String errorMsg = Messages.i18n.format("INVALID_MULTIPART_POST_2", //$NON-NLS-1$
 				        metaDataType.getArtifactType().getType(), artifactType.getArtifactType().getType());
 				throw new SrampAtomException(errorMsg);
 			}
@@ -263,7 +262,7 @@ public class ArtifactResource extends AbstractResource {
 			ArtifactVisitorHelper.visitArtifact(visitor, artifactRval);
 			return visitor.getAtomEntry();
 		} catch (Exception e) {
-			logError(logger, "Error creating an artifact.", e);
+			logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		} finally {
 			IOUtils.closeQuietly(contentStream);
@@ -294,7 +293,7 @@ public class ArtifactResource extends AbstractResource {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateArtifact(artifact, artifactType);
 		} catch (Throwable e) {
-			logError(logger, "Error updating artifact meta data for: " + uuid, e);
+			logError(logger, Messages.i18n.format("ERROR_UPDATING_META_DATA", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
 	}
@@ -331,7 +330,7 @@ public class ArtifactResource extends AbstractResource {
 			// store the content
 			persistenceManager.updateArtifactContent(uuid, artifactType, is);
 		} catch (Exception e) {
-			logError(logger, "Error updating artifact content for: " + uuid, e);
+			logError(logger, Messages.i18n.format("ERROR_UPDATING_CONTENT", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		} finally {
 			IOUtils.closeQuietly(is);
@@ -367,7 +366,7 @@ public class ArtifactResource extends AbstractResource {
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return visitor.getAtomEntry();
 		} catch (Throwable e) {
-			logError(logger, "Error getting artifact meta data for: " + uuid, e);
+			logError(logger, Messages.i18n.format("ERROR_GETTING_META_DATA", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
 	}
@@ -391,6 +390,9 @@ public class ArtifactResource extends AbstractResource {
             }
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			BaseArtifactType baseArtifact = persistenceManager.getArtifact(uuid, artifactType);
+            if (baseArtifact == null)
+                throw new ArtifactNotFoundException(uuid);
+
 			ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
 			ArtifactVisitorHelper.visitArtifact(ctVizzy, baseArtifact);
 			javax.ws.rs.core.MediaType mediaType = ctVizzy.getContentType();
@@ -410,12 +412,12 @@ public class ArtifactResource extends AbstractResource {
 			        baseArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
 			return Response
 			        .ok(output, artifactType.getMimeType())
-			        .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName())
-			        .header("Content-Length",
+			        .header("Content-Disposition", "attachment; filename=" + baseArtifact.getName()) //$NON-NLS-1$ //$NON-NLS-2$
+			        .header("Content-Length", //$NON-NLS-1$
 			                baseArtifact.getOtherAttributes().get(SrampConstants.SRAMP_CONTENT_SIZE_QNAME))
-			        .header("Last-Modified", lastModifiedDate).build();
+			        .header("Last-Modified", lastModifiedDate).build(); //$NON-NLS-1$
 		} catch (Throwable e) {
-			logError(logger, "Error getting artifact content for: " + uuid, e);
+			logError(logger, Messages.i18n.format("ERROR_GETTING_CONTENT", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
 	}
@@ -442,7 +444,7 @@ public class ArtifactResource extends AbstractResource {
 			// Delete the artifact by UUID
 			persistenceManager.deleteArtifact(uuid, artifactType);
 		} catch (Throwable e) {
-			logError(logger, "Error deleting artifact: " + uuid, e);
+			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
 	}

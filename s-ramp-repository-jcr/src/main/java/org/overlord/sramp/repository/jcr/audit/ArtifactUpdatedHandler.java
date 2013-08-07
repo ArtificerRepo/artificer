@@ -24,6 +24,7 @@ import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
 import org.overlord.sramp.repository.jcr.JCRConstants;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 /**
  * Handles artifact updated event bundles.
@@ -43,16 +44,16 @@ public class ArtifactUpdatedHandler extends AbstractAuditEventBundleHandler {
      */
     @Override
     public void handle(Sramp sramp, AuditEventBundle eventBundle) throws Exception {
-        log.debug("(AUDIT) Processing UPDATE ARTIFACT event.");
+        log.debug(Messages.i18n.format("DBG_PROCESSING_UPDATE_ARTY")); //$NON-NLS-1$
 
         if (eventBundle.isEmpty()) {
-            log.debug("No events found for artifact update audit event bundle.");
+            log.debug(Messages.i18n.format("DBG_NO_EVENTS_FOUND_UPDATE")); //$NON-NLS-1$
             return;
         }
 
         Event updateEvent = eventBundle.getArtifactUpdateEvent();
         if (updateEvent == null) {
-            log.debug("No (interesting) events found for artifact update audit event bundle.");
+            log.debug(Messages.i18n.format("DBG_NO_UPDATE_EVENT_FOUND")); //$NON-NLS-1$
             return;
         }
 
@@ -77,7 +78,7 @@ public class ArtifactUpdatedHandler extends AbstractAuditEventBundleHandler {
             }
         }
 
-        log.debug("Created one audit entry for the 'update artifact' event.");
+        log.debug(Messages.i18n.format("DBG_UPDATE_AUDIT_ENTRY_CREATED")); //$NON-NLS-1$
 
         if (eventBundle.getSession().isLive())
             eventBundle.getSession().save();

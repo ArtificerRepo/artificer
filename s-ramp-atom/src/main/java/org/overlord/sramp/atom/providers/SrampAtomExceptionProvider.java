@@ -39,6 +39,7 @@ import javax.ws.rs.ext.Provider;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.atom.i18n.Messages;
 
 /**
  * A RESTEasy provider for reading/writing an S-RAMP Exception.
@@ -64,7 +65,7 @@ public class SrampAtomExceptionProvider implements ExceptionMapper<SrampAtomExce
 	@Override
 	public Response toResponse(SrampAtomException exception) {
 		ResponseBuilder builder = Response.status(500);
-		builder.header("Error-Message", getRootCause(exception).getMessage());
+		builder.header("Error-Message", getRootCause(exception).getMessage()); //$NON-NLS-1$
 		builder.type(org.overlord.sramp.atom.MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION);
 		String stack = getRootStackTrace(exception);
 		builder.entity(stack);
@@ -96,9 +97,9 @@ public class SrampAtomExceptionProvider implements ExceptionMapper<SrampAtomExce
 			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 			throws IOException, WebApplicationException {
 		if (httpHeaders != null)
-			httpHeaders.putSingle("Error-Message", getRootCause(error).getMessage());
+			httpHeaders.putSingle("Error-Message", getRootCause(error).getMessage()); //$NON-NLS-1$
 		String stack = getRootStackTrace(error);
-		entityStream.write(stack.getBytes("UTF-8"));
+		entityStream.write(stack.getBytes("UTF-8")); //$NON-NLS-1$
 		entityStream.flush();
 	}
 
@@ -143,12 +144,12 @@ public class SrampAtomExceptionProvider implements ExceptionMapper<SrampAtomExce
 		List<String> lines = IOUtils.readLines(entityStream);
 		StringBuilder buffer = new StringBuilder();
 		for (String line : lines) {
-			buffer.append(line).append("\n");
+			buffer.append(line).append("\n"); //$NON-NLS-1$
 		}
 		String stackTrace = buffer.toString();
-		String msg = httpHeaders == null ? null : httpHeaders.getFirst("Error-Message");
+		String msg = httpHeaders == null ? null : httpHeaders.getFirst("Error-Message"); //$NON-NLS-1$
 		if (msg == null) {
-			msg = "An unexpected error was thrown by the S-RAMP repository.";
+			msg = Messages.i18n.format("UNKNOWN_SRAMP_ERROR"); //$NON-NLS-1$
 		}
 		SrampAtomException error = new SrampAtomException(msg, stackTrace);
 		return error;

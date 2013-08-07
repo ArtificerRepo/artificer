@@ -39,6 +39,7 @@ import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.repository.AuditManager;
 import org.overlord.sramp.repository.AuditManagerFactory;
 import org.overlord.sramp.repository.audit.AuditEntrySet;
+import org.overlord.sramp.server.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,7 @@ public class AuditResource extends AbstractResource {
             AuditEntry rval = auditManager.addAuditEntry(artifactUuid, auditEntry);
             return auditEntryToAtomEntry(rval);
         } catch (Throwable e) {
-            logError(logger, "Error creating audit entry for: " + artifactUuid, e);
+            logError(logger, Messages.i18n.format("ERROR_CREATING_AUDIT_ENTRY", artifactUuid), e); //$NON-NLS-1$
             throw new SrampAtomException(e);
         }
     }
@@ -97,7 +98,7 @@ public class AuditResource extends AbstractResource {
             AuditEntry auditEntry = auditManager.getArtifactAuditEntry(artifactUuid, auditEntryUuid);
             return auditEntryToAtomEntry(auditEntry);
         } catch (Throwable e) {
-            logError(logger, "Error getting audit entries for artifact: " + artifactUuid, e);
+            logError(logger, Messages.i18n.format("ERROR_GETTING_AUDIT_ENTRY", artifactUuid, auditEntryUuid), e); //$NON-NLS-1$
             throw new SrampAtomException(e);
         }
     }
@@ -131,7 +132,7 @@ public class AuditResource extends AbstractResource {
             AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifactUuid);
             return createAuditFeed(entries, startIdx, endIdx);
         } catch (Throwable e) {
-            logError(logger, "Error getting audit entries for artifact: " + artifactUuid, e);
+            logError(logger, Messages.i18n.format("ERROR_GETTING_AUDIT_ENTRIES", artifactUuid), e); //$NON-NLS-1$
             throw new SrampAtomException(e);
         }
     }
@@ -165,7 +166,7 @@ public class AuditResource extends AbstractResource {
             AuditEntrySet entries = auditManager.getUserAuditEntries(username);
             return createAuditFeed(entries, startIdx, endIdx);
         } catch (Throwable e) {
-            logError(logger, "Error getting audit entries for user: " + username, e);
+            logError(logger, Messages.i18n.format("ERROR_GETTING_AUDIT_ENTRIES_2", username), e); //$NON-NLS-1$
             throw new SrampAtomException(e);
         }
     }
@@ -180,13 +181,13 @@ public class AuditResource extends AbstractResource {
     @SuppressWarnings("unchecked")
     private Feed createAuditFeed(AuditEntrySet auditEntrySet, int fromRow, int toRow) throws Exception {
         Feed feed = new Feed();
-        feed.getExtensionAttributes().put(SrampConstants.SRAMP_PROVIDER_QNAME, "JBoss Overlord");
+        feed.getExtensionAttributes().put(SrampConstants.SRAMP_PROVIDER_QNAME, "JBoss Overlord"); //$NON-NLS-1$
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf((toRow - fromRow) + 1));
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_START_INDEX_QNAME, String.valueOf(fromRow));
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_TOTAL_RESULTS_QNAME, String.valueOf(auditEntrySet.size()));
         feed.setId(new URI(UUID.randomUUID().toString()));
-        feed.setTitle("S-RAMP Audit Feed");
-        feed.setSubtitle("All Audit Entries for Artifact");
+        feed.setTitle("S-RAMP Audit Feed"); //$NON-NLS-1$
+        feed.setSubtitle("All Audit Entries for Artifact"); //$NON-NLS-1$
         feed.setUpdated(new Date());
 
         Iterator<AuditEntry> iterator = auditEntrySet.iterator();
@@ -209,7 +210,7 @@ public class AuditResource extends AbstractResource {
             entry.setUpdated(auditEntry.getWhen().toGregorianCalendar().getTime());
             entry.getAuthors().add(new Person(auditEntry.getWho()));
             entry.setTitle(auditEntry.getType());
-            entry.setSummary("");
+            entry.setSummary(""); //$NON-NLS-1$
 
             feed.getEntries().add(entry);
         }
@@ -229,7 +230,7 @@ public class AuditResource extends AbstractResource {
         entry.setUpdated(auditEntry.getWhen().toGregorianCalendar().getTime());
         entry.getAuthors().add(new Person(auditEntry.getWho()));
         entry.setTitle(auditEntry.getType());
-        entry.setSummary("");
+        entry.setSummary(""); //$NON-NLS-1$
         entry.setAnyOtherJAXBObject(auditEntry);
         return entry;
     }

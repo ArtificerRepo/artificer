@@ -54,23 +54,23 @@ public class TabCompleter implements Completer {
 		// Case 1 - nothing has been typed yet - show all command namespaces
 		if (buffer.trim().length() == 0) {
 			for (String ns: factory.getNamespaces()) {
-				candidates.add(ns + ":");
+				candidates.add(ns + ":"); //$NON-NLS-1$
 			}
 			return cursor;
 		}
 
 		// Case 2 - a partial namespace has been typed - show all namespaces that match
-		if (!buffer.contains(":") && !buffer.contains(" ")) {
+		if (!buffer.contains(":") && !buffer.contains(" ")) { //$NON-NLS-1$ //$NON-NLS-2$
 			for (String ns: factory.getNamespaces()) {
 				if (ns.startsWith(buffer)) {
-					candidates.add(ns + ":");
+					candidates.add(ns + ":"); //$NON-NLS-1$
 				}
 			}
 			// If no namespaces matched, then try to match the default commands
 			if (candidates.isEmpty()) {
-				for (QName cmdName : factory.getCommandNames("s-ramp")) {
+				for (QName cmdName : factory.getCommandNames("s-ramp")) { //$NON-NLS-1$
 					if (cmdName.getLocalPart().startsWith(buffer)) {
-						candidates.add("s-ramp:" + cmdName.getLocalPart() + " ");
+						candidates.add("s-ramp:" + cmdName.getLocalPart() + " "); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 			}
@@ -78,22 +78,22 @@ public class TabCompleter implements Completer {
 		}
 
 		// Case 3 - a namespace has been typed and we're waiting at the colon
-		if (buffer.endsWith(":") && !buffer.contains(" ")) {
+		if (buffer.endsWith(":") && !buffer.contains(" ")) { //$NON-NLS-1$ //$NON-NLS-2$
 			String ns = buffer.substring(0, buffer.length() - 1);
 			for (QName cmdName : factory.getCommandNames(ns)) {
-				candidates.add(cmdName.getLocalPart() + " ");
+				candidates.add(cmdName.getLocalPart() + " "); //$NON-NLS-1$
 			}
 			return cursor;
 		}
 
 		// Case 4 - a partial command has been typed - show all command names that match
-		if (buffer.contains(":") && !buffer.endsWith(":") && !buffer.contains(" ")) {
+		if (buffer.contains(":") && !buffer.endsWith(":") && !buffer.contains(" ")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			int colonIdx = buffer.indexOf(':');
 			String ns = buffer.substring(0, colonIdx);
 			String name = buffer.substring(colonIdx + 1);
 			for (QName cmdName : factory.getCommandNames(ns)) {
 				if (cmdName.getLocalPart().startsWith(name)) {
-					candidates.add(cmdName.getLocalPart() + " ");
+					candidates.add(cmdName.getLocalPart() + " "); //$NON-NLS-1$
 				}
 			}
 			return colonIdx + 1;
@@ -111,7 +111,7 @@ public class TabCompleter implements Completer {
         }
 		QName commandName = arguments.removeCommandName();
 		String lastArgument = null;
-		if (arguments.size() > 0 && !args.endsWith(" ")) {
+		if (arguments.size() > 0 && !args.endsWith(" ")) { //$NON-NLS-1$
 			lastArgument = arguments.remove(arguments.size() - 1);
 		}
 		try {

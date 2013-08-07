@@ -45,16 +45,16 @@ public class JCRQueryManagerTest extends AbstractNoAuditingJCRPersistenceTest {
     public void testQueryManager() throws Exception {
     	// First, store an artifact.
 		BaseArtifactType artifact = createDocument(1);
-        log.info("persisted to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted to JCR, returned artifact uuid=" + artifact.getUuid()); //$NON-NLS-1$
 
         // Now query for it
-        SrampQuery query = queryManager.createQuery("/s-ramp/core/Document");
+        SrampQuery query = queryManager.createQuery("/s-ramp/core/Document"); //$NON-NLS-1$
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
 
         Assert.assertEquals(1, artifactSet.size());
         BaseArtifactType found = artifactSet.iterator().next();
-        Assert.assertNotNull("Expected artifact not found in artifact set.", found);
+        Assert.assertNotNull("Expected artifact not found in artifact set.", found); //$NON-NLS-1$
         Assert.assertEquals(artifact.getUuid(), found.getUuid());
         Assert.assertEquals(artifact.getName(), found.getName());
         Assert.assertEquals(artifact.getDescription(), found.getDescription());
@@ -78,12 +78,12 @@ public class JCRQueryManagerTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now update some properties on them.
         // Prop3 is on all 3 artifacts, prop2 is on 2 artifacts, prop1 is on 1 artifact
-        SrampModelUtils.setCustomProperty(artifact1, "prop1", uniquePropVal1);
-        SrampModelUtils.setCustomProperty(artifact1, "prop2", uniquePropVal2);
-        SrampModelUtils.setCustomProperty(artifact1, "prop3", uniquePropVal3);
-        SrampModelUtils.setCustomProperty(artifact2, "prop2", uniquePropVal2);
-        SrampModelUtils.setCustomProperty(artifact2, "prop3", uniquePropVal3);
-        SrampModelUtils.setCustomProperty(artifact3, "prop3", uniquePropVal3);
+        SrampModelUtils.setCustomProperty(artifact1, "prop1", uniquePropVal1); //$NON-NLS-1$
+        SrampModelUtils.setCustomProperty(artifact1, "prop2", uniquePropVal2); //$NON-NLS-1$
+        SrampModelUtils.setCustomProperty(artifact1, "prop3", uniquePropVal3); //$NON-NLS-1$
+        SrampModelUtils.setCustomProperty(artifact2, "prop2", uniquePropVal2); //$NON-NLS-1$
+        SrampModelUtils.setCustomProperty(artifact2, "prop3", uniquePropVal3); //$NON-NLS-1$
+        SrampModelUtils.setCustomProperty(artifact3, "prop3", uniquePropVal3); //$NON-NLS-1$
 
         persistenceManager.updateArtifact(artifact1, ArtifactType.Document());
         persistenceManager.updateArtifact(artifact2, ArtifactType.Document());
@@ -91,82 +91,82 @@ public class JCRQueryManagerTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now query by various properties
         persistenceManager.printArtifactGraph(artifact1.getUuid(), ArtifactType.Document());
-        SrampQuery query = queryManager.createQuery("/s-ramp/core/Document[@prop1 = ?]");
+        SrampQuery query = queryManager.createQuery("/s-ramp/core/Document[@prop1 = ?]"); //$NON-NLS-1$
         query.setString(uniquePropVal1);
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/core/Document[@prop2 = ?]");
+        query = queryManager.createQuery("/s-ramp/core/Document[@prop2 = ?]"); //$NON-NLS-1$
         query.setString(uniquePropVal2);
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(2, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/core/Document[@prop3 = ?]");
+        query = queryManager.createQuery("/s-ramp/core/Document[@prop3 = ?]"); //$NON-NLS-1$
         query.setString(uniquePropVal3);
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(3, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/core/Document[@prop1 = ?]");
-        query.setString("nomatches");
+        query = queryManager.createQuery("/s-ramp/core/Document[@prop1 = ?]"); //$NON-NLS-1$
+        query.setString("nomatches"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(0, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/core/Document[@prop2]");
+        query = queryManager.createQuery("/s-ramp/core/Document[@prop2]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(2, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/core/Document[@prop1 = ? and @prop2 = ?]");
+        query = queryManager.createQuery("/s-ramp/core/Document[@prop1 = ? and @prop2 = ?]"); //$NON-NLS-1$
         query.setString(uniquePropVal1);
         query.setString(uniquePropVal2);
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/core/Document[@prop1 = ? or @prop2 = ?]");
+        query = queryManager.createQuery("/s-ramp/core/Document[@prop1 = ? or @prop2 = ?]"); //$NON-NLS-1$
         query.setString(uniquePropVal1);
         query.setString(uniquePropVal2);
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(2, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/core/Document[@version = ?]");
-        query.setString("1.0.3");
+        query = queryManager.createQuery("/s-ramp/core/Document[@version = ?]"); //$NON-NLS-1$
+        query.setString("1.0.3"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(3, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/core/Document[@lastModifiedTimestamp < ?]");
+        query = queryManager.createQuery("/s-ramp/core/Document[@lastModifiedTimestamp < ?]"); //$NON-NLS-1$
         query.setDate(new Date(System.currentTimeMillis() + 86400000L));
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertTrue(artifactSet.size() >= 3);
 
-        query = queryManager.createQuery("/s-ramp/core/Document[@lastModifiedTimestamp > ?]");
+        query = queryManager.createQuery("/s-ramp/core/Document[@lastModifiedTimestamp > ?]"); //$NON-NLS-1$
         query.setDate(new Date(System.currentTimeMillis() + 86400000L));
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(0, artifactSet.size());
 
         // Negation by property existence
-        query = queryManager.createQuery("/s-ramp/core/Document[xp2:not(@prop1)]");
+        query = queryManager.createQuery("/s-ramp/core/Document[xp2:not(@prop1)]"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(2, artifactSet.size());
 
         // Negation by property value
-        query = queryManager.createQuery("/s-ramp/core/Document[xp2:not(@prop1 = ?)]");
-        query.setString("nomatches");
+        query = queryManager.createQuery("/s-ramp/core/Document[xp2:not(@prop1 = ?)]"); //$NON-NLS-1$
+        query.setString("nomatches"); //$NON-NLS-1$
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(3, artifactSet.size());
 
         // AND'd negation by property value
-        query = queryManager.createQuery("/s-ramp/core/Document[xp2:not(@prop1 = ? and @prop2 = ?)]");
+        query = queryManager.createQuery("/s-ramp/core/Document[xp2:not(@prop1 = ? and @prop2 = ?)]"); //$NON-NLS-1$
         query.setString(uniquePropVal1);
         query.setString(uniquePropVal2);
         artifactSet = query.executeQuery();
@@ -179,11 +179,11 @@ public class JCRQueryManagerTest extends AbstractNoAuditingJCRPersistenceTest {
 	 * @throws SrampException
 	 */
 	private BaseArtifactType createDocument(int idx) throws SrampException {
-        String artifactFileName = "s-ramp-press-release.pdf";
-		InputStream content = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        String artifactFileName = "s-ramp-press-release.pdf"; //$NON-NLS-1$
+		InputStream content = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
         Document document = new Document();
-        document.setName(artifactFileName + "-" + idx);
-        document.setVersion("1.0.3");
+        document.setName(artifactFileName + "-" + idx); //$NON-NLS-1$
+        document.setVersion("1.0.3"); //$NON-NLS-1$
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
         BaseArtifactType artifact1 = persistenceManager.persistArtifact(document, content);
         Assert.assertNotNull(artifact1);

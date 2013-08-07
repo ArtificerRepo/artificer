@@ -63,8 +63,8 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
 		super.configureNamespaceMappings(namespaceContext);
 
-		namespaceContext.addMapping("xs", "http://www.w3.org/2001/XMLSchema");
-		namespaceContext.addMapping("xsd", "http://www.w3.org/2001/XMLSchema");
+		namespaceContext.addMapping("xs", "http://www.w3.org/2001/XMLSchema"); //$NON-NLS-1$ //$NON-NLS-2$
+		namespaceContext.addMapping("xsd", "http://www.w3.org/2001/XMLSchema"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 */
 	public void processSchema(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType artifact, Element schema, XPath xpath) throws XPathExpressionException {
-        String targetNS = schema.getAttribute("targetNamespace");
+        String targetNS = schema.getAttribute("targetNamespace"); //$NON-NLS-1$
 	    if (artifact instanceof XsdDocument)
 	        ((XsdDocument) artifact).setTargetNamespace(targetNS);
 
@@ -116,14 +116,14 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 */
 	private void processElementDeclarations(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
-		String targetNS = schema.getAttribute("targetNamespace");
+		String targetNS = schema.getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// xpath expression to find all global element decls
-		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:element", XPathConstants.NODESET);
+		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:element", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
-			if (node.hasAttribute("name")) {
-				String nsName = node.getAttribute("name");
+			if (node.hasAttribute("name")) { //$NON-NLS-1$
+				String nsName = node.getAttribute("name"); //$NON-NLS-1$
 				ElementDeclaration elementDecl = new ElementDeclaration();
 				elementDecl.setArtifactType(BaseArtifactEnum.ELEMENT_DECLARATION);
 				elementDecl.setName(nsName);
@@ -144,14 +144,14 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 */
 	private void processAttributeDeclarations(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
-		String targetNS = schema.getAttribute("targetNamespace");
+		String targetNS = schema.getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// xpath expression to find all global attribute decls
-		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:attribute", XPathConstants.NODESET);
+		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:attribute", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
-			if (node.hasAttribute("name")) {
-				String nsName = node.getAttribute("name");
+			if (node.hasAttribute("name")) { //$NON-NLS-1$
+				String nsName = node.getAttribute("name"); //$NON-NLS-1$
 				AttributeDeclaration attributeDecl = new AttributeDeclaration();
 				attributeDecl.setArtifactType(BaseArtifactEnum.ATTRIBUTE_DECLARATION);
 				attributeDecl.setName(nsName);
@@ -172,14 +172,14 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 */
 	private void processSimpleTypeDeclarations(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
-		String targetNS = schema.getAttribute("targetNamespace");
+		String targetNS = schema.getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// xpath expression to find all global simple type decls
-		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:simpleType", XPathConstants.NODESET);
+		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:simpleType", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
-			if (node.hasAttribute("name")) {
-				String nsName = node.getAttribute("name");
+			if (node.hasAttribute("name")) { //$NON-NLS-1$
+				String nsName = node.getAttribute("name"); //$NON-NLS-1$
 				SimpleTypeDeclaration simpleTypeDecl = new SimpleTypeDeclaration();
 				simpleTypeDecl.setArtifactType(BaseArtifactEnum.SIMPLE_TYPE_DECLARATION);
 				simpleTypeDecl.setName(nsName);
@@ -200,14 +200,14 @@ public class XsdDeriver extends AbstractXmlDeriver {
 	 */
 	private void processComplexTypeDeclarations(Collection<BaseArtifactType> derivedArtifacts,
 			BaseArtifactType sourceArtifact, Element schema, XPath xpath) throws XPathExpressionException {
-		String targetNS = schema.getAttribute("targetNamespace");
+		String targetNS = schema.getAttribute("targetNamespace"); //$NON-NLS-1$
 
 		// xpath expression to find all global complex type decls
-		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:complexType", XPathConstants.NODESET);
+		NodeList nodes = (NodeList) this.query(xpath, schema, "./xsd:complexType", XPathConstants.NODESET); //$NON-NLS-1$
 		for (int idx = 0; idx < nodes.getLength(); idx++) {
 			Element node = (Element) nodes.item(idx);
-			if (node.hasAttribute("name")) {
-				String nsName = node.getAttribute("name");
+			if (node.hasAttribute("name")) { //$NON-NLS-1$
+				String nsName = node.getAttribute("name"); //$NON-NLS-1$
 				ComplexTypeDeclaration complexTypeDecl = new ComplexTypeDeclaration();
 				complexTypeDecl.setArtifactType(BaseArtifactEnum.COMPLEX_TYPE_DECLARATION);
 				complexTypeDecl.setName(nsName);

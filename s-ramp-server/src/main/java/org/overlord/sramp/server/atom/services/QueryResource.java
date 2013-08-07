@@ -35,6 +35,7 @@ import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.server.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +86,7 @@ public class QueryResource extends AbstractFeedResource {
 			}
 			return query(query, startIndex, count, orderBy, asc, propNames, baseUrl);
 		} catch (Throwable e) {
-			logError(logger, "Error executing S-RAMP query: " + query, e);
+			logError(logger, Messages.i18n.format("ERROR_EXECUTING_QUERY", query), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
 	}
@@ -102,14 +103,14 @@ public class QueryResource extends AbstractFeedResource {
 		String query = null;
 		try {
 			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
-			query = input.getFormDataPart("query", new GenericType<String>() { });
-			Integer startPage = input.getFormDataPart("startPage", new GenericType<Integer>() { });
-			Integer startIndex = input.getFormDataPart("startIndex", new GenericType<Integer>() { });
-			Integer count = input.getFormDataPart("count", new GenericType<Integer>() { });
-			String orderBy = input.getFormDataPart("orderBy", new GenericType<String>() { });
-			Boolean asc = input.getFormDataPart("ascending", new GenericType<Boolean>() { });
+			query = input.getFormDataPart("query", new GenericType<String>() { }); //$NON-NLS-1$
+			Integer startPage = input.getFormDataPart("startPage", new GenericType<Integer>() { }); //$NON-NLS-1$
+			Integer startIndex = input.getFormDataPart("startIndex", new GenericType<Integer>() { }); //$NON-NLS-1$
+			Integer count = input.getFormDataPart("count", new GenericType<Integer>() { }); //$NON-NLS-1$
+			String orderBy = input.getFormDataPart("orderBy", new GenericType<String>() { }); //$NON-NLS-1$
+			Boolean asc = input.getFormDataPart("ascending", new GenericType<Boolean>() { }); //$NON-NLS-1$
             Set<String> propNames = new HashSet<String>();
-			List<InputPart> list = input.getFormDataMap().get("propertyName");
+			List<InputPart> list = input.getFormDataMap().get("propertyName"); //$NON-NLS-1$
 			if (list != null) {
     			for (InputPart inputPart : list) {
     			    propNames.add(inputPart.getBodyAsString());
@@ -124,7 +125,7 @@ public class QueryResource extends AbstractFeedResource {
 		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
-			logError(logger, "Error executing S-RAMP query: " + query, e);
+			logError(logger, Messages.i18n.format("ERROR_EXECUTING_QUERY", query), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
 	}
@@ -143,15 +144,15 @@ public class QueryResource extends AbstractFeedResource {
 	protected Feed query(String query, Integer startIndex, Integer count, String orderBy, Boolean ascending,
 			Set<String> propNames, String baseUrl) throws SrampAtomException {
 		if (query == null)
-			throw new SrampAtomException("Missing S-RAMP query (param with name 'query').");
+			throw new SrampAtomException(Messages.i18n.format("MISSING_QUERY_PARAM")); //$NON-NLS-1$
 
 		// Add on the "/s-ramp/" if it's missing
 		String xpath = query;
-		if (!xpath.startsWith("/s-ramp")) {
-			if (query.startsWith("/"))
-				xpath = "/s-ramp" + query;
+		if (!xpath.startsWith("/s-ramp")) { //$NON-NLS-1$
+			if (query.startsWith("/")) //$NON-NLS-1$
+				xpath = "/s-ramp" + query; //$NON-NLS-1$
 			else
-				xpath = "/s-ramp/" + query;
+				xpath = "/s-ramp/" + query; //$NON-NLS-1$
 		}
 
 		return createArtifactFeed(xpath, startIndex, count, orderBy, ascending, propNames, baseUrl);

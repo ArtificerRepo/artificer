@@ -38,6 +38,7 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.version.VersionException;
 
 import org.overlord.sramp.repository.jcr.JCRConstants;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 /**
  * Some common utils for working with JCR.
@@ -79,10 +80,10 @@ public class JCRUtils {
             String path,
             String defaultNodeType,
             String finalNodeType ) throws RepositoryException {
-        isNotNull(parentNode, "parentNode");
-        isNotNull(path, "path");
+        isNotNull(parentNode, "parentNode"); //$NON-NLS-1$
+        isNotNull(path, "path"); //$NON-NLS-1$
         // Remove leading and trailing slashes ...
-        String relPath = path.replaceAll("^/+", "").replaceAll("/+$", "");
+        String relPath = path.replaceAll("^/+", "").replaceAll("/+$", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
         // Look for the node first ...
         try {
@@ -91,7 +92,7 @@ public class JCRUtils {
             // continue
         }
         // Create the node, which has to be done segment by segment ...
-        String[] pathSegments = relPath.split("/");
+        String[] pathSegments = relPath.split("/"); //$NON-NLS-1$
         Node node = parentNode;
         for (int i = 0, len = pathSegments.length; i != len; ++i) {
             String pathSegment = pathSegments[i];
@@ -102,7 +103,7 @@ public class JCRUtils {
                 node = node.getNode(pathSegment);
             } else {
                 // Make sure there is no index on the final segment ...
-                String pathSegmentWithNoIndex = pathSegment.replaceAll("(\\[\\d+\\])+$", "");
+                String pathSegmentWithNoIndex = pathSegment.replaceAll("(\\[\\d+\\])+$", ""); //$NON-NLS-1$ //$NON-NLS-2$
                 // Create the node ...
                 String nodeType = defaultNodeType;
                 if (i == len - 1 && finalNodeType != null) nodeType = finalNodeType;
@@ -159,7 +160,7 @@ public class JCRUtils {
             String path,
             String defaultNodeType,
             String finalNodeType ) throws RepositoryException {
-        isNotNull(session, "session");
+        isNotNull(session, "session"); //$NON-NLS-1$
         Node root = session.getRootNode();
         return findOrCreateNode(root, path, defaultNodeType, finalNodeType);
     }
@@ -183,19 +184,19 @@ public class JCRUtils {
     public Node uploadFile( Session session,
             String path,
             InputStream stream ) throws RepositoryException, IOException {
-        isNotNull(session, "session");
-        isNotNull(path, "path");
-        isNotNull(stream, "stream");
+        isNotNull(session, "session"); //$NON-NLS-1$
+        isNotNull(path, "path"); //$NON-NLS-1$
+        isNotNull(stream, "stream"); //$NON-NLS-1$
         Node fileNode = null;
         boolean error = false;
         try {
             // Create an 'nt:file' node at the supplied path, creating any missing intermediate nodes of type 'nt:folder' ...
-            fileNode = findOrCreateNode(session.getRootNode(), path, "nt:folder", "nt:file");
+            fileNode = findOrCreateNode(session.getRootNode(), path, "nt:folder", "nt:file"); //$NON-NLS-1$ //$NON-NLS-2$
 
             // Upload the file to that node ...
-            Node contentNode = findOrCreateChild(fileNode, "jcr:content", "nt:resource");
+            Node contentNode = findOrCreateChild(fileNode, "jcr:content", "nt:resource"); //$NON-NLS-1$ //$NON-NLS-2$
             Binary binary = session.getValueFactory().createBinary(stream);
-            contentNode.setProperty("jcr:data", binary);
+            contentNode.setProperty("jcr:data", binary); //$NON-NLS-1$
         } catch (RepositoryException e) {
             error = true;
             throw e;
@@ -214,7 +215,7 @@ public class JCRUtils {
 
     private static void isNotNull( Object argument, String name ) {
         if (argument == null) {
-            throw new IllegalArgumentException("The argument \"" + name + "\" may not be null");
+            throw new IllegalArgumentException(Messages.i18n.format("ARG_CANNOT_BE_NULL", name)); //$NON-NLS-1$
         }
     }
 
@@ -237,7 +238,7 @@ public class JCRUtils {
      */
     public void printSubgraph( Node node,
             int maxDepth ) throws RepositoryException {
-        printSubgraph(node, " ", node.getDepth(), maxDepth);
+        printSubgraph(node, " ", node.getDepth(), maxDepth); //$NON-NLS-1$
     }
 
     /**
@@ -247,7 +248,7 @@ public class JCRUtils {
      * @throws RepositoryException
      */
     public void printNode( Node node ) throws RepositoryException {
-        printSubgraph(node, " ", node.getDepth(), 1);
+        printSubgraph(node, " ", node.getDepth(), 1); //$NON-NLS-1$
     }
 
     /**
@@ -265,23 +266,23 @@ public class JCRUtils {
             int maxDepthOfSubgraph ) throws RepositoryException {
         int currentDepth = node.getDepth() - depthOfSubgraph + 1;
         if (currentDepth > maxDepthOfSubgraph) return;
-        if (lead == null) lead = "";
+        if (lead == null) lead = ""; //$NON-NLS-1$
         String nodeLead = lead + createString(' ', (currentDepth - 1) * 2);
 
         StringBuilder sb = new StringBuilder();
         sb.append(nodeLead);
         if (node.getDepth() == 0) {
-            sb.append("/");
+            sb.append("/"); //$NON-NLS-1$
         } else {
             sb.append(node.getName());
             if (node.getIndex() != 1) {
                 sb.append('[').append(node.getIndex()).append(']');
             }
         }
-        sb.append(" jcr:primaryType=" + node.getPrimaryNodeType().getName());
-        boolean referenceable = node.isNodeType("mix:referenceable");
+        sb.append(" jcr:primaryType=" + node.getPrimaryNodeType().getName()); //$NON-NLS-1$
+        boolean referenceable = node.isNodeType("mix:referenceable"); //$NON-NLS-1$
         if (node.getMixinNodeTypes().length != 0) {
-            sb.append(" jcr:mixinTypes=[");
+            sb.append(" jcr:mixinTypes=["); //$NON-NLS-1$
             boolean first = true;
             for (NodeType mixin : node.getMixinNodeTypes()) {
                 if (first) first = false;
@@ -291,7 +292,7 @@ public class JCRUtils {
             sb.append(']');
         }
         if (referenceable) {
-            sb.append(" jcr:uuid=" + node.getIdentifier());
+            sb.append(" jcr:uuid=" + node.getIdentifier()); //$NON-NLS-1$
         }
         System.out.println(sb);
 
@@ -299,14 +300,14 @@ public class JCRUtils {
         for (PropertyIterator iter = node.getProperties(); iter.hasNext();) {
             Property property = iter.nextProperty();
             String name = property.getName();
-            if (name.equals("jcr:primaryType") || name.equals("jcr:mixinTypes") || name.equals("jcr:uuid")) continue;
+            if (name.equals("jcr:primaryType") || name.equals("jcr:mixinTypes") || name.equals("jcr:uuid")) continue; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             propertyNames.add(property.getName());
         }
         Collections.sort(propertyNames);
         for (String propertyName : propertyNames) {
             Property property = node.getProperty(propertyName);
             sb = new StringBuilder();
-            sb.append(nodeLead).append("  - ").append(propertyName).append('=');
+            sb.append(nodeLead).append("  - ").append(propertyName).append('='); //$NON-NLS-1$
             int type = property.getType();
             boolean binary = type == PropertyType.BINARY;
             if (property.isMultiple()) {
@@ -355,7 +356,7 @@ public class JCRUtils {
             int type ) throws RepositoryException {
         String result = value.getString();
         if (type == PropertyType.STRING) {
-            result = "\"" + result + "\"";
+            result = "\"" + result + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return result;
     }

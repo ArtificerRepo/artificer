@@ -51,8 +51,8 @@ public abstract class AbstractClientTest extends BaseResourceTest {
 	 */
 	public static void registerServices() throws Exception {
         // use the in-memory config for unit tests
-        System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractNoAuditingJCRPersistenceTest.class.getName()
-                + "/META-INF/modeshape-configs/junit-sramp-config.json");
+        System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractNoAuditingJCRPersistenceTest.class.getName() //$NON-NLS-1$ //$NON-NLS-2$
+                + "/META-INF/modeshape-configs/junit-sramp-config.json"); //$NON-NLS-1$
 		deployment.getProviderFactory().registerProvider(SrampAtomExceptionProvider.class);
 		deployment.getProviderFactory().registerProvider(HttpResponseProvider.class);
 		dispatcher.getRegistry().addPerRequestResource(ArtifactResource.class);
@@ -80,10 +80,10 @@ public abstract class AbstractClientTest extends BaseResourceTest {
      * @throws Exception
      */
     protected BaseArtifactType addXmlDoc() throws Exception {
-        String artifactFileName = "PO.xml";
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+        String artifactFileName = "PO.xml"; //$NON-NLS-1$
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
         try {
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
             return client.uploadArtifact(ArtifactType.XmlDocument(), is, artifactFileName);
         } finally {
             IOUtils.closeQuietly(is);

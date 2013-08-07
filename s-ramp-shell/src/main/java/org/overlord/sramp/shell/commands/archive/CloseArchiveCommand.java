@@ -18,14 +18,15 @@ package org.overlord.sramp.shell.commands.archive;
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Closes the currently open S-RAMP archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class CloseArchiveCommand extends AbstractShellCommand {
+public class CloseArchiveCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
@@ -34,34 +35,17 @@ public class CloseArchiveCommand extends AbstractShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("archive:close");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("This command will close the currently open S-RAMP archive.  If");
-		print("no archive is currently open, this command does nothing.");
-	}
-
-	/**
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
 	public void execute() throws Exception {
-		QName varName = new QName("archive", "active-archive");
+		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampArchive archive = (SrampArchive) getContext().removeVariable(varName);
 
 		if (archive == null) {
-			print("No S-RAMP archive is currently open.");
+			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
 		} else {
-			print("S-RAMP archive closed (and deleted if appropriate).");
+			print(Messages.i18n.format("CloseArchive.Closed")); //$NON-NLS-1$
 		}
 	}
 

@@ -73,9 +73,9 @@ import org.overlord.sramp.shell.commands.ontology.UploadOntologyCommand;
  */
 public class ShellCommandFactory {
 
-	private static QName HELP_CMD_NAME = new QName("s-ramp", "help");
-	private static QName EXIT_CMD_NAME = new QName("s-ramp", "exit");
-	private static QName QUIT_CMD_NAME = new QName("s-ramp", "quit");
+	private static QName HELP_CMD_NAME = new QName("s-ramp", "help"); //$NON-NLS-1$ //$NON-NLS-2$
+	private static QName EXIT_CMD_NAME = new QName("s-ramp", "exit"); //$NON-NLS-1$ //$NON-NLS-2$
+	private static QName QUIT_CMD_NAME = new QName("s-ramp", "quit"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	private Map<QName, Class<? extends ShellCommand>> registry;
 
@@ -93,39 +93,39 @@ public class ShellCommandFactory {
 		registry = new HashMap<QName, Class<? extends ShellCommand>>();
 
 		// S-RAMP core commands
-		registry.put(new QName("s-ramp", "connect"), ConnectCommand.class);
-		registry.put(new QName("s-ramp", "disconnect"), DisconnectCommand.class);
-		registry.put(new QName("s-ramp", "status"), StatusCommand.class);
-		registry.put(new QName("s-ramp", "query"), QueryCommand.class);
-		registry.put(new QName("s-ramp", "getMetaData"), GetMetaDataCommand.class);
-		registry.put(new QName("s-ramp", "getContent"), GetContentCommand.class);
-		registry.put(new QName("s-ramp", "upload"), UploadArtifactCommand.class);
-		registry.put(new QName("s-ramp", "updateMetaData"), UpdateMetaDataCommand.class);
-		registry.put(new QName("s-ramp", "updateContent"), UpdateContentCommand.class);
-		registry.put(new QName("s-ramp", "property"), PropertyCommand.class);
-		registry.put(new QName("s-ramp", "classification"), ClassificationCommand.class);
-		registry.put(new QName("s-ramp", "showMetaData"), ShowMetaDataCommand.class);
-		registry.put(new QName("s-ramp", "refreshMetaData"), RefreshMetaDataCommand.class);
-        registry.put(new QName("s-ramp", "delete"), DeleteCommand.class);
+		registry.put(new QName("s-ramp", "connect"), ConnectCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "disconnect"), DisconnectCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "status"), StatusCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "query"), QueryCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "getMetaData"), GetMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "getContent"), GetContentCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "upload"), UploadArtifactCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "updateMetaData"), UpdateMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "updateContent"), UpdateContentCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "property"), PropertyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "classification"), ClassificationCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "showMetaData"), ShowMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "refreshMetaData"), RefreshMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("s-ramp", "delete"), DeleteCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Archive commands
-		registry.put(new QName("archive", "new"), NewArchiveCommand.class);
-		registry.put(new QName("archive", "open"), OpenArchiveCommand.class);
-		registry.put(new QName("archive", "close"), CloseArchiveCommand.class);
-		registry.put(new QName("archive", "list"), ListArchiveCommand.class);
-		registry.put(new QName("archive", "addEntry"), AddEntryArchiveCommand.class);
-		registry.put(new QName("archive", "updateEntry"), UpdateEntryArchiveCommand.class);
-		registry.put(new QName("archive", "removeEntry"), RemoveEntryArchiveCommand.class);
-		registry.put(new QName("archive", "listEntry"), ListEntryArchiveCommand.class);
-		registry.put(new QName("archive", "pack"), PackArchiveCommand.class);
+		registry.put(new QName("archive", "new"), NewArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("archive", "open"), OpenArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("archive", "close"), CloseArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("archive", "list"), ListArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("archive", "addEntry"), AddEntryArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("archive", "updateEntry"), UpdateEntryArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("archive", "removeEntry"), RemoveEntryArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("archive", "listEntry"), ListEntryArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("archive", "pack"), PackArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Ontology commands
-		registry.put(new QName("ontology", "upload"), UploadOntologyCommand.class);
-		registry.put(new QName("ontology", "list"), ListOntologiesCommand.class);
-		registry.put(new QName("ontology", "delete"), DeleteOntologyCommand.class);
+		registry.put(new QName("ontology", "upload"), UploadOntologyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("ontology", "list"), ListOntologiesCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("ontology", "delete"), DeleteOntologyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 
         // Audit commands
-        registry.put(new QName("audit", "showAuditTrail"), ShowAuditTrailCommand.class);
+        registry.put(new QName("audit", "showAuditTrail"), ShowAuditTrailCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 
 		discoverContributedCommands();
 	}
@@ -139,16 +139,16 @@ public class ShellCommandFactory {
         commandClassloaders.add(Thread.currentThread().getContextClassLoader());
 
         // Register commands listed in the user's commands.ini config file
-        String userHome = System.getProperty("user.home", "/");
-        String commandsDirName = System.getProperty("s-ramp.shell.commandsDir",
-                userHome + "/.s-ramp/commands");
+        String userHome = System.getProperty("user.home", "/"); //$NON-NLS-1$ //$NON-NLS-2$
+        String commandsDirName = System.getProperty("s-ramp.shell.commandsDir", //$NON-NLS-1$
+                userHome + "/.s-ramp/commands"); //$NON-NLS-1$
         File commandsDir = new File(commandsDirName);
         if (!commandsDir.exists()) {
             commandsDir.mkdirs();
         }
         if (commandsDir.isDirectory()) {
             try {
-                Collection<File> jarFiles = FileUtils.listFiles(commandsDir, new String[] { "jar" }, false);
+                Collection<File> jarFiles = FileUtils.listFiles(commandsDir, new String[] { "jar" }, false); //$NON-NLS-1$
                 List<URL> jarURLs = new ArrayList<URL>(jarFiles.size());
                 for (File jarFile : jarFiles) {
                     jarURLs.add(jarFile.toURI().toURL());

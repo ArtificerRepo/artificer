@@ -54,16 +54,16 @@ public abstract class AbstractAuditEventBundleHandler implements AuditEventBundl
             throws ValueFormatException, VersionException, LockException, ConstraintViolationException,
             RepositoryException {
         String auditUuid = UUID.randomUUID().toString();
-        Node auditEntryNode = artifactNode.addNode("audit:" + auditUuid, JCRConstants.SRAMP_AUDIT_ENTRY);
+        Node auditEntryNode = artifactNode.addNode("audit:" + auditUuid, JCRConstants.SRAMP_AUDIT_ENTRY); //$NON-NLS-1$
         long eventDate = when;
         Calendar eventCal = Calendar.getInstance();
         eventCal.setTimeInMillis(eventDate);
 
-        auditEntryNode.setProperty("audit:uuid", auditUuid);
-        auditEntryNode.setProperty("audit:sortId", eventDate);
-        auditEntryNode.setProperty("audit:type", type);
-        auditEntryNode.setProperty("audit:who", who);
-        auditEntryNode.setProperty("audit:when", eventCal);
+        auditEntryNode.setProperty("audit:uuid", auditUuid); //$NON-NLS-1$
+        auditEntryNode.setProperty("audit:sortId", eventDate); //$NON-NLS-1$
+        auditEntryNode.setProperty("audit:type", type); //$NON-NLS-1$
+        auditEntryNode.setProperty("audit:who", who); //$NON-NLS-1$
+        auditEntryNode.setProperty("audit:when", eventCal); //$NON-NLS-1$
 
         return auditEntryNode;
     }
@@ -79,9 +79,9 @@ public abstract class AbstractAuditEventBundleHandler implements AuditEventBundl
      * @throws ValueFormatException
      */
     protected Node createAuditItemNode(Node auditEntryNode, String auditItemType) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        String auditItemNodeName = "audit:" + auditItemType.replace(':', '_');
+        String auditItemNodeName = "audit:" + auditItemType.replace(':', '_'); //$NON-NLS-1$
         Node auditItemNode = auditEntryNode.addNode(auditItemNodeName, JCRConstants.SRAMP_AUDIT_ITEM);
-        auditItemNode.setProperty("audit:type", auditItemType);
+        auditItemNode.setProperty("audit:type", auditItemType); //$NON-NLS-1$
         return auditItemNode;
     }
 

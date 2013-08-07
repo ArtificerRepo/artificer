@@ -34,16 +34,16 @@ public class SwitchYardArtifactFilter implements ArtifactFilter {
 
     private static Set<String> validExtensions = new HashSet<String>();
     static {
-        validExtensions.add("xml");
-        validExtensions.add("xsd");
-        validExtensions.add("wsdl");
-        validExtensions.add("wspolicy");
-        validExtensions.add("class");
-        validExtensions.add("xsl");
+        validExtensions.add("xml"); //$NON-NLS-1$
+        validExtensions.add("xsd"); //$NON-NLS-1$
+        validExtensions.add("wsdl"); //$NON-NLS-1$
+        validExtensions.add("wspolicy"); //$NON-NLS-1$
+        validExtensions.add("class"); //$NON-NLS-1$
+        validExtensions.add("xsl"); //$NON-NLS-1$
     }
     private static Set<String> exclusions = new HashSet<String>();
     static {
-        exclusions.add("pom.xml");
+        exclusions.add("pom.xml"); //$NON-NLS-1$
     }
 
     private SwitchYardAppIndex syIndex;
@@ -59,15 +59,15 @@ public class SwitchYardArtifactFilter implements ArtifactFilter {
      */
     @Override
     public void setContext(ZipToSrampArchiveContext context) {
-        syIndex = (SwitchYardAppIndex) context.get("switchyard.index");
+        syIndex = (SwitchYardAppIndex) context.get("switchyard.index"); //$NON-NLS-1$
         if (syIndex == null) {
-            File switchyardXmlFile = context.getJarEntry("META-INF/switchyard.xml");
+            File switchyardXmlFile = context.getJarEntry("META-INF/switchyard.xml"); //$NON-NLS-1$
             if (switchyardXmlFile == null) {
-                switchyardXmlFile = context.getJarEntry("WEB-INF/switchyard.xml");
+                switchyardXmlFile = context.getJarEntry("WEB-INF/switchyard.xml"); //$NON-NLS-1$
             }
             if (switchyardXmlFile != null) {
                 syIndex = new SwitchYardAppIndex(switchyardXmlFile);
-                context.put("switchyard.index", switchyardXmlFile);
+                context.put("switchyard.index", switchyardXmlFile); //$NON-NLS-1$
             }
         }
     }
@@ -82,7 +82,7 @@ public class SwitchYardArtifactFilter implements ArtifactFilter {
             return false;
         }
         String ext = null;
-        if (name.contains(".")) {
+        if (name.contains(".")) { //$NON-NLS-1$
             ext = name.substring(name.lastIndexOf('.') + 1);
         }
         if (validExtensions.contains(ext)) {
@@ -102,7 +102,7 @@ public class SwitchYardArtifactFilter implements ArtifactFilter {
      * @param extension
      */
     private boolean doIndexedAccept(CandidateArtifact artifact, String extension) {
-        if ("class".equals(extension)) {
+        if ("class".equals(extension)) { //$NON-NLS-1$
             String entryPath = artifact.getEntryPath();
             String classname = entryPath.replace('/', '.').replace('\\', '.');
             classname = classname.substring(0, classname.length() - 6);

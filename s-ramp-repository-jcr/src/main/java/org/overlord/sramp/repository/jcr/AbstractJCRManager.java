@@ -21,6 +21,7 @@ import javax.jcr.Session;
 import javax.jcr.query.QueryResult;
 
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 /**
  * Base class for JCR manager.
@@ -67,7 +68,7 @@ public class AbstractJCRManager {
      */
     protected static Node findArtifactNodeByUuid(Session session, String artifactUuid) throws Exception {
         javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
-        String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", artifactUuid);
+        String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", artifactUuid); //$NON-NLS-1$
         javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, JCRConstants.JCR_SQL2);
         QueryResult jcrQueryResult = jcrQuery.execute();
         NodeIterator jcrNodes = jcrQueryResult.getNodes();
@@ -75,7 +76,7 @@ public class AbstractJCRManager {
             return null;
         }
         if (jcrNodes.getSize() > 1) {
-            throw new Exception("Too many artifacts found with UUID: " + artifactUuid);
+            throw new Exception(Messages.i18n.format("TOO_MANY_ARTIFACTS", artifactUuid)); //$NON-NLS-1$
         }
         Node node = jcrNodes.nextNode();
         return node;

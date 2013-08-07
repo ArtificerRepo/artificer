@@ -39,19 +39,19 @@ public class JCRNodeToOntology {
 	 * @throws RepositoryException
 	 */
 	public void read(SrampOntology ontology, Node jcrNode) throws RepositoryException {
-		ontology.setUuid(getProperty(jcrNode, "sramp:uuid"));
-		ontology.setLabel(getProperty(jcrNode, "sramp:label"));
-		ontology.setComment(getProperty(jcrNode, "sramp:comment"));
-		ontology.setBase(getProperty(jcrNode, "sramp:base"));
-		ontology.setId(getProperty(jcrNode, "sramp:id"));
-		ontology.setCreatedBy(getProperty(jcrNode, "jcr:createdBy"));
-		ontology.setLastModifiedBy(getProperty(jcrNode, "jcr:lastModifiedBy"));
-		if (jcrNode.hasProperty("jcr:created")) {
-			Date d = jcrNode.getProperty("jcr:created").getDate().getTime();
+		ontology.setUuid(getProperty(jcrNode, "sramp:uuid")); //$NON-NLS-1$
+		ontology.setLabel(getProperty(jcrNode, "sramp:label")); //$NON-NLS-1$
+		ontology.setComment(getProperty(jcrNode, "sramp:comment")); //$NON-NLS-1$
+		ontology.setBase(getProperty(jcrNode, "sramp:base")); //$NON-NLS-1$
+		ontology.setId(getProperty(jcrNode, "sramp:id")); //$NON-NLS-1$
+		ontology.setCreatedBy(getProperty(jcrNode, "jcr:createdBy")); //$NON-NLS-1$
+		ontology.setLastModifiedBy(getProperty(jcrNode, "jcr:lastModifiedBy")); //$NON-NLS-1$
+		if (jcrNode.hasProperty("jcr:created")) { //$NON-NLS-1$
+			Date d = jcrNode.getProperty("jcr:created").getDate().getTime(); //$NON-NLS-1$
 			ontology.setCreatedOn(d);
 		}
-		if (jcrNode.hasProperty("jcr:lastModified")) {
-			Date d = jcrNode.getProperty("jcr:lastModified").getDate().getTime();
+		if (jcrNode.hasProperty("jcr:lastModified")) { //$NON-NLS-1$
+			Date d = jcrNode.getProperty("jcr:lastModified").getDate().getTime(); //$NON-NLS-1$
 			ontology.setLastModifiedOn(d);
 		}
 
@@ -74,13 +74,13 @@ public class JCRNodeToOntology {
 		SrampOntology.Class rval = new SrampOntology.Class();
 
 		try {
-			rval.setUri(new URI(getProperty(jcrNode, "sramp:uri")));
+			rval.setUri(new URI(getProperty(jcrNode, "sramp:uri"))); //$NON-NLS-1$
 		} catch (URISyntaxException e) {
 			throw new RepositoryException(e);
 		}
-		rval.setId(getProperty(jcrNode, "sramp:id"));
-		rval.setLabel(getProperty(jcrNode, "sramp:label"));
-		rval.setComment(getProperty(jcrNode, "sramp:comment"));
+		rval.setId(getProperty(jcrNode, "sramp:id")); //$NON-NLS-1$
+		rval.setLabel(getProperty(jcrNode, "sramp:label")); //$NON-NLS-1$
+		rval.setComment(getProperty(jcrNode, "sramp:comment")); //$NON-NLS-1$
 
 		NodeIterator nodes = jcrNode.getNodes();
 		while (nodes.hasNext()) {

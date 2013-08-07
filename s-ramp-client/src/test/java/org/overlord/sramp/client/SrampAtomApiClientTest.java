@@ -60,10 +60,10 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 	 */
 	@Test
 	public void testUploadArtifact() throws Exception {
-		String artifactFileName = "PO.xsd";
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 		try {
-			SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+			SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
 			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
 			Assert.assertEquals(artifactFileName, artifact.getName());
@@ -79,14 +79,14 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
     public void testCreateArtifact() throws Exception {
         ExtendedArtifactType artifact = new ExtendedArtifactType();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-        artifact.setExtendedType("TestArtifact");
-        artifact.setName("My Test Artifact");
-        artifact.setDescription("Description of my test artifact.");
-        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        artifact.setExtendedType("TestArtifact"); //$NON-NLS-1$
+        artifact.setName("My Test Artifact"); //$NON-NLS-1$
+        artifact.setDescription("Description of my test artifact."); //$NON-NLS-1$
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
         BaseArtifactType createdArtifact = client.createArtifact(artifact);
         Assert.assertNotNull(artifact);
-        Assert.assertEquals("My Test Artifact", createdArtifact.getName());
-        Assert.assertEquals("Description of my test artifact.", createdArtifact.getDescription());
+        Assert.assertEquals("My Test Artifact", createdArtifact.getName()); //$NON-NLS-1$
+        Assert.assertEquals("Description of my test artifact.", createdArtifact.getDescription()); //$NON-NLS-1$
     }
 
     /**
@@ -94,11 +94,11 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
      */
     @Test
     public void testExtendedDocumentArtifact() throws Exception {
-        String artifactFileName = "PO.xsd";
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
         try {
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
-            BaseArtifactType artifact = client.uploadArtifact(ArtifactType.ExtendedDocument("TestDocument"), is, artifactFileName);
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
+            BaseArtifactType artifact = client.uploadArtifact(ArtifactType.ExtendedDocument("TestDocument"), is, artifactFileName); //$NON-NLS-1$
             Assert.assertNotNull(artifact);
             Assert.assertEquals(artifactFileName, artifact.getName());
             Assert.assertEquals(BaseArtifactEnum.EXTENDED_DOCUMENT, artifact.getArtifactType());
@@ -114,10 +114,10 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
     @Test
     public void testGetArtifactMetaData() throws Exception {
         String uuid = null;
-        String artifactFileName = "PO.xsd";
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
         try {
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
             BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
             Assert.assertNotNull(artifact);
             uuid = artifact.getUuid();
@@ -127,7 +127,7 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 
         // Now test that we can fetch the meta-data using the artifact type and UUID
         {
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
             BaseArtifactType metaData = client.getArtifactMetaData(ArtifactType.XsdDocument(), uuid);
             Assert.assertNotNull(metaData);
             Assert.assertEquals(artifactFileName, metaData.getName());
@@ -140,10 +140,10 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
     @Test
     public void testGetArtifactMetaDataNoType() throws Exception {
         String uuid = null;
-        String artifactFileName = "PO.xsd";
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
         try {
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
             BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
             Assert.assertNotNull(artifact);
             uuid = artifact.getUuid();
@@ -153,7 +153,7 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 
         // Now test that we can fetch the meta-data using just the UUID
         {
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
             BaseArtifactType metaData = client.getArtifactMetaData(uuid);
             Assert.assertNotNull(metaData);
             Assert.assertEquals(artifactFileName, metaData.getName());
@@ -166,17 +166,17 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
      */
     @Test
     public void testUploadArtifactAndContent() throws Exception {
-        String artifactFileName = "PO.xsd";
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
         try {
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
             XsdDocument xsdDocument = new XsdDocument();
             xsdDocument.setName(artifactFileName);
-            xsdDocument.setUuid("my-client-side-supplied-UUID");
+            xsdDocument.setUuid("my-client-side-supplied-UUID"); //$NON-NLS-1$
             BaseArtifactType artifact = client.uploadArtifact(xsdDocument, is);
             Assert.assertNotNull(artifact);
             Assert.assertEquals(artifactFileName, artifact.getName());
-            Assert.assertEquals("my-client-side-supplied-UUID", artifact.getUuid());
+            Assert.assertEquals("my-client-side-supplied-UUID", artifact.getUuid()); //$NON-NLS-1$
         } finally {
             IOUtils.closeQuietly(is);
         }
@@ -187,12 +187,12 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 	 */
 	@Test
 	public void testGetArtifactContent() throws Exception {
-		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
 		String uuid = null;
 
 		// First, upload an artifact so we have some content to get
-		String artifactFileName = "PO.xsd";
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 		try {
 			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
@@ -209,8 +209,8 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(content));
 			String line1 = reader.readLine();
 			String line2 = reader.readLine();
-			Assert.assertTrue("Unexpected content found.", line1.startsWith("<?xml version=\"1.0\""));
-			Assert.assertTrue("Unexpected content found.", line2.startsWith("<xsd:schema"));
+			Assert.assertTrue("Unexpected content found.", line1.startsWith("<?xml version=\"1.0\"")); //$NON-NLS-1$ //$NON-NLS-2$
+			Assert.assertTrue("Unexpected content found.", line2.startsWith("<xsd:schema")); //$NON-NLS-1$ //$NON-NLS-2$
 		} finally {
 			IOUtils.closeQuietly(is);
 		}
@@ -221,13 +221,13 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 	 * @throws Exception
 	 */
 	public void testUpdateArtifactMetaData() throws Exception {
-		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
 		String uuid = null;
 		XsdDocument xsdDoc = null;
 
 		// First, upload an artifact so we have some content to update
-		String artifactFileName = "PO.xsd";
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 		try {
 			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
@@ -239,12 +239,12 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 		}
 
 		// Now update the description
-		xsdDoc.setDescription("** DESCRIPTION UPDATED **");
+		xsdDoc.setDescription("** DESCRIPTION UPDATED **"); //$NON-NLS-1$
 		client.updateArtifactMetaData(xsdDoc);
 
 		// Now verify
 		BaseArtifactType artifact = client.getArtifactMetaData(ArtifactType.XsdDocument(), uuid.toString());
-		Assert.assertEquals("** DESCRIPTION UPDATED **", artifact.getDescription());
+		Assert.assertEquals("** DESCRIPTION UPDATED **", artifact.getDescription()); //$NON-NLS-1$
 	}
 
 	/**
@@ -252,13 +252,13 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 	 * @throws Exception
 	 */
 	public void testUpdateArtifactContent() throws Exception {
-		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
 		String uuid = null;
 		XsdDocument xsdDoc = null;
 
 		// First, upload an artifact so we have some content to update
-		String artifactFileName = "PO.xsd";
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 		try {
 			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
@@ -270,7 +270,7 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 		}
 
 		// Now update the artifact content
-		is = this.getClass().getResourceAsStream("/sample-files/xsd/PO-updated.xsd");
+		is = this.getClass().getResourceAsStream("/sample-files/xsd/PO-updated.xsd"); //$NON-NLS-1$
 		try {
 			client.updateArtifactContent(xsdDoc, is);
 		} finally {
@@ -288,12 +288,12 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 	 */
 	@Test
 	public void testQuery() throws Exception {
-		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
 		String uuid = null;
 
 		// First add an artifact so we have something to search for
-		String artifactFileName = "PO.xsd";
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 		try {
 			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
@@ -304,13 +304,13 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 		}
 
 		// Now search for all XSDs
-		QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument", 0, 50, "name", false);
+		QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument", 0, 50, "name", false); //$NON-NLS-1$ //$NON-NLS-2$
 		boolean uuidFound = false;
 		for (ArtifactSummary entry : rset) {
 			if (entry.getUuid().equals(uuid))
 				uuidFound = true;
 		}
-		Assert.assertTrue("Failed to find the artifact we just added!", uuidFound);
+		Assert.assertTrue("Failed to find the artifact we just added!", uuidFound); //$NON-NLS-1$
 	}
 
     /**
@@ -318,12 +318,12 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
      */
     @Test
     public void testQueryWithPropertyName() throws Exception {
-        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
         String uuid = null;
 
         // First add an artifact so we have something to search for
-        String artifactFileName = "PO.xsd";
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
         try {
             BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
             Assert.assertNotNull(artifact);
@@ -331,9 +331,9 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
             uuid = artifact.getUuid();
 
             // Set a couple of custom properties and update
-            SrampModelUtils.setCustomProperty(artifact, "prop1", "foo");
-            SrampModelUtils.setCustomProperty(artifact, "prop2", "bar");
-            SrampModelUtils.setCustomProperty(artifact, "prop3", "baz");
+            SrampModelUtils.setCustomProperty(artifact, "prop1", "foo"); //$NON-NLS-1$ //$NON-NLS-2$
+            SrampModelUtils.setCustomProperty(artifact, "prop2", "bar"); //$NON-NLS-1$ //$NON-NLS-2$
+            SrampModelUtils.setCustomProperty(artifact, "prop3", "baz"); //$NON-NLS-1$ //$NON-NLS-2$
             client.updateArtifactMetaData(artifact);
         } finally {
             IOUtils.closeQuietly(is);
@@ -342,14 +342,14 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
         // Now search for the artifact and request one of the custom
         // properties be returned in the result set.
         Set<String> propertyNames = new HashSet<String>();
-        propertyNames.add("prop1");
-        propertyNames.add("prop2");
-        QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument[@uuid='"+uuid+"']", 0, 50, "name", false, propertyNames);
-        Assert.assertEquals("Expected a single artifact returned.", 1, rset.size());
+        propertyNames.add("prop1"); //$NON-NLS-1$
+        propertyNames.add("prop2"); //$NON-NLS-1$
+        QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument[@uuid='"+uuid+"']", 0, 50, "name", false, propertyNames); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        Assert.assertEquals("Expected a single artifact returned.", 1, rset.size()); //$NON-NLS-1$
         ArtifactSummary summary = rset.get(0);
-        Assert.assertEquals("foo", summary.getCustomPropertyValue("prop1"));
-        Assert.assertEquals("bar", summary.getCustomPropertyValue("prop2"));
-        Assert.assertNull("I didn't ask for 'prop3' to be returned!", summary.getCustomPropertyValue("prop3"));
+        Assert.assertEquals("foo", summary.getCustomPropertyValue("prop1")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("bar", summary.getCustomPropertyValue("prop2")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertNull("I didn't ask for 'prop3' to be returned!", summary.getCustomPropertyValue("prop3")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -357,12 +357,12 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
      */
     @Test
     public void testBuildQuery() throws Exception {
-        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
         String uuid = null;
 
         // First add an artifact so we have something to search for
-        String artifactFileName = "PO.xsd";
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
         try {
             BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
             Assert.assertNotNull(artifact);
@@ -373,19 +373,19 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
         }
 
         // Now search for the XSD by its UUID
-        QueryResultSet rset = client.buildQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]").parameter(uuid)
+        QueryResultSet rset = client.buildQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]").parameter(uuid) //$NON-NLS-1$
                 .count(1).query();
-        Assert.assertTrue("Failed to find the artifact we just added!", rset.size() == 1);
+        Assert.assertTrue("Failed to find the artifact we just added!", rset.size() == 1); //$NON-NLS-1$
 
         // Do a couple of date-based queries here
-        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp < ?]")
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp < ?]") //$NON-NLS-1$
                 .parameter(new Date(System.currentTimeMillis() + 86400000L))
                 .count(1).query();
-        Assert.assertTrue("Failed to find an artifact by lastModifiedTimestamp!", rset.size() == 1);
-        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp > ?]")
+        Assert.assertTrue("Failed to find an artifact by lastModifiedTimestamp!", rset.size() == 1); //$NON-NLS-1$
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp > ?]") //$NON-NLS-1$
                 .parameter(new Date(System.currentTimeMillis() + 86400000L))
                 .count(1).query();
-        Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0);
+        Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0); //$NON-NLS-1$
 
         // Now by DateTime
         Calendar endOfToday = Calendar.getInstance();
@@ -394,14 +394,14 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
         endOfToday.set(Calendar.SECOND, 0);
         endOfToday.set(Calendar.MILLISECOND, 0);
         endOfToday.add(Calendar.DAY_OF_YEAR, 1);
-        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp < ?]")
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp < ?]") //$NON-NLS-1$
                 .parameter(endOfToday)
                 .count(1).query();
-        Assert.assertTrue("Failed to find an artifact by lastModifiedTimestamp!", rset.size() == 1);
-        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp > ?]")
+        Assert.assertTrue("Failed to find an artifact by lastModifiedTimestamp!", rset.size() == 1); //$NON-NLS-1$
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp > ?]") //$NON-NLS-1$
                 .parameter(endOfToday)
                 .count(1).query();
-        Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0);
+        Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0); //$NON-NLS-1$
     }
 
     /**
@@ -409,11 +409,11 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
      */
     @Test
     public void testResultSetAttributes() throws Exception {
-        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
         for (int i = 0; i < 20; i++) {
             addXmlDoc();
         }
-        QueryResultSet rs = client.buildQuery("/s-ramp/core").count(2).startIndex(5).query();
+        QueryResultSet rs = client.buildQuery("/s-ramp/core").count(2).startIndex(5).query(); //$NON-NLS-1$
         Assert.assertEquals(20, rs.getTotalResults());
         Assert.assertEquals(2, rs.getItemsPerPage());
         Assert.assertEquals(5, rs.getStartIndex());
@@ -424,12 +424,12 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 	 */
 	@Test
 	public void testQueryError() throws Exception {
-		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+		SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
 		try {
-			QueryResultSet rset = client.query("12345", 0, 20, "name", false);
-			fail("Expected a remote exception from the s-ramp server, but got: " + rset);
+			QueryResultSet rset = client.query("12345", 0, 20, "name", false); //$NON-NLS-1$ //$NON-NLS-2$
+			fail("Expected a remote exception from the s-ramp server, but got: " + rset); //$NON-NLS-1$
 		} catch (SrampAtomException e) {
-			Assert.assertEquals("Invalid artifact set (step 2).", e.getMessage());
+			Assert.assertEquals("Invalid artifact set (step 2).", e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
@@ -445,21 +445,21 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 		try {
 			archive = new SrampArchive();
 
-			String artifactFileName = "PO.xsd";
-			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+			String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 			BaseArtifactType metaData = new XsdDocument();
-			metaData.setName("PO.xsd");
-			metaData.setVersion("1.1");
-			metaData.setDescription("This is a test description (XSD).");
-			archive.addEntry("schemas/PO.xsd", metaData, is1);
+			metaData.setName("PO.xsd"); //$NON-NLS-1$
+			metaData.setVersion("1.1"); //$NON-NLS-1$
+			metaData.setDescription("This is a test description (XSD)."); //$NON-NLS-1$
+			archive.addEntry("schemas/PO.xsd", metaData, is1); //$NON-NLS-1$
 
-			artifactFileName = "PO.xml";
-			is2 = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
+			artifactFileName = "PO.xml"; //$NON-NLS-1$
+			is2 = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
 			metaData = new XsdDocument();
-			metaData.setName("PO.xml");
-			metaData.setVersion("1.2");
-			metaData.setDescription("This is a test description (XML).");
-			archive.addEntry("core/PO.xml", metaData, is2);
+			metaData.setName("PO.xml"); //$NON-NLS-1$
+			metaData.setVersion("1.2"); //$NON-NLS-1$
+			metaData.setDescription("This is a test description (XML)."); //$NON-NLS-1$
+			archive.addEntry("core/PO.xml", metaData, is2); //$NON-NLS-1$
 		} catch (Exception e) {
 			SrampArchive.closeQuietly(archive);
 			throw e;
@@ -470,21 +470,21 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 
 		try {
 			// Now use the s-ramp atom api client to upload the s-ramp archive
-			SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+			SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
 			Map<String, ?> results = client.uploadBatch(archive);
 			Assert.assertEquals(2, results.size());
-			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd"));
-			Assert.assertTrue(results.keySet().contains("core/PO.xml"));
+			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd")); //$NON-NLS-1$
+			Assert.assertTrue(results.keySet().contains("core/PO.xml")); //$NON-NLS-1$
 
-			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd");
+			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd"); //$NON-NLS-1$
 			Assert.assertNotNull(xsdDoc);
-			Assert.assertEquals("PO.xsd", xsdDoc.getName());
-			Assert.assertEquals("1.1", xsdDoc.getVersion());
+			Assert.assertEquals("PO.xsd", xsdDoc.getName()); //$NON-NLS-1$
+			Assert.assertEquals("1.1", xsdDoc.getVersion()); //$NON-NLS-1$
 
-			XmlDocument xmlDoc = (XmlDocument) results.get("core/PO.xml");
+			XmlDocument xmlDoc = (XmlDocument) results.get("core/PO.xml"); //$NON-NLS-1$
 			Assert.assertNotNull(xmlDoc);
-			Assert.assertEquals("PO.xml", xmlDoc.getName());
-			Assert.assertEquals("1.2", xmlDoc.getVersion());
+			Assert.assertEquals("PO.xml", xmlDoc.getName()); //$NON-NLS-1$
+			Assert.assertEquals("1.2", xmlDoc.getVersion()); //$NON-NLS-1$
 		} finally {
 			SrampArchive.closeQuietly(archive);
 		}
@@ -507,7 +507,7 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 
         try {
             // Now use the s-ramp atom api client to upload the s-ramp archive
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
             Map<String, ?> results = client.uploadBatch(archive);
             Assert.assertTrue(results.isEmpty());
         } finally {
@@ -526,10 +526,10 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
             archive = new SrampArchive();
             ExtendedArtifactType nonDocArtifact = new ExtendedArtifactType();
             nonDocArtifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-            nonDocArtifact.setExtendedType("TestArtifact");
-            nonDocArtifact.setName("My Test Artifact");
+            nonDocArtifact.setExtendedType("TestArtifact"); //$NON-NLS-1$
+            nonDocArtifact.setName("My Test Artifact"); //$NON-NLS-1$
 
-            archive.addEntry("myLogicalArtifact", nonDocArtifact, null);
+            archive.addEntry("myLogicalArtifact", nonDocArtifact, null); //$NON-NLS-1$
         } catch (Exception e) {
             SrampArchive.closeQuietly(archive);
             throw e;
@@ -538,20 +538,20 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 
         try {
             // Now use the s-ramp atom api client to upload the s-ramp archive
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
             Map<String, ?> results = client.uploadBatch(archive);
             Assert.assertFalse(results.isEmpty());
             Assert.assertEquals(1, results.size());
 
-            QueryResultSet resultSet = client.buildQuery("/s-ramp/ext").query();
+            QueryResultSet resultSet = client.buildQuery("/s-ramp/ext").query(); //$NON-NLS-1$
             Assert.assertNotNull(resultSet);
             Assert.assertEquals(1, resultSet.getTotalResults());
 
-            resultSet = client.buildQuery("/s-ramp/ext/TestArtifact").query();
+            resultSet = client.buildQuery("/s-ramp/ext/TestArtifact").query(); //$NON-NLS-1$
             Assert.assertNotNull(resultSet);
             Assert.assertEquals(1, resultSet.getTotalResults());
 
-            resultSet = client.buildQuery("/s-ramp/ext/TestArtifact[@name = 'My Test Artifact']").query();
+            resultSet = client.buildQuery("/s-ramp/ext/TestArtifact[@name = 'My Test Artifact']").query(); //$NON-NLS-1$
             Assert.assertNotNull(resultSet);
             Assert.assertEquals(1, resultSet.getTotalResults());
         } finally {
@@ -571,20 +571,20 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 		try {
 			archive = new SrampArchive();
 
-			String artifactFileName = "PO.xsd";
-			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+			String artifactFileName = "PO.xsd"; //$NON-NLS-1$
+			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
 			BaseArtifactType metaData = new XsdDocument();
-			metaData.setName("PO.xsd");
-			metaData.setVersion("1.1");
-			metaData.setDescription("This is a test description (XSD).");
-			archive.addEntry("schemas/PO.xsd", metaData, is1);
+			metaData.setName("PO.xsd"); //$NON-NLS-1$
+			metaData.setVersion("1.1"); //$NON-NLS-1$
+			metaData.setDescription("This is a test description (XSD)."); //$NON-NLS-1$
+			archive.addEntry("schemas/PO.xsd", metaData, is1); //$NON-NLS-1$
 
-			artifactFileName = "PO.xml";
+			artifactFileName = "PO.xml"; //$NON-NLS-1$
 			metaData = new XsdDocument();
-			metaData.setName("PO.xml");
-			metaData.setVersion("1.2");
-			metaData.setDescription("This is a test description (XML).");
-			archive.addEntry("core/PO.xml", metaData, null);
+			metaData.setName("PO.xml"); //$NON-NLS-1$
+			metaData.setVersion("1.2"); //$NON-NLS-1$
+			metaData.setDescription("This is a test description (XML)."); //$NON-NLS-1$
+			archive.addEntry("core/PO.xml", metaData, null); //$NON-NLS-1$
 		} catch (Exception e) {
 			SrampArchive.closeQuietly(archive);
 			throw e;
@@ -595,18 +595,18 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 
 		try {
 			// Now use the s-ramp atom api client to upload the s-ramp archive
-			SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+			SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
 			Map<String, ?> results = client.uploadBatch(archive);
 			Assert.assertEquals(2, results.size());
-			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd"));
-			Assert.assertTrue(results.keySet().contains("core/PO.xml"));
+			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd")); //$NON-NLS-1$
+			Assert.assertTrue(results.keySet().contains("core/PO.xml")); //$NON-NLS-1$
 
-			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd");
+			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd"); //$NON-NLS-1$
 			Assert.assertNotNull(xsdDoc);
-			Assert.assertEquals("PO.xsd", xsdDoc.getName());
-			Assert.assertEquals("1.1", xsdDoc.getVersion());
+			Assert.assertEquals("PO.xsd", xsdDoc.getName()); //$NON-NLS-1$
+			Assert.assertEquals("1.1", xsdDoc.getVersion()); //$NON-NLS-1$
 
-			Exception xmlError = (Exception) results.get("core/PO.xml");
+			Exception xmlError = (Exception) results.get("core/PO.xml"); //$NON-NLS-1$
 			Assert.assertNotNull(xmlError);
 		} finally {
 			SrampArchive.closeQuietly(archive);
@@ -618,16 +618,16 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
      */
     @Test
     public void testUploadOntology() throws Exception {
-        String ontologyFileName = "colors.owl.xml";
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/ontologies/" + ontologyFileName);
+        String ontologyFileName = "colors.owl.xml"; //$NON-NLS-1$
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/ontologies/" + ontologyFileName); //$NON-NLS-1$
         Assert.assertNotNull(is);
         try {
-            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+            SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
             RDF rdf = client.uploadOntology(is);
             Assert.assertNotNull(rdf);
             SrampOntology ontology = RdfToOntologyMapper.rdf2ontology(rdf);
             Assert.assertNotNull(ontology);
-            Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase());
+            Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase()); //$NON-NLS-1$
             Assert.assertNotNull(ontology.getUuid());
         } finally {
             IOUtils.closeQuietly(is);
@@ -639,7 +639,7 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
      */
     @Test
     public void testGetOntologies() throws Exception {
-        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
         List<OntologySummary> ontologies = client.getOntologies();
         Assert.assertNotNull(ontologies);
         Assert.assertTrue(ontologies.isEmpty());
@@ -652,10 +652,10 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
         Assert.assertFalse(ontologies.isEmpty());
         Assert.assertEquals(1, ontologies.size());
         OntologySummary ontologySummary = ontologies.get(0);
-        Assert.assertEquals("http://www.example.org/colors.owl", ontologySummary.getBase());
-        Assert.assertEquals("Colors ontology", ontologySummary.getComment());
-        Assert.assertEquals("Colors", ontologySummary.getId());
-        Assert.assertEquals("Colors", ontologySummary.getLabel());
+        Assert.assertEquals("http://www.example.org/colors.owl", ontologySummary.getBase()); //$NON-NLS-1$
+        Assert.assertEquals("Colors ontology", ontologySummary.getComment()); //$NON-NLS-1$
+        Assert.assertEquals("Colors", ontologySummary.getId()); //$NON-NLS-1$
+        Assert.assertEquals("Colors", ontologySummary.getLabel()); //$NON-NLS-1$
         Assert.assertNotNull(ontologySummary.getUuid());
     }
 
@@ -664,12 +664,12 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
      */
     @Test
     public void testGetOntology() throws Exception {
-        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp"));
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
         RDF rdf = null;
         try {
-            rdf = client.getOntology("INVALID_UUID");
+            rdf = client.getOntology("INVALID_UUID"); //$NON-NLS-1$
         } catch (Exception e) {
-            Assert.assertEquals("No ontology found with UUID: INVALID_UUID", e.getMessage());
+            Assert.assertEquals("No ontology found with UUID: INVALID_UUID", e.getMessage()); //$NON-NLS-1$
         }
         Assert.assertNull(rdf);
 
@@ -688,7 +688,7 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
         Assert.assertNotNull(rdf);
         SrampOntology ontology = RdfToOntologyMapper.rdf2ontology(rdf);
         Assert.assertNotNull(ontology);
-        Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase());
+        Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase()); //$NON-NLS-1$
         Assert.assertNotNull(ontology.getUuid());
     }
 }

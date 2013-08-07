@@ -27,7 +27,7 @@ public abstract class AbstractAuditingClientTest extends AbstractClientTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
-        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "true");
+        System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "true"); //$NON-NLS-1$
         registerServices();
 	}
 

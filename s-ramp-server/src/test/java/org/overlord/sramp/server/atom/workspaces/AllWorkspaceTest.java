@@ -29,7 +29,7 @@ public class AllWorkspaceTest extends AbstractWorkspaceTest {
     @Test
     public void testWorkspace() throws Exception {
 		AppService appService = new AppService();
-		String hrefBase = "http://example.org";
+		String hrefBase = "http://example.org"; //$NON-NLS-1$
 		appService.getWorkspace().add(new CoreWorkspace(hrefBase));
 		appService.getWorkspace().add(new XsdWorkspace(hrefBase));
 		appService.getWorkspace().add(new PolicyWorkspace(hrefBase));
@@ -38,7 +38,7 @@ public class AllWorkspaceTest extends AbstractWorkspaceTest {
         appService.getWorkspace().add(new AuditWorkspace(hrefBase));
 
         String actual = marshall(appService);
-        String expected = getExpectedWorkspaceXML("all");
+        String expected = getExpectedWorkspaceXML("all"); //$NON-NLS-1$
 
         XMLAssert.assertXMLEqual(expected, actual);
     }

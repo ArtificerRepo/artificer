@@ -26,10 +26,11 @@ import javax.xml.namespace.QName;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.shell.api.AbstractShellCommand;
+import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.Arguments;
 import org.overlord.sramp.shell.api.ShellContext;
 import org.overlord.sramp.shell.api.SimpleShellContext;
+import org.overlord.sramp.shell.i18n.Messages;
 import org.overlord.sramp.shell.util.FileNameCompleter;
 
 /**
@@ -37,33 +38,12 @@ import org.overlord.sramp.shell.util.FileNameCompleter;
  *
  * @author eric.wittmann@redhat.com
  */
-public class UploadOntologyCommand extends AbstractShellCommand {
+public class UploadOntologyCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
 	 */
 	public UploadOntologyCommand() {
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-		print("ontology:upload <pathToOntologyFile>");
-	}
-
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-		print("The 'upload' command uploads a new OWL ontology file to the");
-		print("S-RAMP repository.  This makes the classes defined in the OWL");
-		print("ontology available for use as classifications on artifacts.");
-		print("");
-		print("Example usage:");
-		print(">  ontology:upload /home/uname/files/regions.owl.xml");
 	}
 
 	 /**
@@ -73,24 +53,24 @@ public class UploadOntologyCommand extends AbstractShellCommand {
      */
     public static void main(String [] args) throws Exception {
         if (args.length != 2) {
-            throw new Exception("Usage: " + UploadOntologyCommand.class + " [-file | -resource] [<filePath> | <resourcePath>]");
+            throw new Exception("Usage: " + UploadOntologyCommand.class + " [-file | -resource] [<filePath> | <resourcePath>]"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         String type = args[0];
         String path = args[1];
 
         StringBuilder argLine = new StringBuilder();
-        boolean isResource = "-resource".equals(type);
+        boolean isResource = "-resource".equals(type); //$NON-NLS-1$
         if (isResource) {
             URL url = UploadOntologyCommand.class.getResource(path);
-            if (url==null) throw new Exception ("Could not find " + path + " on the classpath");
+            if (url==null) throw new Exception ("Could not find " + path + " on the classpath"); //$NON-NLS-1$ //$NON-NLS-2$
             argLine.append(url.toExternalForm());
         } else {
             File file = new File(path);
             if (!file.isFile()) throw new FileNotFoundException(path);
             argLine.append(file.getCanonicalPath());
         }
-        SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-server");
-        QName clientVarName = new QName("s-ramp", "client");
+        SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-server"); //$NON-NLS-1$
+        QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
         ShellContext context = new SimpleShellContext();
         context.setVariable(clientVarName, client);
         UploadOntologyCommand cmd = new UploadOntologyCommand();
@@ -104,12 +84,12 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 	 */
 	@Override
 	public void execute() throws Exception {
-		String filePathArg = this.requiredArgument(0, "Please specify a path to a local ontology file.");
+		String filePathArg = this.requiredArgument(0, Messages.i18n.format("UploadOntology.InvalidArgMsg.MissingPath")); //$NON-NLS-1$
 
-		QName clientVarName = new QName("s-ramp", "client");
+		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
-			print("No S-RAMP repository connection is currently open.");
+            print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return;
 		}
 		InputStream content = null;
@@ -120,22 +100,22 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 		    } else {
 		        URL url = this.getClass().getResource(filePathArg);
 		        if (url!=null) {
-		            print("Reading from ontology file " + url.toExternalForm());
+		            print(Messages.i18n.format("UploadOntology.ReadingOntology", url.toExternalForm())); //$NON-NLS-1$
 		            content = url.openStream();
 		        } else {
-		            print("ERROR: Cannot find " + filePathArg);
+		            print(Messages.i18n.format("UploadOntology.CannotFind", filePathArg)); //$NON-NLS-1$
 		        }
 		    }
 			client.uploadOntology(content);
-			print("Successfully uploaded a new ontology to the S-RAMP repository.");
+			print(Messages.i18n.format("UploadOntology.SuccessfulUpload")); //$NON-NLS-1$
 		} catch (Exception e) {
-			print("FAILED to upload an artifact.");
-			print("\t" + e.getMessage());
+			print(Messages.i18n.format("UploadOntology.UploadFailed")); //$NON-NLS-1$
+			print("\t" + e.getMessage()); //$NON-NLS-1$
 			IOUtils.closeQuietly(content);
 		} finally {
 			IOUtils.closeQuietly(content);
 		}
-		print("**********************************************************************");
+		print("**********************************************************************"); //$NON-NLS-1$
 	}
 
 	/**
@@ -144,7 +124,7 @@ public class UploadOntologyCommand extends AbstractShellCommand {
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
 		if (lastArgument == null)
-			lastArgument = "";
+			lastArgument = ""; //$NON-NLS-1$
 		if (getArguments().isEmpty()) {
 			FileNameCompleter delegate = new FileNameCompleter();
 			return delegate.complete(lastArgument, lastArgument.length(), candidates);

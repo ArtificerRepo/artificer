@@ -141,7 +141,7 @@ public final class SrampAtomUtils {
 			entry.setSummary(artifact.getDescription());
 
 		Artifact srampArty = new Artifact();
-		Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass());
+		Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass()); //$NON-NLS-1$
 		method.invoke(srampArty, artifact);
 		entry.setAnyOtherJAXBObject(srampArty);
 
@@ -156,7 +156,7 @@ public final class SrampAtomUtils {
 	public static ArtifactType getArtifactType(Entry entry) {
 		ArtifactType type = getArtifactTypeFromEntry(entry);
 		if (type.isExtendedType()) {
-            boolean derived = "true".equals(entry.getExtensionAttributes().get(SrampConstants.SRAMP_DERIVED_QNAME));
+            boolean derived = "true".equals(entry.getExtensionAttributes().get(SrampConstants.SRAMP_DERIVED_QNAME)); //$NON-NLS-1$
             String extendedType = (String) entry.getExtensionAttributes().get(SrampConstants.SRAMP_EXTENDED_TYPE_QNAME);
             type.setExtendedDerivedType(derived);
             type.setExtendedType(extendedType);
@@ -192,7 +192,7 @@ public final class SrampAtomUtils {
         // Try the Category
 		List<Category> categories = entry.getCategories();
 		for (Category cat : categories) {
-			if ("x-s-ramp:2010:type".equals(cat.getScheme().toString())) {
+			if ("x-s-ramp:2010:type".equals(cat.getScheme().toString())) { //$NON-NLS-1$
 				String atype = cat.getTerm();
 				ArtifactType artifactType = ArtifactType.valueOf(atype);
 		        if (artifactType.isExtendedType()) {
@@ -203,11 +203,11 @@ public final class SrampAtomUtils {
 		}
 
 		// Check the 'self' link
-		Link link = entry.getLinkByRel("self");
+		Link link = entry.getLinkByRel("self"); //$NON-NLS-1$
 		if (link != null) {
 			URI href = link.getHref();
 			String path = href.getPath();
-			String [] split = path.split("/");
+			String [] split = path.split("/"); //$NON-NLS-1$
 			String atype = split[split.length - 2];
 			//String amodel = split[split.length - 3];
 			ArtifactType artifactType = ArtifactType.valueOf(atype);
@@ -218,7 +218,7 @@ public final class SrampAtomUtils {
 		}
 
 		// If all else fails!
-		return ArtifactType.valueOf("Document");
+		return ArtifactType.valueOf("Document"); //$NON-NLS-1$
     }
 
     /**

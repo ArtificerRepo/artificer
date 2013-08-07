@@ -48,26 +48,26 @@ public class BrmsPackagesListTest {
     public void marshallPackageXml()
     {
         try {
-            JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
+            JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms"); //$NON-NLS-1$
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8"); //$NON-NLS-1$
 
             Packages packages = new Packages();
             Packages.Package _package = new Packages.Package();
-            _package.setAuthor("kurt");
-            _package.getAssets().add("http://localhost:8080/drools-guvnor/rest/packages/defaultPackage/assets/Test");
+            _package.setAuthor("kurt"); //$NON-NLS-1$
+            _package.getAssets().add("http://localhost:8080/drools-guvnor/rest/packages/defaultPackage/assets/Test"); //$NON-NLS-1$
             packages.getPackage().add(_package);
             StringWriter writer = new StringWriter();
-            JAXBElement<Packages> element = new JAXBElement<Packages>(new QName("","collection",""),Packages.class,packages);
+            JAXBElement<Packages> element = new JAXBElement<Packages>(new QName("","collection",""),Packages.class,packages); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             marshaller.marshal(element,writer);
             String actualXml=writer.toString();
             java.lang.System.out.println(actualXml);
         } catch (Exception e) {
             e.printStackTrace();
-            fail("No exception should be thrown");
+            fail("No exception should be thrown"); //$NON-NLS-1$
         }
     }
 	/**
@@ -77,19 +77,19 @@ public class BrmsPackagesListTest {
 	public void unmarshallPackagesXml()
 	{
 		try {
-			JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
+			JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms"); //$NON-NLS-1$
 			Unmarshaller unMarshaller = jaxbContext.createUnmarshaller();
-			Assert.assertNotNull("Cannot locate file packages.xml",
-			        this.getClass().getResourceAsStream("/brms/srampPackage/rest/packages.xml"));
+			Assert.assertNotNull("Cannot locate file packages.xml", //$NON-NLS-1$
+			        this.getClass().getResourceAsStream("/brms/srampPackage/rest/packages.xml")); //$NON-NLS-1$
 
-			String packagesXML = new Scanner(this.getClass().getResourceAsStream("/brms/srampPackage/rest/packages.xml")).useDelimiter("\\Z").next();
+			String packagesXML = new Scanner(this.getClass().getResourceAsStream("/brms/srampPackage/rest/packages.xml")).useDelimiter("\\Z").next(); //$NON-NLS-1$ //$NON-NLS-2$
 			StringReader reader = new StringReader(packagesXML);
 			JAXBElement<Packages> element = unMarshaller.unmarshal(new StreamSource(reader),Packages.class);
 			Packages packages = element.getValue();
 			Assert.assertEquals(1, packages.getPackage().size());
 		} catch (JAXBException jaxbe) {
 		    jaxbe.printStackTrace();
-			fail("No exception should be thrown");
+			fail("No exception should be thrown"); //$NON-NLS-1$
 		}
 	}
 
@@ -100,25 +100,25 @@ public class BrmsPackagesListTest {
     public void marshallAssetsXml()
     {
         try {
-            JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
+            JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms"); //$NON-NLS-1$
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8"); //$NON-NLS-1$
 
             Assets assets = new Assets();
             Assets.Asset asset = new Assets.Asset();
-            asset.setTitle("myAsset");
+            asset.setTitle("myAsset"); //$NON-NLS-1$
            assets.getAsset().add(asset);
             StringWriter writer = new StringWriter();
-            JAXBElement<Assets> element = new JAXBElement<Assets>(new QName("","collection",""),Assets.class,assets);
+            JAXBElement<Assets> element = new JAXBElement<Assets>(new QName("","collection",""),Assets.class,assets); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             marshaller.marshal(element,writer);
             String actualXml=writer.toString();
             java.lang.System.out.println(actualXml);
         } catch (Exception e) {
             e.printStackTrace();
-            fail("No exception should be thrown");
+            fail("No exception should be thrown"); //$NON-NLS-1$
         }
     }
     /**
@@ -128,19 +128,19 @@ public class BrmsPackagesListTest {
     public void unmarshallAssetsXml()
     {
         try {
-            JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
+            JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms"); //$NON-NLS-1$
             Unmarshaller unMarshaller = jaxbContext.createUnmarshaller();
-            Assert.assertNotNull("Cannot locate file packages.xml",
-                    this.getClass().getResourceAsStream("/brms/srampPackage/rest/assets.xml"));
+            Assert.assertNotNull("Cannot locate file packages.xml", //$NON-NLS-1$
+                    this.getClass().getResourceAsStream("/brms/srampPackage/rest/assets.xml")); //$NON-NLS-1$
 
-            String assetsXML = new Scanner(this.getClass().getResourceAsStream("/brms/srampPackage/rest/assets.xml")).useDelimiter("\\Z").next();
+            String assetsXML = new Scanner(this.getClass().getResourceAsStream("/brms/srampPackage/rest/assets.xml")).useDelimiter("\\Z").next(); //$NON-NLS-1$ //$NON-NLS-2$
             StringReader reader = new StringReader(assetsXML);
             JAXBElement<Assets> element = unMarshaller.unmarshal(new StreamSource(reader),Assets.class);
             Assets assets = element.getValue();
             Assert.assertEquals(8, assets.getAsset().size());
         } catch (JAXBException jaxbe) {
             jaxbe.printStackTrace();
-            fail("No exception should be thrown");
+            fail("No exception should be thrown"); //$NON-NLS-1$
         }
     }
 
@@ -148,23 +148,23 @@ public class BrmsPackagesListTest {
     public void marshallFormatXml()
     {
         try {
-            JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms");
+            JAXBContext jaxbContext=JAXBContext.newInstance("org.overlord.sramp.atom.services.brms"); //$NON-NLS-1$
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.FALSE);
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8"); //$NON-NLS-1$
 
             Format format = new Format();
-            format.setValue("ftl");
+            format.setValue("ftl"); //$NON-NLS-1$
             StringWriter writer = new StringWriter();
-            JAXBElement<Format> element = new JAXBElement<Format>(new QName("","format",""),Format.class,format);
+            JAXBElement<Format> element = new JAXBElement<Format>(new QName("","format",""),Format.class,format); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             marshaller.marshal(element,writer);
             String actualXml=writer.toString();
             java.lang.System.out.println(actualXml);
         } catch (Exception e) {
             e.printStackTrace();
-            fail("No exception should be thrown");
+            fail("No exception should be thrown"); //$NON-NLS-1$
         }
     }
 

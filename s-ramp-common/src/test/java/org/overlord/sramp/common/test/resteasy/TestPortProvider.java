@@ -33,15 +33,15 @@ public class TestPortProvider
 {
    private static final int DEFAULT_PORT = 8081;
 
-   private static final String ENV_VAR_NAME = "RESTEASY_PORT";
+   private static final String ENV_VAR_NAME = "RESTEASY_PORT"; //$NON-NLS-1$
 
-   private static final String PROPERTY_NAME = "org.jboss.resteasy.port";
+   private static final String PROPERTY_NAME = "org.jboss.resteasy.port"; //$NON-NLS-1$
 
-   private static final String DEFAULT_HOST = "localhost";
+   private static final String DEFAULT_HOST = "localhost"; //$NON-NLS-1$
 
-   private static final String ENV_VAR_HOSTNAME = "RESTEASY_HOST";
+   private static final String ENV_VAR_HOSTNAME = "RESTEASY_HOST"; //$NON-NLS-1$
 
-   private static final String PROPERTY_HOSTNAME = "org.jboss.resteasy.host";
+   private static final String PROPERTY_HOSTNAME = "org.jboss.resteasy.host"; //$NON-NLS-1$
    
    /**
     * Create a Resteasy ClientRequest object using the configured port.
@@ -67,7 +67,7 @@ public class TestPortProvider
     */
    public static <T> T createProxy(Class<T> clazz)
    {
-      return createProxy(clazz, "");
+      return createProxy(clazz, ""); //$NON-NLS-1$
    }
 
    /**
@@ -111,7 +111,7 @@ public class TestPortProvider
     */
    public static String generateBaseUrl()
    {
-      return generateURL("");
+      return generateURL(""); //$NON-NLS-1$
    }
 
    /**
@@ -122,7 +122,7 @@ public class TestPortProvider
     */
    public static String generateURL(String path)
    {
-      return String.format("http://%s:%d%s", getHost(), getPort(), path);
+      return String.format("http://%s:%d%s", getHost(), getPort(), path); //$NON-NLS-1$
    }
 
    /**
