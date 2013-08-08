@@ -44,6 +44,7 @@ import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
+import org.overlord.sramp.ui.server.i18n.Messages;
 import org.overlord.sramp.ui.server.services.ArtifactTypeGuessingService;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
 
@@ -89,7 +90,7 @@ public class ArtifactUploadServlet extends HttpServlet {
 				List<FileItem> items = upload.parseRequest(req);
 				for (FileItem item : items) {
 					if (item.isFormField()) {
-						if (item.getFieldName().equals("artifactType")) {
+						if (item.getFieldName().equals("artifactType")) { //$NON-NLS-1$
 							artifactType = item.getString();
 						}
 					} else {
@@ -104,21 +105,21 @@ public class ArtifactUploadServlet extends HttpServlet {
 				responseMap = uploadArtifact(artifactType, fileName, artifactContent);
 			} catch (SrampAtomException e) {
 				responseMap = new HashMap<String, String>();
-				responseMap.put("exception", "true");
-				responseMap.put("exception-message", e.getMessage());
-				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e));
+				responseMap.put("exception", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+				responseMap.put("exception-message", e.getMessage()); //$NON-NLS-1$
+				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e)); //$NON-NLS-1$
 			} catch (Throwable e) {
 				responseMap = new HashMap<String, String>();
-				responseMap.put("exception", "true");
-				responseMap.put("exception-message", e.getMessage());
-				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e));
+				responseMap.put("exception", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+				responseMap.put("exception-message", e.getMessage()); //$NON-NLS-1$
+				responseMap.put("exception-stack", ExceptionUtils.getRootStackTrace(e)); //$NON-NLS-1$
 			} finally {
 				IOUtils.closeQuietly(artifactContent);
 			}
 			writeToResponse(responseMap, response);
 		} else {
 			response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
-					"Request contents type is not supported by the servlet.");
+			        Messages.i18n.format("UploadServlet.ContentTypeNotSupported")); //$NON-NLS-1$
 		}
 	}
 
@@ -139,7 +140,7 @@ public class ArtifactUploadServlet extends HttpServlet {
 		}
 
 		try {
-		    if ("SrampArchive".equals(artifactType)) {
+		    if ("SrampArchive".equals(artifactType)) { //$NON-NLS-1$
 		        uploadPackage(tempFile, responseParams);
 		    } else {
 		        uploadSingleArtifact(artifactType, fileName, tempFile, responseParams);
@@ -172,10 +173,10 @@ public class ArtifactUploadServlet extends HttpServlet {
                 }
             }
             // TODO turn these things into constants
-            responseParams.put("batch", "true");
-            responseParams.put("batchTotal", String.valueOf(numSuccess + numFailed));
-            responseParams.put("batchNumSuccess", String.valueOf(numSuccess));
-            responseParams.put("batchNumFailed", String.valueOf(numFailed));
+            responseParams.put("batch", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+            responseParams.put("batchTotal", String.valueOf(numSuccess + numFailed)); //$NON-NLS-1$
+            responseParams.put("batchNumSuccess", String.valueOf(numSuccess)); //$NON-NLS-1$
+            responseParams.put("batchNumFailed", String.valueOf(numFailed)); //$NON-NLS-1$
         } finally {
             SrampArchive.closeQuietly(archive);
         }
@@ -200,9 +201,9 @@ public class ArtifactUploadServlet extends HttpServlet {
 		try {
 			contentStream = FileUtils.openInputStream(tempFile);
 			BaseArtifactType artifact = clientAccessor.getClient().uploadArtifact(at, contentStream, fileName);
-			responseParams.put("model", at.getArtifactType().getModel());
-			responseParams.put("type", at.getArtifactType().getType());
-			responseParams.put("uuid", artifact.getUuid());
+			responseParams.put("model", at.getArtifactType().getModel()); //$NON-NLS-1$
+			responseParams.put("type", at.getArtifactType().getType()); //$NON-NLS-1$
+			responseParams.put("uuid", artifact.getUuid()); //$NON-NLS-1$
 			uuid = artifact.getUuid();
 		} finally {
 			IOUtils.closeQuietly(contentStream);
@@ -233,7 +234,7 @@ public class ArtifactUploadServlet extends HttpServlet {
 		File resourceTempFile = null;
 		OutputStream oStream = null;
 		try {
-			resourceTempFile = File.createTempFile("s-ramp-ui-upload", ".tmp");
+			resourceTempFile = File.createTempFile("s-ramp-ui-upload", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 			oStream = FileUtils.openOutputStream(resourceTempFile);
             IOUtils.copy(resourceInputStream, oStream);
             return resourceTempFile;
@@ -257,9 +258,9 @@ public class ArtifactUploadServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private void writeToResponse(Map<String, String> responseMap, HttpServletResponse response) throws IOException {
-		response.setContentType("application/json; charset=UTF8");
+		response.setContentType("application/json; charset=UTF8"); //$NON-NLS-1$
 		StringBuilder builder = new StringBuilder();
-		builder.append("({");
+		builder.append("({"); //$NON-NLS-1$
 		boolean first = true;
 		for (java.util.Map.Entry<String, String> entry : responseMap.entrySet()) {
 			String key = entry.getKey();
@@ -267,19 +268,19 @@ public class ArtifactUploadServlet extends HttpServlet {
 			if (first)
 				first = false;
 			else
-				builder.append(",");
-			builder.append("\"");
+				builder.append(","); //$NON-NLS-1$
+			builder.append("\""); //$NON-NLS-1$
 			builder.append(key);
-			builder.append("\" : \"");
+			builder.append("\" : \""); //$NON-NLS-1$
 			if (val != null) {
-				val = val.replace("\"", "\\\"");
-				val = val.replace("\n", "\\n");
+				val = val.replace("\"", "\\\""); //$NON-NLS-1$ //$NON-NLS-2$
+				val = val.replace("\n", "\\n"); //$NON-NLS-1$ //$NON-NLS-2$
 				builder.append(val);
 			}
-			builder.append("\"");
+			builder.append("\""); //$NON-NLS-1$
 		}
-		builder.append("})");
-		byte [] jsonData = builder.toString().getBytes("UTF-8");
+		builder.append("})"); //$NON-NLS-1$
+		byte [] jsonData = builder.toString().getBytes("UTF-8"); //$NON-NLS-1$
 		response.setContentLength(jsonData.length);
 		response.getOutputStream().write(jsonData);
 		response.getOutputStream().flush();

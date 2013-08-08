@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifact-details_dialogs.html#delete-artifact-dialog")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/delete-artifact-dialog.html#delete-artifact-dialog")
 @Dependent
 public class DeleteArtifactDialog extends ModalDialog implements HasClickHandlers {
 

@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifacts_dialogs.html#ontology-selector-node")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/classifier-dialog.html#ontology-selector-node")
 @Dependent
 public class OntologySelectorNode extends Composite {
 
@@ -59,9 +59,9 @@ public class OntologySelectorNode extends Composite {
     @PostConstruct
     public void onPostConstruct() {
         treeToggleButton.getElement().getStyle().setVisibility(Visibility.HIDDEN);
-        String id = "osnp_ul_" + counter++;
+        String id = "osnp_ul_" + counter++; //$NON-NLS-1$
         childPanel.getElement().setId(id);
-        treeToggleButton.getElement().setAttribute("data-target", "#" + id);
+        treeToggleButton.getElement().setAttribute("data-target", "#" + id); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

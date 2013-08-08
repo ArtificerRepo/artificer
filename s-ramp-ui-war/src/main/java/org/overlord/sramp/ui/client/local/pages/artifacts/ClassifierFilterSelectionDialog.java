@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
@@ -48,10 +49,12 @@ import com.google.gwt.user.client.ui.InlineLabel;
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifacts_dialogs.html#classifier-dialog")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/classifier-dialog.html#classifier-dialog")
 @Dependent
 public class ClassifierFilterSelectionDialog extends ModalDialog implements HasValueChangeHandlers<Set<String>> {
 
+    @Inject
+    protected ClientMessages i18n;
     @Inject
     private OntologyRpcService ontologyRpcService;
     @Inject
@@ -85,7 +88,7 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
         title.setText(ontology.getLabel());
         body.clear();
         LoadingOntology w = loading.get();
-        w.getElement().removeClassName("hide");
+        w.getElement().removeClassName("hide"); //$NON-NLS-1$
         body.add(w);
         ontologyRpcService.get(ontology.getUuid(), new IRpcServiceInvocationHandler<OntologyBean>() {
             @Override
@@ -96,9 +99,8 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
             }
             @Override
             public void onError(Throwable error) {
-                // TODO i18n
-                String errorTitle = "Classifier Filter Error";
-                String errorMsg = "Error showing classifiers in ontology " + ontology.getLabel() + ".";
+                String errorTitle = i18n.format("classifier-filter-sel-dialog.error.title"); //$NON-NLS-1$
+                String errorMsg = i18n.format("classifier-filter-sel-dialog.error.msg", ontology.getLabel()); //$NON-NLS-1$
                 if (error instanceof SrampUiException) {
                     notificationService.sendErrorNotification(errorTitle, errorMsg, (SrampUiException) error);
                 } else {

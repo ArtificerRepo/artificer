@@ -46,24 +46,24 @@ public class Pager extends FlowPanel implements HasValueChangeHandlers<Integer>,
      * Constructor.
      */
     public Pager() {
-        goToBeginning = new Anchor(SimpleHtmlSanitizer.sanitizeHtml("&#x00AB;"));
+        goToBeginning = new Anchor(SimpleHtmlSanitizer.sanitizeHtml("&#x00AB;")); //$NON-NLS-1$
         goToBeginning.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 updatePageAndFireEvent(1);
             }
         });
-        goToEnd = new Anchor(SimpleHtmlSanitizer.sanitizeHtml("&#x00BB;"));
+        goToEnd = new Anchor(SimpleHtmlSanitizer.sanitizeHtml("&#x00BB;")); //$NON-NLS-1$
         goToEnd.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 updatePageAndFireEvent(numPages);
             }
         });
-        goToMore = new Anchor(SimpleHtmlSanitizer.sanitizeHtml("&hellip;"));
+        goToMore = new Anchor(SimpleHtmlSanitizer.sanitizeHtml("&hellip;")); //$NON-NLS-1$
 
         this.add(ul);
-        getElement().setClassName("pagination");
+        getElement().setClassName("pagination"); //$NON-NLS-1$
     }
 
     /**
@@ -122,7 +122,7 @@ public class Pager extends FlowPanel implements HasValueChangeHandlers<Integer>,
         this.ul.clear();
         this.ul.add(goToBeginning);
         if (this.currentPage == 1)
-            this.ul.setLiClass(goToBeginning, "disabled");
+            this.ul.setLiClass(goToBeginning, "disabled"); //$NON-NLS-1$
         int fromPage = 1;
         int toPage = this.numPages;
         for (int page = fromPage; page <= toPage; page++) {
@@ -136,16 +136,16 @@ public class Pager extends FlowPanel implements HasValueChangeHandlers<Integer>,
             });
             this.ul.add(a);
             if (this.currentPage == p) {
-                this.ul.setLiClass(a, "disabled");
+                this.ul.setLiClass(a, "disabled"); //$NON-NLS-1$
             }
         }
         if (toPage != this.numPages) {
             this.ul.add(goToMore);
-            this.ul.setLiClass(goToMore, "disabled");
+            this.ul.setLiClass(goToMore, "disabled"); //$NON-NLS-1$
         }
         this.ul.add(goToEnd);
         if (this.currentPage == this.numPages) {
-            this.ul.setLiClass(goToEnd, "disabled");
+            this.ul.setLiClass(goToEnd, "disabled"); //$NON-NLS-1$
         }
     }
 

@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.TextBox;
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifact-details_dialogs.html#add-property-dialog")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/add-property-dialog.html#add-property-dialog")
 @Dependent
 public class AddCustomPropertyDialog extends ModalDialog implements HasValueChangeHandlers<Map.Entry<String, String>> {
 

@@ -34,6 +34,7 @@ import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactService;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
+import org.overlord.sramp.ui.server.i18n.Messages;
 import org.overlord.sramp.ui.server.services.util.RelationshipResolver;
 
 /**
@@ -112,8 +113,7 @@ public class ArtifactService implements IArtifactService {
         try {
             ArtifactType at = ArtifactType.valueOf(artifactType);
             BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(at, uuid);
-            // TODO i18n
-            String response = "N/A (Please download the content instead...)";
+            String response = Messages.i18n.format("ArtifactService.DownloadContent"); //$NON-NLS-1$
             if (SrampModelUtils.isDocumentArtifact(artifact)) {
                 DocumentArtifactType doc = (DocumentArtifactType) artifact;
                 if (SrampModelUtils.isTextDocumentArtifact(doc) && doc.getContentSize() <= TWO_MEG) {
@@ -123,7 +123,7 @@ public class ArtifactService implements IArtifactService {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         IOUtils.copy(content, baos);
                         // TODO: obey the document's encoding here (if we can find it) but default to UTF-8
-                        response = baos.toString("UTF-8");
+                        response = baos.toString("UTF-8"); //$NON-NLS-1$
                     } finally {
                         IOUtils.closeQuietly(content);
                     }

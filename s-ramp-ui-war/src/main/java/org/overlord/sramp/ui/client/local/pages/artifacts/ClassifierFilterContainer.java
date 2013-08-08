@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
@@ -50,6 +51,8 @@ import com.google.gwt.user.client.ui.HasValue;
  */
 public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map<String, Set<String>>> {
 
+    @Inject
+    protected ClientMessages i18n;
     @Inject
     private OntologyRpcService ontologyRpcService;
     @Inject
@@ -77,7 +80,7 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
      */
     @Override
     protected void setElement(Element elem) {
-        super.setElement(DOM.createElement("ul"));
+        super.setElement(DOM.createElement("ul")); //$NON-NLS-1$
     }
 
     /**
@@ -168,9 +171,9 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
                 clear();
                 add(noOntologiesFoundFactory.get());
                 if (error instanceof SrampUiException) {
-                    notificationService.sendErrorNotification("Error Refreshing Ontology List", (SrampUiException) error);
+                    notificationService.sendErrorNotification(i18n.format("classifier-filter-container.error"), (SrampUiException) error); //$NON-NLS-1$
                 } else {
-                    notificationService.sendErrorNotification("Error Refreshing Ontology List", error.getMessage(), null);
+                    notificationService.sendErrorNotification(i18n.format("classifier-filter-container.error"), error.getMessage(), null); //$NON-NLS-1$
                 }
             }
         });

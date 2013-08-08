@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.TextArea;
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifact-details_dialogs.html#edit-property-dialog")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/edit-property-dialog.html#edit-property-dialog")
 @Dependent
 public class EditCustomPropertyDialog extends ModalDialog implements HasValueChangeHandlers<String> {
 
@@ -67,7 +67,7 @@ public class EditCustomPropertyDialog extends ModalDialog implements HasValueCha
      * @param label
      */
     public void setLabel(String label) {
-        this.label.setInnerText(label + ":");
+        this.label.setInnerText(label + ":"); //$NON-NLS-1$
     }
 
     /**

@@ -38,6 +38,7 @@ import org.jboss.errai.ui.shared.api.annotations.Bound;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.pages.details.AddCustomPropertyDialog;
 import org.overlord.sramp.ui.client.local.pages.details.ClassifiersPanel;
 import org.overlord.sramp.ui.client.local.pages.details.CustomPropertiesPanel;
@@ -79,6 +80,8 @@ import com.google.gwt.user.client.ui.Label;
 @Dependent
 public class ArtifactDetailsPage extends AbstractPage {
 
+    @Inject
+    protected ClientMessages i18n;
     @Inject
     protected ArtifactRpcService artifactService;
     @Inject
@@ -177,9 +180,9 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     @PostConstruct
     protected void onPostConstruct() {
-        pageContent = DOMUtil.findElementById(getElement(), "artifact-details-content-wrapper");
-        pageContent.addClassName("hide");
-        editorWrapper = DOMUtil.findElementById(getElement(), "editor-wrapper");
+        pageContent = DOMUtil.findElementById(getElement(), "artifact-details-content-wrapper"); //$NON-NLS-1$
+        pageContent.addClassName("hide"); //$NON-NLS-1$
+        editorWrapper = DOMUtil.findElementById(getElement(), "editor-wrapper"); //$NON-NLS-1$
         artifact.addPropertyChangeHandler(new PropertyChangeHandler<Object>() {
             @Override
             public void onPropertyChange(PropertyChangeEvent<Object> event) {
@@ -193,11 +196,11 @@ public class ArtifactDetailsPage extends AbstractPage {
             }
         });
 
-        name.setDialogTitle("Edit Name");
-        name.setDialogLabel("New Name");
+        name.setDialogTitle(i18n.format("artifact-details.edit-name")); //$NON-NLS-1$
+        name.setDialogLabel(i18n.format("artifact-details.new-name")); //$NON-NLS-1$
 
-        description.setDialogTitle("Edit Description");
-        description.setDialogLabel("New Description");
+        description.setDialogTitle(i18n.format("artifact-details.edit-descr")); //$NON-NLS-1$
+        description.setDialogLabel(i18n.format("artifact-details.new-descr")); //$NON-NLS-1$
     }
 
     /**
@@ -207,10 +210,10 @@ public class ArtifactDetailsPage extends AbstractPage {
     protected void onPageShowing() {
         sourceLoaded = false;
         currentArtifact = null;
-        pageContent.addClassName("hide");
-        artifactLoading.getElement().removeClassName("hide");
+        pageContent.addClassName("hide"); //$NON-NLS-1$
+        artifactLoading.getElement().removeClassName("hide"); //$NON-NLS-1$
         sourceTabAnchor.setVisible(false);
-        editorWrapper.setAttribute("style", "display:none");
+        editorWrapper.setAttribute("style", "display:none"); //$NON-NLS-1$ //$NON-NLS-2$
         artifactService.get(uuid, new IRpcServiceInvocationHandler<ArtifactBean>() {
             @Override
             public void onReturn(ArtifactBean data) {
@@ -219,7 +222,7 @@ public class ArtifactDetailsPage extends AbstractPage {
             }
             @Override
             public void onError(Throwable error) {
-                notificationService.sendErrorNotification("Error getting artifact details.", error);
+                notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-details"), error); //$NON-NLS-1$
             }
         });
         relationshipsTabAnchor.addClickHandler(new ClickHandler() {
@@ -278,19 +281,20 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     protected void onDeleteConfirm() {
         final NotificationBean notificationBean = notificationService.startProgressNotification(
-                "Deleting Artifact", "Deleting artifact '" + artifact.getModel().getName() + "', please wait...");
+                i18n.format("artifact-details.deleting-artifact-title"), //$NON-NLS-1$
+                i18n.format("artifact-details.deleting-artifact-msg", artifact.getModel().getName())); //$NON-NLS-1$
         artifactService.delete(artifact.getModel(), new IRpcServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        "Artifact Deleted",
-                        "You have successfully deleted artifact '" + artifact.getModel().getName() + "'.");
+                        i18n.format("artifact-details.artifact-deleted"), //$NON-NLS-1$
+                        i18n.format("artifact-details.delete-success-msg", artifact.getModel().getName())); //$NON-NLS-1$
                 backToArtifacts.click();
             }
             @Override
             public void onError(Throwable error) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        "Error Deleting Artifact",
+                        i18n.format("artifact-details.delete-error"), //$NON-NLS-1$
                         error);
             }
         });
@@ -334,7 +338,7 @@ public class ArtifactDetailsPage extends AbstractPage {
             }
             @Override
             public void onError(Throwable error) {
-                notificationService.sendErrorNotification("Error getting artifact relationships.", error);
+                notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-relationships"), error); //$NON-NLS-1$
             }
         });
     }
@@ -353,12 +357,12 @@ public class ArtifactDetailsPage extends AbstractPage {
             public void onReturn(String data) {
                 sourceEditor.setValue(data);
                 sourceTabProgress.setVisible(false);
-                editorWrapper.removeAttribute("style");
+                editorWrapper.removeAttribute("style"); //$NON-NLS-1$
                 sourceLoaded = true;
             }
             @Override
             public void onError(Throwable error) {
-                notificationService.sendErrorNotification("Error getting artifact content.", error);
+                notificationService.sendErrorNotification(i18n.format("Error getting artifact content."), error); //$NON-NLS-1$
             }
         });
     }
@@ -369,47 +373,49 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     protected void update(ArtifactBean artifact) {
         this.artifact.setModel(artifact, InitialState.FROM_MODEL);
-        String contentUrl = GWT.getModuleBaseURL() + "services/artifactDownload";
-        contentUrl += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType();
-        String metaDataUrl = contentUrl + "&as=meta-data";
+        String contentUrl = GWT.getModuleBaseURL() + "services/artifactDownload"; //$NON-NLS-1$
+        contentUrl += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType(); //$NON-NLS-1$ //$NON-NLS-2$
+        String metaDataUrl = contentUrl + "&as=meta-data"; //$NON-NLS-1$
         this.downloadContentLink.setHref(contentUrl);
         this.downloadContentLink.setVisible(!artifact.isDerived());
         this.downloadMetaDataLink.setHref(metaDataUrl);
-        this.sourceEditor.setValue("");
+        this.sourceEditor.setValue(""); //$NON-NLS-1$
 
         if (artifact.isTextDocument()) {
             sourceTabAnchor.setVisible(true);
         }
         if (artifact.isDocument()) {
-            this.downloadContentLink.getElement().removeClassName("hidden");
+            this.downloadContentLink.getElement().removeClassName("hidden"); //$NON-NLS-1$
         } else {
-            this.downloadContentLink.getElement().addClassName("hidden");
+            this.downloadContentLink.getElement().addClassName("hidden"); //$NON-NLS-1$
         }
 
         deleteButton.setVisible(!artifact.isDerived());
 
-        artifactLoading.getElement().addClassName("hide");
-        pageContent.removeClassName("hide");
+        artifactLoading.getElement().addClassName("hide"); //$NON-NLS-1$
+        pageContent.removeClassName("hide"); //$NON-NLS-1$
     }
 
     /**
      * Sends the model back up to the server (saves local changes).
      */
-    // TODO i18n
     protected void pushModelToServer() {
+        String noteTitle = i18n.format("artifact-details.updating-artifact.title"); //$NON-NLS-1$
+        String noteBody = i18n.format("artifact-details.updating-artifact.message", artifact.getModel().getName()); //$NON-NLS-1$
         final NotificationBean notificationBean = notificationService.startProgressNotification(
-                "Updating Artifact", "Updating artifact '" + artifact.getModel().getName() + "', please wait...");
+                noteTitle, noteBody);
         artifactService.update(artifact.getModel(), new IRpcServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
+                String noteTitle = i18n.format("artifact-details.updated-artifact.title"); //$NON-NLS-1$
+                String noteBody = i18n.format("artifact-details.updated-artifact.message", artifact.getModel().getName()); //$NON-NLS-1$
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        "Update Complete",
-                        "You have successfully updated artifact '" + artifact.getModel().getName() + "'.");
+                        noteTitle, noteBody);
             }
             @Override
             public void onError(Throwable error) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        "Error Updating Artifact",
+                        i18n.format("artifact-details.error-updating-arty"), //$NON-NLS-1$
                         error);
             }
         });

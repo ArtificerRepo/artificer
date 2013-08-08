@@ -25,6 +25,7 @@ import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
 import org.overlord.sramp.ui.client.local.pages.artifacts.IImportCompletionHandler;
@@ -56,6 +57,8 @@ import com.google.gwt.user.client.ui.TextBox;
 @Dependent
 public class ArtifactsPage extends AbstractPage {
 
+    @Inject
+    protected ClientMessages i18n;
     @Inject
     protected ArtifactSearchRpcService searchService;
     @Inject
@@ -128,15 +131,15 @@ public class ArtifactsPage extends AbstractPage {
         });
 
         // Hide columns 2-5 when in mobile mode.
-        artifactsTable.setColumnClasses(2, "desktop-only");
-        artifactsTable.setColumnClasses(3, "desktop-only");
-        artifactsTable.setColumnClasses(4, "desktop-only");
-        artifactsTable.setColumnClasses(5, "desktop-only");
+        artifactsTable.setColumnClasses(2, "desktop-only"); //$NON-NLS-1$
+        artifactsTable.setColumnClasses(3, "desktop-only"); //$NON-NLS-1$
+        artifactsTable.setColumnClasses(4, "desktop-only"); //$NON-NLS-1$
+        artifactsTable.setColumnClasses(5, "desktop-only"); //$NON-NLS-1$
 
-        this.rangeSpan1.setInnerText("?");
-        this.rangeSpan2.setInnerText("?");
-        this.totalSpan1.setInnerText("?");
-        this.totalSpan2.setInnerText("?");
+        this.rangeSpan1.setInnerText("?"); //$NON-NLS-1$
+        this.rangeSpan2.setInnerText("?"); //$NON-NLS-1$
+        this.totalSpan1.setInnerText("?"); //$NON-NLS-1$
+        this.totalSpan2.setInnerText("?"); //$NON-NLS-1$
     }
 
     /**
@@ -201,7 +204,7 @@ public class ArtifactsPage extends AbstractPage {
             }
             @Override
             public void onError(Throwable error) {
-                notificationService.sendErrorNotification("Error searching for artifacts.", error);
+                notificationService.sendErrorNotification(i18n.format("artifacts.error-searching"), error); //$NON-NLS-1$
                 noDataMessage.setVisible(true);
                 searchInProgressMessage.setVisible(false);
             }
@@ -216,10 +219,10 @@ public class ArtifactsPage extends AbstractPage {
         this.searchInProgressMessage.setVisible(true);
         this.artifactsTable.setVisible(false);
         this.noDataMessage.setVisible(false);
-        this.rangeSpan1.setInnerText("?");
-        this.rangeSpan2.setInnerText("?");
-        this.totalSpan1.setInnerText("?");
-        this.totalSpan2.setInnerText("?");
+        this.rangeSpan1.setInnerText("?"); //$NON-NLS-1$
+        this.rangeSpan2.setInnerText("?"); //$NON-NLS-1$
+        this.totalSpan1.setInnerText("?"); //$NON-NLS-1$
+        this.totalSpan2.setInnerText("?"); //$NON-NLS-1$
     }
 
     /**
@@ -253,7 +256,7 @@ public class ArtifactsPage extends AbstractPage {
 
         int startIndex = data.getStartIndex() + 1;
         int endIndex = startIndex + data.getArtifacts().size() - 1;
-        String rangeText = "" + startIndex + "-" + endIndex;
+        String rangeText = "" + startIndex + "-" + endIndex; //$NON-NLS-1$ //$NON-NLS-2$
         String totalText = String.valueOf(data.getTotalResults());
         this.rangeSpan1.setInnerText(rangeText);
         this.rangeSpan2.setInnerText(rangeText);

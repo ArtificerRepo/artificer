@@ -36,7 +36,7 @@ public class OntologySelectorNodePanel extends FlowPanel {
      */
     @Override
     protected void setElement(Element elem) {
-        super.setElement(DOM.createElement("ul"));
+        super.setElement(DOM.createElement("ul")); //$NON-NLS-1$
     }
 
     /**

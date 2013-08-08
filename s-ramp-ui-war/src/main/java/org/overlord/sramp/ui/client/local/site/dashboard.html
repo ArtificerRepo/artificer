@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>S-RAMP Repository Browser - Dashboard</title>
+    <title data-role="dummy">S-RAMP Repository Browser - Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
     <meta name="description" content=""></meta>
     <meta name="author" content=""></meta>
@@ -27,143 +27,52 @@
       <!-- Content area with footer-->
       <div id="page-content" class="container">
         <div class="hero-unit desktop-only">
-          <h1>S-RAMP Browser</h1>
-          <p>
+          <h1 data-i18n-key="hero-title">S-RAMP Browser</h1>
+          <p data-i18n-key="hero-description">
             Welcome to the S-RAMP browser.  This browser is intended to allow you to manage the 
             content in your S-RAMP repository.  It provides a low level view of the data - you
             may want to learn more about S-RAMP by reviewing the specification and other 
             documentation.
           </p>
           <ul class="link-list">
-            <li><a href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=s-ramp">S-RAMP Specification</a></li>
-            <li><a href="http://www.jboss.org/overlord/documentation/sramp">S-RAMP Documentation</a></li>
-            <li><a href="http://www.jboss.org/overlord/">JBoss Overlord</a></li>
-            <li><a href="https://github.com/Governance/s-ramp">S-RAMP Project</a></li>
+            <li><a data-i18n-key="hero-link-spec" href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=s-ramp">S-RAMP Specification</a></li>
+            <li><a data-i18n-key="hero-link-docs" href="http://www.jboss.org/overlord/documentation/sramp">S-RAMP Documentation</a></li>
+            <li><a data-i18n-key="hero-link-overlord" href="http://www.jboss.org/overlord/">JBoss Overlord</a></li>
+            <li><a data-i18n-key="hero-link-project" href="https://github.com/Governance/s-ramp">S-RAMP Project</a></li>
           </ul>
         </div>
   
         <!-- Example row of columns -->
         <div class="row">
           <div class="span6">
-            <h2>Manage Artifacts</h2>
-            <p>
+            <h2 data-i18n-key="nav.manage-artifacts.title">Manage Artifacts</h2>
+            <p data-i18n-key="nav.manage-artifacts.description">
               Begin here if you're looking to manage the artifacts in your S-RAMP repository.  The Manage 
               Artifacts page allows you to search for artifacts by a variety of criteria, as well as manage 
               artifact content and meta-data.
             </p>
-            <p><a data-field="to-artifacts-page" class="btn" href="artifacts.html">Artifacts &raquo;</a></p>
+            <p><a data-field="to-artifacts-page" class="btn" href="artifacts.html"><span data-i18n-key="artifacts">Artifacts</span> &raquo;</a></p>
           </div>
           <div class="span6">
-            <h2>Manage Ontologies</h2>
-            <div class="alert alert-info"><strong>Coming Soon!</strong></div>
-            <p>
+            <h2 data-i18n-key="nav.manage-ontologies.title">Manage Ontologies</h2>
+            <div class="alert alert-info"><strong data-i18n-key="coming-soon">Coming Soon!</strong></div>
+            <p data-i18n-key="nav.manage-ontologies.description">
               Go here if you're interested in managing the OWL ontologies currently installed in your
               S-RAMP repository.  The Manage Ontologies page allows you to add and update the ontologies
               used for artifact classification.
             </p>
-            <p><a data-field="to-ontologies-page" class="btn hidden" href="ontologies.html">Ontologies &raquo;</a></p>
+            <p><a data-field="to-ontologies-page" class="btn hidden" href="ontologies.html"><span data-i18n-key="ontologies">Ontologies</span> &raquo;</a></p>
          </div>
         </div>
         
         <!-- Footer -->
         <footer>
           <hr />
-          <p>&copy; JBoss Overlord 2012</p>
+          <p data-i18n-key="footer">&copy; JBoss Overlord 2012</p>
         </footer>
       </div> <!-- /container -->
       
     </div> <!-- /page -->
-
-    <!-- Delete artifact with derived content modal -->
-    <div id="delete-dialog-derived" class="modal hide fade">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4>Delete Artifact</h4>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure you want to delete Artifact 1?</p>
-        <p>Deleting Artifact 1 will also remove its 3 derived artifacts.</p>
-        <table id="delete-dialog-children" class="sramp-delete-artifacts-table table table-condensed table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>PurchaseOrder</td>
-              <td>ElementDeclaration</td>
-            </tr>
-            <tr>
-              <td>PurchaseOrderResponse</td>
-              <td>ElementDeclaration</td>
-            </tr>
-            <tr>
-              <td>InvoiceType</td>
-              <td>ComplexTypeDeclaration</td>
-            </tr>
-            <tr>
-              <td>InvoiceId</td>
-              <td>SimpleTypeDeclaration</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <a class="btn" data-dismiss="modal">Cancel</a>
-        <a class="btn btn-focus">Delete</a>
-      </div>
-    </div>
-
-    <!-- Delete artifact with references modal -->
-    <div id="delete-dialog-referenced" class="modal hide fade">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4>Delete Warning</h4>
-      </div>
-      <div class="modal-body">
-        <p>Warning: Artifact 1 is referenced by 5 artifacts.</p>
-        <p>Deleting Artifact 1 will cause problems for these artifacts.</p>
-        <div id="delete-dialog-refs" class="collapse out">
-          <table class="sramp-delete-artifacts-table table table-condensed table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>invoice.xsd</td>
-                <td>XsdDocument</td>
-              </tr>
-              <tr>
-                <td>po.xsd</td>
-                <td>XsdDocument</td>
-              </tr>
-              <tr>
-                <td>invoice-ws.wsdl</td>
-                <td>WsdlDocument</td>
-              </tr>
-              <tr>
-                <td>po-ws.wsdl</td>
-                <td>WsdlDocument</td>
-              </tr>
-              <tr>
-                <td>ws-all.wsdl</td>
-                <td>WsdlDocument</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <a class="btn pull-left" data-toggle="collapse" data-target="#delete-dialog-refs">Show References <b class="caret"></b></a>
-        <a class="btn" data-dismiss="modal">Cancel</a>
-        <a class="btn btn-focus">Delete</a>
-      </div>
-    </div>
 
     <!-- Some scripting to add functionality to the live template -->
     <script>

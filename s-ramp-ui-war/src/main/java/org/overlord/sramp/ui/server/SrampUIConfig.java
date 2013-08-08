@@ -28,6 +28,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
+import org.overlord.sramp.ui.server.i18n.Messages;
 
 /**
  * Global access to configuration information.
@@ -37,16 +38,16 @@ import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
 @Singleton
 public class SrampUIConfig {
 
-    public static final String SRAMP_UI_CONFIG_FILE_NAME     = "sramp-ui.config.file.name";
-    public static final String SRAMP_UI_CONFIG_FILE_REFRESH  = "sramp-ui.config.file.refresh";
+    public static final String SRAMP_UI_CONFIG_FILE_NAME     = "sramp-ui.config.file.name"; //$NON-NLS-1$
+    public static final String SRAMP_UI_CONFIG_FILE_REFRESH  = "sramp-ui.config.file.refresh"; //$NON-NLS-1$
 
-    public static final String SRAMP_API_ENDPOINT = "s-ramp-ui.atom-api.endpoint";
-    public static final String SRAMP_API_VALIDATING = "s-ramp-ui.atom-api.validating";
-    public static final String SRAMP_API_AUTH_PROVIDER = "s-ramp-ui.atom-api.authentication.provider";
-    public static final String SRAMP_API_BASIC_AUTH_USER = "s-ramp-ui.atom-api.authentication.basic.user";
-    public static final String SRAMP_API_BASIC_AUTH_PASS = "s-ramp-ui.atom-api.authentication.basic.password";
-    public static final String SRAMP_API_SAML_AUTH_ISSUER = "s-ramp-ui.atom-api.authentication.saml.issuer";
-    public static final String SRAMP_API_SAML_AUTH_SERVICE = "s-ramp-ui.atom-api.authentication.saml.service";
+    public static final String SRAMP_API_ENDPOINT = "s-ramp-ui.atom-api.endpoint"; //$NON-NLS-1$
+    public static final String SRAMP_API_VALIDATING = "s-ramp-ui.atom-api.validating"; //$NON-NLS-1$
+    public static final String SRAMP_API_AUTH_PROVIDER = "s-ramp-ui.atom-api.authentication.provider"; //$NON-NLS-1$
+    public static final String SRAMP_API_BASIC_AUTH_USER = "s-ramp-ui.atom-api.authentication.basic.user"; //$NON-NLS-1$
+    public static final String SRAMP_API_BASIC_AUTH_PASS = "s-ramp-ui.atom-api.authentication.basic.password"; //$NON-NLS-1$
+    public static final String SRAMP_API_SAML_AUTH_ISSUER = "s-ramp-ui.atom-api.authentication.saml.issuer"; //$NON-NLS-1$
+    public static final String SRAMP_API_SAML_AUTH_SERVICE = "s-ramp-ui.atom-api.authentication.saml.service"; //$NON-NLS-1$
 
 
     public static CompositeConfiguration config;
@@ -64,11 +65,11 @@ public class SrampUIConfig {
                 propertiesConfiguration.setReloadingStrategy(fileChangedReloadingStrategy);
                 config.addConfiguration(propertiesConfiguration);
             }
-            SrampUIConfig.config.addConfiguration(new PropertiesConfiguration(SrampApiClientAccessor.class.getResource("/META-INF/config/org.overlord.sramp.ui.server.api.properties")));
+            SrampUIConfig.config.addConfiguration(new PropertiesConfiguration(SrampApiClientAccessor.class.getResource("/META-INF/config/org.overlord.sramp.ui.server.api.properties"))); //$NON-NLS-1$
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
-        System.out.println("S-RAMP user interface configuration loaded.  S-RAMP Atom API endpoint: " + SrampUIConfig.config.getString(SRAMP_API_ENDPOINT));
+        System.out.println(Messages.i18n.format("Config.Loaded", SrampUIConfig.config.getString(SRAMP_API_ENDPOINT))); //$NON-NLS-1$
     }
 
     /**
@@ -94,31 +95,31 @@ public class SrampUIConfig {
                     return file.toURI().toURL();
             } else {
                 // Check the current user's home directory
-                String userHomeDir = System.getProperty("user.home");
+                String userHomeDir = System.getProperty("user.home"); //$NON-NLS-1$
                 if (userHomeDir != null) {
                     File dirFile = new File(userHomeDir);
                     if (dirFile.isDirectory()) {
-                        File cfile = new File(dirFile, "sramp-ui.properties");
+                        File cfile = new File(dirFile, "sramp-ui.properties"); //$NON-NLS-1$
                         if (cfile.isFile())
                             return cfile.toURI().toURL();
                     }
                 }
 
                 // Next, check for JBoss
-                String jbossConfigDir = System.getProperty("jboss.server.config.dir");
+                String jbossConfigDir = System.getProperty("jboss.server.config.dir"); //$NON-NLS-1$
                 if (jbossConfigDir != null) {
                     File dirFile = new File(jbossConfigDir);
                     if (dirFile.isDirectory()) {
-                        File cfile = new File(dirFile, "sramp-ui.properties");
+                        File cfile = new File(dirFile, "sramp-ui.properties"); //$NON-NLS-1$
                         if (cfile.isFile())
                             return cfile.toURI().toURL();
                     }
                 }
-                String jbossConfigUrl = System.getProperty("jboss.server.config.url");
+                String jbossConfigUrl = System.getProperty("jboss.server.config.url"); //$NON-NLS-1$
                 if (jbossConfigUrl != null) {
                     File dirFile = new File(jbossConfigUrl);
                     if (dirFile.isDirectory()) {
-                        File cfile = new File(dirFile, "sramp-ui.properties");
+                        File cfile = new File(dirFile, "sramp-ui.properties"); //$NON-NLS-1$
                         if (cfile.isFile())
                             return cfile.toURI().toURL();
                     }

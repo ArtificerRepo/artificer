@@ -22,10 +22,10 @@ package org.overlord.sramp.ui.client.local.widgets.bootstrap;
  */
 public enum ButtonSizeEnum {
 
-    large("btn-large"),
+    large("btn-large"), //$NON-NLS-1$
     normal(null),
-    small("btn-small"),
-    mini("btn-mini");
+    small("btn-small"), //$NON-NLS-1$
+    mini("btn-mini"); //$NON-NLS-1$
 
     private String c;
 
@@ -41,9 +41,9 @@ public enum ButtonSizeEnum {
      * The HTML class(es) to use for the button.
      */
     public String getButtonClasses() {
-        String rval = "btn";
+        String rval = "btn"; //$NON-NLS-1$
         if (this.c != null) {
-            rval += " " + this.c;
+            rval += " " + this.c; //$NON-NLS-1$
         }
         return rval;
     }

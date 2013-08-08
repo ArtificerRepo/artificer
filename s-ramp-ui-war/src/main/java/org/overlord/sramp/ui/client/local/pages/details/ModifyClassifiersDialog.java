@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
@@ -54,10 +55,12 @@ import com.google.gwt.user.client.ui.HasValue;
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifact-details_dialogs.html#modify-classifiers-dialog")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/modify-classifiers-dialog.html#modify-classifiers-dialog")
 @Dependent
 public class ModifyClassifiersDialog extends ModalDialog implements HasValue<List<String>>, IRpcServiceInvocationHandler<List<OntologyBean>> {
 
+    @Inject
+    protected ClientMessages i18n;
     @Inject
     private OntologyRpcService ontologyRpcService;
     @Inject
@@ -138,7 +141,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
             OntologySelectorWithToolbar selector = entry.getValue();
             Set<String> selection = selector.getSelection();
             for (String id : selection) {
-                String uri = base + "#" + id;
+                String uri = base + "#" + id; //$NON-NLS-1$
                 newValue.add(uri);
             }
         }
@@ -213,7 +216,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
      */
     @Override
     public void onError(Throwable error) {
-        notificationService.sendErrorNotification("Error Getting Ontolgogies", error);
+        notificationService.sendErrorNotification(i18n.format("modify-classifiers-dialog.error"), error); //$NON-NLS-1$
     }
 
     /**
@@ -223,7 +226,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
     private Set<String> getValueFor(OntologyBean ontologyBean) {
         Set<String> items = new HashSet<String>();
         for (String classifier : this.value) {
-            if (classifier.startsWith(ontologyBean.getBase() + "#")) {
+            if (classifier.startsWith(ontologyBean.getBase() + "#")) { //$NON-NLS-1$
                 items.add(classifier.substring(ontologyBean.getBase().length() + 1));
             }
         }

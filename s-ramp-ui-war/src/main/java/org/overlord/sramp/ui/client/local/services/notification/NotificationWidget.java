@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifacts_dialogs.html#growl-dialog")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/growl-dialog.html#growl-dialog")
 @Dependent
 public class NotificationWidget extends Composite implements HasMouseInHandlers, HasMouseOutHandlers {
 
@@ -114,7 +114,7 @@ public class NotificationWidget extends Composite implements HasMouseInHandlers,
         } else if (notificationType == NotificationType.error) {
             this.body.add(msg);
         } else if (notificationType == NotificationType.progress) {
-            msg.addStyleName("spinner");
+            msg.addStyleName("spinner"); //$NON-NLS-1$
             this.body.add(msg);
         }
     }
@@ -188,7 +188,7 @@ public class NotificationWidget extends Composite implements HasMouseInHandlers,
     private boolean isMouseInMe(int clientX, int clientY) {
         try {
             String bottomStyle = getElement().getStyle().getBottom();
-            int bottom = new Integer(bottomStyle.split("px")[0]).intValue();
+            int bottom = new Integer(bottomStyle.split("px")[0]).intValue(); //$NON-NLS-1$
             bottom = Window.getClientHeight() - bottom;
 
             int top = bottom - getOffsetHeight();
@@ -205,7 +205,7 @@ public class NotificationWidget extends Composite implements HasMouseInHandlers,
      * Called when the mouse enters the dialog.
      */
     protected void onMouseIn() {
-        addStyleName("growl-dialog-hover");
+        addStyleName("growl-dialog-hover"); //$NON-NLS-1$
         MouseInEvent.fire(this);
     }
 
@@ -213,7 +213,7 @@ public class NotificationWidget extends Composite implements HasMouseInHandlers,
      * Called when the mouse leaves the dialog.
      */
     protected void onMouseOut() {
-        removeStyleName("growl-dialog-hover");
+        removeStyleName("growl-dialog-hover"); //$NON-NLS-1$
         MouseOutEvent.fire(this);
     }
 

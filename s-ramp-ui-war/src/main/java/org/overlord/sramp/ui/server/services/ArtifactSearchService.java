@@ -69,12 +69,12 @@ public class ArtifactSearchService implements IArtifactSearchService {
 
             int req_startIndex = (page - 1) * pageSize;
             SrampClientQuery query = null;
-            if (searchText != null && searchText.startsWith("/")) {
+            if (searchText != null && searchText.startsWith("/")) { //$NON-NLS-1$
                 query = clientAccessor.getClient().buildQuery(searchText);
             } else {
                 query = createQuery(filters, searchText);
             }
-            QueryResultSet resultSet = query.startIndex(req_startIndex).orderBy("name").ascending().count(pageSize + 1).query();
+            QueryResultSet resultSet = query.startIndex(req_startIndex).orderBy("name").ascending().count(pageSize + 1).query(); //$NON-NLS-1$
             ArrayList<ArtifactSummaryBean> artifacts = new ArrayList<ArtifactSummaryBean>();
             for (ArtifactSummary artifactSummary : resultSet) {
                 ArtifactSummaryBean bean = new ArtifactSummaryBean();
@@ -123,30 +123,30 @@ public class ArtifactSearchService implements IArtifactSearchService {
     protected SrampClientQuery createQuery(ArtifactFilterBean filters, String searchText) {
         StringBuilder queryBuilder = new StringBuilder();
         // Initial query
-        queryBuilder.append("/s-ramp");
+        queryBuilder.append("/s-ramp"); //$NON-NLS-1$
         // Artifact type
         if (filters.getArtifactType() != null && filters.getArtifactType().trim().length() > 0) {
             ArtifactType type = ArtifactType.valueOf(filters.getArtifactType());
-            queryBuilder.append("/").append(type.getModel()).append("/").append(type.getType());
+            queryBuilder.append("/").append(type.getModel()).append("/").append(type.getType()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         List<String> criteria = new ArrayList<String>();
         List<Object> params = new ArrayList<Object>();
 
         // Search Text
         if (searchText != null && searchText.trim().length() > 0) {
-            criteria.add("fn:matches(@name, ?)");
-            params.add(searchText.replace("*", ".*"));
+            criteria.add("fn:matches(@name, ?)"); //$NON-NLS-1$
+            params.add(searchText.replace("*", ".*")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         // Created on
         if (filters.getDateCreatedFrom() != null) {
-            criteria.add("@createdTimestamp >= ?");
+            criteria.add("@createdTimestamp >= ?"); //$NON-NLS-1$
             Calendar cal = Calendar.getInstance();
             cal.setTime(filters.getDateCreatedFrom());
             zeroOutTime(cal);
             params.add(cal);
         }
         if (filters.getDateCreatedTo() != null) {
-            criteria.add("@createdTimestamp < ?");
+            criteria.add("@createdTimestamp < ?"); //$NON-NLS-1$
             Calendar cal = Calendar.getInstance();
             cal.setTime(filters.getDateCreatedTo());
             zeroOutTime(cal);
@@ -155,14 +155,14 @@ public class ArtifactSearchService implements IArtifactSearchService {
         }
         // Last Modified on
         if (filters.getDateModifiedFrom() != null) {
-            criteria.add("@lastModifiedTimestamp >= ?");
+            criteria.add("@lastModifiedTimestamp >= ?"); //$NON-NLS-1$
             Calendar cal = Calendar.getInstance();
             cal.setTime(filters.getDateModifiedFrom());
             zeroOutTime(cal);
             params.add(cal);
         }
         if (filters.getDateModifiedTo() != null) {
-            criteria.add("@lastModifiedTimestamp < ?");
+            criteria.add("@lastModifiedTimestamp < ?"); //$NON-NLS-1$
             Calendar cal = Calendar.getInstance();
             cal.setTime(filters.getDateModifiedTo());
             zeroOutTime(cal);
@@ -171,36 +171,36 @@ public class ArtifactSearchService implements IArtifactSearchService {
         }
         // Created By
         if (filters.getCreatedBy() != null && filters.getCreatedBy().trim().length() > 0) {
-            criteria.add("@createdBy = ?");
+            criteria.add("@createdBy = ?"); //$NON-NLS-1$
             params.add(filters.getCreatedBy());
         }
         // Last Modified By
         if (filters.getLastModifiedBy() != null && filters.getLastModifiedBy().trim().length() > 0) {
-            criteria.add("@lastModifiedBy = ?");
+            criteria.add("@lastModifiedBy = ?"); //$NON-NLS-1$
             params.add(filters.getLastModifiedBy());
         }
         // Origin
         if (filters.getOrigin() == ArtifactOriginEnum.primary) {
-            criteria.add("@derived = ?");
-            params.add("false");
+            criteria.add("@derived = ?"); //$NON-NLS-1$
+            params.add("false"); //$NON-NLS-1$
         } else if (filters.getOrigin() == ArtifactOriginEnum.derived) {
-            criteria.add("@derived = ?");
-            params.add("true");
+            criteria.add("@derived = ?"); //$NON-NLS-1$
+            params.add("true"); //$NON-NLS-1$
         }
         // Classifiers
         if (hasClassifiers(filters)) {
             Set<String> ontologyBases = filters.getClassifiers().keySet();
             StringBuilder classifierCriteria = new StringBuilder();
-            classifierCriteria.append("s-ramp:classifiedByAllOf(.");
+            classifierCriteria.append("s-ramp:classifiedByAllOf(."); //$NON-NLS-1$
             for (String base : ontologyBases) {
                 Set<String> ids = filters.getClassifiers().get(base);
                 for (String id : ids) {
-                    String classifierUri = base + "#" + id;
-                    classifierCriteria.append(",?");
+                    String classifierUri = base + "#" + id; //$NON-NLS-1$
+                    classifierCriteria.append(",?"); //$NON-NLS-1$
                     params.add(classifierUri);
                 }
             }
-            classifierCriteria.append(")");
+            classifierCriteria.append(")"); //$NON-NLS-1$
             criteria.add(classifierCriteria.toString());
         }
         // Custom properties
@@ -213,9 +213,9 @@ public class ArtifactSearchService implements IArtifactSearchService {
                 // the user to input any query they want anyway (via the
                 // query text box)...
                 if (propVal == null || propVal.trim().length() == 0) {
-                    criteria.add("@" + propName);
+                    criteria.add("@" + propName); //$NON-NLS-1$
                 } else {
-                    criteria.add("@" + propName + " = ?");
+                    criteria.add("@" + propName + " = ?"); //$NON-NLS-1$ //$NON-NLS-2$
                     params.add(propVal);
                 }
             }
@@ -223,9 +223,9 @@ public class ArtifactSearchService implements IArtifactSearchService {
 
         // Now create the query predicate from the generated criteria
         if (criteria.size() > 0) {
-            queryBuilder.append("[");
-            queryBuilder.append(StringUtils.join(criteria, " and "));
-            queryBuilder.append("]");
+            queryBuilder.append("["); //$NON-NLS-1$
+            queryBuilder.append(StringUtils.join(criteria, " and ")); //$NON-NLS-1$
+            queryBuilder.append("]"); //$NON-NLS-1$
         }
 
         // Create the query, and parameterize it

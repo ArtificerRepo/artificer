@@ -51,7 +51,7 @@ public class UnorderedListPanel extends Panel implements IndexedPanel {
 	@Override
 	public void add(Widget w) {
 		if (w == null)
-			throw new NullPointerException("Cannot add a null widget.");
+			throw new NullPointerException("Cannot add a null widget."); //$NON-NLS-1$
 		w.removeFromParent();
 		children.add(w);
 		Element li = Document.get().createLIElement().cast();

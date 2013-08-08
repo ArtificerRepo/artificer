@@ -50,12 +50,12 @@ public class ArtifactsTable extends TemplatedWidgetTable {
      */
     public void addRow(final ArtifactSummaryBean artifactSummaryBean) {
         int rowIdx = this.rowElements.size();
-        DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy");
+        DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy"); //$NON-NLS-1$
 
-        Anchor name = toDetailsPageLinkFactory.get("uuid", artifactSummaryBean.getUuid());
+        Anchor name = toDetailsPageLinkFactory.get("uuid", artifactSummaryBean.getUuid()); //$NON-NLS-1$
         name.setText(artifactSummaryBean.getName());
         InlineLabel type = new InlineLabel(artifactSummaryBean.getType());
-        InlineLabel derived = new InlineLabel(artifactSummaryBean.isDerived() ? "true" : "");
+        InlineLabel derived = new InlineLabel(artifactSummaryBean.isDerived() ? "true" : ""); //$NON-NLS-1$ //$NON-NLS-2$
         InlineLabel modified = new InlineLabel(format.format(artifactSummaryBean.getUpdatedOn()));
 //        InlineLabel actions = new InlineLabel("");
 
