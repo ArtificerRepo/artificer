@@ -31,13 +31,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class ArtifactFilterBean {
 
-    private String artifactType = "";
+    private String artifactType = ""; //$NON-NLS-1$
     private Date dateCreatedFrom;
     private Date dateCreatedTo;
     private Date dateModifiedFrom;
     private Date dateModifiedTo;
-    private String createdBy = "";
-    private String lastModifiedBy = "";
+    private String createdBy = ""; //$NON-NLS-1$
+    private String lastModifiedBy = ""; //$NON-NLS-1$
     private ArtifactOriginEnum origin = ArtifactOriginEnum.primary;
     /**
      * The classifiers selected by the user in the 'Classifiers' filter section.  This is

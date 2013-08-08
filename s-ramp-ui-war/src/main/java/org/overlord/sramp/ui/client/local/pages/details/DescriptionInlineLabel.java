@@ -16,7 +16,9 @@
 package org.overlord.sramp.ui.client.local.pages.details;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.widgets.common.EditableInlineLabel;
 
 /**
@@ -25,6 +27,9 @@ import org.overlord.sramp.ui.client.local.widgets.common.EditableInlineLabel;
  */
 @Dependent
 public class DescriptionInlineLabel extends EditableInlineLabel {
+
+    @Inject
+    protected ClientMessages i18n;
 
     /**
      * Constructor.
@@ -39,11 +44,10 @@ public class DescriptionInlineLabel extends EditableInlineLabel {
     @Override
     public void setText(String text) {
         if (text == null || text.trim().length() == 0) {
-            // TODO i18n
-            this.setText("<no value>");
+            this.setText(i18n.format("no-value")); //$NON-NLS-1$
         } else {
-            if (text.contains("\n")) {
-                String html = text.replace("\n", "<br />");
+            if (text.contains("\n")) { //$NON-NLS-1$
+                String html = text.replace("\n", "<br />"); //$NON-NLS-1$ //$NON-NLS-2$
                 getElement().setInnerHTML(html);
             } else {
                 super.setText(text);

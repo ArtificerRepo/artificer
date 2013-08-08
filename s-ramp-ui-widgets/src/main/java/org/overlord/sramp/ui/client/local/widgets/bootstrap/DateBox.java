@@ -32,11 +32,11 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class DateBox extends TextBox {
 
-    private static final String DEFAULT_DATE_FORMAT = "mm/dd/yyyy";
+    private static final String DEFAULT_DATE_FORMAT = "mm/dd/yyyy"; //$NON-NLS-1$
 
     private static int cidCounter = 1;
     private static String generateUniqueCid() {
-        return "cid-" + cidCounter++;
+        return "cid-" + cidCounter++; //$NON-NLS-1$
     }
 
     private String cid;
@@ -98,7 +98,7 @@ public class DateBox extends TextBox {
      * @param value
      */
     private Date parseDate(String value) {
-        if (value == null || "".equals(value))
+        if (value == null || "".equals(value)) //$NON-NLS-1$
             return null;
         DateTimeFormat format = getFormat();
         return format.parse(value);
@@ -110,7 +110,7 @@ public class DateBox extends TextBox {
     public void setDateValue(Date value) {
         String v = formatDate(value);
         if (v == null)
-            v = "";
+            v = ""; //$NON-NLS-1$
         setValue(v);
     }
 
@@ -131,8 +131,8 @@ public class DateBox extends TextBox {
      */
     private DateTimeFormat getFormat() {
         String strFmt = DEFAULT_DATE_FORMAT;
-        if (getElement().hasAttribute("data-date-format")) {
-            strFmt = getElement().getAttribute("data-date-format");
+        if (getElement().hasAttribute("data-date-format")) { //$NON-NLS-1$
+            strFmt = getElement().getAttribute("data-date-format"); //$NON-NLS-1$
         }
         return DateTimeFormat.getFormat(strFmt);
     }
@@ -143,7 +143,7 @@ public class DateBox extends TextBox {
      * @param format
      */
     public void setDateFormat(String format) {
-        getElement().setAttribute("data-date-format", format);
+        getElement().setAttribute("data-date-format", format); //$NON-NLS-1$
     }
 
 }

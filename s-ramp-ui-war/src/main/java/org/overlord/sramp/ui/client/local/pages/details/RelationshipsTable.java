@@ -100,8 +100,8 @@ public class RelationshipsTable extends TemplatedWidgetTable implements HasValue
     private void addHeadingRow(String key) {
         int rowIdx = this.rowElements.size();
         InlineLabel heading = new InlineLabel(key);
-        add(rowIdx, 0, heading).setAttribute("colspan", "4");
-        getRow(rowIdx).setClassName("sramp-relationship-type");
+        add(rowIdx, 0, heading).setAttribute("colspan", "4"); //$NON-NLS-1$ //$NON-NLS-2$
+        getRow(rowIdx).setClassName("sramp-relationship-type"); //$NON-NLS-1$
     }
 
     /**
@@ -110,9 +110,9 @@ public class RelationshipsTable extends TemplatedWidgetTable implements HasValue
      */
     public void addDataRow(final ArtifactRelationshipBean relationship) {
         int rowIdx = this.rowElements.size();
-        DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy");
+        DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy"); //$NON-NLS-1$
 
-        Anchor name = toDetailsPageLinkFactory.get("uuid", relationship.getTargetUuid());
+        Anchor name = toDetailsPageLinkFactory.get("uuid", relationship.getTargetUuid()); //$NON-NLS-1$
         name.setText(relationship.getTargetName());
         InlineLabel type = new InlineLabel(relationship.getTargetType());
         InlineLabel modified = new InlineLabel(format.format(relationship.getTargetLastModified()));

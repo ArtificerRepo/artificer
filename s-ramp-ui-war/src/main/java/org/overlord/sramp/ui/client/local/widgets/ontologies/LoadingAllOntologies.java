@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.Composite;
  * "Loading all ontologies" spinner.
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifact-details_dialogs.html#modify-classifiers-dialog-spinner-all")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/modify-classifiers-dialog.html#modify-classifiers-dialog-spinner-all")
 @Dependent
 public class LoadingAllOntologies extends Composite {
 
@@ -41,6 +41,6 @@ public class LoadingAllOntologies extends Composite {
      */
     @PostConstruct
     protected void onPostConstruct() {
-        getElement().removeClassName("hide");
+        getElement().removeClassName("hide"); //$NON-NLS-1$
     }
 }

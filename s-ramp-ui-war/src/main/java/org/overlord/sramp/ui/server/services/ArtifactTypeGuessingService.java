@@ -36,18 +36,18 @@ public class ArtifactTypeGuessingService {
     private static Map<String, String> nameMap = new HashMap<String, String>();
     private static Map<String, String> extensionMap = new HashMap<String, String>();
     static {
-        nameMap.put("switchyard.xml", SwitchYardModel.SwitchYardXmlDocument);
-        nameMap.put("pom.xml", "MavenPom");
-        nameMap.put("beans.xml", JavaModel.TYPE_BEANS_XML);
-        extensionMap.put("xml", ArtifactTypeEnum.XmlDocument.getType());
-        extensionMap.put("wsdl", ArtifactTypeEnum.WsdlDocument.getType());
-        extensionMap.put("xsd", ArtifactTypeEnum.XsdDocument.getType());
-        extensionMap.put("wspolicy", ArtifactTypeEnum.PolicyDocument.getType());
-        extensionMap.put("zip", "ZipArchive");
-        extensionMap.put("jar", JavaModel.TYPE_ARCHIVE);
-        extensionMap.put("war", JavaModel.TYPE_WEB_APPLICATION);
-        extensionMap.put("ear", JavaModel.TYPE_ENTERPRISE_APPLICATION);
-        extensionMap.put("sramp", "SrampArchive");
+        nameMap.put("switchyard.xml", SwitchYardModel.SwitchYardXmlDocument); //$NON-NLS-1$
+        nameMap.put("pom.xml", "MavenPom"); //$NON-NLS-1$ //$NON-NLS-2$
+        nameMap.put("beans.xml", JavaModel.TYPE_BEANS_XML); //$NON-NLS-1$
+        extensionMap.put("xml", ArtifactTypeEnum.XmlDocument.getType()); //$NON-NLS-1$
+        extensionMap.put("wsdl", ArtifactTypeEnum.WsdlDocument.getType()); //$NON-NLS-1$
+        extensionMap.put("xsd", ArtifactTypeEnum.XsdDocument.getType()); //$NON-NLS-1$
+        extensionMap.put("wspolicy", ArtifactTypeEnum.PolicyDocument.getType()); //$NON-NLS-1$
+        extensionMap.put("zip", "ZipArchive"); //$NON-NLS-1$ //$NON-NLS-2$
+        extensionMap.put("jar", JavaModel.TYPE_ARCHIVE); //$NON-NLS-1$
+        extensionMap.put("war", JavaModel.TYPE_WEB_APPLICATION); //$NON-NLS-1$
+        extensionMap.put("ear", JavaModel.TYPE_ENTERPRISE_APPLICATION); //$NON-NLS-1$
+        extensionMap.put("sramp", "SrampArchive"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -79,7 +79,7 @@ public class ArtifactTypeGuessingService {
             }
         } catch (Exception e) {
         }
-        return "Document";
+        return "Document"; //$NON-NLS-1$
     }
 
 }

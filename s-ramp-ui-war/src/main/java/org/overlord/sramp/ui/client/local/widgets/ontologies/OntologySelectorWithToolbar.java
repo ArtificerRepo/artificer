@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Composite;
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifacts_dialogs.html#ontology-selector-with-toolbar")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/classifier-dialog.html#ontology-selector-with-toolbar")
 @Dependent
 public class OntologySelectorWithToolbar extends Composite {
 

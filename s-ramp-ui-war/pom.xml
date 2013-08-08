@@ -21,6 +21,11 @@
     <!-- S-RAMP client -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-common</artifactId>
+      <version>${sramp.client.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-client</artifactId>
       <version>${sramp.client.version}</version>
       <exclusions>

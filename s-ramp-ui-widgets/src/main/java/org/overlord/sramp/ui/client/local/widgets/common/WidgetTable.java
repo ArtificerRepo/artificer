@@ -82,7 +82,7 @@ public class WidgetTable extends Panel {
      */
     @Override
     public void add(Widget widget) {
-        throw new RuntimeException("Method not supported.  Try another variant of add().");
+        throw new RuntimeException("Method not supported.  Try another variant of add()."); //$NON-NLS-1$
     }
 
     /**
@@ -94,9 +94,9 @@ public class WidgetTable extends Panel {
      */
     public Element add(int rowIndex, int colIndex, Widget widget) {
         if (widget == null)
-            throw new NullPointerException("Cannot add a null widget.");
+            throw new NullPointerException("Cannot add a null widget."); //$NON-NLS-1$
         if (colIndex >= this.columnCount || colIndex < 0)
-            throw new IllegalArgumentException("Requested column index is out of range.");
+            throw new IndexOutOfBoundsException("Requested column index is out of range."); //$NON-NLS-1$
         Element tr = ensureRow(rowIndex);
         Element td = ensureCell(tr, colIndex);
 
@@ -152,7 +152,7 @@ public class WidgetTable extends Panel {
         for (int c = numTDs; c <= colIndex; c++) {
             td = Document.get().createTDElement().cast();
             if (this.columnClasses.containsKey(colIndex)) {
-                td.setAttribute("class", this.columnClasses.get(colIndex));
+                td.setAttribute("class", this.columnClasses.get(colIndex)); //$NON-NLS-1$
             }
             DOM.appendChild(tr, td);
         }

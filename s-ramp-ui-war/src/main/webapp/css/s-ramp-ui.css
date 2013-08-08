@@ -23,6 +23,7 @@ a:hover {
 
 input.sramp-date {
   cursor: pointer;
+  background-color: white;
 }
 
 button.tree {

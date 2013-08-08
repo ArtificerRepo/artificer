@@ -27,7 +27,7 @@ public class RadioButton extends com.google.gwt.user.client.ui.RadioButton {
      * Constructor.
      */
     public RadioButton() {
-        super("dflt-radioButton");
+        super("dflt-radioButton"); //$NON-NLS-1$
     }
 
 }

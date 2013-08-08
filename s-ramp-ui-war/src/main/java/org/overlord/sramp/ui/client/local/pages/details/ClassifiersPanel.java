@@ -90,7 +90,7 @@ public class ClassifiersPanel extends FlowPanel implements HasValue<List<String>
                 classifierLabel.setValue(classifier);
                 classifierLabel.setSupportsEdit(false);
                 classifierLabel.setSupportsRemove(true);
-                classifierLabel.setStyleName("sramp-meta-data-section-label");
+                classifierLabel.setStyleName("sramp-meta-data-section-label"); //$NON-NLS-1$
                 classifierLabel.addValueChangeHandler(new ValueChangeHandler<String>() {
                     @Override
                     public void onValueChange(ValueChangeEvent<String> event) {
@@ -104,7 +104,7 @@ public class ClassifiersPanel extends FlowPanel implements HasValue<List<String>
                     }
                 });
                 InlineLabel clearFix = new InlineLabel();
-                clearFix.setStyleName("clearfix");
+                clearFix.setStyleName("clearfix"); //$NON-NLS-1$
                 add(classifierLabel);
                 add(clearFix);
             }

@@ -48,7 +48,7 @@ public class DashboardPage extends AbstractPage {
 
     @PageShown
     public void onPageShown() {
-        toOntologiesPage.getElement().setAttribute("disabled", "true");
+        toOntologiesPage.getElement().setAttribute("disabled", "true"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

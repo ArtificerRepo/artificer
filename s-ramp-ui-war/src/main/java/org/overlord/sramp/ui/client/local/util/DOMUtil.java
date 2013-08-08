@@ -35,7 +35,7 @@ public class DOMUtil {
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.getItem(i);
             if (((node.getNodeType() == Node.ELEMENT_NODE))) {
-                if (id.equals(((Element) node).getAttribute("id"))) {
+                if (id.equals(((Element) node).getAttribute("id"))) { //$NON-NLS-1$
                     return (Element) node;
                 } else {
                     Element elem = findElementById((Element) node, id);

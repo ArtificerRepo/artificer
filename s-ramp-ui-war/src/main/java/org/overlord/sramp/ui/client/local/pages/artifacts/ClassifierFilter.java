@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -47,6 +48,9 @@ import com.google.gwt.user.client.ui.InlineLabel;
 @Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#classifier-filter")
 @Dependent
 public class ClassifierFilter extends Composite implements HasClickHandlers, HasValue<Set<String>> {
+
+    @Inject
+    protected ClientMessages i18n;
 
     @Inject @DataField("classifier-filter-anchor")
     private Anchor anchor;
@@ -80,8 +84,7 @@ public class ClassifierFilter extends Composite implements HasClickHandlers, Has
      * @param outOf
      */
     public void setNumSelected(int selected) {
-        // TODO i18n
-        this.numSelected.setText("(" + String.valueOf(selected) + " selected)");
+        this.numSelected.setText(i18n.format("classifier-filter.num-selected", String.valueOf(selected))); //$NON-NLS-1$
     }
 
     /**

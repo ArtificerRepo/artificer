@@ -42,8 +42,8 @@ public class SAMLBearerTokenAuthenticationProvider implements AuthenticationProv
      */
     @Override
     public void provideAuthentication(HttpRequest request) {
-        String headerValue = BasicAuthenticationProvider.createBasicAuthHeader("SAML-BEARER-TOKEN", createSAMLBearerTokenAssertion());
-        request.setHeader("Authorization", headerValue);
+        String headerValue = BasicAuthenticationProvider.createBasicAuthHeader("SAML-BEARER-TOKEN", createSAMLBearerTokenAssertion()); //$NON-NLS-1$
+        request.setHeader("Authorization", headerValue); //$NON-NLS-1$
     }
 
     /**

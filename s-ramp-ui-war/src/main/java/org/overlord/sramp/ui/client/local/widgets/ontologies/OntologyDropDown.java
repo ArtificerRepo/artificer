@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.ListBox;
  * Drop-down for choosing an ontology.
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifact-details_dialogs.html#modify-classifiers-dialog-ontology-selector")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/modify-classifiers-dialog.html#modify-classifiers-dialog-ontology-selector")
 @Dependent
 public class OntologyDropDown extends Composite implements HasChangeHandlers {
 
@@ -53,7 +53,7 @@ public class OntologyDropDown extends Composite implements HasChangeHandlers {
      */
     public void setOptions(List<OntologyBean> ontologies) {
         selector.clear();
-        selector.addItem("", "");
+        selector.addItem("", ""); //$NON-NLS-1$ //$NON-NLS-2$
         for (OntologyBean ontology : ontologies) {
             selector.addItem(ontology.getId(), ontology.getBase());
         }

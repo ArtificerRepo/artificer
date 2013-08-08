@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>S-RAMP Repository Browser - Artifacts</title>
+    <title data-role="dummy">S-RAMP Repository Browser - Artifacts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
     <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
     <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
@@ -31,18 +31,18 @@
         <!-- Breadcrumbs -->
         <div class="row-fluid">
           <ul class="breadcrumb">
-            <li><a data-field="back-to-dashboard" href="dashboard.html">S-RAMP Dashboard</a> <span class="divider">/</span></li>
-            <li class="active">Artifacts</li>
+            <li><a data-i18n-key="breadcrumb.dashboard" data-field="back-to-dashboard" href="dashboard.html">S-RAMP Dashboard</a> <span class="divider">/<span data-role="dummy"/></span></li>
+            <li data-i18n-key="breadcrumb.artifacts" class="active">Artifacts</li>
           </ul>
         </div>
-      
+
         <!-- Page content -->
         <div class="row-fluid">
           <!-- The Filter Sidebar -->
           <div id="sramp-filter-sidebar" data-field="sramp-filter-sidebar" class="span3 sramp-filter-sidebar">
             <!-- Mobile-only header used to collapse the entire Filters section -->
             <div class="row-fluid mobile-header mobile-only">
-              <a class="span12" data-toggle="slide" data-target="#sramp-filters">Filters <span class="caret pull-right"></span></a>
+              <a class="span12" data-toggle="slide" data-target="#sramp-filters"><span data-i18n-key="filters">Filters</span> <span class="caret pull-right"></span></a>
             </div>
             <!-- The actual Filters (accordion-like control) -->
             <div id="sramp-filters" class="row-fluid close-on-mobile closed-on-mobile open-on-desktop">
@@ -54,55 +54,55 @@
                   <div class="sramp-filter-group">
                     <div class="s-ramp-filter-header">
                       <a class="sramp-filter-toggle" data-toggle="slide" data-target="#accordion-filters-core">
-                        Core Properties
+                        <span data-i18n-key="filters.core-properties-header">Core Properties</span>
                       </a>
                     </div>
                     <div id="accordion-filters-core" class="sramp-filter-body closed-on-mobile close-on-mobile open-on-desktop">
                       <div class="sramp-filter-inner">
                         <form class="" onSubmit="return false;">
                           <div class="controls">
-                            <label class="sramp-filter-label">Type</label>
+                            <label class="sramp-filter-label" data-i18n-key="type">Type</label>
                             <input data-field="artifactType" type="text" placeholder="Any (e.g. WsdlDocument)" 
                                    class="span12" data-provide="typeahead" data-items="4" data-source="[&quot;Document&quot;,&quot;XmlDocument&quot;,&quot;XsdDocument&quot;,&quot;AttributeDeclaration&quot;,&quot;ElementDeclaration&quot;,&quot;SimpleTypeDeclaration&quot;,&quot;ComplexTypeDeclaration&quot;,&quot;PolicyDocument&quot;,&quot;PolicyExpression&quot;,&quot;PolicyAttachment&quot;,&quot;SoapAddress&quot;,&quot;SoapBinding&quot;,&quot;WsdlDocument&quot;,&quot;WsdlService&quot;,&quot;Port&quot;,&quot;WsdlExtension&quot;,&quot;Part&quot;,&quot;Message&quot;,&quot;Fault&quot;,&quot;PortType&quot;,&quot;Operation&quot;,&quot;OperationInput&quot;,&quot;OperationOutput&quot;,&quot;Binding&quot;,&quot;BindingOperation&quot;,&quot;BindingOperationInput&quot;,&quot;BindingOperationOutput&quot;,&quot;BindingOperationFault&quot;,&quot;Organization&quot;,&quot;ServiceEndpoint&quot;,&quot;ServiceInstance&quot;,&quot;ServiceOperation&quot;,&quot;HumanActor&quot;,&quot;Choreography&quot;,&quot;ChoreographyProcess&quot;,&quot;Collaboration&quot;,&quot;CollaborationProcess&quot;,&quot;Composition&quot;,&quot;Effect&quot;,&quot;Element&quot;,&quot;Event&quot;,&quot;InformationType&quot;,&quot;Orchestration&quot;,&quot;OrchestrationProcess&quot;,&quot;Policy&quot;,&quot;PolicySubject&quot;,&quot;Process&quot;,&quot;Service&quot;,&quot;ServiceContract&quot;,&quot;ServiceComposition&quot;,&quot;ServiceInterface&quot;,&quot;System&quot;,&quot;Task&quot;]" 
                                    autocomplete="off">
                           </div>
                           <div class="controls controls-row">
-                            <label class="sramp-filter-label">Date Created</label>
+                            <label class="sramp-filter-label" data-i18n-key="date-created">Date Created</label>
                             <input data-field="dateCreatedFrom" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
-                            <span class="span2 desktop-only" style="padding-top: 4px; text-align: center">to</span>
+                            <span class="span2 desktop-only" style="padding-top: 4px; text-align: center" data-i18n-key="to">to</span>
                             <input data-field="dateCreatedTo" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
                           </div>
                           <div class="controls controls-row">
-                            <label class="sramp-filter-label">Date Last Modified</label>
+                            <label class="sramp-filter-label" data-i18n-key="date-last-modified">Date Last Modified</label>
                             <input data-field="dateModifiedFrom" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
-                            <span class="span2 desktop-only" style="padding-top: 4px; text-align: center">to</span>
+                            <span class="span2 desktop-only" style="padding-top: 4px; text-align: center" data-i18n-key="to">to</span>
                             <input data-field="dateModifiedTo" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
                           </div>
                           <div class="controls">
-                            <label class="sramp-filter-label">Created By</label>
-                            <input data-field="createdBy" class="span12" type="text" placeholder="Any">
+                            <label class="sramp-filter-label" data-i18n-key="created-by">Created By</label>
+                            <input data-field="createdBy" class="span12" type="text" placeholder="Any"></input>
                           </div>
                           <div class="controls">
-                            <label class="sramp-filter-label">Last Modified By</label>
-                            <input data-field="lastModifiedBy" class="span12" type="text" placeholder="Any">
+                            <label class="sramp-filter-label" data-i18n-key="modified-by">Last Modified By</label>
+                            <input data-field="lastModifiedBy" class="span12" type="text" placeholder="Any"></input>
                           </div>
                           <div class="controls controls-row">
-                            <label class="sramp-filter-label">Origin</label>
+                            <label class="sramp-filter-label" data-i18n-key="origin">Origin</label>
                             <label class="radio offset1">
-                              <input data-field="originAny" type="radio" name="origin" id="origin-any" value="">
-                              Any
+                              <input data-field="originAny" type="radio" name="origin" id="origin-any" value=""></input>
+                              <span data-i18n-key="any">Any</span>
                             </label>
                             <label class="radio offset1">
-                              <input data-field="originPrimary" type="radio" name="origin" id="origin-primary" value="primary" checked="checked">
-                              Primary
+                              <input data-field="originPrimary" type="radio" name="origin" id="origin-primary" value="primary" checked="checked"></input>
+                              <span data-i18n-key="primary">Primary</span>
                             </label>
                             <label class="radio offset1">
-                              <input data-field="originDerived" type="radio" name="origin" id="origin-derived" value="derived">
-                              Derived
+                              <input data-field="originDerived" type="radio" name="origin" id="origin-derived" value="derived"></input>
+                              <span data-i18n-key="derived">Derived</span>
                             </label>
                           </div>
                           <div class="controls">
-                            <button data-field="clearCoreFilters" class="btn btn-focus btn-clear">Clear All Filters</button>
+                            <button data-field="clearCoreFilters" class="btn btn-focus btn-clear" data-i18n-key="clear-all-filters">Clear All Filters</button>
                           </div>
                         </form>
                       </div>
@@ -118,7 +118,7 @@
                   <div class="sramp-filter-group">
                     <div class="s-ramp-filter-header">
                       <a class="sramp-filter-toggle" data-toggle="slide" data-target="#accordion-filters-categories">
-                        Classifiers
+                        <span data-i18n-key="filters.classifiers-header">Classifiers</span>
                       </a>
                     </div>
                     <div id="accordion-filters-categories" class="sramp-filter-body closed">
@@ -127,26 +127,26 @@
                           <li data-field="classifier-filter">
                             <a data-field="classifier-filter-anchor">
                               <i class="icon-chevron-right"></i>
-                              <span data-field="classifier-filter-label">Regions</span> 
-                              <span data-field="number-selected-label">(15/120)</span>
+                              <span data-field="classifier-filter-label" data-role="dummy">Regions</span>
+                              <span data-field="number-selected-label" data-role="dummy">(15/120)</span>
                             </a>
                           </li>
-                          <li>
+                          <li data-role="dummy">
                             <a><i class="icon-chevron-right"></i>
-                              <span data-field="classifier-filter-label">Species</span> 
-                              <span data-field="number-selected-label">(0/50)</span>
+                              <span>Species</span> 
+                              <span>(0/50)</span>
                             </a>
                           </li>
                           <li data-field="classifier-filter-spinner">
-                            <span class="spinner">Loading ontologies...</span>
+                            <span class="spinner" data-i18n-key="loading-ontologies">Loading ontologies...</span>
                           </li>
                           <li data-field="classifier-filter-none-found">
-                            <span>No ontologies found.</span>
+                            <span data-i18n-key="no-ontologies">No ontologies found.</span>
                           </li>
                         </ul>
                         <form class="" onSubmit="return false;">
                           <div class="controls">
-                            <button data-field="clearClassifierFilters" class="btn btn-focus btn-clear">Clear All Filters</button>
+                            <button data-field="clearClassifierFilters" class="btn btn-focus btn-clear" data-i18n-key="clear-all-filters">Clear All Filters</button>
                           </div>
                         </form>
                       </div>
@@ -162,7 +162,7 @@
                   <div class="sramp-filter-group">
                     <div class="s-ramp-filter-header">
                       <a class="sramp-filter-toggle" data-toggle="slide" data-target="#accordion-filters-properties">
-                        Custom Properties
+                        <span data-i18n-key="filters.custom-properties-header">Custom Properties</span>
                       </a>
                     </div>
                     <div id="accordion-filters-properties" class="sramp-filter-body closed">
@@ -170,14 +170,14 @@
                         <form class="" onSubmit="return false;">
                           <div data-field="filter-custom-properties" class="filter-custom-properties">
                             <div data-field="filter-custom-property" class="controls">
-                              <label data-field="filter-custom-property-label" class="sramp-filter-label">Property 1:</label>
-                              <input data-field="filter-custom-property-input" class="span12" type="text" placeholder="Any">
+                              <label data-field="filter-custom-property-label" class="sramp-filter-label" data-role="dummy">Property 1:</label>
+                              <input data-field="filter-custom-property-input" class="span12" type="text" placeholder="Any"></input>
                             </div>
-                            <div class="controls">
+                            <div class="controls" data-role="dummy">
                               <label class="sramp-filter-label">Property 2:</label>
                               <input class="span12" type="text" placeholder="Any">
                             </div>
-                            <div class="controls">
+                            <div class="controls" data-role="dummy">
                               <label class="sramp-filter-label">Property 3:</label>
                               <select class="span12">
                                 <option selected="selected">Any</option>
@@ -188,10 +188,10 @@
                             </div>
                         </div>
                         <div class="controls">
-                          <button data-field="addCustomPropertyFilter" class="btn btn-focus btn-filter">Add Property Filter</button>
+                          <button data-field="addCustomPropertyFilter" class="btn btn-focus btn-filter" data-i18n-key="add-property-filter">Add Property Filter</button>
                         </div>
                         <div class="controls">
-                          <button data-field="clearCustomPropertyFilters" class="btn btn-focus btn-clear">Clear All Filters</button>
+                          <button data-field="clearCustomPropertyFilters" class="btn btn-focus btn-clear" data-i18n-key="clear-all-filters">Clear All Filters</button>
                         </div>
                         </form>
                       </div>
@@ -217,40 +217,43 @@
             <div class="row-fluid sramp-artifacts">
               <div class="span12 sramp-artifacts-actions">
                 <div class="btn-group hide" style="margin-right: 10px">
-                  <button class="btn">Actions</button>
+                  <button class="btn" data-i18n-key="actions">Actions</button>
                   <button class="btn dropdown-toggle" data-toggle="dropdown">
                     <span class="caret"></span>
                   </button>
-                  <ul class="dropdown-menu">
+                  <ul data-role="dummy" class="dropdown-menu">
                     <li><a>Download Selected</a></li>
                     <li><a>Add to Favorites</a></li>
                     <li><a>Properties</a></li>
                     <li><a>Categories</a></li>
                   </ul>
                 </div>
-                <button data-field="btn-import" id="btn-import" class="btn btn-focus requires-fileupload">Import Artifacts</button>
+                <button data-field="btn-import" id="btn-import" class="btn btn-focus requires-fileupload" data-i18n-key="import-artifacts">Import Artifacts</button>
                 <button data-field="btn-refresh" class="btn pull-right"><i class="icon-refresh"></i></button>
                 <div class="pull-right sramp-sp4n-label desktop-only">
-                  Displaying <span data-field="sramp-artifacts-range-1">1-11</span> of <span data-field="sramp-artifacts-total-1">37</span>
+                  <span data-i18n-key="displaying">Displaying</span>
+                  <span data-field="sramp-artifacts-range-1" data-role="dummy">1-11</span>
+                  <span data-i18n-key="of">of</span>
+                  <span data-field="sramp-artifacts-total-1" data-role="dummy">37</span>
                 </div>
               </div>
               <div data-field="sramp-artifacts-none" style="display:none" class="sramp-artifacts-none">
-                <span>No artifacts found.</span>
+                <span data-i18n-key="no-artifacts">No artifacts found.</span>
               </div>
               <div data-field="sramp-artifacts-searching" style="display:none" class="sramp-artifacts-searching">
-                <span class="spinner">Finding artifacts, please wait...</span>
+                <span class="spinner" data-i18n-key="finding-artifacts">Finding artifacts, please wait...</span>
               </div>
-              <table data-i18n-skip="true" data-field="sramp-artifacts-table" class="sramp-artifacts-table table table-striped table-condensed table-hover">
+              <table data-field="sramp-artifacts-table" class="sramp-artifacts-table table table-striped table-condensed table-hover">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Type</th>
-                  <th class="desktop-only">Derived</th>
-                  <th class="desktop-only">Last Modified</th>
+                  <th data-i18n-key="name">Name</th>
+                  <th data-i18n-key="type">Type</th>
+                  <th data-i18n-key="derived" class="desktop-only">Derived</th>
+                  <th data-i18n-key="last-modified" class="desktop-only">Last Modified</th>
 <!--                   <th class="desktop-only">Actions</th> -->
                 </tr>
               </thead>
-              <tbody>
+              <tbody data-role="dummy">
                 <tr>
                   <td><a href="artifact-details.html">Artifact 1</a></td>
                   <td>XmlDocument</td>
@@ -331,9 +334,12 @@
               </tbody>
               </table>
               <div class="mobile-only" style="padding: 0px; margin: 0px">
-                Displaying <span data-field="sramp-artifacts-range-2">1-11</span> of <span data-field="sramp-artifacts-total-2">37</span>
+                <span data-i18n-key="displaying">Displaying</span>
+                <span data-field="sramp-artifacts-range-2" data-role="dummy">1-11</span>
+                <span data-i18n-key="of">of</span>
+                <span data-field="sramp-artifacts-total-2" data-role="dummy">37</span>
               </div>
-              <div data-field="sramp-artifacts-pager" class="pagination sramp-artifacts-pager">
+              <div data-field="sramp-artifacts-pager" class="pagination sramp-artifacts-pager" data-role="dummy">
                 <ul>
                   <li class="disabled"><a>&#x00AB;</a></li>
                   <li class="active"><a>1</a></li>
@@ -350,7 +356,7 @@
         <!-- Footer -->
         <footer>
           <hr />
-          <p>&copy; JBoss Overlord 2012</p>
+          <p data-i18n-key="footer">&copy; JBoss Overlord 2012</p>
         </footer>
       </div> <!-- /container -->
       

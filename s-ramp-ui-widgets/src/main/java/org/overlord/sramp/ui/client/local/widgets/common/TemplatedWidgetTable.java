@@ -68,23 +68,23 @@ public class TemplatedWidgetTable extends WidgetTable implements HasHTML {
         NodeList<Node> nodes = getElement().getChildNodes();
         for (int j = 0; j < nodes.getLength(); j++) {
             Node item = nodes.getItem(j);
-            if ("thead".equalsIgnoreCase(item.getNodeName())) {
+            if ("thead".equalsIgnoreCase(item.getNodeName())) { //$NON-NLS-1$
                 this.thead = item.cast();
                 NodeList<Node> childNodes = this.thead.getChildNodes();
                 for (int i = 0; i < childNodes.getLength(); i++) {
                     Node theadtr = childNodes.getItem(i);
-                    if ("tr".equalsIgnoreCase(theadtr.getNodeName())) {
+                    if ("tr".equalsIgnoreCase(theadtr.getNodeName())) { //$NON-NLS-1$
                         int thcount = 0;
                         NodeList<Node> nodeList = theadtr.getChildNodes();
                         for (int k = 0; k < nodeList.getLength(); k++) {
-                            if ("th".equalsIgnoreCase(nodeList.getItem(k).getNodeName())) {
+                            if ("th".equalsIgnoreCase(nodeList.getItem(k).getNodeName())) { //$NON-NLS-1$
                                 thcount++;
                             }
                         }
                         this.columnCount = thcount;
                     }
                 }
-            } else if ("tbody".equalsIgnoreCase(item.getNodeName())) {
+            } else if ("tbody".equalsIgnoreCase(item.getNodeName())) { //$NON-NLS-1$
                 this.tbody = item.cast();
                 removeAllChildNodes(this.tbody);
             }
@@ -106,7 +106,7 @@ public class TemplatedWidgetTable extends WidgetTable implements HasHTML {
      */
     @Override
     public String getText() {
-        throw new RuntimeException("Not supported - marker interface only (for Errai UI Templating)");
+        throw new RuntimeException("Not supported - marker interface only (for Errai UI Templating)"); //$NON-NLS-1$
     }
 
     /**
@@ -114,7 +114,7 @@ public class TemplatedWidgetTable extends WidgetTable implements HasHTML {
      */
     @Override
     public void setText(String text) {
-        throw new RuntimeException("Not supported - marker interface only (for Errai UI Templating)");
+        throw new RuntimeException("Not supported - marker interface only (for Errai UI Templating)"); //$NON-NLS-1$
     }
 
     /**
@@ -122,7 +122,7 @@ public class TemplatedWidgetTable extends WidgetTable implements HasHTML {
      */
     @Override
     public String getHTML() {
-        throw new RuntimeException("Not supported - marker interface only (for Errai UI Templating)");
+        throw new RuntimeException("Not supported - marker interface only (for Errai UI Templating)"); //$NON-NLS-1$
     }
 
     /**
@@ -130,7 +130,7 @@ public class TemplatedWidgetTable extends WidgetTable implements HasHTML {
      */
     @Override
     public void setHTML(String html) {
-        throw new RuntimeException("Not supported - marker interface only (for Errai UI Templating)");
+        throw new RuntimeException("Not supported - marker interface only (for Errai UI Templating)"); //$NON-NLS-1$
     }
 
 }

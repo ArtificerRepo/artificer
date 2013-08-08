@@ -22,7 +22,7 @@ package org.overlord.sramp.ui.client.local.services.notification;
  */
 public class NotificationConstants {
 
-    public static final int WIDTH = 350;
+    public static final int WIDTH = 400;
     public static final int MARGIN = 10;
 
 }

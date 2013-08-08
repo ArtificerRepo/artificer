@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
+import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.pages.ArtifactDetailsPage;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
@@ -44,6 +45,8 @@ import com.google.gwt.user.client.ui.Widget;
 @Dependent
 public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCompleteHandler {
 
+    @Inject
+    protected ClientMessages i18n;
     @Inject
     private NotificationService notificationService;
     @Inject
@@ -72,11 +75,11 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
     @Override
     public void onSubmit(SubmitEvent event) {
         dialog.hide(false);
-        // TODO i18n
         notification = notificationService.startProgressNotification(
-                "Importing Artifact(s)",
-                "Please wait while your import is processed...");
+                i18n.format("import-artifact-submit.importing.title"), //$NON-NLS-1$
+                i18n.format("import-artifact-submit.importing.msg")); //$NON-NLS-1$
     }
+
 
     /**
      * @see com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler#onSubmitComplete(com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent)
@@ -85,41 +88,40 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
     public void onSubmitComplete(SubmitCompleteEvent event) {
         dialog.destroy();
 
-        // TODO !!i18n!!
-
         ImportResult results = ImportResult.fromResult(event.getResults());
         if (results.isError()) {
             if (results.getError() != null) {
                 notificationService.completeProgressNotification(
                         notification.getUuid(),
-                        "Importing Artifact(s) [!Error!]",
+                        i18n.format("import-artifact-submit.import-error.title"), //$NON-NLS-1$
                         results.getError());
             } else {
                 notificationService.completeProgressNotification(
                         notification.getUuid(),
-                        "Importing Artifact(s) [!Error!]",
-                        "Uh oh, something went wrong with your import!  Please contact your system administrator.");
+                        i18n.format("import-artifact-submit.import-error.title"), //$NON-NLS-1$
+                        i18n.format("import-artifact-submit.import-error.msg")); //$NON-NLS-1$
             }
         } else if (results.isBatch()) {
-            String message = "The S-RAMP archive was uploaded and processed, with " +
-                    results.getBatchNumSuccess() + " artifact(s) successfully processed and " +
-                    results.getBatchNumFailed() + " failed.";
+            String message = i18n.format(
+                    "import-artifact-submit.import-success.msg",  //$NON-NLS-1$
+                    results.getBatchNumSuccess(),
+                    results.getBatchNumFailed());
             notificationService.completeProgressNotification(
                     notification.getUuid(),
-                    "S-RAMP Archive (batch) Complete",
+                    i18n.format("import-artifact-submit.import-batch-success.title"), //$NON-NLS-1$
                     message);
         } else {
-            Widget ty = new InlineLabel("Thank you for waiting - your import has completed successfully.  ");
-            TransitionAnchor<ArtifactDetailsPage> clickHere = toDetailsFactory.get("uuid", results.getUuid());
-            clickHere.setText("Click here");
-            Widget postAmble = new InlineLabel(" to view the details of the imported artifact.");
+            Widget ty = new InlineLabel(i18n.format("import-artifact-submit.import-complete.msg")); //$NON-NLS-1$
+            TransitionAnchor<ArtifactDetailsPage> clickHere = toDetailsFactory.get("uuid", results.getUuid()); //$NON-NLS-1$
+            clickHere.setText(i18n.format("import-artifact-submit.click-here-1")); //$NON-NLS-1$
+            Widget postAmble = new InlineLabel(i18n.format("import-artifact-submit.click-here-2")); //$NON-NLS-1$
             FlowPanel body = new FlowPanel();
             body.add(ty);
             body.add(clickHere);
             body.add(postAmble);
             notificationService.completeProgressNotification(
                     notification.getUuid(),
-                    "Importing Artifact(s) [Complete]",
+                    i18n.format("import-artifact-submit.import-complete.title"), //$NON-NLS-1$
                     body);
             if (completionHandler != null) {
                 completionHandler.onImportComplete();
@@ -161,7 +163,7 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
         public static final ImportResult fromResult(String resultData) {
             int startIdx = resultData.indexOf('(');
             int endIdx = resultData.lastIndexOf(')') + 1;
-            if (resultData.endsWith(")"))
+            if (resultData.endsWith(")")) //$NON-NLS-1$
                 resultData = resultData.substring(startIdx);
             else
                 resultData = resultData.substring(startIdx, endIdx);
@@ -183,63 +185,63 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
          * @return the uuid
          */
         public final String getUuid() {
-            return get("uuid");
+            return get("uuid"); //$NON-NLS-1$
         }
 
         /**
          * @return the model
          */
         public final String getModel() {
-            return get("model");
+            return get("model"); //$NON-NLS-1$
         }
 
         /**
          * @return the type
          */
         public final String getType() {
-            return get("type");
+            return get("type"); //$NON-NLS-1$
         }
 
         /**
          * Returns true if the response is an error response.
          */
         public final boolean isError() {
-            return "true".equals(get("exception"));
+            return "true".equals(get("exception")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         /**
          * @return true if the response is due to a s-ramp package upload
          */
         public final boolean isBatch() {
-            return "true".equals(get("batch"));
+            return "true".equals(get("batch")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         /**
          * @return the total number of items in the s-ramp package
          */
         public final int getBatchTotal() {
-            return new Integer(get("batchTotal"));
+            return new Integer(get("batchTotal")); //$NON-NLS-1$
         }
 
         /**
          * @return the number of successful items in the package
          */
         public final int getBatchNumSuccess() {
-            return new Integer(get("batchNumSuccess"));
+            return new Integer(get("batchNumSuccess")); //$NON-NLS-1$
         }
 
         /**
          * @return the number of failed items in the package
          */
         public final int getBatchNumFailed() {
-            return new Integer(get("batchNumFailed"));
+            return new Integer(get("batchNumFailed")); //$NON-NLS-1$
         }
 
         /**
          * Gets the error.
          */
         public final SrampUiException getError() {
-            String errorMessage = get("exception-message");
+            String errorMessage = get("exception-message"); //$NON-NLS-1$
 //            String errorStack = get("exception-stack");
             SrampUiException error = new SrampUiException(errorMessage);
 //            error.setRootStackTrace(errorStack);

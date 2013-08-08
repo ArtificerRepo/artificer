@@ -206,13 +206,13 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
      * @param value the new filter settings
      */
     public void setValue(ArtifactFilterBean value) {
-        artifactType.setValue(value.getArtifactType() == null ? "" : value.getArtifactType());
+        artifactType.setValue(value.getArtifactType() == null ? "" : value.getArtifactType()); //$NON-NLS-1$
         dateCreatedFrom.setDateValue(value.getDateCreatedFrom() == null ? null : value.getDateCreatedFrom());
         dateCreatedTo.setDateValue(value.getDateCreatedTo() == null ? null : value.getDateCreatedTo());
         dateModifiedFrom.setDateValue(value.getDateModifiedFrom() == null ? null : value.getDateModifiedFrom());
         dateModifiedTo.setDateValue(value.getDateModifiedTo() == null ? null : value.getDateModifiedTo());
-        createdBy.setValue(value.getCreatedBy() == null ? "" : value.getCreatedBy());
-        lastModifiedBy.setValue(value.getLastModifiedBy() == null ? "" : value.getLastModifiedBy());
+        createdBy.setValue(value.getCreatedBy() == null ? "" : value.getCreatedBy()); //$NON-NLS-1$
+        lastModifiedBy.setValue(value.getLastModifiedBy() == null ? "" : value.getLastModifiedBy()); //$NON-NLS-1$
         if (value.getOrigin() == ArtifactOriginEnum.any) {
             originAny.setValue(true);
         } else if (value.getOrigin() == ArtifactOriginEnum.derived) {

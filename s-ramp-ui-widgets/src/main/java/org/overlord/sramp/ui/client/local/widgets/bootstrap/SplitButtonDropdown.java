@@ -54,16 +54,16 @@ public class SplitButtonDropdown extends FlowPanel {
      */
     public SplitButtonDropdown(ButtonSizeEnum size) {
         actionButton = new Button();
-        actionButton.setText("John Doe");
+        actionButton.setText("..."); //$NON-NLS-1$
         actionButton.getElement().setClassName(size.getButtonClasses());
 
         Button ddBtn = new Button();
-        ddBtn.setHTML("<span class=\"caret\"></span>");
-        ddBtn.getElement().setClassName(size.getButtonClasses() + " dropdown-toggle");
-        ddBtn.getElement().setAttribute("data-toggle", "dropdown");
+        ddBtn.setHTML("<span class=\"caret\"></span>"); //$NON-NLS-1$
+        ddBtn.getElement().setClassName(size.getButtonClasses() + " dropdown-toggle"); //$NON-NLS-1$
+        ddBtn.getElement().setAttribute("data-toggle", "dropdown"); //$NON-NLS-1$ //$NON-NLS-2$
 
         actions = new UnorderedListPanel();
-        actions.getElement().setClassName("dropdown-menu");
+        actions.getElement().setClassName("dropdown-menu"); //$NON-NLS-1$
 
         add(actionButton);
         add(ddBtn);
@@ -77,8 +77,8 @@ public class SplitButtonDropdown extends FlowPanel {
      */
     public Anchor addOption(String label, String value) {
         Anchor a = new Anchor(label);
-        a.getElement().setClassName("");
-        a.getElement().setAttribute("data-value", value);
+        a.getElement().setClassName(""); //$NON-NLS-1$
+        a.getElement().setAttribute("data-value", value); //$NON-NLS-1$
         actions.add(a);
         return a;
     }

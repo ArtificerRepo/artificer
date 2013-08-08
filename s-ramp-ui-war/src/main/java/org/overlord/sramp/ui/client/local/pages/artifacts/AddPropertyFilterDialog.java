@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.TextBox;
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifacts_dialogs.html#add-property-filter-dialog")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/add-property-filter-dialog.html#add-property-filter-dialog")
 @Dependent
 public class AddPropertyFilterDialog extends ModalDialog implements HasValueChangeHandlers<String> {
 

@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/artifact-details_dialogs.html#propval-editor-popover")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/propval-editor-popover.html#propval-editor-popover")
 @Dependent
 public class EditableInlineLabelPopover extends Composite implements IMouseInOutWidget {
 
@@ -64,9 +64,9 @@ public class EditableInlineLabelPopover extends Composite implements IMouseInOut
      */
     public void setSupportsRemove(boolean flag) {
         if (flag) {
-            remove.getElement().removeClassName("hide");
+            remove.getElement().removeClassName("hide"); //$NON-NLS-1$
         } else {
-            remove.getElement().addClassName("hide");
+            remove.getElement().addClassName("hide"); //$NON-NLS-1$
         }
     }
 
@@ -76,9 +76,9 @@ public class EditableInlineLabelPopover extends Composite implements IMouseInOut
      */
     public void setSupportsEdit(boolean flag) {
         if (flag) {
-            edit.getElement().removeClassName("hide");
+            edit.getElement().removeClassName("hide"); //$NON-NLS-1$
         } else {
-            edit.getElement().addClassName("hide");
+            edit.getElement().addClassName("hide"); //$NON-NLS-1$
         }
     }
 
@@ -92,7 +92,7 @@ public class EditableInlineLabelPopover extends Composite implements IMouseInOut
      */
     public void showOver(Element element) {
         rootPanel.add(this);
-        getElement().removeClassName("hide");
+        getElement().removeClassName("hide"); //$NON-NLS-1$
         positionOver(getElement(), element);
         registration = Window.addWindowScrollHandler(new ScrollHandler() {
             @Override

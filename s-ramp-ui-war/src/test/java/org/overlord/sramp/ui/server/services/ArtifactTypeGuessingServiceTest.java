@@ -31,14 +31,14 @@ public class ArtifactTypeGuessingServiceTest {
     @Test
     public void testGuess() {
         ArtifactTypeGuessingService service = new ArtifactTypeGuessingService();
-        Assert.assertEquals("SwitchYardXmlDocument", service.guess("switchyard.xml"));
-        Assert.assertEquals("MavenPom", service.guess("pom.xml"));
-        Assert.assertEquals("XmlDocument", service.guess("my-file.xml"));
-        Assert.assertEquals("WsdlDocument", service.guess("some-service.wsdl"));
-        Assert.assertEquals("XsdDocument", service.guess("datatype.xsd"));
-        Assert.assertEquals("SrampArchive", service.guess("my-archive.sramp"));
-        Assert.assertEquals("ZipArchive", service.guess("my-archive.zip"));
-        Assert.assertEquals("Document", service.guess("spring-break.png"));
+        Assert.assertEquals("SwitchYardXmlDocument", service.guess("switchyard.xml")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("MavenPom", service.guess("pom.xml")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("XmlDocument", service.guess("my-file.xml")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("WsdlDocument", service.guess("some-service.wsdl")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("XsdDocument", service.guess("datatype.xsd")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("SrampArchive", service.guess("my-archive.sramp")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("ZipArchive", service.guess("my-archive.zip")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("Document", service.guess("spring-break.png")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }
