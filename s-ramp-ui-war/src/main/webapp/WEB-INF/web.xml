@@ -16,6 +16,10 @@
     <filter-name>ResourceCacheControl</filter-name>
     <filter-class>org.overlord.commons.gwt.server.filters.ResourceCacheControlFilter</filter-class>
   </filter>
+  <filter>
+    <filter-name>LocaleFilter</filter-name>
+    <filter-class>org.overlord.sramp.ui.server.filters.LocaleFilter</filter-class>
+  </filter>
   <filter-mapping>
     <filter-name>GWTCacheControl</filter-name>
     <url-pattern>/app/*</url-pattern>
@@ -31,6 +35,10 @@
   <filter-mapping>
     <filter-name>ResourceCacheControl</filter-name>
     <url-pattern>/js/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>LocaleFilter</filter-name>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
 
   <servlet>
