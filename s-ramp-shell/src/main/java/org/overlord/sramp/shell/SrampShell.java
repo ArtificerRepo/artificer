@@ -16,6 +16,7 @@
 package org.overlord.sramp.shell;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.api.ShellCommand;
@@ -29,11 +30,31 @@ import org.overlord.sramp.shell.i18n.Messages;
  */
 public class SrampShell {
 
+    private static final String LOCALE_PROPERTY = "s-ramp.shell.locale"; //$NON-NLS-1$
+
 	/**
 	 * Main entry point.
 	 * @param args
 	 */
 	public static void main(String [] args) {
+	    String locale_str = System.getProperty(LOCALE_PROPERTY);
+	    if (locale_str != null) {
+	        String lang = null;
+	        String region = null;
+	        String [] lsplit = locale_str.split("_"); //$NON-NLS-1$
+	        if (lsplit.length > 0) {
+	            lang = lsplit[0];
+	        }
+	        if (lsplit.length > 1) {
+	            region = lsplit[1];
+	        }
+	        if (lang != null && region != null) {
+	            Locale.setDefault(new Locale(lang, region));
+	        } else if (lang != null) {
+                Locale.setDefault(new Locale(lang));
+	        }
+	    }
+
 		final SrampShell shell = new SrampShell();
 		Thread shutdownHook = new Thread(new Runnable() {
 			@Override
@@ -143,6 +164,7 @@ public class SrampShell {
 				"                                                  \n" + //$NON-NLS-1$
 				"  JBoss S-RAMP Kurt Stam and Eric Wittmann, Licensed under the\n" + //$NON-NLS-1$
 				"  Apache License, V2.0, Copyright 2012\n" + //$NON-NLS-1$
+				"  Locale: " + Locale.getDefault().toString().trim() + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
 				"**********************************************************************" //$NON-NLS-1$
 				);
 	}
