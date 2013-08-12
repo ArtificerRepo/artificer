@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -85,6 +86,7 @@ public class SrampAtomApiClient {
 	private boolean validating;
 	private AuthenticationProvider authProvider;
 	private Set<String> enabledFeatures = new HashSet<String>();
+	private Locale locale;
 
 	/**
 	 * Constructor.
@@ -973,6 +975,16 @@ public class SrampAtomApiClient {
     private ClientExecutor createClientExecutor() {
         // TODO I think the http client is thread safe - so let's try to create just one of these
         DefaultHttpClient httpClient = new DefaultHttpClient();
+        httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
+            @Override
+            public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
+                Locale l = getLocale();
+                if (l == null) {
+                    l = Locale.getDefault();
+                }
+                request.addHeader("Accept-Language", l.toString()); //$NON-NLS-1$
+            }
+        });
         if (this.authProvider != null) {
             httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
                 @Override
@@ -982,5 +994,19 @@ public class SrampAtomApiClient {
             });
         }
         return new ApacheHttpClient4Executor(httpClient);
+    }
+
+    /**
+     * @return the locale
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * @param locale the locale to set
+     */
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 }
