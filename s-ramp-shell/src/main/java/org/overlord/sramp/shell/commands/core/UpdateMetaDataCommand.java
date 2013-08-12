@@ -61,7 +61,7 @@ public class UpdateMetaDataCommand extends BuiltInShellCommand {
 			client.updateArtifactMetaData(artifact);
 			print(Messages.i18n.format("UpdateMetaData.Success", artifact.getName())); //$NON-NLS-1$
 		} catch (Exception e) {
-			print(Messages.i18n.format("UpdateMetaData.Success")); //$NON-NLS-1$
+			print(Messages.i18n.format("UpdateMetaData.Failure")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
 		}
 	}

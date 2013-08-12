@@ -16,7 +16,10 @@
 package org.overlord.sramp.common.i18n;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
@@ -29,29 +32,74 @@ import java.util.ResourceBundle;
  */
 public class AbstractMessages {
 
-    private static Map<Class<? extends AbstractMessages>, ResourceBundle> bundles =
-            new HashMap<Class<? extends AbstractMessages>, ResourceBundle>();
+    public static final List<String> FORMATS = Collections.unmodifiableList(Arrays.asList("java.properties")); //$NON-NLS-1$
 
-    private ResourceBundle bundle;
+    private static Map<String, ResourceBundle> bundles = new HashMap<String, ResourceBundle>();
+
+    private Class<? extends AbstractMessages> clazz;
+    private static ThreadLocal<Locale> tlocale = new ThreadLocal<Locale>();
+    public static void setLocale(Locale locale) {
+        tlocale.set(locale);
+    }
+    public static void clearLocale() {
+        tlocale.set(null);
+    }
 
     /**
      * Constructor.
      */
     public AbstractMessages(Class<? extends AbstractMessages> c) {
-        bundle = loadBundle(c);
+        clazz = c;
+    }
+
+    /**
+     * Gets a bundle.  First tries to find one in the cache, then loads it if
+     * it can't find one.
+     */
+    private ResourceBundle getBundle() {
+        String bundleKey = getBundleKey();
+        if (bundles.containsKey(bundleKey)) {
+            return bundles.get(bundleKey);
+        } else {
+            ResourceBundle bundle = loadBundle();
+            bundles.put(bundleKey, bundle);
+            return bundle;
+        }
+    }
+
+    /**
+     * Gets the key to use into the cache of bundles.  The key is made up of the
+     * fully qualified class name and the locale.
+     */
+    private String getBundleKey() {
+        Locale locale = getLocale();
+        return clazz.getName() + "::" + locale.toString(); //$NON-NLS-1$
     }
 
     /**
      * Loads the resource bundle.
      * @param c
      */
-    private ResourceBundle loadBundle(Class<? extends AbstractMessages> c) {
-        synchronized (bundles) {
-            if (!bundles.containsKey(c)) {
-                String pkg = c.getPackage().getName();
-                bundles.put(c, PropertyResourceBundle.getBundle(pkg + ".messages", Locale.getDefault(), c.getClassLoader())); //$NON-NLS-1$
+    private ResourceBundle loadBundle() {
+        String pkg = clazz.getPackage().getName();
+        Locale locale = getLocale();
+        return PropertyResourceBundle.getBundle(pkg + ".messages", locale, clazz.getClassLoader(), new ResourceBundle.Control() { //$NON-NLS-1$
+            @Override
+            public List<String> getFormats(String baseName) {
+                return FORMATS;
             }
-            return bundles.get(c);
+        });
+    }
+
+    /**
+     * Gets the locale to use when finding a bundle.  The locale to use is either from the
+     * thread local value, if set, or else the system default locale.
+     */
+    protected Locale getLocale() {
+        if (tlocale.get() != null) {
+            return tlocale.get();
+        } else {
+            return Locale.getDefault();
         }
     }
 
@@ -62,6 +110,7 @@ public class AbstractMessages {
      * @param params
      */
     public String format(String key, Object ... params) {
+        ResourceBundle bundle = getBundle();
         if (bundle.containsKey(key)) {
             String msg = bundle.getString(key);
             return MessageFormat.format(msg, params);
