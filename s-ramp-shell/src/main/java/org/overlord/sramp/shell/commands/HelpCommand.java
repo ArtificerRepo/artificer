@@ -62,7 +62,7 @@ public class HelpCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String namespaceOrCmdName = optionalArgument(0);
 		if (namespaceOrCmdName == null) {
 			printHelpAll();
@@ -77,6 +77,7 @@ public class HelpCommand extends BuiltInShellCommand {
 				printHelpForCommand(cmdName);
 			}
 		}
+        return true;
 	}
 
 	/**

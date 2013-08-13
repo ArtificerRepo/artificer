@@ -44,4 +44,9 @@ public interface ShellCommandReader {
 	 */
 	public void close() throws IOException;
 
+	/**
+	 * @return true if this is a batch command reader
+	 */
+	public boolean isBatch();
+
 }

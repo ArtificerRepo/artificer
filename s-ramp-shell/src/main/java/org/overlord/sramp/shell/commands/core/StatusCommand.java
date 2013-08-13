@@ -42,7 +42,7 @@ public class StatusCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 		QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -69,6 +69,7 @@ public class StatusCommand extends BuiltInShellCommand {
 		} else {
 			print(Messages.i18n.format("Status.Status6", feed.size())); //$NON-NLS-1$
 		}
+        return true;
 	}
 
 }

@@ -41,7 +41,7 @@ public class PackArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String outputLocationArg = requiredArgument(0, Messages.i18n.format("PackArchive.InvalidArgMsg.OutputLocation")); //$NON-NLS-1$
 
 		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -49,6 +49,7 @@ public class PackArchiveCommand extends BuiltInShellCommand {
 
 		if (archive == null) {
 			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+            return false;
 		} else {
 			File outputFile = new File(outputLocationArg);
 			if (outputFile.exists()) {
@@ -61,6 +62,7 @@ public class PackArchiveCommand extends BuiltInShellCommand {
 			FileUtils.copyFile(packedFile, outputFile);
 			print(Messages.i18n.format("PackArchive.Packaged", outputFile.getCanonicalPath())); //$NON-NLS-1$
 		}
+        return true;
 	}
 
 }

@@ -40,7 +40,7 @@ public class ConnectCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String endpointUrlArg = this.requiredArgument(0, Messages.i18n.format("Connect.InvalidArgMsg.NoUrl")); //$NON-NLS-1$
 		String opt1 = this.optionalArgument(1);
         String opt2 = this.optionalArgument(2);
@@ -80,7 +80,9 @@ public class ConnectCommand extends BuiltInShellCommand {
 		} catch (Exception e) {
 			print(Messages.i18n.format("Connect.Failure", endpointUrlArg)); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
+	        return false;
 		}
+        return true;
 	}
 
 	/**
