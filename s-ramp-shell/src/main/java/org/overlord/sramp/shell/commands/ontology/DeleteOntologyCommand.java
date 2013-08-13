@@ -43,7 +43,7 @@ public class DeleteOntologyCommand extends BuiltInShellCommand {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String ontologyIdArg = this.requiredArgument(0, Messages.i18n.format("DeleteOntology.InvalidArgMsg.OntologyId")); //$NON-NLS-1$
 
 		QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -51,7 +51,7 @@ public class DeleteOntologyCommand extends BuiltInShellCommand {
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
 		if (!ontologyIdArg.contains(":") || ontologyIdArg.endsWith(":")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -84,7 +84,9 @@ public class DeleteOntologyCommand extends BuiltInShellCommand {
 		} catch (Exception e) {
 			print(Messages.i18n.format("DeleteOntology.DeleteFailed")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
+            return false;
 		}
+		return true;
 	}
 
 	/**

@@ -41,7 +41,7 @@ public class OpenArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String pathToArchive = requiredArgument(0, Messages.i18n.format("OpenArchive.InvalidArgMsg.PathToArchive")); //$NON-NLS-1$
 
 		SrampArchive archive = null;
@@ -49,7 +49,7 @@ public class OpenArchiveCommand extends BuiltInShellCommand {
 		archive = (SrampArchive) getContext().getVariable(varName);
 		if (archive != null) {
 			print(Messages.i18n.format("OpenArchive.AlreadyOpen")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
 		File archiveFile = new File(pathToArchive);
@@ -66,6 +66,7 @@ public class OpenArchiveCommand extends BuiltInShellCommand {
 			}
 		});
 		print(Messages.i18n.format("OpenArchive.Opened", archiveFile.getCanonicalPath())); //$NON-NLS-1$
+        return true;
 	}
 
 }

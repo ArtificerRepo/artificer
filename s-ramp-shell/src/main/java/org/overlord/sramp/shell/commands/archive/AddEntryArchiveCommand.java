@@ -45,7 +45,7 @@ public class AddEntryArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg.EntryPath")); //$NON-NLS-1$
 		String artifactTypeArg = requiredArgument(1, Messages.i18n.format("AddEntry.InvalidArgMsg.ArtifactType")); //$NON-NLS-1$
 		String pathToContent = optionalArgument(2);
@@ -55,23 +55,25 @@ public class AddEntryArchiveCommand extends BuiltInShellCommand {
 
 		if (archive == null) {
 			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
-		} else {
-			InputStream contentStream = null;
-			try {
-				ArtifactType type = ArtifactType.valueOf(artifactTypeArg);
-				String name = new File(archivePathArg).getName();
-				if (pathToContent != null) {
-					File contentFile = new File(pathToContent);
-					contentStream = FileUtils.openInputStream(contentFile);
-				}
-				BaseArtifactType artifact = type.newArtifactInstance();
-				artifact.setName(name);
-				archive.addEntry(archivePathArg, artifact, contentStream);
-				print(Messages.i18n.format("AddEntry.Added", archivePathArg)); //$NON-NLS-1$
-			} finally {
-				IOUtils.closeQuietly(contentStream);
-			}
+			return false;
 		}
+		InputStream contentStream = null;
+		try {
+			ArtifactType type = ArtifactType.valueOf(artifactTypeArg);
+			String name = new File(archivePathArg).getName();
+			if (pathToContent != null) {
+				File contentFile = new File(pathToContent);
+				contentStream = FileUtils.openInputStream(contentFile);
+			}
+			BaseArtifactType artifact = type.newArtifactInstance();
+			artifact.setName(name);
+			archive.addEntry(archivePathArg, artifact, contentStream);
+			print(Messages.i18n.format("AddEntry.Added", archivePathArg)); //$NON-NLS-1$
+		} finally {
+			IOUtils.closeQuietly(contentStream);
+		}
+
+		return true;
 	}
 
 }

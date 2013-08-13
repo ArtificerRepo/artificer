@@ -41,12 +41,13 @@ public class ListArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
 			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+	        return false;
 		} else {
 			Collection<SrampArchiveEntry> entries = archive.getEntries();
 			print(Messages.i18n.format("ENTRY_PATH")); //$NON-NLS-1$
@@ -63,6 +64,7 @@ public class ListArchiveCommand extends BuiltInShellCommand {
 			print("  ----------"); //$NON-NLS-1$
             print(Messages.i18n.format("ENTRY_LIST_SUMMARY", entries.size())); //$NON-NLS-1$
 		}
+        return true;
 	}
 
 }

@@ -97,7 +97,10 @@ public class SrampShell {
 				if (command == null) {
 					done = true;
 				} else {
-					command.execute();
+					boolean success = command.execute();
+					if (!success && reader.isBatch()) {
+					    System.exit(1);
+					}
 				}
 			} catch (InvalidCommandArgumentException e) {
 				System.out.println(Messages.i18n.format("Shell.INVALID_ARG", e.getMessage())); //$NON-NLS-1$
@@ -105,8 +108,12 @@ public class SrampShell {
     				System.out.print(Messages.i18n.format("Shell.USAGE")); //$NON-NLS-1$
     				command.printUsage();
 				}
+				if (reader.isBatch())
+				    System.exit(1);
 			} catch (Exception e) {
 				e.printStackTrace(System.err);
+				if (reader.isBatch())
+				    System.exit(1);
 			}
 		}
 	}

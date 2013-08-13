@@ -55,7 +55,7 @@ public class PropertyCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String subcmdArg = requiredArgument(0, Messages.i18n.format("Property.InvalidArgMsg.SubCommand")); //$NON-NLS-1$
 		String propNameArg = requiredArgument(1, Messages.i18n.format("Property.InvalidArgMsg.PropertyName")); //$NON-NLS-1$
 		String propValueArg = null;
@@ -67,7 +67,7 @@ public class PropertyCommand extends BuiltInShellCommand {
 		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		if (artifact == null) {
 			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
 		try {
@@ -85,7 +85,9 @@ public class PropertyCommand extends BuiltInShellCommand {
 		} catch (Exception e) {
 			print(Messages.i18n.format("Property.Failure")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
+            return false;
 		}
+        return true;
 	}
 
 	/**

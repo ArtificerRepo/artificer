@@ -42,7 +42,7 @@ public class ListEntryArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg")); //$NON-NLS-1$
 
 		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -50,6 +50,7 @@ public class ListEntryArchiveCommand extends BuiltInShellCommand {
 
 		if (archive == null) {
 			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+            return false;
 		} else {
 			SrampArchiveEntry entry = archive.getEntry(archivePathArg);
 			BaseArtifactType metaData = entry.getMetaData();
@@ -58,6 +59,7 @@ public class ListEntryArchiveCommand extends BuiltInShellCommand {
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 			ArtifactVisitorHelper.visitArtifact(visitor, metaData);
 		}
+        return true;
 	}
 
 }

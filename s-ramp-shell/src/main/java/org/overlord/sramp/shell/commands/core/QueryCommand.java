@@ -47,7 +47,7 @@ public class QueryCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String queryArg = this.requiredArgument(0, Messages.i18n.format("Query.InvalidArgMsg.MissingQuery")); //$NON-NLS-1$
 		String tooManyArgs = this.optionalArgument(1);
 		if (tooManyArgs != null) {
@@ -59,7 +59,7 @@ public class QueryCommand extends BuiltInShellCommand {
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(varName);
 		if (client == null) {
 			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 		if (queryArg.endsWith("/")) { //$NON-NLS-1$
 			queryArg = queryArg.substring(0, queryArg.length() - 1);
@@ -86,7 +86,9 @@ public class QueryCommand extends BuiltInShellCommand {
 		} catch (Exception e) {
             print(Messages.i18n.format("Query.Failure")); //$NON-NLS-1$
             print("\t" + e.getMessage()); //$NON-NLS-1$
+            return false;
 		}
+        return true;
 	}
 
 	/**
