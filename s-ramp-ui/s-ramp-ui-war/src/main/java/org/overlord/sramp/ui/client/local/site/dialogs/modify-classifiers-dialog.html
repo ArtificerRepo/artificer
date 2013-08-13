@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title data-role="dummy">S-RAMP Repository Browser - Artifact Details (Dialogs)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-datepicker.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-fileupload.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
+    <link href="../../../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../../../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-fileupload.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/js/s-ramp-responsive.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/js/s-ramp-widgets.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Modify Classifers Dialog -->
+    <div data-field="modify-classifiers-dialog" id="modify-classifiers-dialog" class="classifiers-modal modal hide">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;<span data-role="dummy"/></button>
+        <h4 data-i18n-key="modify-classifiers">Modify Classifiers</h4>
+      </div>
+      <div data-field="modify-classifiers-dialog-body" class="modal-body">
+        <div data-field="modify-classifiers-dialog-spinner-all" class="hide"><span class="spinner" data-i18n-key="loading-ontologies">Loading ontologies, please wait...</span></div>
+        <div data-field="modify-classifiers-dialog-ontology-selector" class="modify-classifiers-dialog-ontology-selector">
+          <span class="clearfix" data-i18n-key="choose-ontology">Choose an ontology</span>
+          <select data-field="ontology-select" data-role="dummy" name="ontology" title="Select an ontology...">
+            <option>Regions</option>
+            <option>Colors</option>
+          </select>
+          <hr />
+        </div>
+        <div data-field="ontology-selector-with-toolbar" class="ontology-selector-with-toolbar">
+          <div class="btn-toolbar">
+            <div class="btn-group">
+              <a class="btn-small btn dropdown-toggle" data-toggle="dropdown" href="#">
+                <span data-i18n-key="select_">Select...</span>
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a onClick="$(this).closest('.ontology-selector-with-toolbar').find(':checkbox').prop('checked', true)" data-i18n-key="select-all">Select All</a></li>
+                <li><a onClick="$(this).closest('.ontology-selector-with-toolbar').find(':checkbox').prop('checked', false)" data-i18n-key="select-none">Select None</a></li>
+              </ul>
+            </div>
+            <div class="btn-group">
+              <a class="btn-small btn dropdown-toggle" data-toggle="dropdown" href="#">
+                <span data-i18n-key="expand_">Expand...</span>
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a onClick="expandAllTreeNodes($(this).closest('.ontology-selector-with-toolbar'))" data-i18n-key="expand-all">Expand All</a></li>
+                <li><a onClick="collapseAllTreeNodes($(this).closest('.ontology-selector-with-toolbar'))" data-i18n-key="collapse-all">Collapse All</a></li>
+              </ul>
+            </div>
+            <div class="pull-right hide">
+              <input type="text" name="filter" value="" placeholder="Filter by name..."></input>
+            </div>
+          </div>
+          <ul data-field="ontology-selector" class="ontology-selector">
+            <li data-field="ontology-selector-node">
+              <button data-field="ontology-selector-node-toggle-btn" onClick="toggleTreeIcon($(this))" 
+                  data-toggle="collapse" data-target="#ul-1" 
+                  type="button" class="tree" aria-hidden="true" data-role="dummy">+</button>
+              <label>
+                <input data-field="ontology-selector-node-checkbox" type="checkbox" name="Species1"></input>
+                <span data-field="ontology-selector-node-label" data-role="dummy">Species 1</span>
+              </label>
+              <ul data-field="ontology-selector-node-childPanel" id="ul-1" class="out collapse" data-role="dummy">
+                <li>
+                  <i class="icon icon-none"></i>
+                  <label>
+                    <input type="checkbox" name="Subspecies1"></input>
+                    <span>Subspecies 1</span>
+                  </label>
+                </li>
+                <li>
+                  <button onClick="toggleTreeIcon($(this))" data-toggle="collapse" data-target="#ul-2" type="button" class="tree" aria-hidden="true">+</button>
+                  <label>
+                    <input type="checkbox" name="Subspecies2"></input>
+                    <span>Subspecies 2</span>
+                  </label>
+                  <ul id="ul-2" class="out collapse">
+                    <li>
+                      <i class="icon icon-none"></i>
+                      <label>
+                        <input type="checkbox"></input>
+                        <span>Sub-Subspecies Alpha</span>
+                      </label>
+                    </li>
+                    <li>
+                      <i class="icon icon-none"></i>
+                      <label>
+                        <input type="checkbox"></input>
+                        <span>Sub-Subspecies Beta</span>
+                      </label>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li data-role="dummy">
+              <button onClick="toggleTreeIcon($(this))" data-toggle="collapse" data-target="#ul-3" type="button" class="tree" aria-hidden="true">+</button>
+              <label>
+                <input type="checkbox"></input>
+                <span>Species 2</span>
+              </label>
+              <ul id="ul-3" class="out collapse">
+                <li>
+                  <i class="icon icon-none"></i>
+                  <label>
+                    <input type="checkbox"></input>
+                    <span>Subspecies 2-1</span>
+                  </label>
+                </li>
+                <li>
+                  <button onClick="toggleTreeIcon($(this))" data-toggle="collapse" data-target="#ul-4" type="button" class="tree" aria-hidden="true">+</button>
+                  <label>
+                    <input type="checkbox"></input>
+                    <span>Subspecies 2-2</span>
+                  </label>
+                  <ul id="ul-4" class="out collapse">
+                    <li>
+                      <i class="icon icon-none"></i>
+                      <label>
+                        <input type="checkbox"></input>
+                        <span>Sub-Subspecies Two Alpha</span>
+                      </label>
+                    </li>
+                    <li>
+                      <i class="icon icon-none"></i>
+                      <label>
+                        <input type="checkbox"></input>
+                        <span>Sub-Subspecies Two Beta</span>
+                      </label>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-small" data-dismiss="modal" data-i18n-key="cancel">Cancel</button>
+        <button data-field="modify-classifiers-dialog-btn-ok" class="btn btn-focus btn-small" data-i18n-key="ok">OK</button>
+      </div>
+    </div>
+
+    <!-- Some scripting to add functionality to the live template -->
+    <script>
+      $('#modify-classifiers-dialog').modal({keyboard:false,backdrop:'static'});
+    </script>
+
+  </body>
+</html>
