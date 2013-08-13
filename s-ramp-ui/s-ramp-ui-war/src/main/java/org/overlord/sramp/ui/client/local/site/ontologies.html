@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-role="dummy">
+  <head>
+    <meta charset="utf-8">
+    <title>S-RAMP Repository Browser - Ontologies</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet"></link>
+    <link href="../../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
+    <link href="../../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-responsive.js"></script>
+    <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-widgets.js"></script>
+  </head>
+
+  <body>
+    <div id="page" data-field="page">
+
+      <!-- Content area with footer-->
+      <div id="page-content" class="container-fluid">
+
+        <!-- Breadcrumbs -->
+        <div class="row-fluid">
+          <ul class="breadcrumb">
+            <li><a data-field="back-to-dashboard" href="dashboard.html">S-RAMP Dashboard</a> <span class="divider">/</span></li>
+            <li class="active">Ontologies</li>
+          </ul>
+        </div>
+
+        <!-- Page content -->
+        <div class="row-fluid">
+          <div id="ontologies" class="span2">
+            <div class="sramp-ontology-box-header">Ontologies</div>
+            <ul class="nav nav-pills nav-stacked">
+              <li class="active"><a>Ontology 1</a></li>
+              <li><a>Ontology 2</a></li>
+              <li><a>Ontology 3</a></li>
+            </ul>
+            <a class="btn btn-small">Add Ontology</a>
+          </div>
+          <div id="ontology-editor" class="span10">
+            <div class="sramp-ontology-editor-canvas">
+              <!-- Ontology Tier 1 -->
+              <div class="sramp-ontology-tier">
+                <div class="sramp-ontology-tier-header"></div>
+                <ul class="nav nav-pills nav-stacked">
+                  <li><a>Tier 1, Node 1</a></li>
+                  <li class="active"><a>Tier 1, Node 2</a></li>
+                  <li><a>Tier 1, Node 3</a></li>
+                  <li><a>Tier 1, Node 4</a></li>
+                  <li><a>Tier 1, Node 5</a></li>
+                </ul>
+                <a class="btn btn-small">Add Node</a>
+              </div>
+              <!-- Ontology Tier 2 -->
+              <div class="sramp-ontology-tier">
+                <div class="sramp-ontology-tier-header"></div>
+                <ul class="nav nav-pills nav-stacked">
+                  <li class="active"><a>Tier 2, Node 1</a></li>
+                  <li><a>Tier 2, Node 2</a></li>
+                  <li><a>Tier 2, Node 3</a></li>
+                </ul>
+                <a class="btn btn-small">Add Node</a>
+              </div>
+              <!-- Next Ontology Tier -->
+              <div class="sramp-ontology-tier">
+                <div class="sramp-ontology-tier-header"></div>
+                <a class="btn btn-small">Add Level</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <!-- Footer -->
+        <footer>
+          <hr />
+          <p>&copy; JBoss Overlord 2012</p>
+        </footer>
+      </div> <!-- /container -->
+      
+    </div> <!-- /page -->
+  </body>
+</html>

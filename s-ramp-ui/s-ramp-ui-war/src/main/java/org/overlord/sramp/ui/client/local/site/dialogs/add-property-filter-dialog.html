@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title data-role="dummy">S-RAMP Repository Browser - Artifacts (Dialogs)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-datepicker.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-fileupload.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
+    <link href="../../../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../../../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-fileupload.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/js/s-ramp-responsive.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/js/s-ramp-widgets.js"></script>
+  </head>
+
+  <body>
+    <!-- Add Custom Property filter -->
+    <div data-field="add-property-filter-dialog" id="add-property-filter-dialog" class="modal hide">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;<span data-role="dummy"/></button>
+        <h4 data-i18n-key="dialog.add-property.title">Add Custom Property Filter</h4>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="return false;">
+          <fieldset>
+            <label data-i18n-key="property-name_">Property Name:</label>
+            <input data-field="name" class="input-name" name="property-name" type="text"></input>
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" data-i18n-key="cancel">Cancel</button>
+        <button data-field="submit-button" class="btn btn-focus" disabled="disabled" data-i18n-key="add">Add</button>
+      </div>
+    </div>
+
+    <!-- Some scripting to add functionality to the live template -->
+    <script>
+      $('#add-property-filter-dialog').modal({keyboard:false,backdrop:'static'});
+    </script>
+
+  </body>
+</html>
