@@ -85,7 +85,7 @@ public class JvmStatusCommand extends AbstractShellCommand {
      * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
      */
     @Override
-    public void execute() throws Exception {
+    public boolean execute() throws Exception {
         String statusType = optionalArgument(0);
         if (statusType == null) {
             statusType = "all";
@@ -108,5 +108,6 @@ public class JvmStatusCommand extends AbstractShellCommand {
                 print("Thread %1$d : %2$s", count++, t.getName());
             }
         }
+        return true;
     }
 }

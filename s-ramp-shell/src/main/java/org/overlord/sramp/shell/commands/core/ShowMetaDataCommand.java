@@ -41,12 +41,12 @@ public class ShowMetaDataCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		if (artifact == null) {
 			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
 		// Print out the meta-data information
@@ -54,6 +54,7 @@ public class ShowMetaDataCommand extends BuiltInShellCommand {
 		print("--------------"); //$NON-NLS-1$
 		PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
 		ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+        return true;
 	}
 
 }

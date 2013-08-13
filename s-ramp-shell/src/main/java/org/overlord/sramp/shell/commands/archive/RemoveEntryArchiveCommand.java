@@ -38,7 +38,7 @@ public class RemoveEntryArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg.EntryPath")); //$NON-NLS-1$
 
 		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -46,6 +46,7 @@ public class RemoveEntryArchiveCommand extends BuiltInShellCommand {
 
 		if (archive == null) {
 			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+            return false;
 		} else {
 			boolean success = archive.removeEntry(archivePathArg);
 			if (success) {
@@ -54,6 +55,7 @@ public class RemoveEntryArchiveCommand extends BuiltInShellCommand {
 				print(Messages.i18n.format("RemoveEntry.NoEntryFound", archivePathArg)); //$NON-NLS-1$
 			}
 		}
+        return true;
 	}
 
 }

@@ -80,4 +80,12 @@ public class FileShellCommandReader extends AbstractShellCommandReader {
 		IOUtils.closeQuietly(fileReader);
 	}
 
+	/**
+	 * @see org.overlord.sramp.shell.ShellCommandReader#isBatch()
+	 */
+	@Override
+	public boolean isBatch() {
+	    return true;
+	}
+
 }

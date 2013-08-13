@@ -51,7 +51,7 @@ public class GetContentCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String artifactIdArg = this.requiredArgument(0, Messages.i18n.format("InvalidArgMsg.ArtifactId")); //$NON-NLS-1$
 		String outputFilePathArg = this.requiredArgument(1, Messages.i18n.format("GetContent.InvalidArgMsg.OutputPath")); //$NON-NLS-1$
 		if (!artifactIdArg.contains(":")) { //$NON-NLS-1$
@@ -62,7 +62,7 @@ public class GetContentCommand extends BuiltInShellCommand {
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return;
+            return false;
 		}
 
 		BaseArtifactType artifact = null;
@@ -106,6 +106,7 @@ public class GetContentCommand extends BuiltInShellCommand {
 			IOUtils.closeQuietly(artifactContent);
 			IOUtils.closeQuietly(outputStream);
 		}
+        return true;
 	}
 
 	/**

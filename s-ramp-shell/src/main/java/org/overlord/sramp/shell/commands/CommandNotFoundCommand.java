@@ -49,8 +49,9 @@ public class CommandNotFoundCommand extends AbstractShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() {
+	public boolean execute() {
 		print(Messages.i18n.format("COMMAND_NOT_FOUND")); //$NON-NLS-1$
+        return true;
 	}
 
 }

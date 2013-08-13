@@ -49,7 +49,7 @@ public class GetMetaDataCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String artifactIdArg = this.requiredArgument(0, Messages.i18n.format("InvalidArgMsg.ArtifactId")); //$NON-NLS-1$
 		String outputFilePathArg = this.optionalArgument(1);
 		if (!artifactIdArg.contains(":")) { //$NON-NLS-1$
@@ -60,7 +60,7 @@ public class GetMetaDataCommand extends BuiltInShellCommand {
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
 		BaseArtifactType artifact = null;
@@ -104,6 +104,7 @@ public class GetMetaDataCommand extends BuiltInShellCommand {
 			SrampArchiveJaxbUtils.writeMetaData(outFile, artifact, false);
 			print(Messages.i18n.format("GetMetaData.SavedTo", outFile.getCanonicalPath())); //$NON-NLS-1$
 		}
+        return true;
 	}
 
 	/**

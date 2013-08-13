@@ -83,14 +83,14 @@ public class UploadOntologyCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String filePathArg = this.requiredArgument(0, Messages.i18n.format("UploadOntology.InvalidArgMsg.MissingPath")); //$NON-NLS-1$
 
 		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 		InputStream content = null;
 		try {
@@ -112,10 +112,12 @@ public class UploadOntologyCommand extends BuiltInShellCommand {
 			print(Messages.i18n.format("UploadOntology.UploadFailed")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
 			IOUtils.closeQuietly(content);
+            return false;
 		} finally {
 			IOUtils.closeQuietly(content);
 		}
 		print("**********************************************************************"); //$NON-NLS-1$
+        return true;
 	}
 
 	/**

@@ -113,4 +113,12 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 		return context;
 	}
 
+	/**
+	 * @see org.overlord.sramp.shell.ShellCommandReader#isBatch()
+	 */
+	@Override
+	public boolean isBatch() {
+	    return false;
+	}
+
 }

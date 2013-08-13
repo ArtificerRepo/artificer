@@ -46,7 +46,7 @@ public class DeleteCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
         QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -54,7 +54,7 @@ public class DeleteCommand extends BuiltInShellCommand {
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
         BaseArtifactType artifact = null;
@@ -63,7 +63,7 @@ public class DeleteCommand extends BuiltInShellCommand {
             artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
             if (artifact == null) {
                 print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
-                return;
+                return false;
             }
         } else {
     		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
@@ -89,7 +89,9 @@ public class DeleteCommand extends BuiltInShellCommand {
 		} catch (Exception e) {
 			print(Messages.i18n.format("Delete.Failure")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
+	        return false;
 		}
+        return true;
 	}
 
     /**

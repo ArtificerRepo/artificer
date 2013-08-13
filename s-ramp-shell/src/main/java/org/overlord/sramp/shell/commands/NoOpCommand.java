@@ -48,7 +48,8 @@ public class NoOpCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() {
+	public boolean execute() {
+        return true;
 	}
 
 }
