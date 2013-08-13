@@ -1,0 +1,76 @@
+.titlePanel {
+	width: 100%;
+	border: 1px solid grey;
+}
+.titlePanel .title {
+	font-size: 14px;
+	font-weight: bold;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #eee;
+	background-color: #777;
+	text-shadow: 1px 1px #555;
+	padding: 5px;
+}
+.titlePanel .titlePanelContent {
+	padding: 5px;
+}
+
+.pleaseWait {
+	padding-left: 20px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	background: url("../images/please-wait.gif") no-repeat;
+	background-position: 1px center;
+}
+
+.errorMessage {
+	min-height: 16px;
+	padding-left: 20px;
+	background: url("../images/error.png") no-repeat;
+	background-position: 1px 0px;
+	display: block;
+}
+
+.pager {
+	margin-top: 5px;
+}
+.pager span {
+	padding: 5px;
+	font-style: italic;
+}
+.pager a {
+	font-weight: bold;
+	font-size: 14px;
+}
+
+.filterPanel .label {
+	font-weight: bold;
+}
+.filterPanel .filterOptions {
+	padding-left: 10px;
+}
+.filterPanel .filterOptions a.disabled {
+	color: white;
+	cursor: default;
+}
+.filterPanel .filterOptions li {
+	padding: 2px;
+	padding-right: 30px;
+	padding-left: 8px;
+	height: 16px;
+}
+.filterPanel .filterOptions li:hover {
+	background-color: #e6e6e6;
+	background-image: url("../images/filt_h_bg.png");
+	background-position: center right;
+	background-repeat: no-repeat;
+}
+.filterPanel .filterOptions li.selected {
+	background-color: #9C1919;
+	background-image: url("../images/filt_bg.png");
+	background-position: center right;
+	background-repeat: no-repeat;
+}
+.filterPanel .filterOptions li a {
+	height: 16px;
+}

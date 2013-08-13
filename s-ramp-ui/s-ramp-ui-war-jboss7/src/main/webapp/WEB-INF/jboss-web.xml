@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+  <security-domain>overlord-sp</security-domain>
+  <context-root>s-ramp-ui</context-root>
+  <valve>
+    <class-name>org.picketlink.identity.federation.bindings.tomcat.sp.ServiceProviderAuthenticator</class-name>
+  </valve>
+</jboss-web>
