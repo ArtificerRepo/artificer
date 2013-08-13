@@ -31,6 +31,9 @@ public class JCRAuditConstants {
         "jcr:primaryType", //$NON-NLS-1$
         "sramp:uuid", //$NON-NLS-1$
         "sramp:normalizedClassifiedBy", //$NON-NLS-1$
+        "sramp:contentHash", //$NON-NLS-1$
+        "sramp:contentType", //$NON-NLS-1$
+        "sramp:contentSize", //$NON-NLS-1$
         "jcr:created", //$NON-NLS-1$
         "jcr:versionHistory", //$NON-NLS-1$
         "jcr:baseVersion", //$NON-NLS-1$
@@ -49,17 +52,6 @@ public class JCRAuditConstants {
         }
     }
 
-    public static final String AUDIT_BUNDLE_AUDITING = "audit:audit"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE1 = "audit:artifact-added-1"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE2 = "audit:artifact-added-2"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE3 = "audit:artifact-added-3"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE1 = "audit:derived-artifacts-added-1"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE2 = "audit:derived-artifacts-added-2"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_ARTIFACT_DELETED = "audit:artifact-deleted"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_ARTIFACT_UPDATED = "audit:artifact-updated"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_ARTIFACT_CONTENT_UPDATED = "audit:artifact-content-updated"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_ONTOLOGY_ADDED = "audit:ontology-added"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_ONTOLOGY_UPDATED = "audit:ontology-updated"; //$NON-NLS-1$
-    public static final String AUDIT_BUNDLE_ONTOLOGY_DELETED = "audit:ontology-deleted"; //$NON-NLS-1$
+    public static final String PROP_CLASSIFIED_BY = "sramp:classifiedBy"; //$NON-NLS-1$
 
 }

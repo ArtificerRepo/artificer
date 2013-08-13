@@ -62,8 +62,6 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
 	    Document pdf = addPdf();
         // Add another document
         addPdf();
-		// Wait for the audit entries to be persisted.
-		Thread.sleep(1000);
 
 		// List all the audit entries
         ClientRequest request = new ClientRequest(generateURL("/s-ramp/audit/artifact/" + pdf.getUuid())); //$NON-NLS-1$
@@ -94,14 +92,8 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
             Assert.assertNotNull(property);
             String name = property.getName();
             String value = property.getValue();
-            if (name.equals("sramp:name")) { //$NON-NLS-1$
+            if (name.equals("name")) { //$NON-NLS-1$
                 Assert.assertEquals("sample.pdf", value); //$NON-NLS-1$
-            } else if (name.equals("sramp:contentSize")) { //$NON-NLS-1$
-                Assert.assertEquals("218882", value); //$NON-NLS-1$
-            } else if (name.equals("sramp:contentHash")) { //$NON-NLS-1$
-                Assert.assertEquals("12e5f2da18960dc085ca27bec1ae9e3245389cb1", value); //$NON-NLS-1$
-            } else if (name.equals("sramp:contentType")) { //$NON-NLS-1$
-                Assert.assertEquals("application/pdf", value); //$NON-NLS-1$
             } else {
                 Assert.fail("No assertion for audited property: " + name); //$NON-NLS-1$
             }
@@ -118,8 +110,6 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
     @Test
     public void testCreate() throws Exception {
         Document pdf = addPdf();
-        // Wait for the audit entries to be persisted.
-        Thread.sleep(1000);
 
         DatatypeFactory dtFactory = DatatypeFactory.newInstance();
 

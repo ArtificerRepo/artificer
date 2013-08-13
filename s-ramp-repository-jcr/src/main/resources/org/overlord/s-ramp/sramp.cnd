@@ -60,8 +60,7 @@
 - audit:uuid (string) mandatory
 - audit:sortId (long)
 - audit:type (string)
-- audit:who (string)
-- audit:when (date)
+- audit:summary (string)
 + * (audit:auditItem)
 
 

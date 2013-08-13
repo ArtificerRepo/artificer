@@ -45,8 +45,8 @@ public class JCRNodeToAuditEntryFactory {
 
             String uuid = jcrNode.getProperty("audit:uuid").getString(); //$NON-NLS-1$
             String type = jcrNode.getProperty("audit:type").getString(); //$NON-NLS-1$
-            String who = jcrNode.getProperty("audit:who").getString(); //$NON-NLS-1$
-            XMLGregorianCalendar when = dtFactory.newXMLGregorianCalendar((GregorianCalendar)jcrNode.getProperty("audit:when").getDate()); //$NON-NLS-1$
+            String who = jcrNode.getProperty("jcr:createdBy").getString(); //$NON-NLS-1$
+            XMLGregorianCalendar when = dtFactory.newXMLGregorianCalendar((GregorianCalendar)jcrNode.getProperty("jcr:created").getDate()); //$NON-NLS-1$
 
             AuditEntry entry = new AuditEntry();
             entry.setUuid(uuid);
