@@ -21,10 +21,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.ValueFormatException;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -37,13 +43,17 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.overlord.sramp.common.ArtifactAlreadyExistsException;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.SrampServerException;
+import org.overlord.sramp.common.audit.AuditEntryTypes;
+import org.overlord.sramp.common.audit.AuditItemTypes;
 import org.overlord.sramp.common.derived.LinkerContext;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.DerivedArtifactsFactory;
-import org.overlord.sramp.repository.jcr.audit.JCRAuditConstants;
+import org.overlord.sramp.repository.jcr.audit.ArtifactDiff;
+import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
@@ -58,6 +68,7 @@ import org.slf4j.LoggerFactory;
 public final class JCRArtifactPersister {
 
     private static Logger log = LoggerFactory.getLogger(JCRArtifactPersister.class);
+    private static Sramp sramp = new Sramp();
 
     /**
      * Phase one of persisting an artifact consists of creating the JCR node for the artifact and
@@ -129,7 +140,10 @@ public final class JCRArtifactPersister {
             throw visitor.getError();
 
         log.debug(Messages.i18n.format("SAVED_JCR_NODE", name, uuid)); //$NON-NLS-1$
-        session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE1);
+        if (sramp.isAuditingEnabled()) {
+            auditCreateArtifact(artifactNode);
+            session.save();
+        }
         session.save();
 
         Phase1Result result = new Phase1Result();
@@ -186,7 +200,6 @@ public final class JCRArtifactPersister {
             throw visitor.getError();
 
         // JCR persist point - phase 2 of artifact create
-        session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE2);
         session.save();
 
         Phase2Result result = new Phase2Result();
@@ -225,7 +238,6 @@ public final class JCRArtifactPersister {
 
         // JCR persist point - phase 3 of artifact create (only for document style artifacts
         // with derived content)
-        session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_ADDED_PHASE3);
         session.save();
     }
 
@@ -278,12 +290,16 @@ public final class JCRArtifactPersister {
                 if (visitor.hasError())
                     throw visitor.getError();
 
+                // Audit the create event for the derived node
+                if (sramp.isAuditingEnabled() && sramp.isDerivedArtifactAuditingEnabled()) {
+                    auditCreateArtifact(derivedArtifactNode);
+                }
+
                 log.debug(Messages.i18n.format("SAVED_DERIVED_ARTY_TO_JCR", derivedArtifact.getName(), derivedArtifact.getUuid())); //$NON-NLS-1$
             }
 
             // Save current changes so that references to nodes can be found.  Note that if
             // transactions are enabled, this will not actually persist to final storage.
-            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE1);
             session.save();
 
             log.debug(Messages.i18n.format("SAVED_ARTIFACTS", derivedArtifacts.size())); //$NON-NLS-1$
@@ -326,7 +342,6 @@ public final class JCRArtifactPersister {
             }
 
             // Persist phase 2 (the relationships)
-            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_DERIVED_ARTIFACTS_ADDED_PHASE2);
             session.save();
 
             log.debug(Messages.i18n.format("SAVED_ARTIFACTS_2", derivedArtifacts.size())); //$NON-NLS-1$
@@ -374,4 +389,117 @@ public final class JCRArtifactPersister {
     public static class Phase2Result {
         public Collection<BaseArtifactType> derivedArtifacts;
     }
+
+
+    /**
+     * Audits an artifact create event.  This will add an audit entry as a child of the
+     * new artifact JCR node of type "artifact:add".  In addition, the initial state of
+     * all properties, classifiers, and relationships will be recorded.
+     * @param artifactNode
+     * @throws RepositoryException
+     */
+    public static void auditCreateArtifact(Node artifactNode) throws RepositoryException {
+        ArtifactJCRNodeDiffer differ = new ArtifactJCRNodeDiffer(artifactNode);
+        Node auditEntryNode = createAuditEntryNode(artifactNode, AuditEntryTypes.ARTIFACT_ADD);
+        Node propAddedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.PROPERTY_ADDED);
+        for (Entry<String, String> entry : differ.getProperties().entrySet()) {
+            propAddedNode.setProperty(entry.getKey(), entry.getValue());
+        }
+        if (!differ.getClassifiers().isEmpty()) {
+            Node classifierAddedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.CLASSIFIERS_ADDED);
+            int idx = 0;
+            for (String classifier : differ.getClassifiers()) {
+                classifierAddedNode.setProperty("classifier-" + idx++, classifier); //$NON-NLS-1$
+            }
+        }
+    }
+
+    /**
+     * Audits an artifact update event.  This will add an audit entry as a child of the
+     * new artifact JCR node of type "artifact:update".  In addition, any changes to
+     * properties, classifiers, or relationships will be added as audit items to the
+     * audit entry.
+     * @param artifactNode
+     * @throws RepositoryException
+     */
+    public static void auditUpdateArtifact(ArtifactJCRNodeDiffer differ, Node artifactNode) throws RepositoryException {
+        Node auditEntryNode = createAuditEntryNode(artifactNode, AuditEntryTypes.ARTIFACT_UPDATE);
+
+        ArtifactDiff diff = differ.diff(artifactNode);
+        if (!diff.getAddedProperties().isEmpty()) {
+            Node propAddedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.PROPERTY_ADDED);
+            for (Entry<String, String> entry : diff.getAddedProperties().entrySet()) {
+                propAddedNode.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
+        if (!diff.getUpdatedProperties().isEmpty()) {
+            Node propChangedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.PROPERTY_CHANGED);
+            for (Entry<String, String> entry : diff.getUpdatedProperties().entrySet()) {
+                propChangedNode.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
+        if (!diff.getDeletedProperties().isEmpty()) {
+            Node propRemovedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.PROPERTY_REMOVED);
+            for (String propName : diff.getDeletedProperties()) {
+                propRemovedNode.setProperty(propName, ""); //$NON-NLS-1$
+            }
+        }
+        if (!diff.getAddedClassifiers().isEmpty()) {
+            Node classifiersAddedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.CLASSIFIERS_ADDED);
+            int idx = 0;
+            for (String classifier : diff.getAddedClassifiers()) {
+                classifiersAddedNode.setProperty("classifier-" + idx++, classifier); //$NON-NLS-1$
+            }
+        }
+        if (!diff.getDeletedClassifiers().isEmpty()) {
+            Node classifiersRemovedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.CLASSIFIERS_REMOVED);
+            int idx = 0;
+            for (String classifier : diff.getDeletedClassifiers()) {
+                classifiersRemovedNode.setProperty("classifier-" + idx++, classifier); //$NON-NLS-1$
+            }
+        }
+    }
+
+    /**
+     * Creates a JCR node for a single audit entry for a single artifact.  This is called when
+     * recording audit information for an artifact.
+     * @param artifactNode
+     * @param when
+     * @throws ValueFormatException
+     * @throws VersionException
+     * @throws LockException
+     * @throws ConstraintViolationException
+     * @throws RepositoryException
+     */
+    public static Node createAuditEntryNode(Node artifactNode, String type) throws ValueFormatException,
+            VersionException, LockException, ConstraintViolationException, RepositoryException {
+        String auditUuid = UUID.randomUUID().toString();
+        Node auditEntryNode = artifactNode.addNode("audit:" + auditUuid, JCRConstants.SRAMP_AUDIT_ENTRY); //$NON-NLS-1$
+
+        auditEntryNode.setProperty("audit:uuid", auditUuid); //$NON-NLS-1$
+        auditEntryNode.setProperty("audit:sortId", System.currentTimeMillis()); //$NON-NLS-1$
+        auditEntryNode.setProperty("audit:type", type); //$NON-NLS-1$
+
+        return auditEntryNode;
+    }
+
+    /**
+     * Creates the audit item node as a child of the given audit entry.
+     * @param auditEntryNode
+     * @param propertyAdded
+     * @throws RepositoryException
+     * @throws ConstraintViolationException
+     * @throws LockException
+     * @throws VersionException
+     * @throws ValueFormatException
+     */
+    public static Node createAuditItemNode(Node auditEntryNode, String auditItemType)
+            throws ValueFormatException, VersionException, LockException, ConstraintViolationException,
+            RepositoryException {
+        String auditItemNodeName = "audit:" + auditItemType.replace(':', '_'); //$NON-NLS-1$
+        Node auditItemNode = auditEntryNode.addNode(auditItemNodeName, JCRConstants.SRAMP_AUDIT_ITEM);
+        auditItemNode.setProperty("audit:type", auditItemType); //$NON-NLS-1$
+        return auditItemNode;
+    }
+
 }

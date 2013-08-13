@@ -15,7 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,7 +32,6 @@ import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampServerException;
 import org.overlord.sramp.repository.AuditManager;
 import org.overlord.sramp.repository.audit.AuditEntrySet;
-import org.overlord.sramp.repository.jcr.audit.JCRAuditConstants;
 import org.overlord.sramp.repository.jcr.audit.JCRAuditEntrySet;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToAuditEntryFactory;
@@ -60,7 +58,7 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
             + "WHERE artifact.[sramp:uuid] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC"; //$NON-NLS-1$
     private static final String USER_AUDIT_TRAIL_QUERY = "SELECT auditEntry.*" //$NON-NLS-1$
             + " FROM [audit:auditEntry] AS auditEntry " //$NON-NLS-1$
-            + "WHERE auditEntry.[audit:who] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC"; //$NON-NLS-1$
+            + "WHERE auditEntry.[jcr:createdBy] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC"; //$NON-NLS-1$
 
 	/**
 	 * Default constructor.
@@ -80,16 +78,11 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
             if (artifactNode != null) {
                 String auditEntryUuid = UUID.randomUUID().toString();
                 Node auditEntryNode = artifactNode.addNode("audit:" + auditEntryUuid, JCRConstants.SRAMP_AUDIT_ENTRY); //$NON-NLS-1$
-                long eventDate = entry.getWhen().toGregorianCalendar().getTimeInMillis();
-                Calendar eventCal = Calendar.getInstance();
-                eventCal.setTimeInMillis(eventDate);
                 entry.setUuid(auditEntryUuid);
 
                 auditEntryNode.setProperty("audit:uuid", entry.getUuid()); //$NON-NLS-1$
-                auditEntryNode.setProperty("audit:sortId", eventDate); //$NON-NLS-1$
+                auditEntryNode.setProperty("audit:sortId", System.currentTimeMillis()); //$NON-NLS-1$
                 auditEntryNode.setProperty("audit:type", entry.getType()); //$NON-NLS-1$
-                auditEntryNode.setProperty("audit:who", entry.getWho()); //$NON-NLS-1$
-                auditEntryNode.setProperty("audit:when", eventCal); //$NON-NLS-1$
 
                 List<AuditItemType> auditItems = entry.getAuditItem();
                 for (AuditItemType auditItem : auditItems) {
@@ -105,9 +98,7 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
                     }
                 }
 
-                session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_AUDITING);
                 session.save();
-
                 return entry;
             } else {
                 throw new ArtifactNotFoundException(artifactUuid);

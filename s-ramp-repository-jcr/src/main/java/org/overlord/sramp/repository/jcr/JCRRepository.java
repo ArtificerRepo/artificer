@@ -17,30 +17,13 @@ package org.overlord.sramp.repository.jcr;
 
 import java.io.File;
 
-import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.ObservationManager;
-
-import org.overlord.sramp.common.Sramp;
-import org.overlord.sramp.repository.jcr.audit.AuditEventListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Base class for the JCR repository.
  */
 public abstract class JCRRepository {
-
-    private static Logger log = LoggerFactory.getLogger(JCRRepository.class);
-    private static Sramp sramp = new Sramp();
-
-    private Session auditingSession;
-    private AuditEventListener auditingEventListener1;
-    private AuditEventListener auditingEventListener2;
 
     /**
      * Constructor.
@@ -53,9 +36,6 @@ public abstract class JCRRepository {
      */
     public final void startup() throws RepositoryException {
         doStartup();
-        if (sramp.isAuditingEnabled()) {
-            enableAuditing();
-        }
     }
 
     /**
@@ -67,8 +47,6 @@ public abstract class JCRRepository {
      * Method called when the JCR implementation is no longer needed.
      */
     public final void shutdown() {
-        if (sramp.isAuditingEnabled())
-            disableAuditing();
         doShutdown();
     }
 
@@ -81,56 +59,6 @@ public abstract class JCRRepository {
      * @return the JCR repository
      */
     public abstract Repository getRepo();
-
-    /**
-     * Enables auditing for the JCR repository.
-     * @throws RepositoryException
-     */
-    private void enableAuditing() throws RepositoryException {
-        try {
-            auditingSession = getRepo().login(new SimpleCredentials(sramp.getAuditUser(), sramp.getAuditPassword().toCharArray()));
-            ObservationManager observationManager = auditingSession.getWorkspace().getObservationManager();
-            auditingEventListener1 = new AuditEventListener(sramp, auditingSession);
-            observationManager.addEventListener(
-                    auditingEventListener1,
-                    Event.NODE_ADDED | Event.PROPERTY_ADDED | Event.PROPERTY_CHANGED | Event.PROPERTY_REMOVED | Event.NODE_MOVED,
-                    "/s-ramp/", true, null, null, false); //$NON-NLS-1$
-            auditingEventListener2 = new AuditEventListener(sramp, auditingSession);
-            observationManager.addEventListener(
-                    auditingEventListener2,
-                    Event.NODE_MOVED,
-                    "/s-ramp-trash/", true, null, null, false); //$NON-NLS-1$
-            log.info("JCR Auditor installed successfully."); //$NON-NLS-1$
-        } catch (LoginException e) {
-            log.error(e.getMessage(), e);
-            log.warn("\n**********\nFailed to install auditing listener (see error above):  automatic auditing is disabled!!\n**********"); //$NON-NLS-1$
-            auditingSession = null;
-            auditingEventListener1 = null;
-            auditingEventListener2 = null;
-        }
-    }
-
-    /**
-     * Turns off auditing.
-     */
-    private void disableAuditing() {
-        try {
-            if (auditingSession != null && auditingEventListener1 != null) {
-                // Wait for a bit to let any async audit tasks finish up
-                try { Thread.sleep(2000); } catch (InterruptedException e) { }
-                auditingSession.getWorkspace().getObservationManager().removeEventListener(auditingEventListener1);
-                auditingEventListener1 = null;
-                auditingSession.getWorkspace().getObservationManager().removeEventListener(auditingEventListener2);
-                auditingEventListener2 = null;
-            }
-        } catch (Exception e) {
-            log.error("Error turning off auditing.", e); //$NON-NLS-1$
-        }
-        if (auditingSession != null) {
-            auditingSession.logout();
-            auditingSession = null;
-        }
-    }
 
 	/**
 	 * Figures out what the current data directory is.  The data directory will be

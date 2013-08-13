@@ -32,7 +32,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
@@ -41,6 +40,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampServerException;
 import org.overlord.sramp.common.derived.ArtifactDeriver;
@@ -56,7 +56,7 @@ import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.jcr.JCRArtifactPersister.Phase1Result;
 import org.overlord.sramp.repository.jcr.JCRArtifactPersister.Phase2Result;
-import org.overlord.sramp.repository.jcr.audit.JCRAuditConstants;
+import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToOntology;
@@ -77,6 +77,7 @@ import org.slf4j.LoggerFactory;
 public class JCRPersistence extends AbstractJCRManager implements PersistenceManager, DerivedArtifacts, ClassificationHelper {
 
 	private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
+	private static Sramp sramp = new Sramp();
 
 	private static OntologyToJCRNode o2jcr = new OntologyToJCRNode();
 	private static JCRNodeToOntology jcr2o = new JCRNodeToOntology();
@@ -303,24 +304,32 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	@Override
 	public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampException {
 		Session session = null;
+		ArtifactJCRNodeDiffer differ = null;
 		try {
 			session = JCRRepositoryFactory.getSession();
 			Node artifactNode = findArtifactNode(artifact.getUuid(), type, session);
 			if (artifactNode == null) {
 				throw new ArtifactNotFoundException(artifact.getUuid());
 			}
+			if (sramp.isAuditingEnabled()) {
+			    differ = new ArtifactJCRNodeDiffer(artifactNode);
+			}
 			ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(type, artifactNode,
 					new JCRReferenceFactoryImpl(session), this);
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			if (visitor.hasError())
 				throw visitor.getError();
-            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_UPDATED);
 			session.save();
 
 			log.debug(Messages.i18n.format("UPDATED_ARTY_META_DATA", artifact.getUuid())); //$NON-NLS-1$
 
 			if (log.isDebugEnabled()) {
 				printArtifactGraph(artifact.getUuid(), type);
+			}
+
+			if (sramp.isAuditingEnabled()) {
+			    JCRArtifactPersister.auditUpdateArtifact(differ, artifactNode);
+			    session.save();
 			}
         } catch (SrampException se) {
             throw se;
@@ -357,7 +366,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			// TODO delete and re-create the derived artifacts?  what if some of them have properties or classifications?
 			// TODO is "update content" even allowed in s-ramp??
 
-            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_CONTENT_UPDATED);
 			session.save();
 			log.debug(Messages.i18n.format("UPDATED_ARTY_CONTENT", uuid)); //$NON-NLS-1$
         } catch (SrampException se) {
@@ -402,7 +410,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             jcrUtils.findOrCreateNode(session, parentTrashPath, "nt:folder"); //$NON-NLS-1$
             // Move the jcr node
             session.move(srcPath, trashPath);
-            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ARTIFACT_DELETED);
 			session.save();
 			log.debug(Messages.i18n.format("DELETED_ARTY", uuid)); //$NON-NLS-1$
         } catch (SrampException se) {
@@ -466,7 +473,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 				Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
 				Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology"); //$NON-NLS-1$
 				o2jcr.write(ontology, ontologyNode);
-	            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ONTOLOGY_ADDED);
 				session.save();
 				log.debug(Messages.i18n.format("SAVED_ONTOLOGY", ontology.getUuid())); //$NON-NLS-1$
 				return ontology;
@@ -559,7 +565,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
                 throw new OntologyNotFoundException(ontology.getUuid());
 			}
 			log.debug(Messages.i18n.format("UPDATED_ONTOLOGY", ontology.getUuid())); //$NON-NLS-1$
-            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ONTOLOGY_UPDATED);
 			session.save();
         } catch (SrampException se) {
             throw se;
@@ -586,7 +591,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			} else {
                 throw new OntologyNotFoundException(uuid);
 			}
-            session.getWorkspace().getObservationManager().setUserData(JCRAuditConstants.AUDIT_BUNDLE_ONTOLOGY_DELETED);
 			session.save();
 			log.debug(Messages.i18n.format("DELETED_ONTOLOGY", uuid)); //$NON-NLS-1$
         } catch (SrampException se) {
