@@ -69,9 +69,7 @@ public class ShowAuditTrailCommand extends BuiltInShellCommand {
             ArtifactSummary summary = rset.get(feedIdx);
             artifactUuid = summary.getUuid();
         } else if ("uuid".equals(idType)) { //$NON-NLS-1$
-//          String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
-//          artifact = getArtifactMetaDataByUUID(client, artifactUUID);
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("UuidNotImplemented")); //$NON-NLS-1$
+            artifactUuid = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
         } else {
             throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidIdFormat")); //$NON-NLS-1$
         }

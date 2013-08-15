@@ -555,12 +555,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			session = JCRRepositoryFactory.getSession();
 			if (session.nodeExists(ontologyPath)) {
 				Node ontologyNode = session.getNode(ontologyPath);
-				NodeIterator nodes = ontologyNode.getNodes();
-				while (nodes.hasNext()) {
-					Node child = nodes.nextNode();
-					child.remove();
-				}
-				o2jcr.write(ontology, ontologyNode);
+				o2jcr.update(ontology, ontologyNode);
 			} else {
                 throw new OntologyNotFoundException(ontology.getUuid());
 			}
