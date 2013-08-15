@@ -77,7 +77,8 @@ public class DeleteCommand extends BuiltInShellCommand {
     		    String artifactUUID = summary.getUuid();
     		    artifact = client.getArtifactMetaData(summary.getType(), artifactUUID);
     		} else if ("uuid".equals(idType)) { //$NON-NLS-1$
-    		    throw new InvalidCommandArgumentException(0, Messages.i18n.format("UuidNotImplemented")); //$NON-NLS-1$
+                String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
+                artifact = client.getArtifactMetaData(artifactUUID);
     		} else {
     		    throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
     		}

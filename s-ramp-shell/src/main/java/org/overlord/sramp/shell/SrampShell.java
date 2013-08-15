@@ -105,7 +105,7 @@ public class SrampShell {
 			} catch (InvalidCommandArgumentException e) {
 				System.out.println(Messages.i18n.format("Shell.INVALID_ARG", e.getMessage())); //$NON-NLS-1$
 				if (command != null) {
-    				System.out.print(Messages.i18n.format("Shell.USAGE")); //$NON-NLS-1$
+    				System.out.println(Messages.i18n.format("Shell.USAGE")); //$NON-NLS-1$
     				command.printUsage();
 				}
 				if (reader.isBatch())

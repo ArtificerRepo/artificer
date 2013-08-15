@@ -48,22 +48,21 @@ public class ListArchiveCommand extends BuiltInShellCommand {
 		if (archive == null) {
 			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
 	        return false;
-		} else {
-			Collection<SrampArchiveEntry> entries = archive.getEntries();
-			print(Messages.i18n.format("ENTRY_PATH")); //$NON-NLS-1$
-			print("  ----------"); //$NON-NLS-1$
-			for (SrampArchiveEntry entry : entries) {
-				String modifier = null;
-				if (entry.hasContent()) {
-					modifier = "  C "; //$NON-NLS-1$
-				} else {
-					modifier = "  E "; //$NON-NLS-1$
-				}
-				print(modifier + entry.getPath());
-			}
-			print("  ----------"); //$NON-NLS-1$
-            print(Messages.i18n.format("ENTRY_LIST_SUMMARY", entries.size())); //$NON-NLS-1$
 		}
+		Collection<SrampArchiveEntry> entries = archive.getEntries();
+		print(Messages.i18n.format("ENTRY_PATH")); //$NON-NLS-1$
+		print("  ----------"); //$NON-NLS-1$
+		for (SrampArchiveEntry entry : entries) {
+			String modifier = null;
+			if (entry.hasContent()) {
+				modifier = "  C "; //$NON-NLS-1$
+			} else {
+				modifier = "  E "; //$NON-NLS-1$
+			}
+			print(modifier + entry.getPath());
+		}
+		print("  ----------"); //$NON-NLS-1$
+        print(Messages.i18n.format("ENTRY_LIST_SUMMARY", entries.size())); //$NON-NLS-1$
         return true;
 	}
 
