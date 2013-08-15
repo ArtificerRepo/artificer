@@ -16,14 +16,16 @@
 package org.overlord.sramp.repository.jcr.modeshape;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 import org.overlord.sramp.common.ontology.SrampOntology;
+import org.overlord.sramp.common.ontology.SrampOntology.Class;
 
 
 /**
@@ -249,7 +251,98 @@ public class JCROntologyPersistenceTest extends AbstractNoAuditingJCRPersistence
     	Assert.assertEquals(1, ontologies.size());
     }
 
-	/**
+
+    @Test
+    public void testUpdate() throws Exception {
+        SrampOntology ontology = new SrampOntology();
+        ontology.setBase("urn:example.org/test2"); //$NON-NLS-1$
+        ontology.setLabel("Test Ontology #2"); //$NON-NLS-1$
+        ontology.setComment("This is my second test ontology."); //$NON-NLS-1$
+
+        SrampOntology.Class world = createClass(ontology, null, "World", "World", "The entire world"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        SrampOntology.Class asia = createClass(ontology, world, "Asia", "Asia", null); //$NON-NLS-1$ //$NON-NLS-2$
+        SrampOntology.Class europe = createClass(ontology, world, "Europe", "Europe", "Two world wars"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        SrampOntology.Class japan = createClass(ontology, asia, "Japan", "Japan", "Samurai *and* ninja?  Not fair."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        SrampOntology.Class china = createClass(ontology, asia, "China", "China", "Gunpowder!"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        SrampOntology.Class uk = createClass(ontology, europe, "UnitedKingdom", "United Kingdom", "The food could be better"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        SrampOntology.Class germany = createClass(ontology, europe, "Germany", "Germany", "The fatherland"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        ontology.getRootClasses().add(world);
+
+        world.getChildren().add(asia);
+        world.getChildren().add(europe);
+        asia.getChildren().add(japan);
+        asia.getChildren().add(china);
+        europe.getChildren().add(uk);
+        europe.getChildren().add(germany);
+
+        String uuid = persistenceManager.persistOntology(ontology).getUuid();
+        Assert.assertNotNull(uuid);
+
+        SrampOntology actual = persistenceManager.getOntology(uuid);
+        Assert.assertEquals(ontology.getUuid(), actual.getUuid());
+        Assert.assertEquals(ontology.getBase(), actual.getBase());
+        Assert.assertEquals(ontology.getLabel(), actual.getLabel());
+        Assert.assertEquals(ontology.getComment(), actual.getComment());
+        Assert.assertEquals(ontology.getId(), actual.getId());
+        Assert.assertEquals(1, actual.getRootClasses().size());
+
+        SrampOntology.Class actualWorld = actual.getRootClasses().get(0);
+        Assert.assertEquals(world.getUri(), actualWorld.getUri());
+        Assert.assertEquals(world.getLabel(), actualWorld.getLabel());
+        Assert.assertEquals(world.getComment(), actualWorld.getComment());
+        Assert.assertEquals(world.getId(), actualWorld.getId());
+        Assert.assertNull(actualWorld.getParent());
+        Assert.assertEquals(2, actualWorld.getChildren().size());
+
+        SrampOntology.Class actualAsia = actualWorld.getChildren().get(0);
+        Assert.assertEquals(asia.getUri(), actualAsia.getUri());
+        Assert.assertEquals(asia.getLabel(), actualAsia.getLabel());
+        Assert.assertEquals(asia.getComment(), actualAsia.getComment());
+        Assert.assertEquals(asia.getId(), actualAsia.getId());
+        Assert.assertNotNull(actualAsia.getParent());
+        Assert.assertEquals(actualWorld, actualAsia.getParent());
+        Assert.assertEquals(2, actualAsia.getChildren().size());
+
+        SrampOntology.Class actualJapan = actualAsia.getChildren().get(0);
+        Assert.assertEquals(japan.getUri(), actualJapan.getUri());
+        Assert.assertEquals(japan.getLabel(), actualJapan.getLabel());
+        Assert.assertEquals(japan.getComment(), actualJapan.getComment());
+        Assert.assertEquals(japan.getId(), actualJapan.getId());
+        Assert.assertNotNull(actualJapan.getParent());
+        Assert.assertEquals(actualAsia, actualJapan.getParent());
+        Assert.assertEquals(0, actualJapan.getChildren().size());
+
+        SrampOntology.Class northAmerica = createClass(ontology, world, "NorthAmerica", "North America", null); //$NON-NLS-1$ //$NON-NLS-2$
+        SrampOntology.Class sweden = createClass(ontology, europe, "Sweden", "Sweden", "Bork bork bork"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        SrampOntology.Class usa = createClass(ontology, northAmerica, "USA", "USA", "Cheeseburger, cheeseburger, cheeseburger...no Pepsi, Coke"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        SrampOntology.Class mexico = createClass(ontology, northAmerica, "Mexico", "Mexico", null); //$NON-NLS-1$ //$NON-NLS-2$
+
+        world.getChildren().remove(asia);
+        world.getChildren().add(northAmerica);
+        northAmerica.getChildren().add(usa);
+        northAmerica.getChildren().add(mexico);
+        europe.getChildren().remove(germany);
+        europe.getChildren().add(sweden);
+
+        persistenceManager.updateOntology(ontology);
+
+        actual = persistenceManager.getOntology(uuid);
+        Map<String, SrampOntology.Class> all = index(actual.getRootClasses().get(0));
+        Assert.assertEquals(6, all.size());
+        Assert.assertTrue(all.containsKey("NorthAmerica")); //$NON-NLS-1$
+        Assert.assertTrue(all.containsKey("USA")); //$NON-NLS-1$
+        Assert.assertTrue(all.containsKey("Mexico")); //$NON-NLS-1$
+        Assert.assertTrue(all.containsKey("Europe")); //$NON-NLS-1$
+        Assert.assertTrue(all.containsKey("UnitedKingdom")); //$NON-NLS-1$
+        Assert.assertTrue(all.containsKey("Sweden")); //$NON-NLS-1$
+        Assert.assertFalse(all.containsKey("Germany")); //$NON-NLS-1$
+        Assert.assertFalse(all.containsKey("Asia")); //$NON-NLS-1$
+        Assert.assertFalse(all.containsKey("China")); //$NON-NLS-1$
+        Assert.assertFalse(all.containsKey("Japan")); //$NON-NLS-1$
+    }
+
+    /**
 	 * Creates a test class.
 	 * @param ontology
 	 * @param parent
@@ -264,5 +357,18 @@ public class JCROntologyPersistenceTest extends AbstractNoAuditingJCRPersistence
 		rval.setLabel(label);
 		return rval;
 	}
+
+    /**
+     * @param actualWorld
+     */
+    private Map<String, Class> index(Class actualWorld) {
+        Map<String, Class> all = new HashMap<String, Class>();
+        List<Class> children = actualWorld.getChildren();
+        for (Class class1 : children) {
+            all.put(class1.getId(), class1);
+            all.putAll(index(class1));
+        }
+        return all;
+    }
 
 }

@@ -47,6 +47,7 @@ import org.overlord.sramp.shell.commands.archive.OpenArchiveCommand;
 import org.overlord.sramp.shell.commands.archive.PackArchiveCommand;
 import org.overlord.sramp.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.shell.commands.archive.UpdateEntryArchiveCommand;
+import org.overlord.sramp.shell.commands.archive.UploadArchiveCommand;
 import org.overlord.sramp.shell.commands.audit.ShowAuditTrailCommand;
 import org.overlord.sramp.shell.commands.core.ClassificationCommand;
 import org.overlord.sramp.shell.commands.core.ConnectCommand;
@@ -63,7 +64,9 @@ import org.overlord.sramp.shell.commands.core.UpdateContentCommand;
 import org.overlord.sramp.shell.commands.core.UpdateMetaDataCommand;
 import org.overlord.sramp.shell.commands.core.UploadArtifactCommand;
 import org.overlord.sramp.shell.commands.ontology.DeleteOntologyCommand;
+import org.overlord.sramp.shell.commands.ontology.GetOntologyCommand;
 import org.overlord.sramp.shell.commands.ontology.ListOntologiesCommand;
+import org.overlord.sramp.shell.commands.ontology.UpdateOntologyCommand;
 import org.overlord.sramp.shell.commands.ontology.UploadOntologyCommand;
 
 /**
@@ -118,11 +121,14 @@ public class ShellCommandFactory {
 		registry.put(new QName("archive", "removeEntry"), RemoveEntryArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 		registry.put(new QName("archive", "listEntry"), ListEntryArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 		registry.put(new QName("archive", "pack"), PackArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("archive", "upload"), UploadArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Ontology commands
 		registry.put(new QName("ontology", "upload"), UploadOntologyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 		registry.put(new QName("ontology", "list"), ListOntologiesCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 		registry.put(new QName("ontology", "delete"), DeleteOntologyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("ontology", "get"), GetOntologyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("ontology", "update"), UpdateOntologyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 
         // Audit commands
         registry.put(new QName("audit", "showAuditTrail"), ShowAuditTrailCommand.class); //$NON-NLS-1$ //$NON-NLS-2$

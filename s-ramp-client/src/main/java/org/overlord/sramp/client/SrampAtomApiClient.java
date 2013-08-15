@@ -744,6 +744,27 @@ public class SrampAtomApiClient {
 		}
 	}
 
+    /**
+     * Uploads a new version of an ontology to the S-RAMP repository.  The ontology will be
+     * replaced with this new version.  This may fail if the new version removes classes from
+     * the ontology that are currently in-use.
+     * @param ontologyUuid
+     * @param content
+     */
+    public void updateOntology(String ontologyUuid, InputStream content) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("ontology"); //$NON-NLS-1$
+        try {
+            String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            request.body(MediaType.APPLICATION_RDF_XML_TYPE, content);
+            request.put();
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        }
+    }
+
 	/**
 	 * Gets a list of all the ontologies currently installed in the S-RAMP repository.  This
 	 * will only work if the S-RAMP repository supports the ontology collection, which is not
