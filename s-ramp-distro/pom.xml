@@ -72,7 +72,7 @@
     <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
 
     <!-- Dependency versions -->
-    <overlord-commons.version>1.0.9</overlord-commons.version>
+    <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
     <log4j.version>1.2.16</log4j.version>
     <slf4j.api.version>1.5.11</slf4j.api.version>
     <slf4j.log4j.version>1.5.11</slf4j.log4j.version>
