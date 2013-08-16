@@ -54,6 +54,12 @@
       <version>${sramp.client.version}</version>
     </dependency>
     
+    <!-- Overlord Commons Config -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-config</artifactId>
+      <version>${overlord-commons.version}</version>
+    </dependency>
     <!-- Overlord Commons UI Header -->
     <dependency>
       <groupId>org.overlord</groupId>
