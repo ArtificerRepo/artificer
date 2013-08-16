@@ -383,7 +383,8 @@ public class SrampWagon extends StreamWagon {
             Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
             try {
     			SrampArchiveEntry entry = this.archive.getEntry(artyPath);
-    			BaseArtifactType metaData = entry.getMetaData();
+    			// Re-fetch the artifact meta-data in case it changed on the server since we uploaded it.
+    			BaseArtifactType metaData = client.getArtifactMetaData(entry.getMetaData().getUuid());
     			SrampModelUtils.setCustomProperty(metaData, hashPropName, hashValue);
     			this.archive.updateEntry(entry, null);
 
