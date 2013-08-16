@@ -118,14 +118,12 @@
         <include name="**/META-INF"/>
       </dirset>
     </delete>
-    <copy file="updates/modeshape-module-${appserver.id}.xml" 
-          tofile="${s-ramp.appserver.module.path}/org/modeshape/main/module.xml" overwrite="true" />
     <xslt 
-      style="updates/xslt/patchSolr-jboss.xslt"
-      in="${s-ramp.appserver.module.path}/org/apache/solr/3.6.2/module.xml"
-      out="${s-ramp.install.dir}/_tmp_solr_module.xml" />
-    <copy file="${s-ramp.install.dir}/_tmp_solr_module.xml" tofile="${s-ramp.appserver.module.path}/org/apache/solr/3.6.2/module.xml" overwrite="true" />
-    <delete file="${s-ramp.install.dir}/_tmp_solr_module.xml" />
+      style="updates/xslt/modeshape-module-${appserver.id}.xslt"
+      in="${s-ramp.appserver.module.path}/org/modeshape/main/module.xml"
+      out="${s-ramp.install.dir}/_tmp_modeshape_module.xml" />
+    <copy file="${s-ramp.install.dir}/_tmp_modeshape_module.xml" tofile="${s-ramp.appserver.module.path}/org/modeshape/main/module.xml" overwrite="true" />
+    <delete file="${s-ramp.install.dir}/_tmp_modeshape_module.xml" />
 
     <echo>-----------------------------------</echo>
     <echo>Configuring Modeshape Service</echo>
@@ -144,6 +142,13 @@
 
   <!-- Configure JBoss EAP 6.1 -->
   <target name="config-jboss-eap-6.1" depends="config-jboss-common" if="jboss-eap-6.1">
+    <xslt 
+      style="updates/xslt/patchSolr-jboss.xslt"
+      in="${s-ramp.appserver.module.path}/org/apache/solr/3.6.2/module.xml"
+      out="${s-ramp.install.dir}/_tmp_solr_module.xml" />
+    <copy file="${s-ramp.install.dir}/_tmp_solr_module.xml" tofile="${s-ramp.appserver.module.path}/org/apache/solr/3.6.2/module.xml" overwrite="true" />
+    <delete file="${s-ramp.install.dir}/_tmp_solr_module.xml" />
+
     <copy file="updates/sramp-ds.xml" todir="${s-ramp.appserver.deploy.dir}" overwrite="true" />
   </target>
 
@@ -162,8 +167,13 @@
     <unzip src="${s-ramp.install.dir}/resteasy-jaxrs-all.zip" dest="${s-ramp.install.dir}" overwrite="false" />
     <unzip src="${s-ramp.install.dir}/resteasy-jaxrs-${s-ramp.resteasy.version}/resteasy-jboss-modules-${s-ramp.resteasy.version}.zip" 
            dest="${s-ramp.appserver.dir}/modules" overwrite="false" />
-    <copy file="updates/resteasy-jaxrs-module-jboss-as-7.1.1.Final.xml" 
-          tofile="${s-ramp.appserver.dir}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml" />
+    <xslt 
+      style="updates/xslt/resteasy-jaxrs-module-jboss-as-7.1.1.Final.xslt"
+      in="${s-ramp.appserver.dir}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml"
+      out="${s-ramp.install.dir}/_tmp_module_re_jaxrs.xml" />
+    <copy file="${s-ramp.install.dir}/_tmp_module_re_jaxrs.xml" 
+      tofile="${s-ramp.appserver.dir}/modules/org/jboss/resteasy/resteasy-jaxrs/main/module.xml" overwrite="true" />
+    <delete file="${s-ramp.install.dir}/_tmp_module_re_jaxrs.xml" />
     <echo>--------------------</echo>
     <echo>Configuring RESTEasy</echo>
     <echo>--------------------</echo>
