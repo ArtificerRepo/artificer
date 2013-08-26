@@ -374,6 +374,7 @@
     <module>s-ramp-atom</module>
     <module>s-ramp-client</module>
     <module>s-ramp-common</module>
+    <module>s-ramp-distro</module>
     <module>s-ramp-installer</module>
     <module>s-ramp-integration-java</module>
     <module>s-ramp-integration-kie</module>
@@ -384,6 +385,7 @@
     <module>s-ramp-server</module>
     <module>s-ramp-shell</module>
     <module>s-ramp-shell-api</module>
+    <module>s-ramp-ui</module>
     <module>s-ramp-wagon</module>
   </modules>
 </project>

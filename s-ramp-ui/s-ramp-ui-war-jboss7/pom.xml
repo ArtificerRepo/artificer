@@ -37,7 +37,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
-          <warName>s-ramp-ui</warName>
+          <warName>s-ramp-ui-jboss7</warName>
           <overlays>
             <overlay>
               <groupId>${project.groupId}</groupId>

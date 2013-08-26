@@ -49,6 +49,12 @@
       <type>war</type>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war-eap61</artifactId>
+      <type>war</type>
+      <version>${project.version}</version>
+    </dependency>
     
     <!-- S-RAMP Sources -->
     <dependency>
