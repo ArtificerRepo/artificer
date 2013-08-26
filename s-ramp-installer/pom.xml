@@ -41,7 +41,13 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-jboss7</artifactId>
-      <version>0.3.0.Final</version>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war-eap61</artifactId>
+      <version>${project.version}</version>
       <type>war</type>
     </dependency>
   </dependencies>
@@ -86,7 +92,7 @@
                     <!-- S-RAMP WARs -->
                     <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server.war.path}" />
                     <property name="s-ramp.s-ramp-ui.war.path"
-                      value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-jboss7.war.path}" />
+                      value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap61.war.path}" />
 
                     <!-- ModeShape Distribution -->
                     <property name="s-ramp.modeshape-distribution.zip.path"
