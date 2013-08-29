@@ -168,13 +168,33 @@ public class ArtifactType {
     }
 
     /**
-     * Figures out the artifact type (enum) from the given S-RAMP artifact type string.
-     * @param artifactType
+     * Determines the ArtifactType from the model and type. If the model is "ext"
+     * (extended) then the artifactType can be either ExtendedArtifactType or
+     * ExtendedDocument. All extended artifacts that have contend inherit from
+     * ExtendedDocument. 
+     * 
+     * @param model - the model, for example core, xsd, wsdl, ext, etc.
+     * @param type - the type, for example XmlDocument, WsdlDocument
+     * @param isDocument - this flag is taken into account ONLY when the model is 'ext',
+     * in this case the 'type' can be ExtendedDocument,
+     * ExtendedArtifactType, or a user defined value (for example 'SwitchYardApplication').
+     * The flag 'isDocument' is required only if the type is user defined so it can 
+     * distinguish between an artifact with (true) or without (false) content. 
+     * If this is not known at the time of calling a value of null can be given which will 
+     * default the ArtifactType of ExtendedArtifactType.
+     * 
+     * @return ArtifactType
      */
-    public static ArtifactType valueOf(String model, String type) {
+    public static ArtifactType valueOf(String model, String type, Boolean isDocument) {
         ArtifactType artifactType = null;
         if ("ext".equals(model)) { //$NON-NLS-1$
-            ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.ExtendedArtifactType;
+        	ArtifactTypeEnum artifactTypeEnum = null;
+            if  ( type.equals(ArtifactTypeEnum.ExtendedDocument.getType()) || 
+            		( !type.equals(ArtifactTypeEnum.ExtendedArtifactType.getType()) && isDocument!=null && isDocument ) ) {
+            	artifactTypeEnum = ArtifactTypeEnum.ExtendedDocument;
+            } else {
+        		artifactTypeEnum = ArtifactTypeEnum.ExtendedArtifactType;
+            }
             artifactType = new ArtifactType(artifactTypeEnum, null);
             artifactType.setExtendedType(type);
         } else {
