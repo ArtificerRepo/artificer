@@ -29,12 +29,9 @@ import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
@@ -383,14 +380,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
                 throw new ArtifactNotFoundException(uuid);
             }
 
-            // Remove the core s-ramp mixin and replace it with the sramp:deletedArtifact mixin
-            String jcrMixinName = artifactType.getArtifactType().getApiType().value();
-            jcrMixinName = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrMixinName);
-            artifactNode.addMixin("sramp:deletedArtifact"); //$NON-NLS-1$
-            artifactNode.removeMixin(jcrMixinName);
-
-            markDerivedArtifactsDeleted(artifactNode);
-
             // Move the node to the trash.
             String srcPath = artifactNode.getPath();
             String trashPath = MapToJCRPath.getTrashPath(srcPath);
@@ -413,38 +402,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			JCRRepositoryFactory.logoutQuietly(session);
 		}
 	}
-
-	/**
-	 * Iterates over all of the derived artifacts for the given artifact and marks them as deleted.  It
-	 * does this by removing their primary sramp JCR node mixin and replacing it with sramp:deletedArtifact.
-     * @param artifactNode
-	 * @throws RepositoryException
-     */
-    private void markDerivedArtifactsDeleted(Node artifactNode) throws RepositoryException {
-        NodeIterator nodes = artifactNode.getNodes();
-        while (nodes.hasNext()) {
-            Node childNode = nodes.nextNode();
-            if (childNode.isNodeType("sramp:baseArtifactType")) { //$NON-NLS-1$
-                markNodeDeleted(childNode);
-            }
-        }
-    }
-
-    /**
-     * Marks a derived artifact node as deleted by stripping it of its sramp mixin and replacing it
-     * with sramp:deletedArtifact.
-     * @param childNode
-     * @throws RepositoryException
-     */
-    private void markNodeDeleted(Node childNode) throws RepositoryException {
-        childNode.addMixin("sramp:deletedArtifact"); //$NON-NLS-1$
-        NodeType[] mixinNodeTypes = childNode.getMixinNodeTypes();
-        for (NodeType nodeType : mixinNodeTypes) {
-            if (nodeType.isNodeType("sramp:baseArtifactType")) { //$NON-NLS-1$
-                childNode.removeMixin(nodeType.getName());
-            }
-        }
-    }
 
     /**
 	 * @see org.overlord.sramp.common.repository.PersistenceManager#persistOntology(org.overlord.sramp.common.ontology.SrampOntology)
