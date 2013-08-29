@@ -44,8 +44,6 @@ public class AuditingClientTest extends AbstractAuditingClientTest {
         // Add a second artifact.
         addXmlDoc();
         String artifactUuid = doc.getUuid();
-        // Wait for a bit to let the async audit events persist
-        Thread.sleep(1000);
 
         // Checking auditing - should be 1 event (artifact:add)
         SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$

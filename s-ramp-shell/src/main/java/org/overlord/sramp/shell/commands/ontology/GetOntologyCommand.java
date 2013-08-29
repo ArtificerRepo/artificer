@@ -15,8 +15,11 @@
  */
 package org.overlord.sramp.shell.commands.ontology;
 
+import java.io.File;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.client.SrampAtomApiClient;
@@ -24,18 +27,20 @@ import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.i18n.Messages;
+import org.overlord.sramp.shell.util.FileNameCompleter;
+import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
- * Deletes an ontology.
+ * Gets an ontology (and saves it to a local file).
  *
  * @author eric.wittmann@redhat.com
  */
-public class DeleteOntologyCommand extends BuiltInShellCommand {
+public class GetOntologyCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
 	 */
-	public DeleteOntologyCommand() {
+	public GetOntologyCommand() {
 	}
 
 	/**
@@ -44,7 +49,8 @@ public class DeleteOntologyCommand extends BuiltInShellCommand {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute() throws Exception {
-		String ontologyIdArg = this.requiredArgument(0, Messages.i18n.format("DeleteOntology.InvalidArgMsg.OntologyId")); //$NON-NLS-1$
+		String ontologyIdArg = this.requiredArgument(0, Messages.i18n.format("GetOntology.InvalidArgMsg.OntologyId")); //$NON-NLS-1$
+        String filePathArg = this.optionalArgument(1);
 
 		QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
 		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -57,6 +63,20 @@ public class DeleteOntologyCommand extends BuiltInShellCommand {
 		if (!ontologyIdArg.contains(":") || ontologyIdArg.endsWith(":")) { //$NON-NLS-1$ //$NON-NLS-2$
             throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidOntologyIdFormat")); //$NON-NLS-1$
 		}
+
+		File filePath = null;
+		if (filePathArg != null) {
+		    filePath = new File(filePathArg);
+		    if (filePath.exists()) {
+		        print(Messages.i18n.format("GetOntology.PathExists", filePath)); //$NON-NLS-1$
+		        return false;
+		    }
+		    if (filePath.getParentFile() != null && filePath.getParentFile().isFile()) {
+                print(Messages.i18n.format("GetOntology.InvalidOutputPath", filePath)); //$NON-NLS-1$
+                return false;
+		    }
+		}
+
 		String ontologyUuid = null;
 		int colonIdx = ontologyIdArg.indexOf(':');
 		String idType = ontologyIdArg.substring(0, colonIdx);
@@ -79,10 +99,15 @@ public class DeleteOntologyCommand extends BuiltInShellCommand {
 		}
 
 		try {
-			client.deleteOntology(ontologyUuid);
-			print(Messages.i18n.format("DeleteOntology.Deleted")); //$NON-NLS-1$
+			RDF ontology = client.getOntology(ontologyUuid);
+
+			if (filePathArg != null) {
+			    saveOntologyToFile(ontology, filePath);
+			} else {
+			    printOntology(ontology);
+			}
 		} catch (Exception e) {
-			print(Messages.i18n.format("DeleteOntology.DeleteFailed")); //$NON-NLS-1$
+			print(Messages.i18n.format("GetOntology.GetFailed")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
             return false;
 		}
@@ -90,6 +115,30 @@ public class DeleteOntologyCommand extends BuiltInShellCommand {
 	}
 
 	/**
+	 * Outputs an RDF to stdout.
+     * @param ontology
+     */
+    private void printOntology(RDF ontology) throws Exception {
+        JAXBContext jaxbContext = JAXBContext.newInstance(RDF.class);
+        Marshaller marshaller = jaxbContext.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        marshaller.marshal(ontology, System.out);
+    }
+
+    /**
+     * Outputs an RDF to a file.
+     * @param ontology
+     * @param filePath
+     */
+    private void saveOntologyToFile(RDF ontology, File filePath) throws Exception {
+        JAXBContext jaxbContext = JAXBContext.newInstance(RDF.class);
+        Marshaller marshaller = jaxbContext.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        marshaller.marshal(ontology, filePath);
+        print(Messages.i18n.format("GetOntology.OntologySaved", filePath.getCanonicalPath())); //$NON-NLS-1$
+    }
+
+    /**
 	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
 	 */
 	@Override
@@ -110,6 +159,11 @@ public class DeleteOntologyCommand extends BuiltInShellCommand {
 				}
 			}
 			return 0;
+        } else if (getArguments().size() == 1) {
+            if (lastArgument == null)
+                lastArgument = ""; //$NON-NLS-1$
+            FileNameCompleter delegate = new FileNameCompleter();
+            return delegate.complete(lastArgument, lastArgument.length(), candidates);
 		} else {
 			return -1;
 		}

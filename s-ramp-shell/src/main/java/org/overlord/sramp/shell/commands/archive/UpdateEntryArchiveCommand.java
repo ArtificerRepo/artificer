@@ -48,7 +48,7 @@ public class UpdateEntryArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg.EntryPath")); //$NON-NLS-1$
 		String subCommandArg = requiredArgument(1, Messages.i18n.format("UpdateEntry.InvalidArgMsg.SubCommand")); //$NON-NLS-1$
 
@@ -57,6 +57,7 @@ public class UpdateEntryArchiveCommand extends BuiltInShellCommand {
 
 		if (archive == null) {
 			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+            return false;
 		} else {
 			if (!archive.containsEntry(archivePathArg)) {
 				throw new InvalidCommandArgumentException(0, Messages.i18n.format("UpdateEntry.EntryNotFound", archivePathArg)); //$NON-NLS-1$
@@ -72,6 +73,7 @@ public class UpdateEntryArchiveCommand extends BuiltInShellCommand {
 				executeSetRelationship(archive, archivePathArg, getContext());
 			}
 		}
+        return true;
 	}
 
 	/**

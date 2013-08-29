@@ -180,7 +180,7 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 			}
 			throw error;
 		}
-		if (response.getStatus() == 404) {
+		if (response.getStatus() == 404 || response.getStatus() == 415) {
 			SrampAtomException error = new SrampAtomException(Messages.i18n.format("ENDPOINT_NOT_FOUND")); //$NON-NLS-1$
 			throw error;
 		}

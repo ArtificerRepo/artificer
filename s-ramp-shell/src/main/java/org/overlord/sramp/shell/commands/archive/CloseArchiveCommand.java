@@ -38,15 +38,17 @@ public class CloseArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampArchive archive = (SrampArchive) getContext().removeVariable(varName);
 
 		if (archive == null) {
 			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+			return false;
 		} else {
 			print(Messages.i18n.format("CloseArchive.Closed")); //$NON-NLS-1$
 		}
+        return true;
 	}
 
 }

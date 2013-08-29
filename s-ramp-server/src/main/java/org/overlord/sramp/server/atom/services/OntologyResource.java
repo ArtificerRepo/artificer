@@ -33,7 +33,6 @@ import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.jboss.resteasy.plugins.providers.atom.Source;
 import org.overlord.sramp.atom.MediaType;
-import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.mappers.OntologyToRdfMapper;
 import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
@@ -118,13 +117,12 @@ public class OntologyResource extends AbstractResource {
      */
     @PUT
     @Path("ontology/{uuid}")
-    @Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public void update(@PathParam("uuid") String uuid, Entry entry) throws SrampAtomException {
+    @Consumes(MediaType.APPLICATION_RDF_XML)
+    public void update(@PathParam("uuid") String uuid, RDF rdf) throws SrampAtomException {
     	try {
-    		RDF rdf = SrampAtomUtils.unwrap(entry, RDF.class);
 			SrampOntology ontology = new SrampOntology();
-			ontology.setUuid(uuid);
 			rdf2o.map(rdf, ontology);
+            ontology.setUuid(uuid);
 
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateOntology(ontology);

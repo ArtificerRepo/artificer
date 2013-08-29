@@ -50,9 +50,10 @@ public class ExitCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		print(Messages.i18n.format("GOOD_BYE")); //$NON-NLS-1$
 		System.exit(0);
+        return true;
 	}
 
 }

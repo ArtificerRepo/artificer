@@ -49,7 +49,7 @@ public class GetMetaDataCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String artifactIdArg = this.requiredArgument(0, Messages.i18n.format("InvalidArgMsg.ArtifactId")); //$NON-NLS-1$
 		String outputFilePathArg = this.optionalArgument(1);
 		if (!artifactIdArg.contains(":")) { //$NON-NLS-1$
@@ -60,7 +60,7 @@ public class GetMetaDataCommand extends BuiltInShellCommand {
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
 		BaseArtifactType artifact = null;
@@ -75,9 +75,8 @@ public class GetMetaDataCommand extends BuiltInShellCommand {
 			String artifactUUID = summary.getUuid();
 			artifact = client.getArtifactMetaData(summary.getType(), artifactUUID);
 		} else if ("uuid".equals(idType)) { //$NON-NLS-1$
-//			String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
-//			artifact = getArtifactMetaDataByUUID(client, artifactUUID);
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("UuidNotImplemented")); //$NON-NLS-1$
+			String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
+            artifact = client.getArtifactMetaData(artifactUUID);
 		} else {
             throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
 		}
@@ -104,9 +103,10 @@ public class GetMetaDataCommand extends BuiltInShellCommand {
 			SrampArchiveJaxbUtils.writeMetaData(outFile, artifact, false);
 			print(Messages.i18n.format("GetMetaData.SavedTo", outFile.getCanonicalPath())); //$NON-NLS-1$
 		}
+        return true;
 	}
 
-	/**
+    /**
 	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
 	 */
 	@Override

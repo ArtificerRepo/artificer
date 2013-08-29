@@ -7,7 +7,7 @@
   <xsl:output method="xml" encoding="UTF-8" indent="yes" xalan:indent-amount="2" />
 
   <xsl:template match="as:server/as:extensions">
-      <extensions>
+      <extensions xmlns="urn:jboss:domain:1.2">
         <xsl:apply-templates select="@* | *" />
         <extension module="org.modeshape"/>
       </extensions>

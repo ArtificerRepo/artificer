@@ -45,7 +45,7 @@ public class ShowAuditTrailCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
         String artifactIdArg = this.requiredArgument(0, Messages.i18n.format("AuditTrail.InvalidArgMsg.ArtifactId")); //$NON-NLS-1$
         if (!artifactIdArg.contains(":")) { //$NON-NLS-1$
             throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
@@ -55,7 +55,7 @@ public class ShowAuditTrailCommand extends BuiltInShellCommand {
         SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
         if (client == null) {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-            return;
+            return false;
         }
 
         String artifactUuid = null;
@@ -69,9 +69,7 @@ public class ShowAuditTrailCommand extends BuiltInShellCommand {
             ArtifactSummary summary = rset.get(feedIdx);
             artifactUuid = summary.getUuid();
         } else if ("uuid".equals(idType)) { //$NON-NLS-1$
-//          String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
-//          artifact = getArtifactMetaDataByUUID(client, artifactUUID);
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("UuidNotImplemented")); //$NON-NLS-1$
+            artifactUuid = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
         } else {
             throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidIdFormat")); //$NON-NLS-1$
         }
@@ -86,6 +84,7 @@ public class ShowAuditTrailCommand extends BuiltInShellCommand {
         for (AuditEntrySummary auditEntrySummary : auditTrail) {
             print("  %1$3d  %2$s", idx++, auditEntrySummary.toString()); //$NON-NLS-1$
         }
+        return true;
 	}
 
     /**

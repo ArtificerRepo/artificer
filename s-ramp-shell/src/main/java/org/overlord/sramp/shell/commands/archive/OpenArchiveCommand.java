@@ -16,6 +16,7 @@
 package org.overlord.sramp.shell.commands.archive;
 
 import java.io.File;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -23,6 +24,7 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.shell.AbstractShellContextVariableLifecycleHandler;
 import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
+import org.overlord.sramp.shell.util.FileNameCompleter;
 
 /**
  * Opens an existing S-RAMP batch archive.
@@ -41,7 +43,7 @@ public class OpenArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String pathToArchive = requiredArgument(0, Messages.i18n.format("OpenArchive.InvalidArgMsg.PathToArchive")); //$NON-NLS-1$
 
 		SrampArchive archive = null;
@@ -49,7 +51,7 @@ public class OpenArchiveCommand extends BuiltInShellCommand {
 		archive = (SrampArchive) getContext().getVariable(varName);
 		if (archive != null) {
 			print(Messages.i18n.format("OpenArchive.AlreadyOpen")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
 		File archiveFile = new File(pathToArchive);
@@ -66,6 +68,21 @@ public class OpenArchiveCommand extends BuiltInShellCommand {
 			}
 		});
 		print(Messages.i18n.format("OpenArchive.Opened", archiveFile.getCanonicalPath())); //$NON-NLS-1$
+        return true;
 	}
+
+    /**
+     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+     */
+    @Override
+    public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+        if (getArguments().isEmpty()) {
+            if (lastArgument == null)
+                lastArgument = ""; //$NON-NLS-1$
+            FileNameCompleter delegate = new FileNameCompleter();
+            return delegate.complete(lastArgument, lastArgument.length(), candidates);
+        }
+        return -1;
+    }
 
 }

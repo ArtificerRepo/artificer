@@ -39,14 +39,14 @@ public class NewArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		SrampArchive archive = null;
 		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive != null) {
 			print(Messages.i18n.format("NewArchive.AlreadyOpen")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
 		archive = new SrampArchive();
@@ -61,6 +61,7 @@ public class NewArchiveCommand extends BuiltInShellCommand {
 			}
 		});
 		print(Messages.i18n.format("NewArchive.Opened")); //$NON-NLS-1$
+        return true;
 	}
 
 }

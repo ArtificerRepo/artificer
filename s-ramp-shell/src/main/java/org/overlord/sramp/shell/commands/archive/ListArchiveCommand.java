@@ -41,28 +41,29 @@ public class ListArchiveCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
 		if (archive == null) {
 			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
-		} else {
-			Collection<SrampArchiveEntry> entries = archive.getEntries();
-			print(Messages.i18n.format("ENTRY_PATH")); //$NON-NLS-1$
-			print("  ----------"); //$NON-NLS-1$
-			for (SrampArchiveEntry entry : entries) {
-				String modifier = null;
-				if (entry.hasContent()) {
-					modifier = "  C "; //$NON-NLS-1$
-				} else {
-					modifier = "  E "; //$NON-NLS-1$
-				}
-				print(modifier + entry.getPath());
-			}
-			print("  ----------"); //$NON-NLS-1$
-            print(Messages.i18n.format("ENTRY_LIST_SUMMARY", entries.size())); //$NON-NLS-1$
+	        return false;
 		}
+		Collection<SrampArchiveEntry> entries = archive.getEntries();
+		print(Messages.i18n.format("ENTRY_PATH")); //$NON-NLS-1$
+		print("  ----------"); //$NON-NLS-1$
+		for (SrampArchiveEntry entry : entries) {
+			String modifier = null;
+			if (entry.hasContent()) {
+				modifier = "  C "; //$NON-NLS-1$
+			} else {
+				modifier = "  E "; //$NON-NLS-1$
+			}
+			print(modifier + entry.getPath());
+		}
+		print("  ----------"); //$NON-NLS-1$
+        print(Messages.i18n.format("ENTRY_LIST_SUMMARY", entries.size())); //$NON-NLS-1$
+        return true;
 	}
 
 }

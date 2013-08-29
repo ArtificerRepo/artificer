@@ -46,7 +46,7 @@ public interface ShellCommand {
 	/**
 	 * Called to execute the command.
 	 */
-	public void execute() throws Exception;
+	public boolean execute() throws Exception;
 
 	/**
 	 * Prints the usage help for this command.

@@ -55,7 +55,7 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String filePathArg = this.requiredArgument(0, Messages.i18n.format("Upload.InvalidArgMsg.LocalFile")); //$NON-NLS-1$
 		String artifactTypeArg = this.optionalArgument(1);
 
@@ -63,7 +63,7 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 		InputStream content = null;
         ZipToSrampArchive expander = null;
@@ -101,7 +101,9 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
 			print(Messages.i18n.format("Upload.Failure")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
 			IOUtils.closeQuietly(content);
+            return false;
 		}
+        return true;
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common.audit;
+package org.overlord.sramp.common.ontology;
+
+import org.overlord.sramp.common.SrampUserException;
 
 /**
- * Some basic built-in audit item types.
+ * Exception thrown when the user attempts to update an ontology but something went
+ * wrong (the user did something wrong).
+ *
  * @author eric.wittmann@redhat.com
  */
-public final class AuditItemTypes {
+public class OntologyUpdateException extends SrampUserException {
 
-    public static final String PROPERTY_ADDED    = "property:added"; //$NON-NLS-1$
-    public static final String PROPERTY_CHANGED  = "property:changed"; //$NON-NLS-1$
-    public static final String PROPERTY_REMOVED  = "property:removed"; //$NON-NLS-1$
-    public static final String CLASSIFIERS_ADDED    = "classifier:added"; //$NON-NLS-1$
-    public static final String CLASSIFIERS_REMOVED  = "classifier:removed"; //$NON-NLS-1$
+    private static final long serialVersionUID = OntologyUpdateException.class.hashCode();
+
+    /**
+     * Constructor.
+     * @param message
+     */
+    public OntologyUpdateException(String message) {
+        super(message);
+    }
 
 }

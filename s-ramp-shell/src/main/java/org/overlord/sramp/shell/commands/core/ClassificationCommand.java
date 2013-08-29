@@ -52,7 +52,7 @@ public class ClassificationCommand extends BuiltInShellCommand {
 	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
 	 */
 	@Override
-	public void execute() throws Exception {
+	public boolean execute() throws Exception {
 		String subcmdArg = requiredArgument(0, Messages.i18n.format("Classification.InvalidArgMsg")); //$NON-NLS-1$
 		String classificationArg = null;
 		if ("add".equals(subcmdArg) || "remove".equals(subcmdArg)) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -63,7 +63,7 @@ public class ClassificationCommand extends BuiltInShellCommand {
 		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		if (artifact == null) {
 			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
-			return;
+			return false;
 		}
 
 		try {
@@ -75,6 +75,7 @@ public class ClassificationCommand extends BuiltInShellCommand {
 					print(Messages.i18n.format("Classification.ClassificationRemoved"), classificationArg); //$NON-NLS-1$
 				} else {
 					print(Messages.i18n.format("Classification.ClassificationDoesNotExist"), classificationArg); //$NON-NLS-1$
+					return false;
 				}
 			} else if ("clear".equals(subcmdArg)) { //$NON-NLS-1$
 				if (!artifact.getClassifiedBy().isEmpty()) {
@@ -82,6 +83,7 @@ public class ClassificationCommand extends BuiltInShellCommand {
 					print(Messages.i18n.format("Classification.AllRemoved")); //$NON-NLS-1$
 				} else {
 					print(Messages.i18n.format("Classification.NoneExist")); //$NON-NLS-1$
+					return false;
 				}
 			} else {
 				throw new InvalidCommandArgumentException(0, Messages.i18n.format("Classification.InvalidSubCommand")); //$NON-NLS-1$
@@ -91,7 +93,10 @@ public class ClassificationCommand extends BuiltInShellCommand {
 		} catch (Exception e) {
 			print(Messages.i18n.format("Classification.ModificationFailed")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
+			return false;
 		}
+
+		return true;
 	}
 
 	/**

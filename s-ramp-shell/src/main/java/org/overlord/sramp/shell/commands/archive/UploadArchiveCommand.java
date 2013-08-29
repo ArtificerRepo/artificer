@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.shell.commands.ontology;
-
-import java.util.List;
+package org.overlord.sramp.shell.commands.archive;
 
 import javax.xml.namespace.QName;
 
+import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
 
 /**
- * Lists all ontologies in the S-RAMP repository.
+ * Uploads an s-ramp archive to the repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ListOntologiesCommand extends BuiltInShellCommand {
+public class UploadArchiveCommand extends BuiltInShellCommand {
 
 	/**
 	 * Constructor.
 	 */
-	public ListOntologiesCommand() {
+	public UploadArchiveCommand() {
 	}
 
 	/**
@@ -43,29 +41,29 @@ public class ListOntologiesCommand extends BuiltInShellCommand {
 	@Override
 	public boolean execute() throws Exception {
 		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
 			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return false;
 		}
-		try {
-			List<OntologySummary> ontologies = client.getOntologies();
-			print(Messages.i18n.format("ListOntologies.Summary", ontologies.size())); //$NON-NLS-1$
-			print("  Idx  " + Messages.i18n.format("ListOntologies.Base")); //$NON-NLS-1$ //$NON-NLS-2$
-			print("  ---  ----"); //$NON-NLS-1$
-			int idx = 1;
-			for (OntologySummary ontology : ontologies) {
-				String base = ontology.getBase();
-				print("  %1$3d  %2$s", idx++, base); //$NON-NLS-1$
-			}
+        QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
+        SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
+        if (archive == null) {
+            print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+            return false;
+        }
 
-			getContext().setVariable(feedVarName, ontologies);
+		try {
+	        client.uploadBatch(archive);
+	        // Success!  Close the archive.
+	        getContext().removeVariable(varName);
+	        print(Messages.i18n.format("UploadArchive.Success")); //$NON-NLS-1$
 		} catch (Exception e) {
-			print(Messages.i18n.format("ListOntologies.Failed")); //$NON-NLS-1$
+			print(Messages.i18n.format("UploadArchive.Failure")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
             return false;
 		}
         return true;
 	}
+
 }

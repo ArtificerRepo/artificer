@@ -15,17 +15,30 @@
  */
 package org.overlord.sramp.repository.jcr.mapper;
 
+import java.util.List;
+
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.ontology.OntologyUpdateException;
 import org.overlord.sramp.common.ontology.SrampOntology;
+import org.overlord.sramp.common.ontology.SrampOntology.Class;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 /**
  * Class that knows how to write an ontology to the given JCR node.
  *
  * @author eric.wittmann@redhat.com
  */
-public class OntologyToJCRNode {
+public final class OntologyToJCRNode {
+
+    /**
+     * Constructor.
+     */
+    public OntologyToJCRNode() {
+    }
 
 	/**
 	 * Write the given ontology to the given JCR node.
@@ -62,5 +75,84 @@ public class OntologyToJCRNode {
 			addClass(classNode, childClass);
 		}
 	}
+
+    /**
+     * Updates the given existing ontology in JCR.  This should create any missing nodes
+     * as well as delete nodes that are not in the ontology.
+     * @param ontology
+     * @param ontologyJcrNode
+     * @throws RepositoryException
+     * @throws SrampException
+     */
+    public void update(SrampOntology ontology, Node ontologyJcrNode) throws RepositoryException, SrampException {
+        String base = ontologyJcrNode.getProperty("sramp:base").getString(); //$NON-NLS-1$
+        if (!base.equals(ontology.getBase())) {
+            throw new OntologyUpdateException(Messages.i18n.format("CANNOT_CHANGE_ONTOLOGY_BASE")); //$NON-NLS-1$
+        }
+
+        ontologyJcrNode.setProperty("sramp:label", ontology.getLabel()); //$NON-NLS-1$
+        ontologyJcrNode.setProperty("sramp:comment", ontology.getComment()); //$NON-NLS-1$
+        ontologyJcrNode.setProperty("sramp:id", ontology.getId()); //$NON-NLS-1$
+
+        // Check for deleted root classes first
+        NodeIterator childNodes = ontologyJcrNode.getNodes();
+        while (childNodes.hasNext()) {
+            Node childNode = childNodes.nextNode();
+            String childNodeId = childNode.getProperty("sramp:id").getString(); //$NON-NLS-1$
+            if (!hasClass(ontology.getRootClasses(), childNodeId)) {
+                childNode.remove();
+            }
+        }
+
+        // Now add/update any root classes
+        for (SrampOntology.Class sclass : ontology.getRootClasses()) {
+            addOrUpdateClass(ontologyJcrNode, sclass);
+        }
+
+    }
+
+    /**
+     * Either adds a new node for the given class or else updates an existing one.  This is
+     * determined by checking the parent node for a child node with the ID of the class.
+     * @param parentNode
+     * @param sclass
+     * @throws RepositoryException
+     */
+    private void addOrUpdateClass(Node parentNode, Class sclass) throws RepositoryException {
+        if (parentNode.hasNode(sclass.getId())) {
+            Node classNode = parentNode.getNode(sclass.getId());
+            classNode.setProperty("sramp:label", sclass.getLabel()); //$NON-NLS-1$
+            classNode.setProperty("sramp:comment", sclass.getComment()); //$NON-NLS-1$
+            // Check for deleted classes first
+            NodeIterator childNodes = classNode.getNodes();
+            while (childNodes.hasNext()) {
+                Node childNode = childNodes.nextNode();
+                String childNodeId = childNode.getProperty("sramp:id").getString(); //$NON-NLS-1$
+                if (!hasClass(sclass.getChildren(), childNodeId)) {
+                    childNode.remove();
+                }
+            }
+            // Now add/update any classes that are in common
+            for (SrampOntology.Class childClass : sclass.getChildren()) {
+                addOrUpdateClass(classNode, childClass);
+            }
+        } else {
+            addClass(parentNode, sclass);
+        }
+    }
+
+    /**
+     * Returns true if given list of classes contains a class with the given ID.
+     * @param sclass
+     * @param classId
+     */
+    private boolean hasClass(List<Class> classes, String classId) {
+        for (Class childClass : classes) {
+            if (childClass.getId().equals(classId)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

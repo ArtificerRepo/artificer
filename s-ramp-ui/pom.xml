@@ -1,9 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>s-ramp</artifactId>
+    <groupId>org.overlord.sramp</groupId>
+    <version>0.4.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-  <groupId>org.overlord.sramp</groupId>
   <artifactId>s-ramp-ui</artifactId>
-  <version>0.4.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
   <name>S-RAMP UI</name>
@@ -34,8 +38,6 @@
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
-    <!-- S-RAMP version -->
-    <sramp.client.version>0.4.0-SNAPSHOT</sramp.client.version>
     <srampui.build.date>${maven.build.timestamp}</srampui.build.date>
 
     <!-- Maven plugin versions -->
@@ -54,7 +56,7 @@
     <maven.clean.plugin.version>2.4.1</maven.clean.plugin.version>
     
     <!-- Third party libraries -->
-    <overlord-commons.version>1.0.9</overlord-commons.version>
+    <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
     <commons.io.version>2.4</commons.io.version>
     <commons.lang3.version>3.1</commons.lang3.version>
     <commons.config.version>1.8</commons.config.version>
@@ -82,6 +84,7 @@
     <module>s-ramp-ui-war</module>
     <module>s-ramp-ui-war-jboss7</module>
     <module>s-ramp-ui-widgets</module>
+    <module>s-ramp-ui-war-eap61</module>
   </modules>
 
   <scm>
