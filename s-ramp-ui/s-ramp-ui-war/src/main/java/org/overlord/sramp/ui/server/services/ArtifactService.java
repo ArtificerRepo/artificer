@@ -162,7 +162,7 @@ public class ArtifactService implements IArtifactService {
     @Override
     public void update(ArtifactBean bean) throws SrampUiException {
         try {
-            ArtifactType artifactType = ArtifactType.valueOf(bean.getModel(), bean.getRawType());
+            ArtifactType artifactType = ArtifactType.valueOf(bean.getModel(), bean.getRawType(), null);
             // Grab the latest from the server
             BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(artifactType, bean.getUuid());
             // Update it with new data from the bean
@@ -192,7 +192,7 @@ public class ArtifactService implements IArtifactService {
     @Override
     public void delete(ArtifactBean bean) throws SrampUiException {
         try {
-            ArtifactType artifactType = ArtifactType.valueOf(bean.getModel(), bean.getRawType());
+            ArtifactType artifactType = ArtifactType.valueOf(bean.getModel(), bean.getRawType(), null);
             clientAccessor.getClient().deleteArtifact(bean.getUuid(), artifactType);
         } catch (SrampClientException e) {
             throw new SrampUiException(e.getMessage());
