@@ -110,7 +110,7 @@ public class ArtifactResource extends AbstractResource {
         throws SrampAtomException {
         try {
             String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
-            ArtifactType artifactType = ArtifactType.valueOf(model, type);
+            ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
             if (artifactType.getArtifactType().isDerived()) {
                 throw new DerivedArtifactCreateException(artifactType.getArtifactType());
             }
@@ -152,12 +152,7 @@ public class ArtifactResource extends AbstractResource {
 		throws SrampAtomException {
 		try {
 			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
-			ArtifactType artifactType = ArtifactType.valueOf(model, type);
-			// Switch from extended artifact type to extended document if appropriate.
-			if (artifactType.isExtendedType()) {
-			    artifactType = ArtifactType.valueOf(BaseArtifactEnum.EXTENDED_DOCUMENT);
-			    artifactType.setExtendedType(type);
-			}
+			ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
 			if (artifactType.getArtifactType().isDerived()) {
 				throw new DerivedArtifactCreateException(artifactType.getArtifactType());
 			}
@@ -219,7 +214,7 @@ public class ArtifactResource extends AbstractResource {
 		InputStream contentStream = null;
 		try {
 			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
-			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+			ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
 			if (artifactType.getArtifactType().isDerived()) {
 				throw new DerivedArtifactCreateException(artifactType.getArtifactType());
 			}
@@ -285,7 +280,7 @@ public class ArtifactResource extends AbstractResource {
 	public void updateMetaData(@PathParam("model") String model, @PathParam("type") String type,
 	        @PathParam("uuid") String uuid, Entry atomEntry) throws SrampAtomException {
 		try {
-			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+			ArtifactType artifactType = ArtifactType.valueOf(model, type, null);
 			if (artifactType.isExtendedType()) {
 			    artifactType = SrampAtomUtils.getArtifactType(atomEntry);
 			}
@@ -314,12 +309,9 @@ public class ArtifactResource extends AbstractResource {
 	        throws SrampAtomException {
 		InputStream is = ensureSupportsMark(content);
 		try {
-	        ArtifactType artifactType = ArtifactType.valueOf(model, type);
+	        ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
 	        if (artifactType.isDerived()) {
 	            throw new DerivedArtifactCreateException(artifactType.getArtifactType());
-	        }
-	        if (artifactType.isExtendedType()) {
-	            artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
 	        }
 	        String mimeType = MimeTypes.determineMimeType(fileName, is, artifactType);
 	        artifactType.setMimeType(mimeType);
@@ -353,7 +345,7 @@ public class ArtifactResource extends AbstractResource {
 	        @PathParam("type") String type, @PathParam("uuid") String uuid) throws SrampAtomException {
 		try {
 			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
-			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+			ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
 			// Get the artifact by UUID
@@ -384,10 +376,7 @@ public class ArtifactResource extends AbstractResource {
 	public Response getContent(@PathParam("model") String model, @PathParam("type") String type,
 	        @PathParam("uuid") String uuid) throws SrampAtomException {
 		try {
-			ArtifactType artifactType = ArtifactType.valueOf(model, type);
-            if (artifactType.isExtendedType()) {
-                artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
-            }
+			ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			BaseArtifactType baseArtifact = persistenceManager.getArtifact(uuid, artifactType);
             if (baseArtifact == null)
@@ -435,7 +424,7 @@ public class ArtifactResource extends AbstractResource {
 	public void delete(@PathParam("model") String model, @PathParam("type") String type,
 	        @PathParam("uuid") String uuid) throws SrampAtomException {
 		try {
-			ArtifactType artifactType = ArtifactType.valueOf(model, type);
+			ArtifactType artifactType = ArtifactType.valueOf(model, type, null);
             if (artifactType.getArtifactType().isDerived()) {
                 throw new DerivedArtifactDeleteException(artifactType.getArtifactType());
             }
