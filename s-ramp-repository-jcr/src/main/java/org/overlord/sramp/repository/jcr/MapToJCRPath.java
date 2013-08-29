@@ -16,6 +16,7 @@
 package org.overlord.sramp.repository.jcr;
 
 import javax.jcr.RepositoryException;
+import static org.overlord.sramp.repository.jcr.JCRConstants.ROOT_PATH;
 
 public class MapToJCRPath {
 
@@ -28,7 +29,7 @@ public class MapToJCRPath {
      * @throws RepositoryException
      */
     public static String getTrashPath(String nodePath) throws RepositoryException {
-        return nodePath.replace("/s-ramp", "/s-ramp-trash"); //$NON-NLS-1$ //$NON-NLS-2$
+        return nodePath.replace(ROOT_PATH, ROOT_PATH + "-trash"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -38,7 +39,7 @@ public class MapToJCRPath {
      * @return path: "/s-ramp/artifacts/[btree]"
      */
     public static String getArtifactPath(String uuid) {
-        return "/s-ramp/artifacts/" + bTreePath(uuid); //$NON-NLS-1$
+        return ROOT_PATH + "/artifacts/" + bTreePath(uuid); //$NON-NLS-1$
     }
 
     /**
@@ -48,7 +49,7 @@ public class MapToJCRPath {
      * @return path: "/s-ramp/ontologies/[UUID]"
      */
     public static String getOntologyPath(String uuid) {
-        return "/s-ramp/ontologies/" + uuid; //$NON-NLS-1$
+        return ROOT_PATH + "/ontologies/" + uuid; //$NON-NLS-1$
     }
 
     /**
@@ -58,7 +59,7 @@ public class MapToJCRPath {
      * @return path: "/s-ramp/ontologies/[UUID]"
      */
     public static String getStoredQueryPath(String uuid) {
-        return "/s-ramp/queries/" + uuid; //$NON-NLS-1$
+        return ROOT_PATH + "/queries/" + uuid; //$NON-NLS-1$
     }
 
     /**

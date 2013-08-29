@@ -85,9 +85,10 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 
         corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "derived"), "sramp:derived"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
-
+	
 	private String selectAlias;
 	private StringBuilder fromBuilder = new StringBuilder();
+	private String notDeletedFilter = null;
 	private StringBuilder whereBuilder = new StringBuilder();
     private String artifactPredicateContext = null;
 	private String relationshipPredicateContext = null;
@@ -121,7 +122,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	        throw this.error;
 	    }
 		String query = "SELECT " + selectAlias + ".* FROM " + fromBuilder.toString(); //$NON-NLS-1$ //$NON-NLS-2$
-		String where = whereBuilder.toString();
+		String where = whereBuilder.toString() + notDeletedFilter;
 		if (where.length() > 0) {
 		    if (where.startsWith("AND")) { //$NON-NLS-1$
 		        where = where.substring(4);
@@ -146,6 +147,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	    selectAlias = newArtifactAlias();
 	    this.artifactPredicateContext = selectAlias;
 		this.fromBuilder.append("[sramp:baseArtifactType] AS " + selectAlias); //$NON-NLS-1$
+		this.notDeletedFilter = JCRConstants.NOT_DELETED_FILTER;
 		node.getArtifactSet().accept(this);
 		if (node.getPredicate() != null) {
 			this.whereBuilder.append(" AND ("); //$NON-NLS-1$
