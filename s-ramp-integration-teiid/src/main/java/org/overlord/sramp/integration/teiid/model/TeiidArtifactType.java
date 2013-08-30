@@ -35,12 +35,12 @@ public enum TeiidArtifactType implements TeiidExtendedType {
     /**
      * The VDB manifest file extended artifact type.
      */
-    VDB_MANIFEST("Manifest"); //$NON-NLS-1$
+    VDB_MANIFEST("VdbManifest"); //$NON-NLS-1$
 
     /**
      * The prefix used for each Teiid artifact extended type.
      */
-    public static final String PREFIX = "Teiid"; //$NON-NLS-1$
+    static final String PREFIX = "Teiid"; //$NON-NLS-1$
 
     private final String extendedType;
 

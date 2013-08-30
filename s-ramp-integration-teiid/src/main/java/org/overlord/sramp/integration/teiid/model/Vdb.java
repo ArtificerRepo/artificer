@@ -101,6 +101,6 @@ public final class Vdb {
     /**
      * The prefix used for each Teiid VDB artifact extended type.
      */
-    public static final String PREFIX = TeiidArtifactType.PREFIX + "Vdb"; //$NON-NLS-1$
+    static final String PREFIX = TeiidArtifactType.PREFIX + "Vdb"; //$NON-NLS-1$
 
 }
