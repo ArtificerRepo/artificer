@@ -50,6 +50,6 @@ public class JCRConstants {
     public static final String SRAMP_NON_DOCUMENT_TYPE   = SRAMP_ + "nonDocumentArtifactType"; //$NON-NLS-1$
     public static final String SRAMP_DERIVED_PRIMARY_TYPE     = SRAMP_ + "derivedArtifactPrimaryType"; //$NON-NLS-1$
 
-    public static final String ROOT_PATH          = "/s-ramp";
-    public static final String NOT_DELETED_FILTER = " AND (ISDESCENDANTNODE([sramp:baseArtifactType],'" + ROOT_PATH + "'))";
+    public static final String ROOT_PATH          = "/s-ramp"; //$NON-NLS-1$
+    public static final String NOT_DELETED_FILTER = " AND (ISDESCENDANTNODE([sramp:baseArtifactType],'" + ROOT_PATH + "'))"; //$NON-NLS-1$ //$NON-NLS-2$
 }

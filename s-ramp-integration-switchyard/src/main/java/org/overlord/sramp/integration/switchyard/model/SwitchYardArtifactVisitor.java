@@ -25,6 +25,7 @@ public interface SwitchYardArtifactVisitor {
 
     public void visitService(ExtendedArtifactType artifact);
     public void visitComponent(ExtendedArtifactType artifact);
+    public void visitComponentService(ExtendedArtifactType artifact);
     public void visitTransformer(ExtendedArtifactType artifact);
     public void visitValidator(ExtendedArtifactType artifact);
 

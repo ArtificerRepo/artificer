@@ -34,6 +34,8 @@ public class SwitchYardArtifactVisitorHelper {
             visitor.visitService(artifact);
         } else if (SwitchYardModel.SwitchYardComponent.equals(artifact.getExtendedType())) {
             visitor.visitComponent(artifact);
+        } else if (SwitchYardModel.SwitchYardComponentService.equals(artifact.getExtendedType())) {
+            visitor.visitComponentService(artifact);
         } else if (SwitchYardModel.SwitchYardTransformer.equals(artifact.getExtendedType())) {
             visitor.visitTransformer(artifact);
         } else if (SwitchYardModel.SwitchYardValidator.equals(artifact.getExtendedType())) {

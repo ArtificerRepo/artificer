@@ -21,7 +21,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
  * Base class for switchyard visitors.
  * @author eric.wittmann@redhat.com
  */
-public class AbstractSwitchYardArtifactVisitor implements SwitchYardArtifactVisitor {
+public abstract class AbstractSwitchYardArtifactVisitor implements SwitchYardArtifactVisitor {
 
     /**
      * Constructor.
@@ -41,6 +41,13 @@ public class AbstractSwitchYardArtifactVisitor implements SwitchYardArtifactVisi
      */
     @Override
     public void visitComponent(ExtendedArtifactType artifact) {
+    }
+
+    /**
+     * @see org.overlord.sramp.integration.switchyard.model.SwitchYardArtifactVisitor#visitComponentService(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType)
+     */
+    @Override
+    public void visitComponentService(ExtendedArtifactType artifact) {
     }
 
     /**
