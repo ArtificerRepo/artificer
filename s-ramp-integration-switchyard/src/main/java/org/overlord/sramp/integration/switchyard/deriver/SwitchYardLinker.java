@@ -58,6 +58,28 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
      */
     @Override
     public void visitService(ExtendedArtifactType artifact) {
+        // Handle unresolved "implements" relationships
+        Relationship relationship = SrampModelUtils.getGenericRelationship(artifact, SwitchYardModel.REL_IMPLEMENTS);
+        if (relationship != null && relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF)) {
+            String ref = relationship.getOtherAttributes().remove(SwitchYardXmlDeriver.UNRESOLVED_REF);
+            if (ref.startsWith("java:")) { //$NON-NLS-1$
+                String refInterfaceName = ref.substring(5);
+                BaseArtifactType artifactRef = findJavaInterfaceArtifact(refInterfaceName);
+                if (artifactRef != null) {
+                    Target target = new Target();
+                    target.setValue(artifactRef.getUuid());
+                    relationship.getRelationshipTarget().add(target);
+                }
+            } else if (ref.startsWith("wsdl:")) { //$NON-NLS-1$
+                String refWsdl = ref.substring(5);
+                BaseArtifactType artifactRef = findWsdlArtifact(refWsdl);
+                if (artifactRef != null) {
+                    Target target = new Target();
+                    target.setValue(artifactRef.getUuid());
+                    relationship.getRelationshipTarget().add(target);
+                }
+            }
+        }
     }
 
     /**
@@ -82,6 +104,35 @@ public class SwitchYardLinker implements SwitchYardArtifactVisitor {
 
         // Handle unresolved "references" relationships
         relationship = SrampModelUtils.getGenericRelationship(artifact, SwitchYardModel.REL_REFERENCES);
+        if (relationship != null && relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF)) {
+            String ref = relationship.getOtherAttributes().remove(SwitchYardXmlDeriver.UNRESOLVED_REF);
+            if (ref.startsWith("java:")) { //$NON-NLS-1$
+                String refInterfaceName = ref.substring(5);
+                BaseArtifactType artifactRef = findJavaInterfaceArtifact(refInterfaceName);
+                if (artifactRef != null) {
+                    Target target = new Target();
+                    target.setValue(artifactRef.getUuid());
+                    relationship.getRelationshipTarget().add(target);
+                }
+            } else if (ref.startsWith("wsdl:")) { //$NON-NLS-1$
+                String refWsdl = ref.substring(5);
+                BaseArtifactType artifactRef = findWsdlArtifact(refWsdl);
+                if (artifactRef != null) {
+                    Target target = new Target();
+                    target.setValue(artifactRef.getUuid());
+                    relationship.getRelationshipTarget().add(target);
+                }
+            }
+        }
+    }
+
+    /**
+     * @see org.overlord.sramp.integration.switchyard.model.SwitchYardArtifactVisitor#visitComponentService(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType)
+     */
+    @Override
+    public void visitComponentService(ExtendedArtifactType artifact) {
+        // Handle unresolved "implements" relationships
+        Relationship relationship = SrampModelUtils.getGenericRelationship(artifact, SwitchYardModel.REL_IMPLEMENTS);
         if (relationship != null && relationship.getOtherAttributes().containsKey(SwitchYardXmlDeriver.UNRESOLVED_REF)) {
             String ref = relationship.getOtherAttributes().remove(SwitchYardXmlDeriver.UNRESOLVED_REF);
             if (ref.startsWith("java:")) { //$NON-NLS-1$

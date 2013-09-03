@@ -17,6 +17,7 @@ package org.overlord.sramp.integration.switchyard.deriver;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.UUID;
 
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPath;
@@ -113,6 +114,24 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
                     SrampModelUtils.addGenericRelationship(serviceArtifact, SwitchYardModel.REL_PROMOTES, component.getUuid());
                 }
             }
+
+            Element iface = (Element) this.query(xpath, node, "sca:interface.java", XPathConstants.NODE); //$NON-NLS-1$
+            if (iface != null) {
+                if (iface.hasAttribute("interface")) { //$NON-NLS-1$
+                    String ifaceName = iface.getAttribute("interface"); //$NON-NLS-1$
+                    Relationship relationship = SrampModelUtils.addGenericRelationship(serviceArtifact, SwitchYardModel.REL_IMPLEMENTS, null);
+                    relationship.getOtherAttributes().put(UNRESOLVED_REF, "java:" + ifaceName); //$NON-NLS-1$
+                }
+            }
+            iface = (Element) this.query(xpath, node, "sca:interface.wsdl", XPathConstants.NODE); //$NON-NLS-1$
+            if (iface != null) {
+                if (iface.hasAttribute("interface")) { //$NON-NLS-1$
+                    String wsdlInfo = iface.getAttribute("interface"); //$NON-NLS-1$
+                    Relationship relationship = SrampModelUtils.addGenericRelationship(serviceArtifact, SwitchYardModel.REL_IMPLEMENTS, null);
+                    relationship.getOtherAttributes().put(UNRESOLVED_REF, "wsdl:" + wsdlInfo); //$NON-NLS-1$
+                }
+            }
+
         }
     }
 
@@ -159,7 +178,7 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
                 }
             }
 
-
+            // Process references ('service' children of the component)
             NodeList refs = (NodeList) this.query(xpath, node, "sca:reference", XPathConstants.NODESET); //$NON-NLS-1$
             for (int jdx = 0; jdx < refs.getLength(); jdx++) {
                 Element ref = (Element) refs.item(jdx);
@@ -179,6 +198,40 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
                         relationship.getOtherAttributes().put(UNRESOLVED_REF, "wsdl:" + wsdlInfo); //$NON-NLS-1$
                     }
                 }
+            }
+
+            // Process component services ('service' children of the component)
+            NodeList services = (NodeList) this.query(xpath, node, "sca:service", XPathConstants.NODESET); //$NON-NLS-1$
+            for (int jdx = 0; jdx < services.getLength(); jdx++) {
+                Element componentSvc = (Element) services.item(jdx);
+                name = componentSvc.getAttribute("name"); //$NON-NLS-1$
+                ExtendedArtifactType componentServiceArtifact = SwitchYardModel.newComponentServiceArtifact(name);
+                componentServiceArtifact.setUuid(UUID.randomUUID().toString());
+                derivedArtifacts.add(componentServiceArtifact);
+                SrampModelUtils.addGenericRelationship(componentArtifact, SwitchYardModel.REL_OFFERS, componentServiceArtifact.getUuid());
+
+                Element iface = (Element) this.query(xpath, componentSvc, "sca:interface.java", XPathConstants.NODE); //$NON-NLS-1$
+                if (iface != null) {
+                    if (iface.hasAttribute("interface")) { //$NON-NLS-1$
+                        String ifaceName = iface.getAttribute("interface"); //$NON-NLS-1$
+                        Relationship relationship = SrampModelUtils.addGenericRelationship(componentServiceArtifact, SwitchYardModel.REL_IMPLEMENTS, null);
+                        relationship.getOtherAttributes().put(UNRESOLVED_REF, "java:" + ifaceName); //$NON-NLS-1$
+                    }
+                }
+                iface = (Element) this.query(xpath, componentSvc, "sca:interface.wsdl", XPathConstants.NODE); //$NON-NLS-1$
+                if (iface != null) {
+                    if (iface.hasAttribute("interface")) { //$NON-NLS-1$
+                        String wsdlInfo = iface.getAttribute("interface"); //$NON-NLS-1$
+                        Relationship relationship = SrampModelUtils.addGenericRelationship(componentServiceArtifact, SwitchYardModel.REL_IMPLEMENTS, null);
+                        relationship.getOtherAttributes().put(UNRESOLVED_REF, "wsdl:" + wsdlInfo); //$NON-NLS-1$
+                    }
+                }
+
+                if (componentSvc.hasAttribute("requires")) { //$NON-NLS-1$
+                    String requires = componentSvc.getAttribute("requires"); //$NON-NLS-1$
+                    SrampModelUtils.setCustomProperty(componentServiceArtifact, "requires", requires); //$NON-NLS-1$
+                }
+
             }
         }
     }
