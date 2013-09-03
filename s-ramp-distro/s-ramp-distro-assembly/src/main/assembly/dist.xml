@@ -33,6 +33,7 @@
                 <include>org.overlord:overlord-commons-*:war</include>
                 <include>org.overlord:overlord-commons-*:jar</include>
             </includes>
+            <outputFileNameMapping>${artifact.artifactId}-${overlord-commons.version}.${artifact.extension}</outputFileNameMapping>
             <useProjectArtifact>false</useProjectArtifact>
             <useProjectAttachments>false</useProjectAttachments>
             <useTransitiveDependencies>false</useTransitiveDependencies>
