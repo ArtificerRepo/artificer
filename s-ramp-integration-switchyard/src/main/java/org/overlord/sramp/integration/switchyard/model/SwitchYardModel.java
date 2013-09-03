@@ -46,6 +46,7 @@ public class SwitchYardModel {
     public static final String REL_IMPLEMENTED_BY = "implementedBy"; //$NON-NLS-1$
     public static final String REL_REFERENCES = "references"; //$NON-NLS-1$
     public static final String REL_VALIDATES = "validates"; //$NON-NLS-1$
+    public static final String REL_OFFERS = "offers"; //$NON-NLS-1$
 
     public static final String PROP_TRANSFORMER_TYPE = "transformer-type"; //$NON-NLS-1$
     public static final String PROP_VALIDATE_TYPE = "validator-type"; //$NON-NLS-1$
@@ -55,10 +56,12 @@ public class SwitchYardModel {
     public static final ArtifactType SwitchYardXmlDocumentType = ArtifactType.valueOf(SwitchYardXmlDocument);
     public static final String SwitchYardService = "SwitchYardService"; //$NON-NLS-1$
     public static final String SwitchYardComponent = "SwitchYardComponent"; //$NON-NLS-1$
+    public static final String SwitchYardComponentService = "SwitchYardComponentService"; //$NON-NLS-1$
     public static final String SwitchYardTransformer = "SwitchYardTransformer"; //$NON-NLS-1$
     public static final String SwitchYardValidator = "SwitchYardValidator"; //$NON-NLS-1$
     public static final ArtifactType SwitchYardServiceType = ArtifactType.valueOf(SwitchYardService);
     public static final ArtifactType SwitchYardComponentType = ArtifactType.valueOf(SwitchYardComponent);
+    public static final ArtifactType SwitchYardComponentServiceType = ArtifactType.valueOf(SwitchYardComponentService);
     public static final ArtifactType SwitchYardTransformerType = ArtifactType.valueOf(SwitchYardTransformer);
     public static final ArtifactType SwitchYardValidatorType = ArtifactType.valueOf(SwitchYardValidator);
 
@@ -105,6 +108,14 @@ public class SwitchYardModel {
      */
     public static final ExtendedArtifactType newComponentArtifact(String name) {
         return newArtifact(SwitchYardComponent, name);
+    }
+
+    /**
+     * Creates a new extended artifact type for a SwitchYard Service Component.
+     * @param name
+     */
+    public static final ExtendedArtifactType newComponentServiceArtifact(String name) {
+        return newArtifact(SwitchYardComponentService, name);
     }
 
     /**

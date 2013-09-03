@@ -29,7 +29,7 @@ public class MapToJCRPath {
      * @throws RepositoryException
      */
     public static String getTrashPath(String nodePath) throws RepositoryException {
-        return nodePath.replace(ROOT_PATH, ROOT_PATH + "-trash"); //$NON-NLS-1$ //$NON-NLS-2$
+        return nodePath.replace(ROOT_PATH, ROOT_PATH + "-trash"); //$NON-NLS-1$
     }
 
     /**
