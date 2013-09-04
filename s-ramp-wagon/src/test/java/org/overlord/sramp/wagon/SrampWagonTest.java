@@ -327,6 +327,9 @@ public class SrampWagonTest extends BaseResourceTest {
 
 		File tempFile = File.createTempFile("s-ramp-wagon-test", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 		try {
+            wagon.get("org/overlord/sramp/test/archive/maven-metadata.xml", tempFile); //$NON-NLS-1$
+            Assert.assertTrue(tempFile.exists());
+            Assert.assertTrue(tempFile.isFile());
 			wagon.get("org/overlord/sramp/test/archive/0.0.3/artifact-0.0.3.jar", tempFile); //$NON-NLS-1$
 			assertContents("artifact-0.0.3.jar", tempFile); //$NON-NLS-1$
 			tempFile.delete();

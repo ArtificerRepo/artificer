@@ -21,6 +21,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
@@ -55,6 +61,7 @@ import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
+import org.overlord.sramp.client.SrampClientQuery;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
@@ -154,13 +161,19 @@ public class SrampWagon extends StreamWagon {
 	public void fillInputData(InputData inputData) throws TransferFailedException,
 			ResourceDoesNotExistException, AuthorizationException {
 		Resource resource = inputData.getResource();
-		// Skip maven-metadata.xml files - they are not (yet?) supported
-		if (resource.getName().contains("maven-metadata.xml")) //$NON-NLS-1$
-			throw new ResourceDoesNotExistException(Messages.i18n.format("FILE_NOT_FOUND", resource)); //$NON-NLS-1$
+        MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
+        if (gavInfo.isMavenMetaData() && gavInfo.getVersion() == null) {
+            doGenerateArtifactDirMavenMetaData(gavInfo, inputData);
+            return;
+        }
+
+        if (gavInfo.isMavenMetaData() && gavInfo.getVersion() != null) {
+            doGenerateSnapshotMavenMetaData(gavInfo, inputData);
+            return;
+        }
 
 		logger.debug(Messages.i18n.format("LOOKING_UP_RESOURCE_IN_SRAMP", resource)); //$NON-NLS-1$
 
-		MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
 		if (gavInfo.isHash()) {
 			doGetHash(gavInfo, inputData);
 		} else {
@@ -170,6 +183,188 @@ public class SrampWagon extends StreamWagon {
 	}
 
 	/**
+	 * Generates the maven-metadata.xml file dynamically for a given groupId/artifactId pair.  This will
+	 * list all of the versions available for that groupId+artifactId, along with the latest release and
+	 * snapshot versions.
+     * @param gavInfo
+     * @param inputData
+	 * @throws ResourceDoesNotExistException
+     */
+    private void doGenerateArtifactDirMavenMetaData(MavenGavInfo gavInfo, InputData inputData) throws ResourceDoesNotExistException {
+        // See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
+        // context classloader magic.
+        ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
+        try {
+            String artyPath = gavInfo.getFullName();
+            if (gavInfo.isHash()) {
+                artyPath = artyPath.substring(0, artyPath.lastIndexOf('.'));
+            }
+            SrampArchiveEntry entry = this.archive.getEntry(artyPath);
+            if (entry == null) {
+                QueryResultSet resultSet = client.buildQuery("/s-ramp[@maven.groupId = ? and @maven.artifactId = ?]") //$NON-NLS-1$
+                        .parameter(gavInfo.getGroupId())
+                        .parameter(gavInfo.getArtifactId())
+                        .propertyName("maven.version") //$NON-NLS-1$
+                        .count(500).orderBy("createdTimestamp").ascending().query(); //$NON-NLS-1$
+                if (resultSet.size() == 0) {
+                    throw new Exception(Messages.i18n.format("NO_ARTIFACTS_FOUND")); //$NON-NLS-1$
+                }
+
+                String groupId = gavInfo.getGroupId();
+                String artifactId = gavInfo.getArtifactId();
+                String latest = null;
+                String release = null;
+                String lastUpdated = null;
+
+                LinkedHashSet<String> versions = new LinkedHashSet<String>();
+                SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss"); //$NON-NLS-1$
+                for (ArtifactSummary artifactSummary : resultSet) {
+                    String version = artifactSummary.getCustomPropertyValue("maven.version"); //$NON-NLS-1$
+                    if (versions.add(version)) {
+                        latest = version;
+                        if (!version.endsWith("-SNAPSHOT")) { //$NON-NLS-1$
+                            release = version;
+                        }
+                    }
+                    lastUpdated = format.format(artifactSummary.getCreatedTimestamp());
+                }
+
+                StringBuilder mavenMetadata = new StringBuilder();
+                mavenMetadata.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
+                mavenMetadata.append("<metadata>\n"); //$NON-NLS-1$
+                mavenMetadata.append("  <groupId>").append(groupId).append("</groupId>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                mavenMetadata.append("  <artifactId>").append(artifactId).append("</artifactId>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                mavenMetadata.append("  <versioning>\n"); //$NON-NLS-1$
+                mavenMetadata.append("    <latest>").append(latest).append("</latest>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                mavenMetadata.append("    <release>").append(release).append("</release>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                mavenMetadata.append("    <versions>\n"); //$NON-NLS-1$
+                for (String version : versions) {
+                    mavenMetadata.append("      <version>").append(version).append("</version>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                mavenMetadata.append("    </versions>\n"); //$NON-NLS-1$
+                mavenMetadata.append("    <lastUpdated>").append(lastUpdated).append("</lastUpdated>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                mavenMetadata.append("  </versioning>\n"); //$NON-NLS-1$
+                mavenMetadata.append("</metadata>\n"); //$NON-NLS-1$
+
+                BaseArtifactType artifact = ArtifactType.ExtendedDocument("MavenMetaData").newArtifactInstance(); //$NON-NLS-1$
+                this.archive.addEntry(artyPath, artifact, IOUtils.toInputStream(mavenMetadata.toString()));
+
+                entry = this.archive.getEntry(artyPath);
+            }
+
+            if (!gavInfo.isHash()) {
+                inputData.setInputStream(this.archive.getInputStream(entry));
+            } else {
+                String hash = generateHash(this.archive.getInputStream(entry), gavInfo.getHashAlgorithm());
+                inputData.setInputStream(IOUtils.toInputStream(hash));
+            }
+        } catch (Exception e) {
+            throw new ResourceDoesNotExistException(Messages.i18n.format("FAILED_TO_GENERATE_METADATA"), e); //$NON-NLS-1$
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCtxCL);
+        }
+    }
+
+    /**
+     * Generates the maven-metadata.xml file dynamically for a given groupId/artifactId/snapshot-version.
+     * This will list all of the snapshot versions available.
+     * @param gavInfo
+     * @param inputData
+     * @throws ResourceDoesNotExistException
+     */
+    private void doGenerateSnapshotMavenMetaData(MavenGavInfo gavInfo, InputData inputData) throws ResourceDoesNotExistException {
+        // See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
+        // context classloader magic.
+        ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
+        try {
+            String artyPath = gavInfo.getFullName();
+            if (gavInfo.isHash()) {
+                artyPath = artyPath.substring(0, artyPath.lastIndexOf('.'));
+            }
+            SrampArchiveEntry entry = this.archive.getEntry(artyPath);
+            if (entry == null) {
+                QueryResultSet resultSet = client.buildQuery("/s-ramp[@maven.groupId = ? and @maven.artifactId = ? and @maven.version = ?]") //$NON-NLS-1$
+                        .parameter(gavInfo.getGroupId())
+                        .parameter(gavInfo.getArtifactId())
+                        .parameter(gavInfo.getVersion())
+                        .propertyName("maven.classifier").propertyName("maven.type") //$NON-NLS-1$ //$NON-NLS-2$
+                        .count(500).orderBy("createdTimestamp").ascending().query(); //$NON-NLS-1$
+                if (resultSet.size() == 0) {
+                    throw new Exception(Messages.i18n.format("NO_ARTIFACTS_FOUND")); //$NON-NLS-1$
+                }
+
+                SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyyMMdd.HHmmss"); //$NON-NLS-1$
+                SimpleDateFormat updatedFormat = new SimpleDateFormat("yyyyMMddHHmmss"); //$NON-NLS-1$
+
+                StringBuilder snapshotVersions = new StringBuilder();
+                snapshotVersions.append("    <snapshotVersions>\n"); //$NON-NLS-1$
+                Set<String> processed = new HashSet<String>();
+                Date latestDate = null;
+                for (ArtifactSummary artifactSummary : resultSet) {
+                    String extension = artifactSummary.getCustomPropertyValue("maven.type"); //$NON-NLS-1$
+                    String classifier = artifactSummary.getCustomPropertyValue("maven.classifier"); //$NON-NLS-1$
+                    String value = gavInfo.getVersion();
+                    Date updatedDate = artifactSummary.getLastModifiedTimestamp();
+                    String updated = updatedFormat.format(updatedDate);
+                    String pkey = classifier+"::"+extension; //$NON-NLS-1$
+                    if (processed.add(pkey)) {
+                        snapshotVersions.append("      <snapshotVersion>\n"); //$NON-NLS-1$
+                        if (classifier != null)
+                            snapshotVersions.append("        <classifier>").append(classifier).append("</classifier>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                        snapshotVersions.append("        <extension>").append(extension).append("</extension>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                        snapshotVersions.append("        <value>").append(value).append("</value>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                        snapshotVersions.append("        <updated>").append(updated).append("</updated>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                        snapshotVersions.append("      </snapshotVersion>\n"); //$NON-NLS-1$
+                        if (latestDate == null || latestDate.before(updatedDate)) {
+                            latestDate = updatedDate;
+                        }
+                    }
+                }
+                snapshotVersions.append("    </snapshotVersions>\n"); //$NON-NLS-1$
+
+                String groupId = gavInfo.getGroupId();
+                String artifactId = gavInfo.getArtifactId();
+                String version = gavInfo.getVersion();
+                String lastUpdated = updatedFormat.format(latestDate);
+
+                StringBuilder mavenMetadata = new StringBuilder();
+                mavenMetadata.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
+                mavenMetadata.append("<metadata>\n"); //$NON-NLS-1$
+                mavenMetadata.append("  <groupId>").append(groupId).append("</groupId>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                mavenMetadata.append("  <artifactId>").append(artifactId).append("</artifactId>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                mavenMetadata.append("  <version>").append(version).append("</version>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                mavenMetadata.append("  <versioning>\n"); //$NON-NLS-1$
+                mavenMetadata.append("    <snapshot>\n"); //$NON-NLS-1$
+                mavenMetadata.append("      <timestamp>").append(timestampFormat.format(latestDate)).append("</timestamp>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                mavenMetadata.append("      <buildNumber>1</buildNumber>\n"); //$NON-NLS-1$
+                mavenMetadata.append("    </snapshot>\n"); //$NON-NLS-1$
+                mavenMetadata.append("    <lastUpdated>").append(lastUpdated).append("</lastUpdated>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                mavenMetadata.append(snapshotVersions.toString());
+                mavenMetadata.append("  </versioning>\n"); //$NON-NLS-1$
+                mavenMetadata.append("</metadata>\n"); //$NON-NLS-1$
+
+                BaseArtifactType artifact = ArtifactType.ExtendedDocument("MavenMetaData").newArtifactInstance(); //$NON-NLS-1$
+                this.archive.addEntry(artyPath, artifact, IOUtils.toInputStream(mavenMetadata.toString()));
+
+                entry = this.archive.getEntry(artyPath);
+            }
+
+            if (!gavInfo.isHash()) {
+                inputData.setInputStream(this.archive.getInputStream(entry));
+            } else {
+                String hash = generateHash(this.archive.getInputStream(entry), gavInfo.getHashAlgorithm());
+                inputData.setInputStream(IOUtils.toInputStream(hash));
+            }
+        } catch (Exception e) {
+            throw new ResourceDoesNotExistException(Messages.i18n.format("FAILED_TO_GENERATE_METADATA"), e); //$NON-NLS-1$
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCtxCL);
+        }
+    }
+
+    /**
 	 * Gets the hash data from the s-ramp repository and stores it in the {@link InputData} for
 	 * use by Maven.
 	 * @param gavInfo
@@ -585,22 +780,30 @@ public class SrampWagon extends StreamWagon {
 	 */
 	private BaseArtifactType findExistingArtifactByGAV(SrampAtomApiClient client, MavenGavInfo gavInfo)
 			throws SrampAtomException, SrampClientException, JAXBException {
-		String query = null;
+		SrampClientQuery clientQuery = null;
 		// Search by classifier if we have one...
 		if (gavInfo.getClassifier() == null) {
-			query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s' and @maven.type = '%4$s']", //$NON-NLS-1$
-					gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion(), gavInfo.getType());
+		    clientQuery = client.buildQuery("/s-ramp[@maven.groupId = ? and @maven.artifactId = ? and @maven.version = ? and @maven.type = ?]") //$NON-NLS-1$
+		            .parameter(gavInfo.getGroupId())
+		            .parameter(gavInfo.getArtifactId())
+		            .parameter(gavInfo.getVersion())
+		            .parameter(gavInfo.getType());
 		} else {
-			query = String.format("/s-ramp[@maven.groupId = '%1$s' and @maven.artifactId = '%2$s' and @maven.version = '%3$s' and @maven.classifier = '%4$s' and @maven.type = '%5$s']", //$NON-NLS-1$
-					gavInfo.getGroupId(), gavInfo.getArtifactId(), gavInfo.getVersion(), gavInfo.getClassifier(), gavInfo.getType());
+            clientQuery = client.buildQuery("/s-ramp[@maven.groupId = ? and @maven.artifactId = ? and @maven.version = ? and @maven.classifier = ? and @maven.type = ?]") //$NON-NLS-1$
+                    .parameter(gavInfo.getGroupId())
+                    .parameter(gavInfo.getArtifactId())
+                    .parameter(gavInfo.getVersion())
+                    .parameter(gavInfo.getClassifier())
+                    .parameter(gavInfo.getType());
 		}
-		QueryResultSet rset = client.query(query);
+		QueryResultSet rset = clientQuery.count(100).query();
 		if (rset.size() > 0) {
 			for (ArtifactSummary summary : rset) {
 				String uuid = summary.getUuid();
 				ArtifactType artifactType = summary.getType();
 				BaseArtifactType arty = client.getArtifactMetaData(artifactType, uuid);
 				// If no classifier in the GAV info, only return the artifact that also has no classifier
+				// TODO replace this with "not(@maven.classifer)" in the query, then force the result set to return 2 items (expecting only 1)
 				if (gavInfo.getClassifier() == null) {
 					String artyClassifier = SrampModelUtils.getCustomProperty(arty, "maven.classifier"); //$NON-NLS-1$
 					if (artyClassifier == null) {
@@ -681,6 +884,36 @@ public class SrampWagon extends StreamWagon {
      */
 	protected boolean isPrimaryArtifact(MavenGavInfo gavInfo) {
         return gavInfo.getClassifier() == null && !gavInfo.getType().equals("pom"); //$NON-NLS-1$
+    }
+
+    /**
+     * Generates a hash for the given content using the given hash algorithm.
+     * @param inputStream
+     * @param hashAlgorithm
+     */
+    private String generateHash(InputStream inputStream, String hashAlgorithm) throws Exception {
+        try {
+            MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
+            byte[] dataBytes = new byte[1024];
+
+            int nread = 0;
+
+            while ((nread = inputStream.read(dataBytes)) != -1) {
+                md.update(dataBytes, 0, nread);
+            }
+
+            byte[] mdbytes = md.digest();
+
+            // convert the byte to hex format
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < mdbytes.length; i++) {
+                sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
+            return sb.toString();
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
     }
 
 }

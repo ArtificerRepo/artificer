@@ -45,23 +45,34 @@ public class MavenGavInfo {
 		String filename = segments.remove(segments.size() - 1);
 		String type = filename.substring(filename.lastIndexOf('.') + 1);
 		boolean hash = false;
+		String hashAlgorithm = null;
 		if (filename.endsWith(".sha1")) { //$NON-NLS-1$
 			type = filename.substring(0, filename.length() - 5);
 			type = type.substring(type.lastIndexOf('.') + 1) + ".sha1"; //$NON-NLS-1$
 			hash = true;
+			hashAlgorithm = "SHA1"; //$NON-NLS-1$
 		}
 		if (filename.endsWith(".md5")) { //$NON-NLS-1$
 			type = filename.substring(0, filename.length() - 4);
 			type = type.substring(type.lastIndexOf('.') + 1) + ".md5"; //$NON-NLS-1$
 			hash = true;
+			hashAlgorithm = "MD5"; //$NON-NLS-1$
 		}
-		String version = segments.remove(segments.size() - 1);
+		String version = null;
+		boolean metaData = filename.contains("maven-metadata.xml"); //$NON-NLS-1$
+		if (metaData) {
+		    if (segments.get(segments.size() - 1).endsWith("-SNAPSHOT")) { //$NON-NLS-1$
+	            version = segments.remove(segments.size() - 1);
+		    }
+		} else {
+		    version = segments.remove(segments.size() - 1);
+		}
 		String artifactId = segments.remove(segments.size() - 1);
 		String groupId = StringUtils.join(segments, "."); //$NON-NLS-1$
 		String classifier = extractClassifier(filename, version, type);
-		boolean snapshot = version.endsWith("-SNAPSHOT"); //$NON-NLS-1$
+		boolean snapshot = version != null && version.endsWith("-SNAPSHOT"); //$NON-NLS-1$
 		String snapshotId = null;
-		if (snapshot && !filename.contains(version)) {
+		if (snapshot && !metaData && !filename.contains(version)) {
 			snapshotId = extractSnapshotId(filename, version, type, classifier);
 		}
 
@@ -74,8 +85,10 @@ public class MavenGavInfo {
 		gav.setClassifier(classifier);
 		gav.setType(type);
 		gav.setHash(hash);
+		gav.setHashAlgorithm(hashAlgorithm);
 		gav.setSnapshot(snapshot);
 		gav.setSnapshotId(snapshotId);
+		gav.setMavenMetaData(metaData);
 		return gav;
 	}
 
@@ -96,7 +109,7 @@ public class MavenGavInfo {
 	 * @return the classifier
 	 */
 	private static String extractClassifier(String filename, String version, String type) {
-		if (!filename.endsWith(type))
+		if (!filename.endsWith(type) || version == null)
 			return null;
 
 		String classifier = null;
@@ -138,6 +151,9 @@ public class MavenGavInfo {
 	 * @return a snapshot id or null if not found
 	 */
 	private static String extractSnapshotId(String filename, String version, String type, String classifier) {
+	    if (version == null)
+	        return null;
+
 		String front = version.substring(0, version.indexOf("-SNAPSHOT")); //$NON-NLS-1$
 		String back = "." + type; //$NON-NLS-1$
 		if (classifier != null) {
@@ -161,8 +177,10 @@ public class MavenGavInfo {
 	private String classifier;
 	private String type;
 	private boolean hash;
+	private String hashAlgorithm;
 	private boolean snapshot;
 	private String snapshotId;
+	private boolean mavenMetaData;
 
 	/**
 	 * Default constructor.
@@ -246,7 +264,9 @@ public class MavenGavInfo {
 		builder.append("  isHash: "); //$NON-NLS-1$
 		builder.append(isHash()).append("\n"); //$NON-NLS-1$
 		builder.append("  isSnapshot: "); //$NON-NLS-1$
-		builder.append(isSnapshot()).append("\n"); //$NON-NLS-1$
+        builder.append(isSnapshot()).append("\n"); //$NON-NLS-1$
+        builder.append("  isMavenMetaData: "); //$NON-NLS-1$
+        builder.append(isMavenMetaData()).append("\n"); //$NON-NLS-1$
 		return builder.toString();
 	}
 
@@ -333,5 +353,33 @@ public class MavenGavInfo {
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
+
+    /**
+     * @return the mavenMetaData
+     */
+    public boolean isMavenMetaData() {
+        return mavenMetaData;
+    }
+
+    /**
+     * @param mavenMetaData the mavenMetaData to set
+     */
+    public void setMavenMetaData(boolean mavenMetaData) {
+        this.mavenMetaData = mavenMetaData;
+    }
+
+    /**
+     * @return the hashAlgorithm
+     */
+    public String getHashAlgorithm() {
+        return hashAlgorithm;
+    }
+
+    /**
+     * @param hashAlgorithm the hashAlgorithm to set
+     */
+    public void setHashAlgorithm(String hashAlgorithm) {
+        this.hashAlgorithm = hashAlgorithm;
+    }
 
 }
