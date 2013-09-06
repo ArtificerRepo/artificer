@@ -18,11 +18,8 @@ package org.overlord.sramp.common.derived;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.xml.xpath.XPath;
-
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
-import org.w3c.dom.Element;
 
 /**
  * Creates derived content from a Policy document.  This will create the derived content as
@@ -54,11 +51,11 @@ public class PolicyDeriver extends AbstractXmlDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+	 * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.derived.AbstractXmlDeriver.XmlDeriverContext)
 	 */
 	@Override
 	protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
-			Element rootElement, XPath xpath) throws IOException {
+	        XmlDeriverContext xmlDeriverContext) throws IOException {
 	}
 
 	/**
