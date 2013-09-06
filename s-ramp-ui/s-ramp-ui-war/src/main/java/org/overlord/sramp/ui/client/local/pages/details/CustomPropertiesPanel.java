@@ -28,7 +28,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 
 /**
  * A panel that holds all of the artifact's custom properties.
@@ -85,7 +85,7 @@ public class CustomPropertiesPanel extends FlowPanel implements HasValue<Map<Str
             Set<String> keys = new TreeSet<String>(value.keySet());
             for (final String propName : keys) {
                 String propValue = value.get(propName);
-                InlineLabel propLabel = new InlineLabel(propName + ":"); //$NON-NLS-1$
+                Label propLabel = new Label(propName + ":"); //$NON-NLS-1$
                 propLabel.setStyleName("sramp-meta-data-section-label"); //$NON-NLS-1$
                 CustomPropertyEditableInlineLabel propValueWidget = propValueLabelFactory.get();
                 propValueWidget.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -103,7 +103,7 @@ public class CustomPropertiesPanel extends FlowPanel implements HasValue<Map<Str
                 });
                 propValueWidget.setValue(propValue);
                 propValueWidget.setStyleName("sramp-meta-data-section-value"); //$NON-NLS-1$
-                InlineLabel clearFix = new InlineLabel();
+                Label clearFix = new Label();
                 clearFix.setStyleName("clearfix"); //$NON-NLS-1$
                 add(propLabel);
                 add(propValueWidget);

@@ -172,7 +172,7 @@ public class SrampWagon extends StreamWagon {
             return;
         }
 
-		logger.debug(Messages.i18n.format("LOOKING_UP_RESOURCE_IN_SRAMP", resource)); //$NON-NLS-1$
+		debug(Messages.i18n.format("LOOKING_UP_RESOURCE_IN_SRAMP", resource)); //$NON-NLS-1$
 
 		if (gavInfo.isHash()) {
 			doGetHash(gavInfo, inputData);
@@ -438,19 +438,19 @@ public class SrampWagon extends StreamWagon {
 			throw e;
 		} catch (SrampClientException e) {
 			if (e.getCause() instanceof HttpHostConnectException) {
-				this.logger.debug(Messages.i18n.format("SRAMP_CONNECTION_FAILED", e.getMessage())); //$NON-NLS-1$
+				this.debug(Messages.i18n.format("SRAMP_CONNECTION_FAILED", e.getMessage())); //$NON-NLS-1$
 			} else {
-				this.logger.error(e.getMessage(), e);
+				this.error(e.getMessage(), e);
 			}
 			throw new ResourceDoesNotExistException(Messages.i18n.format("FAILED_TO_GET_RESOURCE_FROM_SRAMP", gavInfo.getName())); //$NON-NLS-1$
 		} catch (Throwable t) {
-			this.logger.error(t.getMessage(), t);
+			this.error(t.getMessage(), t);
 		} finally {
 			Thread.currentThread().setContextClassLoader(oldCtxCL);
 		}
 	}
 
-	/**
+    /**
 	 * @see org.apache.maven.wagon.StreamWagon#putFromStream(java.io.InputStream, java.lang.String)
 	 */
 	@Override
@@ -837,7 +837,7 @@ public class SrampWagon extends StreamWagon {
 		try {
 			return client.getArtifactMetaData(ArtifactType.valueOf(artifactType), uuid);
 		} catch (Throwable t) {
-			logger.debug(t.getMessage());
+			debug(t.getMessage());
 		}
 		return null;
 	}
@@ -914,6 +914,23 @@ public class SrampWagon extends StreamWagon {
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
+    }
+
+    /**
+     * @param message
+     */
+    private void debug(String message) {
+        if (logger != null)
+            logger.debug(message);
+    }
+
+    /**
+     * @param message
+     * @param t
+     */
+    private void error(String message, Throwable t) {
+        if (logger != null)
+            logger.error(message, t);
     }
 
 }

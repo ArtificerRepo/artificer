@@ -45,13 +45,13 @@ public class ExtendedArtifactDeriverTestDeriver extends AbstractXmlDeriver {
     }
 
     /**
-     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.derived.AbstractXmlDeriver.XmlDeriverContext)
      */
     @Override
     protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
-            Element rootElement, XPath xpath) throws IOException {
+            XmlDeriverContext xmlDeriverContext) throws IOException {
         try {
-            processRoot(derivedArtifacts, artifact, rootElement, xpath);
+            processRoot(derivedArtifacts, artifact, xmlDeriverContext.getRootElement(), xmlDeriverContext.getXpath());
         } catch (Exception e) {
             throw new IOException(e);
         }

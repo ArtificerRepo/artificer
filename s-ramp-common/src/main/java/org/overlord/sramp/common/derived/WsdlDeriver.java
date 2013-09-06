@@ -148,16 +148,17 @@ public class WsdlDeriver extends XsdDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.repository.derived.XsdDeriver#derive(org.overlord.sramp.common.repository.derived.IndexedArtifactCollection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+	 * @see org.overlord.sramp.common.derived.XsdDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.derived.AbstractXmlDeriver.XmlDeriverContext)
 	 */
 	@Override
 	protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
-			Element rootElement, XPath xpath) throws IOException {
-		String targetNS = rootElement.getAttribute("targetNamespace"); //$NON-NLS-1$
+	        XmlDeriverContext xmlDeriverContext) throws IOException {
+		String targetNS = xmlDeriverContext.getRootElement().getAttribute("targetNamespace"); //$NON-NLS-1$
 		((WsdlDocument) artifact).setTargetNamespace(targetNS);
 
 		try {
-			processDefinitions((IndexedArtifactCollection) derivedArtifacts, artifact, rootElement, xpath);
+            processDefinitions((IndexedArtifactCollection) derivedArtifacts, artifact,
+                    xmlDeriverContext.getRootElement(), xmlDeriverContext.getXpath());
 		} catch (Exception e) {
 			throw new IOException(e);
 		}
