@@ -64,12 +64,15 @@ public class SwitchYardXmlDeriver extends AbstractXmlDeriver {
     }
 
     /**
-     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.derived.AbstractXmlDeriver.XmlDeriverContext)
      */
     @Override
     protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
-            Element rootElement, XPath xpath) throws IOException {
+            XmlDeriverContext xmlDeriverContext) throws IOException {
         try {
+            Element rootElement = xmlDeriverContext.getRootElement();
+            XPath xpath = xmlDeriverContext.getXpath();
+
             // Pull out the target namespace and save it as a custom property
             String targetNS = rootElement.getAttribute("targetNamespace"); //$NON-NLS-1$
             SrampModelUtils.setCustomProperty(artifact, "targetNamespace", targetNS); //$NON-NLS-1$

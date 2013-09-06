@@ -75,7 +75,8 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 			xpath.setNamespaceContext(nsCtx);
 
 			Element rootElement = document.getDocumentElement();
-			derive(derivedArtifacts, artifact, rootElement, xpath);
+			XmlDeriverContext context = new XmlDeriverContext(rootElement, xpath);
+			derive(derivedArtifacts, artifact, context);
 
 			// Set the relatedDocument relationship for all derived artifacts
 			for (BaseArtifactType derivedArtifact : derivedArtifacts) {
@@ -128,12 +129,11 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 	 * Derives content for the given artifact.
 	 * @param derivedArtifacts
 	 * @param artifact
-	 * @param rootElement
-	 * @param xpath
+	 * @param xmlDeriverContext
 	 * @throws IOException
 	 */
 	protected abstract void derive(Collection<BaseArtifactType> derivedArtifacts,
-			BaseArtifactType artifact, Element rootElement, XPath xpath) throws IOException;
+			BaseArtifactType artifact, XmlDeriverContext xmlDeriverContext) throws IOException;
 
 	/**
 	 * Configures the namespace mappings that will be available when executing XPath
@@ -142,5 +142,63 @@ public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 	 */
 	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
 	}
+
+	/**
+	 * A context passed to the xml deriver's derive method.
+	 * @author eric.wittmann@redhat.com
+	 */
+    public static class XmlDeriverContext {
+        private Element rootElement;
+        private XPath xpath;
+
+        /**
+         * Constructor.
+         * @param rootElement
+         * @param xpath
+         */
+        public XmlDeriverContext(Element rootElement, XPath xpath) {
+            this.rootElement = rootElement;
+            this.xpath = xpath;
+        }
+
+        /**
+         * Adds a namespace mapping to the current namespace context.  Useful if not all namespaces
+         * in the document being derived are known up-front.
+         * @param prefix
+         * @param namespaceURI
+         */
+        public void addNamespaceMapping(String prefix, String namespaceURI) {
+            ((StaticNamespaceContext) xpath.getNamespaceContext()).addMapping(prefix, namespaceURI);
+        }
+
+        /**
+         * @return the rootElement
+         */
+        public Element getRootElement() {
+            return rootElement;
+        }
+
+        /**
+         * @param rootElement the rootElement to set
+         */
+        public void setRootElement(Element rootElement) {
+            this.rootElement = rootElement;
+        }
+
+        /**
+         * @return the xpath
+         */
+        public XPath getXpath() {
+            return xpath;
+        }
+
+        /**
+         * @param xpath the xpath to set
+         */
+        public void setXpath(XPath xpath) {
+            this.xpath = xpath;
+        }
+
+    }
 
 }
