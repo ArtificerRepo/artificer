@@ -111,12 +111,12 @@
         <repository>
           <id>local-sramp-repo</id>
           <name>S-RAMP Releases Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchyardApplication&amp;artifactGrouping=${project.groupId}</url>
+          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchYardApplication&amp;artifactGrouping=${project.groupId}</url>
         </repository>
         <snapshotRepository>
           <id>local-sramp-repo-snapshots</id>
           <name>S-RAMP Snapshots Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchyardApplication&amp;artifactGrouping=${project.groupId}</url>
+          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchYardApplication&amp;artifactGrouping=${project.groupId}</url>
         </snapshotRepository>
       </distributionManagement>
     </profile>

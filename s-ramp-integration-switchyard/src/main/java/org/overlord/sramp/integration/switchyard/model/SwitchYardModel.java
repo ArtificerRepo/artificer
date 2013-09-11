@@ -52,6 +52,7 @@ public class SwitchYardModel {
     public static final String PROP_VALIDATE_TYPE = "validator-type"; //$NON-NLS-1$
     public static final String PROP_GATEWAY_TYPE = "gateway-type"; //$NON-NLS-1$
 
+    public static final String SwitchYardApplication = "SwitchYardApplication"; //$NON-NLS-1$
     public static final String SwitchYardXmlDocument = "SwitchYardXmlDocument"; //$NON-NLS-1$
     public static final ArtifactType SwitchYardXmlDocumentType = ArtifactType.valueOf(SwitchYardXmlDocument);
     public static final String SwitchYardService = "SwitchYardService"; //$NON-NLS-1$
