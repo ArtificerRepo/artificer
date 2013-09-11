@@ -161,16 +161,28 @@
     </profile>
     <profile>
       <id>demo</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.7</version>
+            <configuration>
+              <skip>false</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
       <distributionManagement>
         <repository>
           <id>local-sramp-repo</id>
           <name>S-RAMP Releases Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchyardApplication</url>
+          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchYardApplication</url>
         </repository>
         <snapshotRepository>
           <id>local-sramp-repo-snapshots</id>
           <name>S-RAMP Snapshots Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchyardApplication</url>
+          <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchYardApplication</url>
         </snapshotRepository>
       </distributionManagement>
     </profile>
