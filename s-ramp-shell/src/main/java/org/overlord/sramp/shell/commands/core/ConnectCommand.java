@@ -48,19 +48,23 @@ public class ConnectCommand extends BuiltInShellCommand {
         String username = null;
         String password = null;
 		String disableValidationOptionArg = null;
-		boolean hasCreds = false;
 
 		if (opt3 != null) {
 		    username = opt1;
 		    password = opt2;
 		    disableValidationOptionArg = opt3;
-		    hasCreds = true;
 		} else if (opt2 != null) {
             username = opt1;
             password = opt2;
-            hasCreds = true;
 		} else {
 		    disableValidationOptionArg = opt1;
+		}
+
+		if (username == null) {
+		    username = promptForUsername();
+		}
+		if (password == null) {
+		    password = promptForPassword();
 		}
 
 		boolean validating = !"--disableValidation".equals(disableValidationOptionArg); //$NON-NLS-1$
@@ -70,11 +74,7 @@ public class ConnectCommand extends BuiltInShellCommand {
 		QName varName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		try {
 			SrampAtomApiClient client = null;
-			if (hasCreds) {
-			    client = new SrampAtomApiClient(endpointUrlArg, username, password, validating);
-			} else {
-			    client = new SrampAtomApiClient(endpointUrlArg, validating);
-			}
+		    client = new SrampAtomApiClient(endpointUrlArg, username, password, validating);
 			getContext().setVariable(varName, client);
 			print(Messages.i18n.format("Connect.Success", endpointUrlArg)); //$NON-NLS-1$
 		} catch (Exception e) {
@@ -84,6 +84,20 @@ public class ConnectCommand extends BuiltInShellCommand {
 		}
         return true;
 	}
+
+    /**
+     * Prompts the user to enter a username for authentication credentials.
+     */
+    private String promptForUsername() {
+        return getContext().promptForInput(Messages.i18n.format("Connect.UserPrompt")); //$NON-NLS-1$
+    }
+
+    /**
+     * Prompts the user to enter a password for authentication credentials.
+     */
+    private String promptForPassword() {
+        return getContext().promptForPassword(Messages.i18n.format("Connect.PasswordPrompt")); //$NON-NLS-1$
+    }
 
 	/**
 	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)

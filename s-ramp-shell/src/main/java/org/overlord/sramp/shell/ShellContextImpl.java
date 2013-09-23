@@ -36,6 +36,7 @@ public class ShellContextImpl implements ShellContext {
 	private Map<QName, Object> variables = new HashMap<QName, Object>();
 	private Map<QName, ShellContextVariableLifecycleHandler> variableLifecycleHandlers = new HashMap<QName, ShellContextVariableLifecycleHandler>();
 	private Set<ShellContextEventHandler> eventHandlers = new HashSet<ShellContextEventHandler>();
+	private ShellCommandReader reader;
 
 	/**
 	 * Constructor.
@@ -154,5 +155,35 @@ public class ShellContextImpl implements ShellContext {
 			handler.onVariableRemoved(name);
 		}
 	}
+
+	/**
+	 * @see org.overlord.sramp.shell.api.ShellContext#promptForInput(java.lang.String)
+	 */
+	@Override
+	public String promptForInput(String prompt) {
+	    return getReader().promptForInput(prompt);
+	}
+
+	/**
+	 * @see org.overlord.sramp.shell.api.ShellContext#promptForPassword(java.lang.String)
+	 */
+	@Override
+	public String promptForPassword(String prompt) {
+	    return getReader().promptForPassword(prompt);
+	}
+
+    /**
+     * @return the reader
+     */
+    protected ShellCommandReader getReader() {
+        return reader;
+    }
+
+    /**
+     * @param reader the reader to set
+     */
+    public void setReader(ShellCommandReader reader) {
+        this.reader = reader;
+    }
 
 }

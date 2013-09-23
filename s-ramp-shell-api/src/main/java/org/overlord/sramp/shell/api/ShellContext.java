@@ -63,4 +63,16 @@ public interface ShellContext {
 	 */
 	public Object removeVariable(QName name);
 
+	/**
+	 * Prompts the user for some input.  Returns the text entered by the user.
+	 * @param prompt
+	 */
+	public String promptForInput(String prompt);
+
+	/**
+	 * Prompts the user for a password.  Returns the text entered by the user.
+	 * @param prompt
+	 */
+	public String promptForPassword(String prompt);
+
 }

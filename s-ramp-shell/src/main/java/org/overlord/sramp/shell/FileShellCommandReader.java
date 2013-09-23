@@ -16,6 +16,7 @@
 package org.overlord.sramp.shell;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * An implementation of the {@link ShellCommandReader} that reads data from
@@ -86,6 +88,32 @@ public class FileShellCommandReader extends AbstractShellCommandReader {
 	@Override
 	public boolean isBatch() {
 	    return true;
+	}
+
+	/**
+	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
+	 */
+	@Override
+	public String promptForInput(String prompt) {
+        Console console = System.console();
+        if (console != null) {
+            return console.readLine(prompt);
+        } else {
+            throw new RuntimeException(Messages.i18n.format("FileShellCommandReader.NoConsole")); //$NON-NLS-1$
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
+	 */
+	@Override
+	public String promptForPassword(String prompt) {
+        Console console = System.console();
+        if (console != null) {
+            return new String(console.readPassword(prompt));
+        } else {
+            throw new RuntimeException(Messages.i18n.format("FileShellCommandReader.NoConsole")); //$NON-NLS-1$
+        }
 	}
 
 }

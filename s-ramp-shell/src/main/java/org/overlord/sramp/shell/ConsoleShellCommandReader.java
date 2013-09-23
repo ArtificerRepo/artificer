@@ -65,4 +65,20 @@ public class ConsoleShellCommandReader extends AbstractShellCommandReader {
 		console = null;
 	}
 
+	/**
+	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
+	 */
+	@Override
+	public String promptForInput(String prompt) {
+	    return console.readLine(prompt);
+	}
+
+	/**
+	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
+	 */
+	@Override
+	public String promptForPassword(String prompt) {
+	    return new String(console.readPassword(prompt));
+	}
+
 }
