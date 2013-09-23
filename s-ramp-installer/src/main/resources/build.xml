@@ -37,7 +37,7 @@
   <target name="properties-jboss-eap-6.1" depends="properties-jboss-common" if="jboss-eap-6.1">
     <property name="s-ramp.appserver.zip" location="jboss-eap-6.1.0.zip" />
     <property name="s-ramp.modeshape-distribution.zip.path" location="modeshape-3.2.0.Final-jbosseap-61-dist.zip" />
-    <property name="s-ramp.appserver.module.path" location="${s-ramp.appserver.dir}/modules/system/layers/soa" />
+    <property name="s-ramp.appserver.module.path" location="${s-ramp.appserver.dir}/modules/system/layers/sramp" />
     <property name="s-ramp.appserver.base-module.path" location="${s-ramp.appserver.dir}/modules/system/layers/base" />
     <property name="s-ramp.s-ramp-ui.war.path" location="bin/s-ramp-ui-war-eap61-${s-ramp.version}.war" />
   </target>
@@ -99,6 +99,13 @@
     <copy file="updates/srampui-overlordapp.properties" todir="${overlord-apps.dir}" overwrite="true" />
     <copy file="updates/sramp.properties" todir="${s-ramp.appserver.config.dir}" overwrite="true" />
     <copy file="updates/sramp-ui.properties" todir="${s-ramp.appserver.config.dir}" overwrite="true" />
+
+    <!-- Set the SAML keystore and alias password in the s-ramp-ui config -->
+    <property file="${s-ramp.appserver.config.dir}/overlord-vault-keys.properties" />
+    <propertyfile file="${s-ramp.appserver.config.dir}/sramp-ui.properties">
+      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="$${vault:${overlord-commons.vault.password.hash}}" />
+      <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="$${vault:${overlord-commons.overlord-alias.password.hash}}" />
+    </propertyfile>
 
     <echo message=" " />
     <echo message="########" />

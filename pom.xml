@@ -103,7 +103,7 @@
     <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
     <commons.io.version>2.4</commons.io.version>
     <commons.lang3.version>3.1</commons.lang3.version>
-    <commons.config.version>1.8</commons.config.version>
+    <commons.config.version>1.6</commons.config.version>
     <commons.compress.version>1.4.1</commons.compress.version>
     <commons.codec.version>1.5</commons.codec.version>
     <jline.version>2.9</jline.version>

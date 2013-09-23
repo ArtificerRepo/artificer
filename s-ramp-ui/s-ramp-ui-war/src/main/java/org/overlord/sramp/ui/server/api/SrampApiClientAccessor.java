@@ -55,10 +55,10 @@ public class SrampApiClientAccessor {
      * @param config
      */
     protected SrampAtomApiClient createClient() {
-        String endpoint = (String) config.getConfig().getProperty(SrampUIConfig.SRAMP_API_ENDPOINT);
-        boolean validating = "true".equals(config.getConfig().getProperty(SrampUIConfig.SRAMP_API_VALIDATING)); //$NON-NLS-1$
+        String endpoint = config.getConfig().getString(SrampUIConfig.SRAMP_API_ENDPOINT);
+        boolean validating = "true".equals(config.getConfig().getString(SrampUIConfig.SRAMP_API_VALIDATING)); //$NON-NLS-1$
         AuthenticationProvider authProvider = null;
-        String authProviderClass = (String) config.getConfig().getProperty(SrampUIConfig.SRAMP_API_AUTH_PROVIDER);
+        String authProviderClass = config.getConfig().getString(SrampUIConfig.SRAMP_API_AUTH_PROVIDER);
         try {
             if (authProviderClass != null && authProviderClass.trim().length() > 0) {
                 Class<?> c = Class.forName(authProviderClass);

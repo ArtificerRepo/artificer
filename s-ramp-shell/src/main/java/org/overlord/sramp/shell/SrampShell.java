@@ -142,6 +142,7 @@ public class SrampShell {
 				commandReader = new StdInShellCommandReader(factory, context);
 			}
 		}
+		context.setReader(commandReader);
 		commandReader.open();
 		return commandReader;
 	}
