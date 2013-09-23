@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.wagon;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -122,8 +123,8 @@ public class SrampWagon extends StreamWagon {
 			// Now create and configure the client.
             String endpoint = getSrampEndpoint();
             // Use sensible defaults
-            String username = "admin"; //$NON-NLS-1$
-            String password = "overlord"; //$NON-NLS-1$
+            String username = null;
+            String password = null;
             AuthenticationInfo authInfo = this.getAuthenticationInfo();
             if (authInfo != null) {
                 if (authInfo.getUserName() != null) {
@@ -132,6 +133,12 @@ public class SrampWagon extends StreamWagon {
                 if (authInfo.getPassword() != null) {
                     password = authInfo.getPassword();
                 }
+            }
+            if (username == null) {
+                username = promptForUsername();
+            }
+            if (password == null) {
+                password = promptForPassword();
             }
 
             this.client = new SrampAtomApiClient(endpoint, username, password, true);
@@ -146,7 +153,33 @@ public class SrampWagon extends StreamWagon {
         }
 	}
 
-	/**
+    /**
+     * Prompts the user to enter a username for authentication credentials.
+     */
+    private String promptForUsername() {
+        Console console = System.console();
+        if (console != null) {
+            return console.readLine(Messages.i18n.format("USERNAME_PROMPT")); //$NON-NLS-1$
+        } else {
+            System.err.println(Messages.i18n.format("NO_CONSOLE_ERROR_1")); //$NON-NLS-1$
+            return null;
+        }
+    }
+
+    /**
+     * Prompts the user to enter a password for authentication credentials.
+     */
+    private String promptForPassword() {
+        Console console = System.console();
+        if (console != null) {
+            return new String(console.readPassword(Messages.i18n.format("PASSWORD_PROMPT"))); //$NON-NLS-1$
+        } else {
+            System.err.println(Messages.i18n.format("NO_CONSOLE_ERROR_2")); //$NON-NLS-1$
+            return null;
+        }
+    }
+
+    /**
 	 * @see org.apache.maven.wagon.StreamWagon#closeConnection()
 	 */
 	@Override

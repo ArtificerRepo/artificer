@@ -124,4 +124,28 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 		}
 	}
 
+	/**
+	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
+	 */
+	@Override
+	public String promptForInput(String prompt) {
+	    try {
+            return this.consoleReader.readLine(prompt);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
+	 */
+	@Override
+	public String promptForPassword(String prompt) {
+        try {
+            return this.consoleReader.readLine(prompt, '*');
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+	}
+
 }

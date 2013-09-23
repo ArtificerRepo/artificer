@@ -64,4 +64,28 @@ public class StdInShellCommandReader extends AbstractShellCommandReader {
 	public void close() throws IOException {
 	}
 
+	/**
+	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
+	 */
+	@Override
+	public String promptForInput(String prompt) {
+        try {
+            if (!stdinReader.ready()) {
+                System.out.print(prompt);
+            }
+            return stdinReader.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+	}
+
+	/**
+	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
+	 */
+	@Override
+	public String promptForPassword(String prompt) {
+	    // stdin doesn't support reading passwords
+	    return promptForInput(prompt);
+	}
+
 }

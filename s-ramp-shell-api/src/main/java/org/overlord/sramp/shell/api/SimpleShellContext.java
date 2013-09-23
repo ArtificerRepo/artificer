@@ -89,4 +89,20 @@ public class SimpleShellContext implements ShellContext {
     @Override
     public void removeHandler(ShellContextEventHandler handler) {
     }
+
+    /**
+     * @see org.overlord.sramp.shell.api.ShellContext#promptForInput(java.lang.String)
+     */
+    @Override
+    public String promptForInput(String prompt) {
+        throw new RuntimeException("Not implemented."); //$NON-NLS-1$
+    }
+
+    /**
+     * @see org.overlord.sramp.shell.api.ShellContext#promptForPassword(java.lang.String)
+     */
+    @Override
+    public String promptForPassword(String prompt) {
+        throw new RuntimeException("Not implemented."); //$NON-NLS-1$
+    }
 }
