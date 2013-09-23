@@ -20,6 +20,7 @@
       <module name="org.jboss.as.server" />
       <module name="org.jboss.msc" />
       <module name="org.jboss.netty" />
+      <module name="org.picketbox" />
       <module name="org.picketlink" />
       <module name="org.jboss.resteasy.resteasy-jaxrs" />
       <module name="org.apache.httpcomponents" />

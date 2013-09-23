@@ -29,8 +29,8 @@ public class BasicAuthenticationProvider extends org.overlord.sramp.client.auth.
      * Constructor.
      */
     public BasicAuthenticationProvider() {
-        super((String) SrampUIConfig.config.getProperty(SrampUIConfig.SRAMP_API_BASIC_AUTH_USER),
-                (String) SrampUIConfig.config.getProperty(SrampUIConfig.SRAMP_API_BASIC_AUTH_PASS));
+        super(SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_BASIC_AUTH_USER),
+                SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_BASIC_AUTH_PASS));
     }
 
 }
