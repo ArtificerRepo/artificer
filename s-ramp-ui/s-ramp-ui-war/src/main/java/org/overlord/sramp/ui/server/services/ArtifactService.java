@@ -78,7 +78,7 @@ public class ArtifactService implements IArtifactService {
             bean.setCreatedOn(artifact.getCreatedTimestamp().toGregorianCalendar().getTime());
             bean.setUpdatedOn(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
             bean.setUpdatedBy(artifact.getLastModifiedBy());
-            bean.setDerived(artifactType.getArtifactType().isDerived());
+            bean.setDerived(artifactType.isDerived());
             if (SrampModelUtils.isDocumentArtifact(artifact)) {
                 DocumentArtifactType doc = (DocumentArtifactType) artifact;
                 bean.setContentSize(doc.getContentSize());
