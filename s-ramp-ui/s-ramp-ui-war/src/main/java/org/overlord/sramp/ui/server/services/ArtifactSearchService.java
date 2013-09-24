@@ -88,7 +88,7 @@ public class ArtifactSearchService implements IArtifactSearchService {
                 bean.setCreatedBy(artifactSummary.getCreatedBy());
                 bean.setCreatedOn(artifactSummary.getCreatedTimestamp());
                 bean.setUpdatedOn(artifactSummary.getLastModifiedTimestamp());
-                bean.setDerived(artifactType.getArtifactType().isDerived());
+                bean.setDerived(artifactType.isDerived());
                 artifacts.add(bean);
             }
             boolean hasMorePages = false;
