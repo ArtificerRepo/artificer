@@ -10,15 +10,6 @@
 	<artifactId>s-ramp-demos-mvn-integration</artifactId>
 	<packaging>pom</packaging>
 	<name>S-RAMP Demos: Maven Integration</name>
-	<build>
-		<extensions>
-			<extension>
-				<groupId>org.overlord.sramp</groupId>
-				<artifactId>s-ramp-wagon</artifactId>
-				<version>${project.version}</version>
-			</extension>
-		</extensions>
-	</build>
 	<modules>
 		<module>s-ramp-demos-mvn-integration-artifacts</module>
 		<module>s-ramp-demos-mvn-integration-app</module>
