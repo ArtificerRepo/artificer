@@ -43,6 +43,11 @@
       <artifactId>s-ramp-integration-kie</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-integration-teiid</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- Third party libraries -->
     <dependency>
