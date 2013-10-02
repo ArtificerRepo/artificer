@@ -26,7 +26,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.derived.AbstractXmlDeriver;
 import org.overlord.sramp.common.derived.LinkerContext;
-import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.overlord.sramp.integration.teiid.Messages;
 import org.overlord.sramp.integration.teiid.Utils;
 import org.overlord.sramp.integration.teiid.model.Describable.XmlId;
@@ -46,31 +45,15 @@ public final class ModelDeriver extends AbstractXmlDeriver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelDeriver.class);
 
-    private StaticNamespaceContext namespaceContext;
-
     /**
      * {@inheritDoc}
-     * 
-     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#configureNamespaceMappings(org.overlord.sramp.common.query.xpath.StaticNamespaceContext)
+     *
+     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.derived.AbstractXmlDeriver.XmlDeriverContext)
      */
     @Override
-    protected void configureNamespaceMappings( final StaticNamespaceContext namespaceContext ) {
-        super.configureNamespaceMappings(namespaceContext);
-        this.namespaceContext = namespaceContext;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection,
-     *      org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
-     */
-    @Override
-    protected void derive( final Collection<BaseArtifactType> derivedArtifacts,
-                           final BaseArtifactType artifact,
-                           final Element rootElement,
-                           final XPath xpath ) throws IOException {
-        LOGGER.debug("ModelDeriver:root element='{}' of artifact '{}'", rootElement.getLocalName(), artifact.getName()); //$NON-NLS-1$
+    protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
+            XmlDeriverContext xmlDeriverContext) throws IOException {
+        LOGGER.debug("ModelDeriver:root element='{}' of artifact '{}'", xmlDeriverContext.getRootElement().getLocalName(), artifact.getName()); //$NON-NLS-1$
 
         // make sure Teiid model
         if (!(artifact instanceof ExtendedDocument)
@@ -82,12 +65,12 @@ public final class ModelDeriver extends AbstractXmlDeriver {
 
         try {
             // root element should be the XMI element
-            if (!TeiidModel.XmiId.ROOT_ELEMENT.equals(rootElement.getLocalName())) {
+            if (!TeiidModel.XmiId.ROOT_ELEMENT.equals(xmlDeriverContext.getRootElement().getLocalName())) {
                 throw new IllegalArgumentException(Messages.I18N.format("missingModelRootElement", artifact.getName())); //$NON-NLS-1$
             }
 
-            processNamespaces(rootElement);
-            processModelAnnotation(derivedArtifacts, modelArtifact, rootElement, xpath);
+            processNamespaces(xmlDeriverContext.getRootElement(), xmlDeriverContext);
+            processModelAnnotation(derivedArtifacts, modelArtifact, xmlDeriverContext.getRootElement(), xmlDeriverContext.getXpath());
         } catch (final Exception e) {
             throw new IOException(e);
         }
@@ -95,7 +78,7 @@ public final class ModelDeriver extends AbstractXmlDeriver {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.overlord.sramp.common.derived.ArtifactDeriver#link(org.overlord.sramp.common.derived.LinkerContext,
      *      org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.util.Collection)
      */
@@ -136,14 +119,20 @@ public final class ModelDeriver extends AbstractXmlDeriver {
         setProperty(modelArtifact, annotationElement, TeiidModel.XmiId.VISIBLE, TeiidModel.PropertyId.VISIBLE);
     }
 
-    private void processNamespaces( final Element xmiElement ) {
+    /**
+     * Adds namespace mappings to the current namespace context based on prefix mappings defined
+     * on the given element.
+     * @param xmiElement
+     * @param xmlDeriverContext
+     */
+    private void processNamespaces( final Element xmiElement, final XmlDeriverContext xmlDeriverContext ) {
         final NamedNodeMap attributes = xmiElement.getAttributes();
 
         for (int i = 0, numAttrs = attributes.getLength(); i < numAttrs; ++i) {
             final Node attr = attributes.item(i);
 
             if (TeiidModel.XmiId.XML_NAMESPACE.equals(attr.getPrefix())) {
-                this.namespaceContext.addMapping(attr.getLocalName(), attr.getNodeValue());
+                xmlDeriverContext.addNamespaceMapping(attr.getLocalName(), attr.getNodeValue());
                 LOGGER.debug("ModelDeriver:adding namespace with prefix '{}' and URI '{}'", attr.getLocalName(), attr.getNodeValue()); //$NON-NLS-1$
             }
         }
@@ -151,7 +140,7 @@ public final class ModelDeriver extends AbstractXmlDeriver {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#query(javax.xml.xpath.XPath, org.w3c.dom.Element,
      *      java.lang.String, javax.xml.namespace.QName)
      */
