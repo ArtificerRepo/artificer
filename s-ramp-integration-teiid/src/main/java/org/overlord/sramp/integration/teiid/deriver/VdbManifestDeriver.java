@@ -81,15 +81,13 @@ public final class VdbManifestDeriver extends AbstractXmlDeriver {
 
     /**
      * {@inheritDoc}
-     * 
-     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection,
-     *      org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)
+     *
+     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.derived.AbstractXmlDeriver.XmlDeriverContext)
      */
     @Override
-    protected void derive( final Collection<BaseArtifactType> derivedArtifacts,
-                           final BaseArtifactType artifact,
-                           final Element rootElement,
-                           final XPath xpath ) throws IOException {
+    protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
+            XmlDeriverContext xmlDeriverContext) throws IOException {
+        Element rootElement = xmlDeriverContext.getRootElement();
         LOGGER.debug("VdbManifestDeriver:root element='{}' of artifact '{}'", rootElement.getLocalName(), artifact.getName()); //$NON-NLS-1$
 
         this.sources.clear();
@@ -109,7 +107,7 @@ public final class VdbManifestDeriver extends AbstractXmlDeriver {
                 throw new IllegalArgumentException(Messages.I18N.format("missingVdbRootElement", artifact.getName())); //$NON-NLS-1$
             }
 
-            processVdb(derivedArtifacts, vdbArtifact, rootElement, xpath);
+            processVdb(derivedArtifacts, vdbArtifact, rootElement, xmlDeriverContext.getXpath());
         } catch (final Exception e) {
             throw new IOException(e);
         }
@@ -117,7 +115,7 @@ public final class VdbManifestDeriver extends AbstractXmlDeriver {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.overlord.sramp.common.derived.ArtifactDeriver#link(org.overlord.sramp.common.derived.LinkerContext,
      *      org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.util.Collection)
      */
@@ -223,7 +221,7 @@ public final class VdbManifestDeriver extends AbstractXmlDeriver {
 
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("VdbManifestDeriver:data policy name '{}'", dataPolicyArtifact.getName()); //$NON-NLS-1$
-                    LOGGER.debug("VdbManifestDeriver:data policy description '{}'", dataPolicyArtifact.getDescription()); //$NON-NLS-1$                  
+                    LOGGER.debug("VdbManifestDeriver:data policy description '{}'", dataPolicyArtifact.getDescription()); //$NON-NLS-1$
 
                     for (final Property prop : dataPolicyArtifact.getProperty()) {
                         LOGGER.debug("VdbManifestDeriver:data policy property '{}' with value '{}'", //$NON-NLS-1$
@@ -744,7 +742,7 @@ public final class VdbManifestDeriver extends AbstractXmlDeriver {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#query(javax.xml.xpath.XPath, org.w3c.dom.Element,
      *      java.lang.String, javax.xml.namespace.QName)
      */
