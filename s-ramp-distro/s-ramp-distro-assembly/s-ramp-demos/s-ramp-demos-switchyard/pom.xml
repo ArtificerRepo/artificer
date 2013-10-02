@@ -10,7 +10,7 @@
   <name>S-RAMP Demos: Switchyard Deployment</name>
 
   <properties>
-    <switchyard.version>0.8.0.Final</switchyard.version>
+    <switchyard.version>1.0.0.Final</switchyard.version>
   </properties>
 
   <repositories>
@@ -123,7 +123,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.switchyard</groupId>
                     <artifactId>switchyard-plugin</artifactId>
-                    <versionRange>[0.8.0.Final,)</versionRange>
+                    <versionRange>[1.0.0.Final,)</versionRange>
                     <goals>
                       <goal>configure</goal>
                     </goals>
