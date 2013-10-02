@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<vdb version="1" name="ProductsSS_VDB">
+    <property value="false" name="preview"/>
+    <model visible="true" type="PHYSICAL" name="ProductsSS" path="/TestProducts/ProductsSS.xmi">
+        <description>SQL Server products relational model</description>
+        <property value="3463730926" name="checksum"/>
+        <property value="mmuuid:99038f39-aaf6-4be5-98e7-cfb2e604424f" name="modelUuid"/>
+        <property value="Relational" name="modelClass"/>
+        <property value="false" name="builtIn"/>
+        <property value="4286983813.INDEX" name="indexName"/>
+        <source translator-name="sqlserver" connection-jndi-name="ProductsSS" name="ProductsSS"/>
+        <validation-error severity="WARNING">This is a warning message</validation-error>
+        <validation-error path="EMPLOYEE/ID" severity="ERROR">Error 1</validation-error>
+        <validation-error path="EMPLOYEE/ID" severity="ERROR">Error 2</validation-error>
+        <validation-error path="DEPARTMENT/NAME" severity="ERROR">This is an error message</validation-error>
+    </model>
+</vdb>
