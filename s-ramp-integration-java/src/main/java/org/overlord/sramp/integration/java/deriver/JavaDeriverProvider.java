@@ -44,6 +44,7 @@ public class JavaDeriverProvider implements DeriverProvider {
         derivers.put(JavaModel.TYPE_JAVA_CLASS, new JavaClassDeriver());
         derivers.put(JavaModel.TYPE_JAVA_INTERFACE, new JavaClassDeriver());
         derivers.put(JavaModel.TYPE_JAVA_ENUM, new JavaClassDeriver());
+        derivers.put(JavaModel.TYPE_MAVEN_POM_XML, new MavenPomDeriver());
         return derivers;
     }
 
