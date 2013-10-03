@@ -39,10 +39,23 @@ public class KieJarMetaDataFactory extends DefaultMetaDataFactory {
      */
     @Override
     protected BaseArtifactType createArtifact(DiscoveredArtifact discoveredArtifact) {
-        if (discoveredArtifact.getName().equals("kmodule.xml")) { //$NON-NLS-1$
+    	String name = discoveredArtifact.getName().toLowerCase();
+        if (name.equals("kmodule.xml")) { //$NON-NLS-1$
             ExtendedDocument artifact = new ExtendedDocument();
             artifact.setArtifactType(BaseArtifactEnum.EXTENDED_DOCUMENT);
             artifact.setExtendedType(KieJarModel.KieXmlDocument);
+            return artifact;
+        }
+        if (name.endsWith(".bpmn") || name.endsWith(".bpmn2")) { //$NON-NLS-1$
+            ExtendedDocument artifact = new ExtendedDocument();
+            artifact.setArtifactType(BaseArtifactEnum.EXTENDED_DOCUMENT);
+            artifact.setExtendedType(KieJarModel.BpmnDocument);
+            return artifact;
+        }
+        if (name.endsWith(".drl")) { //$NON-NLS-1$
+            ExtendedDocument artifact = new ExtendedDocument();
+            artifact.setArtifactType(BaseArtifactEnum.EXTENDED_DOCUMENT);
+            artifact.setExtendedType(KieJarModel.DroolsDocument);
             return artifact;
         }
         return super.createArtifact(discoveredArtifact);

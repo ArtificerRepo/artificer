@@ -15,8 +15,6 @@
  */
 package org.overlord.sramp.integration.kie.model;
 
-import org.overlord.sramp.common.ArtifactType;
-
 
 /**
  * Information about the KIE model defined by the KIE deriver(s). KIE
@@ -28,6 +26,7 @@ public class KieJarModel {
     public static final String TYPE_ARCHIVE = "KieJarArchive"; //$NON-NLS-1$
 
     public static final String KieXmlDocument = "KieXmlDocument"; //$NON-NLS-1$
-    public static final ArtifactType KieXmlDocumentType = ArtifactType.valueOf(KieXmlDocument);
-
+    public static final String BpmnDocument   = "BpmnDocument"; //$NON-NLS-1$
+    public static final String DroolsDocument = "DroolsDocument"; //$NON-NLS-1$
+ 
 }
