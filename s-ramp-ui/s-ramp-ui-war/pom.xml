@@ -10,6 +10,12 @@
   <packaging>war</packaging>
   <name>s-ramp-ui-war</name>
   <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-gwt</artifactId>
+      <version>14.0.1</version>
+      <scope>provided</scope>
+    </dependency>
     <!-- Project Dependencies -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
