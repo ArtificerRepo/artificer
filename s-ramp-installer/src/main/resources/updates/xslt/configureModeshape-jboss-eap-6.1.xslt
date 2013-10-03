@@ -31,9 +31,15 @@
             <xsl:apply-templates select="@* | *" />
             <cache-container name="modeshape">
                 <local-cache name="sramp">
+                    <locking isolation="NONE"/>
                     <transaction mode="NON_XA"/>
-                    <locking isolation="NONE" />
-                    <mixed-keyed-jdbc-store datasource="java:jboss/datasources/srampDS" passivation="false" purge="false" />
+                    <string-keyed-jdbc-store datasource="java:jboss/datasources/srampDS" passivation="false" purge="false">
+                        <string-keyed-table prefix="ispn_bucket">
+                            <id-column name="id" type="VARCHAR(500)"/>
+                            <data-column name="datum" type="VARBINARY(60000)"/>
+                            <timestamp-column name="version" type="BIGINT"/>
+                        </string-keyed-table>
+                    </string-keyed-jdbc-store>
                 </local-cache>
             </cache-container>
         </subsystem>
