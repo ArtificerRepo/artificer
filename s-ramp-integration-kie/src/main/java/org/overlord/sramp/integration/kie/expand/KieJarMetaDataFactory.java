@@ -46,7 +46,7 @@ public class KieJarMetaDataFactory extends DefaultMetaDataFactory {
             artifact.setExtendedType(KieJarModel.KieXmlDocument);
             return artifact;
         }
-        if (name.endsWith(".bpmn") || name.endsWith(".bpmn2")) { //$NON-NLS-1$
+        if (name.endsWith(".bpmn") || name.endsWith(".bpmn2")) { //$NON-NLS-1$ //$NON-NLS-2$
             ExtendedDocument artifact = new ExtendedDocument();
             artifact.setArtifactType(BaseArtifactEnum.EXTENDED_DOCUMENT);
             artifact.setExtendedType(KieJarModel.BpmnDocument);
