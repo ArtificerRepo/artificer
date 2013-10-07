@@ -50,7 +50,7 @@ public class MavenPomDeriverTest {
         // Assert
         Assert.assertNotNull(artifact.getProperty());
         for (Property property : artifact.getProperty()) {
-        	System.out.println(property.getPropertyName() + " - " + property.getPropertyValue());
+        	System.out.println(property.getPropertyName() + " - " + property.getPropertyValue()); //$NON-NLS-1$
         }
         System.out.println(artifact.getDescription());
     }
