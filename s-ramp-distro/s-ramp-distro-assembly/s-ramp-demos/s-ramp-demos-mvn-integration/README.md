@@ -25,6 +25,29 @@ The first step is to build and deploy the 'artifacts' project to S-RAMP using Ma
 	$ cd s-ramp-demos-mvn-integration-artifacts
 	$ mvn -Pdemo clean deploy
 
+# Note About Authentication
+
+Be aware that you must supply the maven build with credentials for your S-RAMP repository.  This
+can be done by adding a section to your settings.xml file (or by providing a custom settings.xml
+on the mvn command line using the '-s' argument).
+
+For more information see:  http://maven.apache.org/settings.html
+
+Your settings.xml file should contain two additional server entries in the servers section:
+
+    <server>
+      <id>local-sramp-repo</id>
+      <username>admin</username>
+      <password>PASSWORD</password>
+    </server>
+    <server>
+      <id>local-sramp-repo-snapshots</id>
+      <username>admin</username>
+      <password>PASSWORD</password>
+    </server>
+
+# Results of the Deploy
+
 That will enable the 'demo' profile, which will configure the Maven **distributionManagement** to
 point to a local S-RAMP repository (http://localhost:8080/s-ramp-server/).  Therefore you need to
 be running S-RAMP on port 8080 and deployed as the 's-ramp-atom' context.
