@@ -100,7 +100,7 @@ public class ArtifactType {
         setArtifactType(artifactType);
         // Might need something more interesting than this in the future.
         if (mimeType == null) {
-            if (artifactType == ArtifactTypeEnum.Document) {
+            if (artifactType == ArtifactTypeEnum.Document || artifactType == ArtifactTypeEnum.ExtendedDocument) {
                 mimeType = "application/octet-stream"; //$NON-NLS-1$
             } else {
                 mimeType = "application/xml"; //$NON-NLS-1$
@@ -129,6 +129,7 @@ public class ArtifactType {
      * Returns an {@link ArtifactType} given a common file extension.
      * @param extension a file extension
      * @return an s-ramp artifact type
+     * @deprecated
      */
     public static ArtifactType fromFileExtension(String extension) {
         String ext = extension.toLowerCase();

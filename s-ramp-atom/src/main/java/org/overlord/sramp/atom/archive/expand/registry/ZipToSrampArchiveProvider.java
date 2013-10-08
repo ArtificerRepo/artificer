@@ -51,4 +51,13 @@ public interface ZipToSrampArchiveProvider {
      */
     public ZipToSrampArchive createExtractor(ArtifactType artifactType, InputStream zipStream) throws ZipToSrampArchiveException;
 
+    /**
+     * Returns TypeHintInfo datastructure, which contains a list of path entries, 
+     * which can be used to determine the type of archive. For example a Drools 
+     * kiejar contains a META-INF/kmodule.xml entry, which has a
+     * S-RAMP Model of KieJarArchive.
+     * 
+     * @return TypeHintInfo datastructure.
+     */
+    public TypeHintInfo getArchiveTypeHints();
 }
