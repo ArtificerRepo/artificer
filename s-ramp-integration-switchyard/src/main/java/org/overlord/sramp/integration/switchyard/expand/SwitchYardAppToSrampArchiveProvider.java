@@ -17,13 +17,18 @@ package org.overlord.sramp.integration.switchyard.expand;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
+import org.overlord.sramp.atom.archive.expand.registry.TypeHintInfo;
 import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveProvider;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
 
 /**
  * Provides a SwitchYard version of the {@link ZipToSrampArchive}.
@@ -32,9 +37,15 @@ import org.overlord.sramp.common.ArtifactType;
  */
 public class SwitchYardAppToSrampArchiveProvider implements ZipToSrampArchiveProvider {
 
-    private static final Set<String> acceptedTypes = new HashSet<String>();
+	private static final Set<String> acceptedTypes = new HashSet<String>();
+	private static final Map<String, String> hintsMap;
     static {
         acceptedTypes.add("SwitchYardApplication"); //$NON-NLS-1$
+        Map<String, String>aMap = new TreeMap<String,String>();
+        aMap.put("WEB-INF/switchyard.xml", SwitchYardModel.SwitchYardApplication); //$NON-NLS-1$
+        aMap.put("WEB-INF/classes/META-INF/switchyard.xml", SwitchYardModel.SwitchYardApplication); //$NON-NLS-1$
+        aMap.put("META-INF/switchyard.xml", SwitchYardModel.SwitchYardApplication); //$NON-NLS-1$
+        hintsMap = Collections.unmodifiableMap(aMap);
     }
 
     /**
@@ -70,5 +81,10 @@ public class SwitchYardAppToSrampArchiveProvider implements ZipToSrampArchivePro
     public ZipToSrampArchive createExtractor(ArtifactType artifactType, InputStream zipStream) throws ZipToSrampArchiveException {
         return new SwitchYardAppToSrampArchive(zipStream);
     }
+    
+    @Override
+   	public TypeHintInfo getArchiveTypeHints() {
+   		return new TypeHintInfo(20,hintsMap);
+   	}
 
 }

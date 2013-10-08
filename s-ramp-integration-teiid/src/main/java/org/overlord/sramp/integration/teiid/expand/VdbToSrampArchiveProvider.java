@@ -17,8 +17,13 @@ package org.overlord.sramp.integration.teiid.expand;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
+import org.overlord.sramp.atom.archive.expand.registry.TypeHintInfo;
 import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveProvider;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.integration.teiid.model.Vdb;
@@ -28,6 +33,12 @@ import org.overlord.sramp.integration.teiid.model.Vdb;
  */
 public final class VdbToSrampArchiveProvider implements ZipToSrampArchiveProvider {
 
+	private static final Map<String, String> hintsMap;
+	static {
+		Map<String, String>aMap = new TreeMap<String,String>();
+	    aMap.put("META-INF/vdb.xml", Vdb.ARTIFACT_TYPE); //$NON-NLS-1$
+	    hintsMap = Collections.unmodifiableMap(aMap);
+	}
     /**
      * {@inheritDoc}
      * 
@@ -61,5 +72,10 @@ public final class VdbToSrampArchiveProvider implements ZipToSrampArchiveProvide
                                               final InputStream vdbStream ) throws ZipToSrampArchiveException {
         return new VdbToSrampArchive(vdbStream);
     }
+    
+    @Override
+   	public TypeHintInfo getArchiveTypeHints() {
+   		return new TypeHintInfo(30,hintsMap);
+   	}
 
 }

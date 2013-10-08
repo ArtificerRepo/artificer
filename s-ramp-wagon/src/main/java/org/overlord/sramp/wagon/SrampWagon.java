@@ -58,6 +58,7 @@ import org.overlord.sramp.atom.archive.SrampArchiveException;
 import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
 import org.overlord.sramp.atom.archive.expand.MetaDataProvider;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
+import org.overlord.sramp.atom.archive.expand.registry.ArchiveInfo;
 import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
@@ -66,6 +67,7 @@ import org.overlord.sramp.client.SrampClientQuery;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.wagon.i18n.Messages;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
@@ -557,17 +559,18 @@ public class SrampWagon extends StreamWagon {
 	 * Gets the artifact type from the resource.
 	 * @param gavInfo
 	 */
-	private ArtifactType getArtifactType(MavenGavInfo gavInfo) {
+	private ArtifactType getArtifactType(MavenGavInfo gavInfo, String artifactModel) {
         String customAT = getParamFromRepositoryUrl("artifactType"); //$NON-NLS-1$
 	    if (gavInfo.getType().equals("pom")) { //$NON-NLS-1$
 	        return ArtifactType.valueOf("MavenPom"); //$NON-NLS-1$
 	    } else if (isPrimaryArtifact(gavInfo) && customAT != null) {
 	        return ArtifactType.valueOf(customAT);
 	    }
-		String fileName = gavInfo.getName();
-		int extensionIdx = fileName.lastIndexOf('.');
-		String extension = gavInfo.getName().substring(extensionIdx + 1);
-		return ArtifactType.fromFileExtension(extension);
+	    if (artifactModel!=null) {
+	    	return ArtifactType.valueOf("ext", artifactModel, true); //$NON-NLS-1$
+	    } else {
+	    	return ArtifactType.valueOf(ArtifactTypeEnum.Document.name());
+	    }
 	}
 
 	/**
@@ -635,7 +638,7 @@ public class SrampWagon extends StreamWagon {
 	 * @throws TransferFailedException
 	 */
 	private void doPutArtifact(final MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
-		ArtifactType artifactType = getArtifactType(gavInfo);
+		
 		// See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
 		// context classloader magic.
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
@@ -647,6 +650,11 @@ public class SrampWagon extends StreamWagon {
 		try {
 			// First, stash the content in a temp file - we may need it multiple times.
 			tempResourceFile = stashResourceContent(resourceInputStream);
+			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
+			
+			ArchiveInfo archiveInfo = ZipToSrampArchiveRegistry.inspectArchive(resourceInputStream);
+			ArtifactType artifactType = getArtifactType(gavInfo, archiveInfo.type);
+			
 			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
 
 			// Is the artifact grouping option enabled?
@@ -916,7 +924,7 @@ public class SrampWagon extends StreamWagon {
      * @param gavInfo
      */
 	protected boolean isPrimaryArtifact(MavenGavInfo gavInfo) {
-        return gavInfo.getClassifier() == null && !gavInfo.getType().equals("pom"); //$NON-NLS-1$
+        return gavInfo.getClassifier() == null;
     }
 
     /**
