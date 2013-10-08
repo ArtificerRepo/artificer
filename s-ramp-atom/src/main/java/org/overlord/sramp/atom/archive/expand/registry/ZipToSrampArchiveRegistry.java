@@ -16,13 +16,19 @@
 package org.overlord.sramp.atom.archive.expand.registry;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.TreeMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
 import org.overlord.sramp.common.ArtifactType;
@@ -38,6 +44,7 @@ import org.overlord.sramp.common.ArtifactType;
 public final class ZipToSrampArchiveRegistry {
 
     private static Map<ArtifactType, ZipToSrampArchiveProvider> providerCache = new HashMap<ArtifactType, ZipToSrampArchiveProvider>();
+    private static Map<String,String> sortedPathEntryHintMapCache = null;
     private static List<ZipToSrampArchiveProvider> providers = new ArrayList<ZipToSrampArchiveProvider>();
     static {
         discoverProviders();
@@ -110,5 +117,58 @@ public final class ZipToSrampArchiveRegistry {
         }
         return provider;
     }
-
+    
+    /**
+     * Tries to match an ArchiveType based on the content of the archive. 
+     * For example a Drools kiejar contains a META-INF/kmodule.xml entry, 
+     * which has a S-RAMP Model of KieJarArchive.
+     * 
+     * @param InputStream resourceInputStream, gets consumed and closed.
+     * 
+     * @return ArchiveInfo containing Table of Content and archiveType match.
+     * 
+     * @throws ZipToSrampArchiveException 
+     */
+    public static ArchiveInfo inspectArchive(InputStream resourceInputStream) throws ZipToSrampArchiveException {
+    	try {
+	    	String matchedType = null;
+	    	if (sortedPathEntryHintMapCache==null) {
+	    		sortedPathEntryHintMapCache = new TreeMap<String,String>();
+	    		List<TypeHintInfo> typeHintInfoList = new ArrayList<TypeHintInfo>();
+	    		//loop over all the providers providers
+	    		for (ZipToSrampArchiveProvider p : providers) {
+	    			typeHintInfoList.add(p.getArchiveTypeHints());
+	    		}
+	    		//sort by priority
+	    		Collections.sort(typeHintInfoList);
+	    		for (TypeHintInfo typeHintInfo: typeHintInfoList) {
+	    			for (String path: typeHintInfo.pathEntryHintMap.keySet()) {
+	    				sortedPathEntryHintMapCache.put(path, typeHintInfo.pathEntryHintMap.get(path));
+	    			}
+	    		}
+	    	}
+			ZipInputStream zip = new ZipInputStream(resourceInputStream);
+			ZipEntry entry;
+			String toc = "";
+			while((entry = zip.getNextEntry()) != null) {
+				String name = entry.getName();
+				toc += name + "\n";
+				if (matchedType==null) {
+					for (String path: sortedPathEntryHintMapCache.keySet()) {
+						if (path.equalsIgnoreCase(name)) {
+							matchedType = sortedPathEntryHintMapCache.get(name);
+							break;
+						}
+					}
+				}
+			}
+	    	return new ArchiveInfo(matchedType, toc);
+	    } catch (IOException e) {
+	    	throw new ZipToSrampArchiveException(e.getMessage(),e);
+	    } finally {
+	    	IOUtils.closeQuietly(resourceInputStream);
+	    }
+    }
+    
+   
 }
