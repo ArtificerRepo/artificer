@@ -143,7 +143,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>${maven.resources.plugin.version}</version>
         <executions>
           <execution>
             <id>generate-poms</id>
@@ -165,6 +164,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.4</version>
         <dependencies>
           <dependency>
             <!-- Entry needed to enable jdocbook unzipping -->
