@@ -67,29 +67,10 @@
   </developers>
 
   <properties>
-    <!-- Instruct the build to use only UTF-8 encoding for source code -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
-    <!-- Distribution URLs -->
-    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
-
-    <!-- Maven plugin versions -->
-    <maven.surefire.report.plugin.version>2.4.3</maven.surefire.report.plugin.version>
-    <maven.surefire.plugin.version>2.7.1</maven.surefire.plugin.version>
-    <maven.assembly.plugin.version>2.2</maven.assembly.plugin.version>
-    <maven.install.plugin.version>2.3.1</maven.install.plugin.version>
-    <maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
-    <maven.jxr.plugin.version>2.1</maven.jxr.plugin.version>
-    <maven.jar.plugin.version>2.3.1</maven.jar.plugin.version>
-    <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
-    <maven.bundle.plugin.version>2.1.0</maven.bundle.plugin.version>
-    <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
-    <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
-    <maven.deploy.plugin.version>2.5</maven.deploy.plugin.version>
-
     <!-- Dependency versions -->
+    <jboss.bom.version>10</jboss.bom.version>
     <junit.version>4.11</junit.version>
     <log4j.version>1.2.16</log4j.version>
     <slf4j.api.version>1.5.11</slf4j.api.version>
@@ -98,7 +79,7 @@
     <xmlunit.version>1.3</xmlunit.version>
     <servlet.api.version>2.5</servlet.api.version>
     <org.jboss.resteasy.version>2.3.6.Final</org.jboss.resteasy.version>
-    <org.modeshape.version>3.5.0.Final</org.modeshape.version>
+    
     <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
     <commons.io.version>2.4</commons.io.version>
     <commons.lang3.version>3.1</commons.lang3.version>
@@ -107,73 +88,24 @@
     <commons.codec.version>1.5</commons.codec.version>
     <jline.version>2.9</jline.version>
     <joda-time.version>2.1</joda-time.version>
+    <org.modeshape.version>3.5.0.Final</org.modeshape.version>
     <tika-core.version>1.3</tika-core.version> <!-- inline with version used by modeshape -->
     <maven.version>3.0.5</maven.version> <!-- inline with version in drools-kie -->
   </properties>
+ 
 
   <build>
-    <!-- This section defines the default plugin settings inherited by child 
-      projects. -->
+    <!-- This section is now provided by the jboss.org bom. You can add
+    entries here to override. The plugin settings are inherited by child 
+    projects.  -->
     <pluginManagement>
       <plugins>
-        <!-- Fixes how test resources of a project can be used in projects dependent 
-          on it -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>${maven.jar.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <version>${maven.war.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>${maven.assembly.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>${maven.bundle.plugin.version}</version>
-          <extensions>true</extensions>
-        </plugin>
       </plugins>
     </pluginManagement>
 
     <plugins>
-      <!-- Specify the compiler options and settings -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin.version}</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-          <showDeprecation>false</showDeprecation>
-          <showWarnings>false</showWarnings>
-        </configuration>
-      </plugin>
-      <!-- Produce source jars during the 'verify' phase -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>${maven.source.plugin.version}</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar</goal>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven.surefire.plugin.version}</version>
         <configuration>
           <includes>
             <include>**/*TestCase.java</include>
@@ -194,7 +126,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>${maven.jar.plugin.version}</version><!--$NO-MVN-MAN-VER$ -->
         <executions>
           <execution>
             <id>test-jar</id>
@@ -220,6 +151,14 @@
 
   <dependencyManagement>
     <dependencies>
+    	<!-- Import the JBoss BOM. -->
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>${jboss.bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- Common libraries -->
       <dependency>
         <groupId>org.overlord</groupId>
@@ -354,19 +293,6 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
-
-  <distributionManagement>
-    <repository>
-      <id>jboss-releases-repository</id>
-      <name>JBoss Releases Repository</name>
-      <url>${jboss.releases.repo.url}</url>
-    </repository>
-    <snapshotRepository>
-      <id>jboss-snapshots-repository</id>
-      <name>JBoss Snapshots Repository</name>
-      <url>${jboss.snapshots.repo.url}</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <!-- modules in alphabetical order -->
   <modules>
