@@ -117,17 +117,17 @@ public final class ZipToSrampArchiveRegistry {
         }
         return provider;
     }
-    
+
     /**
-     * Tries to match an ArchiveType based on the content of the archive. 
-     * For example a Drools kiejar contains a META-INF/kmodule.xml entry, 
+     * Tries to match an ArchiveType based on the content of the archive.
+     * For example a Drools kiejar contains a META-INF/kmodule.xml entry,
      * which has a S-RAMP Model of KieJarArchive.
-     * 
+     *
      * @param InputStream resourceInputStream, gets consumed and closed.
-     * 
+     *
      * @return ArchiveInfo containing Table of Content and archiveType match.
-     * 
-     * @throws ZipToSrampArchiveException 
+     *
+     * @throws ZipToSrampArchiveException
      */
     public static ArchiveInfo inspectArchive(InputStream resourceInputStream) throws ZipToSrampArchiveException {
     	try {
@@ -149,10 +149,10 @@ public final class ZipToSrampArchiveRegistry {
 	    	}
 			ZipInputStream zip = new ZipInputStream(resourceInputStream);
 			ZipEntry entry;
-			String toc = "";
+			String toc = ""; //$NON-NLS-1$
 			while((entry = zip.getNextEntry()) != null) {
 				String name = entry.getName();
-				toc += name + "\n";
+				toc += name + "\n"; //$NON-NLS-1$
 				if (matchedType==null) {
 					for (String path: sortedPathEntryHintMapCache.keySet()) {
 						if (path.equalsIgnoreCase(name)) {
@@ -169,6 +169,6 @@ public final class ZipToSrampArchiveRegistry {
 	    	IOUtils.closeQuietly(resourceInputStream);
 	    }
     }
-    
-   
+
+
 }

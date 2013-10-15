@@ -57,9 +57,9 @@ public class SrampUIConfig {
 
         config = ConfigurationFactory.createConfig(
                 configFile,
-                "sramp-ui.properties",
+                "sramp-ui.properties", //$NON-NLS-1$
                 refreshDelay,
-                "/META-INF/config/org.overlord.sramp.ui.server.api.properties",
+                "/META-INF/config/org.overlord.sramp.ui.server.api.properties", //$NON-NLS-1$
                 SrampApiClientAccessor.class);
         System.out.println(Messages.i18n.format("Config.Loaded", SrampUIConfig.config.getString(SRAMP_API_ENDPOINT))); //$NON-NLS-1$
     }

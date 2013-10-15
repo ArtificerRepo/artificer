@@ -30,12 +30,12 @@ import org.overlord.sramp.ui.client.shared.beans.ArtifactOriginEnum;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 @Templated("/org/overlord/sramp/ui/client/local/site/artifacts.html#sramp-filter-sidebar")
 @Dependent
-public class ArtifactFilters extends Composite implements HasValueChangeHandlers<ArtifactFilterBean> {
+public class ArtifactFilters extends Composite implements HasValue<ArtifactFilterBean> {
 
     private ArtifactFilterBean currentState = new ArtifactFilterBean();
 
@@ -115,8 +115,7 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
         ClickHandler clearFilterHandler = new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                setValue(new ArtifactFilterBean());
-                onFilterValueChange();
+                setValue(new ArtifactFilterBean(), true);
             }
         };
         clearCoreFilters.addClickHandler(clearFilterHandler);
@@ -201,11 +200,12 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
     public ArtifactFilterBean getValue() {
         return this.currentState;
     }
-
+    
     /**
-     * @param value the new filter settings
+     * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
-    public void setValue(ArtifactFilterBean value) {
+    @Override
+    public void setValue(ArtifactFilterBean value, boolean fireEvents) {
         artifactType.setValue(value.getArtifactType() == null ? "" : value.getArtifactType()); //$NON-NLS-1$
         dateCreatedFrom.setDateValue(value.getDateCreatedFrom() == null ? null : value.getDateCreatedFrom());
         dateCreatedTo.setDateValue(value.getDateCreatedTo() == null ? null : value.getDateCreatedTo());
@@ -222,7 +222,18 @@ public class ArtifactFilters extends Composite implements HasValueChangeHandlers
         }
         classifierFilters.setValue(value.getClassifiers());
         customPropertyFilters.setValue(value.getCustomProperties());
-        onFilterValueChange();
+        ArtifactFilterBean oldState = this.currentState;
+        currentState = value;
+        if (fireEvents) {
+        	ValueChangeEvent.fireIfNotEqual(this, oldState, currentState);
+        }
+    }
+
+    /**
+     * @param value the new filter settings
+     */
+    public void setValue(ArtifactFilterBean value) {
+    	setValue(value, false);
     }
 
     /**
