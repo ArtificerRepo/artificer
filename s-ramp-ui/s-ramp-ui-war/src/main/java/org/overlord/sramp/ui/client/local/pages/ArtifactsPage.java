@@ -30,6 +30,8 @@ import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
 import org.overlord.sramp.ui.client.local.pages.artifacts.IImportCompletionHandler;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ImportArtifactDialog;
+import org.overlord.sramp.ui.client.local.services.ApplicationStateKeys;
+import org.overlord.sramp.ui.client.local.services.ApplicationStateService;
 import org.overlord.sramp.ui.client.local.services.ArtifactSearchRpcService;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
@@ -63,6 +65,8 @@ public class ArtifactsPage extends AbstractPage {
     protected ArtifactSearchRpcService searchService;
     @Inject
     protected NotificationService notificationService;
+    @Inject
+    protected ApplicationStateService stateService;
 
     // Breadcrumbs
     @Inject @DataField("back-to-dashboard")
@@ -176,8 +180,14 @@ public class ArtifactsPage extends AbstractPage {
      */
     @Override
     protected void onPageShowing() {
+        ArtifactFilterBean filterBean = (ArtifactFilterBean) stateService.get(ApplicationStateKeys.ARTIFACTS_FILTER, new ArtifactFilterBean());
+        String searchText = (String) stateService.get(ApplicationStateKeys.ARTIFACTS_SEARCH_TEXT, ""); //$NON-NLS-1$
+        Integer page = (Integer) stateService.get(ApplicationStateKeys.ARTIFACTS_PAGE, 1);
+    	this.filtersPanel.setValue(filterBean);
+    	this.searchBox.setValue(searchText);
+    	
         // Kick off an artifact search
-        doArtifactSearch();
+        doArtifactSearch(page);
         // Refresh the artifact filters
         filtersPanel.refresh();
     }
@@ -196,7 +206,14 @@ public class ArtifactsPage extends AbstractPage {
     protected void doArtifactSearch(int page) {
         onSearchStarting();
         currentPage = page;
-        searchService.search(filtersPanel.getValue(), this.searchBox.getValue(), page, new IRpcServiceInvocationHandler<ArtifactResultSetBean>() {
+        final ArtifactFilterBean filterBean = filtersPanel.getValue();
+		final String searchText = this.searchBox.getValue();
+		
+        stateService.put(ApplicationStateKeys.ARTIFACTS_FILTER, filterBean);
+        stateService.put(ApplicationStateKeys.ARTIFACTS_SEARCH_TEXT, searchText);
+        stateService.put(ApplicationStateKeys.ARTIFACTS_PAGE, currentPage);
+        
+		searchService.search(filterBean, searchText, page, new IRpcServiceInvocationHandler<ArtifactResultSetBean>() {
             @Override
             public void onReturn(ArtifactResultSetBean data) {
                 updateArtifactTable(data);

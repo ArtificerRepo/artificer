@@ -162,6 +162,7 @@ public class BrmsResourceTest extends AbstractNoAuditingResourceTest {
                 //reading the asset from disk
                 InputStream assetInputStream = this.getClass().getResourceAsStream("/brms/srampPackage/" + fileName); //$NON-NLS-1$
                 //upload the asset using the uuid
+                @SuppressWarnings("deprecation")
                 ArtifactType artifactType = ArtifactType.fromFileExtension(asset.getMetadata().getFormat());
                 BaseArtifactType baseArtifactType = artifactType.newArtifactInstance();
                 baseArtifactType.setName(fileName);
