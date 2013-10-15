@@ -9,19 +9,16 @@
   </listener>
   <listener>
     <display-name>Bootstrap Listener</display-name>
-    <description>This listener bootstraps the system.</description>
     <listener-class>org.overlord.sramp.demos.listeners.BootstrapListener</listener-class>
   </listener>
 
   <filter>
     <display-name>Cache Control Filter</display-name>
-    <description>Handles caching for the JSP content.</description>
     <filter-name>CacheControl</filter-name>
     <filter-class>org.overlord.sramp.demos.filters.CacheControlFilter</filter-class>
   </filter>
   <filter>
     <display-name>Resource Cache Control Filter</display-name>
-    <description>Handles caching for the non-JSP resources (CSS, images, etc...).</description>
     <filter-name>ResourceCacheControl</filter-name>
     <filter-class>org.overlord.sramp.demos.filters.ResourceCacheControlFilter</filter-class>
   </filter>
@@ -36,7 +33,6 @@
 
   <servlet>
     <display-name>Home Servlet</display-name>
-    <description>Serves up the home/dashboard content.</description>
     <servlet-name>Home</servlet-name>
     <servlet-class>org.overlord.sramp.demos.servlets.HomeServlet</servlet-class>
   </servlet>
