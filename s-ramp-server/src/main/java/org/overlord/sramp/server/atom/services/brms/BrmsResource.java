@@ -321,6 +321,7 @@ public class BrmsResource {
 
             //3. Use this UUID to lookup the content, and stream back the response
             if (uuid!=null) {
+                @SuppressWarnings("deprecation")
                 ArtifactType artifactType = ArtifactType.fromFileExtension(format);
                 PersistenceManager persistenceManager = PersistenceFactory.newInstance();
                 BaseArtifactType baseArtifact = persistenceManager.getArtifact(uuid, artifactType);

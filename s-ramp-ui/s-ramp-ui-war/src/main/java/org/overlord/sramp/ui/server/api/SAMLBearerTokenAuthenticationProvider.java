@@ -57,7 +57,7 @@ public class SAMLBearerTokenAuthenticationProvider implements AuthenticationProv
         String issuer = SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_SAML_AUTH_ISSUER);
         String service = SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_SAML_AUTH_SERVICE);
         String samlAssertion = SAMLBearerTokenUtil.createSAMLAssertion(issuer, service);
-        boolean signAssertion = "true".equals(SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_SAML_AUTH_SIGN_ASSERTIONS));
+        boolean signAssertion = "true".equals(SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_SAML_AUTH_SIGN_ASSERTIONS)); //$NON-NLS-1$
         if (signAssertion) {
             String keystorePath = SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_SAML_AUTH_KEYSTORE);
             String keystorePassword = SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_SAML_AUTH_KEYSTORE_PASSWORD);
