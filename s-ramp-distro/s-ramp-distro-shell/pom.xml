@@ -10,7 +10,7 @@
   <artifactId>s-ramp-distro-shell</artifactId>
   <packaging>jar</packaging>
   <name>S-RAMP Distribution: Interactive Shell</name>
-  <dependencies>
+  <dependencies> 
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-shell</artifactId>
@@ -25,10 +25,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
+       <scope>compile</scope>
     </dependency>
   </dependencies>
   <pluginRepositories>
