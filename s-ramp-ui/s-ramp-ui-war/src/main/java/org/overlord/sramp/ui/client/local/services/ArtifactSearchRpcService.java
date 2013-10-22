@@ -52,17 +52,19 @@ public class ArtifactSearchRpcService {
      * @param filters
      * @param searchText
      * @param page
+     * @param sortColumnId
+     * @param sortAscending
      * @param handler
      */
-    public void search(ArtifactFilterBean filters, String searchText,
-            int page, final IRpcServiceInvocationHandler<ArtifactResultSetBean> handler) {
+    public void search(ArtifactFilterBean filters, String searchText, int page, String sortColumnId, boolean sortAscending,
+            final IRpcServiceInvocationHandler<ArtifactResultSetBean> handler) {
         // TODO only allow one search at a time.  If another search comes in before the previous one
         // finished, cancel the previous one.  In other words, only return the results of the *last*
         // search performed.
         RemoteCallback<ArtifactResultSetBean> successCallback = new DelegatingRemoteCallback<ArtifactResultSetBean>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
-            remoteSearchService.call(successCallback, errorCallback).search(filters, searchText, page);
+            remoteSearchService.call(successCallback, errorCallback).search(filters, searchText, page, sortColumnId, sortAscending);
         } catch (SrampUiException e) {
             errorCallback.error(null, e);
         }

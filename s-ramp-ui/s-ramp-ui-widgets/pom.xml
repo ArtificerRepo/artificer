@@ -7,6 +7,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>s-ramp-ui-widgets</artifactId>
+  <name>S-RAMP UI: Shared Widgets</name>
   <dependencies>
     <dependency>
       <groupId>com.google.gwt</groupId>

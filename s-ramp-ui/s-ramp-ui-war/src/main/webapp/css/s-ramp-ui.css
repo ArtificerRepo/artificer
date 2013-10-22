@@ -137,6 +137,14 @@ button.tree:hover {
   width: 95%;
 }
 
+.sortable-column-header {
+  color: rgb(0, 85, 128);
+}
+.sortable-column-icon {
+  font-size: 8px;
+  color: rgb(0, 85, 128);
+}
+
 .mobile-header {
   text-indent: 15px;
   background-color: #1f97d8;

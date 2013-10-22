@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.overlord.sramp.ui.client.local.services;
+package org.overlord.sramp.ui.client.shared.beans;
 
 /**
- * Constants used when storing state in the app state service.
- *
+ * Contains a number of helpful static constants.
  * @author eric.wittmann@redhat.com
  */
-public final class ApplicationStateKeys {
+public class Constants {
 
-	public static final String ARTIFACTS_FILTER = "artifacts.filter-bean"; //$NON-NLS-1$
-	public static final String ARTIFACTS_PAGE = "artifacts.page"; //$NON-NLS-1$
-	public static final String ARTIFACTS_SEARCH_TEXT = "artifacts.search-text"; //$NON-NLS-1$
-    public static final String ARTIFACTS_SORT_COLUMN = "artifacts.sort-column"; //$NON-NLS-1$
-	
+    public static final String SORT_COLID_NAME = "name"; //$NON-NLS-1$
+    public static final String SORT_COLID_MODIFIED_ON = "lastModifiedTimestamp"; //$NON-NLS-1$
+
 }

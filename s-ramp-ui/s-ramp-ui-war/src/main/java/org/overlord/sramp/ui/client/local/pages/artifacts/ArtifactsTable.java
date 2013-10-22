@@ -20,8 +20,9 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.sramp.ui.client.local.pages.ArtifactDetailsPage;
-import org.overlord.sramp.ui.client.local.widgets.common.TemplatedWidgetTable;
+import org.overlord.sramp.ui.client.local.widgets.common.SortableTemplatedWidgetTable;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
+import org.overlord.sramp.ui.client.shared.beans.Constants;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Anchor;
@@ -33,7 +34,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class ArtifactsTable extends TemplatedWidgetTable {
+public class ArtifactsTable extends SortableTemplatedWidgetTable {
 
     @Inject
     protected TransitionAnchorFactory<ArtifactDetailsPage> toDetailsPageLinkFactory;
@@ -42,6 +43,27 @@ public class ArtifactsTable extends TemplatedWidgetTable {
      * Constructor.
      */
     public ArtifactsTable() {
+    }
+
+    /**
+     * @see org.overlord.sramp.ui.client.local.widgets.common.SortableTemplatedWidgetTable#getDefaultSortColumn()
+     */
+    @Override
+    public SortColumn getDefaultSortColumn() {
+        SortColumn sortColumn = new SortColumn();
+        sortColumn.columnId = Constants.SORT_COLID_NAME;
+        sortColumn.ascending = true;
+        return sortColumn;
+    }
+
+    /**
+     * @see org.overlord.monitoring.ui.client.local.widgets.common.SortableTemplatedWidgetTable#configureColumnSorting()
+     */
+    @Override
+    protected void configureColumnSorting() {
+        setColumnSortable(0, Constants.SORT_COLID_NAME);
+        setColumnSortable(3, Constants.SORT_COLID_MODIFIED_ON);
+        sortBy(Constants.SORT_COLID_NAME, true);
     }
 
     /**
