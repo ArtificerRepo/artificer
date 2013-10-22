@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>s-ramp-installer</artifactId>
-  <name>S-RAMP AS Installer</name>
+  <name>S-RAMP Installer</name>
   <description>Scripts to install to an Application Server</description>
 
   <dependencies>

@@ -59,10 +59,11 @@ public class ArtifactSearchService implements IArtifactSearchService {
     }
 
     /**
-     * @see org.overlord.sramp.ui.client.shared.services.IArtifactSearchService#search(org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean, java.lang.String, int)
+     * @see org.overlord.sramp.ui.client.shared.services.IArtifactSearchService#search(org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean, java.lang.String, int, java.lang.String, boolean)
      */
     @Override
-    public ArtifactResultSetBean search(ArtifactFilterBean filters, String searchText, int page) throws SrampUiException {
+    public ArtifactResultSetBean search(ArtifactFilterBean filters, String searchText, int page,
+            String sortColumnId, boolean sortAscending) throws SrampUiException {
         int pageSize = 20;
         try {
             ArtifactResultSetBean rval = new ArtifactResultSetBean();
@@ -74,7 +75,13 @@ public class ArtifactSearchService implements IArtifactSearchService {
             } else {
                 query = createQuery(filters, searchText);
             }
-            QueryResultSet resultSet = query.startIndex(req_startIndex).orderBy("name").ascending().count(pageSize + 1).query(); //$NON-NLS-1$
+            SrampClientQuery sq = query.startIndex(req_startIndex).orderBy(sortColumnId);
+            if (sortAscending) {
+                sq.ascending();
+            } else {
+                sq.descending();
+            }
+            QueryResultSet resultSet = sq.count(pageSize + 1).query();
             ArrayList<ArtifactSummaryBean> artifacts = new ArrayList<ArtifactSummaryBean>();
             for (ArtifactSummary artifactSummary : resultSet) {
                 ArtifactSummaryBean bean = new ArtifactSummaryBean();

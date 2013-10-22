@@ -8,7 +8,7 @@
   </parent>
   <artifactId>s-ramp-ui-war-jboss7</artifactId>
   <packaging>war</packaging>
-  <name>s-ramp-ui-war-jboss7</name>
+  <name>S-RAMP UI: Web App (JBoss 7)</name>
   <dependencies>
     <!-- The base WAR being extended -->
     <dependency>

@@ -26,6 +26,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.ClientMessages;
+import org.overlord.sramp.ui.client.local.events.TableSortEvent;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
 import org.overlord.sramp.ui.client.local.pages.artifacts.IImportCompletionHandler;
@@ -37,6 +38,7 @@ import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.Pager;
 import org.overlord.sramp.ui.client.local.widgets.common.HtmlSnippet;
+import org.overlord.sramp.ui.client.local.widgets.common.SortableTemplatedWidgetTable.SortColumn;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
@@ -133,6 +135,12 @@ public class ArtifactsPage extends AbstractPage {
                 doArtifactSearch(event.getValue());
             }
         });
+        artifactsTable.addTableSortHandler(new TableSortEvent.Handler() {
+            @Override
+            public void onTableSort(TableSortEvent event) {
+                doArtifactSearch(currentPage);
+            }
+        });
 
         // Hide columns 2-5 when in mobile mode.
         artifactsTable.setColumnClasses(2, "desktop-only"); //$NON-NLS-1$
@@ -183,8 +191,11 @@ public class ArtifactsPage extends AbstractPage {
         ArtifactFilterBean filterBean = (ArtifactFilterBean) stateService.get(ApplicationStateKeys.ARTIFACTS_FILTER, new ArtifactFilterBean());
         String searchText = (String) stateService.get(ApplicationStateKeys.ARTIFACTS_SEARCH_TEXT, ""); //$NON-NLS-1$
         Integer page = (Integer) stateService.get(ApplicationStateKeys.ARTIFACTS_PAGE, 1);
-    	this.filtersPanel.setValue(filterBean);
+        SortColumn sortColumn = (SortColumn) stateService.get(ApplicationStateKeys.ARTIFACTS_SORT_COLUMN, artifactsTable.getDefaultSortColumn());
+
+        this.filtersPanel.setValue(filterBean);
     	this.searchBox.setValue(searchText);
+    	this.artifactsTable.sortBy(sortColumn.columnId, sortColumn.ascending);
     	
         // Kick off an artifact search
         doArtifactSearch(page);
@@ -208,12 +219,15 @@ public class ArtifactsPage extends AbstractPage {
         currentPage = page;
         final ArtifactFilterBean filterBean = filtersPanel.getValue();
 		final String searchText = this.searchBox.getValue();
-		
+        final SortColumn currentSortColumn = this.artifactsTable.getCurrentSortColumn();
+
         stateService.put(ApplicationStateKeys.ARTIFACTS_FILTER, filterBean);
         stateService.put(ApplicationStateKeys.ARTIFACTS_SEARCH_TEXT, searchText);
         stateService.put(ApplicationStateKeys.ARTIFACTS_PAGE, currentPage);
-        
-		searchService.search(filterBean, searchText, page, new IRpcServiceInvocationHandler<ArtifactResultSetBean>() {
+        stateService.put(ApplicationStateKeys.ARTIFACTS_SORT_COLUMN, currentSortColumn);
+
+		searchService.search(filterBean, searchText, page, currentSortColumn.columnId, currentSortColumn.ascending,
+		        new IRpcServiceInvocationHandler<ArtifactResultSetBean>() {
             @Override
             public void onReturn(ArtifactResultSetBean data) {
                 updateArtifactTable(data);

@@ -8,7 +8,7 @@
   </parent>
   <artifactId>s-ramp-ui-war-eap61</artifactId>
   <packaging>war</packaging>
-  <name>s-ramp-ui-war-eap61</name>
+  <name>S-RAMP UI: Web App (EAP 6.1)</name>
   <dependencies>
     <!-- The base WAR being extended -->
     <dependency>

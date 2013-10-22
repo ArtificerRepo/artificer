@@ -30,11 +30,14 @@ public interface IArtifactSearchService {
 
     /**
      * Search for artifacts using the given filtersPanel and search text.
-     * @param filtersPanel
+     * @param filters
      * @param searchText
      * @param page
+     * @param sortColumnId
+     * @param sortAscending
      * @throws SrampUiException
      */
-    public ArtifactResultSetBean search(ArtifactFilterBean filters, String searchText, int page) throws SrampUiException;
+    public ArtifactResultSetBean search(ArtifactFilterBean filters, String searchText, int page,
+            String sortColumnId, boolean sortAscending) throws SrampUiException;
 
 }
