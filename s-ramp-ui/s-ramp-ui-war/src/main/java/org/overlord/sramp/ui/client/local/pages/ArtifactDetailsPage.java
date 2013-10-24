@@ -231,6 +231,7 @@ public class ArtifactDetailsPage extends AbstractPage {
                 if (!relationshipsLoaded) {
                     loadRelationships(currentArtifact);
                 }
+                relationshipsTabAnchor.setFocus(false);
             }
         });
         sourceTabAnchor.addClickHandler(new ClickHandler() {
@@ -239,6 +240,7 @@ public class ArtifactDetailsPage extends AbstractPage {
                 if (!sourceLoaded) {
                     loadSource(currentArtifact);
                 }
+                sourceTabAnchor.setFocus(false);
             }
         });
     }
