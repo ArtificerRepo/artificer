@@ -489,6 +489,7 @@ public class NotificationService {
             notification.getData().setMessage(notificationBean.getMessage());
             notification.getData().setMessageWidget(notificationBean.getMessageWidget());
             notification.getData().setType(NotificationType.error);
+            notification.getData().setException(notificationBean.getException());
             notification.getWidget().setNotificationTitle(notificationBean.getTitle());
             if (notificationBean.getMessageWidget() != null) {
                 notification.getWidget().setNotificationMessage((Widget) notificationBean.getMessageWidget());
@@ -499,6 +500,7 @@ public class NotificationService {
                 }
                 if (notification.getData().getException() != null) {
                     // TODO handle exceptions - need to create an exception dialog
+                    errorDetails.add(new InlineLabel(notification.getData().getException().getMessage()));
                 }
                 notification.getWidget().setNotificationMessage(errorDetails);
             }

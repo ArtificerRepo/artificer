@@ -36,6 +36,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.JsonEncoding;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerator;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
@@ -251,41 +254,26 @@ public class ArtifactUploadServlet extends HttpServlet {
 	 * Writes the response values back to the http response.  This allows the calling code to
 	 * parse the response values for display to the user.
 	 *
-	 * TODO replace with Jackson! see DeploymentUploadServlet in dtgovui
-	 *
 	 * @param responseMap the response params to write to the http response
 	 * @param response the http response
 	 * @throws IOException
 	 */
-	private void writeToResponse(Map<String, String> responseMap, HttpServletResponse response) throws IOException {
+	private static void writeToResponse(Map<String, String> responseMap, HttpServletResponse response) throws IOException {
         // Note: setting the content-type to text/html because otherwise IE prompt the user to download
         // the result rather than handing it off to the GWT form response handler.
         // See JIRA issue https://issues.jboss.org/browse/SRAMPUI-103
 		response.setContentType("text/html; charset=UTF8"); //$NON-NLS-1$
-		StringBuilder builder = new StringBuilder();
-		builder.append("({"); //$NON-NLS-1$
-		boolean first = true;
-		for (java.util.Map.Entry<String, String> entry : responseMap.entrySet()) {
-			String key = entry.getKey();
-			String val = entry.getValue();
-			if (first)
-				first = false;
-			else
-				builder.append(","); //$NON-NLS-1$
-			builder.append("\""); //$NON-NLS-1$
-			builder.append(key);
-			builder.append("\" : \""); //$NON-NLS-1$
-			if (val != null) {
-				val = val.replace("\"", "\\\""); //$NON-NLS-1$ //$NON-NLS-2$
-				val = val.replace("\n", "\\n"); //$NON-NLS-1$ //$NON-NLS-2$
-				builder.append(val);
-			}
-			builder.append("\""); //$NON-NLS-1$
-		}
-		builder.append("})"); //$NON-NLS-1$
-		byte [] jsonData = builder.toString().getBytes("UTF-8"); //$NON-NLS-1$
-		response.setContentLength(jsonData.length);
-		response.getOutputStream().write(jsonData);
-		response.getOutputStream().flush();
+        JsonFactory f = new JsonFactory();
+        JsonGenerator g = f.createJsonGenerator(response.getOutputStream(), JsonEncoding.UTF8);
+        g.useDefaultPrettyPrinter();
+        g.writeStartObject();
+        for (java.util.Map.Entry<String, String> entry : responseMap.entrySet()) {
+            String key = entry.getKey();
+            String val = entry.getValue();
+            g.writeStringField(key, val);
+        }
+        g.writeEndObject();
+        g.flush();
+        g.close();
 	}
 }

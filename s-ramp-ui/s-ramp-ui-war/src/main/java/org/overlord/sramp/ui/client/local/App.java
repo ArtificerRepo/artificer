@@ -18,10 +18,18 @@ package org.overlord.sramp.ui.client.local;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.api.BusLifecycleAdapter;
+import org.jboss.errai.bus.client.api.BusLifecycleEvent;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.api.TransportError;
+import org.jboss.errai.bus.client.api.TransportErrorHandler;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.nav.client.local.Navigation;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.overlord.sramp.ui.client.local.widgets.common.LoggedOutDialog;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -37,10 +45,46 @@ public class App {
 	private RootPanel rootPanel;
 	@Inject
 	private Navigation navigation;
+	@Inject
+	private ClientMessageBus bus;
+    @Inject
+    LoggedOutDialog loggedOutDialog;
 
 	@PostConstruct
 	public void buildUI() {
 		rootPanel.add(navigation.getContentPanel());
+		bus.addLifecycleListener(new BusLifecycleAdapter() {
+		    @Override
+		    public void busAssociating(BusLifecycleEvent e) {
+                GWT.log("Bus is associating"); //$NON-NLS-1$
+		    }
+            @Override
+            public void busOnline(BusLifecycleEvent e) {
+                GWT.log("Bus is now online"); //$NON-NLS-1$
+                if (loggedOutDialog.isAttached()) {
+                    Window.Location.reload();
+                }
+            }
+            @Override
+            public void busDisassociating(BusLifecycleEvent e) {
+                GWT.log("Bus is disassociating"); //$NON-NLS-1$
+            }
+            @Override
+            public void busOffline(BusLifecycleEvent e) {
+                GWT.log("Bus is now offline"); //$NON-NLS-1$
+            }
+        });
+		bus.addTransportErrorHandler(new TransportErrorHandler() {
+            @Override
+            public void onError(TransportError error) {
+                GWT.log("Transport error: " + error.getStatusCode()); //$NON-NLS-1$
+                if (error != null && error.getStatusCode() == 401) {
+                    if (!loggedOutDialog.isAttached()) {
+                        loggedOutDialog.show();
+                    }
+                }
+            }
+        });
 	}
 
 }
