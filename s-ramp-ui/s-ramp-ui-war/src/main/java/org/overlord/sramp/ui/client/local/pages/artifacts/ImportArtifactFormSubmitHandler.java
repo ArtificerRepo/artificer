@@ -161,12 +161,9 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
          * @param resultData
          */
         public static final ImportResult fromResult(String resultData) {
-            int startIdx = resultData.indexOf('(');
-            int endIdx = resultData.lastIndexOf(')') + 1;
-            if (resultData.endsWith(")")) //$NON-NLS-1$
-                resultData = resultData.substring(startIdx);
-            else
-                resultData = resultData.substring(startIdx, endIdx);
+            int startIdx = resultData.indexOf('{');
+            int endIdx = resultData.lastIndexOf('}') + 1;
+            resultData = "(" + resultData.substring(startIdx, endIdx) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             return fromJSON(resultData);
         }
 
