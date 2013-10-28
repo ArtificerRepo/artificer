@@ -103,7 +103,7 @@
     <!-- Set the SAML keystore and alias password in the s-ramp-ui config -->
     <property file="${s-ramp.appserver.config.dir}/overlord-vault-keys.properties" />
     <propertyfile file="${s-ramp.appserver.config.dir}/sramp-ui.properties">
-      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="$${vault:${overlord-commons.vault.password.hash}}" />
+      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="$${vault:${overlord-commons.saml-keystore.password.hash}}" />
       <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="$${vault:${overlord-commons.overlord-alias.password.hash}}" />
     </propertyfile>
 
@@ -143,10 +143,14 @@
       out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
     <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.appserver.config.dir}/standalone.xml" overwrite="true" />
     <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+    <xslt 
+      style="updates/xslt/configureModeshape-${appserver.id}.xslt"
+      in="${s-ramp.appserver.config.dir}/standalone-full.xml"
+      out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+    <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.appserver.config.dir}/standalone-full.xml" overwrite="true" />
+    <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
 
     <copy file="updates/layers.conf" todir="${s-ramp.appserver.dir}/modules" overwrite="false" />
-
-    <copy file="updates/standalone-${appserver.id}.conf" tofile="${s-ramp.appserver.bin.dir}/standalone.conf" overwrite="true" />
   </target>
 
   <!-- Configure JBoss EAP 6.1 -->
