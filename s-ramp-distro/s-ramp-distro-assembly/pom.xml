@@ -137,6 +137,14 @@
       <version>${project.version}</version>
       <type>jdocbook</type>
     </dependency>
+    
+    <dependency>
+    	<groupId>org.modeshape</groupId>
+    	<artifactId>modeshape-distribution</artifactId>
+    	<version>${org.modeshape.version}</version>
+    	<classifier>jbosseap-61-dist</classifier>
+    	<type>zip</type>
+    </dependency>
   </dependencies>
 
   <build>

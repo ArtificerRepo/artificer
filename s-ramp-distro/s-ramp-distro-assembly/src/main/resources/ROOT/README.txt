@@ -23,23 +23,12 @@ This distribution comes with the following:
 This distribution works with version 6.1 of the JBoss Enterprise Application
 Platform (JBoss EAP 6.1).  You must download EAP and point the S-RAMP installer
 to the downloaded .zip.  You can accomplish the latter by simply copying the
-downloaded EAP .zip file into the root of this distribution, or you can 
+downloaded EAP .zip file into the AS/EAP directory of this distribution, or you can 
 modify the 's-ramp-build.properties' file to point to wherever you saved it.
 
     Download here:  http://www.jboss.org/jbossas/downloads
 
-Overlord S-RAMP also uses the ModeShape project as its persistence store.  
-So in addition to EAP you must download the ModeShape distribution for EAP
-and follow the same procedure mentioned above (either copy the ModeShape ZIP
-to the root of this distribution, or else modify s-ramp-build.properties.
-
-    Download here:  http://www.jboss.org/modeshape/downloads/downloads3-2-0-final
-
-(Note that we recommend version 3.2.0.Final of ModeShape at the time of this
-writing.
-
-Once these two additional dependencies have been downloaded, the installer
-should do everything else for you.  From the root of this distribution, simply
+The installer should do everything else for you. From the root of this distribution, simply
 run:
 
     ant
@@ -53,6 +42,6 @@ in the 'target' directory) and try out any of the following:
 
 You should be able to log in with the following credentials:
 
-    Username: gary
-    Password: gary
+    Username: admin
+    Password: <pw>
         
