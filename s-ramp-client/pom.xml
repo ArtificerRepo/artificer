@@ -29,43 +29,40 @@
       <version>${project.version}</version>
     </dependency>
 
-    <!-- Third party libraries -->
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>2.2.2</version>
-      <scope>provided</scope>
-    </dependency>
+    <!-- RESTEasy -->
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
-      <version>${org.jboss.resteasy.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-atom-provider</artifactId>
-      <version>${org.jboss.resteasy.version}</version>
+      <version>${version.org.jboss.resteasy}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
-      <version>${org.jboss.resteasy.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>jaxrs-api</artifactId>
-      <version>${org.jboss.resteasy.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
-      <version>${org.jboss.resteasy.version}</version>
       <exclusions>
         <exclusion>
           <artifactId>servlet-api</artifactId>
           <groupId>javax.servlet</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <!-- Third party libraries -->
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -107,6 +104,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-common</artifactId>
       <scope>test</scope>
@@ -117,26 +121,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
-      <version>${project.version}</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>tjws</artifactId>
-      <version>${org.jboss.resteasy.version}</version>
+      <version>${version.org.jboss.resteasy}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

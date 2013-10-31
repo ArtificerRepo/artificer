@@ -1,0 +1,23 @@
+<jboss-deployment-structure>
+  <deployment>
+    <dependencies>
+      <module name="org.picketbox" />
+      <module name="org.picketlink" />
+      <module name="org.jboss.as.web" />
+      <module name="org.overlord.commons.overlord-commons-auth" />
+      <module name="org.apache.commons.codec" />
+      <module name="org.apache.commons.collections" />
+      <module name="org.apache.commons.configuration" />
+      <module name="org.apache.commons.io" />
+      <module name="org.apache.commons.lang" />
+      <module name="org.jboss.marshalling" />
+      <module name="org.jboss.marshalling.river" />
+      <module name="org.apache.log4j" />
+      <module name="org.slf4j" />
+      <module name="org.jboss.staxmapper" />
+      <module name="org.apache.tika" slot="1.3" />
+      <module name="org.modeshape" />
+      <module name="org.jboss.as.clustering.infinispan" />
+    </dependencies>
+  </deployment>
+</jboss-deployment-structure>

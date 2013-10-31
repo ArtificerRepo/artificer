@@ -20,7 +20,6 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-auth</artifactId>
-      <version>${overlord-commons.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
@@ -40,6 +39,18 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server</artifactId>
+      <type>war</type>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server-jboss7</artifactId>
+      <type>war</type>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server-eap61</artifactId>
       <type>war</type>
       <version>${project.version}</version>
     </dependency>
@@ -172,7 +183,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.4</version>
         <dependencies>
           <dependency>
             <!-- Entry needed to enable jdocbook unzipping -->
@@ -243,7 +253,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-install-plugin</artifactId>
-        <version>2.5</version>
         <executions>
           <execution>
             <id>install-cli</id>
@@ -262,7 +271,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.7</version>
         <executions>
           <execution>
             <id>deploy-cli</id>

@@ -22,7 +22,6 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-auth</artifactId>
-      <version>${overlord-commons.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
@@ -35,6 +34,18 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server-jboss7</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server-eap61</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
@@ -60,7 +71,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.7</version>
             <dependencies>
               <dependency>
                 <groupId>ant</groupId>
@@ -90,7 +100,8 @@
                       value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
 
                     <!-- S-RAMP WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server.war.path}" />
+                    <property name="s-ramp.s-ramp-server.war.path" 
+                      value="${maven.dependency.org.overlord.sramp.s-ramp-server-eap61.war.path}" />
                     <property name="s-ramp.s-ramp-ui.war.path"
                       value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap61.war.path}" />
 
@@ -132,7 +143,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.7</version>
             <dependencies>
               <dependency>
                 <groupId>ant</groupId>
@@ -162,7 +172,8 @@
                       value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
 
                     <!-- S-RAMP WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server.war.path}" />
+                    <property name="s-ramp.s-ramp-server.war.path" 
+                      value="${maven.dependency.org.overlord.sramp.s-ramp-server-jboss7.war.path}" />
                     <property name="s-ramp.s-ramp-ui.war.path"
                       value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-jboss7.war.path}" />
 

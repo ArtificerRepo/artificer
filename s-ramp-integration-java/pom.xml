@@ -27,7 +27,6 @@
     <dependency>
       <groupId>org.apache.bcel</groupId>
       <artifactId>bcel</artifactId>
-      <version>5.2</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -36,25 +35,16 @@
       <dependency>
     	<groupId>org.apache.maven</groupId>
     	<artifactId>maven-model</artifactId>
-    	<version>${maven.version}</version>
     </dependency>
     <dependency>
     	<groupId>org.apache.maven</groupId>
     	<artifactId>maven-core</artifactId>
-    	<version>${maven.version}</version>
     	<exclusions>
     	  <exclusion>
     	    <artifactId>sisu-guava</artifactId>
     	    <groupId>org.sonatype.sisu</groupId>
     	  </exclusion>
     	</exclusions>
-    </dependency>
-
-    <!-- Testing (note the scope) -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <!-- Logging -->

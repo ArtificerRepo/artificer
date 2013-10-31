@@ -11,30 +11,22 @@
   <name>S-RAMP Maven Wagon Provider</name>
   <description>Maven Wagon that gets and puts artifacts from and to remote server using the S-RAMP Atom API.</description>
 
-  <properties>
-    <maven.version>3.0</maven.version>
-    <wagon.version>2.2</wagon.version>
-  </properties>
-
   <dependencies>
     <!-- Maven dependencies -->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
-      <version>${maven.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>${maven.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.wagon</groupId>
       <artifactId>wagon-provider-api</artifactId>
-      <version>${wagon.version}</version>
     </dependency>
 
-    <!-- S-RAMP project dependencies -->
+    <!-- Project Dependencies -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-api</artifactId>
@@ -71,7 +63,7 @@
       <version>${project.version}</version>
     </dependency>
 
-    <!-- Third party libraries -->
+    <!-- Apache Commons -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -80,10 +72,12 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
+
+    <!-- Third party libraries -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-nop</artifactId>
-      <version>${slf4j.api.version}</version>
+      <version>${version.org.slf4j}</version>
     </dependency>
 
     <!-- Test dependencies -->
@@ -110,12 +104,12 @@
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-common</artifactId>
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-jcr</artifactId>
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
@@ -127,13 +121,13 @@
     <dependency>
       <groupId>org.apache.maven.wagon</groupId>
       <artifactId>wagon-provider-test</artifactId>
-      <version>${wagon.version}</version>
+      <version>${version.org.apache.maven.wagon}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>tjws</artifactId>
-      <version>${org.jboss.resteasy.version}</version>
+      <version>${version.org.jboss.resteasy}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -144,7 +138,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
@@ -156,7 +149,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -171,7 +163,6 @@
       <plugin>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-metadata</artifactId>
-        <version>1.5.5</version>
         <executions>
           <execution>
             <goals>

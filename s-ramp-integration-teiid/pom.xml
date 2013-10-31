@@ -12,33 +12,27 @@
   <description>S-RAMP Integration: Teiid contains classes used when integrating the S-RAMP repository with Teiid VDBs.</description>
 
   <dependencies>
+    <!-- Project Dependencies -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-common</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-atom</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
 
+    <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
-
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>

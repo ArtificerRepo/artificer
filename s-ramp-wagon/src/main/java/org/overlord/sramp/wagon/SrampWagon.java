@@ -78,7 +78,6 @@ import org.overlord.sramp.wagon.util.DevNullOutputStream;
  *
  * @author eric.wittmann@redhat.com
  */
-@SuppressWarnings("unchecked")
 @Component(role = Wagon.class, hint = "sramp", instantiationStrategy = "per-lookup")
 public class SrampWagon extends StreamWagon {
 

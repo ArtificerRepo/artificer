@@ -23,7 +23,6 @@
     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/${appserver.id}" />
     <property name="s-ramp.overlord-commons.installer.jar" location="overlord-commons-installer.jar" />
     <property name="s-ramp.overlord-commons.installer.dir" location="${s-ramp.install.dir}/overlord-commons-installer" />
-    <property name="s-ramp.s-ramp-server.war.path" location="s-ramp-server.war" />
   </target>
 
   <!-- Configure properties common to all JBoss install targets -->
@@ -39,6 +38,7 @@
     <property name="s-ramp.modeshape-distribution.zip.path" location="modeshape-3.2.0.Final-jbosseap-61-dist.zip" />
     <property name="s-ramp.appserver.module.path" location="${s-ramp.appserver.dir}/modules/system/layers/sramp" />
     <property name="s-ramp.appserver.base-module.path" location="${s-ramp.appserver.dir}/modules/system/layers/base" />
+    <property name="s-ramp.s-ramp-server.war.path" location="bin/s-ramp-server-eap61-${s-ramp.version}.war" />
     <property name="s-ramp.s-ramp-ui.war.path" location="bin/s-ramp-ui-war-eap61-${s-ramp.version}.war" />
   </target>
 
@@ -48,6 +48,7 @@
     <property name="s-ramp.modeshape-distribution.zip.path" location="modeshape-distribution-3.1.3.Final-jbossas-71-dist.zip" />
     <property name="s-ramp.appserver.module.path" location="${s-ramp.appserver.dir}/modules" />
     <property name="s-ramp.appserver.base-module.path" location="${s-ramp.appserver.dir}/modules" />
+    <property name="s-ramp.s-ramp-server.war.path" location="bin/s-ramp-server-jboss7-${s-ramp.version}.war" />
     <property name="s-ramp.s-ramp-ui.war.path" location="bin/s-ramp-ui-war-jboss7-${s-ramp.version}.war" />
   </target>
 

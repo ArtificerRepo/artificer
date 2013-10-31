@@ -22,7 +22,6 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jboss-as-support</artifactId>
-      <version>${errai.version}</version>
       <exclusions>
         <exclusion>
           <artifactId>xml-apis</artifactId>
