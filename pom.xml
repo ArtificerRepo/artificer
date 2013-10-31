@@ -2,6 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.jboss.integration-platform</groupId>
+    <artifactId>jboss-integration-platform-bom</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
+  </parent>
+
   <groupId>org.overlord.sramp</groupId>
   <artifactId>s-ramp</artifactId>
   <version>0.4.0-SNAPSHOT</version>
@@ -67,49 +73,104 @@
   </developers>
 
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 
     <!-- Distribution URLs -->
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
-    <!-- Dependency versions -->
-    <jboss.bom.version>10</jboss.bom.version>
-    <junit.version>4.11</junit.version>
-    <log4j.version>1.2.16</log4j.version>
-    <slf4j.api.version>1.7.2</slf4j.api.version>
-    <slf4j.log4j.version>1.7.2</slf4j.log4j.version>
-    <slf4j.nop.version>1.7.2</slf4j.nop.version>
-    <xmlunit.version>1.3</xmlunit.version>
-    <servlet.api.version>2.5</servlet.api.version>
-    <org.jboss.resteasy.version>2.3.6.Final</org.jboss.resteasy.version>
+    <!-- Maven plugin versions -->
+    <maven.surefire.report.plugin.version>2.4.3</maven.surefire.report.plugin.version>
+    <maven.surefire.plugin.version>2.7.1</maven.surefire.plugin.version>
+    <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
+    <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
+    <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
+    <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
+    <maven.clean.plugin.version>2.4.1</maven.clean.plugin.version>
+    <maven.exec.plugin.version>1.2.1</maven.exec.plugin.version>
+    <maven.antrun.plugin.version>1.7</maven.antrun.plugin.version>
+    <maven.plexus-component-metadata.plugin.version>1.5.5</maven.plexus-component-metadata.plugin.version>
 
+    <!-- S-RAMP only libraries (not in BOM) -->
     <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
-    <commons.io.version>2.4</commons.io.version>
+    <log4j.version>1.2.16</log4j.version>
+    <servlet.api.version>2.5</servlet.api.version>
+    <servlet-api.version>3.0.1</servlet-api.version>
     <commons.lang3.version>3.1</commons.lang3.version>
-    <commons.config.version>1.6</commons.config.version>
     <commons.compress.version>1.4.1</commons.compress.version>
-    <commons.codec.version>1.5</commons.codec.version>
+    <commons.logging.version>1.1.1</commons.logging.version>
     <jline.version>2.9</jline.version>
-    <joda-time.version>2.1</joda-time.version>
     <org.modeshape.version>3.6.0.Final</org.modeshape.version>
     <tika-core.version>1.3</tika-core.version> <!-- inline with version used by modeshape -->
-    <maven.version>3.0.5</maven.version> <!-- inline with version in drools-kie -->
+    <jetty.version>6.1.25</jetty.version>
+    <uel.impl.version>2.1.2-b04</uel.impl.version>
+    <jsp-api.version>2.0</jsp-api.version>
+    <jboss-ejb3-api.version>3.1.0</jboss-ejb3-api.version>
+    <jaxb-impl.version>2.2.2</jaxb-impl.version>
+    <bcel.version>5.2</bcel.version>
+    <jcr.version>2.0</jcr.version>
+    <guava-gwt.version>14.0.1</guava-gwt.version>
+
+    <!-- BOM Overrides -->
+    <version.joda-time>2.1</version.joda-time>
+    <version.org.apache.lucene>3.6.2</version.org.apache.lucene>
+
   </properties>
 
-
   <build>
-    <!-- This section is now provided by the jboss.org bom. You can add
-    entries here to override. The plugin settings are inherited by child 
-    projects.  -->
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven.compiler.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.surefire.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven.jar.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven.source.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>${maven.war.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${maven.clean.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${maven.exec.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>${maven.antrun.plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-metadata</artifactId>
+          <version>${maven.plexus-component-metadata.plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
     <plugins>
-      <!-- Include the maven-compiler-plugin settings here so that Eclipse/m2e
-           will properly import the projects. -->
+      <!-- Include the maven-compiler-plugin settings here so that Eclipse/m2e will properly import the projects. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -120,7 +181,7 @@
           <showWarnings>false</showWarnings>
         </configuration>
       </plugin>
-	  <!-- Produce source jars during the 'verify' phase -->
+      <!-- Produce source jars during the 'verify' phase -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
@@ -151,9 +212,8 @@
           <argLine>-Xmx368m -XX:MaxPermSize=128m</argLine>
         </configuration>
       </plugin>
-      <!-- Build a test-jar for each project, so that src/test/* resources and 
-        classes can be used in other projects. Also customize how the jar files are 
-        assembled. -->
+      <!-- Build a test-jar for each project, so that src/test/* resources and classes can be used in other projects. 
+        Also customize how the jar files are assembled. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -182,39 +242,32 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- Import the JBoss BOM. -->
+      <!-- Overlord Commons -->
       <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-parent</artifactId>
-        <version>${jboss.bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-auth</artifactId>
+        <version>${overlord-commons.version}</version>
       </dependency>
-      <!-- Common libraries -->
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-uiheader</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-gwt</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-config</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
+      <!-- Apache Commons -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${commons.lang3.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${commons.io.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-codec</groupId>
-        <artifactId>commons-codec</artifactId>
-        <version>${commons.codec.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-configuration</groupId>
-        <artifactId>commons-configuration</artifactId>
-        <version>${commons.config.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -222,57 +275,80 @@
         <version>${commons.compress.version}</version>
       </dependency>
       <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>${commons.logging.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <!-- Third party libraries -->
+      <dependency>
+        <groupId>org.apache.tika</groupId>
+        <artifactId>tika-core</artifactId>
+        <version>${tika-core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+        <version>${jaxb-impl.version}</version>
+      </dependency>
+      <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
-        <version>${joda-time.version}</version>
+        <version>${version.joda-time}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-gwt</artifactId>
+        <version>${guava-gwt.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
         <version>${servlet.api.version}</version>
       </dependency>
-      <!-- Logging (require SLF4J API for compiling, but use Log4J and its SLF4J 
-        binding for testing) -->
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.api.version}</version>
-        <scope>compile</scope>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>${servlet-api.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>${slf4j.log4j.version}</version>
-        <scope>test</scope>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jsp-api</artifactId>
+        <version>${jsp-api.version}</version>
       </dependency>
       <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${log4j.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <!-- Testing (note the scope) -->
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
+        <groupId>org.jboss.ejb3</groupId>
+        <artifactId>jboss-ejb3-api</artifactId>
+        <version>${jboss-ejb3-api.version}</version>
       </dependency>
       <dependency>
-        <groupId>xmlunit</groupId>
-        <artifactId>xmlunit</artifactId>
-        <version>${xmlunit.version}</version>
-        <scope>test</scope>
+        <groupId>org.apache.bcel</groupId>
+        <artifactId>bcel</artifactId>
+        <version>${bcel.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.tika</groupId>
-        <artifactId>tika-core</artifactId>
-        <version>${tika-core.version}</version>
+        <groupId>javax.jcr</groupId>
+        <artifactId>jcr</artifactId>
+        <version>${jcr.version}</version>
       </dependency>
-      <!-- Import the ModeShape BOM for embedded usage. This adds to the "dependenciesManagement" section
-               defaults for all of the modules we might need, but we still have to include in the 
-               "dependencies" section the modules we DO need. The benefit is that we don't have to
-               specify the versions of any of those modules.-->
+      <dependency>
+        <groupId>jline</groupId>
+        <artifactId>jline</artifactId>
+        <version>${jline.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${version.org.apache.lucene}</version>
+      </dependency>
+
+      <!-- Import the ModeShape BOM for embedded usage. This adds to the "dependenciesManagement" section defaults 
+        for all of the modules we might need, but we still have to include in the "dependencies" section the modules we 
+        DO need. The benefit is that we don't have to specify the versions of any of those modules. -->
       <dependency>
         <groupId>org.modeshape.bom</groupId>
         <artifactId>modeshape-bom-embedded</artifactId>
@@ -282,6 +358,19 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <reporting>
     <plugins>
@@ -358,6 +447,8 @@
     <module>s-ramp-shell-api</module>
     <module>s-ramp-ui</module>
     <module>s-ramp-wagon</module>
+    <module>s-ramp-server-jboss7</module>
+    <module>s-ramp-server-eap61</module>
   </modules>
 </project>
 

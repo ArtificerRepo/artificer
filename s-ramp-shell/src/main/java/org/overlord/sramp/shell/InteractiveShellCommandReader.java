@@ -20,9 +20,9 @@ import java.io.Writer;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.sramp.shell.api.ShellContextEventHandler;
-
 import jline.console.ConsoleReader;
+
+import org.overlord.sramp.shell.api.ShellContextEventHandler;
 
 /**
  * An implementation of the {@link ShellCommandReader} that uses JLine to provide
@@ -129,10 +129,13 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 */
 	@Override
 	public String promptForInput(String prompt) {
+        String oldprompt = consoleReader.getPrompt();
 	    try {
             return this.consoleReader.readLine(prompt);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            this.consoleReader.setPrompt(oldprompt);
         }
 	}
 
@@ -141,10 +144,13 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 */
 	@Override
 	public String promptForPassword(String prompt) {
+        String oldprompt = consoleReader.getPrompt();
         try {
             return this.consoleReader.readLine(prompt, '*');
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            this.consoleReader.setPrompt(oldprompt);
         }
 	}
 

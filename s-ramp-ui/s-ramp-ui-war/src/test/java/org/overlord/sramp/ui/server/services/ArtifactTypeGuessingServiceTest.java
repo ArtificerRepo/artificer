@@ -15,8 +15,7 @@
  */
 package org.overlord.sramp.ui.server.services;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

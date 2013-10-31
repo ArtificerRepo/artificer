@@ -20,11 +20,13 @@
       <version>${project.version}</version>
     </dependency>
 
-    <!-- Third party libraries -->
+    <!-- Overlord Commons -->
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-config</artifactId>
     </dependency>
+
+    <!-- Third party libraries -->
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -45,17 +47,6 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
-      <version>${org.jboss.resteasy.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>xmlunit</groupId>
-      <artifactId>xmlunit</artifactId>
       <scope>test</scope>
     </dependency>
 
