@@ -42,8 +42,6 @@
                 <exclude>WEB-INF/lib/modeshape-jcr-api-*.jar</exclude>
                 <exclude>WEB-INF/lib/slf4j-api-*.jar</exclude>
                 <exclude>WEB-INF/lib/staxmapper-*.jar</exclude>
-                <exclude>WEB-INF/lib/tika-core-*.jar</exclude>
-                <exclude>WEB-INF/lib/xz-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>
