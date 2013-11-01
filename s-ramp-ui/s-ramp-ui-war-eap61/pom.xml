@@ -58,7 +58,6 @@
                 <exclude>WEB-INF/lib/errai-data-binding-*.jar</exclude>
                 <exclude>WEB-INF/lib/errai-ioc-*.jar</exclude>
                 <exclude>WEB-INF/lib/errai-navigation-*.jar</exclude>
-                <exclude>WEB-INF/lib/errai-ui-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>
