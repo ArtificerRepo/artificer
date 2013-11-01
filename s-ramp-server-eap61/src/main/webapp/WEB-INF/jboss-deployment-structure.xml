@@ -15,7 +15,6 @@
       <module name="org.apache.log4j" />
       <module name="org.slf4j" />
       <module name="org.jboss.staxmapper" />
-      <module name="org.apache.tika" slot="1.3" />
       <module name="org.modeshape" />
       <module name="org.jboss.as.clustering.infinispan" />
     </dependencies>

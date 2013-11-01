@@ -30,6 +30,35 @@
               <groupId>${project.groupId}</groupId>
               <artifactId>s-ramp-ui-war-jboss7</artifactId>
               <excludes>
+                <exclude>WEB-INF/lib/activation-*.jar</exclude>
+                <exclude>WEB-INF/lib/apache-mime4j-*.jar</exclude>
+                <exclude>WEB-INF/lib/commons-codec-*.jar</exclude>
+                <exclude>WEB-INF/lib/commons-collections-*.jar</exclude>
+                <exclude>WEB-INF/lib/commons-configuration-*.jar</exclude>
+                <exclude>WEB-INF/lib/commons-io-*.jar</exclude>
+                <exclude>WEB-INF/lib/commons-lang-*.jar</exclude>
+                <exclude>WEB-INF/lib/dom4j-*.jar</exclude>
+                <exclude>WEB-INF/lib/guava-*.jar</exclude>
+                <exclude>WEB-INF/lib/httpclient-*.jar</exclude>
+                <exclude>WEB-INF/lib/httpcore-*.jar</exclude>
+                <exclude>WEB-INF/lib/jackson-core-asl-*.jar</exclude>
+                <exclude>WEB-INF/lib/jackson-mapper-asl-*.jar</exclude>
+                <exclude>WEB-INF/lib/javassist-*.jar</exclude>
+                <exclude>WEB-INF/lib/javax.inject-1.jar</exclude>
+                <exclude>WEB-INF/lib/jaxrs-api-*.jar</exclude>
+                <exclude>WEB-INF/lib/jboss-logging-*.jar</exclude>
+                <exclude>WEB-INF/lib/jcip-annotations-*.jar</exclude>
+                <exclude>WEB-INF/lib/jgroups-*.jar</exclude>
+                <exclude>WEB-INF/lib/log4j-*.jar</exclude>
+                <exclude>WEB-INF/lib/org.osgi.core-*.jar</exclude>
+                <exclude>WEB-INF/lib/scannotation-*.jar</exclude>
+                <exclude>WEB-INF/lib/slf4j-api-*.jar</exclude>
+                <exclude>WEB-INF/lib/slf4j-ext-*.jar</exclude>
+                <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
+                <exclude>WEB-INF/lib/errai-data-binding-*.jar</exclude>
+                <exclude>WEB-INF/lib/errai-ioc-*.jar</exclude>
+                <exclude>WEB-INF/lib/errai-navigation-*.jar</exclude>
+                <exclude>WEB-INF/lib/errai-ui-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>
