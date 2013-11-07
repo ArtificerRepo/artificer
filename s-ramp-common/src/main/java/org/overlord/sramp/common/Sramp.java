@@ -40,7 +40,6 @@ public class Sramp {
      * Constructor.
      */
     public Sramp() {
-        super();
     }
 
     /**
@@ -72,6 +71,15 @@ public class Sramp {
      */
     public boolean isDerivedArtifactAuditingEnabled() {
         return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_DERIVED_AUDITING, true);
+    }
+    
+    /**
+     * Gets a property from the s-ramp configuration.
+     * @param propertyName
+     * @param propertyDefault
+     */
+    public String getConfigProperty(String propertyName, String propertyDefault) {
+        return configuration.getString(propertyName, propertyDefault);
     }
 
 }

@@ -58,6 +58,7 @@ public class SrampConstants {
     public static final String SRAMP_CONFIG_DERIVED_AUDITING  = "sramp.config.auditing.enabled-derived"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_AUDIT_USER        = "sramp.config.auditing.user"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_AUDIT_PASS        = "sramp.config.auditing.password"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_JCR_REPO_JNDI     = "sramp.config.jcr.repository.jndi-path"; //$NON-NLS-1$
 
     // Location of a directory containing JARs which provide custom derivers
     public static final String SRAMP_CUSTOM_DERIVER_DIR   = "sramp.derivers.customDir"; //$NON-NLS-1$
