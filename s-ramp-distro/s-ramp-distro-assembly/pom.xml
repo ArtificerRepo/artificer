@@ -27,14 +27,22 @@
       <version>${overlord-commons.version}</version>
       <type>war</type>
     </dependency>
-    
+
     <!-- S-RAMP Installer -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-installer</artifactId>
       <version>${project.version}</version>
     </dependency>
-    
+
+    <!-- S-RAMP Demos -->
+    <dependency>
+      <groupId>org.overlord.sramp.demos</groupId>
+      <artifactId>s-ramp-demos</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+    </dependency>
+
     <!-- S-RAMP WARs -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
@@ -66,7 +74,7 @@
       <type>war</type>
       <version>${project.version}</version>
     </dependency>
-    
+
     <!-- S-RAMP Sources -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
@@ -140,7 +148,7 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    
+
     <!-- S-RAMP documentation (jdocbook) -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
@@ -148,39 +156,19 @@
       <version>${project.version}</version>
       <type>jdocbook</type>
     </dependency>
-    
+
+    <!-- ModeShape Distro -->
     <dependency>
-    	<groupId>org.modeshape</groupId>
-    	<artifactId>modeshape-distribution</artifactId>
-    	<version>${org.modeshape.version}</version>
-    	<classifier>jbosseap-61-dist</classifier>
-    	<type>zip</type>
+      <groupId>org.modeshape</groupId>
+      <artifactId>modeshape-distribution</artifactId>
+      <version>${org.modeshape.version}</version>
+      <classifier>jbosseap-61-dist</classifier>
+      <type>zip</type>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-poms</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/poms</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/resources/poms</directory>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <dependencies>
@@ -200,7 +188,7 @@
             </goals>
             <configuration>
               <finalName>s-ramp-${project.version}</finalName>
-              <attach>false</attach>
+              <attach>true</attach>
               <descriptors>
                 <descriptor>src/main/assembly/dist.xml</descriptor>
               </descriptors>
@@ -211,119 +199,8 @@
               </archiverConfig>
             </configuration>
           </execution>
-          <execution>
-            <id>make-dist-cli</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>s-ramp-cli-${project.version}</finalName>
-              <attach>false</attach>
-              <descriptors>
-                <descriptor>src/main/assembly/dist-cli.xml</descriptor>
-              </descriptors>
-              <tarLongFileMode>gnu</tarLongFileMode>
-              <appendAssemblyId>false</appendAssemblyId>
-              <archiverConfig>
-                <defaultDirectoryMode>0755</defaultDirectoryMode>
-              </archiverConfig>
-            </configuration>
-          </execution>
-          <execution>
-            <id>make-dist-demos</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>s-ramp-demos-${project.version}</finalName>
-              <attach>false</attach>
-              <descriptors>
-                <descriptor>src/main/assembly/dist-demos.xml</descriptor>
-              </descriptors>
-              <tarLongFileMode>gnu</tarLongFileMode>
-              <appendAssemblyId>false</appendAssemblyId>
-              <archiverConfig>
-                <defaultDirectoryMode>0755</defaultDirectoryMode>
-              </archiverConfig>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-install-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>install-cli</id>
-            <phase>install</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <file>target/s-ramp-cli-${project.version}.zip</file>
-              <url>${deployFileUrl}</url>
-              <repositoryId>${deployFileRepositoryId}</repositoryId>
-              <pomFile>${project.build.directory}/poms/s-ramp-distro-assembly-cli.pom.xml</pomFile>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>deploy-cli</id>
-            <phase>deploy</phase>
-            <goals>
-              <goal>deploy-file</goal>
-            </goals>
-            <configuration>
-              <file>target/s-ramp-cli-${project.version}.zip</file>
-              <url>${deployFileUrl}</url>
-              <repositoryId>${deployFileRepositoryId}</repositoryId>
-              <pomFile>${project.build.directory}/poms/s-ramp-distro-assembly-cli.pom.xml</pomFile>
-            </configuration>
-          </execution>
-          <execution>
-            <id>deploy-demos</id>
-            <phase>deploy</phase>
-            <goals>
-              <goal>deploy-file</goal>
-            </goals>
-            <configuration>
-              <file>target/s-ramp-demos-${project.version}.zip</file>
-              <url>${deployFileUrl}</url>
-              <repositoryId>${deployFileRepositoryId}</repositoryId>
-              <pomFile>${project.build.directory}/poms/s-ramp-distro-assembly-demos.pom.xml</pomFile>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <deployFileUrl>${jboss.snapshots.repo.url}</deployFileUrl>
-        <deployFileRepositoryId>jboss-snapshots-repository</deployFileRepositoryId>
-      </properties>
-    </profile>
-    <profile>
-      <id>release</id>
-      <properties>
-        <deployFileUrl>${jboss.releases.repo.url}</deployFileUrl>
-        <deployFileRepositoryId>jboss-releases-repository</deployFileRepositoryId>
-      </properties>
-    </profile>
-  </profiles>
-
-  <modules>
-    <module>s-ramp-demos</module>
-  </modules>
 </project>
