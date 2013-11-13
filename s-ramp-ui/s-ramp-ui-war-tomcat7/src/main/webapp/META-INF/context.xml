@@ -1,0 +1,6 @@
+<Context>
+  <Resource name="BeanManager" auth="Container" type="javax.enterprise.inject.spi.BeanManager"
+    factory="org.jboss.weld.resources.ManagerObjectFactory" />
+  <Valve className="org.overlord.commons.auth.tomcat.HttpRequestThreadLocalValve" />
+  <Valve className="org.picketlink.identity.federation.bindings.tomcat.sp.ServiceProviderAuthenticator" />
+</Context>

@@ -447,6 +447,7 @@
     <module>s-ramp-wagon</module>
     <module>s-ramp-server-jboss7</module>
     <module>s-ramp-server-eap61</module>
+    <module>s-ramp-server-tomcat7</module>
   </modules>
 </project>
 

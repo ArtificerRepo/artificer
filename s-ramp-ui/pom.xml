@@ -20,6 +20,7 @@
     <module>s-ramp-ui-war-jboss7</module>
     <module>s-ramp-ui-widgets</module>
     <module>s-ramp-ui-war-eap61</module>
+    <module>s-ramp-ui-war-tomcat7</module>
   </modules>
 
   <build>
