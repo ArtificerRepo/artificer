@@ -19,8 +19,6 @@
                 <exclude>**/.project</exclude>
                 <exclude>**/.gitignore</exclude>
                 <exclude>**/target/**</exclude>
-                <exclude>pom.xml</exclude>
-                <exclude>README.md</exclude>
                 <exclude>src/**</exclude>
             </excludes>
             <directoryMode>0755</directoryMode>
