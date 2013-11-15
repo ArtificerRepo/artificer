@@ -39,11 +39,17 @@ system property 'sramp.derivers.customDir'.  For example, I might do this:
 You will need to create the directory, copy the project JAR into it, and then set the
 appropriate -D system property when you start your application server.
 
-To run the demo, simply do the following:
+To run the demo, you will need to supply valid user credentials.  You can do this
+by passing the following properties using -D:
 
-	$ mvn -Pdemo clean test
+* sramp.auth.username - sets the BASIC auth username to use during the demo
+* sramp.auth.password - sets the BASIC auth password to use during the demo
 
-*Note* - the demo expects the S-RAMP Atom API endpoint to be located at:
+In short, it might look something like this:
+
+	$ mvn -Pdemo -Dsramp.auth.username=admin -Dsramp.auth.password=MYPASSWORD clean test
+
+*Note* - the demo expects/assumes the S-RAMP Atom API endpoint to be located at:
 
 	http://localhost:8080/s-ramp-server
 
