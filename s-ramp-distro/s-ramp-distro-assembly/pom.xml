@@ -23,7 +23,18 @@
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-idp</artifactId>
+      <artifactId>overlord-commons-auth-tomcat7</artifactId>
+      <version>${overlord-commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp-eap61</artifactId>
+      <version>${overlord-commons.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp-tomcat7</artifactId>
       <version>${overlord-commons.version}</version>
       <type>war</type>
     </dependency>
@@ -46,13 +57,7 @@
     <!-- S-RAMP WARs -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server</artifactId>
-      <type>war</type>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server-jboss7</artifactId>
+      <artifactId>s-ramp-server-tomcat7</artifactId>
       <type>war</type>
       <version>${project.version}</version>
     </dependency>
@@ -64,7 +69,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-war-jboss7</artifactId>
+      <artifactId>s-ramp-ui-war-tomcat7</artifactId>
       <type>war</type>
       <version>${project.version}</version>
     </dependency>
@@ -203,4 +208,121 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!-- ***************************************** -->
+    <!-- Profile to *test* installing into EAP 6.1 -->
+    <!-- ***************************************** -->
+    <profile>
+      <id>test-install-eap61</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <dependencies>
+              <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-trax</artifactId>
+                <version>1.6.5</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>install-eap61</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <property name="overlord-commons.idp.download.url"
+                      value="file:///${maven.dependency.org.overlord.overlord-commons-idp-eap61.war.path}" />
+                    <property name="overlord-commons.auth.download.url"
+                      value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
+
+                    <ant dir="${basedir}/src/main/resources/ROOT" antfile="${basedir}/src/main/resources/ROOT/build.xml">
+                      <target name="install" />
+                    </ant>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- ****************************************** -->
+    <!-- Profile to *test* installing into Tomcat 7 -->
+    <!-- ****************************************** -->
+    <profile>
+      <id>test-install-tomcat7</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-auth</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-auth-tomcat7</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-idp-tomcat7</artifactId>
+          <version>${project.version}</version>
+          <type>war</type>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <dependencies>
+              <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-trax</artifactId>
+                <version>1.6.5</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>install-eap61</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <unzip src="apache-tomcat-7.0.47.zip" dest="${project.build.directory}" overwrite="false" />
+                    <property name="appserver.id" value="tomcat-7" />
+                    <property name="overlord-commons.install.dir" value="${project.build.directory}" />
+                    <property name="overlord-commons.appserver.dir" location="${project.build.directory}/apache-tomcat-7.0.47" />
+
+                    <!-- Overlord Commons Installer and Dependencies -->
+                    <property name="overlord-commons.idp.download.url"
+                      value="file:///${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
+                    <property name="overlord-commons.lib.overlord-commons-auth.download.url"
+                      value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
+                    <property name="overlord-commons.lib.overlord-commons-auth-tomcat7.download.url"
+                      value="file:///${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
+
+                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
+                      <target name="install" />
+                    </ant>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  
 </project>
