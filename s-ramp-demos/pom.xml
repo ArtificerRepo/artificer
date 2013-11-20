@@ -71,19 +71,28 @@
     </plugins>
   </build>
 
-  <modules>
-    <module>s-ramp-demos-simple-client</module>
-    <module>s-ramp-demos-archive-package</module>
-    <module>s-ramp-demos-query</module>
-    <module>s-ramp-demos-properties</module>
-    <module>s-ramp-demos-ontologies</module>
-    <module>s-ramp-demos-classifications</module>
-    <module>s-ramp-demos-mvn-integration</module>
-    <module>s-ramp-demos-relationships</module>
-    <module>s-ramp-demos-derived-artifacts</module>
-    <module>s-ramp-demos-custom-deriver</module>
-    <module>s-ramp-demos-shell-command</module>
-    <module>s-ramp-demos-switchyard</module>
-    <module>s-ramp-demos-switchyard-multiapp</module>
-  </modules>
+  <profiles>
+    <profile>
+      <id>with-demos</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
+      <modules>
+        <module>s-ramp-demos-simple-client</module>
+        <module>s-ramp-demos-archive-package</module>
+        <module>s-ramp-demos-query</module>
+        <module>s-ramp-demos-properties</module>
+        <module>s-ramp-demos-ontologies</module>
+        <module>s-ramp-demos-classifications</module>
+        <module>s-ramp-demos-mvn-integration</module>
+        <module>s-ramp-demos-relationships</module>
+        <module>s-ramp-demos-derived-artifacts</module>
+        <module>s-ramp-demos-custom-deriver</module>
+        <module>s-ramp-demos-shell-command</module>
+        <module>s-ramp-demos-switchyard</module>
+        <module>s-ramp-demos-switchyard-multiapp</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>
