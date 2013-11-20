@@ -342,16 +342,20 @@
         <artifactId>jline</artifactId>
         <version>${jline.version}</version>
       </dependency>
-
-      <!-- Import the ModeShape BOM for embedded usage. This adds to the "dependenciesManagement" section defaults 
-        for all of the modules we might need, but we still have to include in the "dependencies" section the modules we 
-        DO need. The benefit is that we don't have to specify the versions of any of those modules. -->
       <dependency>
-        <groupId>org.modeshape.bom</groupId>
-        <artifactId>modeshape-bom-embedded</artifactId>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-common</artifactId>
         <version>${org.modeshape.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-jcr</artifactId>
+        <version>${org.modeshape.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-jcr-api</artifactId>
+        <version>${org.modeshape.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
