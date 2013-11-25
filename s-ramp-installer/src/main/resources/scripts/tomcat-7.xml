@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Install S-RAMP and S-RAMP-UI into Tomcat 7" default="install">
+<project name="Install S-RAMP into Tomcat 7" default="install">
 
   <!-- Configure properties specific to Tomcat 7 -->
   <target name="properties-tomcat-7">
@@ -8,7 +8,6 @@
     <property name="s-ramp.overlord-commons.installer.jar" location="overlord-commons-installer.jar" />
     <property name="s-ramp.overlord-commons.installer.dir" location="${s-ramp.install.dir}/overlord-commons-installer" />
 
-    <property name="s-ramp.tomcat.lib.dir" location="${s-ramp.appserver.dir}/lib" />
     <property name="s-ramp.tomcat.deploy.dir" location="${s-ramp.appserver.dir}/webapps/" />
     <property name="s-ramp.tomcat.config.dir" location="${s-ramp.appserver.dir}/conf/" />
 

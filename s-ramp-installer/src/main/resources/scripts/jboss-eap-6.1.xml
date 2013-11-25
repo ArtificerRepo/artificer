@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Install S-RAMP and S-RAMP-UI into JBoss EAP 6.1" default="install">
+<project name="Install S-RAMP into JBoss EAP 6.1" default="install">
 
-  <!-- Configure properties specific to JBoss EAP 6.1 -->
+  <!-- Configure properties for JBoss EAP 6.1 -->
   <target name="properties-jboss-eap-6.1">
     <property name="s-ramp.updates.dir" location="${basedir}/updates" />
   
