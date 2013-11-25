@@ -1,6 +1,5 @@
 /build.properties
-/jboss-eap-6.1.0.zip
-/jboss-as-7.1.1.Final.zip
+/*.zip
 /target
 /.settings
 /.classpath

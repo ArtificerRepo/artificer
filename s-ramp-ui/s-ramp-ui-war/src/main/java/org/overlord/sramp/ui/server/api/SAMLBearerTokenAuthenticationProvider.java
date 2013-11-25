@@ -20,7 +20,8 @@ import java.security.KeyStore;
 
 import org.apache.http.HttpRequest;
 import org.overlord.commons.auth.jboss7.SAMLBearerTokenLoginModule;
-import org.overlord.commons.auth.jboss7.SAMLBearerTokenUtil;
+import org.overlord.commons.auth.util.SAMLAssertionUtil;
+import org.overlord.commons.auth.util.SAMLBearerTokenUtil;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
 import org.overlord.sramp.client.auth.BasicAuthenticationProvider;
 import org.overlord.sramp.ui.server.SrampUIConfig;
@@ -56,7 +57,7 @@ public class SAMLBearerTokenAuthenticationProvider implements AuthenticationProv
     private static String createSAMLBearerTokenAssertion() {
         String issuer = SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_SAML_AUTH_ISSUER);
         String service = SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_SAML_AUTH_SERVICE);
-        String samlAssertion = SAMLBearerTokenUtil.createSAMLAssertion(issuer, service);
+        String samlAssertion = SAMLAssertionUtil.createSAMLAssertion(issuer, service);
         boolean signAssertion = "true".equals(SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_SAML_AUTH_SIGN_ASSERTIONS)); //$NON-NLS-1$
         if (signAssertion) {
             String keystorePath = SrampUIConfig.config.getString(SrampUIConfig.SRAMP_API_SAML_AUTH_KEYSTORE);

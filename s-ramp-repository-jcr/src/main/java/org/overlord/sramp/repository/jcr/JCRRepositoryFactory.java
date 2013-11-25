@@ -17,6 +17,7 @@ package org.overlord.sramp.repository.jcr;
 
 import java.util.ServiceLoader;
 
+import javax.jcr.Credentials;
 import javax.jcr.LoginException;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.RepositoryException;
@@ -32,6 +33,13 @@ public class JCRRepositoryFactory {
 	private static Logger log = LoggerFactory.getLogger(JCRRepositoryFactory.class);
 
 	private static JCRRepository instance;
+	private static ThreadLocal<Credentials> loginCredentials = new ThreadLocal<Credentials>();
+	public static void setLoginCredentials(Credentials credentials) {
+	    loginCredentials.set(credentials);
+	}
+	public static void clearLoginCredentials() {
+	    loginCredentials.remove();
+	}
 
     public synchronized static JCRRepository getInstance() throws RepositoryException {
         if (instance == null) {
@@ -63,11 +71,15 @@ public class JCRRepositoryFactory {
      * @throws RepositoryException
      */
     public static Session getSession() throws RepositoryException {
-        // Login with null credentials.  This forces ModeShape to authenticate with either
+        // Login with credentials set by some external force.  This may be a ServletFilter
+        // when running in a servlet container, or it may be null when running in a JAAS
+        // compliant application server (e.g. JBoss).
+
+        // Note: when passing 'null', it forces ModeShape to authenticate with either
         // the anonymous auth provider (if configured) or any other auth provider that might
         // be configured *and* can accept null creds.  Typically this means the JAAS provider,
         // which should use the current JAAS subject in the absence of credentials.
-        return getInstance().getRepo().login(null, WORKSPACE_NAME);
+        return getInstance().getRepo().login(loginCredentials.get(), WORKSPACE_NAME);
     }
 
     /**

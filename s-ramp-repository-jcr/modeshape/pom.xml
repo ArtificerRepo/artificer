@@ -26,6 +26,13 @@
       <artifactId>jcr</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- Servlets -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- ModeShape -->
     <dependency>

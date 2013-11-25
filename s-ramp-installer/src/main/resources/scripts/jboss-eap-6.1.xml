@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Install S-RAMP into JBoss EAP 6.1" default="install">
+
+  <!-- Configure properties for JBoss EAP 6.1 -->
+  <target name="properties-jboss-eap-6.1">
+    <property name="s-ramp.updates.dir" location="${basedir}/updates" />
+  
+    <property name="s-ramp.overlord-commons.installer.jar" location="overlord-commons-installer.jar" />
+    <property name="s-ramp.overlord-commons.installer.dir" location="${s-ramp.install.dir}/overlord-commons-installer" />
+
+    <property name="s-ramp.jboss.bin.dir" location="${s-ramp.appserver.dir}/bin" />
+    <property name="s-ramp.jboss.deploy.dir" location="${s-ramp.appserver.dir}/standalone/deployments/" />
+    <property name="s-ramp.jboss.config.dir" location="${s-ramp.appserver.dir}/standalone/configuration/" />
+
+    <property name="s-ramp.modeshape-distribution.zip.path" location="modeshape-3.2.0.Final-jbosseap-61-dist.zip" />
+    <property name="s-ramp.jboss.module.path" location="${s-ramp.appserver.dir}/modules/system/layers/base" />
+    <property name="s-ramp.s-ramp-server.war.path" location="bin/s-ramp-server-eap61-${s-ramp.version}.war" />
+    <property name="s-ramp.s-ramp-ui.war.path" location="bin/s-ramp-ui-war-eap61-${s-ramp.version}.war" />
+  </target>
+
+  <!-- Install S-RAMP -->
+  <target name="install" depends="properties-jboss-eap-6.1">
+    <echo message=" " />
+    <echo message="#############################################" />
+    <echo message="# Installing S-RAMP into JBoss EAP 6.1.     #" />
+    <echo message="#############################################" />
+
+    <antcall target="config-jboss-eap-6.1" />
+
+    <echo>----------------------------------</echo>
+    <echo>Installing Overlord Commons</echo>
+    <echo>----------------------------------</echo>
+    <unzip src="${s-ramp.overlord-commons.installer.jar}" 
+           dest="${s-ramp.overlord-commons.installer.dir}" overwrite="false" />
+    <ant antfile="${s-ramp.overlord-commons.installer.dir}/build.xml" target="install"
+         dir="${s-ramp.overlord-commons.installer.dir}" 
+         inheritall="true" inheritrefs="false">
+      <property name="appserver.id" value="${appserver.id}" />
+      <property name="overlord-commons.install.dir" location="${s-ramp.install.dir}" />
+      <property name="overlord-commons.appserver.dir" location="${s-ramp.appserver.dir}" />
+    </ant>
+
+    <echo>-----------------------------------</echo>
+    <echo>Deploying S-RAMP and S-RAMP UI</echo>
+    <echo>-----------------------------------</echo>
+    <copy file="${s-ramp.s-ramp-server.war.path}" 
+          tofile="${s-ramp.jboss.deploy.dir}/s-ramp-server.war" overwrite="true" />
+    <copy file="${s-ramp.s-ramp-ui.war.path}" 
+          tofile="${s-ramp.jboss.deploy.dir}/s-ramp-ui.war" overwrite="true" />
+
+    <echo>-----------------------------------</echo>
+    <echo>Configuring S-RAMP</echo>
+    <echo>-----------------------------------</echo>
+    <property name="overlord-apps.dir" location="${s-ramp.jboss.config.dir}/overlord-apps" />
+    <mkdir dir="${overlord-apps.dir}" />
+    <copy file="${s-ramp.updates.dir}/srampui-overlordapp.properties" todir="${overlord-apps.dir}" overwrite="true" />
+    <copy file="${s-ramp.updates.dir}/sramp.properties" todir="${s-ramp.jboss.config.dir}" overwrite="true" />
+    <copy file="${s-ramp.updates.dir}/sramp-ui.properties" todir="${s-ramp.jboss.config.dir}" overwrite="true" />
+
+    <!-- Set the SAML keystore and alias password in the s-ramp-ui config -->
+    <property file="${s-ramp.jboss.config.dir}/overlord-vault-keys.properties" />
+    <propertyfile file="${s-ramp.jboss.config.dir}/sramp-ui.properties">
+      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="$${vault:${overlord-commons.saml-keystore.password.hash}}" />
+      <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="$${vault:${overlord-commons.overlord-alias.password.hash}}" />
+    </propertyfile>
+
+    <echo message=" " />
+    <echo message="########" />
+    <echo message="# DONE #" />
+    <echo message="########" />
+    <echo message=" " />
+  </target>
+  
+
+  <!-- Configure JBoss EAP 6.1 -->
+  <target name="config-jboss-eap-6.1">
+    <echo>-----------------------------------</echo>
+    <echo>Installing Modeshape Service</echo>
+    <echo>-----------------------------------</echo>
+    <unzip src="${s-ramp.modeshape-distribution.zip.path}"  dest="${s-ramp.install.dir}/modeshape-dist" overwrite="false" />
+    <move file="${s-ramp.install.dir}/modeshape-dist/modules/org"   todir="${s-ramp.jboss.module.path}" />
+    <move file="${s-ramp.install.dir}/modeshape-dist/modules/javax" todir="${s-ramp.jboss.module.path}" />
+    <delete>
+      <dirset dir="${s-ramp.jboss.module.path}/org/modeshape/">
+        <include name="**/META-INF"/>
+      </dirset>
+    </delete>
+    <xslt 
+      style="${s-ramp.updates.dir}/xslt/modeshape-module-${appserver.id}.xslt"
+      in="${s-ramp.jboss.module.path}/org/modeshape/main/module.xml"
+      out="${s-ramp.install.dir}/_tmp_modeshape_module.xml" />
+    <copy file="${s-ramp.install.dir}/_tmp_modeshape_module.xml" tofile="${s-ramp.jboss.module.path}/org/modeshape/main/module.xml" overwrite="true" />
+    <delete file="${s-ramp.install.dir}/_tmp_modeshape_module.xml" />
+
+    <echo>-----------------------------------</echo>
+    <echo>Configuring Modeshape Service</echo>
+    <echo>-----------------------------------</echo>
+    <xslt 
+      style="${s-ramp.updates.dir}/xslt/configureModeshape-${appserver.id}.xslt"
+      in="${s-ramp.jboss.config.dir}/standalone.xml"
+      out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+    <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone.xml" overwrite="true" />
+    <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+    <xslt 
+      style="${s-ramp.updates.dir}/xslt/configureModeshape-${appserver.id}.xslt"
+      in="${s-ramp.jboss.config.dir}/standalone-full.xml"
+      out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+    <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone-full.xml" overwrite="true" />
+    <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+
+    <xslt 
+      style="${s-ramp.updates.dir}/xslt/patchSolr-jboss-eap-6.1.xslt"
+      in="${s-ramp.jboss.module.path}/org/apache/solr/3.6.2/module.xml"
+      out="${s-ramp.install.dir}/_tmp_solr_module.xml" />
+    <copy file="${s-ramp.install.dir}/_tmp_solr_module.xml" tofile="${s-ramp.jboss.module.path}/org/apache/solr/3.6.2/module.xml" overwrite="true" />
+    <delete file="${s-ramp.install.dir}/_tmp_solr_module.xml" />
+
+    <copy file="${s-ramp.updates.dir}/sramp-ds.xml" todir="${s-ramp.jboss.deploy.dir}" overwrite="true" />
+  </target>
+
+</project>

@@ -15,26 +15,24 @@ This distribution comes with the following:
     4) demos - a number of demo maven projects to help you get started with 
        S-RAMP.
     5) src - all of the S-RAMP source code, in a number of "-sources" JARs.
-    6) updates - bootstrapping configuration for JBoss and jBPM.
-    7) build.xml/s-ramp-build.properties - an Ant script that will install 
-       and configure S-RAMP in JBoss EAP 6.1.
+    7) build.xml an Ant script that will install and configure S-RAMP into
+       either Tomcat 7 or JBoss EAP 6.1.
 
 == What do I do next? ==
 This distribution works with version 6.1 of the JBoss Enterprise Application
-Platform (JBoss EAP 6.1).  You must download EAP and point the S-RAMP installer
-to the downloaded .zip.  You can accomplish the latter by simply copying the
-downloaded EAP .zip file into the AS/EAP directory of this distribution, or you can 
-modify the 's-ramp-build.properties' file to point to wherever you saved it.
+Platform (JBoss EAP 6.1) *or* version 7 of Apache Tomcat.   When using EAP
+you must first download the EAP ZIP distribution and unpack to your preferred
+location.
 
     Download here:  http://www.jboss.org/jbossas/downloads
 
-The installer should do everything else for you. From the root of this distribution, simply
-run:
+The installer will ask you a couple of questions and then do everything else 
+for you! From the root of this distribution, simply run:
 
     ant
 
-Once the installation completes, you can start JBoss (which you should find
-in the 'target' directory) and try out any of the following:
+Once the installation completes, you can start EAP or Tomcat using the standard
+startup scripts and then try out any of the following:
 
         - S-RAMP demos (included)
         - S-RAMP repository browser UI (http://localhost:8080/s-ramp-ui)

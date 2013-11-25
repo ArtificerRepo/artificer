@@ -1,0 +1,9 @@
+<Context>
+  <Valve className="org.overlord.commons.auth.tomcat7.SAMLBearerTokenAuthenticator"
+         allowedIssuers="${overlord.saml.allowed-issuers::/s-ramp-ui,/dtgov,/dtgov-ui}" 
+         signatureRequired="${overlord.saml.signature-required::true}" 
+         keystorePath="${overlord.saml.keystore-path::conf/overlord-saml.keystore}"
+         keystorePassword="${overlord.saml.keystore-password::samlkeystore77}"
+         keyAlias="${overlord.saml.key-alias::overlord}"
+         keyPassword="${overlord.saml.key-password::overlord99}" />
+</Context>

@@ -36,8 +36,6 @@ import javax.jcr.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.commons.configuration.CompositeConfiguration;
-import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.modeshape.common.collection.Problems;
@@ -140,14 +138,7 @@ public class ModeshapeRepository extends JCRRepository {
 	 * @throws Exception
 	 */
 	private URL getModeshapeConfigurationUrl() throws Exception {
-		// System properties can be used to set the config URL.  Note that
-		// in the future we'll likely add more configuration types here, so that
-		// the config URL can be specified in interesting ways (JNDI, properties
-		// file on the classpath, etc).
-		CompositeConfiguration config = new CompositeConfiguration();
-		config.addConfiguration(new SystemConfiguration());
-
-		String configUrl = config.getString("sramp.modeshape.config.url", null); //$NON-NLS-1$
+		String configUrl = sramp.getConfigProperty("sramp.modeshape.config.url", null); //$NON-NLS-1$
 		if (configUrl == null) {
 			return null;
 		}
@@ -165,7 +156,22 @@ public class ModeshapeRepository extends JCRRepository {
 			}
 			throw new Exception(Messages.i18n.format("INVALID_CLASSPATH_URL", configUrl)); //$NON-NLS-1$
 		} else {
-			return new URL(configUrl);
+		    try {
+                File f = new File(configUrl);
+                if (f.isFile()) {
+                    return f.toURI().toURL();
+                }
+            } catch (Exception e) {
+                // eat the error and try the next option
+            }
+		    
+			try {
+                return new URL(configUrl);
+            } catch (Exception e) {
+                // eat the error and try the next option
+            }
+			
+			return null;
 		}
 	}
 

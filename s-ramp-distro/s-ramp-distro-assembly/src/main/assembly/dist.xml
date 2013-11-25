@@ -87,21 +87,17 @@
     </dependencySet>
     <!-- The S-RAMP Installer -->
     <dependencySet>
+      <outputDirectory>bin</outputDirectory>
       <includes>
         <include>org.overlord.sramp:s-ramp-installer:jar</include>
       </includes>
+      <outputFileNameMapping>${artifact.artifactId}-${project.version}.${artifact.extension}</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>
       <useTransitiveDependencies>false</useTransitiveDependencies>
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
-      <unpack>true</unpack>
-      <unpackOptions>
-        <excludes>
-          <exclude>**/META-INF/**</exclude>
-        </excludes>
-      </unpackOptions>
     </dependencySet>
     <!-- Modeshape EAP Modules -->
     <dependencySet>
