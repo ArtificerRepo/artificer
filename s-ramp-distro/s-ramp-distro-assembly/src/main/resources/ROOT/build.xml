@@ -11,12 +11,7 @@
 
   <!-- Install S-RAMP -->
   <target name="install">
-    <mkdir dir="${s-ramp-distro.tempdir}"/>
-
-    <!-- Unpack the s-ramp installer into the temp directory -->
-    <property name="s-ramp-distro.s-ramp-installer.dir" location="${s-ramp-distro.tempdir}/s-ramp-installer" />
-    <unzip src="${s-ramp-distro.s-ramp-installer.jar}" dest="${s-ramp-distro.s-ramp-installer.dir}" overwrite="false" />
-    
+     
     <echo message=" " />
     <echo message="#######################################################" />
     <echo message="# Installing S-RAMP.  Please tell us how you would    #" />
@@ -36,13 +31,19 @@
       <equals arg1="${s-ramp-distro.choices.platform}" arg2="2" />
     </condition>
 
-    <antcall target="install-jboss-eap-6.1" />
-    <antcall target="install-tomcat-7" />
+    <antcall target="install-jboss-eap-6.1-wrapper" />
+    <antcall target="install-tomcat-7-wrapper" />
   </target>
 
+  <target name="extract-installer">
+    <mkdir dir="${s-ramp-distro.tempdir}"/>
+    <!-- Unpack the s-ramp installer into the temp directory -->
+    <property name="s-ramp-distro.s-ramp-installer.dir" location="${s-ramp-distro.tempdir}/s-ramp-installer" />
+    <unzip src="${s-ramp-distro.s-ramp-installer.jar}" dest="${s-ramp-distro.s-ramp-installer.dir}" overwrite="false" />
+  </target>
 
   <!-- Install into EAP 6.1 -->
-  <target name="install-jboss-eap-6.1" if="s-ramp-distro.choices.platform.jboss-eap-6.1">
+  <target name="install-jboss-eap-6.1-wrapper" if="s-ramp-distro.choices.platform.jboss-eap-6.1">
     <echo message=" " />
     <echo message="#######################################################" />
     <echo message="# Installing S-RAMP into EAP 6.1 (great choice!).     #" />
@@ -52,12 +53,15 @@
     <echo message=" " />
     <input message="Path to EAP 6.1: " addproperty="s-ramp-distro.choices.platform.jboss-eap-6.1.path" />
     
-    <condition property="s-ramp-distro.choices.platform.jboss-eap-6.1.path.valid">
-      <available file="jboss-modules.jar" filepath="${s-ramp-distro.choices.platform.jboss-eap-6.1.path}" />
+  	<antcall target="install-jboss-eap-6.1" />
+  </target>
+	
+  <target name="install-jboss-eap-6.1" depends="extract-installer">
+  	<condition property="s-ramp-distro.choices.platform.jboss-eap-6.1.path.valid">
+    <available file="jboss-modules.jar" filepath="${s-ramp-distro.choices.platform.jboss-eap-6.1.path}" />
     </condition>
     <fail message="Failed to find JBoss EAP 6.1 at: ${s-ramp-distro.choices.platform.jboss-eap-6.1.path}" 
-          unless="s-ramp-distro.choices.platform.jboss-eap-6.1.path.valid" />
-
+  	          unless="s-ramp-distro.choices.platform.jboss-eap-6.1.path.valid" />
     <echo message="Installing into: ${s-ramp-distro.choices.platform.jboss-eap-6.1.path} " />
 
     <!-- Call the S-RAMP installer -->
@@ -78,7 +82,7 @@
 
 
   <!-- Install into Tomcat 7 -->
-  <target name="install-tomcat-7" if="s-ramp-distro.choices.platform.tomcat-7">
+  <target name="install-tomcat-7-wrapper" if="s-ramp-distro.choices.platform.tomcat-7">
     <echo message=" " />
     <echo message="########################################" />
     <echo message="# Installing S-RAMP into Tomcat 7.     #" />
@@ -88,7 +92,10 @@
     <echo message=" leave this blank if you want us to download Tomcat 7 for you." />
     <echo message=" " />
     <input message="Path to Tomcat 7: " addproperty="s-ramp-distro.choices.platform.tomcat-7.path" />
-
+    <antcall target="install-tomcat-7" />
+  </target>
+	
+  <target name="install-tomcat-7" depends="extract-installer">
     <!-- If the path is empty, download Tomcat 7 -->
     <condition property="s-ramp-distro.choices.platform.tomcat-7.path.empty">
       <equals arg1="${s-ramp-distro.choices.platform.tomcat-7.path}" arg2="" />
@@ -96,7 +103,6 @@
 
     <antcall target="install-tomcat-7-into" />
   </target>
-
 
   <!-- Download Tomcat 7 for the user -->
   <target name="install-tomcat-7-download" if="s-ramp-distro.choices.platform.tomcat-7.path.empty">
