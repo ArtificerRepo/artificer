@@ -6,7 +6,9 @@
     <version>0.4.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
+  
   <artifactId>s-ramp-integration-switchyard</artifactId>
+  <packaging>bundle</packaging>
   <name>S-RAMP Integration: SwitchYard</name>
   <description>S-RAMP Integration: SwitchYard contains classes used when tightly integrating the S-RAMP repository with SwitchYard.</description>
 
@@ -49,4 +51,37 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Name>${project.name}</Bundle-Name>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <Export-Package>
+              org.overlord.sramp.integration.switchyard.*
+            </Export-Package>
+            <Import-Package>
+              javax.xml.namespace,
+              javax.xml.parsers,
+              javax.xml.xpath,
+              org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
+              org.overlord.sramp.atom.archive.expand,
+              org.overlord.sramp.atom.archive.expand.registry,
+              org.overlord.sramp.common,
+              org.overlord.sramp.common.derived,
+              org.overlord.sramp.common.i18n,
+              org.overlord.sramp.common.query.xpath,
+              org.slf4j,
+              org.w3c.dom
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

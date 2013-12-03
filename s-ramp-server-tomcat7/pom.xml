@@ -26,6 +26,5 @@
       <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
       <version>${project.version}</version>
     </dependency>
-
   </dependencies>
 </project>
