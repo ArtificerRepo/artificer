@@ -17,6 +17,7 @@ package org.overlord.sramp.common;
 
 import org.apache.commons.configuration.Configuration;
 import org.overlord.commons.config.ConfigurationFactory;
+import org.overlord.commons.config.JBossServer;
 
 
 /**
@@ -48,13 +49,19 @@ public class Sramp {
      * @param requestUrl
      */
     public String getBaseUrl(String requestUrl) {
-        String baseUrl = "http://localhost:8080/s-ramp-server"; //$NON-NLS-1$
+    	
+    	String baseUrl = null;
+    	//Try grabbing it from the call
         if (requestUrl!=null) {
             int index = requestUrl.indexOf("/s-ramp/"); //$NON-NLS-1$
             if (index < 0) index = requestUrl.indexOf("/s-ramp"); //$NON-NLS-1$
             if (index > 0) {
                 baseUrl = requestUrl.substring(0, index);
             }
+        }
+        //If that failed, try constructing it from the JBoss system parameters
+        if (baseUrl==null){
+        	baseUrl = JBossServer.getBaseUrl() + "/s-ramp-server" ; //$NON-NLS-1$
         }
         return configuration.getString(SrampConstants.SRAMP_CONFIG_BASEURL, baseUrl);
     }

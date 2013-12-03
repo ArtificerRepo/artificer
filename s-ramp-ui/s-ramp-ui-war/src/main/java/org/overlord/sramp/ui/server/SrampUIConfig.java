@@ -19,6 +19,7 @@ import javax.inject.Singleton;
 
 import org.apache.commons.configuration.Configuration;
 import org.overlord.commons.config.ConfigurationFactory;
+import org.overlord.commons.config.JBossServer;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
 import org.overlord.sramp.ui.server.i18n.Messages;
 
@@ -61,7 +62,8 @@ public class SrampUIConfig {
                 refreshDelay,
                 "/META-INF/config/org.overlord.sramp.ui.server.api.properties", //$NON-NLS-1$
                 SrampApiClientAccessor.class);
-        System.out.println(Messages.i18n.format("Config.Loaded", SrampUIConfig.config.getString(SRAMP_API_ENDPOINT))); //$NON-NLS-1$
+        String defaultSrampApiEndpoint = JBossServer.getBaseUrl() + "/s-ramp-server";
+        System.out.println(Messages.i18n.format("Config.Loaded", SrampUIConfig.config.getString(SRAMP_API_ENDPOINT, defaultSrampApiEndpoint))); //$NON-NLS-1$
     }
 
     /**
