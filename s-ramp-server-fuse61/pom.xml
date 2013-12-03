@@ -5,9 +5,9 @@
     <artifactId>s-ramp</artifactId>
     <version>0.4.0-SNAPSHOT</version>
   </parent>
-  <artifactId>s-ramp-server-karaf23</artifactId>
+  <artifactId>s-ramp-server-fuse61</artifactId>
   <packaging>war</packaging>
-  <name>S-RAMP Server (Karaf 2.3)</name>
+  <name>S-RAMP Server (Fuse 6.1)</name>
 
   <dependencies>
     <!-- The base WAR being extended -->
