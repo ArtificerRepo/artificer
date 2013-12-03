@@ -9,6 +9,7 @@
   </parent>
 
   <artifactId>s-ramp-api</artifactId>
+  <packaging>bundle</packaging>
   <name>S-RAMP API</name>
   <description>S-RAMP API is generated from the OASIS S-RAMP Specification v1.0.</description>
 
@@ -19,5 +20,37 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Name>${project.name}</Bundle-Name>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <Export-Package>
+              org.jboss.downloads.overlord.sramp._2013.auditing,
+              org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
+              org.w3._1999._02._22_rdf_syntax_ns_,
+              org.w3._1999.xlink,
+              org.w3._2000._01.rdf_schema_,
+              org.w3._2002._07.owl_
+            </Export-Package>
+            <Import-Package>
+              javax.xml.bind, 
+              javax.xml.bind.annotation,
+              javax.xml.bind.annotation.adapters, 
+              javax.xml.datatype, 
+              javax.xml.namespace
+            </Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
