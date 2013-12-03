@@ -6,9 +6,9 @@
     <artifactId>s-ramp-distro</artifactId>
     <version>0.4.0-SNAPSHOT</version>
   </parent>
-  <artifactId>s-ramp-distro-karaf</artifactId>
+  <artifactId>s-ramp-distro-fuse61</artifactId>
   <packaging>pom</packaging>
-  <name>S-RAMP Distribution: Karaf Support</name>
+  <name>S-RAMP Distribution: Fuse 6.1 Support</name>
 
   <dependencies>
     <!-- Include the base s-ramp-server WAR to pull in all required dependencies transitively -->
