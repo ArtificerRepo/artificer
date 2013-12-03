@@ -1,0 +1,12 @@
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+
+  <Get name="securityHandler">
+    <Set name="loginService">
+      <New class="org.eclipse.jetty.security.HashLoginService">
+        <Set name="name">karaf</Set>
+        <Set name="config"><SystemProperty name="karaf.home" default="/" />etc/realm.properties</Set>
+      </New>
+    </Set>
+  </Get>
+
+</Configure>
