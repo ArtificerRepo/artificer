@@ -20,6 +20,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.overlord.commons.config.JBossServer;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
 import org.overlord.sramp.ui.server.SrampUIConfig;
@@ -55,7 +56,8 @@ public class SrampApiClientAccessor {
      * @param config
      */
     protected SrampAtomApiClient createClient() {
-        String endpoint = config.getConfig().getString(SrampUIConfig.SRAMP_API_ENDPOINT);
+    	String defaultSrampApiEndpoint = JBossServer.getBaseUrl() + "/s-ramp-server";
+        String endpoint = config.getConfig().getString(SrampUIConfig.SRAMP_API_ENDPOINT, defaultSrampApiEndpoint);
         boolean validating = "true".equals(config.getConfig().getString(SrampUIConfig.SRAMP_API_VALIDATING)); //$NON-NLS-1$
         AuthenticationProvider authProvider = null;
         String authProviderClass = config.getConfig().getString(SrampUIConfig.SRAMP_API_AUTH_PROVIDER);
