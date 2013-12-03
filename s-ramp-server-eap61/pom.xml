@@ -9,6 +9,7 @@
   <artifactId>s-ramp-server-eap61</artifactId>
   <packaging>war</packaging>
   <name>S-RAMP Server (EAP 6.1)</name>
+  
   <dependencies>
     <!-- The base WAR being extended -->
     <dependency>
@@ -18,6 +19,7 @@
       <type>war</type>
     </dependency>
   </dependencies>
+  
   <build>
     <plugins>
       <plugin>

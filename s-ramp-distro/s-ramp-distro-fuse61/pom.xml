@@ -1,0 +1,163 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord.sramp</groupId>
+    <artifactId>s-ramp-distro</artifactId>
+    <version>0.4.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>s-ramp-distro-karaf</artifactId>
+  <packaging>pom</packaging>
+  <name>S-RAMP Distribution: Karaf Support</name>
+
+  <dependencies>
+    <!-- Include the base s-ramp-server WAR to pull in all required dependencies transitively -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+      <classifier>classes</classifier>
+    </dependency>
+
+    <!-- Include the karaf overlay WAR -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server-karaf23</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils-core</artifactId>
+      <version>1.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-digester</groupId>
+      <artifactId>commons-digester</artifactId>
+      <version>1.8</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-jxpath</groupId>
+      <artifactId>commons-jxpath</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.6.5</version>
+    </dependency>
+    <dependency>
+      <groupId>com.datastax.cassandra</groupId>
+      <artifactId>cassandra-driver-core</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>jms</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.security.jacc</groupId>
+      <artifactId>javax.security.jacc-api</artifactId>
+    </dependency>
+  </dependencies>
+
+  <!-- Overrides for Karaf -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- Upgrade to log4j 1.2.17 because the 1.2.16 bundle has a duplicate import -->
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-maven-plugin</artifactId>
+        <version>${overlord-commons.version}</version>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>generate-features-xml</goal>
+            </goals>
+            <configuration>
+              <outputFile>${project.build.directory}/features.xml</outputFile>
+              <attach>true</attach>
+              <features>
+                <feature>
+                  <name>s-ramp-dependencies</name>
+                  <version>${project.version}</version>
+                  <comment>All S-RAMP dependencies</comment>
+                  <dependsOnFeatures>
+                    <feature>
+                      <name>http</name>
+                    </feature>
+                  </dependsOnFeatures>
+                  <excludes>
+                    <exclude>org.overlord.sramp:s-ramp-*:*</exclude>
+                    <exclude>org.mortbay.jetty:*:*</exclude>
+                    <exclude>javax.servlet:servlet-api:*</exclude>
+                    <exclude>javax.servlet:javax.servlet-api:*</exclude>
+                  </excludes>
+                </feature>
+                <feature>
+                  <name>s-ramp-modules</name>
+                  <version>${project.version}</version>
+                  <comment>All S-RAMP modules</comment>
+                  <dependsOnFeatures>
+                    <feature>
+                      <name>s-ramp-dependencies</name>
+                      <version>${project.version}</version>
+                    </feature>
+                  </dependsOnFeatures>
+                  <includes>
+                    <include>org.overlord.sramp:s-ramp-*:jar</include>
+                  </includes>
+                  <excludes>
+                    <exclude>org.overlord.sramp:s-ramp-server*:*</exclude>
+                  </excludes>
+                </feature>
+                <feature>
+                  <name>s-ramp-server</name>
+                  <version>${project.version}</version>
+                  <comment>The S-RAMP Server (backend)</comment>
+                  <dependsOnFeatures>
+                    <feature>
+                      <name>war</name>
+                    </feature>
+                    <feature>
+                      <name>s-ramp-modules</name>
+                      <version>${project.version}</version>
+                    </feature>
+                  </dependsOnFeatures>
+                  <includes>
+                    <include>org.overlord.sramp:s-ramp-server-karaf23:war</include>
+                  </includes>
+                </feature>
+              </features>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

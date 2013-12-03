@@ -446,6 +446,7 @@
     <module>s-ramp-repository-jcr/modeshape</module>
     <module>s-ramp-server</module>
     <module>s-ramp-server-eap61</module>
+    <module>s-ramp-server-fuse61</module>
     <module>s-ramp-server-tomcat7</module>
     <module>s-ramp-shell</module>
     <module>s-ramp-shell-api</module>
