@@ -17,6 +17,13 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+
+    <!-- Additional dependencies to include in the WAR when running on Fuse 6.1 -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
   
   <build>
@@ -38,7 +45,7 @@
             <manifestEntries>
               <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
               <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-              <Bundle-Version>${project.version}</Bundle-Version>
+              <Bundle-Version>0.4.0</Bundle-Version>
               <Bundle-Name>${project.name}</Bundle-Name>
               <Web-ContextPath>/s-ramp-server</Web-ContextPath>
               <Webapp-Context>/s-ramp-server</Webapp-Context>

@@ -20,10 +20,10 @@
       <classifier>classes</classifier>
     </dependency>
 
-    <!-- Include the karaf overlay WAR -->
+    <!-- Include the fuse overlay WAR -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server-karaf23</artifactId>
+      <artifactId>s-ramp-server-fuse61</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
@@ -117,7 +117,15 @@
                     <exclude>org.mortbay.jetty:*:*</exclude>
                     <exclude>javax.servlet:servlet-api:*</exclude>
                     <exclude>javax.servlet:javax.servlet-api:*</exclude>
+                    <exclude>org.infinispan:infinispan-core:*</exclude>
+                    <exclude>org.xerial.snappy:snappy-java:*</exclude>
+                    <exclude>org.slf4j:slf4j-api:*</exclude>
                   </excludes>
+                  <bundles>
+                    <!-- Add the infinispan dependency here in order to override its 
+                         Import-Package spec (which includes the problematic sun.misc). -->
+                    <bundle>wrap:mvn:org.infinispan/infinispan-core/${version.org.infinispan}$Import-Package=javax.management,javax.naming,javax.transaction,javax.transaction.xa,javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.annotation.adapters,javax.xml.namespace,javax.xml.parsers,javax.xml.stream,javax.xml.transform,javax.xml.transform.dom,javax.xml.transform.sax,javax.xml.transform.stream,javax.xml.validation,net.jcip.annotations;resolution:=optional,org.jboss.logging;version="[3.1,4)",org.jboss.marshalling,org.jboss.marshalling.reflect,org.jboss.marshalling.river,org.jboss.marshalling.util,org.jboss.staxmapper,org.jgroups;version="[3.2,4)",org.jgroups.blocks;version="[3.2,4)",org.jgroups.blocks.mux;version="[3.2,4)",org.jgroups.jmx;version="[3.2,4)",org.jgroups.logging;version="[3.2,4)",org.jgroups.protocols;version="[3.2,4)",org.jgroups.protocols.relay;version="[3.2,4)",org.jgroups.stack;version="[3.2,4)",org.jgroups.util;version="[3.2,4)",org.osgi.framework;version="[1.6,2)";resolution:=optional,org.w3c.dom,org.xml.sax,org.xml.sax.helpers&amp;overwrite=merge</bundle>
+                  </bundles>
                 </feature>
                 <feature>
                   <name>s-ramp-modules</name>
@@ -150,7 +158,7 @@
                     </feature>
                   </dependsOnFeatures>
                   <includes>
-                    <include>org.overlord.sramp:s-ramp-server-karaf23:war</include>
+                    <include>org.overlord.sramp:s-ramp-server-fuse61:war</include>
                   </includes>
                 </feature>
               </features>
