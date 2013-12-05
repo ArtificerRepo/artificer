@@ -452,6 +452,7 @@
     <module>s-ramp-shell-api</module>
     <module>s-ramp-ui</module>
     <module>s-ramp-wagon</module>
+    <module>s-ramp-server-jetty8</module>
   </modules>
 </project>
 
