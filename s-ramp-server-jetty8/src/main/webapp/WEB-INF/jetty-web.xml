@@ -3,7 +3,7 @@
   <Get name="securityHandler">
     <Set name="loginService">
       <New class="org.eclipse.jetty.security.HashLoginService">
-        <Set name="name">karaf</Set>
+        <Set name="name">OverlordRealm</Set>
         <Set name="config"><SystemProperty name="configuration.dir" default="/" />/realm.properties</Set>
       </New>
     </Set>
