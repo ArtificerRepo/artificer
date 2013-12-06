@@ -2,20 +2,26 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.sramp</groupId>
-    <artifactId>s-ramp</artifactId>
+    <artifactId>s-ramp-ui</artifactId>
     <version>0.4.0-SNAPSHOT</version>
   </parent>
-  <artifactId>s-ramp-server-fuse61</artifactId>
+  <artifactId>s-ramp-ui-war-jetty8</artifactId>
   <packaging>war</packaging>
-  <name>S-RAMP Server (Fuse 6.1)</name>
-
+  <name>S-RAMP UI: Web App (Jetty 8)</name>
+  
   <dependencies>
     <!-- The base WAR being extended -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server-jetty8</artifactId>
+      <artifactId>s-ramp-ui-war</artifactId>
       <version>${project.version}</version>
       <type>war</type>
+    </dependency>
+
+    <!-- Other Jetty-only dependencies -->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
     </dependency>
   </dependencies>
   
@@ -25,30 +31,17 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
+          <warName>s-ramp-ui-jetty8</warName>
           <overlays>
             <overlay>
               <groupId>${project.groupId}</groupId>
-              <artifactId>s-ramp-server-jetty8</artifactId>
+              <artifactId>s-ramp-ui-war</artifactId>
               <excludes>
-                <exclude>WEB-INF/lib/*.jar</exclude>
+                <exclude>WEB-INF/lib/jetty-naming-*.jar</exclude>
+                <exclude>WEB-INF/lib/jetty-plus-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>
-          <archive>
-            <manifestEntries>
-              <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-              <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-              <Bundle-Version>0.4.0</Bundle-Version>
-              <Bundle-Name>${project.name}</Bundle-Name>
-              <Web-ContextPath>/s-ramp-server</Web-ContextPath>
-              <Webapp-Context>/s-ramp-server</Webapp-Context>
-              <Import-Package>
-                javax.servlet.http,
-                javax.servlet
-              </Import-Package>
-              <Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath>
-            </manifestEntries>
-          </archive>
         </configuration>
       </plugin>
     </plugins>
