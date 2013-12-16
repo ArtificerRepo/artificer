@@ -10,7 +10,7 @@
     <fileSets>
         <!-- The S-RAMP demos -->
         <fileSet>
-            <directory>.</directory>
+            <directory>..</directory>
             <outputDirectory></outputDirectory>
             <useDefaultExcludes>true</useDefaultExcludes>
             <excludes>
@@ -20,6 +20,7 @@
                 <exclude>**/.gitignore</exclude>
                 <exclude>**/target/**</exclude>
                 <exclude>src/**</exclude>
+                <exclude>s-ramp-demos-assembly/**</exclude>
             </excludes>
             <directoryMode>0755</directoryMode>
             <fileMode>0755</fileMode>
