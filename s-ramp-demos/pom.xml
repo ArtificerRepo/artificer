@@ -17,13 +17,6 @@
   <name>S-RAMP Demos</name>
   <packaging>pom</packaging>
 
-  <dependencies>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-  </dependencies>
-
   <repositories>
     <repository>
       <id>jboss-public-repository-group</id>
@@ -41,41 +34,13 @@
     </repository>
   </repositories>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-	<inherited>false</inherited>
-        <executions>
-          <execution>
-            <id>make-dist</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>s-ramp-demos-${project.version}</finalName>
-              <attach>true</attach>
-              <descriptors>
-                <descriptor>src/main/assembly/dist.xml</descriptor>
-              </descriptors>
-              <tarLongFileMode>gnu</tarLongFileMode>
-              <appendAssemblyId>false</appendAssemblyId>
-              <archiverConfig>
-                <defaultDirectoryMode>0755</defaultDirectoryMode>
-              </archiverConfig>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
   <profiles>
     <profile>
       <id>with-demos</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>!srampExcludeDemos</name>
+        </property>
       </activation>
 
       <modules>
@@ -92,6 +57,16 @@
         <module>s-ramp-demos-shell-command</module>
         <module>s-ramp-demos-switchyard</module>
         <module>s-ramp-demos-switchyard-multiapp</module>
+      </modules>
+    </profile>
+    <profile>
+      <activation>
+        <file>
+          <exists>s-ramp-demos-assembly</exists>
+        </file>
+      </activation>
+      <modules>
+        <module>s-ramp-demos-assembly</module>
       </modules>
     </profile>
   </profiles>
