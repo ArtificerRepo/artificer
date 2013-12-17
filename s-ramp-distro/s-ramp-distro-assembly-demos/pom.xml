@@ -13,7 +13,7 @@
     <!-- S-RAMP Demos -->
     <dependency>
       <groupId>org.overlord.sramp.demos</groupId>
-      <artifactId>s-ramp-demos</artifactId>
+      <artifactId>s-ramp-demos-assembly</artifactId>
       <version>${project.version}</version>
       <type>zip</type>
     </dependency>
