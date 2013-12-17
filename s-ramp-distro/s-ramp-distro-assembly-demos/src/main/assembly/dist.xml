@@ -10,7 +10,7 @@
     <dependencySet>
       <outputDirectory></outputDirectory>
       <includes>
-        <include>org.overlord.sramp.demos:s-ramp-demos:zip</include>
+        <include>org.overlord.sramp.demos:s-ramp-demos-assembly:zip</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>
