@@ -35,6 +35,11 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Logging -->
     <dependency>
@@ -62,6 +67,7 @@
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Name>${project.name}</Bundle-Name>
             <Bundle-Version>${project.version}</Bundle-Version>
+            <Bundle-Activator>org.overlord.sramp.integration.switchyard.Activator</Bundle-Activator>
             <Export-Package>
               org.overlord.sramp.integration.switchyard.*
             </Export-Package>
@@ -69,6 +75,7 @@
               javax.xml.namespace,
               javax.xml.parsers,
               javax.xml.xpath,
+              org.osgi.framework,
               org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
               org.overlord.sramp.atom.archive.expand,
               org.overlord.sramp.atom.archive.expand.registry,

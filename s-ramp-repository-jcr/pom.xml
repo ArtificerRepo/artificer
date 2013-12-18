@@ -31,10 +31,15 @@
       <version>${project.version}</version>
     </dependency>
 
-    <!-- JCR -->
+    <!-- Third Party Dependencies -->
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -74,6 +79,7 @@
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Name>${project.name}</Bundle-Name>
             <Bundle-Version>${project.version}</Bundle-Version>
+            <Bundle-Activator>org.overlord.sramp.repository.jcr.Activator</Bundle-Activator>
             <Export-Package>
               org.overlord.sramp.repository.jcr.*
             </Export-Package>
@@ -85,11 +91,13 @@
               javax.jcr.version,
               javax.xml.datatype,
               javax.xml.namespace,
+              org.osgi.framework,
               org.apache.commons.codec.digest,
               org.apache.commons.io,
               org.apache.commons.lang,
               org.jboss.downloads.overlord.sramp._2013.auditing,
               org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
+              org.overlord.commons.config.services,
               org.overlord.sramp.common,
               org.overlord.sramp.common.derived,
               org.overlord.sramp.common.i18n,

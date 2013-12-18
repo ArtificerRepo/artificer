@@ -89,7 +89,7 @@ public class ConnectCommand extends BuiltInShellCommand {
      * Prompts the user to enter a username for authentication credentials.
      */
     private String promptForUsername() {
-        String username = System.getProperty("s-ramp.shell.username");
+        String username = System.getProperty("s-ramp.shell.username"); //$NON-NLS-1$
         if (username != null) {
             return username;
         }
@@ -100,7 +100,7 @@ public class ConnectCommand extends BuiltInShellCommand {
      * Prompts the user to enter a password for authentication credentials.
      */
     private String promptForPassword() {
-        String password = System.getProperty("s-ramp.shell.password");
+        String password = System.getProperty("s-ramp.shell.password"); //$NON-NLS-1$
         if (password != null) {
             return password;
         }

@@ -94,6 +94,7 @@
 
     <!-- S-RAMP only libraries (not in BOM) -->
     <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
+    <picketlink.version>2.1.6.Final</picketlink.version>
     <log4j.version>1.2.16</log4j.version>
     <servlet.api.version>2.5</servlet.api.version>
     <servlet-api.version>3.0.1</servlet-api.version>
