@@ -15,8 +15,7 @@
  */
 package org.overlord.sramp.repository;
 
-import java.util.ServiceLoader;
-
+import org.overlord.commons.config.services.ServiceRegistryUtil;
 import org.overlord.sramp.repository.i18n.Messages;
 
 
@@ -29,9 +28,9 @@ public class PersistenceFactory {
      * Return a new instance of the persistence manager.
      */
     public static PersistenceManager newInstance() {
-        for (PersistenceManager manager : ServiceLoader.load(PersistenceManager.class)) {
-            return manager;
-        }
-        throw new RuntimeException(Messages.i18n.format("MISSING_PERSISTENCEMAN_PROVIDER")); //$NON-NLS-1$
+        PersistenceManager manager = ServiceRegistryUtil.getSingleService(PersistenceManager.class);
+        if (manager == null)
+            throw new RuntimeException(Messages.i18n.format("MISSING_PERSISTENCEMAN_PROVIDER")); //$NON-NLS-1$
+        return manager;
     }
 }

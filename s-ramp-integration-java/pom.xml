@@ -48,6 +48,11 @@
     	  </exclusion>
     	</exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Logging -->
     <dependency>
@@ -75,6 +80,7 @@
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Name>${project.name}</Bundle-Name>
             <Bundle-Version>${project.version}</Bundle-Version>
+            <Bundle-Activator>org.overlord.sramp.integration.java.Activator</Bundle-Activator>
             <Export-Package>
               org.overlord.sramp.integration.java.*
             </Export-Package>
@@ -83,6 +89,7 @@
               org.apache.maven.model,
               org.apache.maven.model.io.xpp3,
               org.apache.maven.project,
+              org.osgi.framework,
               org.codehaus.plexus.util.xml.pull,
               org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
               org.overlord.sramp.atom.archive.expand,

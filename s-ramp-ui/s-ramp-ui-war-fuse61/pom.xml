@@ -44,8 +44,44 @@
               <Web-ContextPath>/s-ramp-ui</Web-ContextPath>
               <Webapp-Context>/s-ramp-ui</Webapp-Context>
               <Import-Package>
+                javax.servlet,
                 javax.servlet.http,
-                javax.servlet
+                javax.xml.bind,
+                org.apache.commons.configuration,
+                org.apache.commons.fileupload,
+                org.apache.commons.fileupload.disk,
+                org.apache.commons.fileupload.servlet,
+                org.apache.commons.io,
+                org.apache.commons.lang3,
+                org.apache.http,
+                org.codehaus.jackson,
+                org.jboss.errai.bus.server.annotations,
+                org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
+                org.overlord.commons.auth.util,
+                org.overlord.commons.config,
+                org.overlord.sramp.atom.archive,
+                org.overlord.sramp.atom.archive.expand,
+                org.overlord.sramp.atom.archive.expand.registry,
+                org.overlord.sramp.atom.err,
+                org.overlord.sramp.atom.mappers,
+                org.overlord.sramp.atom.visitors,
+                org.overlord.sramp.client,
+                org.overlord.sramp.client.auth,
+                org.overlord.sramp.client.ontology,
+                org.overlord.sramp.client.query,
+                org.overlord.sramp.common,
+                org.overlord.sramp.common.i18n,
+                org.overlord.sramp.common.ontology,
+                org.overlord.sramp.common.visitors,
+                org.overlord.sramp.integration.java.model,
+                org.overlord.sramp.integration.switchyard.model,
+                org.w3._1999._02._22_rdf_syntax_ns_,
+                org.jboss.weld.environment.servlet,
+                org.jboss.weld.bootstrap,
+                org.overlord.commons.gwt.server.filters,
+                org.jboss.errai.bus.server.servlet,
+                org.overlord.commons.ui.header,
+                javax.enterprise.inject.spi
               </Import-Package>
               <Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath>
             </manifestEntries>

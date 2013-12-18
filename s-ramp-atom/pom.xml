@@ -110,6 +110,7 @@
               org.jboss.resteasy.specimpl, 
               org.jboss.resteasy.spi, 
               org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
+              org.overlord.commons.config.services,
               org.overlord.sramp.common,
               org.overlord.sramp.common.i18n,
               org.overlord.sramp.common.ontology,
