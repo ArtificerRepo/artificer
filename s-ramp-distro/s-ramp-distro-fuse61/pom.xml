@@ -18,9 +18,44 @@
       <version>${project.version}</version>
       <type>jar</type>
       <classifier>classes</classifier>
+      <exclusions>
+        <!-- Exclude JBoss Marshalling JAR so we can later include the  -->
+        <exclusion>
+          <artifactId>jboss-marshalling-river</artifactId>
+          <groupId>org.jboss.marshalling</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jboss-marshalling</artifactId>
+          <groupId>org.jboss.marshalling</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>snappy-java</artifactId>
+          <groupId>org.xerial.snappy</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>lucene-core</artifactId>
+          <groupId>org.apache.lucene</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>lucene-facet</artifactId>
+          <groupId>org.apache.lucene</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jaxb-impl</artifactId>
+          <groupId>com.sun.xml.bind</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>xmlbeans</artifactId>
+          <groupId>org.apache.xmlbeans</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
-    <!-- Include the fuse overlay WAR -->
+    <!-- Include the fuse version of the server WAR -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-fuse61</artifactId>
@@ -28,6 +63,81 @@
       <type>war</type>
     </dependency>
 
+    <!-- Include the base s-ramp-ui WAR to pull in all required dependencies transitively -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+      <classifier>classes</classifier>
+      <exclusions>
+        <exclusion>
+          <artifactId>errai-tools</artifactId>
+          <groupId>org.jboss.errai</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>errai-codegen-gwt</artifactId>
+          <groupId>org.jboss.errai</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>errai-ioc</artifactId>
+          <groupId>org.jboss.errai</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>netty</artifactId>
+          <groupId>org.jboss.errai.io.netty</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>errai-javax-enterprise</artifactId>
+          <groupId>org.jboss.errai</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>org.apache.stanbol.enhancer.engines.htmlextractor</artifactId>
+          <groupId>org.apache.stanbol</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jetty-plus</artifactId>
+          <groupId>org.mortbay.jetty</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jetty-naming</artifactId>
+          <groupId>org.mortbay.jetty</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Include the fuse version of the UI WAR -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war-fuse61</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    
+    <!-- Additional 3rd party libraries -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.picketlink</groupId>
+      <artifactId>picketlink-core</artifactId>
+      <version>${picketlink.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.lucene</artifactId>
+      <version>${version.org.apache.lucene}_1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>jboss-marshalling-osgi</artifactId>
+      <version>${version.org.jboss.marshalling.jboss-marshalling}</version>
+    </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
@@ -60,6 +170,28 @@
       <groupId>com.datastax.cassandra</groupId>
       <artifactId>cassandra-driver-core</artifactId>
       <version>1.0.4</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>snappy-java</artifactId>
+          <groupId>org.xerial.snappy</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jetty</artifactId>
+          <groupId>org.mortbay.jetty</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>servlet-api</artifactId>
+          <groupId>javax.servlet</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jline</artifactId>
+          <groupId>jline</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
@@ -72,6 +204,12 @@
     <dependency>
       <groupId>javax.security.jacc</groupId>
       <artifactId>javax.security.jacc-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>javax.servlet-api</artifactId>
+          <groupId>javax.servlet</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
@@ -103,6 +241,7 @@
               <outputFile>${project.build.directory}/features.xml</outputFile>
               <attach>true</attach>
               <features>
+                <!-- All S-RAMP Dependencies -->
                 <feature>
                   <name>s-ramp-dependencies</name>
                   <version>${project.version}</version>
@@ -114,19 +253,19 @@
                   </dependsOnFeatures>
                   <excludes>
                     <exclude>org.overlord.sramp:s-ramp-*:*</exclude>
-                    <exclude>org.mortbay.jetty:*:*</exclude>
-                    <exclude>javax.servlet:servlet-api:*</exclude>
-                    <exclude>javax.servlet:javax.servlet-api:*</exclude>
                     <exclude>org.infinispan:infinispan-core:*</exclude>
-                    <exclude>org.xerial.snappy:snappy-java:*</exclude>
-                    <exclude>org.slf4j:slf4j-api:*</exclude>
+                    <exclude>org.jboss.errai:errai-ui:*</exclude>
                   </excludes>
                   <bundles>
                     <!-- Add the infinispan dependency here in order to override its 
                          Import-Package spec (which includes the problematic sun.misc). -->
                     <bundle>wrap:mvn:org.infinispan/infinispan-core/${version.org.infinispan}$Import-Package=javax.management,javax.naming,javax.transaction,javax.transaction.xa,javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.annotation.adapters,javax.xml.namespace,javax.xml.parsers,javax.xml.stream,javax.xml.transform,javax.xml.transform.dom,javax.xml.transform.sax,javax.xml.transform.stream,javax.xml.validation,net.jcip.annotations;resolution:=optional,org.jboss.logging;version="[3.1,4)",org.jboss.marshalling,org.jboss.marshalling.reflect,org.jboss.marshalling.river,org.jboss.marshalling.util,org.jboss.staxmapper,org.jgroups;version="[3.2,4)",org.jgroups.blocks;version="[3.2,4)",org.jgroups.blocks.mux;version="[3.2,4)",org.jgroups.jmx;version="[3.2,4)",org.jgroups.logging;version="[3.2,4)",org.jgroups.protocols;version="[3.2,4)",org.jgroups.protocols.relay;version="[3.2,4)",org.jgroups.stack;version="[3.2,4)",org.jgroups.util;version="[3.2,4)",org.osgi.framework;version="[1.6,2)";resolution:=optional,org.w3c.dom,org.xml.sax,org.xml.sax.helpers&amp;overwrite=merge</bundle>
+                    <!-- Add the errai ui dependency here in order to override its Import-Package
+                         spec to exclude an htmlextractor package that it doesn't actually need. -->
+                    <bundle>wrap:mvn:org.jboss.errai/errai-ui/${version.org.jboss.errai}$Bundle-SymbolicName=org.jboss.errai.errai-ui&amp;Bundle-Version=${version.org.jboss.errai}&amp;Bundle-Name=Errai::UI&amp;Import-Package=!org.apache.stanbol.enhancer.engines.htmlextractor.impl&amp;overwrite=merge</bundle>
                   </bundles>
                 </feature>
+                <!-- The S-RAMP Modules -->
                 <feature>
                   <name>s-ramp-modules</name>
                   <version>${project.version}</version>
@@ -142,8 +281,10 @@
                   </includes>
                   <excludes>
                     <exclude>org.overlord.sramp:s-ramp-server*:*</exclude>
+                    <exclude>org.overlord.sramp:s-ramp-ui-war*:*</exclude>
                   </excludes>
                 </feature>
+                <!-- The S-RAMP Server (back-end) -->
                 <feature>
                   <name>s-ramp-server</name>
                   <version>${project.version}</version>
@@ -160,6 +301,43 @@
                   <includes>
                     <include>org.overlord.sramp:s-ramp-server-fuse61:war</include>
                   </includes>
+                </feature>
+                <!-- The S-RAMP UI -->
+                <feature>
+                  <name>s-ramp-ui</name>
+                  <version>${project.version}</version>
+                  <comment>The S-RAMP UI (web app)</comment>
+                  <dependsOnFeatures>
+                    <feature>
+                      <name>war</name>
+                    </feature>
+                    <feature>
+                      <name>s-ramp-modules</name>
+                      <version>${project.version}</version>
+                    </feature>
+                  </dependsOnFeatures>
+                  <includes>
+                    <include>org.overlord.sramp:s-ramp-ui-war-fuse61:war</include>
+                  </includes>
+                </feature>
+                <!-- Everything -->
+                <feature>
+                  <name>s-ramp</name>
+                  <version>${project.version}</version>
+                  <comment>S-RAMP (Kitchen Sink)</comment>
+                  <dependsOnFeatures>
+                    <feature>
+                      <name>s-ramp-server</name>
+                      <version>${project.version}</version>
+                    </feature>
+                    <feature>
+                      <name>s-ramp-ui</name>
+                      <version>${project.version}</version>
+                    </feature>
+                  </dependsOnFeatures>
+                  <excludes>
+                    <exclude>*:*:*</exclude>
+                  </excludes>
                 </feature>
               </features>
             </configuration>

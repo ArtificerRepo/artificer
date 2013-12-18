@@ -19,7 +19,6 @@ import java.security.KeyPair;
 import java.security.KeyStore;
 
 import org.apache.http.HttpRequest;
-import org.overlord.commons.auth.jboss7.SAMLBearerTokenLoginModule;
 import org.overlord.commons.auth.util.SAMLAssertionUtil;
 import org.overlord.commons.auth.util.SAMLBearerTokenUtil;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
@@ -29,7 +28,7 @@ import org.overlord.sramp.ui.server.SrampUIConfig;
 /**
  * An authentication provider that uses SAML Bearer Tokens.  The S-RAMP
  * Atom API must be configured to accept and consume a SAML Assertion.
- * For more information see {@link SAMLBearerTokenLoginModule}.
+ * For more information see {@link org.overlord.commons.auth.jboss7.SAMLBearerTokenLoginModule}.
  *
  * @author eric.wittmann@redhat.com
  */
