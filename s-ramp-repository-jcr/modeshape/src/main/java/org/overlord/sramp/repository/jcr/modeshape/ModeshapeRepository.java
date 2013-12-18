@@ -166,13 +166,13 @@ public class ModeshapeRepository extends JCRRepository {
             } catch (Exception e) {
                 // eat the error and try the next option
             }
-		    
+
 			try {
                 return new URL(configUrl);
             } catch (Exception e) {
                 // eat the error and try the next option
             }
-			
+
 			return null;
 		}
 	}

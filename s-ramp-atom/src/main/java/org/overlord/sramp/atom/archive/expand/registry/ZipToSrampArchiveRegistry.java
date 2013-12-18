@@ -29,6 +29,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.overlord.commons.config.services.ServiceRegistryUtil;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
 import org.overlord.sramp.common.ArtifactType;
@@ -54,7 +55,7 @@ public final class ZipToSrampArchiveRegistry {
      * Uses the Java {@link ServiceLoader} mechanism to find contributed providers.
      */
     private static void discoverProviders() {
-        for (ZipToSrampArchiveProvider provider : ServiceLoader.load(ZipToSrampArchiveProvider.class)) {
+        for (ZipToSrampArchiveProvider provider : ServiceRegistryUtil.getServices(ZipToSrampArchiveProvider.class)) {
             providers.add(provider);
         }
     }
