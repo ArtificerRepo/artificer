@@ -243,9 +243,6 @@
                     <!-- Add the infinispan dependency here in order to override its Import-Package spec (which 
                       includes the problematic sun.misc). -->
                     <bundle>wrap:mvn:org.infinispan/infinispan-core/${version.org.infinispan}$Import-Package=javax.management,javax.naming,javax.transaction,javax.transaction.xa,javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.annotation.adapters,javax.xml.namespace,javax.xml.parsers,javax.xml.stream,javax.xml.transform,javax.xml.transform.dom,javax.xml.transform.sax,javax.xml.transform.stream,javax.xml.validation,net.jcip.annotations;resolution:=optional,org.jboss.logging;version="[3.1,4)",org.jboss.marshalling,org.jboss.marshalling.reflect,org.jboss.marshalling.river,org.jboss.marshalling.util,org.jboss.staxmapper,org.jgroups;version="[3.2,4)",org.jgroups.blocks;version="[3.2,4)",org.jgroups.blocks.mux;version="[3.2,4)",org.jgroups.jmx;version="[3.2,4)",org.jgroups.logging;version="[3.2,4)",org.jgroups.protocols;version="[3.2,4)",org.jgroups.protocols.relay;version="[3.2,4)",org.jgroups.stack;version="[3.2,4)",org.jgroups.util;version="[3.2,4)",org.osgi.framework;version="[1.6,2)";resolution:=optional,org.w3c.dom,org.xml.sax,org.xml.sax.helpers&amp;overwrite=merge</bundle>
-                    <!-- Add the errai ui dependency here in order to override its Import-Package
-                         spec to exclude an htmlextractor package that it doesn't actually need. -->
-                    <bundle>wrap:mvn:org.jboss.errai/errai-ui/${version.org.jboss.errai}$Bundle-SymbolicName=org.jboss.errai.errai-ui&amp;Bundle-Version=${version.org.jboss.errai}&amp;Bundle-Name=Errai::UI&amp;Import-Package=!org.apache.stanbol.enhancer.engines.htmlextractor.impl&amp;overwrite=merge</bundle>
                   </bundles>
                 </feature>
                 <!-- The S-RAMP Modules -->
