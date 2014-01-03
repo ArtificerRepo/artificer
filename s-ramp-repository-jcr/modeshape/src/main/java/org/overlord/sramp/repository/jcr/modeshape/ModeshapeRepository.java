@@ -198,7 +198,7 @@ public class ModeshapeRepository extends JCRRepository {
 			// Register the ModeShape S-RAMP node types ...
 			is = ModeshapeRepository.class.getClassLoader().getResourceAsStream("org/overlord/sramp/repository/jcr/modeshape/sramp.cnd"); //$NON-NLS-1$
 			if (is == null) {
-			    throw new RuntimeException("Missing file: sramp.cnd could not be found.");
+			    throw new RuntimeException(Messages.i18n.format("CND_NOT_FOUND")); //$NON-NLS-1$
 			}
 			manager.registerNodeTypes(is,true);
 		} catch (LoginException e) {

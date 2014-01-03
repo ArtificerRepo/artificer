@@ -17,6 +17,21 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+    
+    <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>errai-fuse-support</artifactId>
+      <version>${overlord-commons.version}</version>
+    </dependency>
   </dependencies>
   
   <build>
@@ -30,9 +45,6 @@
             <overlay>
               <groupId>${project.groupId}</groupId>
               <artifactId>s-ramp-ui-war-jetty8</artifactId>
-              <excludes>
-                <exclude>WEB-INF/lib/*.jar</exclude>
-              </excludes>
             </overlay>
           </overlays>
           <archive>
@@ -46,44 +58,133 @@
               <Import-Package>
                 javax.servlet,
                 javax.servlet.http,
-                javax.xml.bind,
-                org.apache.commons.configuration,
-                org.apache.commons.fileupload,
-                org.apache.commons.fileupload.disk,
-                org.apache.commons.fileupload.servlet,
-                org.apache.commons.io,
-                org.apache.commons.lang3,
-                org.apache.http,
-                org.codehaus.jackson,
-                org.jboss.errai.bus.server.annotations,
-                org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
-                org.overlord.commons.auth.util,
-                org.overlord.commons.config,
-                org.overlord.sramp.atom.archive,
-                org.overlord.sramp.atom.archive.expand,
-                org.overlord.sramp.atom.archive.expand.registry,
-                org.overlord.sramp.atom.err,
-                org.overlord.sramp.atom.mappers,
-                org.overlord.sramp.atom.visitors,
-                org.overlord.sramp.client,
-                org.overlord.sramp.client.auth,
-                org.overlord.sramp.client.ontology,
-                org.overlord.sramp.client.query,
-                org.overlord.sramp.common,
-                org.overlord.sramp.common.i18n,
-                org.overlord.sramp.common.ontology,
-                org.overlord.sramp.common.visitors,
-                org.overlord.sramp.integration.java.model,
-                org.overlord.sramp.integration.switchyard.model,
-                org.w3._1999._02._22_rdf_syntax_ns_,
-                org.jboss.weld.environment.servlet,
-                org.jboss.weld.bootstrap,
-                org.overlord.commons.gwt.server.filters,
-                org.jboss.errai.bus.server.servlet,
-                org.overlord.commons.ui.header,
-                javax.enterprise.inject.spi
+                javax.servlet.jsp,
+                javax.security.auth.login,
+                javax.xml.parsers,
+                javax.el,
+                org.osgi.framework,
+                org.osgi.framework.wiring,
+                org.xml.sax,
+                org.xml.sax.helpers,
+                org.apache.karaf.jaas.boot.principal,
+                javax.security.auth.callback,
+                org.eclipse.jetty.plus.jaas,
+                org.eclipse.jetty.servlet,
+                org.eclipse.jetty.server.handler
               </Import-Package>
-              <Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath>
+              <Bundle-ClassPath>
+                .,
+                WEB-INF/classes,
+                WEB-INF/lib/activation-1.1.1.jar,
+                WEB-INF/lib/aether-api-1.13.1.jar,
+                WEB-INF/lib/aether-impl-1.13.1.jar,
+                WEB-INF/lib/aether-spi-1.13.1.jar,
+                WEB-INF/lib/aether-util-1.13.1.jar,
+                WEB-INF/lib/aopalliance-1.0.jar,
+                WEB-INF/lib/apache-mime4j-0.6.jar,
+                WEB-INF/lib/bcel-5.2.jar,
+                WEB-INF/lib/cal10n-api-0.7.4.jar,
+                WEB-INF/lib/cdi-api-1.0-SP4.jar,
+                WEB-INF/lib/commons-codec-1.4.jar,
+                WEB-INF/lib/commons-collections-3.2.1.jar,
+                WEB-INF/lib/commons-compress-1.4.1.jar,
+                WEB-INF/lib/commons-configuration-1.6.jar,
+                WEB-INF/lib/commons-fileupload-1.2.2.jar,
+                WEB-INF/lib/commons-io-2.1.jar,
+                WEB-INF/lib/commons-lang-2.6.jar,
+                WEB-INF/lib/commons-lang3-3.1.jar,
+                WEB-INF/lib/commons-logging-1.1.1.jar,
+                WEB-INF/lib/commons-logging-api-1.1.jar,
+                WEB-INF/lib/dom4j-1.6.1.jar,
+                WEB-INF/lib/errai-bus-2.4.1.Final.jar,
+                WEB-INF/lib/errai-cdi-client-2.4.1.Final.jar,
+                WEB-INF/lib/errai-cdi-jetty-2.4.1.Final.jar,
+                WEB-INF/lib/errai-codegen-2.4.1.Final.jar,
+                WEB-INF/lib/errai-codegen-gwt-2.4.1.Final.jar,
+                WEB-INF/lib/errai-common-2.4.1.Final.jar,
+                WEB-INF/lib/errai-config-2.4.1.Final.jar,
+                WEB-INF/lib/errai-ioc-2.4.1.Final.jar,
+                WEB-INF/lib/errai-ioc-bus-support-2.4.1.Final.jar,
+                WEB-INF/lib/errai-marshalling-2.4.1.Final.jar,
+                WEB-INF/lib/errai-tools-2.4.1.Final.jar,
+                WEB-INF/lib/errai-ui-2.4.1.Final.jar,
+                WEB-INF/lib/errai-weld-integration-2.4.1.Final.jar,
+                WEB-INF/lib/geronimo-spec-jta-1.0.1B-rc4.jar,
+                WEB-INF/lib/guava-13.0.1.jar,
+                WEB-INF/lib/guice-3.0.jar,
+                WEB-INF/lib/hsqldb-1.8.0.7.jar,
+                WEB-INF/lib/httpclient-4.2.1.jar,
+                WEB-INF/lib/httpcore-4.2.1.jar,
+                WEB-INF/lib/jackson-core-asl-1.9.9.jar,
+                WEB-INF/lib/jackson-mapper-asl-1.9.9.jar,
+                WEB-INF/lib/jakarta-regexp-1.4.jar,
+                WEB-INF/lib/javassist-3.15.0-GA.jar,
+                WEB-INF/lib/javax.inject-1.jar,
+                WEB-INF/lib/jaxb-impl-2.2.5.jar,
+                WEB-INF/lib/jaxrs-api-2.3.6.Final.jar,
+                WEB-INF/lib/jboss-interceptors-api_1.1_spec-1.0.0.Beta1.jar,
+                WEB-INF/lib/jboss-logging-3.1.2.GA.jar,
+                WEB-INF/lib/jcip-annotations-1.0.jar,
+                WEB-INF/lib/jgroups-3.2.10.Final.jar,
+                WEB-INF/lib/joda-time-2.1.jar,
+                WEB-INF/lib/jsoup-1.7.1.jar,
+                WEB-INF/lib/jsr250-api-1.0.jar,
+                WEB-INF/lib/lesscss-1.3.3.jar,
+                WEB-INF/lib/log4j-1.2.16.jar,
+                WEB-INF/lib/mail-1.4.5.jar,
+                WEB-INF/lib/maven-aether-provider-3.0.5.jar,
+                WEB-INF/lib/maven-artifact-3.0.5.jar,
+                WEB-INF/lib/maven-core-3.0.5.jar,
+                WEB-INF/lib/maven-model-3.0.5.jar,
+                WEB-INF/lib/maven-model-builder-3.0.5.jar,
+                WEB-INF/lib/maven-plugin-api-3.0.5.jar,
+                WEB-INF/lib/maven-repository-metadata-3.0.5.jar,
+                WEB-INF/lib/maven-settings-3.0.5.jar,
+                WEB-INF/lib/maven-settings-builder-3.0.5.jar,
+                WEB-INF/lib/mvel2-2.1.7.Final.jar,
+                WEB-INF/lib/netty-4.0.0.Alpha1.errai.r1.jar,
+                WEB-INF/lib/org.apache.stanbol.enhancer.engines.htmlextractor-0.10.0.jar,
+                WEB-INF/lib/overlord-commons-config-2.0.0-SNAPSHOT.jar,
+                WEB-INF/lib/overlord-commons-gwt-2.0.0-SNAPSHOT.jar,
+                WEB-INF/lib/overlord-commons-uiheader-2.0.0-SNAPSHOT.jar,
+                WEB-INF/lib/plexus-cipher-1.4.jar,
+                WEB-INF/lib/plexus-classworlds-2.4.jar,
+                WEB-INF/lib/plexus-component-annotations-1.5.5.jar,
+                WEB-INF/lib/plexus-interpolation-1.14.jar,
+                WEB-INF/lib/plexus-sec-dispatcher-1.3.jar,
+                WEB-INF/lib/plexus-utils-3.0.7.jar,
+                WEB-INF/lib/rdf.core-0.12-incubating.jar,
+                WEB-INF/lib/reflections-2.4.1.Final.jar,
+                WEB-INF/lib/resteasy-atom-provider-2.3.6.Final.jar,
+                WEB-INF/lib/resteasy-jaxb-provider-2.3.6.Final.jar,
+                WEB-INF/lib/resteasy-jaxrs-2.3.6.Final.jar,
+                WEB-INF/lib/resteasy-multipart-provider-2.3.6.Final.jar,
+                WEB-INF/lib/rhino-1.7R4.jar,
+                WEB-INF/lib/s-ramp-api-0.4.0-SNAPSHOT.jar,
+                WEB-INF/lib/s-ramp-atom-0.4.0-SNAPSHOT.jar,
+                WEB-INF/lib/s-ramp-client-0.4.0-SNAPSHOT.jar,
+                WEB-INF/lib/s-ramp-common-0.4.0-SNAPSHOT.jar,
+                WEB-INF/lib/s-ramp-integration-java-0.4.0-SNAPSHOT.jar,
+                WEB-INF/lib/s-ramp-integration-kie-0.4.0-SNAPSHOT.jar,
+                WEB-INF/lib/s-ramp-integration-switchyard-0.4.0-SNAPSHOT.jar,
+                WEB-INF/lib/s-ramp-integration-teiid-0.4.0-SNAPSHOT.jar,
+                WEB-INF/lib/scannotation-1.0.3.jar,
+                WEB-INF/lib/sisu-guice-3.0.3-no_aop.jar,
+                WEB-INF/lib/sisu-inject-bean-2.2.3.jar,
+                WEB-INF/lib/sisu-inject-plexus-2.2.3.jar,
+                WEB-INF/lib/slf4j-api-1.7.2.jar,
+                WEB-INF/lib/slf4j-ext-1.7.2.jar,
+                WEB-INF/lib/slf4j-log4j12-1.7.2.jar,
+                WEB-INF/lib/utils-0.1-incubating.jar,
+                WEB-INF/lib/weld-api-1.1.Final.jar,
+                WEB-INF/lib/weld-core-1.1.13.Final.jar,
+                WEB-INF/lib/weld-se-core-1.1.13.Final.jar,
+                WEB-INF/lib/weld-servlet-core-1.1.13.Final.jar,
+                WEB-INF/lib/weld-spi-1.1.Final.jar,
+                WEB-INF/lib/wymiwyg-commons-core-0.7.6.jar,
+                WEB-INF/lib/xz-1.0.jar,
+                WEB-INF/lib/errai-fuse-support-2.0.0-SNAPSHOT.jar
+              </Bundle-ClassPath>
             </manifestEntries>
           </archive>
         </configuration>
