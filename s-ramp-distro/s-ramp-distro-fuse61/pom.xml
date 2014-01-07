@@ -19,7 +19,7 @@
       <type>jar</type>
       <classifier>classes</classifier>
       <exclusions>
-        <!-- Exclude JBoss Marshalling JAR so we can later include the  -->
+        <!-- Exclude JBoss Marshalling JAR so we can later include the -->
         <exclusion>
           <artifactId>jboss-marshalling-river</artifactId>
           <groupId>org.jboss.marshalling</groupId>
@@ -68,62 +68,24 @@
     </dependency>
 
     <!-- Include the base s-ramp-ui WAR to pull in all required dependencies transitively -->
-    <!-- 
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-war</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-      <classifier>classes</classifier>
-      <exclusions>
-        <exclusion>
-          <artifactId>errai-tools</artifactId>
-          <groupId>org.jboss.errai</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>errai-codegen-gwt</artifactId>
-          <groupId>org.jboss.errai</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>errai-ioc</artifactId>
-          <groupId>org.jboss.errai</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>netty</artifactId>
-          <groupId>org.jboss.errai.io.netty</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>errai-javax-enterprise</artifactId>
-          <groupId>org.jboss.errai</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>org.apache.stanbol.enhancer.engines.htmlextractor</artifactId>
-          <groupId>org.apache.stanbol</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jetty-plus</artifactId>
-          <groupId>org.mortbay.jetty</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jetty-naming</artifactId>
-          <groupId>org.mortbay.jetty</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-     -->
+    <!-- <dependency> <groupId>org.overlord.sramp</groupId> <artifactId>s-ramp-ui-war</artifactId> <version>${project.version}</version> 
+      <type>jar</type> <classifier>classes</classifier> <exclusions> <exclusion> <artifactId>errai-tools</artifactId> 
+      <groupId>org.jboss.errai</groupId> </exclusion> <exclusion> <artifactId>errai-codegen-gwt</artifactId> <groupId>org.jboss.errai</groupId> 
+      </exclusion> <exclusion> <artifactId>errai-ioc</artifactId> <groupId>org.jboss.errai</groupId> </exclusion> <exclusion> 
+      <artifactId>netty</artifactId> <groupId>org.jboss.errai.io.netty</groupId> </exclusion> <exclusion> <artifactId>errai-javax-enterprise</artifactId> 
+      <groupId>org.jboss.errai</groupId> </exclusion> <exclusion> <artifactId>org.apache.stanbol.enhancer.engines.htmlextractor</artifactId> 
+      <groupId>org.apache.stanbol</groupId> </exclusion> <exclusion> <artifactId>jetty-plus</artifactId> <groupId>org.mortbay.jetty</groupId> 
+      </exclusion> <exclusion> <artifactId>jetty-naming</artifactId> <groupId>org.mortbay.jetty</groupId> </exclusion> 
+      <exclusion> <artifactId>slf4j-api</artifactId> <groupId>org.slf4j</groupId> </exclusion> </exclusions> </dependency> -->
 
-    <!-- Include the fuse version of the UI WAR -->
+    <!-- Include the Fuse 6.1 version of the UI WAR -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-fuse61</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
-    
+
     <!-- Additional 3rd party libraries -->
     <dependency>
       <groupId>org.overlord</groupId>
@@ -223,6 +185,11 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-osgi</artifactId>
+      <version>${overlord-commons.version}</version>
+    </dependency>
   </dependencies>
 
   <!-- Overrides for Karaf -->
@@ -268,8 +235,8 @@
                     <exclude>org.infinispan:infinispan-core:*</exclude>
                   </excludes>
                   <bundles>
-                    <!-- Add the infinispan dependency here in order to override its 
-                         Import-Package spec (which includes the problematic sun.misc). -->
+                    <!-- Add the infinispan dependency here in order to override its Import-Package spec (which 
+                      includes the problematic sun.misc). -->
                     <bundle>wrap:mvn:org.infinispan/infinispan-core/${version.org.infinispan}$Import-Package=javax.management,javax.naming,javax.transaction,javax.transaction.xa,javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.annotation.adapters,javax.xml.namespace,javax.xml.parsers,javax.xml.stream,javax.xml.transform,javax.xml.transform.dom,javax.xml.transform.sax,javax.xml.transform.stream,javax.xml.validation,net.jcip.annotations;resolution:=optional,org.jboss.logging;version="[3.1,4)",org.jboss.marshalling,org.jboss.marshalling.reflect,org.jboss.marshalling.river,org.jboss.marshalling.util,org.jboss.staxmapper,org.jgroups;version="[3.2,4)",org.jgroups.blocks;version="[3.2,4)",org.jgroups.blocks.mux;version="[3.2,4)",org.jgroups.jmx;version="[3.2,4)",org.jgroups.logging;version="[3.2,4)",org.jgroups.protocols;version="[3.2,4)",org.jgroups.protocols.relay;version="[3.2,4)",org.jgroups.stack;version="[3.2,4)",org.jgroups.util;version="[3.2,4)",org.osgi.framework;version="[1.6,2)";resolution:=optional,org.w3c.dom,org.xml.sax,org.xml.sax.helpers&amp;overwrite=merge</bundle>
                   </bundles>
                 </feature>

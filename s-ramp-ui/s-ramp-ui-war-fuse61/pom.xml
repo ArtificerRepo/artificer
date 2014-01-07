@@ -17,11 +17,8 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
-    
-    <dependency>
-      <groupId>org.jboss.weld.servlet</groupId>
-      <artifactId>weld-servlet-core</artifactId>
-    </dependency>
+
+    <!-- Standard servlet dependencies -->
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
@@ -29,8 +26,25 @@
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
-      <artifactId>errai-fuse-support</artifactId>
-      <version>${overlord-commons.version}</version>
+      <artifactId>overlord-commons-osgi</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Some additional dependencies to include in the WAR -->
+    <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-osgi-weld</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-errai-fuse-support</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
   
@@ -61,16 +75,49 @@
                 javax.servlet.jsp,
                 javax.security.auth.login,
                 javax.xml.parsers,
+                javax.xml.bind,
+                javax.xml.bind.annotation,
+                javax.xml.datatype,
+                javax.xml.transform,
+                javax.xml.transform.stream,
+                javax.xml.namespace,
+                javax.ws.rs,
+                javax.ws.rs.core,
+                javax.ws.rs.ext,
+                javax.imageio,
                 javax.el,
+                javax.imageio.plugins.jpeg,
+                javax.net.ssl,
                 org.osgi.framework,
                 org.osgi.framework.wiring,
                 org.xml.sax,
                 org.xml.sax.helpers,
+                org.w3c.dom,
                 org.apache.karaf.jaas.boot.principal,
                 javax.security.auth.callback,
                 org.eclipse.jetty.plus.jaas,
                 org.eclipse.jetty.servlet,
-                org.eclipse.jetty.server.handler
+                org.eclipse.jetty.server.handler,
+                org.apache.http,
+                org.apache.http.client,
+                org.apache.http.client.methods,
+                org.apache.http.impl.client,
+                org.apache.http.protocol,
+                org.jboss.resteasy.util,
+                org.jboss.resteasy.specimpl,
+                org.jboss.resteasy.plugins.interceptors,
+                org.jboss.resteasy.plugins.interceptors.encoding,
+                org.jboss.resteasy.plugins.server.servlet,
+                org.jboss.resteasy.plugins.providers,
+                org.jboss.resteasy.plugins.providers.jaxb,
+                org.jboss.resteasy.plugins.providers.multipart,
+                org.jboss.resteasy.plugins.providers.atom.app,
+                org.jboss.resteasy.plugins.providers.atom,
+                org.jboss.resteasy.client,
+                org.jboss.resteasy.client.core.executors,
+                org.jboss.resteasy.annotations.providers.multipart,
+                org.jboss.resteasy.spi,
+                org.overlord.commons.osgi.vfs
               </Import-Package>
               <Bundle-ClassPath>
                 .,
@@ -113,15 +160,12 @@
                 WEB-INF/lib/guava-13.0.1.jar,
                 WEB-INF/lib/guice-3.0.jar,
                 WEB-INF/lib/hsqldb-1.8.0.7.jar,
-                WEB-INF/lib/httpclient-4.2.1.jar,
-                WEB-INF/lib/httpcore-4.2.1.jar,
                 WEB-INF/lib/jackson-core-asl-1.9.9.jar,
                 WEB-INF/lib/jackson-mapper-asl-1.9.9.jar,
                 WEB-INF/lib/jakarta-regexp-1.4.jar,
                 WEB-INF/lib/javassist-3.15.0-GA.jar,
                 WEB-INF/lib/javax.inject-1.jar,
                 WEB-INF/lib/jaxb-impl-2.2.5.jar,
-                WEB-INF/lib/jaxrs-api-2.3.6.Final.jar,
                 WEB-INF/lib/jboss-interceptors-api_1.1_spec-1.0.0.Beta1.jar,
                 WEB-INF/lib/jboss-logging-3.1.2.GA.jar,
                 WEB-INF/lib/jcip-annotations-1.0.jar,
@@ -155,10 +199,6 @@
                 WEB-INF/lib/plexus-utils-3.0.7.jar,
                 WEB-INF/lib/rdf.core-0.12-incubating.jar,
                 WEB-INF/lib/reflections-2.4.1.Final.jar,
-                WEB-INF/lib/resteasy-atom-provider-2.3.6.Final.jar,
-                WEB-INF/lib/resteasy-jaxb-provider-2.3.6.Final.jar,
-                WEB-INF/lib/resteasy-jaxrs-2.3.6.Final.jar,
-                WEB-INF/lib/resteasy-multipart-provider-2.3.6.Final.jar,
                 WEB-INF/lib/rhino-1.7R4.jar,
                 WEB-INF/lib/s-ramp-api-0.4.0-SNAPSHOT.jar,
                 WEB-INF/lib/s-ramp-atom-0.4.0-SNAPSHOT.jar,
@@ -183,7 +223,8 @@
                 WEB-INF/lib/weld-spi-1.1.Final.jar,
                 WEB-INF/lib/wymiwyg-commons-core-0.7.6.jar,
                 WEB-INF/lib/xz-1.0.jar,
-                WEB-INF/lib/errai-fuse-support-2.0.0-SNAPSHOT.jar
+                WEB-INF/lib/overlord-commons-errai-fuse-support-2.0.0-SNAPSHOT.jar,
+                WEB-INF/lib/overlord-commons-osgi-weld-2.0.0-SNAPSHOT.jar
               </Bundle-ClassPath>
             </manifestEntries>
           </archive>
