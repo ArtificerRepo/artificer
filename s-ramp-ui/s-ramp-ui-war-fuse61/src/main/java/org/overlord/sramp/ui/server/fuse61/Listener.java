@@ -21,6 +21,7 @@ import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.jboss.weld.servlet.api.ServletListener;
+import org.overlord.commons.osgi.weld.BundleListener;
 
 /**
  * A servlet listener that wraps the Weld servlet listener so that we can 
@@ -38,7 +39,7 @@ public class Listener implements ServletListener {
      */
     public Listener() {
         swapper = new ContextClassLoaderSwapper();
-        delegate = new org.jboss.weld.environment.servlet.Listener();
+        delegate = new BundleListener();
         swapper.restore();
     }
     
