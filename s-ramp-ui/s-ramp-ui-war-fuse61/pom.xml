@@ -58,6 +58,11 @@
             <overlay>
               <groupId>${project.groupId}</groupId>
               <artifactId>s-ramp-ui-war-jetty8</artifactId>
+              <excludes>
+                <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
+                <exclude>WEB-INF/lib/httpclient-*.jar</exclude>
+                <exclude>WEB-INF/lib/httpcore-*.jar</exclude>
+              </excludes>
             </overlay>
           </overlays>
           <archive>
