@@ -343,6 +343,7 @@
         <artifactId>jline</artifactId>
         <version>${jline.version}</version>
       </dependency>
+      <!-- ModeShape -->
       <dependency>
         <groupId>org.modeshape</groupId>
         <artifactId>modeshape-common</artifactId>
