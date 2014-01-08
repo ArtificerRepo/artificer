@@ -89,6 +89,7 @@
               org.jboss.downloads.overlord.sramp._2013.auditing,
               org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
               org.overlord.commons.config,
+              org.overlord.commons.config.services,
               org.w3c.dom
             </Import-Package>
           </instructions>

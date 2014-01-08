@@ -28,9 +28,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.commons.config.services.ServiceRegistryUtil;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampConstants;
@@ -57,18 +59,24 @@ public class ArtifactDeriverFactory {
 		derivers.put(ArtifactTypeEnum.WsdlDocument, new WsdlDeriver());
 		derivers.put(ArtifactTypeEnum.PolicyDocument, new PolicyDeriver());
     }
+    
 	/**
      * Loads any extended derivers.  These can be contributed via the
      * standard Java service loading mechanism.
      */
     private static void loadExtendedDerivers() {
-        // ultimately there will be two loaders - the current thread's context classloader
-        // and a single JAR loader over all JARs in the 'sramp.derivers.customDir' directory
-        Collection<ClassLoader> loaders = new LinkedList<ClassLoader>();
-        loaders.add(Thread.currentThread().getContextClassLoader());
-
+        // First load via the standard ServiceRegistry mechanism.
+        Set<DeriverProvider> providers = ServiceRegistryUtil.getServices(DeriverProvider.class);
+        for (DeriverProvider provider : providers) {
+            Map<String, ArtifactDeriver> derivers = provider.createArtifactDerivers();
+            if (derivers != null && !derivers.isEmpty()) {
+                extendedDerivers.putAll(derivers);
+            }
+        }
+        
         // Allow users to provide a directory path where we will check for JARs that
         // contain DeriverProvider implementations.
+        Collection<ClassLoader> loaders = new LinkedList<ClassLoader>();
         String customDeriverDirPath = System.getProperty(SrampConstants.SRAMP_CUSTOM_DERIVER_DIR);
         if (customDeriverDirPath != null && customDeriverDirPath.trim().length() > 0) {
             File directory = new File(customDeriverDirPath);
@@ -87,8 +95,7 @@ public class ArtifactDeriverFactory {
                 loaders.add(jarCL);
             }
         }
-
-        // Now load all of the contributed DeriverProvider implementations
+        // Now load all of these contributed DeriverProvider implementations
         for (ClassLoader loader : loaders) {
             for (DeriverProvider provider : ServiceLoader.load(DeriverProvider.class, loader)) {
                 Map<String, ArtifactDeriver> derivers = provider.createArtifactDerivers();
