@@ -22,6 +22,25 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>regex-property</id>
+            <goals>
+              <goal>regex-property</goal>
+            </goals>
+            <configuration>
+              <name>project.version.osgi</name>
+              <value>${project.version}</value>
+              <regex>-SNAPSHOT</regex>
+              <replacement>.Snapshot</replacement>
+              <failIfNoMatch>false</failIfNoMatch>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
@@ -38,7 +57,7 @@
             <manifestEntries>
               <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
               <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-              <Bundle-Version>0.4.0</Bundle-Version>
+              <Bundle-Version>${project.version.osgi}</Bundle-Version>
               <Bundle-Name>${project.name}</Bundle-Name>
               <Web-ContextPath>/s-ramp-server</Web-ContextPath>
               <Webapp-Context>/s-ramp-server</Webapp-Context>
