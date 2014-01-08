@@ -67,17 +67,6 @@
       <type>war</type>
     </dependency>
 
-    <!-- Include the base s-ramp-ui WAR to pull in all required dependencies transitively -->
-    <!-- <dependency> <groupId>org.overlord.sramp</groupId> <artifactId>s-ramp-ui-war</artifactId> <version>${project.version}</version> 
-      <type>jar</type> <classifier>classes</classifier> <exclusions> <exclusion> <artifactId>errai-tools</artifactId> 
-      <groupId>org.jboss.errai</groupId> </exclusion> <exclusion> <artifactId>errai-codegen-gwt</artifactId> <groupId>org.jboss.errai</groupId> 
-      </exclusion> <exclusion> <artifactId>errai-ioc</artifactId> <groupId>org.jboss.errai</groupId> </exclusion> <exclusion> 
-      <artifactId>netty</artifactId> <groupId>org.jboss.errai.io.netty</groupId> </exclusion> <exclusion> <artifactId>errai-javax-enterprise</artifactId> 
-      <groupId>org.jboss.errai</groupId> </exclusion> <exclusion> <artifactId>org.apache.stanbol.enhancer.engines.htmlextractor</artifactId> 
-      <groupId>org.apache.stanbol</groupId> </exclusion> <exclusion> <artifactId>jetty-plus</artifactId> <groupId>org.mortbay.jetty</groupId> 
-      </exclusion> <exclusion> <artifactId>jetty-naming</artifactId> <groupId>org.mortbay.jetty</groupId> </exclusion> 
-      <exclusion> <artifactId>slf4j-api</artifactId> <groupId>org.slf4j</groupId> </exclusion> </exclusions> </dependency> -->
-
     <!-- Include the Fuse 6.1 version of the UI WAR -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
@@ -199,7 +188,7 @@
       <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
-        <version>1.2.17</version>
+        <version>${version.log4j}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
