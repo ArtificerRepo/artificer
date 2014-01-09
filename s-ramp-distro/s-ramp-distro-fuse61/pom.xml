@@ -10,6 +10,18 @@
   <packaging>pom</packaging>
   <name>S-RAMP Distribution: Fuse 6.1 Support</name>
 
+  <!-- Overrides for Karaf -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- Downgrade to slf4j-ext 1.7.1 so it will run in Fuse 6.1 -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-ext</artifactId>
+        <version>1.7.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- Include the base s-ramp-server WAR to pull in all required dependencies transitively -->
     <dependency>
@@ -55,6 +67,10 @@
         <exclusion>
           <artifactId>log4j</artifactId>
           <groupId>log4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>slf4j-log4j12</artifactId>
+          <groupId>org.slf4j</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -126,6 +142,16 @@
       <version>1.6.5</version>
     </dependency>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>com.datastax.cassandra</groupId>
       <artifactId>cassandra-driver-core</artifactId>
       <version>1.0.4</version>
@@ -154,6 +180,10 @@
           <artifactId>log4j</artifactId>
           <groupId>log4j</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>slf4j-log4j12</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -180,18 +210,6 @@
       <version>${overlord-commons.version}</version>
     </dependency>
   </dependencies>
-
-  <!-- Overrides for Karaf -->
-  <dependencyManagement>
-    <dependencies>
-      <!-- Upgrade to log4j 1.2.17 because the 1.2.16 bundle has a duplicate import -->
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${version.log4j}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <build>
     <plugins>

@@ -50,18 +50,14 @@ public class Listener implements ServletListener {
          * Constructor.
          */
         public ContextClassLoaderSwapper() {
-            System.out.println("Swapping context classloader.");
             loader = Thread.currentThread().getContextClassLoader();
-            System.out.println("   From: " + loader);
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            System.out.println("   To:   " + getClass().getClassLoader());
         }
 
         /**
          * Restores the classloader to its previous version.
          */
         public void restore() {
-            System.out.println("Restoring context classloader.");
             Thread.currentThread().setContextClassLoader(loader);
         }
         
