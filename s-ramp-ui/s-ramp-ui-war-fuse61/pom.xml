@@ -81,6 +81,11 @@
                 <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
                 <exclude>WEB-INF/lib/httpclient-*.jar</exclude>
                 <exclude>WEB-INF/lib/httpcore-*.jar</exclude>
+                <exclude>WEB-INF/lib/log4j-*.jar</exclude>
+                <exclude>WEB-INF/lib/slf4j-api-*.jar</exclude>
+                <exclude>WEB-INF/lib/slf4j-ext-*.jar</exclude>
+                <exclude>WEB-INF/lib/slf4j-log4j12-*.jar</exclude>
+                <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>
@@ -104,6 +109,7 @@
                 javax.xml.transform,
                 javax.xml.transform.stream,
                 javax.xml.namespace,
+                javax.xml.xpath,
                 javax.ws.rs,
                 javax.ws.rs.core,
                 javax.ws.rs.ext,
@@ -118,6 +124,9 @@
                 org.w3c.dom,
                 org.apache.karaf.jaas.boot.principal,
                 javax.security.auth.callback,
+                org.slf4j,
+                org.slf4j.cal10n,
+                org.slf4j.ext,
                 org.eclipse.jetty.plus.jaas,
                 org.eclipse.jetty.servlet,
                 org.eclipse.jetty.server.handler,
@@ -140,7 +149,8 @@
                 org.jboss.resteasy.client.core.executors,
                 org.jboss.resteasy.annotations.providers.multipart,
                 org.jboss.resteasy.spi,
-                org.overlord.commons.osgi.vfs
+                org.overlord.commons.osgi.vfs,
+                ch.qos.cal10n
               </Import-Package>
               <Bundle-ClassPath>
                 .,
@@ -153,7 +163,6 @@
                 WEB-INF/lib/aopalliance-1.0.jar,
                 WEB-INF/lib/apache-mime4j-0.6.jar,
                 WEB-INF/lib/bcel-5.2.jar,
-                WEB-INF/lib/cal10n-api-0.7.4.jar,
                 WEB-INF/lib/cdi-api-${version.javax.enterprise.cdi}.jar,
                 WEB-INF/lib/commons-codec-${version.commons-codec}.jar,
                 WEB-INF/lib/commons-collections-${version.commons-collections}.jar,
@@ -197,7 +206,6 @@
                 WEB-INF/lib/jsoup-1.7.1.jar,
                 WEB-INF/lib/jsr250-api-1.0.jar,
                 WEB-INF/lib/lesscss-1.3.3.jar,
-                WEB-INF/lib/log4j-${log4j.version}.jar,
                 WEB-INF/lib/mail-${version.javax.mail}.jar,
                 WEB-INF/lib/maven-aether-provider-3.0.5.jar,
                 WEB-INF/lib/maven-artifact-${version.org.apache.maven}.jar,
@@ -235,9 +243,6 @@
                 WEB-INF/lib/sisu-guice-3.0.3-no_aop.jar,
                 WEB-INF/lib/sisu-inject-bean-${version.org.sonatype.sisu}.jar,
                 WEB-INF/lib/sisu-inject-plexus-${version.org.sonatype.sisu}.jar,
-                WEB-INF/lib/slf4j-api-${version.org.slf4j}.jar,
-                WEB-INF/lib/slf4j-ext-${version.org.slf4j}.jar,
-                WEB-INF/lib/slf4j-log4j12-${version.org.slf4j}.jar,
                 WEB-INF/lib/utils-0.1-incubating.jar,
                 WEB-INF/lib/weld-api-1.1.Final.jar,
                 WEB-INF/lib/weld-core-${version.org.jboss.weld}.jar,
