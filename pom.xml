@@ -258,7 +258,7 @@
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-uiheader</artifactId>
+        <artifactId>overlord-commons-auth-tomcat7</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
       <dependency>
@@ -269,6 +269,26 @@
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-config</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-errai-fuse-support</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-osgi</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-osgi-weld</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-uiheader</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
       <!-- Apache Commons -->
@@ -449,12 +469,12 @@
     <module>s-ramp-server</module>
     <module>s-ramp-server-eap61</module>
     <module>s-ramp-server-fuse61</module>
+    <module>s-ramp-server-jetty8</module>
     <module>s-ramp-server-tomcat7</module>
     <module>s-ramp-shell</module>
     <module>s-ramp-shell-api</module>
     <module>s-ramp-ui</module>
     <module>s-ramp-wagon</module>
-    <module>s-ramp-server-jetty8</module>
   </modules>
 </project>
 
