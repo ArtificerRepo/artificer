@@ -23,12 +23,12 @@ import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.pages.ArtifactDetailsPage;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
+import org.overlord.sramp.ui.client.local.util.IUploadCompletionHandler;
+import org.overlord.sramp.ui.client.local.util.UploadResult;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
-import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.server.servlets.ArtifactUploadServlet;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
@@ -54,7 +54,7 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
 
     private ModalDialog dialog;
     private NotificationBean notification;
-    private IImportCompletionHandler completionHandler;
+    private IUploadCompletionHandler completionHandler;
 
     /**
      * Constructor.
@@ -132,14 +132,14 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
     /**
      * @return the completionHandler
      */
-    public IImportCompletionHandler getCompletionHandler() {
+    public IUploadCompletionHandler getCompletionHandler() {
         return completionHandler;
     }
 
     /**
      * @param completionHandler the completionHandler to set
      */
-    public void setCompletionHandler(IImportCompletionHandler completionHandler) {
+    public void setCompletionHandler(IUploadCompletionHandler completionHandler) {
         this.completionHandler = completionHandler;
     }
 
@@ -147,7 +147,7 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
      * The {@link ArtifactUploadServlet} returns a JSON map as the response.
      * @author eric.wittmann@redhat.com
      */
-    private static class ImportResult extends JavaScriptObject {
+    public static class ImportResult extends UploadResult {
 
         /**
          * Constructor.
@@ -160,23 +160,12 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
          * then from there into an {@link ImportResult} bean.
          * @param resultData
          */
-        public static final ImportResult fromResult(String resultData) {
+        public static ImportResult fromResult(String resultData) {
             int startIdx = resultData.indexOf('{');
             int endIdx = resultData.lastIndexOf('}') + 1;
             resultData = "(" + resultData.substring(startIdx, endIdx) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-            return fromJSON(resultData);
+            return fromJSON(ImportResult.class, resultData);
         }
-
-        /**
-         * Gets a value from the map.
-         * @param key
-         */
-        public final native String get(String key) /*-{
-            if (this[key])
-                return this[key];
-            else
-                return null;
-        }-*/;
 
         /**
          * @return the uuid
@@ -197,13 +186,6 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
          */
         public final String getType() {
             return get("type"); //$NON-NLS-1$
-        }
-
-        /**
-         * Returns true if the response is an error response.
-         */
-        public final boolean isError() {
-            return "true".equals(get("exception")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         /**
@@ -233,23 +215,6 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
         public final int getBatchNumFailed() {
             return new Integer(get("batchNumFailed")); //$NON-NLS-1$
         }
-
-        /**
-         * Gets the error.
-         */
-        public final SrampUiException getError() {
-            String errorMessage = get("exception-message"); //$NON-NLS-1$
-//            String errorStack = get("exception-stack");
-            SrampUiException error = new SrampUiException(errorMessage);
-//            error.setRootStackTrace(errorStack);
-            return error;
-        }
-
-        /**
-         * Convert a string of json data into a useful bean.
-         * @param jsonData
-         */
-        public static final native ImportResult fromJSON(String jsonData) /*-{ return eval(jsonData); }-*/;
 
     }
 }

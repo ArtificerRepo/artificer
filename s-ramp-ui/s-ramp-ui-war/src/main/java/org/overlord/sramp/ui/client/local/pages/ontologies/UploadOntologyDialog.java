@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.local.pages.artifacts;
+package org.overlord.sramp.ui.client.local.pages.ontologies;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -32,27 +32,27 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Button;
 
 /**
- * A modal dialog used to import artifacts into S-RAMP.
+ * A modal dialog used to upload an ontology to S-RAMP.
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/import-dialog.html#import-dialog")
+@Templated("/org/overlord/sramp/ui/client/local/site/dialogs/upload-ontology-dialog.html#upload-ontology-dialog")
 @Dependent
-public class ImportArtifactDialog extends ModalDialog {
+public class UploadOntologyDialog extends ModalDialog {
 
-    @Inject @DataField("import-dialog-form")
+    @Inject @DataField("upload-ontology-dialog-form")
     private TemplatedFormPanel form;
-    @Inject @DataField("import-dialog-submit-button")
+    @Inject @DataField("upload-ontology-dialog-submit-button")
     private Button submitButton;
     @Inject
-    private Instance<ImportArtifactFormSubmitHandler> formHandlerFactory;
+    private Instance<UploadOntologyFormSubmitHandler> formHandlerFactory;
 
-    private ImportArtifactFormSubmitHandler formHandler;
+    private UploadOntologyFormSubmitHandler formHandler;
     private IUploadCompletionHandler completionHandler;
 
     /**
      * Constructor.
      */
-    public ImportArtifactDialog() {
+    public UploadOntologyDialog() {
     }
 
     /**
@@ -71,7 +71,7 @@ public class ImportArtifactDialog extends ModalDialog {
      */
     @Override
     public void show() {
-        form.setAction(GWT.getModuleBaseURL() + "services/artifactUpload"); //$NON-NLS-1$
+        form.setAction(GWT.getModuleBaseURL() + "services/ontologyUpload"); //$NON-NLS-1$
         super.show();
     }
 
@@ -79,7 +79,7 @@ public class ImportArtifactDialog extends ModalDialog {
      * Called when the user clicks the 'submit' (Import) button.
      * @param event
      */
-    @EventHandler("import-dialog-submit-button")
+    @EventHandler("upload-ontology-dialog-submit-button")
     public void onSubmitClick(ClickEvent event) {
         formHandler.setCompletionHandler(this.completionHandler);
         form.submit();

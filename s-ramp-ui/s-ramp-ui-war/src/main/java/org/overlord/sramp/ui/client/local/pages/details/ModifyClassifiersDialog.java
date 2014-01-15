@@ -124,7 +124,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
         // Add the 'please wait' spinner
         body.add(loading.get());
         // Download all the ontologies
-        ontologyRpcService.getAll(this);
+        ontologyRpcService.getAll(false, this);
         super.show();
     }
 

@@ -41,9 +41,9 @@ public class SrampOntology {
 	private Date createdOn;
 	private String lastModifiedBy;
 	private Date lastModifiedOn;
-	private List<SrampOntology.Class> rootClasses = new ArrayList<SrampOntology.Class>();
-	private Map<URI, SrampOntology.Class> classIndexByUri = new HashMap<URI, SrampOntology.Class>();
-	private Map<String, SrampOntology.Class> classIndexById = new HashMap<String, SrampOntology.Class>();
+	private List<SrampOntology.SrampOntologyClass> rootClasses = new ArrayList<SrampOntology.SrampOntologyClass>();
+	private Map<URI, SrampOntology.SrampOntologyClass> classIndexByUri = new HashMap<URI, SrampOntology.SrampOntologyClass>();
+	private Map<String, SrampOntology.SrampOntologyClass> classIndexById = new HashMap<String, SrampOntology.SrampOntologyClass>();
 
 	/**
 	 * Constructor.
@@ -124,15 +124,15 @@ public class SrampOntology {
 	/**
 	 * @return the rootClasses
 	 */
-	public List<SrampOntology.Class> getRootClasses() {
+	public List<SrampOntology.SrampOntologyClass> getRootClasses() {
 		return rootClasses;
 	}
 
 	/**
 	 * @return a list of all classes in the ontology
 	 */
-	public List<SrampOntology.Class> getAllClasses() {
-		List<SrampOntology.Class> allClasses = new ArrayList<SrampOntology.Class>();
+	public List<SrampOntology.SrampOntologyClass> getAllClasses() {
+		List<SrampOntology.SrampOntologyClass> allClasses = new ArrayList<SrampOntology.SrampOntologyClass>();
 		addAllClasses(allClasses, getRootClasses());
 		return allClasses;
 	}
@@ -142,9 +142,9 @@ public class SrampOntology {
 	 * @param allClasses
 	 * @param classes
 	 */
-	private void addAllClasses(List<Class> allClasses, List<Class> classes) {
+	private void addAllClasses(List<SrampOntologyClass> allClasses, List<SrampOntologyClass> classes) {
 		allClasses.addAll(classes);
-		for (Class c : classes) {
+		for (SrampOntologyClass c : classes) {
 			addAllClasses(allClasses, c.getChildren());
 		}
 	}
@@ -152,7 +152,7 @@ public class SrampOntology {
 	/**
 	 * @param rootClasses the rootClasses to set
 	 */
-	public void setRootClasses(List<SrampOntology.Class> rootClasses) {
+	public void setRootClasses(List<SrampOntology.SrampOntologyClass> rootClasses) {
 		this.rootClasses = rootClasses;
 	}
 
@@ -160,8 +160,8 @@ public class SrampOntology {
 	 * Creates a new class within this ontology.
 	 * @param id
 	 */
-	public SrampOntology.Class createClass(String id) {
-		SrampOntology.Class c = new SrampOntology.Class();
+	public SrampOntology.SrampOntologyClass createClass(String id) {
+		SrampOntology.SrampOntologyClass c = new SrampOntology.SrampOntologyClass();
 		c.setId(id);
 		String uri = this.getBase() + "#" + id; //$NON-NLS-1$
 		try {
@@ -176,12 +176,12 @@ public class SrampOntology {
 	 * Finds a class by its unique id within the ontology.
 	 * @param id
 	 */
-	public synchronized SrampOntology.Class findClass(String id) {
+	public synchronized SrampOntology.SrampOntologyClass findClass(String id) {
 		if (classIndexById.containsKey(id)) {
 			return classIndexById.get(id);
 		} else {
-			SrampOntology.Class found = null;
-			for (SrampOntology.Class candidate : rootClasses) {
+			SrampOntology.SrampOntologyClass found = null;
+			for (SrampOntology.SrampOntologyClass candidate : rootClasses) {
 				found = candidate.findClass(id);
 				if (found != null) {
 					break;
@@ -198,12 +198,12 @@ public class SrampOntology {
 	 * Finds a class by its unique URI.
 	 * @param uri
 	 */
-	public synchronized SrampOntology.Class findClass(URI uri) {
+	public synchronized SrampOntology.SrampOntologyClass findClass(URI uri) {
 		if (classIndexByUri.containsKey(uri)) {
 			return classIndexByUri.get(uri);
 		} else {
-			SrampOntology.Class found = null;
-			for (SrampOntology.Class candidate : rootClasses) {
+			SrampOntology.SrampOntologyClass found = null;
+			for (SrampOntology.SrampOntologyClass candidate : rootClasses) {
 				found = candidate.findClass(uri);
 				if (found != null) {
 					break;
@@ -277,31 +277,31 @@ public class SrampOntology {
 	 *
 	 * @author eric.wittmann@redhat.com
 	 */
-	public static class Class {
+	public static class SrampOntologyClass {
 
 		private String id;
 		private String label;
 		private String comment;
 		private URI uri;
-		private SrampOntology.Class parent;
-		private List<SrampOntology.Class> children = new ArrayList<SrampOntology.Class>();
+		private SrampOntology.SrampOntologyClass parent;
+		private List<SrampOntology.SrampOntologyClass> children = new ArrayList<SrampOntology.SrampOntologyClass>();
 
 		/**
 		 * Constructor.
 		 */
-		public Class() {
+		public SrampOntologyClass() {
 		}
 
 		/**
 		 * Recursively finds a class matching the given ID.
 		 * @param id
 		 */
-		public Class findClass(String id) {
+		public SrampOntologyClass findClass(String id) {
 			if (this.id.equals(id)) {
 				return this;
 			} else {
-				for (Class c : this.children) {
-					Class found = c.findClass(id);
+				for (SrampOntologyClass c : this.children) {
+					SrampOntologyClass found = c.findClass(id);
 					if (found != null) {
 						return found;
 					}
@@ -314,12 +314,12 @@ public class SrampOntology {
 		 * Recursively finds a class matching the given URI.
 		 * @param uri
 		 */
-		public Class findClass(URI uri) {
+		public SrampOntologyClass findClass(URI uri) {
 			if (this.uri.equals(uri)) {
 				return this;
 			} else {
-				for (Class c : this.children) {
-					Class found = c.findClass(uri);
+				for (SrampOntologyClass c : this.children) {
+					SrampOntologyClass found = c.findClass(uri);
 					if (found != null) {
 						return found;
 					}
@@ -359,28 +359,28 @@ public class SrampOntology {
 		/**
 		 * @return the parent
 		 */
-		public SrampOntology.Class getParent() {
+		public SrampOntology.SrampOntologyClass getParent() {
 			return parent;
 		}
 
 		/**
 		 * @param parent the parent to set
 		 */
-		public void setParent(SrampOntology.Class parent) {
+		public void setParent(SrampOntology.SrampOntologyClass parent) {
 			this.parent = parent;
 		}
 
 		/**
 		 * @return the children
 		 */
-		public List<SrampOntology.Class> getChildren() {
+		public List<SrampOntology.SrampOntologyClass> getChildren() {
 			return children;
 		}
 
 		/**
 		 * @param children the children to set
 		 */
-		public void setChildren(List<SrampOntology.Class> children) {
+		public void setChildren(List<SrampOntology.SrampOntologyClass> children) {
 			this.children = children;
 		}
 
@@ -404,7 +404,7 @@ public class SrampOntology {
 		 */
 		public Set<URI> normalize() {
 			Set<URI> uris = new HashSet<URI>();
-			SrampOntology.Class current = this;
+			SrampOntology.SrampOntologyClass current = this;
 			while (current != null) {
 				uris.add(current.getUri());
 				current = current.getParent();

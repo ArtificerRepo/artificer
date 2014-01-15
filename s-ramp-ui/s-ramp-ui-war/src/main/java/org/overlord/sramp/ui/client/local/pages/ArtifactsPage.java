@@ -29,13 +29,13 @@ import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.events.TableSortEvent;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
-import org.overlord.sramp.ui.client.local.pages.artifacts.IImportCompletionHandler;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ImportArtifactDialog;
 import org.overlord.sramp.ui.client.local.services.ApplicationStateKeys;
 import org.overlord.sramp.ui.client.local.services.ApplicationStateService;
 import org.overlord.sramp.ui.client.local.services.ArtifactSearchRpcService;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.util.IUploadCompletionHandler;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.Pager;
 import org.overlord.sramp.ui.client.local.widgets.common.HtmlSnippet;
 import org.overlord.sramp.ui.client.local.widgets.common.SortableTemplatedWidgetTable.SortColumn;
@@ -161,7 +161,7 @@ public class ArtifactsPage extends AbstractPage {
     @EventHandler("btn-import")
     public void onImportClick(ClickEvent event) {
         ImportArtifactDialog dialog = importDialog.get();
-        dialog.setCompletionHandler(new IImportCompletionHandler() {
+        dialog.setCompletionHandler(new IUploadCompletionHandler() {
             @Override
             public void onImportComplete() {
                 if (isAttached()) {

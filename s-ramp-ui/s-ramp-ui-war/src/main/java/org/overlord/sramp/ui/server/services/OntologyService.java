@@ -21,10 +21,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.overlord.sramp.atom.mappers.OntologyToRdfMapper;
 import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.common.ontology.SrampOntology;
-import org.overlord.sramp.common.ontology.SrampOntology.Class;
+import org.overlord.sramp.common.ontology.SrampOntology.SrampOntologyClass;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologyClassBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
@@ -40,6 +41,8 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
  */
 @Service
 public class OntologyService implements IOntologyService {
+
+    private static OntologyToRdfMapper o2rdf = new OntologyToRdfMapper();
 
     @Inject
     private SrampApiClientAccessor clientAccessor;
@@ -81,13 +84,31 @@ public class OntologyService implements IOntologyService {
             throw new SrampUiException(e.getMessage());
         }
     }
+    
+    /**
+     * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#add(org.overlord.sramp.ui.client.shared.beans.OntologyBean)
+     */
+    @Override
+    public void add(OntologyBean ontology) throws SrampUiException {
+        try {
+            RDF rdf = ontologyBeanToRDF(ontology);
+            clientAccessor.getClient().addOntology(rdf);
+        } catch (Exception e) {
+            throw new SrampUiException(e.getMessage());
+        }
+    }
 
     /**
      * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#update(org.overlord.sramp.ui.client.shared.beans.OntologyBean)
      */
     @Override
     public void update(OntologyBean ontology) throws SrampUiException {
-        // TODO Implement updating of an ontology
+        try {
+            RDF rdf = ontologyBeanToRDF(ontology);
+            clientAccessor.getClient().updateOntology(ontology.getUuid(), rdf);
+        } catch (Exception e) {
+            throw new SrampUiException(e.getMessage());
+        }
     }
 
     /**
@@ -106,15 +127,15 @@ public class OntologyService implements IOntologyService {
         bean.setLastModifiedBy(ontology.getLastModifiedBy());
         bean.setLastModifiedOn(ontology.getLastModifiedOn());
         bean.setUuid(ontology.getUuid());
-        List<Class> allClasses = ontology.getAllClasses();
+        List<SrampOntologyClass> allClasses = ontology.getAllClasses();
         // Create and index all the classes first
-        for (Class cl4ss : allClasses) {
+        for (SrampOntologyClass cl4ss : allClasses) {
             OntologyClassBean classBean = bean.createClass(cl4ss.getId());
             classBean.setComment(cl4ss.getComment());
             classBean.setLabel(cl4ss.getLabel());
         }
         // Then go back through and set up the tree.
-        for (Class cl4ss : allClasses) {
+        for (SrampOntologyClass cl4ss : allClasses) {
             OntologyClassBean classBean = bean.findClassById(cl4ss.getId());
             if (cl4ss.getParent() != null) {
                 OntologyClassBean parentBean = bean.findClassById(cl4ss.getParent().getId());
@@ -146,4 +167,50 @@ public class OntologyService implements IOntologyService {
         return bean;
     }
 
+    /**
+     * Converts an ontology bean into an RDF.
+     * @param ontology
+     */
+    private RDF ontologyBeanToRDF(OntologyBean ontology) {
+        SrampOntology sontology = new SrampOntology();
+        sontology.setBase(ontology.getBase());
+        sontology.setId(ontology.getId());
+        sontology.setLabel(ontology.getLabel());
+        sontology.setComment(ontology.getComment());
+        sontology.setUuid(ontology.getUuid());
+        
+        List<SrampOntologyClass> srootClasses = new ArrayList<SrampOntologyClass>();
+        for (OntologyClassBean ontologyClass : ontology.getRootClasses()) {
+            SrampOntologyClass c = sontology.createClass(ontologyClass.getId());
+            copyOntologyClass(sontology, ontologyClass, c);
+            srootClasses.add(c);
+        }
+        sontology.setRootClasses(srootClasses);
+        
+        RDF rdf = new RDF();
+        o2rdf.map(sontology, rdf);
+        return rdf;
+    }
+
+    /**
+     * Copies the ontology class.
+     * @param sontology 
+     * @param from
+     * @param to
+     */
+    private void copyOntologyClass(SrampOntology sontology, OntologyClassBean from, SrampOntologyClass to) {
+        to.setComment(from.getComment());
+        to.setLabel(from.getLabel());
+        
+        List<SrampOntologyClass> schildren = new ArrayList<SrampOntologyClass>();
+        for (OntologyClassBean child : from.getChildren()) {
+            SrampOntologyClass c = sontology.createClass(child.getId());
+            copyOntologyClass(sontology, child, c);
+            c.setParent(to);
+            schildren.add(c);
+        }
+        to.setChildren(schildren);
+
+    }
+    
 }

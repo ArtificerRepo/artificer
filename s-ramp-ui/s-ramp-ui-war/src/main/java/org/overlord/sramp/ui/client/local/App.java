@@ -26,9 +26,11 @@ import org.jboss.errai.bus.client.api.TransportErrorHandler;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.nav.client.local.Navigation;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.widgets.common.LoggedOutDialog;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -49,10 +51,19 @@ public class App {
 	private ClientMessageBus bus;
     @Inject
     LoggedOutDialog loggedOutDialog;
+    @Inject
+    NotificationService notificationService;
 
 	@PostConstruct
 	public void buildUI() {
 		rootPanel.add(navigation.getContentPanel());
+		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+            @Override
+            public void onUncaughtException(Throwable e) {
+                GWT.log("Uncaught error!", e); //$NON-NLS-1$
+                notificationService.sendErrorNotification("Uncaught GWT Error!", e); //$NON-NLS-1$
+            }
+        });
 		bus.addLifecycleListener(new BusLifecycleAdapter() {
 		    @Override
 		    public void busAssociating(BusLifecycleEvent e) {

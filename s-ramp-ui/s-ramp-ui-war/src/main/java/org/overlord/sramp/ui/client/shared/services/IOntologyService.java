@@ -49,5 +49,12 @@ public interface IOntologyService {
      * @throws SrampUiException
      */
     public void update(OntologyBean ontology) throws SrampUiException;
+    
+    /**
+     * Called to add a new ontology.
+     * @param ontology
+     * @throws SrampUiException
+     */
+    public void add(OntologyBean ontology) throws SrampUiException;
 
 }

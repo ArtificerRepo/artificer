@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title data-role="dummy">S-RAMP Repository Browser - Artifact Details (Dialogs)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-datepicker.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-fileupload.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
+    <link href="../../../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="../../../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-fileupload.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/js/s-ramp-responsive.js"></script>
+    <script type="text/javascript" src="../../../../../../../../../webapp/js/s-ramp-widgets.js"></script>
+  </head>
+
+  <body>
+    <!-- Add Custom Property modal -->
+    <div data-field="add-ontology-dialog" id="add-ontology-dialog" class="modal hide">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;<span data-role="dummy"/></button>
+        <h4 data-i18n-key="dialog.add-ontology.title">Add Ontology</h4>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="return false;">
+          <fieldset>
+            <label data-i18n-key="node-namespace">Namespace:</label>
+            <input data-field="namespace" class="input-name" name="node-namespace" type="text"></input>
+            <label data-i18n-key="node-id">ID:</label>
+            <input data-field="id" class="input-id" name="node-id" type="text"></input>
+            <label data-i18n-key="node-name">Label:</label>
+            <input data-field="label" class="input-name" name="node-label" type="text"></input>
+            <label data-i18n-key="node-comment">Comment:</label>
+            <textarea data-field="comment" class="input-value" rows="5" cols=""></textarea>
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" data-i18n-key="cancel">Cancel</button>
+        <button data-field="add-ontology-submit-button" class="btn btn-focus" disabled="disabled" data-i18n-key="add">Add</button>
+      </div>
+    </div>
+
+    <script>
+      $('#add-ontology-dialog').modal({keyboard:false,backdrop:'static'});
+      $('#add-ontology-dialog .input-id').focus();
+    </script>
+
+  </body>
+</html>

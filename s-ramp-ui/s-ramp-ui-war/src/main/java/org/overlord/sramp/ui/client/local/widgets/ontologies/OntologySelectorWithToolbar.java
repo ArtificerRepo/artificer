@@ -77,7 +77,7 @@ public class OntologySelectorWithToolbar extends Composite {
     private void createAndAddNode(OntologyClassBean ontologyClass, OntologySelectorNodePanel nodePanel) {
         OntologySelectorNode node = nodeFactory.get();
         String label = ontologyClass.getId();
-        if (ontologyClass.getLabel() != null) {
+        if (ontologyClass.getLabel() != null && ontologyClass.getLabel().trim().length() > 0) {
             label = ontologyClass.getLabel();
         }
         node.setLabel(label);
@@ -97,7 +97,7 @@ public class OntologySelectorWithToolbar extends Composite {
     private void createAndAddNode(OntologyClassBean ontologyClass, OntologySelectorNode parentNode) {
         OntologySelectorNode node = nodeFactory.get();
         String label = ontologyClass.getId();
-        if (ontologyClass.getLabel() != null) {
+        if (ontologyClass.getLabel() != null && ontologyClass.getLabel().trim().length() > 0) {
             label = ontologyClass.getLabel();
         }
         node.setLabel(label);

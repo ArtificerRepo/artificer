@@ -18,14 +18,12 @@ package org.overlord.sramp.ui.server.servlets;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,9 +34,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
@@ -57,7 +52,7 @@ import org.overlord.sramp.ui.server.util.ExceptionUtils;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactUploadServlet extends HttpServlet {
+public class ArtifactUploadServlet extends AbstractUploadServlet {
 
 	private static final long serialVersionUID = ArtifactUploadServlet.class.hashCode();
 
@@ -227,53 +222,4 @@ public class ArtifactUploadServlet extends HttpServlet {
             ZipToSrampArchive.closeQuietly(expander);
         }
     }
-
-	/**
-	 * Make a temporary copy of the resource by saving the content to a temp file.
-	 * @param resourceInputStream
-	 * @throws IOException
-	 */
-	private File stashResourceContent(InputStream resourceInputStream) throws IOException {
-		File resourceTempFile = null;
-		OutputStream oStream = null;
-		try {
-			resourceTempFile = File.createTempFile("s-ramp-ui-upload", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
-			oStream = FileUtils.openOutputStream(resourceTempFile);
-            IOUtils.copy(resourceInputStream, oStream);
-            return resourceTempFile;
-		} catch (IOException e) {
-			FileUtils.deleteQuietly(resourceTempFile);
-			throw e;
-		} finally {
-			IOUtils.closeQuietly(resourceInputStream);
-			IOUtils.closeQuietly(oStream);
-		}
-	}
-
-	/**
-	 * Writes the response values back to the http response.  This allows the calling code to
-	 * parse the response values for display to the user.
-	 *
-	 * @param responseMap the response params to write to the http response
-	 * @param response the http response
-	 * @throws IOException
-	 */
-	private static void writeToResponse(Map<String, String> responseMap, HttpServletResponse response) throws IOException {
-        // Note: setting the content-type to text/html because otherwise IE prompt the user to download
-        // the result rather than handing it off to the GWT form response handler.
-        // See JIRA issue https://issues.jboss.org/browse/SRAMPUI-103
-		response.setContentType("text/html; charset=UTF8"); //$NON-NLS-1$
-        JsonFactory f = new JsonFactory();
-        JsonGenerator g = f.createJsonGenerator(response.getOutputStream(), JsonEncoding.UTF8);
-        g.useDefaultPrettyPrinter();
-        g.writeStartObject();
-        for (java.util.Map.Entry<String, String> entry : responseMap.entrySet()) {
-            String key = entry.getKey();
-            String val = entry.getValue();
-            g.writeStringField(key, val);
-        }
-        g.writeEndObject();
-        g.flush();
-        g.close();
-	}
 }

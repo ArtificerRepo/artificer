@@ -154,7 +154,7 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
     public void refresh() {
         clear();
         add(loadingOntologiesFactory.get());
-        ontologyRpcService.list(new IRpcServiceInvocationHandler<List<OntologySummaryBean>>() {
+        ontologyRpcService.list(false, new IRpcServiceInvocationHandler<List<OntologySummaryBean>>() {
             @Override
             public void onReturn(List<OntologySummaryBean> data) {
                 clear();

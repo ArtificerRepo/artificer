@@ -45,6 +45,7 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -117,6 +118,21 @@ public class NotificationService {
         bean.setTitle(title);
         bean.setMessage(message);
         bean.setException(exception);
+        sendNotification(bean);
+    }
+
+    /**
+     * Sends an warning notification to the user.
+     * @param title
+     * @param message
+     * @param exception
+     */
+    public final void sendWarningNotification(String title, String message) {
+        NotificationBean bean = new NotificationBean();
+        bean.setUuid(String.valueOf(notificationCounter++));
+        bean.setType(NotificationType.warning);
+        bean.setTitle(title);
+        bean.setMessage(message);
         sendNotification(bean);
     }
 
@@ -249,7 +265,7 @@ public class NotificationService {
             positionAndShowNotificationDialog(notification);
 
             // Schedule the notification to go away automatically.
-            if (notificationBean.getType() == NotificationType.notification)
+            if (notificationBean.getType() == NotificationType.notification || notificationBean.getType() == NotificationType.warning)
                 notification.getAliveTimer().schedule(5000);
         }
     }
@@ -421,11 +437,13 @@ public class NotificationService {
 
         // Now pin the notification to the right using fixed positioning
         widget.getElement().getStyle().setPosition(Position.FIXED);
-        widget.getElement().getStyle().setBottom(bottom, Unit.PX);
+        widget.getElement().getStyle().setBottom(Window.getClientHeight() + 100, Unit.PX);
         widget.getElement().getStyle().setRight(right, Unit.PX);
         widget.getElement().getStyle().setProperty("left", null); //$NON-NLS-1$
         widget.getElement().getStyle().setProperty("top", null); //$NON-NLS-1$
         widget.getElement().getStyle().setVisibility(Visibility.VISIBLE);
+        
+        moveNotificationTo(notification.getWidget(), bottom);
     }
 
     /**

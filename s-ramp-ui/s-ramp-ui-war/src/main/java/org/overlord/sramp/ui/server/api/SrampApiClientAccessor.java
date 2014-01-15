@@ -56,7 +56,7 @@ public class SrampApiClientAccessor {
      * @param config
      */
     protected SrampAtomApiClient createClient() {
-    	String defaultSrampApiEndpoint = JBossServer.getBaseUrl() + "/s-ramp-server";
+    	String defaultSrampApiEndpoint = JBossServer.getBaseUrl() + "/s-ramp-server"; //$NON-NLS-1$
         String endpoint = config.getConfig().getString(SrampUIConfig.SRAMP_API_ENDPOINT, defaultSrampApiEndpoint);
         boolean validating = "true".equals(config.getConfig().getString(SrampUIConfig.SRAMP_API_VALIDATING)); //$NON-NLS-1$
         AuthenticationProvider authProvider = null;

@@ -62,7 +62,7 @@ public class SrampUIConfig {
                 refreshDelay,
                 "/META-INF/config/org.overlord.sramp.ui.server.api.properties", //$NON-NLS-1$
                 SrampApiClientAccessor.class);
-        String defaultSrampApiEndpoint = JBossServer.getBaseUrl() + "/s-ramp-server";
+        String defaultSrampApiEndpoint = JBossServer.getBaseUrl() + "/s-ramp-server"; //$NON-NLS-1$
         System.out.println(Messages.i18n.format("Config.Loaded", SrampUIConfig.config.getString(SRAMP_API_ENDPOINT, defaultSrampApiEndpoint))); //$NON-NLS-1$
     }
 

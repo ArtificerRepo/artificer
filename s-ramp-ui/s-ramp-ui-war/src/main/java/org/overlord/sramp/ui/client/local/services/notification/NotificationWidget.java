@@ -111,6 +111,8 @@ public class NotificationWidget extends Composite implements HasMouseInHandlers,
         InlineLabel msg = new InlineLabel(message);
         if (notificationType == NotificationType.notification) {
             this.body.add(msg);
+        } else if (notificationType == NotificationType.warning) {
+                this.body.add(msg);
         } else if (notificationType == NotificationType.error) {
             this.body.add(msg);
         } else if (notificationType == NotificationType.progress) {

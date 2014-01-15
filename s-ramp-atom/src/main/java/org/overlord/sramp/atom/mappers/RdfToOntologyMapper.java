@@ -77,10 +77,10 @@ public class RdfToOntologyMapper {
 
 		// First create all the classes included in the RDF
 		List<Object[]> classes = new ArrayList<Object[]>();
-		Map<String, SrampOntology.Class> idIndex = new HashMap<String, SrampOntology.Class>();
-		Map<String, SrampOntology.Class> uriIndex = new HashMap<String, SrampOntology.Class>();
+		Map<String, SrampOntology.SrampOntologyClass> idIndex = new HashMap<String, SrampOntology.SrampOntologyClass>();
+		Map<String, SrampOntology.SrampOntologyClass> uriIndex = new HashMap<String, SrampOntology.SrampOntologyClass>();
 		for (org.w3._2002._07.owl_.Class rdfClass : rdf.getClazz()) {
-			SrampOntology.Class oclass = new SrampOntology.Class();
+			SrampOntology.SrampOntologyClass oclass = new SrampOntology.SrampOntologyClass();
 			oclass.setId(rdfClass.getID());
 			oclass.setLabel(rdfClass.getLabel());
 			oclass.setComment(rdfClass.getComment());
@@ -96,12 +96,12 @@ public class RdfToOntologyMapper {
 
 		// And now figure out the relationships
 		for (Object [] classData : classes) {
-			SrampOntology.Class oclass = (SrampOntology.Class) classData[0];
+			SrampOntology.SrampOntologyClass oclass = (SrampOntology.SrampOntologyClass) classData[0];
 			String resourceRef = (String) classData[1];
 			if (resourceRef == null) {
 				ontology.getRootClasses().add(oclass);
 			} else {
-				SrampOntology.Class parent = idIndex.get(resourceRef);
+				SrampOntology.SrampOntologyClass parent = idIndex.get(resourceRef);
 				if (parent == null) {
 					parent = uriIndex.get(resourceRef);
 				}

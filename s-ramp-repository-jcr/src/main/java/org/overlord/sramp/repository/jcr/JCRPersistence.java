@@ -48,7 +48,7 @@ import org.overlord.sramp.common.ontology.InvalidClassifiedByException;
 import org.overlord.sramp.common.ontology.OntologyAlreadyExistsException;
 import org.overlord.sramp.common.ontology.OntologyNotFoundException;
 import org.overlord.sramp.common.ontology.SrampOntology;
-import org.overlord.sramp.common.ontology.SrampOntology.Class;
+import org.overlord.sramp.common.ontology.SrampOntology.SrampOntologyClass;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.PersistenceManager;
@@ -568,7 +568,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 		}
 		Collection<SrampOntology> ontologies = getOntologies();
 		for (SrampOntology ontology : ontologies) {
-			Class sclass = ontology.findClass(classifiedBy);
+			SrampOntologyClass sclass = ontology.findClass(classifiedBy);
 			if (sclass == null) {
 				sclass = ontology.findClass(classifiedUri);
 			}
@@ -586,7 +586,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	public Collection<URI> normalize(URI classification) throws SrampException {
 		List<SrampOntology> ontologies = getOntologies();
 		for (SrampOntology ontology : ontologies) {
-			Class sclass = ontology.findClass(classification);
+			SrampOntologyClass sclass = ontology.findClass(classification);
 			if (sclass != null) {
 	            return sclass.normalize();
 			}
