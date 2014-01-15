@@ -58,7 +58,7 @@ public class JCRNodeToOntology {
 		NodeIterator nodes = jcrNode.getNodes();
 		while (nodes.hasNext()) {
 			Node childNode = nodes.nextNode();
-			SrampOntology.Class sclass = readClass(childNode);
+			SrampOntology.SrampOntologyClass sclass = readClass(childNode);
 			sclass.setParent(null);
 			ontology.getRootClasses().add(sclass);
 		}
@@ -70,8 +70,8 @@ public class JCRNodeToOntology {
 	 * @param jcrNode
 	 * @throws RepositoryException
 	 */
-	private SrampOntology.Class readClass(Node jcrNode) throws RepositoryException {
-		SrampOntology.Class rval = new SrampOntology.Class();
+	private SrampOntology.SrampOntologyClass readClass(Node jcrNode) throws RepositoryException {
+		SrampOntology.SrampOntologyClass rval = new SrampOntology.SrampOntologyClass();
 
 		try {
 			rval.setUri(new URI(getProperty(jcrNode, "sramp:uri"))); //$NON-NLS-1$
@@ -85,7 +85,7 @@ public class JCRNodeToOntology {
 		NodeIterator nodes = jcrNode.getNodes();
 		while (nodes.hasNext()) {
 			Node childNode = nodes.nextNode();
-			SrampOntology.Class sclass = readClass(childNode);
+			SrampOntology.SrampOntologyClass sclass = readClass(childNode);
 			sclass.setParent(rval);
 			rval.getChildren().add(sclass);
 		}

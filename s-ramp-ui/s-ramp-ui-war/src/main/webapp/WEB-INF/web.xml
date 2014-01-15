@@ -62,6 +62,11 @@
     <servlet-name>ArtifactUpload</servlet-name>
     <servlet-class>org.overlord.sramp.ui.server.servlets.ArtifactUploadServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>OntologyUpload</servlet-name>
+    <servlet-class>org.overlord.sramp.ui.server.servlets.OntologyUploadServlet</servlet-class>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>ErraiServlet</servlet-name>
     <url-pattern>*.erraiBus</url-pattern>
@@ -78,7 +83,11 @@
     <servlet-name>ArtifactUpload</servlet-name>
     <url-pattern>/app/services/artifactUpload</url-pattern>
   </servlet-mapping>
-
+  <servlet-mapping>
+    <servlet-name>OntologyUpload</servlet-name>
+    <url-pattern>/app/services/ontologyUpload</url-pattern>
+  </servlet-mapping>
+  
   <resource-env-ref>
     <description>Object factory for the CDI Bean Manager</description>
     <resource-env-ref-name>BeanManager</resource-env-ref-name>

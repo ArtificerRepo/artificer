@@ -90,7 +90,7 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
         LoadingOntology w = loading.get();
         w.getElement().removeClassName("hide"); //$NON-NLS-1$
         body.add(w);
-        ontologyRpcService.get(ontology.getUuid(), new IRpcServiceInvocationHandler<OntologyBean>() {
+        ontologyRpcService.get(ontology.getUuid(), false, new IRpcServiceInvocationHandler<OntologyBean>() {
             @Override
             public void onReturn(OntologyBean data) {
                 body.clear();

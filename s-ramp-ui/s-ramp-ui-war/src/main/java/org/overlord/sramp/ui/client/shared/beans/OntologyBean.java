@@ -90,5 +90,26 @@ public class OntologyBean extends OntologySummaryBean {
         this.classIndexByUri.put(uri, c);
         return c;
     }
+    
+    /**
+     * Make a copy of the ontology.
+     */
+    public OntologyBean copy() {
+        OntologyBean c = new OntologyBean();
+        c.setBase(this.getBase());
+        c.setComment(this.getComment());
+        c.setCreatedBy(this.getCreatedBy());
+        c.setCreatedOn(this.getCreatedOn());
+        c.setId(this.getId());
+        c.setLabel(this.getLabel());
+        c.setLastModifiedBy(this.getLastModifiedBy());
+        c.setLastModifiedOn(this.getLastModifiedOn());
+        c.setUuid(this.getUuid());
+        for (OntologyClassBean bean : getRootClasses()) {
+            c.getRootClasses().add(bean.copy());
+        }
+        
+        return c;
+    }
 
 }

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.local.pages.artifacts;
+package org.overlord.sramp.ui.client.local.util;
 
 /**
- * Allows consumers of the import artifact dialog to get a callback when the import has completed.
+ * Allows consumers of the various upload dialogs to get a callback when the upload has completed.
  * @author eric.wittmann@redhat.com
  */
-public interface IImportCompletionHandler {
+public interface IUploadCompletionHandler {
 
     /**
      * Called upon import completion.

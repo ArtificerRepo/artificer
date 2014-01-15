@@ -124,5 +124,24 @@ public class OntologyClassBean {
     public void setChildren(List<OntologyClassBean> children) {
         this.children = children;
     }
+    
+    /**
+     * Make a copy of the class.
+     */
+    protected OntologyClassBean copy() {
+        OntologyClassBean bean = new OntologyClassBean();
+        bean.setComment(this.getComment());
+        bean.setId(this.getId());
+        bean.setLabel(this.getLabel());
+        bean.setUri(this.getUri());
+        List<OntologyClassBean> newChildren = new ArrayList<OntologyClassBean>();
+        for (OntologyClassBean child : this.getChildren()) {
+            OntologyClassBean copy = child.copy();
+            copy.setParent(bean);
+            newChildren.add(copy);
+        }
+        bean.setChildren(newChildren);
+        return bean;
+    }
 
 }

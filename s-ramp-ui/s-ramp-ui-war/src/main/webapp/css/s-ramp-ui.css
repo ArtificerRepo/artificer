@@ -67,6 +67,19 @@ button.tree:hover {
   width: 100%;
 }
 
+.dropdown-menu {
+  z-index: 1050;
+}
+
+.menu-glass {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  z-index: 1040;
+}
+
 .propval-editor-popover {
   position: fixed;
 }
@@ -102,6 +115,9 @@ button.tree:hover {
 }
 .growl-dialog-error {
   color: #d00000;
+}
+.growl-dialog-warning {
+  color: #ff5600;
 }
 .growl-dialog-hover {
   background-color: #fefefe;
@@ -446,45 +462,85 @@ button.tree:hover {
 #ontologies {
   height: 500px;
   border: 1px solid rgb(221, 221, 221);
+  background-color: white;
 }
 #ontologies ul {
-  margin-bottom: 0px;
+  margin-bottom: 10px;
+  overflow: auto;
+  max-height: 420px;
+}
+#ontologies ul li a {
+  font-size: 12px;
+  border-radius: 0px;
+}
+#ontologies .btn {
+  margin-left: 5px;
 }
 
 .sramp-ontology-box-header {
   font-weight: bold;
   background-color: rgb(245, 240, 240);
   border-bottom: 1px solid rgb(221, 221, 221);
-  padding: 3px;
+  padding: 5px;
   height: 20px;
 }
 
 #ontology-editor {
-  height: 500px;
-  border: 1px solid rgb(221, 221, 221);
+}
+
+#ontology-editor .sramp-ontology-editor-canvas {
+  margin-bottom: 5px;
+  position: relative;
   overflow-x: auto;
   overflow-y: hidden;
+  white-space: nowrap;
 }
 
 #ontology-editor .sramp-ontology-tier {
+  display: inline-block;
+  white-space: normal;
   width: 220px;
-  border-right: 1px solid rgb(221, 221, 221);
-  height: 498px;
-  float: left;
+  border: 1px solid rgb(221, 221, 221);
+  margin-left: 2px;
+  background-color: white;
+}
+
+#ontology-editor .sramp-ontology-tier .btn-add {
+  margin-bottom: 5px;
 }
 
 #ontology-editor .sramp-ontology-tier .sramp-ontology-tier-header {
   background-color: rgb(245, 240, 240);
   border-bottom: 1px solid rgb(221, 221, 221);
-  padding: 3px;
+  padding: 5px;
   height: 20px;
 }
 
 #ontology-editor .sramp-ontology-tier ul {
   margin: 0px;
+  overflow: auto;
+  height: 385px;
 }
 
-#ontology-editor .sramp-ontology-editor-canvas {
+#ontology-editor .sramp-ontology-tier ul li a {
+  border-radius: 0px;
+}
+#ontology-editor .sramp-ontology-tier ul li button {
+  visibility: hidden;
+  margin-top: -3px;
+}
+#ontology-editor .sramp-ontology-tier ul li:hover button {
+  visibility: visible;
+}
+
+#ontology-editor .sramp-ontology-tier .btn-add {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+#ontology-editor .sramp-ontology-editor-actions .btn {
+  margin-left: 8px;
+  margin-top: 5px;
 }
 
 .sramp-settings {
@@ -654,5 +710,12 @@ ul.ontology-selector {
   width: 100%;
 }
 #fileupload-import .uneditable-input {
+  width: 60%;
+}
+
+#fileupload-import .input-append, #fileupload-upload .input-append {
+  width: 100%;
+}
+#fileupload-import .uneditable-input, #fileupload-upload .uneditable-input {
   width: 60%;
 }

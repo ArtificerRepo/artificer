@@ -21,5 +21,5 @@ package org.overlord.sramp.ui.client.shared.beans;
  * @author eric.wittmann@redhat.com
  */
 public enum NotificationType {
-    notification, error, progress, progressCompleted, progressErrored;
+    notification, warning, error, progress, progressCompleted, progressErrored;
 }

@@ -745,6 +745,36 @@ public class SrampAtomApiClient {
 	public SrampClientQuery buildQuery(String query) {
 	    return new SrampClientQuery(this, query);
 	}
+	
+	/**
+	 * Adds on ontology in RDF format to the S-RAMP repository.  This will only work if the S-RAMP
+     * repository supports the ontology collection, which is not a part of the S-RAMP 1.0
+     * specification.
+	 * @param ontology
+	 * @throws SrampClientException
+	 * @throws SrampAtomException
+	 */
+	public RDF addOntology(RDF ontology) throws SrampClientException, SrampAtomException {
+	    assertFeatureEnabled("ontology"); //$NON-NLS-1$
+	    ClientResponse<Entry> response = null;
+        try {
+            String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            request.body(MediaType.APPLICATION_RDF_XML_TYPE, ontology);
+
+            response = request.post(Entry.class);
+            Entry entry = response.getEntity();
+            RDF rdf = SrampAtomUtils.unwrap(entry, RDF.class);
+            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString()); //$NON-NLS-1$
+            return rdf;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
+	}
 
 	/**
 	 * Uploads an ontology to the S-RAMP repository.  This will only work if the S-RAMP
@@ -790,6 +820,30 @@ public class SrampAtomApiClient {
             String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_RDF_XML_TYPE, content);
+            response = request.put();
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
+    }
+
+    /**
+     * Uploads a new version of an ontology to the S-RAMP repository.  The ontology will be
+     * replaced with this new version.  This may fail if the new version removes classes from
+     * the ontology that are currently in-use.
+     * @param ontologyUuid
+     * @param content
+     */
+    public void updateOntology(String ontologyUuid, RDF ontology) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("ontology"); //$NON-NLS-1$
+        ClientResponse<?> response = null;
+        try {
+            String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            request.body(MediaType.APPLICATION_RDF_XML_TYPE, ontology);
             response = request.put();
         } catch (SrampAtomException e) {
             throw e;

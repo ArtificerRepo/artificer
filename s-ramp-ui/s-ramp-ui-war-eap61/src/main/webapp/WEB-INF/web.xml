@@ -120,7 +120,16 @@
     <servlet-name>ArtifactUpload</servlet-name>
     <url-pattern>/app/services/artifactUpload</url-pattern>
   </servlet-mapping>
-
+  
+  <servlet>
+    <servlet-name>OntologyUpload</servlet-name>
+    <servlet-class>org.overlord.sramp.ui.server.servlets.OntologyUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OntologyUpload</servlet-name>
+    <url-pattern>/app/services/ontologyUpload</url-pattern>
+  </servlet-mapping>
+  
   <!-- Define a Security Constraint on this Application -->
   <security-constraint>
     <web-resource-collection>
