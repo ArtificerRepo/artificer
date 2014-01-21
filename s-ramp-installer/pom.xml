@@ -21,11 +21,19 @@
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-auth</artifactId>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-auth-tomcat7</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth-jboss7</artifactId>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
@@ -105,8 +113,14 @@
                       value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="overlord-commons.idp.file"
                       value="${maven.dependency.org.overlord.overlord-commons-idp-eap61.war.path}" />
+                    <property name="overlord-commons.services.file"
+                      value="${maven.dependency.org.overlord.overlord-commons-services.jar.path}" />
                     <property name="overlord-commons.auth.file"
                       value="${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
+                    <property name="overlord-commons.auth.tomcat7.file"
+                      value="${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
+                    <property name="overlord-commons.auth.jboss7.file"
+                      value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
 
                     <!-- S-RAMP WARs -->
                     <property name="s-ramp.s-ramp-server.war.path" 
@@ -185,9 +199,11 @@
                       value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="overlord-commons.idp.file"
                       value="${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
+                    <property name="overlord-commons.services.file"
+                      value="${maven.dependency.org.overlord.overlord-commons-services.jar.path}" />
                     <property name="overlord-commons.auth.file"
                       value="${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
-                    <property name="overlord-commons.auth-tomcat7.file"
+                    <property name="overlord-commons.auth.tomcat7.file"
                       value="${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
 
                     <!-- S-RAMP WARs -->

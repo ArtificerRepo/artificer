@@ -41,7 +41,7 @@ import org.apache.commons.io.IOUtils;
 import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
-import org.overlord.commons.config.services.ServiceRegistryUtil;
+import org.overlord.commons.services.ServiceRegistryUtil;
 import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.repository.jcr.JCRConstants;

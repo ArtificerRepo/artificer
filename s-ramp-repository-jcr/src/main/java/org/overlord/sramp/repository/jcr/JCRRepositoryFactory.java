@@ -21,7 +21,7 @@ import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.overlord.commons.config.services.ServiceRegistryUtil;
+import org.overlord.commons.services.ServiceRegistryUtil;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

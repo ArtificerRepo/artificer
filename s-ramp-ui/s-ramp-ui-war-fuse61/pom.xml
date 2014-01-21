@@ -84,6 +84,7 @@
                 <exclude>WEB-INF/lib/slf4j-ext-*.jar</exclude>
                 <exclude>WEB-INF/lib/slf4j-log4j12-*.jar</exclude>
                 <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
+                <exclude>WEB-INF/lib/overlord-commons-auth-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>
@@ -148,7 +149,9 @@
                 org.jboss.resteasy.annotations.providers.multipart,
                 org.jboss.resteasy.spi,
                 org.overlord.commons.osgi.vfs,
-                ch.qos.cal10n
+                ch.qos.cal10n,
+                org.overlord.commons.auth.util,
+                org.overlord.commons.auth.jetty8
               </Import-Package>
               <Bundle-ClassPath>
                 .,
