@@ -126,7 +126,7 @@
               org.modeshape.jcr.api.nodetype,
               org.modeshape.jcr.security,
               org.modeshape.jcr.value,
-              org.overlord.commons.config.services,
+              org.overlord.commons.services,
               org.overlord.sramp.common,
               org.overlord.sramp.common.i18n,
               org.overlord.sramp.repository.jcr,

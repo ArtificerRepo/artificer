@@ -4,6 +4,7 @@
       <module name="org.picketbox" />
       <module name="org.picketlink" />
       <module name="org.jboss.as.web" />
+      <module name="org.overlord.commons.overlord-commons-services" />
       <module name="org.overlord.commons.overlord-commons-auth" />
       <module name="org.apache.commons.codec" />
       <module name="org.apache.commons.collections" />

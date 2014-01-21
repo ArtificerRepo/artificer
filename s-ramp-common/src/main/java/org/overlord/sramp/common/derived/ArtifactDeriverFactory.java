@@ -32,7 +32,7 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.commons.config.services.ServiceRegistryUtil;
+import org.overlord.commons.services.ServiceRegistryUtil;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampConstants;

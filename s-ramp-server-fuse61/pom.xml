@@ -113,11 +113,15 @@
                 org.overlord.sramp.atom.services.brms.packages,
                 org.overlord.sramp.atom.services.brms.assets,
                 org.overlord.sramp.atom.services.brms,
-                org.apache.karaf.jaas.boot.principal,
                 org.modeshape.jcr,
                 org.infinispan.configuration.parsing,
                 org.infinispan.configuration.as,
-                org.eclipse.jetty.plus.jaas
+                org.eclipse.jetty.plus.jaas,
+                org.eclipse.jetty.server.handler,
+                org.eclipse.jetty.servlet,
+                org.eclipse.jetty.security,
+                org.overlord.commons.auth.jetty8,
+                org.apache.karaf.jaas.boot.principal
               </Import-Package>
               <Bundle-ClassPath>.,WEB-INF/classes</Bundle-ClassPath>
             </manifestEntries>

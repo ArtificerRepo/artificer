@@ -37,6 +37,10 @@
             <overlay>
               <groupId>${project.groupId}</groupId>
               <artifactId>s-ramp-ui-war</artifactId>
+              <excludes>
+                <exclude>WEB-INF/jetty-env.xml</exclude>
+                <exclude>WEB-INF/overlord-commons-services-*.jar</exclude>
+              </excludes>
             </overlay>
           </overlays>
         </configuration>

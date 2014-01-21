@@ -3,6 +3,6 @@
   <security-domain>overlord-jaxrs</security-domain>
   <context-root>s-ramp-server</context-root>
   <valve>
-    <class-name>org.overlord.commons.auth.jboss7.HttpRequestThreadLocalValve</class-name>
+    <class-name>org.overlord.commons.auth.tomcat7.HttpRequestThreadLocalValve</class-name>
   </valve>
 </jboss-web>

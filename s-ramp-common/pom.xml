@@ -24,6 +24,10 @@
     <!-- Overlord Commons -->
     <dependency>
       <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-config</artifactId>
     </dependency>
 
@@ -89,7 +93,7 @@
               org.jboss.downloads.overlord.sramp._2013.auditing,
               org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
               org.overlord.commons.config,
-              org.overlord.commons.config.services,
+              org.overlord.commons.services,
               org.w3c.dom
             </Import-Package>
           </instructions>

@@ -96,6 +96,10 @@
       <artifactId>overlord-commons-auth</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth-jetty8</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.picketlink</groupId>
       <artifactId>picketlink-core</artifactId>
       <version>${picketlink.version}</version>
