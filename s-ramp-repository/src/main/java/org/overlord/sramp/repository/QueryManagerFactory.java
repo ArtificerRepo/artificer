@@ -15,8 +15,7 @@
  */
 package org.overlord.sramp.repository;
 
-import java.util.ServiceLoader;
-
+import org.overlord.commons.services.ServiceRegistryUtil;
 import org.overlord.sramp.repository.i18n.Messages;
 
 
@@ -28,9 +27,9 @@ import org.overlord.sramp.repository.i18n.Messages;
 public class QueryManagerFactory {
 
     public static QueryManager newInstance() {
-        for (QueryManager manager : ServiceLoader.load(QueryManager.class)) {
-            return manager;
-        }
-        throw new RuntimeException(Messages.i18n.format("MISSING_QUERYMAN_PROVIDER")); //$NON-NLS-1$
+        QueryManager manager = ServiceRegistryUtil.getSingleService(QueryManager.class);
+        if (manager == null)
+            throw new RuntimeException(Messages.i18n.format("MISSING_QUERYMAN_PROVIDER")); //$NON-NLS-1$
+        return manager;
     }
 }

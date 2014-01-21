@@ -14,6 +14,7 @@
   <description>Builds the official S-RAMP distribution by pulling together the binaries, source, documentation, etc... into a single bundle.</description>
 
   <modules>
+    <module>s-ramp-distro-fuse61</module>
     <module>s-ramp-distro-shell</module>
     <module>s-ramp-distro-assembly</module>
     <module>s-ramp-distro-assembly-cli</module>

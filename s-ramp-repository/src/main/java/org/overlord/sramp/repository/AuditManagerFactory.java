@@ -15,8 +15,7 @@
  */
 package org.overlord.sramp.repository;
 
-import java.util.ServiceLoader;
-
+import org.overlord.commons.services.ServiceRegistryUtil;
 import org.overlord.sramp.repository.i18n.Messages;
 
 
@@ -28,9 +27,9 @@ import org.overlord.sramp.repository.i18n.Messages;
 public class AuditManagerFactory {
 
     public static AuditManager newInstance() {
-        for (AuditManager manager : ServiceLoader.load(AuditManager.class)) {
-            return manager;
-        }
-        throw new RuntimeException(Messages.i18n.format("MISSING_AUDIT_MANAGER_PROVIDER")); //$NON-NLS-1$
+        AuditManager auditManager = ServiceRegistryUtil.getSingleService(AuditManager.class);
+        if (auditManager == null)
+            throw new RuntimeException(Messages.i18n.format("MISSING_AUDIT_MANAGER_PROVIDER")); //$NON-NLS-1$
+        return auditManager;
     }
 }

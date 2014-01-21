@@ -94,6 +94,7 @@
 
     <!-- S-RAMP only libraries (not in BOM) -->
     <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
+    <picketlink.version>2.1.6.Final</picketlink.version>
     <log4j.version>1.2.16</log4j.version>
     <servlet.api.version>2.5</servlet.api.version>
     <servlet-api.version>3.0.1</servlet-api.version>
@@ -110,6 +111,8 @@
     <bcel.version>5.2</bcel.version>
     <jcr.version>2.0</jcr.version>
     <guava-gwt.version>14.0.1</guava-gwt.version>
+    <picketbox.version>4.0.7.Final</picketbox.version>
+    <picketlink.version>2.1.6.Final</picketlink.version>
 
     <!-- BOM Overrides -->
     <version.joda-time>2.1</version.joda-time>
@@ -257,7 +260,17 @@
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-uiheader</artifactId>
+        <artifactId>overlord-commons-auth-jboss7</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-auth-tomcat7</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-auth-jetty8</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
       <dependency>
@@ -268,6 +281,31 @@
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-config</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-errai-fuse-support</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-osgi</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-osgi-weld</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-uiheader</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-services</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
       <!-- Apache Commons -->
@@ -342,6 +380,7 @@
         <artifactId>jline</artifactId>
         <version>${jline.version}</version>
       </dependency>
+      <!-- ModeShape -->
       <dependency>
         <groupId>org.modeshape</groupId>
         <artifactId>modeshape-common</artifactId>
@@ -446,6 +485,8 @@
     <module>s-ramp-repository-jcr/modeshape</module>
     <module>s-ramp-server</module>
     <module>s-ramp-server-eap61</module>
+    <module>s-ramp-server-fuse61</module>
+    <module>s-ramp-server-jetty8</module>
     <module>s-ramp-server-tomcat7</module>
     <module>s-ramp-shell</module>
     <module>s-ramp-shell-api</module>

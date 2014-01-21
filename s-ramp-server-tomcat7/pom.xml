@@ -26,6 +26,25 @@
       <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
       <version>${project.version}</version>
     </dependency>
-
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <overlays>
+            <overlay>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>s-ramp-server</artifactId>
+              <excludes>
+                <exclude>WEB-INF/overlord-commons-services-*.jar</exclude>
+              </excludes>
+            </overlay>
+          </overlays>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

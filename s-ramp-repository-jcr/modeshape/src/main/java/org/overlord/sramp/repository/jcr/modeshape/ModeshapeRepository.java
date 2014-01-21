@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,6 +41,7 @@ import org.apache.commons.io.IOUtils;
 import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
+import org.overlord.commons.services.ServiceRegistryUtil;
 import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.repository.jcr.JCRConstants;
@@ -112,14 +113,15 @@ public class ModeshapeRepository extends JCRRepository {
     				throw new RepositoryException(problems.toString());
     			}
     			parameters.put("org.modeshape.jcr.URL",configUrl.toExternalForm()); //$NON-NLS-1$
-    			for (RepositoryFactory factory : ServiceLoader.load(RepositoryFactory.class)) {
-    				theFactory = factory;
-    				repository = factory.getRepository(parameters);
-    				if (repository != null) break;
-    			}
-    			if (repository == null) {
-    				throw new RepositoryException(Messages.i18n.format("FAILED_TO_CREATE_JCR_REPO")); //$NON-NLS-1$
-    			}
+    			Set<RepositoryFactory> services = ServiceRegistryUtil.getServices(RepositoryFactory.class);
+    			if (services.isEmpty())
+                    throw new RepositoryException(Messages.i18n.format("FAILED_TO_CREATE_JCR_REPO")); //$NON-NLS-1$
+    			for (RepositoryFactory factory : services) {
+                    theFactory = factory;
+                    repository = factory.getRepository(parameters);
+                    if (repository != null)
+                        break;
+                }
     		} catch (RepositoryException e) {
     			throw e;
     		} catch (Exception e) {
@@ -164,13 +166,13 @@ public class ModeshapeRepository extends JCRRepository {
             } catch (Exception e) {
                 // eat the error and try the next option
             }
-		    
+
 			try {
                 return new URL(configUrl);
             } catch (Exception e) {
                 // eat the error and try the next option
             }
-			
+
 			return null;
 		}
 	}
@@ -194,7 +196,10 @@ public class ModeshapeRepository extends JCRRepository {
 			NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
 
 			// Register the ModeShape S-RAMP node types ...
-			is = ModeshapeRepository.class.getClassLoader().getResourceAsStream("org/overlord/s-ramp/sramp.cnd"); //$NON-NLS-1$
+			is = ModeshapeRepository.class.getClassLoader().getResourceAsStream("org/overlord/sramp/repository/jcr/modeshape/sramp.cnd"); //$NON-NLS-1$
+			if (is == null) {
+			    throw new RuntimeException(Messages.i18n.format("CND_NOT_FOUND")); //$NON-NLS-1$
+			}
 			manager.registerNodeTypes(is,true);
 		} catch (LoginException e) {
 			throw e;

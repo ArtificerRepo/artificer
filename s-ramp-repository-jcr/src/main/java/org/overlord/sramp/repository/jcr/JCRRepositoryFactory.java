@@ -15,14 +15,13 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import java.util.ServiceLoader;
-
 import javax.jcr.Credentials;
 import javax.jcr.LoginException;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.overlord.commons.services.ServiceRegistryUtil;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +42,11 @@ public class JCRRepositoryFactory {
 
     public synchronized static JCRRepository getInstance() throws RepositoryException {
         if (instance == null) {
-            for (JCRRepository jcrRepository : ServiceLoader.load(JCRRepository.class)) {
-                log.info(Messages.i18n.format("JCR_PROVIDER", jcrRepository.getClass())); //$NON-NLS-1$
-                instance = jcrRepository;
-                instance.startup();
-                return instance;
-            }
-            throw new RuntimeException(Messages.i18n.format("Failed to find a JCR Repository provider.")); //$NON-NLS-1$
+            instance = ServiceRegistryUtil.getSingleService(JCRRepository.class);
+            if (instance == null)
+                throw new RuntimeException(Messages.i18n.format("Failed to find a JCR Repository provider.")); //$NON-NLS-1$
+            log.info(Messages.i18n.format("JCR_PROVIDER", instance.getClass())); //$NON-NLS-1$
+            instance.startup();
         }
         return instance;
     }
