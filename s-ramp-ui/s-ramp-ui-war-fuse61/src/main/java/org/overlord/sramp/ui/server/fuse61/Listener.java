@@ -60,7 +60,6 @@ public class Listener implements ServletListener {
         public void restore() {
             Thread.currentThread().setContextClassLoader(loader);
         }
-
     }
 
     /**
