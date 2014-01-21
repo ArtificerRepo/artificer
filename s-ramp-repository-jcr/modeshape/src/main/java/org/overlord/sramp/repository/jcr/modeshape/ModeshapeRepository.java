@@ -41,7 +41,11 @@ import org.apache.commons.io.IOUtils;
 import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
+<<<<<<< HEAD
 import org.overlord.commons.services.ServiceRegistryUtil;
+=======
+import org.overlord.commons.config.services.ServiceRegistryUtil;
+>>>>>>> 5b3b6bf6b5acf60e408c713328b4a8cf7e491105
 import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.repository.jcr.JCRConstants;

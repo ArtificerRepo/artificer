@@ -2,7 +2,13 @@
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
     <Set name="serverClasses">
         <Array type="java.lang.String">
+<<<<<<< HEAD
             <Item>-org.eclipse.jetty.servlet.ServletContextHandler.Decorator</Item>
+=======
+            <Item>
+                -org.eclipse.jetty.servlet.ServletContextHandler.Decorator
+            </Item>
+>>>>>>> 5b3b6bf6b5acf60e408c713328b4a8cf7e491105
         </Array>
     </Set>
 </Configure>

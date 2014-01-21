@@ -19,22 +19,6 @@
   </servlet-mapping>
 
   <filter>
-<<<<<<< HEAD
-    <filter-name>AuthFilter</filter-name>
-    <filter-class>org.overlord.commons.auth.jetty8.Jetty8SamlBearerTokenAuthFilter</filter-class>
-    <init-param>
-        <param-name>allowedIssuers</param-name>
-        <param-value>/s-ramp-ui,/dtgov,/dtgov-ui</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>AuthFilter</filter-name>
-    <servlet-name>Resteasy</servlet-name>
-  </filter-mapping>
-  
-  <filter>
-=======
->>>>>>> 5b3b6bf6b5acf60e408c713328b4a8cf7e491105
     <filter-name>LocaleFilter</filter-name>
     <filter-class>org.overlord.sramp.server.filters.LocaleFilter</filter-class>
   </filter>
@@ -52,8 +36,6 @@
     <servlet-name>Resteasy</servlet-name>
   </filter-mapping>
 
-<<<<<<< HEAD
-=======
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>S-RAMP</web-resource-name>
@@ -66,12 +48,11 @@
 
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>OverlordRealm</realm-name>
+    <realm-name>karaf</realm-name>
   </login-config>
 
   <security-role>
     <role-name>overlorduser</role-name>
   </security-role>
   
->>>>>>> 5b3b6bf6b5acf60e408c713328b4a8cf7e491105
 </web-app>

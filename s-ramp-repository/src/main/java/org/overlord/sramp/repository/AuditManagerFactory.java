@@ -15,7 +15,11 @@
  */
 package org.overlord.sramp.repository;
 
+<<<<<<< HEAD
 import org.overlord.commons.services.ServiceRegistryUtil;
+=======
+import org.overlord.commons.config.services.ServiceRegistryUtil;
+>>>>>>> 5b3b6bf6b5acf60e408c713328b4a8cf7e491105
 import org.overlord.sramp.repository.i18n.Messages;
 
 
