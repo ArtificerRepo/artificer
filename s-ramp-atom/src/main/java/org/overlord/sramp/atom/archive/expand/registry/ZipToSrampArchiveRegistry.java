@@ -21,10 +21,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -133,7 +133,7 @@ public final class ZipToSrampArchiveRegistry {
     	try {
 	    	String matchedType = null;
 	    	if (sortedPathEntryHintMapCache==null) {
-	    		sortedPathEntryHintMapCache = new TreeMap<String,String>();
+	    		sortedPathEntryHintMapCache = new LinkedHashMap<String,String>();
 	    		List<TypeHintInfo> typeHintInfoList = new ArrayList<TypeHintInfo>();
 	    		//loop over all the providers providers
 	    		for (ZipToSrampArchiveProvider p : providers) {
@@ -150,18 +150,19 @@ public final class ZipToSrampArchiveRegistry {
 			ZipInputStream zip = new ZipInputStream(resourceInputStream);
 			ZipEntry entry;
 			String toc = ""; //$NON-NLS-1$
+			//get table of content
 			while((entry = zip.getNextEntry()) != null) {
-				String name = entry.getName();
-				toc += name + "\n"; //$NON-NLS-1$
-				if (matchedType==null) {
-					for (String path: sortedPathEntryHintMapCache.keySet()) {
-						if (path.equalsIgnoreCase(name)) {
-							matchedType = sortedPathEntryHintMapCache.get(name);
-							break;
-						}
-					}
-				}
+				toc += entry.getName() + "\n"; //$NON-NLS-1$
 			}
+			//in the order of priority match toc with path hints (case insensitive).
+			String lowerCaseToc = toc.toLowerCase();
+    		for (String path: sortedPathEntryHintMapCache.keySet()) {
+    			if (lowerCaseToc.contains(path.toLowerCase())) {
+    				matchedType = sortedPathEntryHintMapCache.get(path);
+    				break;
+    			}
+    		}
+    		
 	    	return new ArchiveInfo(matchedType, toc);
 	    } catch (IOException e) {
 	    	throw new ZipToSrampArchiveException(e.getMessage(),e);
