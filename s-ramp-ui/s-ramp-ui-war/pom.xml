@@ -215,7 +215,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>${version.com.google.gwt}</version>
         <configuration>
           <logLevel>INFO</logLevel>
           <runTarget>index.html</runTarget>

@@ -1,8 +1,8 @@
 <PicketLink xmlns="urn:picketlink:identity-federation:config:2.1">
   <PicketLinkSP xmlns="urn:picketlink:identity-federation:config:2.1" ServerEnvironment="tomcat"
     BindingType="REDIRECT" RelayState="someURL">
-    <IdentityURL>${overlord-idp.url::http://localhost:8080/overlord-idp/}</IdentityURL>
-    <ServiceURL>${s-ramp-ui.url::http://localhost:8080/s-ramp-ui/}</ServiceURL>
+    <IdentityURL>${overlord-idp.url::/overlord-idp/}</IdentityURL>
+    <ServiceURL>${s-ramp-ui.url::/s-ramp-ui/}</ServiceURL>
   </PicketLinkSP>
   <Handlers xmlns="urn:picketlink:identity-federation:handler:config:2.1">
     <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2LogOutHandler" />
