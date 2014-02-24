@@ -3,7 +3,10 @@
 ## Summary
 
 This demo shows how to integrate a standard Switchyard application build with 
-the S-RAMP repository.
+the S-RAMP repository. This demo is a copy of the SwitchYard multiApp
+https://github.com/jboss-switchyard/quickstarts/tree/master/demos/multiApp
+In this demo we want to demo the use of artifactGrouping to create a grouping
+in the S-RAMP repo.
 
 ## How It Works
 
@@ -68,7 +71,7 @@ uploaded by this demo.  By default you can find the UI here:
 
 
 ****************************************************************************************************
-Original README from the Switchyard project below:
+For extra credit: Original README from the Switchyard project below:
 
 # MultiApp Demo Quickstart
 
@@ -79,19 +82,27 @@ This quickstart provides an example of a multi-project application structure wit
 * order-consumer : consumes OrderService through a SOAP/HTTP binding
 * web : consumes InventoryService using it's Java service interface
 
-The MultiApp quickstart can also be used to demonstrate design-time repository integration with SwitchYard.  Individual service artifacts in the artifacts project can be uploaded to a service repository (e.g. Guvnor) and exported as a service module for use within projects which consume the service.  Additional detail can be found in the SwitchYard Repository Integration wiki article.
+The MultiApp quickstart can also be used to demonstrate design-time repository integration with SwitchYard.  Individual service 
+artifacts in the artifacts project can be uploaded to a service repository (e.g. Guvnor) and exported 
+as a service module for use within projects which consume the service.  Additional 
+detail can be found in the SwitchYard Repository Integration wiki article.
 
 Consult the README.md in each individual project for more info.
 
 ## Running the Example
 
-1. Deploy each of the following to a SwitchYard AS7 runtime:
-    * multiApp/artifacts/target/OrderService.jar
+1. Deploy JMS Queue
+
+cp order-consumer/src/test/resources/switchyard-quickstart-demo-multi-order-consumer-hornetq-jms.xml ${AS}/standalone/deployments
+
+
+2. Deploy each of the following to a SwitchYard AS7 runtime:
+    * multiApp/artifacts/target/OrderService.jar (make sure to deploy this one first)
     * multiApp/order-service/target/switchyard-quickstart-demo-multi-order-service.jar
     * multiApp/order-consumer/target/switchyard-quickstart-demo-multi-order-consumer.jar
     * multiApp/web/target/switchyard-quickstart-demo-multi-web.war
     
-2. Use one or both of the consuming application projects:
+3. Use one or both of the consuming application projects:
     * <b>Web</b>: Visit <http://localhost:8080/switchyard-quickstart-demo-multi-web>.
     * <b>JMS</b>: Use 'mvn exec:java' in the order-consumer project to submit a JMS order message via the OrderIntake service.
 
