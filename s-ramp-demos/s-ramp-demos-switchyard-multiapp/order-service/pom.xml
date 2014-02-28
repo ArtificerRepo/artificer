@@ -63,6 +63,12 @@
       <version>${org.switchyard.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
   
   <build>
@@ -108,4 +114,19 @@
       </plugin>
     </plugins>
   </build>
+  <!-- Locking the transitive dependency for camel or else the tests fail -->
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>org.apache.camel</groupId>
+  			<artifactId>camel-cdi</artifactId>
+  			<version>2.10.0</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>org.apache.camel</groupId>
+  			<artifactId>camel-core</artifactId>
+  			<version>2.10.0</version>
+  		</dependency>
+  	</dependencies>
+  </dependencyManagement>
 </project>
