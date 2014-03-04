@@ -120,6 +120,7 @@
                 org.eclipse.jetty.server.handler,
                 org.eclipse.jetty.servlet,
                 org.eclipse.jetty.security,
+                org.eclipse.jetty.jndi,
                 org.overlord.commons.auth.jetty8,
                 org.apache.karaf.jaas.boot.principal
               </Import-Package>
