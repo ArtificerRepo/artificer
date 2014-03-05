@@ -53,6 +53,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	@Override
 	public void open() throws IOException {
 		consoleReader = new ConsoleReader();
+        consoleReader.setExpandEvents(false);
 		String prompt = defaultAnsiPrompt();
 		consoleReader.setPrompt(prompt);
 		consoleReader.addCompleter(new TabCompleter(getFactory(), getContext()));
