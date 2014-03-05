@@ -23,8 +23,8 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.sramp.ui.client.local.widgets.bootstrap.DateBox;
-import org.overlord.sramp.ui.client.local.widgets.common.RadioButton;
+import org.overlord.commons.gwt.client.local.widgets.DateBox;
+import org.overlord.commons.gwt.client.local.widgets.RadioButton;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactOriginEnum;
 

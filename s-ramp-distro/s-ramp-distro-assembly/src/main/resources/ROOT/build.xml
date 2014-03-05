@@ -183,7 +183,7 @@
     <echo message=" * and execute the following command:     *" />
     <echo message="                                           " />
     <echo message="   > features:addurl mvn:org.overlord.sramp/s-ramp-distro-fuse61/${project.version}/xml/features"/>
-    <echo message="   > features:install -v s-ramp           *" />
+    <echo message="   > features:install -v s-ramp            " />
     <echo message="                                           " />
     <echo message=" ******************************************" />
   </target>
