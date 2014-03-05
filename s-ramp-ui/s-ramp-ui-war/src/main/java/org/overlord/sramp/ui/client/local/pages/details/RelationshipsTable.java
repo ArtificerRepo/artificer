@@ -24,8 +24,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
+import org.overlord.commons.gwt.client.local.widgets.TemplatedWidgetTable;
 import org.overlord.sramp.ui.client.local.pages.ArtifactDetailsPage;
-import org.overlord.sramp.ui.client.local.widgets.common.TemplatedWidgetTable;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipBean;
 
 import com.google.gwt.event.logical.shared.ValueChangeHandler;

@@ -23,8 +23,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.overlord.commons.gwt.client.local.widgets.UnorderedListPanel;
 import org.overlord.sramp.ui.client.local.ClientMessages;
-import org.overlord.sramp.ui.client.local.widgets.common.UnorderedListPanel;
 import org.overlord.sramp.ui.client.shared.beans.OntologyClassBean;
 
 import com.google.gwt.event.dom.client.ClickEvent;

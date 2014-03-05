@@ -19,8 +19,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
+import org.overlord.commons.gwt.client.local.widgets.SortableTemplatedWidgetTable;
 import org.overlord.sramp.ui.client.local.pages.ArtifactDetailsPage;
-import org.overlord.sramp.ui.client.local.widgets.common.SortableTemplatedWidgetTable;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 import org.overlord.sramp.ui.client.shared.beans.Constants;
 
