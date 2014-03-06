@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xml:base="http://www.example.org/regional.owl">
+	
+	<owl:Ontology rdf:ID="SRAMP 256">
+		<rdfs:label>SRAMP-256 Test</rdfs:label>
+	</owl:Ontology>
+	
+	<owl:Class rdf:ID="Root">
+		<rdfs:label>Root</rdfs:label>
+	</owl:Class>
+	
+	<owl:Class rdf:ID="Child">
+		<rdfs:subClassOf rdf:resource="http://www.example.org/regional.owl#Root" />
+		<rdfs:label>Child1</rdfs:label>
+		<rdfs:comment>The continent of Asia.</rdfs:comment>
+	</owl:Class>
+	
+</rdf:RDF>

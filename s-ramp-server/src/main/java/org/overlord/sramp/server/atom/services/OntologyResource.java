@@ -36,6 +36,7 @@ import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.mappers.OntologyToRdfMapper;
 import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
+import org.overlord.sramp.common.ontology.OntologyValidator;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
@@ -83,10 +84,16 @@ public class OntologyResource extends AbstractResource {
     @Consumes(MediaType.APPLICATION_RDF_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry create(RDF rdf) throws SrampAtomException {
-    	try {
-			SrampOntology ontology = new SrampOntology();
-			rdf2o.map(rdf, ontology);
+        SrampOntology ontology;
+        try {
+            ontology = new SrampOntology();
+            rdf2o.map(rdf, ontology);
+            OntologyValidator.validateOntology(ontology);
+        } catch (Exception e) {
+            throw new SrampAtomException(e);
+        }
 
+        try {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			ontology = persistenceManager.persistOntology(ontology);
 
@@ -119,11 +126,17 @@ public class OntologyResource extends AbstractResource {
     @Path("ontology/{uuid}")
     @Consumes(MediaType.APPLICATION_RDF_XML)
     public void update(@PathParam("uuid") String uuid, RDF rdf) throws SrampAtomException {
-    	try {
-			SrampOntology ontology = new SrampOntology();
-			rdf2o.map(rdf, ontology);
+        SrampOntology ontology;
+        try {
+            ontology = new SrampOntology();
+            rdf2o.map(rdf, ontology);
             ontology.setUuid(uuid);
+            OntologyValidator.validateOntology(ontology);
+        } catch (Exception e) {
+            throw new SrampAtomException(e);
+        }
 
+        try {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			persistenceManager.updateOntology(ontology);
         } catch (Exception e) {

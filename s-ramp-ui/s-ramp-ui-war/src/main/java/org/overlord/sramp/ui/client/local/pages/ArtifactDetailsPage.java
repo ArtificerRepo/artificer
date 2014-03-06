@@ -100,6 +100,9 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject @DataField("back-to-artifacts")
     TransitionAnchor<ArtifactsPage> backToArtifacts;
 
+    @Inject @DataField("feed-link")
+    Anchor feedLink;
+
     // Actions
     @Inject  @DataField("btn-delete")
     Button deleteButton;
@@ -117,6 +120,8 @@ public class ArtifactDetailsPage extends AbstractPage {
     Anchor downloadContentLink;
     @Inject @DataField("link-download-metaData")
     Anchor downloadMetaDataLink;
+    @Inject @DataField("link-repository-direct")
+    Anchor linkToRepository;
     @Inject @DataField("core-property-type-2") @Bound(property="type")
     Label type;
     @Inject @DataField("core-property-uuid") @Bound(property="uuid")
@@ -381,6 +386,8 @@ public class ArtifactDetailsPage extends AbstractPage {
         this.downloadContentLink.setHref(contentUrl);
         this.downloadContentLink.setVisible(!artifact.isDerived());
         this.downloadMetaDataLink.setHref(metaDataUrl);
+        this.feedLink.setHref(artifact.getRepositoryLink());
+        this.linkToRepository.setHref(artifact.getRepositoryMediaLink());
         this.sourceEditor.setValue(""); //$NON-NLS-1$
 
         if (artifact.isTextDocument()) {
