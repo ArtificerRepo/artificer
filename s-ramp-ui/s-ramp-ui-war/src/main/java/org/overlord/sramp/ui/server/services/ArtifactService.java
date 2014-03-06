@@ -65,7 +65,7 @@ public class ArtifactService implements IArtifactService {
         try {
             BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(uuid);
             ArtifactType artifactType = ArtifactType.valueOf(artifact);
-
+            
             ArtifactBean bean = new ArtifactBean();
             bean.setModel(artifactType.getArtifactType().getModel());
             bean.setType(artifactType.getType());
@@ -79,6 +79,8 @@ public class ArtifactService implements IArtifactService {
             bean.setUpdatedOn(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
             bean.setUpdatedBy(artifact.getLastModifiedBy());
             bean.setDerived(artifactType.isDerived());
+            bean.setRepositoryLink(getRepositoryLink(artifact, artifactType));
+            bean.setRepositoryMediaLink(getRepositoryMediaLink(artifact, artifactType));
             if (SrampModelUtils.isDocumentArtifact(artifact)) {
                 DocumentArtifactType doc = (DocumentArtifactType) artifact;
                 bean.setContentSize(doc.getContentSize());
@@ -199,6 +201,35 @@ public class ArtifactService implements IArtifactService {
         } catch (SrampAtomException e) {
             throw new SrampUiException(e.getMessage());
         }
+    }
+
+    /**
+     * Creates a link to the remote repository for the given artifact.
+     * @param artifact
+     * @param artifactType 
+     */
+    private String getRepositoryLink(BaseArtifactType artifact, ArtifactType artifactType) {
+        StringBuilder builder = new StringBuilder();
+        String endpoint = clientAccessor.getClient().getEndpoint();
+        builder.append(endpoint);
+        if (!endpoint.endsWith("/")) {
+            builder.append("/");
+        }
+        builder.append(artifactType.getModel());
+        builder.append("/");
+        builder.append(artifactType.getType());
+        builder.append("/");
+        builder.append(artifact.getUuid());
+        return builder.toString();
+    }
+
+    /**
+     * Creates a media link to the remote repository for the given artifact.
+     * @param artifact
+     * @param artifactType 
+     */
+    private String getRepositoryMediaLink(BaseArtifactType artifact, ArtifactType artifactType) {
+        return getRepositoryLink(artifact, artifactType) + "/media";
     }
 
 }

@@ -23,11 +23,10 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import org.junit.Assert;
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.junit.Assert;
 import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
@@ -43,21 +42,40 @@ import org.w3._2002._07.owl_.Ontology;
  */
 public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 
-	@Test
-	public void testCreate() throws Exception {
-		ClientRequest request = new ClientRequest(generateURL("/s-ramp/ontology")); //$NON-NLS-1$
+    @Test
+    public void testCreate() throws Exception {
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ontology")); //$NON-NLS-1$
 
-		RDF rdf = loadTestRDF("regional"); //$NON-NLS-1$
+        RDF rdf = loadTestRDF("regional"); //$NON-NLS-1$
 
-		request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
-		ClientResponse<Entry> response = request.post(Entry.class);
-		Entry entry = response.getEntity();
+        request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
+        ClientResponse<Entry> response = request.post(Entry.class);
+        Entry entry = response.getEntity();
 
-		RDF ontology = SrampAtomUtils.unwrap(entry, RDF.class);
+        RDF ontology = SrampAtomUtils.unwrap(entry, RDF.class);
 
-		Assert.assertNotNull(ontology);
-		assertEquals(rdf, ontology);
-	}
+        Assert.assertNotNull(ontology);
+        assertEquals(rdf, ontology);
+    }
+
+    /**
+     * Unit test for: https://issues.jboss.org/browse/SRAMP-256
+     * @throws Exception
+     */
+    @Test
+    public void testCreate_SRAMP256() throws Exception {
+        ClientRequest request = new ClientRequest(generateURL("/s-ramp/ontology")); //$NON-NLS-1$
+
+        RDF rdf = loadTestRDF("SRAMP-256"); //$NON-NLS-1$
+
+        request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
+        try {
+            request.post(Entry.class);
+            Assert.fail("Expected an ontology validation error.");
+        } catch (Exception e) {
+            Assert.assertEquals("The ontology ID was invalid: SRAMP 256", e.getMessage());
+        }
+    }
 
 	@Test
 	public void testGet() throws Exception {

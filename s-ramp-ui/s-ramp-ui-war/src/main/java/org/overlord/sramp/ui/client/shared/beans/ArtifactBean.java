@@ -40,6 +40,8 @@ public class ArtifactBean extends ArtifactSummaryBean implements Serializable {
     private long contentSize = -1;
     private String contentType;
     private boolean textDocument;
+    private String repositoryLink;
+    private String repositoryMediaLink;
 
     /**
      * Constructor.
@@ -172,6 +174,34 @@ public class ArtifactBean extends ArtifactSummaryBean implements Serializable {
      */
     public boolean isDocument() {
         return this.contentSize != -1;
+    }
+
+    /**
+     * @return the repositoryLink
+     */
+    public String getRepositoryLink() {
+        return repositoryLink;
+    }
+
+    /**
+     * @param repositoryLink the repositoryLink to set
+     */
+    public void setRepositoryLink(String repositoryLink) {
+        this.repositoryLink = repositoryLink;
+    }
+
+    /**
+     * @return the repositoryMediaLink
+     */
+    public String getRepositoryMediaLink() {
+        return repositoryMediaLink;
+    }
+
+    /**
+     * @param repositoryMediaLink the repositoryMediaLink to set
+     */
+    public void setRepositoryMediaLink(String repositoryMediaLink) {
+        this.repositoryMediaLink = repositoryMediaLink;
     }
 
 }
