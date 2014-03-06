@@ -5,6 +5,7 @@
   <property file="${s-ramp-distro.build.properties}" />
   <property name="s-ramp-distro.tempdir" location=".temp" />
   <property name="s-ramp-distro.rootdir" location="." />
+  <property name="tomcat.version" value="7.0.52" />
   <property name="s-ramp-distro.bindir" location="${s-ramp-distro.rootdir}/bin" />
   <property name="s-ramp-distro.overlord-commons-installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${project.version}.jar" />
   <property name="s-ramp-distro.s-ramp-installer.jar" location="${s-ramp-distro.bindir}/s-ramp-installer-${project.version}.jar" />
@@ -114,7 +115,7 @@
   <!-- Download Tomcat 7 for the user -->
   <target name="install-tomcat-7-download" if="s-ramp-distro.choices.platform.tomcat-7.path.empty">
     <property name="s-ramp-distro.tomcat-7.download.url" 
-              value="http://apache.mirror.quintex.com/tomcat/tomcat-7/v7.0.52/bin/apache-tomcat-7.0.52.zip" />
+              value="http://archive.apache.org/dist/tomcat/tomcat-7/v${tomcat.version}/bin/apache-tomcat-${tomcat.version}.zip" />
     
     <echo message=" " />
     <echo message="########################################" />
@@ -122,12 +123,12 @@
     <echo message="########################################" />
     <get src="${s-ramp-distro.tomcat-7.download.url}" dest="${s-ramp-distro.tempdir}" usetimestamp="true" />
     
-    <property name="s-ramp-distro.tomcat-7.zip" value="${s-ramp-distro.tempdir}/apache-tomcat-7.0.52.zip" />
+    <property name="s-ramp-distro.tomcat-7.zip" value="${s-ramp-distro.tempdir}/apache-tomcat-${tomcat.version}.zip" />
     <echo message="########################################" />
     <echo message="# Unzipping Tomcat 7, please wait...   #" />
     <echo message="########################################" />
     <unzip src="${s-ramp-distro.tomcat-7.zip}" dest="${s-ramp-distro.rootdir}" overwrite="false" />
-    <property name="s-ramp-distro.choices.platform.tomcat-7.real-path" location="${s-ramp-distro.rootdir}/apache-tomcat-7.0.52" />
+    <property name="s-ramp-distro.choices.platform.tomcat-7.real-path" location="${s-ramp-distro.rootdir}/apache-tomcat-${tomcat.version}" />
   </target>
 
 
