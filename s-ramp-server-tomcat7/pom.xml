@@ -26,6 +26,10 @@
       <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+    	<groupId>org.infinispan</groupId>
+    	<artifactId>infinispan-cachestore-jdbc</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
