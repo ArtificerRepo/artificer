@@ -171,7 +171,7 @@ public class OntologiesPage extends AbstractPage {
         
         if (selectedOntologyWidget != null) {
             if (editor.isDirty()) {
-                Window.alert("ontologies-page.editor-is-dirty"); //$NON-NLS-1$
+                Window.alert(i18n.format("ontologies-page.editor-is-dirty")); //$NON-NLS-1$
                 return;
             }
             selectedOntologyWidget.getElement().getParentElement().removeClassName("active"); //$NON-NLS-1$
