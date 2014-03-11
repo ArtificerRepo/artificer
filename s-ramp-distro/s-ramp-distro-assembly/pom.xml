@@ -165,7 +165,7 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>sramp-wiki</artifactId>
-      <version>${project.version}</version>
+      <version>${s-ramp-wiki.version}</version>
       <type>jdocbook</type>
     </dependency>
 
