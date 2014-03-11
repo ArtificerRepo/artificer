@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.sramp</groupId>
     <artifactId>s-ramp</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.4.0.Final</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -109,34 +108,25 @@
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/${appserver.id}" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp.overlord-commons.installer.jar"
-                      value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
-                    <property name="overlord-commons.idp.file"
-                      value="${maven.dependency.org.overlord.overlord-commons-idp-eap61.war.path}" />
-                    <property name="overlord-commons.services.file"
-                      value="${maven.dependency.org.overlord.overlord-commons-services.jar.path}" />
-                    <property name="overlord-commons.auth.file"
-                      value="${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
-                    <property name="overlord-commons.auth.tomcat7.file"
-                      value="${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
-                    <property name="overlord-commons.auth.jboss7.file"
-                      value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
+                    <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+                    <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-eap61.war.path}" />
+                    <property name="overlord-commons.services.file" value="${maven.dependency.org.overlord.overlord-commons-services.jar.path}" />
+                    <property name="overlord-commons.auth.file" value="${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
+                    <property name="overlord-commons.auth.tomcat7.file" value="${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
+                    <property name="overlord-commons.auth.jboss7.file" value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
 
                     <!-- S-RAMP WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" 
-                      value="${maven.dependency.org.overlord.sramp.s-ramp-server-eap61.war.path}" />
-                    <property name="s-ramp.s-ramp-ui.war.path"
-                      value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap61.war.path}" />
+                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-eap61.war.path}" />
+                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap61.war.path}" />
 
                     <!-- ModeShape Distribution -->
-                    <property name="s-ramp.modeshape-distribution.zip.path"
-                      value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-61-dist.zip.path}" />
+                    <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-61-dist.zip.path}" />
 
                     <property file="build.properties" />
                     <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.1.0.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}">
-                      <include name="*.sh"/>
+                      <include name="*.sh" />
                     </chmod>
 
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
@@ -195,29 +185,22 @@
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/apache-tomcat-7.0.52" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp.overlord-commons.installer.jar"
-                      value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
-                    <property name="overlord-commons.idp.file"
-                      value="${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
-                    <property name="overlord-commons.services.file"
-                      value="${maven.dependency.org.overlord.overlord-commons-services.jar.path}" />
-                    <property name="overlord-commons.auth.file"
-                      value="${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
-                    <property name="overlord-commons.auth.tomcat7.file"
-                      value="${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
+                    <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+                    <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
+                    <property name="overlord-commons.services.file" value="${maven.dependency.org.overlord.overlord-commons-services.jar.path}" />
+                    <property name="overlord-commons.auth.file" value="${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
+                    <property name="overlord-commons.auth.tomcat7.file" value="${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
 
                     <!-- S-RAMP WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" 
-                      value="${maven.dependency.org.overlord.sramp.s-ramp-server-tomcat7.war.path}" />
-                    <property name="s-ramp.s-ramp-ui.war.path"
-                      value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-tomcat7.war.path}" />
+                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-tomcat7.war.path}" />
+                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-tomcat7.war.path}" />
 
                     <property file="build.properties" />
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
                     <property name="s-ramp.appserver.zip" value="${basedir}/apache-tomcat-7.0.52.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
-                      <include name="*.sh"/>
+                      <include name="*.sh" />
                     </chmod>
 
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">

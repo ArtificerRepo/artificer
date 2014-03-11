@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.sramp</groupId>
     <artifactId>s-ramp-distro</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.4.0.Final</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>s-ramp-distro-assembly</artifactId>
@@ -241,10 +240,8 @@
                 <phase>install</phase>
                 <configuration>
                   <tasks>
-                    <property name="overlord-commons.idp.download.url"
-                      value="file:///${maven.dependency.org.overlord.overlord-commons-idp-eap61.war.path}" />
-                    <property name="overlord-commons.auth.download.url"
-                      value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
+                    <property name="overlord-commons.idp.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-idp-eap61.war.path}" />
+                    <property name="overlord-commons.auth.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
 
                     <ant dir="${basedir}/src/main/resources/ROOT" antfile="${basedir}/src/main/resources/ROOT/build.xml">
                       <target name="install" />
@@ -309,12 +306,9 @@
                     <property name="overlord-commons.appserver.dir" location="${project.build.directory}/apache-tomcat-7.0.47" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="overlord-commons.idp.download.url"
-                      value="file:///${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
-                    <property name="overlord-commons.lib.overlord-commons-auth.download.url"
-                      value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
-                    <property name="overlord-commons.lib.overlord-commons-auth-tomcat7.download.url"
-                      value="file:///${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
+                    <property name="overlord-commons.idp.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
+                    <property name="overlord-commons.lib.overlord-commons-auth.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
+                    <property name="overlord-commons.lib.overlord-commons-auth-tomcat7.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
 
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
                       <target name="install" />
