@@ -3,7 +3,7 @@
   <parent>
     <artifactId>s-ramp</artifactId>
     <groupId>org.overlord.sramp</groupId>
-    <version>0.4.0.Final</version>
+    <version>0.4.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

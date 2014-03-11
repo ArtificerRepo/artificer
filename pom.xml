@@ -9,7 +9,7 @@
 
   <groupId>org.overlord.sramp</groupId>
   <artifactId>s-ramp</artifactId>
-  <version>0.4.0.Final</version>
+  <version>0.4.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>S-RAMP</name>
@@ -39,7 +39,7 @@
     <connection>scm:git:git@github.com:Governance/s-ramp.git</connection>
     <developerConnection>scm:git:git@github.com:Governance/s-ramp.git</developerConnection>
     <url>scm:git:git@github.com:Governance/s-ramp.git</url>
-    <tag>s-ramp-0.4.0.Final</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <developers>
