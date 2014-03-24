@@ -69,6 +69,12 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server-jetty8</artifactId>
+      <type>war</type>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-eap61</artifactId>
       <type>war</type>
       <version>${project.version}</version>
@@ -76,6 +82,12 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-tomcat7</artifactId>
+      <type>war</type>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war-jetty8</artifactId>
       <type>war</type>
       <version>${project.version}</version>
     </dependency>

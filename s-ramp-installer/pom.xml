@@ -56,6 +56,12 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server-jetty8</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-eap61</artifactId>
       <version>${project.version}</version>
       <type>war</type>
@@ -63,6 +69,12 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-tomcat7</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war-jetty8</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
@@ -199,6 +211,78 @@
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
                     <property name="s-ramp.appserver.zip" value="${basedir}/apache-tomcat-7.0.52.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
+                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
+                      <include name="*.sh" />
+                    </chmod>
+
+                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
+                      <target name="install" />
+                    </ant>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.modeshape</groupId>
+          <artifactId>modeshape-distribution</artifactId>
+          <version>3.1.3.Final</version>
+          <type>zip</type>
+          <classifier>jbossas-71-dist</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+    <!-- ***************************************** -->
+    <!-- Profile to *test* installing into Jetty 8 -->
+    <!-- ***************************************** -->
+    <profile>
+      <id>test-install-jetty8</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-trax</artifactId>
+                <version>1.6.5</version>
+              </dependency>
+              <dependency>
+                <groupId>xalan</groupId>
+                <artifactId>xalan</artifactId>
+                <version>2.7.1</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>install-jetty8</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <property name="appserver.id" value="jetty-8" />
+                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
+                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jetty-distribution-8.1.14.v20131031" />
+                    <property name="s-ramp.jetty.download.url" value="http://eclipse.org/downloads/download.php?file=/jetty/8.1.14.v20131031/dist/jetty-distribution-8.1.14.v20131031.zip&amp;r=1" />
+                    <property name="s-ramp.jetty.zip" location="${basedir}/jetty-distribution-8.1.14.v20131031.zip" />
+
+                    <!-- Overlord Commons Installer and Dependencies -->
+                    <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+
+                    <!-- S-RAMP WARs -->
+                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-jetty8.war.path}" />
+                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-jetty8.war.path}" />
+
+                    <property file="build.properties" />
+                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
+                    <get src="${s-ramp.jetty.download.url}" dest="${basedir}/jetty-distribution-8.1.14.v20131031.zip" usetimestamp="true" />
+                    <unzip src="${s-ramp.jetty.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
                       <include name="*.sh" />
                     </chmod>
