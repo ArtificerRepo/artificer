@@ -18,7 +18,7 @@
          ]
     },"storage": {
         "cacheName": "sramp",
-        "cacheConfiguration" : "infinispan-configuration-tomcat.xml",
+        "cacheConfiguration" : "infinispan-configuration-webapp.xml",
         "binaryStorage": {
             "type"  : "database",
             "dataSourceJndiName" : "java:comp/env/jdbc/sramp",

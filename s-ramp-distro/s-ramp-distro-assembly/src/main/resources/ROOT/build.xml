@@ -5,7 +5,8 @@
   <property file="${s-ramp-distro.build.properties}" />
   <property name="s-ramp-distro.tempdir" location=".temp" />
   <property name="s-ramp-distro.rootdir" location="." />
-  <property name="tomcat.version" value="7.0.52" />
+  <property name="s-ramp-distro.tomcat.version" value="7.0.52" />
+  <property name="s-ramp-distro.jetty.version" value="8.1.14.v20131031" />
   <property name="s-ramp-distro.bindir" location="${s-ramp-distro.rootdir}/bin" />
   <property name="s-ramp-distro.overlord-commons-installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${project.version}.jar" />
   <property name="s-ramp-distro.s-ramp-installer.jar" location="${s-ramp-distro.bindir}/s-ramp-installer-${project.version}.jar" />
@@ -23,6 +24,7 @@
     <echo message="    1. Install into JBoss EAP 6.1" />
     <echo message="    2. Install into Tomcat 7" />
     <echo message="    3. Install into Fuse 6.1" />
+    <echo message="    4. Install into Jetty 8" />
     <echo message=" " />
     <input message="Choice: " addproperty="s-ramp-distro.choices.platform" />
 
@@ -35,10 +37,14 @@
     <condition property="s-ramp-distro.choices.platform.fuse-6.1">
       <equals arg1="${s-ramp-distro.choices.platform}" arg2="3" />
     </condition>
+    <condition property="s-ramp-distro.choices.platform.jetty-8">
+      <equals arg1="${s-ramp-distro.choices.platform}" arg2="4" />
+    </condition>
 
     <antcall target="install-jboss-eap-6.1-wrapper" />
     <antcall target="install-tomcat-7-wrapper" />
     <antcall target="install-fuse-6.1-wrapper" />
+    <antcall target="install-jetty-8-wrapper" />
   </target>
 
   <target name="extract-installer">
@@ -46,6 +52,9 @@
     <!-- Unpack the s-ramp installer into the temp directory -->
     <property name="s-ramp-distro.s-ramp-installer.dir" location="${s-ramp-distro.tempdir}/s-ramp-installer" />
     <unzip src="${s-ramp-distro.s-ramp-installer.jar}" dest="${s-ramp-distro.s-ramp-installer.dir}" overwrite="false" />
+    <chmod perm="a+x" dir="${s-ramp-distro.s-ramp-installer.dir}/apache-tomcat-${s-ramp-distro.tomcat.version}/bin">
+      <include name="*.sh"/>
+    </chmod>
   </target>
 
   <!-- Install into EAP 6.1 -->
@@ -115,7 +124,7 @@
   <!-- Download Tomcat 7 for the user -->
   <target name="install-tomcat-7-download" if="s-ramp-distro.choices.platform.tomcat-7.path.empty">
     <property name="s-ramp-distro.tomcat-7.download.url" 
-              value="http://archive.apache.org/dist/tomcat/tomcat-7/v${tomcat.version}/bin/apache-tomcat-${tomcat.version}.zip" />
+              value="http://archive.apache.org/dist/tomcat/tomcat-7/v${s-ramp-distro.tomcat.version}/bin/apache-tomcat-${s-ramp-distro.tomcat.version}.zip" />
     
     <echo message=" " />
     <echo message="########################################" />
@@ -123,12 +132,12 @@
     <echo message="########################################" />
     <get src="${s-ramp-distro.tomcat-7.download.url}" dest="${s-ramp-distro.tempdir}" usetimestamp="true" />
     
-    <property name="s-ramp-distro.tomcat-7.zip" value="${s-ramp-distro.tempdir}/apache-tomcat-${tomcat.version}.zip" />
+    <property name="s-ramp-distro.tomcat-7.zip" value="${s-ramp-distro.tempdir}/apache-tomcat-${s-ramp-distro.tomcat.version}.zip" />
     <echo message="########################################" />
     <echo message="# Unzipping Tomcat 7, please wait...   #" />
     <echo message="########################################" />
     <unzip src="${s-ramp-distro.tomcat-7.zip}" dest="${s-ramp-distro.rootdir}" overwrite="false" />
-    <property name="s-ramp-distro.choices.platform.tomcat-7.real-path" location="${s-ramp-distro.rootdir}/apache-tomcat-${tomcat.version}" />
+    <property name="s-ramp-distro.choices.platform.tomcat-7.real-path" location="${s-ramp-distro.rootdir}/apache-tomcat-${s-ramp-distro.tomcat.version}" />
   </target>
 
 
@@ -207,4 +216,73 @@
     </ant>
   </target>
 
+  <!-- Install into Jetty 8 -->
+  <target name="install-jetty-8-wrapper" if="s-ramp-distro.choices.platform.jetty-8">
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Installing S-RAMP into Jetty 8.     #" />
+    <echo message="########################################" />
+    <echo message=" " />
+    <echo message=" Please tell us where Jetty 8 is located (full path).  Simply" />
+    <echo message=" leave this blank if you want us to download Jetty 8 for you." />
+    <echo message=" " />
+    <input message="Path to Jetty 8: " addproperty="s-ramp-distro.choices.platform.jetty-8.path" />
+    <antcall target="install-jetty-8" />
+  </target>
+  
+  <target name="install-jetty-8" depends="extract-installer">
+    <!-- If the path is empty, download Jetty 8 -->
+    <condition property="s-ramp-distro.choices.platform.jetty-8.path.empty">
+      <equals arg1="${s-ramp-distro.choices.platform.jetty-8.path}" arg2="" />
+    </condition>
+
+    <antcall target="install-jetty-8-into" />
+  </target>
+
+  <!-- Download Jetty 8 for the user -->
+  <target name="install-jetty-8-download" if="s-ramp-distro.choices.platform.jetty-8.path.empty">
+    <property name="s-ramp-distro.jetty-8.download.url" 
+              value="http://eclipse.org/downloads/download.php?file=/jetty/${s-ramp-distro.jetty.version}/dist/jetty-distribution-${s-ramp-distro.jetty.version}.zip&amp;r=1" />
+    
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Downloading Jetty 8, please wait... #" />
+    <echo message="########################################" />
+    <property name="s-ramp-distro.jetty-8.zip" value="${s-ramp-distro.tempdir}/jetty-distribution-${s-ramp-distro.jetty.version}.zip" />
+    <get src="${s-ramp-distro.jetty-8.download.url}" dest="${s-ramp-distro.jetty-8.zip}/" usetimestamp="true" />
+    
+    <echo message="########################################" />
+    <echo message="# Unzipping Jetty 8, please wait...   #" />
+    <echo message="########################################" />
+    <unzip src="${s-ramp-distro.jetty-8.zip}" dest="${s-ramp-distro.rootdir}" overwrite="false" />
+    <property name="s-ramp-distro.choices.platform.jetty-8.real-path" location="${s-ramp-distro.rootdir}/jetty-distribution-${s-ramp-distro.jetty.version}" />
+  </target>
+
+
+  <!-- Install into Jetty 8 -->
+  <target name="install-jetty-8-into" depends="install-jetty-8-download">
+    <!-- Now set the real path and install into it -->
+    <property name="s-ramp-distro.choices.platform.jetty-8.real-path" value="${s-ramp-distro.choices.platform.jetty-8.path}" />
+
+    <!-- If the path is invalid, fail -->
+    <condition property="s-ramp-distro.choices.platform.jetty-8.path.valid">
+      <available file="start.jar" filepath="${s-ramp-distro.choices.platform.jetty-8.real-path}" />
+    </condition>
+    <fail message="Failed to find Jetty 8 at: ${s-ramp-distro.choices.platform.jetty-8.real-path}" 
+          unless="s-ramp-distro.choices.platform.jetty-8.path.valid" />
+
+    <echo message="Installing into: ${s-ramp-distro.choices.platform.jetty-8.real-path} " />
+
+    <!-- Call the S-RAMP installer -->
+    <ant antfile="${s-ramp-distro.s-ramp-installer.dir}/build.xml" inheritall="true" target="install" 
+         dir="${s-ramp-distro.s-ramp-installer.dir}">
+      <property name="appserver.id" value="jetty-8" />
+      <property name="s-ramp.install.dir" location="${s-ramp-distro.tempdir}" />
+      <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.jetty-8.real-path}" />
+      <property name="s-ramp.overlord-commons.installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${overlord-commons.version}.jar" />
+      <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/s-ramp-server-jetty8-${s-ramp.version}.war" />
+      <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/s-ramp-ui-war-jetty8-${s-ramp.version}.war" />
+    </ant>
+  </target>
+  
 </project>
