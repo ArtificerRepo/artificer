@@ -311,6 +311,17 @@ public class ArtifactType {
     }
 
     /**
+     * @return true if the artifact is a document artifact
+     */
+    public boolean isDocument() {
+        if (isDerived()) {
+            return false;
+        } else {
+            return getArtifactType().isDocument();
+        }
+    }
+
+    /**
      * @return true if the artifact is derived
      */
     public boolean isDerived() {
