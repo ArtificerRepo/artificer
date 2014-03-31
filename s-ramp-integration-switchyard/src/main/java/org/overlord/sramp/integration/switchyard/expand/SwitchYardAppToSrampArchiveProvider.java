@@ -19,9 +19,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
@@ -41,7 +41,7 @@ public class SwitchYardAppToSrampArchiveProvider implements ZipToSrampArchivePro
 	private static final Map<String, String> hintsMap;
     static {
         acceptedTypes.add("SwitchYardApplication"); //$NON-NLS-1$
-        Map<String, String>aMap = new TreeMap<String,String>();
+        Map<String, String>aMap = new LinkedHashMap<String,String>();
         aMap.put("WEB-INF/switchyard.xml", SwitchYardModel.SwitchYardApplication); //$NON-NLS-1$
         aMap.put("WEB-INF/classes/META-INF/switchyard.xml", SwitchYardModel.SwitchYardApplication); //$NON-NLS-1$
         aMap.put("META-INF/switchyard.xml", SwitchYardModel.SwitchYardApplication); //$NON-NLS-1$

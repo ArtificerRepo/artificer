@@ -19,9 +19,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
@@ -40,7 +40,7 @@ public class KieJarToSrampArchiveProvider implements ZipToSrampArchiveProvider {
 	private static final Map<String, String> hintsMap;
     static {
         acceptedTypes.add(KieJarModel.TYPE_ARCHIVE); 
-        Map<String, String>aMap = new TreeMap<String,String>();
+        Map<String, String>aMap = new LinkedHashMap<String,String>();
         aMap.put("META-INF/kmodule.xml", KieJarModel.TYPE_ARCHIVE); //$NON-NLS-1$
         hintsMap = Collections.unmodifiableMap(aMap);
     }

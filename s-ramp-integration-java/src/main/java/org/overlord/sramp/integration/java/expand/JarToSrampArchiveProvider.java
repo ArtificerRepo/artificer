@@ -19,9 +19,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
@@ -43,7 +43,7 @@ public class JarToSrampArchiveProvider implements ZipToSrampArchiveProvider {
         acceptedTypes.add(JavaModel.TYPE_ARCHIVE);
         acceptedTypes.add(JavaModel.TYPE_WEB_APPLICATION);
         acceptedTypes.add(JavaModel.TYPE_ENTERPRISE_APPLICATION);
-        Map<String, String>aMap = new TreeMap<String,String>();
+        Map<String, String>aMap = new LinkedHashMap<String,String>();
         aMap.put("META-INF/application.xml", JavaModel.TYPE_ENTERPRISE_APPLICATION); //$NON-NLS-1$
         aMap.put("WEB-INF/web.xml", JavaModel.TYPE_WEB_APPLICATION); //$NON-NLS-1$
         aMap.put("META-INF/MANIFEST.MF", JavaModel.TYPE_ARCHIVE); //$NON-NLS-1$
