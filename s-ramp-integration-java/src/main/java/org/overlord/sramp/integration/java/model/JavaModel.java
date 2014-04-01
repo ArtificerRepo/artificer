@@ -41,10 +41,14 @@ public class JavaModel {
     public static final String PROP_MAVEN_ARTIFACT_ID = "maven.artifactId"; //$NON-NLS-1$
     public static final String PROP_MAVEN_GROUP_ID = "maven.groupId"; //$NON-NLS-1$
     public static final String PROP_MAVEN_VERSION = "maven.version"; //$NON-NLS-1$
+    public static final String PROP_MAVEN_TYPE = "maven.type"; //$NON-NLS-1$
+    public static final String PROP_MAVEN_CLASSIFIER = "maven.classifier"; //$NON-NLS-1$
     public static final String PROP_MAVEN_PACKAGING = "maven.packaging"; //$NON-NLS-1$
     public static final String PROP_MAVEN_PARENT_ARTIFACT_ID = "maven.parent.artifactId"; //$NON-NLS-1$
     public static final String PROP_MAVEN_PARENT_GROUP_ID = "maven.parent.groupId"; //$NON-NLS-1$
     public static final String PROP_MAVEN_PARENT_VERSION = "maven.parent.version"; //$NON-NLS-1$
+    public static final String PROP_MAVEN_HASH_MD5 = "maven.hash.md5"; //$NON-NLS-1$
+    public static final String PROP_MAVEN_HASH_SHA1 = "maven.hash.sha1"; //$NON-NLS-1$
     
 
 }
