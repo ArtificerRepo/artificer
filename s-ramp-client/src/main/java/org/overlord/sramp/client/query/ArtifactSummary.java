@@ -16,6 +16,8 @@
 package org.overlord.sramp.client.query;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -31,7 +33,7 @@ import org.overlord.sramp.common.SrampModelUtils;
  */
 public class ArtifactSummary {
 
-	private Entry entry;
+	private final Entry entry;
 	private BaseArtifactType artifact;
 
 	/**
@@ -122,4 +124,15 @@ public class ArtifactSummary {
 	        return null;
 	    }
 	}
+
+    public Map<String, String> getPropertiesByPrefix(String prefix) {
+        Map<String, String> result = new HashMap<String, String>();
+        if (artifact == null) {
+            artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
+        }
+        if (artifact != null) {
+            result = SrampModelUtils.getCustomPropertiesByPrefix(artifact, prefix);
+        }
+        return result;
+    }
 }
