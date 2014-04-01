@@ -217,6 +217,9 @@ public class ArtifactResource extends AbstractResource {
 			if (artifactType.isDerived()) {
 				throw new DerivedArtifactCreateException(artifactType.getArtifactType());
 			}
+			if (artifactType.isExtendedType()) {
+			    artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
+			}
 
 			List<InputPart> list = input.getParts();
 			// Expecting 2 parts

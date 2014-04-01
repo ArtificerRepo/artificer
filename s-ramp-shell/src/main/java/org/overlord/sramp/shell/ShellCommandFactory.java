@@ -63,6 +63,7 @@ import org.overlord.sramp.shell.commands.core.StatusCommand;
 import org.overlord.sramp.shell.commands.core.UpdateContentCommand;
 import org.overlord.sramp.shell.commands.core.UpdateMetaDataCommand;
 import org.overlord.sramp.shell.commands.core.UploadArtifactCommand;
+import org.overlord.sramp.shell.commands.maven.DeployCommand;
 import org.overlord.sramp.shell.commands.ontology.DeleteOntologyCommand;
 import org.overlord.sramp.shell.commands.ontology.GetOntologyCommand;
 import org.overlord.sramp.shell.commands.ontology.ListOntologiesCommand;
@@ -132,6 +133,9 @@ public class ShellCommandFactory {
 
         // Audit commands
         registry.put(new QName("audit", "showAuditTrail"), ShowAuditTrailCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+
+        // Maven commands
+        registry.put(new QName("maven", "deploy"), DeployCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 
 		discoverContributedCommands();
 	}
