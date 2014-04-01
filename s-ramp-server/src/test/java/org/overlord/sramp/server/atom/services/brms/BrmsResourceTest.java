@@ -164,6 +164,9 @@ public class BrmsResourceTest extends AbstractNoAuditingResourceTest {
                 //upload the asset using the uuid
                 @SuppressWarnings("deprecation")
                 ArtifactType artifactType = ArtifactType.fromFileExtension(asset.getMetadata().getFormat());
+                if (artifactType.isExtendedType()) {
+                    artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
+                }
                 BaseArtifactType baseArtifactType = artifactType.newArtifactInstance();
                 baseArtifactType.setName(fileName);
                 baseArtifactType.setUuid(uuid);
@@ -171,10 +174,12 @@ public class BrmsResourceTest extends AbstractNoAuditingResourceTest {
                 String path = "/s-ramp/" + artifactType.getModel() + "/" + artifactType.getType(); //$NON-NLS-1$ //$NON-NLS-2$
                 ClientRequest request5 = new ClientRequest(generateURL(path));
                 MultipartRelatedOutput output = new MultipartRelatedOutput();
-
+                
                 Entry atomEntry = new Entry();
                 MediaType mediaType = new MediaType("application", "atom+xml"); //$NON-NLS-1$ //$NON-NLS-2$
                 artifact = new Artifact();
+
+                System.out.println("Creating artifact of type: " + artifactType.getArtifactType().getTypeClass());
 
                 //get the right method call
                 String methodStr = "set" + artifactType.getArtifactType(); //$NON-NLS-1$
