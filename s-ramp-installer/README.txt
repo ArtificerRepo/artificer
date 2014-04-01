@@ -29,4 +29,26 @@ and then issuing:
 
 3. Installing S-RAMP to Tomcat-7.x
 ----------------------------------
-Not yet implementented.
+In the s-ramp-installer directory issue
+
+  mvn clean install -Ptest-install-tomcat7
+  
+This will download and configure a tomcat server in the target/apache-tomcat-<version>
+directory. You can start the server by going into the target/apache-tomcat-<version> directory
+and then issuing
+
+  ./bin/startup.sh
+
+4. Installing S-RAMP to Jetty-8.x
+----------------------------------
+In the s-ramp-installer directory issue
+
+  mvn clean install -Ptest-install-jetty8
+  
+This will download and configure a jetty server in the target/jetty-distribution-<version>
+directory. You can start the server by going into the target/jetty-distribution-<version> directory
+and then issuing
+
+  ./bin/jetty.sh start
+  
+  

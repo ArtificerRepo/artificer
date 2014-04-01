@@ -52,9 +52,6 @@
     <!-- Unpack the s-ramp installer into the temp directory -->
     <property name="s-ramp-distro.s-ramp-installer.dir" location="${s-ramp-distro.tempdir}/s-ramp-installer" />
     <unzip src="${s-ramp-distro.s-ramp-installer.jar}" dest="${s-ramp-distro.s-ramp-installer.dir}" overwrite="false" />
-    <chmod perm="a+x" dir="${s-ramp-distro.s-ramp-installer.dir}/apache-tomcat-${s-ramp-distro.tomcat.version}/bin">
-      <include name="*.sh"/>
-    </chmod>
   </target>
 
   <!-- Install into EAP 6.1 -->
@@ -138,6 +135,9 @@
     <echo message="########################################" />
     <unzip src="${s-ramp-distro.tomcat-7.zip}" dest="${s-ramp-distro.rootdir}" overwrite="false" />
     <property name="s-ramp-distro.choices.platform.tomcat-7.real-path" location="${s-ramp-distro.rootdir}/apache-tomcat-${s-ramp-distro.tomcat.version}" />
+  	<chmod perm="a+x" dir="${s-ramp-distro.s-ramp-installer.dir}/apache-tomcat-${s-ramp-distro.tomcat.version}/bin">
+  	   <include name="*.sh"/>
+  	</chmod>
   </target>
 
 
