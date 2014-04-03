@@ -15,7 +15,9 @@
  */
 package org.overlord.sramp.common;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
@@ -140,4 +142,24 @@ public class SrampModelUtils {
 	    ct = ct.toLowerCase();
 	    return ct.contains("text/") || ct.contains("application/xml"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
+
+    /**
+     * Gets the value of one of the s-ramp custom properties.
+     * 
+     * @param artifact
+     *            the s-ramp artifact
+     * @param prefix
+     *            the prefix of the properties searched
+     * @return the map of custom properties that start by the prefix
+     */
+    public static Map<String, String> getCustomPropertiesByPrefix(BaseArtifactType artifact, String prefix) {
+        Map<String, String> result = new HashMap<String, String>();
+        List<Property> properties = artifact.getProperty();
+        for (Property prop : properties) {
+            if (prop.getPropertyName().startsWith(prefix)) {
+                result.put(prop.getPropertyName(), prop.getPropertyValue());
+            }
+        }
+        return result;
+    }
 }

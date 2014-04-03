@@ -51,6 +51,7 @@ import org.overlord.sramp.shell.commands.archive.UploadArchiveCommand;
 import org.overlord.sramp.shell.commands.audit.ShowAuditTrailCommand;
 import org.overlord.sramp.shell.commands.core.ClassificationCommand;
 import org.overlord.sramp.shell.commands.core.ConnectCommand;
+import org.overlord.sramp.shell.commands.core.CreateArtifactCommand;
 import org.overlord.sramp.shell.commands.core.DeleteCommand;
 import org.overlord.sramp.shell.commands.core.DisconnectCommand;
 import org.overlord.sramp.shell.commands.core.GetContentCommand;
@@ -111,6 +112,7 @@ public class ShellCommandFactory {
 		registry.put(new QName("s-ramp", "showMetaData"), ShowMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 		registry.put(new QName("s-ramp", "refreshMetaData"), RefreshMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
         registry.put(new QName("s-ramp", "delete"), DeleteCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+       registry.put(new QName("s-ramp", "createArtifact"), CreateArtifactCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Archive commands
 		registry.put(new QName("archive", "new"), NewArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
