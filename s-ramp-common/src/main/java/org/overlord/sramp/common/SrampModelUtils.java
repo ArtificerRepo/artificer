@@ -144,12 +144,12 @@ public class SrampModelUtils {
 	}
 
     /**
-     * Gets the value of one of the s-ramp custom properties.
+     * Gets all properties with names that begin with the given prefix.  This is useful
+     * if the artifact has a number of custom properties that all start with a common
+     * domain specific prefix.
      * 
-     * @param artifact
-     *            the s-ramp artifact
-     * @param prefix
-     *            the prefix of the properties searched
+     * @param artifact the s-ramp artifact
+     * @param prefix the prefix of the properties searched
      * @return the map of custom properties that start by the prefix
      */
     public static Map<String, String> getCustomPropertiesByPrefix(BaseArtifactType artifact, String prefix) {

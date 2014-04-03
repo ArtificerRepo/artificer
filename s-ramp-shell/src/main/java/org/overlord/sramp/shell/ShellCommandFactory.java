@@ -112,7 +112,7 @@ public class ShellCommandFactory {
 		registry.put(new QName("s-ramp", "showMetaData"), ShowMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 		registry.put(new QName("s-ramp", "refreshMetaData"), RefreshMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
         registry.put(new QName("s-ramp", "delete"), DeleteCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-       registry.put(new QName("s-ramp", "createArtifact"), CreateArtifactCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("s-ramp", "create"), CreateArtifactCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Archive commands
 		registry.put(new QName("archive", "new"), NewArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
