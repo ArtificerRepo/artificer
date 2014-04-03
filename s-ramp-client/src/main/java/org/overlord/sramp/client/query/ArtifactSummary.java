@@ -125,6 +125,12 @@ public class ArtifactSummary {
 	    }
 	}
 
+	/**
+	 * Returns all custom properties included in the query result set that begin
+	 * with the given prefix.  Note that only properties which have been requested
+	 * via the "propertyName" parameter of the issueing query will be returned.
+	 * @param prefix
+	 */
     public Map<String, String> getPropertiesByPrefix(String prefix) {
         Map<String, String> result = new HashMap<String, String>();
         if (artifact == null) {
