@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package org.overlord.sramp.shell;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
@@ -33,35 +36,65 @@ import org.overlord.sramp.shell.commands.NoOpCommand;
  */
 public abstract class AbstractShellCommandReader implements ShellCommandReader {
 
-	private ShellContext context;
-	private ShellCommandFactory factory;
+	private final ShellContext context;
+	private final ShellCommandFactory factory;
+    private Map<String, String> properties;
 
 	/**
-	 * Constructor.
-	 * @param factory
-	 * @param context
-	 */
+     * Constructor.
+     *
+     * @param factory
+     *            the factory
+     * @param context
+     *            the context
+     */
 	public AbstractShellCommandReader(ShellCommandFactory factory, ShellContext context) {
 		this.factory = factory;
 		this.context = context;
 	}
 
+    /**
+     * Instantiates a new abstract shell command reader.
+     *
+     * @param factory
+     *            the factory
+     * @param context
+     *            the context
+     * @param properties
+     *            the properties
+     */
+    public AbstractShellCommandReader(ShellCommandFactory factory, ShellContext context,
+            Map<String, String> properties) {
+        this.factory = factory;
+        this.context = context;
+        this.properties = properties;
+    }
+
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommandReader#open()
-	 */
+     * Open.
+     *
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.ShellCommandReader#open()
+     */
 	@Override
 	public abstract void open() throws IOException;
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommandReader#read()
-	 */
+     * Read.
+     *
+     * @return the shell command
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.common.shell.ShellCommandReader#read()
+     */
 	@Override
 	public final ShellCommand read() throws Exception {
 		String line = readLine();
 		if (line == null) {
 			return null;
 		}
-
+        line = filterLine(line, properties);
 		Arguments arguments = new Arguments(line);
 		if (arguments.isEmpty()) {
 			return new NoOpCommand();
@@ -78,44 +111,85 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 		return command;
 	}
 
+    /**
+     * Filter the line using the properties attribute.
+     *
+     * @param line
+     *            the line
+     * @return the string
+     */
+    protected static String filterLine(String line, Map<String, String> properties) {
+        String filtered = line;
+        Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
+        Matcher matcher = pattern.matcher(line);
+        while (matcher.find()) {
+            String match = matcher.group();
+            String key = match.substring(2, match.length() - 1);
+            if (properties.containsKey(key)) {
+                filtered = filtered.replace(match, properties.get(key));
+            } else if (System.getProperties().containsKey(key)) {
+                filtered = filtered.replace(match, (String) System.getProperties().get(key));
+            }
+        }
+
+        return filtered;
+    }
+
 	/**
-	 * Gets the output stream that should be used by commands when they need
-	 * to print a message to the console.
-	 */
+     * Gets the output stream that should be used by commands when they need to
+     * print a message to the console.
+     *
+     * @return the command output
+     */
 	protected Writer getCommandOutput() {
 		return new OutputStreamWriter(System.out);
 	}
 
 	/**
-	 * Reads a single line from the input source (e.g. user input) and returns it.
-	 * @throws IOException
-	 */
+     * Reads a single line from the input source (e.g. user input) and returns
+     * it.
+     *
+     * @return the string
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     */
 	protected abstract String readLine() throws IOException;
 
 	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommandReader#close()
-	 */
+     * Close.
+     *
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.ShellCommandReader#close()
+     */
 	@Override
 	public void close() throws IOException {
 	}
 
 	/**
-	 * @return the factory
-	 */
+     * Gets the factory.
+     *
+     * @return the factory
+     */
 	public ShellCommandFactory getFactory() {
 		return factory;
 	}
 
 	/**
-	 * @return the context
-	 */
+     * Gets the context.
+     *
+     * @return the context
+     */
 	public ShellContext getContext() {
 		return context;
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.ShellCommandReader#isBatch()
-	 */
+     * Checks if is batch.
+     *
+     * @return true, if is batch
+     * @see org.overlord.sramp.shell.ShellCommandReader#isBatch()
+     */
 	@Override
 	public boolean isBatch() {
 	    return false;

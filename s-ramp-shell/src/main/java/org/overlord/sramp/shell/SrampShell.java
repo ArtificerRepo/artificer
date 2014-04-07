@@ -71,8 +71,8 @@ public class SrampShell {
 		}
 	}
 
-	private ShellCommandFactory factory = new ShellCommandFactory();
-	private ShellContextImpl context = new ShellContextImpl();
+	private final ShellCommandFactory factory = new ShellCommandFactory();
+	private final ShellContextImpl context = new ShellContextImpl();
 	private ShellCommandReader reader;
 
 	/**
@@ -87,7 +87,9 @@ public class SrampShell {
 	 * @throws Exception
 	 */
 	public void run(String[] args) throws Exception {
-		reader = createCommandReader(args);
+        reader = ShellCommandReaderFactory.createCommandReader(args, factory, context);
+        context.setReader(reader);
+        reader.open();
 		displayWelcomeMessage();
 		boolean done = false;
 		while (!done) {
@@ -116,35 +118,6 @@ public class SrampShell {
 				    System.exit(1);
 			}
 		}
-	}
-
-	/**
-	 * Creates an appropriate {@link ShellCommandReader} based on the command line
-	 * arguments and the current runtime environment.
-	 * @param args
-	 * @throws IOException
-	 */
-	protected ShellCommandReader createCommandReader(String[] args) throws IOException {
-		ShellCommandReader commandReader = null;
-		if (args.length >= 2 && "-f".equals(args[0])) { //$NON-NLS-1$
-			String filePath = args[1];
-			commandReader = new FileShellCommandReader(factory, context, filePath);
-		} else if (args.length == 1 && "-simple".equals(args[0])) { //$NON-NLS-1$
-			if (System.console() != null) {
-				commandReader = new ConsoleShellCommandReader(factory, context);
-			} else {
-				commandReader = new StdInShellCommandReader(factory, context);
-			}
-		} else {
-			if (System.console() != null) {
-				commandReader = new InteractiveShellCommandReader(factory, context);
-			} else {
-				commandReader = new StdInShellCommandReader(factory, context);
-			}
-		}
-		context.setReader(commandReader);
-		commandReader.open();
-		return commandReader;
 	}
 
 	/**
