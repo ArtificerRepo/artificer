@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -34,23 +35,49 @@ import org.overlord.sramp.shell.i18n.Messages;
  */
 public class FileShellCommandReader extends AbstractShellCommandReader {
 
-	private String filePath;
+	private final String filePath;
 	private BufferedReader fileReader;
 
-	/**
-	 * Constructor.
-	 * @param factory
-	 * @param context
-	 * @param filePath
-	 */
+	    /**
+     * Constructor.
+     *
+     * @param factory
+     *            the factory
+     * @param context
+     *            the context
+     * @param filePath
+     *            the file path
+     */
 	public FileShellCommandReader(ShellCommandFactory factory, ShellContextImpl context, String filePath) {
 		super(factory, context);
 		this.filePath = filePath;
 	}
 
-	/**
-	 * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#open()
-	 */
+    /**
+     * Instantiates a new file shell command reader.
+     *
+     * @param factory
+     *            the factory
+     * @param context
+     *            the context
+     * @param filePath
+     *            the file path
+     * @param properties
+     *            the properties
+     */
+    public FileShellCommandReader(ShellCommandFactory factory, ShellContextImpl context, String filePath,
+            Map<String, String> properties) {
+        super(factory, context, properties);
+        this.filePath = filePath;
+    }
+
+	    /**
+     * Open.
+     *
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#open()
+     */
 	@Override
 	public void open() throws IOException {
 		File file = new File(filePath);
@@ -60,9 +87,14 @@ public class FileShellCommandReader extends AbstractShellCommandReader {
 		this.fileReader = new BufferedReader(new InputStreamReader(FileUtils.openInputStream(file)));
 	}
 
-	/**
-	 * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#readLine()
-	 */
+	    /**
+     * Read line.
+     *
+     * @return the string
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#readLine()
+     */
 	@Override
 	protected String readLine() throws IOException {
 	    String line = null;
@@ -74,25 +106,37 @@ public class FileShellCommandReader extends AbstractShellCommandReader {
 	    return line;
 	}
 
-	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommandReader#close()
-	 */
+	    /**
+     * Close.
+     *
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.ShellCommandReader#close()
+     */
 	@Override
 	public void close() throws IOException {
 		IOUtils.closeQuietly(fileReader);
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.ShellCommandReader#isBatch()
-	 */
+	    /**
+     * Checks if is batch.
+     *
+     * @return true, if is batch
+     * @see org.overlord.sramp.shell.ShellCommandReader#isBatch()
+     */
 	@Override
 	public boolean isBatch() {
 	    return true;
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
-	 */
+	    /**
+     * Prompt for input.
+     *
+     * @param prompt
+     *            the prompt
+     * @return the string
+     * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
+     */
 	@Override
 	public String promptForInput(String prompt) {
         Console console = System.console();
@@ -103,9 +147,14 @@ public class FileShellCommandReader extends AbstractShellCommandReader {
         }
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
-	 */
+	    /**
+     * Prompt for password.
+     *
+     * @param prompt
+     *            the prompt
+     * @return the string
+     * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
+     */
 	@Override
 	public String promptForPassword(String prompt) {
         Console console = System.console();

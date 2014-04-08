@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@ package org.overlord.sramp.shell;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Map;
 
+// TODO: Auto-generated Javadoc
 /**
  * An implementation of the {@link ShellCommandReader} that uses standard input
  * to read commands typed in by the user.
@@ -29,26 +31,53 @@ public class StdInShellCommandReader extends AbstractShellCommandReader {
 
 	private BufferedReader stdinReader;
 
-	/**
-	 * Constructor.
-	 * @param factory
-	 * @param context
-	 */
+	    /**
+     * Constructor.
+     *
+     * @param factory
+     *            the factory
+     * @param context
+     *            the context
+     */
 	public StdInShellCommandReader(ShellCommandFactory factory, ShellContextImpl context) {
 		super(factory, context);
 	}
 
-	/**
-	 * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#open()
-	 */
+    /**
+     * Instantiates a new std in shell command reader.
+     *
+     * @param factory
+     *            the factory
+     * @param context
+     *            the context
+     * @param properties
+     *            the properties
+     */
+    public StdInShellCommandReader(ShellCommandFactory factory, ShellContextImpl context,
+            Map<String, String> properties) {
+        super(factory, context, properties);
+    }
+
+	    /**
+     * Open.
+     *
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#open()
+     */
 	@Override
 	public void open() throws IOException {
 		stdinReader = new BufferedReader(new InputStreamReader(System.in));
 	}
 
-	/**
-	 * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#readLine()
-	 */
+	    /**
+     * Read line.
+     *
+     * @return the string
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#readLine()
+     */
 	@Override
 	protected String readLine() throws IOException {
 		if (!stdinReader.ready()) {
@@ -57,16 +86,25 @@ public class StdInShellCommandReader extends AbstractShellCommandReader {
 		return stdinReader.readLine();
 	}
 
-	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommandReader#close()
-	 */
+	    /**
+     * Close.
+     *
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.ShellCommandReader#close()
+     */
 	@Override
 	public void close() throws IOException {
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
-	 */
+	    /**
+     * Prompt for input.
+     *
+     * @param prompt
+     *            the prompt
+     * @return the string
+     * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
+     */
 	@Override
 	public String promptForInput(String prompt) {
         try {
@@ -79,9 +117,14 @@ public class StdInShellCommandReader extends AbstractShellCommandReader {
         }
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
-	 */
+	    /**
+     * Prompt for password.
+     *
+     * @param prompt
+     *            the prompt
+     * @return the string
+     * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
+     */
 	@Override
 	public String promptForPassword(String prompt) {
 	    // stdin doesn't support reading passwords

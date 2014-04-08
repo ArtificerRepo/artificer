@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.overlord.sramp.shell;
 
 import java.io.Console;
 import java.io.IOException;
+import java.util.Map;
 
 import org.overlord.sramp.shell.api.ShellContext;
 
@@ -31,51 +32,93 @@ public class ConsoleShellCommandReader extends AbstractShellCommandReader {
 
 	private Console console;
 
-	/**
-	 * Constructor.
-	 * @param factory
-	 * @param context
-	 */
+	    /**
+     * Constructor.
+     *
+     * @param factory
+     *            the factory
+     * @param context
+     *            the context
+     */
 	public ConsoleShellCommandReader(ShellCommandFactory factory, ShellContext context) {
 		super(factory, context);
 	}
 
+
+    /**
+     * Instantiates a new console shell command reader.
+     *
+     * @param factory
+     *            the factory
+     * @param context
+     *            the context
+     * @param properties
+     *            the properties
+     */
+    public ConsoleShellCommandReader(ShellCommandFactory factory, ShellContext context,
+            Map<String, String> properties) {
+        super(factory, context);
+    }
+
 	/**
-	 * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#open()
-	 */
+     * Open.
+     *
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#open()
+     */
 	@Override
 	public void open() throws IOException {
 		this.console = System.console();
 	}
 
-	/**
-	 * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#readLine()
-	 */
+	    /**
+     * Read line.
+     *
+     * @return the string
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.AbstractShellCommandReader#readLine()
+     */
 	@Override
 	protected String readLine() throws IOException {
 		return console.readLine("s-ramp> "); //$NON-NLS-1$
 	}
 
-	/**
-	 * @see org.overlord.sramp.common.shell.ShellCommandReader#close()
-	 */
+	    /**
+     * Close.
+     *
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @see org.overlord.sramp.common.shell.ShellCommandReader#close()
+     */
 	@Override
 	public void close() throws IOException {
 		console.flush();
 		console = null;
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
-	 */
+	    /**
+     * Prompt for input.
+     *
+     * @param prompt
+     *            the prompt
+     * @return the string
+     * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
+     */
 	@Override
 	public String promptForInput(String prompt) {
 	    return console.readLine(prompt);
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
-	 */
+	    /**
+     * Prompt for password.
+     *
+     * @param prompt
+     *            the prompt
+     * @return the string
+     * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
+     */
 	@Override
 	public String promptForPassword(String prompt) {
 	    return new String(console.readPassword(prompt));
