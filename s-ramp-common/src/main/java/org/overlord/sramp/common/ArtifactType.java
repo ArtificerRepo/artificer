@@ -34,6 +34,21 @@ import org.overlord.sramp.common.i18n.Messages;
  */
 public class ArtifactType {
 
+    /**
+     * Returns true if the given artifact type is valid.  It must be alphanumeric only.
+     * @param artifactType the artifact type
+     * @return true if valid
+     */
+    public static final boolean isValid(String artifactType) {
+        for (int i = 0; i < artifactType.length(); i++) {
+            char c = artifactType.charAt(i);
+            if (!(Character.isLetter(c) || Character.isDigit(c))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public static final ArtifactType Document() {
         return new ArtifactType(ArtifactTypeEnum.Document, "application/octet-stream"); //$NON-NLS-1$
     }
@@ -383,10 +398,20 @@ public class ArtifactType {
                 .getType(), getMimeType());
     }
 
+    /**
+     * Sets the extended type.
+     * @param extendedType
+     */
     public void setExtendedType(String extendedType) {
+        if (!isValid(extendedType)) {
+            throw new RuntimeException(Messages.i18n.format("ArtifactType.InvalidExtendedType", extendedType));
+        }
         this.extendedType = extendedType;
     }
 
+    /**
+     * Gets the extended artifact type.
+     */
     public String getExtendedType() {
         return extendedType;
     }
