@@ -34,20 +34,19 @@ public class AbstractShellCommandReaderTest {
      */
     @Test
     public void filterLine() {
-        String line="maven:deploy ${dtgov-workflow-jar} ${dt-workflows-groupId}:1.2.1-SNAPSHOT KieJarArchive";
-        Map<String, String> properties=new HashMap<String, String>();
+        String line = "maven:deploy ${dtgov-workflow-jar} ${dt-workflows-groupId}:1.2.1-SNAPSHOT KieJarArchive";
+        Map<String, String> properties = new HashMap<String, String>();
         properties.put("dtgov-workflow-jar", "/home/test/dtgov-workflows.jar");
         properties.put("dt-workflows-groupId", "org.overlord.dtgov:dtgov-workflows");
         String filtered = AbstractShellCommandReader.filterLine(line, properties);
-        Assert.assertTrue(!filtered.contains("${"));
-        // Tested the filter by Map of properties
+        Assert.assertEquals("maven:deploy /home/test/dtgov-workflows.jar org.overlord.dtgov:dtgov-workflows:1.2.1-SNAPSHOT KieJarArchive", filtered);
 
         line = "maven:deploy ${dtgov-workflow-jar} ${dt-workflows-groupId}:1.2.1-SNAPSHOT KieJarArchive";
         properties.clear();
         System.setProperty("dtgov-workflow-jar", "/home/test/dtgov-workflows.jar");
         System.setProperty("dt-workflows-groupId", "org.overlord.dtgov:dtgov-workflows");
         filtered = AbstractShellCommandReader.filterLine(line, properties);
-        Assert.assertTrue(!filtered.contains("${"));
+        Assert.assertEquals("maven:deploy /home/test/dtgov-workflows.jar org.overlord.dtgov:dtgov-workflows:1.2.1-SNAPSHOT KieJarArchive", filtered);
     }
 
 }

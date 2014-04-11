@@ -114,7 +114,7 @@
   "import-dialog.cancel" : "Cancel",
   "import-dialog.change" : "Change",
   "import-dialog.dialog.import.message" : "Choose a file to upload (may be a simple file or an S-RAMP package).",
-  "import-dialog.dialog.import.message-2" : " Choose the artifact type (optional - only specify for custom artifact types - if ommitted, the server will do its best to guess the type). ",
+  "import-dialog.dialog.import.message-2" : " Choose a custom (alphanumerical) artifact type.  OPTIONAL: only specify for custom artifact types - if ommitted, the server will do its best to guess the type. ",
   "import-dialog.dialog.import.title" : "Import Artifact(s)",
   "import-dialog.import" : "Import",
   "import-dialog.remove" : "Remove",
