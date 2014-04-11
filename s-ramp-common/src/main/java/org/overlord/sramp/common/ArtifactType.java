@@ -403,7 +403,7 @@ public class ArtifactType {
      * @param extendedType
      */
     public void setExtendedType(String extendedType) {
-        if (!isValid(extendedType)) {
+        if (extendedType != null && !isValid(extendedType)) {
             throw new RuntimeException(Messages.i18n.format("ArtifactType.InvalidExtendedType", extendedType));
         }
         this.extendedType = extendedType;
