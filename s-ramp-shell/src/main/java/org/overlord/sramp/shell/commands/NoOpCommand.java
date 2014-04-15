@@ -52,4 +52,8 @@ public class NoOpCommand extends BuiltInShellCommand {
         return true;
 	}
 
+    @Override
+    public String getName() {
+        return null;
+    }
 }

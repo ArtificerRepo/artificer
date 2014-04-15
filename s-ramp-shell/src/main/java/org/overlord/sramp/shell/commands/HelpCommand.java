@@ -15,15 +15,23 @@
  */
 package org.overlord.sramp.shell.commands;
 
-import java.util.Collection;
-import java.util.List;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.lang.StringUtils;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.completer.OptionCompleter;
+import org.jboss.aesh.console.command.CommandResult;
+import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.SrampCommandInvocation;
 import org.overlord.sramp.shell.api.ShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
 
@@ -32,152 +40,260 @@ import org.overlord.sramp.shell.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
+@CommandDefinition(name = ShellCommandConstants.Sramp.COMMAND_HELP, description = "Exit from the shell")
 public class HelpCommand extends BuiltInShellCommand {
 
-	private Map<QName, Class<? extends ShellCommand>> commands;
+    private Map<QName, Class<? extends ShellCommand>> _commands;
 
-	/**
-	 * Constructor.
-	 * @param commands
-	 */
-	public HelpCommand(Map<QName, Class<? extends ShellCommand>> commands) {
-		this.commands = commands;
-	}
+    @Option(required = false, name = "namespace", hasValue = true, shortName = 'n', completer = NamespaceCompleter.class)
+    private String _namespace;
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
-	@Override
-	public void printUsage() {
-	}
+    @Option(required = false, name = "commandName", hasValue = true, shortName = 'c', completer = CommandNameCompleter.class)
+    private String _commandName;
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
-	@Override
-	public void printHelp() {
-	}
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
-	@Override
-	public boolean execute() throws Exception {
-		String namespaceOrCmdName = optionalArgument(0);
-		if (namespaceOrCmdName == null) {
-			printHelpAll();
-		} else {
-			int colonIdx = namespaceOrCmdName.indexOf(':');
-			if (colonIdx == -1) {
-				printHelpForNamespace(namespaceOrCmdName);
-			} else {
-				String ns = namespaceOrCmdName.substring(0, colonIdx);
-				String localPart = namespaceOrCmdName.substring(colonIdx + 1);
-				QName cmdName = new QName(ns, localPart);
-				printHelpForCommand(cmdName);
-			}
-		}
+    /**
+     * Constructor.
+     */
+    public HelpCommand() {
+    }
+
+    @Override
+    public CommandResult execute(SrampCommandInvocation commandInvocation) throws IOException {
+        _commands = commandInvocation.getFactory().getCommands();
+        return super.execute(commandInvocation);
+    }
+    /**
+     * Constructor.
+     *
+     * @param commands
+     */
+    public HelpCommand(Map<QName, Class<? extends ShellCommand>> commands) {
+        this._commands = commands;
+    }
+
+
+    /**
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
+     */
+    @Override
+    public void printUsage() {
+    }
+
+    /**
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
+     */
+    @Override
+    public void printHelp() {
+    }
+
+    /**
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
+    @Override
+    public boolean execute() throws Exception {
+        super.execute();
+        if (StringUtils.isBlank(_namespace) && StringUtils.isBlank(_commandName)) {
+            printHelpAll();
+        } else if (StringUtils.isBlank(_commandName)) {
+            printHelpForNamespace();
+        } else {
+            printHelpForCommand();
+        }
+
         return true;
-	}
+    }
 
-	/**
-	 * Prints the generic help (lists all commands, etc).
-	 */
-	private void printHelpAll() {
-		print(Messages.i18n.format("Help.COMMAND_LIST_MSG")); //$NON-NLS-1$
-		String currentNamespace = null;
-		int colCount = 0;
-		StringBuilder builder = new StringBuilder();
-		for (Entry<QName,Class<? extends ShellCommand>> entry : this.commands.entrySet()) {
-			QName cmdName = entry.getKey();
-			String namespace = cmdName.getNamespaceURI();
-			String name = cmdName.getLocalPart();
-			if (!namespace.equals(currentNamespace)) {
-				builder.append(String.format("\n\nNamespace: %1$s\n-----------------------\n", namespace)); //$NON-NLS-1$
-				currentNamespace = namespace;
-				builder.append(String.format("  %1$-18s", name)); //$NON-NLS-1$
-				colCount = 0;
-			} else {
-				builder.append(String.format("%1$-18s", name)); //$NON-NLS-1$
-				colCount++;
-			}
-			if (colCount == 3) {
-				builder.append("\n  "); //$NON-NLS-1$
-				colCount = 0;
-			}
-		}
-		print(builder.toString());
-		print("\n"); //$NON-NLS-1$
-		print(Messages.i18n.format("Help.GET_HELP_1")); //$NON-NLS-1$
-		print(""); //$NON-NLS-1$
-		print(Messages.i18n.format("Help.GET_HELP_2")); //$NON-NLS-1$
-		print(""); //$NON-NLS-1$
-	}
+    /**
+     * Prints the generic help (lists all commands, etc).
+     */
+    private void printHelpAll() {
+        print(Messages.i18n.format("Help.COMMAND_LIST_MSG")); //$NON-NLS-1$
+        String currentNamespace = null;
+        int colCount = 0;
+        StringBuilder builder = new StringBuilder();
+        for (Entry<QName, Class<? extends ShellCommand>> entry : this._commands.entrySet()) {
+            QName cmdName = entry.getKey();
+            String namespace = cmdName.getNamespaceURI();
+            String name = cmdName.getLocalPart();
+            if (!namespace.equals(currentNamespace)) {
+                builder.append(String.format("\n\nNamespace: %1$s\n-----------------------\n", namespace)); //$NON-NLS-1$
+                currentNamespace = namespace;
+                builder.append(String.format("  %1$-18s", name)); //$NON-NLS-1$
+                colCount = 0;
+            } else {
+                builder.append(String.format("%1$-18s", name)); //$NON-NLS-1$
+                colCount++;
+            }
+            if (colCount == 3) {
+                builder.append("\n  "); //$NON-NLS-1$
+                colCount = 0;
+            }
+        }
+        print(builder.toString());
+        print("\n"); //$NON-NLS-1$
+        print(Messages.i18n.format("Help.GET_HELP_1")); //$NON-NLS-1$
+        print(""); //$NON-NLS-1$
+        print(Messages.i18n.format("Help.GET_HELP_2")); //$NON-NLS-1$
+        print(""); //$NON-NLS-1$
+    }
 
-	/**
-	 * Prints the help for a single namespace.
-	 * @param namespace
-	 */
-	private void printHelpForNamespace(String namespace) {
-		print(Messages.i18n.format("Help.COMMAND_LIST_MSG_2", namespace)); //$NON-NLS-1$
-		for (Entry<QName,Class<? extends ShellCommand>> entry : this.commands.entrySet()) {
-			QName cmdName = entry.getKey();
-			String ns = cmdName.getNamespaceURI();
-			String name = cmdName.getLocalPart();
-			if (ns.equals(namespace)) {
-				print("   " + name); //$NON-NLS-1$
-			}
-		}
-		print(""); //$NON-NLS-1$
-		print(Messages.i18n.format("Help.HELP_PER_CMD_MSG")); //$NON-NLS-1$
-	}
+    /**
+     * Prints the help for a single namespace.
+     * 
+     * @param _namespace
+     */
+    private void printHelpForNamespace() {
+        print(Messages.i18n.format("Help.COMMAND_LIST_MSG_2", _namespace)); //$NON-NLS-1$
+        for (Entry<QName, Class<? extends ShellCommand>> entry : this._commands.entrySet()) {
+            QName cmdName = entry.getKey();
+            String ns = cmdName.getNamespaceURI();
+            String name = cmdName.getLocalPart();
+            if (ns.equals(_namespace)) {
+                print("   " + name); //$NON-NLS-1$
+            }
+        }
+        print(""); //$NON-NLS-1$
+        print(Messages.i18n.format("Help.HELP_PER_CMD_MSG")); //$NON-NLS-1$
+    }
 
-	/**
-	 * Prints the help for a single command.
-	 * @param cmdName
-	 * @throws Exception
-	 */
-	private void printHelpForCommand(QName cmdName) throws Exception {
-		Class<? extends ShellCommand> commandClass = this.commands.get(cmdName);
-		if (commandClass == null) {
-			print(Messages.i18n.format("Help.INVALID_COMMAND")); //$NON-NLS-1$
-		} else {
-			ShellCommand command = commandClass.newInstance();
-			print(Messages.i18n.format("Help.USAGE")); //$NON-NLS-1$
-			command.printUsage();
-			print(""); //$NON-NLS-1$
-			command.printHelp();
-			print(""); //$NON-NLS-1$
-		}
-	}
+    /**
+     * Prints the help for a single command.
+     *
+     * @param cmdName
+     * @throws Exception
+     */
+    private void printHelpForCommand() throws Exception {
+        if (getCommandInvocation() == null) {
+            QName cmdName = new QName(_namespace, _commandName);
+            Class<? extends ShellCommand> commandClass = this._commands.get(cmdName);
+            if (commandClass == null) {
+                print(Messages.i18n.format("Help.INVALID_COMMAND")); //$NON-NLS-1$
+            } else {
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty()) {
-			for (String candidate : generateHelpCandidates()) {
-				if (lastArgument == null || candidate.startsWith(lastArgument)) {
-					candidates.add(candidate);
-				}
-			}
-			return 0;
-		} else {
-			return -1;
-		}
-	}
+                ShellCommand command = commandClass.newInstance();
+                print(Messages.i18n.format("Help.USAGE")); //$NON-NLS-1$
+                command.printUsage();
+                print(""); //$NON-NLS-1$
+                command.printHelp();
+                print(""); //$NON-NLS-1$
+            }
+        } else {
+            if (getCommandInvocation().getCommandRegistry().getCommand(
+                    _namespace + ShellCommandConstants.SEPARATOR + _commandName, null) != null) {
 
-	/**
-	 * @return a collection of all possible command names
-	 */
-	private Collection<String> generateHelpCandidates() {
-		TreeSet<String> candidates = new TreeSet<String>();
-		for (QName key : this.commands.keySet()) {
-			String candidate = key.getNamespaceURI() + ":" + key.getLocalPart(); //$NON-NLS-1$
-			candidates.add(candidate);
-		}
-		return candidates;
-	}
+                super.getShell()
+                        .out()
+                        .println(
+                                getCommandInvocation().getHelpInfo(
+                                        _namespace + ShellCommandConstants.SEPARATOR + _commandName));
+            }
+
+        }
+    }
+
+
+
+    /**
+     * @return a collection of all possible namespace names
+     */
+    private Set<String> generateNamespaceCandidates(String givenValue) {
+        TreeSet<String> candidates = new TreeSet<String>();
+        for (QName key : this._commands.keySet()) {
+            if (key.getNamespaceURI().startsWith(givenValue)) {
+                String candidate = key.getNamespaceURI() + ":" + key.getLocalPart(); //$NON-NLS-1$
+                candidates.add(candidate);
+            }
+        }
+        return candidates;
+    }
+
+    /**
+     * @return a collection of all possible command names
+     */
+    private Set<String> generateCommandNamesCandidates(String namespace, String givenValue) {
+        TreeSet<String> candidates = new TreeSet<String>();
+        for (QName key : this._commands.keySet()) {
+            if (StringUtils.isBlank(namespace)) {
+                if (key.getLocalPart().startsWith(givenValue)) {
+                    String candidate = key.getLocalPart(); //$NON-NLS-1$
+                    candidates.add(candidate);
+                }
+            } else {
+                if (key.getLocalPart().startsWith(givenValue) && namespace.equals(key.getNamespaceURI())) {
+                    candidates.add(key.getLocalPart());
+                }
+            }
+
+        }
+        return candidates;
+    }
+
+    protected class NamespaceCompleter implements OptionCompleter<CompleterInvocation> {
+
+        @Override
+        public void complete(CompleterInvocation completerInvocation) {
+            Set<String> candidates = generateNamespaceCandidates(completerInvocation.getGivenCompleteValue());
+
+            for (String candidate : candidates) {
+                completerInvocation.addCompleterValue(candidate);
+            }
+        }
+
+    }
+
+    protected class CommandNameCompleter implements OptionCompleter<CompleterInvocation> {
+
+        @Override
+        public void complete(CompleterInvocation completerInvocation) {
+            Set<String> candidates = generateCommandNamesCandidates(_namespace,
+                    completerInvocation.getGivenCompleteValue());
+
+            for (String candidate : candidates) {
+                completerInvocation.addCompleterValue(candidate);
+            }
+        }
+
+    }
+
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.COMMAND_HELP;
+    }
+
+    public Map<QName, Class<? extends ShellCommand>> getCommands() {
+        return _commands;
+    }
+
+    public void setCommands(Map<QName, Class<? extends ShellCommand>> commands) {
+        this._commands = commands;
+    }
+
+    public String getNamespace() {
+        return _namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this._namespace = namespace;
+    }
+
+    public String getCommandName() {
+        return _commandName;
+    }
+
+    public void setCommandName(String commandName) {
+        this._commandName = commandName;
+    }
+
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
 
 }

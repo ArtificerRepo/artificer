@@ -18,12 +18,15 @@ package org.overlord.sramp.shell.api;
 import java.io.Writer;
 import java.util.List;
 
+import org.jboss.aesh.console.command.Command;
+import org.jboss.aesh.console.command.invocation.CommandInvocation;
+
 /**
  * Interface implemented by all shell commands.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface ShellCommand {
+public interface ShellCommand<T extends CommandInvocation> extends Command<T> {
 
 	/**
 	 * Sets the arguments that can be used by this command.

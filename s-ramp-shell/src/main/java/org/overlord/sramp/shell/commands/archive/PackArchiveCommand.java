@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,52 +17,109 @@ package org.overlord.sramp.shell.commands.archive;
 
 import java.io.File;
 
-import javax.xml.namespace.QName;
-
 import org.apache.commons.io.FileUtils;
-import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.completer.FileOptionCompleter;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Removes an entry from the current S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class PackArchiveCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Archive.ARCHIVE_COMMAND_PACK, description = "Adds an entry to the current S-RAMP batch archive.")
+public class PackArchiveCommand extends AbstractArchiveShellCommand {
 
-	/**
-	 * Constructor.
-	 */
+    @Option(required = true, hasValue = true, name = "outputFile", shortName = 'f', completer = FileOptionCompleter.class)
+    private File _outputFile;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
+
+    /**
+     * Constructor.
+     */
 	public PackArchiveCommand() {
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+	    /**
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		String outputLocationArg = requiredArgument(0, Messages.i18n.format("PackArchive.InvalidArgMsg.OutputLocation")); //$NON-NLS-1$
-
-		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
-
+        super.execute();
 		if (archive == null) {
 			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
             return false;
 		} else {
-			File outputFile = new File(outputLocationArg);
-			if (outputFile.exists()) {
+			if (_outputFile.exists()) {
 				print(Messages.i18n.format("PackArchive.OutputLocAlreadyExists")); //$NON-NLS-1$
 			}
-			if (!outputFile.getParentFile().exists()) {
-				outputFile.mkdirs();
+            if (_outputFile.getParentFile() != null && !_outputFile.getParentFile().exists()) {
+                _outputFile.getParentFile().mkdirs();
 			}
 			File packedFile = archive.pack();
-			FileUtils.copyFile(packedFile, outputFile);
-			print(Messages.i18n.format("PackArchive.Packaged", outputFile.getCanonicalPath())); //$NON-NLS-1$
+			FileUtils.copyFile(packedFile, _outputFile);
+			print(Messages.i18n.format("PackArchive.Packaged", _outputFile.getCanonicalPath())); //$NON-NLS-1$
 		}
         return true;
 	}
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Archive.ARCHIVE_COMMAND_PACK;
+    }
+
+    /**
+     * Gets the output file.
+     *
+     * @return the output file
+     */
+    public File getOutputFile() {
+        return _outputFile;
+    }
+
+    /**
+     * Sets the output file.
+     *
+     * @param outputFile
+     *            the new output file
+     */
+    public void setOutputFile(File outputFile) {
+        this._outputFile = outputFile;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
 
 }

@@ -16,6 +16,7 @@
   <modules>
     <module>s-ramp-distro-fuse61</module>
     <module>s-ramp-distro-shell</module>
+    <module>s-ramp-distro-shell-jline</module>
     <module>s-ramp-distro-assembly</module>
     <module>s-ramp-distro-assembly-cli</module>
     <module>s-ramp-distro-assembly-demos</module>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,28 @@
 package org.overlord.sramp.shell.commands.archive;
 
 import java.io.File;
-import java.util.List;
 
-import javax.xml.namespace.QName;
-
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.completer.FileOptionCompleter;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.shell.AbstractShellContextVariableLifecycleHandler;
-import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
-import org.overlord.sramp.shell.util.FileNameCompleter;
 
 /**
  * Opens an existing S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class OpenArchiveCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Archive.ARCHIVE_COMMAND_OPEN, description = "Opens an existing S-RAMP batch archive.")
+public class OpenArchiveCommand extends AbstractArchiveShellCommand {
+
+    @Option(required = true, hasValue = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class)
+    private File _file;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 
 	/**
 	 * Constructor.
@@ -39,24 +45,24 @@ public class OpenArchiveCommand extends BuiltInShellCommand {
 	public OpenArchiveCommand() {
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+	    /**
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		String pathToArchive = requiredArgument(0, Messages.i18n.format("OpenArchive.InvalidArgMsg.PathToArchive")); //$NON-NLS-1$
+        super.execute();
 
-		SrampArchive archive = null;
-		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
-		archive = (SrampArchive) getContext().getVariable(varName);
 		if (archive != null) {
 			print(Messages.i18n.format("OpenArchive.AlreadyOpen")); //$NON-NLS-1$
 			return false;
 		}
 
-		File archiveFile = new File(pathToArchive);
-
-		archive = new SrampArchive(archiveFile);
+        archive = new SrampArchive(_file);
 		getContext().setVariable(varName, archive, new AbstractShellContextVariableLifecycleHandler() {
 			@Override
 			public void onRemove(Object object) {
@@ -67,22 +73,59 @@ public class OpenArchiveCommand extends BuiltInShellCommand {
 				SrampArchive.closeQuietly((SrampArchive) object);
 			}
 		});
-		print(Messages.i18n.format("OpenArchive.Opened", archiveFile.getCanonicalPath())); //$NON-NLS-1$
+        print(Messages.i18n.format("OpenArchive.Opened", _file.getCanonicalPath())); //$NON-NLS-1$
         return true;
 	}
 
     /**
-     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+     * Gets the name.
+     *
+     * @return the name
+     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String,
+     *      java.util.List)
      */
     @Override
-    public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-        if (getArguments().isEmpty()) {
-            if (lastArgument == null)
-                lastArgument = ""; //$NON-NLS-1$
-            FileNameCompleter delegate = new FileNameCompleter();
-            return delegate.complete(lastArgument, lastArgument.length(), candidates);
-        }
-        return -1;
+    public String getName() {
+        return ShellCommandConstants.Archive.ARCHIVE_COMMAND_OPEN;
+    }
+
+    /**
+     * Gets the file.
+     *
+     * @return the file
+     */
+    public File getFile() {
+        return _file;
+    }
+
+    /**
+     * Sets the file.
+     *
+     * @param file
+     *            the new file
+     */
+    public void setFile(File file) {
+        this._file = file;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
     }
 
 }
