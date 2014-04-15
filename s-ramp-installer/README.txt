@@ -1,13 +1,13 @@
 
-1. Installing S-RAMP to JBoss EAP-6.1
+1. Installing S-RAMP to JBoss EAP-6.x
 -------------------------------------
-Download the jbosseap-6.1.0.zip into the s-ramp-installer directory. Then in the same
+Download the jbosseap-6.x.0.zip into the s-ramp-installer directory. Then in the same
 directory issue:
 
-  mvn clean install -Peap61
+  mvn clean install -Peap6x
 
-This will create a fully configured application server in the target/jbosseap-6.1 directory.
-You can start the server by going into the target/jboss-eap-6.1 directory and by issuing:
+This will create a fully configured application server in the target/jbosseap-6.x directory.
+You can start the server by going into the target/jboss-eap-6.x directory and by issuing:
 
   ./bin/standalone.sh
 

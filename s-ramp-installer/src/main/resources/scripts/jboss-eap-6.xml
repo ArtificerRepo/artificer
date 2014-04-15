@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Install S-RAMP into JBoss EAP 6.1" default="install">
+<project name="Install S-RAMP into JBoss EAP 6" default="install">
 
-  <!-- Configure properties for JBoss EAP 6.1 -->
-  <target name="properties-jboss-eap-6.1">
+  <!-- Configure properties for JBoss EAP 6 -->
+  <target name="properties-jboss-eap-6">
     <property name="s-ramp.updates.dir" location="${basedir}/updates" />
   
     <property name="s-ramp.overlord-commons.installer.jar" location="overlord-commons-installer.jar" />
@@ -14,18 +14,18 @@
 
     <property name="s-ramp.modeshape-distribution.zip.path" location="modeshape-3.2.0.Final-jbosseap-61-dist.zip" />
     <property name="s-ramp.jboss.module.path" location="${s-ramp.appserver.dir}/modules/system/layers/base" />
-    <property name="s-ramp.s-ramp-server.war.path" location="bin/s-ramp-server-eap61-${s-ramp.version}.war" />
-    <property name="s-ramp.s-ramp-ui.war.path" location="bin/s-ramp-ui-war-eap61-${s-ramp.version}.war" />
+    <property name="s-ramp.s-ramp-server.war.path" location="bin/s-ramp-server-eap6-${s-ramp.version}.war" />
+    <property name="s-ramp.s-ramp-ui.war.path" location="bin/s-ramp-ui-war-eap6-${s-ramp.version}.war" />
   </target>
 
   <!-- Install S-RAMP -->
-  <target name="install" depends="properties-jboss-eap-6.1">
+  <target name="install" depends="properties-jboss-eap-6">
     <echo message=" " />
     <echo message="#############################################" />
-    <echo message="# Installing S-RAMP into JBoss EAP 6.1.     #" />
+    <echo message="# Installing S-RAMP into JBoss EAP 6.     #" />
     <echo message="#############################################" />
 
-    <antcall target="config-jboss-eap-6.1" />
+    <antcall target="config-jboss-eap-6" />
 
     <echo>----------------------------------</echo>
     <echo>Installing Overlord Commons</echo>
@@ -72,8 +72,8 @@
   </target>
   
 
-  <!-- Configure JBoss EAP 6.1 -->
-  <target name="config-jboss-eap-6.1">
+  <!-- Configure JBoss EAP 6 -->
+  <target name="config-jboss-eap-6">
     <echo>-----------------------------------</echo>
     <echo>Installing Modeshape Service</echo>
     <echo>-----------------------------------</echo>
@@ -109,7 +109,7 @@
     <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
 
     <xslt 
-      style="${s-ramp.updates.dir}/xslt/patchSolr-jboss-eap-6.1.xslt"
+      style="${s-ramp.updates.dir}/xslt/patchSolr-jboss-eap-6.xslt"
       in="${s-ramp.jboss.module.path}/org/apache/solr/3.6.2/module.xml"
       out="${s-ramp.install.dir}/_tmp_solr_module.xml" />
     <copy file="${s-ramp.install.dir}/_tmp_solr_module.xml" tofile="${s-ramp.jboss.module.path}/org/apache/solr/3.6.2/module.xml" overwrite="true" />

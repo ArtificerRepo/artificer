@@ -36,7 +36,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-idp-eap61</artifactId>
+      <artifactId>overlord-commons-idp-eap6</artifactId>
       <version>${overlord-commons.version}</version>
       <type>war</type>
     </dependency>
@@ -62,7 +62,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server-eap61</artifactId>
+      <artifactId>s-ramp-server-eap6</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
@@ -80,7 +80,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-war-eap61</artifactId>
+      <artifactId>s-ramp-ui-war-eap6</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
@@ -88,10 +88,10 @@
 
   <profiles>
     <!-- ***************************************** -->
-    <!-- Profile to *test* installing into EAP 6.1 -->
+    <!-- Profile to *test* installing into EAP 6 -->
     <!-- ***************************************** -->
     <profile>
-      <id>test-install-eap61</id>
+      <id>test-install-eap6</id>
       <build>
         <plugins>
           <plugin>
@@ -111,25 +111,25 @@
             </dependencies>
             <executions>
               <execution>
-                <id>install-eap61</id>
+                <id>install-eap6</id>
                 <phase>install</phase>
                 <configuration>
                   <tasks>
-                    <property name="appserver.id" value="jboss-eap-6.1" />
+                    <property name="appserver.id" value="jboss-eap-6" />
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/${appserver.id}" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
                     <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
-                    <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-eap61.war.path}" />
+                    <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
                     <property name="overlord-commons.services.file" value="${maven.dependency.org.overlord.overlord-commons-services.jar.path}" />
                     <property name="overlord-commons.auth.file" value="${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
                     <property name="overlord-commons.auth.tomcat7.file" value="${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
                     <property name="overlord-commons.auth.jboss7.file" value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
 
                     <!-- S-RAMP WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-eap61.war.path}" />
-                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap61.war.path}" />
+                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-eap6.war.path}" />
+                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap6.war.path}" />
 
                     <!-- ModeShape Distribution -->
                     <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-61-dist.zip.path}" />
