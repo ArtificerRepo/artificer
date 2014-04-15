@@ -10,7 +10,7 @@
   <!-- ****************************************************** -->
   <!-- Customize these properties when calling this installer -->
   <!-- ****************************************************** -->
-  <property name="appserver.id" value="jboss-eap-6.1" />
+  <property name="appserver.id" value="jboss-eap-6" />
   <property name="s-ramp.install.dir" location="target" />
   <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/${appserver.id}" />
   <!-- ****************************************************** -->

@@ -6,9 +6,9 @@
     <version>0.4.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>s-ramp-server-eap61</artifactId>
+  <artifactId>s-ramp-server-eap6</artifactId>
   <packaging>war</packaging>
-  <name>S-RAMP Server (EAP 6.1)</name>
+  <name>S-RAMP Server (EAP 6)</name>
   
   <dependencies>
     <!-- The base WAR being extended -->

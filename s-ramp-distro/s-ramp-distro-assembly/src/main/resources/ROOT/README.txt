@@ -16,11 +16,11 @@ This distribution comes with the following:
        S-RAMP.
     5) src - all of the S-RAMP source code, in a number of "-sources" JARs.
     7) build.xml an Ant script that will install and configure S-RAMP into
-       either Tomcat 7 or JBoss EAP 6.1.
+       either Tomcat 7 or JBoss EAP 6.
 
 == What do I do next? ==
-This distribution works with version 6.1 of the JBoss Enterprise Application
-Platform (JBoss EAP 6.1) *or* version 7 of Apache Tomcat.   When using EAP
+This distribution works with version 6 of the JBoss Enterprise Application
+Platform (JBoss EAP 6) *or* version 7 of Apache Tomcat.   When using EAP
 you must first download the EAP ZIP distribution and unpack to your preferred
 location.
 

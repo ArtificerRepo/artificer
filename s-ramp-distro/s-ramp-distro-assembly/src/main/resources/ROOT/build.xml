@@ -21,14 +21,14 @@
     <echo message="#######################################################" />
     <echo message=" " />
     <echo message=" Choose from one of the following options." />
-    <echo message="    1. Install into JBoss EAP 6.1" />
+    <echo message="    1. Install into JBoss EAP 6" />
     <echo message="    2. Install into Tomcat 7" />
     <echo message="    3. Install into Fuse 6.1" />
     <echo message="    4. Install into Jetty 8" />
     <echo message=" " />
     <input message="Choice: " addproperty="s-ramp-distro.choices.platform" />
 
-    <condition property="s-ramp-distro.choices.platform.jboss-eap-6.1">
+    <condition property="s-ramp-distro.choices.platform.jboss-eap-6">
       <equals arg1="${s-ramp-distro.choices.platform}" arg2="1" />
     </condition>
     <condition property="s-ramp-distro.choices.platform.tomcat-7">
@@ -41,7 +41,7 @@
       <equals arg1="${s-ramp-distro.choices.platform}" arg2="4" />
     </condition>
 
-    <antcall target="install-jboss-eap-6.1-wrapper" />
+    <antcall target="install-jboss-eap-6-wrapper" />
     <antcall target="install-tomcat-7-wrapper" />
     <antcall target="install-fuse-6.1-wrapper" />
     <antcall target="install-jetty-8-wrapper" />
@@ -54,42 +54,42 @@
     <unzip src="${s-ramp-distro.s-ramp-installer.jar}" dest="${s-ramp-distro.s-ramp-installer.dir}" overwrite="false" />
   </target>
 
-  <!-- Install into EAP 6.1 -->
-  <target name="install-jboss-eap-6.1-wrapper" if="s-ramp-distro.choices.platform.jboss-eap-6.1">
+  <!-- Install into EAP 6 -->
+  <target name="install-jboss-eap-6-wrapper" if="s-ramp-distro.choices.platform.jboss-eap-6">
     <echo message=" " />
     <echo message="#######################################################" />
-    <echo message="# Installing S-RAMP into EAP 6.1 (great choice!).     #" />
+    <echo message="# Installing S-RAMP into EAP 6 (great choice!).     #" />
     <echo message="#######################################################" />
     <echo message=" " />
-    <echo message=" Please tell us where JBoss EAP 6.1 is located (full path)." />
+    <echo message=" Please tell us where JBoss EAP 6 is located (full path)." />
     <echo message=" " />
-    <input message="Path to EAP 6.1: " addproperty="s-ramp-distro.choices.platform.jboss-eap-6.1.path" />
+    <input message="Path to EAP 6: " addproperty="s-ramp-distro.choices.platform.jboss-eap-6.path" />
     
-    <antcall target="install-jboss-eap-6.1" />
+    <antcall target="install-jboss-eap-6" />
   </target>
 
-  <target name="install-jboss-eap-6.1" depends="extract-installer">
-    <condition property="s-ramp-distro.choices.platform.jboss-eap-6.1.path.valid">
-      <available file="jboss-modules.jar" filepath="${s-ramp-distro.choices.platform.jboss-eap-6.1.path}" />
+  <target name="install-jboss-eap-6" depends="extract-installer">
+    <condition property="s-ramp-distro.choices.platform.jboss-eap-6.path.valid">
+      <available file="jboss-modules.jar" filepath="${s-ramp-distro.choices.platform.jboss-eap-6.path}" />
     </condition>
-    <fail message="Failed to find JBoss EAP 6.1 at: ${s-ramp-distro.choices.platform.jboss-eap-6.1.path}" 
-              unless="s-ramp-distro.choices.platform.jboss-eap-6.1.path.valid" />
-    <echo message="Installing into: ${s-ramp-distro.choices.platform.jboss-eap-6.1.path} " />
+    <fail message="Failed to find JBoss EAP 6 at: ${s-ramp-distro.choices.platform.jboss-eap-6.path}" 
+              unless="s-ramp-distro.choices.platform.jboss-eap-6.path.valid" />
+    <echo message="Installing into: ${s-ramp-distro.choices.platform.jboss-eap-6.path} " />
 
     <!-- Call the S-RAMP installer -->
     <ant antfile="${s-ramp-distro.s-ramp-installer.dir}/build.xml" inheritall="true" target="install" 
          dir="${s-ramp-distro.s-ramp-installer.dir}">
-      <property name="appserver.id" value="jboss-eap-6.1" />
+      <property name="appserver.id" value="jboss-eap-6" />
       <property name="s-ramp.install.dir" location="${s-ramp-distro.tempdir}" />
-      <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.jboss-eap-6.1.path}" />
+      <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.jboss-eap-6.path}" />
       <property name="s-ramp.overlord-commons.installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${overlord-commons.version}.jar" />
-      <property name="overlord-commons.idp.file" value="${s-ramp-distro.bindir}/overlord-commons-idp-eap61-${overlord-commons.version}.war" />
+      <property name="overlord-commons.idp.file" value="${s-ramp-distro.bindir}/overlord-commons-idp-eap6-${overlord-commons.version}.war" />
       <property name="overlord-commons.services.file" location="${s-ramp-distro.bindir}/overlord-commons-services-${overlord-commons.version}.jar" />
       <property name="overlord-commons.auth.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-${overlord-commons.version}.jar" />
       <property name="overlord-commons.auth.tomcat7.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-tomcat7-${overlord-commons.version}.jar" />
       <property name="overlord-commons.auth.jboss7.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-jboss7-${overlord-commons.version}.jar" />
-      <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/s-ramp-server-eap61-${s-ramp.version}.war" />
-      <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/s-ramp-ui-war-eap61-${s-ramp.version}.war" />
+      <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/s-ramp-server-eap6-${s-ramp.version}.war" />
+      <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/s-ramp-ui-war-eap6-${s-ramp.version}.war" />
       <property name="s-ramp.modeshape-distribution.zip.path" location="${s-ramp-distro.rootdir}/AS/EAP/modeshape-distribution-${org.modeshape.version}-jbosseap-61-dist.zip" />
     </ant>
   </target>
