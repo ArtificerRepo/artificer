@@ -34,7 +34,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-idp-eap61</artifactId>
+      <artifactId>overlord-commons-idp-eap6</artifactId>
       <version>${overlord-commons.version}</version>
       <type>war</type>
     </dependency>
@@ -75,7 +75,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server-eap61</artifactId>
+      <artifactId>s-ramp-server-eap6</artifactId>
       <type>war</type>
       <version>${project.version}</version>
     </dependency>
@@ -93,7 +93,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-war-eap61</artifactId>
+      <artifactId>s-ramp-ui-war-eap6</artifactId>
       <type>war</type>
       <version>${project.version}</version>
     </dependency>
@@ -229,10 +229,10 @@
 
   <profiles>
     <!-- ***************************************** -->
-    <!-- Profile to *test* installing into EAP 6.1 -->
+    <!-- Profile to *test* installing into EAP 6 -->
     <!-- ***************************************** -->
     <profile>
-      <id>test-install-eap61</id>
+      <id>test-install-eap6</id>
       <build>
         <plugins>
           <plugin>
@@ -248,11 +248,11 @@
             </dependencies>
             <executions>
               <execution>
-                <id>install-eap61</id>
+                <id>install-eap6</id>
                 <phase>install</phase>
                 <configuration>
                   <tasks>
-                    <property name="overlord-commons.idp.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-idp-eap61.war.path}" />
+                    <property name="overlord-commons.idp.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
                     <property name="overlord-commons.auth.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
 
                     <ant dir="${basedir}/src/main/resources/ROOT" antfile="${basedir}/src/main/resources/ROOT/build.xml">
@@ -308,7 +308,7 @@
             </dependencies>
             <executions>
               <execution>
-                <id>install-eap61</id>
+                <id>install-eap6</id>
                 <phase>install</phase>
                 <configuration>
                   <tasks>
