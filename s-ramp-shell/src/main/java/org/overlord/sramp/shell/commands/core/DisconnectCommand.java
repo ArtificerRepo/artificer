@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,22 @@
  */
 package org.overlord.sramp.shell.commands.core;
 
-import javax.xml.namespace.QName;
-
-import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Disconnects from the current S-RAMP repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DisconnectCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_DISCONNECT, description = "Disconnects from the current S-RAMP repository.")
+public class DisconnectCommand extends AbstractCoreShellCommand {
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 
 	/**
 	 * Constructor.
@@ -35,19 +39,50 @@ public class DisconnectCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		QName varName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(varName);
+        super.execute();
+
 		if (client == null) {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return false;
 		}
-		getContext().removeVariable(varName);
+        getContext().removeVariable(s_ramp_client_name);
 		print(Messages.i18n.format("Disconnect.Success")); //$NON-NLS-1$
         return true;
 	}
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_DISCONNECT;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
 
 }

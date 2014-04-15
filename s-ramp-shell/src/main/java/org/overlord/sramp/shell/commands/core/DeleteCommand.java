@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,74 +15,68 @@
  */
 package org.overlord.sramp.shell.commands.core;
 
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
+import org.apache.commons.lang.StringUtils;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.validator.CommandValidator;
+import org.jboss.aesh.cl.validator.CommandValidatorException;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.client.query.ArtifactSummary;
-import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.shell.BuiltInShellCommand;
-import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
-import org.overlord.sramp.shell.util.FileNameCompleter;
+
 
 /**
  * Deletes an artifact from the S-RAMP repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DeleteCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_DELETE, validator = DeleteCommand.CustomCommandValidator.class, description = "Deletes an artifact from the S-RAMP repository.")
+public class DeleteCommand extends AbstractCoreShellCommand {
+
+    private BaseArtifactType artifact;
+
+    @Option(required = false, name = "feedIndex", hasValue = true, shortName = 'f')
+    private Integer _feedIndex;
+
+    @Option(required = false, name = "uuid", hasValue = true, shortName = 'u')
+    private String _uuid;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 
 	/**
 	 * Constructor.
 	 */
 	public DeleteCommand() {
+
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
-        QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
+        super.execute();
 
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
-		if (client == null) {
-			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return false;
-		}
+        if (client == null) {
+	            print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
+	            return false;
+        }
+        artifact = getArtifact(_feedIndex, _uuid);
 
-        BaseArtifactType artifact = null;
-		String artifactIdArg = this.optionalArgument(0);
-        if (artifactIdArg == null) {
-            artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
+        if (artifact == null) {
+            artifact = getArtifact();
             if (artifact == null) {
                 print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
                 return false;
             }
-        } else {
-    		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
-    		if ("feed".equals(idType)) { //$NON-NLS-1$
-    		    QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
-    		    int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
-    		    if (feedIdx < 0 || feedIdx >= rset.size()) {
-    		        throw new InvalidCommandArgumentException(0, Messages.i18n.format("FeedIndexOutOfRange")); //$NON-NLS-1$
-    		    }
-    		    ArtifactSummary summary = rset.get(feedIdx);
-    		    String artifactUUID = summary.getUuid();
-    		    artifact = client.getArtifactMetaData(summary.getType(), artifactUUID);
-    		} else if ("uuid".equals(idType)) { //$NON-NLS-1$
-                String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
-                artifact = client.getArtifactMetaData(artifactUUID);
-    		} else {
-    		    throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
-    		}
-		}
+        }
 
 		try {
 			client.deleteArtifact(artifact.getUuid(), ArtifactType.valueOf(artifact));
@@ -95,34 +89,121 @@ public class DeleteCommand extends BuiltInShellCommand {
         return true;
 	}
 
-    /**
-     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
      */
     @Override
-    public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-        if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
-            QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-            QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
-            if (rset != null) {
-                for (int idx = 0; idx < rset.size(); idx++) {
-                    String candidate = "feed:" + (idx+1); //$NON-NLS-1$
-                    if (lastArgument == null) {
-                        candidates.add(candidate);
-                    }
-                    if (lastArgument != null && candidate.startsWith(lastArgument)) {
-                        candidates.add(candidate);
-                    }
-                }
-            }
-            return 0;
-        } else if (getArguments().size() == 1) {
-            if (lastArgument == null)
-                lastArgument = ""; //$NON-NLS-1$
-            FileNameCompleter delegate = new FileNameCompleter();
-            return delegate.complete(lastArgument, lastArgument.length(), candidates);
-        } else {
-            return -1;
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_DELETE;
+    }
+
+
+    /**
+     * Validates that the Delete command is properly filled.
+     * 
+     * @author David Virgil Naranjo
+     */
+    public class CustomCommandValidator implements CommandValidator<DeleteCommand> {
+
+        /**
+         * Instantiates a new custom command validator.
+         */
+        public CustomCommandValidator() {
+
         }
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.validator.CommandValidator#validate(org.jboss.aesh.console.command.Command)
+         */
+        @Override
+        public void validate(DeleteCommand command) throws CommandValidatorException {
+            if (StringUtils.isBlank(command.getUuid()) && command.getFeedIndex() == null) {
+                throw new CommandValidatorException(Messages.i18n.format("Artifact.feed.no.option.selected"));
+
+            } else if (!StringUtils.isBlank(command.getUuid()) && command.getFeedIndex() != null) {
+                throw new CommandValidatorException(
+                        Messages.i18n.format("Artifact.feed.both.option.selected"));
+            }
+
+        }
+    }
+
+
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.commands.core.AbstractCoreShellCommand#getArtifact()
+     */
+    @Override
+    public BaseArtifactType getArtifact() {
+        return artifact;
+    }
+
+    /**
+     * Sets the artifact.
+     *
+     * @param artifact
+     *            the new artifact
+     */
+    public void setArtifact(BaseArtifactType artifact) {
+        this.artifact = artifact;
+    }
+
+    /**
+     * Gets the feed index.
+     *
+     * @return the feed index
+     */
+    public Integer getFeedIndex() {
+        return _feedIndex;
+    }
+
+    /**
+     * Sets the feed index.
+     *
+     * @param feedIndex
+     *            the new feed index
+     */
+    public void setFeedIndex(Integer feedIndex) {
+        this._feedIndex = feedIndex;
+    }
+
+    /**
+     * Gets the uuid.
+     *
+     * @return the uuid
+     */
+    public String getUuid() {
+        return _uuid;
+    }
+
+    /**
+     * Sets the uuid.
+     *
+     * @param uuid
+     *            the new uuid
+     */
+    public void setUuid(String uuid) {
+        this._uuid = uuid;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,9 +78,14 @@ import org.overlord.sramp.shell.commands.ontology.UploadOntologyCommand;
  */
 public class ShellCommandFactory {
 
-	private static QName HELP_CMD_NAME = new QName("s-ramp", "help"); //$NON-NLS-1$ //$NON-NLS-2$
-	private static QName EXIT_CMD_NAME = new QName("s-ramp", "exit"); //$NON-NLS-1$ //$NON-NLS-2$
-	private static QName QUIT_CMD_NAME = new QName("s-ramp", "quit"); //$NON-NLS-1$ //$NON-NLS-2$
+    private static QName HELP_CMD_NAME = new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+            ShellCommandConstants.Sramp.COMMAND_HELP);
+    private static QName EXIT_CMD_NAME = new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+            ShellCommandConstants.Sramp.COMMAND_EXIT);
+    private static QName QUIT_CMD_NAME = new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+            ShellCommandConstants.Sramp.COMMAND_QUIT);
+
+    private Map<QName, Class<? extends ShellCommand>> standardRegistry;
 
 	private Map<QName, Class<? extends ShellCommand>> registry;
 
@@ -96,49 +101,88 @@ public class ShellCommandFactory {
 	 */
 	private void registerCommands() {
 		registry = new HashMap<QName, Class<? extends ShellCommand>>();
-
+        standardRegistry = new HashMap<QName, Class<? extends ShellCommand>>();
 		// S-RAMP core commands
-		registry.put(new QName("s-ramp", "connect"), ConnectCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "disconnect"), DisconnectCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "status"), StatusCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "query"), QueryCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "getMetaData"), GetMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "getContent"), GetContentCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "upload"), UploadArtifactCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "updateMetaData"), UpdateMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "updateContent"), UpdateContentCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "property"), PropertyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "classification"), ClassificationCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "showMetaData"), ShowMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("s-ramp", "refreshMetaData"), RefreshMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-        registry.put(new QName("s-ramp", "delete"), DeleteCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-        registry.put(new QName("s-ramp", "create"), CreateArtifactCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_CONNECT), ConnectCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_DISCONNECT), DisconnectCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_STATUS), StatusCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_QUERY), QueryCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_GET_METADATA), GetMetaDataCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_GET_CONTENT), GetContentCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_UPLOAD), UploadArtifactCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_UPDATE_METADATA), UpdateMetaDataCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_UPDATE_CONTENT), UpdateContentCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_PROPERTY), PropertyCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_CLASSIFICATION), ClassificationCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_SHOW_METADATA), ShowMetaDataCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_REFRESH_METADATA), RefreshMetaDataCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_DELETE), DeleteCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_CREATE), CreateArtifactCommand.class);
 
-		// Archive commands
-		registry.put(new QName("archive", "new"), NewArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("archive", "open"), OpenArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("archive", "close"), CloseArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("archive", "list"), ListArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("archive", "addEntry"), AddEntryArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("archive", "updateEntry"), UpdateEntryArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("archive", "removeEntry"), RemoveEntryArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("archive", "listEntry"), ListEntryArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("archive", "pack"), PackArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-        registry.put(new QName("archive", "upload"), UploadArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        // Archive commands
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
+                ShellCommandConstants.Archive.COMMAND_NEW), NewArchiveCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
+                ShellCommandConstants.Archive.COMMAND_OPEN), OpenArchiveCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
+                ShellCommandConstants.Archive.COMMAND_CLOSE), CloseArchiveCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
+                ShellCommandConstants.Archive.COMMAND_LIST), ListArchiveCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
+                ShellCommandConstants.Archive.COMMAND_ADD_ENTRY),
+                AddEntryArchiveCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
+                ShellCommandConstants.Archive.COMMAND_UPDATE_ENTRY),
+                UpdateEntryArchiveCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
+                ShellCommandConstants.Archive.COMMAND_REMOVE_ENTRY),
+                RemoveEntryArchiveCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
+                ShellCommandConstants.Archive.COMMAND_LIST_ENTRY),
+                ListEntryArchiveCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
+                ShellCommandConstants.Archive.COMMAND_PACK), PackArchiveCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
+                ShellCommandConstants.Archive.COMMAND_UPLOAD), UploadArchiveCommand.class);
 
-		// Ontology commands
-		registry.put(new QName("ontology", "upload"), UploadOntologyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("ontology", "list"), ListOntologiesCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-		registry.put(new QName("ontology", "delete"), DeleteOntologyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-        registry.put(new QName("ontology", "get"), GetOntologyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-        registry.put(new QName("ontology", "update"), UpdateOntologyCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        // // Ontology commands
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ONTOLOGY,
+                ShellCommandConstants.Ontology.COMMAND_UPLOAD), UploadOntologyCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ONTOLOGY,
+                ShellCommandConstants.Ontology.COMMAND_LIST), ListOntologiesCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ONTOLOGY,
+                ShellCommandConstants.Ontology.COMMAND_DELETE), DeleteOntologyCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ONTOLOGY,
+                ShellCommandConstants.Ontology.COMMAND_GET), GetOntologyCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ONTOLOGY,
+                ShellCommandConstants.Ontology.COMMAND_UPDATE), UpdateOntologyCommand.class);
 
-        // Audit commands
-        registry.put(new QName("audit", "showAuditTrail"), ShowAuditTrailCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        // // Audit commands
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_AUDIT,
+                ShellCommandConstants.Audit.COMMAND_SHOW_AUDIT_TRAIL), ShowAuditTrailCommand.class);
+        //
+        // // Maven commands
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_MAVEN,
+                ShellCommandConstants.Maven.COMMAND_DEPLOY), DeployCommand.class);
 
-        // Maven commands
-        registry.put(new QName("maven", "deploy"), DeployCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-
+        standardRegistry.put(HELP_CMD_NAME, HelpCommand.class);
+        standardRegistry.put(EXIT_CMD_NAME, ExitCommand.class);
+        standardRegistry.put(QUIT_CMD_NAME, ExitCommand.class);
 		discoverContributedCommands();
 	}
 
@@ -187,11 +231,15 @@ public class ShellCommandFactory {
         }
     }
 
-	/**
-	 * Called to create a shell command.
-	 * @param commandName
-	 * @throws Exception
-	 */
+	    /**
+     * Called to create a shell command.
+     *
+     * @param commandName
+     *            the command name
+     * @return the shell command
+     * @throws Exception
+     *             the exception
+     */
 	public ShellCommand createCommand(QName commandName) throws Exception {
 		ShellCommand command = null;
 		if (commandName.equals(HELP_CMD_NAME)) {
@@ -209,10 +257,30 @@ public class ShellCommandFactory {
 		return command;
 	}
 
-	/**
-	 * Gets the available commands, ordered by command {@link QName}.
-	 */
-	private Map<QName, Class<? extends ShellCommand>> getCommands() {
+    /**
+     * Gets the standard commands.
+     *
+     * @return the standard commands
+     */
+    public Map<QName, Class<? extends ShellCommand>> getStandardCommands() {
+        TreeMap<QName, Class<? extends ShellCommand>> treeMap = new TreeMap<QName, Class<? extends ShellCommand>>(
+                new Comparator<QName>() {
+                    @Override
+                    public int compare(QName name1, QName name2) {
+                        return name1.toString().compareTo(name2.toString());
+                    }
+                });
+
+        treeMap.putAll(this.standardRegistry);
+        return treeMap;
+    }
+
+	    /**
+     * Gets the available commands, ordered by command {@link QName}.
+     *
+     * @return the commands
+     */
+    public Map<QName, Class<? extends ShellCommand>> getCommands() {
 		TreeMap<QName, Class<? extends ShellCommand>> treeMap = new TreeMap<QName, Class<? extends ShellCommand>>(new Comparator<QName>() {
 			@Override
 			public int compare(QName name1, QName name2) {
@@ -223,9 +291,11 @@ public class ShellCommandFactory {
 		return treeMap;
 	}
 
-	/**
-	 * Gets the set of namespaces for all commands in the factory.
-	 */
+	    /**
+     * Gets the set of namespaces for all commands in the factory.
+     *
+     * @return the namespaces
+     */
 	public Set<String> getNamespaces() {
 		Set<String> namespaces = new TreeSet<String>();
 		for (QName cmdName : this.registry.keySet()) {
@@ -234,10 +304,13 @@ public class ShellCommandFactory {
 		return namespaces;
 	}
 
-	/**
-	 * Gets the set of commands available within the given namespace.
-	 * @param namespace
-	 */
+	    /**
+     * Gets the set of commands available within the given namespace.
+     *
+     * @param namespace
+     *            the namespace
+     * @return the command names
+     */
 	public Set<QName> getCommandNames(String namespace) {
 		Set<QName> commandNames = new TreeSet<QName>(new Comparator<QName>() {
 			@Override

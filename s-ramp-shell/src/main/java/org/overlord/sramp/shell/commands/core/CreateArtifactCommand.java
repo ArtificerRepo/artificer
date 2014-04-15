@@ -17,68 +17,180 @@ package org.overlord.sramp.shell.commands.core;
 
 import javax.xml.namespace.QName;
 
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.completer.OptionCompleter;
+import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.common.ArtifactTypeEnum;
+import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.converter.ExtendedArtifactTypeConverter;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.i18n.Messages;
 
+
 /**
- * This CLI command is used to create a new artifact in the repository.  This 
+ * This CLI command is used to create a new artifact in the repository.  This
  * command creates non-Document style artifacts (artifacts with no content).
- * It complements the {@link UploadArtifactCommand}, which creates a new 
+ * It complements the {@link UploadArtifactCommand}, which creates a new
  * artifact *with* content.
- * 
+ *
  * @author David Virgil Naranjo
  */
-public class CreateArtifactCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_CREATE, description = "This CLI command is used to create a new artifact in the repository.")
+public class CreateArtifactCommand extends AbstractCoreShellCommand {
 
-    private SrampAtomApiClient client;
+
+
+    @Option(required = true, name = "artifactType", hasValue = true, shortName = 't', converter = ExtendedArtifactTypeConverter.class, completer = ArtifactTypeCompleter.class)
+    private ArtifactType _artifactType;
+
+    @Option(required = true, name = "name", hasValue = true, shortName = 'n')
+    private String _name;
+
+    @Option(hasValue = true, name = "description", shortName = 'd')
+    private String _description;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 
     /**
      * Constructor.
      */
     public CreateArtifactCommand() {
+
     }
-    
+
     /**
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
      * @see org.overlord.sramp.shell.api.ShellCommand#execute()
      */
     @Override
     public boolean execute() throws Exception {
-        String artifactTypeArg = this.requiredArgument(0, Messages.i18n.format("ArtifactModel.Mandatory"));
-        String nameArg = this.requiredArgument(1, Messages.i18n.format("ArtifactName.Mandatory"));
-        String descriptionArg = this.optionalArgument(2);
-
-        QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-        client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
+        super.execute();
         if (client == null) {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-            return false;
         }
-        
-        ArtifactType artifactType = ArtifactType.valueOf(artifactTypeArg);
-        if (artifactType.isExtendedType()) {
-            artifactType = ArtifactType.ExtendedArtifactType(artifactType.getExtendedType(), false);
-        }
-        
-        if (artifactType.isDerived()) {
+
+        if (_artifactType.isDerived()) {
             throw new InvalidCommandArgumentException(0, Messages.i18n.format("ArtifactModel.isDerived")); //$NON-NLS-1$
-        } else if (artifactType.isDocument()) {
+        } else if (_artifactType.isDocument()) {
             throw new InvalidCommandArgumentException(0, Messages.i18n.format("ArtifactModel.isDocument"));
         } else {
-            BaseArtifactType artifact = artifactType.newArtifactInstance();
-            artifact.setName(nameArg);
-            artifact.setDescription(descriptionArg);
+            BaseArtifactType artifact = _artifactType.newArtifactInstance();
+            artifact.setName(_name);
+            artifact.setDescription(_description);
             artifact = client.createArtifact(artifact);
             // Put the artifact in the session as the active artifact
             QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
             getContext().setVariable(artifactVarName, artifact);
         }
 
-        print(Messages.i18n.format("CreateArtifactCommand.Successful", nameArg)); //$NON-NLS-1$
+        print(Messages.i18n.format("CreateArtifactCommand.Successful", _name)); //$NON-NLS-1$
         return true;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_CREATE;
+    }
+
+    /**
+     * Completes the input string with the list of artifact types that match the
+     * input.
+     * 
+     * @author David Virgil Naranjo
+     */
+    private class ArtifactTypeCompleter implements OptionCompleter<CompleterInvocation> {
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.completer.OptionCompleter#complete(org.jboss.aesh.console.command.completer.CompleterInvocation)
+         */
+        @Override
+        public void complete(CompleterInvocation completerInvocation) {
+            String artifact = completerInvocation.getGivenCompleteValue();
+            for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+                String candidate = t.getType();
+                if (artifact == null || candidate.startsWith(artifact) && t.isDocument() && !t.isDerived()) {
+                    completerInvocation.addCompleterValue(candidate);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Gets the artifact type.
+     *
+     * @return the artifact type
+     */
+    public ArtifactType getArtifactType() {
+        return _artifactType;
+    }
+
+    /**
+     * Sets the artifact type.
+     *
+     * @param artifactType
+     *            the new artifact type
+     */
+    public void setArtifactType(ArtifactType artifactType) {
+        this._artifactType = artifactType;
+    }
+
+    /**
+     * Gets the description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return _description;
+    }
+
+    /**
+     * Sets the description.
+     *
+     * @param description
+     *            the new description
+     */
+    public void setDescription(String description) {
+        this._description = description;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
+
+    /**
+     * Sets the name.
+     *
+     * @param name
+     *            the new name
+     */
+    public void setName(String name) {
+        this._name = name;
     }
 
 }
