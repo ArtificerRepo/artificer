@@ -147,6 +147,18 @@ public abstract class AbstractShellCommand<T extends CommandInvocation> implemen
      */
     @Override
     public CommandResult execute(T commandInvocation) throws IOException {
-        return null;
+        boolean result = false;
+        try {
+            result = this.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = false;
+        }
+
+        if (result) {
+            return CommandResult.SUCCESS;
+        } else {
+            return CommandResult.FAILURE;
+        }
     }
 }
