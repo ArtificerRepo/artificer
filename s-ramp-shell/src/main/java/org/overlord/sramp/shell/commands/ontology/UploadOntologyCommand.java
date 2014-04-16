@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,94 +16,66 @@
 package org.overlord.sramp.shell.commands.ontology;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
-
-import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.shell.BuiltInShellCommand;
-import org.overlord.sramp.shell.api.Arguments;
-import org.overlord.sramp.shell.api.ShellContext;
-import org.overlord.sramp.shell.api.SimpleShellContext;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
-import org.overlord.sramp.shell.util.FileNameCompleter;
+
 
 /**
  * Uploads an ontology (S-RAMP OWL format) to the s-ramp repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UploadOntologyCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_UPLOAD, description = "Uploads an ontology (S-RAMP OWL format) to the s-ramp repository.")
+public class UploadOntologyCommand extends AbstractOntologyCommand {
 
-	/**
-	 * Constructor.
-	 */
+    @Option(hasValue = true, name = "urlContent", required = true, shortName = 'u')
+    private String _urlContent;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
+
+    /**
+     * Constructor.
+     */
 	public UploadOntologyCommand() {
 	}
 
-	 /**
-     * Main entry point - for use outside the interactive shell.
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String [] args) throws Exception {
-        if (args.length != 2) {
-            throw new Exception("Usage: " + UploadOntologyCommand.class + " [-file | -resource] [<filePath> | <resourcePath>]"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        String type = args[0];
-        String path = args[1];
-
-        StringBuilder argLine = new StringBuilder();
-        boolean isResource = "-resource".equals(type); //$NON-NLS-1$
-        if (isResource) {
-            URL url = UploadOntologyCommand.class.getResource(path);
-            if (url==null) throw new Exception ("Could not find " + path + " on the classpath"); //$NON-NLS-1$ //$NON-NLS-2$
-            argLine.append(url.toExternalForm());
-        } else {
-            File file = new File(path);
-            if (!file.isFile()) throw new FileNotFoundException(path);
-            argLine.append(file.getCanonicalPath());
-        }
-        SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-server"); //$NON-NLS-1$
-        QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-        ShellContext context = new SimpleShellContext();
-        context.setVariable(clientVarName, client);
-        UploadOntologyCommand cmd = new UploadOntologyCommand();
-        cmd.setArguments(new Arguments(argLine.toString()));
-        cmd.setContext(context);
-        cmd.execute();
-    }
-
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		String filePathArg = this.requiredArgument(0, Messages.i18n.format("UploadOntology.InvalidArgMsg.MissingPath")); //$NON-NLS-1$
+        super.execute();
 
-		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return false;
 		}
 		InputStream content = null;
 		try {
-		    File file = new File(filePathArg);
+            File file = new File(_urlContent);
 		    if (file.exists()) {
 		        content = FileUtils.openInputStream(file);
 		    } else {
-		        URL url = this.getClass().getResource(filePathArg);
+                URL url = this.getClass().getResource(_urlContent);
 		        if (url!=null) {
 		            print(Messages.i18n.format("UploadOntology.ReadingOntology", url.toExternalForm())); //$NON-NLS-1$
 		            content = url.openStream();
 		        } else {
-		            print(Messages.i18n.format("UploadOntology.CannotFind", filePathArg)); //$NON-NLS-1$
+                    print(Messages.i18n.format("UploadOntology.CannotFind", _urlContent)); //$NON-NLS-1$
+                    return false;
 		        }
 		    }
 			client.uploadOntology(content);
@@ -120,17 +92,50 @@ public class UploadOntologyCommand extends BuiltInShellCommand {
         return true;
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (lastArgument == null)
-			lastArgument = ""; //$NON-NLS-1$
-		if (getArguments().isEmpty()) {
-			FileNameCompleter delegate = new FileNameCompleter();
-			return delegate.complete(lastArgument, lastArgument.length(), candidates);
-		}
-		return -1;
-	}
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_UPLOAD;
+    }
+
+    /**
+     * Gets the url content.
+     *
+     * @return the url content
+     */
+    public String getUrlContent() {
+        return _urlContent;
+    }
+
+    /**
+     * Sets the url content.
+     *
+     * @param urlContent
+     *            the new url content
+     */
+    public void setUrlContent(String urlContent) {
+        this._urlContent = urlContent;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
+
 }

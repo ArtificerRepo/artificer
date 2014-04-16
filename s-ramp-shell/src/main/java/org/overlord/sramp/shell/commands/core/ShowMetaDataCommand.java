@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,14 @@
  */
 package org.overlord.sramp.shell.commands.core;
 
-import javax.xml.namespace.QName;
-
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
-import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
+
 
 /**
  * Shows the full meta-data for the artifact currently active in the
@@ -29,7 +30,11 @@ import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ShowMetaDataCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_SHOW_METADATA, description = "Shows the full meta-data for the artifact currently active in the session")
+public class ShowMetaDataCommand extends AbstractCoreShellCommand {
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 
 	/**
 	 * Constructor.
@@ -38,16 +43,22 @@ public class ShowMetaDataCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
-		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
-		if (artifact == null) {
-			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
-			return false;
-		}
+        super.execute();
+
+        BaseArtifactType artifact = getArtifact();
+        if (artifact == null) {
+            print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
+            return false;
+        }
 
 		// Print out the meta-data information
 		print(Messages.i18n.format("RefreshMetaData.MetaDataFor", artifact.getUuid())); //$NON-NLS-1$
@@ -56,5 +67,31 @@ public class ShowMetaDataCommand extends BuiltInShellCommand {
 		ArtifactVisitorHelper.visitArtifact(visitor, artifact);
         return true;
 	}
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_SHOW_METADATA;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
 
 }

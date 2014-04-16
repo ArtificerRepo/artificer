@@ -19,12 +19,15 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
+import org.jboss.aesh.console.command.CommandResult;
+import org.jboss.aesh.console.command.invocation.CommandInvocation;
+
 /**
  * Base class for shell commands.
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class AbstractShellCommand implements ShellCommand {
+public abstract class AbstractShellCommand<T extends CommandInvocation> implements ShellCommand<T> {
 
 	private ShellContext context;
 	private Arguments arguments;
@@ -136,4 +139,26 @@ public abstract class AbstractShellCommand implements ShellCommand {
 		return -1;
 	}
 
+    /**
+     * Will be called when this command is triggered by the command line.
+     *
+     * @return success or failure depending on how the execution went.
+     * @throws IOException
+     */
+    @Override
+    public CommandResult execute(T commandInvocation) throws IOException {
+        boolean result = false;
+        try {
+            result = this.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = false;
+        }
+
+        if (result) {
+            return CommandResult.SUCCESS;
+        } else {
+            return CommandResult.FAILURE;
+        }
+    }
 }

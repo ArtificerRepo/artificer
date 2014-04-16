@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,19 @@ package org.overlord.sramp.shell.commands.core;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
-import javax.xml.namespace.QName;
-
+import org.apache.commons.lang.StringUtils;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.validator.CommandValidator;
+import org.jboss.aesh.cl.validator.CommandValidatorException;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.shell.BuiltInShellCommand;
-import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Command used to manipulate properties on the currently active S-RAMP artifact.  This command
@@ -36,15 +37,30 @@ import org.overlord.sramp.shell.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class PropertyCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_PROPERTY, validator = PropertyCommand.CustomCommandValidator.class, description = "Command used to manipulate properties on the currently active S-RAMP artifact.")
+public class PropertyCommand extends AbstractCoreShellCommand {
 
-	private static final Set<String> CORE_PROPERTIES = new HashSet<String>();
-	{
-		CORE_PROPERTIES.add("name"); //$NON-NLS-1$
-		CORE_PROPERTIES.add("description"); //$NON-NLS-1$
-		CORE_PROPERTIES.add("version"); //$NON-NLS-1$
-	}
+    private static final Set<String> CORE_PROPERTIES = new HashSet<String>();
+    {
+        CORE_PROPERTIES.add("name"); //$NON-NLS-1$
+        CORE_PROPERTIES.add("description"); //$NON-NLS-1$
+        CORE_PROPERTIES.add("version"); //$NON-NLS-1$
+    }
 
+    @Option(hasValue = false, name = "set", shortName = 's')
+    private boolean _set;
+
+    @Option(hasValue = false, name = "unset", shortName = 'u')
+    private boolean _unset;
+
+    @Option(required = true, name = "name", shortName = 'n')
+	private String _name;
+
+    @Option(name = "value", shortName = 'v')
+	private String _value;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 	/**
 	 * Constructor.
 	 */
@@ -52,36 +68,31 @@ public class PropertyCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		String subcmdArg = requiredArgument(0, Messages.i18n.format("Property.InvalidArgMsg.SubCommand")); //$NON-NLS-1$
-		String propNameArg = requiredArgument(1, Messages.i18n.format("Property.InvalidArgMsg.PropertyName")); //$NON-NLS-1$
-		String propValueArg = null;
-		if ("set".equals(subcmdArg)) { //$NON-NLS-1$
-			propValueArg = requiredArgument(2, Messages.i18n.format("Property.InvalidArgMsg.PropertyValue")); //$NON-NLS-1$
-		}
+        super.execute();
 
-		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
-		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
-		if (artifact == null) {
+        BaseArtifactType artifact = getArtifact();
+        if (artifact == null) {
 			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
 			return false;
 		}
 
 		try {
-			if ("set".equals(subcmdArg)) { //$NON-NLS-1$
-				setProperty(artifact, propNameArg, propValueArg);
-				print(Messages.i18n.format("Property.PropertySet", propNameArg)); //$NON-NLS-1$
-			} else if ("unset".equals(subcmdArg)) { //$NON-NLS-1$
-				unsetProperty(artifact, propNameArg);
-				print(Messages.i18n.format("Property.PropertyUnset", propNameArg)); //$NON-NLS-1$
-			} else {
-				throw new InvalidCommandArgumentException(0, Messages.i18n.format("Property.InvalidSubCommand")); //$NON-NLS-1$
+            if (_set) { //$NON-NLS-1$
+                setProperty(artifact, _name, _value);
+                print(Messages.i18n.format("Property.PropertySet", _name)); //$NON-NLS-1$
+            } else if (_unset) { //$NON-NLS-1$
+                unsetProperty(artifact, _name);
+                print(Messages.i18n.format("Property.PropertyUnset", _name)); //$NON-NLS-1$
 			}
-		} catch (InvalidCommandArgumentException e) {
-			throw e;
 		} catch (Exception e) {
 			print(Messages.i18n.format("Property.Failure")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
@@ -91,11 +102,15 @@ public class PropertyCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * Sets a property on the artifact.
-	 * @param artifact
-	 * @param propName
-	 * @param propValue
-	 */
+     * Sets a property on the artifact.
+     *
+     * @param artifact
+     *            the artifact
+     * @param propName
+     *            the prop name
+     * @param propValue
+     *            the prop value
+     */
 	private void setProperty(BaseArtifactType artifact, String propName, String propValue) {
 		String propNameLC = propName.toLowerCase();
 		if (CORE_PROPERTIES.contains(propNameLC)) {
@@ -112,58 +127,25 @@ public class PropertyCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * Unsets a property on the artifact.
-	 * @param artifact
-	 * @param propName
-	 */
+     * Unsets a property on the artifact.
+     *
+     * @param artifact
+     *            the artifact
+     * @param propName
+     *            the prop name
+     */
 	private void unsetProperty(BaseArtifactType artifact, String propName) {
 		setProperty(artifact, propName, null);
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
-
-		if (getArguments().isEmpty()) {
-			if (lastArgument == null) {
-				candidates.add("set "); //$NON-NLS-1$
-				candidates.add("unset "); //$NON-NLS-1$
-				return 0;
-			} else if ("set".startsWith(lastArgument)) { //$NON-NLS-1$
-				candidates.add("set "); //$NON-NLS-1$
-				return 0;
-			} else if ("unset".startsWith(lastArgument)) { //$NON-NLS-1$
-				candidates.add("unset "); //$NON-NLS-1$
-				return 0;
-			}
-		} else if (getArguments().size() == 1 && (getArguments().contains("set") || getArguments().contains("unset"))) { //$NON-NLS-1$ //$NON-NLS-2$
-			BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
-			if (artifact != null) {
-				Set<String> props = new TreeSet<String>();
-				props.addAll(CORE_PROPERTIES);
-				props.addAll(getCustomPropertyNames(artifact));
-				String candidatePostfix = " "; //$NON-NLS-1$
-				if (getArguments().contains("unset")) { //$NON-NLS-1$
-					candidatePostfix = ""; //$NON-NLS-1$
-				}
-				for (String prop : props) {
-					if (lastArgument == null || prop.startsWith(lastArgument)) {
-						candidates.add(prop + candidatePostfix);
-					}
-				}
-				return 0;
-			}
-		}
-		return -1;
-	}
 
 	/**
-	 * Gets all the custom property names for the artifact.
-	 * @param artifact
-	 */
+     * Gets all the custom property names for the artifact.
+     *
+     * @param artifact
+     *            the artifact
+     * @return the custom property names
+     */
 	private Collection<String> getCustomPropertyNames(BaseArtifactType artifact) {
 		Set<String> props = new HashSet<String>();
 		for (Property prop : artifact.getProperty()) {
@@ -171,5 +153,140 @@ public class PropertyCommand extends BuiltInShellCommand {
 		}
 		return props;
 	}
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_PROPERTY;
+    }
+
+
+
+    /**
+     * Validates that the Property command is properly filled.
+     * 
+     * @author David Virgil Naranjo
+     */
+    public class CustomCommandValidator implements CommandValidator<PropertyCommand> {
+
+        /**
+         * Instantiates a new custom command validator.
+         */
+        public CustomCommandValidator() {
+
+        }
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.validator.CommandValidator#validate(org.jboss.aesh.console.command.Command)
+         */
+        @Override
+        public void validate(PropertyCommand command) throws CommandValidatorException {
+            /*
+             * try { command.validate(); } catch
+             * (InvalidCommandArgumentException e) { throw new
+             * CommandValidatorException(e.getMessage()); }
+             */
+            if (command._set && command._unset) {
+                throw new CommandValidatorException(Messages.i18n.format("Property.both.set.unset.true"));
+            } else if (!command._set && !command._unset) {
+                throw new CommandValidatorException(Messages.i18n.format("Property.no.set.unset.true"));
+            }
+            if (command._set) {
+                if (StringUtils.isBlank(command._value)) {
+                    throw new CommandValidatorException(
+                            Messages.i18n.format("Property.InvalidArgMsg.PropertyValue"));
+                }
+
+            }
+        }
+
+    }
+
+    /**
+     * Checks if is sets the.
+     *
+     * @return true, if is sets the
+     */
+    public boolean isSet() {
+        return _set;
+    }
+
+    /**
+     * Sets the sets the.
+     *
+     * @param set
+     *            the new sets the
+     */
+    public void setSet(boolean set) {
+        this._set = set;
+    }
+
+    /**
+     * Checks if is unset.
+     *
+     * @return true, if is unset
+     */
+    public boolean isUnset() {
+        return _unset;
+    }
+
+    /**
+     * Sets the unset.
+     *
+     * @param unset
+     *            the new unset
+     */
+    public void setUnset(boolean unset) {
+        this._unset = unset;
+    }
+
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
+    public String getValue() {
+        return _value;
+    }
+
+    /**
+     * Sets the value.
+     *
+     * @param value
+     *            the new value
+     */
+    public void setValue(String value) {
+        this._value = value;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
+
+    /**
+     * Sets the name.
+     *
+     * @param name
+     *            the new name
+     */
+    public void setName(String name) {
+        this._name = name;
+    }
 
 }

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jboss.aesh.console.command.invocation.CommandInvocation;
 import org.overlord.sramp.shell.api.AbstractShellCommand;
 
 /**
@@ -26,7 +27,7 @@ import org.overlord.sramp.shell.api.AbstractShellCommand;
  * particularly useful, but is rather a demonstration of a simple, custom
  * command that can be contributed to the S-RAMP interactive shell.
  */
-public class JvmStatusCommand extends AbstractShellCommand {
+public class JvmStatusCommand extends AbstractShellCommand<CommandInvocation> {
 
     /**
      * Constructor.
