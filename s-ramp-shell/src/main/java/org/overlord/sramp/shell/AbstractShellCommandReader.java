@@ -41,7 +41,7 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 	private final ShellCommandFactory factory;
     private Map<String, String> properties;
 
-    private final AeshPopulator aeshPopulator = new AeshPopulator();
+    private final AeshPopulator aeshPopulator = new AeshPopulator("/alias.txt");
 
 	/**
      * Constructor.

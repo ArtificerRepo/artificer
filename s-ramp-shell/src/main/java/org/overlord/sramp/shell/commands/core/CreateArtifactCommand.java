@@ -47,7 +47,7 @@ public class CreateArtifactCommand extends AbstractCoreShellCommand {
     private ArtifactType _artifactType;
 
     @Option(required = true, name = "name", hasValue = true, shortName = 'n')
-    private String _name;
+    private String _artifactName;
 
     @Option(hasValue = true, name = "description", shortName = 'd')
     private String _description;
@@ -83,7 +83,7 @@ public class CreateArtifactCommand extends AbstractCoreShellCommand {
             throw new InvalidCommandArgumentException(0, Messages.i18n.format("ArtifactModel.isDocument"));
         } else {
             BaseArtifactType artifact = _artifactType.newArtifactInstance();
-            artifact.setName(_name);
+            artifact.setName(_artifactName);
             artifact.setDescription(_description);
             artifact = client.createArtifact(artifact);
             // Put the artifact in the session as the active artifact
@@ -91,7 +91,7 @@ public class CreateArtifactCommand extends AbstractCoreShellCommand {
             getContext().setVariable(artifactVarName, artifact);
         }
 
-        print(Messages.i18n.format("CreateArtifactCommand.Successful", _name)); //$NON-NLS-1$
+        print(Messages.i18n.format("CreateArtifactCommand.Successful", _artifactName)); //$NON-NLS-1$
         return true;
     }
 
@@ -106,7 +106,7 @@ public class CreateArtifactCommand extends AbstractCoreShellCommand {
     /**
      * Completes the input string with the list of artifact types that match the
      * input.
-     * 
+     *
      * @author David Virgil Naranjo
      */
     private class ArtifactTypeCompleter implements OptionCompleter<CompleterInvocation> {
@@ -184,13 +184,21 @@ public class CreateArtifactCommand extends AbstractCoreShellCommand {
     }
 
     /**
-     * Sets the name.
-     *
-     * @param name
+     * Sets the artifact name.
+     * 
+     * @param artifactName
      *            the new name
      */
-    public void setName(String name) {
-        this._name = name;
+    public void setArtifactName(String artifactName) {
+        this._artifactName = artifactName;
     }
 
+    /**
+     * Gets the artifact name.
+     * 
+     * @return the description
+     */
+    public String getArtifactName() {
+        return _artifactName;
+    }
 }
