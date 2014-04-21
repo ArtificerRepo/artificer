@@ -25,6 +25,7 @@ import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.cl.completer.FileOptionCompleter;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
 
 
@@ -37,7 +38,7 @@ import org.overlord.sramp.shell.i18n.Messages;
 @CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_UPDATE_CONTENT, description = "Updates an artifact's content in the s-ramp repository")
 public class UpdateContentCommand extends AbstractCoreShellCommand {
 
-    @Option(hasValue = true, required = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class)
+    @Option(hasValue = true, required = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class, renderer = RequiredOptionRenderer.class)
     File _file;
 
     @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')

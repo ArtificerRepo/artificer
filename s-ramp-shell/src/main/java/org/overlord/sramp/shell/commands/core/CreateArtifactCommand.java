@@ -25,6 +25,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.aesh.converter.ExtendedArtifactTypeConverter;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.i18n.Messages;
@@ -43,10 +44,10 @@ public class CreateArtifactCommand extends AbstractCoreShellCommand {
 
 
 
-    @Option(required = true, name = "artifactType", hasValue = true, shortName = 't', converter = ExtendedArtifactTypeConverter.class, completer = ArtifactTypeCompleter.class)
+    @Option(required = true, name = "artifactType", hasValue = true, shortName = 't', converter = ExtendedArtifactTypeConverter.class, completer = ArtifactTypeCompleter.class, renderer = RequiredOptionRenderer.class)
     private ArtifactType _artifactType;
 
-    @Option(required = true, name = "name", hasValue = true, shortName = 'n')
+    @Option(required = true, name = "name", hasValue = true, shortName = 'n', renderer = RequiredOptionRenderer.class)
     private String _artifactName;
 
     @Option(hasValue = true, name = "description", shortName = 'd')
@@ -185,7 +186,7 @@ public class CreateArtifactCommand extends AbstractCoreShellCommand {
 
     /**
      * Sets the artifact name.
-     * 
+     *
      * @param artifactName
      *            the new name
      */
@@ -195,7 +196,7 @@ public class CreateArtifactCommand extends AbstractCoreShellCommand {
 
     /**
      * Gets the artifact name.
-     * 
+     *
      * @return the description
      */
     public String getArtifactName() {

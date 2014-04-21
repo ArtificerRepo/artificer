@@ -29,6 +29,7 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.aesh.validator.EntryFileNameValidator;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.api.ShellContext;
@@ -43,10 +44,10 @@ import org.overlord.sramp.shell.i18n.Messages;
 @CommandDefinition(name = ShellCommandConstants.Archive.ARCHIVE_COMMAND_UPDATE_ENTRY, validator = UpdateEntryArchiveCommand.CustomValidator.class, description = "Removes an entry from the current S-RAMP batch archive.")
 public class UpdateEntryArchiveCommand extends AbstractArchiveShellCommand {
 
-    @Option(required = true, name = "path", hasValue = true, shortName = 'e')
+    @Option(required = true, name = "path", hasValue = true, shortName = 'e', renderer = RequiredOptionRenderer.class)
     private String _path;
 
-    @Option(required = true, name = "fileName", hasValue = true, shortName = 'f', validator = EntryFileNameValidator.class)
+    @Option(required = true, name = "fileName", hasValue = true, shortName = 'f', validator = EntryFileNameValidator.class, renderer = RequiredOptionRenderer.class)
     private String _fileName;
 
     @Option(hasValue = false, name = "content", shortName = 'c')

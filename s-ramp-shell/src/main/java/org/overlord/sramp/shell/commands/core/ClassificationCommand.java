@@ -22,6 +22,7 @@ import org.jboss.aesh.cl.validator.CommandValidator;
 import org.jboss.aesh.cl.validator.CommandValidatorException;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
 
 
@@ -36,7 +37,7 @@ public class ClassificationCommand extends AbstractCoreShellCommand {
 
 
 
-    @Option(required = true, name = "classification", hasValue = true, shortName = 'c')
+    @Option(required = true, name = "classification", hasValue = true, shortName = 'c', renderer = RequiredOptionRenderer.class)
     private String _classification;
 
 

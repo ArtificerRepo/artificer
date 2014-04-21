@@ -18,6 +18,7 @@ package org.overlord.sramp.shell.commands.archive;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.cl.Option;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.aesh.validator.EntryFileNameValidator;
 import org.overlord.sramp.shell.i18n.Messages;
 
@@ -30,10 +31,10 @@ import org.overlord.sramp.shell.i18n.Messages;
 @CommandDefinition(name = ShellCommandConstants.Archive.ARCHIVE_COMMAND_REMOVE_ENTRY, description = "Adds an entry to the current S-RAMP batch archive.")
 public class RemoveEntryArchiveCommand extends AbstractArchiveShellCommand {
 
-    @Option(required = true, hasValue = true, name = "path", shortName = 'p')
+    @Option(required = true, hasValue = true, name = "path", shortName = 'p', renderer = RequiredOptionRenderer.class)
     private String _path;
 
-    @Option(required = true, hasValue = true, name = "fileName", shortName = 'f', validator = EntryFileNameValidator.class)
+    @Option(required = true, hasValue = true, name = "fileName", shortName = 'f', validator = EntryFileNameValidator.class, renderer = RequiredOptionRenderer.class)
     private String _fileName;
 
     @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')

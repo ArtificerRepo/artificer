@@ -22,6 +22,7 @@ import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.cl.Option;
 import org.jboss.aesh.cl.completer.FileOptionCompleter;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
 
 
@@ -33,7 +34,7 @@ import org.overlord.sramp.shell.i18n.Messages;
 @CommandDefinition(name = ShellCommandConstants.Archive.ARCHIVE_COMMAND_PACK, description = "Adds an entry to the current S-RAMP batch archive.")
 public class PackArchiveCommand extends AbstractArchiveShellCommand {
 
-    @Option(required = true, hasValue = true, name = "outputFile", shortName = 'f', completer = FileOptionCompleter.class)
+    @Option(required = true, hasValue = true, name = "outputFile", shortName = 'f', completer = FileOptionCompleter.class, renderer = RequiredOptionRenderer.class)
     private File _outputFile;
 
     @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')

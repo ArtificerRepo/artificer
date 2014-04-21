@@ -25,7 +25,7 @@ import org.overlord.sramp.shell.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-@CommandDefinition(name = ShellCommandConstants.Sramp.COMMAND_EXIT, description = "Exit from the shell")
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_EXIT, description = "Exit from the shell")
 public class ExitCommand extends BuiltInShellCommand {
 
 	/**

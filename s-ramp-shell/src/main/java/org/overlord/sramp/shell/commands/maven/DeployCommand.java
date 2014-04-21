@@ -49,6 +49,7 @@ import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.aesh.validator.FileValidator;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.i18n.Messages;
@@ -79,10 +80,10 @@ import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
 @CommandDefinition(name = ShellCommandConstants.Maven.MAVEN_COMMAND_DEPLOY, description = "Uploads a file to the S-RAMP repository as a new artifact.")
 public class DeployCommand extends BuiltInShellCommand {
 
-    @Option(required = true, hasValue = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class, validator = FileValidator.class)
+    @Option(required = true, hasValue = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class, validator = FileValidator.class, renderer = RequiredOptionRenderer.class)
     private File _file;
 
-    @Option(required = true, name = "gav", hasValue = true, shortName = 'g', validator = GavValidator.class)
+    @Option(required = true, name = "gav", hasValue = true, shortName = 'g', validator = GavValidator.class, renderer = RequiredOptionRenderer.class)
     private String _gav;
 
     @Option(hasValue = true, name = "artifactType", shortName = 't', completer = ArtifactTypeCompleter.class, converter = ArtifactTypeConverter.class)

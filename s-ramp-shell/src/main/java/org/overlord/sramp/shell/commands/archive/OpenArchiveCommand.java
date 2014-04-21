@@ -23,6 +23,7 @@ import org.jboss.aesh.cl.completer.FileOptionCompleter;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.shell.AbstractShellContextVariableLifecycleHandler;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
 
 /**
@@ -33,7 +34,7 @@ import org.overlord.sramp.shell.i18n.Messages;
 @CommandDefinition(name = ShellCommandConstants.Archive.ARCHIVE_COMMAND_OPEN, description = "Opens an existing S-RAMP batch archive.")
 public class OpenArchiveCommand extends AbstractArchiveShellCommand {
 
-    @Option(required = true, hasValue = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class)
+    @Option(required = true, hasValue = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class, renderer = RequiredOptionRenderer.class)
     private File _file;
 
     @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')

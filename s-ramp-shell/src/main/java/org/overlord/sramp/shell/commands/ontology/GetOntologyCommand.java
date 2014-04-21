@@ -30,6 +30,7 @@ import org.jboss.aesh.cl.validator.CommandValidatorException;
 import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
@@ -42,7 +43,7 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 @CommandDefinition(name = ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_GET, description = "Gets an ontology (and saves it to a local file).", validator = GetOntologyCommand.CustomValidator.class)
 public class GetOntologyCommand extends AbstractOntologyCommand {
 
-    @Option(hasValue = true, required = true, name = "outputFile", shortName = 'f', completer = FileOptionCompleter.class)
+    @Option(hasValue = true, required = true, name = "outputFile", shortName = 'f', completer = FileOptionCompleter.class, renderer = RequiredOptionRenderer.class)
     private File _outputFile;
 
     @Option(hasValue = true, name = "feedIndex", shortName = 'i', completer = OntologyCompleter.class)

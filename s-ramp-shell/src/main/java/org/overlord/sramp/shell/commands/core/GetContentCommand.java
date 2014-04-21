@@ -30,6 +30,7 @@ import org.jboss.aesh.cl.validator.CommandValidatorException;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.aesh.validator.FileDirectoryValidator;
 import org.overlord.sramp.shell.i18n.Messages;
 
@@ -44,7 +45,7 @@ public class GetContentCommand extends AbstractCoreShellCommand {
 
 
 
-    @Option(required = true, hasValue = true, name = "outputDirectory", shortName = 'd', completer = FileOptionCompleter.class, validator = FileDirectoryValidator.class)
+    @Option(required = true, hasValue = true, name = "outputDirectory", shortName = 'd', completer = FileOptionCompleter.class, validator = FileDirectoryValidator.class, renderer = RequiredOptionRenderer.class)
     private File _outputDirectory;
 
     @Option(required = false, hasValue = true, name = "feedIndex", shortName = 'f')
@@ -112,7 +113,7 @@ public class GetContentCommand extends AbstractCoreShellCommand {
 
     /**
      * Validates that the Get Content command is properly filled.
-     * 
+     *
      * @author David Virgil Naranjo
      */
     public class CustomCommandValidator implements CommandValidator<GetContentCommand> {

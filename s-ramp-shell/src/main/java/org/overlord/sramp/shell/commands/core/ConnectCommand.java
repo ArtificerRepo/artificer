@@ -23,6 +23,7 @@ import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.cl.Option;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
 
 
@@ -34,7 +35,7 @@ import org.overlord.sramp.shell.i18n.Messages;
 @CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_CONNECT, description = "Connect to a specific s-ramp instance")
 public class ConnectCommand extends AbstractCoreShellCommand {
 
-    @Option(hasValue = true, required = true, name = "url", shortName = 'U', defaultValue = { "http://localhost:8080/s-ramp-server" })
+    @Option(hasValue = true, required = true, name = "url", shortName = 'U', defaultValue = { "http://localhost:8080/s-ramp-server" }, renderer = RequiredOptionRenderer.class)
     private String _endpointUrl;
 
     @Option(hasValue = true, name = "username", shortName = 'u')

@@ -32,6 +32,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.aesh.validator.EntryFileNameValidator;
 import org.overlord.sramp.shell.i18n.Messages;
 
@@ -43,13 +44,13 @@ import org.overlord.sramp.shell.i18n.Messages;
 @CommandDefinition(name = ShellCommandConstants.Archive.ARCHIVE_COMMAND_ADD_ENTRY, description = "Adds an entry to the current S-RAMP batch archive.")
 public class AddEntryArchiveCommand extends AbstractArchiveShellCommand {
 
-    @Option(required = true, name = "path", hasValue = true, shortName = 'p')
+    @Option(required = true, name = "path", hasValue = true, shortName = 'p', renderer = RequiredOptionRenderer.class)
     private String _path;
 
-    @Option(required = true, name = "fileName", hasValue = true, shortName = 'f', validator = EntryFileNameValidator.class)
+    @Option(required = true, name = "fileName", hasValue = true, shortName = 'f', validator = EntryFileNameValidator.class, renderer = RequiredOptionRenderer.class)
     private String _fileName;
 
-    @Option(required = true, name = "artifactType", hasValue = true, shortName = 't', converter = BaseArtifactTypeConverter.class, completer = ArtifactTypeCompleter.class)
+    @Option(required = true, name = "artifactType", hasValue = true, shortName = 't', converter = BaseArtifactTypeConverter.class, completer = ArtifactTypeCompleter.class, renderer = RequiredOptionRenderer.class)
     private BaseArtifactType _artifactType;
 
     @Option(required = false, name = "content", hasValue = true, shortName = 'c', completer = FileOptionCompleter.class)

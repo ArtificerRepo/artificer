@@ -24,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.aesh.cl.CommandDefinition;
 import org.jboss.aesh.cl.Option;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
 
 
@@ -35,7 +36,7 @@ import org.overlord.sramp.shell.i18n.Messages;
 @CommandDefinition(name = ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_UPLOAD, description = "Uploads an ontology (S-RAMP OWL format) to the s-ramp repository.")
 public class UploadOntologyCommand extends AbstractOntologyCommand {
 
-    @Option(hasValue = true, name = "urlContent", required = true, shortName = 'u')
+    @Option(hasValue = true, name = "urlContent", required = true, shortName = 'u', renderer = RequiredOptionRenderer.class)
     private String _urlContent;
 
     @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')

@@ -30,6 +30,7 @@ import org.jboss.aesh.cl.validator.CommandValidatorException;
 import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
 
 
@@ -41,7 +42,7 @@ import org.overlord.sramp.shell.i18n.Messages;
 @CommandDefinition(name = ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_UPDATE, description = "Updates an ontology (S-RAMP OWL format).", validator = UpdateOntologyCommand.CustomValidator.class)
 public class UpdateOntologyCommand extends AbstractOntologyCommand {
 
-    @Option(hasValue = true, name = "file", required = true, shortName = 'f', completer = FileOptionCompleter.class)
+    @Option(hasValue = true, name = "file", required = true, shortName = 'f', completer = FileOptionCompleter.class, renderer = RequiredOptionRenderer.class)
     private File _file;
 
     @Option(hasValue = true, name = "feedIndex", shortName = 'i', completer = OntologyCompleter.class)

@@ -30,6 +30,7 @@ import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
 
 
@@ -43,7 +44,7 @@ public class QueryCommand extends AbstractCoreShellCommand {
 
 
 
-    @Option(required = true, hasValue = true, name = "query", shortName = 'q', completer = QueryCommand.QueryCompleter.class)
+    @Option(required = true, hasValue = true, name = "query", shortName = 'q', completer = QueryCommand.QueryCompleter.class, renderer = RequiredOptionRenderer.class)
     private String _query;
 
     @Option(overrideRequired = true, hasValue = false, name = "help", shortName = 'h')

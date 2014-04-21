@@ -29,6 +29,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchiveJaxbUtils;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.aesh.validator.FileDirectoryValidator;
 import org.overlord.sramp.shell.i18n.Messages;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
@@ -44,7 +45,7 @@ public class GetMetaDataCommand extends AbstractCoreShellCommand {
 
 
 
-    @Option(hasValue = true, name = "", shortName = 'd', completer = FileOptionCompleter.class, validator = FileDirectoryValidator.class)
+    @Option(hasValue = true, name = "", shortName = 'd', completer = FileOptionCompleter.class, validator = FileDirectoryValidator.class, renderer = RequiredOptionRenderer.class)
     private File _outputDirectory;
 
 
@@ -117,7 +118,7 @@ public class GetMetaDataCommand extends AbstractCoreShellCommand {
 
     /**
      * Validates that the Get MetaData command is properly filled.
-     * 
+     *
      * @author David Virgil Naranjo
      */
     public class CustomCommandValidator implements CommandValidator<GetMetaDataCommand> {

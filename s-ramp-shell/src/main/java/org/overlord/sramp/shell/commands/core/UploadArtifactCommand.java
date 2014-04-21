@@ -39,6 +39,7 @@ import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.aesh.converter.ExtendedDocumentArtifactTypeConverter;
 import org.overlord.sramp.shell.i18n.Messages;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
@@ -52,7 +53,7 @@ import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
 @CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_UPLOAD, validator = UploadArtifactCommand.CustomCommandValidator.class, description = "Upload an artifact to s-ramp")
 public class UploadArtifactCommand extends AbstractCoreShellCommand {
 
-    @Option(hasValue = true, required = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class)
+    @Option(hasValue = true, required = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class, renderer = RequiredOptionRenderer.class)
     private File file;
 
     @Option(hasValue = true, shortName = 't', name = "artifactType", converter = ExtendedDocumentArtifactTypeConverter.class, completer = DocumentArtifactTypeCompleter.class)
