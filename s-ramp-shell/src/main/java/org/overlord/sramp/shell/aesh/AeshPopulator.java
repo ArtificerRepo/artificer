@@ -16,10 +16,9 @@
 package org.overlord.sramp.shell.aesh;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,15 +91,12 @@ public class AeshPopulator {
      */
     private Map<String, String> getAliases(String file) {
         Map<String, String> aliases = new HashMap<String, String>();
-        File aliasFile = null;
+        InputStream inputFile = null;
+
+            inputFile = InteractiveShellCommandReader.class.getClassLoader().getResourceAsStream(file);
 
         try {
-            aliasFile = new File(InteractiveShellCommandReader.class.getResource(file).toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(aliasFile));
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputFile));
             String line = "";
             while ((line = br.readLine()) != null) {
                 if (StringUtils.isNotBlank(line)) {

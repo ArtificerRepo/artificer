@@ -16,7 +16,7 @@ public class AeshPopulatorTest {
 
     private final ShellContext context = new ShellContextImpl();
 
-    private final AeshPopulator aeshPopulator = new AeshPopulator("/alias.txt");
+    private final AeshPopulator aeshPopulator = new AeshPopulator("alias.txt");
 
 
     private void populateCreateCommand(String line) throws Exception {
