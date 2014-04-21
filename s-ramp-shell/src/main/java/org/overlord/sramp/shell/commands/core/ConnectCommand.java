@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,109 +15,247 @@
  */
 package org.overlord.sramp.shell.commands.core;
 
-import java.util.List;
+import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
 import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Connects to an s-ramp server.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ConnectCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_CONNECT, description = "Connect to a specific s-ramp instance")
+public class ConnectCommand extends AbstractCoreShellCommand {
 
+    @Option(hasValue = true, required = true, name = "url", shortName = 'U', defaultValue = { "http://localhost:8080/s-ramp-server" }, renderer = RequiredOptionRenderer.class)
+    private String _endpointUrl;
+
+    @Option(hasValue = true, name = "username", shortName = 'u')
+    private String _username;
+
+    @Option(hasValue = true, name = "password", shortName = 'p')
+    private String _password;
+
+    @Option(hasValue = false, name = "disableValidation", shortName = 'd')
+    private boolean _disableValidation;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
+
+    private boolean _validateConnection;
 	/**
 	 * Constructor.
 	 */
 	public ConnectCommand() {
+        _validateConnection = true;
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
-	@Override
-	public boolean execute() throws Exception {
-		String endpointUrlArg = this.requiredArgument(0, Messages.i18n.format("Connect.InvalidArgMsg.NoUrl")); //$NON-NLS-1$
-		String opt1 = this.optionalArgument(1);
-        String opt2 = this.optionalArgument(2);
-        String opt3 = this.optionalArgument(3);
-        String username = null;
-        String password = null;
-		String disableValidationOptionArg = null;
 
-		if (opt3 != null) {
-		    username = opt1;
-		    password = opt2;
-		    disableValidationOptionArg = opt3;
-		} else if (opt2 != null) {
-            username = opt1;
-            password = opt2;
-		} else {
-		    disableValidationOptionArg = opt1;
+    /**
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
+    @Override
+    public boolean execute() throws Exception {
+        super.execute();
+
+		if (_username == null) {
+		    _username = promptForUsername();
+		}
+		if (_password == null) {
+		    _password = promptForPassword();
 		}
 
-		if (username == null) {
-		    username = promptForUsername();
-		}
-		if (password == null) {
-		    password = promptForPassword();
-		}
-
-		boolean validating = !"--disableValidation".equals(disableValidationOptionArg); //$NON-NLS-1$
-		if (!endpointUrlArg.startsWith("http")) { //$NON-NLS-1$
-			endpointUrlArg = "http://" + endpointUrlArg; //$NON-NLS-1$
+        if (!_endpointUrl.startsWith("http")) { //$NON-NLS-1$
+            _endpointUrl = "http://" + _endpointUrl; //$NON-NLS-1$
 		}
 		QName varName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		try {
 			SrampAtomApiClient client = null;
-		    client = new SrampAtomApiClient(endpointUrlArg, username, password, validating);
+            if (_disableValidation) {
+                _validateConnection = false;
+            }
+            client = new SrampAtomApiClient(_endpointUrl, _username, _password, _validateConnection);
+
 			getContext().setVariable(varName, client);
-			print(Messages.i18n.format("Connect.Success", endpointUrlArg)); //$NON-NLS-1$
+            print(Messages.i18n.format("Connect.Success", _endpointUrl)); //$NON-NLS-1$
 		} catch (Exception e) {
-			print(Messages.i18n.format("Connect.Failure", endpointUrlArg)); //$NON-NLS-1$
+            print(Messages.i18n.format("Connect.Failure", _endpointUrl)); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
 	        return false;
 		}
         return true;
 	}
 
+
     /**
      * Prompts the user to enter a username for authentication credentials.
+     *
+     * @return the string
      */
     private String promptForUsername() {
         String username = System.getProperty("s-ramp.shell.username"); //$NON-NLS-1$
         if (username != null) {
             return username;
         }
-        return getContext().promptForInput(Messages.i18n.format("Connect.UserPrompt")); //$NON-NLS-1$
+        try {
+            username = promptForInput(Messages.i18n.format("Connect.UserPrompt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return username;
     }
 
     /**
      * Prompts the user to enter a password for authentication credentials.
+     *
+     * @return the string
      */
     private String promptForPassword() {
         String password = System.getProperty("s-ramp.shell.password"); //$NON-NLS-1$
         if (password != null) {
             return password;
         }
-        return getContext().promptForPassword(Messages.i18n.format("Connect.PasswordPrompt")); //$NON-NLS-1$
+        try {
+            password = promptForInput(Messages.i18n.format("Connect.PasswordPrompt"), '*');
+        } catch (IOException e) {
+            e.printStackTrace();
+        } //$NON-NLS-1$
+        return password;
     }
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty()) {
-			candidates.add("http://localhost:8080/s-ramp-server"); //$NON-NLS-1$
-			return 0;
-		} else {
-			return -1;
-		}
-	}
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_CONNECT;
+    }
+
+    /**
+     * Gets the endpoint url.
+     *
+     * @return the endpoint url
+     */
+    public String getEndpointUrl() {
+        return _endpointUrl;
+    }
+
+    /**
+     * Sets the endpoint url.
+     *
+     * @param endpointUrl
+     *            the new endpoint url
+     */
+    public void setEndpointUrl(String endpointUrl) {
+        this._endpointUrl = endpointUrl;
+    }
+
+    /**
+     * Gets the username.
+     *
+     * @return the username
+     */
+    public String getUsername() {
+        return _username;
+    }
+
+    /**
+     * Sets the username.
+     *
+     * @param username
+     *            the new username
+     */
+    public void setUsername(String username) {
+        this._username = username;
+    }
+
+    /**
+     * Gets the password.
+     *
+     * @return the password
+     */
+    public String getPassword() {
+        return _password;
+    }
+
+    /**
+     * Sets the password.
+     *
+     * @param password
+     *            the new password
+     */
+    public void setPassword(String password) {
+        this._password = password;
+    }
+
+    /**
+     * Checks if is disable validation.
+     *
+     * @return true, if is disable validation
+     */
+    public boolean isDisableValidation() {
+        return _disableValidation;
+    }
+
+    /**
+     * Sets the disable validation.
+     *
+     * @param disableValidation
+     *            the new disable validation
+     */
+    public void setDisableValidation(boolean disableValidation) {
+        this._disableValidation = disableValidation;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
+
+    /**
+     * Checks if is validate connection.
+     *
+     * @return true, if is validate connection
+     */
+    public boolean isValidateConnection() {
+        return _validateConnection;
+    }
+
+    /**
+     * Sets the validate connection.
+     *
+     * @param validateConnection
+     *            the new validate connection
+     */
+    public void setValidateConnection(boolean validateConnection) {
+        this._validateConnection = validateConnection;
+    }
 
 }

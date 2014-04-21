@@ -87,42 +87,52 @@ public class SrampShell {
 	 * @throws Exception
 	 */
 	public void run(String[] args) throws Exception {
-        reader = ShellCommandReaderFactory.createCommandReader(args, factory, context);
+
+		reader = ShellCommandReaderFactory.createCommandReader(args, factory, context);
         context.setReader(reader);
-        reader.open();
-		displayWelcomeMessage();
-		boolean done = false;
-		while (!done) {
-			ShellCommand command = null;
-			try {
-	            command = reader.read();
-				if (command == null) {
-					done = true;
-				} else {
-					boolean success = command.execute();
-					if (!success && reader.isBatch()) {
-					    System.exit(1);
-					}
-				}
-			} catch (InvalidCommandArgumentException e) {
-				System.out.println(Messages.i18n.format("Shell.INVALID_ARG", e.getMessage())); //$NON-NLS-1$
-				if (command != null) {
-    				System.out.println(Messages.i18n.format("Shell.USAGE")); //$NON-NLS-1$
-    				command.printUsage();
-				}
-				if (reader.isBatch())
-				    System.exit(1);
-			} catch (Exception e) {
-				e.printStackTrace(System.err);
-				if (reader.isBatch())
-				    System.exit(1);
-			}
-		}
+        if (!(reader instanceof InteractiveShellCommandReader)) {
+            reader.open();
+            displayWelcomeMessage();
+            boolean done = false;
+            while (!done) {
+                ShellCommand command = null;
+                try {
+                    command = reader.read();
+                    if (command == null) {
+                        done = true;
+                    } else {
+                        boolean success = command.execute();
+                        if (!success && reader.isBatch()) {
+                            System.exit(1);
+                        }
+                    }
+                } catch (InvalidCommandArgumentException e) {
+                    System.out.println(Messages.i18n.format("Shell.INVALID_ARG", e.getMessage())); //$NON-NLS-1$
+                    if (command != null) {
+                        System.out.println(Messages.i18n.format("Shell.USAGE")); //$NON-NLS-1$
+                        command.printUsage();
+                    }
+                    if (reader.isBatch())
+                        System.exit(1);
+                } catch (Exception e) {
+                    e.printStackTrace(System.err);
+                    if (reader.isBatch())
+                        System.exit(1);
+                }
+            }
+        } else {
+            // When it is in interactive mode calling the open method with the
+            // interactive shell
+            displayWelcomeMessage();
+
+            reader.open();
+        }
+
 	}
 
-	/**
-	 * Shuts down the shell.
-	 */
+    /*
+     * Shuts down the shell.
+     */
 	public void shutdown() {
 		System.out.print(Messages.i18n.format("Shell.SHUTTING_DOWN")); //$NON-NLS-1$
 		try { this.reader.close(); } catch (IOException e) { }

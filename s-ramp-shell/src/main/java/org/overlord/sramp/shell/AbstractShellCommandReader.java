@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
+import org.overlord.sramp.shell.aesh.AeshPopulator;
 import org.overlord.sramp.shell.api.Arguments;
 import org.overlord.sramp.shell.api.ShellCommand;
 import org.overlord.sramp.shell.api.ShellContext;
@@ -39,6 +40,8 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 	private final ShellContext context;
 	private final ShellCommandFactory factory;
     private Map<String, String> properties;
+
+    private final AeshPopulator aeshPopulator = new AeshPopulator("alias.txt");
 
 	/**
      * Constructor.
@@ -106,10 +109,11 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 		// Create the command.
 		ShellCommand command = factory.createCommand(commandName);
 		command.setContext(this.context);
-		command.setArguments(arguments);
+        aeshPopulator.populateCommand(command, line);
 		command.setOutput(getCommandOutput());
 		return command;
 	}
+
 
     /**
      * Filter the line using the properties attribute.

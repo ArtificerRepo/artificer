@@ -114,7 +114,7 @@
     <guava-gwt.version>14.0.1</guava-gwt.version>
     <picketbox.version>4.0.7.Final</picketbox.version>
     <picketlink.version>2.1.6.Final</picketlink.version>
-
+    <aesh.version>0.51</aesh.version>
     <!-- BOM Overrides -->
     <version.joda-time>2.1</version.joda-time>
 
@@ -418,6 +418,11 @@
         <artifactId>jline</artifactId>
         <version>${jline.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.aesh</groupId>
+        <artifactId>aesh</artifactId>
+        <version>${aesh.version}</version>
+      </dependency>
       <!-- ModeShape -->
       <dependency>
         <groupId>org.modeshape</groupId>
@@ -527,6 +532,7 @@
     <module>s-ramp-server-jetty8</module>
     <module>s-ramp-server-tomcat7</module>
     <module>s-ramp-shell</module>
+    <module>s-ramp-shell-jline</module>
     <module>s-ramp-shell-api</module>
     <module>s-ramp-ui</module>
     <module>s-ramp-wagon</module>
@@ -536,6 +542,7 @@
     <profile>
       <id>javadoc</id>
       <build>
+
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>

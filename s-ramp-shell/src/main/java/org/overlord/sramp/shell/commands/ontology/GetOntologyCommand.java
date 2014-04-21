@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,93 +16,85 @@
 package org.overlord.sramp.shell.commands.ontology;
 
 import java.io.File;
-import java.util.List;
+import java.io.IOException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
 
-import org.overlord.sramp.client.SrampAtomApiClient;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.completer.FileOptionCompleter;
+import org.jboss.aesh.cl.completer.OptionCompleter;
+import org.jboss.aesh.cl.validator.CommandValidator;
+import org.jboss.aesh.cl.validator.CommandValidatorException;
+import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.overlord.sramp.client.ontology.OntologySummary;
-import org.overlord.sramp.shell.BuiltInShellCommand;
-import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
-import org.overlord.sramp.shell.util.FileNameCompleter;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
+
 
 /**
  * Gets an ontology (and saves it to a local file).
  *
  * @author eric.wittmann@redhat.com
  */
-public class GetOntologyCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_GET, description = "Gets an ontology (and saves it to a local file).", validator = GetOntologyCommand.CustomValidator.class)
+public class GetOntologyCommand extends AbstractOntologyCommand {
 
-	/**
-	 * Constructor.
-	 */
+    @Option(hasValue = true, required = true, name = "outputFile", shortName = 'f', completer = FileOptionCompleter.class, renderer = RequiredOptionRenderer.class)
+    private File _outputFile;
+
+    @Option(hasValue = true, name = "feedIndex", shortName = 'i', completer = OntologyCompleter.class)
+    private Integer _feedIndex;
+
+    @Option(hasValue = true, name = "uuid", shortName = 'u')
+    private String _uuid;
+
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
+
+
+    /**
+     * Constructor.
+     */
 	public GetOntologyCommand() {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute() throws Exception {
-		String ontologyIdArg = this.requiredArgument(0, Messages.i18n.format("GetOntology.InvalidArgMsg.OntologyId")); //$NON-NLS-1$
-        String filePathArg = this.optionalArgument(1);
+        super.execute();
 
-		QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return false;
 		}
 
-		if (!ontologyIdArg.contains(":") || ontologyIdArg.endsWith(":")) { //$NON-NLS-1$ //$NON-NLS-2$
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidOntologyIdFormat")); //$NON-NLS-1$
-		}
-
-		File filePath = null;
-		if (filePathArg != null) {
-		    filePath = new File(filePathArg);
-		    if (filePath.exists()) {
-		        print(Messages.i18n.format("GetOntology.PathExists", filePath)); //$NON-NLS-1$
-		        return false;
-		    }
-		    if (filePath.getParentFile() != null && filePath.getParentFile().isFile()) {
-                print(Messages.i18n.format("GetOntology.InvalidOutputPath", filePath)); //$NON-NLS-1$
-                return false;
-		    }
-		}
 
 		String ontologyUuid = null;
-		int colonIdx = ontologyIdArg.indexOf(':');
-		String idType = ontologyIdArg.substring(0, colonIdx);
-		String idValue = ontologyIdArg.substring(colonIdx + 1);
-		if ("feed".equals(idType)) { //$NON-NLS-1$
-			List<OntologySummary> ontologies = (List<OntologySummary>) getContext().getVariable(feedVarName);
-			if (ontologies == null) {
-				throw new InvalidCommandArgumentException(0, Messages.i18n.format("DeleteOntology.NoOntologyFeed")); //$NON-NLS-1$
-			}
-			int feedIdx = Integer.parseInt(idValue) - 1;
-			if (feedIdx < 0 || feedIdx >= ontologies.size()) {
-                throw new InvalidCommandArgumentException(0, Messages.i18n.format("FeedIndexOutOfRange")); //$NON-NLS-1$
-			}
-			OntologySummary summary = ontologies.get(feedIdx);
-			ontologyUuid = summary.getUuid();
-		} else if ("uuid".equals(idType)) { //$NON-NLS-1$
-			ontologyUuid = idValue;
-		} else {
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidIdFormat")); //$NON-NLS-1$
-		}
+        if (_feedIndex != null) { //$NON-NLS-1$
+            OntologySummary ontology = getOntology(_feedIndex);
+            ontologyUuid = ontology.getUuid();
+        } else { //$NON-NLS-1$
+            ontologyUuid = _uuid;
+        }
 
 		try {
 			RDF ontology = client.getOntology(ontologyUuid);
 
-			if (filePathArg != null) {
-			    saveOntologyToFile(ontology, filePath);
+            if (_outputFile != null) {
+                saveOntologyToFile(ontology, _outputFile);
 			} else {
 			    printOntology(ontology);
 			}
@@ -115,8 +107,12 @@ public class GetOntologyCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * Outputs an RDF to stdout.
+     * Outputs an RDF to stdout.
+     *
      * @param ontology
+     *            the ontology
+     * @throws Exception
+     *             the exception
      */
     private void printOntology(RDF ontology) throws Exception {
         JAXBContext jaxbContext = JAXBContext.newInstance(RDF.class);
@@ -127,8 +123,13 @@ public class GetOntologyCommand extends BuiltInShellCommand {
 
     /**
      * Outputs an RDF to a file.
+     *
      * @param ontology
+     *            the ontology
      * @param filePath
+     *            the file path
+     * @throws Exception
+     *             the exception
      */
     private void saveOntologyToFile(RDF ontology, File filePath) throws Exception {
         JAXBContext jaxbContext = JAXBContext.newInstance(RDF.class);
@@ -138,34 +139,152 @@ public class GetOntologyCommand extends BuiltInShellCommand {
         print(Messages.i18n.format("GetOntology.OntologySaved", filePath.getCanonicalPath())); //$NON-NLS-1$
     }
 
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_GET;
+    }
+
     /**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
-			QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-			@SuppressWarnings("unchecked")
-			List<OntologySummary> ontologies = (List<OntologySummary>) getContext().getVariable(feedVarName);
-			if (ontologies != null) {
-				for (int idx = 0; idx < ontologies.size(); idx++) {
-					String candidate = "feed:" + (idx+1); //$NON-NLS-1$
-					if (lastArgument == null) {
-						candidates.add(candidate);
-					}
-					if (lastArgument != null && candidate.startsWith(lastArgument)) {
-						candidates.add(candidate);
-					}
-				}
-			}
-			return 0;
-        } else if (getArguments().size() == 1) {
-            if (lastArgument == null)
-                lastArgument = ""; //$NON-NLS-1$
-            FileNameCompleter delegate = new FileNameCompleter();
-            return delegate.complete(lastArgument, lastArgument.length(), candidates);
-		} else {
-			return -1;
-		}
-	}
+     * Validates that the Get Ontology command is properly filled.
+     *
+     * @author David Virgil Naranjo
+     */
+    public class CustomValidator implements CommandValidator<GetOntologyCommand> {
+
+        /**
+         * Instantiates a new custom validator.
+         */
+        public CustomValidator() {
+
+        }
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.validator.CommandValidator#validate(org.jboss.aesh.console.command.Command)
+         */
+        @Override
+        public void validate(GetOntologyCommand command) throws CommandValidatorException {
+            command.validateFeedOntology();
+            if (command._outputFile.exists()) {
+                try {
+                    throw new CommandValidatorException(Messages.i18n.format("GetOntology.PathExists",
+                            command._outputFile.getCanonicalPath()));
+                } catch (IOException e) {
+                    throw new CommandValidatorException(Messages.i18n.format("GetOntology.PathExists"));
+                }
+            }
+            if (command._outputFile.getParentFile() != null && command._outputFile.getParentFile().isFile()) {
+                try {
+                    throw new CommandValidatorException(Messages.i18n.format("GetOntology.InvalidOutputPath",
+                            command._outputFile.getCanonicalPath()));
+                } catch (IOException e) {
+                    throw new CommandValidatorException(Messages.i18n.format("GetOntology.InvalidOutputPath"));
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Completes the input string with the list of ontologies stored in s-ramp.
+     *
+     * @author David Virgil Naranjo
+     */
+    public class OntologyCompleter implements OptionCompleter<CompleterInvocation> {
+
+        /**
+         * Instantiates a new ontology completer.
+         */
+        public OntologyCompleter() {
+
+        }
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.completer.OptionCompleter#complete(org.jboss.aesh.console.command.completer.CompleterInvocation)
+         */
+        @Override
+        public void complete(CompleterInvocation completerInvocation) {
+            completeOntology(completerInvocation);
+        }
+
+    }
+
+
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.commands.ontology.AbstractOntologyCommand#getUuid()
+     */
+    @Override
+    public String getUuid() {
+        return _uuid;
+    }
+
+    /**
+     * Sets the uuid.
+     *
+     * @param uuid
+     *            the new uuid
+     */
+    public void setUuid(String uuid) {
+        this._uuid = uuid;
+    }
+
+    /**
+     * Gets the output file.
+     *
+     * @return the output file
+     */
+    public File getOutputFile() {
+        return _outputFile;
+    }
+
+    /**
+     * Sets the output file.
+     *
+     * @param outputFile
+     *            the new output file
+     */
+    public void setOutputFile(File outputFile) {
+        this._outputFile = outputFile;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.commands.ontology.AbstractOntologyCommand#getFeedIndex()
+     */
+    @Override
+    public Integer getFeedIndex() {
+        return _feedIndex;
+    }
+
+    /**
+     * Sets the feed index.
+     *
+     * @param feedIndex
+     *            the new feed index
+     */
+    public void setFeedIndex(Integer feedIndex) {
+        this._feedIndex = feedIndex;
+    }
+
 }

@@ -22,6 +22,22 @@
         <fileMode>0755</fileMode>
       </binaries>
     </moduleSet>
+    <moduleSet>
+      <useAllReactorProjects>true</useAllReactorProjects>
+      <includes>
+        <include>org.overlord.sramp:s-ramp-distro-shell-jline:*</include>
+      </includes>
+      <binaries>
+        <outputDirectory>bin</outputDirectory>
+        <attachmentClassifier>onejar</attachmentClassifier>
+        <includeDependencies>false</includeDependencies>
+        <unpack>false</unpack>
+        <outputFileNameMapping>s-ramp-shell-jline-${project.version}.jar</outputFileNameMapping>
+        <directoryMode>0755</directoryMode>
+        <fileMode>0755</fileMode>
+      </binaries>
+    </moduleSet>
+    
   </moduleSets>
   <dependencySets>
     <!-- Overlord Commons components -->

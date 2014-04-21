@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,49 @@
 package org.overlord.sramp.shell.commands.core;
 
 import java.io.File;
-import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.lang.StringUtils;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.completer.FileOptionCompleter;
+import org.jboss.aesh.cl.validator.CommandValidator;
+import org.jboss.aesh.cl.validator.CommandValidatorException;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchiveJaxbUtils;
-import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.client.query.ArtifactSummary;
-import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
-import org.overlord.sramp.shell.BuiltInShellCommand;
-import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
+import org.overlord.sramp.shell.aesh.validator.FileDirectoryValidator;
 import org.overlord.sramp.shell.i18n.Messages;
-import org.overlord.sramp.shell.util.FileNameCompleter;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
+
 
 /**
  * Gets the full meta-data for a single artifact in the s-ramp repo.
  *
  * @author eric.wittmann@redhat.com
  */
-public class GetMetaDataCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_GET_METADATA, validator = GetMetaDataCommand.CustomCommandValidator.class, description = "Gets the full meta-data for a single artifact in the s-ramp repo.")
+public class GetMetaDataCommand extends AbstractCoreShellCommand {
+
+
+
+    @Option(hasValue = true, name = "", shortName = 'd', completer = FileOptionCompleter.class, validator = FileDirectoryValidator.class, renderer = RequiredOptionRenderer.class)
+    private File _outputDirectory;
+
+
+    private BaseArtifactType _artifact;
+
+    @Option(required = false, name = "feedIndex", hasValue = true, shortName = 'f')
+    private Integer _feedIndex;
+
+    @Option(required = false, name = "uuid", hasValue = true, shortName = 'u')
+    private String _uuid;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 
 	/**
 	 * Constructor.
@@ -46,94 +67,176 @@ public class GetMetaDataCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		String artifactIdArg = this.requiredArgument(0, Messages.i18n.format("InvalidArgMsg.ArtifactId")); //$NON-NLS-1$
-		String outputFilePathArg = this.optionalArgument(1);
-		if (!artifactIdArg.contains(":")) { //$NON-NLS-1$
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
-		}
-		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
-		if (client == null) {
+        super.execute();
+
+        if (client == null) {
 			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return false;
 		}
 
-		BaseArtifactType artifact = null;
-		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
-		if ("feed".equals(idType)) { //$NON-NLS-1$
-			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
-			int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
-			if (feedIdx < 0 || feedIdx >= rset.size()) {
-                throw new InvalidCommandArgumentException(0, Messages.i18n.format("FeedIndexOutOfRange")); //$NON-NLS-1$
-			}
-			ArtifactSummary summary = rset.get(feedIdx);
-			String artifactUUID = summary.getUuid();
-			artifact = client.getArtifactMetaData(summary.getType(), artifactUUID);
-		} else if ("uuid".equals(idType)) { //$NON-NLS-1$
-			String artifactUUID = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
-            artifact = client.getArtifactMetaData(artifactUUID);
-		} else {
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
-		}
+        _artifact = getArtifact(_feedIndex, _uuid);
 
 		// Store the artifact in the context, making it the active artifact.
 		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
-		getContext().setVariable(artifactVarName, artifact);
+		getContext().setVariable(artifactVarName, _artifact);
 
-		if (outputFilePathArg == null) {
+		if (_outputDirectory == null) {
 			// Print out the meta-data information
-			print(Messages.i18n.format("GetMetaData.MetaDataLabel", artifact.getUuid())); //$NON-NLS-1$
+			print(Messages.i18n.format("GetMetaData.MetaDataLabel", _artifact.getUuid())); //$NON-NLS-1$
 			print("--------------"); //$NON-NLS-1$
 			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
-			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+			ArtifactVisitorHelper.visitArtifact(visitor, _artifact);
 		} else {
-			File outFile = new File(outputFilePathArg);
-			if (outFile.isFile()) {
-				throw new InvalidCommandArgumentException(1, Messages.i18n.format("GetMetaData.OutputFileExists", outFile.getCanonicalPath())); //$NON-NLS-1$
-			} else if (outFile.isDirectory()) {
-				String fileName = artifact.getName() + "-metadata.xml"; //$NON-NLS-1$
-				outFile = new File(outFile, fileName);
-			}
-			outFile.getParentFile().mkdirs();
-			SrampArchiveJaxbUtils.writeMetaData(outFile, artifact, false);
-			print(Messages.i18n.format("GetMetaData.SavedTo", outFile.getCanonicalPath())); //$NON-NLS-1$
+            String fileName = _artifact.getName() + "-metadata.xml"; //$NON-NLS-1$
+            _outputDirectory = new File(_outputDirectory, fileName);
+
+            _outputDirectory.getParentFile().mkdirs();
+			SrampArchiveJaxbUtils.writeMetaData(_outputDirectory, _artifact, false);
+			print(Messages.i18n.format("GetMetaData.SavedTo", _outputDirectory.getCanonicalPath())); //$NON-NLS-1$
 		}
         return true;
 	}
 
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_GET_METADATA;
+    }
+
+
     /**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
-			QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
-			if (rset != null) {
-				for (int idx = 0; idx < rset.size(); idx++) {
-					String candidate = "feed:" + (idx+1); //$NON-NLS-1$
-					if (lastArgument == null) {
-						candidates.add(candidate);
-					}
-					if (lastArgument != null && candidate.startsWith(lastArgument)) {
-						candidates.add(candidate);
-					}
-				}
-			}
-			return 0;
-		} else if (getArguments().size() == 1) {
-			if (lastArgument == null)
-				lastArgument = ""; //$NON-NLS-1$
-			FileNameCompleter delegate = new FileNameCompleter();
-			return delegate.complete(lastArgument, lastArgument.length(), candidates);
-		} else {
-			return -1;
-		}
-	}
+     * Validates that the Get MetaData command is properly filled.
+     *
+     * @author David Virgil Naranjo
+     */
+    public class CustomCommandValidator implements CommandValidator<GetMetaDataCommand> {
+
+        /**
+         * Instantiates a new custom command validator.
+         */
+        public CustomCommandValidator() {
+
+        }
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.validator.CommandValidator#validate(org.jboss.aesh.console.command.Command)
+         */
+        @Override
+        public void validate(GetMetaDataCommand command) throws CommandValidatorException {
+            if (StringUtils.isBlank(command.getUuid()) && command.getFeedIndex() == null) {
+                throw new CommandValidatorException(Messages.i18n.format("Artifact.feed.no.option.selected"));
+
+            } else if (!StringUtils.isBlank(command.getUuid()) && command.getFeedIndex() != null) {
+                throw new CommandValidatorException(
+                        Messages.i18n.format("Artifact.feed.both.option.selected"));
+            }
+
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
+
+    /**
+     * Gets the output directory.
+     *
+     * @return the output directory
+     */
+    public File getOutputDirectory() {
+        return _outputDirectory;
+    }
+
+    /**
+     * Sets the output directory.
+     *
+     * @param outputDirectory
+     *            the new output directory
+     */
+    public void setOutputDirectory(File outputDirectory) {
+        this._outputDirectory = outputDirectory;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.commands.core.AbstractCoreShellCommand#getArtifact()
+     */
+    @Override
+    public BaseArtifactType getArtifact() {
+        return _artifact;
+    }
+
+    /**
+     * Sets the artifact.
+     *
+     * @param artifact
+     *            the new artifact
+     */
+    public void setArtifact(BaseArtifactType artifact) {
+        this._artifact = artifact;
+    }
+
+    /**
+     * Gets the feed index.
+     *
+     * @return the feed index
+     */
+    public Integer getFeedIndex() {
+        return _feedIndex;
+    }
+
+    /**
+     * Sets the feed index.
+     *
+     * @param feedIndex
+     *            the new feed index
+     */
+    public void setFeedIndex(Integer feedIndex) {
+        this._feedIndex = feedIndex;
+    }
+
+    /**
+     * Gets the uuid.
+     *
+     * @return the uuid
+     */
+    public String getUuid() {
+        return _uuid;
+    }
+
+    /**
+     * Sets the uuid.
+     *
+     * @param uuid
+     *            the new uuid
+     */
+    public void setUuid(String uuid) {
+        this._uuid = uuid;
+    }
 
 }

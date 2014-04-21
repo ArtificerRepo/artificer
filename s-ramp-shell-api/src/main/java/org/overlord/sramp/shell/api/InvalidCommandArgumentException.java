@@ -34,6 +34,13 @@ public class InvalidCommandArgumentException extends Exception {
 		this.setArgumentIndex(argumentIndex);
 	}
 
+        /**
+         * Constructor.
+         */
+        public InvalidCommandArgumentException(String message) {
+                super(message);
+        }
+
 	/**
 	 * @return the argumentIndex
 	 */

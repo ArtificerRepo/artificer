@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,34 +17,42 @@ package org.overlord.sramp.shell.commands.ontology;
 
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
-import org.overlord.sramp.client.SrampAtomApiClient;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
 import org.overlord.sramp.client.ontology.OntologySummary;
-import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Lists all ontologies in the S-RAMP repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ListOntologiesCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_LIST, description = "Lists all ontologies in the S-RAMP repository.")
+public class ListOntologiesCommand extends AbstractOntologyCommand {
 
-	/**
-	 * Constructor.
-	 */
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
+
+    /**
+     * Constructor.
+     */
 	public ListOntologiesCommand() {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
+        super.execute();
+
 		if (client == null) {
 			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return false;
@@ -52,12 +60,12 @@ public class ListOntologiesCommand extends BuiltInShellCommand {
 		try {
 			List<OntologySummary> ontologies = client.getOntologies();
 			print(Messages.i18n.format("ListOntologies.Summary", ontologies.size())); //$NON-NLS-1$
-			print("  Idx  " + Messages.i18n.format("ListOntologies.Base")); //$NON-NLS-1$ //$NON-NLS-2$
-			print("  ---  ----"); //$NON-NLS-1$
+            print("  Idx                                  UUID  " + Messages.i18n.format("ListOntologies.Base")); //$NON-NLS-1$ //$NON-NLS-2$
+            print("  ---                                  ----  ----"); //$NON-NLS-1$
 			int idx = 1;
 			for (OntologySummary ontology : ontologies) {
 				String base = ontology.getBase();
-				print("  %1$3d  %2$s", idx++, base); //$NON-NLS-1$
+                print("  %1$3d %2$37s %3$s", idx++, ontology.getUuid(), base); //$NON-NLS-1$
 			}
 
 			getContext().setVariable(feedVarName, ontologies);
@@ -68,4 +76,31 @@ public class ListOntologiesCommand extends BuiltInShellCommand {
 		}
         return true;
 	}
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_LIST;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
+
 }

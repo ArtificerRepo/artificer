@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,16 @@
  */
 package org.overlord.sramp.shell.commands.core;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.xml.namespace.QName;
-
+import org.apache.commons.lang.StringUtils;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.validator.CommandValidator;
+import org.jboss.aesh.cl.validator.CommandValidatorException;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.shell.BuiltInShellCommand;
-import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Command used to manipulate classifications on the currently active S-RAMP artifact.  This command
@@ -33,14 +32,26 @@ import org.overlord.sramp.shell.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ClassificationCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_CLASSIFICATION, validator = ClassificationCommand.ClassificationCommandValidator.class, description = "Command used to manipulate classifications on the currently active S-RAMP artifact.")
+public class ClassificationCommand extends AbstractCoreShellCommand {
 
-	private static final Set<String> subcommands = new HashSet<String>();
-	{
-		subcommands.add("add"); //$NON-NLS-1$
-		subcommands.add("remove"); //$NON-NLS-1$
-		subcommands.add("clear"); //$NON-NLS-1$
-	}
+
+
+    @Option(required = true, name = "classification", hasValue = true, shortName = 'c', renderer = RequiredOptionRenderer.class)
+    private String _classification;
+
+
+    @Option(hasValue = false, name = "add", shortName = 'a')
+    private boolean _add;
+
+    @Option(hasValue = false, name = "remove", shortName = 'r')
+    private boolean _remove;
+
+    @Option(hasValue = false, name = "clear", shortName = 'C')
+    private boolean _clear;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 
 	/**
 	 * Constructor.
@@ -49,35 +60,34 @@ public class ClassificationCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		String subcmdArg = requiredArgument(0, Messages.i18n.format("Classification.InvalidArgMsg")); //$NON-NLS-1$
-		String classificationArg = null;
-		if ("add".equals(subcmdArg) || "remove".equals(subcmdArg)) { //$NON-NLS-1$ //$NON-NLS-2$
-			classificationArg = requiredArgument(1, Messages.i18n.format("Classification.InvalidArgMsg.ClassificationUri")); //$NON-NLS-1$
-		}
-
-		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
-		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
-		if (artifact == null) {
-			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
-			return false;
-		}
+        super.execute();
+        BaseArtifactType artifact = getArtifact();
+        if (artifact == null) {
+            print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
+            return false;
+        }
 
 		try {
-			if ("add".equals(subcmdArg)) { //$NON-NLS-1$
-				artifact.getClassifiedBy().add(classificationArg);
-				print(Messages.i18n.format("Classification.ClassificationAdded", classificationArg)); //$NON-NLS-1$
-			} else if ("remove".equals(subcmdArg)) { //$NON-NLS-1$
-				if (artifact.getClassifiedBy().remove(classificationArg)) {
-					print(Messages.i18n.format("Classification.ClassificationRemoved"), classificationArg); //$NON-NLS-1$
+            if (_add) { //$NON-NLS-1$
+                artifact.getClassifiedBy().add(_classification);
+                print(Messages.i18n.format("Classification.ClassificationAdded", _classification)); //$NON-NLS-1$
+            } else if (_remove) { //$NON-NLS-1$
+                if (artifact.getClassifiedBy().remove(_classification)) {
+                    print(Messages.i18n.format("Classification.ClassificationRemoved"), _classification); //$NON-NLS-1$
 				} else {
-					print(Messages.i18n.format("Classification.ClassificationDoesNotExist"), classificationArg); //$NON-NLS-1$
+                    print(Messages.i18n.format("Classification.ClassificationDoesNotExist"), _classification); //$NON-NLS-1$
 					return false;
 				}
-			} else if ("clear".equals(subcmdArg)) { //$NON-NLS-1$
+            } else if (_clear) { //$NON-NLS-1$
 				if (!artifact.getClassifiedBy().isEmpty()) {
 					artifact.getClassifiedBy().clear();
 					print(Messages.i18n.format("Classification.AllRemoved")); //$NON-NLS-1$
@@ -85,12 +95,8 @@ public class ClassificationCommand extends BuiltInShellCommand {
 					print(Messages.i18n.format("Classification.NoneExist")); //$NON-NLS-1$
 					return false;
 				}
-			} else {
-				throw new InvalidCommandArgumentException(0, Messages.i18n.format("Classification.InvalidSubCommand")); //$NON-NLS-1$
 			}
-		} catch (InvalidCommandArgumentException e) {
-			throw e;
-		} catch (Exception e) {
+        } catch (Exception e) {
 			print(Messages.i18n.format("Classification.ModificationFailed")); //$NON-NLS-1$
 			print("\t" + e.getMessage()); //$NON-NLS-1$
 			return false;
@@ -99,34 +105,146 @@ public class ClassificationCommand extends BuiltInShellCommand {
 		return true;
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		if (getArguments().isEmpty()) {
-			for (String subcmd : subcommands) {
-				if (lastArgument == null || subcmd.startsWith(lastArgument)) {
-					candidates.add(subcmd + " "); //$NON-NLS-1$
-				}
-			}
-			return 0;
-		} else if (getArguments().size() == 1 && getArguments().contains("remove")) { //$NON-NLS-1$
-			BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
-			if (artifact != null) {
-				Set<String> classifications = new TreeSet<String>();
-				classifications.addAll(artifact.getClassifiedBy());
-				for (String classification : classifications) {
-					if (lastArgument == null || classification.startsWith(lastArgument)) {
-						candidates.add(classification);
-					}
-				}
-				return 0;
-			}
-		}
-		return -1;
-	}
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_CLASSIFICATION;
+    }
+
+    /**
+     * Validates that the Classification command is properly filled.
+     *
+     * @author David Virgil Naranjo
+     */
+    public class ClassificationCommandValidator implements CommandValidator<ClassificationCommand> {
+
+        /**
+         * Instantiates a new classification command validator.
+         */
+        public ClassificationCommandValidator() {
+
+        }
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.validator.CommandValidator#validate(org.jboss.aesh.console.command.Command)
+         */
+        @Override
+        public void validate(ClassificationCommand command) throws CommandValidatorException {
+            if (!_add && !_remove && !_clear) {
+                throw new CommandValidatorException(
+                        Messages.i18n.format("Classification.InvalidArgMsg.No.Subcommand"));
+            } else if ((_add && _remove) || (_add && _clear) || (_remove && _clear)) {
+                throw new CommandValidatorException(
+                        Messages.i18n.format("Classification.InvalidArgMsg.Only.One.Action"));
+            }
+
+            if (_add || _remove) {
+                if (StringUtils.isBlank(command._classification)) {
+                    throw new CommandValidatorException(
+                            Messages.i18n.format("Classification.InvalidArgMsg.ClassificationUri"));
+                }
+            }
+
+
+        }
+    }
+
+    /**
+     * Gets the classification.
+     *
+     * @return the classification
+     */
+    public String getClassification() {
+        return _classification;
+    }
+
+    /**
+     * Sets the classification.
+     *
+     * @param classification
+     *            the new classification
+     */
+    public void setClassification(String classification) {
+        this._classification = classification;
+    }
+
+    /**
+     * Checks if is adds the.
+     *
+     * @return true, if is adds the
+     */
+    public boolean isAdd() {
+        return _add;
+    }
+
+    /**
+     * Sets the adds the.
+     *
+     * @param add
+     *            the new adds the
+     */
+    public void setAdd(boolean add) {
+        this._add = add;
+    }
+
+    /**
+     * Checks if is removes the.
+     *
+     * @return true, if is removes the
+     */
+    public boolean isRemove() {
+        return _remove;
+    }
+
+    /**
+     * Sets the removes the.
+     *
+     * @param remove
+     *            the new removes the
+     */
+    public void setRemove(boolean remove) {
+        this._remove = remove;
+    }
+
+    /**
+     * Checks if is clear.
+     *
+     * @return true, if is clear
+     */
+    public boolean isClear() {
+        return _clear;
+    }
+
+    /**
+     * Sets the clear.
+     *
+     * @param clear
+     *            the new clear
+     */
+    public void setClear(boolean clear) {
+        this._clear = clear;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
 
 }

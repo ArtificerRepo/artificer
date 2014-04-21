@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,40 @@
  */
 package org.overlord.sramp.shell.commands.core;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
-import org.overlord.sramp.client.SrampAtomApiClient;
+import org.apache.commons.lang.StringUtils;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.completer.OptionCompleter;
+import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.shell.BuiltInShellCommand;
-import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Performs a query against the s-ramp server and displays the result.
  *
  * @author eric.wittmann@redhat.com
  */
-public class QueryCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_QUERY, description = "Performs a query against the s-ramp server and displays the result.")
+public class QueryCommand extends AbstractCoreShellCommand {
+
+
+
+    @Option(required = true, hasValue = true, name = "query", shortName = 'q', completer = QueryCommand.QueryCompleter.class, renderer = RequiredOptionRenderer.class)
+    private String _query;
+
+    @Option(overrideRequired = true, hasValue = false, name = "help", shortName = 'h')
+    private boolean _help;
 
 	/**
 	 * Constructor.
@@ -44,42 +57,40 @@ public class QueryCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		String queryArg = this.requiredArgument(0, Messages.i18n.format("Query.InvalidArgMsg.MissingQuery")); //$NON-NLS-1$
-		String tooManyArgs = this.optionalArgument(1);
-		if (tooManyArgs != null) {
-            throw new InvalidCommandArgumentException(1, Messages.i18n.format("Query.TooManyArgs")); //$NON-NLS-1$
-		}
+        super.execute();
 
-		// Get the client out of the context and exec the query
-		QName varName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(varName);
-		if (client == null) {
+        if (client == null) {
 			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return false;
 		}
-		if (queryArg.endsWith("/")) { //$NON-NLS-1$
-			queryArg = queryArg.substring(0, queryArg.length() - 1);
+        if (_query.endsWith("/")) { //$NON-NLS-1$
+            _query = _query.substring(0, _query.length() - 1);
 		}
 
 		print(Messages.i18n.format("Query.Querying")); //$NON-NLS-1$
-		print("\t" + queryArg); //$NON-NLS-1$
+        print("\t" + _query); //$NON-NLS-1$
 		try {
-    		QueryResultSet rset = client.query(queryArg, 0, 100, "uuid", true); //$NON-NLS-1$
+            QueryResultSet rset = client.query(_query, 0, 100, "uuid", true); //$NON-NLS-1$
     		int entryIndex = 1;
     		print(Messages.i18n.format("Query.AtomFeedSummary", rset.size())); //$NON-NLS-1$
-    		print("  Idx                    Type Name"); //$NON-NLS-1$
-    		print("  ---                    ---- ----"); //$NON-NLS-1$
+            print("  Idx                                  UUID                    Type Name"); //$NON-NLS-1$
+            print("  ---                                  ----                    ---- ----"); //$NON-NLS-1$
     		for (ArtifactSummary summary : rset) {
     			ArtifactType type = summary.getType();
     			String displayType = type.getArtifactType().getType().toString();
     			if (type.isExtendedType() && type.getExtendedType() != null) {
     			    displayType = type.getExtendedType();
     			}
-                print("  %1$3d %2$23s %3$-40s", entryIndex++, displayType, //$NON-NLS-1$
+                print("  %1$3d %2$37s %3$23s %4$-40s", entryIndex++, summary.getUuid(), displayType, //$NON-NLS-1$
     					summary.getName());
     		}
     		getContext().setVariable(new QName("s-ramp", "feed"), rset); //$NON-NLS-1$ //$NON-NLS-2$
@@ -91,74 +102,122 @@ public class QueryCommand extends BuiltInShellCommand {
         return true;
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty()) {
-			if (lastArgument == null) {
-				candidates.add("\"/s-ramp/"); //$NON-NLS-1$
-				return 0;
-			} else {
-				String [] split = lastArgument.split("/"); //$NON-NLS-1$
-				if (split.length == 0 || split.length == 1 || (split.length == 2 && !lastArgument.endsWith("/"))) { //$NON-NLS-1$
-					candidates.add("\"/s-ramp/"); //$NON-NLS-1$
-					return 0;
-				}
-				// All artifact models
-				if (lastArgument.equals("/s-ramp/")) { //$NON-NLS-1$
-					Set<String> modelCandidates = new TreeSet<String>();
-					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
-						modelCandidates.add(t.getModel());
-					}
-					candidates.addAll(modelCandidates);
-					return lastArgument.length();
-				}
-				// Artifact models matching the partial value
-				if (split.length == 3 && !lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
-					String partialModel = split[2];
-					Set<String> modelCandidates = new TreeSet<String>();
-					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
-						if (t.getModel().startsWith(partialModel))
-							modelCandidates.add(t.getModel());
-					}
-					if (modelCandidates.size() == 1) {
-						candidates.add(modelCandidates.iterator().next() + "/"); //$NON-NLS-1$
-					} else {
-						candidates.addAll(modelCandidates);
-					}
+    /**
+     * Completes the query input string with the different possibilites allowed
+     * in the shell.
+     *
+     * @author David Virgil Naranjo
+     */
+    private class QueryCompleter implements OptionCompleter<CompleterInvocation> {
 
-					return lastArgument.length() - partialModel.length();
-				}
-				// All artifact types
-				if (split.length == 3 && lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
-					String model = split[2];
-					Set<String> typeCandidates = new TreeSet<String>();
-					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
-						if (t.getModel().equals(model)) {
-							typeCandidates.add(t.getType());
-						}
-					}
-					candidates.addAll(typeCandidates);
-					return lastArgument.length();
-				}
-				// Artifact types matching the partial value
-				if (split.length == 4 && !lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
-					String model = split[2];
-					String partialType = split[3];
-					Set<String> typeCandidates = new TreeSet<String>();
-					for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
-						if (t.getModel().equals(model) && t.getType().startsWith(partialType)) {
-							typeCandidates.add(t.getType());
-						}
-					}
-					candidates.addAll(typeCandidates);
-					return lastArgument.length() - partialType.length();
-				}
-			}
-		}
-		return -1;
-	}
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.completer.OptionCompleter#complete(org.jboss.aesh.console.command.completer.CompleterInvocation)
+         */
+        @Override
+        public void complete(CompleterInvocation completerInvocation) {
+            String query = completerInvocation.getGivenCompleteValue();
+
+            if (StringUtils.isBlank(query)) {
+                completerInvocation.addCompleterValue("\"/s-ramp/"); //$NON-NLS-1$
+            } else {
+                String[] split = query.split("/"); //$NON-NLS-1$
+                if (split.length == 0 || split.length == 1 || (split.length == 2 && !query.endsWith("/"))) { //$NON-NLS-1$
+                    completerInvocation.addCompleterValue("\"/s-ramp/"); //$NON-NLS-1$
+                }
+                // All artifact models
+                if (query.equals("/s-ramp/")) { //$NON-NLS-1$
+                    List<String> modelCandidates = new ArrayList<String>();
+                    for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+                        modelCandidates.add(t.getModel());
+                    }
+                    completerInvocation.addAllCompleterValues(modelCandidates);
+                }
+                // Artifact models matching the partial value
+                if (split.length == 3 && !query.endsWith("/") && query.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    String partialModel = split[2];
+                    List<String> modelCandidates = new ArrayList<String>();
+                    for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+                        if (t.getModel().startsWith(partialModel))
+                            modelCandidates.add(t.getModel());
+                    }
+                    if (modelCandidates.size() == 1) {
+                        completerInvocation.addCompleterValue(modelCandidates.iterator().next() + "/"); //$NON-NLS-1$
+                    } else {
+                        completerInvocation.addAllCompleterValues(modelCandidates);
+                    }
+                }
+                // All artifact types
+                if (split.length == 3 && query.endsWith("/") && query.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    String model = split[2];
+                    List<String> typeCandidates = new ArrayList<String>();
+                    for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+                        if (t.getModel().equals(model)) {
+                            typeCandidates.add(t.getType());
+                        }
+                    }
+                    completerInvocation.addAllCompleterValues(typeCandidates);
+                }
+                // Artifact types matching the partial value
+                if (split.length == 4 && !query.endsWith("/") && query.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    String model = split[2];
+                    String partialType = split[3];
+                    List<String> typeCandidates = new ArrayList<String>();
+                    for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+                        if (t.getModel().equals(model) && t.getType().startsWith(partialType)) {
+                            typeCandidates.add(t.getType());
+                        }
+                    }
+                    completerInvocation.addAllCompleterValues(typeCandidates);
+
+                }
+            }
+        }
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_QUERY;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
+
+    /**
+     * Gets the query.
+     *
+     * @return the query
+     */
+    public String getQuery() {
+        return _query;
+    }
+
+    /**
+     * Sets the query.
+     *
+     * @param query
+     *            the new query
+     */
+    public void setQuery(String query) {
+        this._query = query;
+    }
 
 }

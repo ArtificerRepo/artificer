@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@ package org.overlord.sramp.shell.commands.core;
 
 import javax.xml.namespace.QName;
 
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Displays a summary of the current status, including what repository the
@@ -30,7 +32,11 @@ import org.overlord.sramp.shell.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class StatusCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_STATUS, description = "Displays a summary of the current status")
+public class StatusCommand extends AbstractCoreShellCommand {
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 
 	/**
 	 * Constructor.
@@ -39,15 +45,21 @@ public class StatusCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
+        super.execute();
+
+        QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
 		QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
+
 		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
 		QueryResultSet feed = (QueryResultSet) getContext().getVariable(feedVarName);
 
@@ -71,5 +83,31 @@ public class StatusCommand extends BuiltInShellCommand {
 		}
         return true;
 	}
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_STATUS;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
 
 }

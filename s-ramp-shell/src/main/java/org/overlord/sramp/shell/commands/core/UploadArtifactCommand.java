@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,34 +17,50 @@ package org.overlord.sramp.shell.commands.core;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.List;
 
 import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.completer.FileOptionCompleter;
+import org.jboss.aesh.cl.completer.OptionCompleter;
+import org.jboss.aesh.cl.validator.CommandValidator;
+import org.jboss.aesh.cl.validator.CommandValidatorException;
+import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry;
-import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
-import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
+import org.overlord.sramp.shell.aesh.converter.ExtendedDocumentArtifactTypeConverter;
 import org.overlord.sramp.shell.i18n.Messages;
-import org.overlord.sramp.shell.util.FileNameCompleter;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
+
 
 /**
  * Uploads an artifact to the s-ramp repository.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UploadArtifactCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_UPLOAD, validator = UploadArtifactCommand.CustomCommandValidator.class, description = "Upload an artifact to s-ramp")
+public class UploadArtifactCommand extends AbstractCoreShellCommand {
 
+    @Option(hasValue = true, required = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class, renderer = RequiredOptionRenderer.class)
+    private File file;
+
+    @Option(hasValue = true, shortName = 't', name = "artifactType", converter = ExtendedDocumentArtifactTypeConverter.class, completer = DocumentArtifactTypeCompleter.class)
+    private ArtifactType _artifactType;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
 	/**
 	 * Constructor.
 	 */
@@ -52,39 +68,30 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		String filePathArg = this.requiredArgument(0, Messages.i18n.format("Upload.InvalidArgMsg.LocalFile")); //$NON-NLS-1$
-		String artifactTypeArg = this.optionalArgument(1);
+        super.execute();
 
-		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
-		if (client == null) {
-			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return false;
-		}
-		InputStream content = null;
+        InputStream content = null;
         ZipToSrampArchive expander = null;
         SrampArchive archive = null;
+        if (client == null) {
+            print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
+        }
 		try {
-			File file = new File(filePathArg);
-			ArtifactType artifactType = null;
-			if (artifactTypeArg != null) {
-				artifactType = ArtifactType.valueOf(artifactTypeArg);
-				if (artifactType.isExtendedType()) {
-				    artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
-				}
-			} else {
-				artifactType = determineArtifactType(file);
-			}
 			content = FileUtils.openInputStream(file);
-			BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
+			BaseArtifactType artifact = client.uploadArtifact(_artifactType, content, file.getName());
             IOUtils.closeQuietly(content);
 
             // Now also add "expanded" content to the s-ramp repository
-            expander = ZipToSrampArchiveRegistry.createExpander(artifactType, file);
+            expander = ZipToSrampArchiveRegistry.createExpander(_artifactType, file);
             if (expander != null) {
                 expander.setContextParam(DefaultMetaDataFactory.PARENT_UUID, artifact.getUuid());
                 archive = expander.createSrampArchive();
@@ -107,9 +114,12 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
 	}
 
 	/**
-	 * Try to figure out what kind of artifact we're dealing with.
-	 * @param file
-	 */
+     * Try to figure out what kind of artifact we're dealing with.
+     *
+     * @param file
+     *            the file
+     * @return the artifact type
+     */
 	private ArtifactType determineArtifactType(File file) {
 		ArtifactType type = null;
 		String extension = FilenameUtils.getExtension(file.getName());
@@ -127,26 +137,124 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
 		return type;
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty()) {
-			if (lastArgument == null)
-				lastArgument = ""; //$NON-NLS-1$
-			FileNameCompleter delegate = new FileNameCompleter();
-			return delegate.complete(lastArgument, lastArgument.length(), candidates);
-		} else if (getArguments().size() == 1) {
-			for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
-				String candidate = t.getType();
-				if (lastArgument == null || candidate.startsWith(lastArgument)) {
-					candidates.add(candidate);
-				}
-			}
-			return 0;
-		}
-		return -1;
-	}
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_UPLOAD;
+    }
+
+    /**
+     * Validates that the Upload Artifact command is properly filled.
+     *
+     * @author David Virgil Naranjo
+     */
+    public class CustomCommandValidator implements CommandValidator<UploadArtifactCommand> {
+
+        /**
+         * Instantiates a new custom command validator.
+         */
+        public CustomCommandValidator() {
+
+        }
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.validator.CommandValidator#validate(org.jboss.aesh.console.command.Command)
+         */
+        @Override
+        public void validate(UploadArtifactCommand command) throws CommandValidatorException {
+            if (command._artifactType == null) {
+                command._artifactType = determineArtifactType(command.file);
+            }
+            if (command._artifactType == null) {
+                throw new CommandValidatorException(
+                        Messages.i18n.format("UploadArtifact.InvalidFileExtension"));
+
+            }
+
+        }
+    }
+
+    /**
+     * Completes the input string with the list of document artifact types that
+     * match the input.
+     *
+     * @author David Virgil Naranjo
+     */
+    private class DocumentArtifactTypeCompleter implements OptionCompleter<CompleterInvocation> {
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.completer.OptionCompleter#complete(org.jboss.aesh.console.command.completer.CompleterInvocation)
+         */
+        @Override
+        public void complete(CompleterInvocation completerInvocation) {
+            String artifact = completerInvocation.getGivenCompleteValue();
+            for (ArtifactTypeEnum t : ArtifactTypeEnum.values()) {
+                String candidate = t.getType();
+                if (artifact == null || candidate.startsWith(artifact) && t.isDocument()) {
+                    completerInvocation.addCompleterValue(candidate);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Gets the file.
+     *
+     * @return the file
+     */
+    public File getFile() {
+        return file;
+    }
+
+    /**
+     * Sets the file.
+     *
+     * @param file
+     *            the new file
+     */
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    /**
+     * Gets the artifact type.
+     *
+     * @return the artifact type
+     */
+    public ArtifactType getArtifactType() {
+        return _artifactType;
+    }
+
+    /**
+     * Sets the artifact type.
+     *
+     * @param artifactType
+     *            the new artifact type
+     */
+    public void setArtifactType(ArtifactType artifactType) {
+        this._artifactType = artifactType;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
 
 }

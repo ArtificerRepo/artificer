@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,17 @@ package org.overlord.sramp.shell.commands.core;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.List;
-
-import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.completer.FileOptionCompleter;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.shell.BuiltInShellCommand;
-import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.aesh.RequiredOptionRenderer;
 import org.overlord.sramp.shell.i18n.Messages;
-import org.overlord.sramp.shell.util.FileNameCompleter;
+
 
 /**
  * Updates an artifact's content in the s-ramp repository. This requires an active artifact to exist in the
@@ -36,43 +35,48 @@ import org.overlord.sramp.shell.util.FileNameCompleter;
  *
  * @author eric.wittmann@redhat.com
  */
-public class UpdateContentCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_UPDATE_CONTENT, description = "Updates an artifact's content in the s-ramp repository")
+public class UpdateContentCommand extends AbstractCoreShellCommand {
 
-	/**
-	 * Constructor.
-	 */
+    @Option(hasValue = true, required = true, name = "file", shortName = 'f', completer = FileOptionCompleter.class, renderer = RequiredOptionRenderer.class)
+    File _file;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
+
+    /**
+     * Constructor.
+     */
 	public UpdateContentCommand() {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		String contentFilePathArg = requiredArgument(0, Messages.i18n.format("UpdateContent.InvalidArgMsg.PathToContent")); //$NON-NLS-1$
-		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
+        super.execute();
 
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
-		if (client == null) {
-			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return false;
-		}
+        if (client == null) {
+            print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
+        }
 
-		BaseArtifactType artifact = (BaseArtifactType) getContext().getVariable(artifactVarName);
-		if (artifact == null) {
-			print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
-			return false;
-		}
+        BaseArtifactType artifact = getArtifact();
+        if (artifact == null) {
+            print(Messages.i18n.format("NoActiveArtifact")); //$NON-NLS-1$
+            return false;
+        }
 
-		File file = new File(contentFilePathArg);
-		if (!file.isFile()) {
-			throw new InvalidCommandArgumentException(0, Messages.i18n.format("UpdateContent.InvalidArgMsg.PathToFile")); //$NON-NLS-1$
-		}
+
 
 		InputStream content = null;
 		try {
-			content = FileUtils.openInputStream(file);
+			content = FileUtils.openInputStream(_file);
 			client.updateArtifactContent(artifact, content);
 			print(Messages.i18n.format("UpdateContent.Success", artifact.getName())); //$NON-NLS-1$
 		} catch (Exception e) {
@@ -84,18 +88,53 @@ public class UpdateContentCommand extends BuiltInShellCommand {
         return true;
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty()) {
-			if (lastArgument == null)
-				lastArgument = ""; //$NON-NLS-1$
-			FileNameCompleter delegate = new FileNameCompleter();
-			return delegate.complete(lastArgument, lastArgument.length(), candidates);
-		}
-		return -1;
-	}
+
+
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.S_RAMP_COMMAND_UPDATE_CONTENT;
+    }
+
+
+    /**
+     * Gets the file.
+     *
+     * @return the file
+     */
+    public File getFile() {
+        return _file;
+    }
+
+    /**
+     * Sets the file.
+     *
+     * @param file
+     *            the new file
+     */
+    public void setFile(File file) {
+        this._file = file;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
 
 }

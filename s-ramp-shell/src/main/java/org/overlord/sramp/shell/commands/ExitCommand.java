@@ -15,7 +15,9 @@
  */
 package org.overlord.sramp.shell.commands;
 
+import org.jboss.aesh.cl.CommandDefinition;
 import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
 
 /**
@@ -23,6 +25,7 @@ import org.overlord.sramp.shell.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
+@CommandDefinition(name = ShellCommandConstants.Sramp.S_RAMP_COMMAND_EXIT, description = "Exit from the shell")
 public class ExitCommand extends BuiltInShellCommand {
 
 	/**
@@ -56,4 +59,8 @@ public class ExitCommand extends BuiltInShellCommand {
         return true;
 	}
 
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Sramp.COMMAND_EXIT;
+    }
 }

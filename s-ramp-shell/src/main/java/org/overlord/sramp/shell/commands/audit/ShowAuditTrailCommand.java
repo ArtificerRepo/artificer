@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,63 +15,70 @@
  */
 package org.overlord.sramp.shell.commands.audit;
 
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
-import org.overlord.sramp.client.SrampAtomApiClient;
+import org.apache.commons.lang.StringUtils;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.validator.CommandValidator;
+import org.jboss.aesh.cl.validator.CommandValidatorException;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.client.audit.AuditEntrySummary;
 import org.overlord.sramp.client.audit.AuditResultSet;
-import org.overlord.sramp.client.query.ArtifactSummary;
-import org.overlord.sramp.client.query.QueryResultSet;
-import org.overlord.sramp.shell.BuiltInShellCommand;
-import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.commands.core.AbstractCoreShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Displays the audit trail for an artifact.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ShowAuditTrailCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Audit.AUDIT_COMMAND_SHOW_AUDIT_TRAIL, description = "Displays the audit trail for an artifact.", validator = ShowAuditTrailCommand.CustomValidator.class)
+public class ShowAuditTrailCommand extends AbstractCoreShellCommand {
 
-	/**
-	 * Constructor.
-	 */
+    private final static QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
+
+    @Option(required = false, name = "feedIndex", hasValue = true, shortName = 'f')
+    private Integer _feedIndex;
+
+    @Option(required = false, name = "uuid", hasValue = true, shortName = 'u')
+    private String _uuid;
+
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
+
+
+    /**
+     * Constructor.
+     */
 	public ShowAuditTrailCommand() {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-        String artifactIdArg = this.requiredArgument(0, Messages.i18n.format("AuditTrail.InvalidArgMsg.ArtifactId")); //$NON-NLS-1$
-        if (!artifactIdArg.contains(":")) { //$NON-NLS-1$
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidArtifactIdFormat")); //$NON-NLS-1$
-        }
-        QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-        QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-        SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
+        super.execute();
+
         if (client == null) {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
             return false;
         }
-
+        BaseArtifactType artifact = getArtifact(_feedIndex, _uuid);
         String artifactUuid = null;
-        String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
-        if ("feed".equals(idType)) { //$NON-NLS-1$
-            QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
-            int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
-            if (feedIdx < 0 || feedIdx >= rset.size()) {
-                throw new InvalidCommandArgumentException(0, Messages.i18n.format("FeedIndexOutOfRange")); //$NON-NLS-1$
-            }
-            ArtifactSummary summary = rset.get(feedIdx);
-            artifactUuid = summary.getUuid();
-        } else if ("uuid".equals(idType)) { //$NON-NLS-1$
-            artifactUuid = artifactIdArg.substring(artifactIdArg.indexOf(':') + 1);
-        } else {
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidIdFormat")); //$NON-NLS-1$
+        if (artifact != null) { //$NON-NLS-1$
+            artifactUuid = artifact.getUuid();
+        } else { //$NON-NLS-1$
+            artifactUuid = _uuid;
         }
 
         AuditResultSet auditTrail = client.getAuditTrailForArtifact(artifactUuid);
@@ -87,29 +94,109 @@ public class ShowAuditTrailCommand extends BuiltInShellCommand {
         return true;
 	}
 
-    /**
-     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
      */
     @Override
-    public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-        if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
-            QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-            QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
-            if (rset != null) {
-                for (int idx = 0; idx < rset.size(); idx++) {
-                    String candidate = "feed:" + (idx+1); //$NON-NLS-1$
-                    if (lastArgument == null) {
-                        candidates.add(candidate);
-                    }
-                    if (lastArgument != null && candidate.startsWith(lastArgument)) {
-                        candidates.add(candidate);
-                    }
-                }
-            }
-            return 0;
-        } else {
-            return -1;
+    public String getName() {
+        return ShellCommandConstants.Audit.AUDIT_COMMAND_SHOW_AUDIT_TRAIL;
+    }
+
+
+    /**
+     * Validates the Show Audit Trail Command
+     * 
+     * @author David Virgil Naranjo
+     */
+    public class CustomValidator implements CommandValidator<ShowAuditTrailCommand> {
+
+        /**
+         * Instantiates a new custom validator.
+         */
+        public CustomValidator() {
+
         }
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.validator.CommandValidator#validate(org.jboss.aesh.console.command.Command)
+         */
+        @Override
+        public void validate(ShowAuditTrailCommand command) throws CommandValidatorException {
+            if (StringUtils.isBlank(command.getUuid()) && command.getFeedIndex() == null) {
+                throw new CommandValidatorException(Messages.i18n.format("Artifact.feed.no.option.selected"));
+
+            } else if (!StringUtils.isBlank(command.getUuid()) && command.getFeedIndex() != null) {
+                throw new CommandValidatorException(
+                        Messages.i18n.format("Artifact.feed.both.option.selected"));
+            }
+        }
+
+    }
+
+    /**
+     * Gets the feed index.
+     *
+     * @return the feed index
+     */
+    public Integer getFeedIndex() {
+        return _feedIndex;
+    }
+
+    /**
+     * Sets the feed index.
+     *
+     * @param feedIndex
+     *            the new feed index
+     */
+    public void setFeedIndex(Integer feedIndex) {
+        this._feedIndex = feedIndex;
+    }
+
+    /**
+     * Gets the uuid.
+     *
+     * @return the uuid
+     */
+    public String getUuid() {
+        return _uuid;
+    }
+
+    /**
+     * Sets the uuid.
+     *
+     * @param uuid
+     *            the new uuid
+     */
+    public void setUuid(String uuid) {
+        this._uuid = uuid;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
+
+    /**
+     * Gets the feedvarname.
+     *
+     * @return the feedvarname
+     */
+    public static QName getFeedvarname() {
+        return feedVarName;
     }
 
 }

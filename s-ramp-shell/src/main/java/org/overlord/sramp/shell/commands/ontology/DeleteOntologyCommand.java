@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,67 +15,64 @@
  */
 package org.overlord.sramp.shell.commands.ontology;
 
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import org.overlord.sramp.client.SrampAtomApiClient;
+import org.jboss.aesh.cl.CommandDefinition;
+import org.jboss.aesh.cl.Option;
+import org.jboss.aesh.cl.completer.OptionCompleter;
+import org.jboss.aesh.cl.validator.CommandValidator;
+import org.jboss.aesh.cl.validator.CommandValidatorException;
+import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.overlord.sramp.client.ontology.OntologySummary;
-import org.overlord.sramp.shell.BuiltInShellCommand;
-import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
+import org.overlord.sramp.shell.ShellCommandConstants;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Deletes an ontology.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DeleteOntologyCommand extends BuiltInShellCommand {
+@CommandDefinition(name = ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_DELETE, description = "Deletes an ontology.", validator = DeleteOntologyCommand.CustomValidator.class)
+public class DeleteOntologyCommand extends AbstractOntologyCommand {
 
-	/**
-	 * Constructor.
-	 */
+
+    @Option(hasValue = true, name = "feedIndex", shortName = 'i', completer = OntologyCompleter.class)
+    private Integer _feedIndex;
+
+    @Option(hasValue = true, name = "uuid", shortName = 'u')
+    private String _uuid;
+
+    @Option(overrideRequired = true, name = "help", hasValue = false, shortName = 'h')
+    private boolean _help;
+
+    /**
+     * Constructor.
+     */
 	public DeleteOntologyCommand() {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute() throws Exception {
-		String ontologyIdArg = this.requiredArgument(0, Messages.i18n.format("DeleteOntology.InvalidArgMsg.OntologyId")); //$NON-NLS-1$
+        super.execute();
 
-		QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
 		if (client == null) {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
 			return false;
 		}
-
-		if (!ontologyIdArg.contains(":") || ontologyIdArg.endsWith(":")) { //$NON-NLS-1$ //$NON-NLS-2$
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidOntologyIdFormat")); //$NON-NLS-1$
-		}
 		String ontologyUuid = null;
-		int colonIdx = ontologyIdArg.indexOf(':');
-		String idType = ontologyIdArg.substring(0, colonIdx);
-		String idValue = ontologyIdArg.substring(colonIdx + 1);
-		if ("feed".equals(idType)) { //$NON-NLS-1$
-			List<OntologySummary> ontologies = (List<OntologySummary>) getContext().getVariable(feedVarName);
-			if (ontologies == null) {
-				throw new InvalidCommandArgumentException(0, Messages.i18n.format("DeleteOntology.NoOntologyFeed")); //$NON-NLS-1$
-			}
-			int feedIdx = Integer.parseInt(idValue) - 1;
-			if (feedIdx < 0 || feedIdx >= ontologies.size()) {
-                throw new InvalidCommandArgumentException(0, Messages.i18n.format("FeedIndexOutOfRange")); //$NON-NLS-1$
-			}
-			OntologySummary summary = ontologies.get(feedIdx);
-			ontologyUuid = summary.getUuid();
-		} else if ("uuid".equals(idType)) { //$NON-NLS-1$
-			ontologyUuid = idValue;
-		} else {
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("InvalidIdFormat")); //$NON-NLS-1$
+        if (_feedIndex != null) { //$NON-NLS-1$
+            OntologySummary ontology = getOntology(_feedIndex);
+            ontologyUuid = ontology.getUuid();
+        } else { //$NON-NLS-1$
+            ontologyUuid = _uuid;
 		}
 
 		try {
@@ -89,29 +86,119 @@ public class DeleteOntologyCommand extends BuiltInShellCommand {
 		return true;
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
-	@Override
-	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-		if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
-			QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-			@SuppressWarnings("unchecked")
-			List<OntologySummary> ontologies = (List<OntologySummary>) getContext().getVariable(feedVarName);
-			if (ontologies != null) {
-				for (int idx = 0; idx < ontologies.size(); idx++) {
-					String candidate = "feed:" + (idx+1); //$NON-NLS-1$
-					if (lastArgument == null) {
-						candidates.add(candidate);
-					}
-					if (lastArgument != null && candidate.startsWith(lastArgument)) {
-						candidates.add(candidate);
-					}
-				}
-			}
-			return 0;
-		} else {
-			return -1;
-		}
-	}
+
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#getName()
+     */
+    @Override
+    public String getName() {
+        return ShellCommandConstants.Ontology.ONTOLOGY_COMMAND_DELETE;
+    }
+
+    /**
+     * Validates that the Delete Ontology command is properly filled.
+     *
+     * @author David Virgil Naranjo
+     */
+    public class CustomValidator implements CommandValidator<DeleteOntologyCommand> {
+
+        /**
+         * Instantiates a new custom validator.
+         */
+        public CustomValidator() {
+
+        }
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.validator.CommandValidator#validate(org.jboss.aesh.console.command.Command)
+         */
+        @Override
+        public void validate(DeleteOntologyCommand command) throws CommandValidatorException {
+            command.validateFeedOntology();
+        }
+
+    }
+
+    /**
+     * Completes the input string with the list of ontologies stored in s-ramp.
+     *
+     * @author David Virgil Naranjo
+     */
+    public class OntologyCompleter implements OptionCompleter<CompleterInvocation> {
+
+        /**
+         * Instantiates a new ontology completer.
+         */
+        public OntologyCompleter() {
+
+        }
+
+        /* (non-Javadoc)
+         * @see org.jboss.aesh.cl.completer.OptionCompleter#complete(org.jboss.aesh.console.command.completer.CompleterInvocation)
+         */
+        @Override
+        public void complete(CompleterInvocation completerInvocation) {
+            completeOntology(completerInvocation);
+        }
+
+    }
+
+
+
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.commands.ontology.AbstractOntologyCommand#getFeedIndex()
+     */
+    @Override
+    public Integer getFeedIndex() {
+        return _feedIndex;
+    }
+
+    /**
+     * Sets the feed index.
+     *
+     * @param feedIndex
+     *            the new feed index
+     */
+    public void setFeedIndex(Integer feedIndex) {
+        this._feedIndex = feedIndex;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.commands.ontology.AbstractOntologyCommand#getUuid()
+     */
+    @Override
+    public String getUuid() {
+        return _uuid;
+    }
+
+    /**
+     * Sets the uuid.
+     *
+     * @param uuid
+     *            the new uuid
+     */
+    public void setUuid(String uuid) {
+        this._uuid = uuid;
+    }
+
+    /* (non-Javadoc)
+     * @see org.overlord.sramp.shell.BuiltInShellCommand#isHelp()
+     */
+    @Override
+    public boolean isHelp() {
+        return _help;
+    }
+
+    /**
+     * Sets the help.
+     *
+     * @param help
+     *            the new help
+     */
+    public void setHelp(boolean help) {
+        this._help = help;
+    }
+
 }
