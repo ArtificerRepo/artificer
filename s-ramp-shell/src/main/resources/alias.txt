@@ -15,3 +15,4 @@ alias updateMetaData=s-ramp:updateMetaData
 alias upload=s-ramp:upload
 alias s-ramp:quit=s-ramp:exit
 alias quit=s-ramp:exit
+alias exit=s-ramp:exit

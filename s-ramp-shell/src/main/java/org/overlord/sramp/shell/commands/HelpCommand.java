@@ -31,6 +31,7 @@ import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.completer.CompleterInvocation;
 import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.ShellCommandConstants;
+import org.overlord.sramp.shell.ShellCommandFactory;
 import org.overlord.sramp.shell.aesh.SrampCommandInvocation;
 import org.overlord.sramp.shell.api.ShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
@@ -58,6 +59,8 @@ public class HelpCommand extends BuiltInShellCommand {
      * Constructor.
      */
     public HelpCommand() {
+        ShellCommandFactory factory = new ShellCommandFactory();
+        _commands = factory.getCommands();
     }
 
     @Override
@@ -142,7 +145,7 @@ public class HelpCommand extends BuiltInShellCommand {
 
     /**
      * Prints the help for a single namespace.
-     * 
+     *
      * @param _namespace
      */
     private void printHelpForNamespace() {
@@ -202,8 +205,8 @@ public class HelpCommand extends BuiltInShellCommand {
     private Set<String> generateNamespaceCandidates(String givenValue) {
         TreeSet<String> candidates = new TreeSet<String>();
         for (QName key : this._commands.keySet()) {
-            if (key.getNamespaceURI().startsWith(givenValue)) {
-                String candidate = key.getNamespaceURI() + ":" + key.getLocalPart(); //$NON-NLS-1$
+            if (key.getNamespaceURI().startsWith(givenValue) && !candidates.contains(key.getNamespaceURI())) {
+                String candidate = key.getNamespaceURI();
                 candidates.add(candidate);
             }
         }
@@ -235,6 +238,7 @@ public class HelpCommand extends BuiltInShellCommand {
 
         @Override
         public void complete(CompleterInvocation completerInvocation) {
+            completerInvocation.clearCompleterValues();
             Set<String> candidates = generateNamespaceCandidates(completerInvocation.getGivenCompleteValue());
 
             for (String candidate : candidates) {
@@ -248,7 +252,9 @@ public class HelpCommand extends BuiltInShellCommand {
 
         @Override
         public void complete(CompleterInvocation completerInvocation) {
-            Set<String> candidates = generateCommandNamesCandidates(_namespace,
+            completerInvocation.clearCompleterValues();
+            HelpCommand current = ((HelpCommand) completerInvocation.getCommand());
+            Set<String> candidates = generateCommandNamesCandidates(current.getNamespace(),
                     completerInvocation.getGivenCompleteValue());
 
             for (String candidate : candidates) {
