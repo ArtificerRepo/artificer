@@ -50,6 +50,7 @@ import org.overlord.sramp.shell.commands.archive.UpdateEntryArchiveCommand;
 import org.overlord.sramp.shell.commands.archive.UploadArchiveCommand;
 import org.overlord.sramp.shell.commands.audit.ShowAuditTrailCommand;
 import org.overlord.sramp.shell.commands.core.ClassificationCommand;
+import org.overlord.sramp.shell.commands.core.ClearCommand;
 import org.overlord.sramp.shell.commands.core.ConnectCommand;
 import org.overlord.sramp.shell.commands.core.CreateArtifactCommand;
 import org.overlord.sramp.shell.commands.core.DeleteCommand;
@@ -133,6 +134,8 @@ public class ShellCommandFactory {
                 ShellCommandConstants.Sramp.COMMAND_DELETE), DeleteCommand.class);
         registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
                 ShellCommandConstants.Sramp.COMMAND_CREATE), CreateArtifactCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_SRAMP,
+                ShellCommandConstants.Sramp.COMMAND_CLEAR), ClearCommand.class);
 
         // Archive commands
         registry.put(new QName(ShellCommandConstants.NAMESPACE_ARCHIVE,
@@ -171,6 +174,9 @@ public class ShellCommandFactory {
                 ShellCommandConstants.Ontology.COMMAND_GET), GetOntologyCommand.class);
         registry.put(new QName(ShellCommandConstants.NAMESPACE_ONTOLOGY,
                 ShellCommandConstants.Ontology.COMMAND_UPDATE), UpdateOntologyCommand.class);
+        registry.put(new QName(ShellCommandConstants.NAMESPACE_ONTOLOGY,
+                ShellCommandConstants.Ontology.COMMAND_STATUS),
+                org.overlord.sramp.shell.commands.ontology.StatusCommand.class);
 
         // // Audit commands
         registry.put(new QName(ShellCommandConstants.NAMESPACE_AUDIT,

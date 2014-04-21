@@ -3,7 +3,7 @@ package org.overlord.sramp.shell;
 /**
  * Constants class that stores all the shell namespace names and all the command
  * names.
- * 
+ *
  * @author David Virgil Naranjo
  */
 public interface ShellCommandConstants {
@@ -37,6 +37,7 @@ public interface ShellCommandConstants {
         public final static String COMMAND_HELP = "help";
         public final static String COMMAND_EXIT = "exit";
         public final static String COMMAND_QUIT = "quit";
+        public final static String COMMAND_CLEAR = "clear";
 
         // CORE COMMAND NAMES:
         public final static String S_RAMP_COMMAND_CONNECT = NAMESPACE_SRAMP + SEPARATOR + COMMAND_CONNECT;
@@ -65,7 +66,7 @@ public interface ShellCommandConstants {
         public final static String S_RAMP_COMMAND_HELP = NAMESPACE_SRAMP + SEPARATOR + COMMAND_HELP;
         public final static String S_RAMP_COMMAND_QUIT = NAMESPACE_SRAMP + SEPARATOR + COMMAND_QUIT;
         public final static String S_RAMP_COMMAND_EXIT = NAMESPACE_SRAMP + SEPARATOR + COMMAND_EXIT;
-
+        public final static String S_RAMP_COMMAND_CLEAR = NAMESPACE_SRAMP + SEPARATOR + COMMAND_CLEAR;
     }
 
     public interface Audit {
@@ -92,6 +93,7 @@ public interface ShellCommandConstants {
         public final static String COMMAND_UPLOAD = "upload";
         public final static String COMMAND_DELETE = "delete";
         public final static String COMMAND_LIST = "list";
+        public final static String COMMAND_STATUS = "status";
 
         // ONTOLOGY COMMAND NAMES
         public final static String ONTOLOGY_COMMAND_UPLOAD = NAMESPACE_ONTOLOGY + SEPARATOR + COMMAND_UPLOAD;
@@ -99,6 +101,7 @@ public interface ShellCommandConstants {
         public final static String ONTOLOGY_COMMAND_DELETE = NAMESPACE_ONTOLOGY + SEPARATOR + COMMAND_DELETE;
         public final static String ONTOLOGY_COMMAND_GET = NAMESPACE_ONTOLOGY + SEPARATOR + COMMAND_GET;
         public final static String ONTOLOGY_COMMAND_UPDATE = NAMESPACE_ONTOLOGY + SEPARATOR + COMMAND_UPDATE;
+        public final static String ONTOLOGY_COMMAND_STATUS = NAMESPACE_ONTOLOGY + SEPARATOR + COMMAND_STATUS;
     }
 
     public interface Archive {
