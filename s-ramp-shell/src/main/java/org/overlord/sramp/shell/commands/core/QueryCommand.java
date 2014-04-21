@@ -82,15 +82,15 @@ public class QueryCommand extends AbstractCoreShellCommand {
             QueryResultSet rset = client.query(_query, 0, 100, "uuid", true); //$NON-NLS-1$
     		int entryIndex = 1;
     		print(Messages.i18n.format("Query.AtomFeedSummary", rset.size())); //$NON-NLS-1$
-    		print("  Idx                    Type Name"); //$NON-NLS-1$
-    		print("  ---                    ---- ----"); //$NON-NLS-1$
+            print("  Idx                                  UUID                    Type Name"); //$NON-NLS-1$
+            print("  ---                                  ----                    ---- ----"); //$NON-NLS-1$
     		for (ArtifactSummary summary : rset) {
     			ArtifactType type = summary.getType();
     			String displayType = type.getArtifactType().getType().toString();
     			if (type.isExtendedType() && type.getExtendedType() != null) {
     			    displayType = type.getExtendedType();
     			}
-                print("  %1$3d %2$23s %3$-40s", entryIndex++, displayType, //$NON-NLS-1$
+                print("  %1$3d %2$37s %3$23s %4$-40s", entryIndex++, summary.getUuid(), displayType, //$NON-NLS-1$
     					summary.getName());
     		}
     		getContext().setVariable(new QName("s-ramp", "feed"), rset); //$NON-NLS-1$ //$NON-NLS-2$

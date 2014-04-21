@@ -60,12 +60,12 @@ public class ListOntologiesCommand extends AbstractOntologyCommand {
 		try {
 			List<OntologySummary> ontologies = client.getOntologies();
 			print(Messages.i18n.format("ListOntologies.Summary", ontologies.size())); //$NON-NLS-1$
-			print("  Idx  " + Messages.i18n.format("ListOntologies.Base")); //$NON-NLS-1$ //$NON-NLS-2$
-			print("  ---  ----"); //$NON-NLS-1$
+            print("  Idx                                  UUID  " + Messages.i18n.format("ListOntologies.Base")); //$NON-NLS-1$ //$NON-NLS-2$
+            print("  ---                                  ----  ----"); //$NON-NLS-1$
 			int idx = 1;
 			for (OntologySummary ontology : ontologies) {
 				String base = ontology.getBase();
-				print("  %1$3d  %2$s", idx++, base); //$NON-NLS-1$
+                print("  %1$3d %2$37s %3$s", idx++, ontology.getUuid(), base); //$NON-NLS-1$
 			}
 
 			getContext().setVariable(feedVarName, ontologies);
