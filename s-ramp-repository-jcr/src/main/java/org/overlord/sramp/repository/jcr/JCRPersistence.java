@@ -421,12 +421,12 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			ontology.setUuid(UUID.randomUUID().toString());
 		}
 		String ontologyPath = MapToJCRPath.getOntologyPath(ontology.getUuid());
-		
+
 		// Check if an ontology with the given base URL already exists.
 		List<SrampOntology> ontologies = getOntologies();
 		for (SrampOntology existingOntology : ontologies) {
             if (existingOntology.getBase().equals(ontology.getBase())) {
-                throw new OntologyAlreadyExistsException();
+                throw new OntologyAlreadyExistsException(existingOntology.getUuid());
             }
         }
 
