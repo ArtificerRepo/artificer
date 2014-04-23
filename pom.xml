@@ -522,7 +522,7 @@
     <module>s-ramp-repository-jcr</module>
     <module>s-ramp-repository-jcr/modeshape</module>
     <module>s-ramp-server</module>
-    <module>s-ramp-server-eap61</module>
+    <module>s-ramp-server-eap6</module>
     <module>s-ramp-server-fuse61</module>
     <module>s-ramp-server-jetty8</module>
     <module>s-ramp-server-tomcat7</module>

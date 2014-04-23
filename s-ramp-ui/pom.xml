@@ -17,7 +17,7 @@
 
   <modules>
     <module>s-ramp-ui-war</module>
-    <module>s-ramp-ui-war-eap61</module>
+    <module>s-ramp-ui-war-eap6</module>
     <module>s-ramp-ui-war-fuse61</module>
     <module>s-ramp-ui-war-jetty8</module>
     <module>s-ramp-ui-war-tomcat7</module>
