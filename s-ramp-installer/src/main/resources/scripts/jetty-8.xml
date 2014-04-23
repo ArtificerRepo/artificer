@@ -46,7 +46,7 @@
     <get src="${s-ramp.lib.commons-pool.download.url}" dest="${s-ramp.appserver.dir}/lib/ext" usetimestamp="true" />
     <get src="${s-ramp.lib.h2.download.url}" dest="${s-ramp.appserver.dir}/lib/ext" usetimestamp="true" />
     <copy file="${s-ramp.updates.dir}/jetty.xml" todir="${s-ramp.jetty.config.dir}" overwrite="true" />
-      
+
     <echo>-----------------------------------</echo>
     <echo>Deploying S-RAMP and S-RAMP UI</echo>
     <echo>-----------------------------------</echo>
