@@ -107,10 +107,11 @@
       <artifactId>log4j</artifactId>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>jline</groupId>
-      <artifactId>jline</artifactId>
+   <dependency>
+      <groupId>org.jboss.aesh</groupId>
+      <artifactId>aesh</artifactId>
     </dependency>
+
   </dependencies>
 
   <build>

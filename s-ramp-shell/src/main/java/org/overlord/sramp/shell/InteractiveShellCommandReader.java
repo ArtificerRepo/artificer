@@ -16,12 +16,15 @@
 package org.overlord.sramp.shell;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import javax.xml.namespace.QName;
 
-import jline.console.ConsoleReader;
-
+import org.jboss.aesh.console.Console;
+import org.jboss.aesh.console.ConsoleOutput;
+import org.jboss.aesh.console.Prompt;
+import org.jboss.aesh.console.settings.Settings;
 import org.overlord.sramp.shell.api.ShellContextEventHandler;
 
 /**
@@ -35,8 +38,9 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 
 	private static final QName CLIENT_NAME = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	private ConsoleReader consoleReader;
+    private Console consoleReader;
 
+    private Prompt prompt;
 	/**
 	 * Constructor.
 	 * @param factory
@@ -52,11 +56,16 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 */
 	@Override
 	public void open() throws IOException {
-		consoleReader = new ConsoleReader();
-        consoleReader.setExpandEvents(false);
-		String prompt = defaultAnsiPrompt();
-		consoleReader.setPrompt(prompt);
-		consoleReader.addCompleter(new TabCompleter(getFactory(), getContext()));
+        Settings settings = Settings.getInstance();
+        settings.setAliasEnabled(true);
+        // settings.setAliasFile(new File("al"));
+        settings.setEnablePipelineAndRedirectionParser(false);
+        settings.setLogging(true);
+        consoleReader = new Console(settings);
+
+        String promptChar = defaultAnsiPrompt();
+        prompt = new Prompt(promptChar);
+        consoleReader.addCompletion(new TabCompleter(getFactory(), getContext()));
 	}
 
 	/**
@@ -78,7 +87,8 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 */
 	@Override
 	protected String readLine() throws IOException {
-		return consoleReader.readLine();
+        ConsoleOutput output = consoleReader.read(prompt, null);
+        return output.getBuffer();
 	}
 
 	/**
@@ -86,7 +96,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 */
 	@Override
 	protected Writer getCommandOutput() {
-		return consoleReader.getOutput();
+        return new OutputStreamWriter(Settings.getInstance().getStdOut());
 	}
 
 	/**
@@ -94,7 +104,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 */
 	@Override
 	public void close() throws IOException {
-		consoleReader.shutdown();
+        consoleReader.stop();
 	}
 
 	/**
@@ -103,7 +113,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	@Override
 	public void onVariableAdded(QName variableName, Object value) {
 		if (CLIENT_NAME.equals(variableName)) {
-			consoleReader.setPrompt(connectedAnsiPrompt());
+            prompt = new Prompt(connectedAnsiPrompt());
 		}
 	}
 
@@ -121,7 +131,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	@Override
 	public void onVariableRemoved(QName variableName) {
 		if (CLIENT_NAME.equals(variableName)) {
-			consoleReader.setPrompt(defaultAnsiPrompt());
+            prompt = new Prompt(defaultAnsiPrompt());
 		}
 	}
 
@@ -129,14 +139,14 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForInput(java.lang.String)
 	 */
 	@Override
-	public String promptForInput(String prompt) {
-        String oldprompt = consoleReader.getPrompt();
+    public String promptForInput(String promptString) {
+        String oldprompt = prompt.getPromptAsString();
 	    try {
-            return this.consoleReader.readLine(prompt);
+            return this.consoleReader.read(promptString).getBuffer();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            this.consoleReader.setPrompt(oldprompt);
+            prompt = new Prompt(oldprompt);
         }
 	}
 
@@ -144,14 +154,15 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 * @see org.overlord.sramp.shell.ShellCommandReader#promptForPassword(java.lang.String)
 	 */
 	@Override
-	public String promptForPassword(String prompt) {
-        String oldprompt = consoleReader.getPrompt();
+	public String promptForPassword(String promptString) {
+        String oldprompt = prompt.getPromptAsString();
         try {
-            return this.consoleReader.readLine(prompt, '*');
+            Prompt newPrompt = new Prompt(promptString);
+            return this.consoleReader.read(newPrompt,Character.valueOf((char) 0)).getBuffer();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            this.consoleReader.setPrompt(oldprompt);
+            prompt=new Prompt(oldprompt);
         }
 	}
 
