@@ -17,7 +17,6 @@
 
     <property name="s-ramp.s-ramp-server.war.path" location="bin/s-ramp-server-eap61-${s-ramp.version}.war" />
     <property name="s-ramp.s-ramp-ui.war.path" location="bin/s-ramp-ui-war-eap61-${s-ramp.version}.war" />
-    <property name="s-ramp-overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}"/>
   </target>
 
   <!-- Install S-RAMP -->
@@ -40,7 +39,6 @@
       <property name="appserver.id" value="${appserver.id}" />
       <property name="overlord-commons.install.dir" location="${s-ramp.install.dir}" />
       <property name="overlord-commons.appserver.dir" location="${s-ramp.appserver.dir}" />
-      <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar}"/>
     </ant>
 
     <echo>-----------------------------------</echo>
