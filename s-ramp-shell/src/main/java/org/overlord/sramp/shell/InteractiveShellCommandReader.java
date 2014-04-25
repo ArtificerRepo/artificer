@@ -57,7 +57,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	@Override
 	public void open() throws IOException {
         Settings settings = Settings.getInstance();
-        settings.setAliasEnabled(true);
+        settings.setAliasEnabled(false);
         // settings.setAliasFile(new File("al"));
         settings.setEnablePipelineAndRedirectionParser(false);
         settings.setLogging(true);
