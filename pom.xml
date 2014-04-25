@@ -292,6 +292,11 @@
       <!-- Overlord Commons -->
       <dependency>
         <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-ant</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
