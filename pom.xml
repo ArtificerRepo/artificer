@@ -111,8 +111,8 @@
     <bcel.version>5.2</bcel.version>
     <jcr.version>2.0</jcr.version>
     <guava-gwt.version>14.0.1</guava-gwt.version>
-    <picketbox.version>4.0.7.Final</picketbox.version>
-    <picketlink.version>2.1.6.Final</picketlink.version>
+    <picketbox.version>4.0.19.SP4</picketbox.version>
+    <picketlink.version>2.5.3.SP1</picketlink.version>
     <aesh.version>0.33.11</aesh.version>
     
     <!-- BOM Overrides -->

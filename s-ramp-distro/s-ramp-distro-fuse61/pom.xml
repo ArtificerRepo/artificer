@@ -100,7 +100,7 @@
     </dependency>
     <dependency>
       <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-core</artifactId>
+      <artifactId>picketlink-federation</artifactId>
       <version>${picketlink.version}</version>
       <exclusions>
         <exclusion>
