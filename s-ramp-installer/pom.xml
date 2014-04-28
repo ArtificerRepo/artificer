@@ -117,7 +117,7 @@
                   <tasks>
                     <property name="appserver.id" value="jboss-eap-6" />
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/${appserver.id}" />
+                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.1" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
                     <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
