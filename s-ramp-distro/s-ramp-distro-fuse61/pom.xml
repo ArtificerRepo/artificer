@@ -134,10 +134,9 @@
       <artifactId>commons-jxpath</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet.jsp</groupId>
-      <artifactId>jsp-api</artifactId>
-      <version>2.2</version>
-    </dependency>
+      <groupId>org.jboss.spec.javax.servlet.jsp</groupId>
+      <artifactId>jboss-jsp-api_2.2_spec</artifactId>
+    </dependency>    
     <dependency>
       <groupId>ant</groupId>
       <artifactId>ant</artifactId>
