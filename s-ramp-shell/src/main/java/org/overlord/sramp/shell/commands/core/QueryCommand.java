@@ -27,6 +27,7 @@ import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.CompletionConstants;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.i18n.Messages;
 
@@ -99,12 +100,10 @@ public class QueryCommand extends BuiltInShellCommand {
 		if (getArguments().isEmpty()) {
 			if (lastArgument == null) {
 				candidates.add("\"/s-ramp/"); //$NON-NLS-1$
-				return 0;
 			} else {
 				String [] split = lastArgument.split("/"); //$NON-NLS-1$
 				if (split.length == 0 || split.length == 1 || (split.length == 2 && !lastArgument.endsWith("/"))) { //$NON-NLS-1$
 					candidates.add("\"/s-ramp/"); //$NON-NLS-1$
-					return 0;
 				}
 				// All artifact models
 				if (lastArgument.equals("/s-ramp/")) { //$NON-NLS-1$
@@ -113,7 +112,6 @@ public class QueryCommand extends BuiltInShellCommand {
 						modelCandidates.add(t.getModel());
 					}
 					candidates.addAll(modelCandidates);
-					return lastArgument.length();
 				}
 				// Artifact models matching the partial value
 				if (split.length == 3 && !lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -128,8 +126,6 @@ public class QueryCommand extends BuiltInShellCommand {
 					} else {
 						candidates.addAll(modelCandidates);
 					}
-
-					return lastArgument.length() - partialModel.length();
 				}
 				// All artifact types
 				if (split.length == 3 && lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -141,7 +137,6 @@ public class QueryCommand extends BuiltInShellCommand {
 						}
 					}
 					candidates.addAll(typeCandidates);
-					return lastArgument.length();
 				}
 				// Artifact types matching the partial value
 				if (split.length == 4 && !lastArgument.endsWith("/") && lastArgument.startsWith("/s-ramp/")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -154,11 +149,10 @@ public class QueryCommand extends BuiltInShellCommand {
 						}
 					}
 					candidates.addAll(typeCandidates);
-					return lastArgument.length() - partialType.length();
 				}
 			}
 		}
-		return -1;
+        return CompletionConstants.NO_APPEND_SEPARATOR;
 	}
 
 }

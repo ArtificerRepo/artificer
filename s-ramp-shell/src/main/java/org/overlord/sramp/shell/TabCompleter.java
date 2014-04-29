@@ -84,12 +84,22 @@ public class TabCompleter implements Completion {
                 command.setArguments(arguments);
 
                 List<CharSequence> list = new ArrayList<CharSequence>();
-                command.tabCompletion(lastArgument, list);
+                int tabCompletionResult = command.tabCompletion(lastArgument, list);
                 if (!list.isEmpty()) {
                     // In case the tab completion return just one result it is
                     // printed the previous buffer plus the argument
                     if (list.size() == 1) {
-                        completeOperation.addCompletionCandidate(buffer.trim() + " " + list.get(0));
+                        if (buffer.endsWith(" ")) {
+                            completeOperation.addCompletionCandidate(buffer + list.get(0).toString().trim());
+                        } else if (buffer.indexOf(" ") != -1) {
+                            completeOperation.addCompletionCandidate(buffer.substring(0,
+                                    buffer.lastIndexOf(" "))
+                                    + " " + list.get(0).toString().trim());
+                        } else {
+                            completeOperation.addCompletionCandidate(buffer + " "
+                                    + list.get(0).toString().trim());
+                        }
+
                     } else {
                         // In case the result of the command tab completion
                         // contains more than one result (like the
@@ -97,6 +107,9 @@ public class TabCompleter implements Completion {
                         for (CharSequence sequence : list) {
                             completeOperation.addCompletionCandidate(sequence.toString());
                         }
+                    }
+                    if (tabCompletionResult == CompletionConstants.NO_APPEND_SEPARATOR) {
+                        completeOperation.doAppendSeparator(false);
                     }
 
                 }

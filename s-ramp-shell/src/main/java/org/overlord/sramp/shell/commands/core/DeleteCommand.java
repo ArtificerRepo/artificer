@@ -100,29 +100,14 @@ public class DeleteCommand extends BuiltInShellCommand {
      */
     @Override
     public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-        if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
-            QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-            QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
-            if (rset != null) {
-                for (int idx = 0; idx < rset.size(); idx++) {
-                    String candidate = "feed:" + (idx+1); //$NON-NLS-1$
-                    if (lastArgument == null) {
-                        candidates.add(candidate);
-                    }
-                    if (lastArgument != null && candidate.startsWith(lastArgument)) {
-                        candidates.add(candidate);
-                    }
-                }
-            }
-            return 0;
-        } else if (getArguments().size() == 1) {
+        int toReturn = FeedTabCompleter.tabCompletion(getArguments(), getContext(), lastArgument, candidates);
+        if (getArguments().size() == 1) {
             if (lastArgument == null)
                 lastArgument = ""; //$NON-NLS-1$
             FileNameCompleter delegate = new FileNameCompleter();
             return delegate.complete(lastArgument, lastArgument.length(), candidates);
-        } else {
-            return -1;
         }
+        return toReturn;
     }
 
 }
