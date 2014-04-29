@@ -16,6 +16,7 @@
 package org.overlord.sramp.shell.util;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -108,7 +109,9 @@ public class FileNameCompleter {
             // when this is *not* done (the cygwin shell will treat the
             // backlashes as escape sequences).
             if (isWindows()) {
-                for (CharSequence candidate : candidates) {
+                List<CharSequence> copy = new ArrayList<CharSequence>(candidates);
+                candidates.clear();
+                for (CharSequence candidate : copy) {
                     candidates.add(candidate.toString().replace("\\", "/")); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
