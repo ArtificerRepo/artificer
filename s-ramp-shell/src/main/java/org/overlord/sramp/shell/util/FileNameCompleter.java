@@ -18,6 +18,8 @@ package org.overlord.sramp.shell.util;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.overlord.sramp.shell.CompletionConstants;
 
 
 /**
@@ -78,11 +80,18 @@ public class FileNameCompleter {
                 String cwd = getUserDir().getAbsolutePath();
                 translated = cwd + separator() + translated;
             }
-
-            File file = new File(translated);
+            String lastPart = "";
+            String firstPart = "";
+            if (!translated.endsWith(File.separator)) {
+                firstPart = translated.substring(0, translated.lastIndexOf(File.separator) + 1);
+                lastPart = translated.substring(translated.lastIndexOf(File.separator) + 1);
+            } else {
+                firstPart = translated;
+            }
+            File file = new File(firstPart);
             final File dir;
 
-            if (translated.endsWith(separator())) {
+            if (firstPart.endsWith(separator())) {
                 dir = file;
             } else {
                 dir = file.getParentFile();
@@ -90,7 +99,7 @@ public class FileNameCompleter {
 
             File[] entries = dir == null ? new File[0] : dir.listFiles();
 
-            int toReturn = matchFiles(buffer, translated, entries, candidates);
+            matchFiles(buffer, firstPart + lastPart, entries, candidates);
 
             // Clean up the file candidates if we're in Windows - backslashes
             // become forward slashes. This
@@ -103,9 +112,8 @@ public class FileNameCompleter {
                     candidates.add(candidate.toString().replace("\\", "/")); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
-            return toReturn;
         }
-        return -1;
+        return CompletionConstants.NO_APPEND_SEPARATOR;
 
 
     }
@@ -142,11 +150,8 @@ public class FileNameCompleter {
      *            the candidates
      * @return the int
      */
-    protected int matchFiles(final String buffer, final String translated, final File[] files,
+    protected void matchFiles(final String buffer, final String translated, final File[] files,
             final List<CharSequence> candidates) {
-        if (files == null) {
-            return -1;
-        }
 
         int matches = 0;
 
@@ -158,15 +163,26 @@ public class FileNameCompleter {
         }
         for (File file : files) {
             if (file.getAbsolutePath().startsWith(translated)) {
-                CharSequence name = file.getName() + (matches == 1 && file.isDirectory() ? separator() : " ");
-                candidates.add(render(file, name).toString());
+                // CharSequence name = file.getName() + (matches == 1 &&
+                // file.isDirectory() ? separator() : " ");
+                if (StringUtils.isNotBlank(buffer)) {
+                    String toAdd = file.getAbsolutePath().substring(
+                            file.getAbsolutePath().lastIndexOf(buffer));
+                    if (file.isDirectory()) {
+                        toAdd += File.separator;
+                    }
+                    candidates.add(toAdd);
+                } else {
+                    String toAdd = file.getName();
+                    if (file.isDirectory()) {
+                        toAdd += File.separator;
+                    }
+                    candidates.add(toAdd);
+                }
+
             }
         }
 
-        final int index = buffer.lastIndexOf(separator());
-
-
-        return index + separator().length();
     }
 
     /**
