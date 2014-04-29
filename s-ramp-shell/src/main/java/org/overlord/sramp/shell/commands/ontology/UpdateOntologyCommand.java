@@ -118,29 +118,13 @@ public class UpdateOntologyCommand extends BuiltInShellCommand {
 	 */
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
-        if (getArguments().isEmpty() && (lastArgument == null || "feed:".startsWith(lastArgument))) { //$NON-NLS-1$
-            QName feedVarName = new QName("ontology", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
-            @SuppressWarnings("unchecked")
-            List<OntologySummary> ontologies = (List<OntologySummary>) getContext().getVariable(feedVarName);
-            if (ontologies != null) {
-                for (int idx = 0; idx < ontologies.size(); idx++) {
-                    String candidate = "feed:" + (idx+1); //$NON-NLS-1$
-                    if (lastArgument == null) {
-                        candidates.add(candidate);
-                    }
-                    if (lastArgument != null && candidate.startsWith(lastArgument)) {
-                        candidates.add(candidate);
-                    }
-                }
-            }
-            return 0;
-        } else if (getArguments().size() == 1) {
+        int toReturn = FeedTabCompleter.tabCompletion(getArguments(), getContext(), lastArgument, candidates);
+        if (getArguments().size() == 1) {
             if (lastArgument == null)
                 lastArgument = ""; //$NON-NLS-1$
             FileNameCompleter delegate = new FileNameCompleter();
             return delegate.complete(lastArgument, lastArgument.length(), candidates);
-        } else {
-            return -1;
         }
+        return toReturn;
 	}
 }
