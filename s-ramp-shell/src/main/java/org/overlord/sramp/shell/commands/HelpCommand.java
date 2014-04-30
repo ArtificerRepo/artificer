@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.lang.StringUtils;
 import org.overlord.sramp.shell.BuiltInShellCommand;
+import org.overlord.sramp.shell.CompletionConstants;
 import org.overlord.sramp.shell.api.ShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
 
@@ -34,33 +37,49 @@ import org.overlord.sramp.shell.i18n.Messages;
  */
 public class HelpCommand extends BuiltInShellCommand {
 
-	private Map<QName, Class<? extends ShellCommand>> commands;
+	private final Map<QName, Class<? extends ShellCommand>> commands;
 
-	/**
-	 * Constructor.
-	 * @param commands
-	 */
-	public HelpCommand(Map<QName, Class<? extends ShellCommand>> commands) {
+    private final Set<String> namespaces;
+
+	    /**
+     * Constructor.
+     *
+     * @param commands
+     *            the commands
+     * @param namespaces
+     *            the namespaces
+     */
+    public HelpCommand(Map<QName, Class<? extends ShellCommand>> commands, Set<String> namespaces) {
 		this.commands = commands;
+        this.namespaces = namespaces;
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
-	 */
+	    /**
+     * Prints the usage.
+     *
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#printUsage()
+     */
 	@Override
 	public void printUsage() {
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
-	 */
+	    /**
+     * Prints the help.
+     *
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#printHelp()
+     */
 	@Override
 	public void printHelp() {
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+	    /**
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
 		String namespaceOrCmdName = optionalArgument(0);
@@ -114,10 +133,12 @@ public class HelpCommand extends BuiltInShellCommand {
 		print(""); //$NON-NLS-1$
 	}
 
-	/**
-	 * Prints the help for a single namespace.
-	 * @param namespace
-	 */
+	    /**
+     * Prints the help for a single namespace.
+     *
+     * @param namespace
+     *            the namespace
+     */
 	private void printHelpForNamespace(String namespace) {
 		print(Messages.i18n.format("Help.COMMAND_LIST_MSG_2", namespace)); //$NON-NLS-1$
 		for (Entry<QName,Class<? extends ShellCommand>> entry : this.commands.entrySet()) {
@@ -132,11 +153,14 @@ public class HelpCommand extends BuiltInShellCommand {
 		print(Messages.i18n.format("Help.HELP_PER_CMD_MSG")); //$NON-NLS-1$
 	}
 
-	/**
-	 * Prints the help for a single command.
-	 * @param cmdName
-	 * @throws Exception
-	 */
+	    /**
+     * Prints the help for a single command.
+     *
+     * @param cmdName
+     *            the cmd name
+     * @throws Exception
+     *             the exception
+     */
 	private void printHelpForCommand(QName cmdName) throws Exception {
 		Class<? extends ShellCommand> commandClass = this.commands.get(cmdName);
 		if (commandClass == null) {
@@ -151,26 +175,62 @@ public class HelpCommand extends BuiltInShellCommand {
 		}
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
+	    /**
+     * Tab completion.
+     *
+     * @param lastArgument
+     *            the last argument
+     * @param candidates
+     *            the candidates
+     * @return the int
+     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String,
+     *      java.util.List)
+     */
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
 		if (getArguments().isEmpty()) {
-			for (String candidate : generateHelpCandidates()) {
-				if (lastArgument == null || candidate.startsWith(lastArgument)) {
-					candidates.add(candidate);
-				}
-			}
+            String namespace = getNamespaceIfExist(lastArgument);
+            if (StringUtils.isNotBlank(namespace)) {
+                candidates.add(namespace);
+                return CompletionConstants.NO_APPEND_SEPARATOR;
+            } else {
+                for (String candidate : generateHelpCandidates()) {
+                    if (lastArgument == null || candidate.startsWith(lastArgument)) {
+                        candidates.add(candidate);
+                    }
+                }
+            }
+
 			return 0;
 		} else {
 			return -1;
 		}
 	}
 
-	/**
-	 * @return a collection of all possible command names
-	 */
+    /**
+     * Gets the namespace if exist.
+     *
+     * @param candidate
+     *            the candidate
+     * @return the namespace if exist
+     */
+    private String getNamespaceIfExist(String candidate) {
+        if (StringUtils.isNotBlank(candidate)) {
+            for (String namespace : namespaces) {
+                if (namespace.startsWith(candidate)) {
+                    return namespace + ":";
+                }
+            }
+        }
+
+        return null;
+    }
+
+	    /**
+     * Generate help candidates.
+     *
+     * @return a collection of all possible command names
+     */
 	private Collection<String> generateHelpCandidates() {
 		TreeSet<String> candidates = new TreeSet<String>();
 		for (QName key : this.commands.keySet()) {

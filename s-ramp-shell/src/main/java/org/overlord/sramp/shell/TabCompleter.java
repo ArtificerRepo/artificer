@@ -126,16 +126,11 @@ public class TabCompleter implements Completion {
                 // commands
 
                 if (completeOperation.getCompletionCandidates().isEmpty()) {
-                    List<String> toBeAdded = new ArrayList<String>();
                     for (QName cmdName : factory.getCommandNames("s-ramp")) { //$NON-NLS-1$
                         if (cmdName.getLocalPart().startsWith(buffer)) {
-                            toBeAdded.add("s-ramp:" + cmdName.getLocalPart() + " ");
+                            completeOperation.addCompletionCandidate(cmdName.getLocalPart());
 
                         }
-                    }
-                    if (toBeAdded.size() == 1) {
-                        String cmdName = toBeAdded.get(0).substring(toBeAdded.get(0).indexOf(":") + 1);
-                        completeOperation.addCompletionCandidate(cmdName.trim()); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else if (completeOperation.getCompletionCandidates().size() == 1) {
                     completeOperation.doAppendSeparator(false);

@@ -195,7 +195,7 @@ public class ShellCommandFactory {
 	public ShellCommand createCommand(QName commandName) throws Exception {
 		ShellCommand command = null;
 		if (commandName.equals(HELP_CMD_NAME)) {
-			command = new HelpCommand(getCommands());
+            command = new HelpCommand(getCommands(), this.getNamespaces());
 		} else if (commandName.equals(QUIT_CMD_NAME)) {
 			command = new ExitCommand();
 		} else if (commandName.equals(EXIT_CMD_NAME)) {
