@@ -20,11 +20,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.Date;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
@@ -44,7 +42,7 @@ import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactDownloadServlet extends HttpServlet {
+public class ArtifactDownloadServlet extends AbstractDownloadServlet {
 
 	private static final long serialVersionUID = ArtifactDownloadServlet.class.hashCode();
 
@@ -87,6 +85,7 @@ public class ArtifactDownloadServlet extends HttpServlet {
 
     /**
      * Downloads the content of the artifact.
+     * 
      * @param httpResponse
      * @param client
      * @param artyType
@@ -96,39 +95,26 @@ public class ArtifactDownloadServlet extends HttpServlet {
     protected void doDownloadContent(HttpServletResponse httpResponse, SrampAtomApiClient client,
             ArtifactType artyType, BaseArtifactType artifact) throws Exception {
         InputStream artifactContent = null;
-        try {
-            // Set the content-disposition
-            String artifactName = artifact.getName();
-            String disposition = String.format("attachment; filename=\"%1$s\"", artifactName); //$NON-NLS-1$
-            httpResponse.setHeader("Content-Disposition", disposition); //$NON-NLS-1$
+        // Set the content-disposition
+        String artifactName = artifact.getName();
+        String disposition = String.format("attachment; filename=\"%1$s\"", artifactName); //$NON-NLS-1$
 
-            // Set the content-type
-            ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
-            ArtifactVisitorHelper.visitArtifact(ctVizzy, artifact);
-            String contentType = ctVizzy.getContentType().toString();
-            httpResponse.setHeader("Content-Type", contentType); //$NON-NLS-1$
+        // Set the content-type
+        ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
+        ArtifactVisitorHelper.visitArtifact(ctVizzy, artifact);
+        String contentType = ctVizzy.getContentType().toString();
 
-            // Set the content-size (if possible)
-            if (artifact instanceof DocumentArtifactType) {
-            	DocumentArtifactType d = (DocumentArtifactType) artifact;
-            	long size = d.getContentSize();
-            	if (size != -1) {
-            		httpResponse.setHeader("Content-Size", String.valueOf(size)); //$NON-NLS-1$
-            	}
+        // Set the content-size (if possible)
+        if (artifact instanceof DocumentArtifactType) {
+            DocumentArtifactType d = (DocumentArtifactType) artifact;
+            long size = d.getContentSize();
+            if (size != -1) {
+                httpResponse.setHeader("Content-Size", String.valueOf(size)); //$NON-NLS-1$
             }
-
-            // Make sure the browser doesn't cache it
-            Date now = new Date();
-            httpResponse.setDateHeader("Date", now.getTime()); //$NON-NLS-1$
-            httpResponse.setDateHeader("Expires", now.getTime() - 86400000L); //$NON-NLS-1$
-            httpResponse.setHeader("Pragma", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
-            httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate"); //$NON-NLS-1$ //$NON-NLS-2$
-
-            artifactContent = client.getArtifactContent(artyType, artifact.getUuid());
-            IOUtils.copy(artifactContent, httpResponse.getOutputStream());
-        } finally {
-            IOUtils.closeQuietly(artifactContent);
         }
+        artifactContent = client.getArtifactContent(artyType, artifact.getUuid());
+        super.doDownloadContent(artifactContent, contentType, disposition, httpResponse);
+
     }
 
     /**

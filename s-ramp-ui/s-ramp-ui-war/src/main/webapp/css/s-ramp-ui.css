@@ -726,3 +726,20 @@ ul.ontology-selector {
 #fileupload-import .uneditable-input, #fileupload-upload .uneditable-input {
   width: 60%;
 }
+
+#ontologies table .active, #ontologies .table-hover tbody tr.active:hover td, .table-hover tbody tr.active:hover th {
+  background-color: #08C !important;
+}
+
+#ontologies table td a img.download{
+	width:20px;
+	content:url(../images/download-icon.png)
+}
+#ontologies table .active a{
+	color: white !important;
+}
+
+#ontologies table .icon{
+	text-align: right;
+}
+

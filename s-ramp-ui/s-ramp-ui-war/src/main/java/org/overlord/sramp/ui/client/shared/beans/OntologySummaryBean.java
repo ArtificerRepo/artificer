@@ -154,4 +154,5 @@ public class OntologySummaryBean {
         this.lastModifiedOn = lastModifiedOn;
     }
 
+    
 }
