@@ -57,7 +57,8 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
 	@Override
 	public boolean execute() throws Exception {
 		String filePathArg = this.requiredArgument(0, Messages.i18n.format("Upload.InvalidArgMsg.LocalFile")); //$NON-NLS-1$
-		String artifactTypeArg = this.optionalArgument(1);
+        String nameArg = this.requiredArgument(1, Messages.i18n.format("ArtifactName.Mandatory"));
+        String artifactTypeArg = this.optionalArgument(2);
 
 		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
 		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
@@ -81,6 +82,7 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
 			}
 			content = FileUtils.openInputStream(file);
 			BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
+            artifact.setName(nameArg);
             IOUtils.closeQuietly(content);
 
             // Now also add "expanded" content to the s-ramp repository
