@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.aesh.complete.CompleteOperation;
 import org.jboss.aesh.complete.Completion;
 import org.overlord.sramp.shell.api.Arguments;
@@ -42,13 +43,21 @@ public class TabCompleter implements Completion {
      * Constructor.
      *
      * @param factory
+     *            the factory
      * @param context
+     *            the context
      */
     public TabCompleter(ShellCommandFactory factory, ShellContext context) {
         this.factory = factory;
         this.context = context;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.jboss.aesh.complete.Completion#complete(org.jboss.aesh.complete.
+     * CompleteOperation)
+     */
     @Override
     public void complete(CompleteOperation completeOperation) {
         String buffer = completeOperation.getBuffer();
@@ -58,85 +67,32 @@ public class TabCompleter implements Completion {
                 completeOperation.addCompletionCandidate(ns + ":"); //$NON-NLS-1$
             }
         } else {
-            // We check the first thing if what is introduced is a command or
-            // not.
-            // Check if what was introduced is a command itself
-            Arguments arguments = null;
-            try {
-                arguments = new Arguments(buffer, true);
-            } catch (InvalidCommandArgumentException e1) {
-                // should never happen...but if it does, just bail
-            }
-            QName commandName = arguments.removeCommandName();
-            String lastArgument = null;
-            if (arguments.size() > 0 && !buffer.endsWith(" ")) { //$NON-NLS-1$
-                lastArgument = arguments.remove(arguments.size() - 1);
-            }
-            ShellCommand command = null;
-            try {
-                command = factory.createCommand(commandName);
-            } catch (Exception e) {
-            }
-            // In case it is a command then we print the tabCompletion specific
-            // of the command
-            if (command != null && !(command instanceof CommandNotFoundCommand)) {
-                command.setContext(this.context);
-                command.setArguments(arguments);
-
-                List<CharSequence> list = new ArrayList<CharSequence>();
-                int tabCompletionResult = command.tabCompletion(lastArgument, list);
-                if (!list.isEmpty()) {
-                    // In case the tab completion return just one result it is
-                    // printed the previous buffer plus the argument
-                    if (list.size() == 1) {
-                        if (buffer.endsWith(" ")) {
-                            completeOperation.addCompletionCandidate(buffer + list.get(0).toString().trim());
-                        } else if (buffer.indexOf(" ") != -1) {
-                            completeOperation.addCompletionCandidate(buffer.substring(0,
-                                    buffer.lastIndexOf(" "))
-                                    + " " + list.get(0).toString().trim());
-                        } else {
-                            completeOperation.addCompletionCandidate(buffer + " "
-                                    + list.get(0).toString().trim());
-                        }
-
-                    } else {
-                        // In case the result of the command tab completion
-                        // contains more than one result (like the
-                        // FileNameCompleter
-                        for (CharSequence sequence : list) {
-                            completeOperation.addCompletionCandidate(sequence.toString());
+            boolean checkIfCommand = false;
+            if (!buffer.contains(":") && !buffer.contains(" ")) {
+                //This is the case of archive:list and archive:listEntry.
+                //If the user do not type " " at the end then when click on tab button should display the two options archive:list and archive:listEntry.
+                    // Case 2 - a partial namespace has been typed - show all
+                    // namespaces
+                    // that match
+                    for (String ns : factory.getNamespaces()) {
+                        if (ns.startsWith(buffer)) {
+                            completeOperation.addCompletionCandidate(ns + ":"); //$NON-NLS-1$
                         }
                     }
-                    if (tabCompletionResult == CompletionConstants.NO_APPEND_SEPARATOR) {
+                    // If no namespaces matched, then try to match the default
+                    // commands
+
+                    if (completeOperation.getCompletionCandidates().isEmpty()) {
+                        for (QName cmdName : factory.getCommandNames("s-ramp")) { //$NON-NLS-1$
+                            if (cmdName.getLocalPart().startsWith(buffer)) {
+                                completeOperation.addCompletionCandidate(cmdName.getLocalPart());
+
+                            }
+                        }
+                    } else if (completeOperation.getCompletionCandidates().size() == 1) {
                         completeOperation.doAppendSeparator(false);
                     }
-
                 }
-            } else if (!buffer.contains(":") && !buffer.contains(" ")) { //$NON-NLS-1$ //$NON-NLS-2$
-                // Case 2 - a partial namespace has been typed - show all
-                // namespaces
-                // that match
-                for (String ns : factory.getNamespaces()) {
-                    if (ns.startsWith(buffer)) {
-                        completeOperation.addCompletionCandidate(ns + ":"); //$NON-NLS-1$
-                    }
-                }
-                // If no namespaces matched, then try to match the default
-                // commands
-
-                if (completeOperation.getCompletionCandidates().isEmpty()) {
-                    for (QName cmdName : factory.getCommandNames("s-ramp")) { //$NON-NLS-1$
-                        if (cmdName.getLocalPart().startsWith(buffer)) {
-                            completeOperation.addCompletionCandidate(cmdName.getLocalPart());
-
-                        }
-                    }
-                } else if (completeOperation.getCompletionCandidates().size() == 1) {
-                    completeOperation.doAppendSeparator(false);
-                }
-
-            }
             // Case 3 - a namespace has been typed and we're waiting at the
             // colon
             else if (buffer.endsWith(":") && !buffer.contains(" ")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -158,9 +114,127 @@ public class TabCompleter implements Completion {
                         completeOperation.addCompletionCandidate(cmdName.getNamespaceURI()+":"+cmdName.getLocalPart()); //$NON-NLS-1$
                     }
                 }
+            } else {
+                // We check the first thing if what is introduced is a command
+                // or
+                // not.
+                // Check if what was introduced is a command itself
+                Arguments arguments = null;
+                try {
+                    arguments = new Arguments(buffer, true);
+                } catch (InvalidCommandArgumentException e1) {
+                    // should never happen...but if it does, just bail
+                }
+                QName commandName = arguments.removeCommandName();
+                String lastArgument = null;
+                if (arguments.size() > 0 && !buffer.endsWith(" ")) { //$NON-NLS-1$
+                    lastArgument = arguments.remove(arguments.size() - 1);
+                }
+                ShellCommand command = null;
+                try {
+                    command = factory.createCommand(commandName);
+                } catch (Exception e) {
+                }
+                // In case it is a command then we print the tabCompletion
+                // specific
+                // of the command
+                if (command != null && !(command instanceof CommandNotFoundCommand)) {
+                    command.setContext(this.context);
+                    command.setArguments(arguments);
+
+                    List<CharSequence> list = new ArrayList<CharSequence>();
+                    int tabCompletionResult = command.tabCompletion(lastArgument, list);
+                    if (!list.isEmpty()) {
+                        // In case the tab completion return just one result it
+                        // is
+                        // printed the previous buffer plus the argument
+                        if (list.size() == 1) {
+                            if (buffer.endsWith(" ")) {
+                                completeOperation.addCompletionCandidate(buffer
+                                        + list.get(0).toString().trim());
+                            } else if (buffer.indexOf(" ") != -1) {
+                                completeOperation.addCompletionCandidate(buffer.substring(0,
+                                        buffer.lastIndexOf(" "))
+                                        + " " + list.get(0).toString().trim());
+                            } else {
+                                completeOperation.addCompletionCandidate(buffer + " "
+                                        + list.get(0).toString().trim());
+                            }
+
+                        } else {
+                            // In case the result of the command tab completion
+                            // contains more than one result (like the
+                            // FileNameCompleter
+                            for (CharSequence sequence : list) {
+                                completeOperation.addCompletionCandidate(sequence.toString());
+                            }
+                        }
+                        if (tabCompletionResult == CompletionConstants.NO_APPEND_SEPARATOR) {
+                            completeOperation.doAppendSeparator(false);
+                        }
+
+                    }
+                }
+
             }
         }
 
+        String commonPartCandidates = mergeCandidates(completeOperation.getCompletionCandidates(), buffer);
+        if (StringUtils.isNotBlank(commonPartCandidates)) {
+            String tokenToCompare = "";
+            if (buffer.contains(" ")) {
+                tokenToCompare = buffer.substring(buffer.lastIndexOf(" ") + 1);
+            } else {
+                tokenToCompare = buffer;
+            }
+            completeOperation.getCompletionCandidates().clear();
+            if (StringUtils.isBlank(tokenToCompare) || commonPartCandidates.startsWith(tokenToCompare)) {
+                if (buffer.contains(" ")) {
+                    completeOperation.addCompletionCandidate(buffer.substring(0, buffer.lastIndexOf(" "))
+                            .trim() + " " + commonPartCandidates);
+                } else {
+                    completeOperation.addCompletionCandidate(commonPartCandidates);
+                }
+
+            } else {
+                completeOperation.addCompletionCandidate(commonPartCandidates);
+            }
+
+            completeOperation.doAppendSeparator(false);
+        }
+
+    }
+
+    /**
+     * Merge candidates.
+     *
+     * @param completionCandidates
+     *            the completion candidates
+     * @param buffer
+     *            the buffer
+     * @return the string
+     */
+    private String mergeCandidates(List<String> completionCandidates, String buffer) {
+        if (completionCandidates.size() > 1) {
+            int indexOfDifference = StringUtils.indexOfDifference(completionCandidates
+                    .toArray(new String[completionCandidates.size()]));
+            if (indexOfDifference == -1) {
+                return completionCandidates.get(0);
+            } else {
+                String partToCompare = "";
+                String commonPart = completionCandidates.get(0).substring(0, indexOfDifference);
+                if (commonPart.startsWith(buffer)) {
+                    partToCompare = buffer;
+                } else {
+                    partToCompare = buffer.substring(buffer.lastIndexOf(" ") + 1);
+                }
+                if (partToCompare.length() != indexOfDifference) {
+                    return commonPart;
+                }
+
+            }
+        }
+        return "";
 
     }
 }

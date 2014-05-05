@@ -15,11 +15,6 @@
  */
 package org.overlord.sramp.shell.commands.archive;
 
-import javax.xml.namespace.QName;
-
-import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.client.SrampAtomApiClient;
-import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
 
 /**
@@ -27,12 +22,13 @@ import org.overlord.sramp.shell.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class UploadArchiveCommand extends BuiltInShellCommand {
+public class UploadArchiveCommand extends AbstractArchiveCommand {
 
 	/**
 	 * Constructor.
 	 */
 	public UploadArchiveCommand() {
+
 	}
 
 	/**
@@ -40,16 +36,9 @@ public class UploadArchiveCommand extends BuiltInShellCommand {
 	 */
 	@Override
 	public boolean execute() throws Exception {
-		QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampAtomApiClient client = (SrampAtomApiClient) getContext().getVariable(clientVarName);
-		if (client == null) {
-			print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
-			return false;
-		}
-        QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
-        SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
-        if (archive == null) {
-            print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+        super.initialize();
+
+        if (!validate()) {
             return false;
         }
 
@@ -65,5 +54,17 @@ public class UploadArchiveCommand extends BuiltInShellCommand {
 		}
         return true;
 	}
+
+    @Override
+    protected boolean validate(String... args) {
+        if (!validateArchiveSession()) {
+            return false;
+        }
+        if (client == null) {
+            print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
+            return false;
+        }
+        return true;
+    }
 
 }

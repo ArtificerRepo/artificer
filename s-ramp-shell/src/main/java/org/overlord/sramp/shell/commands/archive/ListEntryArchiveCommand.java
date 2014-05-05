@@ -15,14 +15,16 @@
  */
 package org.overlord.sramp.shell.commands.archive;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
-import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
+import org.overlord.sramp.shell.util.FileEntryPathCompleter;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
 
 /**
@@ -30,7 +32,7 @@ import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ListEntryArchiveCommand extends BuiltInShellCommand {
+public class ListEntryArchiveCommand extends AbstractArchiveCommand {
 
 	/**
 	 * Constructor.
@@ -43,23 +45,54 @@ public class ListEntryArchiveCommand extends BuiltInShellCommand {
 	 */
 	@Override
 	public boolean execute() throws Exception {
-		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg")); //$NON-NLS-1$
+        super.initialize();
+        String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg")); //$NON-NLS-1$
 
-		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
-
-		if (archive == null) {
-			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+        if (!validate(archivePathArg)) {
             return false;
-		} else {
+        } else {
 			SrampArchiveEntry entry = archive.getEntry(archivePathArg);
-			BaseArtifactType metaData = entry.getMetaData();
-			print(Messages.i18n.format("ENTRY", archivePathArg)); //$NON-NLS-1$
-			print("-----"); //$NON-NLS-1$
-			PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
-			ArtifactVisitorHelper.visitArtifact(visitor, metaData);
+            if (entry != null) {
+                BaseArtifactType metaData = entry.getMetaData();
+                print(Messages.i18n.format("ENTRY", archivePathArg)); //$NON-NLS-1$
+                print("-----"); //$NON-NLS-1$
+                PrintArtifactMetaDataVisitor visitor = new PrintArtifactMetaDataVisitor();
+                ArtifactVisitorHelper.visitArtifact(visitor, metaData);
+            } else {
+                print(Messages.i18n.format("ListEntryArchive.Entry.Not.Exist", archivePathArg)); //$NON-NLS-1$
+            }
+
 		}
         return true;
 	}
+
+    /**
+     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String,
+     *      java.util.List)
+     */
+    @Override
+    public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+        if (lastArgument == null)
+            lastArgument = ""; //$NON-NLS-1$
+
+        if (getArguments().isEmpty()) {
+            QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
+            SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
+            FileEntryPathCompleter delegate = new FileEntryPathCompleter(archive);
+            return delegate.complete(lastArgument, lastArgument.length(), candidates);
+        }
+        return -1;
+    }
+
+    @Override
+    protected boolean validate(String... args) {
+        if (!validateArchiveSession()) {
+            return false;
+        }
+        if (!validateArchivePath(args[0])) {
+            return false;
+        }
+        return true;
+    }
 
 }
