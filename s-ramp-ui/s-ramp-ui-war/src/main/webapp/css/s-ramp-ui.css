@@ -731,15 +731,18 @@ ul.ontology-selector {
   background-color: #08C !important;
 }
 
-#ontologies table td a img.download{
-	width:20px;
-	content:url(../images/download-icon.png)
-}
-#ontologies table .active a{
-	color: white !important;
-}
-
-#ontologies table .icon{
-	text-align: right;
+#ontologies table tr td a div.download-icon {
+  width: 20px;
+  height: 20px;
+  background-image: url(../images/download-icon.png);
+  background-position: top left;
+  background-repeat: no-repeat;
 }
 
+#ontologies table tr.active td a div.download-icon {
+  background-image: url(../images/download-icon_white.png);
+}
+
+#ontologies table .active a {
+  color: white !important;
+}

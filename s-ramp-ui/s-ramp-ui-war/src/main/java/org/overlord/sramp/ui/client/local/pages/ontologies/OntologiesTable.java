@@ -78,7 +78,6 @@ public class OntologiesTable extends TemplatedWidgetTable implements
         final Anchor a = new Anchor(OntologiesUtil.createOntologyLabel(ontologyBean));
         a.getElement().setAttribute("data-uuid", ontologyBean.getUuid()); //$NON-NLS-1$
         a.addClickHandler(new ClickHandler() {
-
             @Override
             public void onClick(ClickEvent event) {
                 SelectionEvent.fire(OntologiesTable.this, ontologyBean);
@@ -89,7 +88,7 @@ public class OntologiesTable extends TemplatedWidgetTable implements
         String contentUrl = GWT.getModuleBaseURL()
                 + "services/ontologyDownload?uuid=" + ontologyBean.getUuid(); //$NON-NLS-1$
         downloadAnchor.setHref(contentUrl);
-        downloadAnchor.setHTML("<img class=\"download\"/>");
+        downloadAnchor.setHTML("<div class=\"download-icon\"></div>");
 
         add(rowIdx, 0, a);
         add(rowIdx, 1, downloadAnchor);
