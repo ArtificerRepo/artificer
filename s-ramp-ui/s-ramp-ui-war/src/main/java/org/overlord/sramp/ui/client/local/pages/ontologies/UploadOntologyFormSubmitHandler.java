@@ -47,6 +47,7 @@ public class UploadOntologyFormSubmitHandler implements SubmitHandler, SubmitCom
     private NotificationBean notification;
     private IUploadCompletionHandler completionHandler;
 
+    private UploadResult uploadResult;
     /**
      * Constructor.
      */
@@ -66,6 +67,7 @@ public class UploadOntologyFormSubmitHandler implements SubmitHandler, SubmitCom
     @Override
     public void onSubmit(SubmitEvent event) {
         dialog.hide(false);
+        uploadResult = null;
         notification = notificationService.startProgressNotification(
                 i18n.format("upload-ontology-submit.uploading.title"), //$NON-NLS-1$
                 i18n.format("upload-ontology-submit.uploading.msg")); //$NON-NLS-1$
@@ -80,6 +82,7 @@ public class UploadOntologyFormSubmitHandler implements SubmitHandler, SubmitCom
         dialog.destroy();
 
         UploadResult results = UploadResult.fromResult(event.getResults());
+        uploadResult = results;
         if (results.isError()) {
             if (results.getError() != null) {
                 notificationService.completeProgressNotification(
@@ -116,4 +119,13 @@ public class UploadOntologyFormSubmitHandler implements SubmitHandler, SubmitCom
     public void setCompletionHandler(IUploadCompletionHandler completionHandler) {
         this.completionHandler = completionHandler;
     }
+
+    public UploadResult getUploadResult() {
+        return uploadResult;
+    }
+
+    public void setUploadResult(UploadResult uploadResult) {
+        this.uploadResult = uploadResult;
+    }
+
 }

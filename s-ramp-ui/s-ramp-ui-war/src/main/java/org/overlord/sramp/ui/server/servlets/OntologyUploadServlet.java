@@ -36,6 +36,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
 import org.overlord.sramp.ui.server.i18n.Messages;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
@@ -141,7 +142,16 @@ public class OntologyUploadServlet extends AbstractUploadServlet {
 		try {
 			contentStream = FileUtils.openInputStream(tempFile);
 			RDF ontology = clientAccessor.getClient().uploadOntology(contentStream);
-            responseParams.put("namespace", ontology.getOtherAttributes().get(new QName("http://www.w3.org/XML/1998/namespace", "base"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+            if (ontology.getOtherAttributes() != null) {
+                responseParams
+                        .put("namespace", ontology.getOtherAttributes().get(new QName("http://www.w3.org/XML/1998/namespace", "base"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                QName uuid = new QName(SrampConstants.SRAMP_NS, "uuid");
+                if (ontology.getOtherAttributes().get(uuid) != null) {
+                    responseParams.put("uuid", ontology.getOtherAttributes().get(uuid));
+                }
+            }
+
             responseParams.put("id", ontology.getOntology().getID()); //$NON-NLS-1$
             responseParams.put("label", ontology.getOntology().getLabel()); //$NON-NLS-1$
             responseParams.put("comment", ontology.getOntology().getComment()); //$NON-NLS-1$

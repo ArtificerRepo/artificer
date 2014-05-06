@@ -137,6 +137,15 @@
     <servlet-name>OntologyUpload</servlet-name>
     <url-pattern>/app/services/ontologyUpload</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>OntologyDownload</servlet-name>
+    <servlet-class>org.overlord.sramp.ui.server.servlets.OntologyDownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OntologyDownload</servlet-name>
+    <url-pattern>/app/services/ontologyDownload</url-pattern>
+  </servlet-mapping>  
+  
   
   <!-- Define a Security Constraint on this Application -->
   <security-constraint>

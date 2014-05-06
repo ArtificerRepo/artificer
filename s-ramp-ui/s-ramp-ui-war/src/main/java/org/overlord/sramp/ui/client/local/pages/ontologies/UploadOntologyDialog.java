@@ -25,6 +25,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.TemplatedFormPanel;
 import org.overlord.sramp.ui.client.local.util.IUploadCompletionHandler;
+import org.overlord.sramp.ui.client.local.util.UploadResult;
 import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 
 import com.google.gwt.core.client.GWT;
@@ -97,6 +98,14 @@ public class UploadOntologyDialog extends ModalDialog {
      */
     public void setCompletionHandler(IUploadCompletionHandler completionHandler) {
         this.completionHandler = completionHandler;
+    }
+
+    public String getOntologyUploadedUUID() {
+        UploadResult result = formHandler.getUploadResult();
+        if (result != null) {
+            return result.get("uuid");
+        }
+        return null;
     }
 
 }
