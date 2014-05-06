@@ -15,11 +15,8 @@
  */
 package org.overlord.sramp.shell.commands.archive;
 
-import javax.xml.namespace.QName;
-
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.shell.AbstractShellContextVariableLifecycleHandler;
-import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
 
 /**
@@ -27,7 +24,7 @@ import org.overlord.sramp.shell.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class NewArchiveCommand extends BuiltInShellCommand {
+public class NewArchiveCommand extends AbstractArchiveCommand {
 
 	/**
 	 * Constructor.
@@ -40,14 +37,10 @@ public class NewArchiveCommand extends BuiltInShellCommand {
 	 */
 	@Override
 	public boolean execute() throws Exception {
-		SrampArchive archive = null;
-		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
-		archive = (SrampArchive) getContext().getVariable(varName);
-
-		if (archive != null) {
-			print(Messages.i18n.format("NewArchive.AlreadyOpen")); //$NON-NLS-1$
-			return false;
-		}
+        super.initialize();
+        if (!validate()) {
+            return false;
+        }
 
 		archive = new SrampArchive();
 		getContext().setVariable(varName, archive, new AbstractShellContextVariableLifecycleHandler() {
@@ -63,5 +56,14 @@ public class NewArchiveCommand extends BuiltInShellCommand {
 		print(Messages.i18n.format("NewArchive.Opened")); //$NON-NLS-1$
         return true;
 	}
+
+    @Override
+    protected boolean validate(String... args) {
+        if (archive != null) {
+            print(Messages.i18n.format("NewArchive.AlreadyOpen")); //$NON-NLS-1$
+            return false;
+        }
+        return true;
+    }
 
 }

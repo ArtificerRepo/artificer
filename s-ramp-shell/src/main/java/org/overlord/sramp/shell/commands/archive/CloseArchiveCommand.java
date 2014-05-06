@@ -15,10 +15,6 @@
  */
 package org.overlord.sramp.shell.commands.archive;
 
-import javax.xml.namespace.QName;
-
-import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
 
 /**
@@ -26,7 +22,7 @@ import org.overlord.sramp.shell.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class CloseArchiveCommand extends BuiltInShellCommand {
+public class CloseArchiveCommand extends AbstractArchiveCommand {
 
 	/**
 	 * Constructor.
@@ -39,16 +35,21 @@ public class CloseArchiveCommand extends BuiltInShellCommand {
 	 */
 	@Override
 	public boolean execute() throws Exception {
-		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampArchive archive = (SrampArchive) getContext().removeVariable(varName);
-
-		if (archive == null) {
-			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+        super.initialize();
+        if (!validate()) {
 			return false;
 		} else {
 			print(Messages.i18n.format("CloseArchive.Closed")); //$NON-NLS-1$
 		}
         return true;
 	}
+
+    @Override
+    protected boolean validate(String... args) {
+        if (!validateArchiveSession()) {
+            return false;
+        }
+        return true;
+    }
 
 }

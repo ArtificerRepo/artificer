@@ -156,14 +156,6 @@ public class FileNameCompleter {
     protected void matchFiles(final String buffer, final String translated, final File[] files,
             final List<CharSequence> candidates) {
 
-        int matches = 0;
-
-        // first pass: just count the matches
-        for (File file : files) {
-            if (file.getAbsolutePath().startsWith(translated)) {
-                matches++;
-            }
-        }
         for (File file : files) {
             if (file.getAbsolutePath().startsWith(translated)) {
                 // CharSequence name = file.getName() + (matches == 1 &&

@@ -16,20 +16,18 @@
 package org.overlord.sramp.shell.commands.archive;
 
 import java.io.File;
-
-import javax.xml.namespace.QName;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
+import org.overlord.sramp.shell.util.FileNameCompleter;
 
 /**
  * Removes an entry from the current S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class PackArchiveCommand extends BuiltInShellCommand {
+public class PackArchiveCommand extends AbstractArchiveCommand {
 
 	/**
 	 * Constructor.
@@ -42,13 +40,10 @@ public class PackArchiveCommand extends BuiltInShellCommand {
 	 */
 	@Override
 	public boolean execute() throws Exception {
-		String outputLocationArg = requiredArgument(0, Messages.i18n.format("PackArchive.InvalidArgMsg.OutputLocation")); //$NON-NLS-1$
-
-		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
-
-		if (archive == null) {
-			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+        super.initialize();
+        String outputLocationArg = requiredArgument(0,
+                Messages.i18n.format("PackArchive.InvalidArgMsg.OutputLocation")); //$NON-NLS-1$
+        if (!validate()) {
             return false;
 		} else {
 			File outputFile = new File(outputLocationArg);
@@ -64,5 +59,29 @@ public class PackArchiveCommand extends BuiltInShellCommand {
 		}
         return true;
 	}
+
+    /**
+     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String,
+     *      java.util.List)
+     */
+    @Override
+    public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+        if (lastArgument == null)
+            lastArgument = ""; //$NON-NLS-1$
+
+        if (getArguments().isEmpty()) {
+            FileNameCompleter delegate = new FileNameCompleter();
+            return delegate.complete(lastArgument, lastArgument.length(), candidates);
+        }
+        return -1;
+    }
+
+    @Override
+    protected boolean validate(String... args) {
+        if (!validateArchiveSession()) {
+            return false;
+        }
+        return true;
+    }
 
 }

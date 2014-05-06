@@ -17,6 +17,9 @@ package org.overlord.sramp.shell.commands.archive;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -26,21 +29,28 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.api.ShellContext;
 import org.overlord.sramp.shell.i18n.Messages;
+import org.overlord.sramp.shell.util.FileEntryPathCompleter;
 
 /**
  * Removes an entry from the current S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class UpdateEntryArchiveCommand extends BuiltInShellCommand {
+public class UpdateEntryArchiveCommand extends AbstractArchiveCommand {
 
-	/**
-	 * Constructor.
-	 */
+    private static final Set<String> subcommands = new HashSet<String>();
+    {
+        subcommands.add("setContent"); //$NON-NLS-1$
+        subcommands.add("setProperty"); //$NON-NLS-1$
+        subcommands.add("setRelationship"); //$NON-NLS-1$
+    }
+
+    /**
+     * Constructor.
+     */
 	public UpdateEntryArchiveCommand() {
 	}
 
@@ -49,20 +59,14 @@ public class UpdateEntryArchiveCommand extends BuiltInShellCommand {
 	 */
 	@Override
 	public boolean execute() throws Exception {
-		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg.EntryPath")); //$NON-NLS-1$
+        super.initialize();
+        String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg.EntryPath")); //$NON-NLS-1$
 		String subCommandArg = requiredArgument(1, Messages.i18n.format("UpdateEntry.InvalidArgMsg.SubCommand")); //$NON-NLS-1$
 
-		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
-		if (archive == null) {
-			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+        if (!validate(archivePathArg)) {
             return false;
 		} else {
-			if (!archive.containsEntry(archivePathArg)) {
-				throw new InvalidCommandArgumentException(0, Messages.i18n.format("UpdateEntry.EntryNotFound", archivePathArg)); //$NON-NLS-1$
-			}
-
 			if ("setContent".equals(subCommandArg)) { //$NON-NLS-1$
 				executeSetContent(archive, archivePathArg, getContext());
 			}
@@ -146,5 +150,44 @@ public class UpdateEntryArchiveCommand extends BuiltInShellCommand {
 	private void executeSetRelationship(SrampArchive archive, String entryPath, ShellContext context) throws Exception {
 		throw new InvalidCommandArgumentException(0, Messages.i18n.format("UpdateEntry.NotYetImplemented.Relationships")); //$NON-NLS-1$
 	}
+
+    /**
+     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String,
+     *      java.util.List)
+     */
+    @Override
+    public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+        if (lastArgument == null)
+            lastArgument = ""; //$NON-NLS-1$
+
+        if (getArguments().isEmpty()) {
+            QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
+            SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
+            FileEntryPathCompleter delegate = new FileEntryPathCompleter(archive);
+            return delegate.complete(lastArgument, lastArgument.length(), candidates);
+        } else if (getArguments().size() == 1) {
+            for (String subcmd : subcommands) {
+                if (lastArgument == null || subcmd.startsWith(lastArgument)) {
+                    candidates.add(subcmd); //$NON-NLS-1$
+                }
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    protected boolean validate(String... args) throws Exception {
+        if (!validateArchiveSession()) {
+            return false;
+        }
+        if (!validateArchivePath(args[0])) {
+            return false;
+        }
+        if (!archive.containsEntry(args[0])) {
+            throw new InvalidCommandArgumentException(0, Messages.i18n.format(
+                    "UpdateEntry.EntryNotFound", args[0])); //$NON-NLS-1$
+        }
+        return true;
+    }
 
 }

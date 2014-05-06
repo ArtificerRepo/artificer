@@ -15,18 +15,20 @@
  */
 package org.overlord.sramp.shell.commands.archive;
 
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
+import org.overlord.sramp.shell.util.FileEntryPathCompleter;
 
 /**
  * Removes an entry from the current S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class RemoveEntryArchiveCommand extends BuiltInShellCommand {
+public class RemoveEntryArchiveCommand extends AbstractArchiveCommand {
 
 	/**
 	 * Constructor.
@@ -39,15 +41,13 @@ public class RemoveEntryArchiveCommand extends BuiltInShellCommand {
 	 */
 	@Override
 	public boolean execute() throws Exception {
-		String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg.EntryPath")); //$NON-NLS-1$
+        super.initialize();
+        String archivePathArg = requiredArgument(0, Messages.i18n.format("InvalidArgMsg.EntryPath")); //$NON-NLS-1$
 
-		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
 
-		if (archive == null) {
-			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+        if (!validate(archivePathArg)) {
             return false;
-		} else {
+        } else {
 			boolean success = archive.removeEntry(archivePathArg);
 			if (success) {
 				print(Messages.i18n.format("RemoveEntry.EntryDeleted")); //$NON-NLS-1$
@@ -58,4 +58,32 @@ public class RemoveEntryArchiveCommand extends BuiltInShellCommand {
         return true;
 	}
 
+    /**
+     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String,
+     *      java.util.List)
+     */
+    @Override
+    public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
+        if (lastArgument == null)
+            lastArgument = ""; //$NON-NLS-1$
+
+        if (getArguments().isEmpty()) {
+            QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
+            SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
+            FileEntryPathCompleter delegate = new FileEntryPathCompleter(archive);
+            return delegate.complete(lastArgument, lastArgument.length(), candidates);
+        }
+        return -1;
+    }
+
+    @Override
+    protected boolean validate(String... args) {
+        if (!validateArchiveSession()) {
+            return false;
+        }
+        if (!validateArchivePath(args[0])) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,16 @@ package org.overlord.sramp.shell.commands.archive;
 
 import java.util.Collection;
 
-import javax.xml.namespace.QName;
-
-import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
-import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
+
 
 /**
  * Opens an existing S-RAMP batch archive.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ListArchiveCommand extends BuiltInShellCommand {
+public class ListArchiveCommand extends AbstractArchiveCommand {
 
 	/**
 	 * Constructor.
@@ -37,16 +34,18 @@ public class ListArchiveCommand extends BuiltInShellCommand {
 	public ListArchiveCommand() {
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
+	    /**
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
+     * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
+     */
 	@Override
 	public boolean execute() throws Exception {
-		QName varName = new QName("archive", "active-archive"); //$NON-NLS-1$ //$NON-NLS-2$
-		SrampArchive archive = (SrampArchive) getContext().getVariable(varName);
-
-		if (archive == null) {
-			print(Messages.i18n.format("NO_ARCHIVE_OPEN")); //$NON-NLS-1$
+        super.initialize();
+        if (!validate()) {
 	        return false;
 		}
 		Collection<SrampArchiveEntry> entries = archive.getEntries();
@@ -65,5 +64,20 @@ public class ListArchiveCommand extends BuiltInShellCommand {
         print(Messages.i18n.format("ENTRY_LIST_SUMMARY", entries.size())); //$NON-NLS-1$
         return true;
 	}
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.overlord.sramp.shell.commands.archive.AbstractArchiveCommand#validate
+     * (java.lang.String[])
+     */
+    @Override
+    protected boolean validate(String... args) {
+        if (!validateArchiveSession()) {
+            return false;
+        }
+        return true;
+    }
 
 }
