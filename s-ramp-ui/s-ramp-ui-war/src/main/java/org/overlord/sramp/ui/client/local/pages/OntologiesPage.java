@@ -146,7 +146,7 @@ public class OntologiesPage extends AbstractPage {
                 && ontologies.getSelectedOntology() == null) {
             ontologies.selectItem(uuidNewOntology);
         } else if (ontologyMap.size() == 1) {
-            ontologies.selectItem(ontologyMap.keySet().iterator().next());
+            ontologies.selectItem(ontologyMap.get(ontologyMap.keySet().iterator().next()).getUuid());
         } else if (ontologies.getSelectedOntology() != null) {
             ontologies.selectItem(ontologies.getSelectedOntology().getUuid());
         }
