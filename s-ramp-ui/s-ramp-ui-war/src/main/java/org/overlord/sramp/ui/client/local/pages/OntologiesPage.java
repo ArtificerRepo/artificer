@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ public class OntologiesPage extends AbstractPage {
     @Inject @DataField("ontology-editor")
     OntologyEditor editor;
 
-
+    private String uuidNewOntology;
 
     /**
      * Constructor.
@@ -98,6 +98,9 @@ public class OntologiesPage extends AbstractPage {
     public OntologiesPage() {
     }
 
+    /**
+     * Post construct.
+     */
     @PostConstruct
     protected void postConstruct() {
         ontologies.addSelectionHandler(new SelectionHandler<OntologySummaryBean>() {
@@ -111,6 +114,8 @@ public class OntologiesPage extends AbstractPage {
     }
 
     /**
+     * On page showing.
+     *
      * @see org.overlord.sramp.ui.client.local.pages.AbstractPage#onPageShowing()
      */
     @Override
@@ -132,12 +137,19 @@ public class OntologiesPage extends AbstractPage {
     }
 
     /**
-     * @param data
+     * Update ontology list.
      */
     protected void updateOntologyList() {
         ontologies.clear();
-
         ontologies.setValue(ontologyMap);
+        if (uuidNewOntology != null && !uuidNewOntology.equals("")
+                && ontologies.getSelectedOntology() == null) {
+            ontologies.selectItem(uuidNewOntology);
+        } else if (ontologyMap.size() == 1) {
+            ontologies.selectItem(ontologyMap.keySet().iterator().next());
+        } else if (ontologies.getSelectedOntology() != null) {
+            ontologies.selectItem(ontologies.getSelectedOntology().getUuid());
+        }
     }
 
 
@@ -146,7 +158,9 @@ public class OntologiesPage extends AbstractPage {
 
     /**
      * Event handler that fires when the user clicks the New Ontology button.
+     *
      * @param event
+     *            the event
      */
     @EventHandler("btn-new-ontology")
     public void onAddOntologyClick(ClickEvent event) {
@@ -162,18 +176,22 @@ public class OntologiesPage extends AbstractPage {
 
     /**
      * Event handler that fires when the user clicks the Upload Ontology button.
+     *
      * @param event
+     *            the event
      */
     @EventHandler("btn-upload-ontology")
     public void onUploadOntologyClick(ClickEvent event) {
-        UploadOntologyDialog dialog = uploadOntologyDialogFactory.get();
+        final UploadOntologyDialog dialog = uploadOntologyDialogFactory.get();
         dialog.setCompletionHandler(new IUploadCompletionHandler() {
             @Override
             public void onImportComplete() {
-                if (isAttached()) {
-                    editor.setValue(null);
-                    onPageShowing();
+                String uuid = dialog.getOntologyUploadedUUID();
+                if (uuid != null && !uuid.equals("")) {
+                    uuidNewOntology = uuid;
                 }
+                onPageShowing();
+
             }
         });
         dialog.show();
@@ -181,7 +199,9 @@ public class OntologiesPage extends AbstractPage {
 
     /**
      * Called when the user creates a new ontology.
+     *
      * @param value
+     *            the value
      */
     protected void onNewOntology(final OntologyBean value) {
         final NotificationBean notificationBean = notificationService.startProgressNotification(
@@ -193,7 +213,7 @@ public class OntologiesPage extends AbstractPage {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
                         i18n.format("new-ontology.created.title"), //$NON-NLS-1$
                         i18n.format("new-ontology.created.message", value.getId())); //$NON-NLS-1$
-                editor.setValue(null);
+                uuidNewOntology = value.getUuid();
                 onPageShowing();
                 // TODO select the ontology automatically here?
             }
@@ -211,8 +231,6 @@ public class OntologiesPage extends AbstractPage {
      *
      * @param ontology
      *            the ontology
-     * @param widget
-     *            the widget
      */
     protected void onOntologyClicked(OntologySummaryBean ontology) {
         if (ontology == ontologies.getSelectedOntology()) {
@@ -232,9 +250,20 @@ public class OntologiesPage extends AbstractPage {
         }
         ontologies.selectItem(ontology);
 
+        reloadOntologyEditor(ontology.getUuid());
+        this.uuidNewOntology = "";
 
+    }
+
+    /**
+     * Reload the ontology editor.
+     *
+     * @param uuid
+     *            the uuid
+     */
+    private void reloadOntologyEditor(String uuid) {
         this.editor.clear();
-        this.ontologyService.get(ontology.getUuid(), true, new IRpcServiceInvocationHandler<OntologyBean>() {
+        this.ontologyService.get(uuid, true, new IRpcServiceInvocationHandler<OntologyBean>() {
             @Override
             public void onReturn(OntologyBean data) {
                 editor.setValue(data);

@@ -82,7 +82,6 @@ public class OntologiesTable extends TemplatedWidgetTable implements
             @Override
             public void onClick(ClickEvent event) {
                 SelectionEvent.fire(OntologiesTable.this, ontologyBean);
-
             }
         });
         Anchor downloadAnchor = new Anchor();
@@ -90,7 +89,7 @@ public class OntologiesTable extends TemplatedWidgetTable implements
         String contentUrl = GWT.getModuleBaseURL()
                 + "services/ontologyDownload?uuid=" + ontologyBean.getUuid(); //$NON-NLS-1$
         downloadAnchor.setHref(contentUrl);
-        downloadAnchor.setHTML("<img/>");
+        downloadAnchor.setHTML("<img class=\"download\"/>");
 
         add(rowIdx, 0, a);
         add(rowIdx, 1, downloadAnchor);
@@ -103,7 +102,7 @@ public class OntologiesTable extends TemplatedWidgetTable implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#
      * addValueChangeHandler
      * (com.google.gwt.event.logical.shared.ValueChangeHandler)
@@ -116,7 +115,7 @@ public class OntologiesTable extends TemplatedWidgetTable implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler
      * (com.google.gwt.event.logical.shared.SelectionHandler)
@@ -128,7 +127,7 @@ public class OntologiesTable extends TemplatedWidgetTable implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     @Override
@@ -138,7 +137,7 @@ public class OntologiesTable extends TemplatedWidgetTable implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     @Override
@@ -148,7 +147,7 @@ public class OntologiesTable extends TemplatedWidgetTable implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object,
      * boolean)
      */
@@ -174,6 +173,22 @@ public class OntologiesTable extends TemplatedWidgetTable implements
         Element row = this.getRow(rows.get(ontology));
         row.addClassName("active"); //$NON-NLS-1$
         this.selectedOntology = ontology;
+    }
+
+    /**
+     * Select item.
+     *
+     * @param ontology
+     *            the ontology
+     */
+    public void selectItem(String uuid) {
+        for (OntologySummaryBean ontology : rows.keySet()) {
+            if (ontology.getUuid() != null && !ontology.getUuid().equals("")
+                    && ontology.getUuid().equals(uuid)) {
+                SelectionEvent.fire(OntologiesTable.this, ontology);
+            }
+        }
+
     }
 
     /**
