@@ -14,7 +14,6 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
 
@@ -30,7 +29,6 @@
     <dependency>
       <groupId>org.picketlink</groupId>
       <artifactId>picketlink-federation</artifactId>
-      <version>${picketlink.version}</version>
     </dependency>
   </dependencies>
   

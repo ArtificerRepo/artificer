@@ -15,18 +15,15 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-widgets</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-common</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-client</artifactId>
-      <version>${project.version}</version>
       <exclusions>
         <exclusion>
           <artifactId>slf4j-log4j12</artifactId>
@@ -45,22 +42,18 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-integration-java</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-integration-switchyard</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-integration-kie</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-integration-teiid</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- Overlord Commons -->
@@ -139,7 +132,6 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-tools</artifactId>
-      <version>${version.org.jboss.errai}</version>
     </dependency>
     <dependency>
       <groupId>org.mvel</groupId>

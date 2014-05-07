@@ -17,12 +17,10 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-common</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-atom</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- Third Party Dependencies -->

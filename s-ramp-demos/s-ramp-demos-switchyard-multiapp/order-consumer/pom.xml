@@ -20,37 +20,30 @@
     <dependency>
       <groupId>org.switchyard</groupId>
       <artifactId>switchyard-api</artifactId>
-      <version>${org.switchyard.version}</version>
     </dependency>
     <dependency>
       <groupId>org.switchyard</groupId>
       <artifactId>switchyard-plugin</artifactId>
-      <version>${org.switchyard.version}</version>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-bean</artifactId>
-      <version>${org.switchyard.version}</version>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-camel</artifactId>
-      <version>${org.switchyard.version}</version>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-camel-core</artifactId>
-      <version>${org.switchyard.version}</version>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-soap</artifactId>
-      <version>${org.switchyard.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>switchyard-quickstart-demo-multi-artifacts</artifactId>
-      <version>${project.version}</version>
     </dependency>
     
     <!-- Third Party Dependencies -->
@@ -67,13 +60,11 @@
     <dependency>
       <groupId>org.switchyard</groupId>
       <artifactId>switchyard-test</artifactId>
-      <version>${org.switchyard.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-test-mixin-hornetq</artifactId>
-      <version>${org.switchyard.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

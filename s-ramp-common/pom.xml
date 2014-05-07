@@ -17,7 +17,6 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-api</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- Overlord Commons -->
