@@ -14,7 +14,6 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-shell</artifactId>
-      <version>${project.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-beanutils</groupId>

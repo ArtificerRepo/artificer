@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-parent</artifactId>
-    <version>6.0.0.CR6</version>
+    <version>6.0.0.CR8</version>
   </parent>
 
   <groupId>org.overlord.sramp</groupId>
@@ -110,6 +110,7 @@
     <guava-gwt.version>14.0.1</guava-gwt.version>
     <picketbox.version>4.0.19.SP4</picketbox.version>
     <picketlink.version>2.5.3.SP1</picketlink.version>
+    <org.switchyard.version>1.1.0.Final</org.switchyard.version>
     <aesh.version>0.33.11</aesh.version>
     
     <!-- BOM Overrides -->
@@ -272,6 +273,18 @@
           </archive>
         </configuration>
       </plugin>
+
+      <!-- SRAMP-247 Disable 'enforce victims' check until jansi-1.9 dependency sorted
+         https://access.redhat.com/security/cve/CVE-2013-2035 -->
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-victims-rule</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -281,9 +294,270 @@
       <dependency>
         <groupId>org.jboss.integration-platform</groupId>
         <artifactId>jboss-integration-platform-bom</artifactId>
-        <version>6.0.0.CR6</version>
+        <version>6.0.0.CR8</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <!-- Internal Dependencies -->
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-atom</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-client</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-common</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-distro-shell</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-installer</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-integration-java</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-integration-kie</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-integration-switchyard</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-integration-teiid</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-repository</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-repository-jcr</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-server</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-server</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-server-eap6</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-server-fuse61</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-server-jetty8</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-server-tomcat7</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-shell-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-shell</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-ui-war</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-ui-war-eap6</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-ui-war-fuse61</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-ui-war-jetty8</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-ui-war-tomcat7</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-ui-widgets</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- S-RAMP Sources -->
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-api</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-atom</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-client</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-repository</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-repository-jcr</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-server</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-shell</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-shell-api</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-wagon</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-ui-war</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.overlord.sramp.demos</groupId>
+        <artifactId>s-ramp-demos-assembly</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.overlord.sramp.demos.switchyard.multiapp</groupId>
+        <artifactId>switchyard-quickstart-demo-multi-artifacts</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- S-RAMP documentation (jdocbook) -->
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>sramp-wiki</artifactId>
+        <version>${s-ramp-wiki.version}</version>
+        <type>jdocbook</type>
       </dependency>
 
       <!-- Overlord Commons -->
@@ -329,6 +603,23 @@
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-installer</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-idp-eap6</artifactId>
+        <version>${overlord-commons.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-idp-tomcat7</artifactId>
+        <version>${overlord-commons.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-osgi</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
@@ -339,12 +630,12 @@
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-uiheader</artifactId>
+        <artifactId>overlord-commons-services</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-services</artifactId>
+        <artifactId>overlord-commons-uiheader</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
 
@@ -365,10 +656,68 @@
         <version>${commons.logging.version}</version>
       </dependency>
       <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils-core</artifactId>
+        <version>1.8.0</version>
+      </dependency>
+      <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>${log4j.version}</version>
       </dependency>
+
+      <!-- Switchyard -->
+      <dependency>
+        <groupId>org.switchyard</groupId>
+        <artifactId>switchyard-api</artifactId>
+        <version>${org.switchyard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.switchyard</groupId>
+        <artifactId>switchyard-plugin</artifactId>
+        <version>${org.switchyard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.switchyard</groupId>
+        <artifactId>switchyard-test</artifactId>
+        <version>${org.switchyard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.switchyard.components</groupId>
+        <artifactId>switchyard-component-bean</artifactId>
+        <version>${org.switchyard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.switchyard.components</groupId>
+        <artifactId>switchyard-component-camel</artifactId>
+        <version>${org.switchyard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.switchyard.components</groupId>
+        <artifactId>switchyard-component-camel-core</artifactId>
+        <version>${org.switchyard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.switchyard.components</groupId>
+        <artifactId>switchyard-component-soap</artifactId>
+        <version>${org.switchyard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.switchyard.components</groupId>
+        <artifactId>switchyard-component-test-mixin-cdi</artifactId>
+        <version>${org.switchyard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.switchyard.components</groupId>
+        <artifactId>switchyard-component-test-mixin-hornetq</artifactId>
+        <version>${org.switchyard.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.switchyard.components</groupId>
+        <artifactId>switchyard-component-test-mixin-http</artifactId>
+        <version>${org.switchyard.version}</version>
+      </dependency>
+
       <!-- Third party libraries -->
       <dependency>
         <groupId>org.apache.tika</groupId>
@@ -400,6 +749,55 @@
         <artifactId>aesh</artifactId>
         <version>${aesh.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.lucene</artifactId>
+        <version>${version.org.apache.lucene}_1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>tjws</artifactId>
+        <version>${version.org.jboss.resteasy}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-federation</artifactId>
+        <version>${picketlink.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-tools</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.datastax.cassandra</groupId>
+        <artifactId>cassandra-driver-core</artifactId>
+        <version>1.0.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-test</artifactId>
+        <version>${version.org.apache.maven.wagon}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-nop</artifactId>
+        <version>${version.org.slf4j}</version>
+      </dependency>
+
+      <!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss AS 
+        7 -->
+      <dependency>
+        <groupId>org.jboss.spec.javax.annotation</groupId>
+        <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+        <version>1.0.1.Final</version>
+      </dependency>
+      <!-- Import the JSF API, we use provided scope as the API is included in JBoss AS 7 -->
+      <dependency>
+        <groupId>org.jboss.spec.javax.faces</groupId>
+        <artifactId>jboss-jsf-api_2.1_spec</artifactId>
+        <version>2.1.19.Final</version>
+      </dependency>
 
       <!-- ModeShape -->
       <dependency>
@@ -417,6 +815,21 @@
         <artifactId>modeshape-jcr-api</artifactId>
         <version>${org.modeshape.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-distribution</artifactId>
+        <version>${org.modeshape.version}</version>
+        <type>zip</type>
+        <classifier>jbosseap-61-dist</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-distribution</artifactId>
+        <version>${org.modeshape.version}</version>
+        <type>zip</type>
+        <classifier>jbossas-71-dist</classifier>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 

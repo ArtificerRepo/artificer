@@ -20,46 +20,38 @@
     <dependency>
       <groupId>org.switchyard</groupId>
       <artifactId>switchyard-api</artifactId>
-      <version>${org.switchyard.version}</version>
     </dependency>
     <dependency>
       <groupId>org.switchyard</groupId>
       <artifactId>switchyard-plugin</artifactId>
-      <version>${org.switchyard.version}</version>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-bean</artifactId>
-      <version>${org.switchyard.version}</version>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-soap</artifactId>
-      <version>${org.switchyard.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>switchyard-quickstart-demo-multi-artifacts</artifactId>
-      <version>${project.version}</version>
     </dependency>
     
     <!-- Test Only -->
     <dependency>
       <groupId>org.switchyard</groupId>
       <artifactId>switchyard-test</artifactId>
-      <version>${org.switchyard.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-test-mixin-cdi</artifactId>
-      <version>${org.switchyard.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-test-mixin-http</artifactId>
-      <version>${org.switchyard.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -111,6 +103,17 @@
           </execution>
         </executions>
       </plugin>
+
+      <!-- Disable 'require plugin versions' for now as switchyard is using snapshot -->
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+    </plugin>
     </plugins>
   </build>
   <!-- Locking the transitive dependency for camel or else the tests fail -->

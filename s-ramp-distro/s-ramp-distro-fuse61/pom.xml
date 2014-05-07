@@ -26,7 +26,6 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server</artifactId>
-      <version>${project.version}</version>
       <type>jar</type>
       <classifier>classes</classifier>
       <exclusions>
@@ -78,7 +77,6 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-fuse61</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
 
@@ -86,7 +84,6 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-fuse61</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
     </dependency>
     <!-- Additional 3rd party libraries -->
@@ -101,7 +98,6 @@
     <dependency>
       <groupId>org.picketlink</groupId>
       <artifactId>picketlink-federation</artifactId>
-      <version>${picketlink.version}</version>
       <exclusions>
         <exclusion>
           <artifactId>log4j</artifactId>
@@ -112,22 +108,18 @@
     <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.lucene</artifactId>
-      <version>${version.org.apache.lucene}_1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.marshalling</groupId>
       <artifactId>jboss-marshalling-osgi</artifactId>
-      <version>${version.org.jboss.marshalling.jboss-marshalling}</version>
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils-core</artifactId>
-      <version>1.8.0</version>
     </dependency>
     <dependency>
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
-      <version>1.8</version>
     </dependency>
     <dependency>
       <groupId>commons-jxpath</groupId>
@@ -138,9 +130,8 @@
       <artifactId>jboss-jsp-api_2.2_spec</artifactId>
     </dependency>    
     <dependency>
-      <groupId>ant</groupId>
+      <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
-      <version>1.6.5</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -155,7 +146,6 @@
     <dependency>
       <groupId>com.datastax.cassandra</groupId>
       <artifactId>cassandra-driver-core</artifactId>
-      <version>1.0.4</version>
       <exclusions>
         <exclusion>
           <artifactId>snappy-java</artifactId>
@@ -325,6 +315,17 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <!-- Disable 'require plugin versions' as reports issue when overlord-commons plugin is using snapshot -->
+      <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <executions>
+              <execution>
+                  <id>enforce-plugin-versions</id>
+                  <phase>none</phase>
+              </execution>
+          </executions>
       </plugin>
     </plugins>
   </build>

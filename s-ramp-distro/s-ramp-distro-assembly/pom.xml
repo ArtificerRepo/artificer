@@ -14,7 +14,6 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-installer</artifactId>
-      <version>${overlord-commons.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
@@ -39,13 +38,11 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-idp-eap6</artifactId>
-      <version>${overlord-commons.version}</version>
       <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-idp-tomcat7</artifactId>
-      <version>${overlord-commons.version}</version>
       <type>war</type>
     </dependency>
 
@@ -53,14 +50,12 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-installer</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- S-RAMP Demos -->
     <dependency>
       <groupId>org.overlord.sramp.demos</groupId>
       <artifactId>s-ramp-demos-assembly</artifactId>
-      <version>${project.version}</version>
       <type>zip</type>
     </dependency>
 
@@ -69,110 +64,92 @@
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-tomcat7</artifactId>
       <type>war</type>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-jetty8</artifactId>
       <type>war</type>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-eap6</artifactId>
       <type>war</type>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-tomcat7</artifactId>
       <type>war</type>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-jetty8</artifactId>
       <type>war</type>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-eap6</artifactId>
       <type>war</type>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- S-RAMP Sources -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-api</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-atom</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-client</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-common</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-repository</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-repository-jcr</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-shell</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-shell-api</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-wagon</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war</artifactId>
-      <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
 
@@ -180,7 +157,6 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>sramp-wiki</artifactId>
-      <version>${s-ramp-wiki.version}</version>
       <type>jdocbook</type>
     </dependency>
 
@@ -188,7 +164,6 @@
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-distribution</artifactId>
-      <version>${org.modeshape.version}</version>
       <classifier>jbosseap-61-dist</classifier>
       <type>zip</type>
     </dependency>
@@ -283,17 +258,14 @@
         <dependency>
           <groupId>org.overlord</groupId>
           <artifactId>overlord-commons-auth</artifactId>
-          <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>org.overlord</groupId>
           <artifactId>overlord-commons-auth-tomcat7</artifactId>
-          <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>org.overlord</groupId>
           <artifactId>overlord-commons-idp-tomcat7</artifactId>
-          <version>${project.version}</version>
           <type>war</type>
         </dependency>
       </dependencies>

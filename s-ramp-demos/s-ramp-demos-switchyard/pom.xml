@@ -51,25 +51,21 @@
     <dependency>
       <groupId>org.switchyard</groupId>
       <artifactId>switchyard-api</artifactId>
-      <version>${switchyard.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.switchyard</groupId>
       <artifactId>switchyard-plugin</artifactId>
-      <version>${switchyard.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-bean</artifactId>
-      <version>${switchyard.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.switchyard.components</groupId>
       <artifactId>switchyard-component-soap</artifactId>
-      <version>${switchyard.version}</version>
       <scope>provided</scope>
     </dependency>
 
