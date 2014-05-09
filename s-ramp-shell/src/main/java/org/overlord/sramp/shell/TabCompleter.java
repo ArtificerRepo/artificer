@@ -67,13 +67,11 @@ public class TabCompleter implements Completion {
                 completeOperation.addCompletionCandidate(ns + ":"); //$NON-NLS-1$
             }
         } else {
-            boolean checkIfCommand = false;
             if (!buffer.contains(":") && !buffer.contains(" ")) {
                 //This is the case of archive:list and archive:listEntry.
                 //If the user do not type " " at the end then when click on tab button should display the two options archive:list and archive:listEntry.
                     // Case 2 - a partial namespace has been typed - show all
-                    // namespaces
-                    // that match
+                    // namespaces that match
                     for (String ns : factory.getNamespaces()) {
                         if (ns.startsWith(buffer)) {
                             completeOperation.addCompletionCandidate(ns + ":"); //$NON-NLS-1$
@@ -93,8 +91,7 @@ public class TabCompleter implements Completion {
                         completeOperation.doAppendSeparator(false);
                     }
                 }
-            // Case 3 - a namespace has been typed and we're waiting at the
-            // colon
+            // Case 3 - a namespace has been typed and we're waiting at the colon
             else if (buffer.endsWith(":") && !buffer.contains(" ")) { //$NON-NLS-1$ //$NON-NLS-2$
                 String ns = buffer.substring(0, buffer.length() - 1);
                 for (QName cmdName : factory.getCommandNames(ns)) {
@@ -103,8 +100,7 @@ public class TabCompleter implements Completion {
 
             }
             // Case 4 - a partial command has been typed - show all command
-            // names
-            // that match
+            // names that match
             else if (buffer.contains(":") && !buffer.endsWith(":") && !buffer.contains(" ")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 int colonIdx = buffer.indexOf(':');
                 String ns = buffer.substring(0, colonIdx);
@@ -115,9 +111,7 @@ public class TabCompleter implements Completion {
                     }
                 }
             } else {
-                // We check the first thing if what is introduced is a command
-                // or
-                // not.
+                // We check the first thing if what is introduced is a command or not.
                 // Check if what was introduced is a command itself
                 Arguments arguments = null;
                 try {
@@ -136,8 +130,7 @@ public class TabCompleter implements Completion {
                 } catch (Exception e) {
                 }
                 // In case it is a command then we print the tabCompletion
-                // specific
-                // of the command
+                // specific of the command
                 if (command != null && !(command instanceof CommandNotFoundCommand)) {
                     command.setContext(this.context);
                     command.setArguments(arguments);
@@ -146,8 +139,7 @@ public class TabCompleter implements Completion {
                     int tabCompletionResult = command.tabCompletion(lastArgument, list);
                     if (!list.isEmpty()) {
                         // In case the tab completion return just one result it
-                        // is
-                        // printed the previous buffer plus the argument
+                        // is printed the previous buffer plus the argument
                         if (list.size() == 1) {
                             if (buffer.endsWith(" ")) {
                                 completeOperation.addCompletionCandidate(buffer
@@ -163,8 +155,7 @@ public class TabCompleter implements Completion {
 
                         } else {
                             // In case the result of the command tab completion
-                            // contains more than one result (like the
-                            // FileNameCompleter
+                            // contains more than one result (like the FileNameCompleter)
                             for (CharSequence sequence : list) {
                                 completeOperation.addCompletionCandidate(sequence.toString());
                             }
