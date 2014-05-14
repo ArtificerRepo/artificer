@@ -18,6 +18,12 @@
         <artifactId>slf4j-ext</artifactId>
         <version>1.7.1</version>
       </dependency>
+      <!-- Until the BOM is updated, force 5.2.10.Final of ISPN -->
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-core</artifactId>
+        <version>5.2.10.Final</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -70,6 +76,10 @@
           <artifactId>slf4j-log4j12</artifactId>
           <groupId>org.slf4j</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>jdom</artifactId>
+          <groupId>jdom</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -87,14 +97,6 @@
       <type>war</type>
     </dependency>
     <!-- Additional 3rd party libraries -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth-jetty8</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.picketlink</groupId>
       <artifactId>picketlink-federation</artifactId>
@@ -132,6 +134,10 @@
     <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -196,8 +202,8 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-osgi</artifactId>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
   </dependencies>
 
@@ -229,13 +235,8 @@
                   </dependsOnFeatures>
                   <excludes>
                     <exclude>org.overlord.sramp:s-ramp-*:*</exclude>
-                    <exclude>org.infinispan:infinispan-core:*</exclude>
-                  </excludes>
-                  <bundles>
-                    <!-- Add the infinispan dependency here in order to override its Import-Package spec (which 
-                      includes the problematic sun.misc). -->
-                    <bundle>wrap:mvn:org.infinispan/infinispan-core/${version.org.infinispan}$Import-Package=javax.management,javax.naming,javax.transaction,javax.transaction.xa,javax.xml.bind,javax.xml.bind.annotation,javax.xml.bind.annotation.adapters,javax.xml.namespace,javax.xml.parsers,javax.xml.stream,javax.xml.transform,javax.xml.transform.dom,javax.xml.transform.sax,javax.xml.transform.stream,javax.xml.validation,net.jcip.annotations;resolution:=optional,org.jboss.logging;version="[3.1,4)",org.jboss.marshalling,org.jboss.marshalling.reflect,org.jboss.marshalling.river,org.jboss.marshalling.util,org.jboss.staxmapper,org.jgroups;version="[3.2,4)",org.jgroups.blocks;version="[3.2,4)",org.jgroups.blocks.mux;version="[3.2,4)",org.jgroups.jmx;version="[3.2,4)",org.jgroups.logging;version="[3.2,4)",org.jgroups.protocols;version="[3.2,4)",org.jgroups.protocols.relay;version="[3.2,4)",org.jgroups.stack;version="[3.2,4)",org.jgroups.util;version="[3.2,4)",org.osgi.framework;version="[1.6,2)";resolution:=optional,org.w3c.dom,org.xml.sax,org.xml.sax.helpers&amp;overwrite=merge</bundle>
-                  </bundles>
+                    <exclude>org.overlord:overlord-commons-*:*</exclude>
+                    </excludes>
                 </feature>
                 <!-- The S-RAMP Modules -->
                 <feature>
@@ -246,6 +247,10 @@
                     <feature>
                       <name>s-ramp-dependencies</name>
                       <version>${project.version}</version>
+                    </feature>
+                    <feature>
+                      <name>overlord-commons</name>
+                      <version>${overlord-commons.version}</version>
                     </feature>
                   </dependsOnFeatures>
                   <includes>

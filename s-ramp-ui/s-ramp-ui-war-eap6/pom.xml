@@ -40,7 +40,6 @@
               <groupId>${project.groupId}</groupId>
               <artifactId>s-ramp-ui-war</artifactId>
               <excludes>
-                <exclude>WEB-INF/jetty-env.xml</exclude>
                 <exclude>WEB-INF/lib/activation-*.jar</exclude>
                 <exclude>WEB-INF/lib/apache-mime4j-*.jar</exclude>
                 <exclude>WEB-INF/lib/cal10n-api*.jar</exclude>

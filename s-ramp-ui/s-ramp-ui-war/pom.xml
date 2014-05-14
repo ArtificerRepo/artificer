@@ -59,6 +59,14 @@
     <!-- Overlord Commons -->
     <dependency>
       <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-config</artifactId>
     </dependency>
     <dependency>
@@ -69,13 +77,20 @@
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-gwt</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- Third Party Dependencies -->
+    <dependency>
+      <groupId>org.picketbox</groupId>
+      <artifactId>picketbox</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.picketlink</groupId>
+      <artifactId>picketlink-federation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -94,7 +109,6 @@
       <artifactId>jboss-jsp-api_2.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
       <artifactId>jboss-ejb-api_3.1_spec</artifactId>

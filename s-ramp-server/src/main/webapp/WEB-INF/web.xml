@@ -21,29 +21,47 @@
   <filter>
     <filter-name>LocaleFilter</filter-name>
     <filter-class>org.overlord.sramp.server.filters.LocaleFilter</filter-class>
+    <description>Used to configure the current locale in the i18n layer.</description>
   </filter>
   <filter-mapping>
     <filter-name>LocaleFilter</filter-name>
     <servlet-name>Resteasy</servlet-name>
   </filter-mapping>
 
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>S-RAMP</web-resource-name>
-      <url-pattern>/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>overlorduser</role-name>
-    </auth-constraint>
-  </security-constraint>
+  <filter>
+    <filter-name>AuthFilter</filter-name>
+    <filter-class>org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter</filter-class>
+    <description>This filter provides support for BASIC authentication that works with both standard user/password auth as well as SAML Bearer Token auth.</description>
+    <init-param>
+        <param-name>allowedIssuers</param-name>
+        <param-value>/s-ramp-ui,/dtgov,/dtgov-ui</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>AuthFilter</filter-name>
+    <servlet-name>Resteasy</servlet-name>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>ServletCredentials</filter-name>
+    <filter-class>org.overlord.sramp.repository.jcr.modeshape.filters.ServletCredentialsFilter</filter-class>
+    <description>Stores the inbound request so it can be used to log in to ModeShape.</description>
+  </filter>
+  <filter-mapping>
+    <filter-name>ServletCredentials</filter-name>
+    <servlet-name>Resteasy</servlet-name>
+  </filter-mapping>
 
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>OverlordRealm</realm-name>
+    <realm-name>Overlord</realm-name>
   </login-config>
-
-  <security-role>
-    <role-name>overlorduser</role-name>
-  </security-role>
+  
+  <resource-ref>
+    <description>Modeshape DS</description>
+    <res-ref-name>jdbc/sramp</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
   
 </web-app>

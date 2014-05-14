@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2011 JBoss, by Red Hat, Inc
+  ~ Copyright 2014 JBoss, by Red Hat, Inc
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -46,8 +46,9 @@
       <module name="org.picketbox" />
       <module name="org.picketlink" />
       <module name="org.jboss.resteasy.resteasy-jaxrs" />
-      <module name="org.overlord.commons.overlord-commons-services" />
-      <module name="org.overlord.commons.overlord-commons-auth" />
     </dependencies>
+    <exclude-subsystems>
+      <subsystem name="webservices" />
+    </exclude-subsystems>
   </deployment>
 </jboss-deployment-structure>

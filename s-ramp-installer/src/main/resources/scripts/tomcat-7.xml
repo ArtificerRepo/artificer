@@ -41,7 +41,6 @@
     <property name="s-ramp.lib.download.central.url" value="http://central.maven.org/maven2" />
     <property name="s-ramp.lib.h2.download.url" value="${s-ramp.lib.download.central.url}/com/h2database/h2/${version.com.h2database}/h2-${version.com.h2database}.jar" />
     <get src="${s-ramp.lib.h2.download.url}" dest="${s-ramp.appserver.dir}/lib" usetimestamp="true" />
-    <copy file="${s-ramp.updates.dir}/jetty.xml" todir="${s-ramp.jetty.config.dir}" overwrite="true" />
 
     <echo>-----------------------------------</echo>
     <echo>Deploying S-RAMP and S-RAMP UI</echo>

@@ -17,7 +17,7 @@
       <type>war</type>
     </dependency>
 
-    <!-- Standard servlet dependencies -->
+    <!-- Provided dependencies -->
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
       <artifactId>jboss-servlet-api_3.0_spec</artifactId>
@@ -83,7 +83,6 @@
                 <exclude>WEB-INF/lib/slf4j-ext-*.jar</exclude>
                 <exclude>WEB-INF/lib/slf4j-log4j12-*.jar</exclude>
                 <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
-                <exclude>WEB-INF/lib/overlord-commons-auth-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>
@@ -106,7 +105,10 @@
                 javax.xml.datatype,
                 javax.xml.transform,
                 javax.xml.transform.stream,
+                javax.xml.transform.dom,
                 javax.xml.namespace,
+                javax.xml.stream,
+                javax.xml.stream.events,
                 javax.xml.xpath,
                 javax.ws.rs,
                 javax.ws.rs.core,
@@ -115,11 +117,18 @@
                 javax.el,
                 javax.imageio.plugins.jpeg,
                 javax.net.ssl,
+                javax.persistence,
+                javax.persistence.criteria,
+                javax.sql,
+                javax.naming,
+                javax.naming.ldap,
+                javax.naming.directory,
                 org.osgi.framework,
                 org.osgi.framework.wiring,
                 org.xml.sax,
                 org.xml.sax.helpers,
                 org.w3c.dom,
+                org.w3c.dom.ls,
                 org.apache.karaf.jaas.boot.principal,
                 javax.security.auth.callback,
                 org.slf4j,
@@ -128,6 +137,7 @@
                 org.eclipse.jetty.plus.jaas,
                 org.eclipse.jetty.servlet,
                 org.eclipse.jetty.server.handler,
+                org.eclipse.jetty.jndi,
                 org.apache.http,
                 org.apache.http.client,
                 org.apache.http.client.methods,
@@ -150,7 +160,7 @@
                 org.overlord.commons.osgi.vfs,
                 ch.qos.cal10n,
                 org.overlord.commons.auth.util,
-                org.overlord.commons.auth.jetty8
+                org.overlord.commons.auth.filters
               </Import-Package>
               <Bundle-ClassPath>
                 .,
@@ -219,7 +229,6 @@
                 WEB-INF/lib/mvel2-${version.org.mvel}.jar,
                 WEB-INF/lib/netty-4.0.0.Alpha1.errai.r1.jar,
                 WEB-INF/lib/org.apache.stanbol.enhancer.engines.htmlextractor-0.10.0.jar,
-                WEB-INF/lib/overlord-commons-config-${overlord-commons.version}.jar,
                 WEB-INF/lib/overlord-commons-gwt-${overlord-commons.version}.jar,
                 WEB-INF/lib/overlord-commons-uiheader-${overlord-commons.version}.jar,
                 WEB-INF/lib/plexus-cipher-1.4.jar,
@@ -251,8 +260,18 @@
                 WEB-INF/lib/weld-spi-${version.org.jboss.weld.weld-api}.jar,
                 WEB-INF/lib/wymiwyg-commons-core-0.7.6.jar,
                 WEB-INF/lib/xz-1.0.jar,
+                WEB-INF/lib/jbossxacml-2.0.8.Final.jar,
                 WEB-INF/lib/overlord-commons-errai-fuse-support-${overlord-commons.version}.jar,
-                WEB-INF/lib/overlord-commons-osgi-weld-${overlord-commons.version}.jar
+                WEB-INF/lib/overlord-commons-osgi-weld-${overlord-commons.version}.jar,
+                WEB-INF/lib/overlord-commons-config-${overlord-commons.version}.jar,
+                WEB-INF/lib/overlord-commons-auth-${overlord-commons.version}.jar,
+                WEB-INF/lib/picketbox-${picketbox.version}.jar,
+                WEB-INF/lib/picketlink-common-${picketlink.version}.jar,
+                WEB-INF/lib/picketlink-config-${picketlink.version}.jar,
+                WEB-INF/lib/picketlink-federation-${picketlink.version}.jar,
+                WEB-INF/lib/picketlink-idm-api-${picketlink.version}.jar,
+                WEB-INF/lib/picketlink-idm-impl-${picketlink.version}.jar,
+                WEB-INF/lib/xmlsec-1.5.1.jar
               </Bundle-ClassPath>
             </manifestEntries>
           </archive>

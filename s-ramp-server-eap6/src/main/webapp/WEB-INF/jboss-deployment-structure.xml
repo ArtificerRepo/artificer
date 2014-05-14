@@ -1,11 +1,7 @@
 <jboss-deployment-structure>
   <deployment>
     <dependencies>
-      <module name="org.picketbox" />
-      <module name="org.picketlink" />
       <module name="org.jboss.as.web" />
-      <module name="org.overlord.commons.overlord-commons-services" />
-      <module name="org.overlord.commons.overlord-commons-auth" />
       <module name="org.apache.commons.codec" />
       <module name="org.apache.commons.collections" />
       <module name="org.apache.commons.configuration" />
@@ -19,5 +15,8 @@
       <module name="org.modeshape" />
       <module name="org.jboss.as.clustering.infinispan" />
     </dependencies>
-  </deployment>
+    <exclude-subsystems>
+      <subsystem name="webservices" />
+    </exclude-subsystems>
+    </deployment>
 </jboss-deployment-structure>

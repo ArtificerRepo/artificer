@@ -21,19 +21,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-services</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-auth-jboss7</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth-tomcat7</artifactId>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
@@ -45,7 +33,17 @@
       <artifactId>overlord-commons-idp-tomcat7</artifactId>
       <type>war</type>
     </dependency>
-
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp-jetty8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp-fuse61</artifactId>
+      <type>war</type>
+    </dependency>
+    
     <!-- S-RAMP Installer -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
