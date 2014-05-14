@@ -222,6 +222,9 @@
             <configuration>
               <outputFile>${project.build.directory}/features.xml</outputFile>
               <attach>true</attach>
+              <repositories>
+                <repository>mvn:org.overlord/overlord-commons-dist-fuse6/${overlord-commons.version}/xml/features</repository>
+              </repositories>
               <features>
                 <!-- All S-RAMP Dependencies -->
                 <feature>
