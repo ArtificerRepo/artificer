@@ -103,9 +103,6 @@
     <commons.logging.version>1.1.1</commons.logging.version>
     <org.modeshape.version>3.6.0.Final</org.modeshape.version>
     <tika-core.version>1.3</tika-core.version> <!-- inline with version used by modeshape -->
-    <jetty.version>6.1.25</jetty.version>
-    <uel.impl.version>2.1.2-b04</uel.impl.version>
-    <jsp-api.version>2.0</jsp-api.version>
     <bcel.version>5.2</bcel.version>
     <jcr.version>2.0</jcr.version>
     <guava-gwt.version>14.0.1</guava-gwt.version>
@@ -113,7 +110,7 @@
     <picketlink.version>2.5.3.SP1</picketlink.version>
     <org.switchyard.version>1.1.0.Final</org.switchyard.version>
     <aesh.version>0.33.11</aesh.version>
-    
+
     <!-- BOM Overrides -->
     <version.joda-time>2.1</version.joda-time>
 
@@ -249,8 +246,8 @@
           <argLine>-Xmx368m -XX:MaxPermSize=128m</argLine>
         </configuration>
       </plugin>
-      <!-- Build a test-jar for each project, so that src/test/* resources and classes can be used in other projects. 
-        Also customize how the jar files are assembled. -->
+      <!-- Build a test-jar for each project, so that src/test/* resources and classes can be used in other projects. Also 
+        customize how the jar files are assembled. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -275,8 +272,7 @@
         </configuration>
       </plugin>
 
-      <!-- SRAMP-247 Disable 'enforce victims' check until jansi-1.9 dependency sorted
-         https://access.redhat.com/security/cve/CVE-2013-2035 -->
+      <!-- SRAMP-247 Disable 'enforce victims' check until jansi-1.9 dependency sorted https://access.redhat.com/security/cve/CVE-2013-2035 -->
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
@@ -589,6 +585,11 @@
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-auth-fuse61</artifactId>
+        <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-gwt</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
@@ -621,6 +622,18 @@
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-idp-jetty8</artifactId>
+        <version>${overlord-commons.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-idp-fuse61</artifactId>
+        <version>${overlord-commons.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-osgi</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
@@ -638,6 +651,12 @@
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-uiheader</artifactId>
         <version>${overlord-commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-idp</artifactId>
+        <version>${overlord-commons.version}</version>
+        <type>war</type>
       </dependency>
 
       <!-- Apache Commons -->
@@ -761,6 +780,11 @@
         <version>${version.org.jboss.resteasy}</version>
       </dependency>
       <dependency>
+        <groupId>org.picketbox</groupId>
+        <artifactId>picketbox</artifactId>
+        <version>${picketbox.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-federation</artifactId>
         <version>${picketlink.version}</version>
@@ -786,8 +810,7 @@
         <version>${version.org.slf4j}</version>
       </dependency>
 
-      <!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss AS 
-        7 -->
+      <!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss AS 7 -->
       <dependency>
         <groupId>org.jboss.spec.javax.annotation</groupId>
         <artifactId>jboss-annotations-api_1.1_spec</artifactId>

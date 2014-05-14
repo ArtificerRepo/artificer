@@ -86,9 +86,6 @@
       <property name="s-ramp.overlord-commons.installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${overlord-commons.version}.jar" />
       <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
       <property name="overlord-commons.idp.file" value="${s-ramp-distro.bindir}/overlord-commons-idp-eap6-${overlord-commons.version}.war" />
-      <property name="overlord-commons.services.file" location="${s-ramp-distro.bindir}/overlord-commons-services-${overlord-commons.version}.jar" />
-      <property name="overlord-commons.auth.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-${overlord-commons.version}.jar" />
-      <property name="overlord-commons.auth.tomcat7.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-tomcat7-${overlord-commons.version}.jar" />
       <property name="overlord-commons.auth.jboss7.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-jboss7-${overlord-commons.version}.jar" />
       <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/s-ramp-server-eap6-${s-ramp.version}.war" />
       <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/s-ramp-ui-war-eap6-${s-ramp.version}.war" />
@@ -166,9 +163,6 @@
       <property name="s-ramp.overlord-commons.installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${overlord-commons.version}.jar" />
       <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
       <property name="overlord-commons.idp.file" value="${s-ramp-distro.bindir}/overlord-commons-idp-tomcat7-${overlord-commons.version}.war" />
-      <property name="overlord-commons.services.file" location="${s-ramp-distro.bindir}/overlord-commons-services-${overlord-commons.version}.jar" />
-      <property name="overlord-commons.auth.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-${overlord-commons.version}.jar" />
-      <property name="overlord-commons.auth.tomcat7.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-tomcat7-${overlord-commons.version}.jar" />
       <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/s-ramp-server-tomcat7-${s-ramp.version}.war" />
       <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/s-ramp-ui-war-tomcat7-${s-ramp.version}.war" />
     </ant>
@@ -285,6 +279,7 @@
       <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.jetty-8.real-path}" />
       <property name="s-ramp.overlord-commons.installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${overlord-commons.version}.jar" />
       <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
+      <property name="overlord-commons.idp.file" value="${s-ramp-distro.bindir}/overlord-commons-idp-jetty8-${overlord-commons.version}.war" />
       <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/s-ramp-server-jetty8-${s-ramp.version}.war" />
       <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/s-ramp-ui-war-jetty8-${s-ramp.version}.war" />
     </ant>

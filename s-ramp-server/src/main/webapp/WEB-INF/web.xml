@@ -32,6 +32,10 @@
     <filter-name>AuthFilter</filter-name>
     <filter-class>org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter</filter-class>
     <description>This filter provides support for BASIC authentication that works with both standard user/password auth as well as SAML Bearer Token auth.</description>
+    <init-param>
+        <param-name>allowedIssuers</param-name>
+        <param-value>/s-ramp-ui,/dtgov,/dtgov-ui</param-value>
+    </init-param>
   </filter>
   <filter-mapping>
     <filter-name>AuthFilter</filter-name>
@@ -50,7 +54,7 @@
 
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>OverlordRealm</realm-name>
+    <realm-name>Overlord</realm-name>
   </login-config>
   
   <resource-ref>
