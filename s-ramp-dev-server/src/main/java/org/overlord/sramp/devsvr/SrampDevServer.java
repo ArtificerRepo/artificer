@@ -109,7 +109,7 @@ public class SrampDevServer extends ErraiDevServer {
         // Use an in-memory config for s-ramp
         System.setProperty("sramp.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
                 + "/META-INF/modeshape-configs/inmemory-sramp-config.json");
-        
+
         // Authentication provider
 //        System.setProperty("s-ramp-ui.atom-api.authentication.provider", BasicAuthenticationProvider.class.getName());
 //        System.setProperty("s-ramp-ui.atom-api.authentication.basic.user", "ui");
@@ -119,7 +119,7 @@ public class SrampDevServer extends ErraiDevServer {
         System.setProperty("s-ramp-ui.atom-api.authentication.saml.service", "/s-ramp-server");
         System.setProperty("s-ramp-ui.atom-api.authentication.saml.sign-assertions", "false");
 
-        
+
         // Don't do any resource caching!
         System.setProperty("overlord.resource-caching.disabled", "true");
     }
@@ -202,7 +202,11 @@ public class SrampDevServer extends ErraiDevServer {
         srampServer.setContextPath("/s-ramp-server");
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", SRAMPApplication.class.getName());
-        srampServer.addServlet(resteasyServlet, "/*");
+        srampServer.addServlet(resteasyServlet, "/s-ramp/*");
+        //maven repository servlet:
+        ServletHolder mvnServlet = new ServletHolder(new HttpServletDispatcher());
+        srampServer.addServlet(mvnServlet, "/maven/repository/*");
+        srampServer.addServlet(mvnServlet, "/maven/repository");
         srampServer.addFilter(SamlBearerTokenAuthFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST))
             .setInitParameter("allowedIssuers", "/s-ramp-ui,/dtgov,/dtgov-ui");
         srampServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
