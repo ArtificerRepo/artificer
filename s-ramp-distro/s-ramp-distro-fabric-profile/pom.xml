@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.overlord.sramp</groupId>
+    <artifactId>s-ramp-distro</artifactId>
+    <version>0.4.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>s-ramp-distro-fabric-profile</artifactId>
+  <name>S-RAMP Distribution: Fabric Profile</name>
+
+
+  <dependencies>
+     <dependency>
+		<groupId>org.overlord.sramp</groupId>
+		<artifactId>s-ramp-installer</artifactId>
+     </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <dependencies>
+              <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-trax</artifactId>
+                <version>1.6.5</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>install-fuse</id>
+                <phase>package</phase>
+                <configuration>
+                  <escapeString>\</escapeString>
+                  <tasks>
+                    <property name="s-ramp-distro.tempdir" location="target/.temp" />
+                    <property name="s-ramp.appserver.dir" location="${s-ramp-distro.tempdir}/properties"/>
+                    <property name="server.host" value="${container&#58;httpUrl}"/>
+					<mkdir dir="${s-ramp-distro.tempdir}"/>
+					<mkdir dir="${s-ramp.appserver.dir}"/>
+                  	<mkdir dir="${s-ramp.appserver.dir}/etc" />
+				    <!-- Unpack the s-ramp installer into the temp directory -->
+				    <property name="s-ramp-distro.s-ramp-installer.dir" location="${s-ramp-distro.tempdir}/s-ramp-installer" />
+				    <property name="s-ramp-distro.s-ramp-installer.jar" value="${maven.dependency.org.overlord.sramp.s-ramp-installer.jar.path}" />
+				    <unzip src="${s-ramp-distro.s-ramp-installer.jar}" dest="${s-ramp-distro.s-ramp-installer.dir}" overwrite="false" />
+                    <ant dir="${s-ramp-distro.s-ramp-installer.dir}" antfile="${s-ramp-distro.s-ramp-installer.dir}/scripts/fuse-fabric-6.1.xml">
+                      <target name="copy-files" />
+                    </ant>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+ 	  <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>make-dist</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>s-ramp-profile-${project.version}</finalName>
+              <attach>true</attach>
+              <descriptors>
+                <descriptor>src/main/assembly/dist.xml</descriptor>
+              </descriptors>
+              <tarLongFileMode>gnu</tarLongFileMode>
+              <appendAssemblyId>false</appendAssemblyId>
+              <archiverConfig>
+                <defaultDirectoryMode>0755</defaultDirectoryMode>
+              </archiverConfig>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

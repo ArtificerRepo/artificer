@@ -19,5 +19,6 @@
     <module>s-ramp-distro-assembly</module>
     <module>s-ramp-distro-assembly-cli</module>
     <module>s-ramp-distro-assembly-demos</module>
+    <module>s-ramp-distro-fabric-profile</module>
   </modules>
 </project>

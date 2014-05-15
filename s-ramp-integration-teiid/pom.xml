@@ -43,6 +43,11 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency>
+    <!-- Declarative Service Annotations -->
+    <dependency>
+	  <groupId>org.apache.felix</groupId>
+	  <artifactId>org.apache.felix.scr.annotations</artifactId>
+	</dependency>         
   </dependencies>
 
   <build>
@@ -56,7 +61,6 @@
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Name>${project.name}</Bundle-Name>
             <Bundle-Version>${project.version}</Bundle-Version>
-            <Bundle-Activator>org.overlord.sramp.integration.teiid.Activator</Bundle-Activator>
             <Export-Package>
               org.overlord.sramp.integration.teiid.*
             </Export-Package>

@@ -222,6 +222,14 @@
 	    <groupId>com.h2database</groupId>
 	    <artifactId>h2</artifactId>
 	</dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-osgi-weld</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>fabric-api</artifactId>
+     </dependency> 
   </dependencies>
 
   <build>
@@ -259,6 +267,7 @@
                       <name>jndi</name>
                     </feature>
                   </dependsOnFeatures>
+
                   <excludes>
                     <exclude>org.overlord.sramp:s-ramp-*:*</exclude>
                     <exclude>org.overlord:overlord-commons-*:*</exclude>
@@ -289,6 +298,7 @@
                   <excludes>
                     <exclude>org.overlord.sramp:s-ramp-server*:*</exclude>
                     <exclude>org.overlord.sramp:s-ramp-ui-war*:*</exclude>
+                    <exclude>org.overlord.sramp:s-ramp-installer*:*</exclude>
                   </excludes>
                 </feature>
                 <!-- The S-RAMP Server (back-end) -->

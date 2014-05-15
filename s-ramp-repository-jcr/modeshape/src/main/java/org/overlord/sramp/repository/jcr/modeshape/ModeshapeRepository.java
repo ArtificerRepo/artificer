@@ -38,6 +38,8 @@ import javax.naming.NamingException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
@@ -51,6 +53,8 @@ import org.overlord.sramp.repository.jcr.modeshape.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(name = "Modeshape JCR Repository", immediate = true)
+@Service(value = org.overlord.sramp.repository.jcr.JCRRepository.class)
 public class ModeshapeRepository extends JCRRepository {
 
 	private static Logger log = LoggerFactory.getLogger(ModeshapeRepository.class);
