@@ -250,6 +250,9 @@
                   <comment>All S-RAMP dependencies</comment>
                   <dependsOnFeatures>
                     <feature>
+                      <name>overlord-commons-idp</name>
+                    </feature>
+                    <feature>
                       <name>http</name>
                     </feature>
                     <feature>
