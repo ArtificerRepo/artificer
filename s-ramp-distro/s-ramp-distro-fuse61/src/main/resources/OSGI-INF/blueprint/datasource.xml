@@ -7,6 +7,11 @@
            <cm:property name="jdbc.url" value="jdbc:h2:file:overlord-data/sramp"/>
            <cm:property name="jdbc.username" value="sa"/>
            <cm:property name="jdbc.password" value=""/>
+           
+           <!-- connection pooling -->
+           <cm:property name="jdbc.initialSize" value="5"/>
+           <cm:property name="jdbc.maxTotal" value="10"/>
+           <cm:property name="jdbc.maxIdle" value="10"/>
        </cm:default-properties>
    </cm:property-placeholder>
 
