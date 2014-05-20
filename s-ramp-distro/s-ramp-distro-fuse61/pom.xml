@@ -6,7 +6,7 @@
     <version>0.4.1-SNAPSHOT</version>
   </parent>
   <artifactId>s-ramp-distro-fuse61</artifactId>
-  <packaging>pom</packaging>
+  <packaging>bundle</packaging>
   <name>S-RAMP Distribution: Fuse 6.1 Support</name>
 
   <!-- Overrides for Karaf -->
@@ -22,6 +22,11 @@
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-core</artifactId>
+        <version>5.2.10.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-cachestore-jdbc</artifactId>
         <version>5.2.10.Final</version>
       </dependency>
     </dependencies>
@@ -205,6 +210,18 @@
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-cachestore-jdbc</artifactId>
+    </dependency>
+    <dependency>
+	    <groupId>commons-dbcp</groupId>
+	    <artifactId>commons-dbcp</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>com.h2database</groupId>
+	    <artifactId>h2</artifactId>
+	</dependency>
   </dependencies>
 
   <build>
@@ -235,11 +252,18 @@
                     <feature>
                       <name>http</name>
                     </feature>
+                    <feature>
+                      <name>jndi</name>
+                    </feature>
                   </dependsOnFeatures>
                   <excludes>
                     <exclude>org.overlord.sramp:s-ramp-*:*</exclude>
                     <exclude>org.overlord:overlord-commons-*:*</exclude>
-                    </excludes>
+                  </excludes>
+                  <bundles>
+                    <!-- TODO: overlord-commons-maven-plugin isn't picking this up.  For now, be explicit. -->
+                    <bundle>mvn:org.overlord.sramp/s-ramp-distro-fuse61/${project.version}</bundle>
+                  </bundles>
                 </feature>
                 <!-- The S-RAMP Modules -->
                 <feature>
@@ -257,7 +281,7 @@
                     </feature>
                   </dependsOnFeatures>
                   <includes>
-                    <include>org.overlord.sramp:s-ramp-*:jar</include>
+                    <include>org.overlord.sramp:s-ramp-*:*</include>
                   </includes>
                   <excludes>
                     <exclude>org.overlord.sramp:s-ramp-server*:*</exclude>
@@ -334,6 +358,19 @@
                   <phase>none</phase>
               </execution>
           </executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Name>${project.name}</Bundle-Name>
+            <Bundle-Version>${project.version}</Bundle-Version>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
