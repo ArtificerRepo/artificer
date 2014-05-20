@@ -79,7 +79,7 @@
     <!-- Install the s-ramp datasource into jetty.xml -->
     <echo>Adding the S-RAMP datasource to jetty.xml</echo>
     <property name="s-ramp.datasource.xslt" value="${s-ramp.updates.dir}/xslt/addDatasource-jetty-8.xslt" />
-    <copy file="${s-ramp.jetty.config.dir}/jetty.xml" tofile="${s-ramp.jetty.config.dir}/jetty-overlord-backup.xml" overwrite="true" />
+    <copy file="${s-ramp.jetty.config.dir}/jetty.xml" tofile="${s-ramp.jetty.config.dir}/jetty-sramp-backup.xml" overwrite="true" />
     <xslt 
       style="${s-ramp.datasource.xslt}"
       in="${s-ramp.jetty.config.dir}/jetty.xml"
