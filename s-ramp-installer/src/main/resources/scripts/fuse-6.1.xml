@@ -53,8 +53,8 @@
     <!-- Set the SAML keystore and alias password in the s-ramp-ui config -->
     <propertyfile file="${s-ramp.fuse.config.dir}/sramp-ui.properties">
       <entry key="s-ramp-ui.atom-api.endpoint" value="http://localhost:8181/s-ramp-server" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.sign-assertions" value="false" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore" value="${sys:catalina.home}/conf/overlord-saml.keystore" />
+      <entry key="s-ramp-ui.atom-api.authentication.saml.sign-assertions" value="true" />
+      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore" value="${sys:karaf.home}/etc/overlord-saml.keystore" />
       <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="samlkeystore77" />
       <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="overlord99" />
     </propertyfile>
