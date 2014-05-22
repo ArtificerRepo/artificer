@@ -89,7 +89,7 @@
       <property name="overlord-commons.auth.jboss7.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-jboss7-${overlord-commons.version}.jar" />
       <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/s-ramp-server-eap6-${s-ramp.version}.war" />
       <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/s-ramp-ui-war-eap6-${s-ramp.version}.war" />
-      <property name="s-ramp.modeshape-distribution.zip.path" location="${s-ramp-distro.rootdir}/AS/EAP/modeshape-distribution-${org.modeshape.version}-jbosseap-61-dist.zip" />
+      <property name="s-ramp.modeshape-distribution.zip.path" location="${s-ramp-distro.rootdir}/AS/EAP/modeshape-distribution-${org.modeshape.version}-jbosseap-dist.zip" />
     </ant>
   </target>
 

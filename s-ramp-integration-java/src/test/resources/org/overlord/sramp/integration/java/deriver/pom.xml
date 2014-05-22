@@ -97,7 +97,7 @@
     <slf4j.nop.version>1.5.11</slf4j.nop.version>
     <xmlunit.version>1.3</xmlunit.version>
     <resteasy.version>2.3.6.Final</resteasy.version>
-    <org.modeshape.version>3.2.0.Final</org.modeshape.version>
+    <org.modeshape.version>3.8-SNAPSHOT</org.modeshape.version>
     <infinispan.version>5.1.6.FINAL</infinispan.version>
     <overlord-commons.version>2.0.0-SNAPSHOT</overlord-commons.version>
     <commons.io.version>2.4</commons.io.version>
