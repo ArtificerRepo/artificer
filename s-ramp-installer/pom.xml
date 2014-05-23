@@ -131,7 +131,7 @@
                     <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap6.war.path}" />
 
                     <!-- ModeShape Distribution -->
-                    <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-61-dist.zip.path}" />
+                    <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
                     
                     <property file="build.properties" />
                     <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.1.0.zip" />
@@ -162,7 +162,7 @@
           <groupId>org.modeshape</groupId>
           <artifactId>modeshape-distribution</artifactId>
           <type>zip</type>
-          <classifier>jbosseap-61-dist</classifier>
+          <classifier>jbosseap-dist</classifier>
         </dependency>
       </dependencies>
     </profile>

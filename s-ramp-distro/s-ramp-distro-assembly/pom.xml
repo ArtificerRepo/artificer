@@ -162,7 +162,7 @@
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-distribution</artifactId>
-      <classifier>jbosseap-61-dist</classifier>
+      <classifier>jbosseap-dist</classifier>
       <type>zip</type>
     </dependency>
   </dependencies>

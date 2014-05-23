@@ -12,8 +12,8 @@
     <property name="s-ramp.jboss.deploy.dir" location="${s-ramp.appserver.dir}/standalone/deployments/" />
     <property name="s-ramp.jboss.config.dir" location="${s-ramp.appserver.dir}/standalone/configuration/" />
 
-    <property name="s-ramp.modeshape-distribution.zip.path" location="modeshape-3.2.0.Final-jbosseap-61-dist.zip" />
-    <property name="s-ramp.jboss.module.path" location="${s-ramp.appserver.dir}/modules/system/layers/base" />
+    <property name="s-ramp.modeshape-distribution.zip.path" location="modeshape-distribution-3.8.0.Final-jbosseap-dist.zip" />
+    <property name="s-ramp.jboss.module.path" location="${s-ramp.appserver.dir}/modules" />
 
     <property name="s-ramp.s-ramp-server.war.path" location="bin/s-ramp-server-eap61-${s-ramp.version}.war" />
     <property name="s-ramp.s-ramp-ui.war.path" location="bin/s-ramp-ui-war-eap61-${s-ramp.version}.war" />
@@ -78,9 +78,7 @@
     <echo>-----------------------------------</echo>
     <echo>Installing Modeshape Service</echo>
     <echo>-----------------------------------</echo>
-    <unzip src="${s-ramp.modeshape-distribution.zip.path}"  dest="${s-ramp.install.dir}/modeshape-dist" overwrite="false" />
-    <move file="${s-ramp.install.dir}/modeshape-dist/modules/org"   todir="${s-ramp.jboss.module.path}" />
-    <move file="${s-ramp.install.dir}/modeshape-dist/modules/javax" todir="${s-ramp.jboss.module.path}" />
+    <unzip src="${s-ramp.modeshape-distribution.zip.path}"  dest="${s-ramp.appserver.dir}" overwrite="false" />
     <delete>
       <dirset dir="${s-ramp.jboss.module.path}/org/modeshape/">
         <include name="**/META-INF"/>

@@ -74,7 +74,7 @@
     </profile>
   </xsl:template>
 
-  <xsl:template match="as16:profile/inf:subsystem" xmlns="urn:jboss:domain:1.6">
+  <xsl:template match="as16:profile/inf15:subsystem" xmlns="urn:jboss:domain:1.6">
         <subsystem xmlns="urn:jboss:domain:infinispan:1.5" default-cache-container="hibernate">
             <xsl:apply-templates select="@* | *" />
             <cache-container name="modeshape">
