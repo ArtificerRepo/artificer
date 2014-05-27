@@ -21,7 +21,6 @@ import javax.jcr.RepositoryFactory;
 import org.modeshape.jcr.JcrRepositoryFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.overlord.sramp.repository.jcr.JCRRepository;
 
 /**
  * Registers osgi services.
@@ -35,7 +34,6 @@ public class Activator implements BundleActivator {
      */
     @Override
     public void start(BundleContext context) throws Exception {
-        context.registerService(JCRRepository.class.getName(), new ModeshapeRepository(), null);
         context.registerService(RepositoryFactory.class.getName(), new JcrRepositoryFactory(), null);
     }
 

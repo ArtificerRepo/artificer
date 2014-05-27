@@ -15,6 +15,8 @@
  */
 package org.overlord.sramp.repository.jcr;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.overlord.sramp.repository.QueryManager;
 import org.overlord.sramp.repository.jcr.query.JCRSrampQuery;
 import org.overlord.sramp.repository.query.SrampQuery;
@@ -25,6 +27,8 @@ import org.overlord.sramp.repository.query.SrampQuery;
  *
  * @author eric.wittmann@redhat.com
  */
+@Component(name = "JCR Query Manager", immediate = true)
+@Service(value = org.overlord.sramp.repository.QueryManager.class)
 public class JCRQueryManager implements QueryManager {
 
 	/**
@@ -48,5 +52,5 @@ public class JCRQueryManager implements QueryManager {
 	public SrampQuery createQuery(String xpathTemplate) {
 		return createQuery(xpathTemplate, null, false);
 	}
-	
+
 }

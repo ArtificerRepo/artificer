@@ -26,7 +26,6 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-osgi</artifactId>
-      <scope>provided</scope>
     </dependency>
     
     <!-- Some additional dependencies to include in the WAR -->
@@ -83,7 +82,9 @@
                 <exclude>WEB-INF/lib/slf4j-ext-*.jar</exclude>
                 <exclude>WEB-INF/lib/slf4j-log4j12-*.jar</exclude>
                 <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
-              </excludes>
+                <exclude>WEB-INF/lib/commons-configuration-*.jar</exclude>
+                <exclude> WEB-INF/lib/commons-lang-*.jar</exclude>
+              </excludes>              
             </overlay>
           </overlays>
           <archive>
@@ -158,7 +159,14 @@
                 org.jboss.resteasy.annotations.providers.multipart,
                 org.jboss.resteasy.spi,
                 org.overlord.commons.osgi.vfs,
+                org.overlord.commons.config,
+                org.overlord.commons.config.configurator,
                 ch.qos.cal10n,
+                org.apache.commons.lang,
+                org.apache.commons.lang.text,
+                org.apache.commons.configuration,
+                org.apache.commons.configuration.interpol,
+                org.overlord.commons.services,
                 org.overlord.commons.auth.util,
                 org.overlord.commons.auth.filters
               </Import-Package>
@@ -177,10 +185,8 @@
                 WEB-INF/lib/commons-codec-${version.commons-codec}.jar,
                 WEB-INF/lib/commons-collections-${version.commons-collections}.jar,
                 WEB-INF/lib/commons-compress-1.4.1.jar,
-                WEB-INF/lib/commons-configuration-${version.commons-configuration}.jar,
                 WEB-INF/lib/commons-fileupload-${version.commons-fileupload}.jar,
                 WEB-INF/lib/commons-io-${version.commons-io}.jar,
-                WEB-INF/lib/commons-lang-${version.commons-lang}.jar,
                 WEB-INF/lib/commons-lang3-${commons.lang3.version}.jar,
                 WEB-INF/lib/commons-logging-${version.commons-logging}.jar,
                 WEB-INF/lib/commons-logging-api-1.1.jar,

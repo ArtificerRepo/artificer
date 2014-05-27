@@ -18,6 +18,8 @@ package org.overlord.sramp.integration.kie.deriver;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.overlord.sramp.common.derived.ArtifactDeriver;
 import org.overlord.sramp.common.derived.DeriverProvider;
 
@@ -25,6 +27,8 @@ import org.overlord.sramp.common.derived.DeriverProvider;
  * Provides all KIE artifact/content derivers.
  *
  */
+@Component(name = "Kie Deriver Provider", immediate = true)
+@Service(value = org.overlord.sramp.common.derived.DeriverProvider.class)
 public class KieDeriverProvider implements DeriverProvider {
 
     /**

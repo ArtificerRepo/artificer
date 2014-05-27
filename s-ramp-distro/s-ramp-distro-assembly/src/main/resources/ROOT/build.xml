@@ -202,10 +202,11 @@
     <fail message="Failed to find JBoss Fuse 6.1 at: ${s-ramp-distro.choices.platform.fuse-6.1.path}" 
               unless="s-ramp-distro.choices.platform.fuse-6.1.path.valid" />
     <echo message="Installing into: ${s-ramp-distro.choices.platform.fuse-6.1.path} " />
-
+	
     <!-- Call the S-RAMP installer -->
     <ant antfile="${s-ramp-distro.s-ramp-installer.dir}/build.xml" inheritall="true" target="install" 
          dir="${s-ramp-distro.s-ramp-installer.dir}">
+      <property name="server.host" value="http://localhost:8181"/>
       <property name="appserver.id" value="fuse-6.1" />
       <property name="s-ramp.install.dir" location="${s-ramp-distro.tempdir}" />
       <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.fuse-6.1.path}" />

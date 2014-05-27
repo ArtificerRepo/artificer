@@ -32,6 +32,8 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
@@ -72,6 +74,10 @@ import org.slf4j.LoggerFactory;
  * This particular implementation leverages the ModeShape sequencing feature to assist with the
  * creation of the S-RAMP derived artifacts.
  */
+
+@Component(name = "JCR Persistence", immediate = true)
+@Service(value = { org.overlord.sramp.repository.DerivedArtifacts.class,
+        org.overlord.sramp.repository.PersistenceManager.class })
 public class JCRPersistence extends AbstractJCRManager implements PersistenceManager, DerivedArtifacts, ClassificationHelper {
 
 	private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
@@ -421,7 +427,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			ontology.setUuid(UUID.randomUUID().toString());
 		}
 		String ontologyPath = MapToJCRPath.getOntologyPath(ontology.getUuid());
-		
+
 		// Check if an ontology with the given base URL already exists.
 		List<SrampOntology> ontologies = getOntologies();
 		for (SrampOntology existingOntology : ontologies) {

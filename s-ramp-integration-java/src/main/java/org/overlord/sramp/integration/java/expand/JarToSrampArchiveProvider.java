@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
 import org.overlord.sramp.atom.archive.expand.registry.TypeHintInfo;
@@ -35,6 +37,8 @@ import org.overlord.sramp.integration.java.model.JavaModel;
  *
  * @author eric.wittmann@redhat.com
  */
+@Component(name = "Jar to Sramp Archive Provider", immediate = true)
+@Service(value = org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveProvider.class)
 public class JarToSrampArchiveProvider implements ZipToSrampArchiveProvider {
 
 	private static final Map<String, String> hintsMap;
@@ -85,7 +89,7 @@ public class JarToSrampArchiveProvider implements ZipToSrampArchiveProvider {
     }
 
     /**
-     * 
+     *
      */
 	@Override
 	public TypeHintInfo getArchiveTypeHints() {

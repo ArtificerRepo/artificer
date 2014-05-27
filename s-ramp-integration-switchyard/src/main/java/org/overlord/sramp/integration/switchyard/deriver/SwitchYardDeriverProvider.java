@@ -18,6 +18,8 @@ package org.overlord.sramp.integration.switchyard.deriver;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.overlord.sramp.common.derived.ArtifactDeriver;
 import org.overlord.sramp.common.derived.DeriverProvider;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
@@ -27,6 +29,9 @@ import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
  *
  * @author eric.wittmann@redhat.com
  */
+
+@Component(name = "SwitchYard Deriver Provider", immediate = true)
+@Service(value = org.overlord.sramp.common.derived.DeriverProvider.class)
 public class SwitchYardDeriverProvider implements DeriverProvider {
 
     /**

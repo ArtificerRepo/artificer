@@ -17,6 +17,9 @@ package org.overlord.sramp.integration.teiid.deriver;
 
 import java.util.Collections;
 import java.util.Map;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.overlord.sramp.common.derived.ArtifactDeriver;
 import org.overlord.sramp.common.derived.DeriverProvider;
 import org.overlord.sramp.integration.teiid.model.VdbManifest;
@@ -24,6 +27,9 @@ import org.overlord.sramp.integration.teiid.model.VdbManifest;
 /**
  * This provider contributes an {@link ArtifactDeriver} to the S-RAMP repository for Teiid VDB manifest files.
  */
+
+@Component(name = "Vdb Manifest Deriver Provider", immediate = true)
+@Service(value = org.overlord.sramp.common.derived.DeriverProvider.class)
 public final class VdbManifestDeriverProvider implements DeriverProvider {
 
     /**
