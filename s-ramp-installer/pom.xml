@@ -118,7 +118,7 @@
                   <tasks>
                     <property name="appserver.id" value="jboss-eap-6" />
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.1" />
+                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.3" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
                     <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
@@ -134,7 +134,7 @@
                     <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
                     
                     <property file="build.properties" />
-                    <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.1.0.zip" />
+                    <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.3.0.Beta.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}">
                       <include name="*.sh" />
