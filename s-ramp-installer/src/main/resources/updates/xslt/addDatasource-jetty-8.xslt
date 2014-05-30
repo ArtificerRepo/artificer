@@ -7,7 +7,7 @@
       doctype-system="http://www.eclipse.org/jetty/configure.dtd"
    />
 
-  <xsl:template match="/Configure/Set[@name = 'ThreadPool']">
+  <xsl:template match="/Configure/child::*[last()]">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()|text()" />
     </xsl:copy>

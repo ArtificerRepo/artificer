@@ -1,5 +1,5 @@
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
-        "http://jetty.mortbay.org/configure.dtd">
+        "http://www.eclipse.org/jetty/configure.dtd">
 
 <Configure id="sample-weld" class="org.mortbay.jetty.webapp.WebAppContext">
 

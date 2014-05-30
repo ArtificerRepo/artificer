@@ -95,6 +95,7 @@
               <Web-ContextPath>/s-ramp-ui</Web-ContextPath>
               <Webapp-Context>/s-ramp-ui</Webapp-Context>
               <Import-Package>
+                io.fabric8.api,
                 javax.servlet,
                 javax.servlet.http,
                 javax.servlet.jsp,
@@ -158,9 +159,7 @@
                 org.jboss.resteasy.annotations.providers.multipart,
                 org.jboss.resteasy.spi,
                 org.overlord.commons.osgi.vfs,
-                ch.qos.cal10n,
-                org.overlord.commons.auth.util,
-                org.overlord.commons.auth.filters
+                ch.qos.cal10n
               </Import-Package>
               <Bundle-ClassPath>
                 .,
@@ -265,6 +264,7 @@
                 WEB-INF/lib/overlord-commons-osgi-weld-${overlord-commons.version}.jar,
                 WEB-INF/lib/overlord-commons-config-${overlord-commons.version}.jar,
                 WEB-INF/lib/overlord-commons-auth-${overlord-commons.version}.jar,
+                WEB-INF/lib/overlord-commons-services-${overlord-commons.version}.jar,
                 WEB-INF/lib/picketbox-${picketbox.version}.jar,
                 WEB-INF/lib/picketlink-common-${picketlink.version}.jar,
                 WEB-INF/lib/picketlink-config-${picketlink.version}.jar,

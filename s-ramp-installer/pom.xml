@@ -53,6 +53,11 @@
       <artifactId>overlord-commons-idp-jetty8</artifactId>
       <type>war</type>
     </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp-fuse61</artifactId>
+      <type>war</type>
+    </dependency>
     
     <!-- S-RAMP -->
     <dependency>
@@ -63,6 +68,11 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-jetty8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server-fuse61</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
@@ -78,6 +88,11 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-jetty8</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war-fuse61</artifactId>
       <type>war</type>
     </dependency>
     <dependency>
@@ -280,6 +295,73 @@
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
                     <get src="${s-ramp.jetty.download.url}" dest="${basedir}/jetty-distribution-8.1.14.v20131031.zip" usetimestamp="true" />
                     <unzip src="${s-ramp.jetty.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
+                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
+                      <include name="*.sh" />
+                    </chmod>
+
+                    <!-- The commons ant jar location -->
+                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
+
+                    <!-- Call the installer -->
+                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
+                      <target name="install" />
+                    </ant>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- ****************************************** -->
+    <!-- Profile to *test* installing into Fuse 6.1 -->
+    <!-- ****************************************** -->
+    <profile>
+      <id>test-install-fuse61</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-trax</artifactId>
+                <version>1.6.5</version>
+              </dependency>
+              <dependency>
+                <groupId>xalan</groupId>
+                <artifactId>xalan</artifactId>
+                <version>2.7.1</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>install-fuse61</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <property name="appserver.id" value="fuse-6.1" />
+                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
+                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-fuse-6.1.0.redhat-379" />
+                    <property name="s-ramp.fuse.zip" location="${basedir}/jboss-fuse-full-6.1.0.redhat-379.zip" />
+
+                    <!-- Overlord Commons Installer and Dependencies -->
+                    <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-fuse61.war.path}" />
+                    
+                    <!-- S-RAMP WARs -->
+                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-fuse61.war.path}" />
+                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-fuse61.war.path}" />
+
+                    <property file="build.properties" />
+                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
+                    <unzip src="${s-ramp.fuse.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
                       <include name="*.sh" />
                     </chmod>

@@ -40,7 +40,7 @@ import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
 import org.jboss.weld.environment.servlet.Listener;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter;
-import org.overlord.commons.auth.jetty8.Jetty8SamlBearerTokenAuthFilter;
+import org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
@@ -203,8 +203,8 @@ public class SrampDevServer extends ErraiDevServer {
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", SRAMPApplication.class.getName());
         srampServer.addServlet(resteasyServlet, "/*");
-        srampServer.addFilter(Jetty8SamlBearerTokenAuthFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST))
-                .setInitParameter("allowedIssuers", "/s-ramp-ui,/dtgov,/dtgov-ui");
+        srampServer.addFilter(SamlBearerTokenAuthFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST))
+            .setInitParameter("allowedIssuers", "/s-ramp-ui,/dtgov,/dtgov-ui");
         srampServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         srampServer.addFilter(ServletCredentialsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
 
