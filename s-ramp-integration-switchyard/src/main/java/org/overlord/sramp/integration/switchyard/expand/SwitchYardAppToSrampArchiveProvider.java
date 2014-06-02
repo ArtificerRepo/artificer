@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
 import org.overlord.sramp.atom.archive.expand.registry.TypeHintInfo;
@@ -35,6 +37,8 @@ import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
  *
  * @author eric.wittmann@redhat.com
  */
+@Component(name = "SwitchYard App to Sramp Archive Provider", immediate = true)
+@Service(value = org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveProvider.class)
 public class SwitchYardAppToSrampArchiveProvider implements ZipToSrampArchiveProvider {
 
 	private static final Set<String> acceptedTypes = new HashSet<String>();
@@ -81,7 +85,7 @@ public class SwitchYardAppToSrampArchiveProvider implements ZipToSrampArchivePro
     public ZipToSrampArchive createExtractor(ArtifactType artifactType, InputStream zipStream) throws ZipToSrampArchiveException {
         return new SwitchYardAppToSrampArchive(zipStream);
     }
-    
+
     @Override
    	public TypeHintInfo getArchiveTypeHints() {
    		return new TypeHintInfo(20,hintsMap);

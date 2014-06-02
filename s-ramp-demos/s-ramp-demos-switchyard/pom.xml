@@ -103,6 +103,12 @@
           </execution>
         </executions>
       </plugin>
+ 	  <plugin>
+		  <groupId>org.apache.felix</groupId>
+		  <artifactId>maven-scr-plugin</artifactId>
+		  <executions>
+	  	  </executions>
+	  </plugin>         
     </plugins>
     <pluginManagement>
       <plugins>

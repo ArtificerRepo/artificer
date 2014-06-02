@@ -31,28 +31,29 @@
   <target name="copy-files" depends="properties-fuse-6.1">	
   	<property name="s-ramp.updates.dir" location="${basedir}/updates" />
   	<echo>-----------------------------------</echo>
-    <echo>Configuring S-RAMP</echo>
-    <echo>-----------------------------------</echo>
-    <property name="overlord-apps.dir" location="${s-ramp.fuse.config.dir}/overlord-apps" />
-    <mkdir dir="${overlord-apps.dir}" />
-    <copy file="${s-ramp.updates.dir}/srampui-overlordapp.properties" todir="${overlord-apps.dir}" overwrite="true" />
-    <copy file="${s-ramp.updates.dir}/sramp.properties" todir="${s-ramp.fuse.config.dir}" overwrite="true" />
-    <copy file="${s-ramp.updates.dir}/sramp-ui.properties" todir="${s-ramp.fuse.config.dir}" overwrite="true" />
-    <copy file="${s-ramp.updates.dir}/sramp-modeshape-fuse.json" tofile="${s-ramp.fuse.config.dir}/sramp-modeshape.json" overwrite="true" />
+      <echo>Configuring S-RAMP</echo>
+      <echo>-----------------------------------</echo>
+      <property name="overlord-apps.dir" location="${s-ramp.fuse.config.dir}/overlord-apps" />
+      <mkdir dir="${overlord-apps.dir}" />
+      <copy file="${s-ramp.updates.dir}/srampui-overlordapp.properties" todir="${overlord-apps.dir}" overwrite="true" />
+      <copy file="${s-ramp.updates.dir}/sramp.properties" todir="${s-ramp.fuse.config.dir}" overwrite="true" />
+      <copy file="${s-ramp.updates.dir}/sramp-ui.properties" todir="${s-ramp.fuse.config.dir}" overwrite="true" />
+  	  <copy file="${s-ramp.updates.dir}/sramp-modeshape-fuse.json" tofile="${s-ramp.fuse.config.dir}/sramp-modeshape.json" overwrite="true" />
 
-    <!-- Set the SAML keystore and alias password in the s-ramp-ui config -->
-    <propertyfile file="${s-ramp.fuse.config.dir}/sramp-ui.properties">
-      <entry key="s-ramp-ui.atom-api.endpoint" value="${server.host}/s-ramp-server" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.sign-assertions" value="false" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore" value="${sys:karaf.home}/etc//overlord-saml.keystore" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="samlkeystore77" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="overlord99" />
-    </propertyfile>
 
-    <!-- Set the location of the modeshape config file in sramp.properties -->
-    <propertyfile file="${s-ramp.fuse.config.dir}/sramp.properties">
-      <entry key="sramp.modeshape.config.url" value="${sys:karaf.home}/etc/sramp-modeshape.json" />
-    </propertyfile>
+      <!-- Set the SAML keystore and alias password in the s-ramp-ui config -->
+      <propertyfile file="${s-ramp.fuse.config.dir}/sramp-ui.properties">
+        <entry key="s-ramp-ui.atom-api.endpoint" value="${server.host}/s-ramp-server" />
+        <entry key="s-ramp-ui.atom-api.authentication.saml.sign-assertions" value="false" />
+        <entry key="s-ramp-ui.atom-api.authentication.saml.keystore" value="" />
+        <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="" />
+        <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="" />
+      </propertyfile>
+
+      <!-- Set the location of the modeshape config file in sramp.properties -->
+      <propertyfile file="${s-ramp.fuse.config.dir}/sramp.properties">
+        <entry key="sramp.modeshape.config.url" value="profile:sramp-modeshape.json" />
+      </propertyfile>
 	  	
   </target>
 	
@@ -68,7 +69,6 @@
       <entry key="org.ops4j.pax.url.mvn.repositories" 
              value="${org.ops4j.pax.url.mvn.repositories}, http://repository.jboss.org/nexus/content/groups/developer/@snapshots" />
     </propertyfile>
-
 
 
     <echo message=" " />

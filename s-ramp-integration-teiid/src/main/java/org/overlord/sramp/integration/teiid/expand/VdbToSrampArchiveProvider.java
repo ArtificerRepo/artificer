@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
 import org.overlord.sramp.atom.archive.expand.registry.TypeHintInfo;
@@ -31,6 +33,8 @@ import org.overlord.sramp.integration.teiid.model.Vdb;
 /**
  * Provides a Teiid version of the {@link ZipToSrampArchive}.
  */
+@Component(name = "Vdb To Sramp Archive Provider", immediate = true)
+@Service(value = org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveProvider.class)
 public final class VdbToSrampArchiveProvider implements ZipToSrampArchiveProvider {
 
 	private static final Map<String, String> hintsMap;
@@ -41,7 +45,7 @@ public final class VdbToSrampArchiveProvider implements ZipToSrampArchiveProvide
 	}
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveProvider#accept(org.overlord.sramp.common.ArtifactType)
      */
     @Override
@@ -51,7 +55,7 @@ public final class VdbToSrampArchiveProvider implements ZipToSrampArchiveProvide
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveProvider#createExtractor(org.overlord.sramp.common.ArtifactType,
      *      java.io.File)
      */
@@ -63,7 +67,7 @@ public final class VdbToSrampArchiveProvider implements ZipToSrampArchiveProvide
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @see org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveProvider#createExtractor(org.overlord.sramp.common.ArtifactType,
      *      java.io.InputStream)
      */
@@ -72,7 +76,7 @@ public final class VdbToSrampArchiveProvider implements ZipToSrampArchiveProvide
                                               final InputStream vdbStream ) throws ZipToSrampArchiveException {
         return new VdbToSrampArchive(vdbStream);
     }
-    
+
     @Override
    	public TypeHintInfo getArchiveTypeHints() {
    		return new TypeHintInfo(30,hintsMap);
