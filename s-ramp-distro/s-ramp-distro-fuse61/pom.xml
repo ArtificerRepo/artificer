@@ -18,17 +18,6 @@
         <artifactId>slf4j-ext</artifactId>
         <version>1.7.1</version>
       </dependency>
-      <!-- Until the BOM is updated, force 5.2.10.Final of ISPN -->
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-core</artifactId>
-        <version>5.2.10.Final</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-cachestore-jdbc</artifactId>
-        <version>5.2.10.Final</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
