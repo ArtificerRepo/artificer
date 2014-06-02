@@ -746,3 +746,7 @@ ul.ontology-selector {
 #ontologies table .active a {
   color: white !important;
 }
+
+td .icon{
+	width:1%;
+}
