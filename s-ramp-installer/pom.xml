@@ -345,6 +345,8 @@
                 <phase>install</phase>
                 <configuration>
                   <tasks>
+                    <property name="server.host" value="http://localhost:8181"/>
+                    
                     <property name="appserver.id" value="fuse-6.1" />
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-fuse-6.1.0.redhat-379" />
