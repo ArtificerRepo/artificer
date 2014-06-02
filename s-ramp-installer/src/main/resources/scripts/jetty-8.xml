@@ -73,7 +73,7 @@
 
     <!-- Set the location of the modeshape config file in sramp.properties -->
     <propertyfile file="${s-ramp.jetty.config.dir}/sramp.properties">
-      <entry key="sramp.modeshape.config.url" value="${s-ramp.jetty.config.dir}/sramp-modeshape.json" />
+      <entry key="sramp.modeshape.config.url" value="${sys:jetty.home}/etc/sramp-modeshape.json" />
     </propertyfile>
 
     <!-- Install the s-ramp datasource into jetty.xml -->
