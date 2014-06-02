@@ -118,10 +118,10 @@
     <picketlink.version>2.5.3.SP1</picketlink.version>
     <org.switchyard.version>1.1.0.Final</org.switchyard.version>
     <aesh.version>0.33.11</aesh.version>
+    <fabric8.version>1.0.0.redhat-379</fabric8.version>
 
     <!-- BOM Overrides -->
     <version.joda-time>2.1</version.joda-time>
- 	<fabric8.version>1.0.0.redhat-379</fabric8.version>
   </properties>
 
   <build>
@@ -931,6 +931,20 @@
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
       <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>fuse</id>
+      <name>Fuse Public Repository</name>
+      <url>http://repo.fusesource.com/nexus/content/groups/public/</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>

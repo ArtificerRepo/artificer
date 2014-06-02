@@ -211,7 +211,7 @@
                   <tasks>
                     <property name="appserver.id" value="tomcat-7" />
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/apache-tomcat-7.0.52" />
+                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/apache-tomcat-7.0.54" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
                     <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
@@ -224,7 +224,7 @@
 
                     <property file="build.properties" />
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.zip" value="${basedir}/apache-tomcat-7.0.52.zip" />
+                    <property name="s-ramp.appserver.zip" value="${basedir}/apache-tomcat-7.0.54.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
                       <include name="*.sh" />
@@ -363,7 +363,7 @@
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
                     <unzip src="${s-ramp.fuse.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
-                      <include name="*.sh" />
+                      <include name="*" />
                     </chmod>
 
                     <!-- The commons ant jar location -->

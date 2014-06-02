@@ -97,6 +97,8 @@
               <Webapp-Context>/s-ramp-ui</Webapp-Context>
               <Import-Package>
                 io.fabric8.api,
+                javax.crypto,
+                javax.crypto.spec,
                 javax.servlet,
                 javax.servlet.http,
                 javax.servlet.jsp,
@@ -111,6 +113,9 @@
                 javax.xml.namespace,
                 javax.xml.stream,
                 javax.xml.stream.events,
+                javax.xml.transform.stax,
+                javax.xml.validation,
+                javax.xml.ws,
                 javax.xml.xpath,
                 javax.ws.rs,
                 javax.ws.rs.core,
