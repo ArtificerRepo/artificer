@@ -45,7 +45,7 @@
       <propertyfile file="${s-ramp.fuse.config.dir}/sramp-ui.properties">
         <entry key="s-ramp-ui.atom-api.endpoint" value="${server.host}/s-ramp-server" />
         <entry key="s-ramp-ui.atom-api.authentication.saml.sign-assertions" value="false" />
-        <entry key="s-ramp-ui.atom-api.authentication.saml.keystore" value="" />
+        <entry key="s-ramp-ui.atom-api.authentication.saml.keystore" value="profile:overlord-saml.keystore" />
         <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="" />
         <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="" />
       </propertyfile>

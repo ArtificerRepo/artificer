@@ -13,6 +13,7 @@
       	<include>sramp-ui.properties</include>
       	<include>sramp.properties</include>
       	<include>sramp-modeshape.json</include>
+      	<include>overlord-saml.keystore</include>
       </includes>
       <outputDirectory>overlord/sramp.profile/</outputDirectory>
       <filtered>true</filtered>
