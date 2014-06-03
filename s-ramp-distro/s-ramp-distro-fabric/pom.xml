@@ -5,8 +5,8 @@
     <artifactId>s-ramp-distro</artifactId>
     <version>0.4.1-SNAPSHOT</version>
   </parent>
-  <artifactId>s-ramp-distro-fabric-profile</artifactId>
-  <name>S-RAMP Distribution: Fabric Profile</name>
+  <artifactId>s-ramp-distro-fabric</artifactId>
+  <name>S-RAMP Distribution: Fabric</name>
 
 
   <dependencies>
@@ -14,6 +14,14 @@
 		<groupId>org.overlord.sramp</groupId>
 		<artifactId>s-ramp-installer</artifactId>
      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-installer</artifactId>
+      </dependency>  
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-ant</artifactId>
+      </dependency>   
   </dependencies>
 
   <build>
@@ -49,6 +57,18 @@
                     <ant dir="${s-ramp-distro.s-ramp-installer.dir}" antfile="${s-ramp-distro.s-ramp-installer.dir}/scripts/fuse-fabric-6.1.xml">
                       <target name="copy-files" />
                     </ant>
+ 					<property name="overlord-commons-installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+ 				    <property name="overlord-commons-installer.dir" location="${s-ramp-distro.tempdir}/overlord-commons-installer" />
+ 				    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+ 				    <!-- The commons ant jar location -->
+                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
+ 				    
+ 				    
+ 					<unzip src="${overlord-commons-installer.jar}" dest="${overlord-commons-installer.dir}" overwrite="false" />  
+ 					<property name="overlord-commons.fuse.config.dir" value="${s-ramp.appserver.dir}/etc"/>
+ 					<ant dir="${overlord-commons-installer.dir}" antfile="${overlord-commons-installer.dir}/scripts/fuse-6.1.xml">
+                      <target name="generate_keystore" />
+                    </ant>                  
                   </tasks>
                 </configuration>
                 <goals>
