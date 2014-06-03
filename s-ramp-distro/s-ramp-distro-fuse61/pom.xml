@@ -18,6 +18,11 @@
         <artifactId>slf4j-ext</artifactId>
         <version>1.7.1</version>
       </dependency>
+      <dependency>
+		<groupId>org.eclipse.jetty.aggregate</groupId>
+		<artifactId>jetty-all</artifactId>
+		<version>8.1.14.v20131031</version>
+	  </dependency>      
     </dependencies>
   </dependencyManagement>
 
@@ -219,6 +224,10 @@
         <groupId>io.fabric8</groupId>
         <artifactId>fabric-api</artifactId>
      </dependency> 
+      <dependency>
+		<groupId>org.eclipse.jetty.aggregate</groupId>
+		<artifactId>jetty-all</artifactId>
+	</dependency>        
   </dependencies>
 
   <build>
