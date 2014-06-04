@@ -126,8 +126,15 @@
 		  <groupId>org.apache.felix</groupId>
 		  <artifactId>maven-scr-plugin</artifactId>
 		  <executions>
+		    <execution>
+		      <id>generate-scr-scrdescriptor</id>
+		      <phase>install</phase>
+		      <goals>
+		        <goal>scr</goal>
+		      </goals>
+		    </execution>
 	  	  </executions>
-	  </plugin>          
+	  </plugin>                   
     </plugins>
   </build>
 </project>
