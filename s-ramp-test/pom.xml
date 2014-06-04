@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>s-ramp</artifactId>
+    <groupId>org.overlord.sramp</groupId>
+    <version>0.4.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>s-ramp-test</artifactId>
+  <packaging>jar</packaging>
+  <name>S-RAMP Test</name>
+  <description>A general test package supporting various integration tests.</description>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.arquillian.container</groupId>
+        <artifactId>arquillian-tomcat-managed-7</artifactId>
+        <version>1.0.0.CR7</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <!-- TODO: Should we include this, or will the tests automatically get 
+    skipped if no container is included by a profile? -->
+  <!-- <build> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> 
+    <artifactId>maven-surefire-plugin</artifactId> <configuration> <skipTests>true</skipTests> 
+    </configuration> </plugin> </plugins> </build> -->
+
+  <profiles>
+    <profile>
+      <id>tomcat-integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>generate-test-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${basedir}/src/test/resources/build.xml" target="install-tomcat" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <arquillian.launch>tomcat</arquillian.launch>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.jboss.arquillian.container</groupId>
+          <artifactId>arquillian-tomcat-managed-7</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+</project>
