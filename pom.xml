@@ -301,6 +301,7 @@
 		  <executions>
 		    <execution>
 		      <id>generate-scr-scrdescriptor</id>
+		      <phase>compile</phase>
 		      <goals>
 		        <goal>scr</goal>
 		      </goals>
