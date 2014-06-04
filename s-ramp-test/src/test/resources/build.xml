@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="S-RAMP Integration Tests: Setup">
+
+  <property name="filename.tomcat" value="apache-tomcat-7.0.54.zip" />
+  <property name="download.url.tomcat"
+    value="http://apache.cs.utah.edu/tomcat/tomcat-7/v7.0.54/bin/${filename.tomcat}" />
+  <property name="dir.tomcat" value="apache-tomcat-7.0.54" />
+
+  <property name="filename.jetty" value="jetty-distribution-8.1.15.v20140411.zip" />
+  <property name="download.url.jetty"
+    value="http://eclipse.org/downloads/download.php?file=/jetty/stable-8/dist/${filename.jetty}&amp;r=1" />
+  <property name="dir.jetty" value="jetty-distribution-8.1.15.v20140411" />
+
+  <target name="install-tomcat">
+    <property name="name" value="Tomcat" />
+    <property name="filename" value="target/${filename.tomcat}" />
+    <property name="dir" value="target/${dir.tomcat}" />
+    <property name="download.url" value="${download.url.tomcat}" />
+    <antcall target="install" />
+    
+    <!-- Manager user/pass needed so Arquillian can control the Tomcat server. -->
+    <copy todir="target/${dir.tomcat}" overwrite="true">
+      <fileset dir="src/test/resources/tomcat"/>
+    </copy>
+  </target>
+
+  <!-- <target name="install-jetty">
+    <property name="name" value="Jetty" />
+    <property name="filename" value="target/${filename.jetty}" />
+    <property name="dir" value="target/${dir.jetty}" />
+    <property name="download.url" value="${download.url.jetty}" />
+    <antcall target="install" />
+  </target> -->
+
+  <target name="install" depends="download">
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Unzipping ${name}...                 #" />
+    <echo message="########################################" />
+    <echo message=" " />
+    <delete dir="${dir}" />
+    <unzip src="${filename}" dest="target" />
+
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Installing S-RAMP on ${name}...      #" />
+    <echo message="########################################" />
+    <echo message=" " />
+  </target>
+
+  <target name="download" if="missing" depends="find">
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Downloading ${name}...               #" />
+    <echo message="########################################" />
+    <echo message=" " />
+    <get src="${download.url}" dest="target" />
+  </target>
+
+  <target name="find">
+    <condition property="missing">
+      <not>
+        <resourceexists>
+          <file file="${filename}" />
+        </resourceexists>
+      </not>
+    </condition>
+  </target>
+
+</project>
