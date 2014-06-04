@@ -47,6 +47,7 @@ import org.overlord.commons.services.ServiceRegistryUtil;
 import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.repository.jcr.JCRConstants;
+import org.overlord.sramp.repository.jcr.JCRExtensions;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
 import org.overlord.sramp.repository.jcr.modeshape.i18n.Messages;
@@ -238,5 +239,13 @@ public class ModeshapeRepository extends JCRRepository {
                 log.error(e.getMessage(), e);
             }
         }
+    }
+
+    /**
+     * @see org.overlord.sramp.repository.jcr.JCRRepository#getExtensions()
+     */
+    @Override
+    public JCRExtensions getExtensions() {
+        return new ModeshapeJCRExtensions();
     }
 }
