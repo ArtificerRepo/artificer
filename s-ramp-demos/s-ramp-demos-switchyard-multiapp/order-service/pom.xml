@@ -114,6 +114,19 @@
           </execution>
         </executions>
     </plugin>
+ 	<plugin>
+		  <groupId>org.apache.felix</groupId>
+		  <artifactId>maven-scr-plugin</artifactId>
+		  <executions>
+		    <execution>
+		      <id>generate-scr-scrdescriptor</id>
+		      <phase>install</phase>
+		      <goals>
+		        <goal>scr</goal>
+		      </goals>
+		    </execution>
+	  	  </executions>
+	  </plugin>                       
     </plugins>
   </build>
   <!-- Locking the transitive dependency for camel or else the tests fail -->
