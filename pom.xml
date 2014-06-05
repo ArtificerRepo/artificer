@@ -104,11 +104,9 @@
     <!-- S-RAMP only libraries (not in BOM) -->
     <s-ramp-wiki.version>0.4.0.Final</s-ramp-wiki.version>
     <overlord-commons.version>2.0.1-SNAPSHOT</overlord-commons.version>
-    <log4j.version>1.2.16</log4j.version>
     <commons.beanutils.version>1.8.2</commons.beanutils.version>
     <commons.lang3.version>3.1</commons.lang3.version>
     <commons.compress.version>1.4.1</commons.compress.version>
-    <commons.logging.version>1.1.1</commons.logging.version>
     <org.modeshape.version>3.8.0.Final</org.modeshape.version>
     <tika-core.version>1.3</tika-core.version> <!-- inline with version used by modeshape -->
     <bcel.version>5.2</bcel.version>
@@ -116,7 +114,7 @@
     <guava-gwt.version>14.0.1</guava-gwt.version>
     <picketbox.version>4.0.19.SP4</picketbox.version>
     <picketlink.version>2.5.3.SP1</picketlink.version>
-    <org.switchyard.version>1.1.0.Final</org.switchyard.version>
+    <org.switchyard.version>2.0.0.Alpha1</org.switchyard.version>
     <aesh.version>0.33.11</aesh.version>
     <fabric8.version>1.0.0.redhat-379</fabric8.version>
 
@@ -714,19 +712,9 @@
         <version>${commons.compress.version}</version>
       </dependency>
       <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>${commons.logging.version}</version>
-      </dependency>
-      <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils-core</artifactId>
         <version>${commons.beanutils.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${log4j.version}</version>
       </dependency>
 
       <!-- Switchyard -->
