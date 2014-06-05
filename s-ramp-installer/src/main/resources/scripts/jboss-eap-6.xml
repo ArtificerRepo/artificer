@@ -12,7 +12,6 @@
     <property name="s-ramp.jboss.deploy.dir" location="${s-ramp.appserver.dir}/standalone/deployments/" />
     <property name="s-ramp.jboss.config.dir" location="${s-ramp.appserver.dir}/standalone/configuration/" />
 
-    <property name="s-ramp.modeshape-distribution.zip.path" location="modeshape-distribution-3.8.0.Final-jbosseap-dist.zip" />
     <property name="s-ramp.jboss.module.path" location="${s-ramp.appserver.dir}/modules" />
 
     <property name="s-ramp.s-ramp-server.war.path" location="bin/s-ramp-server-eap61-${s-ramp.version}.war" />

@@ -9,6 +9,21 @@
   <artifactId>s-ramp-distro-assembly</artifactId>
   <packaging>pom</packaging>
   <name>S-RAMP Distribution: Assembly</name>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- NOTE: Need to temporarily include both ModeShape 3.6 (EAP 6.1) and the later 3.x (EAP 6.2+) -->
+      <dependency>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-distribution</artifactId>
+        <classifier>jbosseap-61-dist</classifier>
+        <version>3.6.0.Final</version>
+        <type>zip</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+    
+  
   <dependencies>
     <!-- Overlord Commons -->
     <dependency>
@@ -159,6 +174,13 @@
     </dependency>
 
     <!-- ModeShape Distro -->
+    <!-- NOTE: Need to temporarily include both ModeShape 3.6 (EAP 6.1) and the later 3.x (EAP 6.2+) -->
+    <dependency>
+      <groupId>org.modeshape</groupId>
+      <artifactId>modeshape-distribution</artifactId>
+      <classifier>jbosseap-61-dist</classifier>
+      <type>zip</type>
+    </dependency>
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-distribution</artifactId>

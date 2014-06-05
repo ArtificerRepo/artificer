@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Install S-RAMP from distro" default="install">
+  <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+    <classpath>
+      <pathelement location="lib/ant-contrib-0.6.jar" />
+    </classpath>
+  </taskdef>
 
   <property name="s-ramp-distro.build.properties" location="build.properties" />
   <property file="${s-ramp-distro.build.properties}" />
@@ -76,6 +81,21 @@
     <fail message="Failed to find JBoss EAP 6 at: ${s-ramp-distro.choices.platform.jboss-eap-6.path}" 
               unless="s-ramp-distro.choices.platform.jboss-eap-6.path.valid" />
     <echo message="Installing into: ${s-ramp-distro.choices.platform.jboss-eap-6.path} " />
+    
+    <echo message="s-ramp-distro.choices.platform.jboss-eap-6.path: ${s-ramp-distro.choices.platform.jboss-eap-6.path}"/>
+    <!-- Find the specific version -->
+    <loadfile property="eap-version" srcFile="${s-ramp-distro.choices.platform.jboss-eap-6.path}/version.txt"/>
+    <echo message="eap-version: ${eap-version}"/>
+    <if>
+        <contains string="${eap-version}" substring="6.1" />
+        <then>
+            <property name="s-ramp.modeshape-distribution.zip.path" location="${s-ramp-distro.rootdir}/AS/EAP/modeshape-distribution-3.6.0.Final-jbosseap-61-dist.zip" />
+        </then>
+        <else>
+            <!-- default to 6.2+ -->
+            <property name="s-ramp.modeshape-distribution.zip.path" location="${s-ramp-distro.rootdir}/AS/EAP/modeshape-distribution-${org.modeshape.version}-jbosseap-dist.zip" />
+        </else>
+    </if>
 
     <!-- Call the S-RAMP installer -->
     <ant antfile="${s-ramp-distro.s-ramp-installer.dir}/build.xml" inheritall="true" target="install" 
@@ -89,7 +109,6 @@
       <property name="overlord-commons.auth.jboss7.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-jboss7-${overlord-commons.version}.jar" />
       <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/s-ramp-server-eap6-${s-ramp.version}.war" />
       <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/s-ramp-ui-war-eap6-${s-ramp.version}.war" />
-      <property name="s-ramp.modeshape-distribution.zip.path" location="${s-ramp-distro.rootdir}/AS/EAP/modeshape-distribution-${org.modeshape.version}-jbosseap-dist.zip" />
     </ant>
   </target>
 

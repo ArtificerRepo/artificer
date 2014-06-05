@@ -9,10 +9,6 @@
   <artifactId>s-ramp-demos-switchyard</artifactId>
   <name>S-RAMP Demos: Switchyard Deployment</name>
 
-  <properties>
-    <switchyard.version>1.1.0.Final</switchyard.version>
-  </properties>
-
   <repositories>
     <repository>
       <id>jboss-public-repository-group</id>
@@ -88,7 +84,7 @@
       <plugin>
         <groupId>org.switchyard</groupId>
         <artifactId>switchyard-plugin</artifactId>
-        <version>${switchyard.version}</version>
+        <version>${org.switchyard.version}</version>
         <configuration>
           <scannerClassNames>
             <param>org.switchyard.component.bean.config.model.BeanSwitchYardScanner</param>
