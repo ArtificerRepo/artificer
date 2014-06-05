@@ -47,11 +47,11 @@ public class FeedTabCompleter {
      */
     public static int tabCompletion(Arguments args, ShellContext context, String lastArgument,
             List<CharSequence> candidates) {
-        if (args.isEmpty() && StringUtils.isBlank(lastArgument)) { //$NON-NLS-1$
-            candidates.add("feed:");
-            candidates.add("uuid:");
+        if (args.isEmpty() && StringUtils.isBlank(lastArgument)) {
+            candidates.add("feed:"); //$NON-NLS-1$
+            candidates.add("uuid:"); //$NON-NLS-1$
         } else if (args.isEmpty() && StringUtils.isNotBlank(lastArgument)) {
-            if (lastArgument.startsWith("feed:")) {
+            if (lastArgument.startsWith("feed:")) { //$NON-NLS-1$
                 QName feedVarName = new QName("s-ramp", "feed"); //$NON-NLS-1$ //$NON-NLS-2$
                 QueryResultSet rset = (QueryResultSet) context.getVariable(feedVarName);
                 if (rset != null) {
@@ -62,11 +62,11 @@ public class FeedTabCompleter {
                         }
                     }
                 }
-            } else if ("feed:".startsWith(lastArgument)) {
-                candidates.add("feed:");
+            } else if ("feed:".startsWith(lastArgument)) { //$NON-NLS-1$
+                candidates.add("feed:"); //$NON-NLS-1$
                 return CompletionConstants.NO_APPEND_SEPARATOR;
-            } else if ("uuid:".startsWith(lastArgument)) {
-                candidates.add("uuid:");
+            } else if ("uuid:".startsWith(lastArgument)) { //$NON-NLS-1$
+                candidates.add("uuid:"); //$NON-NLS-1$
                 return CompletionConstants.NO_APPEND_SEPARATOR;
             }
         }

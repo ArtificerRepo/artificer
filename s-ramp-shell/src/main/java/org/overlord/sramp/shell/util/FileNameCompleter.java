@@ -43,7 +43,7 @@ public class FileNameCompleter {
 
     static {
         String os = getOsName();
-        OS_IS_WINDOWS = os.contains("windows");
+        OS_IS_WINDOWS = os.contains("windows"); //$NON-NLS-1$
     }
 
     /**
@@ -61,7 +61,7 @@ public class FileNameCompleter {
         // buffer can be null
         if (candidates != null) {
             if (buffer == null) {
-                buffer = "";
+                buffer = ""; //$NON-NLS-1$
             }
 
             if (OS_IS_WINDOWS) {
@@ -73,16 +73,16 @@ public class FileNameCompleter {
             File homeDir = getUserHome();
 
             // Special character: ~ maps to the user's home directory
-            if (translated.startsWith("~" + separator())) {
+            if (translated.startsWith("~" + separator())) { //$NON-NLS-1$
                 translated = homeDir.getPath() + translated.substring(1);
-            } else if (translated.startsWith("~")) {
+            } else if (translated.startsWith("~")) { //$NON-NLS-1$
                 translated = homeDir.getParentFile().getAbsolutePath();
             } else if (!(translated.startsWith(separator()))) {
                 String cwd = getUserDir().getAbsolutePath();
                 translated = cwd + separator() + translated;
             }
-            String lastPart = "";
-            String firstPart = "";
+            String lastPart = ""; //$NON-NLS-1$
+            String firstPart = ""; //$NON-NLS-1$
             if (!translated.endsWith(File.separator)) {
                 firstPart = translated.substring(0, translated.lastIndexOf(File.separator) + 1);
                 lastPart = translated.substring(translated.lastIndexOf(File.separator) + 1);
@@ -137,7 +137,7 @@ public class FileNameCompleter {
      * @return the user dir
      */
     protected File getUserDir() {
-        return new File(".");
+        return new File("."); //$NON-NLS-1$
     }
 
     /**
@@ -199,7 +199,7 @@ public class FileNameCompleter {
      * @return the user home
      */
     protected static File getUserHome() {
-        return new File(System.getProperty("user.home"));
+        return new File(System.getProperty("user.home")); //$NON-NLS-1$
     }
 
     /**
@@ -208,7 +208,7 @@ public class FileNameCompleter {
      * @return the os name
      */
     protected static String getOsName() {
-        return System.getProperty("os.name").toLowerCase();
+        return System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
     }
 
     /**
@@ -217,7 +217,7 @@ public class FileNameCompleter {
      * @return true, if is windows
      */
     public static boolean isWindows() {
-        return getOsName().startsWith("windows");
+        return getOsName().startsWith("windows"); //$NON-NLS-1$
     }
 
 }

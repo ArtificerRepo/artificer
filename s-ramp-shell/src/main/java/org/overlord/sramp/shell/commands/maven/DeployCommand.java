@@ -79,7 +79,7 @@ public class DeployCommand extends BuiltInShellCommand {
     @Override
     public boolean execute() throws Exception {
         String filePathArg = this.requiredArgument(0, Messages.i18n.format("DeployCommand.InvalidArgMsg.LocalFile")); //$NON-NLS-1$
-        String gavArg = this.requiredArgument(1, Messages.i18n.format("DeployCommand.InvalidArgMsg.GAVInfo"));
+        String gavArg = this.requiredArgument(1, Messages.i18n.format("DeployCommand.InvalidArgMsg.GAVInfo")); //$NON-NLS-1$
         String artifactTypeArg = this.optionalArgument(2);
 
         QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -116,18 +116,18 @@ public class DeployCommand extends BuiltInShellCommand {
             // Process GAV and other meta-data, then update the artifact
             MavenMetaData mmd = new MavenMetaData(gavArg, file);
             String artifactName = mmd.artifactId + '-' + mmd.version;
-            String pomName = mmd.artifactId + '-' + mmd.version + ".pom";
+            String pomName = mmd.artifactId + '-' + mmd.version + ".pom"; //$NON-NLS-1$
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_GROUP_ID, mmd.groupId);
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_ARTIFACT_ID, mmd.artifactId);
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_VERSION, mmd.version);
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_HASH_MD5, mmd.md5);
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_HASH_SHA1, mmd.sha1);
             if (mmd.classifier != null) {
-                SrampModelUtils.setCustomProperty(artifact, "maven.classifier", mmd.classifier);
+                SrampModelUtils.setCustomProperty(artifact, "maven.classifier", mmd.classifier); //$NON-NLS-1$
                 artifactName += '-' + mmd.classifier;
             }
             if (mmd.type != null) {
-                SrampModelUtils.setCustomProperty(artifact, "maven.type", mmd.type);
+                SrampModelUtils.setCustomProperty(artifact, "maven.type", mmd.type); //$NON-NLS-1$
                 artifactName += '.' + mmd.type;
             }
             artifact.setName(artifactName);
@@ -143,10 +143,10 @@ public class DeployCommand extends BuiltInShellCommand {
             
             // Generate and add a POM for the artifact
             String pom = generatePom(mmd);
-            InputStream pomContent = new ByteArrayInputStream(pom.getBytes("UTF-8"));
+            InputStream pomContent = new ByteArrayInputStream(pom.getBytes("UTF-8")); //$NON-NLS-1$
             BaseArtifactType pomArtifact = ArtifactType.ExtendedDocument(JavaModel.TYPE_MAVEN_POM_XML).newArtifactInstance();
             pomArtifact.setName(pomName);
-            SrampModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_TYPE, "pom");
+            SrampModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_TYPE, "pom"); //$NON-NLS-1$
             SrampModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_HASH_MD5, DigestUtils.md5Hex(pom));
             SrampModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_HASH_SHA1, DigestUtils.shaHex(pom));
             
@@ -174,19 +174,19 @@ public class DeployCommand extends BuiltInShellCommand {
      */
     private String generatePom(MavenMetaData mmd) {
         StringBuilder builder = new StringBuilder();
-        builder.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n");
-        builder.append("  xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n");
-        builder.append("  <modelVersion>4.0.0</modelVersion>\r\n");
-        builder.append("  <groupId>" + mmd.groupId + "</groupId>\r\n");
-        builder.append("  <artifactId>" + mmd.artifactId + "</artifactId>\r\n");
-        builder.append("  <version>" + mmd.version + "</version>\r\n");
+        builder.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n"); //$NON-NLS-1$
+        builder.append("  xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n"); //$NON-NLS-1$
+        builder.append("  <modelVersion>4.0.0</modelVersion>\r\n"); //$NON-NLS-1$
+        builder.append("  <groupId>" + mmd.groupId + "</groupId>\r\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.append("  <artifactId>" + mmd.artifactId + "</artifactId>\r\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.append("  <version>" + mmd.version + "</version>\r\n"); //$NON-NLS-1$ //$NON-NLS-2$
         if (mmd.type != null) {
-            builder.append("  <packaging>" + mmd.type + "</packaging>\r\n"); 
+            builder.append("  <packaging>" + mmd.type + "</packaging>\r\n");  //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (mmd.classifier != null) {
-            builder.append("  <classifier>" + mmd.classifier + "</classifier>\r\n");
+            builder.append("  <classifier>" + mmd.classifier + "</classifier>\r\n"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        builder.append("</project>");
+        builder.append("</project>"); //$NON-NLS-1$
         return builder.toString();
     }
 
@@ -254,9 +254,9 @@ public class DeployCommand extends BuiltInShellCommand {
          * @param file
          */
         public MavenMetaData(String gavArg, File file) throws Exception {
-            String [] split = gavArg.split(":");
+            String [] split = gavArg.split(":"); //$NON-NLS-1$
             if (split.length < 3) {
-                throw new Exception(Messages.i18n.format("DeployCommand.InvalidArgMsg.GavFormat"));
+                throw new Exception(Messages.i18n.format("DeployCommand.InvalidArgMsg.GavFormat")); //$NON-NLS-1$
             }
             groupId = split[0];
             artifactId = split[1];

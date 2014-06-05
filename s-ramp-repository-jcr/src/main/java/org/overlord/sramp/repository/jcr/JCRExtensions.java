@@ -56,7 +56,7 @@ public abstract class JCRExtensions {
         InputStream inputStream = null;
         try {
             inputStream = binary.getStream();
-            String shaHex = DigestUtils.shaHex(inputStream); //$NON-NLS-1$
+            String shaHex = DigestUtils.shaHex(inputStream);
             return shaHex;
         } finally {
             if (inputStream != null) {

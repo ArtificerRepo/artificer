@@ -145,9 +145,9 @@ public class OntologyUploadServlet extends AbstractUploadServlet {
             if (ontology.getOtherAttributes() != null) {
                 responseParams
                         .put("namespace", ontology.getOtherAttributes().get(new QName("http://www.w3.org/XML/1998/namespace", "base"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                QName uuid = new QName(SrampConstants.SRAMP_NS, "uuid");
+                QName uuid = new QName(SrampConstants.SRAMP_NS, "uuid"); //$NON-NLS-1$
                 if (ontology.getOtherAttributes().get(uuid) != null) {
-                    responseParams.put("uuid", ontology.getOtherAttributes().get(uuid));
+                    responseParams.put("uuid", ontology.getOtherAttributes().get(uuid)); //$NON-NLS-1$
                 }
             }
 

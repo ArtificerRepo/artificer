@@ -103,7 +103,7 @@ public class UploadOntologyDialog extends ModalDialog {
     public String getOntologyUploadedUUID() {
         UploadResult result = formHandler.getUploadResult();
         if (result != null) {
-            return result.get("uuid");
+            return result.get("uuid"); //$NON-NLS-1$
         }
         return null;
     }

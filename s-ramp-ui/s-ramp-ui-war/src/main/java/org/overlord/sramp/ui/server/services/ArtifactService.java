@@ -212,13 +212,13 @@ public class ArtifactService implements IArtifactService {
         StringBuilder builder = new StringBuilder();
         String endpoint = clientAccessor.getClient().getEndpoint();
         builder.append(endpoint);
-        if (!endpoint.endsWith("/")) {
-            builder.append("/");
+        if (!endpoint.endsWith("/")) { //$NON-NLS-1$
+            builder.append("/"); //$NON-NLS-1$
         }
         builder.append(artifactType.getModel());
-        builder.append("/");
+        builder.append("/"); //$NON-NLS-1$
         builder.append(artifactType.getType());
-        builder.append("/");
+        builder.append("/"); //$NON-NLS-1$
         builder.append(artifact.getUuid());
         return builder.toString();
     }
@@ -229,7 +229,7 @@ public class ArtifactService implements IArtifactService {
      * @param artifactType 
      */
     private String getRepositoryMediaLink(BaseArtifactType artifact, ArtifactType artifactType) {
-        return getRepositoryLink(artifact, artifactType) + "/media";
+        return getRepositoryLink(artifact, artifactType) + "/media"; //$NON-NLS-1$
     }
 
 }

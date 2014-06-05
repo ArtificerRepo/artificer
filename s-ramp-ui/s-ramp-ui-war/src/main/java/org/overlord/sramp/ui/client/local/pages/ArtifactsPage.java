@@ -291,7 +291,7 @@ public class ArtifactsPage extends AbstractPage {
             startIndex = data.getStartIndex() + 1;
             endIndex = startIndex + data.getArtifacts().size() - 1;
         }
-        String rangeText = startIndex + "-" + endIndex; //$NON-NLS-1$ //$NON-NLS-2$
+        String rangeText = startIndex + "-" + endIndex; //$NON-NLS-1$
         String totalText = String.valueOf(data.getTotalResults());
         this.rangeSpan1.setInnerText(rangeText);
         this.rangeSpan2.setInnerText(rangeText);

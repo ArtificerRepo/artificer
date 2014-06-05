@@ -168,7 +168,7 @@ public class UpdateEntryArchiveCommand extends AbstractArchiveCommand {
         } else if (getArguments().size() == 1) {
             for (String subcmd : subcommands) {
                 if (lastArgument == null || subcmd.startsWith(lastArgument)) {
-                    candidates.add(subcmd); //$NON-NLS-1$
+                    candidates.add(subcmd);
                 }
             }
         }

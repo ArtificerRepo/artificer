@@ -71,9 +71,9 @@ public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
         request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
         try {
             request.post(Entry.class);
-            Assert.fail("Expected an ontology validation error.");
+            Assert.fail("Expected an ontology validation error."); //$NON-NLS-1$
         } catch (Exception e) {
-            Assert.assertEquals("The ontology ID was invalid: SRAMP 256", e.getMessage());
+            Assert.assertEquals("The ontology ID was invalid: SRAMP 256", e.getMessage()); //$NON-NLS-1$
         }
     }
 

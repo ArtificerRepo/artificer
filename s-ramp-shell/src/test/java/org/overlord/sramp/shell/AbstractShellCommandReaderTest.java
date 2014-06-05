@@ -34,19 +34,19 @@ public class AbstractShellCommandReaderTest {
      */
     @Test
     public void filterLine() {
-        String line = "maven:deploy ${dtgov-workflow-jar} ${dt-workflows-groupId}:1.2.1-SNAPSHOT KieJarArchive";
+        String line = "maven:deploy ${dtgov-workflow-jar} ${dt-workflows-groupId}:1.2.1-SNAPSHOT KieJarArchive"; //$NON-NLS-1$
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put("dtgov-workflow-jar", "/home/test/dtgov-workflows.jar");
-        properties.put("dt-workflows-groupId", "org.overlord.dtgov:dtgov-workflows");
+        properties.put("dtgov-workflow-jar", "/home/test/dtgov-workflows.jar"); //$NON-NLS-1$ //$NON-NLS-2$
+        properties.put("dt-workflows-groupId", "org.overlord.dtgov:dtgov-workflows"); //$NON-NLS-1$ //$NON-NLS-2$
         String filtered = AbstractShellCommandReader.filterLine(line, properties);
-        Assert.assertEquals("maven:deploy /home/test/dtgov-workflows.jar org.overlord.dtgov:dtgov-workflows:1.2.1-SNAPSHOT KieJarArchive", filtered);
+        Assert.assertEquals("maven:deploy /home/test/dtgov-workflows.jar org.overlord.dtgov:dtgov-workflows:1.2.1-SNAPSHOT KieJarArchive", filtered); //$NON-NLS-1$
 
-        line = "maven:deploy ${dtgov-workflow-jar} ${dt-workflows-groupId}:1.2.1-SNAPSHOT KieJarArchive";
+        line = "maven:deploy ${dtgov-workflow-jar} ${dt-workflows-groupId}:1.2.1-SNAPSHOT KieJarArchive"; //$NON-NLS-1$
         properties.clear();
-        System.setProperty("dtgov-workflow-jar", "/home/test/dtgov-workflows.jar");
-        System.setProperty("dt-workflows-groupId", "org.overlord.dtgov:dtgov-workflows");
+        System.setProperty("dtgov-workflow-jar", "/home/test/dtgov-workflows.jar"); //$NON-NLS-1$ //$NON-NLS-2$
+        System.setProperty("dt-workflows-groupId", "org.overlord.dtgov:dtgov-workflows"); //$NON-NLS-1$ //$NON-NLS-2$
         filtered = AbstractShellCommandReader.filterLine(line, properties);
-        Assert.assertEquals("maven:deploy /home/test/dtgov-workflows.jar org.overlord.dtgov:dtgov-workflows:1.2.1-SNAPSHOT KieJarArchive", filtered);
+        Assert.assertEquals("maven:deploy /home/test/dtgov-workflows.jar org.overlord.dtgov:dtgov-workflows:1.2.1-SNAPSHOT KieJarArchive", filtered); //$NON-NLS-1$
     }
 
 }

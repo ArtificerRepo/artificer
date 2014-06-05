@@ -120,7 +120,7 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
      */
     protected static String filterLine(String line, Map<String, String> properties) {
         String filtered = line;
-        Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
+        Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}"); //$NON-NLS-1$
         Matcher matcher = pattern.matcher(line);
         while (matcher.find()) {
             String match = matcher.group();

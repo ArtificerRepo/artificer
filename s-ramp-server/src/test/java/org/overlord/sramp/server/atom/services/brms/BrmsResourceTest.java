@@ -179,7 +179,7 @@ public class BrmsResourceTest extends AbstractNoAuditingResourceTest {
                 MediaType mediaType = new MediaType("application", "atom+xml"); //$NON-NLS-1$ //$NON-NLS-2$
                 artifact = new Artifact();
 
-                System.out.println("Creating artifact of type: " + artifactType.getArtifactType().getTypeClass());
+                System.out.println("Creating artifact of type: " + artifactType.getArtifactType().getTypeClass()); //$NON-NLS-1$
 
                 //get the right method call
                 String methodStr = "set" + artifactType.getArtifactType(); //$NON-NLS-1$

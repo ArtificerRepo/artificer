@@ -142,7 +142,7 @@ public class OntologiesPage extends AbstractPage {
     protected void updateOntologyList() {
         ontologies.clear();
         ontologies.setValue(ontologyMap);
-        if (uuidNewOntology != null && !uuidNewOntology.equals("")
+        if (uuidNewOntology != null && !uuidNewOntology.equals("") //$NON-NLS-1$
                 && ontologies.getSelectedOntology() == null) {
             ontologies.selectItem(uuidNewOntology);
         } else if (ontologyMap.size() == 1) {
@@ -187,7 +187,7 @@ public class OntologiesPage extends AbstractPage {
             @Override
             public void onImportComplete() {
                 String uuid = dialog.getOntologyUploadedUUID();
-                if (uuid != null && !uuid.equals("")) {
+                if (uuid != null && !uuid.equals("")) { //$NON-NLS-1$
                     uuidNewOntology = uuid;
                 }
                 onPageShowing();
@@ -251,7 +251,7 @@ public class OntologiesPage extends AbstractPage {
         ontologies.selectItem(ontology);
 
         reloadOntologyEditor(ontology.getUuid());
-        this.uuidNewOntology = "";
+        this.uuidNewOntology = ""; //$NON-NLS-1$
 
     }
 

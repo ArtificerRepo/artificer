@@ -404,7 +404,7 @@ public class ArtifactType {
      */
     public void setExtendedType(String extendedType) {
         if (extendedType != null && !isValid(extendedType)) {
-            throw new RuntimeException(Messages.i18n.format("ArtifactType.InvalidExtendedType", extendedType));
+            throw new RuntimeException(Messages.i18n.format("ArtifactType.InvalidExtendedType", extendedType)); //$NON-NLS-1$
         }
         this.extendedType = extendedType;
     }

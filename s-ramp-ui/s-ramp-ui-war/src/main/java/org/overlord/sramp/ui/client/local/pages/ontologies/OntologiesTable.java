@@ -57,8 +57,8 @@ public class OntologiesTable extends TemplatedWidgetTable implements
      * Instantiates a new ontologies table.
      */
     public OntologiesTable() {
-        super.setColumnClasses(0, "");
-        super.setColumnClasses(1, "icon");
+        super.setColumnClasses(0, ""); //$NON-NLS-1$
+        super.setColumnClasses(1, "icon"); //$NON-NLS-1$
         super.columnCount = 2;
         value = new TreeMap<String, OntologySummaryBean>();
         rows = new HashMap<OntologySummaryBean, Integer>();
@@ -88,7 +88,7 @@ public class OntologiesTable extends TemplatedWidgetTable implements
         String contentUrl = GWT.getModuleBaseURL()
                 + "services/ontologyDownload?uuid=" + ontologyBean.getUuid(); //$NON-NLS-1$
         downloadAnchor.setHref(contentUrl);
-        downloadAnchor.setHTML("<div class=\"download-icon\"></div>");
+        downloadAnchor.setHTML("<div class=\"download-icon\"></div>"); //$NON-NLS-1$
 
         add(rowIdx, 0, a);
         add(rowIdx, 1, downloadAnchor);
@@ -182,7 +182,7 @@ public class OntologiesTable extends TemplatedWidgetTable implements
      */
     public void selectItem(String uuid) {
         for (OntologySummaryBean ontology : rows.keySet()) {
-            if (ontology.getUuid() != null && !ontology.getUuid().equals("")
+            if (ontology.getUuid() != null && !ontology.getUuid().equals("") //$NON-NLS-1$
                     && ontology.getUuid().equals(uuid)) {
                 SelectionEvent.fire(OntologiesTable.this, ontology);
             }

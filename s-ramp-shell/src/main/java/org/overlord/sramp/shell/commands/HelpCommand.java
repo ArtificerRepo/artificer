@@ -218,7 +218,7 @@ public class HelpCommand extends BuiltInShellCommand {
         if (StringUtils.isNotBlank(candidate)) {
             for (String namespace : namespaces) {
                 if (namespace.startsWith(candidate)) {
-                    return namespace + ":";
+                    return namespace + ":"; //$NON-NLS-1$
                 }
             }
         }

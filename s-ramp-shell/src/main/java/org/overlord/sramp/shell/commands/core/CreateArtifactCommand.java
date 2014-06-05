@@ -47,8 +47,8 @@ public class CreateArtifactCommand extends BuiltInShellCommand {
      */
     @Override
     public boolean execute() throws Exception {
-        String artifactTypeArg = this.requiredArgument(0, Messages.i18n.format("ArtifactModel.Mandatory"));
-        String nameArg = this.requiredArgument(1, Messages.i18n.format("ArtifactName.Mandatory"));
+        String artifactTypeArg = this.requiredArgument(0, Messages.i18n.format("ArtifactModel.Mandatory")); //$NON-NLS-1$
+        String nameArg = this.requiredArgument(1, Messages.i18n.format("ArtifactName.Mandatory")); //$NON-NLS-1$
         String descriptionArg = this.optionalArgument(2);
 
         QName clientVarName = new QName("s-ramp", "client"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -66,7 +66,7 @@ public class CreateArtifactCommand extends BuiltInShellCommand {
         if (artifactType.isDerived()) {
             throw new InvalidCommandArgumentException(0, Messages.i18n.format("ArtifactModel.isDerived")); //$NON-NLS-1$
         } else if (artifactType.isDocument()) {
-            throw new InvalidCommandArgumentException(0, Messages.i18n.format("ArtifactModel.isDocument"));
+            throw new InvalidCommandArgumentException(0, Messages.i18n.format("ArtifactModel.isDocument")); //$NON-NLS-1$
         } else {
             BaseArtifactType artifact = artifactType.newArtifactInstance();
             artifact.setName(nameArg);

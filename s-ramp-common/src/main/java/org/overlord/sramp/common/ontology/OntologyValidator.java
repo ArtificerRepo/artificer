@@ -37,14 +37,14 @@ public class OntologyValidator {
         try {
             new URI(ontology.getId());
         } catch (Exception e) {
-            throw new Exception(Messages.i18n.format("INVALID_ONTOLOGY_ID", ontology.getId()));
+            throw new Exception(Messages.i18n.format("INVALID_ONTOLOGY_ID", ontology.getId())); //$NON-NLS-1$
         }
         List<SrampOntologyClass> classes = ontology.getAllClasses();
         for (SrampOntologyClass oclass : classes) {
             try {
                 new URI(oclass.getId());
             } catch (Exception e) {
-                throw new Exception(Messages.i18n.format("INVALID_CLASS_ID", oclass.getId()));
+                throw new Exception(Messages.i18n.format("INVALID_CLASS_ID", oclass.getId())); //$NON-NLS-1$
             }
         }
     }

@@ -53,7 +53,7 @@ public class ShellCommandReaderFactory {
         ShellCommandReader commandReader = null;
         if (args.length > 0) {
             Map<String, String> properties = new HashMap<String, String>();
-            if (args[0].equals("-simple")) {
+            if (args[0].equals("-simple")) { //$NON-NLS-1$
                 properties = getProperties(1, args);
                 if (System.console() != null) {
                     commandReader = new ConsoleShellCommandReader(factory, context, properties);
@@ -92,18 +92,18 @@ public class ShellCommandReaderFactory {
         for (int i = index; i < args.length; i++) {
             String argument = args[i];
             if (!propertyFileArg) {
-                if (argument.startsWith("-D")) {
-                    if (argument.contains("=")) {
-                        String key = argument.substring(2, argument.indexOf("="));
-                        String value = argument.substring(argument.indexOf("=") + 1);
+                if (argument.startsWith("-D")) { //$NON-NLS-1$
+                    if (argument.contains("=")) { //$NON-NLS-1$
+                        String key = argument.substring(2, argument.indexOf("=")); //$NON-NLS-1$
+                        String value = argument.substring(argument.indexOf("=") + 1); //$NON-NLS-1$
                         properties.put(key, value);
                     } else {
-                        System.out.println("Error Argument: " + argument + " index: " + i + " "
-                                + Messages.i18n.format("InvalidArgMsg.property.not.correct.format"));
+                        System.out.println("Error Argument: " + argument + " index: " + i + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + Messages.i18n.format("InvalidArgMsg.property.not.correct.format")); //$NON-NLS-1$
 
                     }
 
-                } else if (argument.equals("-propertiesFile")) {
+                } else if (argument.equals("-propertiesFile")) { //$NON-NLS-1$
                     propertyFileArg = true;
                 }
             } else {
@@ -111,7 +111,7 @@ public class ShellCommandReaderFactory {
                 try {
                     properties.putAll(getPropertiesFromFile(argument, index));
                 } catch (ShellArgumentException sae) {
-                    System.out.println("Error Argument: " + argument + " index: " + i + " "
+                    System.out.println("Error Argument: " + argument + " index: " + i + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             + sae.getMessage());
                 }
 
@@ -143,10 +143,10 @@ public class ShellCommandReaderFactory {
             props.load(new FileInputStream(f));
         } catch (FileNotFoundException e) {
             throw new ShellArgumentException(index,
-                    Messages.i18n.format("InvalidArgMsg.propertiesFile.not.exist"));
+                    Messages.i18n.format("InvalidArgMsg.propertiesFile.not.exist")); //$NON-NLS-1$
         } catch (IOException e) {
                 throw new ShellArgumentException(index,
-                        Messages.i18n.format("InvalidArgMsg.propertiesFile.error.reading") + ": "
+                        Messages.i18n.format("InvalidArgMsg.propertiesFile.error.reading") + ": " //$NON-NLS-1$ //$NON-NLS-2$
                             + e.getMessage());
             }
         for (final String name : props.stringPropertyNames()){

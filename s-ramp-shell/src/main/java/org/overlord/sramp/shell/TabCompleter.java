@@ -67,7 +67,7 @@ public class TabCompleter implements Completion {
                 completeOperation.addCompletionCandidate(ns + ":"); //$NON-NLS-1$
             }
         } else {
-            if (!buffer.contains(":") && !buffer.contains(" ")) {
+            if (!buffer.contains(":") && !buffer.contains(" ")) { //$NON-NLS-1$ //$NON-NLS-2$
                 //This is the case of archive:list and archive:listEntry.
                 //If the user do not type " " at the end then when click on tab button should display the two options archive:list and archive:listEntry.
                     // Case 2 - a partial namespace has been typed - show all
@@ -141,15 +141,15 @@ public class TabCompleter implements Completion {
                         // In case the tab completion return just one result it
                         // is printed the previous buffer plus the argument
                         if (list.size() == 1) {
-                            if (buffer.endsWith(" ")) {
+                            if (buffer.endsWith(" ")) { //$NON-NLS-1$
                                 completeOperation.addCompletionCandidate(buffer
                                         + list.get(0).toString().trim());
-                            } else if (buffer.indexOf(" ") != -1) {
+                            } else if (buffer.indexOf(" ") != -1) { //$NON-NLS-1$
                                 completeOperation.addCompletionCandidate(buffer.substring(0,
-                                        buffer.lastIndexOf(" "))
-                                        + " " + list.get(0).toString().trim());
+                                        buffer.lastIndexOf(" ")) //$NON-NLS-1$
+                                        + " " + list.get(0).toString().trim()); //$NON-NLS-1$
                             } else {
-                                completeOperation.addCompletionCandidate(buffer + " "
+                                completeOperation.addCompletionCandidate(buffer + " " //$NON-NLS-1$
                                         + list.get(0).toString().trim());
                             }
 
@@ -172,17 +172,17 @@ public class TabCompleter implements Completion {
 
         String commonPartCandidates = mergeCandidates(completeOperation.getCompletionCandidates(), buffer);
         if (StringUtils.isNotBlank(commonPartCandidates)) {
-            String tokenToCompare = "";
-            if (buffer.contains(" ")) {
-                tokenToCompare = buffer.substring(buffer.lastIndexOf(" ") + 1);
+            String tokenToCompare = ""; //$NON-NLS-1$
+            if (buffer.contains(" ")) { //$NON-NLS-1$
+                tokenToCompare = buffer.substring(buffer.lastIndexOf(" ") + 1); //$NON-NLS-1$
             } else {
                 tokenToCompare = buffer;
             }
             completeOperation.getCompletionCandidates().clear();
             if (StringUtils.isBlank(tokenToCompare) || commonPartCandidates.startsWith(tokenToCompare)) {
-                if (buffer.contains(" ")) {
-                    completeOperation.addCompletionCandidate(buffer.substring(0, buffer.lastIndexOf(" "))
-                            .trim() + " " + commonPartCandidates);
+                if (buffer.contains(" ")) { //$NON-NLS-1$
+                    completeOperation.addCompletionCandidate(buffer.substring(0, buffer.lastIndexOf(" ")) //$NON-NLS-1$
+                            .trim() + " " + commonPartCandidates); //$NON-NLS-1$
                 } else {
                     completeOperation.addCompletionCandidate(commonPartCandidates);
                 }
@@ -212,12 +212,12 @@ public class TabCompleter implements Completion {
             if (indexOfDifference == -1) {
                 return completionCandidates.get(0);
             } else {
-                String partToCompare = "";
+                String partToCompare = ""; //$NON-NLS-1$
                 String commonPart = completionCandidates.get(0).substring(0, indexOfDifference);
                 if (commonPart.startsWith(buffer)) {
                     partToCompare = buffer;
                 } else {
-                    partToCompare = buffer.substring(buffer.lastIndexOf(" ") + 1);
+                    partToCompare = buffer.substring(buffer.lastIndexOf(" ") + 1); //$NON-NLS-1$
                 }
                 if (partToCompare.length() != indexOfDifference) {
                     return commonPart;
@@ -225,7 +225,7 @@ public class TabCompleter implements Completion {
 
             }
         }
-        return "";
+        return ""; //$NON-NLS-1$
 
     }
 }
