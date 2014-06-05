@@ -23,7 +23,6 @@ import javax.security.auth.Subject;
 import javax.servlet.DispatcherType;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
@@ -81,7 +80,7 @@ public class SrampDevServer extends ErraiDevServer {
      */
     public static void main(String [] args) throws Exception {
         SrampDevServer devServer = new SrampDevServer(args);
-//        devServer.enableDebug();
+        devServer.enableDebug();
         devServer.go();
     }
 
@@ -222,15 +221,10 @@ public class SrampDevServer extends ErraiDevServer {
         constraint.setRoles(new String[]{"overlorduser"});
         constraint.setAuthenticate(true);
 
-        ConstraintMapping cm = new ConstraintMapping();
-        cm.setConstraint(constraint);
-        cm.setPathSpec("/*");
-
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setSessionRenewedOnAuthentication(false);
         csh.setAuthenticator(new BasicAuthenticator());
         csh.setRealmName("overlord");
-        csh.addConstraintMapping(cm);
         csh.setLoginService(new HashLoginService() {
             @Override
             public UserIdentity login(String username, Object credentials) {
