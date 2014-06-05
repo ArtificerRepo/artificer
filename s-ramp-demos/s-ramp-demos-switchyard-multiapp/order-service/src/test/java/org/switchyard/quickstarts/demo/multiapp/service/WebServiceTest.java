@@ -32,7 +32,7 @@ public class WebServiceTest {
     private HTTPMixIn httpMixIn;
 
     @Test
-    @org.junit.Ignore("SRAMP-426 - Need to upgrade switchyard version to be compatible with cxf")
+    @org.junit.Ignore("SRAMP-456 - due to mismatch cxf version in switchyard (using IP BOM CR6) and main CR9, causing CNFE")
     public void invokeOrderWebService() throws Exception {
         // Use the HttpMixIn to invoke the SOAP binding endpoint with a SOAP input (from the test classpath)
         // and compare the SOAP response to a SOAP response resource (from the test classpath)...
