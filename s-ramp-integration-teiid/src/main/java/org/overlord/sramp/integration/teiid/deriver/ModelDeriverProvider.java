@@ -17,6 +17,7 @@ package org.overlord.sramp.integration.teiid.deriver;
 
 import java.util.Collections;
 import java.util.Map;
+
 import org.overlord.sramp.common.derived.ArtifactDeriver;
 import org.overlord.sramp.common.derived.DeriverProvider;
 import org.overlord.sramp.integration.teiid.model.TeiidArtifactType;
@@ -31,7 +32,7 @@ public final class ModelDeriverProvider implements DeriverProvider {
      */
     @Override
     public Map<String, ArtifactDeriver> createArtifactDerivers() {
-        return Collections.singletonMap(TeiidArtifactType.MODEL.extendedType(), (ArtifactDeriver)new VdbManifestDeriver());
+        return Collections.singletonMap(TeiidArtifactType.MODEL.extendedType(), (ArtifactDeriver)new ModelDeriver());
     }
 
 }
