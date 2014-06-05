@@ -23,6 +23,7 @@ import javax.security.auth.Subject;
 import javax.servlet.DispatcherType;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.SecurityHandler;
@@ -155,7 +156,7 @@ public class SrampDevServer extends ErraiDevServer {
          * S-RAMP UI
          * ********* */
         ServletContextHandler srampUI = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        srampUI.setSecurityHandler(createUISecurityHandler());
+        srampUI.setSecurityHandler(createSecurityHandler(true));
         srampUI.setContextPath("/s-ramp-ui");
         srampUI.setWelcomeFiles(new String[] { "index.html" });
         srampUI.setResourceBase(environment.getModuleDir("s-ramp-ui").getCanonicalPath());
@@ -197,7 +198,7 @@ public class SrampDevServer extends ErraiDevServer {
          * S-RAMP server
          * ************* */
         ServletContextHandler srampServer = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        srampServer.setSecurityHandler(createUISecurityHandler());
+        srampServer.setSecurityHandler(createSecurityHandler(false));
         srampServer.setContextPath("/s-ramp-server");
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", SRAMPApplication.class.getName());
@@ -215,16 +216,23 @@ public class SrampDevServer extends ErraiDevServer {
     /**
      * @return a security handler
      */
-    private SecurityHandler createUISecurityHandler() {
+    private SecurityHandler createSecurityHandler(boolean forUI) {
         Constraint constraint = new Constraint();
         constraint.setName(Constraint.__BASIC_AUTH);
         constraint.setRoles(new String[]{"overlorduser"});
         constraint.setAuthenticate(true);
 
+        ConstraintMapping cm = new ConstraintMapping();
+        cm.setConstraint(constraint);
+        cm.setPathSpec("/*");
+
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setSessionRenewedOnAuthentication(false);
         csh.setAuthenticator(new BasicAuthenticator());
         csh.setRealmName("overlord");
+        if (forUI) {
+            csh.addConstraintMapping(cm);
+        }
         csh.setLoginService(new HashLoginService() {
             @Override
             public UserIdentity login(String username, Object credentials) {
