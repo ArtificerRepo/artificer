@@ -122,12 +122,17 @@
           </arguments>
         </configuration>
       </plugin>
- 	  <plugin>
+ 	  <!-- Disable SCR completely.  Appears to cause a conflict with other plugins. -->
+    <plugin>
 		  <groupId>org.apache.felix</groupId>
 		  <artifactId>maven-scr-plugin</artifactId>
 		  <executions>
+		    <execution>
+		      <id>generate-scr-scrdescriptor</id>
+		      <phase>none</phase>
+		    </execution>
 	  	  </executions>
-	  </plugin>          
+	  </plugin>                   
     </plugins>
   </build>
 </project>

@@ -114,8 +114,20 @@
           </execution>
         </executions>
     </plugin>
+    <!-- Disable SCR completely.  Appears to cause a conflict with other plugins. -->
+ 	<plugin>
+		  <groupId>org.apache.felix</groupId>
+		  <artifactId>maven-scr-plugin</artifactId>
+		  <executions>
+		    <execution>
+		      <id>generate-scr-scrdescriptor</id>
+              <phase>none</phase>
+		    </execution>
+	  	  </executions>
+	  </plugin>                       
     </plugins>
   </build>
+  
   <!-- Locking the transitive dependency for camel or else the tests fail -->
   <dependencyManagement>
   	<dependencies>
