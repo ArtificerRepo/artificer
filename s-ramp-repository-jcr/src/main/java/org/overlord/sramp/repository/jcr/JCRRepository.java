@@ -57,5 +57,10 @@ public abstract class JCRRepository {
      * @return the JCR repository
      */
     public abstract Repository getRepo();
+    
+    /**
+     * @return the JCRExtensions
+     */
+    public abstract JCRExtensions getExtensions();
 
 }
