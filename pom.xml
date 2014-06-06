@@ -281,31 +281,7 @@
             </manifestEntries>
           </archive>
         </configuration>
-      </plugin>
-
-      <!-- SRAMP-247 Disable 'enforce victims' check until jansi-1.9 dependency sorted https://access.redhat.com/security/cve/CVE-2013-2035 -->
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-victims-rule</id>
-            <phase>none</phase>
-          </execution>
-        </executions>
-      </plugin>
- 	  <plugin>
-		  <groupId>org.apache.felix</groupId>
-		  <artifactId>maven-scr-plugin</artifactId>
-		  <executions>
-		    <execution>
-		      <id>generate-scr-scrdescriptor</id>
-		      <phase>compile</phase>
-		      <goals>
-		        <goal>scr</goal>
-		      </goals>
-		    </execution>
-	  	  </executions>
-	  </plugin>      
+      </plugin>   
     </plugins>
   </build>
 
