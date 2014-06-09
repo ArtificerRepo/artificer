@@ -130,7 +130,6 @@
                 org.infinispan.loaders.jdbc.configuration.as,
                 org.infinispan.loaders.jdbc.stringbased,
                 org.infinispan.loaders.jdbc.connectionfactory,
-                org.apache.jcp.xml.dsig.internal.dom,
                 javax.xml.crypto.dsig,
                 <!-- Shouldn't be needed... -->
                 org.infinispan.schematic.internal,

@@ -83,8 +83,8 @@
                 <exclude>WEB-INF/lib/slf4j-log4j12-*.jar</exclude>
                 <exclude>WEB-INF/lib/cal10n-api-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-configuration-*.jar</exclude>
-                <exclude> WEB-INF/lib/commons-lang-*.jar</exclude>
-              </excludes>              
+                <exclude>WEB-INF/lib/commons-lang-*.jar</exclude>
+              </excludes>
             </overlay>
           </overlays>
           <archive>
@@ -103,16 +103,18 @@
                 javax.servlet.http,
                 javax.servlet.jsp,
                 javax.security.auth.login,
-                javax.xml.parsers,
                 javax.xml.bind,
                 javax.xml.bind.annotation,
+                javax.xml.crypto,
+                javax.xml.crypto.dsig,
                 javax.xml.datatype,
+                javax.xml.namespace,
+                javax.xml.parsers,
+                javax.xml.stream,
+                javax.xml.stream.events,
                 javax.xml.transform,
                 javax.xml.transform.stream,
                 javax.xml.transform.dom,
-                javax.xml.namespace,
-                javax.xml.stream,
-                javax.xml.stream.events,
                 javax.xml.transform.stax,
                 javax.xml.validation,
                 javax.xml.ws,
@@ -281,8 +283,7 @@
                 WEB-INF/lib/picketlink-config-${picketlink.version}.jar,
                 WEB-INF/lib/picketlink-federation-${picketlink.version}.jar,
                 WEB-INF/lib/picketlink-idm-api-${picketlink.version}.jar,
-                WEB-INF/lib/picketlink-idm-impl-${picketlink.version}.jar,
-                WEB-INF/lib/xmlsec-1.5.1.jar
+                WEB-INF/lib/picketlink-idm-impl-${picketlink.version}.jar
               </Bundle-ClassPath>
             </manifestEntries>
           </archive>

@@ -18,6 +18,12 @@
         <artifactId>slf4j-ext</artifactId>
         <version>1.7.1</version>
       </dependency>
+      <!-- Upgrade to a version of xmlsec that will work in OSGi -->
+      <dependency>
+        <groupId>org.apache.santuario</groupId>
+        <artifactId>xmlsec</artifactId>
+        <version>2.0.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -96,8 +102,13 @@
       <artifactId>picketlink-federation</artifactId>
       <exclusions>
         <exclusion>
-          <artifactId>log4j</artifactId>
           <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <!-- Exclude xmlsec because it doesn't play well in OSGi -->
+        <exclusion>
+          <groupId>org.apache.santuario</groupId>
+          <artifactId>xmlsec</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -190,8 +201,8 @@
       <artifactId>javax.security.jacc-api</artifactId>
       <exclusions>
         <exclusion>
-          <artifactId>javax.servlet-api</artifactId>
           <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
