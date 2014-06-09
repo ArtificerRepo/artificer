@@ -151,7 +151,7 @@
                     <property file="build.properties" />
                     <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.3.0.Beta.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
-                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}">
+                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
                       <include name="*.sh" />
                     </chmod>
 
