@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.overlord.sramp.demos</groupId>
 		<artifactId>s-ramp-demos</artifactId>
-		<version>0.4.1-SNAPSHOT</version>
+		<version>0.5.0.Alpha1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>s-ramp-demos-mvn-integration</artifactId>
