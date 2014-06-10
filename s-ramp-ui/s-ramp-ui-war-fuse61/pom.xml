@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.overlord.sramp</groupId>
     <artifactId>s-ramp-ui</artifactId>
-    <version>0.4.1-SNAPSHOT</version>
+    <version>0.5.0.Alpha1</version>
   </parent>
   <artifactId>s-ramp-ui-war-fuse61</artifactId>
   <packaging>war</packaging>
@@ -105,8 +105,8 @@
                 javax.security.auth.login,
                 javax.xml.bind,
                 javax.xml.bind.annotation,
-                javax.xml.crypto,
-                javax.xml.crypto.dsig,
+<!--                 javax.xml.crypto, -->
+<!--                 javax.xml.crypto.dsig, -->
                 javax.xml.datatype,
                 javax.xml.namespace,
                 javax.xml.parsers,
@@ -283,7 +283,8 @@
                 WEB-INF/lib/picketlink-config-${picketlink.version}.jar,
                 WEB-INF/lib/picketlink-federation-${picketlink.version}.jar,
                 WEB-INF/lib/picketlink-idm-api-${picketlink.version}.jar,
-                WEB-INF/lib/picketlink-idm-impl-${picketlink.version}.jar
+                WEB-INF/lib/picketlink-idm-impl-${picketlink.version}.jar,
+                WEB-INF/lib/xmlsec-1.5.1.jar
               </Bundle-ClassPath>
             </manifestEntries>
           </archive>
