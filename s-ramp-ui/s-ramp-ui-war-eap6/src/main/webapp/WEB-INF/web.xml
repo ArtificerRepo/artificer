@@ -77,6 +77,15 @@
     <filter-name>PicketLinkAuthWrapperFilter</filter-name>
     <url-pattern>*</url-pattern>
   </filter-mapping>
+  
+  <filter>
+    <filter-name>PostAuthenticationRedirectFilter</filter-name>
+    <filter-class>org.overlord.commons.gwt.server.filters.PostAuthenticationRedirectFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>PostAuthenticationRedirectFilter</filter-name>
+    <url-pattern>*</url-pattern>
+  </filter-mapping>
 
   <filter>
     <filter-name>HttpRequestThreadLocalFilter</filter-name>
