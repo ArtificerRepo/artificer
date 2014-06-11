@@ -36,6 +36,7 @@ import org.apache.commons.io.FileUtils;
 import org.overlord.sramp.shell.api.ShellCommand;
 import org.overlord.sramp.shell.api.ShellCommandProvider;
 import org.overlord.sramp.shell.commands.CommandNotFoundCommand;
+import org.overlord.sramp.shell.commands.EchoCommand;
 import org.overlord.sramp.shell.commands.ExitCommand;
 import org.overlord.sramp.shell.commands.HelpCommand;
 import org.overlord.sramp.shell.commands.archive.AddEntryArchiveCommand;
@@ -81,6 +82,7 @@ public class ShellCommandFactory {
 	private static QName HELP_CMD_NAME = new QName("s-ramp", "help"); //$NON-NLS-1$ //$NON-NLS-2$
 	private static QName EXIT_CMD_NAME = new QName("s-ramp", "exit"); //$NON-NLS-1$ //$NON-NLS-2$
 	private static QName QUIT_CMD_NAME = new QName("s-ramp", "quit"); //$NON-NLS-1$ //$NON-NLS-2$
+    private static QName ECHO_CMD_NAME = new QName("s-ramp", "echo"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	private Map<QName, Class<? extends ShellCommand>> registry;
 
@@ -198,8 +200,10 @@ public class ShellCommandFactory {
             command = new HelpCommand(getCommands(), this.getNamespaces());
 		} else if (commandName.equals(QUIT_CMD_NAME)) {
 			command = new ExitCommand();
-		} else if (commandName.equals(EXIT_CMD_NAME)) {
-			command = new ExitCommand();
+        } else if (commandName.equals(EXIT_CMD_NAME)) {
+            command = new ExitCommand();
+        } else if (commandName.equals(ECHO_CMD_NAME)) {
+            command = new EchoCommand();
 		} else {
 			Class<? extends ShellCommand> commandClass = registry.get(commandName);
 			if (commandClass == null)

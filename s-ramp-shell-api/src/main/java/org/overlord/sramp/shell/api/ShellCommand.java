@@ -44,7 +44,10 @@ public interface ShellCommand {
 	public void setContext(ShellContext context);
 
 	/**
-	 * Called to execute the command.
+	 * Called to execute the command.  Returns true if the command
+	 * was successful or false if not.  If false is returned, and
+	 * the command is part of a batch, then the batch will be
+	 * halted.
 	 */
 	public boolean execute() throws Exception;
 
