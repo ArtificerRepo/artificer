@@ -113,11 +113,10 @@ public class ArtifactResource extends AbstractResource {
             if (artifactType.isDerived()) {
                 throw new DerivedArtifactCreateException(artifactType.getArtifactType());
             }
-            BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
-            if (SrampModelUtils.isDocumentArtifact(artifact)) {
+            if (artifactType.isDocument()) {
                 throw new InvalidArtifactCreationException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
             }
-
+            BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             // store the content
             BaseArtifactType persistedArtifact = persistenceManager.persistArtifact(artifact, null);

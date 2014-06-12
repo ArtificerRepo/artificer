@@ -40,6 +40,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.InvalidArtifactUpdateException;
 import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampServerException;
@@ -355,6 +356,9 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             Node artifactNode = findArtifactNode(uuid, artifactType, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
+            }
+            if (artifactNode.isNodeType(JCRConstants.SRAMP_NON_DOCUMENT_TYPE)) {
+                throw new InvalidArtifactUpdateException(Messages.i18n.format("JCRPersistence.NoArtifactContent")); //$NON-NLS-1$
             }
 			JCRUtils tools = new JCRUtils();
 			tools.uploadFile(session, artifactNode.getPath(), content);
