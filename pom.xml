@@ -878,6 +878,11 @@
 	   	<artifactId>fabric-api</artifactId>
 	 	<version>${fabric8.version}</version>
 	  </dependency>
+	  	<dependency>
+	    <groupId>jstl</groupId>
+	    <artifactId>jstl</artifactId>
+	    <version>1.2</version>
+	</dependency>    
     </dependencies>
   </dependencyManagement>
 
