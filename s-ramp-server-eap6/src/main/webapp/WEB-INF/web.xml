@@ -17,6 +17,7 @@
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/s-ramp/*</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <servlet-name>MavenRepository</servlet-name>
     <servlet-class>org.overlord.sramp.server.servlet.MavenRepositoryServlet</servlet-class>
@@ -31,6 +32,7 @@
     <url-pattern>/maven/repository</url-pattern>
   </servlet-mapping>
  
+ 
   <filter>
     <filter-name>LocaleFilter</filter-name>
     <filter-class>org.overlord.sramp.server.filters.LocaleFilter</filter-class>
@@ -40,8 +42,7 @@
     <filter-name>LocaleFilter</filter-name>
     <servlet-name>Resteasy</servlet-name>
   </filter-mapping>
-
-   <filter-mapping>
+  <filter-mapping>
     <filter-name>LocaleFilter</filter-name>
     <servlet-name>MavenRepository</servlet-name>
   </filter-mapping>
@@ -51,8 +52,8 @@
     <filter-class>org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter</filter-class>
     <description>This filter provides support for BASIC authentication that works with both standard user/password auth as well as SAML Bearer Token auth.</description>
     <init-param>
-        <param-name>allowedIssuers</param-name>
-        <param-value>/s-ramp-ui,/dtgov,/dtgov-ui</param-value>
+      <param-name>allowedIssuers</param-name>
+      <param-value>/s-ramp-ui,/dtgov,/dtgov-ui</param-value>
     </init-param>
   </filter>
   <filter-mapping>
@@ -63,6 +64,7 @@
     <filter-name>AuthFilter</filter-name>
     <servlet-name>MavenRepository</servlet-name>
   </filter-mapping> 
+
   <filter>
     <filter-name>ServletCredentials</filter-name>
     <filter-class>org.overlord.sramp.repository.jcr.modeshape.filters.ServletCredentialsFilter</filter-class>
@@ -72,8 +74,7 @@
     <filter-name>ServletCredentials</filter-name>
     <servlet-name>Resteasy</servlet-name>
   </filter-mapping>
-  
-   <filter-mapping>
+  <filter-mapping>
     <filter-name>ServletCredentials</filter-name>
     <servlet-name>MavenRepository</servlet-name>
   </filter-mapping>

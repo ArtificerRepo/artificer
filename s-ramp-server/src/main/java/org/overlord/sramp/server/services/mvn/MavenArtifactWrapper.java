@@ -27,13 +27,9 @@ import java.util.Date;
 public class MavenArtifactWrapper {
 
     private InputStream content;
-
     private int contentLength;
-
     private Date lastModifiedDate;
-
     private String fileName;
-
     private String contentType;
 
     /**
@@ -51,8 +47,7 @@ public class MavenArtifactWrapper {
      *            the content type
      */
     public MavenArtifactWrapper(InputStream content, int contentLength, Date lastModifiedDate,
-            String fileName,
-            String contentType) {
+            String fileName, String contentType) {
         super();
         this.content = content;
         this.contentLength = contentLength;
@@ -61,61 +56,17 @@ public class MavenArtifactWrapper {
         this.contentType = contentType;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode()
+
+    /**
+     * @return the content stream
      */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + contentLength;
-        result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
-        result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
-        result = prime * result + ((lastModifiedDate == null) ? 0 : lastModifiedDate.hashCode());
-        return result;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        MavenArtifactWrapper other = (MavenArtifactWrapper) obj;
-
-        if (contentLength != other.contentLength)
-            return false;
-        if (contentType == null) {
-            if (other.contentType != null)
-                return false;
-        } else if (!contentType.equals(other.contentType))
-            return false;
-        if (fileName == null) {
-            if (other.fileName != null)
-                return false;
-        } else if (!fileName.equals(other.fileName))
-            return false;
-        if (lastModifiedDate == null) {
-            if (other.lastModifiedDate != null)
-                return false;
-        } else if (!lastModifiedDate.equals(other.lastModifiedDate))
-            return false;
-        return true;
-    }
-
     public InputStream getContent() {
         return content;
     }
 
+    /**
+     * @param content the content stream
+     */
     public void setContent(InputStream content) {
         this.content = content;
     }
@@ -195,6 +146,5 @@ public class MavenArtifactWrapper {
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
-
 
 }

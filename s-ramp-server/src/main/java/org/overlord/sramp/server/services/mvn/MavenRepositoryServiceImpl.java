@@ -82,7 +82,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService{
         try {
             QueryManager queryManager = QueryManagerFactory.newInstance();
             SrampQuery srampQuery = queryManager.createQuery(queryBuilder.toString(),
-                    "lastModifiedTimestamp", false);
+                    "lastModifiedTimestamp", false); //$NON-NLS-1$
 
             for (Object parameter : parameters) {
                 if (parameter instanceof String) {
@@ -99,18 +99,11 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService{
         return artifactSet;
     }
 
-
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.overlord.sramp.server.services.MavenRepositoryService#getArtifactContent
-     * (java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+    /**
+     * @see org.overlord.sramp.server.services.MavenRepositoryService#getArtifactContent(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public MavenArtifactWrapper getArtifactContent(String fileName, String groupId,
-            String artifactId,
+    public MavenArtifactWrapper getArtifactContent(String fileName, String groupId, String artifactId,
             String version) throws SrampAtomException, IOException {
 
         List<String> criteria = new ArrayList<String>();
@@ -118,27 +111,30 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService{
         criteria.add("@maven.artifactId = ?"); //$NON-NLS-1$
         criteria.add("@maven.groupId = ?"); //$NON-NLS-1$
         criteria.add("@maven.version = ?"); //$NON-NLS-1$
-        criteria.add("@maven.type = ?");
+        criteria.add("@maven.type = ?"); //$NON-NLS-1$
 
         parameters.add(artifactId);
         parameters.add(groupId);
         parameters.add(version);
-        parameters.add(fileName.substring(fileName.lastIndexOf(".") + 1));
+        parameters.add(fileName.substring(fileName.lastIndexOf(".") + 1)); //$NON-NLS-1$
 
-        String without_extension=fileName.substring(0,fileName.lastIndexOf("."));
-        String classifier="";
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-        if(StringUtils.countMatches(without_extension, "-")>=2){
-            String before_classifier=without_extension.substring(0,without_extension.lastIndexOf("-"));
-            String possible_version = before_classifier.substring(before_classifier.lastIndexOf("-") + 1);
-            if(possible_version.equals(version)){
-                classifier=without_extension.substring(without_extension.lastIndexOf("-")+1);
+        String without_extension = fileName.substring(0, fileName.lastIndexOf(".")); //$NON-NLS-1$
+        String classifier = ""; //$NON-NLS-1$
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1); //$NON-NLS-1$
+        if (StringUtils.countMatches(without_extension, "-") >= 2) { //$NON-NLS-1$
+            int versionIdx = without_extension.indexOf(version);
+            int versionLen = version.length();
+            int classifierIdx = versionIdx + versionLen + 1;
+            if (classifierIdx < without_extension.length()) {
+                classifier = without_extension.substring(classifierIdx);
             }
         }
 
         if (StringUtils.isNotBlank(classifier)) {
-            criteria.add("@maven.classifier= ?"); //$NON-NLS-1$
+            criteria.add("@maven.classifier = ?"); //$NON-NLS-1$
             parameters.add(classifier);
+        } else {
+            criteria.add("xp2:not(@maven.classifier)"); //$NON-NLS-1$
         }
 
         ArtifactSet artifactSet = null;
@@ -146,9 +142,8 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService{
         try {
             artifactSet = query(criteria, parameters);
             if (artifactSet.size() >= 1) {
-                // RETURN THE CONTENT
+                // Found some content!
                 baseArtifact = artifactSet.iterator().next();
-
             }
         } catch (SrampAtomException e) {
             throw e;
@@ -168,41 +163,35 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService{
 
             MavenFileExtensionEnum ext = MavenFileExtensionEnum.value(fileName);
             if (ext != null && StringUtils.isNotBlank(ext.getCustomProperty())) {
-                // we need to set the input stream with the value of the
-                // custom property
+                // we need to set the input stream with the value of the custom property
                 String content = SrampModelUtils.getCustomProperty(baseArtifact, ext.getCustomProperty());
                 artifactContent = new ByteArrayInputStream(content.getBytes());
             } else {
-                // we need to set the input stream with the artifact
-                // content
-
+                // we need to set the input stream with the artifact content
                 try {
-                    artifactContent = persistenceManager.getArtifactContent(baseArtifact.getUuid(),
-                            artifactType);
+                    artifactContent = persistenceManager.getArtifactContent(baseArtifact.getUuid(), artifactType);
                 } catch (SrampException e) {
-                    logger.error(
-                            Messages.i18n.format("maven.resource.get.content.error", baseArtifact.getUuid()), e); //$NON-NLS-1$
-                    throw new SrampAtomException(Messages.i18n.format("maven.resource.get.content.error",
+                    logger.error(Messages.i18n.format("maven.resource.get.content.error", baseArtifact.getUuid()), e); //$NON-NLS-1$
+                    throw new SrampAtomException(Messages.i18n.format("maven.resource.get.content.error", //$NON-NLS-1$
                             baseArtifact.getUuid()), e);
                 }
             }
-            String file_name = artifactId + version;
+            String artifactFileName = artifactId + "-" + version; //$NON-NLS-1$
             if (StringUtils.isNotEmpty(classifier)) {
-                file_name += classifier;
+                artifactFileName += "-" + classifier; //$NON-NLS-1$
             }
-            file_name += "." + extension;
+            artifactFileName += "." + extension; //$NON-NLS-1$
             int contentLength = -1;
 
             contentLength = Integer.parseInt(baseArtifact.getOtherAttributes().get(
                     SrampConstants.SRAMP_CONTENT_SIZE_QNAME));
             MavenArtifactWrapper wrapper = new MavenArtifactWrapper(artifactContent, contentLength,
-                    lastModifiedDate,
-                    file_name, artifactType.getMimeType());
+                    lastModifiedDate, artifactFileName, artifactType.getMimeType());
             return wrapper;
-
         } else {
             logger.error(Messages.i18n.format("maven.resource.item.null")); //$NON-NLS-1$
-            throw new SrampAtomException(Messages.i18n.format("maven.resource.item.null"));
+            // Return null so that the servlet can return a 404
+            return null;
         }
 
     }
@@ -218,38 +207,38 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService{
     @Override
     public Set<String> getItems(String path) throws SrampAtomException {
         Set<String> items = null;
-        String[] tokens = path.split("/");
-        String groupId = "";
-        String version = "";
-        String artifactId = "";
+        String[] tokens = path.split("/"); //$NON-NLS-1$
+        String groupId = ""; //$NON-NLS-1$
+        String version = ""; //$NON-NLS-1$
+        String artifactId = ""; //$NON-NLS-1$
         // Search by groupId
         for (int i = 0; i < tokens.length; i++) {
             if (i != 0) {
-                groupId += ".";
+                groupId += "."; //$NON-NLS-1$
             }
             groupId += tokens[i];
         }
         items = getItems(groupId, null, null);
         if ((items == null || items.size() == 0) && tokens.length >= 2) {
-            groupId = "";
-            version = "";
-            artifactId = "";
+            groupId = ""; //$NON-NLS-1$
+            version = ""; //$NON-NLS-1$
+            artifactId = ""; //$NON-NLS-1$
             // Search by groupId and artifactId
             for (int i = 0; i < tokens.length - 1; i++) {
                 if (i != 0) {
-                    groupId += ".";
+                    groupId += "."; //$NON-NLS-1$
                 }
                 groupId += tokens[i];
             }
             artifactId = tokens[tokens.length - 1];
             items = getItems(groupId, artifactId, null);
             if ((items == null || items.size() == 0) && tokens.length >= 3) {
-                groupId = "";
-                version = "";
-                artifactId = "";
+                groupId = ""; //$NON-NLS-1$
+                version = ""; //$NON-NLS-1$
+                artifactId = ""; //$NON-NLS-1$
                 for (int i = 0; i < tokens.length - 2; i++) {
                     if (i != 0) {
-                        groupId += ".";
+                        groupId += "."; //$NON-NLS-1$
                     }
                     groupId += tokens[i];
                 }
@@ -282,9 +271,9 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService{
         Set<String> items = new HashSet<String>();
         if (StringUtils.isNotBlank(groupId)) {
             criteria.add("fn:matches(@maven.groupId, ?)"); //$NON-NLS-1$
-            parameters.add(groupId + ".*");
+            parameters.add(groupId + ".*"); //$NON-NLS-1$
         } else {
-            criteria.add("@maven.groupId");
+            criteria.add("@maven.groupId"); //$NON-NLS-1$
         }
 
         if (StringUtils.isNotBlank(version)) {
@@ -302,20 +291,20 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService{
             Iterator<BaseArtifactType> it = artifactSet.iterator();
             while (it.hasNext()) {
                 BaseArtifactType artifact = it.next();
-                String artifactGroupId = SrampModelUtils.getCustomProperty(artifact, "maven.groupId");
-                String artifactVersion = SrampModelUtils.getCustomProperty(artifact, "maven.version");
-                String artifactArtifactId = SrampModelUtils.getCustomProperty(artifact, "maven.artifactId");
-                String artifactClassifier = SrampModelUtils.getCustomProperty(artifact, "maven.classifier");
-                String artifactType = SrampModelUtils.getCustomProperty(artifact, "maven.type");
+                String artifactGroupId = SrampModelUtils.getCustomProperty(artifact, "maven.groupId"); //$NON-NLS-1$
+                String artifactVersion = SrampModelUtils.getCustomProperty(artifact, "maven.version"); //$NON-NLS-1$
+                String artifactArtifactId = SrampModelUtils.getCustomProperty(artifact, "maven.artifactId"); //$NON-NLS-1$
+                String artifactClassifier = SrampModelUtils.getCustomProperty(artifact, "maven.classifier"); //$NON-NLS-1$
+                String artifactType = SrampModelUtils.getCustomProperty(artifact, "maven.type"); //$NON-NLS-1$
                 if (StringUtils.isNotBlank(artifactId)) {
                     if (StringUtils.isNotBlank(version)) {
-                        String toAdd = "";
+                        String toAdd = ""; //$NON-NLS-1$
                         toAdd = artifactArtifactId;
-                        toAdd += "-" + artifactVersion;
+                        toAdd += "-" + artifactVersion; //$NON-NLS-1$
                         if (StringUtils.isNotBlank(artifactClassifier)) {
-                            toAdd += "-" + artifactClassifier;
+                            toAdd += "-" + artifactClassifier; //$NON-NLS-1$
                         }
-                        toAdd += "." + artifactType;
+                        toAdd += "." + artifactType; //$NON-NLS-1$
                         items.add(toAdd);
                     } else {
                         items.add(artifactVersion);
@@ -325,17 +314,17 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService{
 
                     String restGroupId = artifactGroupId.substring(artifactGroupId.indexOf(groupId)
                             + groupId.length());
-                    if (restGroupId.startsWith(".")) {
+                    if (restGroupId.startsWith(".")) { //$NON-NLS-1$
                         String removeBegin = restGroupId.substring(1);
-                        if (removeBegin.contains(".")) {
-                            items.add(removeBegin.substring(0, removeBegin.indexOf(".")));
+                        if (removeBegin.contains(".")) { //$NON-NLS-1$
+                            items.add(removeBegin.substring(0, removeBegin.indexOf("."))); //$NON-NLS-1$
                         } else {
                             items.add(removeBegin);
                         }
                     } else {
-                        if (restGroupId.contains(".")) {
-                            items.add(restGroupId.substring(0, restGroupId.indexOf(".")));
-                        } else if (restGroupId.trim().equals("")) {
+                        if (restGroupId.contains(".")) { //$NON-NLS-1$
+                            items.add(restGroupId.substring(0, restGroupId.indexOf("."))); //$NON-NLS-1$
+                        } else if (restGroupId.trim().equals("")) { //$NON-NLS-1$
                             items.add(artifactArtifactId);
                         } else {
                             items.add(restGroupId);

@@ -165,10 +165,10 @@
       <artifactId>log4j</artifactId>
       <scope>runtime</scope>
     </dependency>
-	<dependency>
-	    <groupId>jstl</groupId>
-	    <artifactId>jstl</artifactId>
-	</dependency>    
+    <dependency>
+      <groupId>jstl</groupId>
+      <artifactId>jstl</artifactId>
+    </dependency>    
   </dependencies>
 
   <build>

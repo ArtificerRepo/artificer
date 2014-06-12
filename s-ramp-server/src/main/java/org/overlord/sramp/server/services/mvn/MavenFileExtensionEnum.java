@@ -27,11 +27,11 @@ import org.apache.commons.lang.StringUtils;
  */
 public enum MavenFileExtensionEnum {
 
-    HASH_MD5("md5", "maven.hash.md5", "jar"), HASH_SHA1("sha1", "maven.hash.sha1", "jar");
+    HASH_MD5("md5", "maven.hash.md5"),  //$NON-NLS-1$ //$NON-NLS-2$
+    HASH_SHA1("sha1", "maven.hash.sha1");  //$NON-NLS-1$ //$NON-NLS-2$
 
     private final String extension;
     private final String customProperty;
-    private final String mavenType;
 
     /**
      * Instantiates a new maven file extension enum.
@@ -40,13 +40,10 @@ public enum MavenFileExtensionEnum {
      *            the extension
      * @param customProperty
      *            the custom property
-     * @param mavenType
-     *            the maven type
      */
-    MavenFileExtensionEnum(String extension, String customProperty, String mavenType) {
+    MavenFileExtensionEnum(String extension, String customProperty) {
         this.extension = extension;
         this.customProperty = customProperty;
-        this.mavenType = mavenType;
     }
 
     /**
@@ -68,15 +65,6 @@ public enum MavenFileExtensionEnum {
     }
 
     /**
-     * Gets the maven type.
-     *
-     * @return the maven type
-     */
-    public String getMavenType() {
-        return mavenType;
-    }
-
-    /**
      * Value.
      *
      * @param fileName
@@ -85,8 +73,8 @@ public enum MavenFileExtensionEnum {
      */
     public static MavenFileExtensionEnum value(String fileName) {
         MavenFileExtensionEnum[] values = MavenFileExtensionEnum.values();
-        if (StringUtils.isNotBlank(fileName) && fileName.contains(".")) {
-            String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        if (StringUtils.isNotBlank(fileName) && fileName.contains(".")) { //$NON-NLS-1$
+            String extension = fileName.substring(fileName.lastIndexOf(".") + 1); //$NON-NLS-1$
             for (MavenFileExtensionEnum ext : values) {
                 if (ext.getExtension().equals(extension)) {
                     return ext;
