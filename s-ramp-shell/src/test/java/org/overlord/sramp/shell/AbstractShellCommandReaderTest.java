@@ -33,20 +33,29 @@ public class AbstractShellCommandReaderTest {
      * Filter line.
      */
     @Test
-    public void filterLine() {
+    public void interpolate() {
         String line = "maven:deploy ${dtgov-workflow-jar} ${dt-workflows-groupId}:1.2.1-SNAPSHOT KieJarArchive"; //$NON-NLS-1$
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("dtgov-workflow-jar", "/home/test/dtgov-workflows.jar"); //$NON-NLS-1$ //$NON-NLS-2$
         properties.put("dt-workflows-groupId", "org.overlord.dtgov:dtgov-workflows"); //$NON-NLS-1$ //$NON-NLS-2$
-        String filtered = AbstractShellCommandReader.filterLine(line, properties);
+        String filtered = AbstractShellCommandReader.interpolate(line, properties);
         Assert.assertEquals("maven:deploy /home/test/dtgov-workflows.jar org.overlord.dtgov:dtgov-workflows:1.2.1-SNAPSHOT KieJarArchive", filtered); //$NON-NLS-1$
 
         line = "maven:deploy ${dtgov-workflow-jar} ${dt-workflows-groupId}:1.2.1-SNAPSHOT KieJarArchive"; //$NON-NLS-1$
         properties.clear();
         System.setProperty("dtgov-workflow-jar", "/home/test/dtgov-workflows.jar"); //$NON-NLS-1$ //$NON-NLS-2$
         System.setProperty("dt-workflows-groupId", "org.overlord.dtgov:dtgov-workflows"); //$NON-NLS-1$ //$NON-NLS-2$
-        filtered = AbstractShellCommandReader.filterLine(line, properties);
+        filtered = AbstractShellCommandReader.interpolate(line, properties);
         Assert.assertEquals("maven:deploy /home/test/dtgov-workflows.jar org.overlord.dtgov:dtgov-workflows:1.2.1-SNAPSHOT KieJarArchive", filtered); //$NON-NLS-1$
+
+        line = "connect ${sramp.endpoint:http://localhost:8080/s-ramp-server} ${sramp.username:admin} ${sramp.password:admin123}"; //$NON-NLS-1$
+        properties.clear();
+        filtered = AbstractShellCommandReader.interpolate(line, properties);
+        Assert.assertEquals("connect http://localhost:8080/s-ramp-server admin admin123", filtered); //$NON-NLS-1$
+        properties.put("sramp.endpoint", "http://localhost:8181/sramp"); //$NON-NLS-1$ //$NON-NLS-2$
+        properties.put("sramp.username", "bwayne"); //$NON-NLS-1$ //$NON-NLS-2$
+        filtered = AbstractShellCommandReader.interpolate(line, properties);
+        Assert.assertEquals("connect http://localhost:8181/sramp bwayne admin123", filtered); //$NON-NLS-1$
     }
 
 }
