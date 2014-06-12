@@ -206,11 +206,11 @@
             </execution>
           </executions>
         </plugin>
-		<plugin>
-		  <groupId>org.apache.felix</groupId>
-		  <artifactId>maven-scr-plugin</artifactId>
-		  <version>1.9.0</version>
-		</plugin>        
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-scr-plugin</artifactId>
+          <version>1.9.0</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -282,19 +282,19 @@
           </archive>
         </configuration>
       </plugin>
- 	  <plugin>
-		  <groupId>org.apache.felix</groupId>
-		  <artifactId>maven-scr-plugin</artifactId>
-		  <executions>
-		    <execution>
-		      <id>generate-scr-scrdescriptor</id>
-		      <phase>compile</phase>
-		      <goals>
-		        <goal>scr</goal>
-		      </goals>
-		    </execution>
-	  	  </executions>
-	  </plugin>   
+      <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-scr-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>generate-scr-scrdescriptor</id>
+              <phase>compile</phase>
+              <goals>
+                <goal>scr</goal>
+              </goals>
+            </execution>
+          </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -302,10 +302,10 @@
     <dependencies>
         <!-- Declarative Service Annotations -->
       <dependency>
-	    <groupId>org.apache.felix</groupId>
-	  	<artifactId>org.apache.felix.scr.annotations</artifactId>
-	  	<version>1.7.0</version>
-	  </dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.scr.annotations</artifactId>
+        <version>1.7.0</version>
+      </dependency>
       <!-- Integration Platform Imports -->
       <dependency>
         <groupId>org.jboss.integration-platform</groupId>
@@ -873,16 +873,16 @@
         <type>zip</type>
         <classifier>jbossas-71-dist</classifier>
       </dependency>
-	  <dependency>
-		<groupId>io.fabric8</groupId>
-	   	<artifactId>fabric-api</artifactId>
-	 	<version>${fabric8.version}</version>
-	  </dependency>
-	  	<dependency>
-	    <groupId>jstl</groupId>
-	    <artifactId>jstl</artifactId>
-	    <version>1.2</version>
-	</dependency>    
+      <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>fabric-api</artifactId>
+        <version>${fabric8.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jstl</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
