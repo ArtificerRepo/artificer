@@ -94,7 +94,7 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 		if (line == null) {
 			return null;
 		}
-        line = filterLine(line, properties);
+        line = interpolate(line, properties);
 		Arguments arguments = new Arguments(line);
 		if (arguments.isEmpty()) {
 			return new NoOpCommand();
@@ -112,27 +112,36 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 	}
 
     /**
-     * Filter the line using the properties attribute.
+     * Interpolate any properties that might be present on the line, using values
+     * from the given map.
      *
-     * @param line
-     *            the line
+     * @param line the line
      * @return the string
      */
-    protected static String filterLine(String line, Map<String, String> properties) {
-        String filtered = line;
+    protected static String interpolate(String line, Map<String, String> properties) {
+        String interpolated = line;
         Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}"); //$NON-NLS-1$
         Matcher matcher = pattern.matcher(line);
         while (matcher.find()) {
             String match = matcher.group();
-            String key = match.substring(2, match.length() - 1);
+            String keyWithOptionalDefault = match.substring(2, match.length() - 1);
+            int idx = keyWithOptionalDefault.indexOf(':');
+            String key = keyWithOptionalDefault;
+            String defaultVal = null;
+            if (idx > 0) {
+                key = keyWithOptionalDefault.substring(0, idx);
+                defaultVal = keyWithOptionalDefault.substring(idx + 1);
+            }
             if (properties.containsKey(key)) {
-                filtered = filtered.replace(match, properties.get(key));
-            } else if (System.getProperties().containsKey(key)) {
-                filtered = filtered.replace(match, (String) System.getProperties().get(key));
+                interpolated = interpolated.replace(match, properties.get(key));
+            } else if (System.getProperties().containsKey(keyWithOptionalDefault)) {
+                interpolated = interpolated.replace(match, System.getProperty(key));
+            } else if (defaultVal != null) {
+                interpolated = interpolated.replace(match, defaultVal);
             }
         }
 
-        return filtered;
+        return interpolated;
     }
 
 	/**
