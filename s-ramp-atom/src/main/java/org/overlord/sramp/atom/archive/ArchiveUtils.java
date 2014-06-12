@@ -56,7 +56,11 @@ public class ArchiveUtils {
 				}
 
 				if (entry.isDirectory()) {
-					if (!outFile.mkdir()) {
+				    if (outFile.isDirectory()) {
+				        // Do nothing - already created.
+				    } else if (outFile.isFile()) {
+                        throw new IOException(Messages.i18n.format("FAILED_TO_CREATE_DIR", outFile.getCanonicalPath())); //$NON-NLS-1$
+				    } else if (!outFile.mkdir()) {
 						throw new IOException(Messages.i18n.format("FAILED_TO_CREATE_DIR", outFile.getCanonicalPath())); //$NON-NLS-1$
 					}
 				} else {
