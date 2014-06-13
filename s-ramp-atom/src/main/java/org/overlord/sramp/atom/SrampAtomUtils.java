@@ -29,6 +29,8 @@ import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
+import org.jboss.resteasy.plugins.providers.jaxb.JAXBContextFinder;
+import org.jboss.resteasy.plugins.providers.jaxb.XmlJAXBContextFinder;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -48,6 +50,8 @@ import org.w3c.dom.NodeList;
  */
 public final class SrampAtomUtils {
 
+    private static final XmlJAXBContextFinder finder = new XmlJAXBContextFinder();
+    
 	/**
 	 * Private constructor.
 	 */
@@ -258,6 +262,7 @@ public final class SrampAtomUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T unwrap(Entry entry, Class<T> clazz) throws JAXBException {
+	    setFinder(entry);
 	    if (entry.getAnyOtherElement() == null && entry.getAnyOther().isEmpty())
 	        return null;
 		T object = entry.getAnyOtherJAXBObject(clazz);
@@ -273,6 +278,25 @@ public final class SrampAtomUtils {
 	}
 
 	/**
+	 * TODO: remove this once we fix RestEasy to set the finder automatically on the Entry during unmarshaling
+     * @param entry
+     */
+    private static void setFinder(Entry entry) {
+        // Eat any exception we might encounter - if this fails it'll just revert to creating
+        // a new JAXBContext each time.  This is slow but works.
+        try {
+            Method method = entry.getClass().getDeclaredMethod("setFinder", JAXBContextFinder.class); //$NON-NLS-1$
+            method.setAccessible(true);
+            method.invoke(entry, finder);
+        } catch (SecurityException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException e) {
+        }
+    }
+
+    /**
 	 * Gets the XML node for the wrapper 'artifact' element from the {@link Entry}.
 	 * @param entry
 	 */

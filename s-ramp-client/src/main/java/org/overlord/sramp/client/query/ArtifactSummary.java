@@ -131,7 +131,7 @@ public class ArtifactSummary {
 	 * via the "propertyName" parameter of the issueing query will be returned.
 	 * @param prefix
 	 */
-    public Map<String, String> getPropertiesByPrefix(String prefix) {
+    public Map<String, String> getCustomPropertiesByPrefix(String prefix) {
         Map<String, String> result = new HashMap<String, String>();
         if (artifact == null) {
             artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
