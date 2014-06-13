@@ -691,4 +691,51 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
         Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase()); //$NON-NLS-1$
         Assert.assertNotNull(ontology.getUuid());
     }
+
+    /**
+     * Test method for {@link SrampAtomApiClient#query(String, int, int, String, boolean, java.util.Collection)
+     * 
+     * https://issues.jboss.org/browse/SRAMP-389
+     */
+    @Test
+    public void testQueryWithPropertyName_SRAMP389() throws Exception {
+        SrampAtomApiClient client = new SrampAtomApiClient(generateURL("/s-ramp")); //$NON-NLS-1$
+
+        // First add a bunch of artifacts so we can search for them.
+        for (int count = 0; count < 10; count++) {
+            String artifactFileName = "PO-" + count + ".xsd"; //$NON-NLS-1$ //$NON-NLS-2$
+            InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/PO.xsd"); //$NON-NLS-1$
+            try {
+                BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
+                Assert.assertNotNull(artifact);
+                Assert.assertEquals(artifactFileName, artifact.getName());
+
+                // Set some custom properties and then update.
+                SrampModelUtils.setCustomProperty(artifact, "count", String.valueOf(count)); //$NON-NLS-1$
+                SrampModelUtils.setCustomProperty(artifact, "prop1", "foo"); //$NON-NLS-1$ //$NON-NLS-2$
+                SrampModelUtils.setCustomProperty(artifact, "test", "SRAMP-389"); //$NON-NLS-1$ //$NON-NLS-2$
+                client.updateArtifactMetaData(artifact);
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
+        }
+
+        // Now search for the artifacts and request some of the custom
+        // properties be returned in the result set.
+        QueryResultSet rset = client.buildQuery("/s-ramp[@test = 'SRAMP-389']") //$NON-NLS-1$
+                .propertyName("count").propertyName("prop1") //$NON-NLS-1$ //$NON-NLS-2$
+                .orderBy("createdTimestamp").descending().query(); //$NON-NLS-1$
+        StringBuilder builder = new StringBuilder();
+        System.out.println("----- Query done, iterating result set"); //$NON-NLS-1$
+        long start = System.currentTimeMillis();
+        for (ArtifactSummary artifactSummary : rset) {
+            String prop = artifactSummary.getCustomPropertyValue("count"); //$NON-NLS-1$
+            builder.append(prop);
+            builder.append("|"); //$NON-NLS-1$
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("----- Done iterating in: " + (end-start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("9|8|7|6|5|4|3|2|1|0|", builder.toString()); //$NON-NLS-1$
+    }
+
 }
