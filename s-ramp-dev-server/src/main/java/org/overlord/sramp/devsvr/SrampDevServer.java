@@ -112,13 +112,13 @@ public class SrampDevServer extends ErraiDevServer {
                 + "/META-INF/modeshape-configs/inmemory-sramp-config.json");
 
         // Authentication provider
-//        System.setProperty("s-ramp-ui.atom-api.authentication.provider", BasicAuthenticationProvider.class.getName());
-//        System.setProperty("s-ramp-ui.atom-api.authentication.basic.user", "ui");
-//        System.setProperty("s-ramp-ui.atom-api.authentication.basic.password", "ui");
         System.setProperty("s-ramp-ui.atom-api.authentication.provider", SAMLBearerTokenAuthenticationProvider.class.getName());
         System.setProperty("s-ramp-ui.atom-api.authentication.saml.issuer", "/s-ramp-ui");
         System.setProperty("s-ramp-ui.atom-api.authentication.saml.service", "/s-ramp-server");
         System.setProperty("s-ramp-ui.atom-api.authentication.saml.sign-assertions", "false");
+
+        // Don't do any resource caching!
+        System.setProperty("overlord.resource-caching.disabled", "true");
     }
 
     /**
