@@ -307,25 +307,23 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService{
                         toAdd += "." + artifactType; //$NON-NLS-1$
                         items.add(toAdd);
                     } else {
-                        items.add(artifactVersion);
+                        items.add(artifactVersion + "/"); //$NON-NLS-1$
                     }
                 } else {
-
-
                     String restGroupId = artifactGroupId.substring(artifactGroupId.indexOf(groupId)
                             + groupId.length());
                     if (restGroupId.startsWith(".")) { //$NON-NLS-1$
                         String removeBegin = restGroupId.substring(1);
                         if (removeBegin.contains(".")) { //$NON-NLS-1$
-                            items.add(removeBegin.substring(0, removeBegin.indexOf("."))); //$NON-NLS-1$
+                            items.add(removeBegin.substring(0, removeBegin.indexOf(".")) + "/"); //$NON-NLS-1$ //$NON-NLS-2$
                         } else {
-                            items.add(removeBegin);
+                            items.add(removeBegin + "/"); //$NON-NLS-1$
                         }
                     } else {
                         if (restGroupId.contains(".")) { //$NON-NLS-1$
-                            items.add(restGroupId.substring(0, restGroupId.indexOf("."))); //$NON-NLS-1$
+                            items.add(restGroupId.substring(0, restGroupId.indexOf(".")) + "/"); //$NON-NLS-1$ //$NON-NLS-2$
                         } else if (restGroupId.trim().equals("")) { //$NON-NLS-1$
-                            items.add(artifactArtifactId);
+                            items.add(artifactArtifactId + "/"); //$NON-NLS-1$
                         } else {
                             items.add(restGroupId);
                         }

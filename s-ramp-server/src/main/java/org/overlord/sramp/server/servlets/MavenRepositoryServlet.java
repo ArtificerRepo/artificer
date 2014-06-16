@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.server.servlet;
+package org.overlord.sramp.server.servlets;
 
 import java.io.IOException;
 import java.util.Set;
@@ -70,61 +70,65 @@ public class MavenRepositoryServlet extends HttpServlet {
         if (maven_url.startsWith("/")) { //$NON-NLS-1$
             maven_url = maven_url.substring(1);
         }
-
-        String[] tokens = maven_url.split("/"); //$NON-NLS-1$
-        if (tokens != null && tokens.length > 0) {
-            String groupId = ""; //$NON-NLS-1$
-            String version = ""; //$NON-NLS-1$
-            String artifactId = ""; //$NON-NLS-1$
-            String file_name = ""; //$NON-NLS-1$
-
-            if (tokens.length >= 4) {
-                file_name = tokens[tokens.length - 1];
-                MavenArtifactWrapper artifact = null;
-                if (file_name.contains(".")) { //$NON-NLS-1$
-                    version = tokens[tokens.length - 2];
-                    for (int i = 0; i < tokens.length - 2; i++) {
-                        if (i < tokens.length - 3) {
-                            if (i != 0) {
-                                groupId += "."; //$NON-NLS-1$
+        
+        int lastPathSegmentIdx = maven_url.lastIndexOf('/');
+        String lastPathSegment = null;
+        if (lastPathSegmentIdx != -1) {
+            lastPathSegment = maven_url.substring(lastPathSegmentIdx);
+        }
+        
+        if (lastPathSegment != null && lastPathSegment.indexOf('.') != -1) {
+            String[] tokens = maven_url.split("/"); //$NON-NLS-1$
+            if (tokens != null && tokens.length > 0) {
+                String groupId = ""; //$NON-NLS-1$
+                String version = ""; //$NON-NLS-1$
+                String artifactId = ""; //$NON-NLS-1$
+                String file_name = ""; //$NON-NLS-1$
+    
+                if (tokens.length >= 4) {
+                    file_name = tokens[tokens.length - 1];
+                    MavenArtifactWrapper artifact = null;
+                    if (file_name.contains(".")) { //$NON-NLS-1$
+                        version = tokens[tokens.length - 2];
+                        for (int i = 0; i < tokens.length - 2; i++) {
+                            if (i < tokens.length - 3) {
+                                if (i != 0) {
+                                    groupId += "."; //$NON-NLS-1$
+                                }
+                                groupId += tokens[i];
+                            } else {
+                                artifactId = tokens[i];
                             }
-                            groupId += tokens[i];
-                        } else {
-                            artifactId = tokens[i];
                         }
-                    }
-                    // Here we have the gav info. So let's go to Sramp to
-                    // obtain the InputStream with the info
-                    try {
-                        artifact = service.getArtifactContent(file_name, groupId, artifactId, version);
-                        if (artifact != null) {
-                            resp.setContentLength(artifact.getContentLength());
-                            resp.addHeader("Content-Disposition", //$NON-NLS-1$
-                                    "attachment; filename=" + artifact.getFileName()); //$NON-NLS-1$
-                            resp.setContentType(artifact.getContentType());
-                            IOUtils.copy(artifact.getContent(), resp.getOutputStream());
-                        } else {
-                            // Send a 404 if we couldn't find the artifact
-                            resp.sendError(404);
-                        }
-                    } catch (SrampAtomException e) {
-                        logger.info(Messages.i18n.format("maven.servlet.artifact.content.get.exception", //$NON-NLS-1$
-                                groupId, artifactId, version, file_name));
-                        // Send a 500 error if there's an exception
-                        resp.sendError(500);
-                    } finally {
-                        if (artifact != null) {
-                            IOUtils.closeQuietly(artifact.getContent());
+                        // Here we have the gav info. So let's go to Sramp to
+                        // obtain the InputStream with the info
+                        try {
+                            artifact = service.getArtifactContent(file_name, groupId, artifactId, version);
+                            if (artifact != null) {
+                                resp.setContentLength(artifact.getContentLength());
+                                resp.addHeader("Content-Disposition", //$NON-NLS-1$
+                                        "attachment; filename=" + artifact.getFileName()); //$NON-NLS-1$
+                                resp.setContentType(artifact.getContentType());
+                                IOUtils.copy(artifact.getContent(), resp.getOutputStream());
+                            } else {
+                                // Send a 404 if we couldn't find the artifact
+                                resp.sendError(404);
+                            }
+                        } catch (SrampAtomException e) {
+                            logger.info(Messages.i18n.format("maven.servlet.artifact.content.get.exception", //$NON-NLS-1$
+                                    groupId, artifactId, version, file_name));
+                            // Send a 500 error if there's an exception
+                            resp.sendError(500);
+                        } finally {
+                            if (artifact != null) {
+                                IOUtils.closeQuietly(artifact.getContent());
+                            }
                         }
                     }
                 }
-
-                if (artifact == null) {
-                    listItemsResponse(req, resp, maven_url);
-                }
-            } else {
-                listItemsResponse(req, resp, maven_url);
             }
+        } else {
+            listItemsResponse(req, resp, maven_url);
         }
     }
 
@@ -144,6 +148,9 @@ public class MavenRepositoryServlet extends HttpServlet {
      */
     private void listItemsResponse(HttpServletRequest req, HttpServletResponse resp, String url)
             throws ServletException, IOException {
+        if (!url.endsWith("/")) { //$NON-NLS-1$
+            url = url + "/"; //$NON-NLS-1$
+        }
         try {
             Set<String> items = service.getItems(url);
             if ((items != null && items.size() > 0) || (url.equals("/") || url.equals(""))) { //$NON-NLS-1$ //$NON-NLS-2$
