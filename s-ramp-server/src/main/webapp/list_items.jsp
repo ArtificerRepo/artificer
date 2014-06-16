@@ -13,12 +13,8 @@
         <c:url value='/maven/repository${parentPath}' var="urlBack" scope="page"></c:url>
         <tr><td><a href="${urlBack}">../</a></td></tr>
     </c:if>
-    <c:set var="separator" value=""></c:set>
-    <c:if test="${fn:endsWith(relativePath, '/')==false && relativePath!=''}">
-        <c:set var="separator" value="/"></c:set>
-    </c:if>
     <c:forEach items="${items}" var="item">
-        <c:url value='/maven/repository/${relativePath}${separator}${item}' var="urlItem" scope="page"></c:url>
+        <c:url value='/maven/repository/${relativePath}${item}' var="urlItem" scope="page"></c:url>
         <tr><td><a href="${urlItem}">${item}</a></td></tr>
     </c:forEach>
     </table>

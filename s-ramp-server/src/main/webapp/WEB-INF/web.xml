@@ -21,7 +21,7 @@
   
   <servlet>
     <servlet-name>MavenRepository</servlet-name>
-    <servlet-class>org.overlord.sramp.server.servlet.MavenRepositoryServlet</servlet-class>
+    <servlet-class>org.overlord.sramp.server.servlets.MavenRepositoryServlet</servlet-class>
     <jsp-file>/list_items.jsp</jsp-file>
   </servlet>
   <servlet-mapping>
@@ -61,8 +61,14 @@
     <filter-name>AuthFilter</filter-name>
     <servlet-name>Resteasy</servlet-name>
   </filter-mapping>
+
+  <filter>
+    <filter-name>MavenAuthFilter</filter-name>
+    <filter-class>org.overlord.sramp.server.filters.MavenRepositoryAuthFilter</filter-class>
+    <description>This filter provides support for BASIC authentication protecting the Maven Repository Facade.  If no user is provided then a read-only user is fabricated and used.</description>
+  </filter>
   <filter-mapping>
-    <filter-name>AuthFilter</filter-name>
+    <filter-name>MavenAuthFilter</filter-name>
     <servlet-name>MavenRepository</servlet-name>
   </filter-mapping> 
 
