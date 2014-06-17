@@ -16,20 +16,58 @@
 package org.overlord.sramp.repository.jcr.modeshape;
 
 import javax.jcr.Binary;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
+import org.modeshape.jcr.api.ServletCredentials;
 import org.overlord.sramp.repository.jcr.JCRExtensions;
+import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
 
 /**
+ * The ModeShape-specific implementation of the JCR Extensions, allowing ModeShape
+ * specific enhancements to the JCR persistence layer.
+ * 
  * @author Brett Meyer
  */
+@Component(name = "Modeshape JCR Extensions", immediate = true)
+@Service(value = org.overlord.sramp.repository.jcr.JCRExtensions.class)
 public class ModeshapeJCRExtensions extends JCRExtensions {
+    
+    /**
+     * Constructor.
+     */
+    public ModeshapeJCRExtensions() {
+    }
 
+    /**
+     * @see org.overlord.sramp.repository.jcr.JCRExtensions#getSha1Hash(javax.jcr.Binary)
+     */
     @Override
     public String getSha1Hash(Binary binary) throws Exception {
         if (binary instanceof org.modeshape.jcr.api.Binary) {
             return ((org.modeshape.jcr.api.Binary) binary).getHexHash();
         } else {
             return super.getSha1Hash(binary);
+        }
+    }
+
+    /**
+     * @see org.overlord.sramp.repository.jcr.JCRExtensions#startup()
+     */
+    @Override
+    public void startup() {
+        // Set credentials (manufactured for full privileges)
+        HttpServletRequest request = new ModeshapeStartupHttpServletRequest();
+        ServletCredentials credentials = new ServletCredentials((HttpServletRequest) request);
+        JCRRepositoryFactory.setLoginCredentials(credentials);
+
+        try {
+            JCRRepositoryFactory.getSession();
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        } finally {
+            JCRRepositoryFactory.setLoginCredentials(null);
         }
     }
 }

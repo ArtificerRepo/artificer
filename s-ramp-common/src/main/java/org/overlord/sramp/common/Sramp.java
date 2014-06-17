@@ -79,7 +79,7 @@ public class Sramp {
     public boolean isDerivedArtifactAuditingEnabled() {
         return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_DERIVED_AUDITING, true);
     }
-    
+
     /**
      * Gets a property from the s-ramp configuration.
      * @param propertyName
@@ -87,6 +87,20 @@ public class Sramp {
      */
     public String getConfigProperty(String propertyName, String propertyDefault) {
         return configuration.getString(propertyName, propertyDefault);
+    }
+
+    /**
+     * @return the name of the JCR repository being used
+     */
+    public String getJCRRepositoryName() {
+        return getConfigProperty(SrampConstants.SRAMP_CONFIG_JCR_REPO_NAME, "sramp"); //$NON-NLS-1$
+    }
+
+    /**
+     * @return the name of the JCR repository being used
+     */
+    public String getMavenReadOnlyUsername() {
+        return getConfigProperty(SrampConstants.SRAMP_CONFIG_MAVEN_READONLY_USERNAME, "mavenuser"); //$NON-NLS-1$
     }
 
 }

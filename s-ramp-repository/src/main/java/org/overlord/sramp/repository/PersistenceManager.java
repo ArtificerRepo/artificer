@@ -138,6 +138,14 @@ public interface PersistenceManager {
     public void printArtifactGraph(String uuid, ArtifactType type);
 
     /**
+     * Called to startup the persistence manager, providing an opportunity
+     * for the implementation to bootstrap.  This is optional - perhaps an
+     * implementation will want to lazy-load itself on first use.  It is 
+     * recommended to implement this if it makes sense, however.
+     */
+    public void startup();
+
+    /**
      * Called to shutdown the persistence manager, cleaning up any resources
      * being held open.  This is typically called when the container hosting
      * the s-ramp repository is shut down.

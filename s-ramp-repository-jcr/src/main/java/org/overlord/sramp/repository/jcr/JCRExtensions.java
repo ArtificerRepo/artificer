@@ -40,7 +40,7 @@ public abstract class JCRExtensions {
     // TODO: Not sure how I feel about this pattern.  Wire it elsewhere?
     public static JCRExtensions getInstance() throws Exception {
         if (instance == null) {
-            instance = JCRRepositoryFactory.getInstance().getExtensions();
+            instance = JCRExtensionsFactory.getInstance();
         }
         return instance;
     }
@@ -63,5 +63,11 @@ public abstract class JCRExtensions {
                 IOUtils.closeQuietly(inputStream);
             }
         }
+    }
+    
+    /**
+     * Provides a way to start up the implementation-specific JCR repository.
+     */
+    public void startup() {
     }
 }
