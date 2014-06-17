@@ -15,6 +15,8 @@ public class SrampLifeCycle implements ServletContextListener {
 	 */
 	@Override
     public void contextInitialized(ServletContextEvent sce) {
+	    // TODO make this async
+	    PersistenceFactory.newInstance().startup();
     }
 
     /**

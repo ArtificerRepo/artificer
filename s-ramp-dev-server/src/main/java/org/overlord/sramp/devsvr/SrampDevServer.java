@@ -61,6 +61,7 @@ import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.integration.switchyard.expand.SwitchYardAppToSrampArchive;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.jcr.modeshape.filters.ServletCredentialsFilter;
+import org.overlord.sramp.server.SrampLifeCycle;
 import org.overlord.sramp.server.atom.services.SRAMPApplication;
 import org.overlord.sramp.server.filters.LocaleFilter;
 import org.overlord.sramp.server.filters.MavenRepositoryAuthFilter;
@@ -200,6 +201,7 @@ public class SrampDevServer extends ErraiDevServer {
         ServletContextHandler srampServer = new ServletContextHandler(ServletContextHandler.SESSIONS);
         srampServer.setSecurityHandler(createSecurityHandler(false));
         srampServer.setContextPath("/s-ramp-server");
+        srampServer.addEventListener(new SrampLifeCycle());
         ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServlet.setInitParameter("javax.ws.rs.Application", SRAMPApplication.class.getName());
         srampServer.addServlet(resteasyServlet, "/s-ramp/*");

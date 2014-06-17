@@ -656,6 +656,18 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 		}
 	}
 
+    /**
+     * @see org.overlord.sramp.repository.PersistenceManager#startup()
+     */
+    @Override
+    public void startup() {
+        try {
+            JCRExtensions.getInstance().startup();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+	
 	/**
 	 * @see org.overlord.sramp.common.repository.PersistenceManager#shutdown()
 	 */

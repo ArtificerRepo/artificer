@@ -32,6 +32,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.overlord.commons.auth.filters.SimplePrincipal;
+import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.server.i18n.Messages;
 
 /**
  * A filter that supports authentication to the s-ramp maven repository facade.  This
@@ -42,6 +44,8 @@ import org.overlord.commons.auth.filters.SimplePrincipal;
  * @author eric.wittmann@redhat.com
  */
 public class MavenRepositoryAuthFilter implements Filter {
+    
+    private static final Sramp sramp = new Sramp();
     
     /**
      * Constructor.
@@ -66,9 +70,8 @@ public class MavenRepositoryAuthFilter implements Filter {
         String authHeader = req.getHeader("Authorization"); //$NON-NLS-1$
         Creds credentials = parseAuthorizationHeader(authHeader);
         if  (credentials == null) {
-            // TODO: make these configurable
-            SimplePrincipal principal = new SimplePrincipal("mavenuser"); //$NON-NLS-1$
-            principal.addRole("readonly.sramp"); //$NON-NLS-1$
+            SimplePrincipal principal = new SimplePrincipal(sramp.getMavenReadOnlyUsername());
+            principal.addRole("readonly." + sramp.getJCRRepositoryName()); //$NON-NLS-1$
             doFilterChain(request, response, chain, principal);
         } else {
             if (login(credentials, req, (HttpServletResponse) response)) {
@@ -153,7 +156,7 @@ public class MavenRepositoryAuthFilter implements Filter {
                 String password = data.substring(sepIdx + 1);
                 return new Creds(username, password);
             } else {
-                throw new RuntimeException("Invalid BASIC authentication credentials format.");
+                throw new RuntimeException(Messages.i18n.format("MavenRepositoryAuthFilter.InvalidCredFormat")); //$NON-NLS-1$
             }
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);

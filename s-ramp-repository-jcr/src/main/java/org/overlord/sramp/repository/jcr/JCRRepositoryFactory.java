@@ -44,7 +44,7 @@ public class JCRRepositoryFactory {
         if (instance == null) {
             instance = ServiceRegistryUtil.getSingleService(JCRRepository.class);
             if (instance == null)
-                throw new RuntimeException(Messages.i18n.format("Failed to find a JCR Repository provider.")); //$NON-NLS-1$
+                throw new RuntimeException(Messages.i18n.format("JCR_PROVIDER_NOT_FOUND")); //$NON-NLS-1$
             log.info(Messages.i18n.format("JCR_PROVIDER", instance.getClass())); //$NON-NLS-1$
             instance.startup();
         }
