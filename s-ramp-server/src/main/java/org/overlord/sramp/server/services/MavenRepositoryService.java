@@ -16,10 +16,13 @@
 package org.overlord.sramp.server.services;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.server.services.mvn.MavenArtifactWrapper;
+import org.overlord.sramp.server.services.mvn.MavenMetaData;
+import org.overlord.sramp.server.services.mvn.MavenRepositoryException;
 
 /**
  * Interface that define the services associates to the maven repository facade
@@ -32,24 +35,15 @@ public interface MavenRepositoryService {
     /**
      * Gets the artifact content.
      *
-     * @param fileName
-     *            the file name
-     * @param groupId
-     *            the group id
-     * @param artifactId
-     *            the artifact id
-     * @param version
-     *            the version
+     * @param metadata
+     *            the metadata
      * @return the artifact content
      * @throws SrampAtomException
      *             the sramp atom exception
      * @throws IOException
      *             Signals that an I/O exception has occurred.
      */
-    public MavenArtifactWrapper getArtifactContent(String fileName, String groupId,
-            String artifactId,
-            String version) throws SrampAtomException,
-            IOException;
+    public MavenArtifactWrapper getArtifactContent(MavenMetaData metadata) throws MavenRepositoryException;
 
     /**
      * Gets the items.
@@ -60,6 +54,23 @@ public interface MavenRepositoryService {
      * @throws SrampAtomException
      *             the sramp atom exception
      */
-    public Set<String> getItems(String path) throws SrampAtomException;
+    public Set<String> getItems(String path) throws MavenRepositoryException;
+
+
+    /**
+     * Uploads an artifact to s-ramp.
+     *
+     * @param metadata
+     *            the metadata
+     * @param content
+     *            the content
+     * @return the string
+     * @throws MavenRepositoryException
+     *             the maven repository exception
+     * @throws SrampAtomException
+     *             the sramp atom exception
+     */
+    public String uploadArtifact(MavenMetaData metadata, InputStream content)
+ throws MavenRepositoryException;
 
 }
