@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.overlord.sramp</groupId>
-    <artifactId>s-ramp-distro</artifactId>
+    <artifactId>s-ramp</artifactId>
     <version>0.5.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>s-ramp-distro-assembly</artifactId>
   <packaging>pom</packaging>
@@ -22,8 +22,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-    
-  
+
   <dependencies>
     <!-- Overlord Commons -->
     <dependency>
@@ -63,6 +62,13 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-installer</artifactId>
+    </dependency>
+
+    <!-- S-RAMP Shell Distro -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-distro-shell</artifactId>
+      <classifier>onejar</classifier>
     </dependency>
 
     <!-- S-RAMP Demos -->

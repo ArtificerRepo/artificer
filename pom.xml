@@ -569,6 +569,13 @@
       </dependency>
 
       <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-distro-shell</artifactId>
+        <version>${project.version}</version>
+        <classifier>onejar</classifier>
+      </dependency>
+
+      <dependency>
         <groupId>org.overlord.sramp.demos.switchyard.multiapp</groupId>
         <artifactId>switchyard-quickstart-demo-multi-artifacts</artifactId>
         <version>${project.version}</version>
@@ -974,26 +981,35 @@
     <module>s-ramp-atom</module>
     <module>s-ramp-client</module>
     <module>s-ramp-common</module>
-    <module>s-ramp-distro</module>
     <module>s-ramp-demos</module>
+    <module>s-ramp-dev-server</module>
+    <module>s-ramp-distro/assembly</module>
+    <module>s-ramp-distro/assembly-cli</module>
+    <module>s-ramp-distro/assembly-demos</module>
+    <module>s-ramp-distro/fabric</module>
+    <module>s-ramp-distro/fuse61</module>
+    <module>s-ramp-distro/shell</module>
     <module>s-ramp-installer</module>
-    <module>s-ramp-integration-java</module>
-    <module>s-ramp-integration-kie</module>
-    <module>s-ramp-integration-switchyard</module>
-    <module>s-ramp-integration-teiid</module>
+    <module>s-ramp-integration/java</module>
+    <module>s-ramp-integration/kie</module>
+    <module>s-ramp-integration/switchyard</module>
+    <module>s-ramp-integration/teiid</module>
     <module>s-ramp-repository</module>
     <module>s-ramp-repository-jcr</module>
     <module>s-ramp-repository-jcr/modeshape</module>
     <module>s-ramp-server</module>
-    <module>s-ramp-server-eap6</module>
-    <module>s-ramp-server-fuse61</module>
-    <module>s-ramp-server-jetty8</module>
-    <module>s-ramp-server-tomcat7</module>
+    <module>s-ramp-server/eap6</module>
+    <module>s-ramp-server/fuse61</module>
+    <module>s-ramp-server/jetty8</module>
+    <module>s-ramp-server/tomcat7</module>
     <module>s-ramp-shell</module>
     <module>s-ramp-shell-api</module>
-    <module>s-ramp-ui</module>
+    <module>s-ramp-ui-war</module>
+    <module>s-ramp-ui-war/eap6</module>
+    <module>s-ramp-ui-war/fuse61</module>
+    <module>s-ramp-ui-war/jetty8</module>
+    <module>s-ramp-ui-war/tomcat7</module>
     <module>s-ramp-wagon</module>
-    <module>s-ramp-dev-server</module>
   </modules>
 
   <profiles>
