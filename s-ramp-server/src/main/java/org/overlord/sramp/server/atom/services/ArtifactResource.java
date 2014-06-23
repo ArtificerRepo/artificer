@@ -82,7 +82,7 @@ import org.slf4j.LoggerFactory;
 @Path("/s-ramp")
 public class ArtifactResource extends AbstractResource {
 
-	private static Logger logger = LoggerFactory.getLogger(BatchResource.class);
+	private static Logger logger = LoggerFactory.getLogger(ArtifactResource.class);
 
 	// Sadly, date formats are not thread safe.
 	private static final ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>() {
