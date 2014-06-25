@@ -15,14 +15,13 @@
  */
 package org.overlord.sramp.server.services.mvn;
 
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Enumeration that include all the maven file extension that needs special
  * treatment. This is the case of md5 and sha1. It is included the file
  * extension, the maven type where they can be found in s-ramp and the custom
  * property where they can be fetched.
- * 
+ *
  * @author David Virgil Naranjo
  */
 public enum MavenFileExtensionEnum {
@@ -66,21 +65,19 @@ public enum MavenFileExtensionEnum {
 
     /**
      * Value.
-     *
-     * @param fileName
-     *            the file name
+     * 
+     * @param extension
+     *            the file extension
      * @return the maven file extension enum
      */
-    public static MavenFileExtensionEnum value(String fileName) {
+    public static MavenFileExtensionEnum value(String extension) {
         MavenFileExtensionEnum[] values = MavenFileExtensionEnum.values();
-        if (StringUtils.isNotBlank(fileName) && fileName.contains(".")) { //$NON-NLS-1$
-            String extension = fileName.substring(fileName.lastIndexOf(".") + 1); //$NON-NLS-1$
+
             for (MavenFileExtensionEnum ext : values) {
                 if (ext.getExtension().equals(extension)) {
                     return ext;
                 }
             }
-        }
 
         return null;
     }
