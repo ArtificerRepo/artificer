@@ -157,7 +157,7 @@
     </fileSet>
     <!-- Additional files in the bin subfolder -->
     <fileSet>
-      <directory>../s-ramp-distro-shell/src/main/bin</directory>
+      <directory>${basedir}/../shell/src/main/bin</directory>
       <outputDirectory>bin</outputDirectory>
       <filtered>true</filtered>
       <includes>

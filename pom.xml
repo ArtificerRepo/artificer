@@ -103,7 +103,7 @@
 
     <!-- S-RAMP only libraries (not in BOM) -->
     <s-ramp-wiki.version>0.4.0.Final</s-ramp-wiki.version>
-    <overlord-commons.version>2.0.2-SNAPSHOT</overlord-commons.version>
+    <overlord-commons.version>2.0.2.Final</overlord-commons.version>
     <commons.beanutils.version>1.8.2</commons.beanutils.version>
     <commons.lang3.version>3.1</commons.lang3.version>
     <commons.compress.version>1.4.1</commons.compress.version>

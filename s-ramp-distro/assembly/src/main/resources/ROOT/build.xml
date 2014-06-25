@@ -10,7 +10,7 @@
   <property file="${s-ramp-distro.build.properties}" />
   <property name="s-ramp-distro.tempdir" location=".temp" />
   <property name="s-ramp-distro.rootdir" location="." />
-  <property name="s-ramp-distro.tomcat.version" value="7.0.52" />
+  <property name="s-ramp-distro.tomcat.version" value="7.0.54" />
   <property name="s-ramp-distro.jetty.version" value="8.1.14.v20131031" />
   <property name="s-ramp-distro.bindir" location="${s-ramp-distro.rootdir}/bin" />
   <property name="s-ramp-distro.overlord-commons-installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${overlord-commons.version}.jar" />
@@ -28,8 +28,8 @@
     <echo message=" " />
     <echo message=" Choose from one of the following options." />
     <echo message="    1. Install into JBoss EAP 6" />
-    <echo message="    2. Install into Tomcat 7" />
-    <echo message="    3. Install into Fuse 6.1" />
+    <echo message="    2. Install into Apache Tomcat 7" />
+    <echo message="    3. Install into JBoss Fuse 6.1" />
     <echo message="    4. Install into Jetty 8" />
     <echo message=" " />
     <input message="Choice: " addproperty="s-ramp-distro.choices.platform" />

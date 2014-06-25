@@ -15,24 +15,27 @@ This distribution comes with the following:
     4) demos - a number of demo maven projects to help you get started with 
        S-RAMP.
     5) src - all of the S-RAMP source code, in a number of "-sources" JARs.
-    7) build.xml an Ant script that will install and configure S-RAMP into
-       either Tomcat 7 or JBoss EAP 6.
+    6) build.xml an Ant script that will install and configure S-RAMP into
+       one of:
+       A) JBoss EAP 6
+       B) Tomcat 7
+       C) Jetty 8
+       D) Fuse 6.1
 
 == What do I do next? ==
-This distribution works with version 6 of the JBoss Enterprise Application
-Platform (JBoss EAP 6) *or* version 7 of Apache Tomcat.   When using EAP
-you must first download the EAP ZIP distribution and unpack to your preferred
-location.
+When installing into JBoss EAP or JBoss Fuse you must first download the 
+appropriate ZIP distribution and unpack to your preferred location.
 
-    Download here:  http://www.jboss.org/jbossas/downloads
+    Download JBoss EAP:  http://www.jboss.org/jbossas/downloads
+    Download JBoss Fuse: http://www.jboss.org/products/fuse/overview/
 
 The installer will ask you a couple of questions and then do everything else 
 for you! From the root of this distribution, simply run:
 
     ant
 
-Once the installation completes, you can start EAP or Tomcat using the standard
-startup scripts and then try out any of the following:
+Once the installation completes, you can start your preferred runtime using 
+the standard startup scripts and then try out any of the following:
 
         - S-RAMP demos (included)
         - S-RAMP repository browser UI (http://localhost:8080/s-ramp-ui)
@@ -41,5 +44,6 @@ startup scripts and then try out any of the following:
 You should be able to log in with the following credentials:
 
     Username: admin
-    Password: <pw>
-        
+    Password: <pw-chosen-during-install>
+
+Note: the repository browser UI can be found on port 8181 when runnig in Fuse.
