@@ -66,5 +66,5 @@ public class SrampConstants {
 
     public static final String SRAMP_CONFIG_MAVEN_READONLY_USERNAME = "sramp.config.maven.readonly-username"; //$NON-NLS-1$
     
-    public static final String SRAMP_SNAPSHOT_ALLOWED="sramp.snapshots.allowed";
+    public static final String SRAMP_SNAPSHOT_ALLOWED="sramp.config.maven.allow-snapshots";
 }
