@@ -71,10 +71,6 @@
       <param-name>ROLES</param-name>
       <param-value>overlorduser</param-value>
     </init-param>
-    <init-param>
-      <param-name>IGNORE_SIGNATURES</param-name>
-      <param-value>true</param-value>
-    </init-param>
   </filter>
   <filter-mapping>
     <filter-name>AuthenticationFilter</filter-name>

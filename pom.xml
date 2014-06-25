@@ -776,6 +776,11 @@
         <version>${picketlink.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-tomcat7-single</artifactId>
+        <version>${picketlink.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-tools</artifactId>
         <version>${version.org.jboss.errai}</version>

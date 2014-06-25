@@ -18,6 +18,10 @@
     </dependency>
     
     <!-- Other JBoss-only dependencies -->
+<!--     <dependency> -->
+<!--       <groupId>org.picketlink</groupId> -->
+<!--       <artifactId>picketlink-tomcat7-single</artifactId> -->
+<!--     </dependency> -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-jboss-as-support</artifactId>
@@ -77,6 +81,7 @@
                 <exclude>WEB-INF/lib/mail*.jar</exclude>
                 <exclude>WEB-INF/lib/netty*.jar</exclude>
                 <exclude>WEB-INF/lib/org.osgi.core-*.jar</exclude>
+                <exclude>WEB-INF/lib/picket*.jar</exclude>
                 <exclude>WEB-INF/lib/resteasy*.jar</exclude>
                 <exclude>WEB-INF/lib/scannotation-*.jar</exclude>
                 <exclude>WEB-INF/lib/servlet-api*.jar</exclude>
