@@ -63,6 +63,8 @@
               <Import-Package>
                 javax.servlet.http,
                 javax.servlet,
+                org.apache.commons.lang,
+                org.apache.commons.codec.binary,
                 org.overlord.sramp.repository.jcr.modeshape.filters,
                 org.w3._2002._07.owl_,
                 org.w3._1999._02._22_rdf_syntax_ns_,
