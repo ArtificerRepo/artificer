@@ -134,13 +134,12 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
             }
             if (properties.containsKey(key)) {
                 interpolated = interpolated.replace(match, properties.get(key));
-            } else if (System.getProperties().containsKey(keyWithOptionalDefault)) {
+            } else if (System.getProperties().containsKey(key)) {
                 interpolated = interpolated.replace(match, System.getProperty(key));
             } else if (defaultVal != null) {
                 interpolated = interpolated.replace(match, defaultVal);
             }
         }
-
         return interpolated;
     }
 
