@@ -1009,6 +1009,7 @@
     <module>s-ramp-ui-war/fuse61</module>
     <module>s-ramp-ui-war/jetty8</module>
     <module>s-ramp-ui-war/tomcat7</module>
+    <module>s-ramp-ui-widgets</module>
     <module>s-ramp-wagon</module>
   </modules>
 
