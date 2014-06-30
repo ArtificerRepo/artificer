@@ -115,7 +115,7 @@
     <picketbox.version>4.0.19.SP4</picketbox.version>
     <picketlink.version>2.5.3.SP1</picketlink.version>
     <org.switchyard.version>2.0.0.Alpha1</org.switchyard.version>
-    <aesh.version>0.33.11</aesh.version>
+    <aesh.version>0.33.13</aesh.version>
     <fabric8.version>1.0.0.redhat-379</fabric8.version>
 
     <!-- BOM Overrides -->
