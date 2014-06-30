@@ -121,6 +121,9 @@ public class SrampDevServer extends ErraiDevServer {
 
         // Don't do any resource caching!
         System.setProperty("overlord.resource-caching.disabled", "true");
+
+        System.setProperty("sramp.config.events.jms.topics", "sramp/events/topic");
+        System.setProperty("sramp.config.events.jms.embedded-activemq-port", "61616");
     }
 
     /**

@@ -39,9 +39,9 @@
     <property name="overlord-commons.idp.file"
       value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
     <property name="overlord-commons.eap-dist.file"
-    	value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
+      value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
     <property name="overlord-commons.auth.jboss7.file"
-        value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
+      value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
 
     <property name="s-ramp.s-ramp-server.war.path"
       value="${maven.dependency.org.overlord.sramp.s-ramp-server-eap6.war.path}" />
@@ -85,9 +85,9 @@
     <property name="overlord-commons.idp.file"
       value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
     <property name="overlord-commons.eap-dist.file"
-        value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
+      value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
     <property name="overlord-commons.auth.jboss7.file"
-        value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
+      value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
 
     <property name="s-ramp.s-ramp-server.war.path"
       value="${maven.dependency.org.overlord.sramp.s-ramp-server-eap6.war.path}" />
@@ -95,10 +95,10 @@
       value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap6.war.path}" />
     
     <property name="s-ramp.modeshape-distribution.zip.path"
-        value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
+      value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
 
     <ant antfile="../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
-        inheritall="true" target="install" />
+      inheritall="true" target="install" />
   </target>
 
 </project>

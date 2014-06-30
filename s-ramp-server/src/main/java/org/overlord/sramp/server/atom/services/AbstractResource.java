@@ -45,5 +45,5 @@ public abstract class AbstractResource {
         } else {
             return null;
         }
-}
+    }
 }

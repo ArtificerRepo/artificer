@@ -20,9 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
@@ -36,7 +34,6 @@ import org.overlord.sramp.test.AbstractIntegrationTest;
  * @author Brett Meyer
  *
  */
-@RunWith(Arquillian.class)
 public class SimpleClientTest extends AbstractIntegrationTest {
     
     @Test

@@ -307,7 +307,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	 * @see org.overlord.sramp.common.repository.PersistenceManager#updateArtifact(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.ArtifactType)
 	 */
 	@Override
-	public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampException {
+	public BaseArtifactType updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampException {
 		Session session = null;
 		ArtifactJCRNodeDiffer differ = null;
 		try {
@@ -336,6 +336,8 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			    JCRArtifactPersister.auditUpdateArtifact(differ, artifactNode);
 			    session.save();
 			}
+			
+			return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {
@@ -349,11 +351,11 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	 * @see org.overlord.sramp.common.repository.PersistenceManager#updateArtifactContent(java.lang.String, org.overlord.sramp.common.ArtifactType, java.io.InputStream)
 	 */
 	@Override
-	public void updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws SrampException {
+	public BaseArtifactType updateArtifactContent(String uuid, ArtifactType type, InputStream content) throws SrampException {
 		Session session = null;
 		try {
 			session = JCRRepositoryFactory.getSession();
-            Node artifactNode = findArtifactNode(uuid, artifactType, session);
+            Node artifactNode = findArtifactNode(uuid, type, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
             }
@@ -362,11 +364,11 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             }
 			JCRUtils tools = new JCRUtils();
 			tools.uploadFile(session, artifactNode.getPath(), content);
-			JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
+			JCRUtils.setArtifactContentMimeType(artifactNode, type.getMimeType());
 
 			// Document
-			if (DocumentArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
-				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, artifactType.getMimeType());
+			if (DocumentArtifactType.class.isAssignableFrom(type.getArtifactType().getTypeClass())) {
+				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, type.getMimeType());
 				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty("jcr:content/jcr:data").getLength()); //$NON-NLS-1$
 				// TODO also handle the hash here
 			}
@@ -376,6 +378,8 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 
 			session.save();
 			log.debug(Messages.i18n.format("UPDATED_ARTY_CONTENT", uuid)); //$NON-NLS-1$
+            
+            return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {
@@ -390,11 +394,11 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	 * @see org.overlord.sramp.common.repository.PersistenceManager#deleteArtifact(java.lang.String, org.overlord.sramp.common.ArtifactType)
 	 */
 	@Override
-	public void deleteArtifact(String uuid, ArtifactType artifactType) throws SrampException {
+	public BaseArtifactType deleteArtifact(String uuid, ArtifactType type) throws SrampException {
 		Session session = null;
 		try {
 			session = JCRRepositoryFactory.getSession();
-            Node artifactNode = findArtifactNode(uuid, artifactType, session);
+            Node artifactNode = findArtifactNode(uuid, type, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
             }
@@ -412,6 +416,8 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             session.move(srcPath, trashPath);
 			session.save();
 			log.debug(Messages.i18n.format("DELETED_ARTY", uuid)); //$NON-NLS-1$
+			
+			return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {

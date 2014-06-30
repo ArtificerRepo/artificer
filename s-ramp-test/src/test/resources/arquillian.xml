@@ -22,6 +22,8 @@
       </protocol>
       <configuration>
          <property name="jbossHome">target/jboss-eap-6.1</property>
+         <!-- Needed for JMS -->
+         <property name="serverConfig">standalone-full.xml</property>
       </configuration>
    </container>
    
@@ -31,6 +33,8 @@
       </protocol>
       <configuration>
          <property name="jbossHome">target/jboss-eap-6.2</property>
+         <!-- Needed for JMS -->
+         <property name="serverConfig">standalone-full.xml</property>
       </configuration>
    </container>
    
@@ -40,6 +44,8 @@
       </protocol>
       <configuration>
          <property name="jbossHome">target/jboss-eap-6.3</property>
+         <!-- Needed for JMS -->
+         <property name="serverConfig">standalone-full.xml</property>
       </configuration>
    </container>
    

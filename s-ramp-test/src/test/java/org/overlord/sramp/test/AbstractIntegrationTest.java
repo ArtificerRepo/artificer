@@ -54,9 +54,9 @@ public abstract class AbstractIntegrationTest {
     
     private static final String BASE_URL = "http://" + HOST + ":" + PORT + "/s-ramp-server"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     
-    private static final String USERNAME = "admin"; //$NON-NLS-1$
+    protected static final String USERNAME = "admin"; //$NON-NLS-1$
     
-    private static final String PASSWORD = "overlord1!"; //$NON-NLS-1$
+    protected static final String PASSWORD = "overlord1!"; //$NON-NLS-1$
     
     @After
     public void cleanup() {

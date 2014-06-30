@@ -18,6 +18,7 @@ package org.overlord.sramp.server.atom.services;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -38,6 +39,8 @@ import org.overlord.sramp.atom.mappers.OntologyToRdfMapper;
 import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
 import org.overlord.sramp.common.ontology.OntologyValidator;
 import org.overlord.sramp.common.ontology.SrampOntology;
+import org.overlord.sramp.events.EventProducer;
+import org.overlord.sramp.events.EventProducerFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.server.i18n.Messages;
@@ -99,6 +102,11 @@ public class OntologyResource extends AbstractResource {
 
 			RDF responseRDF = new RDF();
 			o2rdf.map(ontology, responseRDF);
+			
+			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+            for (EventProducer eventProducer : eventProducers) {
+                eventProducer.ontologyCreated(responseRDF);
+            }
 
 			Entry entry = new Entry();
 			entry.setId(new URI(ontology.getUuid()));
@@ -137,8 +145,20 @@ public class OntologyResource extends AbstractResource {
         }
 
         try {
-			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+            SrampOntology oldOntology = persistenceManager.getOntology(uuid);
+            RDF oldRDF = new RDF();
+            o2rdf.map(oldOntology, oldRDF);
+            
 			persistenceManager.updateOntology(ontology);
+			
+			RDF updatedRDF = new RDF();
+            o2rdf.map(ontology, updatedRDF);
+            
+			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+            for (EventProducer eventProducer : eventProducers) {
+                eventProducer.ontologyUpdated(oldRDF, updatedRDF);
+            }
         } catch (Exception e) {
         	logError(logger, Messages.i18n.format("ERROR_UPDATING_ONTOLOGY", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
@@ -190,8 +210,17 @@ public class OntologyResource extends AbstractResource {
     @Path("ontology/{uuid}")
 	public void delete(@PathParam("uuid") String uuid) throws SrampAtomException {
     	try {
-			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+    	    PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+            SrampOntology ontology = persistenceManager.getOntology(uuid);
+            RDF rdf = new RDF();
+            o2rdf.map(ontology, rdf);
+    	    
 			persistenceManager.deleteOntology(uuid);
+			
+			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+            for (EventProducer eventProducer : eventProducers) {
+                eventProducer.ontologyDeleted(rdf);
+            }
         } catch (Exception e) {
         	logError(logger, Messages.i18n.format("ERROR_DELETING_ONTOLOGY", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);

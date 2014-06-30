@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -56,6 +57,8 @@ import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
+import org.overlord.sramp.events.EventProducer;
+import org.overlord.sramp.events.EventProducerFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.errors.DerivedArtifactCreateException;
@@ -120,6 +123,11 @@ public class ArtifactResource extends AbstractResource {
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             // store the content
             BaseArtifactType persistedArtifact = persistenceManager.persistArtifact(artifact, null);
+            
+            Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+            for (EventProducer eventProducer : eventProducers) {
+                eventProducer.artifactCreated(persistedArtifact);
+            }
 
             // return the entry containing the s-ramp artifact
             ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
@@ -180,6 +188,11 @@ public class ArtifactResource extends AbstractResource {
             }
 			baseArtifactType.setName(fileName);
 			BaseArtifactType artifact = persistenceManager.persistArtifact(baseArtifactType, is);
+			
+			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+			for (EventProducer eventProducer : eventProducers) {
+			    eventProducer.artifactCreated(artifact);
+			}
 
 			// return the entry containing the s-ramp artifact
 			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
@@ -252,6 +265,11 @@ public class ArtifactResource extends AbstractResource {
 			// store the content
 			BaseArtifactType artifactRval = persistenceManager.persistArtifact(artifactMetaData,
 			        contentStream);
+			
+			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+            for (EventProducer eventProducer : eventProducers) {
+                eventProducer.artifactCreated(artifactRval);
+            }
 
 			// Convert to a full Atom Entry and return it
 			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
@@ -287,7 +305,13 @@ public class ArtifactResource extends AbstractResource {
 			}
 			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(artifactType, atomEntry);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-			persistenceManager.updateArtifact(artifact, artifactType);
+			BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);
+			BaseArtifactType updatedArtifact = persistenceManager.updateArtifact(artifact, artifactType);
+			
+			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+            for (EventProducer eventProducer : eventProducers) {
+                eventProducer.artifactUpdated(updatedArtifact, oldArtifact);
+            }
 		} catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_UPDATING_META_DATA", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
@@ -320,8 +344,13 @@ public class ArtifactResource extends AbstractResource {
 	        // TODO we need to update the S-RAMP metadata too (new updateDate, size, etc)?
 
 	        PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-			// store the content
-			persistenceManager.updateArtifactContent(uuid, artifactType, is);
+	        BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);
+	        BaseArtifactType updatedArtifact = persistenceManager.updateArtifactContent(uuid, artifactType, is);
+			
+			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+            for (EventProducer eventProducer : eventProducers) {
+                eventProducer.artifactUpdated(updatedArtifact, oldArtifact);
+            }
 		} catch (Exception e) {
 			logError(logger, Messages.i18n.format("ERROR_UPDATING_CONTENT", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
@@ -432,7 +461,12 @@ public class ArtifactResource extends AbstractResource {
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
 			// Delete the artifact by UUID
-			persistenceManager.deleteArtifact(uuid, artifactType);
+			BaseArtifactType artifact = persistenceManager.deleteArtifact(uuid, artifactType);
+			
+			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+            for (EventProducer eventProducer : eventProducers) {
+                eventProducer.artifactDeleted(artifact);
+            }
 		} catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);

@@ -63,6 +63,10 @@
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-integration-rtgov</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-events</artifactId>
+    </dependency>
 
     <!-- RESTEasy -->
     <dependency>
@@ -113,8 +117,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- S-RAMP Provider (only JCR for now: runtime scope for Tomcat deployment 
-      and unit testing) -->
+    <!-- S-RAMP Providers-->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-repository-jcr</artifactId>
@@ -123,6 +126,11 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-events-jms</artifactId>
       <scope>runtime</scope>
     </dependency>
 

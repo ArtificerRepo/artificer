@@ -75,7 +75,7 @@ public interface PersistenceManager {
 	 * @param type the type of the artifact
 	 * @throws SrampException
 	 */
-	public void updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampException;
+	public BaseArtifactType updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampException;
 
 	/**
 	 * Called to update the content for an existing artifact.
@@ -84,7 +84,7 @@ public interface PersistenceManager {
 	 * @param content the new artifact content
 	 * @throws SrampException
 	 */
-	public void updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws SrampException;
+	public BaseArtifactType updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws SrampException;
 
 	/**
 	 * Deletes a previously persisted artifact from the S-RAMP repository.
@@ -92,7 +92,7 @@ public interface PersistenceManager {
 	 * @param artifactType
 	 * @throws SrampException
 	 */
-	public void deleteArtifact(String uuid, ArtifactType artifactType) throws SrampException;
+	public BaseArtifactType deleteArtifact(String uuid, ArtifactType artifactType) throws SrampException;
 
     /**
      * Persists a single ontology.

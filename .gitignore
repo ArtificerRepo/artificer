@@ -8,3 +8,4 @@ target
 *.versionsBackup
 *~
 .checkstyle
+activemq-data
