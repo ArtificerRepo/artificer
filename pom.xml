@@ -89,17 +89,11 @@
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
-    <!-- Maven plugin versions -->
+    <!-- Maven plugin versions (not in jboss-parent) -->
     <maven.surefire.report.plugin.version>2.4.3</maven.surefire.report.plugin.version>
-    <maven.surefire.plugin.version>2.7.1</maven.surefire.plugin.version>
-    <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
-    <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
-    <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
-    <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
-    <maven.clean.plugin.version>2.4.1</maven.clean.plugin.version>
     <maven.exec.plugin.version>1.2.1</maven.exec.plugin.version>
-    <maven.antrun.plugin.version>1.7</maven.antrun.plugin.version>
     <maven.plexus-component-metadata.plugin.version>1.5.5</maven.plexus-component-metadata.plugin.version>
+    <maven.scr.plugin.version>1.9.0</maven.scr.plugin.version>
 
     <!-- S-RAMP only libraries (not in BOM) -->
     <s-ramp-wiki.version>0.5.0.Beta1</s-ramp-wiki.version>
@@ -126,44 +120,9 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>${maven.compiler.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${maven.surefire.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>${maven.jar.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>${maven.source.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <version>${maven.war.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>${maven.clean.plugin.version}</version>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>${maven.exec.plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <version>${maven.antrun.plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.plexus</groupId>
@@ -209,7 +168,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-scr-plugin</artifactId>
-          <version>1.9.0</version>
+          <version>${maven.scr.plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
