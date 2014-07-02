@@ -10,19 +10,6 @@
   <packaging>pom</packaging>
   <name>S-RAMP Distribution: Assembly</name>
 
-  <dependencyManagement>
-    <dependencies>
-      <!-- NOTE: Need to temporarily include both ModeShape 3.6 (EAP 6.1) and the later 3.x (EAP 6.2+) -->
-      <dependency>
-        <groupId>org.modeshape</groupId>
-        <artifactId>modeshape-distribution</artifactId>
-        <classifier>jbosseap-61-dist</classifier>
-        <version>3.6.0.Final</version>
-        <type>zip</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <!-- Overlord Commons -->
     <dependency>
@@ -180,13 +167,6 @@
     </dependency>
 
     <!-- ModeShape Distro -->
-    <!-- NOTE: Need to temporarily include both ModeShape 3.6 (EAP 6.1) and the later 3.x (EAP 6.2+) -->
-    <dependency>
-      <groupId>org.modeshape</groupId>
-      <artifactId>modeshape-distribution</artifactId>
-      <classifier>jbosseap-61-dist</classifier>
-      <type>zip</type>
-    </dependency>
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-distribution</artifactId>
@@ -197,6 +177,33 @@
 
   <build>
     <plugins>
+    <!-- NOTE: Need to temporarily include the old ModeShape 3.6 distro (EAP 6.1) for the assembly,
+    *without* declaring it as a dependency.  The assembly pulls this in as a fileSet. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.modeshape</groupId>
+                  <artifactId>modeshape-distribution</artifactId>
+                  <version>3.6.0.Final</version>
+                  <classifier>jbosseap-61-dist</classifier>
+                  <type>zip</type>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}/modeshape</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <dependencies>
