@@ -6,3 +6,5 @@ target
 /RemoteSystemsTempFiles
 .errai
 *.versionsBackup
+*~
+.checkstyle
