@@ -101,35 +101,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Bundle-Version>${project.version}</Bundle-Version>
             <Bundle-Activator>org.overlord.sramp.repository.jcr.modeshape.Activator</Bundle-Activator>
-            <Export-Package>
-              org.overlord.sramp.repository.jcr.modeshape,
-              org.overlord.sramp.repository.jcr.modeshape.*
-            </Export-Package>
-            <Import-Package>
-              javax.jcr,
-              javax.jcr.nodetype,
-              javax.naming,
-              javax.security.auth.login,
-              javax.servlet,
-              javax.servlet.http,
-              org.osgi.framework,
-              org.apache.commons.io,
-              org.modeshape.common.collection,
-              org.modeshape.jcr,
-              org.modeshape.jcr.api,
-              org.modeshape.jcr.api.nodetype,
-              org.modeshape.jcr.security,
-              org.modeshape.jcr.value,
-              org.overlord.commons.services,
-              org.overlord.sramp.common,
-              org.overlord.sramp.common.i18n,
-              org.overlord.sramp.repository.jcr,
-              org.slf4j
-            </Import-Package>
           </instructions>
         </configuration>
       </plugin>

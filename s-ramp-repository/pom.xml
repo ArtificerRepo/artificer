@@ -50,29 +50,6 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Bundle-Version>${project.version}</Bundle-Version>
-            <Export-Package>
-              org.overlord.sramp.repository.*
-            </Export-Package>
-            <Import-Package>
-              org.jboss.downloads.overlord.sramp._2013.auditing,
-              org.joda.time,
-              org.joda.time.format,
-              org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
-              org.overlord.commons.services,
-              org.overlord.sramp.common,
-              org.overlord.sramp.common.derived,
-              org.overlord.sramp.common.i18n,
-              org.overlord.sramp.common.ontology,
-              org.overlord.sramp.common.query.xpath,
-              org.overlord.sramp.common.query.xpath.ast
-            </Import-Package>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>
