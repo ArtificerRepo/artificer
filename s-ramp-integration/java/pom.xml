@@ -78,29 +78,6 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Bundle-Version>${project.version}</Bundle-Version>
-            <Export-Package>
-              org.overlord.sramp.integration.java.*
-            </Export-Package>
-            <Import-Package>
-              org.apache.bcel.classfile,
-              org.apache.maven.model,
-              org.apache.maven.model.io.xpp3,
-              org.apache.maven.project,
-              org.osgi.framework,
-              org.codehaus.plexus.util.xml.pull,
-              org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
-              org.overlord.sramp.atom.archive.expand,
-              org.overlord.sramp.atom.archive.expand.registry,
-              org.overlord.sramp.common,
-              org.overlord.sramp.common.derived
-            </Import-Package>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>

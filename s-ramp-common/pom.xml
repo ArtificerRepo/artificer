@@ -74,28 +74,6 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Bundle-Version>${project.version}</Bundle-Version>
-            <Export-Package>
-              org.overlord.sramp.common.*
-            </Export-Package>
-            <Import-Package>
-              javax.xml.namespace,
-              javax.xml.parsers,
-              javax.xml.xpath,
-              org.apache.commons.configuration,
-              org.apache.commons.io,
-              org.jboss.downloads.overlord.sramp._2013.auditing,
-              org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
-              org.overlord.commons.config,
-              org.overlord.commons.services,
-              org.w3c.dom
-            </Import-Package>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>
