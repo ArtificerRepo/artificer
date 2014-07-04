@@ -87,7 +87,8 @@ public class SrampShell {
 	 * @throws Exception
 	 */
 	public void run(String[] args) throws Exception {
-        reader = ShellCommandReaderFactory.createCommandReader(args, factory, context);
+	    ShellArguments shellArgs = new ShellArguments(args);
+        reader = ShellCommandReaderFactory.createCommandReader(shellArgs, factory, context);
         context.setReader(reader);
         reader.open();
 		displayWelcomeMessage();

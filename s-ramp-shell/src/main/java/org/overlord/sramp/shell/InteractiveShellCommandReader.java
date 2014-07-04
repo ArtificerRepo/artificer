@@ -28,7 +28,7 @@ import org.jboss.aesh.console.settings.Settings;
 import org.overlord.sramp.shell.api.ShellContextEventHandler;
 
 /**
- * An implementation of the {@link ShellCommandReader} that uses JLine to provide
+ * An implementation of the {@link ShellCommandReader} that uses aesh to provide
  * a rich console experience to the user, complete with history, tab completion,
  * and ansi output.
  *
@@ -45,9 +45,10 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 * Constructor.
 	 * @param factory
 	 * @param context
+     * @param args
 	 */
-	public InteractiveShellCommandReader(ShellCommandFactory factory, ShellContextImpl context) {
-		super(factory, context);
+	public InteractiveShellCommandReader(ShellCommandFactory factory, ShellContextImpl context, ShellArguments args) {
+		super(factory, context, args);
 		context.addHandler(this);
 	}
 
