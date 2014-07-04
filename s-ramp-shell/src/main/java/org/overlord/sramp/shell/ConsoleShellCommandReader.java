@@ -17,7 +17,6 @@ package org.overlord.sramp.shell;
 
 import java.io.Console;
 import java.io.IOException;
-import java.util.Map;
 
 import org.overlord.sramp.shell.api.ShellContext;
 
@@ -39,26 +38,12 @@ public class ConsoleShellCommandReader extends AbstractShellCommandReader {
      *            the factory
      * @param context
      *            the context
+     * @param args
+     *            the args
      */
-	public ConsoleShellCommandReader(ShellCommandFactory factory, ShellContext context) {
-		super(factory, context);
+	public ConsoleShellCommandReader(ShellCommandFactory factory, ShellContext context, ShellArguments args) {
+		super(factory, context, args);
 	}
-
-
-    /**
-     * Instantiates a new console shell command reader.
-     *
-     * @param factory
-     *            the factory
-     * @param context
-     *            the context
-     * @param properties
-     *            the properties
-     */
-    public ConsoleShellCommandReader(ShellCommandFactory factory, ShellContext context,
-            Map<String, String> properties) {
-        super(factory, context);
-    }
 
 	/**
      * Open.

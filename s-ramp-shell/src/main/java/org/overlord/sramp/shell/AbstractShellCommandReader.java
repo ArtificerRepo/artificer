@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.shell;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -38,7 +39,7 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 
 	private final ShellContext context;
 	private final ShellCommandFactory factory;
-    private Map<String, String> properties;
+    private final ShellArguments args;
 
 	/**
      * Constructor.
@@ -47,28 +48,23 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
      *            the factory
      * @param context
      *            the context
+     * @param args
+     *            the args
      */
-	public AbstractShellCommandReader(ShellCommandFactory factory, ShellContext context) {
+	public AbstractShellCommandReader(ShellCommandFactory factory, ShellContext context, ShellArguments args) {
 		this.factory = factory;
 		this.context = context;
+		this.args = args;
+		
+		if (args.hasLogFile()) {
+		    try {
+	            // truncate it in case it already exists
+                new FileWriter(args.getLogFilePath(), false).write("");
+            } catch (IOException e) {
+                // TODO
+            };
+		}
 	}
-
-    /**
-     * Instantiates a new abstract shell command reader.
-     *
-     * @param factory
-     *            the factory
-     * @param context
-     *            the context
-     * @param properties
-     *            the properties
-     */
-    public AbstractShellCommandReader(ShellCommandFactory factory, ShellContext context,
-            Map<String, String> properties) {
-        this.factory = factory;
-        this.context = context;
-        this.properties = properties;
-    }
 
 	/**
      * Open.
@@ -94,7 +90,14 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 		if (line == null) {
 			return null;
 		}
-        line = interpolate(line, properties);
+		
+		if (args.hasLogFile()) {
+		    FileWriter writer = new FileWriter(args.getLogFilePath(), true);
+		    writer.append(line + "\n");
+		    writer.close();
+		}
+		
+        line = interpolate(line, args.getPropertiesFromFile());
 		Arguments arguments = new Arguments(line);
 		if (arguments.isEmpty()) {
 			return new NoOpCommand();
@@ -183,14 +186,23 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 		return factory;
 	}
 
-	/**
+    /**
      * Gets the context.
      *
      * @return the context
      */
-	public ShellContext getContext() {
-		return context;
-	}
+    public ShellContext getContext() {
+        return context;
+    }
+
+    /**
+     * Gets the args.
+     *
+     * @return the args
+     */
+    public ShellArguments getArgs() {
+        return args;
+    }
 
 	/**
      * Checks if is batch.
