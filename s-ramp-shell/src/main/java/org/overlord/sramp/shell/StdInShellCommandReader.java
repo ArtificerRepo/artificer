@@ -18,9 +18,7 @@ package org.overlord.sramp.shell;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Map;
 
-// TODO: Auto-generated Javadoc
 /**
  * An implementation of the {@link ShellCommandReader} that uses standard input
  * to read commands typed in by the user.
@@ -38,25 +36,12 @@ public class StdInShellCommandReader extends AbstractShellCommandReader {
      *            the factory
      * @param context
      *            the context
+     * @param args
+     *            the args
      */
-	public StdInShellCommandReader(ShellCommandFactory factory, ShellContextImpl context) {
-		super(factory, context);
+	public StdInShellCommandReader(ShellCommandFactory factory, ShellContextImpl context, ShellArguments args) {
+		super(factory, context, args);
 	}
-
-    /**
-     * Instantiates a new std in shell command reader.
-     *
-     * @param factory
-     *            the factory
-     * @param context
-     *            the context
-     * @param properties
-     *            the properties
-     */
-    public StdInShellCommandReader(ShellCommandFactory factory, ShellContextImpl context,
-            Map<String, String> properties) {
-        super(factory, context, properties);
-    }
 
 	    /**
      * Open.

@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -43,25 +42,11 @@ public class FileShellCommandReader extends AbstractShellCommandReader {
      * 
      * @param factory the factory
      * @param context the context
-     * @param filePath the file path
+     * @param args the args
      */
-    public FileShellCommandReader(ShellCommandFactory factory, ShellContextImpl context, String filePath) {
-        super(factory, context);
-        this.filePath = filePath;
-    }
-
-    /**
-     * Instantiates a new file shell command reader.
-     * 
-     * @param factory the factory
-     * @param context the context
-     * @param filePath the file path
-     * @param properties the properties
-     */
-    public FileShellCommandReader(ShellCommandFactory factory, ShellContextImpl context, String filePath,
-            Map<String, String> properties) {
-        super(factory, context, properties);
-        this.filePath = filePath;
+    public FileShellCommandReader(ShellCommandFactory factory, ShellContextImpl context, ShellArguments args) {
+        super(factory, context, args);
+        this.filePath = args.getBatchFilePath();
     }
 
     /**
