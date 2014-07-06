@@ -11,8 +11,8 @@
          <property name="catalinaHome">target/apache-tomcat-7.0.54</property>
          <!-- TODO: Remove catalinaBase after ARQ-1814. -->
          <property name="catalinaBase">target/apache-tomcat-7.0.54</property>
-         <property name="user">tomcat</property>
-         <property name="pass">tomcat</property>
+         <property name="user">admin</property>
+         <property name="pass">admin</property>
       </configuration>
    </container>
    

@@ -17,11 +17,6 @@
     <property name="dir" value="target/${dir.tomcat}" />
     <property name="download.url" value="${download.url.tomcat}" />
     <antcall target="install" />
-    
-    <!-- Manager user/pass needed so Arquillian can control the Tomcat server. -->
-    <copy todir="target/${dir.tomcat}" overwrite="true">
-      <fileset dir="src/test/resources/tomcat"/>
-    </copy>
   </target>
 
   <!-- <target name="install-jetty">

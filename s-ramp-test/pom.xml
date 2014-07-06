@@ -29,19 +29,66 @@
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-installer</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp-tomcat7</artifactId>
+      <type>war</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-server-tomcat7</artifactId>
+      <type>war</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war-tomcat7</artifactId>
+      <type>war</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-client</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
-  <!-- TODO: Should we include this, or will the tests automatically get 
-    skipped if no container is included by a profile? -->
-  <!-- <build> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> 
-    <artifactId>maven-surefire-plugin</artifactId> <configuration> <skipTests>true</skipTests> 
-    </configuration> </plugin> </plugins> </build> -->
+  <!-- Skipped tests if no container is included by a profile! -->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <profiles>
     <profile>
       <id>tomcat-integration-test</id>
       <build>
         <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>false</skipTests>
+            </configuration>
+          </plugin>
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
@@ -53,6 +100,41 @@
                 <configuration>
                   <tasks>
                     <ant antfile="${basedir}/src/test/resources/build.xml" target="install-tomcat" />
+
+                    <!-- COPIED (AND MODIFIED) FROM s-ramp-installer's test-install-tomcat7 -->
+                    <!-- TODO: Pull into a common ant task? -->
+                    <property name="appserver.id" value="tomcat-7" />
+                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
+                    <property name="s-ramp.appserver.dir" location="${project.build.directory}/apache-tomcat-7.0.54" />
+
+                    <!-- Overlord Commons Installer and Dependencies -->
+                    <property name="s-ramp.overlord-commons.installer.jar"
+                      value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+                    <property name="s-ramp-overlord-commons.ant.jar.path"
+                      value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}" />
+                    <property name="overlord-commons.idp.file"
+                      value="${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
+
+                    <!-- S-RAMP WARs -->
+                    <property name="s-ramp.s-ramp-server.war.path"
+                      value="${maven.dependency.org.overlord.sramp.s-ramp-server-tomcat7.war.path}" />
+                    <property name="s-ramp.s-ramp-ui.war.path"
+                      value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-tomcat7.war.path}" />
+
+                    <!-- The commons ant jar location -->
+                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
+
+                    <!-- Call the installer -->
+                    <!-- TODO: Use the maven.dependency instead? -->
+                    <property name="s-ramp.updates.dir" location="../s-ramp-installer/src/main/resources/updates" />
+                    <ant antfile="../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
+                        inheritall="true" target="install" />
+    
+                    <!-- Manager user/pass needed so Arquillian can control the Tomcat server.  Overwrite what was
+                    created by the S-RAMP installer.-->
+                    <copy todir="${s-ramp.appserver.dir}" overwrite="true">
+                      <fileset dir="src/test/resources/tomcat"/>
+                    </copy>
                   </tasks>
                 </configuration>
               </execution>
