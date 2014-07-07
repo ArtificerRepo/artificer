@@ -6,16 +6,38 @@
     value="http://apache.cs.utah.edu/tomcat/tomcat-7/v7.0.54/bin/${filename.tomcat}" />
   <property name="dir.tomcat" value="apache-tomcat-7.0.54" />
 
-  <property name="filename.jetty" value="jetty-distribution-8.1.15.v20140411.zip" />
+  <!-- <property name="filename.jetty" value="jetty-distribution-8.1.15.v20140411.zip" />
   <property name="download.url.jetty"
     value="http://eclipse.org/downloads/download.php?file=/jetty/stable-8/dist/${filename.jetty}&amp;r=1" />
-  <property name="dir.jetty" value="jetty-distribution-8.1.15.v20140411" />
+  <property name="dir.jetty" value="jetty-distribution-8.1.15.v20140411" /> -->
+
+  <property name="filename.eap61" value="jboss-eap-6.1.0.zip" />
+  <property name="dir.eap61" value="jboss-eap-6.1" />
+
+  <property name="filename.eap62" value="jboss-eap-6.2.0.zip" />
+  <property name="dir.eap62" value="jboss-eap-6.2" />
 
   <target name="install-tomcat">
     <property name="name" value="Tomcat" />
-    <property name="filename" value="target/${filename.tomcat}" />
+    <property name="filename" value="${filename.tomcat}" />
     <property name="dir" value="target/${dir.tomcat}" />
     <property name="download.url" value="${download.url.tomcat}" />
+    <antcall target="install" />
+  </target>
+
+  <target name="install-eap61">
+    <!-- TODO: Fail is the ZIP isn't in the root? -->
+    <property name="name" value="JBoss EAP 6.1" />
+    <property name="filename" value="${filename.eap61}" />
+    <property name="dir" value="target/${dir.eap61}" />
+    <antcall target="install" />
+  </target>
+
+  <target name="install-eap62">
+    <!-- TODO: Fail is the ZIP isn't in the root? -->
+    <property name="name" value="JBoss EAP 6.2" />
+    <property name="filename" value="${filename.eap62}" />
+    <property name="dir" value="target/${dir.eap62}" />
     <antcall target="install" />
   </target>
 
@@ -49,7 +71,7 @@
     <echo message="# Downloading ${name}...               #" />
     <echo message="########################################" />
     <echo message=" " />
-    <get src="${download.url}" dest="target" />
+    <get src="${download.url}" dest="." />
   </target>
 
   <target name="find">
