@@ -44,7 +44,7 @@ public class SimpleClientTest {
     public void testSimple() {
         try {
             SrampAtomApiClient client = new SrampAtomApiClient("http://localhost:8080/s-ramp-server",
-                    "admin", "admin", true);
+                    "admin", "overlord1!", true);
             ExtendedArtifactType artifact = new ExtendedArtifactType();
             artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
             artifact.setExtendedType("FooArtifactType");

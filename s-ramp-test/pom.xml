@@ -36,24 +36,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-idp-tomcat7</artifactId>
-      <type>war</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server-tomcat7</artifactId>
-      <type>war</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-war-tomcat7</artifactId>
-      <type>war</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-api</artifactId>
       <scope>test</scope>
@@ -100,43 +82,8 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <ant antfile="${basedir}/src/test/resources/build.xml" target="install-tomcat" />
-
-                    <!-- COPIED (AND MODIFIED) FROM s-ramp-installer's test-install-tomcat7 -->
-                    <!-- TODO: Pull into a common ant task? -->
-                    <property name="appserver.id" value="tomcat-7" />
-                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${project.build.directory}/apache-tomcat-7.0.54" />
-                    <property name="overlord-commons.admin.password" value="admin" />
-
-                    <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp.overlord-commons.installer.jar"
-                      value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
-                    <property name="s-ramp-overlord-commons.ant.jar.path"
-                      value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}" />
-                    <property name="overlord-commons.idp.file"
-                      value="${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
-
-                    <!-- S-RAMP WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path"
-                      value="${maven.dependency.org.overlord.sramp.s-ramp-server-tomcat7.war.path}" />
-                    <property name="s-ramp.s-ramp-ui.war.path"
-                      value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-tomcat7.war.path}" />
-
-                    <!-- The commons ant jar location -->
-                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-
-                    <!-- Call the installer -->
-                    <!-- TODO: Use the maven.dependency instead? -->
-                    <property name="s-ramp.updates.dir" location="../s-ramp-installer/src/main/resources/updates" />
-                    <ant antfile="../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
-                        inheritall="true" target="install" />
-    
-                    <!-- Manager user/pass needed so Arquillian can control the Tomcat server.  Overwrite what was
-                    created by the S-RAMP installer.-->
-                    <copy todir="${s-ramp.appserver.dir}" overwrite="true">
-                      <fileset dir="src/test/resources/tomcat"/>
-                    </copy>
+                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-tomcat" />
+                    <ant antfile="${basedir}/src/test/resources/install-sramp.xml" target="install-sramp-tomcat" />
                   </tasks>
                 </configuration>
               </execution>
@@ -157,6 +104,198 @@
         <dependency>
           <groupId>org.jboss.arquillian.container</groupId>
           <artifactId>arquillian-tomcat-managed-7</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-idp-tomcat7</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord.sramp</groupId>
+          <artifactId>s-ramp-server-tomcat7</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord.sramp</groupId>
+          <artifactId>s-ramp-ui-war-tomcat7</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>eap61-integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>false</skipTests>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy</id>
+                <phase>generate-test-resources</phase>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.modeshape</groupId>
+                      <artifactId>modeshape-distribution</artifactId>
+                      <version>3.6.0.Final</version>
+                      <classifier>jbosseap-61-dist</classifier>
+                      <type>zip</type>
+                    </artifactItem>
+                  </artifactItems>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>generate-test-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-eap61" />
+                    <ant antfile="${basedir}/src/test/resources/install-sramp.xml" target="install-sramp-eap61" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <arquillian.launch>eap61</arquillian.launch>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-arquillian-container-managed</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-idp-eap6</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord.sramp</groupId>
+          <artifactId>s-ramp-server-eap6</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord.sramp</groupId>
+          <artifactId>s-ramp-ui-war-eap6</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-auth-jboss7</artifactId>
+          <type>jar</type>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>eap62-integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>false</skipTests>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>generate-test-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-eap62" />
+                    <ant antfile="${basedir}/src/test/resources/install-sramp.xml" target="install-sramp-eap62" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <arquillian.launch>eap62</arquillian.launch>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-arquillian-container-managed</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-idp-eap6</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord.sramp</groupId>
+          <artifactId>s-ramp-server-eap6</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord.sramp</groupId>
+          <artifactId>s-ramp-ui-war-eap6</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-auth-jboss7</artifactId>
+          <type>jar</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.modeshape</groupId>
+          <artifactId>modeshape-distribution</artifactId>
+          <type>zip</type>
+          <classifier>jbosseap-dist</classifier>
           <scope>test</scope>
         </dependency>
       </dependencies>

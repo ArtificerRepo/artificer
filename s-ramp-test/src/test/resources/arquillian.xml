@@ -12,9 +12,27 @@
          <!-- TODO: Remove catalinaBase after ARQ-1814. -->
          <property name="catalinaBase">target/apache-tomcat-7.0.54</property>
          <property name="user">admin</property>
-         <property name="pass">admin</property>
+         <property name="pass">overlord1!</property>
       </configuration>
    </container>
    
-   <!-- TODO: EAP, Jetty, etc. -->
+   <container qualifier="eap61">
+      <protocol type="Servlet 3.0">
+         <property name="executionType">MANAGED</property>
+      </protocol>
+      <configuration>
+         <property name="jbossHome">target/jboss-eap-6.1</property>
+      </configuration>
+   </container>
+   
+   <container qualifier="eap62">
+      <protocol type="Servlet 3.0">
+         <property name="executionType">MANAGED</property>
+      </protocol>
+      <configuration>
+         <property name="jbossHome">target/jboss-eap-6.2</property>
+      </configuration>
+   </container>
+   
+   <!-- TODO: Jetty -->
 </arquillian>

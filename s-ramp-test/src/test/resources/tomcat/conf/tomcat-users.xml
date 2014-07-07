@@ -11,6 +11,6 @@
   <role rolename="ba"/>
   <role rolename="arch"/>
   <!-- S-RAMP installer's roles *plus* manager-gui,manager-status,manager-script,manager-jmx (needed by Arquillian) -->
-  <user username="admin" password="admin"
+  <user username="admin" password="overlord1!"
       roles="tomcat,overlorduser,admin.sramp,dev,qa,stage,prod,ba,arch,manager-gui,manager-status,manager-script,manager-jmx"/>
 </tomcat-users>
