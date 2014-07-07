@@ -97,7 +97,7 @@
 
     <!-- S-RAMP only libraries (not in BOM) -->
     <s-ramp-wiki.version>0.5.0.Beta1</s-ramp-wiki.version>
-    <overlord-commons.version>2.0.2.Final</overlord-commons.version>
+    <overlord-commons.version>2.0.3-SNAPSHOT</overlord-commons.version>
     <commons.beanutils.version>1.8.2</commons.beanutils.version>
     <commons.lang3.version>3.1</commons.lang3.version>
     <commons.compress.version>1.4.1</commons.compress.version>
@@ -598,6 +598,7 @@
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-installer</artifactId>
         <version>${overlord-commons.version}</version>
+        <type>jar</type>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
