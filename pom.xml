@@ -571,6 +571,7 @@
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-installer</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
+        <type>jar</type>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>

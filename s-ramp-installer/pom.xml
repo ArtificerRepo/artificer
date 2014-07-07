@@ -16,6 +16,7 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-installer</artifactId>
+      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
