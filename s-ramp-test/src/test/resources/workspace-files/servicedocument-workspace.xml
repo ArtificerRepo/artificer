@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app:service xmlns:atom="http://www.w3.org/2005/Atom" xmlns:app="http://www.w3.org/2007/app">
+    <app:workspace>
+        <atom:title>Core Model</atom:title>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/core">
+            <atom:title>Core Model Objects</atom:title>
+            <app:accept>application/zip</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Document" scheme="urn:x-s-ramp:v1:type" term="Document"/>
+                <atom:category label="XML Document" scheme="urn:x-s-ramp:v1:type" term="XmlDocument"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/core/Document">
+            <atom:title>Documents</atom:title>
+            <app:accept>application/octet-stream</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Document" scheme="urn:x-s-ramp:v1:type" term="Document"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/core/XmlDocument">
+            <atom:title>XML Documents</atom:title>
+            <app:accept>application/xml</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Document" scheme="urn:x-s-ramp:v1:type" term="XmlDocument"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+    <app:workspace>
+        <atom:title>XSD Model</atom:title>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd">
+            <atom:title>XSD Model Objects</atom:title>
+            <app:accept>application/zip</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema" scheme="urn:x-s-ramp:v1:type" term="XsdDocument"/>
+                <atom:category label="XML Schema Attribute Declaration" scheme="urn:x-s-ramp:v1:type" term="AttributeDeclaration"/>
+                <atom:category label="XML Schema Element Declaration" scheme="urn:x-s-ramp:v1:type" term="ElementDeclaration"/>
+                <atom:category label="XML Schema Simple Type Declaration" scheme="urn:x-s-ramp:v1:type" term="SimpleTypeDeclaration"/>
+                <atom:category label="XML Schema Complex Type Declaration" scheme="urn:x-s-ramp:v1:type" term="ComplexTypeDeclaration"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/XsdDocument">
+            <atom:title>XSD Documents</atom:title>
+            <app:accept>application/xml</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema" scheme="urn:x-s-ramp:v1:type" term="XsdDocument"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/AttributeDeclation">
+            <atom:title>Attribute Declarations</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema Attribute Declaration" scheme="urn:x-s-ramp:v1:type" term="AttributeDeclaration"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/ElementDeclation">
+            <atom:title>Element Declarations</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema Element Declaration" scheme="urn:x-s-ramp:v1:type" term="ElementDeclaration"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/SimpleTypeDeclation">
+            <atom:title>Simple Type Declarations</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema Simple Type Declaration" scheme="urn:x-s-ramp:v1:type" term="SimpleTypeDeclaration"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/ComplexTypeDeclation">
+            <atom:title>Complex Type Declarations</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="XML Schema Complex Type Declaration" scheme="urn:x-s-ramp:v1:type" term="ComplexTypeDeclaration"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+    <app:workspace>
+        <atom:title>Policy Model</atom:title>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/policy">
+            <atom:title>Policy Model Objects</atom:title>
+            <app:accept>application/zip</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Policy" scheme="urn:x-s-ramp:v1:type" term="PolicyDocument"/>
+                <atom:category label="Policy Expression" scheme="urn:x-s-ramp:v1:type" term="PolicyExpression"/>
+                <atom:category label="Policy Attachment" scheme="urn:x-s-ramp:v1:type" term="PolicyAttachment"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/policy/PolicyDocument">
+            <atom:title>Policy Documents</atom:title>
+            <app:accept>application/xml</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Policy" scheme="urn:x-s-ramp:v1:type" term="PolicyDocument"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/policy/PolicyExpression">
+            <atom:title>Policy Expressions</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Policy Expression" scheme="urn:x-s-ramp:v1:type" term="PolicyExpression"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/policy/PolicyAttachment">
+            <atom:title>Policy Attachments</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Policy Attachment" scheme="urn:x-s-ramp:v1:type" term="PolicyAttachment"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+    <app:workspace>
+        <atom:title>WSDL Model</atom:title>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl">
+            <atom:title>WSDL Model Objects</atom:title>
+            <app:accept>application/zip</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL" scheme="urn:x-s-ramp:v1:type" term="WsdlDocument"/>
+                <atom:category label="WSDL Service" scheme="urn:x-s-ramp:v1:type" term="WsdlService"/>
+                <atom:category label="WSDL Port" scheme="urn:x-s-ramp:v1:type" term="Port"/>
+                <atom:category label="WSDL Extension" scheme="urn:x-s-ramp:v1:type" term="WsdlExtension"/>
+                <atom:category label="WSDL Part" scheme="urn:x-s-ramp:v1:type" term="Part"/>
+                <atom:category label="WSDL Message" scheme="urn:x-s-ramp:v1:type" term="Message"/>
+                <atom:category label="WSDL Fault" scheme="urn:x-s-ramp:v1:type" term="Fault"/>
+                <atom:category label="WSDL Port Type" scheme="urn:x-s-ramp:v1:type" term="PortType"/>
+                <atom:category label="WSDL Operation" scheme="urn:x-s-ramp:v1:type" term="Operation"/>
+                <atom:category label="WSDL Operation Input" scheme="urn:x-s-ramp:v1:type" term="OperationInput"/>
+                <atom:category label="WSDL Operation Output" scheme="urn:x-s-ramp:v1:type" term="OperationOutput"/>
+                <atom:category label="WSDL Binding" scheme="urn:x-s-ramp:v1:type" term="Binding"/>
+                <atom:category label="WSDL Binding Operation" scheme="urn:x-s-ramp:v1:type" term="BindingOperation"/>
+                <atom:category label="WSDL Binding Operation Input" scheme="urn:x-s-ramp:v1:type" term="BindingOperationInput"/>
+                <atom:category label="WSDL Binding Operation Output" scheme="urn:x-s-ramp:v1:type" term="BindingOperationOutput"/>
+                <atom:category label="WSDL Binding Operation Fault" scheme="urn:x-s-ramp:v1:type" term="BindingOperationFault"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/WsdlDocument">
+            <atom:title>WSDL Documents</atom:title>
+            <app:accept>application/xml</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL" scheme="urn:x-s-ramp:v1:type" term="WsdlDocument"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/WsdlService">
+            <atom:title>WSDL Services</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Service" scheme="urn:x-s-ramp:v1:type" term="WsdlService"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/Port">
+            <atom:title>Ports</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Port" scheme="urn:x-s-ramp:v1:type" term="Port"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/WsdlExtension">
+            <atom:title>WSDL Extensions</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Extension" scheme="urn:x-s-ramp:v1:type" term="WsdlExtension"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/Part">
+            <atom:title>Parts</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Part" scheme="urn:x-s-ramp:v1:type" term="Part"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/Message">
+            <atom:title>Messages</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Message" scheme="urn:x-s-ramp:v1:type" term="Message"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/Fault">
+            <atom:title>Faults</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Fault" scheme="urn:x-s-ramp:v1:type" term="Fault"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/PortType">
+            <atom:title>Port Types</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Port Type" scheme="urn:x-s-ramp:v1:type" term="PortType"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/Operation">
+            <atom:title>Operations</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Operation" scheme="urn:x-s-ramp:v1:type" term="Operation"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/OperationInput">
+            <atom:title>Operation Inputs</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Operation Input" scheme="urn:x-s-ramp:v1:type" term="OperationInput"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/OperationOutput">
+            <atom:title>Operation Outputs</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Operation Output" scheme="urn:x-s-ramp:v1:type" term="OperationOutput"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/Binding">
+            <atom:title>Bindings</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Binding" scheme="urn:x-s-ramp:v1:type" term="Binding"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/BindingOperation">
+            <atom:title>Binding Operations</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Binding Operation" scheme="urn:x-s-ramp:v1:type" term="BindingOperation"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/BindingOperationInput">
+            <atom:title>Binding Operation Inputs</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Binding Operation Input" scheme="urn:x-s-ramp:v1:type" term="BindingOperationInput"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/BindingOperationOutput">
+            <atom:title>Bindig Operation Outputs</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Binding Operation Output" scheme="urn:x-s-ramp:v1:type" term="BindingOperationOutput"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/wsdl/BindingOperationFault">
+            <atom:title>Binding Operation Faults</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="WSDL Binding Operation Fault" scheme="urn:x-s-ramp:v1:type" term="BindingOperationFault"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+    <app:workspace>
+        <atom:title>SOAP-WSDL Model</atom:title>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/soapWsdl">
+            <atom:title>SOAP-WSDL Model Objects</atom:title>
+            <app:accept>application/zip</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="SOAP Address" scheme="urn:x-s-ramp:v1:type" term="SoapAddress"/>
+                <atom:category label="SOAP Binding" scheme="urn:x-s-ramp:v1:type" term="SoapBinding"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/soapWsdl/SoapAddress">
+            <atom:title>SOAP Addresses</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="SOAP Address" scheme="urn:x-s-ramp:v1:type" term="SoapAddress"/>
+            </app:categories>
+        </app:collection>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/soapWsdl/SoapBinding">
+            <atom:title>SOAP Bindings</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="SOAP Binding" scheme="urn:x-s-ramp:v1:type" term="SoapBinding"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+    <app:workspace>
+        <atom:title>Extended Model</atom:title>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/ext">
+            <atom:title>Extended Model Objects</atom:title>
+            <app:accept>application/octet-stream</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Extended Artifact Type" scheme="urn:x-s-ramp:v1:type" term="ExtendedArtifactType"/>
+                <atom:category label="Extended Document" scheme="urn:x-s-ramp:v1:type" term="ExtendedDocument"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+    <app:workspace>
+        <atom:title>Ontology Model</atom:title>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/ontology">
+            <atom:title>Ontology Objects</atom:title>
+            <app:accept>application/rdf+xml</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Ontology" scheme="urn:x-s-ramp:v1:type" term="ontology"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+    <app:workspace>
+        <atom:title>Auditing Model</atom:title>
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/audit">
+            <atom:title>Audit Entries</atom:title>
+            <app:accept>application/auditEntry+xml</app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Audit" scheme="urn:x-s-ramp:v1:type" term="audit"/>
+            </app:categories>
+        </app:collection>
+    </app:workspace>
+</app:service>
+
