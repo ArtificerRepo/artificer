@@ -158,7 +158,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
                 baseArtifact = artifactSet.iterator().next();
             }
         } catch (SrampAtomException e) {
-            throw new MavenRepositoryException(Messages.i18n.format(""), e);
+            throw new MavenRepositoryException(Messages.i18n.format(""), e); //$NON-NLS-1$
         } finally {
             if (artifactSet != null) {
                 artifactSet.close();
@@ -377,7 +377,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
                 }
             }
         } catch (SrampAtomException e) {
-            throw new MavenRepositoryException(Messages.i18n.format("maven.resource.get.items.error", groupId, artifactId, version), e);
+            throw new MavenRepositoryException(Messages.i18n.format("maven.resource.get.items.error", groupId, artifactId, version), e); //$NON-NLS-1$
         } finally {
             if (artifactSet != null) {
                 artifactSet.close();
@@ -399,7 +399,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
     public String uploadArtifact(MavenMetaData metadata, InputStream content) throws MavenRepositoryException {
         String uuid = null;
         if (content == null) {
-            throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.no.content"));
+            throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.no.content")); //$NON-NLS-1$
         }
         String fileName = metadata.getFileName();
         PersistenceManager persistenceManager = PersistenceFactory.newInstance();
@@ -442,7 +442,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
                 baseArtifact = artifactSet.iterator().next();
             }
         } catch (SrampAtomException e) {
-            throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.query.error", metadata.toString()), e);
+            throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.query.error", metadata.toString()), e); //$NON-NLS-1$
         } finally {
             if (artifactSet != null) {
                 artifactSet.close();
@@ -454,11 +454,11 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
                 ArtifactType artifactType = ArtifactType.valueOf(baseArtifact.getArtifactType());
                 if (metadata.getType().equals(MavenFileExtensionEnum.HASH_MD5.getExtension())
                         || metadata.getType().equals(MavenFileExtensionEnum.HASH_SHA1.getExtension())) {
-                    String content_value = "";
+                    String content_value = ""; //$NON-NLS-1$
                     try {
                         content_value = IOUtils.toString(content);
                     } catch (IOException e1) {
-                        throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.error", metadata.toString()), e1);
+                        throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.error", metadata.toString()), e1); //$NON-NLS-1$
                     }
 
                     if (StringUtils.isNotBlank(content_value)) {
@@ -474,7 +474,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
                             try {
                                 persistenceManager.updateArtifact(baseArtifact, artifactType);
                             } catch (SrampException e) {
-                                throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.error", metadata.toString()), e);
+                                throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.error", metadata.toString()), e); //$NON-NLS-1$
                             }
                         }
                     }
@@ -482,7 +482,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
                     try {
                         persistenceManager.updateArtifactContent(baseArtifact.getUuid(), artifactType, content);
                     } catch (SrampException e) {
-                        throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.error", metadata.toString()), e);
+                        throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.error", metadata.toString()), e); //$NON-NLS-1$
                     }
                 }
 
@@ -496,7 +496,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
                 try {
                     persistenceManager.updateArtifactContent(baseArtifact.getUuid(), artifactType, content);
                 } catch (SrampException e) {
-                    throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.update.content.error",
+                    throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.update.content.error", //$NON-NLS-1$
                             baseArtifact.getUuid()), e);
                 }
                 persisted = baseArtifact;
@@ -508,7 +508,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
                 try {
                     persisted = persistenceManager.persistArtifact(baseArtifactType, content);
                 } catch (SrampException e1) {
-                    throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.new.content.error"), e1);
+                    throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.new.content.error"), e1); //$NON-NLS-1$
                 }
             }
             // Store the metadata to the persisted artifact
@@ -517,17 +517,17 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
             SrampModelUtils.setCustomProperty(persisted, JavaModel.PROP_MAVEN_VERSION, metadata.getVersion());
 
             if (StringUtils.isNotBlank(metadata.getClassifier())) {
-                SrampModelUtils.setCustomProperty(persisted, JavaModel.PROP_MAVEN_CLASSIFIER, metadata.getClassifier()); //$NON-NLS-1$;
+                SrampModelUtils.setCustomProperty(persisted, JavaModel.PROP_MAVEN_CLASSIFIER, metadata.getClassifier());
             }
             if (StringUtils.isNotBlank(metadata.getType())) {
-                SrampModelUtils.setCustomProperty(persisted, JavaModel.PROP_MAVEN_TYPE, metadata.getType()); //$NON-NLS-1$
+                SrampModelUtils.setCustomProperty(persisted, JavaModel.PROP_MAVEN_TYPE, metadata.getType());
             }
             try {
                 // Persist the content size, because it will be required when
                 // reading
-                persisted.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_SIZE_QNAME, content.available() + "");
+                persisted.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_SIZE_QNAME, content.available() + ""); //$NON-NLS-1$
             } catch (IOException e) {
-                logger.error("");
+                logger.error(""); //$NON-NLS-1$
             }
 
             persisted.setName(metadata.getFileName());
@@ -535,7 +535,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
             try {
                 persistenceManager.updateArtifact(persisted, artifactType);
             } catch (SrampException e) {
-                throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.update.content.metadata.error",
+                throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.update.content.metadata.error", //$NON-NLS-1$
                         persisted.getUuid()), e);
             }
             uuid = persisted.getUuid();

@@ -18,7 +18,7 @@ package org.overlord.sramp.ui.client.local.widgets.common;
 import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
+import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
 
 /**
  * Dialog that informs the user of an authentication problem.

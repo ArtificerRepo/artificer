@@ -14,11 +14,6 @@
     <!-- Project Dependencies -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-widgets</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-common</artifactId>
     </dependency>
     <dependency>
