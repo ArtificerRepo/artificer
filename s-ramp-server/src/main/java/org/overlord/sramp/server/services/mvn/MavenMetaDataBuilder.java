@@ -46,13 +46,13 @@ public class MavenMetaDataBuilder {
      * @return the maven meta data
      */
     public static MavenMetaData build(String url) {
-        String groupId = "";
-        String artifactId = "";
-        String version = "";
-        String type = "";
-        String classifier = "";
-        String parentType = "";
-        String fileName = "";
+        String groupId = ""; //$NON-NLS-1$
+        String artifactId = ""; //$NON-NLS-1$
+        String version = ""; //$NON-NLS-1$
+        String type = ""; //$NON-NLS-1$
+        String classifier = ""; //$NON-NLS-1$
+        String parentType = ""; //$NON-NLS-1$
+        String fileName = ""; //$NON-NLS-1$
 
         if (url.startsWith("/")) { //$NON-NLS-1$
             url = url.substring(1);
@@ -71,8 +71,8 @@ public class MavenMetaDataBuilder {
                 //Then for that it is mandatory to have more than 2 tokens. At least one for groupId, one for artifactId and one for fileName
                 if (tokens.length >= 3) {
 
-                    if (lastPathSegment.contains("maven-metadata.xml")) {
-                        String possibleGroupId = "";
+                    if (lastPathSegment.contains("maven-metadata.xml")) { //$NON-NLS-1$
+                        String possibleGroupId = ""; //$NON-NLS-1$
 
                         boolean isGroup = false;
                         // There are checked the different possibilities about
@@ -88,20 +88,20 @@ public class MavenMetaDataBuilder {
                         for (int i = 0; i < tokens.length - 2; i++) {
                             possibleGroupId += tokens[i];
                             if (i < tokens.length - 1) {
-                                possibleGroupId += ".";
+                                possibleGroupId += "."; //$NON-NLS-1$
                             }
 
                         }
                         // For example for org.overlord.test the number of
                         // checks is going to be 3
-                        int iterations = StringUtils.countMatches(possibleGroupId, ".") + 1;
+                        int iterations = StringUtils.countMatches(possibleGroupId, ".") + 1; //$NON-NLS-1$
                         for (int i = 0; i < iterations; i++) {
                             if (isGroupId(possibleGroupId)) {
                                 isGroup = true;
                                 break;
                             }
-                            if (possibleGroupId.lastIndexOf(".") != -1) {
-                                possibleGroupId = possibleGroupId.substring(0, possibleGroupId.lastIndexOf("."));
+                            if (possibleGroupId.lastIndexOf(".") != -1) { //$NON-NLS-1$
+                                possibleGroupId = possibleGroupId.substring(0, possibleGroupId.lastIndexOf(".")); //$NON-NLS-1$
                             }
                         }
                         // If there is a group in s-ramp that matches the
@@ -109,9 +109,9 @@ public class MavenMetaDataBuilder {
                         if (isGroup) {
                             // This means there is an existing groupId in s-ramp
                             groupId = possibleGroupId;
-                            String lastGroupIdToken = "";
-                            if (groupId.contains(".")) {
-                                lastGroupIdToken = groupId.substring(groupId.lastIndexOf(".") + 1);
+                            String lastGroupIdToken = ""; //$NON-NLS-1$
+                            if (groupId.contains(".")) { //$NON-NLS-1$
+                                lastGroupIdToken = groupId.substring(groupId.lastIndexOf(".") + 1); //$NON-NLS-1$
                             } else {
                                 lastGroupIdToken = groupId;
                             }
@@ -155,7 +155,7 @@ public class MavenMetaDataBuilder {
                             for (int i = 0; i < tokens.length - 2; i++) {
                                 if (i < tokens.length - 3) {
                                     if (i != 0) {
-                                        groupId += ".";
+                                        groupId += "."; //$NON-NLS-1$
                                     }
                                     groupId += tokens[i];
                                 } else {
@@ -172,7 +172,7 @@ public class MavenMetaDataBuilder {
                         for (int i = 0; i < tokens.length - 2; i++) {
                             if (i < tokens.length - 3) {
                                 if (i != 0) {
-                                    groupId += ".";
+                                    groupId += "."; //$NON-NLS-1$
                                 }
                                 groupId += tokens[i];
                             } else {
@@ -185,22 +185,22 @@ public class MavenMetaDataBuilder {
 
                     //It is parsed the fileName to get information about the classifier
                     if (StringUtils.isNotBlank(fileName)) {
-                        type = fileName.substring(fileName.lastIndexOf(".") + 1);
+                        type = fileName.substring(fileName.lastIndexOf(".") + 1); //$NON-NLS-1$
 
                         classifier = ""; //$NON-NLS-1$
                         //We know the information about classifier comes in files that are under the version folder
 
                         if (StringUtils.isNotBlank(version) ) {
-                            String versionParsed="";
+                            String versionParsed=""; //$NON-NLS-1$
                             //When the version contains a -SNAPSHOT, then the filename is artifactId-versionWithoutSNAPSHOT
                             //The snapshot keyword is substitute by a timestamp-counter
-                            if(version.contains("-SNAPSHOT")){
-                                versionParsed=version.substring(0,version.lastIndexOf("-SNAPSHOT"));
+                            if(version.contains("-SNAPSHOT")){ //$NON-NLS-1$
+                                versionParsed=version.substring(0,version.lastIndexOf("-SNAPSHOT")); //$NON-NLS-1$
                             }
                             else{
                                 versionParsed=version;
                             }
-                            if(fileName.startsWith(artifactId + "-" + versionParsed)){
+                            if(fileName.startsWith(artifactId + "-" + versionParsed)){ //$NON-NLS-1$
                                 String without_extension = fileName.substring(0, fileName.lastIndexOf(".")); //$NON-NLS-1$
                                 if (StringUtils.countMatches(without_extension, "-") >= 2) { //$NON-NLS-1$
                                     int versionIdx = without_extension.indexOf(versionParsed);
@@ -208,10 +208,10 @@ public class MavenMetaDataBuilder {
                                     int classifierIdx = versionIdx + versionLen;
                                     if (classifierIdx < without_extension.length()) {
                                         //If it is an snapshop
-                                        if (version.contains("SNAPSHOT") && !version.equals(versionParsed)) {
+                                        if (version.contains("SNAPSHOT") && !version.equals(versionParsed)) { //$NON-NLS-1$
                                             String rest = without_extension.substring(classifierIdx + 1);
                                             //All the tokens from the clasifierIdx to the end are splitted by '-'
-                                            String[] tokens_file_name = rest.split("-");
+                                            String[] tokens_file_name = rest.split("-"); //$NON-NLS-1$
                                             if (tokens_file_name.length > 0) {
                                                 //It is expected a timestamp
                                                 if (isMavenTimeStamp(tokens_file_name[0])) {
@@ -219,7 +219,7 @@ public class MavenMetaDataBuilder {
                                                         try {
                                                             //The it is expected maybe a counter
                                                             String[] counter = StringUtils.split(
-                                                                    tokens_file_name[1], ".");
+                                                                    tokens_file_name[1], "."); //$NON-NLS-1$
                                                             Integer.parseInt(counter[0]);
                                                             if (tokens_file_name.length > 2) {
                                                                 classifier = tokens_file_name[2];
@@ -243,14 +243,14 @@ public class MavenMetaDataBuilder {
 
                                         if (StringUtils.isNotBlank(classifier)) {
                                             if (classifier.contains(".")) {//$NON-NLS-1$
-                                                if (classifier.startsWith(".")) {
+                                                if (classifier.startsWith(".")) { //$NON-NLS-1$
                                                     parentType = classifier.substring(1);
-                                                    classifier = "";
+                                                    classifier = ""; //$NON-NLS-1$
                                                 } else {
                                                     parentType = classifier
-                                                            .substring(classifier.lastIndexOf(".") + 1);
+                                                            .substring(classifier.lastIndexOf(".") + 1); //$NON-NLS-1$
                                                     classifier = classifier.substring(0,
-                                                            classifier.lastIndexOf("."));
+                                                            classifier.lastIndexOf(".")); //$NON-NLS-1$
                                                 }
                                             }
                                         }
@@ -268,9 +268,9 @@ public class MavenMetaDataBuilder {
         //If the type, belongs to the MavenFileExtensionEnum, it means than it is sha1 or md5.
         if (MavenFileExtensionEnum.value(type) != null) {
             //Then the parent type has to be filled. We know that the parent type can be taken from the filename
-            String without_ext = fileName.substring(0, fileName.lastIndexOf("." + type));
-            if (without_ext.contains(".")) {
-                parentType = without_ext.substring(without_ext.lastIndexOf(".") + 1);
+            String without_ext = fileName.substring(0, fileName.lastIndexOf("." + type)); //$NON-NLS-1$
+            if (without_ext.contains(".")) { //$NON-NLS-1$
+                parentType = without_ext.substring(without_ext.lastIndexOf(".") + 1); //$NON-NLS-1$
             }
         }
 
@@ -286,10 +286,10 @@ public class MavenMetaDataBuilder {
      * @return true, if is group id
      */
     private static boolean isGroupId(String groupId) {
-        String query = "/s-ramp[@maven.groupId = ?]";
+        String query = "/s-ramp[@maven.groupId = ?]"; //$NON-NLS-1$
         try {
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            SrampQuery srampQuery = queryManager.createQuery(query); //$NON-NLS-1$
+            SrampQuery srampQuery = queryManager.createQuery(query);
 
             srampQuery.setString(groupId);
 
@@ -315,10 +315,10 @@ public class MavenMetaDataBuilder {
      * @return true, if successful
      */
     private static boolean existVersion(String groupId, String version) {
-        String query = "/s-ramp[@maven.groupId = ? and @maven.version = ? ]";
+        String query = "/s-ramp[@maven.groupId = ? and @maven.version = ? ]"; //$NON-NLS-1$
         try {
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            SrampQuery srampQuery = queryManager.createQuery(query); //$NON-NLS-1$
+            SrampQuery srampQuery = queryManager.createQuery(query);
 
             srampQuery.setString(groupId);
             srampQuery.setString(version);
@@ -342,7 +342,7 @@ public class MavenMetaDataBuilder {
      */
     private static boolean isMavenTimeStamp(String possibleTimestamp) {
         // Timestamp included by maven in the snapthots artifacts.
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd.HHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd.HHmmss"); //$NON-NLS-1$
         try {
             sdf.parse(possibleTimestamp);
         } catch (ParseException e) {

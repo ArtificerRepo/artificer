@@ -66,8 +66,8 @@ public class MavenRepositoryServlet extends HttpServlet {
 
     static {
         Sramp sramp = new Sramp();
-        String value = sramp.getConfigProperty(SrampConstants.SRAMP_SNAPSHOT_ALLOWED, "false");
-        if (StringUtils.isNotBlank(value) && value.equals("true")) {
+        String value = sramp.getConfigProperty(SrampConstants.SRAMP_SNAPSHOT_ALLOWED, "false"); //$NON-NLS-1$
+        if (StringUtils.isNotBlank(value) && value.equals("true")) { //$NON-NLS-1$
             SNAPSHOT_ALLOWED = true;
         } else {
             SNAPSHOT_ALLOWED = false;
@@ -227,7 +227,7 @@ public class MavenRepositoryServlet extends HttpServlet {
             if (metadata.isArtifact()) {
                 if (SNAPSHOT_ALLOWED || !metadata.isSnapshotVersion()) {
                     String uuid = service.uploadArtifact(metadata, content);
-                    responseMap.put("uuid", uuid);
+                    responseMap.put("uuid", uuid); //$NON-NLS-1$
                 } else {
                     response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Messages.i18n.format("maven.servlet.put.snapshot.not.allowed")); //$NON-NLS-1$
                 }
@@ -237,7 +237,7 @@ public class MavenRepositoryServlet extends HttpServlet {
             }
 
         } catch (Throwable e) {
-            logger.error(Messages.i18n.format("maven.servlet.artifact.content.put.exception"), e);
+            logger.error(Messages.i18n.format("maven.servlet.artifact.content.put.exception"), e); //$NON-NLS-1$
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Messages.i18n.format("maven.servlet.put.exception")); //$NON-NLS-1$
         } finally {
             if (content != null) {
@@ -289,7 +289,7 @@ public class MavenRepositoryServlet extends HttpServlet {
                     parentPath = "/" + parentPath; //$NON-NLS-1$
                     req.setAttribute("parentPath", parentPath); //$NON-NLS-1$
                 } else {
-                    url = "";
+                    url = ""; //$NON-NLS-1$
                 }
                 req.setAttribute("relativePath", url); //$NON-NLS-1$
                 req.setAttribute("items", items); //$NON-NLS-1$
@@ -342,7 +342,7 @@ public class MavenRepositoryServlet extends HttpServlet {
             IOException {
         String method = req.getMethod();
         String url = req.getRequestURI();
-        logger.info(Messages.i18n.format("maven.repository.servlet.service", method, url));
+        logger.info(Messages.i18n.format("maven.repository.servlet.service", method, url)); //$NON-NLS-1$
         super.service(req, resp);
     }
 

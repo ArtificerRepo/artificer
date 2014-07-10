@@ -20,12 +20,12 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
+import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
 import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.pages.ArtifactDetailsPage;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.util.IUploadCompletionHandler;
 import org.overlord.sramp.ui.client.local.util.UploadResult;
-import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
 import org.overlord.sramp.ui.server.servlets.ArtifactUploadServlet;
 
