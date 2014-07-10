@@ -75,7 +75,7 @@
 
   <filter>
     <filter-name>AuthenticationFilter</filter-name>
-    <filter-class>org.picketlink.identity.federation.web.filters.SPFilter</filter-class>
+    <filter-class>org.picketlink.identity.federation.web.filters.SamlSPFilter</filter-class>
     <init-param>
       <param-name>ROLES</param-name>
       <param-value>overlorduser</param-value>
