@@ -69,7 +69,7 @@
   <filter-mapping>
     <filter-name>MavenAuthFilter</filter-name>
     <servlet-name>MavenRepository</servlet-name>
-  </filter-mapping> 
+  </filter-mapping>
 
   <filter>
     <filter-name>ServletCredentials</filter-name>
