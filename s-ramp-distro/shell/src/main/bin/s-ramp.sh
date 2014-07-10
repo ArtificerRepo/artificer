@@ -3,18 +3,23 @@
 # -----------------------------------------------------------------------------
 # Run script for the S-RAMP Interactive Shell
 #
-# Environment Variable Prerequisites
+# Prerequisites:
 #
-#   JAVA_HOME       Must point at your Java Development Kit installation.
+#   Either java needs to be available on your PATH, or the JAVA_HOME
+#   environment variable must be set and point at a valid Java installation.
 #
 # -----------------------------------------------------------------------------
 
 BIN_DIR=$(dirname $0)
 
-if [ -r "$JAVA_HOME"/bin/java ]; then
-  "$JAVA_HOME/bin/java" -Xmx1024m -jar "$BIN_DIR/s-ramp-shell-${project.version}.jar" "$@"
+JAVA="$JAVA_HOME/bin/java"
+if [ ! -r "$JAVA" ]; then
+    JAVA=`which java`
+fi
+
+if [ ! -z "$JAVA" ] && [ -r "$JAVA" ]; then
+  "$JAVA" -Xmx1024m -jar "$BIN_DIR/s-ramp-shell-${project.version}.jar" "$@"
 else
-  echo "The JAVA_HOME environment variable is not defined correctly."
-  echo "This environment variable is needed to run the S-RAMP shell."
+  echo "Error: java needs to be available on your PATH, or the JAVA_HOME environment variable must be set and point at a valid Java installation."
   exit 1
 fi

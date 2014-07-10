@@ -4,7 +4,7 @@ rem Run script for the S-RAMP Interactive Shell (Windows)
 rem
 rem Environment Variable Prerequisites
 rem
-rem   JAVA_HOME       Must point at your Java Development Kit installation.
+rem   JAVA_HOME       Must point at a valid Java installation.
 rem
 rem ---------------------------------------------------------------------------
 @echo on

@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
+import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -99,7 +99,7 @@ public class AddOntologyDialog extends ModalDialog implements HasValueChangeHand
     }
 
     /**
-     * @see org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog#show()
+     * @see org.overlord.commons.gwt.client.local.widgets.ModalDialog#show()
      */
     @Override
     public void show() {

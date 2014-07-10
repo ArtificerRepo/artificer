@@ -27,6 +27,14 @@ The general idea is to keep your 'master' branch in-sync with the 'upstream/mast
 We use Maven 3.x to build our software. The following command compiles all the code, installs the JARs into your local Maven repository, and runs all of the unit tests:
 
 	$ mvn clean install
+	
+## Run S-RAMP for local development and testing
+
+S-RAMP includes an "s-ramp-dev-server" module that runs the server and UI in an embedded Jetty app server.  It's great for local development, providing a fast and lightweight means for testing your bug fixes or new features.  Use the following command to start it up:
+
+	$ mvn clean test -pl s-ramp-dev-server -P run
+
+Then, test your changes through http://localhost:8080/s-ramp-ui/index.html or http://localhost:8080/s-ramp-server.  Note that the dev server uses a dummy, basic authentication facade.  If prompted by the UI or server, enter *any* username and password.
 
 ## Contribute fixes and features
 

@@ -18,11 +18,11 @@ package org.overlord.sramp.ui.client.local.pages.ontologies;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
 import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.util.IUploadCompletionHandler;
 import org.overlord.sramp.ui.client.local.util.UploadResult;
-import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
 
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;

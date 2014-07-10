@@ -23,10 +23,10 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
 import org.overlord.commons.gwt.client.local.widgets.TemplatedFormPanel;
 import org.overlord.sramp.ui.client.local.util.IUploadCompletionHandler;
 import org.overlord.sramp.ui.client.local.util.UploadResult;
-import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -68,7 +68,7 @@ public class UploadOntologyDialog extends ModalDialog {
     }
 
     /**
-     * @see org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog#show()
+     * @see org.overlord.commons.gwt.client.local.widgets.ModalDialog#show()
      */
     @Override
     public void show() {

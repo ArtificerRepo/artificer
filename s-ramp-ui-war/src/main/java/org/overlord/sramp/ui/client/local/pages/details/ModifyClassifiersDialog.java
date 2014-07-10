@@ -31,11 +31,11 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
 import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
 import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
-import org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.LoadingAllOntologies;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.OntologyDropDown;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.OntologySelectorWithToolbar;
@@ -117,7 +117,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
     }
 
     /**
-     * @see org.overlord.sramp.ui.client.local.widgets.bootstrap.ModalDialog#show()
+     * @see org.overlord.commons.gwt.client.local.widgets.ModalDialog#show()
      */
     @Override
     public void show() {

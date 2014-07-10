@@ -23,15 +23,15 @@ import org.apache.commons.lang.StringUtils;
  * @author David Virgil Naranjo
  */
 public class MavenMetaData {
-    private String groupId = "";
-    private String artifactId = "";
-    private String version = "";
-    private String type = "";
-    private String classifier = "";
+    private String groupId = ""; //$NON-NLS-1$
+    private String artifactId = ""; //$NON-NLS-1$
+    private String version = ""; //$NON-NLS-1$
+    private String type = ""; //$NON-NLS-1$
+    private String classifier = ""; //$NON-NLS-1$
 
-    private String parentType = "";
+    private String parentType = ""; //$NON-NLS-1$
 
-    private String fileName = "";
+    private String fileName = ""; //$NON-NLS-1$
 
 
 
@@ -220,7 +220,7 @@ public class MavenMetaData {
         if (StringUtils.isBlank(parentType)) {
             return fileName;
         } else {
-            return fileName.substring(0, fileName.lastIndexOf("."));
+            return fileName.substring(0, fileName.lastIndexOf(".")); //$NON-NLS-1$
         }
     }
 
@@ -233,9 +233,9 @@ public class MavenMetaData {
 
     @Override
     public String toString() {
-        return "MavenMetaData [groupId=" + groupId + ", artifactId=" + artifactId + ", version=" + version
-                + ", type=" + type + ", classifier=" + classifier + ", parentType=" + parentType
-                + ", fileName=" + fileName + "]";
+        return "MavenMetaData [groupId=" + groupId + ", artifactId=" + artifactId + ", version=" + version //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ", type=" + type + ", classifier=" + classifier + ", parentType=" + parentType //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ", fileName=" + fileName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }
