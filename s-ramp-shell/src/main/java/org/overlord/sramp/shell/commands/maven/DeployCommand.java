@@ -47,7 +47,7 @@ import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
 /**
  * Uploads a file to the S-RAMP repository as a new artifact.  Additionally
  * adds Maven meta-data to the resulting artifact, including:
- * 
+ *
  * <ul>
  *   <li>Group ID</li>
  *   <li>Artifact ID</li>
@@ -57,7 +57,7 @@ import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
  *   <li>MD5 Hash</li>
  *   <li>SHA1 Hash</li>
  * </ul>
- * 
+ *
  * Usage:
  * <pre>
  *   maven:deploy &lt;pathToFile&gt; &lt;groupId&gt;:&lt;artifactId&gt;:&lt;version&gt;:[&lt;type&gt;]:[&lt;classifier&gt;] [&lt;artifactType&gt;]
@@ -112,9 +112,14 @@ public class DeployCommand extends BuiltInShellCommand {
             content = FileUtils.openInputStream(file);
             BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
             IOUtils.closeQuietly(content);
-            
+
             // Process GAV and other meta-data, then update the artifact
             MavenMetaData mmd = new MavenMetaData(gavArg, file);
+            if (mmd.type == null) {
+                print(Messages.i18n.format("DeployCommand.TypeNotSet", file.getName())); //$NON-NLS-1$
+                IOUtils.closeQuietly(content);
+                return false;
+            }
             String artifactName = mmd.artifactId + '-' + mmd.version;
             String pomName = mmd.artifactId + '-' + mmd.version + ".pom"; //$NON-NLS-1$
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_GROUP_ID, mmd.groupId);
@@ -140,7 +145,7 @@ public class DeployCommand extends BuiltInShellCommand {
                 archive = expander.createSrampArchive();
                 client.uploadBatch(archive);
             }
-            
+
             // Generate and add a POM for the artifact
             String pom = generatePom(mmd);
             InputStream pomContent = new ByteArrayInputStream(pom.getBytes("UTF-8")); //$NON-NLS-1$
@@ -149,7 +154,7 @@ public class DeployCommand extends BuiltInShellCommand {
             SrampModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_TYPE, "pom"); //$NON-NLS-1$
             SrampModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_HASH_MD5, DigestUtils.md5Hex(pom));
             SrampModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_HASH_SHA1, DigestUtils.shaHex(pom));
-            
+
             client.uploadArtifact(pomArtifact, pomContent);
 
             // Put the artifact in the session as the active artifact
@@ -232,8 +237,8 @@ public class DeployCommand extends BuiltInShellCommand {
         }
         return -1;
     }
-    
-    
+
+
     /**
      * Encapsulates maven meta-data information for a file.
      *
@@ -247,7 +252,7 @@ public class DeployCommand extends BuiltInShellCommand {
         public String classifier;
         public String md5;
         public String sha1;
-        
+
         /**
          * Constructor.
          * @param gavArg
@@ -263,6 +268,8 @@ public class DeployCommand extends BuiltInShellCommand {
             version = split[2];
             if (split.length >= 4) {
                 type = split[3];
+            } else {
+                type = getType(file.getName());
             }
             if (split.length >= 5) {
                 classifier = split[5];
@@ -276,7 +283,31 @@ public class DeployCommand extends BuiltInShellCommand {
             sha1 = DigestUtils.shaHex(is);
             IOUtils.closeQuietly(is);
         }
-        
+
+        /**
+         * Obtain the type of file from its filename.
+         *
+         * @param filename
+         */
+        private String getType(String filename) {
+            if (filename.contains(".")) {//$NON-NLS-1$
+                String type = filename.substring(filename.lastIndexOf('.') + 1); //$NON-NLS-1$
+                if (filename.endsWith(".sha1")) { //$NON-NLS-1$
+                    type = filename.substring(0, filename.length() - 5);
+                    type = type.substring(type.lastIndexOf('.') + 1) + ".sha1"; //$NON-NLS-1$
+                }
+                if (filename.endsWith(".md5")) { //$NON-NLS-1$
+                    type = filename.substring(0, filename.length() - 4);
+                    type = type.substring(type.lastIndexOf('.') + 1) + ".md5"; //$NON-NLS-1$
+                }
+                return type;
+            } else {
+                return null;
+            }
+
+        }
     }
+
+
 
 }
