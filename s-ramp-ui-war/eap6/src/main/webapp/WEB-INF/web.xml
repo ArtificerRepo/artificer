@@ -67,10 +67,6 @@
       <param-name>ROLES</param-name>
       <param-value>overlorduser</param-value>
     </init-param>
-    <init-param>
-      <param-name>IGNORE_SIGNATURES</param-name>
-      <param-value>true</param-value>
-    </init-param>
   </filter>
   <filter-mapping>
     <filter-name>AuthenticationFilter</filter-name>
@@ -205,34 +201,5 @@
     <servlet-name>OntologyDownload</servlet-name>
     <url-pattern>/app/services/ontologyDownload</url-pattern>
   </servlet-mapping>
-
-  <!-- Define a Security Constraint on this Application -->
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>S-RAMP UI</web-resource-name>
-      <url-pattern>*.html</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>overlorduser</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <!-- Define the Login Configuration for this Application -->
-  <login-config>
-    <auth-method>FORM</auth-method>
-    <realm-name>Overlord</realm-name>
-    <form-login-config>
-      <form-login-page>/login.html</form-login-page>
-      <form-error-page>/loginerror.html</form-error-page>
-    </form-login-config>
-  </login-config>
-
-  <!-- Security roles referenced by this web application -->
-  <security-role>
-    <description>
-        The role that is required to log in to the S-RAMP UI.
-    </description>
-    <role-name>overlorduser</role-name>
-  </security-role>
 
 </web-app>

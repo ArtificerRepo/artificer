@@ -44,8 +44,6 @@
       <module name="org.jboss.msc" />
       <module name="org.jboss.netty" />
       <module name="org.jboss.resteasy.resteasy-jaxrs" />
-      <module name="org.picketlink" />
-      <module name="org.picketlink.config" />
     </dependencies>
     <exclude-subsystems>
       <subsystem name="webservices" />
