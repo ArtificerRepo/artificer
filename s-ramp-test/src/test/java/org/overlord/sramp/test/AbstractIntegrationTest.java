@@ -17,6 +17,8 @@ package org.overlord.sramp.test;
 
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -34,6 +36,7 @@ import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
+import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 
@@ -45,39 +48,42 @@ public abstract class AbstractIntegrationTest {
     
     // Note: Running Arquillian in its as-client mode by leaving off the @Deployment.
     
-    private static final String HOST = "localhost";
+    private static final String HOST = "localhost"; //$NON-NLS-1$
     
     private static final int PORT = 8080;
     
-    private static final String BASE_URL = "http://" + HOST + ":" + PORT + "/s-ramp-server";
+    private static final String BASE_URL = "http://" + HOST + ":" + PORT + "/s-ramp-server"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     
-    private static final String USERNAME = "admin";
+    private static final String USERNAME = "admin"; //$NON-NLS-1$
     
-    private static final String PASSWORD = "overlord1!";
+    private static final String PASSWORD = "overlord1!"; //$NON-NLS-1$
     
     @After
     public void cleanup() {
-        cleanup("serviceImplementation");
-        cleanup("soa");
-        cleanup("policy");
-        cleanup("wsdl");
-        cleanup("ext");
-        cleanup("core");
-        cleanup("xsd");
-    }
-    
-    private void cleanup(String model) {
+        
+        // delete all artifacts
         try {
-            SrampAtomApiClient client = client("");
+            SrampAtomApiClient client = client();
             // Rather than mess with pagination, just set the count to something sufficiently large.
-            QueryResultSet results = client.query("/s-ramp/" + model, 0, 1000, "name", true);
+            QueryResultSet results = client.query("/s-ramp", 0, 10000, "name", true); //$NON-NLS-1$ //$NON-NLS-2$
             for (ArtifactSummary summary : results) {
                 if (!summary.isDerived()) {
                     client.deleteArtifact(summary.getUuid(), summary.getType());
                 }
             }
         } catch (Exception e) {
-            fail("Unable to cleanup test.");
+            fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
+        }
+        
+        // delete all ontologies
+        try {
+            SrampAtomApiClient client = client();
+            List<OntologySummary> ontologies = client.getOntologies();
+            for (OntologySummary ontology : ontologies) {
+                client.deleteOntology(ontology.getUuid());
+            }
+        } catch (Exception e) {
+            fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
         }
     }
     
@@ -97,8 +103,8 @@ public abstract class AbstractIntegrationTest {
         return PASSWORD;
     }
     
-    protected SrampAtomApiClient client(String endpoint) throws SrampClientException, SrampAtomException {
-        return new SrampAtomApiClient(BASE_URL + endpoint, USERNAME, PASSWORD, true);
+    protected SrampAtomApiClient client() throws SrampClientException, SrampAtomException {
+        return new SrampAtomApiClient(BASE_URL, USERNAME, PASSWORD, true);
     }
     
     protected ClientRequest clientRequest(String endpoint) {

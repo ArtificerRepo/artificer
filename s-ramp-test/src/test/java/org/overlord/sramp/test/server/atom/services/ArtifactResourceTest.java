@@ -489,7 +489,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	        xmlDocument.setCreatedBy("kurt"); //$NON-NLS-1$
 	        xmlDocument.setDescription("In depth description of this XML document"); //$NON-NLS-1$
 	        xmlDocument.setName("PO.xml"); //$NON-NLS-1$
-	        xmlDocument.setUuid(uuid); //$NON-NLS-1$
+	        xmlDocument.setUuid(uuid); 
 	        xmlDocument.setVersion("1.0"); //$NON-NLS-1$
 
 	        Entry atomEntry = new Entry();
@@ -512,7 +512,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
             Entry entry = response.getEntity();
             Assert.assertEquals(artifactFileName, entry.getTitle());
             Artifact artifact = entry.getAnyOtherJAXBObject(Artifact.class);
-            Assert.assertEquals(uuid,artifact.getXmlDocument().getUuid()); //$NON-NLS-1$
+            Assert.assertEquals(uuid,artifact.getXmlDocument().getUuid()); 
             Long size = artifact.getXmlDocument().getContentSize();
             Assert.assertTrue(size >= 825L);
             Assert.assertEquals(artifactFileName, artifact.getXmlDocument().getName());

@@ -90,7 +90,7 @@ public class SrampWagonTest extends AbstractIntegrationTest {
 
 		// Now that we've deployed the artifacts, do some queries to make sure we put away
 		// what we intended.
-		SrampAtomApiClient client = client("/s-ramp/"); //$NON-NLS-1$
+		SrampAtomApiClient client = client(); 
 		QueryResultSet rset = client.query("/s-ramp/ext/JavaArchive"); //$NON-NLS-1$
 		Assert.assertEquals(1, rset.size());
         rset = client.query("/s-ramp/ext/MavenPom"); //$NON-NLS-1$
@@ -172,7 +172,7 @@ public class SrampWagonTest extends AbstractIntegrationTest {
 
 		// Now that we've deployed the artifacts, do some queries to make sure we put away
 		// what we intended.
-		SrampAtomApiClient client = client("/s-ramp/"); //$NON-NLS-1$
+		SrampAtomApiClient client = client(); 
 		QueryResultSet rset = client.query("/s-ramp/ext/JavaArchive"); //$NON-NLS-1$
 		Assert.assertEquals(1, rset.size());
         rset = client.query("/s-ramp/ext/MavenPom"); //$NON-NLS-1$
@@ -223,7 +223,7 @@ public class SrampWagonTest extends AbstractIntegrationTest {
 
         // Now that we've deployed the artifacts, do some queries to make sure we put away
         // what we intended.
-        SrampAtomApiClient client = client("/s-ramp/"); //$NON-NLS-1$
+        SrampAtomApiClient client = client(); 
         QueryResultSet rset = client.query("/s-ramp/core/Document"); //$NON-NLS-1$
         Assert.assertEquals(0, rset.size());
         rset = client.query("/s-ramp/ext/FooApplication"); //$NON-NLS-1$
@@ -298,7 +298,7 @@ public class SrampWagonTest extends AbstractIntegrationTest {
 
         // Now that we've deployed the artifacts, do some queries to make sure we put away
         // what we intended.
-        SrampAtomApiClient client = client("/s-ramp/"); //$NON-NLS-1$
+        SrampAtomApiClient client = client(); 
         QueryResultSet rset = client.query("/s-ramp[@maven.groupId = 'org.overlord.sramp.test']"); //$NON-NLS-1$
         Assert.assertEquals(4, rset.size());
 
@@ -326,7 +326,7 @@ public class SrampWagonTest extends AbstractIntegrationTest {
 	@Test
 	public void testWagonPull() throws Exception {
 		// First, deploy some maven annotated artifacts
-		SrampAtomApiClient client = client("/s-ramp/"); //$NON-NLS-1$
+		SrampAtomApiClient client = client(); 
 		InputStream archiveStream = null;
 		SrampArchive archive = null;
 		try {

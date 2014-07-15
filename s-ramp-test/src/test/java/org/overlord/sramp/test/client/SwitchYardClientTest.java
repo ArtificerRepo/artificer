@@ -37,7 +37,7 @@ public class SwitchYardClientTest extends AbstractNoAuditingClientTest {
 
 	@Test
 	public void testUploadArtifact() throws Exception {
-        SrampAtomApiClient client = client("/s-ramp"); //$NON-NLS-1$
+        SrampAtomApiClient client = client();
 
         // Upload the artifacts jar
         InputStream artifactsIS = this.getClass().getResourceAsStream("/sample-files/switchyard/artifacts.jar"); //$NON-NLS-1$

@@ -151,7 +151,7 @@ public class FeedResourceTest extends AbstractNoAuditingResourceTest {
 			String entryUuid = entry.getId().toString();
 			pkgUuids.remove(entryUuid);
 		}
-		assertEquals("The feed did not contain the expected PkgDocument entries.", 0, pkgUuids.size());
+		assertEquals("The feed did not contain the expected PkgDocument entries.", 0, pkgUuids.size()); //$NON-NLS-1$
 
 		// Test the feed of the pkg docs
 		request = clientRequest("/s-ramp/ext/BpmnDocument"); //$NON-NLS-1$
@@ -161,7 +161,7 @@ public class FeedResourceTest extends AbstractNoAuditingResourceTest {
 			String entryUuid = entry.getId().toString();
 			bpmnUuids.remove(entryUuid);
 		}
-        assertEquals("The feed did not contain the expected BpmnDocument entries.", 0, pkgUuids.size());
+        assertEquals("The feed did not contain the expected BpmnDocument entries.", 0, pkgUuids.size()); //$NON-NLS-1$
 	}
 
 	/**

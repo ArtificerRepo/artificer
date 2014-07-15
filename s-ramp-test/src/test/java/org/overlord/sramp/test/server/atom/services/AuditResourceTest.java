@@ -77,7 +77,7 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
 		Entry entry = request.get(Entry.class).getEntity();
 		AuditEntry auditEntry = SrampAtomUtils.unwrap(entry, AuditEntry.class);
 		Assert.assertNotNull(auditEntry);
-        Assert.assertEquals(getUsername(), auditEntry.getWho()); //$NON-NLS-1$
+        Assert.assertEquals(getUsername(), auditEntry.getWho()); 
         Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD, auditEntry.getType());
         List<AuditItemType> auditItems = auditEntry.getAuditItem();
         Assert.assertEquals(1, auditItems.size());
@@ -118,7 +118,7 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
         AuditEntry auditEntry = new AuditEntry();
         auditEntry.setType("junit:test1"); //$NON-NLS-1$
         auditEntry.setWhen(now);
-        auditEntry.setWho(getUsername()); //$NON-NLS-1$
+        auditEntry.setWho(getUsername()); 
         AuditItemType item = AuditUtils.getOrCreateAuditItem(auditEntry, "junit:item"); //$NON-NLS-1$
         AuditUtils.setAuditItemProperty(item, "foo", "bar"); //$NON-NLS-1$ //$NON-NLS-2$
         AuditUtils.setAuditItemProperty(item, "hello", "world"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -129,7 +129,7 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
         AuditEntry re = SrampAtomUtils.unwrap(entry, AuditEntry.class);
         Assert.assertNotNull(re);
         Assert.assertNotNull(re.getUuid());
-        Assert.assertEquals(getUsername(), re.getWho()); //$NON-NLS-1$
+        Assert.assertEquals(getUsername(), re.getWho()); 
         Assert.assertEquals(1, re.getAuditItem().size());
         Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType()); //$NON-NLS-1$
         Assert.assertEquals(2, re.getAuditItem().iterator().next().getProperty().size());
@@ -148,7 +148,7 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
         re = SrampAtomUtils.unwrap(entry, AuditEntry.class);
         Assert.assertNotNull(re);
         Assert.assertNotNull(re.getUuid());
-        Assert.assertEquals(getUsername(), re.getWho()); //$NON-NLS-1$
+        Assert.assertEquals(getUsername(), re.getWho()); 
         Assert.assertEquals(1, re.getAuditItem().size());
         Assert.assertEquals("junit:item", re.getAuditItem().iterator().next().getType()); //$NON-NLS-1$
         Assert.assertEquals(2, re.getAuditItem().iterator().next().getProperty().size());
