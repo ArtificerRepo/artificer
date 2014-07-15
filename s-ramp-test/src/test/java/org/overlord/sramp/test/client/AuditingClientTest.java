@@ -38,10 +38,10 @@ public class AuditingClientTest extends AbstractAuditingClientTest {
 
     @Test
     public void testAuditing() throws Exception {
-        SrampAtomApiClient client = client("/s-ramp"); //$NON-NLS-1$
+        SrampAtomApiClient client = client(); 
         
         // Get all audit entries by user (later used for a delta)
-        AuditResultSet resultSet = client.getAuditTrailForUser(getUsername()); //$NON-NLS-1$
+        AuditResultSet resultSet = client.getAuditTrailForUser(getUsername()); 
         Assert.assertNotNull(resultSet);
         long currentAudit = resultSet.getTotalResults();
         
@@ -57,7 +57,7 @@ public class AuditingClientTest extends AbstractAuditingClientTest {
         Assert.assertEquals(1, resultSet.getTotalResults());
         AuditEntrySummary summary = resultSet.get(0);
         Assert.assertNotNull(summary);
-        Assert.assertEquals(getUsername(), summary.getWho()); //$NON-NLS-1$
+        Assert.assertEquals(getUsername(), summary.getWho()); 
         Assert.assertEquals("artifact:add", summary.getType()); //$NON-NLS-1$
 
         // Add a custom entry
@@ -65,10 +65,10 @@ public class AuditingClientTest extends AbstractAuditingClientTest {
         XMLGregorianCalendar now = dtFactory.newXMLGregorianCalendar((GregorianCalendar)Calendar.getInstance());
         auditEntry.setType("junit:test1"); //$NON-NLS-1$
         auditEntry.setWhen(now);
-        auditEntry.setWho(getUsername()); //$NON-NLS-1$
+        auditEntry.setWho(getUsername()); 
         AuditEntry newEntry = client.addAuditEntry(artifactUuid, auditEntry );
         Assert.assertNotNull(newEntry);
-        Assert.assertEquals(getUsername(), newEntry.getWho()); //$NON-NLS-1$
+        Assert.assertEquals(getUsername(), newEntry.getWho()); 
         Assert.assertEquals("junit:test1", newEntry.getType()); //$NON-NLS-1$
 
         // Get the audit trail again
@@ -77,21 +77,21 @@ public class AuditingClientTest extends AbstractAuditingClientTest {
         Assert.assertEquals(2, resultSet.getTotalResults());
         summary = resultSet.get(0);
         Assert.assertNotNull(summary);
-        Assert.assertEquals(getUsername(), summary.getWho()); //$NON-NLS-1$
+        Assert.assertEquals(getUsername(), summary.getWho()); 
         Assert.assertEquals("junit:test1", summary.getType()); //$NON-NLS-1$
         summary = resultSet.get(1);
         Assert.assertNotNull(summary);
-        Assert.assertEquals(getUsername(), summary.getWho()); //$NON-NLS-1$
+        Assert.assertEquals(getUsername(), summary.getWho()); 
         Assert.assertEquals("artifact:add", summary.getType()); //$NON-NLS-1$
 
         // Get the full audit entry
         auditEntry = client.getAuditEntry(artifactUuid, summary.getUuid());
         Assert.assertNotNull(newEntry);
-        Assert.assertEquals(getUsername(), auditEntry.getWho()); //$NON-NLS-1$
+        Assert.assertEquals(getUsername(), auditEntry.getWho()); 
         Assert.assertEquals("artifact:add", auditEntry.getType()); //$NON-NLS-1$
 
         // Get all audit entries by user
-        resultSet = client.getAuditTrailForUser(getUsername()); //$NON-NLS-1$
+        resultSet = client.getAuditTrailForUser(getUsername()); 
         Assert.assertNotNull(resultSet);
         Assert.assertEquals(3, resultSet.getTotalResults() - currentAudit);
     }

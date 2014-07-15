@@ -46,7 +46,7 @@ public abstract class AbstractClientTest extends AbstractIntegrationTest {
         String artifactFileName = "PO.xml"; //$NON-NLS-1$
         InputStream is = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
         try {
-            SrampAtomApiClient client = client("/s-ramp"); //$NON-NLS-1$
+            SrampAtomApiClient client = client();
             return client.uploadArtifact(ArtifactType.XmlDocument(), is, artifactFileName);
         } finally {
             IOUtils.closeQuietly(is);

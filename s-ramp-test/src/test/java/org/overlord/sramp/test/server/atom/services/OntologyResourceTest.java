@@ -54,9 +54,6 @@ public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 
         Assert.assertNotNull(ontology);
         assertEquals(rdf, ontology);
-        
-        // delete it to prevent OntologyAlreadyExistsException
-        deleteOntology(entry.getId().toString());
     }
 
     /**
@@ -96,9 +93,6 @@ public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 
 		Assert.assertNotNull(ontology);
 		assertEquals(rdf, ontology);
-        
-        // delete it to prevent OntologyAlreadyExistsException
-        deleteOntology(uuid);
 	}
 
 	@Test
@@ -119,11 +113,6 @@ public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 		Feed feed = request.get(Feed.class).getEntity();
 		Assert.assertNotNull(feed);
 		Assert.assertEquals(2, feed.getEntries().size());
-        
-        // delete it to prevent OntologyAlreadyExistsException
-		for (Entry entry : feed.getEntries()) {
-		    deleteOntology(entry.getId().toString());
-		}
 	}
 
 	/**
@@ -194,10 +183,5 @@ public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 		Unmarshaller unMarshaller = jaxbContext.createUnmarshaller();
 		return (RDF) unMarshaller.unmarshal(resourceUrl);
 	}
-
-    private void deleteOntology(String uuid) throws Exception {
-        ClientRequest request = clientRequest("/s-ramp/ontology/" + uuid); //$NON-NLS-1$
-        request.delete(Void.class);
-    }
 
 }
