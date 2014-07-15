@@ -139,11 +139,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>tjws</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-common</artifactId>
       <classifier>tests</classifier>
