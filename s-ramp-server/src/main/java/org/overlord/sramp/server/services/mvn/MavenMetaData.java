@@ -23,6 +23,8 @@ import org.apache.commons.lang.StringUtils;
  * @author David Virgil Naranjo
  */
 public class MavenMetaData {
+
+    public static final String SEPARATOR_FULL_NAME = ":";
     private String groupId = ""; //$NON-NLS-1$
     private String artifactId = ""; //$NON-NLS-1$
     private String version = ""; //$NON-NLS-1$
@@ -32,6 +34,8 @@ public class MavenMetaData {
     private String parentType = ""; //$NON-NLS-1$
 
     private String fileName = ""; //$NON-NLS-1$
+
+    private String snapshotId = ""; //$NON-NLS-1$
 
 
 
@@ -54,7 +58,7 @@ public class MavenMetaData {
      * @param fileName
      *            the file name
      */
-    public MavenMetaData(String groupId, String artifactId, String version, String type, String classifier,
+    public MavenMetaData(String groupId, String artifactId, String version, String type, String classifier, String snapshotId,
             String parentType, String fileName) {
         super();
         this.groupId = groupId;
@@ -64,6 +68,7 @@ public class MavenMetaData {
         this.classifier = classifier;
         this.parentType = parentType;
         this.fileName = fileName;
+        this.snapshotId = snapshotId;
     }
 
     /**
@@ -211,6 +216,14 @@ public class MavenMetaData {
         return fileName;
     }
 
+    public String getSnapshotId() {
+        return snapshotId;
+    }
+
+    public void setSnapshotId(String snapshotId) {
+        this.snapshotId = snapshotId;
+    }
+
     /**
      * Gets the file name.
      *
@@ -229,6 +242,17 @@ public class MavenMetaData {
             return true;
         }
         return false;
+    }
+
+    public String getFullName() {
+        StringBuilder builder = new StringBuilder("");
+        builder.append(groupId).append(SEPARATOR_FULL_NAME);
+        if (StringUtils.isNotBlank(version)) {
+            builder.append(version);
+        }
+        builder.append(SEPARATOR_FULL_NAME);
+        builder.append(fileName);
+        return builder.toString();
     }
 
     @Override

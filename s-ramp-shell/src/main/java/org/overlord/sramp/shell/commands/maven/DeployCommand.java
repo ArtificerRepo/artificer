@@ -20,20 +20,29 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry;
+import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
+import org.overlord.sramp.client.SrampClientException;
+import org.overlord.sramp.client.SrampClientQuery;
+import org.overlord.sramp.client.query.ArtifactSummary;
+import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampModelUtils;
@@ -66,6 +75,8 @@ import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
  * @author eric.wittmann@redhat.com
  */
 public class DeployCommand extends BuiltInShellCommand {
+
+    public static final String SEPARATOR_FULL_NAME = ":";
 
     /**
      * Constructor.
@@ -109,10 +120,6 @@ public class DeployCommand extends BuiltInShellCommand {
             } else {
                 artifactType = determineArtifactType(file);
             }
-            content = FileUtils.openInputStream(file);
-            BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
-            IOUtils.closeQuietly(content);
-
             // Process GAV and other meta-data, then update the artifact
             MavenMetaData mmd = new MavenMetaData(gavArg, file);
             if (mmd.type == null) {
@@ -120,6 +127,19 @@ public class DeployCommand extends BuiltInShellCommand {
                 IOUtils.closeQuietly(content);
                 return false;
             }
+            BaseArtifactType artifact = findExistingArtifactByGAV(client, mmd);
+            if (artifact != null) {
+                    print(Messages.i18n.format("DeployCommand.Failure.ReleaseArtifact.Exist", mmd.getFullName())); //$NON-NLS-1$
+                    return false;
+            } else {
+                content = FileUtils.openInputStream(file);
+                artifact = client.uploadArtifact(artifactType, content, file.getName());
+                IOUtils.closeQuietly(content);
+            }
+
+
+
+            // Process GAV and other meta-data, then update the artifact
             String artifactName = mmd.artifactId + '-' + mmd.version;
             String pomName = mmd.artifactId + '-' + mmd.version + ".pom"; //$NON-NLS-1$
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_GROUP_ID, mmd.groupId);
@@ -127,6 +147,9 @@ public class DeployCommand extends BuiltInShellCommand {
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_VERSION, mmd.version);
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_HASH_MD5, mmd.md5);
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_HASH_SHA1, mmd.sha1);
+            if (StringUtils.isNotBlank(mmd.snapshotId)) {
+                SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_SNAPSHOT_ID, mmd.snapshotId);
+            }
             if (mmd.classifier != null) {
                 SrampModelUtils.setCustomProperty(artifact, "maven.classifier", mmd.classifier); //$NON-NLS-1$
                 artifactName += '-' + mmd.classifier;
@@ -252,6 +275,7 @@ public class DeployCommand extends BuiltInShellCommand {
         public String classifier;
         public String md5;
         public String sha1;
+        public String snapshotId;
 
         /**
          * Constructor.
@@ -282,11 +306,50 @@ public class DeployCommand extends BuiltInShellCommand {
             is = new FileInputStream(file);
             sha1 = DigestUtils.shaHex(is);
             IOUtils.closeQuietly(is);
+            boolean snapshot = version != null && version.endsWith("-SNAPSHOT"); //$NON-NLS-1$
+            snapshotId = null;
+            if (snapshot && !file.getName().contains(version)) {
+                snapshotId = extractSnapshotId(file.getName(), version, type, classifier);
+            }
+
+        }
+
+        private String extractSnapshotId(String filename, String version, String type, String classifier) {
+            if (version == null) {
+                return null;
+            }
+
+            String front = version.substring(0, version.indexOf("-SNAPSHOT")); //$NON-NLS-1$
+            String back = "." + type; //$NON-NLS-1$
+            if (classifier != null) {
+                back = "-" + classifier + back; //$NON-NLS-1$
+            }
+            int idx1 = filename.indexOf(front) + front.length() + 1;
+            int idx2 = filename.indexOf(back);
+
+            if (idx1 > 0 && idx1 < filename.length() && idx2 > 0 && idx2 < filename.length()) {
+                return filename.substring(idx1, idx2);
+            } else {
+                return null;
+            }
+        }
+
+        public String getFullName() {
+            StringBuilder builder = new StringBuilder("");
+            builder.append(groupId).append(SEPARATOR_FULL_NAME);
+            if (StringUtils.isNotBlank(version)) {
+                builder.append(version);
+            }
+            builder.append(SEPARATOR_FULL_NAME);
+            builder.append(artifactId);
+            builder.append(SEPARATOR_FULL_NAME);
+            builder.append(type);
+            return builder.toString();
         }
 
         /**
          * Obtain the type of file from its filename.
-         *
+         * 
          * @param filename
          */
         private String getType(String filename) {
@@ -307,6 +370,78 @@ public class DeployCommand extends BuiltInShellCommand {
 
         }
     }
+
+    /**
+     * Finds an existing artifact in the s-ramp repository that matches the GAV
+     * information.
+     *
+     * @param client
+     * @param gavInfo
+     * @return an s-ramp artifact (if found) or null (if not found)
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     * @throws JAXBException
+     */
+    private BaseArtifactType findExistingArtifactByGAV(SrampAtomApiClient client, MavenMetaData gavInfo) throws SrampAtomException,
+            SrampClientException, JAXBException {
+        SrampClientQuery clientQuery = null;
+
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("/s-ramp"); //$NON-NLS-1$
+        List<String> criteria = new ArrayList<String>();
+        List<Object> params = new ArrayList<Object>();
+
+        criteria.add("@maven.groupId = ?");
+        params.add(gavInfo.groupId);
+        criteria.add("@maven.artifactId = ?");
+        params.add(gavInfo.artifactId);
+        criteria.add("@maven.version = ?");
+        params.add(gavInfo.version);
+
+        if (StringUtils.isNotBlank(gavInfo.type)) {
+            criteria.add("@maven.type = ?");
+            params.add(gavInfo.type);
+        }
+        if (StringUtils.isNotBlank(gavInfo.classifier)) {
+            criteria.add("@maven.classifier = ?");
+            params.add(gavInfo.classifier);
+        } else {
+            criteria.add("xp2:not(@maven.classifier)");
+        }
+        if (StringUtils.isNotBlank(gavInfo.snapshotId)) {
+            return null;
+        } else {
+            criteria.add("xp2:not(@maven.snapshot.id)");
+        }
+
+        if (criteria.size() > 0) {
+            queryBuilder.append("["); //$NON-NLS-1$
+            queryBuilder.append(StringUtils.join(criteria, " and ")); //$NON-NLS-1$
+            queryBuilder.append("]"); //$NON-NLS-1$
+        }
+        clientQuery = client.buildQuery(queryBuilder.toString());
+        for (Object param : params) {
+            if (param instanceof String) {
+                clientQuery.parameter((String) param);
+            }
+            if (param instanceof Calendar) {
+                clientQuery.parameter((Calendar) param);
+            }
+        }
+
+        QueryResultSet rset = clientQuery.count(100).query();
+        if (rset.size() > 0) {
+            for (ArtifactSummary summary : rset) {
+                String uuid = summary.getUuid();
+                ArtifactType artifactType = summary.getType();
+                BaseArtifactType arty = client.getArtifactMetaData(artifactType, uuid);
+                return arty;
+
+            }
+        }
+        return null;
+    }
+
 
 
 
