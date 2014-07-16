@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.overlord.sramp</groupId>
+    <artifactId>s-ramp</artifactId>
+    <version>0.5.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>s-ramp-distro</artifactId>
+  <name>S-RAMP Distros</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>assembly-cli</module>
+    <module>assembly-demos</module>
+    <module>assembly</module>
+    <module>fabric</module>
+    <module>fuse61</module>
+    <module>shell</module>
+  </modules>
+
+</project>

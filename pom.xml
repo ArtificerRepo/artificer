@@ -934,18 +934,9 @@
     <module>s-ramp-common</module>
     <module>s-ramp-demos</module>
     <module>s-ramp-dev-server</module>
-    <module>s-ramp-distro/assembly</module>
-    <module>s-ramp-distro/assembly-cli</module>
-    <module>s-ramp-distro/assembly-demos</module>
-    <module>s-ramp-distro/fabric</module>
-    <module>s-ramp-distro/fuse61</module>
-    <module>s-ramp-distro/shell</module>
+    <module>s-ramp-distro</module>
     <module>s-ramp-installer</module>
-    <module>s-ramp-integration/java</module>
-    <module>s-ramp-integration/kie</module>
-    <module>s-ramp-integration/rtgov</module>
-    <module>s-ramp-integration/switchyard</module>
-    <module>s-ramp-integration/teiid</module>
+    <module>s-ramp-integration</module>
     <module>s-ramp-javadoc</module>
     <module>s-ramp-repository</module>
     <module>s-ramp-repository-jcr</module>
