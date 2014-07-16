@@ -24,7 +24,6 @@ import org.overlord.sramp.atom.providers.AuditEntryProvider;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.OntologyProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
-import org.overlord.sramp.server.atom.services.brms.BrmsResource;
 
 /**
  * The SRAMP RESTEasy application.  This is essentially the main entry point into a
@@ -42,7 +41,6 @@ public class SRAMPApplication extends Application {
 	public SRAMPApplication() {
 		singletons.add(new ServiceDocumentResource());
 		singletons.add(new ArtifactResource());
-		singletons.add(new BrmsResource());
 		singletons.add(new FeedResource());
 		singletons.add(new QueryResource());
 		singletons.add(new BatchResource());
