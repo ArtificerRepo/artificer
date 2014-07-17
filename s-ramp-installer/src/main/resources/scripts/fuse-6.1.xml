@@ -25,7 +25,7 @@
   	      <property name="appserver.id" value="${appserver.id}" />
   	      <property name="overlord-commons.install.dir" location="${s-ramp.install.dir}" />
   	      <property name="overlord-commons.appserver.dir" location="${s-ramp.appserver.dir}" />
-  	    </ant>
+  	    </ant>  	
   </target>
 	
   <target name="copy-files" depends="properties-fuse-6.1">	
@@ -45,8 +45,8 @@
       <entry key="s-ramp-ui.atom-api.endpoint" value="${server.host}/s-ramp-server" />
       <entry key="s-ramp-ui.atom-api.authentication.saml.sign-assertions" value="false" />
       <entry key="s-ramp-ui.atom-api.authentication.saml.keystore" value="${sys:karaf.home}/etc//overlord-saml.keystore" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="samlkeystore77" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="overlord99" />
+      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="${overlord.auth.saml-keystore-password}" />
+      <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="${overlord.auth.saml-key-alias-password}" />
     </propertyfile>
 
     <!-- Set the location of the modeshape config file in sramp.properties -->
@@ -68,8 +68,6 @@
       <entry key="org.ops4j.pax.url.mvn.repositories" 
              value="${org.ops4j.pax.url.mvn.repositories}, http://repository.jboss.org/nexus/content/groups/developer/@snapshots" />
     </propertyfile>
-
-
 
     <echo message=" " />
     <echo message="########" />

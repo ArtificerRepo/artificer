@@ -34,7 +34,6 @@
       <property name="overlord-commons.install.dir" location="${s-ramp.install.dir}" />
       <property name="overlord-commons.appserver.dir" location="${s-ramp.appserver.dir}" />
     </ant>
-
     <echo>-----------------------------------</echo>
     <echo>Deploying S-RAMP DataSource</echo>
     <echo>-----------------------------------</echo>
@@ -67,8 +66,8 @@
     <!-- Set the SAML keystore and alias password in the s-ramp-ui config -->
     <propertyfile file="${s-ramp.jetty.config.dir}/sramp-ui.properties">
       <entry key="s-ramp-ui.atom-api.authentication.saml.keystore" value="${sys:jetty.home}/etc/overlord-saml.keystore" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="samlkeystore77" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="overlord99" />
+      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="${overlord.auth.saml-keystore-password}" />
+      <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="${overlord.auth.saml-key-alias-password}" />
     </propertyfile>
 
     <!-- Set the location of the modeshape config file in sramp.properties -->
@@ -87,7 +86,7 @@
     </xslt>
     <copy file="${s-ramp.install.dir}/_tmp_jetty.xml" tofile="${s-ramp.jetty.config.dir}/jetty.xml" overwrite="true" />
     <delete file="${s-ramp.install.dir}/_tmp_jetty.xml" />
-
+  
     <echo message=" " />
     <echo message="########" />
     <echo message="# DONE #" />
