@@ -266,12 +266,6 @@
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-common</artifactId>
         <version>${project.version}</version>
-        <type>test-jar</type>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-common</artifactId>
-        <version>${project.version}</version>
         <classifier>tests</classifier>
       </dependency>
       <dependency>
@@ -323,12 +317,6 @@
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
-        <version>${project.version}</version>
-        <classifier>tests</classifier>
       </dependency>
       <dependency>
         <groupId>org.overlord.sramp</groupId>
@@ -965,6 +953,7 @@
     <module>s-ramp-server/tomcat7</module>
     <module>s-ramp-shell</module>
     <module>s-ramp-shell-api</module>
+    <module>s-ramp-test</module>
     <module>s-ramp-ui-war</module>
     <module>s-ramp-ui-war/eap6</module>
     <module>s-ramp-ui-war/fuse61</module>
@@ -972,7 +961,6 @@
     <module>s-ramp-ui-war/tomcat7</module>
     <module>s-ramp-ui-widgets</module>
     <module>s-ramp-wagon</module>
-    <module>s-ramp-test</module>
   </modules>
 </project>
 
