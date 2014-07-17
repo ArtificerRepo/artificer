@@ -34,7 +34,6 @@
       <property name="overlord-commons.install.dir" location="${s-ramp.install.dir}" />
       <property name="overlord-commons.appserver.dir" location="${s-ramp.appserver.dir}" />
     </ant>
-
     <echo>-----------------------------------</echo>
     <echo>Deploying S-RAMP DataSource</echo>
     <echo>-----------------------------------</echo>
@@ -65,6 +64,7 @@
       <entry key="sramp.modeshape.config.url" value="${sys:catalina.home}/conf/sramp-modeshape.json" />
     </propertyfile>
 
+  	
     <echo message=" " />
     <echo message="########" />
     <echo message="# DONE #" />

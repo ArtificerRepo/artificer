@@ -24,15 +24,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.maven.wagon.ConnectionException;
 import org.apache.maven.wagon.InputData;
@@ -637,7 +641,7 @@ public class SrampWagon extends StreamWagon {
 	 * @throws TransferFailedException
 	 */
 	private void doPutArtifact(final MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
-		
+
 		// See the comment in {@link SrampWagon#fillInputData(InputData)} about why we're doing this
 		// context classloader magic.
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
@@ -650,10 +654,10 @@ public class SrampWagon extends StreamWagon {
 			// First, stash the content in a temp file - we may need it multiple times.
 			tempResourceFile = stashResourceContent(resourceInputStream);
 			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
-			
+
 			ArchiveInfo archiveInfo = ZipToSrampArchiveRegistry.inspectArchive(resourceInputStream);
 			ArtifactType artifactType = getArtifactType(gavInfo, archiveInfo.type);
-			
+
 			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
 
 			// Is the artifact grouping option enabled?
@@ -666,12 +670,8 @@ public class SrampWagon extends StreamWagon {
 			// If we found an artifact, we should update its content.  If not, we should upload
 			// the artifact to the repository.
 			if (artifact != null) {
-				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
-				client.updateArtifactContent(artifact, resourceInputStream);
-				if (ZipToSrampArchiveRegistry.canExpand(artifactType)) {
-					final String parentUUID = artifact.getUuid();
-					cleanExpandedArtifacts(client, parentUUID);
-				}
+                throw new TransferFailedException(Messages.i18n.format("ARTIFACT_UPDATE_NOT_ALLOWED", gavInfo.getFullName()));
+
 			} else {
 				// Upload the content, then add the maven properties to the artifact
 				// as meta-data
@@ -680,8 +680,12 @@ public class SrampWagon extends StreamWagon {
 				SrampModelUtils.setCustomProperty(artifact, "maven.artifactId", gavInfo.getArtifactId()); //$NON-NLS-1$
 				SrampModelUtils.setCustomProperty(artifact, "maven.version", gavInfo.getVersion()); //$NON-NLS-1$
 				artifact.setVersion(gavInfo.getVersion());
-				if (gavInfo.getClassifier() != null)
+                if (gavInfo.getClassifier() != null) {
 					SrampModelUtils.setCustomProperty(artifact, "maven.classifier", gavInfo.getClassifier()); //$NON-NLS-1$
+                }
+                if (gavInfo.getSnapshotId() != null && !gavInfo.getSnapshotId().equals("")) {
+                    SrampModelUtils.setCustomProperty(artifact, "maven.snapshot.id", gavInfo.getSnapshotId()); //$NON-NLS-1$
+                }
 				SrampModelUtils.setCustomProperty(artifact, "maven.type", gavInfo.getType()); //$NON-NLS-1$
 				// Also create a relationship to the artifact grouping, if necessary
 				if (artifactGrouping != null) {
@@ -821,21 +825,48 @@ public class SrampWagon extends StreamWagon {
 	private BaseArtifactType findExistingArtifactByGAV(SrampAtomApiClient client, MavenGavInfo gavInfo)
 			throws SrampAtomException, SrampClientException, JAXBException {
 		SrampClientQuery clientQuery = null;
-		// Search by classifier if we have one...
-		if (gavInfo.getClassifier() == null) {
-		    clientQuery = client.buildQuery("/s-ramp[@maven.groupId = ? and @maven.artifactId = ? and @maven.version = ? and @maven.type = ?]") //$NON-NLS-1$
-		            .parameter(gavInfo.getGroupId())
-		            .parameter(gavInfo.getArtifactId())
-		            .parameter(gavInfo.getVersion())
-		            .parameter(gavInfo.getType());
-		} else {
-            clientQuery = client.buildQuery("/s-ramp[@maven.groupId = ? and @maven.artifactId = ? and @maven.version = ? and @maven.classifier = ? and @maven.type = ?]") //$NON-NLS-1$
-                    .parameter(gavInfo.getGroupId())
-                    .parameter(gavInfo.getArtifactId())
-                    .parameter(gavInfo.getVersion())
-                    .parameter(gavInfo.getClassifier())
-                    .parameter(gavInfo.getType());
-		}
+
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("/s-ramp"); //$NON-NLS-1$
+        List<String> criteria = new ArrayList<String>();
+        List<Object> params = new ArrayList<Object>();
+
+        criteria.add("@maven.groupId = ?");
+        params.add(gavInfo.getGroupId());
+        criteria.add("@maven.artifactId = ?");
+        params.add(gavInfo.getArtifactId());
+        criteria.add("@maven.version = ?");
+        params.add(gavInfo.getVersion());
+
+        if (StringUtils.isNotBlank(gavInfo.getType())) {
+            criteria.add("@maven.type = ?");
+            params.add(gavInfo.getType());
+        }
+        if (StringUtils.isNotBlank(gavInfo.getClassifier())) {
+            criteria.add("@maven.classifier = ?");
+            params.add(gavInfo.getClassifier());
+        }
+        if (StringUtils.isNotBlank(gavInfo.getSnapshotId())) {
+            return null;
+        } else {
+            criteria.add("xp2:not(@maven.snapshot.id)");
+        }
+
+        if (criteria.size() > 0) {
+            queryBuilder.append("["); //$NON-NLS-1$
+            queryBuilder.append(StringUtils.join(criteria, " and ")); //$NON-NLS-1$
+            queryBuilder.append("]"); //$NON-NLS-1$
+        }
+        clientQuery = client.buildQuery(queryBuilder.toString());
+        for (Object param : params) {
+            if (param instanceof String) {
+                clientQuery.parameter((String) param);
+            }
+            if (param instanceof Calendar) {
+                clientQuery.parameter((Calendar) param);
+            }
+        }
+
 		QueryResultSet rset = clientQuery.count(100).query();
 		if (rset.size() > 0) {
 			for (ArtifactSummary summary : rset) {

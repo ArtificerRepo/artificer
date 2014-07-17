@@ -22,7 +22,7 @@
   <target name="install" depends="properties-jboss-eap-6">
     <echo message=" " />
     <echo message="#############################################" />
-    <echo message="# Installing S-RAMP into JBoss EAP 6.     #" />
+    <echo message="# Installing S-RAMP into JBoss EAP 6. #" />
     <echo message="#############################################" />
 
     <antcall target="config-jboss-eap-6" />
@@ -30,10 +30,10 @@
     <echo>----------------------------------</echo>
     <echo>Installing Overlord Commons</echo>
     <echo>----------------------------------</echo>
-    <unzip src="${s-ramp.overlord-commons.installer.jar}" 
+    <unzip src="${s-ramp.overlord-commons.installer.jar}"
            dest="${s-ramp.overlord-commons.installer.dir}" overwrite="false" />
     <ant antfile="${s-ramp.overlord-commons.installer.dir}/build.xml" target="install"
-         dir="${s-ramp.overlord-commons.installer.dir}" 
+         dir="${s-ramp.overlord-commons.installer.dir}"
          inheritall="true" inheritrefs="false">
       <property name="appserver.id" value="${appserver.id}" />
       <property name="overlord-commons.install.dir" location="${s-ramp.install.dir}" />
@@ -43,9 +43,9 @@
     <echo>-----------------------------------</echo>
     <echo>Deploying S-RAMP and S-RAMP UI</echo>
     <echo>-----------------------------------</echo>
-    <copy file="${s-ramp.s-ramp-server.war.path}" 
+    <copy file="${s-ramp.s-ramp-server.war.path}"
           tofile="${s-ramp.jboss.deploy.dir}/s-ramp-server.war" overwrite="true" />
-    <copy file="${s-ramp.s-ramp-ui.war.path}" 
+    <copy file="${s-ramp.s-ramp-ui.war.path}"
           tofile="${s-ramp.jboss.deploy.dir}/s-ramp-ui.war" overwrite="true" />
 
     <echo>-----------------------------------</echo>
@@ -70,13 +70,13 @@
     <echo>-----------------------------------</echo>
     <echo>Installing Modeshape Service</echo>
     <echo>-----------------------------------</echo>
-    <unzip src="${s-ramp.modeshape-distribution.zip.path}"  dest="${s-ramp.appserver.dir}" overwrite="false" />
+    <unzip src="${s-ramp.modeshape-distribution.zip.path}" dest="${s-ramp.appserver.dir}" overwrite="false" />
     <delete>
       <dirset dir="${s-ramp.jboss.module.path}/org/modeshape/">
         <include name="**/META-INF"/>
       </dirset>
     </delete>
-    <xslt 
+    <xslt
       style="${s-ramp.updates.dir}/xslt/modeshape-module-${appserver.id}.xslt"
       in="${s-ramp.jboss.module.path}/org/modeshape/main/module.xml"
       out="${s-ramp.install.dir}/_tmp_modeshape_module.xml" />
@@ -86,20 +86,20 @@
     <echo>-----------------------------------</echo>
     <echo>Configuring Modeshape Service</echo>
     <echo>-----------------------------------</echo>
-    <xslt 
+    <xslt
       style="${s-ramp.updates.dir}/xslt/configureModeshape-${appserver.id}.xslt"
       in="${s-ramp.jboss.config.dir}/standalone.xml"
       out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
     <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone.xml" overwrite="true" />
     <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
-    <xslt 
+    <xslt
       style="${s-ramp.updates.dir}/xslt/configureModeshape-${appserver.id}.xslt"
       in="${s-ramp.jboss.config.dir}/standalone-full.xml"
       out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
     <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone-full.xml" overwrite="true" />
     <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
 
-    <xslt 
+    <xslt
       style="${s-ramp.updates.dir}/xslt/patchSolr-jboss-eap-6.xslt"
       in="${s-ramp.jboss.module.path}/org/apache/solr/3.6.2/module.xml"
       out="${s-ramp.install.dir}/_tmp_solr_module.xml" />

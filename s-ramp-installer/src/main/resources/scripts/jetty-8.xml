@@ -34,7 +34,6 @@
       <property name="overlord-commons.install.dir" location="${s-ramp.install.dir}" />
       <property name="overlord-commons.appserver.dir" location="${s-ramp.appserver.dir}" />
     </ant>
-
     <echo>-----------------------------------</echo>
     <echo>Deploying S-RAMP DataSource</echo>
     <echo>-----------------------------------</echo>
@@ -80,7 +79,7 @@
     </xslt>
     <copy file="${s-ramp.install.dir}/_tmp_jetty.xml" tofile="${s-ramp.jetty.config.dir}/jetty.xml" overwrite="true" />
     <delete file="${s-ramp.install.dir}/_tmp_jetty.xml" />
-
+  
     <echo message=" " />
     <echo message="########" />
     <echo message="# DONE #" />

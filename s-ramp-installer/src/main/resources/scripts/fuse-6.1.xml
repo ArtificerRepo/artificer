@@ -25,7 +25,7 @@
   	      <property name="appserver.id" value="${appserver.id}" />
   	      <property name="overlord-commons.install.dir" location="${s-ramp.install.dir}" />
   	      <property name="overlord-commons.appserver.dir" location="${s-ramp.appserver.dir}" />
-  	    </ant>
+  	    </ant>  	
   </target>
 	
   <target name="copy-files" depends="properties-fuse-6.1">	
@@ -63,8 +63,6 @@
       <entry key="org.ops4j.pax.url.mvn.repositories" 
              value="${org.ops4j.pax.url.mvn.repositories}, http://repository.jboss.org/nexus/content/groups/developer/@snapshots" />
     </propertyfile>
-
-
 
     <echo message=" " />
     <echo message="########" />

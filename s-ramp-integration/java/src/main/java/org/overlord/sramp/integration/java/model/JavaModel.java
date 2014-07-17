@@ -27,14 +27,14 @@ public class JavaModel {
     public static final String TYPE_WEB_APPLICATION = "JavaWebApplication"; //$NON-NLS-1$
     public static final String TYPE_ENTERPRISE_APPLICATION = "JavaEnterpriseApplication"; //$NON-NLS-1$
     public static final String TYPE_BEANS_XML = "BeanArchiveDescriptor"; //$NON-NLS-1$
-    
+
     public static final String TYPE_JAVA_CLASS = "JavaClass"; //$NON-NLS-1$
     public static final String TYPE_JAVA_INTERFACE = "JavaInterface"; //$NON-NLS-1$
     public static final String TYPE_JAVA_ENUM = "JavaEnum"; //$NON-NLS-1$
 
     public static final String PROP_PACKAGE_NAME = "packageName"; //$NON-NLS-1$
     public static final String PROP_CLASS_NAME = "className"; //$NON-NLS-1$
-    
+
     //maven info
     public static final String TYPE_MAVEN_POM_XML = "MavenPom"; //$NON-NLS-1$
     public static final String PROP_MAVEN_PROPERTY = "maven.property."; //$NON-NLS-1$
@@ -49,6 +49,6 @@ public class JavaModel {
     public static final String PROP_MAVEN_PARENT_VERSION = "maven.parent.version"; //$NON-NLS-1$
     public static final String PROP_MAVEN_HASH_MD5 = "maven.hash.md5"; //$NON-NLS-1$
     public static final String PROP_MAVEN_HASH_SHA1 = "maven.hash.sha1"; //$NON-NLS-1$
-    
+    public static final String PROP_MAVEN_SNAPSHOT_ID = "maven.snapshot.id"; //$NON-NLS-1$
 
 }
