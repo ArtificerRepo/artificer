@@ -90,10 +90,6 @@
     
     <!-- Apache Commons -->
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
@@ -124,25 +120,6 @@
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
       <scope>runtime</scope>
-    </dependency>
-    
-    <!-- Testing (note the scope) -->
-    <dependency>
-      <groupId>org.modeshape</groupId>
-      <artifactId>modeshape-jcr</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-common</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
     </dependency>
 
     <!-- Logging -->
