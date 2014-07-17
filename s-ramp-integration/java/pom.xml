@@ -13,26 +13,12 @@
   <description>S-RAMP Integration: Java contains classes used when integrating the S-RAMP repository with Java projects.</description>
 
   <dependencies>
-    <!-- Project Dependencies -->
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-atom</artifactId>
-    </dependency>
-
     <!-- Third party libraries -->
     <dependency>
       <groupId>org.apache.bcel</groupId>
       <artifactId>bcel</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-      <dependency>
     	<groupId>org.apache.maven</groupId>
     	<artifactId>maven-model</artifactId>
     </dependency>
@@ -45,40 +31,6 @@
     	    <groupId>org.sonatype.sisu</groupId>
     	  </exclusion>
     	</exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-    </dependency>
-    <!-- Declarative Service Annotations -->
-    <dependency>
-	  <groupId>org.apache.felix</groupId>
-	  <artifactId>org.apache.felix.scr.annotations</artifactId>
-	</dependency>         
+    </dependency>         
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

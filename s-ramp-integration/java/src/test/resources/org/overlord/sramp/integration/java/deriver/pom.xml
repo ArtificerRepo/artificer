@@ -142,18 +142,6 @@
     </pluginManagement>
 
     <plugins>
-      <!-- Specify the compiler options and settings -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin.version}</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-          <showDeprecation>false</showDeprecation>
-          <showWarnings>false</showWarnings>
-        </configuration>
-      </plugin>
       <!-- Produce source jars during the 'verify' phase -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -320,38 +308,6 @@
       </plugin>
     </plugins>
   </reporting>
-
-  <repositories>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
 
   <distributionManagement>
     <repository>

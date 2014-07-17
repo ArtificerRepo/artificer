@@ -76,7 +76,6 @@
                 <exclude>WEB-INF/lib/log4j-*.jar</exclude>
                 <exclude>WEB-INF/lib/mail*.jar</exclude>
                 <exclude>WEB-INF/lib/netty*.jar</exclude>
-                <exclude>WEB-INF/lib/org.osgi.core-*.jar</exclude>
                 <exclude>WEB-INF/lib/resteasy*.jar</exclude>
                 <exclude>WEB-INF/lib/scannotation-*.jar</exclude>
                 <exclude>WEB-INF/lib/servlet-api*.jar</exclude>
