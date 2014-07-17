@@ -60,13 +60,6 @@
     <copy file="${s-ramp.updates.dir}/sramp-ui.properties" todir="${s-ramp.tomcat.config.dir}" overwrite="true" />
     <copy file="${s-ramp.updates.dir}/sramp-modeshape.json" todir="${s-ramp.tomcat.config.dir}" overwrite="true" />
 
-    <!-- Set the SAML keystore and alias password in the s-ramp-ui config -->
-    <propertyfile file="${s-ramp.tomcat.config.dir}/sramp-ui.properties">
-      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore" value="${sys:catalina.home}/conf/overlord-saml.keystore" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="samlkeystore77" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="overlord99" />
-    </propertyfile>
-
     <!-- Set the location of the modeshape config file in sramp.properties -->
     <propertyfile file="${s-ramp.tomcat.config.dir}/sramp.properties">
       <entry key="sramp.modeshape.config.url" value="${sys:catalina.home}/conf/sramp-modeshape.json" />

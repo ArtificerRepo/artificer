@@ -23,13 +23,10 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.TreeSet;
 
-import org.junit.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
-import org.overlord.sramp.common.query.xpath.XPathParser;
-import org.overlord.sramp.common.query.xpath.XPathParserException;
 import org.overlord.sramp.common.query.xpath.ast.Query;
 import org.overlord.sramp.common.query.xpath.visitors.XPathSerializationVisitor;
 
@@ -105,5 +102,5 @@ public class XPathParserTest {
 		}
 		return testCases;
 	}
-
+	
 }

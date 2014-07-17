@@ -40,14 +40,8 @@
       <copy file="${s-ramp.updates.dir}/sramp-ui.properties" todir="${s-ramp.fuse.config.dir}" overwrite="true" />
   	  <copy file="${s-ramp.updates.dir}/sramp-modeshape-fuse.json" tofile="${s-ramp.fuse.config.dir}/sramp-modeshape.json" overwrite="true" />
 
-
-      <!-- Set the SAML keystore and alias password in the s-ramp-ui config -->
       <propertyfile file="${s-ramp.fuse.config.dir}/sramp-ui.properties">
         <entry key="s-ramp-ui.atom-api.endpoint" value="${server.host}/s-ramp-server" />
-        <entry key="s-ramp-ui.atom-api.authentication.saml.sign-assertions" value="false" />
-        <entry key="s-ramp-ui.atom-api.authentication.saml.keystore" value="" />
-        <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="" />
-        <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="" />
       </propertyfile>
 
       <!-- Set the location of the modeshape config file in sramp.properties -->

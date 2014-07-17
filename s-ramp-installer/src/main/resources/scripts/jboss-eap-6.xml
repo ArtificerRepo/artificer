@@ -57,13 +57,6 @@
     <copy file="${s-ramp.updates.dir}/sramp.properties" todir="${s-ramp.jboss.config.dir}" overwrite="true" />
     <copy file="${s-ramp.updates.dir}/sramp-ui.properties" todir="${s-ramp.jboss.config.dir}" overwrite="true" />
 
-    <!-- Set the SAML keystore and alias password in the s-ramp-ui config -->
-    <property file="${s-ramp.jboss.config.dir}/overlord-vault-keys.properties" />
-    <propertyfile file="${s-ramp.jboss.config.dir}/sramp-ui.properties">
-      <entry key="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="$${vault:${overlord-commons.saml-keystore.password.hash}}" />
-      <entry key="s-ramp-ui.atom-api.authentication.saml.key-password" value="$${vault:${overlord-commons.overlord-alias.password.hash}}" />
-    </propertyfile>
-
     <echo message=" " />
     <echo message="########" />
     <echo message="# DONE #" />
