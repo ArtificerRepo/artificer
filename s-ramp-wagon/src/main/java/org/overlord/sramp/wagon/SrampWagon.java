@@ -73,6 +73,7 @@ import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.wagon.i18n.Messages;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
@@ -562,19 +563,22 @@ public class SrampWagon extends StreamWagon {
 	 * Gets the artifact type from the resource.
 	 * @param gavInfo
 	 */
-	private ArtifactType getArtifactType(MavenGavInfo gavInfo, String artifactModel) {
+    private ArtifactType getArtifactType(MavenGavInfo gavInfo, String archiveType) {
         String customAT = getParamFromRepositoryUrl("artifactType"); //$NON-NLS-1$
-	    if (gavInfo.getType().equals("pom")) { //$NON-NLS-1$
-	        return ArtifactType.valueOf("MavenPom"); //$NON-NLS-1$
-	    } else if (isPrimaryArtifact(gavInfo) && customAT != null) {
-	        return ArtifactType.valueOf(customAT);
-	    }
-	    if (artifactModel!=null) {
-	    	return ArtifactType.valueOf("ext", artifactModel, true); //$NON-NLS-1$
-	    } else {
-	    	return ArtifactType.valueOf(ArtifactTypeEnum.Document.name());
-	    }
-	}
+        if (gavInfo.getType().equals("pom")) { //$NON-NLS-1$
+            return ArtifactType.valueOf("MavenPom"); //$NON-NLS-1$
+        } else if (isPrimaryArtifact(gavInfo) && customAT != null) {
+            return ArtifactType.valueOf(customAT);
+        } else if (isPrimaryArtifact(gavInfo) && archiveType != null) {
+            return ArtifactType.valueOf("ext", archiveType, true); //$NON-NLS-1$
+        } else if ("jar".equals(gavInfo.getType())) { //$NON-NLS-1$
+            return ArtifactType.valueOf(JavaModel.TYPE_ARCHIVE);
+        } else if ("xml".equals(gavInfo.getType())) { //$NON-NLS-1$
+            return ArtifactType.XmlDocument();
+        } else {
+            return ArtifactType.valueOf(ArtifactTypeEnum.Document.name());
+        }
+    }
 
 	/**
 	 * Puts the maven resource into the s-ramp repository.
