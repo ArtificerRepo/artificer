@@ -73,6 +73,7 @@ import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.wagon.i18n.Messages;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
@@ -561,18 +562,22 @@ public class SrampWagon extends StreamWagon {
 	/**
 	 * Gets the artifact type from the resource.
 	 * @param gavInfo
+	 * @param archiveType
 	 */
-	private ArtifactType getArtifactType(MavenGavInfo gavInfo, String artifactModel) {
-        String customAT = getParamFromRepositoryUrl("artifactType"); //$NON-NLS-1$
+	private ArtifactType getArtifactType(MavenGavInfo gavInfo, String archiveType) {
+	    String customAT = getParamFromRepositoryUrl("artifactType"); //$NON-NLS-1$
 	    if (gavInfo.getType().equals("pom")) { //$NON-NLS-1$
 	        return ArtifactType.valueOf("MavenPom"); //$NON-NLS-1$
 	    } else if (isPrimaryArtifact(gavInfo) && customAT != null) {
 	        return ArtifactType.valueOf(customAT);
-	    }
-	    if (artifactModel!=null) {
-	    	return ArtifactType.valueOf("ext", artifactModel, true); //$NON-NLS-1$
+	    } else if (isPrimaryArtifact(gavInfo) && archiveType != null) {
+	        return ArtifactType.valueOf("ext", archiveType, true); //$NON-NLS-1$
+	    } else if ("jar".equals(gavInfo.getType())) { //$NON-NLS-1$
+	        return ArtifactType.valueOf(JavaModel.TYPE_ARCHIVE);
+	    } else if ("xml".equals(gavInfo.getType())) { //$NON-NLS-1$
+	        return ArtifactType.XmlDocument();
 	    } else {
-	    	return ArtifactType.valueOf(ArtifactTypeEnum.Document.name());
+	        return ArtifactType.valueOf(ArtifactTypeEnum.Document.name());
 	    }
 	}
 
@@ -670,7 +675,7 @@ public class SrampWagon extends StreamWagon {
 			// If we found an artifact, we should update its content.  If not, we should upload
 			// the artifact to the repository.
 			if (artifact != null) {
-                throw new TransferFailedException(Messages.i18n.format("ARTIFACT_UPDATE_NOT_ALLOWED", gavInfo.getFullName()));
+                throw new TransferFailedException(Messages.i18n.format("ARTIFACT_UPDATE_NOT_ALLOWED", gavInfo.getFullName())); //$NON-NLS-1$
 
 			} else {
 				// Upload the content, then add the maven properties to the artifact
@@ -683,7 +688,7 @@ public class SrampWagon extends StreamWagon {
                 if (gavInfo.getClassifier() != null) {
 					SrampModelUtils.setCustomProperty(artifact, "maven.classifier", gavInfo.getClassifier()); //$NON-NLS-1$
                 }
-                if (gavInfo.getSnapshotId() != null && !gavInfo.getSnapshotId().equals("")) {
+                if (gavInfo.getSnapshotId() != null && !gavInfo.getSnapshotId().equals("")) { //$NON-NLS-1$
                     SrampModelUtils.setCustomProperty(artifact, "maven.snapshot.id", gavInfo.getSnapshotId()); //$NON-NLS-1$
                 }
 				SrampModelUtils.setCustomProperty(artifact, "maven.type", gavInfo.getType()); //$NON-NLS-1$
@@ -752,30 +757,6 @@ public class SrampWagon extends StreamWagon {
         }
     }
 
-    /**
-	 * Deletes the 'expanded' artifacts from the s-ramp repository.
-	 * @param client
-	 * @param parentUUID
-	 * @throws SrampClientException
-	 * @throws SrampAtomException
-	 */
-	private void cleanExpandedArtifacts(SrampAtomApiClient client, String parentUUID) throws SrampAtomException, SrampClientException {
-		String query = String.format("/s-ramp[mavenParent[@uuid = '%1$s']]", parentUUID); //$NON-NLS-1$
-		boolean done = false;
-		while (!done) {
-			QueryResultSet rset = client.query(query, 0, 20, "name", true); //$NON-NLS-1$
-			if (rset.size() == 0) {
-				done = true;
-			} else {
-				for (ArtifactSummary entry : rset) {
-					ArtifactType artifactType = entry.getType();
-					String uuid = entry.getUuid();
-					client.deleteArtifact(uuid, artifactType);
-				}
-			}
-		}
-	}
-
 	/**
 	 * Make a temporary copy of the resource by saving the content to a temp file.
 	 * @param resourceInputStream
@@ -831,25 +812,25 @@ public class SrampWagon extends StreamWagon {
         List<String> criteria = new ArrayList<String>();
         List<Object> params = new ArrayList<Object>();
 
-        criteria.add("@maven.groupId = ?");
+        criteria.add("@maven.groupId = ?"); //$NON-NLS-1$
         params.add(gavInfo.getGroupId());
-        criteria.add("@maven.artifactId = ?");
+        criteria.add("@maven.artifactId = ?"); //$NON-NLS-1$
         params.add(gavInfo.getArtifactId());
-        criteria.add("@maven.version = ?");
+        criteria.add("@maven.version = ?"); //$NON-NLS-1$
         params.add(gavInfo.getVersion());
 
         if (StringUtils.isNotBlank(gavInfo.getType())) {
-            criteria.add("@maven.type = ?");
+            criteria.add("@maven.type = ?"); //$NON-NLS-1$
             params.add(gavInfo.getType());
         }
         if (StringUtils.isNotBlank(gavInfo.getClassifier())) {
-            criteria.add("@maven.classifier = ?");
+            criteria.add("@maven.classifier = ?"); //$NON-NLS-1$
             params.add(gavInfo.getClassifier());
         }
         if (StringUtils.isNotBlank(gavInfo.getSnapshotId())) {
             return null;
         } else {
-            criteria.add("xp2:not(@maven.snapshot.id)");
+            criteria.add("xp2:not(@maven.snapshot.id)"); //$NON-NLS-1$
         }
 
         if (criteria.size() > 0) {

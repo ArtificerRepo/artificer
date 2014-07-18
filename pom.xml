@@ -654,6 +654,12 @@
         <artifactId>overlord-commons-dev</artifactId>
         <version>${overlord-commons.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-dist-eap6</artifactId>
+        <version>${overlord-commons.version}</version>
+        <type>zip</type>
+      </dependency>
 
       <!-- Apache Commons -->
       <dependency>

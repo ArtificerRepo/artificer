@@ -25,8 +25,6 @@
     <echo message="# Installing S-RAMP into JBoss EAP 6. #" />
     <echo message="#############################################" />
 
-    <antcall target="config-jboss-eap-6" />
-
     <echo>----------------------------------</echo>
     <echo>Installing Overlord Commons</echo>
     <echo>----------------------------------</echo>
@@ -51,11 +49,7 @@
     <echo>-----------------------------------</echo>
     <echo>Configuring S-RAMP</echo>
     <echo>-----------------------------------</echo>
-    <property name="overlord-apps.dir" location="${s-ramp.jboss.config.dir}/overlord-apps" />
-    <mkdir dir="${overlord-apps.dir}" />
-    <copy file="${s-ramp.updates.dir}/srampui-overlordapp.properties" todir="${overlord-apps.dir}" overwrite="true" />
-    <copy file="${s-ramp.updates.dir}/sramp.properties" todir="${s-ramp.jboss.config.dir}" overwrite="true" />
-    <copy file="${s-ramp.updates.dir}/sramp-ui.properties" todir="${s-ramp.jboss.config.dir}" overwrite="true" />
+    <antcall target="config-jboss-eap-6" />
 
     <echo message=" " />
     <echo message="########" />
@@ -84,21 +78,14 @@
     <delete file="${s-ramp.install.dir}/_tmp_modeshape_module.xml" />
 
     <echo>-----------------------------------</echo>
-    <echo>Configuring Modeshape Service</echo>
+    <echo>Configuring Modeshape Service      </echo>
     <echo>-----------------------------------</echo>
-    <xslt
-      style="${s-ramp.updates.dir}/xslt/configureModeshape-${appserver.id}.xslt"
-      in="${s-ramp.jboss.config.dir}/standalone.xml"
-      out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
-    <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone.xml" overwrite="true" />
-    <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
-    <xslt
-      style="${s-ramp.updates.dir}/xslt/configureModeshape-${appserver.id}.xslt"
-      in="${s-ramp.jboss.config.dir}/standalone-full.xml"
-      out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
-    <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone-full.xml" overwrite="true" />
-    <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+    <transformConfig config="${s-ramp.jboss.config.dir}/standalone.xml" />
+    <transformConfig config="${s-ramp.jboss.config.dir}/standalone-full.xml" />
+    <transformConfig config="${s-ramp.jboss.config.dir}/standalone-full-ha.xml" />
+    <transformConfig config="${s-ramp.jboss.config.dir}/standalone-ha.xml" />
 
+    <!-- Patch solr if needed -->
     <xslt
       style="${s-ramp.updates.dir}/xslt/patchSolr-jboss-eap-6.xslt"
       in="${s-ramp.jboss.module.path}/org/apache/solr/3.6.2/module.xml"
@@ -106,7 +93,27 @@
     <copy file="${s-ramp.install.dir}/_tmp_solr_module.xml" tofile="${s-ramp.jboss.module.path}/org/apache/solr/3.6.2/module.xml" overwrite="true" />
     <delete file="${s-ramp.install.dir}/_tmp_solr_module.xml" />
 
+    <!-- Deploy the datasource -->
     <copy file="${s-ramp.updates.dir}/sramp-ds.xml" todir="${s-ramp.jboss.deploy.dir}" overwrite="true" />
   </target>
+
+  
+  <macrodef name="transformConfig">
+    <attribute name="config"/>
+    <sequential>
+      <xslt
+        style="${s-ramp.updates.dir}/xslt/configureModeshape-${appserver.id}.xslt"
+        in="@{config}"
+        out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+      <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="@{config}" overwrite="true" />
+      <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+      <xslt
+        style="${s-ramp.updates.dir}/xslt/addConfiguration-${appserver.id}.xslt"
+        in="@{config}"
+        out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+      <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="@{config}" overwrite="true" />
+      <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+    </sequential>
+  </macrodef>
 
 </project>

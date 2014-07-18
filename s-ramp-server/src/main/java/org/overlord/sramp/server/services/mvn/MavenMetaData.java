@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class MavenMetaData {
 
-    public static final String SEPARATOR_FULL_NAME = ":";
+    public static final String SEPARATOR_FULL_NAME = ":"; //$NON-NLS-1$
     private String groupId = ""; //$NON-NLS-1$
     private String artifactId = ""; //$NON-NLS-1$
     private String version = ""; //$NON-NLS-1$
@@ -245,7 +245,7 @@ public class MavenMetaData {
     }
 
     public String getFullName() {
-        StringBuilder builder = new StringBuilder("");
+        StringBuilder builder = new StringBuilder(""); //$NON-NLS-1$
         builder.append(groupId).append(SEPARATOR_FULL_NAME);
         if (StringUtils.isNotBlank(version)) {
             builder.append(version);

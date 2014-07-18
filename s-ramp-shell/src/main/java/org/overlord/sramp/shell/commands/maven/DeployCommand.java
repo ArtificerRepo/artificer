@@ -76,7 +76,7 @@ import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
  */
 public class DeployCommand extends BuiltInShellCommand {
 
-    public static final String SEPARATOR_FULL_NAME = ":";
+    public static final String SEPARATOR_FULL_NAME = ":"; //$NON-NLS-1$
 
     /**
      * Constructor.
@@ -335,7 +335,7 @@ public class DeployCommand extends BuiltInShellCommand {
         }
 
         public String getFullName() {
-            StringBuilder builder = new StringBuilder("");
+            StringBuilder builder = new StringBuilder(""); //$NON-NLS-1$
             builder.append(groupId).append(SEPARATOR_FULL_NAME);
             if (StringUtils.isNotBlank(version)) {
                 builder.append(version);
@@ -354,7 +354,7 @@ public class DeployCommand extends BuiltInShellCommand {
          */
         private String getType(String filename) {
             if (filename.contains(".")) {//$NON-NLS-1$
-                String type = filename.substring(filename.lastIndexOf('.') + 1); //$NON-NLS-1$
+                String type = filename.substring(filename.lastIndexOf('.') + 1);
                 if (filename.endsWith(".sha1")) { //$NON-NLS-1$
                     type = filename.substring(0, filename.length() - 5);
                     type = type.substring(type.lastIndexOf('.') + 1) + ".sha1"; //$NON-NLS-1$
@@ -391,27 +391,27 @@ public class DeployCommand extends BuiltInShellCommand {
         List<String> criteria = new ArrayList<String>();
         List<Object> params = new ArrayList<Object>();
 
-        criteria.add("@maven.groupId = ?");
+        criteria.add("@maven.groupId = ?"); //$NON-NLS-1$
         params.add(gavInfo.groupId);
-        criteria.add("@maven.artifactId = ?");
+        criteria.add("@maven.artifactId = ?"); //$NON-NLS-1$
         params.add(gavInfo.artifactId);
-        criteria.add("@maven.version = ?");
+        criteria.add("@maven.version = ?"); //$NON-NLS-1$
         params.add(gavInfo.version);
 
         if (StringUtils.isNotBlank(gavInfo.type)) {
-            criteria.add("@maven.type = ?");
+            criteria.add("@maven.type = ?"); //$NON-NLS-1$
             params.add(gavInfo.type);
         }
         if (StringUtils.isNotBlank(gavInfo.classifier)) {
-            criteria.add("@maven.classifier = ?");
+            criteria.add("@maven.classifier = ?"); //$NON-NLS-1$
             params.add(gavInfo.classifier);
         } else {
-            criteria.add("xp2:not(@maven.classifier)");
+            criteria.add("xp2:not(@maven.classifier)"); //$NON-NLS-1$
         }
         if (StringUtils.isNotBlank(gavInfo.snapshotId)) {
             return null;
         } else {
-            criteria.add("xp2:not(@maven.snapshot.id)");
+            criteria.add("xp2:not(@maven.snapshot.id)"); //$NON-NLS-1$
         }
 
         if (criteria.size() > 0) {
