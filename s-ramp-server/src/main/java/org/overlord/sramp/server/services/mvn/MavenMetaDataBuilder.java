@@ -53,7 +53,7 @@ public class MavenMetaDataBuilder {
         String classifier = ""; //$NON-NLS-1$
         String parentType = ""; //$NON-NLS-1$
         String fileName = ""; //$NON-NLS-1$
-        String snapshotId = "";
+        String snapshotId = ""; //$NON-NLS-1$
 
         if (url.startsWith("/")) { //$NON-NLS-1$
             url = url.substring(1);
@@ -222,7 +222,7 @@ public class MavenMetaDataBuilder {
                                                             String[] counter = StringUtils.split(
                                                                     tokens_file_name[1], "."); //$NON-NLS-1$
                                                             Integer.parseInt(counter[0]);
-                                                            snapshotId = tokens_file_name[0] + "-" + counter[0];
+                                                            snapshotId = tokens_file_name[0] + "-" + counter[0]; //$NON-NLS-1$
                                                             if (tokens_file_name.length > 2) {
                                                                 classifier = tokens_file_name[2];
                                                             } else if (counter.length == 2) {

@@ -56,8 +56,8 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
 
     private static Logger logger = LoggerFactory.getLogger(MavenRepositoryServiceImpl.class);
 
-    private static final String MAVEN_SEPARATOR = "-";
-    private static final String MAVEN_FILE_EXTENSION_SEPARATOR = ".";
+    private static final String MAVEN_SEPARATOR = "-"; //$NON-NLS-1$
+    private static final String MAVEN_FILE_EXTENSION_SEPARATOR = "."; //$NON-NLS-1$
 
     /**
      * Creates the query.
@@ -290,11 +290,11 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
         String classifier = SrampModelUtils.getCustomProperty(artifact, JavaModel.PROP_MAVEN_CLASSIFIER);
         String type = SrampModelUtils.getCustomProperty(artifact, JavaModel.PROP_MAVEN_TYPE);
         if (artifact.getName().contains(artifactId)) {
-            StringBuilder name = new StringBuilder("");
+            StringBuilder name = new StringBuilder(""); //$NON-NLS-1$
             name.append(artifactId);
-            if (version.contains("SNAPSHOT")) {
+            if (version.contains("SNAPSHOT")) { //$NON-NLS-1$
                 if (StringUtils.isNotBlank(snapshotId)) {
-                    name.append(MAVEN_SEPARATOR).append(version.substring(0, version.indexOf("SNAPSHOT"))).append(snapshotId);
+                    name.append(MAVEN_SEPARATOR).append(version.substring(0, version.indexOf("SNAPSHOT"))).append(snapshotId); //$NON-NLS-1$
                 } else {
                     name.append(MAVEN_SEPARATOR).append(version);
                 }
@@ -539,7 +539,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
             // If there is an existing artifact in s-ramp it would be updaded
             // with the new content
             if (baseArtifact != null) {
-                if (metadata.isSnapshotVersion() || metadata.getFileName().equals("maven-metadata.xml")) {
+                if (metadata.isSnapshotVersion() || metadata.getFileName().equals("maven-metadata.xml")) { //$NON-NLS-1$
                     ArtifactType artifactType = ArtifactType.valueOf(baseArtifact);
                     try {
                         persistenceManager.updateArtifactContent(baseArtifact.getUuid(), artifactType, content);
@@ -549,7 +549,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
                     }
                     persisted = baseArtifact;
                 } else {
-                    throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.release.artifact.exist",
+                    throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.release.artifact.exist", //$NON-NLS-1$
                             metadata.getFullName()));
                 }
 

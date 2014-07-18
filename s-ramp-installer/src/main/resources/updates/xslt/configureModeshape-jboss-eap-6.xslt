@@ -7,7 +7,7 @@
   xmlns:inf="urn:jboss:domain:infinispan:1.4"
   xmlns:inf15="urn:jboss:domain:infinispan:1.5"
   xmlns:xalan="http://xml.apache.org/xalan" 
-  exclude-result-prefixes="inf inf15 xalan as as16" version="1.0">
+  exclude-result-prefixes="inf inf15 xalan as as15 as16" version="1.0">
 
   <xsl:output method="xml" encoding="UTF-8" indent="yes" xalan:indent-amount="2" />
 
