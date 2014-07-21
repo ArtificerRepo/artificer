@@ -1,0 +1,5 @@
+<module xmlns="urn:jboss:module:1.0" name="org.overlord.sramp.eap.deployments">
+  <resources>
+    <resource-root path="." />
+  </resources>
+</module>
