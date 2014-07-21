@@ -384,7 +384,8 @@ public class ArtifactDetailsPage extends AbstractPage {
         contentUrl += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType(); //$NON-NLS-1$ //$NON-NLS-2$
         String metaDataUrl = contentUrl + "&as=meta-data"; //$NON-NLS-1$
         this.downloadContentLink.setHref(contentUrl);
-        this.downloadContentLink.setVisible(!artifact.isDerived());
+        // hide the link if the artifact is derived or has no content
+        this.downloadContentLink.setVisible(!artifact.isDerived() && artifact.isDocument());
         this.downloadMetaDataLink.setHref(metaDataUrl);
         this.feedLink.setHref(artifact.getRepositoryLink());
         this.linkToRepository.setHref(artifact.getRepositoryMediaLink());
