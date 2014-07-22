@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- XSLT file to add the security domains to the standalone.xml -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:mod="urn:jboss:module:1.2"
   xmlns="urn:jboss:module:1.2" xmlns:xalan="http://xml.apache.org/xalan" exclude-result-prefixes="mod xalan"
   version="1.0">

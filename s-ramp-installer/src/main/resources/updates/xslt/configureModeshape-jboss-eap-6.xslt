@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- XSLT file to add the security domains to the standalone.xml -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:as="urn:jboss:domain:1.4"
   xmlns:as15="urn:jboss:domain:1.5"
@@ -15,7 +14,7 @@
   <!-- Support for JBoss EAP 6.1 -->
   <!-- ************************* -->
 
-  <xsl:template match="as:server/as:extensions" xmlns="urn:jboss:domain:1.4">
+  <xsl:template match="as:extensions" xmlns="urn:jboss:domain:1.4">
       <extensions>
         <xsl:apply-templates select="@* | *" />
         <extension module="org.modeshape"/>
@@ -57,7 +56,7 @@
   <!-- Support for JBoss EAP 6.2 -->
   <!-- ************************* -->
 
-  <xsl:template match="as15:server/as15:extensions" xmlns="urn:jboss:domain:1.5">
+  <xsl:template match="as15:extensions" xmlns="urn:jboss:domain:1.5">
       <extensions>
         <xsl:apply-templates select="@* | *" />
         <extension module="org.modeshape"/>
@@ -99,7 +98,7 @@
   <!-- Support for JBoss EAP 6.3 -->
   <!-- ************************* -->
 
-  <xsl:template match="as16:server/as16:extensions" xmlns="urn:jboss:domain:1.6">
+  <xsl:template match="as16:extensions" xmlns="urn:jboss:domain:1.6">
       <extensions>
         <xsl:apply-templates select="@* | *" />
         <extension module="org.modeshape"/>

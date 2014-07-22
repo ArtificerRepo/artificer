@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- XSLT file to add the security domains to the standalone.xml -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
     xmlns:oc="urn:jboss:domain:overlord-configuration:1.0"
     exclude-result-prefixes="oc">
@@ -8,7 +7,7 @@
     xalan:indent-amount="2" />
 
 
-  <xsl:template match="/*[name()='server']/*[name()='profile']/oc:subsystem/oc:configurations/oc:configuration[@name = 'overlord']/oc:properties">
+  <xsl:template match="/*[name()='server' or name()='domain']//*[name()='profile']/oc:subsystem/oc:configurations/oc:configuration[@name = 'overlord']/oc:properties">
     <xsl:variable name="currentNS" select="namespace-uri(.)" />
     <xsl:element name="properties" namespace="{$currentNS}">
       <xsl:apply-templates select="./node()|./text()" />
@@ -32,7 +31,7 @@
   </xsl:template>
 
 
-  <xsl:template match="/*[name()='server']/*[name()='profile']/oc:subsystem/oc:configurations">
+  <xsl:template match="/*[name()='server' or name()='domain']//*[name()='profile']/oc:subsystem/oc:configurations">
     <xsl:variable name="currentNS" select="namespace-uri(.)" />
     <xsl:element name="configurations" namespace="{$currentNS}">
       <xsl:apply-templates select="./node()|./text()" />
