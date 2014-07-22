@@ -10,6 +10,7 @@
 
     <property name="s-ramp.jboss.bin.dir" location="${s-ramp.appserver.dir}/bin" />
     <property name="s-ramp.jboss.config.dir" location="${s-ramp.appserver.dir}/standalone/configuration/" />
+    <property name="s-ramp.jboss.domain-config.dir" location="${s-ramp.appserver.dir}/domain/configuration/" />
 
     <property name="s-ramp.jboss.module.path" location="${s-ramp.appserver.dir}/modules" />
     <property name="s-ramp.jboss.deployments.dir" location="${s-ramp.jboss.module.path}/org/overlord/sramp/eap/deployments/main" />
@@ -86,6 +87,7 @@
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone-full.xml" />
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone-full-ha.xml" />
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone-ha.xml" />
+    <transformConfig config="${s-ramp.jboss.domain-config.dir}/domain.xml" />
 
     <!-- Patch solr if needed -->
     <xslt
