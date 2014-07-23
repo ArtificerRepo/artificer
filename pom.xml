@@ -130,42 +130,6 @@
           <version>${maven.plexus-component-metadata.plugin.version}</version>
         </plugin>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <excludePackageNames>org.jboss.downloads.overlord.sramp._2013.auditing:org.oasis_open.docs.s_ramp.ns.s_ramp_v1:org.w3*:org.overlord.sramp.atom.beans:org.overlord.sramp.atom.client:org.overlord.sramp.atom.err:org.overlord.sramp.atom.i18n:org.overlord.sramp.atom.mappers:org.overlord.sramp.atom.providers:org.overlord.sramp.atom.services.brms:org.overlord.sramp.atom.services.brms.assets:org.overlord.sramp.atom.services.brms.packages:org.overlord.sramp.atom.visitors:org.overlord.sramp.common.audit:org.overlord.sramp.common.i18n:org.overlord.sramp.common.ontology:org.overlord.sramp.common.query.xpath:org.overlord.sramp.common.query.xpath.ast:org.overlord.sramp.common.query.xpath.visitors:org.overlord.sramp.common.visitors:org.overlord.sramp.demos*:org.overlord.sramp.integration*:org.overlord.sramp.repository*:org.overlord.sramp.server*:org.overlord.sramp.shell.api.i18n:org.overlord.sramp.shell.commands:org.overlord.sramp.shell.commands.archive:org.overlord.sramp.shell.commands.audit:org.overlord.sramp.shell.commands.core:org.overlord.sramp.shell.commands.maven:org.overlord.sramp.shell.commands.ontology:org.overlord.sramp.shell.i18n:org.overlord.sramp.shell.util:org.overlord.sramp.ui*:org.overlord.sramp.wagon*:*.quickstarts.*</excludePackageNames>
-            <groups>
-              <group>
-                <title>S-RAMP Client</title>
-                <packages>org.overlord.sramp.client*</packages>
-              </group>
-              <group>
-                <title>S-RAMP Artifact Expander</title>
-                <packages>org.overlord.sramp.atom.archive.expand.registry*</packages>
-              </group>
-              <group>
-                <title>S-RAMP Artifact Deriver</title>
-                <packages>org.overlord.sramp.common.derived*</packages>
-              </group>
-              <group>
-                <title>S-RAMP Shell API</title>
-                <packages>org.overlord.sramp.shell.api*</packages>
-              </group>
-            </groups>
-          </configuration>
-          <executions>
-            <execution>
-              <id>aggregate</id>
-              <goals>
-                <goal>aggregate</goal>
-              </goals>
-              <phase>package</phase>
-              <configuration>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-scr-plugin</artifactId>
           <version>${maven.scr.plugin.version}</version>
@@ -538,6 +502,18 @@
         <groupId>org.overlord.sramp.demos.switchyard.multiapp</groupId>
         <artifactId>switchyard-quickstart-demo-multi-artifacts</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-javadoc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-javadoc</artifactId>
+        <version>${project.version}</version>
+        <classifier>javadoc</classifier>
       </dependency>
 
       <!-- S-RAMP documentation (jdocbook) -->
@@ -959,6 +935,7 @@
     <module>s-ramp-integration/kie</module>
     <module>s-ramp-integration/switchyard</module>
     <module>s-ramp-integration/teiid</module>
+    <module>s-ramp-javadoc</module>
     <module>s-ramp-repository</module>
     <module>s-ramp-repository-jcr</module>
     <module>s-ramp-repository-jcr/modeshape</module>
@@ -977,30 +954,5 @@
     <module>s-ramp-ui-widgets</module>
     <module>s-ramp-wagon</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>javadoc</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>aggregate</id>
-                <goals>
-                  <goal>aggregate-jar</goal>
-                </goals>
-                <phase>package</phase>
-                <configuration>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
 

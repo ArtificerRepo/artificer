@@ -178,6 +178,12 @@
       <classifier>jbosseap-dist</classifier>
       <type>zip</type>
     </dependency>
+    
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-javadoc</artifactId>
+      <classifier>javadoc</classifier>
+    </dependency>
   </dependencies>
 
   <build>
