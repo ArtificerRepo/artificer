@@ -188,33 +188,6 @@
 
   <build>
     <plugins>
-    <!-- NOTE: Need to temporarily include the old ModeShape 3.6 distro (EAP 6.1) for the assembly,
-    *without* declaring it as a dependency.  The assembly pulls this in as a fileSet. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.modeshape</groupId>
-                  <artifactId>modeshape-distribution</artifactId>
-                  <version>3.6.0.Final</version>
-                  <classifier>jbosseap-61-dist</classifier>
-                  <type>zip</type>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${project.build.directory}/modeshape</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <dependencies>
@@ -251,6 +224,46 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>community</id>
+      <activation>
+        <property>
+          <name>!product</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <!-- NOTE: Need to temporarily include the old ModeShape 3.6 distro (EAP 6.1) for the assembly,
+               *without* declaring it as a dependency.  The assembly pulls this in as a fileSet. -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.modeshape</groupId>
+                      <artifactId>modeshape-distribution</artifactId>
+                      <version>3.6.0.Final</version>
+                      <classifier>jbosseap-61-dist</classifier>
+                      <type>zip</type>
+                    </artifactItem>
+                  </artifactItems>
+                  <outputDirectory>${project.build.directory}/modeshape</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
     <!-- ***************************************** -->
     <!-- Profile to *test* installing into EAP 6 -->
     <!-- ***************************************** -->
