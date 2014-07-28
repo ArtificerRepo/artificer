@@ -36,6 +36,8 @@
     
     <property name="overlord-commons.idp.file"
       value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
+    <property name="overlord-commons.eap-dist.file"
+    	value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
     <property name="overlord-commons.auth.jboss7.file"
         value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
 
@@ -57,6 +59,8 @@
     
     <property name="overlord-commons.idp.file"
       value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
+    <property name="overlord-commons.eap-dist.file"
+        value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
     <property name="overlord-commons.auth.jboss7.file"
         value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
 

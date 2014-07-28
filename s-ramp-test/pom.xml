@@ -253,6 +253,11 @@
           <type>jar</type>
           <scope>test</scope>
         </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-dist-eap6</artifactId>
+          <type>zip</type>
+        </dependency>
       </dependencies>
     </profile>
     <profile>
@@ -330,6 +335,11 @@
           <type>zip</type>
           <classifier>jbosseap-dist</classifier>
           <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-dist-eap6</artifactId>
+          <type>zip</type>
         </dependency>
       </dependencies>
     </profile>
