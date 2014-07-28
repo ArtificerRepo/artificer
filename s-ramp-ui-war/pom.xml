@@ -246,25 +246,53 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${basedir}</directory>
-              <includes>
-                <include>www-test/**</include>
-                <include>.gwt/**</include>
-                <include>.errai/**</include>
-                <include>src/main/webapp/.errai/**</include>
-                <include>src/main/webapp/app/**</include>
-                <include>src/main/webapp/WEB-INF/deploy/**</include>
-                <include>src/main/webapp/WEB-INF/lib/**</include>
-                <include>src/main/webapp/WEB-INF/classes/**</include>
-                <include>**/gwt-unitCache/**</include>
-                <include>**/*.JUnit/**</include>
-              </includes>
-            </fileset>
-          </filesets>
-        </configuration>
+        <executions>
+          <execution>
+            <id>default-clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+              <filesets>
+                <fileset>
+                  <directory>${basedir}</directory>
+                  <includes>
+                    <include>www-test/**</include>
+                    <include>.gwt/**</include>
+                    <include>.errai/**</include>
+                    <include>src/main/webapp/.errai/**</include>
+                    <include>src/main/webapp/app/**</include>
+                    <include>src/main/webapp/WEB-INF/deploy/**</include>
+                    <include>src/main/webapp/WEB-INF/lib/**</include>
+                    <include>src/main/webapp/WEB-INF/classes/**</include>
+                    <include>**/gwt-unitCache/**</include>
+                    <include>**/*.JUnit/**</include>
+                  </includes>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
+          <execution>
+            <id>package-clean</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <filesets>
+                <fileset>
+                  <directory>${basedir}</directory>
+                  <includes>
+                    <!-- Prevent non-needed GWT junk from ending up in the war. -->
+                    <include>**/.junit_symbolMaps/**</include>
+                  </includes>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
