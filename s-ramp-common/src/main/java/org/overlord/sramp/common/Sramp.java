@@ -16,6 +16,7 @@
 package org.overlord.sramp.common;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang.StringUtils;
 import org.overlord.commons.config.ConfigurationFactory;
 import org.overlord.commons.config.JBossServer;
 
@@ -49,7 +50,7 @@ public class Sramp {
      * @param requestUrl
      */
     public String getBaseUrl(String requestUrl) {
-    	
+
     	String baseUrl = null;
     	//Try grabbing it from the call
         if (requestUrl!=null) {
@@ -103,4 +104,26 @@ public class Sramp {
         return getConfigProperty(SrampConstants.SRAMP_CONFIG_MAVEN_READONLY_USERNAME, "mavenuser"); //$NON-NLS-1$
     }
 
+    public boolean isSnapshot() {
+        String version = getVersion();
+        return StringUtils.isNotBlank(version) && version.contains("SNAPSHOT");
+    }
+
+    public String getVersion() {
+        return Version.get().getVersionString();
+    }
+
+    public boolean containsKey(String key) {
+        return configuration.containsKey(key);
+    }
+
+    public boolean isSnapshotAllowed() {
+        if (containsKey(SrampConstants.SRAMP_SNAPSHOT_ALLOWED)) {
+            String value = getConfigProperty(SrampConstants.SRAMP_SNAPSHOT_ALLOWED, "false"); //$NON-NLS-1$
+            return StringUtils.isNotBlank(value) && value.equals("true"); //$NON-NLS-1$
+
+        } else {
+            return isSnapshot();
+        }
+    }
 }

@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
     xmlns:oc="urn:jboss:domain:overlord-configuration:1.0"
     exclude-result-prefixes="oc">
-
+  <xsl:param name="project.version" />
   <xsl:output xmlns:xalan="http://xml.apache.org/xalan" method="xml" encoding="UTF-8" indent="yes"
     xalan:indent-amount="2" />
 
@@ -39,7 +39,6 @@
       <xsl:element name="configuration" namespace="urn:jboss:domain:overlord-configuration:1.0">
         <xsl:attribute name="name">sramp</xsl:attribute>
         <xsl:element name="properties" namespace="urn:jboss:domain:overlord-configuration:1.0">
-          <!-- No properties defined - all defaults are OK -->
         </xsl:element>
       </xsl:element>
       <!-- S-RAMP UI Config -->

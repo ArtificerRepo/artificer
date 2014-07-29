@@ -65,6 +65,7 @@ public class SrampConstants {
     public static final String SRAMP_CUSTOM_DERIVER_DIR   = "sramp.derivers.customDir"; //$NON-NLS-1$
 
     public static final String SRAMP_CONFIG_MAVEN_READONLY_USERNAME = "sramp.config.maven.readonly-username"; //$NON-NLS-1$
-    
-    public static final String SRAMP_SNAPSHOT_ALLOWED     = "sramp.config.maven.allow-snapshots"; //$NON-NLS-1$
+
+    public static final String SRAMP_SNAPSHOT_ALLOWED = "sramp.config.maven.allow-snapshots"; //$NON-NLS-1$
+
 }
