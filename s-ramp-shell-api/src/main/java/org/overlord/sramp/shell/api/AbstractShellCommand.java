@@ -37,7 +37,7 @@ public abstract class AbstractShellCommand implements ShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.ShellCommand#setContext(org.overlord.sramp.shell.api.ShellContext)
+	 * @see ShellCommand#setContext(ShellContext)
 	 */
 	@Override
 	public void setContext(ShellContext context) {
@@ -52,7 +52,7 @@ public abstract class AbstractShellCommand implements ShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.ShellCommand#setArguments(java.lang.String[])
+	 * @see ShellCommand#setArguments(String[])
 	 */
 	@Override
 	public void setArguments(Arguments arguments) {
@@ -103,7 +103,7 @@ public abstract class AbstractShellCommand implements ShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.ShellCommand#print(java.lang.String, java.lang.Object[])
+	 * @see ShellCommand#print(String, Object[])
 	 */
 	@Override
 	public void print(String formattedMessage, Object... params) {
@@ -129,7 +129,7 @@ public abstract class AbstractShellCommand implements ShellCommand {
 	}
 
 	/**
-	 * @see org.overlord.sramp.shell.api.ShellCommand#tabCompletion(java.lang.String, java.util.List)
+	 * @see ShellCommand#tabCompletion(String, List)
 	 */
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {

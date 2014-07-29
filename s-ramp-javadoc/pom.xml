@@ -73,10 +73,16 @@
                 <mkdir dir="${project.build.directory}/sources" />
                 <copy todir="${project.build.directory}/sources">
                   <fileset dir="..">
-                    <include name="**/src/main/java/org/overlord/sramp/client/*.java" />
-                    <include name="**/src/main/java/org/overlord/sramp/atom/archive/expand/registry/*.java" />
-                    <include name="**/src/main/java/org/overlord/sramp/common/derived/*.java" />
+                    <!-- APIs + packages for arguments and return types -->
+                    <include name="**/src/main/java/org/overlord/sramp/client/**/*.java" />
+                    <include name="**/src/main/java/org/overlord/sramp/atom/archive/**/*.java" />
+                    <include name="**/src/main/java/org/overlord/sramp/common/**/*.java" />
                     <include name="**/src/main/java/org/overlord/sramp/shell/api/*.java" />
+                    
+                    <include name="**/src/main/java/org/overlord/sramp/atom/client/**/*.java" />
+                    <include name="**/src/main/java/org/overlord/sramp/atom/err/**/*.java" />
+                    
+                    <exclude name="**/i18n/**" />
                     <exclude name="**/internal/**" />
                   </fileset>
                 </copy>

@@ -40,7 +40,7 @@ public class SimpleShellContext implements ShellContext {
     }
 
     /**
-     * @see org.overlord.sramp.shell.api.shell.ShellContext#setVariable(javax.xml.namespace.QName, java.lang.Object)
+     * @see ShellContext#setVariable(QName, Object)
      */
     @Override
     public void setVariable(QName name, Object object) {
@@ -48,7 +48,7 @@ public class SimpleShellContext implements ShellContext {
     }
 
     /**
-     * @see org.overlord.sramp.shell.api.shell.ShellContext#setVariable(javax.xml.namespace.QName, java.lang.Object, org.overlord.sramp.shell.api.shell.ShellContextVariableLifecycleHandler)
+     * @see ShellContext#setVariable(QName, Object, ShellContextVariableLifecycleHandler)
      */
     @Override
     public void setVariable(QName name, Object object, ShellContextVariableLifecycleHandler lifecycleHandler) {
@@ -58,7 +58,7 @@ public class SimpleShellContext implements ShellContext {
     }
 
     /**
-     * @see org.overlord.sramp.shell.api.shell.ShellContext#getVariable(javax.xml.namespace.QName)
+     * @see ShellContext#getVariable(QName)
      */
     @Override
     public Object getVariable(QName name) {
@@ -66,7 +66,7 @@ public class SimpleShellContext implements ShellContext {
     }
 
     /**
-     * @see org.overlord.sramp.shell.api.shell.ShellContext#removeVariable(javax.xml.namespace.QName)
+     * @see ShellContext#removeVariable(QName)
      */
     @Override
     public Object removeVariable(QName name) {
@@ -77,21 +77,21 @@ public class SimpleShellContext implements ShellContext {
     }
 
     /**
-     * @see org.overlord.sramp.shell.api.ShellContext#addHandler(org.overlord.sramp.shell.api.ShellContextEventHandler)
+     * @see ShellContext#addHandler(ShellContextEventHandler)
      */
     @Override
     public void addHandler(ShellContextEventHandler handler) {
     }
 
     /**
-     * @see org.overlord.sramp.shell.api.ShellContext#removeHandler(org.overlord.sramp.shell.api.ShellContextEventHandler)
+     * @see ShellContext#removeHandler(ShellContextEventHandler)
      */
     @Override
     public void removeHandler(ShellContextEventHandler handler) {
     }
 
     /**
-     * @see org.overlord.sramp.shell.api.ShellContext#promptForInput(java.lang.String)
+     * @see ShellContext#promptForInput(String)
      */
     @Override
     public String promptForInput(String prompt) {
@@ -99,7 +99,7 @@ public class SimpleShellContext implements ShellContext {
     }
 
     /**
-     * @see org.overlord.sramp.shell.api.ShellContext#promptForPassword(java.lang.String)
+     * @see ShellContext#promptForPassword(String)
      */
     @Override
     public String promptForPassword(String prompt) {

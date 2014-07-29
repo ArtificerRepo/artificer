@@ -129,7 +129,7 @@ public class WsdlDeriver extends XsdDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.repository.derived.XsdDeriver#configureNamespaceMappings(org.overlord.sramp.common.query.xpath.StaticNamespaceContext)
+	 * @see XsdDeriver#configureNamespaceMappings(StaticNamespaceContext)
 	 */
 	@Override
 	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
@@ -140,7 +140,7 @@ public class WsdlDeriver extends XsdDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#createDerivedArtifactCollection()
+	 * @see AbstractXmlDeriver#createDerivedArtifactCollection()
 	 */
 	@Override
 	protected Collection<BaseArtifactType> createDerivedArtifactCollection() {
@@ -148,7 +148,7 @@ public class WsdlDeriver extends XsdDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.derived.XsdDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.derived.AbstractXmlDeriver.XmlDeriverContext)
+	 * @see XsdDeriver#derive(Collection, BaseArtifactType, AbstractXmlDeriver.XmlDeriverContext)
 	 */
 	@Override
 	protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
@@ -917,7 +917,7 @@ public class WsdlDeriver extends XsdDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.derived.XsdDeriver#link(org.overlord.sramp.common.derived.LinkerContext, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.util.Collection)
+	 * @see XsdDeriver#link(LinkerContext, BaseArtifactType, Collection)
 	 */
 	@Override
 	public void link(LinkerContext context, BaseArtifactType sourceArtifact,

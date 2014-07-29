@@ -42,7 +42,7 @@ public class PolicyDeriver extends AbstractXmlDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.repository.derived.AbstractXmlDeriver#configureNamespaceMappings(org.overlord.sramp.common.query.xpath.StaticNamespaceContext)
+	 * @see AbstractXmlDeriver#configureNamespaceMappings(StaticNamespaceContext)
 	 */
 	@Override
 	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
@@ -51,7 +51,7 @@ public class PolicyDeriver extends AbstractXmlDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.derived.AbstractXmlDeriver.XmlDeriverContext)
+	 * @see AbstractXmlDeriver#derive(Collection, BaseArtifactType, AbstractXmlDeriver.XmlDeriverContext)
 	 */
 	@Override
 	protected void derive(Collection<BaseArtifactType> derivedArtifacts, BaseArtifactType artifact,
@@ -59,7 +59,7 @@ public class PolicyDeriver extends AbstractXmlDeriver {
 	}
 
 	/**
-	 * @see org.overlord.sramp.common.derived.ArtifactDeriver#link(org.overlord.sramp.common.derived.LinkerContext, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, java.util.Collection)
+	 * @see ArtifactDeriver#link(LinkerContext, BaseArtifactType, Collection)
 	 */
 	@Override
 	public void link(LinkerContext context, BaseArtifactType sourceArtifact,
