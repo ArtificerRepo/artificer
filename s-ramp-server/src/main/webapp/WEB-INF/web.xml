@@ -21,7 +21,7 @@
   
   <servlet>
     <servlet-name>MavenRepository</servlet-name>
-    <servlet-class>org.overlord.sramp.server.servlets.MavenRepositoryServlet</servlet-class>
+    <servlet-class>org.overlord.sramp.server.mvn.services.MavenRepositoryService</servlet-class>
     <jsp-file>/list_items.jsp</jsp-file>
   </servlet>
   <servlet-mapping>

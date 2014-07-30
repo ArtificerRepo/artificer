@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.server.services.mvn;
+package org.overlord.sramp.server.mvn.services;
 
 import org.apache.commons.lang.StringUtils;
 

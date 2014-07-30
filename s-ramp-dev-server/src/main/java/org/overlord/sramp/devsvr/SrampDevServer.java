@@ -65,7 +65,7 @@ import org.overlord.sramp.server.SrampLifeCycle;
 import org.overlord.sramp.server.atom.services.SRAMPApplication;
 import org.overlord.sramp.server.filters.LocaleFilter;
 import org.overlord.sramp.server.filters.MavenRepositoryAuthFilter;
-import org.overlord.sramp.server.servlets.MavenRepositoryServlet;
+import org.overlord.sramp.server.mvn.services.MavenRepositoryService;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 import org.overlord.sramp.ui.server.api.SAMLBearerTokenAuthenticationProvider;
 import org.overlord.sramp.ui.server.servlets.ArtifactDownloadServlet;
@@ -206,7 +206,7 @@ public class SrampDevServer extends ErraiDevServer {
         resteasyServlet.setInitParameter("javax.ws.rs.Application", SRAMPApplication.class.getName());
         srampServer.addServlet(resteasyServlet, "/s-ramp/*");
         //maven repository servlet:
-        ServletHolder mvnServlet = new ServletHolder(new MavenRepositoryServlet());
+        ServletHolder mvnServlet = new ServletHolder(new MavenRepositoryService());
         srampServer.addServlet(mvnServlet, "/maven/repository/*");
         srampServer.addServlet(mvnServlet, "/maven/repository");
         // TODO enable JSP support to test the repository listing

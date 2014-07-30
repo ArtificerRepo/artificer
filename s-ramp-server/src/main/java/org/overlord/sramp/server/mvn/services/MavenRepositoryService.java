@@ -13,24 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.server.services.mvn;
+package org.overlord.sramp.server.mvn.services;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
@@ -42,7 +52,6 @@ import org.overlord.sramp.repository.QueryManagerFactory;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.overlord.sramp.server.i18n.Messages;
-import org.overlord.sramp.server.services.MavenRepositoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,24 +61,137 @@ import org.slf4j.LoggerFactory;
  *
  * @author David Virgil Naranjo
  */
-public class MavenRepositoryServiceImpl implements MavenRepositoryService {
+public class MavenRepositoryService extends HttpServlet {
 
-    private static Logger logger = LoggerFactory.getLogger(MavenRepositoryServiceImpl.class);
+    private static final long serialVersionUID = 1L;
 
     private static final String MAVEN_SEPARATOR = "-"; //$NON-NLS-1$
     private static final String MAVEN_FILE_EXTENSION_SEPARATOR = "."; //$NON-NLS-1$
 
-    /**
-     * Creates the query.
-     *
-     * @param criteria
-     *            the criteria
-     * @param parameters
-     *            the parameters
-     * @return the artifact set
-     * @throws SrampAtomException
-     *             the sramp atom exception
-     */
+    private static final String JSP_LOCATION_LIST_DIR = "/list_items.jsp"; //$NON-NLS-1$
+    private static final String URL_CONTEXT_STR = "maven/repository"; //$NON-NLS-1$
+
+    private static boolean SNAPSHOT_ALLOWED;
+
+    private static Logger logger = LoggerFactory.getLogger(MavenRepositoryService.class);
+
+    static {
+        Sramp sramp = new Sramp();
+        String value = sramp.getConfigProperty(SrampConstants.SRAMP_SNAPSHOT_ALLOWED, "false"); //$NON-NLS-1$
+        if (StringUtils.isNotBlank(value) && value.equals("true")) { //$NON-NLS-1$
+            SNAPSHOT_ALLOWED = true;
+        } else {
+            SNAPSHOT_ALLOWED = false;
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        // Get the URL request and prepare it to obtain the maven metadata
+        // information
+        String url = req.getRequestURI();
+        String maven_url = ""; //$NON-NLS-1$
+        if (url.contains(URL_CONTEXT_STR)) {
+            maven_url = url.substring(url.indexOf(URL_CONTEXT_STR) + URL_CONTEXT_STR.length());
+        } else {
+            maven_url = url;
+        }
+
+        if (maven_url.startsWith("/")) { //$NON-NLS-1$
+            maven_url = maven_url.substring(1);
+        }
+
+        // Builder class that converts the url into a Maven MetaData Object
+        MavenMetaData metadata = MavenMetaDataBuilder.build(maven_url);
+
+        // If it is possible to detect a maven metadata information and it is
+        // found an artifact information
+        if (metadata.isArtifact()) {
+
+            // Here we have the gav info. So let's go to Sramp to
+            // obtain the InputStream with the info
+            MavenArtifactWrapper artifact = null;
+            try {
+                artifact = getArtifactContent(metadata);
+                if (artifact != null) {
+                    resp.setContentLength(artifact.getContentLength());
+                    resp.addHeader("Content-Disposition", //$NON-NLS-1$
+                            "attachment; filename=" + artifact.getFileName()); //$NON-NLS-1$
+                    resp.setContentType(artifact.getContentType());
+                    IOUtils.copy(artifact.getContent(), resp.getOutputStream());
+                } else {
+                    listItemsResponse(req, resp, maven_url);
+                }
+            } catch (MavenRepositoryException e) {
+                logger.info(Messages.i18n.format(
+                        "maven.servlet.artifact.content.get.exception", //$NON-NLS-1$
+                        metadata.getGroupId(), metadata.getArtifactId(), metadata.getVersion(),
+                        metadata.getFileName()));
+                // Send a 500 error if there's an exception
+                resp.sendError(500);
+            } finally {
+                if (artifact != null) {
+                    IOUtils.closeQuietly(artifact.getContent());
+                }
+            }
+
+        } else {
+            // In case the metadata information is not an artifact, then the
+            // maven url is listed
+            listItemsResponse(req, resp, maven_url);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse response) throws ServletException,
+            IOException {
+        uploadArtifact(req, response);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse response) throws ServletException,
+            IOException {
+        uploadArtifact(req, response);
+    }
+
+    private void listItemsResponse(HttpServletRequest req, HttpServletResponse resp, String url)
+            throws ServletException, IOException {
+        if (!url.endsWith("/")) { //$NON-NLS-1$
+            url = url + "/"; //$NON-NLS-1$
+        }
+        try {
+            // Gets all the items from the maven url
+            Set<String> items = getItems(url);
+
+            // If there are items or the request is the root maven folder
+            if ((items != null && items.size() > 0) || (url.equals("/") || url.equals(""))) { //$NON-NLS-1$ //$NON-NLS-2$
+                // Dispatch the request to the JSP that would display the items
+                RequestDispatcher dispatcher = req.getRequestDispatcher(JSP_LOCATION_LIST_DIR);
+                if (StringUtils.isNotBlank(url) && !url.equals("/")) { //$NON-NLS-1$
+                    String[] urlTokens = url.split("/"); //$NON-NLS-1$
+                    String parentPath = ""; //$NON-NLS-1$
+                    if (urlTokens.length > 1) {
+                        for (int i = 0; i < urlTokens.length - 1; i++) {
+                            parentPath += urlTokens[i] + "/"; //$NON-NLS-1$
+                        }
+                    }
+                    parentPath = "/" + parentPath; //$NON-NLS-1$
+                    req.setAttribute("parentPath", parentPath); //$NON-NLS-1$
+                } else {
+                    url = ""; //$NON-NLS-1$
+                }
+                req.setAttribute("relativePath", url); //$NON-NLS-1$
+                req.setAttribute("items", items); //$NON-NLS-1$
+                dispatcher.forward(req, resp);
+            } else {
+                resp.setStatus(HttpStatus.SC_NOT_FOUND);
+            }
+        } catch (MavenRepositoryException e) {
+            resp.sendError(HttpStatus.SC_NOT_FOUND, e.getMessage());
+        }
+    }
+
     private ArtifactSet query(List<String> criteria, List<Object> parameters) throws SrampAtomException {
         ArtifactSet artifactSet = null;
         /* Query */
@@ -105,21 +227,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
         return artifactSet;
     }
 
-    /**
-     * Gets the artifact content.
-     *
-     * @param metadata
-     *            the metadata
-     * @return the artifact content
-     * @throws SrampAtomException
-     *             the sramp atom exception
-     * @throws IOException
-     *             Signals that an I/O exception has occurred.
-     * @see org.overlord.sramp.server.services.MavenRepositoryService#getArtifactContent(java.lang.String,
-     *      java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
-    public MavenArtifactWrapper getArtifactContent(MavenMetaData metadata) throws MavenRepositoryException {
+    private MavenArtifactWrapper getArtifactContent(MavenMetaData metadata) throws MavenRepositoryException {
         // List of criterias and the parameters associated
         List<String> criteria = new ArrayList<String>();
         List<Object> parameters = new ArrayList<Object>();
@@ -227,15 +335,7 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.overlord.sramp.server.services.MavenRepositoryService#getItems(java
-     * .lang.String)
-     */
-    @Override
-    public Set<String> getItems(String path) throws MavenRepositoryException {
+    private Set<String> getItems(String path) throws MavenRepositoryException {
         // It try to get the items based on the different combinations of
         // groupId versionId and artifactId
         Set<String> items = null;
@@ -312,19 +412,6 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
 
     }
 
-    /**
-     * Gets the items.
-     *
-     * @param groupId
-     *            the group id
-     * @param artifactId
-     *            the artifact id
-     * @param version
-     *            the version
-     * @return the items
-     * @throws SrampAtomException
-     *             the sramp atom exception
-     */
     private Set<String> getItems(String groupId, String artifactId, String version) throws MavenRepositoryException {
         // Add the criterias/parameters depends on the method parameters
         List<String> criteria = new ArrayList<String>();
@@ -426,16 +513,56 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
         return items;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.overlord.sramp.server.services.MavenRepositoryService#uploadArtifact
-     * (org.overlord.sramp.server.services.mvn.MavenMetaData,
-     * java.io.InputStream)
-     */
-    @Override
-    public String uploadArtifact(MavenMetaData metadata, InputStream content) throws MavenRepositoryException {
+    private void uploadArtifact(HttpServletRequest req, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Get the URL request and prepare it to obtain the maven metadata
+        // information
+        String url = req.getRequestURI();
+        String maven_url = ""; //$NON-NLS-1$
+        if (url.contains(URL_CONTEXT_STR)) {
+            maven_url = url.substring(url.indexOf(URL_CONTEXT_STR) + URL_CONTEXT_STR.length());
+        } else {
+            maven_url = url;
+        }
+
+        if (maven_url.startsWith("/")) { //$NON-NLS-1$
+            maven_url = maven_url.substring(1);
+        }
+
+        // Extract the relevant content from the POST'd form
+        Map<String, String> responseMap = new HashMap<String, String>();
+
+        InputStream content = null;
+        // Parse the request
+        content = req.getInputStream();
+
+        // Builder class that converts the url into a Maven MetaData Object
+        MavenMetaData metadata = MavenMetaDataBuilder.build(maven_url);
+        try {
+            if (metadata.isArtifact()) {
+                if (SNAPSHOT_ALLOWED || !metadata.isSnapshotVersion()) {
+                    String uuid = uploadArtifact(metadata, content);
+                    responseMap.put("uuid", uuid); //$NON-NLS-1$
+                } else {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Messages.i18n.format("maven.servlet.put.snapshot.not.allowed")); //$NON-NLS-1$
+                }
+
+            } else {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, Messages.i18n.format("maven.servlet.put.url.without.artifact")); //$NON-NLS-1$
+            }
+
+        } catch (Throwable e) {
+            logger.error(Messages.i18n.format("maven.servlet.artifact.content.put.exception"), e); //$NON-NLS-1$
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Messages.i18n.format("maven.servlet.put.exception")); //$NON-NLS-1$
+        } finally {
+            if (content != null) {
+                IOUtils.closeQuietly(content);
+            }
+
+        }
+    }
+
+    private String uploadArtifact(MavenMetaData metadata, InputStream content) throws MavenRepositoryException {
         String uuid = null;
         if (content == null) {
             throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.no.content")); //$NON-NLS-1$
@@ -623,6 +750,22 @@ public class MavenRepositoryServiceImpl implements MavenRepositoryService {
             type = ArtifactType.Document();
         }
         return type;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest
+     * , javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        String method = req.getMethod();
+        String url = req.getRequestURI();
+        logger.info(Messages.i18n.format("maven.repository.servlet.service", method, url)); //$NON-NLS-1$
+        super.service(req, resp);
     }
 
 }

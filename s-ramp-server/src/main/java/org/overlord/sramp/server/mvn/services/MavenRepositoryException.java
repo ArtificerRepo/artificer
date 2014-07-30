@@ -1,4 +1,4 @@
-package org.overlord.sramp.server.services.mvn;
+package org.overlord.sramp.server.mvn.services;
 
 
 /**
