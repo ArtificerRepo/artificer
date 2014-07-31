@@ -57,6 +57,7 @@
   <modules>
     <module>java</module>
     <module>kie</module>
+    <module>rtgov</module>
     <module>switchyard</module>
     <module>teiid</module>
   </modules>
