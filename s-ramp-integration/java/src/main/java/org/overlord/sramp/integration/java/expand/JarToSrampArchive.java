@@ -22,7 +22,7 @@ import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchiveException;
 
 /**
- * Creates an s-ramp archive from a SwitchYard application (JAR or WAR).
+ * Creates an s-ramp archive from a JAR or WAR.
  *
  * @author eric.wittmann@redhat.com
  */

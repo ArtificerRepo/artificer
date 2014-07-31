@@ -50,6 +50,10 @@
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-integration-teiid</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-integration-rtgov</artifactId>
+    </dependency>
 
     <!-- Overlord Commons -->
     <dependency>

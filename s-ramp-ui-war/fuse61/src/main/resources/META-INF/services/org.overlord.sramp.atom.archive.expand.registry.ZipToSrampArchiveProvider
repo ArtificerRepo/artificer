@@ -1,4 +1,0 @@
-org.overlord.sramp.integration.java.expand.JarToSrampArchiveProvider
-org.overlord.sramp.integration.kie.expand.KieJarToSrampArchiveProvider
-org.overlord.sramp.integration.switchyard.expand.SwitchYardAppToSrampArchiveProvider
-org.overlord.sramp.integration.teiid.expand.VdbToSrampArchiveProvider

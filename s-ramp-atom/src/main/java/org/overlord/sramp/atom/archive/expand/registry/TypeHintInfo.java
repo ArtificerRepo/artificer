@@ -50,19 +50,7 @@ public class TypeHintInfo implements  Comparable<TypeHintInfo> {
 	}
 
 	@Override
-	public int compareTo(TypeHintInfo o) {
-		final int BEFORE = -1;
-	    final int EQUAL = 0;
-	    final int AFTER = 1;
-
-	    //this optimization is usually worthwhile, and can
-	    //always be added
-	    if (priority == o.getPriority()) return EQUAL;
-
-	    //primitive numbers follow this form
-	    if (priority < o.getPriority()) return BEFORE;
-	    if (priority > o.getPriority()) return AFTER;
-		
-		return EQUAL;
+	public int compareTo(TypeHintInfo other) {
+		return priority.compareTo(other.getPriority());
 	}
 }
