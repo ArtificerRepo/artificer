@@ -70,27 +70,27 @@ public class TabCompleter implements Completion {
             if (!buffer.contains(":") && !buffer.contains(" ")) { //$NON-NLS-1$ //$NON-NLS-2$
                 //This is the case of archive:list and archive:listEntry.
                 //If the user do not type " " at the end then when click on tab button should display the two options archive:list and archive:listEntry.
-                    // Case 2 - a partial namespace has been typed - show all
-                    // namespaces that match
-                    for (String ns : factory.getNamespaces()) {
-                        if (ns.startsWith(buffer)) {
-                            completeOperation.addCompletionCandidate(ns + ":"); //$NON-NLS-1$
-                        }
-                    }
-                    // If no namespaces matched, then try to match the default
-                    // commands
-
-                    if (completeOperation.getCompletionCandidates().isEmpty()) {
-                        for (QName cmdName : factory.getCommandNames("s-ramp")) { //$NON-NLS-1$
-                            if (cmdName.getLocalPart().startsWith(buffer)) {
-                                completeOperation.addCompletionCandidate(cmdName.getLocalPart());
-
-                            }
-                        }
-                    } else if (completeOperation.getCompletionCandidates().size() == 1) {
-                        completeOperation.doAppendSeparator(false);
+                // Case 2 - a partial namespace has been typed - show all
+                // namespaces that match
+                for (String ns : factory.getNamespaces()) {
+                    if (ns.startsWith(buffer)) {
+                        completeOperation.addCompletionCandidate(ns + ":"); //$NON-NLS-1$
                     }
                 }
+                // If no namespaces matched, then try to match the default
+                // commands
+
+                if (completeOperation.getCompletionCandidates().isEmpty()) {
+                    for (QName cmdName : factory.getCommandNames("s-ramp")) { //$NON-NLS-1$
+                        if (cmdName.getLocalPart().startsWith(buffer)) {
+                            completeOperation.addCompletionCandidate(cmdName.getLocalPart());
+
+                        }
+                    }
+                } else if (completeOperation.getCompletionCandidates().size() == 1) {
+                    completeOperation.doAppendSeparator(false);
+                }
+            }
             // Case 3 - a namespace has been typed and we're waiting at the colon
             else if (buffer.endsWith(":") && !buffer.contains(" ")) { //$NON-NLS-1$ //$NON-NLS-2$
                 String ns = buffer.substring(0, buffer.length() - 1);
