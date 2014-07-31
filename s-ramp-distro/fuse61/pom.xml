@@ -238,7 +238,7 @@
       <plugin>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-maven-plugin</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
@@ -249,7 +249,7 @@
               <outputFile>${project.build.directory}/features.xml</outputFile>
               <attach>true</attach>
               <repositories>
-                <repository>mvn:org.overlord/overlord-commons-dist-fuse6/${overlord-commons.version}/xml/features</repository>
+                <repository>mvn:org.overlord/overlord-commons-dist-fuse6/${version.org.overlord.overlord-commons}/xml/features</repository>
               </repositories>
               <features>
                 <!-- All S-RAMP Dependencies -->
@@ -290,7 +290,7 @@
                     </feature>
                     <feature>
                       <name>overlord-commons</name>
-                      <version>${overlord-commons.version}</version>
+                      <version>${version.org.overlord.overlord-commons}</version>
                     </feature>
                   </dependsOnFeatures>
                   <includes>

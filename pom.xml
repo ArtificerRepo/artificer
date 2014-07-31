@@ -90,27 +90,27 @@
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
     <!-- Maven plugin versions (not in jboss-parent) -->
-    <maven.surefire.report.plugin.version>2.4.3</maven.surefire.report.plugin.version>
-    <maven.exec.plugin.version>1.2.1</maven.exec.plugin.version>
-    <maven.plexus-component-metadata.plugin.version>1.5.5</maven.plexus-component-metadata.plugin.version>
-    <maven.scr.plugin.version>1.9.0</maven.scr.plugin.version>
+    <version.org.apache.maven.plugins>2.4.3</version.org.apache.maven.plugins>
+    <version.org.codehaus.mojo>1.2.1</version.org.codehaus.mojo>
+    <version.org.codehaus.plexus>1.5.5</version.org.codehaus.plexus>
+    <version.org.apache.felix>1.9.0</version.org.apache.felix>
 
     <!-- S-RAMP only libraries (not in BOM) -->
-    <s-ramp-wiki.version>0.5.0.Beta3</s-ramp-wiki.version>
-    <overlord-commons.version>2.0.6.Final</overlord-commons.version>
-    <commons.beanutils.version>1.8.2</commons.beanutils.version>
-    <commons.lang3.version>3.1</commons.lang3.version>
-    <commons.compress.version>1.4.1</commons.compress.version>
-    <org.modeshape.version>3.8.0.Final</org.modeshape.version>
-    <tika-core.version>1.3</tika-core.version> <!-- inline with version used by modeshape -->
-    <bcel.version>5.2</bcel.version>
-    <jcr.version>2.0</jcr.version>
-    <guava-gwt.version>14.0.1</guava-gwt.version>
-    <picketbox.version>4.0.19.SP4</picketbox.version>
-    <picketlink.version>2.5.3.SP4</picketlink.version>
-    <org.switchyard.version>2.0.0.Alpha1</org.switchyard.version>
-    <aesh.version>0.33.13</aesh.version>
-    <fabric8.version>1.0.0.redhat-379</fabric8.version>
+    <version.org.overlord.sramp.s-ramp-wiki>0.5.0.Beta3</version.org.overlord.sramp.s-ramp-wiki>
+    <version.org.overlord.overlord-commons>2.0.6.Final</version.org.overlord.overlord-commons>
+    <version.commons-beanutils>1.8.2</version.commons-beanutils>
+    <version.org.apache.commons.commons-lang3>3.1</version.org.apache.commons.commons-lang3>
+    <version.org.apache.commons.commons-compress>1.4.1</version.org.apache.commons.commons-compress>
+    <version.org.modeshape>3.8.0.Final</version.org.modeshape>
+    <version.org.apache.tika>1.3</version.org.apache.tika> <!-- inline with version used by modeshape -->
+    <version.org.apache.bcel>5.2</version.org.apache.bcel>
+    <version.javax.jcr>2.0</version.javax.jcr>
+    <version.com.google.guava>14.0.1</version.com.google.guava>
+    <version.org.picketbox>4.0.19.SP4</version.org.picketbox>
+    <version.org.picketlink>2.5.3.SP4</version.org.picketlink>
+    <version.org.switchyard>2.0.0.Alpha1</version.org.switchyard>
+    <version.org.jboss.aesh>0.33.13</version.org.jboss.aesh>
+    <version.io.fabric8>1.0.0.redhat-379</version.io.fabric8>
 
     <!-- BOM Overrides -->
     <version.joda-time>2.1</version.joda-time>
@@ -122,17 +122,17 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
-          <version>${maven.exec.plugin.version}</version>
+          <version>${version.org.codehaus.mojo}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.plexus</groupId>
           <artifactId>plexus-component-metadata</artifactId>
-          <version>${maven.plexus-component-metadata.plugin.version}</version>
+          <version>${version.org.codehaus.plexus}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-scr-plugin</artifactId>
-          <version>${maven.scr.plugin.version}</version>
+          <version>${version.org.apache.felix}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -525,7 +525,7 @@
       <dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>sramp-wiki</artifactId>
-        <version>${s-ramp-wiki.version}</version>
+        <version>${version.org.overlord.sramp.s-ramp-wiki}</version>
         <type>jdocbook</type>
       </dependency>
 
@@ -533,112 +533,112 @@
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-ant</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth-jboss7</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth-tomcat7</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth-jetty8</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth-fuse61</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-gwt</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-config</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-errai-fuse-support</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-installer</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-idp-eap6</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-idp-tomcat7</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-idp-jetty8</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-idp-fuse61</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-osgi</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-osgi-weld</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-services</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-uiheader</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-idp</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
         <type>war</type>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-dev</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-dist-eap6</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
         <type>zip</type>
       </dependency>
 
@@ -646,76 +646,76 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>${commons.lang3.version}</version>
+        <version>${version.org.apache.commons.commons-lang3}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>${commons.compress.version}</version>
+        <version>${version.org.apache.commons.commons-compress}</version>
       </dependency>
       <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils-core</artifactId>
-        <version>${commons.beanutils.version}</version>
+        <version>${version.commons-beanutils}</version>
       </dependency>
 
       <!-- Switchyard -->
       <dependency>
         <groupId>org.switchyard</groupId>
         <artifactId>switchyard-api</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
       </dependency>
       <dependency>
         <groupId>org.switchyard</groupId>
         <artifactId>switchyard-plugin</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
       </dependency>
       <dependency>
         <groupId>org.switchyard</groupId>
         <artifactId>switchyard-test</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
       </dependency>
       <dependency>
         <groupId>org.switchyard.components</groupId>
         <artifactId>switchyard-component-bean</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
       </dependency>
       <dependency>
         <groupId>org.switchyard.components</groupId>
         <artifactId>switchyard-component-camel</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
       </dependency>
       <dependency>
         <groupId>org.switchyard.components</groupId>
         <artifactId>switchyard-component-camel-core</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
       </dependency>
       <dependency>
         <groupId>org.switchyard.components</groupId>
         <artifactId>switchyard-component-soap</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
       </dependency>
       <dependency>
         <groupId>org.switchyard.components</groupId>
         <artifactId>switchyard-component-test-mixin-cdi</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
       </dependency>
       <dependency>
         <groupId>org.switchyard.components</groupId>
         <artifactId>switchyard-component-test-mixin-hornetq</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
       </dependency>
       <dependency>
         <groupId>org.switchyard.components</groupId>
         <artifactId>switchyard-component-test-mixin-http</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
       </dependency>
 
       <!-- Third party libraries -->
       <dependency>
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-core</artifactId>
-        <version>${tika-core.version}</version>
+        <version>${version.org.apache.tika}</version>
       </dependency>
       <dependency>
         <groupId>joda-time</groupId>
@@ -725,22 +725,22 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava-gwt</artifactId>
-        <version>${guava-gwt.version}</version>
+        <version>${version.com.google.guava}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.bcel</groupId>
         <artifactId>bcel</artifactId>
-        <version>${bcel.version}</version>
+        <version>${version.org.apache.bcel}</version>
       </dependency>
       <dependency>
         <groupId>javax.jcr</groupId>
         <artifactId>jcr</artifactId>
-        <version>${jcr.version}</version>
+        <version>${version.javax.jcr}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.aesh</groupId>
         <artifactId>aesh</artifactId>
-        <version>${aesh.version}</version>
+        <version>${version.org.jboss.aesh}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.servicemix.bundles</groupId>
@@ -755,12 +755,12 @@
       <dependency>
         <groupId>org.picketbox</groupId>
         <artifactId>picketbox</artifactId>
-        <version>${picketbox.version}</version>
+        <version>${version.org.picketbox}</version>
       </dependency>
       <dependency>
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-federation</artifactId>
-        <version>${picketlink.version}</version>
+        <version>${version.org.picketlink}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.errai</groupId>
@@ -800,36 +800,36 @@
       <dependency>
         <groupId>org.modeshape</groupId>
         <artifactId>modeshape-common</artifactId>
-        <version>${org.modeshape.version}</version>
+        <version>${version.org.modeshape}</version>
       </dependency>
       <dependency>
         <groupId>org.modeshape</groupId>
         <artifactId>modeshape-jcr</artifactId>
-        <version>${org.modeshape.version}</version>
+        <version>${version.org.modeshape}</version>
       </dependency>
       <dependency>
         <groupId>org.modeshape</groupId>
         <artifactId>modeshape-jcr-api</artifactId>
-        <version>${org.modeshape.version}</version>
+        <version>${version.org.modeshape}</version>
       </dependency>
       <dependency>
         <groupId>org.modeshape</groupId>
         <artifactId>modeshape-distribution</artifactId>
-        <version>${org.modeshape.version}</version>
+        <version>${version.org.modeshape}</version>
         <type>zip</type>
         <classifier>jbosseap-dist</classifier>
       </dependency>
       <dependency>
         <groupId>org.modeshape</groupId>
         <artifactId>modeshape-distribution</artifactId>
-        <version>${org.modeshape.version}</version>
+        <version>${version.org.modeshape}</version>
         <type>zip</type>
         <classifier>jbossas-71-dist</classifier>
       </dependency>
       <dependency>
         <groupId>io.fabric8</groupId>
         <artifactId>fabric-api</artifactId>
-        <version>${fabric8.version}</version>
+        <version>${version.io.fabric8}</version>
       </dependency>
       <dependency>
         <groupId>jstl</groupId>
@@ -857,7 +857,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>${maven.surefire.report.plugin.version}</version>
+        <version>${version.org.apache.maven.plugins}</version>
       </plugin>
     </plugins>
   </reporting>

@@ -84,7 +84,7 @@
       <plugin>
         <groupId>org.switchyard</groupId>
         <artifactId>switchyard-plugin</artifactId>
-        <version>${org.switchyard.version}</version>
+        <version>${version.org.switchyard}</version>
         <configuration>
           <scannerClassNames>
             <param>org.switchyard.component.bean.config.model.BeanSwitchYardScanner</param>

@@ -46,7 +46,7 @@
         <include>org.overlord:overlord-commons-*:jar</include>
         <include>org.overlord:overlord-commons-dist-eap6:zip</include>
       </includes>
-      <outputFileNameMapping>${artifact.artifactId}-${overlord-commons.version}.${artifact.extension}</outputFileNameMapping>
+      <outputFileNameMapping>${artifact.artifactId}-${version.org.overlord.overlord-commons}.${artifact.extension}</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>
       <useTransitiveDependencies>false</useTransitiveDependencies>
