@@ -97,7 +97,11 @@ public class TabCompleter implements Completion {
                 for (QName cmdName : factory.getCommandNames(ns)) {
                     completeOperation.addCompletionCandidate(cmdName.getLocalPart() + " "); //$NON-NLS-1$
                 }
-
+                // TODO: This can be removed later on, once we upgrade to a more recent aesh.  It should do this
+                // automatically, but for now we need to set it.  Otherwise, commands get chopped off (SRAMP-534)
+                if (completeOperation.getCompletionCandidates().size() == 1) {
+                    completeOperation.setOffset(completeOperation.getCursor());
+                }
             }
             // Case 4 - a partial command has been typed - show all command
             // names that match
