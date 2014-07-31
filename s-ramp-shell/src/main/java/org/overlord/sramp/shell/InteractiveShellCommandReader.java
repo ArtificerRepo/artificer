@@ -87,8 +87,16 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
 	 */
 	@Override
 	protected String readLine() throws IOException {
-        ConsoleOutput output = consoleReader.read(prompt, null);
-        return output.getBuffer();
+	    // The #isRunning and output != null check are necessary to prevent exceptions when killing the shell w/o
+	    // using exit (ctrl+c, etc.)
+	    if (consoleReader.isRunning()) {
+            ConsoleOutput output = consoleReader.read(prompt, null);
+            if (output != null) {
+                return output.getBuffer();
+            }
+	    }
+	    
+	    return "";
 	}
 
 	/**
