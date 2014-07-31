@@ -5,7 +5,7 @@
       <pathelement location="lib/ant-contrib-0.6.jar" />
     </classpath>
   </taskdef>
-
+	
   <property name="s-ramp-distro.build.properties" location="build.properties" />
   <property file="${s-ramp-distro.build.properties}" />
   <property name="s-ramp-distro.tempdir" location=".temp" />
@@ -13,6 +13,7 @@
   <property name="s-ramp-distro.tomcat.version" value="7.0.54" />
   <property name="s-ramp-distro.jetty.version" value="8.1.14.v20131031" />
   <property name="s-ramp-distro.bindir" location="${s-ramp-distro.rootdir}/bin" />
+  <property name="s-ramp-distro.libdir" location="${s-ramp-distro.rootdir}/lib" />
   <property name="s-ramp-distro.overlord-commons-installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${overlord-commons.version}.jar" />
   <property name="s-ramp-distro.overlord-commons-ant.jar" location="${s-ramp-distro.bindir}/overlord-commons-ant-${overlord-commons.version}.jar" />
   <property name="s-ramp-distro.s-ramp-installer.jar" location="${s-ramp-distro.bindir}/s-ramp-installer-${project.version}.jar" />
@@ -232,6 +233,7 @@
       <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.fuse-6.1.path}" />
       <property name="s-ramp.overlord-commons.installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${overlord-commons.version}.jar" />
       <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
+      <property name="commons-codec.jar" location="${s-ramp-distro.libdir}/commons-codec.jar" />    	
     </ant>
   </target>
 

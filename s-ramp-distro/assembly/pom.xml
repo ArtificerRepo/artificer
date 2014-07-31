@@ -184,6 +184,12 @@
       <artifactId>s-ramp-javadoc</artifactId>
       <classifier>javadoc</classifier>
     </dependency>
+    
+    
+	<dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+	</dependency>    
   </dependencies>
 
   <build>
