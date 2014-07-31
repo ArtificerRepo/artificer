@@ -24,10 +24,24 @@
     </moduleSet>
   </moduleSets>
   <dependencySets>
+  	<dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>commons-codec:commons-codec:jar</include>      
+      </includes>
+      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+  
     <!-- Overlord Commons components -->
     <dependencySet>
       <outputDirectory>bin</outputDirectory>
-      <includes>
+      <includes>    
         <include>org.overlord:overlord-commons-*:war</include>
         <include>org.overlord:overlord-commons-*:jar</include>
         <include>org.overlord:overlord-commons-dist-eap6:zip</include>
