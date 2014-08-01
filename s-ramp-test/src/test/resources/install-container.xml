@@ -3,7 +3,7 @@
 
   <property name="filename.tomcat" value="apache-tomcat-7.0.54.zip" />
   <property name="download.url.tomcat"
-    value="http://apache.cs.utah.edu/tomcat/tomcat-7/v7.0.54/bin/${filename.tomcat}" />
+    value="http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.54/bin/${filename.tomcat}" />
   <property name="dir.tomcat" value="apache-tomcat-7.0.54" />
 
   <!-- <property name="filename.jetty" value="jetty-distribution-8.1.15.v20140411.zip" />
