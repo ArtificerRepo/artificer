@@ -64,6 +64,11 @@
       <type>zip</type>
     </dependency>
     
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-codec</artifactId>
+    </dependency>    
+    
     <!-- S-RAMP -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
@@ -105,6 +110,10 @@
       <artifactId>s-ramp-ui-war-eap6</artifactId>
       <type>war</type>
     </dependency>
+	<dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+	</dependency>    
   </dependencies>
 
   <profiles>
@@ -141,7 +150,7 @@
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.3" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>               
                     <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
                     <property name="overlord-commons.eap-dist.file" value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
@@ -222,6 +231,7 @@
                     <!-- Overlord Commons Installer and Dependencies -->
                     <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="s-ramp-overlord-commons.codec.jar.path" value="${maven.dependency.org.overlord.overlord-commons-codec.jar.path}"/>                         
                     <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
 
                     <!-- S-RAMP WARs -->
@@ -238,7 +248,8 @@
 
                     <!-- The commons ant jar location -->
                     <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-
+                    <property name="overlord-commons.codec.jar" location="${s-ramp-overlord-commons.codec.jar.path}" />                    
+                    <property name="commons-codec.jar" location="${maven.dependency.commons-codec.commons-codec.jar.path}" />
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
                       <target name="install" />
@@ -291,6 +302,7 @@
                     <!-- Overlord Commons Installer and Dependencies -->
                     <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="s-ramp-overlord-commons.codec.jar.path" value="${maven.dependency.org.overlord.overlord-commons-codec.jar.path}"/>                         
                     <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-jetty8.war.path}" />
                     
                     <!-- S-RAMP WARs -->
@@ -307,7 +319,8 @@
 
                     <!-- The commons ant jar location -->
                     <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-
+                    <property name="overlord-commons.codec.jar" location="${s-ramp-overlord-commons.codec.jar.path}" />                    
+                    <property name="commons-codec.jar" location="${maven.dependency.commons-codec.commons-codec.jar.path}" />
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
                       <target name="install" />
@@ -344,11 +357,6 @@
                 <artifactId>xalan</artifactId>
                 <version>2.7.1</version>
               </dependency>
-			 <dependency>
-				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<version>1.9</version>
-			 </dependency>
 		              
             </dependencies>
             <executions>
@@ -367,6 +375,7 @@
                     <!-- Overlord Commons Installer and Dependencies -->
                     <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="s-ramp-overlord-commons.codec.jar.path" value="${maven.dependency.org.overlord.overlord-commons-codec.jar.path}"/>                         
                     <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-fuse61.war.path}" />
                     
                     <!-- S-RAMP WARs -->
@@ -382,6 +391,7 @@
 
                     <!-- The commons ant jar location -->
                     <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
+                    <property name="overlord-commons.codec.jar" location="${s-ramp-overlord-commons.codec.jar.path}" />                    
                     <property name="commons-codec.jar" location="${maven.dependency.commons-codec.commons-codec.jar.path}" />
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
