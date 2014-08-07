@@ -640,6 +640,12 @@
         <version>${version.org.overlord.overlord-commons}</version>
         <type>zip</type>
       </dependency>
+      <dependency>
+	  	<groupId>org.overlord</groupId>
+	   	<artifactId>overlord-commons-codec</artifactId>
+       	<version>${version.org.overlord.overlord-commons}</version>	      
+      </dependency>  
+
 
       <!-- Apache Commons -->
       <dependency>
