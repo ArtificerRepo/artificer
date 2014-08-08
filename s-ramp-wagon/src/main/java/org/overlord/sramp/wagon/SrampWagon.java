@@ -93,14 +93,14 @@ public class SrampWagon extends StreamWagon {
 	private transient SrampArchive archive;
 	private transient SrampAtomApiClient client;
 
-    boolean snapshot;
+    private boolean allowSnapshot;
 
 	/**
 	 * Constructor.
 	 */
 	public SrampWagon() {
         Sramp properties = new Sramp();
-        snapshot = properties.isSnapshotAllowed();
+        allowSnapshot = properties.isSnapshotAllowed();
 	}
 
 	/**
@@ -500,10 +500,8 @@ public class SrampWagon extends StreamWagon {
 	@Override
 	public void putFromStream(InputStream stream, String destination) throws TransferFailedException,
 			ResourceDoesNotExistException, AuthorizationException {
-        if (!snapshot) {
-            Resource resource = new Resource(destination);
-            putCommon(resource, null, stream);
-        }
+        Resource resource = new Resource(destination);
+        putCommon(resource, null, stream);
 	}
 
 	/**
@@ -512,12 +510,10 @@ public class SrampWagon extends StreamWagon {
 	@Override
 	public void putFromStream(InputStream stream, String destination, long contentLength, long lastModified)
 			throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
-        if (!snapshot) {
-            Resource resource = new Resource(destination);
-            resource.setContentLength(contentLength);
-            resource.setLastModified(lastModified);
-            putCommon(resource, null, stream);
-        }
+        Resource resource = new Resource(destination);
+        resource.setContentLength(contentLength);
+        resource.setLastModified(lastModified);
+        putCommon(resource, null, stream);
 	}
 
 	/**
@@ -526,19 +522,17 @@ public class SrampWagon extends StreamWagon {
 	@Override
 	public void put(File source, String resourceName) throws TransferFailedException,
 			ResourceDoesNotExistException, AuthorizationException {
-        if (!snapshot) {
-            InputStream resourceInputStream = null;
-            try {
-                resourceInputStream = new FileInputStream(source);
-            } catch (FileNotFoundException e) {
-                throw new TransferFailedException(e.getMessage());
-            }
-
-            Resource resource = new Resource(resourceName);
-            resource.setContentLength(source.length());
-            resource.setLastModified(source.lastModified());
-            putCommon(resource, source, resourceInputStream);
+        InputStream resourceInputStream = null;
+        try {
+            resourceInputStream = new FileInputStream(source);
+        } catch (FileNotFoundException e) {
+            throw new TransferFailedException(e.getMessage());
         }
+
+        Resource resource = new Resource(resourceName);
+        resource.setContentLength(source.length());
+        resource.setLastModified(source.lastModified());
+        putCommon(resource, source, resourceInputStream);
 	}
 
 	/**
@@ -553,21 +547,26 @@ public class SrampWagon extends StreamWagon {
 	 */
 	private void putCommon(Resource resource, File source, InputStream content)
 			throws TransferFailedException, ResourceDoesNotExistException, AuthorizationException {
-		logger.info(Messages.i18n.format("UPLOADING_TO_SRAMP", resource.getName())); //$NON-NLS-1$
-		firePutInitiated(resource, source);
-
-		firePutStarted(resource, source);
-		if (resource.getName().contains("maven-metadata.xml")) { //$NON-NLS-1$
-			logger.info(Messages.i18n.format("SKIPPING_ARTY", resource.getName())); //$NON-NLS-1$
-			try {
-				transfer(resource, content, new DevNullOutputStream(), TransferEvent.REQUEST_PUT);
-			} catch (IOException e) {
-				throw new TransferFailedException(e.getMessage(), e);
-			}
-		} else {
-			doPut(resource, content);
-		}
-		firePutCompleted(resource, source);
+	    MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
+	    if (allowSnapshot || !gavInfo.isSnapshot()) {
+    		logger.info(Messages.i18n.format("UPLOADING_TO_SRAMP", resource.getName())); //$NON-NLS-1$
+    		firePutInitiated(resource, source);
+    
+    		firePutStarted(resource, source);
+    		if (resource.getName().contains("maven-metadata.xml")) { //$NON-NLS-1$
+    			logger.info(Messages.i18n.format("SKIPPING_ARTY", resource.getName())); //$NON-NLS-1$
+    			try {
+    				transfer(resource, content, new DevNullOutputStream(), TransferEvent.REQUEST_PUT);
+    			} catch (IOException e) {
+    				throw new TransferFailedException(e.getMessage(), e);
+    			}
+    		} else {
+    			doPut(gavInfo, content);
+    		}
+    		firePutCompleted(resource, source);
+	    } else {
+	        throw new TransferFailedException(Messages.i18n.format("SNAPSHOT_NOT_ALLOWED"));
+	    }
 	}
 
 	/**
@@ -598,8 +597,7 @@ public class SrampWagon extends StreamWagon {
 	 * @param resourceInputStream
 	 * @throws TransferFailedException
 	 */
-	private void doPut(Resource resource, InputStream resourceInputStream) throws TransferFailedException {
-		MavenGavInfo gavInfo = MavenGavInfo.fromResource(resource);
+	private void doPut(MavenGavInfo gavInfo, InputStream resourceInputStream) throws TransferFailedException {
 		if (gavInfo.isHash()) {
 			doPutHash(gavInfo, resourceInputStream);
 		} else {
