@@ -1,0 +1,22 @@
+
+<xs:schema 
+    targetNamespace="urn:webapp-multimodule-demo:1.0" 
+    xmlns:tns="urn:webapp-multimodule-demo:1.0" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="order" type="tns:orderType"/>
+    <xs:element name="orderAck" type="tns:orderAckType"/>
+    <xs:complexType name="orderType">
+        <xs:sequence>
+            <xs:element name="orderId" type="xs:string"/>
+            <xs:element name="itemId" type="xs:string"/>
+            <xs:element name="quantity" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="orderAckType">
+        <xs:sequence>
+            <xs:element name="orderId" type="xs:string"/>
+            <xs:element name="accepted" type="xs:boolean"/>
+            <xs:element name="status" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

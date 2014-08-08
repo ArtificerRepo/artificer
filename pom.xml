@@ -503,12 +503,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.overlord.sramp.demos.switchyard.multiapp</groupId>
-        <artifactId>switchyard-quickstart-demo-multi-artifacts</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-javadoc</artifactId>
         <version>${project.version}</version>
