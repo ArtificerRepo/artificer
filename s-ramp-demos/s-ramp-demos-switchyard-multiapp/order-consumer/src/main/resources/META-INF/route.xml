@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<route xmlns="http://camel.apache.org/schema/spring">
-    <from uri="switchyard://OrderInput"/>
-    <to uri="switchyard://OrderWebService"/>
-</route>
