@@ -69,6 +69,16 @@
   </dependencies>
 
   <build>
+  	<resources>
+	  	<resource>
+	        <directory>src/main/resources</directory>
+	        <filtering>false</filtering>
+	      </resource>
+  		<resource>
+  			<directory>src/main/resources-filtered</directory>
+  			<filtering>true</filtering>
+  		</resource>
+  	</resources>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -92,6 +102,7 @@
               org.oasis_open.docs.s_ramp.ns.s_ramp_v1,
               org.overlord.commons.config,
               org.overlord.commons.services,
+              org.apache.commons.lang,
               org.w3c.dom
             </Import-Package>
           </instructions>
