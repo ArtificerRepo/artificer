@@ -45,6 +45,7 @@ import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
+import org.overlord.sramp.common.Sramp;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.integration.java.model.JavaModel;
@@ -78,10 +79,14 @@ public class DeployCommand extends BuiltInShellCommand {
 
     public static final String SEPARATOR_FULL_NAME = ":"; //$NON-NLS-1$
 
+    private boolean allowSnapshot;
+
     /**
      * Constructor.
      */
     public DeployCommand() {
+        Sramp properties = new Sramp();
+        allowSnapshot = properties.isSnapshotAllowed();
     }
 
     /**
@@ -127,9 +132,15 @@ public class DeployCommand extends BuiltInShellCommand {
                 IOUtils.closeQuietly(content);
                 return false;
             }
+            if (!allowSnapshot && mmd.snapshot) {
+                print(Messages.i18n.format("DeployCommand.SnapshotNotAllowed", mmd.getFullName())); //$NON-NLS-1$
+                IOUtils.closeQuietly(content);
+                return false;
+            }
             BaseArtifactType artifact = findExistingArtifactByGAV(client, mmd);
             if (artifact != null) {
                     print(Messages.i18n.format("DeployCommand.Failure.ReleaseArtifact.Exist", mmd.getFullName())); //$NON-NLS-1$
+                    IOUtils.closeQuietly(content);
                     return false;
             } else {
                 content = FileUtils.openInputStream(file);
@@ -275,6 +286,7 @@ public class DeployCommand extends BuiltInShellCommand {
         public String classifier;
         public String md5;
         public String sha1;
+        public boolean snapshot;
         public String snapshotId;
 
         /**
@@ -306,7 +318,7 @@ public class DeployCommand extends BuiltInShellCommand {
             is = new FileInputStream(file);
             sha1 = DigestUtils.shaHex(is);
             IOUtils.closeQuietly(is);
-            boolean snapshot = version != null && version.endsWith("-SNAPSHOT"); //$NON-NLS-1$
+            snapshot = version != null && version.endsWith("-SNAPSHOT"); //$NON-NLS-1$
             snapshotId = null;
             if (snapshot && !file.getName().contains(version)) {
                 snapshotId = extractSnapshotId(file.getName(), version, type, classifier);
