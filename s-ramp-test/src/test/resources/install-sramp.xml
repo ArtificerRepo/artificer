@@ -6,6 +6,8 @@
   <property name="s-ramp.overlord-commons.installer.jar"
     value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
   <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}" />
+  <property name="commons-codec.jar" location="${maven.dependency.commons-codec.commons-codec.jar.path}" />
+  <property name="overlord-commons.codec.jar" location="${maven.dependency.org.overlord.overlord-commons-codec.jar.path}" />
   <property name="overlord-commons.admin.password" value="overlord1!" />
 
   <target name="install-sramp-tomcat">
