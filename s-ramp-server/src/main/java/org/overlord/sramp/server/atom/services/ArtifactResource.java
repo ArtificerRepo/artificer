@@ -302,32 +302,16 @@ public class ArtifactResource extends AbstractResource {
 	 * @param uuid
 	 * @param content
 	 * @throws SrampAtomException
+     * 
+     * @deprecated No longer supported.  See SRAMP-541
 	 */
 	@PUT
 	@Path("{model}/{type}/{uuid}/media")
-	public void updateContent(@HeaderParam("Slug") String fileName, @PathParam("model") String model,
+	@Deprecated
+    public void updateContent(@HeaderParam("Slug") String fileName, @PathParam("model") String model,
 	        @PathParam("type") String type, @PathParam("uuid") String uuid, InputStream content)
 	        throws SrampAtomException {
-		InputStream is = ensureSupportsMark(content);
-		try {
-	        ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
-	        if (artifactType.isDerived()) {
-	            throw new DerivedArtifactCreateException(artifactType.getArtifactType());
-	        }
-	        String mimeType = MimeTypes.determineMimeType(fileName, is, artifactType);
-	        artifactType.setMimeType(mimeType);
-
-	        // TODO we need to update the S-RAMP metadata too (new updateDate, size, etc)?
-
-	        PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-			// store the content
-			persistenceManager.updateArtifactContent(uuid, artifactType, is);
-		} catch (Exception e) {
-			logError(logger, Messages.i18n.format("ERROR_UPDATING_CONTENT", uuid), e); //$NON-NLS-1$
-			throw new SrampAtomException(e);
-		} finally {
-			IOUtils.closeQuietly(is);
-		}
+	    logger.warn("Deleting artifact content is no longer supported!  See SRAMP-541.  PUT on {model}/{type}/{uuid}/media now does nothing.");
 	}
 
 	/**

@@ -251,42 +251,6 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
 	}
 
 	/**
-	 * Tests updating an artifact.
-	 * @throws Exception
-	 */
-	public void testUpdateArtifactContent() throws Exception {
-		SrampAtomApiClient client = client(); 
-		String uuid = null;
-		XsdDocument xsdDoc = null;
-
-		// First, upload an artifact so we have some content to update
-		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
-		try {
-			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
-			Assert.assertNotNull(artifact);
-			Assert.assertEquals(artifactFileName, artifact.getName());
-			uuid = artifact.getUuid();
-			xsdDoc = (XsdDocument) artifact;
-		} finally {
-			IOUtils.closeQuietly(is);
-		}
-
-		// Now update the artifact content
-		is = this.getClass().getResourceAsStream("/sample-files/xsd/PO-updated.xsd"); //$NON-NLS-1$
-		try {
-			client.updateArtifactContent(xsdDoc, is);
-		} finally {
-			IOUtils.closeQuietly(is);
-		}
-
-		// Now verify
-		BaseArtifactType artifact = client.getArtifactMetaData(ArtifactType.XsdDocument(), uuid.toString());
-		xsdDoc = (XsdDocument) artifact;
-		Assert.assertEquals(new Long(2583), xsdDoc.getContentSize());
-	}
-
-	/**
 	 * Test method for {@link SrampAtomApiClient#query(java.lang.String, int, int, java.lang.String, boolean)}.
 	 */
 	@Test

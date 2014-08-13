@@ -240,36 +240,6 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
     }
 
     /**
-     * Tests that we can update the content of an s-ramp artifact.
-     * @throws Exception
-     */
-    @Test
-    public void testUpdateContent() throws Exception {
-    	// First, add an artifact to the repo
-        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-        InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
-        Document document = new Document();
-        document.setName(artifactFileName);
-        document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
-        Assert.assertNotNull(artifact);
-        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid()); //$NON-NLS-1$
-        Assert.assertEquals(XsdDocument.class, artifact.getClass());
-        long size = ((DocumentArtifactType) artifact).getContentSize();
-        Assert.assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
-        Assert.assertEquals(artifactFileName, artifact.getName());
-
-        // Now update the artifact content
-        InputStream otherXsd = this.getClass().getResourceAsStream("/sample-files/xsd/XMLSchema.xsd"); //$NON-NLS-1$
-        persistenceManager.updateArtifactContent(artifact.getUuid(), ArtifactType.XsdDocument(), otherXsd);
-
-        // Now verify the content was updated
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
-        size = ((DocumentArtifactType) artifact).getContentSize();
-        Assert.assertTrue(size >= 87677L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
-    }
-
-    /**
      * Tests that we can manage s-ramp properties.
      * @throws Exception
      */
