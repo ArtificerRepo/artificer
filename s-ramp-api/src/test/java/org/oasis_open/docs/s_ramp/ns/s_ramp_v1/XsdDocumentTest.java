@@ -129,7 +129,7 @@ public class XsdDocumentTest {
 //			java.lang.System.out.println(expectedXML);
 			Diff diff = new Diff(expectedXML, actualXml);
 			boolean isSimilar = diff.similar();
-			assertTrue(isSimilar);
+			assertTrue(false);
 
 		} catch (Exception e) {
 			e.printStackTrace();
