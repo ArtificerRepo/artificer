@@ -205,7 +205,7 @@ public class MavenRepositoryService extends HttpServlet {
 
         try {
             QueryManager queryManager = QueryManagerFactory.newInstance();
-            SrampQuery srampQuery = queryManager.createQuery(queryBuilder.toString(), "lastModifiedTimestamp", false); //$NON-NLS-1$
+            SrampQuery srampQuery = queryManager.createQuery(queryBuilder.toString(), "createdTimestamp", false); //$NON-NLS-1$
 
             for (Object parameter : parameters) {
                 if (parameter instanceof String) {
@@ -257,8 +257,6 @@ public class MavenRepositoryService extends HttpServlet {
         if (StringUtils.isNotBlank(metadata.getSnapshotId())) {
             criteria.add("@maven.snapshot.id = ?"); //$NON-NLS-1$
             parameters.add(metadata.getSnapshotId());
-        } else {
-            criteria.add("xp2:not(@maven.snapshot.id)"); //$NON-NLS-1$
         }
 
         ArtifactSet artifactSet = null;

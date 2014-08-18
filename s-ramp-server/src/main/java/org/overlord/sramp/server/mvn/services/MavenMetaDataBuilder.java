@@ -201,7 +201,7 @@ public class MavenMetaDataBuilder {
                             else{
                                 versionParsed=version;
                             }
-                            if(fileName.startsWith(artifactId + "-" + versionParsed)){ //$NON-NLS-1$
+                            if (!fileName.contains(version) && fileName.startsWith(artifactId + "-" + versionParsed)) { //$NON-NLS-1$
                                 String without_extension = fileName.substring(0, fileName.lastIndexOf(".")); //$NON-NLS-1$
                                 if (StringUtils.countMatches(without_extension, "-") >= 2) { //$NON-NLS-1$
                                     int versionIdx = without_extension.indexOf(versionParsed);
