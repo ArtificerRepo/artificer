@@ -59,7 +59,7 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 		if (args.hasLogFile()) {
 		    try {
 	            // truncate it in case it already exists
-                new FileWriter(args.getLogFilePath(), false).write("");
+                new FileWriter(args.getLogFilePath(), false).write(""); //$NON-NLS-1$
             } catch (IOException e) {
                 // TODO
             };
@@ -93,7 +93,7 @@ public abstract class AbstractShellCommandReader implements ShellCommandReader {
 		
 		if (args.hasLogFile()) {
 		    FileWriter writer = new FileWriter(args.getLogFilePath(), true);
-		    writer.append(line + "\n");
+		    writer.append(line + "\n"); //$NON-NLS-1$
 		    writer.close();
 		}
 		

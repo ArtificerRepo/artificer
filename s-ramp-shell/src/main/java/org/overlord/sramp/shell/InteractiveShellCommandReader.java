@@ -97,7 +97,7 @@ public class InteractiveShellCommandReader extends AbstractShellCommandReader im
             }
 	    }
 	    
-	    return "";
+	    return ""; //$NON-NLS-1$
 	}
 
 	/**

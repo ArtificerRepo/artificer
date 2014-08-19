@@ -79,7 +79,7 @@ public class ShellArguments {
                     + Messages.i18n.format("InvalidArgMsg.propertiesFile.not.exist")); //$NON-NLS-1$
         } catch (IOException e) {
             System.out.println("Error: " + filePath + " " //$NON-NLS-1$ //$NON-NLS-2$
-                    + Messages.i18n.format("InvalidArgMsg.propertiesFile.error.reading") + ": " //$NON-NLS-1$
+                    + Messages.i18n.format("InvalidArgMsg.propertiesFile.error.reading") + ": " //$NON-NLS-1$ //$NON-NLS-2$
                     + e.getMessage());
         }
         for (final String name : props.stringPropertyNames()) {

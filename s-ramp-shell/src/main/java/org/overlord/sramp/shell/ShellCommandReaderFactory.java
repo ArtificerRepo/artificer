@@ -43,14 +43,14 @@ public class ShellCommandReaderFactory {
     public static ShellCommandReader createCommandReader(ShellArguments args, ShellCommandFactory factory,
             ShellContextImpl context) throws IOException {
         ShellCommandReader commandReader = null;
-        if (args.isSimple()) { //$NON-NLS-1$
+        if (args.isSimple()) {
             if (System.console() != null) {
                 commandReader = new ConsoleShellCommandReader(factory, context, args);
             } else {
                 commandReader = new StdInShellCommandReader(factory, context, args);
             }
 
-        } else if (args.hasBatchFile()) { //$NON-NLS-1$
+        } else if (args.hasBatchFile()) {
             commandReader = new FileShellCommandReader(factory, context, args);
 
         } else {
