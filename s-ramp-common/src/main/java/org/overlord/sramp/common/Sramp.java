@@ -54,8 +54,8 @@ public class Sramp {
     	String baseUrl = null;
     	//Try grabbing it from the call
         if (requestUrl!=null) {
-            int index = requestUrl.indexOf("/s-ramp/"); //$NON-NLS-1$
-            if (index < 0) index = requestUrl.indexOf("/s-ramp"); //$NON-NLS-1$
+            int index = requestUrl.lastIndexOf("/s-ramp/"); //$NON-NLS-1$
+            if (index < 0) index = requestUrl.lastIndexOf("/s-ramp"); //$NON-NLS-1$
             if (index > 0) {
                 baseUrl = requestUrl.substring(0, index);
             }

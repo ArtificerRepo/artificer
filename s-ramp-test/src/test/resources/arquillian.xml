@@ -34,5 +34,14 @@
       </configuration>
    </container>
    
+   <container qualifier="eap63">
+      <protocol type="Servlet 3.0">
+         <property name="executionType">MANAGED</property>
+      </protocol>
+      <configuration>
+         <property name="jbossHome">target/jboss-eap-6.3</property>
+      </configuration>
+   </container>
+   
    <!-- TODO: Jetty -->
 </arquillian>

@@ -6,6 +6,8 @@
   <property name="s-ramp.overlord-commons.installer.jar"
     value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
   <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}" />
+  <property name="commons-codec.jar" location="${maven.dependency.commons-codec.commons-codec.jar.path}" />
+  <property name="overlord-commons.codec.jar" location="${maven.dependency.org.overlord.overlord-commons-codec.jar.path}" />
   <property name="overlord-commons.admin.password" value="overlord1!" />
 
   <target name="install-sramp-tomcat">
@@ -56,6 +58,29 @@
   <target name="install-sramp-eap62">
     <property name="appserver.id" value="jboss-eap-6" />
     <property name="s-ramp.appserver.dir" location="${project.build.directory}/jboss-eap-6.2" />
+    
+    <property name="overlord-commons.idp.file"
+      value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
+    <property name="overlord-commons.eap-dist.file"
+        value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
+    <property name="overlord-commons.auth.jboss7.file"
+        value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
+
+    <property name="s-ramp.s-ramp-server.war.path"
+      value="${maven.dependency.org.overlord.sramp.s-ramp-server-eap6.war.path}" />
+    <property name="s-ramp.s-ramp-ui.war.path"
+      value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap6.war.path}" />
+    
+    <property name="s-ramp.modeshape-distribution.zip.path"
+        value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
+
+    <ant antfile="../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
+        inheritall="true" target="install" />
+  </target>
+
+  <target name="install-sramp-eap63">
+    <property name="appserver.id" value="jboss-eap-6" />
+    <property name="s-ramp.appserver.dir" location="${project.build.directory}/jboss-eap-6.3" />
     
     <property name="overlord-commons.idp.file"
       value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />

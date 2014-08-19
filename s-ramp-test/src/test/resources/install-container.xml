@@ -17,6 +17,9 @@
   <property name="filename.eap62" value="jboss-eap-6.2.0.zip" />
   <property name="dir.eap62" value="jboss-eap-6.2" />
 
+  <property name="filename.eap63" value="jboss-eap-6.3.0.zip" />
+  <property name="dir.eap63" value="jboss-eap-6.3" />
+
   <target name="install-tomcat">
     <property name="name" value="Tomcat" />
     <property name="filename" value="${filename.tomcat}" />
@@ -38,6 +41,14 @@
     <property name="name" value="JBoss EAP 6.2" />
     <property name="filename" value="${filename.eap62}" />
     <property name="dir" value="target/${dir.eap62}" />
+    <antcall target="install" />
+  </target>
+
+  <target name="install-eap63">
+    <!-- TODO: Fail is the ZIP isn't in the root? -->
+    <property name="name" value="JBoss EAP 6.3" />
+    <property name="filename" value="${filename.eap63}" />
+    <property name="dir" value="target/${dir.eap63}" />
     <antcall target="install" />
   </target>
 
