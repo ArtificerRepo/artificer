@@ -73,6 +73,8 @@ import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
@@ -81,6 +83,8 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
  * @author eric.wittmann@redhat.com
  */
 public class SrampAtomApiClient {
+    
+    private static Logger LOG = LoggerFactory.getLogger(SrampAtomApiClient.class);
 
 	private String endpoint;
 	private boolean validating;
@@ -562,30 +566,13 @@ public class SrampAtomApiClient {
 	 * @param content
 	 * @throws SrampClientException
 	 * @throws SrampAtomException
+	 * 
+	 * @deprecated No longer supported.  See SRAMP-541
 	 */
+	@Deprecated
 	public void updateArtifactContent(BaseArtifactType artifact, InputStream content)
 			throws SrampClientException, SrampAtomException {
-		ArtifactType type = ArtifactType.valueOf(artifact);
-		assertFeatureEnabled(type);
-        ClientResponse<?> response = null;
-		try {
-			String artifactModel = type.getArtifactType().getModel();
-			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) { //$NON-NLS-1$
-				artifactType = type.getExtendedType();
-			}
-			String artifactUuid = artifact.getUuid();
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid); //$NON-NLS-1$
-			ClientRequest request = createClientRequest(atomUrl);
-			request.body(type.getMimeType(), content);
-			response = request.put();
-		} catch (SrampAtomException e) {
-			throw e;
-		} catch (Throwable e) {
-			throw new SrampClientException(e);
-        } finally {
-            closeQuietly(response);
-		}
+		LOG.warn("Deleting artifact content is no longer supported!  See SRAMP-541.  #updateArtifactContent now does nothing.");
 	}
 
 	/**
