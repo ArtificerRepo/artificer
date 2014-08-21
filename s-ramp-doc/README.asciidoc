@@ -1,0 +1,31 @@
+How to build the S-RAMP Guide Book in Docbook format
+====================================================
+
+
+This module is the source of the S-RAMP Guide document. We convert the asciidoc into an intermediate Docbook format, which then is used to create HTML and PDF versions. If you want to build these yourself, simply run the following:
+----
+mvn clean install -P generate-docs
+----
+This will build HTML and PDF versions in the target/docbook/publish/en-US directory.
+
+
+[qanda]
+.Q&A
+I spotted a typo, can I fix it?::
+Absolutely!  We sincerely appreciate help maintaining the documentation. Check out S-RAMP's 
+https://github.com/Governance/s-ramp/blob/master/README.md[README] for more info on how to make fixes and submit
+a pull request!
+
+How do add a numbering and references?::
+Add a label using the convention
+<type>-<chapter>-<label> (i.e.
+`[[figure-gs-screenshot-of-the-s-ramp-ui]]`), a title (i.e. 
+`.Welcome screen of the s-ramp-ui.`), and the thing itself (for an
+image, use something like `image::images/srampui.png[Screenshot of the
+s-ramp-ui]`). The label `figure-gs-screenshot-of-the-s-ramp-ui` can be used to link to this figure using
+`<<figure-gs-screenshot-of-the-s-ramp-ui>>`.
+
+How do I add a chapter to the book in docbook?::
+We add chapters as different files, and then include them in
+`Guide.asciidoc`. At docbook generation time it will pull in the
+chapter into the `Guide.xml` file.
