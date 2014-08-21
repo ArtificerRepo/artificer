@@ -1,0 +1,93 @@
+Overlord S-RAMP Server Configuration
+------------------------------------
+
+Out-of-the-box, Overlord S-RAMP provides a useful, default server configuration.  However, if you'd like to mold it into an existing setup, here are a few areas that can be modified.
+
+Datasource
+~~~~~~~~~~
+
+By default, S-RAMP uses a simple file-based H2 datasource.  However, any existing datasource can be used.  Swap-out the datasource's JNDI name in the following locations, based on your platform:
+
+JBoss EAP 6
+^^^^^^^^^^^
+
+* Standalone modes: JBOSS_HOME/standalone/configuration/standalone*.xml
+* Domain mode: JBOSS_HOME/domain/configuration/domain.xml (note that the cache-container will need updated for ALL profiles)
+----
+      ...
+      <cache-container name="modeshape">
+        <local-cache name="sramp">
+          <locking isolation="NONE"/>
+          <transaction mode="NON_XA"/>
+          <string-keyed-jdbc-store purge="false" passivation="false" datasource="[DATASOURCE JNDI NAME]">
+            <string-keyed-table prefix="ispn_bucket">
+              <id-column type="VARCHAR(500)" name="id"/>
+              <data-column type="VARBINARY(60000)" name="datum"/>
+              <timestamp-column type="BIGINT" name="version"/>
+            </string-keyed-table>
+          </string-keyed-jdbc-store>
+        </local-cache>
+      </cache-container>
+      ...
+----
+
+Tomcat 7
+^^^^^^^^
+
+TOMCAT_HOME/conf/sramp-modeshape.json:
+----
+    ...
+    },"storage": {
+        "cacheName": "sramp",
+        "cacheConfiguration" : "infinispan-configuration-webapp.xml",
+        "binaryStorage": {
+            "type"  : "database",
+            "dataSourceJndiName" : "[DATASOURCE JNDI NAME]",
+            "minimumBinarySizeInBytes" : "${application.min.binary.size:4096}"
+        }
+    },
+    ...
+----
+
+Jetty 8
+^^^^^^^
+
+JETTY_HOME/etc/sramp-modeshape.json:
+----
+    ...
+    },"storage": {
+        "cacheName": "sramp",
+        "cacheConfiguration" : "infinispan-configuration-webapp.xml",
+        "binaryStorage": {
+            "type"  : "database",
+            "dataSourceJndiName" : "[DATASOURCE JNDI NAME]",
+            "minimumBinarySizeInBytes" : "${application.min.binary.size:4096}"
+        }
+    },
+    ...
+----
+
+JBoss Fuse 6.1
+^^^^^^^^^^^^^^
+
+* Standalone mode: FUSE_HOME/etc/sramp-modeshape.json
+* Fuse Fabric: FUSE_HOME/fabric/import/fabric/configs/versions/1.0/profiles/overlord/sramp.profile/sramp-modeshape.json
+----
+    ...
+    },"storage": {
+        "cacheName": "sramp",
+        "cacheConfiguration" : "infinispan-configuration-webapp.xml",
+        "binaryStorage": {
+            "type"  : "database",
+            "dataSourceJndiName" : "osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=[DATASOURCE JNDI NAME])",
+            "minimumBinarySizeInBytes" : "${application.min.binary.size:4096}"
+        }
+    },
+    ...
+----
+
+WARNINGS
+~~~~~~~~
+
+* Between runs, the ModeShape repository name cannot be changed.  The name is used on multiple paths used for binary storage, search indexes, etc.  Attempting to do so, without changing all necessary paths, will result in ModeShape failures during startup.
+* Similarly, between runs, the Infinispan "local-cache" name (and accompanying "cacheName" in the ModeShape config) cannot be changed.  ModeShape includes a hash of the cache name within its node IDs, so changing the name is guaranteed to break your repository.

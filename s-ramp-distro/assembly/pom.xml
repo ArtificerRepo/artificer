@@ -171,7 +171,7 @@
     <!-- S-RAMP documentation (jdocbook) -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>sramp-wiki</artifactId>
+      <artifactId>s-ramp-doc</artifactId>
       <type>jdocbook</type>
     </dependency>
 

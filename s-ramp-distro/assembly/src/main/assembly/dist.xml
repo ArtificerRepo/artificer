@@ -85,7 +85,7 @@
     <dependencySet>
       <outputDirectory>docs</outputDirectory>
       <includes>
-        <include>org.overlord.sramp:sramp-wiki:jdocbook</include>
+        <include>org.overlord.sramp:s-ramp-doc:jdocbook</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>

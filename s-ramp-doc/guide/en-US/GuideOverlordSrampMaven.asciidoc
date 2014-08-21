@@ -1,0 +1,237 @@
+Overlord S-RAMP Maven Integration
+---------------------------------
+
+Overview
+~~~~~~~~
+A key feature of the Overlord S-RAMP project is its integration with Maven.  Currently
+there are several mechanisms provided to integrate with Maven.  The first mechanism is a custom S-RAMP
+Maven Wagon that adds support for the S-RAMP Atom based REST API protocol.  The second mechanism is
+an HTTP servlet which acts as a facade in front of the S-RAMP repository.  Finally, there is a "maven"
+namespace in the S-RAMP Shell (CLI) providing integration between the CLI and Maven.
+
+The S-RAMP Maven Wagon can be used to upload deployable artifacts directly from Maven into a 
+compliant S-RAMP repository.  It allows a number of options including specifying the Artifact Type
+and creating an ArtifactGrouping (more on these later).  Additionally, artifacts from the S-RAMP 
+repository can be used as dependencies in a Maven project.
+
+The S-RAMP Maven HTTP Facade currently allows only basic integration with Maven, but in a way that
+does not require the use of a custom Wagon in your pom.xml.  The facade does not currently support
+the same set of optional features that the wagon implements.  However, for relatively simple 
+integrations it is a very easy solution to get working.
+
+
+Enabling the S-RAMP Wagon
+~~~~~~~~~~~~~~~~~~~~~~~~~
+In order to use the S-RAMP Wagon in a maven project, it must first be enabled in the pom.xml 
+build section.  Here's how it's done:
+
+----
+<build>
+  <extensions>
+    <extension>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-wagon</artifactId>
+      <version>${s-ramp-wagon.version}</version>
+    </extension>
+  </extensions>
+</build>
+----
+
+
+Deploying to S-RAMP
+~~~~~~~~~~~~~~~~~~~
+Once the wagon is enabled, then URLs with a schema of "sramp" can be used in the pom.xml's
+distributionManagement section.  For example:
+
+----
+<distributionManagement>
+  <repository>
+    <id>local-sramp-repo</id>
+    <name>S-RAMP Releases Repository</name>
+    <url>sramp://localhost:8080/s-ramp-server/</url>
+  </repository>
+  <snapshotRepository>
+    <id>local-sramp-repo-snapshots</id>
+    <name>S-RAMP Snapshots Repository</name>
+    <url>sramp://localhost:8080/s-ramp-server/</url>
+  </snapshotRepository>
+</distributionManagement>
+----
+
+With these settings, maven deployments will be sent directly to the S-RAMP repository using
+the S-RAMP API.  Note that artifacts will be added to the S-RAMP repository with an artifact
+type based on the maven type of the project.  This behavior can be overridden by adding a
+query parameter to the repository URL in the pom.xml.  For example:
+
+----
+<distributionManagement>
+  <repository>
+    <id>local-sramp-repo</id>
+    <name>S-RAMP Releases Repository</name>
+    <url>sramp://localhost:8080/s-ramp-server/?artifactType=SwitchYardApplication</url>
+  </repository>
+</distributionManagement>
+----
+
+The above example will cause the maven artifact to be uploaded with an S-RAMP artifact type 
+of "SwitchYardApplication" whenever a maven deployment or release build is performed.
+
+For example, the following maven command could be run to deploy the maven artifact directly into s-ramp:
+
+----
+mvn clean deploy
+----
+
+
+Adding S-RAMP Artifacts as Dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Additionally (after enabling the wagon [see above]), artifacts from the S-RAMP repository can 
+be used as dependencies in your maven project.
+
+First, the S-RAMP repository must be configured in the maven project as a maven repository.  This 
+can be done with the following markup in the pom.xml.
+
+----
+<repositories>
+  <repository>
+    <id>local-sramp-repo</id>
+    <name>Local S-RAMP Repository</name>
+    <url>sramp://localhost:8080/s-ramp-server</url>
+    <layout>default</layout>
+  </repository>
+</repositories>
+----
+
+Once the repository is configured, an S-RAMP artifact can be referenced as a dependency in two 
+ways.  First, if the artifact was added to S-RAMP using the maven integration to deploy it, then 
+the artifact in S-RAMP will contain maven specific properties, allowing it to be referenced as a 
+dependency using those maven specific properties.  In this case, simply add the dependency as you 
+normally would in a maven project.  For example:
+
+----
+<dependency>
+  <groupId>org.overlord.sramp.wiki</groupId>
+  <artifactId>s-ramp-wiki-example</artifactId>
+  <version>1.0</version>
+</dependency>
+----
+
+However, even if an artifact was added to the S-RAMP repository in some other way (and therefore 
+does not have any maven specific properties) it can be used as a dependency.  In this case, you 
+can reference the dependency by using its S-RAMP artifact model, type, and UUID.  The model and 
+type are used to make up a maven groupId, while the UUID becomes the maven artifactId.  The 
+version information is not used (but still required in the pom.xml).  For example, if a JAR is 
+added to the S-RAMP repository and you wish to use it as a dependency, your pom.xml might contain 
+the following dependency.
+
+----
+<dependency>
+  <groupId>ext.JavaArchive</groupId>
+  <artifactId>8744-437487-4734525-382345-923424</artifactId>
+  <version>1.0</version>
+</dependency>
+----
+
+
+Leveraging the S-RAMP Maven HTTP Facade
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A less feature-rich (currently) but easier to configure maven integration option is the S-RAMP
+Maven HTTP facade.  This HTTP servlet can be accessed (by default) from the following URL:
+
+----
+  http://localhost:8080/s-ramp-server/maven/repository
+----
+
+This URL can be treated as the root of a standard Maven repository both for deploying artifacts
+to the S-RAMP repository and also for getting artifacts back out again as dependencies.  You can
+use standard Maven configuration of your "repositories" (for GETs) and "distributionManagement" 
+(for PUTs) within your pom.xml.  There is no need to configure a wagon or any other maven 
+extension.
+
+An example configuration in your pom.xml for this mechanism might be:
+
+----
+
+  <repositories>
+    <repository>
+      <id>local-sramp-repo</id>
+      <name>Local S-RAMP Repository</name>
+      <url>http://localhost:8080/s-ramp-server/maven/repository</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <repository>
+      <id>local-sramp-repo</id>
+      <name>Local S-RAMP Releases Repository</name>
+      <url>http://localhost:8080/s-ramp-server/maven/repository</url>
+    </repository>
+    <snapshotRepository>
+      <id>local-sramp-repo-snapshots</id>
+      <name>Local S-RAMP Snapshots Repository</name>
+      <url>http://localhost:8080/s-ramp-server/maven/repository</url>
+    </snapshotRepository>
+  </distributionManagement>
+----
+
+Once this configuration is complete, you should be able to both deploy to the S-RAMP repository
+(requires authentication - see below) and pull in dependencies from the S-RAMP repository (does
+not require authentication).
+
+
+A Note About Authentication
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Whenever the S-RAMP Maven integration features are used, it is likely that you will need to provide 
+valid authentication credentials.  There are two available mechanisms to provide these credentials.  
+First, you may provide the S-RAMP repository username and password in the 
+http://maven.apache.org/settings.html[Maven settings.xml] file.  If no credentials are found there, 
+then you will be prompted to enter them when they are needed during the build.
+
+An example of providing credentials in the settings.xml file:
+
+----
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <servers>
+    <server>
+      <id>local-sramp-repo</id>
+      <username>admin</username>
+      <password>ADMIN_PASSWORD</password>
+    </server>
+    <server>
+      <id>local-sramp-repo-snapshots</id>
+      <username>admin</username>
+      <password>ADMIN_PASSWORD</password>
+    </server>
+  </servers>
+</settings>
+----
+
+
+Maven Integration in the CLI
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+_Note_:  For more general information about the S-RAMP Shell please see the S-RAMP CLI chapter 
+in this guide.
+
+Another available mechanism for integrating with maven is the S-RAMP CLI's "maven" command 
+namespace.  For help on the maven commands in the CLI, run the S-RAMP shell (sramp.sh) and 
+type the following from the resulting prompt:
+
+----
+help maven
+----
+
+Using the maven CLI commands is often a good choice if you wish to incorporate maven related
+S-RAMP operations into a script of some kind.

@@ -1,0 +1,153 @@
+S-RAMP REST API
+---------------
+
+The intent of the S-RAMP specification is to outline a data model and protocol designed to define
+how a repository should store and manipulate artifacts.  The foundation document defines the former,
+while various protocol binding documents define the latter.  Version 1 of the S-RAMP specification
+includes a single, Atom based protocol binding.
+
+This section of the guide describes the highlights of the Atom API.
+
+TIP: For more information on the S-RAMP Atom API, see the S-RAMP Atom Binding document.
+
+
+Overview
+~~~~~~~~
+
+The S-RAMP specification does not dictate the format of the Atom REST endpoints.  Instead, the 
+client is expected to query a service document endpoint and inspect it to find the various relevant
+endpoints.  The specification does present a notional format, but implementations are not required
+to follow it.  This Guide will give examples based on this notional format.  But it bears repeating
+that for any given server implementation, a client should first query the Atom service document
+at the following endpoint:
+
+----
+GET /s-ramp/servicedocument
+----
+
+The resulting service document will contain a set of workspaces representing the artifact 
+collections supported by the server, along with endpoints indicating how to manipulate them.
+
+However, the Atom Binding document does outline the inputs, outputs, and REST verbs that must be
+used for each of the supported operations.  In general, the Atom API data models are used to wrap
+custom S-RAMP specific XML structures.  Atom Entry documents are used when dealing with individual
+artifacts, while Atom Feed documents are used when dealing with lists of documents.
+
+
+Adding Artifacts
+~~~~~~~~~~~~~~~~
+
+There are two basic types of artifacts from the protocol standpoint:  document style artifacts
+(those artifacts that are based on files/binary content) and logical (direct instantiation) 
+artifacts.  In the case of a document-style artifact, the client must POST the binary content
+to the correct Atom Endpoint.  In the case of a direct artifact (no document content) the client
+must POST an Atom Entry containing an S-RAMP artifact XML entity to the appropriate endpoint.
+The server will respond with an Atom Entry containing the full meta data of the newly created
+artifact (if successful).
+
+*Notional REST Endpoint*
+----
+POST /s-ramp/{model}/{type}
+----
+
+
+Updating Artifacts
+~~~~~~~~~~~~~~~~~~
+
+A client can update the meta data (properties, classifiers, relationships) by performing a PUT
+request to the artifact's endpoint.  The artifact's endpoint can be found either by querying
+for the artifact or as part of the returned Atom Entry returned when the artifact was created.
+
+*Notional REST Endpoint*
+----
+PUT /s-ramp/{model}/{type}/{uuid}
+----
+
+
+Deleting Artifacts
+~~~~~~~~~~~~~~~~~~
+
+Not surprisingly, an artifact can be deleted by a client by performing a DELETE request to the
+artifact's endpoint. 
+
+*Notional REST Endpoint*
+----
+DELETE /s-ramp/{model}/{type}/{uuid}
+----
+
+
+Querying
+~~~~~~~~
+
+Performing an S-RAMP query is a matter of issueing a GET or POST to the S-RAMP query endpoint.
+In addition, full feeds are available for all Artifact Models and Artifact Types.  In both cases,
+the response is an Atom Feed where each Entry provides summary information about an artifact in
+the respository.  To retrieve full details about a given entry in the feed (custom properties,
+classifiers, relationships), the client must issue an additional GET.  Only a subset of the core
+properties, such as name and description, are mapped to the Atom Entry in a feed.
+
+Queries
+^^^^^^^
+When querying, the client can either GET or POST to the following notional endpoint:
+
+*Notional REST Endpoint*
+----
+GET /s-ramp
+----
+
+The following parameters are supported (all parameters except the 'query' param have
+reasonable defaults):
+
+* 'query': The S-RAMP query.
+* 'startPage': The page to start from.
+* 'startIndex': The index number to start from.
+* 'count': The number of artifacts to return.
+* 'orderBy': The sort order to use when creating the feed.
+* 'ascending': The sort direction to use when creating the feed.
+* 'propertyName': Additional custom property to return for each artifact in the feed.  This property can be included multiple times.
+
+
+Feeds
+^^^^^
+When retrieving a simple model or type feed, the client must issue a GET request to the
+appropriate model or type endpoint.
+
+*Notional REST Endpoint*
+----
+GET /s-ramp/{model}
+GET /s-ramp/{model}/{type}
+----
+
+The following parameters are supported (all parameters have reasonable defaults):
+
+* 'startPage': The page to start from.
+* 'startIndex': The index number to start from.
+* 'count': The number of artifacts to return.
+* 'orderBy': The sort order to use when creating the feed.
+* 'ascending': The sort direction to use when creating the feed.
+* 'propertyName': Additional custom property to return for each artifact in the feed.  This property can be included multiple times.
+
+
+Getting Full Artifact
+~~~~~~~~~~~~~~~~~~~~~
+In order to retrieve the full meta data for an artifact, the client must issue a GET request
+to the appropriate artifact endpoint.  This is necessary after a query or feed, when only
+the summary information is available.  The summary information found in a feed or query
+response contains the UUID of the artifact, as well as a URL to the endpoint needed to 
+retrieve the full artifact details.
+
+*Notional REST Endpoint*
+----
+GET /s-ramp/{model}/{type}/{uuid}
+----
+
+
+Batch changes: S-RAMP Archives (Packages)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A powerful additional feature of the S-RAMP API is the batch processing function.  The
+batch processing endpoint allows the client to POST an S-RAMP package, which can contain
+multiple Atom Entries and binary files.  The package allows a client to add, update, and
+delete multiple artifacts in a single batch.  The format of an S-RAMP package archive is
+described further in the S-RAMP Atom Binding document (Section 2.3.5.2.2.1 - no I'm not
+kidding, that's really the section).
+

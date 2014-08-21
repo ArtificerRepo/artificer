@@ -1,0 +1,22 @@
+Using OpenShift Red Hat's Cloud
+-------------------------------
+
+Continuous Integration using Jenkins
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The S-RAMP project is using http://jenkins-ci.org/[Jenkins] on an https://www.openshift.com/[OpenShift] Gear for continuous integration (ci). Our Jenkins installation can be found at address http://jenkins-jbossoverlord.rhcloud.com/[http://jenkins-jbossoverlord.rhcloud.com/]. 
+
+Jenkins Setup
+^^^^^^^^^^^^^
+Login to your OpenShift account and under create a new 'https://openshift.redhat.com/app/console/application_types[Instant App]' select Jenkins'. Note that you cannot change your gear size once your gear is created. In our case we ended up a medium gear for the Jenkins gear and a medium gear for the builder node gear. 
+[[figure-os-screenshot-of-openshift]]
+.Create a Jenkins Gear on Openshift.
+image::images/jenkins.png[Screenshot of Jenkins]
+
+Job Setup
+^^^^^^^^^
+Next navigate to the URL you chose in the previous step to login into the 
+
+A Public S-RAMP instance
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+

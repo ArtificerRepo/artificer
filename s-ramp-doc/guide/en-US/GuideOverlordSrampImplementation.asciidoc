@@ -1,0 +1,292 @@
+Overlord S-RAMP Implementation
+------------------------------
+
+Overview
+~~~~~~~~
+The Overlord S-RAMP implementation strives to be a fully compliant reference implementation of the
+S-RAMP specification.  This chapter describes the overall architecture of the implementation and also
+provides some information about how to configure it.
+
+Overlord S-RAMP also provides a Java based client library that consumers can use to integrate their own
+applications with an S-RAMP compliant server.
+
+
+Server
+~~~~~~
+Description
+^^^^^^^^^^^
+The server implementation is a conventional Java web application (WAR).  The following technologies
+are used to provide the various components that make up the server implementation:
+
+1. JCR (ModeShape) - used as the persistence engine, where all S-RAMP data is stored.  Artifacts
+and ontologies are both stored as nodes in a JCR tree.  All S-RAMP queries are mapped to JCRSQL2
+queries for processing by the JCR API.  The ModeShape JCR implementation is used by default.
+However, the persistence layer is pluggable allowing alternative providers to be implemented in
+the future.
+
+2. JAX-RS (RESTEasy) - used to provide the S-RAMP Atom based REST API.  The S-RAMP specification
+documents an Atom based REST API that implementations should make available.  The Overlord S-RAMP
+implementation uses JAX-RS (specifically RESTEasy) to expose all of the REST endpoints defined
+by the specification.
+
+3. JAXB - used to expose a Java data model based on the S-RAMP data structures defined by the
+specification (S-RAMP XSD schemas).
+
+
+Configuring
+^^^^^^^^^^^
+Configuration of the server can be done by providing a configuration file to the server on
+startup.  The configuration file can be provided in a number of ways:
+
+1. sramp.properties - an external file can be provided in the JBoss application server's
+configuration directory.  An alernative location is the home directory of the user running
+the application server.
+
+2. custom external file - a custom location for an sramp.properties file can be specified
+by starting the application server with the *sramp.config.file.name* system property set.
+This is typically done using *-Dsramp.config.file.name=<pathToFile>* on the application
+server's command line startup script (often in JAVA_OPTS).
+
+3. on the classpath - if no external file is found, the classpath is used to lookup a 
+default configuration.
+
+The configuration file is a simple Java properties file, with the following properties
+available to be set:
+
+----
+# The base URL of the S-RAMP server - can be useful in some advanced configurations where
+# the incoming Request URL is not the canonical server address.
+sramp.config.baseurl
+# Turn on/off auditing of changes to S-RAMP artifacts
+sramp.config.auditing.enabled
+# Turn on/off auditing of changes to derived S-RAMP artifacts
+sramp.config.auditing.enabled-derived
+----
+
+
+Configuring (EAP)
+^^^^^^^^^^^^^^^^^
+When running in JBoss EAP this same configuration information is instead stored in the 
+*JBOSS/standalone/configuration/standalone.xml* file under the 
+*urn:jboss:domain:overlord-configuration:1.0* subsystem. For example:
+
+----
+    <subsystem xmlns="urn:jboss:domain:overlord-configuration:1.0">
+      <configurations>
+        <configuration name="sramp">
+          <properties>
+            <property name="sramp.config.auditing.enabled" value="true" />
+            <property name="sramp.config.auditing.enabled-derived" value="true" />
+          </properties>
+        </configuration>
+      </configurations>
+    </subsystem>
+----
+
+Security (Authentication)
+^^^^^^^^^^^^^^^^^^^^^^^^^
+The S-RAMP repository Atom API is protected using standard web application security
+and JAAS on the backend.  When deploying to an application server, security should
+be configured according to the specifics of the container.  Typically the API would
+be protected by a simple BASIC authentication scheme, but in some more advanced 
+configurations it would be appropriate to use OAuth or SAML Bearer Token authentication
+mechanisms.
+
+When deploying into JBoss, the S-RAMP distribution adds a JBoss security domain named
+"overlord-jaxrs".  This security domain is configured to accept either a username
+and password (standard BASIC authentication) or a SAML Assertion (bearer token auth).
+If invoking the Atom API directly, then typically BASIC authentication would be used.
+When invoking the Atom API from an application that has already authenticated the 
+user in some way, then it is appropriate to use SAML.  For example, the S-RAMP CLI
+application uses BASIC authentication when invoking the S-RAMP Atom API.  The S-RAMP
+Browser (a web application) requires the user be authenticated into it, and thus is
+able to use SAML rather than propagate user credentials.
+
+When using simple BASIC authentication, the security domain must be configured with a
+source of users and passwords.  For example, in JBoss EAP this information can be 
+configured by modifying the following files:
+
+----
+jboss-eap-6.x/standalone/configuration/application-users.properties
+----
+
+Alternative mechanisms can be used by making changes to the security domains configured
+in the JBoss configuration.  For example:
+
+----
+jboss-eap-6.x/standalone/configuration/standalone.xml
+----
+
+The relevant section looks something like this:
+
+----
+<security-domain name="overlord-jaxrs" cache-type="default">
+  <authentication>
+    <login-module code="RealmDirect" flag="required">
+      <module-option name="password-stacking" value="useFirstPass"/>
+    </login-module>
+  </authentication>
+</security-domain>
+----
+
+For example, the RealmDirect (which passes through the authentication to the Application
+Realm) login module could be replaced with a LDAP login module.
+
+
+Security (Authorization)
+^^^^^^^^^^^^^^^^^^^^^^^^
+When accessing the S-RAMP Atom API, the authenticated user must have certain roles.
+Because the implementation leverages ModeShape as its persistence store by default,
+the authenticated user must have the following JAAS role, which is required by 
+ModeShape:
+
+----
+admin.sramp
+----
+
+Additionally, the S-RAMP Atom API web application requires that the user has the
+following role:
+
+----
+overlorduser
+----
+
+
+Extending: Custom Deriver
+^^^^^^^^^^^^^^^^^^^^^^^^^
+As mentioned earlier in this guide.  part of the S-RAMP specification is the concept of 
+Derived content.  This happens when an artifact of a certain type is added to the S-RAMP 
+repository.  The server is responsible for creating relevant and interesting Derived
+Artifacts from it.  For example, when an XML Schema (XSD) document is added to the 
+repository, the server is responsible for automatically creating an artifact for every
+top level Element, Complex Type, Simple Type, and Attribute declaration found in the XSD.
+
+The Overlord S-RAMP implementation includes Artifact Derivers for all of the logical models
+defined by the S-RAMP specification (e.g. WSDL, XSD, Policy).  However, it also provides a
+mechanism that allows users to provide Artifact Derivers for their own artifact types.  This
+is done by performing the following steps:
+
+1. Write a custom Deriver Java class - it must implement *ArtifactDeriver*
+2. Create a DeriverProvider (a class that implements *DeriverProvider*) - 
+   used to map artifact types to implementations of ArtifactDeriver
+3. Provide a text file named *org.overlord.sramp.common.derived.DeriverProvider* in the following
+   location:  *META-INF/services*.  The content of that file should simply be one line containing
+   the fully qualified classname of the class defined in #2
+4. Package everything up into a JAR and make it available either on the classpath or in an
+   external directory configured by setting property *sramp.derivers.customDir*.
+   
+The Overlord S-RAMP distribution comes with an example of how to write and package a custom 
+deriver - the demo is named *s-ramp-demos-custom-deriver*.
+
+
+Client
+~~~~~~
+As mentioned, the Overlord S-RAMP implementation also provides a Java client library that can be
+used to integrate with S-RAMP compliant servers.  This section of the guide describes how to use
+this library.
+
+
+Basic Usage
+^^^^^^^^^^^
+The S-RAMP client is a simple Java based client library and can be included in a Maven project
+by including the following pom.xml dependency:
+
+----
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-client</artifactId>
+      <version>${sramp.client.version}</version>
+    </dependency>
+----
+
+Once the library is included in your project, you can use the client by instantiating the 
+*SrampAtomApiClient* class.  Note that the client class supports pluggable authentication
+mechanisms, although BASIC auth is a simple matter of including the username and password
+upon construction of the client. 
+
+Please refer to the javadoc of that class for details, but here are some usage examples to 
+help you get started (code simplified for readability):
+
+.'Upload an XSD document to S-RAMP'
+----
+SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+String artifactFileName = getXSDArtifactName();
+InputStream is = getXSDArtifactContentStream();
+ArtifactType type = ArtifactType.XsdDocument();
+BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
+----
+
+.'Create a custom artifact in S-RAMP (meta-data only, no file content)'
+----
+SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+ExtendedArtifactType artifact = new ExtendedArtifactType();
+artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
+artifact.setExtendedType("MyArtifactType");
+artifact.setName("My Test Artifact #1");
+artifact.setDescription("Description of my test artifact.");
+BaseArtifactType createdArtifact = client.createArtifact(artifact);
+----
+
+.'Retrieve full meta-data for an XSD artifact by its UUID'
+----
+SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+String uuid = getArtifactUUID();
+BaseArtifactType metaData = client.getArtifactMetaData(ArtifactType.XsdDocument(), uuid);
+----
+
+.'Retrieve artifact content'
+----
+SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+String uuid = getArtifactUUID();
+InputStream content = client.getArtifactContent(ArtifactType.XsdDocument(), uuid);
+----
+
+.'Query the S-RAMP repository (by artifact name)'
+----
+SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+String artifactName = getArtifactName();
+QueryResultSet rset = client.buildQuery("/s-ramp/xsd/XsdDocument[@name = ?]")
+        .parameter(artifactName)
+        .count(10)
+        .query();
+----
+
+
+Extended Feature: Ontologies
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Although the S-RAMP specification is silent on how the API should support the
+management of ontologies, the Overlord S-RAMP implementation provides an extension
+to the Atom based REST API to support this.  Using any of the client's ontology
+related methods will work when communicating with the Overlord implementation of
+S-RAMP, but will likely fail when communicating with any other S-RAMP server.
+
+The client supports adding, updating, and getting (both individual and a full list)
+ontologies from the S-RAMP repository.
+
+
+Extended Feature: Auditing
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+The Overlord S-RAMP implementation also offers an extension to the Atom based
+REST API to get and set auditing information for artifacts in the repository.
+
+
+Extending: Custom Expander
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+A special feature of the client is the ability to automatically expand archive
+style artifacts (artifacts that are JARs, WARs, ZIPs, etc).  This feature is 
+similar to how the server creates Derived content.  The result is that certain
+files from the archive being uploaded as an S-RAMP artifact are extracted from
+the archive and also uploaded to the server.  When this happens these "expanded"
+artifacts are added with an S-RAMP relationship (expandedFromDocument) that 
+points to the archive artifact they were expanded from.
+
+The Overlord S-RAMP implementation comes with a few built-in expanders (e.g.
+java archive, SwitchYard archive, etc).  Additionally, custom expanders can 
+be created and provided by implementing *ZipToSrampArchiveProvider*.  In order
+to tell the client about the custom provider, put it in a JAR along with a
+file named:
+
+*META-INF/services/org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveProvider*
+  
+The contents of the file should be a single line with the fully qualified 
+Java classname of the provider implementation.

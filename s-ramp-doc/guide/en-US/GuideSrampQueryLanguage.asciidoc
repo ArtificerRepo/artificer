@@ -1,0 +1,42 @@
+Query Language
+--------------
+
+Another key aspect of the S-RAMP specification is the query language it defines, which allows
+clients to find artifacts by various criteria.  The S-RAMP query language is a subset of the
+XPath 2.0 language, designed specifically to find and select S-RAMP artifacts.
+
+TIP: for detailed information about the S-RAMP Query Language, see Section 4 of the S-RAMP
+specification's foundation document.
+
+As you might imagine, the query language allows clients to find artifacts based on any of the
+already discussed artifact meta-data, including:
+
+*Core Properties
+*Custom Properties
+*Classifiers
+*Relationships
+
+The basic structure of a typical S-RAMP query looks like this:
+
+----
+/s-ramp/<artifactModel>/<artifactType>[ <artifact-predicate> ]/relationship[ <target-artifact-predicate> ]
+----
+
+Of course, not all of the components of the above query are required.  It is likely best to 
+provide the following table of examples of a range of queries:
+
+[width="100%",options="header"]
+|=============================
+|Query                                                                  |What It Selects
+|/s-ramp                                                                |All artifacts.
+|/s-ramp/core                                                           |All Core Model artifacts.
+|/s-ramp/xsd/XsdDocument                                                |All XsdDocument artifacts.
+|/s-ramp/xsd/XsdDocument[@my-prop]                                      |All XsdDocument artifacts that have the custom property 'my-prop' defined (with any value).
+|/s-ramp/xsd/XsdDocument[@name=\'core.xsd']                              |XsdDocument artifacts named 'core.xsd'.
+|/s-ramp/xsd/XsdDocument[@name=\'core.xsd' and @version=\'1.0']           |XsdDocument artifacts named 'core.xsd' and versioned as '1.0'.
+|/s-ramp/soa[@myCustomProperty=\'foo']                                   |SOA artifacts with a custom property named 'myCustomProperty' that has value 'foo'.
+|/s-ramp/core[classifiedByAnyOf(., \'Maine', \'Alaska')]                  |Core artifacts classified by either 'Maine' or 'Alaska' (presumably from the 'Regions' ontology).
+|/s-ramp/wsdl/PortType[@name=\'OrderServicePT']/operation                |Artifacts related to any 'PortType' artifact named 'OrderServicePT' via a relationship named 'operation'.  (This effectively returns all of the order service port type's operations)
+|/s-ramp/ext/ServletFilter[relatedDocument[@uuid=\'12345']]              |All servlet filter artifacts derived from (i.e. contain a 'relatedDocument' relationship to) an artifact with UUID '12345'.
+|/s-ramp/wsdl/Message[xp2:matches(.,\'get.*')]/part[element]             |Element style WSDL parts from WSDL messages with names starting with 'get'.
+|=============================

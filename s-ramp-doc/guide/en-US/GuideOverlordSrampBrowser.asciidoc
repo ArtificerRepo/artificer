@@ -1,0 +1,175 @@
+The S-RAMP Browser (UI)
+-----------------------
+
+Overview
+~~~~~~~~
+The Overlord S-RAMP project comes with a user interface that allows end users (or 
+more likely business admins) to browse all of the artifacts in the S-RAMP repository.
+This UI is capable of viewing and manipulating all S-RAMP artifacts in a very 
+generic way, supporting all aspects of the S-RAMP specification (properties, 
+classifiers, relationships, etc).
+
+The browser is a web based application built using GWT and Errai, and is compatible
+with all modern web browsers.  Additionally, it is capable of scaling the interface
+down to a size that is useful on a smart phone.
+
+
+Configuration
+~~~~~~~~~~~~~
+The UI can be configured via an external properties file named *sramp-ui.properties*
+located in the application server's configuration directory.  This configuration
+file can contain UI specific configuration such as:
+
+----
+# The location of the S-RAMP server's Atom API
+s-ramp-ui.atom-api.endpoint
+# Whether or not to validate the S-RAMP server endpoint when connecting to it
+s-ramp-ui.atom-api.validating
+# The authentication provider to use when connecting
+s-ramp-ui.atom-api.authentication.provider
+# BASIC auth username/password
+s-ramp-ui.atom-api.authentication.basic.user
+s-ramp-ui.atom-api.authentication.basic.password
+----
+
+Alternatively, a configuration file location can be provided by setting a Java 
+system property (e.g. JAVA_OPTS) with the following name:
+
+*sramp-ui.config.file.name*
+
+
+Configuration (EAP)
+~~~~~~~~~~~~~~~~~~~
+When running in JBoss EAP this same configuration information is instead stored in the 
+*JBOSS/standalone/configuration/standalone.xml* file under the 
+*urn:jboss:domain:overlord-configuration:1.0* subsystem. For example:
+
+----
+    <subsystem xmlns="urn:jboss:domain:overlord-configuration:1.0">
+      <configurations>
+        <configuration name="sramp-ui">
+          <properties>
+            <property name="s-ramp-ui.atom-api.endpoint" value="${overlord.baseUrl}/s-ramp-server" />
+            <property name="s-ramp-ui.atom-api.authentication.provider" value="org.overlord.sramp.ui.server.api.SAMLBearerTokenAuthenticationProvider" />
+            <property name="s-ramp-ui.atom-api.authentication.saml.issuer" value="/s-ramp-ui" />
+            <property name="s-ramp-ui.atom-api.authentication.saml.service" value="/s-ramp-server" />
+            <property name="s-ramp-ui.atom-api.authentication.saml.sign-assertions" value="true" />
+            <property name="s-ramp-ui.atom-api.authentication.saml.keystore" value="${overlord.auth.saml-keystore}" />
+            <property name="s-ramp-ui.atom-api.authentication.saml.keystore-password" value="${overlord.auth.saml-keystore-password}" />
+            <property name="s-ramp-ui.atom-api.authentication.saml.key-alias" value="${overlord.auth.saml-key-alias}" />
+            <property name="s-ramp-ui.atom-api.authentication.saml.key-password" value="${overlord.auth.saml-key-alias-password}" />
+          </properties>
+        </configuration>
+      </configurations>
+    </subsystem>
+----
+
+
+Security (Authentication)
+^^^^^^^^^^^^^^^^^^^^^^^^^
+The S-RAMP Browser is protected using web application security mechanisms
+configured in the web.xml.
+
+By default, the UI uses SAML based single-sign-on (SSO) as the actual authentication 
+mechanism.  The SSO is provided via an Overlord SAML IDP web appliation (which is 
+shared across all Overlord UI projects).
+
+The Overlord SAML IDP is a simple web application that leverages the web app
+container's FORM authentication support and then implements the SAML SSO Web
+Browser protocol.  This allows other web applications (called Service Providers)
+to leverage the IDP as a source of authentication.
+
+Overlord SSO is enabled in the S-RAMP Browser UI web application by configuring
+a SAML SP servlet filter to protect the UI's html host page.  This filter
+implements the Service Provider side of the SAML SSO protocol and is configured
+in the web.xml like so:
+
+----
+  <filter>
+    <filter-name>AuthenticationFilter</filter-name>
+    <filter-class>org.picketlink.identity.federation.web.filters.SPFilter</filter-class>
+    <init-param>
+      <param-name>ROLES</param-name>
+      <param-value>overlorduser</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>AuthenticationFilter</filter-name>
+    <url-pattern>/</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>AuthenticationFilter</filter-name>
+    <url-pattern>/index.html</url-pattern>
+  </filter-mapping>
+----
+
+This protects the UI's host page (index.html) and requires that any user logging
+in must have the 'overlorduser' role.
+
+This SPFilter class works together with the IDP web application to provide web based 
+single-sign-on.  This functionality is provided by the PicketLink project, which
+also requires one final bit of configuration via a 'picketlink.xml' file also
+included in the WEB-INF folder of the Service Provider web application:
+
+----
+<PicketLink xmlns="urn:picketlink:identity-federation:config:2.1">
+  <PicketLinkSP xmlns="urn:picketlink:identity-federation:config:2.1" ServerEnvironment="tomcat"
+    BindingType="REDIRECT" RelayState="someURL">
+    <IdentityURL>${overlord-idp.url::/overlord-idp/}</IdentityURL>
+    <ServiceURL>${dtgov-ui.url::/dtgov-ui/}</ServiceURL>
+  </PicketLinkSP>
+  <Handlers xmlns="urn:picketlink:identity-federation:handler:config:2.1">
+    <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2LogOutHandler" />
+    <Handler class="org.picketlink.identity.federation.web.handlers.saml2.SAML2AuthenticationHandler" />
+    <Handler class="org.overlord.commons.auth.handlers.RoleCachingHandler" />
+  </Handlers>
+</PicketLink>
+----
+
+All of the above configuration enables SAML based SSO for the Browser web app.
+It's worth pointing out that the IDP web app is configured to use the application
+container's local mechanism for authentication and authorization.  So you should
+look up the details of this for whatever platform you are running.
+
+When running in JBoss EAP, the Overlord IDP is configured to use the following
+security domain (configured in standalone.xml):
+
+----
+<security-domain name="overlord-idp" cache-type="default">
+  <authentication>
+    <login-module code="RealmDirect" flag="required">
+      <module-option name="password-stacking" value="useFirstPass"/>
+    </login-module>
+  </authentication>
+</security-domain>
+----
+
+This security domain passes through authentication to the JBoss Application
+security realm.  By default, the Application Realm is configured like this:
+
+----
+<security-realm name="ApplicationRealm">
+    <authentication>
+        <local default-user="$local" allowed-users="*" skip-group-loading="true"/>
+        <properties path="application-users.properties" relative-to="jboss.server.config.dir"/>
+    </authentication>
+    <authorization>
+        <properties path="application-roles.properties" relative-to="jboss.server.config.dir"/>
+    </authorization>
+</security-realm>
+----
+
+This uses simple property files to configure the users and groups.  It is recommended
+for most production systems to replace this with some other approach, such as an LDAP
+configuration.
+
+
+Security (Authorization)
+^^^^^^^^^^^^^^^^^^^^^^^^
+Currently the S-RAMP Browser UI does not support any sort of fine grained 
+authorization.  As a result, the user must simply have the following role in order
+to log in and use the UI:
+
+----
+overlorduser
+----
