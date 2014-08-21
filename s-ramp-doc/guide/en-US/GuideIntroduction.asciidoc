@@ -1,0 +1,111 @@
+Introduction to S-RAMP
+----------------------
+
+The S-RAMP Specification
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+S-RAMP stands for SOA Repository Artifact Model and Protocol. https://www.oasis-open.org/committees/s-ramp/charter.php[S-RAMP] is a new specification worked on by the OASIS Technical Committee. 
+[quote, OASIS Charter, https://www.oasis-open.org/committees/s-ramp/charter.php]
+____
+The SOA Repository Artifact Model and Protocol (S-RAMP) TC defines a common data model for SOA repositories as well as an interaction protocol to facilitate the use of common tooling and sharing of data. The TC will define an ATOM binding which documents the syntax for interaction with a compliant repository for create, read, update, delete and query operations.
+____
+The first version of the specification (1.0) should be finalized in the first half of 2013. Two of the developers on the project participated in the Technical Committee. 
+
+
+Purpose
+~~~~~~~
+
+The OASIS S-RAMP (SOA Repository Artifact Model and Protocol) specification is intended to 
+provide a common data model and protocol for interacting with a repository of (primarily)
+SOA artifacts.  The goal of the specification is to foster interoperability between 
+repository implementations by standardizing on a data model and API. 
+
+This guide will discuss both the OASIS standard and the Overlord open source implementation.
+
+
+Overview
+~~~~~~~~
+
+The S-RAMP specification includes a foundation document and an Atom based protocol binding
+document.  The foundation document describes core concepts and will be the focus of the 
+first part of this guide.  The Atom binding document describes an Atom based API that 
+implementations should provide.
+
+An S-RAMP repository primarily stores artifacts.  An artifact is comprised of the following
+meta-data:
+
+.Core Properties
+.Custom Properties
+.Classifiers
+.Relationships
+
+
+Core Properties
+~~~~~~~~~~~~~~~
+
+All artifacts in S-RAMP contain a set of core properties such as name, description, 
+creation date, etc.  Many of these properties are automatically set by the server when the
+artifact is added and/or updated.  Others, such as description, can be set by clients.
+
+However, most importantly every artifact has an Artifact Model and an Artifact Type.  
+These two properties determine what kind of artifact it is (more on artifact types later, 
+in the Data Models section of this Guide).  
+
+Additionally, some artifact types contain additional core properties.  For example, the 
+Document artifact type includes additional core properties of contentType and contentSize, 
+while the XsdDocument artifact type includes the targetNamespace property.
+
+
+Custom Properties
+~~~~~~~~~~~~~~~~~
+
+An artifact may have additional properties set on it by clients.  These custom properties
+are simply arbitrary name/value pairs.  The only restriction is that a custom property
+may not have the same name as a Core Property.
+
+
+Classifiers
+~~~~~~~~~~~
+
+Another type of meta-data found on S-RAMP artifacts are classifiers.  Classifiers are a 
+lot like keywords or tags except that they are hierarchical.  Every artifact has a 
+collection of classifiers configured by the client, where each classifier must be a node
+in an ontology previously uploaded to the repository (presumably by an admin).
+
+An ontology is simply a hierarchy of tags (defined as a subset of the OWL Lite format).  
+This approach allows the repository to be configured with a pre-defined set of hierarchical
+tags (classifiers) that can be associated with an artifact.
+
+An example is helpful in this case.  First, a repository administrator would define and
+upload an ontology:
+
+----
+World
+  |-> North America
+     |-> United States
+         |-> Alabama
+         |-> Alaska
+     |-> Mexico
+     |-> Canada
+  |-> South America
+  |-> Australia
+----
+
+Once this ontology has been added to the repository, then clients can add, for example,
+#Alaska or #Canada as classifiers on artifacts.  This provides a way to "tag" artifacts
+in interesting and meaningful ways, and provides a useful means of querying (more on that
+later).
+
+For more information about ontologies and classifiers, have a look at Section 3 of the
+S-RAMP Foundation document.
+
+
+Relationships
+~~~~~~~~~~~~~
+
+The final bit of meta-data that can be found on an artifact are relationships  An S-RAMP
+relationship is a uni-directional link between a source artifact and a target artifact.
+Artifacts can have arbitrary, client-defined relationships.  Every relationship has a
+name and a target artifact.  For example, a client might define a relationship named
+"documentedBy" between a wsdl artifact and a text or PDF artifact, indicating that the
+latter provides documentation for the former.

@@ -1,0 +1,107 @@
+Getting Started
+---------------
+
+Prerequisites
+~~~~~~~~~~~~~
+
+The S-RAMP application is written in Java. To get started make sure your system has the following:
+
+* Java JDK 1.6 or newer
+* Apache Ant 1.7 or newer to use the installer
+* Maven 3.0.3 or newer to build and run the examples
+
+Download, Installation and Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `s-ramp-<version>.zip` (or tar.gz) archive can be downloaded from the http://www.jboss.org/overlord[http://www.jboss.org/overlord]
+website. Grab the latest, extract the archive and run:
+
+....
+ant install
+....
+
+The installer will ask you to choose a runtime platform.  Currently the following platforms are supported:
+
+* JBoss EAP 6
+* JBoss Fuse 6.1
+* Tomcat 7
+* Jetty 8
+
+Simply follow the installer instructions to install onto the platform of your choice.  We recommend installing
+into a clean version of which platform you choose, to minimize the risk of colliding with other projects.
+
+Note that you must have already downloaded and installed the platform on which you wish to run, with the 
+exception of Tomcat 7 and Jetty 8 (which the installer will download for you if you choose).
+
+Finally, please make sure the admin password you choose (the installer will prompt you for this) contains
+letters, numbers, and punctuation (and is at least 8 characters long).
+
+TIP: Read the installer output carefully - extra instructions are given for certain platforms.
+
+Once S-RAMP is installed on your preferred platform, you should be able to go ahead and start it up.  The
+instructions for starting the server depend on the chosen platform:
+
+.Tomcat 7
+....
+bin/startup.sh
+....
+
+.Jetty 8
+....
+bin/jetty.sh run
+....
+
+.JBoss EAP 6
+....
+bin/standalone.sh
+....
+
+.JBoss Fuse 6.1
+....
+bin/fuse
+....
+
+Check your Installation
+~~~~~~~~~~~~~~~~~~~~~~~
+
+To make sure your installation works you can fire up the http://localhost:8080/s-ramp-ui[s-ramp-ui]. You
+should see the GUI dashboard and be able to navigate to either the Artifacts or Ontologies management pages:
+
+[[figure-gs-screenshot-of-the-s-ramp-ui]]
+.Welcome screen of the s-ramp-ui.
+image::images/srampui.png[Screenshot of the s-ramp-ui]
+
+You can click on `Artifacts` and see a list of files related to the S-RAMP default workflows.
+
+Alternatively you can fire up the `s-ramp shell` in the `bin` directory of the distribution:
+....
+./bin/s-ramp.sh
+**********************************************************************
+           _____       ______  ___ ___  ________  
+          /  ___|      | ___ \/ _ \|  \/  | ___ \ 
+          \ `--. ______| |_/ / /_\ \ .  . | |_/ / 
+           `--. \______|    /|  _  | |\/| |  __/  
+          /\__/ /      | |\ \| | | | |  | | |     
+          \____/       \_| \_\_| |_|_|  |_|_|     
+                                                  
+  JBoss S-RAMP Kurt Stam and Eric Wittmann, Licensed under the
+  Apache License, V2.0, Copyright 2012
+**********************************************************************
+s-ramp>
+....
+
+To connect the shell to the server type `connect` and hit the tab key. It should auto-complete
+to say `s-ramp:connect http://localhost:8080/s-ramp-server` and when hitting the return key
+you should be prompted for user credentials.  Use 'admin' and whatever password you entered
+during installation.  If this succeeds, the shell cursor/prompt will go from red to green. To 
+browse the artifacts in the repository (there will likely not be any) run the following query:
+
+....
+s-ramp> s-ramp:query "/s-ramp"
+Querying the S-RAMP repository:
+	/s-ramp
+Atom Feed (0 entries)
+  Idx                    Type Name
+  ---                    ---- ----
+....
+In later chapters will go into more detail, but if this all worked you can be sure that your installation is in good working order.

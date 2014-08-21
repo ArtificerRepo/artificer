@@ -1,0 +1,46 @@
+How to build the S-RAMP Guide Book in Docbook format
+====================================================
+
+
+This S-RAMP wiki is the source of the S-RAMP Guide document. We convert the asciidoc into an intermediate Docbook format, which then is used to create HTML and PDF versions. If you want to build these yourself you need to install http://www.methods.co.nz/asciidoc/[asciidoc] on your machine and check out the repository locally using:
+----
+git clone git@github.com:Governance/s-ramp.wiki.git
+----
+Then go into the s-ramp.wiki/guide/en-US directory, and run:
+----
+asciidoc -a docinfo -b docbook Guide.asciidoc 
+----
+This will produce a docbook formatted file called Guide.xml. Now, go back up in the guide directory and run:
+----
+mvn clean install
+----
+and it will build HTML and PDF versions in the target/docbook/publish/en-US directory.
+
+
+[qanda]
+.Q&A
+I spotted a typo, can I fix it?::
+Yes please help us maintain the documentation. Simpy update the
+appropriate page right on
+https://github.com/Governance/s-ramp/wiki/Guide[github]. Our nightly
+build will distribute the changes to docbook and the html and pdf
+versions.
+
+How do I add an image?::
+Images can not be uploaded through the github UI. Instead you need to add them to the `images` directory in the root of the s-ramp.wiki repo and then push it up to github. You can then reference your image on the page using `image::images/<myimage>.ext`.
+NOTE: Make sure to add an empty line before and after this image reference.
+
+How do add a numbering and references?::
+You should add a label -we use the convention
+<type>-<chapter>-<label>, i.e.
+`[[figure-gs-screenshot-of-the-s-ramp-ui]]`- , a title i.e. 
+`.Welcome screen of the s-ramp-ui.` and then the thing itself -for an
+image use something like `image::images/srampui.png[Screenshot of the
+s-ramp-ui]`. The label `figure-gs-screenshot-of-the-s-ramp-ui` can be used to link to this figure using
+`<<figure-gs-screenshot-of-the-s-ramp-ui>>`.
+
+How do I add a chapter to the book in docbook?::
+We add chapters as different files, and then include them in the
+`Guide.asciidoc` file. At docbook generation time it will pull in the
+chapter into the `Guide.xml` file. Also we add a link in the `_Sidebar.asciidoc`
+page to have a link when looking at it at Github in wiki style.

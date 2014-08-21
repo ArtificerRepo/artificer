@@ -1,0 +1,294 @@
+S-RAMP Data Models
+------------------
+
+The S-RAMP specification defines a number of built-in artifact types, while also allowing
+clients to define their own (implicit) types.  This section of the Guide describes these
+different models.
+
+An artifact may have document (e.g file) content or it may be a purely logical artifact.
+In either case, clients typically add artifacts to the repository directly (e.g. via the
+S-RAMP Atom API, described later in this guide).
+
+Additionally, some document style artifact types when added to the repository, will result
+in the creation of a set of "derived" artifacts.  For example, if an XSD document is
+added to the repository, the server will automatically extract the element declarations
+from the content of the file resulting in a set of additional artifacts "related" to the
+original.  This will be described in detail further in the XSD Data Model section.
+
+
+Core Data Model (core)
+~~~~~~~~~~~~~~~~~~~~~~
+
+The S-RAMP core model defines some basic artifact types including Document and XmlDocument.
+These basic types allow clients to add simple files to the repository as artifacts.
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type   |Parent Type    |Properties
+|Document        |               |contentType, contentSize, contentHash
+|XmlDocument     |Document       |contentEncoding
+|=============================
+
+
+XML Schema (XSD) Data Model (xsd)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The XSD model defines a single document style artifact, XsdDocument, and a number of derived
+artifact types.  When an XSD document is added to the repository, the server will additionally
+"index" the artifact by automatically creating a number of derived artifacts of the following
+types from the XSD content.
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type          |Parent Type    |Properties
+|XsdDocument            |XmlDocument    |targetNamespace
+|AttributeDeclaration   |<derived>      |ncName, namespace
+|ElementDeclaration     |<derived>      |ncName, namespace
+|SimpleTypeDeclaration  |<derived>      |ncName, namespace
+|ComplexTypeDeclaration |<derived>      |ncName, namespace
+|=============================
+
+
+WSDL Data Model (wsdl)
+~~~~~~~~~~~~~~~~~~~~~~
+
+The WSDL model defines a single document style artifact, WsdlDocument, and a number of derived
+artifact types.  Similarly to the XsdDocument type, when a WSDL dcument is added to the
+repository, the server will automatically derive additional artifacts (listed below) from the
+content of the WSDL file.
+
+For further details about the WSDL Model, please see the S-RAMP specification's foundation 
+document, section 2.4.2.
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type          |Parent Type    |Properties
+|WsdlDocument           |XmlDocument    |targetNamespace, xsdTargetNamespaces
+|WsdlService            |<derived>      |ncName, namespace
+|Port                   |<derived>      |ncName, namespace
+|WsdlExtension          |<derived>      |ncName, namespace
+|Part                   |<derived>      |ncName, namespace
+|Message                |<derived>      |ncName, namespace
+|Fault                  |<derived>      |ncName, namespace
+|PortType               |<derived>      |ncName, namespace
+|Operation              |<derived>      |ncName, namespace
+|OperationInput         |<derived>      |ncName, namespace
+|OperationOutput        |<derived>      |ncName, namespace
+|Binding                |<derived>      |ncName, namespace
+|BindingOperation       |<derived>      |ncName, namespace
+|BindingOperationInput  |<derived>      |ncName, namespace
+|BindingOperationOutput |<derived>      |ncName, namespace
+|BindingOperationFault  |<derived>      |ncName, namespace
+|=============================
+
+
+Policy Data Model (policy)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This data model is present to represent the primary components of a WS-Policy document.
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type          |Parent Type    |Properties
+|PolicyDocument         |XmlDocument    |
+|PolicyExpression       |<derived>      |
+|PolicyAttachment       |<derived>      |
+|=============================
+
+
+SOA Data Model (soa)
+~~~~~~~~~~~~~~~~~~~~
+
+The SOA model exists to provide a link to the work done by the Open Group SOA Ontology group.
+All of the artifacts in this model are non-document artifacts which are directly instantiated
+by clients.
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type          |Parent Type    |Properties
+|HumanActor             |               |
+|Choreography           |               |
+|ChoreographyProcess    |               |
+|Collaboration          |               |
+|CollaborationProcess   |               |
+|Composition            |               |
+|Effect                 |               |
+|Element                |               |
+|Event                  |               |
+|InformationType        |               |
+|Orchestration          |               |
+|OrchestrationProcess   |               |
+|Policy                 |               |
+|PolicySubject          |               |
+|Process                |               |
+|Service                |               |
+|ServiceContract        |               |
+|ServiceComposition     |               |
+|ServiceInterface       |               |
+|System                 |               |
+|Task                   |               |
+|=============================
+
+
+Service Implementation Data Model (serviceImplementation)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Service Implementation model adds SOA service implementation artifact types underneath
+the (already mentioned) SOA Data Model.
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type          |Parent Type    |Properties
+|Organization           |               |end
+|ServiceEndpoint        |               |end, url
+|ServiceInstance        |               |end, url
+|ServiceOperation       |               |end, url
+|=============================
+
+
+Custom/Extension Data Models (ext)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Clients can define their own (implicit) data models by using the "ext" model space defined
+by the S-RAMP specification.  This allows clients to add documents with custom artifact types.
+For example, a client can add an artifact to /s-ramp/ext/PdfDocument.  This provides a way
+for clients to define their own data models with their own properties and relationships.
+Note however that the server will not have a definition of the model - it is up to the client
+to properly conform to their own implicit model.  Custom properties and user-defined 
+relationships allow clients to richly define their own models.
+
+As an example, a client might define the following Data Model for a J2EE web application
+domain:
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type          |Parent Type           |Properties
+|WebXmlDocument         |ExtendedDocument      |displayName
+|ServletFilter          |ExtendedArtifactType  |displayName, filterClass
+|Servlet                |ExtendedArtifactType  |servletClass, loadOnStartup
+|=============================
+
+
+Java Data Model
+~~~~~~~~~~~~~~~
+
+The S-RAMP server adds a custom (ext) model for dealing with Java artifacts.  The following
+table lists the Java artifact types that are supported out of the box.  These artifacts can
+either be directly added to the repository or they can be added as part of the expansion
+of some other artifact.  A typical example of the latter is how JavaClass artifacts may be
+added because they are contained within an archive of some kind.
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type             |Parent Type           |File Extension   |Properties
+|JavaArchive               |ExtendedDocument      |jar              |
+|JavaWebApplication        |ExtendedDocument      |war              |
+|JavaEnterpriseApplication |ExtendedDocument      |ear              |
+|BeanArchiveDescriptor     |ExtendedDocument      |beans.xml        |
+|JavaClass                 |ExtendedDocument      |class            |packageName, className
+|JavaInterface             |ExtendedDocument      |class            |packageName, className
+|JavaEnum                  |ExtendedDocument      |class            |packageName, className
+|=============================
+
+
+KIE Data Model (Knowledge is Everything)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The S-RAMP server includes basic out of the box support for Drools (KIE) artifact types.
+The following table lists the KIE artifact types that are currently supported.
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type         |Parent Type           |File Extension   |Properties
+|KieJarArchive         |ExtendedDocument      |jar              |
+|KieXmlDocument        |ExtendedDocument      |kmodule.xml      |
+|BpmnDocument          |ExtendedDocument      |bpmn             |
+|DroolsDocument        |ExtendedDocument      |drl              |
+|=============================
+
+
+SwitchYard Data Model
+~~~~~~~~~~~~~~~~~~~~~
+
+The S-RAMP server inclues a custom (ext) data model for SwitchYard artifacts.  The following
+table lists the artifact types currently supported.  The non-derived artifacts can be added
+directly to the repository or expanded out of some archive type artifact.
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type              |Parent Type                             |Properties
+|SwitchYardApplication      |ExtendedDocument                        |
+|SwitchYardXmlDocument      |ExtendedDocument                        |targetNamespace
+|SwitchYardService          |<derived from SwitchYardXmlDocument>    |
+|SwitchYardComponent        |<derived from SwitchYardXmlDocument>    |requires
+|SwitchYardComponentService |<derived from SwitchYardXmlDocument>    |
+|SwitchYardTransformer      |<derived from SwitchYardXmlDocument>    |transformer-type
+|SwitchYardValidator        |<derived from SwitchYardXmlDocument>    |validator-type
+|=============================
+
+Additionally, the SwitchYard derived artifacts have various relationships automatically
+created between and amongst them (as well as to other derived artifacts such as those
+derived from XML Schema artifacts).  The following table outlines all the relationships
+currently defined in the SwitchYard Model.
+
+[width="75%",options="header"]
+|=============================
+|Relationship           |Source Artifact Type         |Target Artifact Type
+|implementedBy          |SwitchYardComponent          |JavaClass
+|implementedBy          |SwitchYardTransformer        |JavaClass
+|implementedBy          |SwitchYardValidator          |JavaClass
+|implements             |SwitchYardService            |JavaInterface, PortType
+|implements             |SwitchYardComponentService   |JavaInterface, PortType
+|offers                 |SwitchYardComponent          |SwitchYardComponentService
+|promotes               |SwitchYardService            |SwitchYardComponent
+|references             |SwitchYardComponent          |JavaInterface, PortType
+|transformsFrom         |SwitchYardTransformer        |JavaClass, ElementDeclaration
+|transformsTo           |SwitchYardTransformer        |JavaClass, ElementDeclaration
+|validates              |SwitchYardValidator          |JavaClass, ElementDeclaration
+|=============================
+
+
+Teiid Data Model (Teiid)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Teiid model adds Teiid-related artifact types, derived artifacts, and relationships. There 
+are artifact types for the following Teiid resources: VDBs (`*.vdb`), models (`*.xml`), VDB 
+manifests (usually named `vdb.xml`), and VDB configuration files (`ConfigurationInfo.def`). Teiid 
+resources should be added to the repository using the corresponding artifact types listed in the 
+following table:
+
+[width="75%",options="header"]
+|=============================
+|Artifact Type               |Parent Type                     |Properties
+|TeiidVdb                    |                                |
+|TeiidModel                  |ExtendedArtifactType            |description, maxSetSize, mmuuid, modelType, nameInSource, primaryMetamodelUri, producerName, producerVersion, visible
+|TeiidVdbConfigInfo          |ExtendedArtifactType            |
+|TeiidVdbManifest            |ExtendedArtifactType            |description, preview, UseConnectorMetadata, vdbVersion, <custom properties>
+|TeiidVdbDataPolicy          |<derived from TeiidVdbManifest> |anyAuthenticated, description, roleNames, tempTableCreatable
+|TeiidVdbEntry               |<derived from TeiidVdbManifest> |description, <custom properties>
+|TeiidVdbImportVdb           |<derived from TeiidVdbManifest> |importDataPolicies, vdbVersion
+|TeiidVdbPermission          |<derived from TeiidVdbManifest> |alterable, condition, creatable, deletable, executable, languagable, mask, readable, updatable
+|TeiidVdbSchema              |<derived from TeiidVdbManifest> |builtIn, checksum, description, indexName, metadata, metadataType, modelClass, modelUuid, pathInVdb, schemaType, visible, <custom properties>
+|TeiidVdbSource              |<derived from TeiidVdbManifest> |jndiName, translatorName
+|TeiidVdbTranslator          |<derived from TeiidVdbManifest> |description, translatorType, <custom properties>
+|TeiidVdbValidationError     |<derived from TeiidVdbManifest> |message, severity
+|=============================
+
+When a `TeiidVDB` or a `TeiidVdbManifest` artifact type is added to the repository, relationships 
+between it and its derived artifacts are created. Note that the `TeiidVdbContains` relationship is 
+the inverse of the `expandedFromDocument` relationship. Here is a list of the Teiid relationship types:
+
+[width="75%",options="header"]
+|=============================
+|Relationship Type               |Source Type              |Target Type               |Multiplicity
+|TeiidVdbContains                |TeiidVdbManifest         |TeiidVdbDataPolicy, TeiidVdbEntry, TeiidVdbSchema, TeiidVdbTranslator, TeiidVdbImportVdb                                                 |1 to many
+|TeiidVdbDataPolicyPermissions   |TeiidVdbDataPolicy       |TeiidVdbPermission        |1 to many
+|TeiidVdbPermissionDataPolicy    |TeiidVdbPermission       |TeiidVdbDataPolicy        |1 to 1
+|TeiidVdbSchemaSources           |TeiidVdbSchema           |TeiidVdbSource            |1 to 1
+|TeiidVdbSchemaValidationErrors  |TeiidVdbSchema           |TeiidVdbValidationError   |1 to many
+|TeiidVdbSourceSchemas           |TeiidVdbSource           |TeiidVdbSchema            |1 to many
+|TeiidVdbSourceTranslator        |TeiidVdbSource           |TeiidVdbTranslator        |1 to 1 
+|TeiidVdbTranslatorSources       |TeiidVdbTranslator       |TeiidVdbSource            |1 to many  
+|TeiidVdbValidationErrorSource   |TeiidVdbValidationError  |TeiidVdbSource            |1 to 1
+|expandedFromDocument            |TeiidVdbDataPolicy, TeiidVdbEntry, TeiidVdbSchema, TeiidVdbTranslator, TeiidVdbImportVdb  | TeiidVdbManifest |many to 1
+|=============================
