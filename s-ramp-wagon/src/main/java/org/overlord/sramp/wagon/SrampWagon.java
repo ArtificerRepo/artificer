@@ -93,7 +93,7 @@ public class SrampWagon extends StreamWagon {
 	private transient SrampArchive archive;
 	private transient SrampAtomApiClient client;
 
-    private boolean allowSnapshot;
+    private final boolean allowSnapshot;
 
 	/**
 	 * Constructor.
@@ -551,7 +551,7 @@ public class SrampWagon extends StreamWagon {
 	    if (allowSnapshot || !gavInfo.isSnapshot()) {
     		logger.info(Messages.i18n.format("UPLOADING_TO_SRAMP", resource.getName())); //$NON-NLS-1$
     		firePutInitiated(resource, source);
-    
+
     		firePutStarted(resource, source);
     		if (resource.getName().contains("maven-metadata.xml")) { //$NON-NLS-1$
     			logger.info(Messages.i18n.format("SKIPPING_ARTY", resource.getName())); //$NON-NLS-1$
@@ -836,9 +836,8 @@ public class SrampWagon extends StreamWagon {
             params.add(gavInfo.getClassifier());
         }
         if (StringUtils.isNotBlank(gavInfo.getSnapshotId())) {
-            return null;
-        } else {
-            criteria.add("xp2:not(@maven.snapshot.id)"); //$NON-NLS-1$
+            criteria.add("@maven.snapshot.id = ?"); //$NON-NLS-1$
+            params.add(gavInfo.getSnapshotId());
         }
 
         if (criteria.size() > 0) {
@@ -856,7 +855,7 @@ public class SrampWagon extends StreamWagon {
             }
         }
 
-		QueryResultSet rset = clientQuery.count(100).query();
+        QueryResultSet rset = clientQuery.count(100).orderBy("createdTimestamp").descending().query();//$NON-NLS-1$
 		if (rset.size() > 0) {
 			for (ArtifactSummary summary : rset) {
 				String uuid = summary.getUuid();
