@@ -26,23 +26,23 @@ import org.overlord.sramp.common.ArtifactType;
  * @author Brett Meyer
  */
 public class RTGovModel {
-    public static final String TYPE_RTGOV_ACS = "RTGovACS";
-    public static final String TYPE_RTGOV_AV = "RTGovAV";
-    public static final String TYPE_RTGOV_EPN = "RTGovEPN";
-    public static final String TYPE_RTGOV_IP = "RTGovIP";
-    public static final String TYPE_RTGOV_ACS_TEMPLATE = "RTGovACSTemplate";
-    public static final String TYPE_RTGOV_AV_TEMPLATE = "RTGovAVTemplate";
-    public static final String TYPE_RTGOV_EPN_TEMPLATE = "RTGovEPNTemplate";
-    public static final String TYPE_RTGOV_IP_TEMPLATE = "RTGovIPTemplate";
+    public static final String TYPE_RTGOV_ACS = "RTGovACS"; //$NON-NLS-1$
+    public static final String TYPE_RTGOV_AV = "RTGovAV"; //$NON-NLS-1$
+    public static final String TYPE_RTGOV_EPN = "RTGovEPN"; //$NON-NLS-1$
+    public static final String TYPE_RTGOV_IP = "RTGovIP"; //$NON-NLS-1$
+    public static final String TYPE_RTGOV_ACS_TEMPLATE = "RTGovACSTemplate"; //$NON-NLS-1$
+    public static final String TYPE_RTGOV_AV_TEMPLATE = "RTGovAVTemplate"; //$NON-NLS-1$
+    public static final String TYPE_RTGOV_EPN_TEMPLATE = "RTGovEPNTemplate"; //$NON-NLS-1$
+    public static final String TYPE_RTGOV_IP_TEMPLATE = "RTGovIPTemplate"; //$NON-NLS-1$
 
-    public static final String HINT_RTGOV_ACS = "acs.json";
-    public static final String HINT_RTGOV_AV = "av.json";
-    public static final String HINT_RTGOV_EPN = "epn.json";
-    public static final String HINT_RTGOV_IP = "ip.json";
-    public static final String HINT_RTGOV_ACS_TEMPLATE = "acs-template.json";
-    public static final String HINT_RTGOV_AV_TEMPLATE = "av-template.json";
-    public static final String HINT_RTGOV_EPN_TEMPLATE = "epn-template.json";
-    public static final String HINT_RTGOV_IP_TEMPLATE = "ip-template.json";
+    public static final String HINT_RTGOV_ACS = "acs.json"; //$NON-NLS-1$
+    public static final String HINT_RTGOV_AV = "av.json"; //$NON-NLS-1$
+    public static final String HINT_RTGOV_EPN = "epn.json"; //$NON-NLS-1$
+    public static final String HINT_RTGOV_IP = "ip.json"; //$NON-NLS-1$
+    public static final String HINT_RTGOV_ACS_TEMPLATE = "acs-template.json"; //$NON-NLS-1$
+    public static final String HINT_RTGOV_AV_TEMPLATE = "av-template.json"; //$NON-NLS-1$
+    public static final String HINT_RTGOV_EPN_TEMPLATE = "epn-template.json"; //$NON-NLS-1$
+    public static final String HINT_RTGOV_IP_TEMPLATE = "ip-template.json"; //$NON-NLS-1$
     
     public static final Map<String, String> HINTS = new HashMap<String, String>();
     

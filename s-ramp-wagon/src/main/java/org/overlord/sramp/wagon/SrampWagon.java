@@ -565,7 +565,7 @@ public class SrampWagon extends StreamWagon {
     		}
     		firePutCompleted(resource, source);
 	    } else {
-	        throw new TransferFailedException(Messages.i18n.format("SNAPSHOT_NOT_ALLOWED"));
+	        throw new TransferFailedException(Messages.i18n.format("SNAPSHOT_NOT_ALLOWED")); //$NON-NLS-1$
 	    }
 	}
 

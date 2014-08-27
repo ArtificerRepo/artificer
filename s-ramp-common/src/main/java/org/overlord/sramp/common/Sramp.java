@@ -106,7 +106,7 @@ public class Sramp {
 
     private boolean isSnapshot() {
         String version = getVersion();
-        return StringUtils.isNotBlank(version) && version.contains("SNAPSHOT");
+        return StringUtils.isNotBlank(version) && version.contains("SNAPSHOT"); //$NON-NLS-1$
     }
 
     private String getVersion() {
@@ -119,7 +119,7 @@ public class Sramp {
 
     public boolean isSnapshotAllowed() {
         // Need to support both system properties (wagon, cli) and sramp.properties (maven facade)
-        if ("true".equalsIgnoreCase(System.getProperty(SrampConstants.SRAMP_SNAPSHOT_ALLOWED))) {
+        if ("true".equalsIgnoreCase(System.getProperty(SrampConstants.SRAMP_SNAPSHOT_ALLOWED))) { //$NON-NLS-1$
             return true;
         }
         if (containsKey(SrampConstants.SRAMP_SNAPSHOT_ALLOWED)) {
