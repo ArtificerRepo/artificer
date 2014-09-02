@@ -39,12 +39,14 @@
       <artifactId>overlord-commons-codec</artifactId>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-installer</artifactId>
       <type>jar</type>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-api</artifactId>
@@ -53,6 +55,11 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-common</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -74,12 +81,6 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-common</artifactId>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-wagon</artifactId>
       <scope>test</scope>
     </dependency>
@@ -87,6 +88,17 @@
       <groupId>org.apache.maven.wagon</groupId>
       <artifactId>wagon-provider-api</artifactId>
       <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>jms</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -165,6 +177,11 @@
           <groupId>org.overlord.sramp</groupId>
           <artifactId>s-ramp-ui-war-tomcat7</artifactId>
           <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.activemq</groupId>
+          <artifactId>activemq-client</artifactId>
           <scope>test</scope>
         </dependency>
       </dependencies>
@@ -246,6 +263,18 @@
           <scope>test</scope>
         </dependency>
         <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-auth-jboss7</artifactId>
+          <type>jar</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-dist-eap6</artifactId>
+          <type>zip</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
           <groupId>org.overlord.sramp</groupId>
           <artifactId>s-ramp-server-eap6</artifactId>
           <type>war</type>
@@ -258,15 +287,9 @@
           <scope>test</scope>
         </dependency>
         <dependency>
-          <groupId>org.overlord</groupId>
-          <artifactId>overlord-commons-auth-jboss7</artifactId>
-          <type>jar</type>
+          <groupId>org.hornetq</groupId>
+          <artifactId>hornetq-jms-client</artifactId>
           <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.overlord</groupId>
-          <artifactId>overlord-commons-dist-eap6</artifactId>
-          <type>zip</type>
         </dependency>
       </dependencies>
     </profile>
@@ -316,9 +339,28 @@
           <scope>test</scope>
         </dependency>
         <dependency>
+          <groupId>org.modeshape</groupId>
+          <artifactId>modeshape-distribution</artifactId>
+          <type>zip</type>
+          <classifier>jbosseap-dist</classifier>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
           <groupId>org.overlord</groupId>
           <artifactId>overlord-commons-idp-eap6</artifactId>
           <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-auth-jboss7</artifactId>
+          <type>jar</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-dist-eap6</artifactId>
+          <type>zip</type>
           <scope>test</scope>
         </dependency>
         <dependency>
@@ -334,22 +376,9 @@
           <scope>test</scope>
         </dependency>
         <dependency>
-          <groupId>org.overlord</groupId>
-          <artifactId>overlord-commons-auth-jboss7</artifactId>
-          <type>jar</type>
+          <groupId>org.hornetq</groupId>
+          <artifactId>hornetq-jms-client</artifactId>
           <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.modeshape</groupId>
-          <artifactId>modeshape-distribution</artifactId>
-          <type>zip</type>
-          <classifier>jbosseap-dist</classifier>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.overlord</groupId>
-          <artifactId>overlord-commons-dist-eap6</artifactId>
-          <type>zip</type>
         </dependency>
       </dependencies>
     </profile>
@@ -399,9 +428,28 @@
           <scope>test</scope>
         </dependency>
         <dependency>
+          <groupId>org.modeshape</groupId>
+          <artifactId>modeshape-distribution</artifactId>
+          <type>zip</type>
+          <classifier>jbosseap-dist</classifier>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
           <groupId>org.overlord</groupId>
           <artifactId>overlord-commons-idp-eap6</artifactId>
           <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-auth-jboss7</artifactId>
+          <type>jar</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-dist-eap6</artifactId>
+          <type>zip</type>
           <scope>test</scope>
         </dependency>
         <dependency>
@@ -417,22 +465,9 @@
           <scope>test</scope>
         </dependency>
         <dependency>
-          <groupId>org.overlord</groupId>
-          <artifactId>overlord-commons-auth-jboss7</artifactId>
-          <type>jar</type>
+          <groupId>org.hornetq</groupId>
+          <artifactId>hornetq-jms-client</artifactId>
           <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.modeshape</groupId>
-          <artifactId>modeshape-distribution</artifactId>
-          <type>zip</type>
-          <classifier>jbosseap-dist</classifier>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.overlord</groupId>
-          <artifactId>overlord-commons-dist-eap6</artifactId>
-          <type>zip</type>
         </dependency>
       </dependencies>
     </profile>

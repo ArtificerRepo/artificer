@@ -51,15 +51,18 @@ public class SrampConstants {
     public static final QName SRAMP_TOTAL_RESULTS_QNAME   = new QName(SRAMP_NS, SRAMP_TOTAL_RESULTS, SRAMP_PREFIX);
 
     // Configuration constants
-    public static final String SRAMP_CONFIG_FILE_NAME         = "sramp.config.file.name"; //$NON-NLS-1$
-    public static final String SRAMP_CONFIG_FILE_REFRESH      = "sramp.config.file.refresh"; //$NON-NLS-1$
-    public static final String SRAMP_CONFIG_BASEURL           = "sramp.config.baseurl"; //$NON-NLS-1$
-    public static final String SRAMP_CONFIG_AUDITING          = "sramp.config.auditing.enabled"; //$NON-NLS-1$
-    public static final String SRAMP_CONFIG_DERIVED_AUDITING  = "sramp.config.auditing.enabled-derived"; //$NON-NLS-1$
-    public static final String SRAMP_CONFIG_AUDIT_USER        = "sramp.config.auditing.user"; //$NON-NLS-1$
-    public static final String SRAMP_CONFIG_AUDIT_PASS        = "sramp.config.auditing.password"; //$NON-NLS-1$
-    public static final String SRAMP_CONFIG_JCR_REPO_JNDI     = "sramp.config.jcr.repository.jndi-path"; //$NON-NLS-1$
-    public static final String SRAMP_CONFIG_JCR_REPO_NAME     = "sramp.config.jcr.repository.name"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_FILE_NAME           = "sramp.config.file.name"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_FILE_REFRESH        = "sramp.config.file.refresh"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_BASEURL             = "sramp.config.baseurl"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_AUDITING            = "sramp.config.auditing.enabled"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_DERIVED_AUDITING    = "sramp.config.auditing.enabled-derived"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_AUDIT_USER          = "sramp.config.auditing.user"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_AUDIT_PASS          = "sramp.config.auditing.password"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_JCR_REPO_JNDI       = "sramp.config.jcr.repository.jndi-path"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_JCR_REPO_NAME       = "sramp.config.jcr.repository.name"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_EVENT_JMS_TOPICS    = "sramp.config.events.jms.topics"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_EVENT_JMS_QUEUES    = "sramp.config.events.jms.queues"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_EVENT_JMS_PORT      = "sramp.config.events.jms.embedded-activemq-port"; //$NON-NLS-1$
 
     // Location of a directory containing JARs which provide custom derivers
     public static final String SRAMP_CUSTOM_DERIVER_DIR   = "sramp.derivers.customDir"; //$NON-NLS-1$

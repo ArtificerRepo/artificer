@@ -3,6 +3,8 @@ package org.overlord.sramp.server;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.overlord.sramp.events.EventProducer;
+import org.overlord.sramp.events.EventProducerFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 
 /**
@@ -17,6 +19,10 @@ public class SrampLifeCycle implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
 	    // TODO make this async
 	    PersistenceFactory.newInstance().startup();
+	    
+	    for (EventProducer eventProducer : EventProducerFactory.getEventProducers()) {
+	        eventProducer.startup();
+	    }
     }
 
     /**
@@ -25,6 +31,10 @@ public class SrampLifeCycle implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         PersistenceFactory.newInstance().shutdown();
+        
+        for (EventProducer eventProducer : EventProducerFactory.getEventProducers()) {
+            eventProducer.shutdown();
+        }
     }
 
 }

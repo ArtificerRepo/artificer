@@ -99,6 +99,13 @@
 
     <!-- Deploy the datasource -->
     <copy file="${s-ramp.updates.dir}/sramp-ds.xml" todir="${s-ramp.jboss.deployments.dir}" overwrite="true" />
+    
+    <xslt
+      style="${s-ramp.updates.dir}/xslt/configureJMS-jboss-eap-6.xslt"
+      in="${s-ramp.jboss.config.dir}/standalone-full.xml"
+      out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+    <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone-full.xml" overwrite="true" />
+    <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
   </target>
 
   
