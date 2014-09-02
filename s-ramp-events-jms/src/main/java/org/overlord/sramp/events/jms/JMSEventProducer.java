@@ -70,19 +70,19 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 @Service(value = EventProducer.class)
 public class JMSEventProducer implements EventProducer {
 
-    public static final String JMS_TYPE_ARTIFACT_CREATED = "sramp:artifactCreated";
-    public static final String JMS_TYPE_ARTIFACT_UPDATED = "sramp:artifactUpdated";
-    public static final String JMS_TYPE_ARTIFACT_DELETED = "sramp:artifactDeleted";
-    public static final String JMS_TYPE_ONTOLOGY_CREATED = "sramp:ontologyCreated";
-    public static final String JMS_TYPE_ONTOLOGY_UPDATED = "sramp:ontologyUpdated";
-    public static final String JMS_TYPE_ONTOLOGY_DELETED = "sramp:ontologyDeleted";
+    public static final String JMS_TYPE_ARTIFACT_CREATED = "sramp:artifactCreated"; //$NON-NLS-1$
+    public static final String JMS_TYPE_ARTIFACT_UPDATED = "sramp:artifactUpdated"; //$NON-NLS-1$
+    public static final String JMS_TYPE_ARTIFACT_DELETED = "sramp:artifactDeleted"; //$NON-NLS-1$
+    public static final String JMS_TYPE_ONTOLOGY_CREATED = "sramp:ontologyCreated"; //$NON-NLS-1$
+    public static final String JMS_TYPE_ONTOLOGY_UPDATED = "sramp:ontologyUpdated"; //$NON-NLS-1$
+    public static final String JMS_TYPE_ONTOLOGY_DELETED = "sramp:ontologyDeleted"; //$NON-NLS-1$
     
     private static final Sramp sramp = new Sramp();
 
     private static final String CONNECTIONFACTORY_JNDI = "ConnectionFactory"; //$NON-NLS-1$
     
-    private static final String ACTIVEMQ_PROVIDER_URL = "tcp://localhost:" + sramp.getConfigProperty(
-            SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, "");
+    private static final String ACTIVEMQ_PROVIDER_URL = "tcp://localhost:" + sramp.getConfigProperty( //$NON-NLS-1$
+            SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, ""); //$NON-NLS-1$
     
     private static Logger LOG = LoggerFactory.getLogger(JMSEventProducer.class);
     
@@ -98,16 +98,16 @@ public class JMSEventProducer implements EventProducer {
             // Note that both properties end up doing the same thing.  Technically, we could combine both into one
             // single sramp.config.events.jms.destinations, but leaving them split for readability.
             
-            String topicNamesProp = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_TOPICS, "");
+            String topicNamesProp = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_TOPICS, ""); //$NON-NLS-1$
             String[] topicNames = new String[0];
             if (StringUtils.isNotEmpty(topicNamesProp)) {
-                topicNames = topicNamesProp.split(",");
+                topicNames = topicNamesProp.split(","); //$NON-NLS-1$
             }
             
-            String queueNamesProp = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_QUEUES, "");
+            String queueNamesProp = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_QUEUES, ""); //$NON-NLS-1$
             String[] queueNames = new String[0];
             if (StringUtils.isNotEmpty(queueNamesProp)) {
-                queueNames = queueNamesProp.split(",");
+                queueNames = queueNamesProp.split(","); //$NON-NLS-1$
             }
             
             try {
@@ -129,7 +129,7 @@ public class JMSEventProducer implements EventProducer {
                 }
             } catch (NamingException e) {
                 // JMS wasn't setup.  Assume we need to start an embedded ActiveMQ broker and create the destinations.
-                LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", ACTIVEMQ_PROVIDER_URL));
+                LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", ACTIVEMQ_PROVIDER_URL)); //$NON-NLS-1$
                 
                 session = null;
                 destinations.clear();
@@ -140,7 +140,7 @@ public class JMSEventProducer implements EventProducer {
                 
                 // Event though we added a TCP connector, above, ActiveMQ also exposes the broker over the "vm"
                 // protocol.  It optimizes performance for connections on the same JVM.
-                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost");
+                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
                 Connection connection = connectionFactory.createConnection();
                 connection.start();
                 session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -219,11 +219,11 @@ public class JMSEventProducer implements EventProducer {
     private Object jndiLookup(String name) throws NamingException {
         Context initContext = new InitialContext();
         try {
-            Context jndiContext = (Context) initContext.lookup("java:comp/env");
+            Context jndiContext = (Context) initContext.lookup("java:comp/env"); //$NON-NLS-1$
             return jndiContext.lookup(name);
         } catch (NamingException e) {
             // EAP (no namespace)
-            Context jndiContext = (Context) initContext.lookup("java:");
+            Context jndiContext = (Context) initContext.lookup("java:"); //$NON-NLS-1$
             return jndiContext.lookup(name);
         }
     }
