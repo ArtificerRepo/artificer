@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -79,7 +81,7 @@ public class DeployCommand extends BuiltInShellCommand {
 
     public static final String SEPARATOR_FULL_NAME = ":"; //$NON-NLS-1$
 
-    private boolean allowSnapshot;
+    private final boolean allowSnapshot;
 
     /**
      * Constructor.
@@ -90,6 +92,11 @@ public class DeployCommand extends BuiltInShellCommand {
     }
 
     /**
+     * Execute.
+     *
+     * @return true, if successful
+     * @throws Exception
+     *             the exception
      * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
      */
     @Override
@@ -160,6 +167,8 @@ public class DeployCommand extends BuiltInShellCommand {
             SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_HASH_SHA1, mmd.sha1);
             if (StringUtils.isNotBlank(mmd.snapshotId)) {
                 SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_SNAPSHOT_ID, mmd.snapshotId);
+            } else if (mmd.snapshot) {
+                SrampModelUtils.setCustomProperty(artifact, JavaModel.PROP_MAVEN_SNAPSHOT_ID, generateSnapshotTimestamp());
             }
             if (mmd.classifier != null) {
                 SrampModelUtils.setCustomProperty(artifact, "maven.classifier", mmd.classifier); //$NON-NLS-1$
@@ -208,7 +217,9 @@ public class DeployCommand extends BuiltInShellCommand {
 
     /**
      * Generates a simple maven pom given the artifact information.
+     *
      * @param mmd
+     *            the mmd
      * @return a generated Maven pom
      */
     private String generatePom(MavenMetaData mmd) {
@@ -231,7 +242,10 @@ public class DeployCommand extends BuiltInShellCommand {
 
     /**
      * Try to figure out what kind of artifact we're dealing with.
+     *
      * @param file
+     *            the file
+     * @return the artifact type
      */
     private ArtifactType determineArtifactType(File file) {
         ArtifactType type = null;
@@ -249,7 +263,15 @@ public class DeployCommand extends BuiltInShellCommand {
     }
 
     /**
-     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
+     * Tab completion.
+     *
+     * @param lastArgument
+     *            the last argument
+     * @param candidates
+     *            the candidates
+     * @return the int
+     * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String,
+     *      java.util.List)
      */
     @Override
     public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
@@ -291,8 +313,13 @@ public class DeployCommand extends BuiltInShellCommand {
 
         /**
          * Constructor.
+         *
          * @param gavArg
+         *            the gav arg
          * @param file
+         *            the file
+         * @throws Exception
+         *             the exception
          */
         public MavenMetaData(String gavArg, File file) throws Exception {
             String [] split = gavArg.split(":"); //$NON-NLS-1$
@@ -326,6 +353,19 @@ public class DeployCommand extends BuiltInShellCommand {
 
         }
 
+        /**
+         * Extract snapshot id.
+         *
+         * @param filename
+         *            the filename
+         * @param version
+         *            the version
+         * @param type
+         *            the type
+         * @param classifier
+         *            the classifier
+         * @return the string
+         */
         private String extractSnapshotId(String filename, String version, String type, String classifier) {
             if (version == null) {
                 return null;
@@ -346,6 +386,11 @@ public class DeployCommand extends BuiltInShellCommand {
             }
         }
 
+        /**
+         * Gets the full name.
+         *
+         * @return the full name
+         */
         public String getFullName() {
             StringBuilder builder = new StringBuilder(""); //$NON-NLS-1$
             builder.append(groupId).append(SEPARATOR_FULL_NAME);
@@ -361,8 +406,10 @@ public class DeployCommand extends BuiltInShellCommand {
 
         /**
          * Obtain the type of file from its filename.
-         * 
+         *
          * @param filename
+         *            the filename
+         * @return the type
          */
         private String getType(String filename) {
             if (filename.contains(".")) {//$NON-NLS-1$
@@ -388,11 +435,16 @@ public class DeployCommand extends BuiltInShellCommand {
      * information.
      *
      * @param client
+     *            the client
      * @param gavInfo
+     *            the gav info
      * @return an s-ramp artifact (if found) or null (if not found)
-     * @throws SrampClientException
      * @throws SrampAtomException
+     *             the sramp atom exception
+     * @throws SrampClientException
+     *             the sramp client exception
      * @throws JAXBException
+     *             the JAXB exception
      */
     private BaseArtifactType findExistingArtifactByGAV(SrampAtomApiClient client, MavenMetaData gavInfo) throws SrampAtomException,
             SrampClientException, JAXBException {
@@ -455,6 +507,19 @@ public class DeployCommand extends BuiltInShellCommand {
     }
 
 
-
+    /**
+     * Generate snapshot timestamp.
+     *
+     * @return the string
+     */
+    private String generateSnapshotTimestamp() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd.hhmmss"); //$NON-NLS-1$
+        String timestamp = sdf.format(new Date());
+        StringBuilder builder = new StringBuilder();
+        // It is added at the end the maven counter. By default it is set to
+        // "1". The maven format for the timestamp is yyyyMMdd.hhmmss-counter
+        builder.append(timestamp).append("-1");
+        return builder.toString();
+    }
 
 }
