@@ -49,21 +49,26 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
  * Provides a JMS implementation of the {@link EventProducer}.
- * 
- * During {@link #startup()}, we check for the existence of a JMS "ConnectionFactory" and any configured topics/queues,
- * both through JNDI names.  If they exist, it means we're in a JavaEE environment and things are correctly configured.
- * We simply use the existing JMS framework and the pre-existing topics/queues.
- * 
- * Otherwise, we assume we're on a non-JavaEE server (Tomcat, Jetty, EAP without standalone-full, etc).  We then create
- * an embedded ActiveMQ broker over a TCP port, then programmatically create all topics/queues.  External clients can
- * then connect to it in one of two ways:
- *     1.) Simply use the ActiveMQ libs and API
- *     2.) The ActiveMQ broker provides a lightweight JNDI implementation and automatically exposes the
- *     ConnectionFactory (literally named "ConnectionFactory").  To expose the topics/queues, the *client app* needs
- *     to include a jndi.properties file (and ActiveMQ jar) on the classpath.  The contents should contain something
- *     like "topic.[jndi name] = [activemq topic name]".  [jndi name] is then available to the client.  Other than that
- *     properties file, the client is able to use generic JNDI and JMS without any ActiveMQ APIs.
- * 
+ *
+ * During {@link #startup()}, we check for the existence of a JMS
+ * "ConnectionFactory" and any configured topics/queues, both through JNDI
+ * names. If they exist, it means we're in a JavaEE environment and things are
+ * correctly configured. We simply use the existing JMS framework and the
+ * pre-existing topics/queues.
+ *
+ * Otherwise, we assume we're on a non-JavaEE server (Tomcat, Jetty, EAP without
+ * standalone-full, etc). We then create an embedded ActiveMQ broker over a TCP
+ * port, then programmatically create all topics/queues. External clients can
+ * then connect to it in one of two ways: 1.) Simply use the ActiveMQ libs and
+ * API 2.) The ActiveMQ broker provides a lightweight JNDI implementation and
+ * automatically exposes the ConnectionFactory (literally named
+ * "ConnectionFactory"). To expose the topics/queues, the *client app* needs to
+ * include a jndi.properties file (and ActiveMQ jar) on the classpath. The
+ * contents should contain something like
+ * "topic.[jndi name] = [activemq topic name]". [jndi name] is then available to
+ * the client. Other than that properties file, the client is able to use
+ * generic JNDI and JMS without any ActiveMQ APIs.
+ *
  * @author Brett Meyer
  */
 @Component(name = "JMS Event Producer", immediate = true)
@@ -76,115 +81,142 @@ public class JMSEventProducer implements EventProducer {
     public static final String JMS_TYPE_ONTOLOGY_CREATED = "sramp:ontologyCreated"; //$NON-NLS-1$
     public static final String JMS_TYPE_ONTOLOGY_UPDATED = "sramp:ontologyUpdated"; //$NON-NLS-1$
     public static final String JMS_TYPE_ONTOLOGY_DELETED = "sramp:ontologyDeleted"; //$NON-NLS-1$
-    
+
     private static final Sramp sramp = new Sramp();
 
     private static final String CONNECTIONFACTORY_JNDI = "ConnectionFactory"; //$NON-NLS-1$
-    
-    private static final String ACTIVEMQ_PROVIDER_URL = "tcp://localhost:" + sramp.getConfigProperty( //$NON-NLS-1$
-            SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, ""); //$NON-NLS-1$
-    
+
+    private static final String BROKER_ACTIVEMQ_PROVIDER_PORT = "tcp://localhost:" + sramp.getConfigProperty( //$NON-NLS-1$
+            SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, "61616"); //$NON-NLS-1$
+
+    private static final String ACTIVEMQ_PROVIDER_URL = sramp.getConfigProperty( //$NON-NLS-1$
+            SrampConstants.SRAMP_CONFIG_EVENT_JMS_URL, "tcp://localhost:61616"); //$NON-NLS-1$
+
     private static Logger LOG = LoggerFactory.getLogger(JMSEventProducer.class);
-    
+
     private Connection connection = null;
-    
+
     private Session session = null;
 
-    private List<Destination> destinations = new ArrayList<Destination>();
+    private final List<Destination> destinations = new ArrayList<Destination>();
 
     @Override
     public void startup() {
+
         try {
             // Note that both properties end up doing the same thing.  Technically, we could combine both into one
             // single sramp.config.events.jms.destinations, but leaving them split for readability.
-            
+
             String topicNamesProp = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_TOPICS, ""); //$NON-NLS-1$
             String[] topicNames = new String[0];
             if (StringUtils.isNotEmpty(topicNamesProp)) {
                 topicNames = topicNamesProp.split(","); //$NON-NLS-1$
             }
-            
+
             String queueNamesProp = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_QUEUES, ""); //$NON-NLS-1$
             String[] queueNames = new String[0];
             if (StringUtils.isNotEmpty(queueNamesProp)) {
                 queueNames = queueNamesProp.split(","); //$NON-NLS-1$
             }
-            
+
             try {
                 // First, see if a ConnectionFactory and Topic/Queue exists on JNDI.  If so, assume JMS is properly
                 // setup in a Java EE container and simply use it.
-                
+
                 ConnectionFactory connectionFactory = (ConnectionFactory) jndiLookup(CONNECTIONFACTORY_JNDI);
                 connection = connectionFactory.createConnection();
                 session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                
+
                 for (String topicName : topicNames) {
                     Topic topic = (Topic) jndiLookup(topicName);
                     destinations.add(topic);
                 }
-                
+
                 for (String queueName : queueNames) {
                     Queue queue = (Queue) jndiLookup(queueName);
                     destinations.add(queue);
                 }
             } catch (NamingException e) {
-                // JMS wasn't setup.  Assume we need to start an embedded ActiveMQ broker and create the destinations.
-                LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", ACTIVEMQ_PROVIDER_URL)); //$NON-NLS-1$
-                
-                session = null;
-                destinations.clear();
-                
-                BrokerService broker = new BrokerService();
-                broker.addConnector(ACTIVEMQ_PROVIDER_URL);
-                broker.start();
-                
-                // Event though we added a TCP connector, above, ActiveMQ also exposes the broker over the "vm"
-                // protocol.  It optimizes performance for connections on the same JVM.
-                ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
-                Connection connection = connectionFactory.createConnection();
-                connection.start();
-                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                
-                for (String topicName : topicNames) {
-                    destinations.add(session.createTopic(topicName));
+
+                try {
+                    String username = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_USER, "");
+                    String password = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PASSWORD, "");
+                    ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, password, ACTIVEMQ_PROVIDER_URL);
+                    connection = connectionFactory.createConnection();
+                    session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                    for (String topicName : topicNames) {
+                        Topic topic = session.createTopic(topicName);
+                        destinations.add(topic);
+                    }
+
+                    for (String queueName : queueNames) {
+                        Queue queue = session.createQueue(queueName);
+                        destinations.add(queue);
+                    }
+                } catch (Exception e1) {
+                    // JMS wasn't setup. Assume we need to start an embedded
+                    // ActiveMQ broker and create the destinations.
+                    LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", ACTIVEMQ_PROVIDER_URL)); //$NON-NLS-1$
+
+                    session = null;
+                    destinations.clear();
+
+                    BrokerService broker = new BrokerService();
+                    broker.addConnector(BROKER_ACTIVEMQ_PROVIDER_PORT);
+                    broker.start();
+
+                    // Event though we added a TCP connector, above, ActiveMQ
+                    // also exposes the broker over the "vm"
+                    // protocol. It optimizes performance for connections on the
+                    // same JVM.
+                    ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
+                    Connection connection = connectionFactory.createConnection();
+                    connection.start();
+                    session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                    for (String topicName : topicNames) {
+                        destinations.add(session.createTopic(topicName));
+                    }
+
+                    for (String queueName : queueNames) {
+                        destinations.add(session.createQueue(queueName));
+                    }
                 }
-                
-                for (String queueName : queueNames) {
-                    destinations.add(session.createQueue(queueName));
-                }
+
             }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
     }
-    
+
     @Override
     public void artifactCreated(BaseArtifactType artifact) {
         publishEvent(artifact, JMS_TYPE_ARTIFACT_CREATED);
     }
-    
+
     @Override
     public void artifactUpdated(BaseArtifactType updatedArtifact, BaseArtifactType oldArtifact) {
         ArtifactUpdateEvent event = new ArtifactUpdateEvent(updatedArtifact, oldArtifact);
         publishEvent(event, JMS_TYPE_ARTIFACT_UPDATED);
     }
-    
+
     @Override
     public void artifactDeleted(BaseArtifactType artifact) {
         publishEvent(artifact, JMS_TYPE_ARTIFACT_DELETED);
     }
-    
+
     @Override
     public void ontologyCreated(RDF ontology) {
         publishEvent(ontology, JMS_TYPE_ONTOLOGY_CREATED);
     }
-    
+
     @Override
     public void ontologyUpdated(RDF updatedOntology, RDF oldOntology) {
         OntologyUpdateEvent event = new OntologyUpdateEvent(updatedOntology, oldOntology);
         publishEvent(event, JMS_TYPE_ONTOLOGY_UPDATED);
     }
-    
+
     @Override
     public void ontologyDeleted(RDF ontology) {
         publishEvent(ontology, JMS_TYPE_ONTOLOGY_DELETED);
@@ -197,11 +229,11 @@ public class JMSEventProducer implements EventProducer {
                 producer = session.createProducer(destination);
                 TextMessage textMessage = session.createTextMessage();
                 textMessage.setJMSType(type);
-                
+
                 ObjectMapper mapper = new ObjectMapper();
                 String text = mapper.writeValueAsString(payload);
                 textMessage.setText(text);
-                
+
                 producer.send(textMessage);
             } catch (Exception e) {
                 LOG.error(e.getMessage(), e);
@@ -215,7 +247,7 @@ public class JMSEventProducer implements EventProducer {
             }
         }
     }
-    
+
     private Object jndiLookup(String name) throws NamingException {
         Context initContext = new InitialContext();
         try {
@@ -227,7 +259,7 @@ public class JMSEventProducer implements EventProducer {
             return jndiContext.lookup(name);
         }
     }
-    
+
     @Override
     public void shutdown() {
         try {
