@@ -525,25 +525,24 @@ button.tree:hover {
 #ontology-editor .sramp-ontology-tier ul {
   margin: 0px;
   overflow: auto;
-  height: 469px;
+  height: 465px;
 }
 
 #ontology-editor .sramp-ontology-tier ul li a {
   border-radius: 0px;
 }
-#ontology-editor .sramp-ontology-tier ul li button {
-  visibility: hidden;
-  margin-top: -3px;
-  z-index: 999;
+
+.sramp-ontology-tier-item-actions {
+  text-align: right;
 }
-#ontology-editor .sramp-ontology-tier ul li:hover button {
-  visibility: visible;
+.sramp-ontology-tier-item-actions .btn {
+	margin-right: 8px;
 }
 
-.ontology-editor-actions {
+.sramp-ontology-editor-actions {
   margin-top: 5px;
 }
-.ontology-editor-actions .btn {
+.sramp-ontology-editor-actions .btn {
   margin-right: 8px;
 }
 

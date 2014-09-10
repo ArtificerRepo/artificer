@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @author eric.wittmann@redhat.com
  */
+// TODO: No longer used!
 @Dependent
 public class DropdownMenu extends FlowPanel {
     

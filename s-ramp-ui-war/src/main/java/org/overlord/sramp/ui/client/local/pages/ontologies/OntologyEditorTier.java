@@ -80,8 +80,8 @@ public class OntologyEditorTier extends FlowPanel implements HasValue<List<Ontol
         setStyleName("sramp-ontology-tier"); //$NON-NLS-1$
         header.getElement().setClassName("sramp-ontology-tier-header"); //$NON-NLS-1$
         addNode.setText("+");
-        addNode.setStyleName("btn"); //$NON-NLS-1$
-        addNode.setStyleName("btn-mini"); //$NON-NLS-1$
+        addNode.addStyleName("btn-mini"); //$NON-NLS-1$
+        addNode.addStyleName("btn"); //$NON-NLS-1$
         addNode.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -207,13 +207,14 @@ public class OntologyEditorTier extends FlowPanel implements HasValue<List<Ontol
         OntologyEditorTierItem oldSelection = selected;
         OntologyEditorTierItem newSelection = item;
         if (oldSelection != null) {
-            oldSelection.getElement().getParentElement().removeClassName("active"); //$NON-NLS-1$
+            oldSelection.getElement().removeClassName("active"); //$NON-NLS-1$
+            oldSelection.hideActions();
         }
         if (oldSelection == newSelection) {
             selected = null;
             SelectionEvent.fire(this, null);
         } else {
-            newSelection.getElement().getParentElement().addClassName("active"); //$NON-NLS-1$
+            newSelection.getElement().addClassName("active"); //$NON-NLS-1$
             selected = newSelection;
             OntologyClassBean bean = selected.getValue();
             SelectionEvent.fire(this, bean);

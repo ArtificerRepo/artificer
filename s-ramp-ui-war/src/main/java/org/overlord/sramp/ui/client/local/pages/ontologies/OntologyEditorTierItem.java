@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.ClientMessages;
-import org.overlord.sramp.ui.client.local.widgets.common.DropdownMenu;
 import org.overlord.sramp.ui.client.shared.beans.OntologyClassBean;
 
 import com.google.gwt.dom.client.Element;
@@ -37,9 +36,9 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
 
@@ -60,9 +59,11 @@ public class OntologyEditorTierItem extends Composite implements HasValue<Ontolo
     @Inject @DataField
     InlineLabel label;
     @Inject @DataField
-    Button actions;
+    FlowPanel actions;
     @Inject
-    Instance<DropdownMenu> menuFactory;
+    Button editButton;
+    @Inject
+    Button deleteButton;
     @Inject
     Instance<EditOntologyNodeDialog> dialogFactory;
 
@@ -79,6 +80,25 @@ public class OntologyEditorTierItem extends Composite implements HasValue<Ontolo
     protected void postConstruct() {
         label.setText(""); //$NON-NLS-1$
         sinkEvents(Event.ONCLICK);
+
+        editButton.setText(i18n.format("ontology-editor.edit"));
+        editButton.addStyleName("btn-mini"); //$NON-NLS-1$
+        editButton.addStyleName("btn"); //$NON-NLS-1$
+        editButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                onEdit();
+            }
+        });
+        deleteButton.setText(i18n.format("ontology-editor.delete"));
+        deleteButton.addStyleName("btn-mini"); //$NON-NLS-1$
+        deleteButton.addStyleName("btn"); //$NON-NLS-1$
+        deleteButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                onDelete();
+            }
+        });
     }
     
     /**
@@ -90,40 +110,34 @@ public class OntologyEditorTierItem extends Composite implements HasValue<Ontolo
             EventTarget target = event.getEventTarget();
             Element elem = (Element) target.cast();
             if (elem.getNodeName().toLowerCase().equals("button")) { //$NON-NLS-1$
-                onActionButton();
+                // an action button was clicked
                 event.preventDefault();
             } else {
+                showActions();
                 super.onBrowserEvent(event);
             }
         }
     }
 
     /**
-     * Called when the user clicks on the action button.
+     * Called when the user clicks on this item
      */
-    private void onActionButton() {
-        DropdownMenu menu = menuFactory.get();
-        Anchor editAction = menu.addMenuAction(i18n.format("ontology-editor.edit")); //$NON-NLS-1$
-        editAction.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                onEdit();
-            }
-        });
-        Anchor removeAction = menu.addMenuAction(i18n.format("ontology-editor.remove")); //$NON-NLS-1$
-        removeAction.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                onRemove();
-            }
-        });
-        menu.showRelativeTo(actions);
+    private void showActions() {
+        actions.add(editButton);
+        actions.add(deleteButton);
+    }
+    
+    /**
+     * Called when a different item is selected in the parent list.
+     */
+    public void hideActions() {
+        actions.clear();
     }
 
     /**
-     * Called when the user clicks the Remove action.
+     * Called when the user clicks the Delete action.
      */
-    protected void onRemove() {
+    protected void onDelete() {
         ValueChangeEvent.fire(this, null);
     }
 

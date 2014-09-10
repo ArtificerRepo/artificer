@@ -62,7 +62,7 @@
                 </tbody>
               </table>
             </div>
-            <div class="ontology-editor-actions">
+            <div class="sramp-ontology-editor-actions">
               <button data-field="btn-new-ontology" data-i18n-key="new-ontology" class="btn">New Ontology</button>
               <button data-field="btn-upload-ontology" data-i18n-key="upload-ontology" class="btn">Upload Ontology</button>
             </div>
@@ -75,11 +75,19 @@
                   <button class="btn-mini btn">+</button>
                 </div>
                 <ul class="nav nav-pills nav-stacked">
-                  <li><a data-field="sramp-ontology-tier-item"><span data-field="label" data-role="dummy">Tier 1, Node 1</span><button data-field="actions" class="btn btn-mini pull-right"><i class="icon-chevron-down"></i></button></a></li>
-                  <li class="active"><a>Tier 1, Node 2<button class="btn btn-mini pull-right"><i class="icon-chevron-down"></i></button></a></li>
-                  <li><a>Tier 1, Node 3<button class="btn btn-mini pull-right"><i class="icon-chevron-down"></i></button></a></li>
-                  <li><a>Tier 1, Node 4<button class="btn btn-mini pull-right"><i class="icon-chevron-down"></i></button></a></li>
-                  <li><a>Tier 1, Node 5<button class="btn btn-mini pull-right"><i class="icon-chevron-down"></i></button></a></li>
+                  <li data-field="sramp-ontology-tier-item">
+                    <a><span data-field="label" data-role="dummy">Tier 1, Node 1</span></a>
+                    <div data-field="actions" class="sramp-ontology-tier-item-actions"></div>
+                  </li>
+                  <li class="active">
+                    <a>Tier 1, Node 2</a>
+                    <div class="sramp-ontology-tier-item-actions">
+                      <button class="btn-mini btn">Edit</button><button class="btn-mini btn">Delete</button>
+                    </div>
+                  </li>
+                  <li><a>Tier 1, Node 3</a></li>
+                  <li><a>Tier 1, Node 4</a></li>
+                  <li><a>Tier 1, Node 5</a></li>
                 </ul>
               </div>
               <!-- Ontology Tier 2 -->
@@ -88,7 +96,13 @@
                   <button class="btn-mini btn">+</button>
                 </div>
                 <ul class="nav nav-pills nav-stacked">
-                  <li class="active"><a>Tier 2, Node 1</a></li>
+                  <li class="active">
+                    <a>Tier 2, Node 1</a>
+                    <div class="sramp-ontology-tier-item-actions">
+                      <button class="btn-mini btn">Edit</button>
+                      <button class="btn-mini btn">Delete</button>
+                    </div>
+                  </li>
                   <li><a>Tier 2, Node 2</a></li>
                   <li><a>Tier 2, Node 3</a></li>
                   <li><a>Tier 2, Node 4</a></li>
@@ -117,9 +131,9 @@
                 </ul>
               </div>
             </div>
-            <div class="ontology-editor-actions" data-role="dummy">
-              <button class="btn">Save</button>
-              <button class="btn">Revert</button>
+            <div class="sramp-ontology-editor-actions" data-role="dummy">
+              <button class="btn">Save Ontology</button>
+              <button class="btn">Revert Ontology</button>
             </div>
           </div>
         </div>
