@@ -268,6 +268,10 @@ public class ArtifactsPage extends AbstractPage {
                 this.artifactsTable.addRow(artifactSummaryBean);
             }
             this.artifactsTable.setVisible(true);
+            // Important to set this here.  If you click on a search suggestion, filtersPanel's ValueChangeHandler
+            // gets kicked off twice -- once due to the click on the suggestion popup and again when that replaces
+            // the value in the field.  The first one sets noDataMessage.setVisible(true), below.  See SRAMP-557
+            this.noDataMessage.setVisible(false);
         } else {
             this.noDataMessage.setVisible(true);
         }
