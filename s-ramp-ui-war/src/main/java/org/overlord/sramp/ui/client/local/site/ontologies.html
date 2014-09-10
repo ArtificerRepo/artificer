@@ -37,37 +37,43 @@
         <!-- Page content -->
         <div class="row-fluid">
           <div id="ontologies" class="span4">
-            <div data-i18n-key="ontologies" class="sramp-ontology-box-header">Ontologies</div>
-            <table class="table table-hover"  data-field="ontologies">
-              <tbody data-role="dummy">
-                <tr class="active">
-                  <td><a>http://www.example.org/colors.owl</a></td>
-                  <td class="icon">
-                    <a><div class="download-icon"></div></a>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a>http://www.example.org/regional.owl</a></td>
-                  <td class="icon">
-                    <a><div class="download-icon"></div></a>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a>http://www.jboss.org/overlord/deployment-status.owl</a></td>
-                  <td class="icon">
-                    <a><div class="download-icon"></div></a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <button data-field="btn-new-ontology" data-i18n-key="new-ontology" class="btn btn-small">New Ontology</button>
-            <button data-field="btn-upload-ontology" data-i18n-key="upload-ontology" class="btn btn-small">Upload Ontology</button>
+            <div id="ontologies-canvas">
+              <div data-i18n-key="ontologies" class="sramp-ontology-box-header">Ontologies</div>
+              <table class="table table-hover"  data-field="ontologies">
+                <tbody data-role="dummy">
+                  <tr class="active">
+                    <td><a>http://www.example.org/colors.owl</a></td>
+                    <td class="icon">
+                      <a><div class="download-icon"></div></a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a>http://www.example.org/regional.owl</a></td>
+                    <td class="icon">
+                      <a><div class="download-icon"></div></a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a>http://www.jboss.org/overlord/deployment-status.owl</a></td>
+                    <td class="icon">
+                      <a><div class="download-icon"></div></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="ontology-editor-actions">
+              <button data-field="btn-new-ontology" data-i18n-key="new-ontology" class="btn">New Ontology</button>
+              <button data-field="btn-upload-ontology" data-i18n-key="upload-ontology" class="btn">Upload Ontology</button>
+            </div>
           </div>
           <div data-field="ontology-editor" id="ontology-editor" class="span8">
             <div class="sramp-ontology-editor-canvas">
               <!-- Ontology Tier 1 -->
               <div class="sramp-ontology-tier">
-                <div class="sramp-ontology-tier-header"></div>
+                <div class="sramp-ontology-tier-header">
+                  <button class="btn-mini btn">+</button>
+                </div>
                 <ul class="nav nav-pills nav-stacked">
                   <li><a data-field="sramp-ontology-tier-item"><span data-field="label" data-role="dummy">Tier 1, Node 1</span><button data-field="actions" class="btn btn-mini pull-right"><i class="icon-chevron-down"></i></button></a></li>
                   <li class="active"><a>Tier 1, Node 2<button class="btn btn-mini pull-right"><i class="icon-chevron-down"></i></button></a></li>
@@ -75,11 +81,12 @@
                   <li><a>Tier 1, Node 4<button class="btn btn-mini pull-right"><i class="icon-chevron-down"></i></button></a></li>
                   <li><a>Tier 1, Node 5<button class="btn btn-mini pull-right"><i class="icon-chevron-down"></i></button></a></li>
                 </ul>
-                <button data-i18n-key="add-node" class="btn btn-small btn-add">Add Node</button>
               </div>
               <!-- Ontology Tier 2 -->
               <div class="sramp-ontology-tier" data-role="dummy">
-                <div class="sramp-ontology-tier-header"></div>
+                <div class="sramp-ontology-tier-header">
+                  <button class="btn-mini btn">+</button>
+                </div>
                 <ul class="nav nav-pills nav-stacked">
                   <li class="active"><a>Tier 2, Node 1</a></li>
                   <li><a>Tier 2, Node 2</a></li>
@@ -100,17 +107,17 @@
                   <li><a>Tier 2, Node 37</a></li>
                   <li><a>Tier 2, Node 38</a></li>
                 </ul>
-                <a class="btn btn-small btn-add">Add Node</a>
               </div>
               <!-- Ontology Tier 3 -->
               <div class="sramp-ontology-tier" data-role="dummy">
-                <div class="sramp-ontology-tier-header"></div>
+                <div class="sramp-ontology-tier-header">
+                  <button class="btn-mini btn">+</button>
+                </div>
                 <ul class="nav nav-pills nav-stacked">
                 </ul>
-                <a class="btn btn-small btn-add">Add Node</a>
               </div>
             </div>
-            <div class="sramp-ontology-editor-actions" data-role="dummy">
+            <div class="ontology-editor-actions" data-role="dummy">
               <button class="btn">Save</button>
               <button class="btn">Revert</button>
             </div>

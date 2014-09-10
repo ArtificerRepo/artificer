@@ -62,9 +62,9 @@ public class OntologyEditorTier extends FlowPanel implements HasValue<List<Ontol
     @Inject
     FlowPanel header;
     @Inject
-    UnorderedListPanel items;
-    @Inject
     Button addNode;
+    @Inject
+    UnorderedListPanel items;
 
     /**
      * Constructor.
@@ -79,23 +79,22 @@ public class OntologyEditorTier extends FlowPanel implements HasValue<List<Ontol
     protected void postConstruct() {
         setStyleName("sramp-ontology-tier"); //$NON-NLS-1$
         header.getElement().setClassName("sramp-ontology-tier-header"); //$NON-NLS-1$
-        items.setStyleName("nav"); //$NON-NLS-1$
-        items.addStyleName("nav-pills"); //$NON-NLS-1$
-        items.addStyleName("nav-stacked"); //$NON-NLS-1$
-        addNode.setText(i18n.format("ontology-editor.add-node")); //$NON-NLS-1$
+        addNode.setText("+");
         addNode.setStyleName("btn"); //$NON-NLS-1$
-        addNode.addStyleName("btn-small"); //$NON-NLS-1$
-        addNode.addStyleName("btn-add"); //$NON-NLS-1$
+        addNode.setStyleName("btn-mini"); //$NON-NLS-1$
         addNode.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 onAddItem();
             }
         });
+        header.add(addNode);
+        items.setStyleName("nav"); //$NON-NLS-1$
+        items.addStyleName("nav-pills"); //$NON-NLS-1$
+        items.addStyleName("nav-stacked"); //$NON-NLS-1$
         
         add(header);
         add(items);
-        add(addNode);
     }
 
     /**

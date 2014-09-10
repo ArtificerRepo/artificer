@@ -466,22 +466,19 @@ button.tree:hover {
   background: white;
 }
 
-#ontologies {
+#ontologies-canvas {
   height: 500px;
   border: 1px solid rgb(221, 221, 221);
   background-color: white;
 }
-#ontologies ul {
+#ontologies-canvas ul {
   margin-bottom: 10px;
   overflow: auto;
   max-height: 420px;
 }
-#ontologies ul li a {
+#ontologies-canvas ul li a {
   font-size: 12px;
   border-radius: 0px;
-}
-#ontologies .btn {
-  margin-left: 5px;
 }
 
 .sramp-ontology-box-header {
@@ -507,13 +504,10 @@ button.tree:hover {
   display: inline-block;
   white-space: normal;
   width: 220px;
+  height: 500px;
   border: 1px solid rgb(221, 221, 221);
   margin-left: 2px;
   background-color: white;
-}
-
-#ontology-editor .sramp-ontology-tier .btn-add {
-  margin-bottom: 5px;
 }
 
 #ontology-editor .sramp-ontology-tier .sramp-ontology-tier-header {
@@ -521,12 +515,17 @@ button.tree:hover {
   border-bottom: 1px solid rgb(221, 221, 221);
   padding: 5px;
   height: 20px;
+  text-align: right;
+}
+
+#ontology-editor .sramp-ontology-tier .sramp-ontology-tier-header .btn {
+    margin: 0;
 }
 
 #ontology-editor .sramp-ontology-tier ul {
   margin: 0px;
   overflow: auto;
-  height: 385px;
+  height: 469px;
 }
 
 #ontology-editor .sramp-ontology-tier ul li a {
@@ -535,19 +534,17 @@ button.tree:hover {
 #ontology-editor .sramp-ontology-tier ul li button {
   visibility: hidden;
   margin-top: -3px;
+  z-index: 999;
 }
 #ontology-editor .sramp-ontology-tier ul li:hover button {
   visibility: visible;
 }
 
-#ontology-editor .sramp-ontology-tier .btn-add {
+.ontology-editor-actions {
   margin-top: 5px;
-  margin-left: 5px;
 }
-
-#ontology-editor .sramp-ontology-editor-actions .btn {
-  margin-left: 8px;
-  margin-top: 5px;
+.ontology-editor-actions .btn {
+  margin-right: 8px;
 }
 
 .sramp-settings {
