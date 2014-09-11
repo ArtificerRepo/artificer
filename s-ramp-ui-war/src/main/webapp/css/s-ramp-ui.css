@@ -466,19 +466,10 @@ button.tree:hover {
   background: white;
 }
 
-#ontologies-canvas {
+.ontologies-canvas {
   height: 500px;
   border: 1px solid rgb(221, 221, 221);
   background-color: white;
-}
-#ontologies-canvas ul {
-  margin-bottom: 10px;
-  overflow: auto;
-  max-height: 420px;
-}
-#ontologies-canvas ul li a {
-  font-size: 12px;
-  border-radius: 0px;
 }
 
 .sramp-ontology-box-header {
@@ -522,27 +513,27 @@ button.tree:hover {
     margin: 0;
 }
 
-#ontology-editor .sramp-ontology-tier ul {
+.ontologies-canvas ul, #ontology-editor .sramp-ontology-tier ul {
   margin: 0px;
   overflow: auto;
   height: 465px;
 }
 
-#ontology-editor .sramp-ontology-tier ul li a {
+.ontologies-canvas ul li a, #ontology-editor .sramp-ontology-tier ul li a {
   border-radius: 0px;
 }
 
-.sramp-ontology-tier-item-actions {
+.sramp-ontology-item-actions {
   text-align: right;
 }
-.sramp-ontology-tier-item-actions .btn {
+.sramp-ontology-item-actions .btn {
 	margin-right: 8px;
 }
 
-.sramp-ontology-editor-actions {
+.sramp-ontology-actions {
   margin-top: 5px;
 }
-.sramp-ontology-editor-actions .btn {
+.sramp-ontology-actions .btn {
   margin-right: 8px;
 }
 
@@ -721,28 +712,4 @@ ul.ontology-selector {
 }
 #fileupload-import .uneditable-input, #fileupload-upload .uneditable-input {
   width: 60%;
-}
-
-#ontologies table .active, #ontologies .table-hover tbody tr.active:hover td, .table-hover tbody tr.active:hover th {
-  background-color: #08C !important;
-}
-
-#ontologies table tr td a div.download-icon {
-  width: 20px;
-  height: 20px;
-  background-image: url(../images/download-icon.png);
-  background-position: top left;
-  background-repeat: no-repeat;
-}
-
-#ontologies table tr.active td a div.download-icon {
-  background-image: url(../images/download-icon_white.png);
-}
-
-#ontologies table .active a {
-  color: white !important;
-}
-
-td .icon{
-	width:1%;
 }

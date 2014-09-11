@@ -37,32 +37,37 @@
         <!-- Page content -->
         <div class="row-fluid">
           <div id="ontologies" class="span4">
-            <div id="ontologies-canvas">
-              <div data-i18n-key="ontologies" class="sramp-ontology-box-header">Ontologies</div>
-              <table class="table table-hover"  data-field="ontologies">
-                <tbody data-role="dummy">
-                  <tr class="active">
-                    <td><a>http://www.example.org/colors.owl</a></td>
-                    <td class="icon">
-                      <a><div class="download-icon"></div></a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a>http://www.example.org/regional.owl</a></td>
-                    <td class="icon">
-                      <a><div class="download-icon"></div></a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a>http://www.jboss.org/overlord/deployment-status.owl</a></td>
-                    <td class="icon">
-                      <a><div class="download-icon"></div></a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div data-field="ontologies-canvas" class="ontologies-canvas">
+              <div class="sramp-ontology-box-header">Ontologies</div>
+              <ul class="nav nav-pills nav-stacked">
+                <li data-field="sramp-ontology-item">
+                  <a><span data-field="label" data-role="dummy">http://www.example.org/colors.owl</span></a>
+                  <div data-field="actions" class="sramp-ontology-item-actions"></div>
+                </li>
+                <li class="active">
+                  <a>http://www.example.org/regional.owl</a>
+                  <div class="sramp-ontology-item-actions">
+                    <button class="btn-mini btn">Download</button><button class="btn-mini btn">Delete</button>
+                  </div>
+                </li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+                <li><a>http://www.jboss.org/overlord/deployment-status.owl</a></li>
+              </ul>
             </div>
-            <div class="sramp-ontology-editor-actions">
+            <div class="sramp-ontology-actions">
               <button data-field="btn-new-ontology" data-i18n-key="new-ontology" class="btn">New Ontology</button>
               <button data-field="btn-upload-ontology" data-i18n-key="upload-ontology" class="btn">Upload Ontology</button>
             </div>
@@ -77,11 +82,11 @@
                 <ul class="nav nav-pills nav-stacked">
                   <li data-field="sramp-ontology-tier-item">
                     <a><span data-field="label" data-role="dummy">Tier 1, Node 1</span></a>
-                    <div data-field="actions" class="sramp-ontology-tier-item-actions"></div>
+                    <div data-field="actions" class="sramp-ontology-item-actions"></div>
                   </li>
                   <li class="active">
                     <a>Tier 1, Node 2</a>
-                    <div class="sramp-ontology-tier-item-actions">
+                    <div class="sramp-ontology-item-actions">
                       <button class="btn-mini btn">Edit</button><button class="btn-mini btn">Delete</button>
                     </div>
                   </li>
@@ -98,7 +103,7 @@
                 <ul class="nav nav-pills nav-stacked">
                   <li class="active">
                     <a>Tier 2, Node 1</a>
-                    <div class="sramp-ontology-tier-item-actions">
+                    <div class="sramp-ontology-item-actions">
                       <button class="btn-mini btn">Edit</button>
                       <button class="btn-mini btn">Delete</button>
                     </div>
@@ -131,7 +136,7 @@
                 </ul>
               </div>
             </div>
-            <div class="sramp-ontology-editor-actions" data-role="dummy">
+            <div class="sramp-ontology-actions" data-role="dummy">
               <button class="btn">Save Ontology</button>
               <button class="btn">Revert Ontology</button>
             </div>

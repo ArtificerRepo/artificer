@@ -181,6 +181,7 @@
   "ontology-editor.revert" : "Revert Ontology", 
   "ontology-editor.edit" : "Edit", 
   "ontology-editor.delete" : "Delete", 
+  "ontology-editor.download" : "Download", 
   "ontology-editor.please-select" : "Please select an ontology",
   "ontology-editor.saving.title" : "Saving Ontology", 
   "ontology-editor.saving.message" : "Please wait while your ontology is saved.",

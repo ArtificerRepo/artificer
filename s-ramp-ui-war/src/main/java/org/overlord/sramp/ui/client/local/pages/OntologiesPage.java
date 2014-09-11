@@ -16,7 +16,6 @@
 package org.overlord.sramp.ui.client.local.pages;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -30,9 +29,8 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.pages.ontologies.AddOntologyDialog;
-import org.overlord.sramp.ui.client.local.pages.ontologies.OntologiesTable;
-import org.overlord.sramp.ui.client.local.pages.ontologies.OntologiesUtil;
 import org.overlord.sramp.ui.client.local.pages.ontologies.OntologyEditor;
+import org.overlord.sramp.ui.client.local.pages.ontologies.OntologySummaryPanel;
 import org.overlord.sramp.ui.client.local.pages.ontologies.UploadOntologyDialog;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
@@ -64,8 +62,6 @@ public class OntologiesPage extends AbstractPage {
     @Inject @DataField("back-to-dashboard")
     TransitionAnchor<DashboardPage> backToDashboard;
 
-    TreeMap<String, OntologySummaryBean> ontologyMap = new TreeMap<String, OntologySummaryBean>();
-
     // Services
     @Inject
     NotificationService notificationService;
@@ -81,16 +77,14 @@ public class OntologiesPage extends AbstractPage {
     Instance<UploadOntologyDialog> uploadOntologyDialogFactory;
 
     // Widgets
-    @Inject @DataField
-    OntologiesTable ontologies;
+    @Inject @DataField("ontologies-canvas")
+    OntologySummaryPanel ontologySummaryPanel;
     @Inject @DataField("btn-new-ontology")
     Button newOntologyButton;
     @Inject @DataField("btn-upload-ontology")
     Button uploadOntologyButton;
     @Inject @DataField("ontology-editor")
     OntologyEditor editor;
-
-    private String uuidNewOntology;
 
     /**
      * Constructor.
@@ -103,7 +97,7 @@ public class OntologiesPage extends AbstractPage {
      */
     @PostConstruct
     protected void postConstruct() {
-        ontologies.addSelectionHandler(new SelectionHandler<OntologySummaryBean>() {
+        ontologySummaryPanel.addSelectionHandler(new SelectionHandler<OntologySummaryBean>() {
 
             @Override
             public void onSelection(SelectionEvent<OntologySummaryBean> event) {
@@ -123,11 +117,16 @@ public class OntologiesPage extends AbstractPage {
         ontologyService.list(true, new IRpcServiceInvocationHandler<List<OntologySummaryBean>>() {
             @Override
             public void onReturn(List<OntologySummaryBean> data) {
-                ontologyMap.clear();
-                for (OntologySummaryBean ontology : data) {
-                    ontologyMap.put(OntologiesUtil.createOntologyLabel(ontology), ontology);
+                String selectedUuid = ontologySummaryPanel.getSelectedOntology() == null
+                        ? null : ontologySummaryPanel.getSelectedOntology().getUuid();
+                
+                ontologySummaryPanel.setValue(data);
+                
+                // If something was selected, re-select it.  This is mostly to handle add/upload ontologies
+                // refreshing the panel.
+                if (selectedUuid != null) {
+                    ontologySummaryPanel.restoreSelectedItem(selectedUuid);
                 }
-                updateOntologyList();
             }
             @Override
             public void onError(Throwable error) {
@@ -135,26 +134,6 @@ public class OntologiesPage extends AbstractPage {
             }
         });
     }
-
-    /**
-     * Update ontology list.
-     */
-    protected void updateOntologyList() {
-        ontologies.clear();
-        ontologies.setValue(ontologyMap);
-        if (uuidNewOntology != null && !uuidNewOntology.equals("") //$NON-NLS-1$
-                && ontologies.getSelectedOntology() == null) {
-            ontologies.selectItem(uuidNewOntology);
-        } else if (ontologyMap.size() == 1) {
-            ontologies.selectItem(ontologyMap.get(ontologyMap.keySet().iterator().next()).getUuid());
-        } else if (ontologies.getSelectedOntology() != null) {
-            ontologies.selectItem(ontologies.getSelectedOntology().getUuid());
-        }
-    }
-
-
-
-
 
     /**
      * Event handler that fires when the user clicks the New Ontology button.
@@ -186,12 +165,7 @@ public class OntologiesPage extends AbstractPage {
         dialog.setCompletionHandler(new IUploadCompletionHandler() {
             @Override
             public void onImportComplete() {
-                String uuid = dialog.getOntologyUploadedUUID();
-                if (uuid != null && !uuid.equals("")) { //$NON-NLS-1$
-                    uuidNewOntology = uuid;
-                }
                 onPageShowing();
-
             }
         });
         dialog.show();
@@ -213,9 +187,7 @@ public class OntologiesPage extends AbstractPage {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
                         i18n.format("new-ontology.created.title"), //$NON-NLS-1$
                         i18n.format("new-ontology.created.message", value.getId())); //$NON-NLS-1$
-                uuidNewOntology = value.getUuid();
                 onPageShowing();
-                // TODO select the ontology automatically here?
             }
             @Override
             public void onError(Throwable error) {
@@ -233,26 +205,15 @@ public class OntologiesPage extends AbstractPage {
      *            the ontology
      */
     protected void onOntologyClicked(OntologySummaryBean ontology) {
-        if (ontology == ontologies.getSelectedOntology()) {
-            if (this.editor.isDirty()) {
+        if (ontologySummaryPanel.getSelectedOntology() != null) {
+            if (editor.isDirty()) {
                 Window.alert(i18n.format("ontologies-page.editor-is-dirty")); //$NON-NLS-1$
                 return;
             }
-            this.editor.setValue(null);
-            ontologies.unselectItem();
-            return;
-        } else if (ontologies.getSelectedOntology() != null) {
-            if (this.editor.isDirty()) {
-                Window.alert(i18n.format("ontologies-page.editor-is-dirty")); //$NON-NLS-1$
-                return;
-            }
-            ontologies.unselectItem();
+            reloadOntologyEditor(ontology.getUuid());
+        } else {
+            editor.setValue(null);
         }
-        ontologies.selectItem(ontology);
-
-        reloadOntologyEditor(ontology.getUuid());
-        this.uuidNewOntology = ""; //$NON-NLS-1$
-
     }
 
     /**
