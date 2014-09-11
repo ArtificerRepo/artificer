@@ -57,4 +57,11 @@ public interface IOntologyService {
      */
     public void add(OntologyBean ontology) throws SrampUiException;
 
+    /**
+     * Called to delete the given ontology.
+     * @param uuid
+     * @throws SrampUiException
+     */
+    public void delete(String uuid) throws SrampUiException;
+
 }

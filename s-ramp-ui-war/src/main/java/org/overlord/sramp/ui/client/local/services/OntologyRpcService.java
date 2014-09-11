@@ -189,4 +189,18 @@ public class OntologyRpcService {
         }
     }
 
+    /**
+     * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#delete(OntologyBean)
+     */
+    public void delete(String uuid, final IRpcServiceInvocationHandler<Void> handler) {
+        ontologyCache.remove(uuid);
+        RemoteCallback<Void> successCallback = new DelegatingRemoteCallback<Void>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteOntologyService.call(successCallback, errorCallback).delete(uuid);
+        } catch (SrampUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
 }

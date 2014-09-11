@@ -112,6 +112,18 @@ public class OntologyService implements IOntologyService {
     }
 
     /**
+     * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#delete(String)
+     */
+    @Override
+    public void delete(String uuid) throws SrampUiException {
+        try {
+            clientAccessor.getClient().deleteOntology(uuid);
+        } catch (Exception e) {
+            throw new SrampUiException(e.getMessage());
+        }
+    }
+
+    /**
      * Converts an ontology into an {@link OntologyBean}.
      * @param ontology
      */

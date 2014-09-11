@@ -23,6 +23,10 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.ClientMessages;
+import org.overlord.sramp.ui.client.local.services.NotificationService;
+import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
+import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
 
 import com.google.gwt.core.client.GWT;
@@ -56,6 +60,10 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
     
     @Inject
     ClientMessages i18n;
+    @Inject
+    OntologyRpcService ontologyService;
+    @Inject
+    NotificationService notificationService;
     
     @Inject @DataField
     InlineLabel label;
@@ -142,8 +150,23 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
      * Called when the user clicks the Delete action.
      */
     protected void onDelete() {
-        // TODO: delete server side
-        ValueChangeEvent.fire(this, null);
+        final NotificationBean notificationBean = notificationService.startProgressNotification(
+                i18n.format("ontology-deleting.title"), //$NON-NLS-1$
+                i18n.format("ontology-deleting.message")); //$NON-NLS-1$
+        ontologyService.delete(getValue().getUuid(), new IRpcServiceInvocationHandler<Void>() {
+            @Override
+            public void onReturn(Void data) {
+                notificationService.completeProgressNotification(notificationBean.getUuid(), 
+                        i18n.format("ontology-deleted.title"),  //$NON-NLS-1$
+                        i18n.format("ontology-deleted.message", getValue().getId())); //$NON-NLS-1$
+                ValueChangeEvent.fire(OntologySummaryPanelItem.this, null);
+            }
+            @Override
+            public void onError(Throwable error) {
+                notificationService.completeProgressNotification(notificationBean.getUuid(),
+                        i18n.format("ontology-deleted-error.title"), error); //$NON-NLS-1$
+            }
+        });
     }
 
     /**
