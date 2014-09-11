@@ -135,7 +135,7 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
     
     protected void onDownload() {
         String contentUrl = GWT.getModuleBaseURL() + "services/ontologyDownload?uuid=" + value.getUuid(); //$NON-NLS-1$
-        Window.open(contentUrl, "_self", "enabled");
+        Window.open(contentUrl, "_blank", "enabled");
     }
 
     /**

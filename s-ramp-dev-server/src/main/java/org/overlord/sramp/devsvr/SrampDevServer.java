@@ -70,6 +70,7 @@ import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 import org.overlord.sramp.ui.server.api.SAMLBearerTokenAuthenticationProvider;
 import org.overlord.sramp.ui.server.servlets.ArtifactDownloadServlet;
 import org.overlord.sramp.ui.server.servlets.ArtifactUploadServlet;
+import org.overlord.sramp.ui.server.servlets.OntologyDownloadServlet;
 import org.overlord.sramp.ui.server.servlets.OntologyUploadServlet;
 
 /**
@@ -183,6 +184,7 @@ public class SrampDevServer extends ErraiDevServer {
         srampUI.addServlet(new ServletHolder(ArtifactDownloadServlet.class), "/app/services/artifactDownload");
         srampUI.addServlet(new ServletHolder(ArtifactUploadServlet.class), "/app/services/artifactUpload");
         srampUI.addServlet(new ServletHolder(OntologyUploadServlet.class), "/app/services/ontologyUpload");
+        srampUI.addServlet(new ServletHolder(OntologyDownloadServlet.class), "/app/services/ontologyDownload");
         ServletHolder headerDataServlet = new ServletHolder(OverlordHeaderDataJS.class);
         headerDataServlet.setInitParameter("app-id", "s-ramp-ui");
         srampUI.addServlet(headerDataServlet, "/js/overlord-header-data.js");
