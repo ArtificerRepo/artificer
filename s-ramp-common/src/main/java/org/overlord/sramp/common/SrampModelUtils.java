@@ -24,6 +24,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
+import org.overlord.commons.codec.AesEncrypter;
 
 /**
  * A collection of utilities for dealing with the s-ramp models.
@@ -32,6 +33,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
  */
 public class SrampModelUtils {
 
+    public static final String ENCRYPT_PREFIX = "${crypt:";
+    public static final String ENCRYPT_SUFIX = "}";
 	/**
 	 * Convenience method to help set a custom s-ramp property on the given artifact.
 	 * @param artifact
@@ -59,6 +62,23 @@ public class SrampModelUtils {
 		}
 	}
 
+    /**
+     * Convenience method to help set a custom s-ramp property on the given
+     * artifact.
+     *
+     * @param artifact
+     * @param propName
+     * @param propValue
+     * @param encrypt
+     *            *
+     */
+    public static void setCustomEncryptedProperty(BaseArtifactType artifact, String propName, String propValue) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(ENCRYPT_PREFIX).append(AesEncrypter.encrypt(propValue)).append(ENCRYPT_SUFIX);
+        setCustomProperty(artifact, propName, builder.toString());
+
+    }
+
 	/**
 	 * Gets the value of one of the s-ramp custom properties.
 	 * @param artifact the s-ramp artifact
@@ -74,6 +94,10 @@ public class SrampModelUtils {
 				break;
 			}
 		}
+        if (rval.startsWith(ENCRYPT_PREFIX) && rval.endsWith(ENCRYPT_SUFIX)) {
+            String encrypted_value = rval.substring(ENCRYPT_PREFIX.length(), rval.length() - ENCRYPT_SUFIX.length());
+            return AesEncrypter.decrypt(encrypted_value);
+        }
 		return rval;
 	}
 
@@ -147,7 +171,7 @@ public class SrampModelUtils {
      * Gets all properties with names that begin with the given prefix.  This is useful
      * if the artifact has a number of custom properties that all start with a common
      * domain specific prefix.
-     * 
+     *
      * @param artifact the s-ramp artifact
      * @param prefix the prefix of the properties searched
      * @return the map of custom properties that start by the prefix
