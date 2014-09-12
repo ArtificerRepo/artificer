@@ -96,7 +96,7 @@
     <version.org.apache.felix>1.9.0</version.org.apache.felix>
 
     <!-- S-RAMP only libraries (not in BOM) -->
-    <version.org.overlord.overlord-commons>2.0.10-SNAPSHOT</version.org.overlord.overlord-commons>
+    <version.org.overlord.overlord-commons>2.0.11-SNAPSHOT</version.org.overlord.overlord-commons>
     <version.commons-beanutils>1.8.2</version.commons-beanutils>
     <version.org.apache.commons.commons-lang3>3.1</version.org.apache.commons.commons-lang3>
     <version.org.apache.commons.commons-compress>1.4.1</version.org.apache.commons.commons-compress>
