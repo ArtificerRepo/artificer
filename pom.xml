@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-parent</artifactId>
-    <version>6.0.0.CR9</version>
+    <version>6.0.0.CR12</version>
   </parent>
 
   <groupId>org.overlord.sramp</groupId>
@@ -99,19 +99,18 @@
     <version.org.overlord.overlord-commons>2.0.10-SNAPSHOT</version.org.overlord.overlord-commons>
     <version.commons-beanutils>1.8.2</version.commons-beanutils>
     <version.org.apache.commons.commons-lang3>3.1</version.org.apache.commons.commons-lang3>
-    <version.org.apache.commons.commons-compress>1.4.1</version.org.apache.commons.commons-compress>
     <version.org.modeshape>3.8.0.Final</version.org.modeshape>
-    <version.org.apache.tika>1.3</version.org.apache.tika> <!-- inline with version used by modeshape -->
     <version.org.apache.bcel>5.2</version.org.apache.bcel>
-    <version.javax.jcr>2.0</version.javax.jcr>
     <version.org.picketbox>4.0.19.SP4</version.org.picketbox>
     <version.org.picketlink>2.5.3.SP4</version.org.picketlink>
     <version.org.switchyard>2.0.0.Alpha1</version.org.switchyard>
     <version.org.jboss.aesh>0.33.13</version.org.jboss.aesh>
     <version.io.fabric8>1.0.0.redhat-379</version.io.fabric8>
+    <version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>2.1.19.Final</version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>
 
     <!-- BOM Overrides -->
     <version.joda-time>2.1</version.joda-time>
+    <version.org.jboss.as>7.4.0.Final-redhat-19</version.org.jboss.as>
   </properties>
 
   <build>
@@ -236,7 +235,7 @@
       <dependency>
         <groupId>org.jboss.integration-platform</groupId>
         <artifactId>jboss-integration-platform-bom</artifactId>
-        <version>6.0.0.CR9</version>
+        <version>6.0.0.CR12</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -596,7 +595,7 @@
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-dist-eap6</artifactId>
-        <version>${overlord-commons.version}</version>
+        <version>${version.org.overlord.overlord-commons}</version>
         <type>zip</type>
       </dependency>
       <dependency>
@@ -666,28 +665,16 @@
         <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-dist-eap6</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-        <type>zip</type>
-      </dependency>
-      <dependency>
 	  	<groupId>org.overlord</groupId>
 	   	<artifactId>overlord-commons-codec</artifactId>
        	<version>${version.org.overlord.overlord-commons}</version>	      
       </dependency>  
-
 
       <!-- Apache Commons -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${version.org.apache.commons.commons-lang3}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>${version.org.apache.commons.commons-compress}</version>
       </dependency>
       <dependency>
         <groupId>commons-beanutils</groupId>
@@ -747,6 +734,23 @@
         <version>${version.org.switchyard}</version>
       </dependency>
 
+      <!-- JBoss AS -->
+      <dependency>
+        <groupId>org.jboss.as</groupId>
+        <artifactId>jboss-as-security</artifactId>
+        <version>${version.org.jboss.as}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.as</groupId>
+        <artifactId>jboss-as-naming</artifactId>
+        <version>${version.org.jboss.as}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.as</groupId>
+        <artifactId>jboss-as-server</artifactId>
+        <version>${version.org.jboss.as}</version>
+      </dependency>
+
       <!-- Third party libraries -->
       <dependency>
         <groupId>org.apache.tika</groupId>
@@ -767,11 +771,6 @@
         <groupId>org.apache.bcel</groupId>
         <artifactId>bcel</artifactId>
         <version>${version.org.apache.bcel}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.jcr</groupId>
-        <artifactId>jcr</artifactId>
-        <version>${version.javax.jcr}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.aesh</groupId>
@@ -824,7 +823,7 @@
       <dependency>
         <groupId>org.jboss.spec.javax.faces</groupId>
         <artifactId>jboss-jsf-api_2.1_spec</artifactId>
-        <version>2.1.19.Final</version>
+        <version>${version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec}</version>
       </dependency>
 
       <!-- ModeShape -->
@@ -919,6 +918,20 @@
       <id>fuse</id>
       <name>Fuse Public Repository</name>
       <url>http://repo.fusesource.com/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>redhat-tech-preview-repository</id>
+      <name>Red Hat Tech Preview Repository</name>
+      <url>http://maven.repository.redhat.com/techpreview/all/</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
