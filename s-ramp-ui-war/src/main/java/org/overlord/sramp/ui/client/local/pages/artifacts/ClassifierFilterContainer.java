@@ -97,13 +97,18 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
         });
         classifierFilter.setOntology(ontologySummary);
         classifierFilter.setLabel(ontologySummary.getLabel());
-        classifierFilter.setNumSelected(0);
         filters.add(classifierFilter);
         add(classifierFilter);
+        
+        int numSelected = 0;
         if (getValue() != null) {
             Set<String> cfValue = getValue().get(ontologySummary.getBase());
             classifierFilter.setValue(cfValue);
+            if (cfValue != null) {
+                numSelected = cfValue.size();
+            }
         }
+        classifierFilter.setNumSelected(numSelected);
     }
 
     /**
