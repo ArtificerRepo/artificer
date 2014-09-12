@@ -101,7 +101,7 @@ public class OntologyEditor extends FlowPanel implements HasValue<OntologyBean> 
         getElement().setId("ontology-editor"); //$NON-NLS-1$
         getElement().setClassName("span8"); //$NON-NLS-1$
         canvas.getElement().setClassName("sramp-ontology-editor-canvas"); //$NON-NLS-1$
-        actions.getElement().setClassName("sramp-ontology-editor-actions"); //$NON-NLS-1$
+        actions.getElement().setClassName("sramp-ontology-actions"); //$NON-NLS-1$
         actions.add(saveButton);
         actions.add(revertButton);
         add(canvas);

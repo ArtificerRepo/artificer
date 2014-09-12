@@ -535,6 +535,7 @@ button.tree:hover {
 }
 .sramp-ontology-actions .btn {
   margin-right: 8px;
+  min-width: 80px;
 }
 
 .sramp-settings {
