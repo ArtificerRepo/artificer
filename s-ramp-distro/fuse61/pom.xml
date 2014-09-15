@@ -97,6 +97,13 @@
       <artifactId>s-ramp-ui-war-fuse61</artifactId>
       <type>war</type>
     </dependency>
+    
+    <!-- Include the Karaf commands -->
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-karaf-commands</artifactId>
+    </dependency>
+    
     <!-- Additional 3rd party libraries -->
     <dependency>
       <groupId>org.picketlink</groupId>
@@ -132,6 +139,10 @@
     <dependency>
       <groupId>commons-jxpath</groupId>
       <artifactId>commons-jxpath</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.servlet.jsp</groupId>
@@ -278,6 +289,26 @@
                     <bundle>mvn:org.overlord.sramp/s-ramp-distro-fuse61/${project.version}</bundle>
                   </bundles>
                 </feature>
+                
+                <!-- The S-RAMP Fuse Installer -->
+                <feature>
+                  <name>s-ramp-install</name>
+                  <version>${project.version}</version>
+                  <comment>S-RAMP installation (Karaf commands)</comment>
+                  <dependsOnFeatures>
+                    <!-- Note: DO NOT include s-ramp-dependencies.  We want http (jetty) to be refreshed only when
+                    installing the s-ramp feature.  The karaf-commands add items to jetty.xml, users.properties, etc.
+                    that must be present BEFORE the refresh. -->
+                    <feature>
+                      <name>overlord-commons</name>
+                      <version>${version.org.overlord.overlord-commons}</version>
+                    </feature>
+                  </dependsOnFeatures>
+                  <includes>
+                    <include>org.overlord.sramp:s-ramp-karaf-commands:*</include>
+                  </includes>
+                </feature>
+                
                 <!-- The S-RAMP Modules -->
                 <feature>
                   <name>s-ramp-modules</name>
@@ -300,8 +331,10 @@
                     <exclude>org.overlord.sramp:s-ramp-server*:*</exclude>
                     <exclude>org.overlord.sramp:s-ramp-ui-war*:*</exclude>
                     <exclude>org.overlord.sramp:s-ramp-installer*:*</exclude>
+                    <exclude>org.overlord.sramp:s-ramp-karaf-commands:*</exclude>
                   </excludes>
                 </feature>
+                
                 <!-- The S-RAMP Server (back-end) -->
                 <feature>
                   <name>s-ramp-server</name>
@@ -320,6 +353,7 @@
                     <include>org.overlord.sramp:s-ramp-server-fuse61:war</include>
                   </includes>
                 </feature>
+                
                 <!-- The S-RAMP UI -->
                 <feature>
                   <name>s-ramp-ui</name>
@@ -338,6 +372,7 @@
                     <include>org.overlord.sramp:s-ramp-ui-war-fuse61:war</include>
                   </includes>
                 </feature>
+                
                 <!-- Everything -->
                 <feature>
                   <name>s-ramp</name>

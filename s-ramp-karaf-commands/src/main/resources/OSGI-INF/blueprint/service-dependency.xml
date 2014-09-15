@@ -1,0 +1,8 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+
+    <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.0.0">
+        <command name="overlord:s-ramp:configure">
+            <action class="org.overlord.sramp.karaf.commands.ConfigureCommand"/>
+        </command>    
+    </command-bundle>
+</blueprint>
