@@ -86,12 +86,6 @@ public class JMSEventProducer implements EventProducer {
 
     private static final String CONNECTIONFACTORY_JNDI = "ConnectionFactory"; //$NON-NLS-1$
 
-    private static final String BROKER_ACTIVEMQ_PROVIDER_PORT = "tcp://localhost:" + sramp.getConfigProperty( //$NON-NLS-1$
-            SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, "61616"); //$NON-NLS-1$
-
-    private static final String ACTIVEMQ_PROVIDER_URL = sramp.getConfigProperty( //$NON-NLS-1$
-            SrampConstants.SRAMP_CONFIG_EVENT_JMS_URL, "tcp://localhost:61616"); //$NON-NLS-1$
-
     private static Logger LOG = LoggerFactory.getLogger(JMSEventProducer.class);
 
     private Connection connection = null;
@@ -137,56 +131,56 @@ public class JMSEventProducer implements EventProducer {
                     destinations.add(queue);
                 }
             } catch (NamingException e) {
-
                 try {
-                    String username = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_USER, "");
-                    String password = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PASSWORD, "");
-                    ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, password, ACTIVEMQ_PROVIDER_URL);
-                    connection = connectionFactory.createConnection();
-                    session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-                    for (String topicName : topicNames) {
-                        Topic topic = session.createTopic(topicName);
-                        destinations.add(topic);
-                    }
-
-                    for (String queueName : queueNames) {
-                        Queue queue = session.createQueue(queueName);
-                        destinations.add(queue);
-                    }
+                    // Second, are we within Fuse?  If so, use the existing ActiveMQ broker.
+                    
+                    String brokerURL = sramp.getConfigProperty(
+                            SrampConstants.SRAMP_CONFIG_EVENT_JMS_URL, "tcp://localhost:61616"); //$NON-NLS-1$
+                    
+                    String username = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_USER, ""); //$NON-NLS-1$
+                    String password = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PASSWORD, ""); //$NON-NLS-1$
+                    ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, password, brokerURL);
+                    initActiveMQ(connectionFactory, topicNames, queueNames);
                 } catch (Exception e1) {
-                    // JMS wasn't setup. Assume we need to start an embedded
+                    // Otherwise, JMS wasn't setup. Assume we need to start an embedded
                     // ActiveMQ broker and create the destinations.
-                    LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", ACTIVEMQ_PROVIDER_URL)); //$NON-NLS-1$
+                    
+                    String bindAddress = "tcp://localhost:" //$NON-NLS-1$
+                            + sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, "61616"); //$NON-NLS-1$
+                    
+                    LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", bindAddress)); //$NON-NLS-1$
 
                     session = null;
                     destinations.clear();
 
                     BrokerService broker = new BrokerService();
-                    broker.addConnector(BROKER_ACTIVEMQ_PROVIDER_PORT);
+                    broker.addConnector(bindAddress);
                     broker.start();
 
-                    // Event though we added a TCP connector, above, ActiveMQ
-                    // also exposes the broker over the "vm"
-                    // protocol. It optimizes performance for connections on the
-                    // same JVM.
-                    ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
-                    Connection connection = connectionFactory.createConnection();
-                    connection.start();
-                    session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-                    for (String topicName : topicNames) {
-                        destinations.add(session.createTopic(topicName));
-                    }
-
-                    for (String queueName : queueNames) {
-                        destinations.add(session.createQueue(queueName));
-                    }
+                    // Event though we added a TCP connector, above, ActiveMQ also exposes the broker over the "vm"
+                    // protocol. It optimizes performance for connections on the same JVM.
+                    ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
+                    initActiveMQ(connectionFactory, topicNames, queueNames);
                 }
 
             }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
+        }
+    }
+    
+    private void initActiveMQ(ConnectionFactory connectionFactory, String[] topicNames, String[] queueNames)
+            throws Exception {
+        connection = connectionFactory.createConnection();
+        connection.start();
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+        for (String topicName : topicNames) {
+            destinations.add(session.createTopic(topicName));
+        }
+
+        for (String queueName : queueNames) {
+            destinations.add(session.createQueue(queueName));
         }
     }
 
