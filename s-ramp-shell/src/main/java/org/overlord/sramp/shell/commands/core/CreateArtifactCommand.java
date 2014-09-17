@@ -25,10 +25,10 @@ import org.overlord.sramp.shell.api.InvalidCommandArgumentException;
 import org.overlord.sramp.shell.i18n.Messages;
 
 /**
- * This CLI command is used to create a new artifact in the repository.  This 
- * command creates non-Document style artifacts (artifacts with no content).
- * It complements the {@link UploadArtifactCommand}, which creates a new 
- * artifact *with* content.
+ * This CLI command is used to create a new artifact in the repository. This
+ * command creates non-Document style artifacts (artifacts with no content). It
+ * complements the {@link UploadArtifactCommand}, which creates a new artifact
+ * *with* content.
  * 
  * @author David Virgil Naranjo
  */
@@ -41,7 +41,7 @@ public class CreateArtifactCommand extends BuiltInShellCommand {
      */
     public CreateArtifactCommand() {
     }
-    
+
     /**
      * @see org.overlord.sramp.shell.api.ShellCommand#execute()
      */
@@ -57,12 +57,12 @@ public class CreateArtifactCommand extends BuiltInShellCommand {
             print(Messages.i18n.format("MissingSRAMPConnection")); //$NON-NLS-1$
             return false;
         }
-        
+
         ArtifactType artifactType = ArtifactType.valueOf(artifactTypeArg);
         if (artifactType.isExtendedType()) {
             artifactType = ArtifactType.ExtendedArtifactType(artifactType.getExtendedType(), false);
         }
-        
+
         if (artifactType.isDerived()) {
             throw new InvalidCommandArgumentException(0, Messages.i18n.format("ArtifactModel.isDerived")); //$NON-NLS-1$
         } else if (artifactType.isDocument()) {

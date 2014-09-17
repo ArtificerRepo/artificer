@@ -27,7 +27,7 @@ import org.overlord.sramp.shell.i18n.Messages;
 
 /**
  * Encapsulates all possible shell arguments.
- * 
+ *
  * @author Brett Meyer
  */
 public class ShellArguments {
@@ -38,7 +38,7 @@ public class ShellArguments {
 
     private String logFilePath = null;
 
-    private Map<String, String> propertiesFromFile = new HashMap<String, String>();;
+    private final Map<String, String> propertiesFromFile = new HashMap<String, String>();;
 
     public ShellArguments(String[] args) {
         for (int i = 0; i < args.length; i++) {
@@ -56,12 +56,13 @@ public class ShellArguments {
                 i++;
                 logFilePath = args[i];
             }
+
         }
     }
 
     /**
      * Gets the properties from a file.
-     * 
+     *
      * @param filePath
      *            the file path
      * @throws ShellArgumentException
