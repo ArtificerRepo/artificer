@@ -30,7 +30,7 @@
 	
   <target name="copy-files" depends="properties-fuse-6.1">	
   	<property name="s-ramp.updates.dir" location="${basedir}/updates" />
-  	<echo>-----------------------------------</echo>
+  	<echo>-----------------------------------</echo>	
       <echo>Configuring S-RAMP</echo>
       <echo>-----------------------------------</echo>
       <property name="overlord-apps.dir" location="${s-ramp.fuse.config.dir}/overlord-apps" />
@@ -46,7 +46,9 @@
 
       <!-- Set the location of the modeshape config file in sramp.properties -->
       <propertyfile file="${s-ramp.fuse.config.dir}/sramp.properties">
-        <entry key="sramp.modeshape.config.url" value="profile:sramp-modeshape.json" />     
+        <entry key="sramp.modeshape.config.url" value="profile:sramp-modeshape.json" />   
+        <entry key="sramp.config.events.jms.activemq-url" value="discovery:(fabric://default)" /> 
+      	<entry key="sramp.config.events.jms.user" value="admin"/>    	     
       </propertyfile>
 	  	
   </target>

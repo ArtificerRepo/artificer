@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Install S-RAMP into Fuse 6.1" default="install">
-
+  <taskdef name="passwordEncrypter" classname="org.overlord.commons.ant.jaas.PasswordEncrypter">
+	<classpath>
+	  	<pathelement location="${overlord-commons.ant.jar}"/>
+	  	<pathelement location="${commons-codec.jar}"/>
+	</classpath>
+  </taskdef>
+  <taskdef name="aesEncrypter" classname="org.overlord.commons.ant.crypt.AesEncrypterTask">
+	<classpath>
+		<pathelement location="${overlord-commons.ant.jar}"/>
+		<pathelement location="${commons-codec.jar}"/>
+		<pathelement location="${overlord-commons.codec.jar}"/>
+	</classpath>
+  </taskdef>		
   <!-- Configure properties specific to Fuse 6.1 -->
   <target name="properties-fuse-6.1">
     <property name="s-ramp.fuse.config.dir" location="${s-ramp.appserver.dir}/etc/" />
@@ -43,13 +55,33 @@
     <propertyfile file="${s-ramp.fuse.config.dir}/sramp-ui.properties">
       <entry key="s-ramp-ui.atom-api.endpoint" value="${server.host}/s-ramp-server" />
     </propertyfile>
-
+  	 <genguid property="sramp.config.events.jms.password" />
+  	<passwordEncrypter password="${sramp.config.events.jms.password}" addProperty="sramp.config.events.jms.password.encrypted"/>
+  	<echo>Configuring Overlord srampjms user in fuse/etc/users.properties</echo>
+  	
+  	<propertyfile file="${s-ramp.fuse.config.dir}/users.properties">
+  	      <entry key="srampjms" value="{CRYPT}${sramp.config.events.jms.password.encrypted}{CRYPT}" />
+  	</propertyfile>
+    <property name="crypt_prefix" value="$${crypt:" />
+  	<aesEncrypter plain="${sramp.config.events.jms.password}" addProperty="sramp.config.events.jms.password.aes.encrypted"/>
+  	
     <!-- Set the location of the modeshape config file in sramp.properties -->
     <propertyfile file="${s-ramp.fuse.config.dir}/sramp.properties">
       <entry key="sramp.modeshape.config.url" value="${sys:karaf.home}/etc/sramp-modeshape.json" />
+      <entry key="sramp.config.events.jms.user" value="srampjms"/>    	
+      <entry key="sramp.config.events.jms.password" value="${crypt_prefix}${sramp.config.events.jms.password.aes.encrypted}}"/>    	
+      	<entry key="sramp.config.events.jms.activemq-url" value="tcp://localhost:61616" />     	
     </propertyfile>
 	  	
   </target>
+	
+  <scriptdef name="genguid" language="javascript">
+	<attribute name="property" />
+		<![CDATA[
+		importClass( java.util.UUID );
+		project.setProperty( attributes.get( "property" ), UUID.randomUUID() );
+		]]>
+  </scriptdef>	
 	
   <!-- Install S-RAMP -->
   <target name="install" depends="properties-fuse-6.1 , overlord-commons , copy-files">
