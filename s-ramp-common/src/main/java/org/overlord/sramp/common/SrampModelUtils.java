@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
@@ -94,7 +95,7 @@ public class SrampModelUtils {
 				break;
 			}
 		}
-        if (rval.startsWith(ENCRYPT_PREFIX) && rval.endsWith(ENCRYPT_SUFIX)) {
+        if (StringUtils.isNotBlank(rval) && rval.startsWith(ENCRYPT_PREFIX) && rval.endsWith(ENCRYPT_SUFIX)) {
             String encrypted_value = rval.substring(ENCRYPT_PREFIX.length(), rval.length() - ENCRYPT_SUFIX.length());
             return AesEncrypter.decrypt(encrypted_value);
         }
