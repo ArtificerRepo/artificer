@@ -420,6 +420,11 @@
         <artifactId>s-ramp-ui-widgets</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-karaf-commands</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- S-RAMP Sources -->
       <dependency>
@@ -668,7 +673,12 @@
 	  	<groupId>org.overlord</groupId>
 	   	<artifactId>overlord-commons-codec</artifactId>
        	<version>${version.org.overlord.overlord-commons}</version>	      
-      </dependency>  
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-karaf-commands</artifactId>
+        <version>${version.org.overlord.overlord-commons}</version>
+      </dependency>
 
       <!-- Apache Commons -->
       <dependency>
@@ -875,6 +885,10 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
 
     <!-- Test -->
     <dependency>
@@ -986,6 +1000,7 @@
     <module>s-ramp-installer</module>
     <module>s-ramp-integration</module>
     <module>s-ramp-javadoc</module>
+    <module>s-ramp-karaf-commands</module>
     <module>s-ramp-repository</module>
     <module>s-ramp-repository-jcr</module>
     <module>s-ramp-repository-jcr/modeshape</module>
