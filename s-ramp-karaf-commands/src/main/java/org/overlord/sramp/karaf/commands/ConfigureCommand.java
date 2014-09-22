@@ -31,23 +31,23 @@ import org.overlord.commons.karaf.commands.configure.AbstractConfigureCommand;
  */
 @Command(scope = "overlord:s-ramp", name = "configure")
 public class ConfigureCommand extends AbstractConfigureCommand {
-    
+
     @Override
     protected Object doExecute() throws Exception {
         super.doExecute();
-        
-        copyFile("sramp-modeshape.json"); //$NON-NLS-1$
+
+        copyFile("sramp-modeshape-fuse.json", "sramp-modeshape.json"); //$NON-NLS-1$
         copyFile("sramp-ui.properties"); //$NON-NLS-1$
-        
+
         String randomSrampJmsPassword = UUID.randomUUID().toString();
-        
+
         Properties usersProperties = new Properties();
         File srcFile = new File(karafConfigPath + "users.properties"); //$NON-NLS-1$
         usersProperties.load(new FileInputStream(srcFile));
         String encryptedPassword = "{CRYPT}" + DigestUtils.sha256Hex(randomSrampJmsPassword) + "{CRYPT}"; //$NON-NLS-1$ //$NON-NLS-2$
         usersProperties.setProperty("srampjms", encryptedPassword); //$NON-NLS-1$
         usersProperties.store(new FileOutputStream(srcFile), ""); //$NON-NLS-1$
-        
+
         // TODO: Host is currently hardcoded to "localhost" -- does that need to be configurable?
         Properties srampProperties = new Properties();
         srampProperties.load(this.getClass().getClassLoader().getResourceAsStream("/sramp.properties")); //$NON-NLS-1$
@@ -55,13 +55,13 @@ public class ConfigureCommand extends AbstractConfigureCommand {
         srampProperties.setProperty("sramp.config.events.jms.password", encryptedPassword); //$NON-NLS-1$
         File destFile = new File(karafConfigPath + "sramp.properties"); //$NON-NLS-1$
         srampProperties.store(new FileOutputStream(destFile), ""); //$NON-NLS-1$
-        
+
         File dir = new File(karafConfigPath + "overlord-apps"); //$NON-NLS-1$
         if (!dir.exists()) {
             dir.mkdir();
         }
-        copyFile("overlord-apps/srampui-overlordapp.properties"); //$NON-NLS-1$
-        
+        copyFile("srampui-overlordapp.properties", "overlord-apps/srampui-overlordapp.properties"); //$NON-NLS-1$
+
         return null;
     }
 }

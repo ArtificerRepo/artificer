@@ -5,21 +5,27 @@
     <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
-
+  <files>
+  	  <file>
+  	  	<destName>sramp-modeshape.json</destName>
+  	  	<outputDirectory>overlord/sramp.profile/</outputDirectory>
+      	<filtered>true</filtered>
+      	<source>./target/classes/sramp-modeshape-fuse.json</source>
+  	  </file>
+  </files>
   <fileSets>
     <fileSet>
-      <directory>./target/.temp/properties/etc/</directory>
+      <directory>./target/classes</directory>
       <includes>
       	<include>sramp-ui.properties</include>
       	<include>sramp.properties</include>
-      	<include>sramp-modeshape.json</include>
       </includes>
       <outputDirectory>overlord/sramp.profile/</outputDirectory>
       <filtered>true</filtered>
     </fileSet>
     
      <fileSet>
-      <directory>./target/.temp/properties/etc/overlord-apps</directory>
+      <directory>./target/classes</directory>
       <includes>
       	<include>srampui-overlordapp.properties</include>
       </includes>
