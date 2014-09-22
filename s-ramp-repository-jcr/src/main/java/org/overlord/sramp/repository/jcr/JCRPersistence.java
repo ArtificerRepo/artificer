@@ -38,6 +38,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.InvalidArtifactUpdateException;
@@ -52,6 +53,8 @@ import org.overlord.sramp.common.ontology.OntologyAlreadyExistsException;
 import org.overlord.sramp.common.ontology.OntologyNotFoundException;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.common.ontology.SrampOntology.SrampOntologyClass;
+import org.overlord.sramp.common.storedquery.StoredQueryAlreadyExistsException;
+import org.overlord.sramp.common.storedquery.StoredQueryNotFoundException;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.DerivedArtifacts;
 import org.overlord.sramp.repository.PersistenceManager;
@@ -61,7 +64,9 @@ import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToOntology;
+import org.overlord.sramp.repository.jcr.mapper.JCRNodeToStoredQuery;
 import org.overlord.sramp.repository.jcr.mapper.OntologyToJCRNode;
+import org.overlord.sramp.repository.jcr.mapper.StoredQueryToJCRNode;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.slf4j.Logger;
@@ -86,6 +91,8 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 
 	private static OntologyToJCRNode o2jcr = new OntologyToJCRNode();
 	private static JCRNodeToOntology jcr2o = new JCRNodeToOntology();
+    private static StoredQueryToJCRNode q2jcr = new StoredQueryToJCRNode();
+    private static JCRNodeToStoredQuery jcr2q = new JCRNodeToStoredQuery();
 
 	//	private Map<String, SrampOntology> ontologyCache = new HashMap<String, SrampOntology>();
 
@@ -428,156 +435,288 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 	}
 
     /**
-	 * @see org.overlord.sramp.common.repository.PersistenceManager#persistOntology(org.overlord.sramp.common.ontology.SrampOntology)
-	 */
-	@Override
-	public SrampOntology persistOntology(SrampOntology ontology) throws SrampException {
-		Session session = null;
-		if (ontology.getUuid() == null) {
-			ontology.setUuid(UUID.randomUUID().toString());
-		}
-		String ontologyPath = MapToJCRPath.getOntologyPath(ontology.getUuid());
+     * @see org.overlord.sramp.common.repository.PersistenceManager#persistOntology(org.overlord.sramp.common.ontology.SrampOntology)
+     */
+    @Override
+    public SrampOntology persistOntology(SrampOntology ontology) throws SrampException {
+        Session session = null;
+        if (ontology.getUuid() == null) {
+            ontology.setUuid(UUID.randomUUID().toString());
+        }
+        String ontologyPath = MapToJCRPath.getOntologyPath(ontology.getUuid());
 
-		// Check if an ontology with the given base URL already exists.
-		List<SrampOntology> ontologies = getOntologies();
-		for (SrampOntology existingOntology : ontologies) {
+        // Check if an ontology with the given base URL already exists.
+        List<SrampOntology> ontologies = getOntologies();
+        for (SrampOntology existingOntology : ontologies) {
             if (existingOntology.getBase().equals(ontology.getBase())) {
                 throw new OntologyAlreadyExistsException();
             }
         }
 
-		try {
-			session = JCRRepositoryFactory.getSession();
-			if (session.nodeExists(ontologyPath)) {
-			    throw new OntologyAlreadyExistsException(ontology.getUuid());
-			} else {
-			    JCRUtils tools = new JCRUtils();
-				Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
-				Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology"); //$NON-NLS-1$
-				o2jcr.write(ontology, ontologyNode);
-				session.save();
-				log.debug(Messages.i18n.format("SAVED_ONTOLOGY", ontology.getUuid())); //$NON-NLS-1$
-				return ontology;
-			}
+        try {
+            session = JCRRepositoryFactory.getSession();
+            if (session.nodeExists(ontologyPath)) {
+                throw new OntologyAlreadyExistsException(ontology.getUuid());
+            } else {
+                JCRUtils tools = new JCRUtils();
+                Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
+                Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology"); //$NON-NLS-1$
+                o2jcr.write(ontology, ontologyNode);
+                session.save();
+                log.debug(Messages.i18n.format("SAVED_ONTOLOGY", ontology.getUuid())); //$NON-NLS-1$
+                return ontology;
+            }
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {
             throw new SrampServerException(t);
-		} finally {
-			JCRRepositoryFactory.logoutQuietly(session);
-		}
-	}
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
 
-	/**
-	 * @see org.overlord.sramp.common.repository.PersistenceManager#getOntology(java.lang.String)
-	 */
-	@Override
-	public SrampOntology getOntology(String uuid) throws SrampException {
-		Session session = null;
+    /**
+     * @see org.overlord.sramp.common.repository.PersistenceManager#getOntology(java.lang.String)
+     */
+    @Override
+    public SrampOntology getOntology(String uuid) throws SrampException {
+        Session session = null;
         String ontologyPath = MapToJCRPath.getOntologyPath(uuid);
 
-		try {
-			SrampOntology ontology = null;
-			session = JCRRepositoryFactory.getSession();
-			if (session.nodeExists(ontologyPath)) {
-				Node ontologyNode = session.getNode(ontologyPath);
-				ontology = new SrampOntology();
-				ontology.setUuid(uuid);
-				jcr2o.read(ontology, ontologyNode);
-			} else {
-			    throw new OntologyNotFoundException(uuid);
-			}
-			return ontology;
+        try {
+            SrampOntology ontology = null;
+            session = JCRRepositoryFactory.getSession();
+            if (session.nodeExists(ontologyPath)) {
+                Node ontologyNode = session.getNode(ontologyPath);
+                ontology = new SrampOntology();
+                ontology.setUuid(uuid);
+                jcr2o.read(ontology, ontologyNode);
+            } else {
+                throw new OntologyNotFoundException(uuid);
+            }
+            return ontology;
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {
             throw new SrampServerException(t);
-		} finally {
-			JCRRepositoryFactory.logoutQuietly(session);
-		}
-	}
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
 
-	/**
-	 * @see org.overlord.sramp.common.repository.PersistenceManager#getOntologies()
-	 */
-	@Override
-	public List<SrampOntology> getOntologies() throws SrampException {
-		// TODO add caching based on the last modified date of the ontology node
-		Session session = null;
+    /**
+     * @see org.overlord.sramp.common.repository.PersistenceManager#getOntologies()
+     */
+    @Override
+    public List<SrampOntology> getOntologies() throws SrampException {
+        // TODO add caching based on the last modified date of the ontology node
+        Session session = null;
 
-		try {
-			session = JCRRepositoryFactory.getSession();
-			JCRUtils tools = new JCRUtils();
-			Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
-			NodeIterator nodes = ontologiesNode.getNodes();
-			List<SrampOntology> ontologies = new ArrayList<SrampOntology>();
-			while (nodes.hasNext()) {
-				Node node = nodes.nextNode();
-				SrampOntology ontology = new SrampOntology();
-				jcr2o.read(ontology, node);
-				ontologies.add(ontology);
-			}
-			return ontologies;
+        try {
+            session = JCRRepositoryFactory.getSession();
+            JCRUtils tools = new JCRUtils();
+            Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
+            NodeIterator nodes = ontologiesNode.getNodes();
+            List<SrampOntology> ontologies = new ArrayList<SrampOntology>();
+            while (nodes.hasNext()) {
+                Node node = nodes.nextNode();
+                SrampOntology ontology = new SrampOntology();
+                jcr2o.read(ontology, node);
+                ontologies.add(ontology);
+            }
+            return ontologies;
         } catch (Throwable t) {
             throw new SrampServerException(t);
-		} finally {
-			JCRRepositoryFactory.logoutQuietly(session);
-		}
-	}
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
 
-	/**
-	 * @see org.overlord.sramp.common.repository.PersistenceManager#updateOntology(org.overlord.sramp.common.ontology.SrampOntology)
-	 */
-	@Override
-	public void updateOntology(SrampOntology ontology) throws SrampException {
-		Session session = null;
+    /**
+     * @see org.overlord.sramp.common.repository.PersistenceManager#updateOntology(org.overlord.sramp.common.ontology.SrampOntology)
+     */
+    @Override
+    public void updateOntology(SrampOntology ontology) throws SrampException {
+        Session session = null;
         String ontologyPath = MapToJCRPath.getOntologyPath(ontology.getUuid());
 
-		try {
-			session = JCRRepositoryFactory.getSession();
-			if (session.nodeExists(ontologyPath)) {
-				Node ontologyNode = session.getNode(ontologyPath);
-				o2jcr.update(ontology, ontologyNode);
-			} else {
+        try {
+            session = JCRRepositoryFactory.getSession();
+            if (session.nodeExists(ontologyPath)) {
+                Node ontologyNode = session.getNode(ontologyPath);
+                o2jcr.update(ontology, ontologyNode);
+            } else {
                 throw new OntologyNotFoundException(ontology.getUuid());
-			}
-			log.debug(Messages.i18n.format("UPDATED_ONTOLOGY", ontology.getUuid())); //$NON-NLS-1$
-			session.save();
+            }
+            log.debug(Messages.i18n.format("UPDATED_ONTOLOGY", ontology.getUuid())); //$NON-NLS-1$
+            session.save();
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {
             throw new SrampServerException(t);
-		} finally {
-			JCRRepositoryFactory.logoutQuietly(session);
-		}
-	}
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
 
-	/**
-	 * @see org.overlord.sramp.common.repository.PersistenceManager#deleteOntology(java.lang.String)
-	 */
-	@Override
-	public void deleteOntology(String uuid) throws SrampException {
-		Session session = null;
+    /**
+     * @see org.overlord.sramp.common.repository.PersistenceManager#deleteOntology(java.lang.String)
+     */
+    @Override
+    public void deleteOntology(String uuid) throws SrampException {
+        Session session = null;
         String ontologyPath = MapToJCRPath.getOntologyPath(uuid);
 
-		try {
-			session = JCRRepositoryFactory.getSession();
-			if (session.nodeExists(ontologyPath)) {
-				Node ontologyNode = session.getNode(ontologyPath);
-				ontologyNode.remove();
-			} else {
+        try {
+            session = JCRRepositoryFactory.getSession();
+            if (session.nodeExists(ontologyPath)) {
+                Node ontologyNode = session.getNode(ontologyPath);
+                ontologyNode.remove();
+            } else {
                 throw new OntologyNotFoundException(uuid);
-			}
-			session.save();
-			log.debug(Messages.i18n.format("DELETED_ONTOLOGY", uuid)); //$NON-NLS-1$
+            }
+            session.save();
+            log.debug(Messages.i18n.format("DELETED_ONTOLOGY", uuid)); //$NON-NLS-1$
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {
             throw new SrampServerException(t);
-		} finally {
-			JCRRepositoryFactory.logoutQuietly(session);
-		}
-	}
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
+
+    @Override
+    public StoredQuery persistStoredQuery(StoredQuery storedQuery) throws SrampException {
+        String name = storedQuery.getQueryName();
+        Session session = null;
+        String storedQueryPath = MapToJCRPath.getStoredQueryPath(name);
+
+        // Check if a stored query with the given name already exists.
+        try {
+            getStoredQuery(storedQuery.getQueryName());
+            throw new StoredQueryAlreadyExistsException(name);
+        } catch (StoredQueryNotFoundException e) {
+            // do nothing -- success
+        }
+
+        try {
+            session = JCRRepositoryFactory.getSession();
+            if (session.nodeExists(storedQueryPath)) {
+                throw new StoredQueryAlreadyExistsException(name);
+            } else {
+                JCRUtils tools = new JCRUtils();
+                Node queriesNode = tools.findOrCreateNode(session, "/s-ramp/queries", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
+                Node queryNode = queriesNode.addNode(name, "sramp:query"); //$NON-NLS-1$
+                q2jcr.write(storedQuery, queryNode);
+                session.save();
+                log.debug(Messages.i18n.format("SAVED_STOREDQUERY", name)); //$NON-NLS-1$
+                return storedQuery;
+            }
+        } catch (SrampException se) {
+            throw se;
+        } catch (Throwable t) {
+            throw new SrampServerException(t);
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
+
+    @Override
+    public StoredQuery getStoredQuery(String queryName) throws SrampException {
+        Session session = null;
+        String storedQueryPath = MapToJCRPath.getStoredQueryPath(queryName);
+
+        try {
+            session = JCRRepositoryFactory.getSession();
+            if (session.nodeExists(storedQueryPath)) {
+                Node queryNode = session.getNode(storedQueryPath);
+                StoredQuery storedQuery = new StoredQuery();
+                jcr2q.read(storedQuery, queryNode);
+                return storedQuery;
+            } else {
+                throw new StoredQueryNotFoundException(queryName);
+            }
+        } catch (SrampException se) {
+            throw se;
+        } catch (Throwable t) {
+            throw new SrampServerException(t);
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
+
+    @Override
+    public List<StoredQuery> getStoredQueries() throws SrampException {
+        Session session = null;
+
+        try {
+            session = JCRRepositoryFactory.getSession();
+            JCRUtils tools = new JCRUtils();
+            Node queriesNode = tools.findOrCreateNode(session, "/s-ramp/queries", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
+            NodeIterator nodes = queriesNode.getNodes();
+            List<StoredQuery> storedQueries = new ArrayList<StoredQuery>();
+            while (nodes.hasNext()) {
+                Node queryNode = nodes.nextNode();
+                StoredQuery storedQuery = new StoredQuery();
+                jcr2q.read(storedQuery, queryNode);
+                storedQueries.add(storedQuery);
+            }
+            return storedQueries;
+        } catch (Throwable t) {
+            throw new SrampServerException(t);
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
+
+    @Override
+    public void updateStoredQuery(String queryName, StoredQuery storedQuery) throws SrampException {
+        Session session = null;
+        String storedQueryPath = MapToJCRPath.getStoredQueryPath(queryName);
+
+        try {
+            session = JCRRepositoryFactory.getSession();
+            if (session.nodeExists(storedQueryPath)) {
+                Node queryNode = session.getNode(storedQueryPath);
+                q2jcr.write(storedQuery, queryNode);
+            } else {
+                throw new StoredQueryNotFoundException(queryName);
+            }
+            log.debug(Messages.i18n.format("UPDATED_STOREDQUERY", queryName)); //$NON-NLS-1$
+            session.save();
+        } catch (SrampException se) {
+            throw se;
+        } catch (Throwable t) {
+            throw new SrampServerException(t);
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
+
+    @Override
+    public void deleteStoredQuery(String queryName) throws SrampException {
+        Session session = null;
+        String storedQueryPath = MapToJCRPath.getStoredQueryPath(queryName);
+
+        try {
+            session = JCRRepositoryFactory.getSession();
+            if (session.nodeExists(storedQueryPath)) {
+                Node queryNode = session.getNode(storedQueryPath);
+                queryNode.remove();
+            } else {
+                throw new StoredQueryNotFoundException(queryName);
+            }
+            session.save();
+            log.debug(Messages.i18n.format("DELETED_STOREDQUERY", queryName)); //$NON-NLS-1$
+        } catch (SrampException se) {
+            throw se;
+        } catch (Throwable t) {
+            throw new SrampServerException(t);
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
 
 	/**
 	 * @see org.overlord.sramp.common.repository.jcr.ClassificationHelper#resolve(java.lang.String)

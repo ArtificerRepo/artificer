@@ -127,6 +127,10 @@ public abstract class AbstractShellCommand implements ShellCommand {
 	public void setOutput(Writer output) {
 		this.writer = output;
 	}
+	
+	protected Writer getOutput() {
+	    return writer;
+	}
 
 	/**
 	 * @see ShellCommand#tabCompletion(String, List)

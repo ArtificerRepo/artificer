@@ -71,6 +71,12 @@ import org.overlord.sramp.shell.commands.ontology.GetOntologyCommand;
 import org.overlord.sramp.shell.commands.ontology.ListOntologiesCommand;
 import org.overlord.sramp.shell.commands.ontology.UpdateOntologyCommand;
 import org.overlord.sramp.shell.commands.ontology.UploadOntologyCommand;
+import org.overlord.sramp.shell.commands.storedquery.CreateStoredQueryCommand;
+import org.overlord.sramp.shell.commands.storedquery.DeleteStoredQueryCommand;
+import org.overlord.sramp.shell.commands.storedquery.ExecuteStoredQueryCommand;
+import org.overlord.sramp.shell.commands.storedquery.GetStoredQueryCommand;
+import org.overlord.sramp.shell.commands.storedquery.ListStoredQueriesCommand;
+import org.overlord.sramp.shell.commands.storedquery.UpdateStoredQueryCommand;
 
 /**
  * Factory used to create shell commands.
@@ -116,6 +122,12 @@ public class ShellCommandFactory {
         registry.put(new QName("s-ramp", "delete"), DeleteCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
         registry.put(new QName("s-ramp", "create"), CreateArtifactCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
         registry.put(new QName("s-ramp", "exit"), ExitCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("s-ramp", "createStoredQuery"), CreateStoredQueryCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("s-ramp", "deleteStoredQuery"), DeleteStoredQueryCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("s-ramp", "getStoredQuery"), GetStoredQueryCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("s-ramp", "listStoredQueries"), ListStoredQueriesCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("s-ramp", "updateStoredQuery"), UpdateStoredQueryCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+        registry.put(new QName("s-ramp", "executeStoredQuery"), ExecuteStoredQueryCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Archive commands
 		registry.put(new QName("archive", "new"), NewArchiveCommand.class); //$NON-NLS-1$ //$NON-NLS-2$

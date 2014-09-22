@@ -68,6 +68,18 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	 */
 	protected Feed createArtifactFeed(String query, Integer startIndex, Integer count, String orderBy,
 			Boolean ascending, Set<String> propNames, String baseUrl) throws SrampAtomException {
+	    if (query == null)
+            throw new SrampAtomException(Messages.i18n.format("MISSING_QUERY_PARAM")); //$NON-NLS-1$
+
+        // Add on the "/s-ramp/" if it's missing
+        String xpath = query;
+        if (!xpath.startsWith("/s-ramp")) { //$NON-NLS-1$
+            if (query.startsWith("/")) //$NON-NLS-1$
+                xpath = "/s-ramp" + query; //$NON-NLS-1$
+            else
+                xpath = "/s-ramp/" + query; //$NON-NLS-1$
+        }
+        
 		if (startIndex == null)
 			startIndex = 0;
 		if (count == null)
@@ -80,12 +92,12 @@ public abstract class AbstractFeedResource extends AbstractResource {
 		ArtifactSet artifactSet = null;
 		try {
 			QueryManager queryManager = QueryManagerFactory.newInstance();
-			SrampQuery srampQuery = queryManager.createQuery(query, orderBy, ascending);
+			SrampQuery srampQuery = queryManager.createQuery(xpath, orderBy, ascending);
 			artifactSet = srampQuery.executeQuery();
 			int startIdx = startIndex;
 			int endIdx = startIdx + count - 1;
 			Feed feed = createFeed(artifactSet, startIdx, endIdx, propNames, baseUrl);
-			addPaginationLinks(feed, artifactSet, query, startIndex, count, orderBy, ascending, baseUrl);
+			addPaginationLinks(feed, artifactSet, xpath, startIndex, count, orderBy, ascending, baseUrl);
 			return feed;
 		} catch (Throwable e) {
 			logError(logger, Messages.i18n.format("Error trying to create an Artifact Feed."), e); //$NON-NLS-1$

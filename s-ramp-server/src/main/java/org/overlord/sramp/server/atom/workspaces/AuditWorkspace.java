@@ -51,7 +51,7 @@ public class AuditWorkspace extends AbstractWorkspace {
 		collection.getCategories().add(categories);
 
 		Category category = new Category();
-		category.setScheme(SrampAtomConstants.URN_X_S_RAMP_TYPE);
+		category.setScheme(SrampAtomConstants.URN_X_S_RAMP_V1_TYPE);
 		category.setTerm("audit"); //$NON-NLS-1$
 		category.setLabel("Audit"); //$NON-NLS-1$
 		categories.getCategory().add(category);

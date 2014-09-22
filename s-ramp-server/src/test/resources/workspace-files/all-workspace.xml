@@ -264,4 +264,14 @@
             </app:categories>
         </app:collection>
     </app:workspace>
+    <app:workspace>
+        <atom:title>Stored Query Model</atom:title>
+        <app:collection href="http://example.org/s-ramp/query">
+            <atom:title>Stored Queries</atom:title>
+            <app:accept></app:accept>
+            <app:categories fixed="yes">
+                <atom:category label="Stored Query Entries" scheme="urn:x-s-ramp:2013:type" term="queries" />
+            </app:categories>
+        </app:collection>
+    </app:workspace>
 </app:service>
