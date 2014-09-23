@@ -70,7 +70,7 @@
           </overlays>
           <archive>
             <!-- add the generated manifest to the war -->
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+            <manifestFile>${project.build.directory}/osgi/MANIFEST.MF</manifestFile>
           </archive>
         </configuration>
       </plugin>
@@ -92,10 +92,7 @@
             <supportedProjectType>bundle</supportedProjectType>
             <supportedProjectType>war</supportedProjectType>
           </supportedProjectTypes>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
-          <warName>${project.artifactId}</warName>
-          <attachClasses>true</attachClasses>
-          <classesClassifier>classes</classesClassifier>
+          <manifestLocation>${project.build.directory}/osgi</manifestLocation>
           <instructions>
             <Web-ContextPath>/s-ramp-ui</Web-ContextPath>
             <Webapp-Context>/s-ramp-ui</Webapp-Context>
