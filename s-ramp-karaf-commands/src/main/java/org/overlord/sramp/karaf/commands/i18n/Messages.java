@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
  * @author David Virgil Naranjo
  */
 public class Messages {
-    private static final String BUNDLE_NAME = "org.overlord.commons.karaf.commands.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.overlord.sramp.karaf.commands.messages"; //$NON-NLS-1$
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
@@ -24,7 +24,7 @@ public class Messages {
             return '!' + key + '!';
         }
     }
-    
+
     /**
      * Look up a message in the i18n resource message bundle by key, then format the
      * message with the given params and return the result.
