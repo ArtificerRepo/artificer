@@ -47,11 +47,6 @@
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-idp-fuse61</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-codec</artifactId>
     </dependency>    
     <!-- S-RAMP Installer -->

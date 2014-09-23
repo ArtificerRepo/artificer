@@ -31,8 +31,7 @@
     <echo message=" Choose from one of the following options." />
     <echo message="    1. Install into JBoss EAP 6" />
     <echo message="    2. Install into Apache Tomcat 7" />
-    <echo message="    3. Install into JBoss Fuse 6.1" />
-    <echo message="    4. Install into Jetty 8" />
+    <echo message="    3. Install into Jetty 8" />
     <echo message=" " />
     <input message="Choice: " addproperty="s-ramp-distro.choices.platform" />
 
@@ -42,16 +41,12 @@
     <condition property="s-ramp-distro.choices.platform.tomcat-7">
       <equals arg1="${s-ramp-distro.choices.platform}" arg2="2" />
     </condition>
-    <condition property="s-ramp-distro.choices.platform.fuse-6.1">
-      <equals arg1="${s-ramp-distro.choices.platform}" arg2="3" />
-    </condition>
     <condition property="s-ramp-distro.choices.platform.jetty-8">
-      <equals arg1="${s-ramp-distro.choices.platform}" arg2="4" />
+      <equals arg1="${s-ramp-distro.choices.platform}" arg2="3" />
     </condition>
 
     <antcall target="install-jboss-eap-6-wrapper" />
     <antcall target="install-tomcat-7-wrapper" />
-    <antcall target="install-fuse-6.1-wrapper" />
     <antcall target="install-jetty-8-wrapper" />
   </target>
 
@@ -192,54 +187,6 @@
     </ant>
   </target>
   
-
-  <!-- Install into Fuse 6.1 -->
-  <target name="install-fuse-6.1-wrapper" if="s-ramp-distro.choices.platform.fuse-6.1">
-    <echo message=" " />
-    <echo message="#######################################################" />
-    <echo message="# Installing S-RAMP into Fuse 6.1                     #" />
-    <echo message="#######################################################" />
-    <echo message=" " />
-    <echo message=" Please tell us where JBoss Fuse 6.1 is located (full path)." />
-    <echo message=" " />
-    <input message="Path to Fuse 6.1: " addproperty="s-ramp-distro.choices.platform.fuse-6.1.path" />
-
-    <antcall target="install-fuse-6.1" />
-
-    <echo message=" ******************************************" />
-    <echo message=" * Installation Completed Successfully    *" />
-    <echo message=" ******************************************" />
-    <echo message=" *                                        *" />
-    <echo message=" * Next you must start up Fuse 6.1        *" />
-    <echo message=" * and execute the following command:     *" />
-    <echo message="                                           " />
-    <echo message="   > features:addurl mvn:org.overlord.sramp/s-ramp-distro-fuse61/${project.version}/xml/features"/>
-    <echo message="   > features:install -v s-ramp            " />
-    <echo message="                                           " />
-    <echo message=" ******************************************" />
-  </target>
-
-  <target name="install-fuse-6.1" depends="extract-installer">
-    <condition property="s-ramp-distro.choices.platform.fuse-6.1.path.valid">
-      <available file="fuse-bai.xml" filepath="${s-ramp-distro.choices.platform.fuse-6.1.path}/etc" />
-    </condition>
-    <fail message="Failed to find JBoss Fuse 6.1 at: ${s-ramp-distro.choices.platform.fuse-6.1.path}" 
-              unless="s-ramp-distro.choices.platform.fuse-6.1.path.valid" />
-    <echo message="Installing into: ${s-ramp-distro.choices.platform.fuse-6.1.path} " />
-	
-    <!-- Call the S-RAMP installer -->
-    <ant antfile="${s-ramp-distro.s-ramp-installer.dir}/build.xml" inheritall="true" target="install" 
-         dir="${s-ramp-distro.s-ramp-installer.dir}">
-      <property name="server.host" value="http://localhost:8181"/>
-      <property name="appserver.id" value="fuse-6.1" />
-      <property name="s-ramp.install.dir" location="${s-ramp-distro.tempdir}" />
-      <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.fuse-6.1.path}" />
-      <property name="s-ramp.overlord-commons.installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${version.org.overlord.overlord-commons}.jar" />
-      <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
-      <property name="overlord-commons.codec.jar" location="${s-ramp-distro.overlord-commons-codec.jar}" />       	
-      <property name="commons-codec.jar" location="${s-ramp-distro.libdir}/commons-codec.jar" />    	
-    </ant>
-  </target>
 
   <!-- Install into Jetty 8 -->
   <target name="install-jetty-8-wrapper" if="s-ramp-distro.choices.platform.jetty-8">
