@@ -5,4 +5,9 @@
             <action class="org.overlord.sramp.karaf.commands.ConfigureCommand"/>
         </command>    
     </command-bundle>
+    <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.0.0">
+        <command name="overlord:s-ramp:configureFabric">
+            <action class="org.overlord.sramp.karaf.commands.ConfigureFabricCommand"/>
+        </command>    
+    </command-bundle>    
 </blueprint>
