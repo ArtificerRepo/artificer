@@ -48,7 +48,7 @@ public class UpdateStoredQueryCommand extends BuiltInShellCommand {
         storedQuery.setQueryName(name);
         storedQuery.setQueryExpression(query);
         if (StringUtils.isNotBlank(propertyNames)) {
-            String[] split = propertyNames.split(",");
+            String[] split = propertyNames.split(","); //$NON-NLS-1$
             for (String s : split) {
                 storedQuery.getPropertyName().add(s);
             }

@@ -43,7 +43,7 @@ public class StoredQueryWorkspace extends AbstractWorkspace {
 	@Override
 	protected void configureWorkspace() {
 	    // TODO: What is the last arg?
-        AppCollection collection = addCollection("/s-ramp/query", "Stored Queries", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        AppCollection collection = addCollection("/s-ramp/query", "Stored Queries", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		AppCategories categories = new AppCategories();
         categories.setFixed(true);

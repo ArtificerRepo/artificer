@@ -36,7 +36,7 @@ public class ConfigureCommand extends AbstractConfigureCommand {
     protected Object doExecute() throws Exception {
         super.doExecute();
 
-        copyFile("sramp-modeshape-fuse.json", "sramp-modeshape.json"); //$NON-NLS-1$
+        copyFile("sramp-modeshape-fuse.json", "sramp-modeshape.json"); //$NON-NLS-1$ //$NON-NLS-2$
         copyFile("sramp-ui.properties"); //$NON-NLS-1$
 
         String randomSrampJmsPassword = UUID.randomUUID().toString();
@@ -60,7 +60,7 @@ public class ConfigureCommand extends AbstractConfigureCommand {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        copyFile("srampui-overlordapp.properties", "overlord-apps/srampui-overlordapp.properties"); //$NON-NLS-1$
+        copyFile("srampui-overlordapp.properties", "overlord-apps/srampui-overlordapp.properties"); //$NON-NLS-1$ //$NON-NLS-2$
 
         return null;
     }

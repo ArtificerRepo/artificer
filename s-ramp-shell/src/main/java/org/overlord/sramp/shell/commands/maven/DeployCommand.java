@@ -517,7 +517,7 @@ public class DeployCommand extends BuiltInShellCommand {
         StringBuilder builder = new StringBuilder();
         // It is added at the end the maven counter. By default it is set to
         // "1". The maven format for the timestamp is yyyyMMdd.hhmmss-counter
-        builder.append(timestamp).append("-1");
+        builder.append(timestamp).append("-1"); //$NON-NLS-1$
         return builder.toString();
     }
 

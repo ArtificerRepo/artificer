@@ -178,7 +178,7 @@ public class StoredQueryResource extends AbstractFeedResource {
 //        entry.setPublished();
 //        entry.setUpdated();
         
-        String atomLink = baseUrl + "/s-ramp/query/" + storedQuery.getQueryName();
+        String atomLink = baseUrl + "/s-ramp/query/" + storedQuery.getQueryName(); //$NON-NLS-1$
         
         // self link
         Link linkToSelf = new Link();
@@ -199,7 +199,7 @@ public class StoredQueryResource extends AbstractFeedResource {
         Link linkToResults = new Link();
         linkToResults.setType(MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
         linkToResults.setRel("urn:x-s-ramp:2013:query:results"); //$NON-NLS-1$
-        linkToResults.setHref(new URI(atomLink + "/results"));
+        linkToResults.setHref(new URI(atomLink + "/results")); //$NON-NLS-1$
         entry.getLinks().add(linkToResults);
         
         return entry;

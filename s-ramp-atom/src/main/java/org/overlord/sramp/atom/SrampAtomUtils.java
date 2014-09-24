@@ -157,8 +157,8 @@ public final class SrampAtomUtils {
     
     public static Entry wrapStoredQuery(StoredQuery storedQuery) throws Exception {
         Entry entry = new Entry();
-        entry.setId(new URI("urn:uuid:" + storedQuery.getQueryName()));
-        entry.setTitle("Stored Query: " + storedQuery.getQueryName());
+        entry.setId(new URI("urn:uuid:" + storedQuery.getQueryName())); //$NON-NLS-1$
+        entry.setTitle("Stored Query: " + storedQuery.getQueryName()); //$NON-NLS-1$
         
         // TODO: This is really stupid.  Going to push back on this w/ the TC.  The Atom binding spec should simply
         // reuse the core model's StoredQuery.
@@ -169,13 +169,13 @@ public final class SrampAtomUtils {
         entry.setAnyOtherJAXBObject(data);
         
         Content content = new Content();
-        content.setText("Stored Query Entry");
+        content.setText("Stored Query Entry"); //$NON-NLS-1$
         entry.setContent(content);
         
         Category category = new Category();
-        category.setTerm("query");
-        category.setLabel("Stored Query Entry");
-        category.setScheme(SrampAtomConstants.URN_X_S_RAMP_2013_TYPE); //$NON-NLS-1$
+        category.setTerm("query"); //$NON-NLS-1$
+        category.setLabel("Stored Query Entry"); //$NON-NLS-1$
+        category.setScheme(SrampAtomConstants.URN_X_S_RAMP_2013_TYPE);
         entry.getCategories().add(category);
         
         return entry;

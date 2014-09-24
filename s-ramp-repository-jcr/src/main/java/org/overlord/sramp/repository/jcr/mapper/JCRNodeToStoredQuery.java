@@ -29,7 +29,7 @@ public class JCRNodeToStoredQuery {
     public void read(StoredQuery storedQuery, Node jcrNode) throws RepositoryException {
         storedQuery.setQueryName(JCRMapperUtil.getPropertyString(jcrNode, "sramp:queryName")); //$NON-NLS-1$
         storedQuery.setQueryExpression(JCRMapperUtil.getPropertyString(jcrNode, "sramp:queryExpression")); //$NON-NLS-1$
-        Value[] propertyNames = JCRMapperUtil.getPropertyArray(jcrNode, "sramp:propertyName");
+        Value[] propertyNames = JCRMapperUtil.getPropertyArray(jcrNode, "sramp:propertyName"); //$NON-NLS-1$
         if (propertyNames != null) {
             for (Value propertyName : propertyNames) {
                 storedQuery.getPropertyName().add(propertyName.getString());

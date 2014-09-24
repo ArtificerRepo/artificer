@@ -28,7 +28,7 @@ public final class StoredQueryToJCRNode {
     public void write(StoredQuery storedQuery, Node jcrNode) throws RepositoryException {
         jcrNode.setProperty("sramp:queryName", storedQuery.getQueryName()); //$NON-NLS-1$
         jcrNode.setProperty("sramp:queryExpression", storedQuery.getQueryExpression()); //$NON-NLS-1$
-        jcrNode.setProperty("sramp:propertyName",
+        jcrNode.setProperty("sramp:propertyName", //$NON-NLS-1$
                 storedQuery.getPropertyName().toArray(new String[storedQuery.getPropertyName().size()]));
     }
 }
