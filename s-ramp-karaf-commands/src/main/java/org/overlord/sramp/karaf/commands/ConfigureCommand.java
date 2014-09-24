@@ -44,7 +44,7 @@ public class ConfigureCommand extends AbstractConfigureCommand {
         super.doExecute();
 
         logger.debug(Messages.getString("configure.command.copying.files")); //$NON-NLS-1$
-        copyFile("sramp-modeshape.json"); //$NON-NLS-1$
+		copyFile("sramp-modeshape-fuse.json", "sramp-modeshape.json"); //$NON-NLS-1$
         copyFile("sramp-ui.properties"); //$NON-NLS-1$
 
         logger.debug(Messages.getString("configure.command.copying.files.end")); //$NON-NLS-1$
@@ -85,7 +85,7 @@ public class ConfigureCommand extends AbstractConfigureCommand {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        copyFile("overlord-apps/srampui-overlordapp.properties"); //$NON-NLS-1$
+        copyFile("srampui-overlordapp.properties", "overlord-apps/srampui-overlordapp.properties"); //$NON-NLS-1$
         logger.info(Messages.getString("configure.command.end.execution")); //$NON-NLS-1$
         return null;
     }
