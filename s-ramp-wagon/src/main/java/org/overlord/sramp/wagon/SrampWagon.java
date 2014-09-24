@@ -72,7 +72,7 @@ import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.wagon.i18n.Messages;
@@ -99,8 +99,7 @@ public class SrampWagon extends StreamWagon {
 	 * Constructor.
 	 */
 	public SrampWagon() {
-        Sramp properties = new Sramp();
-        allowSnapshot = properties.isSnapshotAllowed();
+        allowSnapshot = SrampConfig.isSnapshotAllowed();
 	}
 
 	/**

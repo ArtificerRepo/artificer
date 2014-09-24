@@ -39,7 +39,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.server.i18n.Messages;
@@ -56,8 +56,6 @@ public class StoredQueryResource extends AbstractFeedResource {
 
 	private static Logger logger = LoggerFactory.getLogger(StoredQueryResource.class);
 
-	private static final Sramp SRAMP = new Sramp();
-
 	public StoredQueryResource() {
 	}
 
@@ -66,7 +64,7 @@ public class StoredQueryResource extends AbstractFeedResource {
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
     public Entry create(@Context HttpServletRequest request, Entry atomEntry) throws SrampAtomException {
         try {
-            String baseUrl = SRAMP.getBaseUrl(request.getRequestURL().toString());
+            String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
             StoredQuery storedQuery = SrampAtomUtils.unwrapStoredQuery(atomEntry);
             // TODO: validate?  mainly just whether or not it has a name/query
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
@@ -100,7 +98,7 @@ public class StoredQueryResource extends AbstractFeedResource {
 	public Entry get(@Context HttpServletRequest request, @PathParam("queryName") String queryName)
 	        throws SrampAtomException {
 		try {
-		    String baseUrl = SRAMP.getBaseUrl(request.getRequestURL().toString());
+		    String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             StoredQuery storedQuery = persistenceManager.getStoredQuery(queryName);
 
@@ -115,7 +113,7 @@ public class StoredQueryResource extends AbstractFeedResource {
     @Produces(MediaType.APPLICATION_ATOM_XML_FEED)
     public Feed list(@Context HttpServletRequest request) throws SrampAtomException {
         try {
-            String baseUrl = SRAMP.getBaseUrl(request.getRequestURL().toString());
+            String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             List<StoredQuery> storedQueries = persistenceManager.getStoredQueries();
 
@@ -146,7 +144,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             @QueryParam("ascending") Boolean asc)
             throws SrampAtomException {
         try {
-            String baseUrl = SRAMP.getBaseUrl(request.getRequestURL().toString());
+            String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             StoredQuery storedQuery = persistenceManager.getStoredQuery(queryName);
             

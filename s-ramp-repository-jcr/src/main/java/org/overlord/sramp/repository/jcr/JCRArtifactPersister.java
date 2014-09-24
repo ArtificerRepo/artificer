@@ -42,7 +42,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.overlord.sramp.common.ArtifactAlreadyExistsException;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.SrampServerException;
@@ -67,7 +67,6 @@ import org.slf4j.LoggerFactory;
 public final class JCRArtifactPersister {
 
     private static Logger log = LoggerFactory.getLogger(JCRArtifactPersister.class);
-    private static Sramp sramp = new Sramp();
 
     /**
      * Phase one of persisting an artifact consists of creating the JCR node for the artifact and
@@ -140,7 +139,7 @@ public final class JCRArtifactPersister {
             throw visitor.getError();
 
         log.debug(Messages.i18n.format("SAVED_JCR_NODE", name, uuid)); //$NON-NLS-1$
-        if (sramp.isAuditingEnabled()) {
+        if (SrampConfig.isAuditingEnabled()) {
             auditCreateArtifact(artifactNode);
             session.save();
         }
@@ -291,7 +290,7 @@ public final class JCRArtifactPersister {
                     throw visitor.getError();
 
                 // Audit the create event for the derived node
-                if (sramp.isAuditingEnabled() && sramp.isDerivedArtifactAuditingEnabled()) {
+                if (SrampConfig.isAuditingEnabled() && SrampConfig.isDerivedArtifactAuditingEnabled()) {
                     auditCreateArtifact(derivedArtifactNode);
                 }
 

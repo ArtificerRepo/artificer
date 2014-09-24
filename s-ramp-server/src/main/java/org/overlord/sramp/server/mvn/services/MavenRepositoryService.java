@@ -40,7 +40,7 @@ import org.apache.http.HttpStatus;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
@@ -76,8 +76,7 @@ public class MavenRepositoryService extends HttpServlet {
     private static Logger logger = LoggerFactory.getLogger(MavenRepositoryService.class);
 
     static {
-        Sramp sramp = new Sramp();
-        SNAPSHOT_ALLOWED = sramp.isSnapshotAllowed();
+        SNAPSHOT_ALLOWED = SrampConfig.isSnapshotAllowed();
     }
 
     @Override

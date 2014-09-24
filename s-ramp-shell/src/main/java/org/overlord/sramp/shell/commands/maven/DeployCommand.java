@@ -47,7 +47,7 @@ import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.integration.java.model.JavaModel;
@@ -87,8 +87,7 @@ public class DeployCommand extends BuiltInShellCommand {
      * Constructor.
      */
     public DeployCommand() {
-        Sramp properties = new Sramp();
-        allowSnapshot = properties.isSnapshotAllowed();
+        allowSnapshot = SrampConfig.isSnapshotAllowed();
     }
 
     /**

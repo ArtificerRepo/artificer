@@ -42,7 +42,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.InvalidArtifactUpdateException;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampServerException;
 import org.overlord.sramp.common.derived.ArtifactDeriver;
@@ -87,7 +87,6 @@ import org.slf4j.LoggerFactory;
 public class JCRPersistence extends AbstractJCRManager implements PersistenceManager, DerivedArtifacts, ClassificationHelper {
 
 	private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
-	private static Sramp sramp = new Sramp();
 
 	private static OntologyToJCRNode o2jcr = new OntologyToJCRNode();
 	private static JCRNodeToOntology jcr2o = new JCRNodeToOntology();
@@ -323,7 +322,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			if (artifactNode == null) {
 				throw new ArtifactNotFoundException(artifact.getUuid());
 			}
-			if (sramp.isAuditingEnabled()) {
+			if (SrampConfig.isAuditingEnabled()) {
 			    differ = new ArtifactJCRNodeDiffer(artifactNode);
 			}
 			ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(type, artifactNode,
@@ -339,7 +338,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 				printArtifactGraph(artifact.getUuid(), type);
 			}
 
-			if (sramp.isAuditingEnabled()) {
+			if (SrampConfig.isAuditingEnabled()) {
 			    JCRArtifactPersister.auditUpdateArtifact(differ, artifactNode);
 			    session.save();
 			}

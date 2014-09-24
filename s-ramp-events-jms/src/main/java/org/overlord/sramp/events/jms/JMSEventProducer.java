@@ -37,7 +37,7 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.events.ArtifactUpdateEvent;
 import org.overlord.sramp.events.EventProducer;
@@ -82,8 +82,6 @@ public class JMSEventProducer implements EventProducer {
     public static final String JMS_TYPE_ONTOLOGY_UPDATED = "sramp:ontologyUpdated"; //$NON-NLS-1$
     public static final String JMS_TYPE_ONTOLOGY_DELETED = "sramp:ontologyDeleted"; //$NON-NLS-1$
 
-    private static final Sramp sramp = new Sramp();
-
     private static final String CONNECTIONFACTORY_JNDI = "ConnectionFactory"; //$NON-NLS-1$
 
     private static Logger LOG = LoggerFactory.getLogger(JMSEventProducer.class);
@@ -101,13 +99,13 @@ public class JMSEventProducer implements EventProducer {
             // Note that both properties end up doing the same thing.  Technically, we could combine both into one
             // single sramp.config.events.jms.destinations, but leaving them split for readability.
 
-            String topicNamesProp = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_TOPICS, ""); //$NON-NLS-1$
+            String topicNamesProp = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_TOPICS, ""); //$NON-NLS-1$
             String[] topicNames = new String[0];
             if (StringUtils.isNotEmpty(topicNamesProp)) {
                 topicNames = topicNamesProp.split(","); //$NON-NLS-1$
             }
 
-            String queueNamesProp = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_QUEUES, ""); //$NON-NLS-1$
+            String queueNamesProp = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_QUEUES, ""); //$NON-NLS-1$
             String[] queueNames = new String[0];
             if (StringUtils.isNotEmpty(queueNamesProp)) {
                 queueNames = queueNamesProp.split(","); //$NON-NLS-1$
@@ -134,11 +132,11 @@ public class JMSEventProducer implements EventProducer {
                 try {
                     // Second, are we within Fuse?  If so, use the existing ActiveMQ broker.
                     
-                    String brokerURL = sramp.getConfigProperty(
+                    String brokerURL = SrampConfig.getConfigProperty(
                             SrampConstants.SRAMP_CONFIG_EVENT_JMS_URL, "tcp://localhost:61616"); //$NON-NLS-1$
                     
-                    String username = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_USER, ""); //$NON-NLS-1$
-                    String password = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PASSWORD, ""); //$NON-NLS-1$
+                    String username = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_USER, ""); //$NON-NLS-1$
+                    String password = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PASSWORD, ""); //$NON-NLS-1$
                     ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, password, brokerURL);
                     initActiveMQ(connectionFactory, topicNames, queueNames);
                 } catch (Exception e1) {
@@ -146,7 +144,7 @@ public class JMSEventProducer implements EventProducer {
                     // ActiveMQ broker and create the destinations.
                     
                     String bindAddress = "tcp://localhost:" //$NON-NLS-1$
-                            + sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, "61616"); //$NON-NLS-1$
+                            + SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, "61616"); //$NON-NLS-1$
                     
                     LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", bindAddress)); //$NON-NLS-1$
 

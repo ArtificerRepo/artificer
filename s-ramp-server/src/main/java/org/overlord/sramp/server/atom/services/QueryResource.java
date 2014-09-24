@@ -34,7 +34,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.util.GenericType;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.server.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +47,6 @@ import org.slf4j.LoggerFactory;
 public class QueryResource extends AbstractFeedResource {
 
 	private static Logger logger = LoggerFactory.getLogger(QueryResource.class);
-
-	private final Sramp sramp = new Sramp();
 
 	/**
 	 * Constructor.
@@ -79,7 +77,7 @@ public class QueryResource extends AbstractFeedResource {
 			@QueryParam("ascending") Boolean asc,
 			@QueryParam("propertyName") Set<String> propNames) throws SrampAtomException {
 		try {
-			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+			String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
 			if (startIndex == null && startPage != null) {
 				int c = count != null ? count.intValue() : 100;
 				startIndex = (startPage.intValue() - 1) * c;
@@ -102,7 +100,7 @@ public class QueryResource extends AbstractFeedResource {
 	public Feed queryFromPost(@Context HttpServletRequest request, MultipartFormDataInput input) throws SrampAtomException {
 		String query = null;
 		try {
-			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+			String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
 			query = input.getFormDataPart("query", new GenericType<String>() { }); //$NON-NLS-1$
 			Integer startPage = input.getFormDataPart("startPage", new GenericType<Integer>() { }); //$NON-NLS-1$
 			Integer startIndex = input.getFormDataPart("startIndex", new GenericType<Integer>() { }); //$NON-NLS-1$

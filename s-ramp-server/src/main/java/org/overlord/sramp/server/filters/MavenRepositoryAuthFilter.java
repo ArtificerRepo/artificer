@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.overlord.commons.auth.filters.SimplePrincipal;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.server.i18n.Messages;
 
 /**
@@ -44,8 +44,6 @@ import org.overlord.sramp.server.i18n.Messages;
  * @author eric.wittmann@redhat.com
  */
 public class MavenRepositoryAuthFilter implements Filter {
-    
-    private static final Sramp sramp = new Sramp();
     
     /**
      * Constructor.
@@ -70,8 +68,8 @@ public class MavenRepositoryAuthFilter implements Filter {
         String authHeader = req.getHeader("Authorization"); //$NON-NLS-1$
         Creds credentials = parseAuthorizationHeader(authHeader);
         if  (credentials == null) {
-            SimplePrincipal principal = new SimplePrincipal(sramp.getMavenReadOnlyUsername());
-            principal.addRole("readonly." + sramp.getJCRRepositoryName()); //$NON-NLS-1$
+            SimplePrincipal principal = new SimplePrincipal(SrampConfig.getMavenReadOnlyUsername());
+            principal.addRole("readonly." + SrampConfig.getJCRRepositoryName()); //$NON-NLS-1$
             doFilterChain(request, response, chain, principal);
         } else {
             if (login(credentials, req, (HttpServletResponse) response)) {

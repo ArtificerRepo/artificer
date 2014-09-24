@@ -27,7 +27,7 @@ import javax.ws.rs.core.Context;
 
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.overlord.sramp.atom.MediaType;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 
 /**
  * A jax-rs implementation that handles all s-ramp feeds. There are a number of feeds described by the s-ramp
@@ -41,8 +41,6 @@ import org.overlord.sramp.common.Sramp;
  */
 @Path("/s-ramp")
 public class FeedResource extends AbstractFeedResource {
-
-	private final Sramp sramp = new Sramp();
 
 	/**
 	 * Constructor.
@@ -68,7 +66,7 @@ public class FeedResource extends AbstractFeedResource {
 			@QueryParam("ascending") Boolean asc,
 			@QueryParam("propertyName") Set<String> propNames) throws Exception {
 		String xpath = String.format("/s-ramp/%1$s", model); //$NON-NLS-1$
-		String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+		String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
 		if (startIndex == null && startPage != null) {
 			int c = count != null ? count.intValue() : 100;
 			startIndex = (startPage.intValue() - 1) * c;
@@ -95,7 +93,7 @@ public class FeedResource extends AbstractFeedResource {
 			@QueryParam("ascending") Boolean asc,
 			@QueryParam("propertyName") Set<String> propNames) throws Exception {
 		String xpath = String.format("/s-ramp/%1$s/%2$s", model, type); //$NON-NLS-1$
-		String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+		String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
 		if (startIndex == null && startPage != null) {
 			int c = count != null ? count.intValue() : 100;
 			startIndex = (startPage.intValue() - 1) * c;

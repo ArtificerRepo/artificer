@@ -53,7 +53,7 @@ import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.InvalidArtifactCreationException;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
@@ -95,8 +95,6 @@ public class ArtifactResource extends AbstractResource {
 		}
 	};
 
-	private final Sramp sramp = new Sramp();
-
 	/**
 	 * Constructor.
 	 */
@@ -111,7 +109,7 @@ public class ArtifactResource extends AbstractResource {
         @PathParam("model") String model, @PathParam("type") String type, Entry entry)
         throws SrampAtomException {
         try {
-            String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+            String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
             ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
             if (artifactType.isDerived()) {
                 throw new DerivedArtifactCreateException(artifactType.getArtifactType());
@@ -157,7 +155,7 @@ public class ArtifactResource extends AbstractResource {
 		@PathParam("model") String model, @PathParam("type") String type, InputStream is)
 		throws SrampAtomException {
 		try {
-			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+			String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
 			ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
 			if (artifactType.isDerived()) {
 				throw new DerivedArtifactCreateException(artifactType.getArtifactType());
@@ -224,7 +222,7 @@ public class ArtifactResource extends AbstractResource {
 	        @PathParam("type") String type, MultipartRelatedInput input) throws SrampAtomException {
 		InputStream contentStream = null;
 		try {
-			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+			String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
 			ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
 			if (artifactType.isDerived()) {
 				throw new DerivedArtifactCreateException(artifactType.getArtifactType());
@@ -374,7 +372,7 @@ public class ArtifactResource extends AbstractResource {
 	public Entry getMetaData(@Context HttpServletRequest request, @PathParam("model") String model,
 	        @PathParam("type") String type, @PathParam("uuid") String uuid) throws SrampAtomException {
 		try {
-			String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+			String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
 			ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 

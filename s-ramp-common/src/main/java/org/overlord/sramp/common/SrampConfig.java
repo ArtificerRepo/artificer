@@ -24,9 +24,10 @@ import org.overlord.commons.config.JBossServer;
 /**
  * The core sramp configuration.
  */
-public class Sramp {
+public class SrampConfig {
 
     private static Configuration configuration = null;
+    
     static {
         String configFile = System.getProperty(SrampConstants.SRAMP_CONFIG_FILE_NAME);
         String refreshDelayStr = System.getProperty(SrampConstants.SRAMP_CONFIG_FILE_REFRESH);
@@ -39,17 +40,11 @@ public class Sramp {
     }
 
     /**
-     * Constructor.
-     */
-    public Sramp() {
-    }
-
-    /**
      * Gets the base URL of the S-RAMP server.  This can be used to override the automatic
      * detection of the base URL when calling the Atom API endpoints.
      * @param requestUrl
      */
-    public String getBaseUrl(String requestUrl) {
+    public static String getBaseUrl(String requestUrl) {
 
     	String baseUrl = null;
     	//Try grabbing it from the call
@@ -70,14 +65,14 @@ public class Sramp {
     /**
      * @return true if auditing is enabled
      */
-    public boolean isAuditingEnabled() {
+    public static boolean isAuditingEnabled() {
         return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_AUDITING, true);
     }
 
     /**
      * @return true if auditing is enabled for derived artifacts
      */
-    public boolean isDerivedArtifactAuditingEnabled() {
+    public static boolean isDerivedArtifactAuditingEnabled() {
         return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_DERIVED_AUDITING, true);
     }
 
@@ -86,38 +81,33 @@ public class Sramp {
      * @param propertyName
      * @param propertyDefault
      */
-    public String getConfigProperty(String propertyName, String propertyDefault) {
+    public static String getConfigProperty(String propertyName, String propertyDefault) {
         return configuration.getString(propertyName, propertyDefault);
     }
 
     /**
      * @return the name of the JCR repository being used
      */
-    public String getJCRRepositoryName() {
+    public static String getJCRRepositoryName() {
         return getConfigProperty(SrampConstants.SRAMP_CONFIG_JCR_REPO_NAME, "sramp"); //$NON-NLS-1$
     }
 
     /**
      * @return the name of the JCR repository being used
      */
-    public String getMavenReadOnlyUsername() {
+    public static String getMavenReadOnlyUsername() {
         return getConfigProperty(SrampConstants.SRAMP_CONFIG_MAVEN_READONLY_USERNAME, "mavenuser"); //$NON-NLS-1$
     }
 
-    private boolean isSnapshot() {
-        String version = getVersion();
-        return StringUtils.isNotBlank(version) && version.contains("SNAPSHOT"); //$NON-NLS-1$
-    }
-
-    private String getVersion() {
+    private static String getVersion() {
         return Version.get().getVersionString();
     }
 
-    public boolean containsKey(String key) {
+    public static boolean containsKey(String key) {
         return configuration.containsKey(key);
     }
 
-    public boolean isSnapshotAllowed() {
+    public static boolean isSnapshotAllowed() {
         // Need to support both system properties (wagon, cli) and sramp.properties (maven facade)
         if ("true".equalsIgnoreCase(System.getProperty(SrampConstants.SRAMP_SNAPSHOT_ALLOWED))) { //$NON-NLS-1$
             return true;
@@ -128,5 +118,10 @@ public class Sramp {
         } else {
             return isSnapshot();
         }
+    }
+
+    private static boolean isSnapshot() {
+        String version = getVersion();
+        return StringUtils.isNotBlank(version) && version.contains("SNAPSHOT"); //$NON-NLS-1$
     }
 }

@@ -44,7 +44,7 @@ import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
 import org.overlord.commons.services.ServiceRegistryUtil;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.repository.jcr.JCRExtensions;
@@ -60,8 +60,6 @@ public class ModeshapeRepository extends JCRRepository {
 
 	private static Logger log = LoggerFactory.getLogger(ModeshapeRepository.class);
 	private static String S_RAMP_JNDI = "jcr/sramp"; //$NON-NLS-1$
-
-    private static Sramp sramp = new Sramp();
 
 	private Repository repository;
 
@@ -95,7 +93,7 @@ public class ModeshapeRepository extends JCRRepository {
 	    }
 	    //Using the Modeshape Service
 	    if (configUrl==null) {
-	        String srampJndiLocation = sramp.getConfigProperty(SrampConstants.SRAMP_CONFIG_JCR_REPO_JNDI, S_RAMP_JNDI);
+	        String srampJndiLocation = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_JCR_REPO_JNDI, S_RAMP_JNDI);
             log.info(Messages.i18n.format("CONNECT_TO_MS", srampJndiLocation)); //$NON-NLS-1$
             try {
                 InitialContext context = new InitialContext();
@@ -145,7 +143,7 @@ public class ModeshapeRepository extends JCRRepository {
 	 * @throws Exception
 	 */
 	private URL getModeshapeConfigurationUrl() throws Exception {
-		String configUrl = sramp.getConfigProperty("sramp.modeshape.config.url", null); //$NON-NLS-1$
+		String configUrl = SrampConfig.getConfigProperty("sramp.modeshape.config.url", null); //$NON-NLS-1$
 		if (configUrl == null) {
 			return null;
 		}

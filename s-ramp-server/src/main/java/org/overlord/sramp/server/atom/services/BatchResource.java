@@ -42,7 +42,7 @@ import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.Sramp;
+import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.PersistenceFactory;
@@ -65,8 +65,6 @@ import org.slf4j.LoggerFactory;
 public class BatchResource extends AbstractResource {
 
 	private static Logger logger = LoggerFactory.getLogger(BatchResource.class);
-
-    private final Sramp sramp = new Sramp();
 
 	/**
 	 * Constructor.
@@ -92,7 +90,7 @@ public class BatchResource extends AbstractResource {
 
         InputStream is = content;
     	SrampArchive archive = null;
-    	String baseUrl = sramp.getBaseUrl(request.getRequestURL().toString());
+    	String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
         try {
             archive = new SrampArchive(content);
 
