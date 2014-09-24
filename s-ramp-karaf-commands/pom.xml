@@ -1,51 +1,102 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.overlord.sramp</groupId>
-    <artifactId>s-ramp</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+ <parent>
+  <groupId>org.overlord.sramp</groupId>
+  <artifactId>s-ramp</artifactId>
+  <version>0.6.0-SNAPSHOT</version>
+  <relativePath>../pom.xml</relativePath>
+ </parent>
 
-  <artifactId>s-ramp-karaf-commands</artifactId>
-  <name>S-RAMP: Karaf commands</name>
-  <packaging>bundle</packaging>
+ <artifactId>s-ramp-karaf-commands</artifactId>
+ <name>S-RAMP: Karaf commands</name>
+ <packaging>bundle</packaging>
 
+ <dependencies>
+  <dependency>
+   <groupId>org.overlord</groupId>
+   <artifactId>overlord-commons-karaf-commands</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.karaf.shell</groupId>
+   <artifactId>org.apache.karaf.shell.console</artifactId>
+   <scope>provided</scope>
+  </dependency>
+  <dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <scope>test</scope>
+  </dependency>
+ </dependencies>
+
+ <dependencyManagement>
   <dependencies>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-karaf-commands</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.karaf.shell</groupId>
-      <artifactId>org.apache.karaf.shell.console</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
+   <dependency>
+    <groupId>org.apache.karaf.shell</groupId>
+    <artifactId>org.apache.karaf.shell.console</artifactId>
+    <version>2.3.5</version>
+   </dependency>
   </dependencies>
-  
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.karaf.shell</groupId>
-        <artifactId>org.apache.karaf.shell.console</artifactId>
-        <version>2.3.5</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+ </dependencyManagement>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
+ <build>
+  <resources>
+   <resource>
+    <directory>src/main/resources</directory>
+    <filtering>true</filtering>
+   </resource>
+   <resource>
+    <directory>../s-ramp-installer/src/main/resources/updates</directory>
+    <includes>
+     <include>sramp-ui.properties</include>
+	 <include>srampui-overlordapp.properties</include>
+	 <include>sramp-modeshape-fuse.json</include>	      
+    </includes>
+    <filtering>true</filtering>
+   </resource>
+  </resources>
+  <plugins>
+
+   <plugin>
+         <groupId>org.overlord</groupId>
+         <artifactId>overlord-commons-maven-plugin</artifactId>
+         <version>${version.org.overlord.overlord-commons}</version>
+    <configuration>
+     <merges>
+      <merge>
+       <destination>${build.outputDirectory}/sramp.properties</destination>
+       <files>
+        <file>../s-ramp-installer/src/main/resources/updates/sramp.properties</file>
+        <file>${build.outputDirectory}/sramp.properties</file>
+       </files>
+      </merge>
+     </merges>
+    </configuration>
+    <executions>
+     <execution>
+      <phase>package</phase>
+      <goals>
+       <goal>merge-files</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.felix</groupId>
+    <artifactId>maven-bundle-plugin</artifactId>
+    <extensions>true</extensions>
+   </plugin>
+   <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <executions>
+            <!-- Disable 'require plugin versions' due to using snapshot -->
+            <execution>
+              <id>enforce-plugin-versions</id>
+              <phase>none</phase>
+            </execution>
+          </executions>
+        </plugin>   
+  </plugins>
+ </build>
 </project>

@@ -61,7 +61,7 @@
 
     <!-- Set the location of the modeshape config file in sramp.properties -->
     <propertyfile file="${s-ramp.tomcat.config.dir}/sramp.properties">
-      <entry key="sramp.modeshape.config.url" value="${sys:catalina.home}/conf/sramp-modeshape.json" />
+      <entry key="sramp.modeshape.config.url" value="${sys:catalina.home}/conf/sramp-modeshape.json" />  	    	
     </propertyfile>
   	
     <echo message=" " />

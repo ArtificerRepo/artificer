@@ -970,7 +970,7 @@
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
       </snapshots>
-    </pluginRepository>
+    </pluginRepository>   
   </pluginRepositories>
 
   <distributionManagement>
