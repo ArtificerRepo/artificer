@@ -84,7 +84,7 @@ public class QueryResource extends AbstractFeedResource {
 				int c = count != null ? count.intValue() : 100;
 				startIndex = (startPage.intValue() - 1) * c;
 			}
-			return query(query, startIndex, count, orderBy, asc, propNames, baseUrl);
+			return createArtifactFeed(query, startIndex, count, orderBy, asc, propNames, baseUrl);
 		} catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_EXECUTING_QUERY", query), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
@@ -121,40 +121,12 @@ public class QueryResource extends AbstractFeedResource {
 				int c = count != null ? count.intValue() : 100;
 				startIndex = (startPage.intValue() - 1) * c;
 			}
-			return query(query, startIndex, count, orderBy, asc, propNames, baseUrl);
+			return createArtifactFeed(query, startIndex, count, orderBy, asc, propNames, baseUrl);
 		} catch (SrampAtomException e) {
 			throw e;
 		} catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_EXECUTING_QUERY", query), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
-	}
-
-	/**
-	 * Common method that performs the query and returns the atom {@link Feed}.
-	 * @param query the x-path formatted s-ramp query
-	 * @param startIndex index of the first item in the result that should be returned
-	 * @param count the number of items to return
-	 * @param orderBy the property to sort the results by
-	 * @param ascending the sort direction
-	 * @param propNames the set of s-ramp property names - the extra properties that the query should return as part of the {@link Feed}
-	 * @return an Atom {@link Feed}
-	 * @throws SrampAtomException
-	 */
-	protected Feed query(String query, Integer startIndex, Integer count, String orderBy, Boolean ascending,
-			Set<String> propNames, String baseUrl) throws SrampAtomException {
-		if (query == null)
-			throw new SrampAtomException(Messages.i18n.format("MISSING_QUERY_PARAM")); //$NON-NLS-1$
-
-		// Add on the "/s-ramp/" if it's missing
-		String xpath = query;
-		if (!xpath.startsWith("/s-ramp")) { //$NON-NLS-1$
-			if (query.startsWith("/")) //$NON-NLS-1$
-				xpath = "/s-ramp" + query; //$NON-NLS-1$
-			else
-				xpath = "/s-ramp/" + query; //$NON-NLS-1$
-		}
-
-		return createArtifactFeed(xpath, startIndex, count, orderBy, ascending, propNames, baseUrl);
 	}
 }

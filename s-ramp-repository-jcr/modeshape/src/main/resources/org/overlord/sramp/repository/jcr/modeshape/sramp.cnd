@@ -48,6 +48,16 @@
 
 
 // -------------------------------------------------------
+// S-RAMP Stored Queries
+// -------------------------------------------------------
+
+[sramp:query] > nt:hierarchyNode, mix:created, mix:lastModified
+- sramp:queryName (string) mandatory
+- sramp:queryExpression (string) mandatory
+- sramp:propertyName (string) multiple
+
+
+// -------------------------------------------------------
 // Auditing
 // -------------------------------------------------------
 

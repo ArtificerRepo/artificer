@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.ontology.SrampOntology;
@@ -129,6 +130,42 @@ public interface PersistenceManager {
 	 * @throws SrampException
 	 */
 	public void deleteOntology(String uuid) throws SrampException;
+
+    /**
+     * Persists a single StoredQuery.
+     * @param storedQuery
+     * @throws SrampException
+     */
+    public StoredQuery persistStoredQuery(StoredQuery storedQuery) throws SrampException;
+
+    /**
+     * Gets a previously persisted StoredQuery by its UUID.
+     * @param queryName the queryName of the s-ramp StoredQuery
+     * @return an instance of a {@link StoredQuery} or null if not found
+     * @throws SrampException
+     */
+    public StoredQuery getStoredQuery(String queryName) throws SrampException;
+
+    /**
+     * Gets all of the StoredQueries known to the S-RAMP repository.
+     * @throws SrampException
+     */
+    public List<StoredQuery> getStoredQueries() throws SrampException;
+
+    /**
+     * Updates a previously persisted StoredQuery.
+     * @param queryName
+     * @param storedQuery the StoredQuery being updated
+     * @throws SrampException
+     */
+    public void updateStoredQuery(String queryName, StoredQuery storedQuery) throws SrampException;
+
+    /**
+     * Deletes a previously persisted StoredQuery from the S-RAMP repository.
+     * @param queryName
+     * @throws SrampException
+     */
+    public void deleteStoredQuery(String queryName) throws SrampException;
 
 	/**
 	 * TODO remove this

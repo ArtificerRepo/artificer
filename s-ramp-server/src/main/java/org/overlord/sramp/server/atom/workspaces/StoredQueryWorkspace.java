@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,23 @@ package org.overlord.sramp.server.atom.workspaces;
 import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.app.AppCategories;
 import org.jboss.resteasy.plugins.providers.atom.app.AppCollection;
-import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomConstants;
 
 /**
- * Models the custom ontology workspace.  This workspace is not defined by the
- * S-RAMP specification (the spec is silent regarding how to manage ontologies).
+ * Models the stored query workspace.
  *
- * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
-public class OntologyWorkspace extends AbstractWorkspace {
+public class StoredQueryWorkspace extends AbstractWorkspace {
 
-	private static final long serialVersionUID = -1353321140809507853L;
+	private static final long serialVersionUID = 9119601241133543724L;
 
-	/**
+    /**
 	 * Constructor.
 	 * @param hrefBase
 	 */
-	public OntologyWorkspace(String hrefBase) {
-		super(hrefBase, "Ontology Model"); //$NON-NLS-1$
+	public StoredQueryWorkspace(String hrefBase) {
+		super(hrefBase, "Stored Query Model"); //$NON-NLS-1$
 	}
 
 	/**
@@ -44,16 +42,21 @@ public class OntologyWorkspace extends AbstractWorkspace {
 	 */
 	@Override
 	protected void configureWorkspace() {
-		AppCollection collection = addCollection("/s-ramp/ontology", "Ontology Objects", MediaType.APPLICATION_RDF_XML); //$NON-NLS-1$ //$NON-NLS-2$
+	    // TODO: What is the last arg?
+        AppCollection collection = addCollection("/s-ramp/query", "Stored Queries", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
 		AppCategories categories = new AppCategories();
-		categories.setFixed(true);
-		collection.getCategories().add(categories);
+        categories.setFixed(true);
+        collection.getCategories().add(categories);
 
-		Category category = new Category();
-		category.setScheme(SrampAtomConstants.URN_X_S_RAMP_V1_TYPE);
-		category.setTerm("ontology"); //$NON-NLS-1$
-		category.setLabel("Ontology"); //$NON-NLS-1$
-		categories.getCategory().add(category);
+        Category category = new Category();
+        try {
+            category.setScheme(SrampAtomConstants.URN_X_S_RAMP_2013_TYPE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        category.setTerm("queries"); //$NON-NLS-1$
+        category.setLabel("Stored Query Entries"); //$NON-NLS-1$
+        categories.getCategory().add(category);
 	}
 }

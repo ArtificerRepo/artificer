@@ -57,6 +57,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartInput;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedOutput;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
@@ -745,18 +746,18 @@ public class SrampAtomApiClient {
 	public SrampClientQuery buildQuery(String query) {
 	    return new SrampClientQuery(this, query);
 	}
-	
-	/**
-	 * Adds on ontology in RDF format to the S-RAMP repository.  This will only work if the S-RAMP
+    
+    /**
+     * Adds on ontology in RDF format to the S-RAMP repository.  This will only work if the S-RAMP
      * repository supports the ontology collection, which is not a part of the S-RAMP 1.0
      * specification.
-	 * @param ontology
-	 * @throws SrampClientException
-	 * @throws SrampAtomException
-	 */
-	public RDF addOntology(RDF ontology) throws SrampClientException, SrampAtomException {
-	    assertFeatureEnabled("ontology"); //$NON-NLS-1$
-	    ClientResponse<Entry> response = null;
+     * @param ontology
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public RDF addOntology(RDF ontology) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("ontology"); //$NON-NLS-1$
+        ClientResponse<Entry> response = null;
         try {
             String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
             ClientRequest request = createClientRequest(atomUrl);
@@ -774,37 +775,37 @@ public class SrampAtomApiClient {
         } finally {
             closeQuietly(response);
         }
-	}
+    }
 
-	/**
-	 * Uploads an ontology to the S-RAMP repository.  This will only work if the S-RAMP
-	 * repository supports the ontology collection, which is not a part of the S-RAMP 1.0
-	 * specification.
-	 * @param content
-	 * @throws SrampClientException
-	 * @throws SrampAtomException
-	 */
-	public RDF uploadOntology(InputStream content) throws SrampClientException, SrampAtomException {
-		assertFeatureEnabled("ontology"); //$NON-NLS-1$
+    /**
+     * Uploads an ontology to the S-RAMP repository.  This will only work if the S-RAMP
+     * repository supports the ontology collection, which is not a part of the S-RAMP 1.0
+     * specification.
+     * @param content
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public RDF uploadOntology(InputStream content) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("ontology"); //$NON-NLS-1$
         ClientResponse<Entry> response = null;
-		try {
-			String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
-			ClientRequest request = createClientRequest(atomUrl);
-			request.body(MediaType.APPLICATION_RDF_XML_TYPE, content);
+        try {
+            String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            request.body(MediaType.APPLICATION_RDF_XML_TYPE, content);
 
-			response = request.post(Entry.class);
-			Entry entry = response.getEntity();
-			RDF rdf = SrampAtomUtils.unwrap(entry, RDF.class);
-			rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString()); //$NON-NLS-1$
-			return rdf;
-		} catch (SrampAtomException e) {
-			throw e;
-		} catch (Throwable e) {
-			throw new SrampClientException(e);
+            response = request.post(Entry.class);
+            Entry entry = response.getEntity();
+            RDF rdf = SrampAtomUtils.unwrap(entry, RDF.class);
+            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString()); //$NON-NLS-1$
+            return rdf;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
         } finally {
             closeQuietly(response);
-		}
-	}
+        }
+    }
 
     /**
      * Uploads a new version of an ontology to the S-RAMP repository.  The ontology will be
@@ -854,45 +855,45 @@ public class SrampAtomApiClient {
         }
     }
 
-	/**
-	 * Gets a list of all the ontologies currently installed in the S-RAMP repository.  This
-	 * will only work if the S-RAMP repository supports the ontology collection, which is not
-	 * a part of the S-RAMP 1.0 specification.
-	 * @throws SrampClientException
-	 * @throws SrampAtomException
-	 */
-	public List<OntologySummary> getOntologies() throws SrampClientException, SrampAtomException {
-		assertFeatureEnabled("ontology"); //$NON-NLS-1$
+    /**
+     * Gets a list of all the ontologies currently installed in the S-RAMP repository.  This
+     * will only work if the S-RAMP repository supports the ontology collection, which is not
+     * a part of the S-RAMP 1.0 specification.
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public List<OntologySummary> getOntologies() throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("ontology"); //$NON-NLS-1$
         ClientResponse<Feed> response = null;
-		try {
-			String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
-			ClientRequest request = createClientRequest(atomUrl);
-			response = request.get(Feed.class);
-			Feed feed = response.getEntity();
-			List<OntologySummary> rval = new ArrayList<OntologySummary>(feed.getEntries().size());
-			for (Entry entry : feed.getEntries()) {
-				OntologySummary summary = new OntologySummary(entry);
-				rval.add(summary);
-			}
-			return rval;
-		} catch (SrampAtomException e) {
-			throw e;
-		} catch (Throwable e) {
-			throw new SrampClientException(e);
+        try {
+            String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            response = request.get(Feed.class);
+            Feed feed = response.getEntity();
+            List<OntologySummary> rval = new ArrayList<OntologySummary>(feed.getEntries().size());
+            for (Entry entry : feed.getEntries()) {
+                OntologySummary summary = new OntologySummary(entry);
+                rval.add(summary);
+            }
+            return rval;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
         } finally {
             closeQuietly(response);
-		}
-	}
+        }
+    }
 
-	/**
-	 * Gets a single ontology by UUID.  This returns all of the ontology meta-data
-	 * as well as all of the classes.
-	 * @param ontologyUuid
-	 * @throws SrampClientException
-	 * @throws SrampAtomException
-	 */
-	public RDF getOntology(String ontologyUuid) throws SrampClientException, SrampAtomException {
-	    assertFeatureEnabled("ontology"); //$NON-NLS-1$
+    /**
+     * Gets a single ontology by UUID.  This returns all of the ontology meta-data
+     * as well as all of the classes.
+     * @param ontologyUuid
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public RDF getOntology(String ontologyUuid) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("ontology"); //$NON-NLS-1$
         ClientResponse<Entry> response = null;
         try {
             String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
@@ -909,31 +910,222 @@ public class SrampAtomApiClient {
         } finally {
             closeQuietly(response);
         }
-	}
+    }
 
-	/**
-	 * Deletes a single ontology by its UUID.  Note that this will only work if the S-RAMP
-	 * repository supports the ontology collection, which is not a part of the S-RAMP 1.0
-	 * specification.
-	 * @param ontologyUuid
-	 * @throws SrampClientException
-	 * @throws SrampAtomException
-	 */
-	public void deleteOntology(String ontologyUuid) throws SrampClientException, SrampAtomException {
-		assertFeatureEnabled("ontology"); //$NON-NLS-1$
+    /**
+     * Deletes a single ontology by its UUID.  Note that this will only work if the S-RAMP
+     * repository supports the ontology collection, which is not a part of the S-RAMP 1.0
+     * specification.
+     * @param ontologyUuid
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public void deleteOntology(String ontologyUuid) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("ontology"); //$NON-NLS-1$
         ClientResponse<?> response = null;
-		try {
-			String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
-			ClientRequest request = createClientRequest(atomUrl);
-			response = request.delete();
-		} catch (SrampAtomException e) {
-			throw e;
-		} catch (Throwable e) {
-			throw new SrampClientException(e);
+        try {
+            String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            response = request.delete();
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
         } finally {
             closeQuietly(response);
-		}
-	}
+        }
+    }
+    
+    /**
+     * Adds a stored query to the S-RAMP repository.
+     * 
+     * @param storedQuery
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public StoredQuery createStoredQuery(StoredQuery storedQuery) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("queries"); //$NON-NLS-1$
+        ClientResponse<Entry> response = null;
+        try {
+            String atomUrl = String.format("%1$s/query", this.endpoint); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, SrampAtomUtils.wrapStoredQuery(storedQuery));
+                    
+            response = request.post(Entry.class);
+            Entry entry = response.getEntity();
+            return SrampAtomUtils.unwrapStoredQuery(entry);
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
+    }
+
+    /**
+     * Uploads a new version of a stored query to the S-RAMP repository.  The stored query will be
+     * replaced with this new version.
+     * 
+     * @param queryName
+     * @param storedQuery
+     */
+    public void updateStoredQuery(String queryName, StoredQuery storedQuery) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("queries"); //$NON-NLS-1$
+        ClientResponse<?> response = null;
+        try {
+            String atomUrl = String.format("%1$s/query/%2$s", this.endpoint, queryName); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, SrampAtomUtils.wrapStoredQuery(storedQuery));
+            response = request.put();
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
+    }
+
+    /**
+     * Gets a list of all the stored queries currently installed in the S-RAMP repository.
+     * 
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public List<StoredQuery> getStoredQueries() throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("queries"); //$NON-NLS-1$
+        ClientResponse<Feed> response = null;
+        try {
+            String atomUrl = String.format("%1$s/query", this.endpoint); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            response = request.get(Feed.class);
+            Feed feed = response.getEntity();
+            List<StoredQuery> storedQueries = new ArrayList<StoredQuery>(feed.getEntries().size());
+            for (Entry entry : feed.getEntries()) {
+                storedQueries.add(SrampAtomUtils.unwrapStoredQuery(entry));
+            }
+            return storedQueries;
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
+    }
+
+    /**
+     * Gets a single stored query by name.
+     * 
+     * @param queryName
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public StoredQuery getStoredQuery(String queryName) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("queries"); //$NON-NLS-1$
+        ClientResponse<Entry> response = null;
+        try {
+            String atomUrl = String.format("%1$s/query/%2$s", this.endpoint, queryName); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            response = request.get(Entry.class);
+            Entry entry = response.getEntity();
+            return SrampAtomUtils.unwrapStoredQuery(entry);
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
+    }
+
+    /**
+     * Deletes a single stored query by name.
+     * 
+     * @param queryName
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public void deleteStoredQuery(String queryName) throws SrampClientException, SrampAtomException {
+        assertFeatureEnabled("queries"); //$NON-NLS-1$
+        ClientResponse<?> response = null;
+        try {
+            String atomUrl = String.format("%1$s/query/%2$s", this.endpoint, queryName); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(atomUrl);
+            response = request.delete();
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
+    }
+    
+    /**
+     * See {@link #query(String)}
+     * 
+     * @param queryName
+     * @return QueryResultSet
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public QueryResultSet queryWithStoredQuery(String queryName) throws SrampClientException, SrampAtomException {
+        return queryWithStoredQuery(queryName, 0, 20, "name", true); //$NON-NLS-1$
+    }
+
+    /**
+     * See {@link #query(String, int, int, String, boolean, Collection)}.
+     * Note that {@link StoredQuery#getPropertyName()} is automatically given to #query.
+     * 
+     * @param storedQuery
+     * @param startIndex
+     * @param count
+     * @param orderBy
+     * @param ascending
+     * @return SrampClientQuery
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public QueryResultSet queryWithStoredQuery(String queryName, int startIndex, int count, String orderBy,
+            boolean ascending) throws SrampClientException, SrampAtomException {
+        ClientResponse<Feed> response = null;
+        try {
+            String atomUrl = String.format("%1$s/query/%2$s/results", this.endpoint, queryName); //$NON-NLS-1$
+
+            StringBuilder urlBuilder = new StringBuilder();
+            urlBuilder.append(atomUrl);
+            urlBuilder.append("?startIndex="); //$NON-NLS-1$
+            urlBuilder.append(String.valueOf(startIndex));
+            urlBuilder.append("&count="); //$NON-NLS-1$
+            urlBuilder.append(String.valueOf(count));
+            urlBuilder.append("&orderBy="); //$NON-NLS-1$
+            urlBuilder.append(URLEncoder.encode(orderBy, "UTF8")); //$NON-NLS-1$
+            urlBuilder.append("&ascending="); //$NON-NLS-1$
+            urlBuilder.append(String.valueOf(ascending));
+            
+            ClientRequest request = createClientRequest(urlBuilder.toString());
+            response = request.get(Feed.class);
+            return new QueryResultSet(response.getEntity());
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
+    }
+
+    /**
+     * See {@link #buildQuery(String)}
+     * 
+     * @param query
+     * @return SrampClientQuery
+     */
+    public SrampClientQuery buildQueryWithStoredQuery(StoredQuery storedQuery) {
+        return buildQuery(storedQuery.getQueryExpression());
+    }
 
 	/**
 	 * Adds a new audit entry on the artifact with the given UUID.

@@ -39,13 +39,13 @@ public class JCRNodeToOntology {
 	 * @throws RepositoryException
 	 */
 	public void read(SrampOntology ontology, Node jcrNode) throws RepositoryException {
-		ontology.setUuid(getProperty(jcrNode, "sramp:uuid")); //$NON-NLS-1$
-		ontology.setLabel(getProperty(jcrNode, "sramp:label")); //$NON-NLS-1$
-		ontology.setComment(getProperty(jcrNode, "sramp:comment")); //$NON-NLS-1$
-		ontology.setBase(getProperty(jcrNode, "sramp:base")); //$NON-NLS-1$
-		ontology.setId(getProperty(jcrNode, "sramp:id")); //$NON-NLS-1$
-		ontology.setCreatedBy(getProperty(jcrNode, "jcr:createdBy")); //$NON-NLS-1$
-		ontology.setLastModifiedBy(getProperty(jcrNode, "jcr:lastModifiedBy")); //$NON-NLS-1$
+		ontology.setUuid(JCRMapperUtil.getPropertyString(jcrNode, "sramp:uuid")); //$NON-NLS-1$
+		ontology.setLabel(JCRMapperUtil.getPropertyString(jcrNode, "sramp:label")); //$NON-NLS-1$
+		ontology.setComment(JCRMapperUtil.getPropertyString(jcrNode, "sramp:comment")); //$NON-NLS-1$
+		ontology.setBase(JCRMapperUtil.getPropertyString(jcrNode, "sramp:base")); //$NON-NLS-1$
+		ontology.setId(JCRMapperUtil.getPropertyString(jcrNode, "sramp:id")); //$NON-NLS-1$
+		ontology.setCreatedBy(JCRMapperUtil.getPropertyString(jcrNode, "jcr:createdBy")); //$NON-NLS-1$
+		ontology.setLastModifiedBy(JCRMapperUtil.getPropertyString(jcrNode, "jcr:lastModifiedBy")); //$NON-NLS-1$
 		if (jcrNode.hasProperty("jcr:created")) { //$NON-NLS-1$
 			Date d = jcrNode.getProperty("jcr:created").getDate().getTime(); //$NON-NLS-1$
 			ontology.setCreatedOn(d);
@@ -74,13 +74,13 @@ public class JCRNodeToOntology {
 		SrampOntology.SrampOntologyClass rval = new SrampOntology.SrampOntologyClass();
 
 		try {
-			rval.setUri(new URI(getProperty(jcrNode, "sramp:uri"))); //$NON-NLS-1$
+			rval.setUri(new URI(JCRMapperUtil.getPropertyString(jcrNode, "sramp:uri"))); //$NON-NLS-1$
 		} catch (URISyntaxException e) {
 			throw new RepositoryException(e);
 		}
-		rval.setId(getProperty(jcrNode, "sramp:id")); //$NON-NLS-1$
-		rval.setLabel(getProperty(jcrNode, "sramp:label")); //$NON-NLS-1$
-		rval.setComment(getProperty(jcrNode, "sramp:comment")); //$NON-NLS-1$
+		rval.setId(JCRMapperUtil.getPropertyString(jcrNode, "sramp:id")); //$NON-NLS-1$
+		rval.setLabel(JCRMapperUtil.getPropertyString(jcrNode, "sramp:label")); //$NON-NLS-1$
+		rval.setComment(JCRMapperUtil.getPropertyString(jcrNode, "sramp:comment")); //$NON-NLS-1$
 
 		NodeIterator nodes = jcrNode.getNodes();
 		while (nodes.hasNext()) {
@@ -91,21 +91,6 @@ public class JCRNodeToOntology {
 		}
 
 		return rval;
-	}
-
-	/**
-	 * Gets a property from the JCR node.  Returns null if the property does not exist
-	 * on the node.
-	 * @param jcrNode
-	 * @param propertyName
-	 * @throws RepositoryException
-	 */
-	private String getProperty(Node jcrNode, String propertyName) throws RepositoryException {
-		if (jcrNode.hasProperty(propertyName)) {
-			return jcrNode.getProperty(propertyName).getString();
-		} else {
-			return null;
-		}
 	}
 
 }

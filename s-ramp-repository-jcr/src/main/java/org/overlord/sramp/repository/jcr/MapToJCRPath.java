@@ -53,13 +53,13 @@ public class MapToJCRPath {
     }
 
     /**
-     * "/s-ramp/queries/[UUID]"
+     * "/s-ramp/queries/queryName"
      *
-     * @param uuid - Universally Unique ID
-     * @return path: "/s-ramp/ontologies/[UUID]"
+     * @param queryName
+     * @return path: "/s-ramp/queries/queryName"
      */
-    public static String getStoredQueryPath(String uuid) {
-        return ROOT_PATH + "/queries/" + uuid; //$NON-NLS-1$
+    public static String getStoredQueryPath(String queryName) {
+        return ROOT_PATH + "/queries/" + queryName; //$NON-NLS-1$
     }
 
     /**
