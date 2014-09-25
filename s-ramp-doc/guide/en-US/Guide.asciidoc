@@ -18,8 +18,6 @@ include::GuideSrampRestAPI.asciidoc[]
 
 include::GuideOverlordSrampImplementation.asciidoc[]
 
-include::GuideOverlordSrampRestAPIEndpoints.asciidoc[]
-
 include::GuideOverlordSrampBrowser.asciidoc[]
 
 include::GuideOverlordSrampCLI.asciidoc[]
