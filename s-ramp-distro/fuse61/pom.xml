@@ -292,7 +292,7 @@
                 
                 <!-- The S-RAMP Fuse Installer -->
                 <feature>
-                  <name>s-ramp-install</name>
+                  <name>s-ramp-karaf-commands</name>
                   <version>${project.version}</version>
                   <comment>S-RAMP installation (Karaf commands)</comment>
                   <dependsOnFeatures>

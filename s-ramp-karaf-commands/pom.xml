@@ -59,9 +59,9 @@
   <plugins>
 
    <plugin>
-         <groupId>org.overlord</groupId>
-         <artifactId>overlord-commons-maven-plugin</artifactId>
-         <version>${version.org.overlord.overlord-commons}</version>
+    <groupId>org.overlord</groupId>
+    <artifactId>overlord-commons-maven-plugin</artifactId>
+    <version>${version.org.overlord.overlord-commons}</version>
     <configuration>
      <merges>
       <merge>
