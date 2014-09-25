@@ -273,6 +273,19 @@ Atom Feed (3 entries)
 For more information about querying the repository see the 'S-RAMP Query Language' section 
 of this guide.
 
+Stored Queries
+^^^^^^^^^^^^^^^
+The above queries can also be executed using Stored Queries:
+....
+s-ramp> s-ramp:createStoredQuery FooQuery /s-ramp/ext/FooType
+s-ramp> s-ramp:executeStoredQuery FooQuery
+Querying the S-RAMP repository:
+    /s-ramp/ext/FooType
+Atom Feed (1 entries)
+  Idx                    Type Name
+  ---                    ---- ----
+    1                 FooType FooArtifact
+....
 
 Extending the S-RAMP CLI
 ~~~~~~~~~~~~~~~~~~~~~~~~

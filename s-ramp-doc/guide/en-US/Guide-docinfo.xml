@@ -21,27 +21,24 @@
        <shortaffil>Red Hat</shortaffil>
        <jobtitle>Developer</jobtitle>
        <orgname>JBoss</orgname>
-       <orgdiv>SOA </orgdiv>
+       <orgdiv>SOA</orgdiv>
+     </affiliation>
+     </author>
+
+    <author>
+     <honorific>Lord</honorific>
+     <firstname>Brett</firstname>
+     <surname>Meyer</surname>
+     <affiliation>
+       <shortaffil>Red Hat</shortaffil>
+       <jobtitle>Developer</jobtitle>
+       <orgname>JBoss</orgname>
+       <orgdiv>SOA</orgdiv>
      </affiliation>
      </author>
 
      </authorgroup>
 
      <copyright>
-     <year>2012-2013</year>
+     <year>2014</year>
      </copyright>
-
-     <revhistory>
-     <revision>
-          <revnumber>0.2.0</revnumber>
-          <date>May 2013</date>
-          <authorinitials>KS & EW</authorinitials>
-          <revremark>2nd Draft</revremark>
-     </revision>
-     <revision>
-          <revnumber>0.1.1</revnumber>
-          <date>Feb 2013</date>
-          <authorinitials>KS</authorinitials>
-          <revremark>1st Draft</revremark>
-     </revision>
-     </revhistory>

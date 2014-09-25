@@ -22,6 +22,12 @@ Overlord implementation:
 |GET /s-ramp                                 |xref:api-query[Query]
 |POST /s-ramp                                |xref:api-query-1[Query]
 |POST /s-ramp                                |xref:api-batch-processing[Batch Processing]
+|POST /s-ramp/query                          |xref:api-create-storedquery[Create Stored Query]
+|PUT /s-ramp/query/{queryName}               |xref:api-update-storedquery[Update Stored Query]
+|GET /s-ramp/query                           |xref:api-list-storedqueries[List Stored Queries]
+|GET /s-ramp/query/{queryName}               |xref:api-get-storedquery[Get Stored Query]
+|GET /s-ramp/query/{queryName}/results       |xref:api-execute-storedquery[Execute Stored Query]
+|DELETE /s-ramp/query/{queryName}            |xref:api-delete-storedquery[Delete Stored Query]
 |POST /s-ramp/ontology                       |xref:api-add-ontology[Add Ontology]
 |GET /s-ramp/ontology                        |xref:api-list-ontologies[List Ontologies]
 |PUT /s-ramp/ontology/\{uuid}                |xref:api-update-ontology[Update Ontology]
@@ -1159,6 +1165,300 @@ HTTP/1.1 200 OK
 
 XX_TBD_XX
 ----
+
+Stored Queries
+~~~~~~~~~~~~~~
+
+S-RAMP queries can be utilized through the "stored query" concept.  The query is persisted within the S-RAMP repository
+and can be repeatedly executed by name.
+
+[[api-create-storedquery]]
+API: Create Stored Query
+^^^^^^^^^^^^^^^^^^^^^^^^
+----
+  /s-ramp/query
+----
+Creates a new stored query in the repository.  The body of the request must be the stored query, wrapped as an Atom
+Entry.  The response is also an Atom Entry containing additional, server-generated meta-data.
+
+[width="50%",options="header"]
+|=============================
+|#HTTP Method# |#Request#            |#Response#
+|POST          |Atom Entry           |Atom Entry
+|=============================
+
+'Example Request'
+----
+POST /s-ramp/query HTTP/1.1
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<atom:entry xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:atom="http://www.w3.org/2005/Atom">
+  <s-ramp:storedQueryData>
+    <s-ramp:queryName>FooQuery</s-ramp:queryName>
+    <s-ramp:queryString>/s-ramp/ext/FooType</s-ramp:queryString>
+    <s-ramp:propertyName>importantProperty1</s-ramp:propertyName>
+    <s-ramp:propertyName>importantProperty2</s-ramp:propertyName>
+  </s-ramp:storedQueryData>
+</atom:entry>
+----
+
+'Example Response'
+----
+HTTP/1.1 200 OK
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<atom:entry xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:atom="http://www.w3.org/2005/Atom">
+  <atom:title>Stored Query: FooQuery</atom:title>
+  <atom:link href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+    rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
+  <atom:link href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+    rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
+  <atom:link
+    href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery/results"
+    rel="urn:x-s-ramp:2013:query:results" type="application/atom+xml;type=&quot;feed&quot;" />
+  <atom:category label="Stored Query Entry" scheme="urn:x-s-ramp:2013:type"
+    term="query" />
+  <atom:id>urn:uuid:FooQuery</atom:id>
+  <atom:content>Stored Query Entry</atom:content>
+  <s-ramp:storedQueryData>
+    <s-ramp:queryName>FooQuery</s-ramp:queryName>
+    <s-ramp:queryString>/s-ramp/ext/FooType</s-ramp:queryString>
+    <s-ramp:propertyName>importantProperty1</s-ramp:propertyName>
+    <s-ramp:propertyName>importantProperty2</s-ramp:propertyName>
+  </s-ramp:storedQueryData>
+</atom:entry>
+----
+
+[[api-update-storedquery]]
+API: Update Stored Query
+^^^^^^^^^^^^^^^^^^^^^^^^
+----
+  /s-ramp/query/{queryName}
+----
+Updates the given stored query in the repository.  The body of the request is the same Atom Entry as in
+xref:api-create-storedquery[Create Stored Query].
+
+[width="50%",options="header"]
+|=============================
+|#HTTP Method# |#Request#            |#Response#
+|PUT           |Atom Entry           |N/A
+|=============================
+
+[[api-list-storedquery]]
+API: List Stored Queries
+^^^^^^^^^^^^^^^^^^^^^^^^
+----
+  /s-ramp/query
+----
+Retrieves all stored queries from the repository.
+
+[width="50%",options="header"]
+|=============================
+|#HTTP Method# |#Request#            |#Response#
+|GET           |N/A                  |Atom Feed
+|=============================
+
+'Example Response'
+----
+HTTP/1.1 200 OK
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<atom:feed xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:atom="http://www.w3.org/2005/Atom">
+  <atom:title>S-RAMP stored queries feed</atom:title>
+  <atom:updated>2014-09-25T16:45:10.133-04:00</atom:updated>
+  <atom:entry>
+    <atom:title>Stored Query: FooQuery</atom:title>
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+      rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+      rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery/results"
+      rel="urn:x-s-ramp:2013:query:results" type="application/atom+xml;type=&quot;feed&quot;" />
+    <atom:category label="Stored Query Entry" scheme="urn:x-s-ramp:2013:type"
+      term="query" />
+    <atom:id>urn:uuid:FooQuery</atom:id>
+    <atom:content>Stored Query Entry</atom:content>
+    <s-ramp:storedQueryData>
+      <s-ramp:queryName>FooQuery</s-ramp:queryName>
+      <s-ramp:queryString>/s-ramp/ext/FooType</s-ramp:queryString>
+      <s-ramp:propertyName>importantProperty1</s-ramp:propertyName>
+      <s-ramp:propertyName>importantProperty2</s-ramp:propertyName>
+    </s-ramp:storedQueryData>
+  </atom:entry>
+  <atom:entry>
+    <atom:title>Stored Query: FooQuery2</atom:title>
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery2"
+      rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery2"
+      rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery2/results"
+      rel="urn:x-s-ramp:2013:query:results" type="application/atom+xml;type=&quot;feed&quot;" />
+    <atom:category label="Stored Query Entry" scheme="urn:x-s-ramp:2013:type"
+      term="query" />
+    <atom:id>urn:uuid:FooQuery2</atom:id>
+    <atom:content>Stored Query Entry</atom:content>
+    <s-ramp:storedQueryData>
+      <s-ramp:queryName>FooQuery2</s-ramp:queryName>
+      <s-ramp:queryString>/s-ramp/ext/FooType</s-ramp:queryString>
+    </s-ramp:storedQueryData>
+  </atom:entry>
+</atom:feed>
+----
+
+[[api-get-storedquery]]
+API: Get Stored Query
+^^^^^^^^^^^^^^^^^^^^^
+----
+  /s-ramp/query/{queryName}
+----
+Retrieves the given stored query from the repository.
+
+[width="50%",options="header"]
+|=============================
+|#HTTP Method# |#Request#            |#Response#
+|GET           |N/A                  |Atom Entry
+|=============================
+
+'Example Response'
+----
+HTTP/1.1 200 OK
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<atom:entry xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:atom="http://www.w3.org/2005/Atom">
+  <atom:title>Stored Query: FooQuery</atom:title>
+  <atom:link href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+    rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
+  <atom:link href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+    rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
+  <atom:link
+    href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery/results"
+    rel="urn:x-s-ramp:2013:query:results" type="application/atom+xml;type=&quot;feed&quot;" />
+  <atom:category label="Stored Query Entry" scheme="urn:x-s-ramp:2013:type"
+    term="query" />
+  <atom:id>urn:uuid:FooQuery</atom:id>
+  <atom:content>Stored Query Entry</atom:content>
+  <s-ramp:storedQueryData>
+    <s-ramp:queryName>FooQuery</s-ramp:queryName>
+    <s-ramp:queryString>/s-ramp/ext/FooType</s-ramp:queryString>
+    <s-ramp:propertyName>importantProperty1</s-ramp:propertyName>
+    <s-ramp:propertyName>importantProperty2</s-ramp:propertyName>
+  </s-ramp:storedQueryData>
+</atom:entry>
+----
+
+[[api-execute-storedquery]]
+API: Execute Stored Query
+^^^^^^^^^^^^^^^^^^^^^^^^
+----
+  /s-ramp/query/{queryName}/results
+----
+Similar to a normal, ad-hoc xref:api-query[Query], this returns an Atom Feed of artifact entries.
+
+[width="50%",options="header"]
+|=============================
+|#HTTP Method# |#Request#            |#Response#
+|GET           |N/A                  |Atom Feed
+|=============================
+
+'Example Request'
+----
+GET /s-ramp-server/s-ramp/query/FooQuery/results?startIndex=0&count=20&orderBy=name&ascending=true HTTP/1.1
+----
+
+Note that the paging and ordering parameters are optional and have reasonable defaults (defaults are shown values).
+
+'Example Response'
+----
+HTTP/1.1 200 OK
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<atom:feed xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:atom="http://www.w3.org/2005/Atom"
+  s-ramp:provider="JBoss Overlord" s-ramp:itemsPerPage="20"
+  s-ramp:startIndex="0" s-ramp:totalResults="2">
+  <atom:title>S-RAMP Feed</atom:title>
+  <atom:subtitle>Ad Hoc query feed</atom:subtitle>
+  <atom:updated>2014-09-25T17:03:32.504-04:00</atom:updated>
+  <atom:id>b4746dcd-82b9-433a-9d61-e54a384ae4e6</atom:id>
+  <atom:author>
+    <atom:name>anonymous</atom:name>
+  </atom:author>
+  <atom:entry s-ramp:derived="false" s-ramp:extendedType="FooType">
+    <atom:title>FooArtifact</atom:title>
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/f57c30d3-9a9a-4df9-b362-8f0b0816af99"
+      rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/f57c30d3-9a9a-4df9-b362-8f0b0816af99/media"
+      rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/f57c30d3-9a9a-4df9-b362-8f0b0816af99"
+      rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
+    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2010:type"
+      term="FooType" />
+    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2010:model"
+      term="ext" />
+    <atom:updated>2014-09-25T17:03:27.392-04:00</atom:updated>
+    <atom:id>f57c30d3-9a9a-4df9-b362-8f0b0816af99</atom:id>
+    <atom:published>2014-09-25T17:03:27.392-04:00</atom:published>
+    <atom:author>
+      <atom:name>asdf</atom:name>
+    </atom:author>
+    <s-ramp:artifact>
+      <s-ramp:ExtendedArtifactType />
+    </s-ramp:artifact>
+  </atom:entry>
+  <atom:entry s-ramp:derived="false" s-ramp:extendedType="FooType">
+    <atom:title>FooArtifact2</atom:title>
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/e8b6aaf2-d787-45d0-a534-b9205d6e8815"
+      rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/e8b6aaf2-d787-45d0-a534-b9205d6e8815/media"
+      rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
+    <atom:link
+      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/e8b6aaf2-d787-45d0-a534-b9205d6e8815"
+      rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
+    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2010:type"
+      term="FooType" />
+    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2010:model"
+      term="ext" />
+    <atom:updated>2014-09-25T17:03:29.580-04:00</atom:updated>
+    <atom:id>e8b6aaf2-d787-45d0-a534-b9205d6e8815</atom:id>
+    <atom:published>2014-09-25T17:03:29.580-04:00</atom:published>
+    <atom:author>
+      <atom:name>asdf</atom:name>
+    </atom:author>
+    <s-ramp:artifact>
+      <s-ramp:ExtendedArtifactType />
+    </s-ramp:artifact>
+  </atom:entry>
+</atom:feed>
+----
+
+[[api-delete-storedquery]]
+API: Delete Stored Query
+^^^^^^^^^^^^^^^^^^^^^^^^
+----
+  /s-ramp/query/{queryName}
+----
+Deletes the given stored query from the repository.
+
+[width="50%",options="header"]
+|=============================
+|#HTTP Method# |#Request#            |#Response#
+|DELETE        |N/A                  |N/A
+|=============================
 
 
 [[api-add-ontology]]

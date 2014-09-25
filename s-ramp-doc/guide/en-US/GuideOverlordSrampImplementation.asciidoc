@@ -251,6 +251,20 @@ QueryResultSet rset = client.buildQuery("/s-ramp/xsd/XsdDocument[@name = ?]")
         .query();
 ----
 
+.'Query the S-RAMP repository using a stored query'
+----
+SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+
+StoredQuery storedQuery = new StoredQuery();
+storedQuery.setQueryName("FooQuery");
+storedQuery.setQueryExpression("/s-ramp/ext/FooType");
+storedQuery.getPropertyName().add("importantProperty1");
+storedQuery.getPropertyName().add("importantProperty2");
+client.createStoredQuery(storedQuery);
+
+QueryResultSet rset = client.queryWithStoredQuery(storedQuery.getQueryName());
+----
+
 
 Extended Feature: Ontologies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
