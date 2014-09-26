@@ -8,21 +8,23 @@ include::GuideIntroduction.asciidoc[]
 
 include::GuideGettingStarted.asciidoc[]
 
-include::GuideUserManagement.asciidoc[]
-
 include::GuideSrampDataModels.asciidoc[]
 
 include::GuideSrampQueryLanguage.asciidoc[]
 
 include::GuideSrampRestAPI.asciidoc[]
 
-include::GuideOverlordSrampImplementation.asciidoc[]
-
-include::GuideOverlordSrampBrowser.asciidoc[]
+include::GuideOverlordSrampClients.asciidoc[]
 
 include::GuideOverlordSrampCLI.asciidoc[]
 
 include::GuideOverlordSrampMaven.asciidoc[]
+
+include::GuideOverlordSrampBrowser.asciidoc[]
+
+include::GuideUserManagement.asciidoc[]
+
+include::GuideOverlordSrampImplementation.asciidoc[]
 
 include::GuideSrampSamples.asciidoc[]
 
