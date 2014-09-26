@@ -9,9 +9,9 @@ package org.overlord.sramp.karaf.commands;
 public interface ConfigureConstants {
     public static final String SRAMP_PROPERTIES_FILE_NAME = "sramp.properties"; //$NON-NLS-1$
 
-    public static final String SRAMP_EVENTS_JMS_USER = "sramp.config.events.jms.user";
-    public static final String SRAMP_EVENTS_JMS_PASSWORD = "sramp.config.events.jms.password";
+    public static final String SRAMP_EVENTS_JMS_USER = "sramp.config.events.jms.user"; //$NON-NLS-1$
+    public static final String SRAMP_EVENTS_JMS_PASSWORD = "sramp.config.events.jms.password"; //$NON-NLS-1$
 
-    public static final String SRAMP_EVENTS_JMS_DEFAULT_USER = "srampjms";
+    public static final String SRAMP_EVENTS_JMS_DEFAULT_USER = "srampjms"; //$NON-NLS-1$
 
 }

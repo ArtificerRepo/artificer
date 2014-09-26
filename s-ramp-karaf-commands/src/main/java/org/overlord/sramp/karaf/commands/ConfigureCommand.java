@@ -56,11 +56,11 @@ public class ConfigureCommand extends AbstractConfigureCommand {
         usersProperties.load(new FileInputStream(srcFile));
         // Adding the jms user to the users.properties
         String encryptedPassword = "{CRYPT}" + DigestUtils.sha256Hex(randomSrampJmsPassword) + "{CRYPT}"; //$NON-NLS-1$ //$NON-NLS-2$
-        usersProperties.setProperty(ConfigureConstants.SRAMP_EVENTS_JMS_DEFAULT_USER, encryptedPassword); //$NON-NLS-1$
+        usersProperties.setProperty(ConfigureConstants.SRAMP_EVENTS_JMS_DEFAULT_USER, encryptedPassword);
         logger.debug(Messages.getString("configure.command.adding.user.end")); //$NON-NLS-1$
 
         // Adding to the admin user the sramp grants:
-        String adminUser = (String) usersProperties.get("admin");
+        String adminUser = (String) usersProperties.get("admin"); //$NON-NLS-1$
         adminUser += ",admin.sramp"; //$NON-NLS-1$
         usersProperties.setProperty("admin", adminUser); //$NON-NLS-1$
 
@@ -74,12 +74,12 @@ public class ConfigureCommand extends AbstractConfigureCommand {
         Properties srampProperties = new Properties();
         srampProperties.load(this.getClass().getClassLoader().getResourceAsStream("/sramp.properties")); //$NON-NLS-1$
         encryptedPassword = "${crypt:" + AesEncrypter.encrypt(randomSrampJmsPassword) + "}"; //$NON-NLS-1$ //$NON-NLS-2$
-        srampProperties.setProperty(ConfigureConstants.SRAMP_EVENTS_JMS_USER, ConfigureConstants.SRAMP_EVENTS_JMS_DEFAULT_USER); //$NON-NLS-1$
-        srampProperties.setProperty(ConfigureConstants.SRAMP_EVENTS_JMS_PASSWORD, encryptedPassword); //$NON-NLS-1$
-        File destFile = new File(karafConfigPath + ConfigureConstants.SRAMP_PROPERTIES_FILE_NAME); //$NON-NLS-1$
+        srampProperties.setProperty(ConfigureConstants.SRAMP_EVENTS_JMS_USER, ConfigureConstants.SRAMP_EVENTS_JMS_DEFAULT_USER);
+        srampProperties.setProperty(ConfigureConstants.SRAMP_EVENTS_JMS_PASSWORD, encryptedPassword);
+        File destFile = new File(karafConfigPath + ConfigureConstants.SRAMP_PROPERTIES_FILE_NAME);
         srampProperties.store(new FileOutputStream(destFile), ""); //$NON-NLS-1$
         String message = Messages.format("configure.command.new.user.added", ConfigureConstants.SRAMP_EVENTS_JMS_DEFAULT_USER); //$NON-NLS-1$
-        logger.info(message); //$NON-NLS-1$
+        logger.info(message);
         System.out.println(message);
         File dir = new File(karafConfigPath + "overlord-apps"); //$NON-NLS-1$
         if (!dir.exists()) {
