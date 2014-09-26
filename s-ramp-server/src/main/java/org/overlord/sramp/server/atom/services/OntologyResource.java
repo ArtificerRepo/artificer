@@ -157,7 +157,7 @@ public class OntologyResource extends AbstractResource {
             
 			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
             for (EventProducer eventProducer : eventProducers) {
-                eventProducer.ontologyUpdated(oldRDF, updatedRDF);
+                eventProducer.ontologyUpdated(updatedRDF, oldRDF);
             }
         } catch (Exception e) {
         	logError(logger, Messages.i18n.format("ERROR_UPDATING_ONTOLOGY", uuid), e); //$NON-NLS-1$

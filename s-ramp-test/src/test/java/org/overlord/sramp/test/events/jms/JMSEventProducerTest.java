@@ -36,6 +36,7 @@ import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.xml.namespace.QName;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
@@ -44,7 +45,10 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.events.ArtifactUpdateEvent;
+import org.overlord.sramp.events.OntologyUpdateEvent;
 import org.overlord.sramp.test.AbstractIntegrationTest;
+import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
+import org.w3._2002._07.owl_.Ontology;
 
 /**
  * @author Brett Meyer
@@ -65,7 +69,7 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
     private List<TextMessage> textMessages;
     
     @Test
-    public void testBasicTopic() throws Exception {
+    public void testArtifactTopic() throws Exception {
         textMessages = new ArrayList<TextMessage>();
         
         // 3 == create, update, delete
@@ -132,6 +136,90 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
         assertEquals(artifact.getExtendedType(), eventArtifact.getExtendedType());
         assertEquals(artifact.getName(), eventArtifact.getName());
         assertEquals(persistedArtifact.getDescription(), eventArtifact.getDescription());
+        
+        connection.close();
+    }
+    
+    @Test
+    public void testOntologyTopic() throws Exception {
+        textMessages = new ArrayList<TextMessage>();
+        
+        // 3 == create, update, delete
+        final CountDownLatch lock = new CountDownLatch(3);
+        
+        Connection connection = subscribe(lock);
+        
+        // create
+        SrampAtomApiClient client = client();
+        RDF rdf = new RDF();
+        rdf.getOtherAttributes().put(new QName("http://www.w3.org/XML/1998/namespace", "base"), "foo");
+        Ontology ontology = new Ontology();
+        ontology.setID("Color");
+        ontology.setLabel("Color");
+        rdf.setOntology(ontology);
+        org.w3._2002._07.owl_.Class clazz1 = new org.w3._2002._07.owl_.Class();
+        clazz1.setID("Red");
+        clazz1.setLabel("Red");
+        org.w3._2002._07.owl_.Class clazz2 = new org.w3._2002._07.owl_.Class();
+        clazz2.setID("Blue");
+        clazz2.setLabel("Blue");
+        rdf.getClazz().add(clazz1);
+        rdf.getClazz().add(clazz2);
+        RDF persistedRdf = client.addOntology(rdf);
+        
+        String uuid = persistedRdf.getOtherAttributes().get(
+                new QName("http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0", "uuid"));
+        
+        // update
+        persistedRdf.getOntology().setLabel("ColorUpdated");
+        client.updateOntology(uuid, persistedRdf);
+        
+        // delete
+        client.deleteOntology(uuid);
+        
+        lock.await(10000, TimeUnit.MILLISECONDS);
+        
+        assertEquals(3, textMessages.size());
+        
+        ObjectMapper mapper = new ObjectMapper();
+        
+        // sramp:ontologyCreated
+        TextMessage textMessage = textMessages.get(0);
+        assertNotNull(textMessage);
+        assertEquals("sramp:ontologyCreated", textMessage.getJMSType());
+        assertTrue(textMessage.getText() != null && textMessage.getText().length() > 0);
+        RDF eventRdf = mapper.readValue(textMessage.getText(), RDF.class);
+        assertNotNull(eventRdf);
+        assertEquals(rdf.getOntology().getID(), eventRdf.getOntology().getID());
+        assertEquals(rdf.getOntology().getLabel(), eventRdf.getOntology().getLabel());
+        assertEquals(2, eventRdf.getClazz().size());
+        assertEquals(clazz1.getID(), eventRdf.getClazz().get(0).getID());
+        assertEquals(clazz1.getLabel(), eventRdf.getClazz().get(0).getLabel());
+        assertEquals(clazz2.getID(), eventRdf.getClazz().get(1).getID());
+        assertEquals(clazz2.getLabel(), eventRdf.getClazz().get(1).getLabel());
+        
+        // sramp:ontologyUpdated
+        textMessage = textMessages.get(1);
+        assertNotNull(textMessage);
+        assertEquals("sramp:ontologyUpdated", textMessage.getJMSType());
+        assertTrue(textMessage.getText() != null && textMessage.getText().length() > 0);
+        OntologyUpdateEvent updateEvent = mapper.readValue(textMessage.getText(), OntologyUpdateEvent.class);
+        assertNotNull(updateEvent);
+        assertNotNull(updateEvent.getOldOntology());
+        assertNotNull(updateEvent.getUpdatedOntology());
+        assertEquals(rdf.getOntology().getID(), updateEvent.getOldOntology().getOntology().getID());
+        assertEquals(rdf.getOntology().getLabel(), updateEvent.getOldOntology().getOntology().getLabel());
+        assertEquals(rdf.getOntology().getID(), updateEvent.getUpdatedOntology().getOntology().getID());
+        assertEquals(persistedRdf.getOntology().getLabel(), updateEvent.getUpdatedOntology().getOntology().getLabel());
+        
+        // sramp:ontologyDeleted
+        textMessage = textMessages.get(2);
+        assertNotNull(textMessage);
+        assertEquals("sramp:ontologyDeleted", textMessage.getJMSType());
+        assertTrue(textMessage.getText() != null && textMessage.getText().length() > 0);
+        eventRdf = mapper.readValue(textMessage.getText(), RDF.class);
+        assertNotNull(eventRdf);
+        assertEquals(rdf.getOntology().getID(), eventRdf.getOntology().getID());
         
         connection.close();
     }
