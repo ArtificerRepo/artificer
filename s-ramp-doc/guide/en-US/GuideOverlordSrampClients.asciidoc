@@ -126,4 +126,253 @@ file named:
   
 The contents of the file should be a single line with the fully qualified 
 Java classname of the provider implementation.
+
+
+JMS Client
+~~~~~~~~~~
+
+Overlord S-RAMP publishes JMS messages to both topics and queues for several types of events.  The type of event
+is designated by the JMSType header field.  All events carry the relevant object marshalled into a JSON payload.
+
+Installation and Setup
+^^^^^^^^^^^^^^^^^^^^^^
+
+The 'sramp.properties' configuration file contains 3 properties relevant to the JMS setup:
+
+----
+# By default, S-RAMP publishes events through the "sramp/events/topic" JMS topic name (JNDI).  But, it will also publish
+# to any other names listed here (comma-delimited).
+sramp.config.events.jms.topics = sramp/events/topic
+# In addition to the above topics, S-RAMP will also publish non-expiring events to any JMS queue names (JNDI)
+# listed here (comma-delimited).
+sramp.config.events.jms.queues = 
+# If S-RAMP is running on a non-JavaEE server, or a server where JMS/JNDI is not properly configured, it will start
+# an embedded ActiveMQ broker over TCP.  The property controls that port.
+sramp.config.events.jms.embedded-activemq-port = 61616
+----
+
+S-RAMP supports three JMS environments:
+
+* When S-RAMP is installed in EAP by using our installation script, JMS is configured automatically.  The existing
+HornetQ configuration is modified to add the default topic, described above, and all necessary credentials.
+Users can add additional topics/queues to their framework, then add them to 'sramp.properties' (see above).
+* For other EE platforms, S-RAMP will always attempt to discover a JMS 'ConnectionFactory' and all
+configured topics/queues through JNDI.  If found, it will simply use that existing framework and setup.
+Users can add additional topics/queues to their framework, then add them to 'sramp.properties' (see above).
+* If the no existing JMS setup is discovered, S-RAMP kicks off an embedded ActiveMQ broker over TCP.  Then, all
+configured topics and queues are created automatically.  External clients can connect to this broker in one of two ways:
+** The ActiveMQ broker provides a lightweight JNDI implementation and automatically exposes the ConnectionFactory
+   (literally named "ConnectionFactory"). To expose the topics/queues, the *client app* needs to include a
+   'jndi.properties' file (and ActiveMQ jars) on the classpath. The contents of that file should contain something like
+   'topic.[jndi name] = [activemq topic name]'. '[jndi name]' is then available to the client. Other than that
+   properties file, the client is able to use generic JNDI and JMS without any ActiveMQ APIs.
+** Simply use the ActiveMQ libraries and API
+
+TIP: If your existing JMS framework requires authentication, S-RAMP will automatically use proper credentials.
+Therefore, it's vital to include the 'overlorduser' role in the JMS security settings.
+
+Artifact JMS Events
+^^^^^^^^^^^^^^^^^^^
+
+[width="50%",options="header"]
+|=============================
+|#Event#              |#JMSType Header#          |#Payload#
+|Artifact Created     |sramp:artifactCreated     |Artifact JSON
+|Artifact Updated     |sramp:artifactUpdated     |Old/New Artifacts JSON
+|Artifact Deleted     |sramp:artifactDeleted     |Artifact JSON
+|=============================
+
+These events carry the artifacts, marshalled into JSON, as payloads.  Note that these can be easily unmarshalled
+back into the s-ramp-api module's Java bindings.  Here's a brief example using Jackson:
+
+----
+// The TextMessage is received through a typical JMS MessageListener.
+TextMessage textMessage = ...;
+ObjectMapper mapper = new ObjectMapper();
+ExtendedArtifactType eventArtifact = mapper.readValue(textMessage.getText(), ExtendedArtifactType.class);
+----
+
+'Example Artifact Created JSON'
+----
+{
+  "classifiedBy":[
+
+  ],
+  "relationship":[
+
+  ],
+  "property":[
+
+  ],
+  "artifactType":"EXTENDED_ARTIFACT_TYPE",
+  "name":"Foo",
+  "description":"created",
+  "createdBy":"admin",
+  "version":null,
+  "uuid":"cd0d16c6-cee0-41fa-ad53-47d4e48947fb",
+  "createdTimestamp":1411744515668,
+  "lastModifiedTimestamp":1411744515668,
+  "lastModifiedBy":"admin",
+  "otherAttributes":{
+    "{http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0}derived":"false",
+    "{http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0}contentType":"application/xml"
+  },
+  "extendedType":"FooArtifactType"
+}
+----
+
+artifactUpdated takes the payload a step further and includes both the original and the revised artifacts.
+
+'Example Artifact Updated JSON'
+----
+{
+  "updatedArtifact":{
+    "@class":"org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType",
+    "classifiedBy":[
+
+    ],
+    "relationship":[
+
+    ],
+    "property":[
+
+    ],
+    "artifactType":"EXTENDED_ARTIFACT_TYPE",
+    "name":"Foo",
+    "description":"updated",
+    "createdBy":"admin",
+    "version":null,
+    "uuid":"cd0d16c6-cee0-41fa-ad53-47d4e48947fb",
+    "createdTimestamp":1411744515668,
+    "lastModifiedTimestamp":1411744516142,
+    "lastModifiedBy":"admin",
+    "otherAttributes":{
+      "{http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0}derived":"false",
+      "{http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0}contentType":"application/xml"
+    },
+    "extendedType":"FooArtifactType"
+  },
+  "oldArtifact":{
+    "@class":"org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType",
+    "classifiedBy":[
+
+    ],
+    "relationship":[
+
+    ],
+    "property":[
+
+    ],
+    "artifactType":"EXTENDED_ARTIFACT_TYPE",
+    "name":"Foo",
+    "description":"created",
+    "createdBy":"admin",
+    "version":null,
+    "uuid":"cd0d16c6-cee0-41fa-ad53-47d4e48947fb",
+    "createdTimestamp":1411744515668,
+    "lastModifiedTimestamp":1411744515668,
+    "lastModifiedBy":"admin",
+    "otherAttributes":{
+      "{http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0}derived":"false",
+      "{http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0}contentType":"application/xml"
+    },
+    "extendedType":"FooArtifactType"
+  }
+}
+----
+
+Ontology JMS Events
+^^^^^^^^^^^^^^^^^^^
+
+[width="50%",options="header"]
+|=============================
+|#Event#              |#JMSType Header#          |#Payload#
+|Ontology Created     |sramp:ontologyCreated     |Ontology JSON
+|Ontology Updated     |sramp:ontologyUpdated     |Old/New Ontologies JSON
+|Ontology Deleted     |sramp:ontologyDeleted     |Ontology JSON
+|=============================
+
+These events work similarly to Artifacts, but carry the ontology payload using the s-ramp-api module's
+binding: RDF.
+
+'Example Ontology Created JSON'
+----
+{
+  "ontology":{
+    "label":"Color",
+    "comment":null,
+    "id":"Color"
+  },
+  "clazz":[
+    {
+      "subClassOf":null,
+      "label":"Red",
+      "comment":null,
+      "id":"Red"
+    },
+    {
+      "subClassOf":null,
+      "label":"Blue",
+      "comment":null,
+      "id":"Blue"
+    }
+  ],
+  "otherAttributes":{
+    "{http://www.w3.org/XML/1998/namespace}base":"foo"
+  }
+}
+----
+
+'Example Ontology Updated JSON'
+----
+{
+  "updatedOntology":{
+    "ontology":{
+      "label":"ColorUpdated",
+      "comment":null,
+      "id":"Color"
+    },
+    "clazz":[
+      {
+        "subClassOf":null,
+        "label":"Red",
+        "comment":null,
+        "id":"Red"
+      },
+      {
+        "subClassOf":null,
+        "label":"Blue",
+        "comment":null,
+        "id":"Blue"
+      }
+    ],
+    "otherAttributes":{
+      "{http://www.w3.org/XML/1998/namespace}base":"foo"
+    }
+  },
+  "oldOntology":{
+    "ontology":{
+      "label":"Color",
+      "comment":null,
+      "id":"Color"
+    },
+    "clazz":[
+      {
+        "subClassOf":null,
+        "label":"Red",
+        "comment":null,
+        "id":"Red"
+      },
+      {
+        "subClassOf":null,
+        "label":"Blue",
+        "comment":null,
+        "id":"Blue"
+      }
+    ],
+    "otherAttributes":{
+      "{http://www.w3.org/XML/1998/namespace}base":"foo"
+    }
+  }
+}
 ----
