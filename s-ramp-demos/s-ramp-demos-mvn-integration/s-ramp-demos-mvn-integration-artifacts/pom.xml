@@ -23,6 +23,7 @@
       <extension>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-wagon</artifactId>
+        <version>${project.version}</version>
       </extension>
     </extensions>
     <plugins>
@@ -64,6 +65,25 @@
     </profile>
     <profile>
       <id>demo</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+              <skip>false</skip>
+            </configuration>
+          </plugin>
+          <!-- Prevent this from being installed locally, in order to show the web project downloading it from
+          the S-RAMP wagon. -->
+          <plugin>
+            <artifactId>maven-install-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
       <distributionManagement>
         <repository>
           <id>local-sramp-repo</id>

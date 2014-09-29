@@ -75,12 +75,7 @@ Maven artifact from within the S-RAMP repository UI.
 # Depending on an artifact deployed to S-RAMP
 
 Now that the 'artifacts' JAR is safely tucked away in the S-RAMP repository, the 'app' project 
-(which depends on the 'artifacts' JAR) can be built.  But first, make sure you don't already 
-have the 'artifacts' JAR installed in your local .m2 repository!
-
-Delete the 'artifacts' JAR from your local .m2 repository:
-
-	$ rm -rf ~/.m2/repository/org/overlord/sramp/demos/s-ramp-demos-mvn-integration-artifacts
+(which depends on the 'artifacts' JAR) can be built.
 
 Ok great, now go ahead and build the 'app':
 

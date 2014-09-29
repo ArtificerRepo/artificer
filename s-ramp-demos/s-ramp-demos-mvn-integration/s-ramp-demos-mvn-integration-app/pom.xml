@@ -10,7 +10,7 @@
 
   <artifactId>s-ramp-demos-mvn-integration-app</artifactId>
   <name>S-RAMP Demos: Maven Integration - App</name>
-
+  
   <dependencies>
     <!-- Depends on the Artifacts library -->
     <dependency>
@@ -24,6 +24,7 @@
       <extension>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-wagon</artifactId>
+        <version>${project.version}</version>
       </extension>
     </extensions>
   </build>
@@ -49,6 +50,7 @@
     </profile>
     <profile>
       <id>demo</id>
+      <!-- Download the artifacts jar from the wagon. -->
       <repositories>
         <repository>
           <id>local-sramp-repo</id>

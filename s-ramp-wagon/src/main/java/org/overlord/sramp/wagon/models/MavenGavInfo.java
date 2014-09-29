@@ -132,10 +132,14 @@ public class MavenGavInfo {
 			int vidx = w.indexOf(v2) + v2.length() + 1;
 			if (vidx < w.length()) {
 				w = w.substring(vidx);
+				// can be something like nnnnnnnn.nnnnnn-n-sources or nnnnnnnn.nnnnnn-n-test-sources
 				String [] split = w.split("-"); //$NON-NLS-1$
 				if (split.length == 3) {
 					classifier = split[2];
 				}
+				else if (split.length == 4) {
+                    classifier = split[2] + "-" + split[3]; //$NON-NLS-1$
+                }
 			}
 		}
 
