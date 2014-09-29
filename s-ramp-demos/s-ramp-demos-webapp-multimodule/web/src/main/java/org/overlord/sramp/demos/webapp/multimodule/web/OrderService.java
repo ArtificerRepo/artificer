@@ -14,40 +14,41 @@
 
 package org.overlord.sramp.demos.webapp.multimodule.web;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.overlord.sramp.demos.webapp.multimodule.artifacts.Order;
 import org.overlord.sramp.demos.webapp.multimodule.artifacts.OrderAck;
 
-@Path("/orderService")
-public class OrderService {
+public class OrderService extends HttpServlet {
     
+    private int idCounter = 0;
+
     private int totalQuantity = 5;
-    
-    @POST
-    public String submitOrder(@QueryParam("id") Integer id, @QueryParam("quantity") Integer quantity) {
-        Order order = new Order().setOrderId(id).setQuantity(quantity);
-        
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
+        Order order = new Order().setOrderId(idCounter++).setQuantity(1);
+
         // Create an order ack
         OrderAck orderAck = new OrderAck();
         // Check the inventory
         // Check quantity on hand and generate the ack
-        if (order.getQuantity() > totalQuantity) {
+        if (order.getQuantity() < totalQuantity) {
             orderAck.setAccepted(true).setStatus("Order Accepted");
             totalQuantity--;
-            
+
             // "Do stuff" with the Order...
         } else {
             orderAck.setAccepted(false).setStatus("Insufficient Quantity");
         }
-        return orderAck.toString();
-    }
-    
-    @GET
-    public String totalQuantity() {
-        return totalQuantity + "";
+        PrintWriter out = resp.getWriter();
+        out.println(orderAck.toString());
     }
 }
