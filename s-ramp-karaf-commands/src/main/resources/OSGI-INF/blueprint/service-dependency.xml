@@ -6,7 +6,7 @@
         </command>    
     </command-bundle>
     <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.0.0">
-        <command name="overlord:s-ramp:configure-fabric">
+        <command name="overlord:fabric:s-ramp:configure">
             <action class="org.overlord.sramp.karaf.commands.ConfigureFabricCommand"/>
         </command>    
     </command-bundle>    
