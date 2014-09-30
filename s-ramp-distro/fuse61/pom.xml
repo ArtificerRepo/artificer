@@ -283,6 +283,7 @@
                   <excludes>
                     <exclude>org.overlord.sramp:s-ramp-*:*</exclude>
                     <exclude>org.overlord:overlord-commons-*:*</exclude>
+                    <exclude>org.jboss.spec.javax.el:jboss-el-api*:*</exclude>
                   </excludes>
                   <bundles>
                     <!-- TODO: overlord-commons-maven-plugin isn't picking this up.  For now, be explicit. -->

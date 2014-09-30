@@ -62,10 +62,9 @@ public class ConfigureFabricCommand extends AbstractConfigureFabricCommand {
      *
      * @return the fuse config path
      */
-    @Override
-    public String getFabricProfilePath() {
+    public String getSrampFabricProfilePath() {
         StringBuilder fuse_config_path = new StringBuilder();
-        fuse_config_path.append(getFabricProfilesePath()).append(SRAMP_PROFILE_PATH).append(File.separator);
+        fuse_config_path.append(getFabricProfilesPath()).append(SRAMP_PROFILE_PATH).append(File.separator);
         return fuse_config_path.toString();
     }
 
@@ -106,7 +105,7 @@ public class ConfigureFabricCommand extends AbstractConfigureFabricCommand {
      */
     private String getSrampPropertiesFilePath() {
         StringBuilder fuse_config_path = new StringBuilder();
-        fuse_config_path.append(getFabricProfilePath()).append(ConfigureConstants.SRAMP_PROPERTIES_FILE_NAME);
+        fuse_config_path.append(getSrampFabricProfilePath()).append(ConfigureConstants.SRAMP_PROPERTIES_FILE_NAME);
         return fuse_config_path.toString();
     }
 

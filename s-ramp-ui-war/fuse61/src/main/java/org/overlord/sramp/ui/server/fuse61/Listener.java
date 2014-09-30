@@ -75,7 +75,9 @@ public class Listener implements ServletListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
+        swapper = new ContextClassLoaderSwapper();
         delegate.contextInitialized(arg0);
+        swapper.restore();
     }
 
     /**
