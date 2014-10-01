@@ -18,6 +18,7 @@ package org.overlord.sramp.karaf.commands;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.felix.gogo.commands.Command;
@@ -52,7 +53,7 @@ public class ConfigureFabricCommand extends AbstractConfigureFabricCommand {
     @Override
     protected Object doExecute() throws Exception {
         super.doExecute();
-
+        addHeaderProperties();
         updateSrampProperties();
         return null;
     }
@@ -107,6 +108,43 @@ public class ConfigureFabricCommand extends AbstractConfigureFabricCommand {
         StringBuilder fuse_config_path = new StringBuilder();
         fuse_config_path.append(getSrampFabricProfilePath()).append(ConfigureConstants.SRAMP_PROPERTIES_FILE_NAME);
         return fuse_config_path.toString();
+    }
+
+    /**
+     * Adds the header properties.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    private void addHeaderProperties() throws Exception {
+
+        String filePath = getOverlordPropertiesFilePath();
+
+        Properties props = new Properties();
+        InputStream is = null;
+        try {
+            is = new FileInputStream(new File(filePath));
+            props.load(is);
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+        }
+
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(filePath);
+            props.setProperty(ConfigureConstants.SRAMP_HEADER_HREF, ConfigureConstants.SRAMP_HEADER_HREF_VALUE);
+            props.setProperty(ConfigureConstants.SRAMP_HEADER_LABEL, ConfigureConstants.SRAMP_HEADER_LABEL_VALUE);
+            props.setProperty(ConfigureConstants.SRAMP_HEADER_PRIMARY_BRAND, ConfigureConstants.SRAMP_HEADER_PRIMARY_BRAND_VALUE);
+            props.setProperty(ConfigureConstants.SRAMP_HEADER_SECOND_BRAND, ConfigureConstants.SRAMP_HEADER_SECOND_BRAND_VALUE);
+            props.store(out, null);
+
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+        }
     }
 
 }

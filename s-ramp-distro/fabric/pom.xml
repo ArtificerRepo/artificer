@@ -28,7 +28,6 @@
             <includes>
               <include>sramp-ui.properties</include>
               <include>sramp-modeshape-fuse.json</include>
-              <include>srampui-overlordapp.properties</include>
             </includes>
             <filtering>true</filtering>
       </resource>
