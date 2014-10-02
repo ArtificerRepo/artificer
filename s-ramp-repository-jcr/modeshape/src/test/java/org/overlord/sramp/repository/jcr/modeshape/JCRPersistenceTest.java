@@ -542,6 +542,15 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         query.setString(document.getUuid());
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertEquals(0, artifactSet.size());
+        
+        // Ensure we can re-create an artifact w/ the same UUID, then delete it again without same-name collisions
+        // in the trash folder.
+        pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
+        BaseArtifactType artifact2 = persistenceManager.persistArtifact(document, pdf);
+        Assert.assertEquals(artifact.getUuid(), artifact2.getUuid());
+        persistenceManager.deleteArtifact(document.getUuid(), at);
+        deleted = persistenceManager.getArtifact(document.getUuid(), at);
+        Assert.assertNull(deleted);
     }
 
 

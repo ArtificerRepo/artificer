@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -408,14 +409,14 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
             }
-
+            
             // Move the node to the trash.
             String srcPath = artifactNode.getPath();
-            String trashPath = MapToJCRPath.getTrashPath(srcPath);
+            String parentTrashPath = MapToJCRPath.getTrashPath(srcPath);
+            // Append "/[timestamp]" to the trash path.  This allows users to deploy another artifact with the
+            // same UUID, then delete it later on without "same name siblings" collisions in the trash.
+            String trashPath = parentTrashPath + "/" + Calendar.getInstance().getTimeInMillis(); //$NON-NLS-1$
 
-            // Ensure that the destination parent path exists
-            String parentSrcPath = artifactNode.getParent().getPath();
-            String parentTrashPath = MapToJCRPath.getTrashPath(parentSrcPath);
             JCRUtils jcrUtils = new JCRUtils();
             jcrUtils.findOrCreateNode(session, parentTrashPath, "nt:folder"); //$NON-NLS-1$
             // Move the jcr node
