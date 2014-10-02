@@ -127,9 +127,6 @@
 - sramp:extendedType (string) mandatory
 + * (sramp:extendedDerivedArtifactType)
 
-[sramp:storedQuery] > nt:query
-- sramp:propertyList (string) multiple
-
 
 // -------------------------------------------------------
 // S-RAMP XSD Model Artifacts
@@ -227,10 +224,112 @@
 [sramp:soapAddress] > sramp:wsdlExtension mixin
 - sramp:soapLocation (string)
 
+
 // -------------------------------------------------------
 // S-RAMP Policy Model Artifacts
 // -------------------------------------------------------
 [sramp:policyDocument] > sramp:xmlDocument mixin
+
+
+// -------------------------------------------------------
+// S-RAMP SOA Artifacts
+// -------------------------------------------------------
+[sramp:extensionType]
+// TODO (if this is needed, use * nt:base): protected List<Object> any;
+// TODO: private Map<QName, String> otherAttributes = new HashMap<QName, String>();
+
+[sramp:soaModelType] > sramp:baseArtifactType abstract mixin
+- sramp:documentation (reference) < 'sramp:baseArtifactType'
+
+[sramp:effect] > sramp:soaModelType mixin
+
+[sramp:event] > sramp:soaModelType mixin
+
+[sramp:informationType] > sramp:soaModelType mixin
+
+[sramp:policy] > sramp:soaModelType mixin
+- sramp:appliesTo (reference) multiple < 'sramp:baseArtifactType'
+
+[sramp:policySubject] > sramp:soaModelType mixin
+
+[sramp:element] > sramp:policySubject mixin
+- sramp:represents (reference) multiple < 'sramp:baseArtifactType'
+- sramp:uses (reference) multiple < 'sramp:baseArtifactType'
+- sramp:performs (reference) multiple < 'sramp:baseArtifactType'
+- sramp:directsOrchestration (reference) < 'sramp:baseArtifactType'
+- sramp:directsOrchestrationProcess (reference) < 'sramp:baseArtifactType'
+- sramp:generates (reference) multiple < 'sramp:baseArtifactType'
+- sramp:respondsTo (reference) multiple < 'sramp:baseArtifactType'
+
+[sramp:actor] > sramp:element mixin
+- sramp:does (reference) multiple < 'sramp:baseArtifactType'
+- sramp:setsPolicy (reference) multiple < 'sramp:baseArtifactType'
+
+[sramp:organization] > sramp:actor mixin
+- sramp:provides (reference) multiple < 'sramp:baseArtifactType'
++ sramp:extension (sramp:extensionType)
+- sramp:end (string)
+// TODO (if this is needed, use * nt:base): protected List<Object> any;
+
+[sramp:service] > sramp:element mixin
+- sramp:hasContract (reference) multiple < 'sramp:baseArtifactType'
+- sramp:hasInterface (reference) multiple < 'sramp:baseArtifactType'
+- sramp:hasInstance (reference) < 'sramp:baseArtifactType'
+
+[sramp:system] > sramp:element mixin
+
+[sramp:composition] > sramp:system mixin
+
+[sramp:choreography] > sramp:composition mixin
+
+[sramp:collaboration] > sramp:composition mixin
+
+[sramp:orchestration] > sramp:composition mixin
+
+[sramp:process] > sramp:composition mixin
+
+[sramp:choreographyProcess] > sramp:process mixin
+
+[sramp:collaborationProcess] > sramp:process mixin
+
+[sramp:orchestrationProcess] > sramp:process mixin
+
+[sramp:serviceComposition] > sramp:composition mixin
+
+[sramp:task] > sramp:element mixin
+
+[sramp:serviceContract] > sramp:policySubject mixin
+- sramp:involvesParty (reference) multiple < 'sramp:baseArtifactType'
+- sramp:specifies (reference) multiple < 'sramp:baseArtifactType'
+
+[sramp:serviceInterface] > sramp:soaModelType mixin
+// TODO: #interfaceDefinedBy should be a target, but is incorrectly an actual artifact -- skip until corrected in spec
+- sramp:hasOperation (reference) < 'sramp:baseArtifactType'
+- sramp:hasOutput (reference) multiple < 'sramp:baseArtifactType'
+- sramp:hasInput (reference) multiple < 'sramp:baseArtifactType'
+- sramp:isInterfaceOf (reference) multiple < 'sramp:baseArtifactType'
+
+
+// -------------------------------------------------------
+// S-RAMP Service Implementation Artifacts
+// -------------------------------------------------------
+[sramp:serviceImplementationModelType] > sramp:baseArtifactType abstract mixin
+- sramp:documentation (reference) < 'sramp:baseArtifactType'
+// the following are not actually on serviceImplementationModelType, but including here for convenience
+- sramp:end (string)
++ sramp:extension (sramp:extensionType)
+// TODO (if this is needed, use * nt:base): protected List<Object> any;
+
+[sramp:serviceEndpoint] > sramp:serviceImplementationModelType mixin
+- sramp:endpointDefinedBy (reference) < 'sramp:baseArtifactType'
+- sramp:url (string)
+
+[sramp:serviceInstance] > sramp:serviceImplementationModelType mixin
+- sramp:uses (reference) multiple < 'sramp:baseArtifactType'
+- sramp:describedBy (reference) multiple < 'sramp:baseArtifactType'
+
+[sramp:serviceOperation] > sramp:serviceImplementationModelType mixin
+- sramp:operationDefinedBy (reference) < 'sramp:baseArtifactType'
 
 
 // -------------------------------------------------------
