@@ -24,6 +24,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.overlord.sramp.common.ontology.SrampOntology;
+import org.overlord.sramp.repository.jcr.JCRConstants;
 
 /**
  * Reads an ontology from the given JCR node.
@@ -39,19 +40,19 @@ public class JCRNodeToOntology {
 	 * @throws RepositoryException
 	 */
 	public void read(SrampOntology ontology, Node jcrNode) throws RepositoryException {
-		ontology.setUuid(JCRMapperUtil.getPropertyString(jcrNode, "sramp:uuid")); //$NON-NLS-1$
-		ontology.setLabel(JCRMapperUtil.getPropertyString(jcrNode, "sramp:label")); //$NON-NLS-1$
-		ontology.setComment(JCRMapperUtil.getPropertyString(jcrNode, "sramp:comment")); //$NON-NLS-1$
-		ontology.setBase(JCRMapperUtil.getPropertyString(jcrNode, "sramp:base")); //$NON-NLS-1$
-		ontology.setId(JCRMapperUtil.getPropertyString(jcrNode, "sramp:id")); //$NON-NLS-1$
-		ontology.setCreatedBy(JCRMapperUtil.getPropertyString(jcrNode, "jcr:createdBy")); //$NON-NLS-1$
-		ontology.setLastModifiedBy(JCRMapperUtil.getPropertyString(jcrNode, "jcr:lastModifiedBy")); //$NON-NLS-1$
-		if (jcrNode.hasProperty("jcr:created")) { //$NON-NLS-1$
-			Date d = jcrNode.getProperty("jcr:created").getDate().getTime(); //$NON-NLS-1$
+		ontology.setUuid(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_UUID));
+		ontology.setLabel(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_LABEL));
+		ontology.setComment(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_COMMENT));
+		ontology.setBase(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_BASE));
+		ontology.setId(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_ID));
+		ontology.setCreatedBy(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.JCR_CREATED_BY));
+		ontology.setLastModifiedBy(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.JCR_LAST_MODIFIED_BY));
+		if (jcrNode.hasProperty(JCRConstants.JCR_CREATED)) {
+			Date d = jcrNode.getProperty(JCRConstants.JCR_CREATED).getDate().getTime();
 			ontology.setCreatedOn(d);
 		}
-		if (jcrNode.hasProperty("jcr:lastModified")) { //$NON-NLS-1$
-			Date d = jcrNode.getProperty("jcr:lastModified").getDate().getTime(); //$NON-NLS-1$
+		if (jcrNode.hasProperty(JCRConstants.JCR_LAST_MODIFIED)) {
+			Date d = jcrNode.getProperty(JCRConstants.JCR_LAST_MODIFIED).getDate().getTime();
 			ontology.setLastModifiedOn(d);
 		}
 
@@ -74,13 +75,13 @@ public class JCRNodeToOntology {
 		SrampOntology.SrampOntologyClass rval = new SrampOntology.SrampOntologyClass();
 
 		try {
-			rval.setUri(new URI(JCRMapperUtil.getPropertyString(jcrNode, "sramp:uri"))); //$NON-NLS-1$
+			rval.setUri(new URI(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_URI)));
 		} catch (URISyntaxException e) {
 			throw new RepositoryException(e);
 		}
-		rval.setId(JCRMapperUtil.getPropertyString(jcrNode, "sramp:id")); //$NON-NLS-1$
-		rval.setLabel(JCRMapperUtil.getPropertyString(jcrNode, "sramp:label")); //$NON-NLS-1$
-		rval.setComment(JCRMapperUtil.getPropertyString(jcrNode, "sramp:comment")); //$NON-NLS-1$
+		rval.setId(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_ID));
+		rval.setLabel(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_LABEL));
+		rval.setComment(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_COMMENT));
 
 		NodeIterator nodes = jcrNode.getNodes();
 		while (nodes.hasNext()) {

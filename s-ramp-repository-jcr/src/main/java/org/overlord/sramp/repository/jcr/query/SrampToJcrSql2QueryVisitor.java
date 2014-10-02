@@ -55,35 +55,35 @@ import org.overlord.sramp.repository.jcr.i18n.Messages;
  */
 public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 
-	private static QName CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAnyOf"); //$NON-NLS-1$
-	private static QName CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAllOf"); //$NON-NLS-1$
-	private static QName EXACTLY_CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAnyOf"); //$NON-NLS-1$
-	private static QName EXACTLY_CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAllOf"); //$NON-NLS-1$
-    private static QName MATCHES = new QName("http://www.w3.org/2005/xpath-functions", "matches"); //$NON-NLS-1$ //$NON-NLS-2$
-    private static QName NOT = new QName("http://www.w3.org/2005/xpath-functions", "not"); //$NON-NLS-1$ //$NON-NLS-2$
+	private static QName CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAnyOf");
+	private static QName CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAllOf");
+	private static QName EXACTLY_CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAnyOf");
+	private static QName EXACTLY_CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAllOf");
+    private static QName MATCHES = new QName("http://www.w3.org/2005/xpath-functions", "matches");
+    private static QName NOT = new QName("http://www.w3.org/2005/xpath-functions", "not");
 	private static Map<QName, String> corePropertyMap = new HashMap<QName, String>();
 	static {
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "createdBy"), "jcr:createdBy"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "version"), "version"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "uuid"), "sramp:uuid"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "createdTimestamp"), "jcr:created"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "lastModifiedTimestamp"), "jcr:lastModified"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "lastModifiedBy"), "jcr:lastModifiedBy"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "description"), "sramp:description"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "name"), "sramp:name"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentType"), "sramp:contentType"); //$NON-NLS-1$ //$NON-NLS-2$
-        corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentSize"), "sramp:contentSize"); //$NON-NLS-1$ //$NON-NLS-2$
-        corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentHash"), "sramp:contentHash"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentEncoding"), "sramp:contentEncoding"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "extendedType"), "sramp:extendedType"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "ncName"), "sramp:ncName"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "namespace"), "sramp:namespace"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "targetNamespace"), "sramp:targetNamespace"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "style"), "sramp:style"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "transport"), "sramp:transport"); //$NON-NLS-1$ //$NON-NLS-2$
-		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "soapLocation"), "sramp:soapLocation"); //$NON-NLS-1$ //$NON-NLS-2$
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "createdBy"), JCRConstants.JCR_CREATED_BY);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "version"), "version");
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "uuid"), JCRConstants.SRAMP_UUID);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "createdTimestamp"), JCRConstants.JCR_CREATED);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "lastModifiedTimestamp"), JCRConstants.JCR_LAST_MODIFIED);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "lastModifiedBy"), JCRConstants.JCR_LAST_MODIFIED_BY);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "description"), JCRConstants.SRAMP_DESCRIPTION);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "name"), JCRConstants.SRAMP_NAME);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentType"), JCRConstants.SRAMP_CONTENT_TYPE);
+        corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentSize"), JCRConstants.SRAMP_CONTENT_SIZE);
+        corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentHash"), JCRConstants.SRAMP_CONTENT_HASH);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "contentEncoding"), JCRConstants.SRAMP_CONTENT_ENCODING);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "extendedType"), JCRConstants.SRAMP_EXTENDED_TYPE);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "ncName"), JCRConstants.SRAMP_NC_NAME);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "namespace"), JCRConstants.SRAMP_NAMESPACE);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "targetNamespace"), JCRConstants.SRAMP_TARGET_NAMESPACE);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "style"), JCRConstants.SRAMP_STYLE);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "transport"), JCRConstants.SRAMP_TRANSPORT);
+		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "soapLocation"), JCRConstants.SRAMP_SOAP_LOCATION);
 
-        corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "derived"), "sramp:derived"); //$NON-NLS-1$ //$NON-NLS-2$
+        corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "derived"), JCRConstants.SRAMP_DERIVED);
 	}
 	
 	private String selectAlias;
@@ -96,7 +96,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	private int artifactJoinCounter = 1;
 	private ClassificationHelper classificationHelper;
 	private String lastFPS = null;
-    private Pattern datePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d"); //$NON-NLS-1$
+    private Pattern datePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d");
 	private SrampException error;
 
 	/**
@@ -121,19 +121,19 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	    if (this.error != null) {
 	        throw this.error;
 	    }
-		String query = "SELECT " + selectAlias + ".* FROM " + fromBuilder.toString(); //$NON-NLS-1$ //$NON-NLS-2$
+		String query = "SELECT " + selectAlias + ".* FROM " + fromBuilder.toString();
 		String where = whereBuilder.toString() + notDeletedFilter;
 		if (where.length() > 0) {
-		    if (where.startsWith("AND")) { //$NON-NLS-1$
+		    if (where.startsWith("AND")) {
 		        where = where.substring(4);
-		    } else if (where.startsWith(" AND")) { //$NON-NLS-1$
+		    } else if (where.startsWith(" AND")) {
                 where = where.substring(5);
-            } else if (where.startsWith("OR")) { //$NON-NLS-1$
+            } else if (where.startsWith("OR")) {
                 where = where.substring(3);
-            } else if (where.startsWith(" OR")) { //$NON-NLS-1$
+            } else if (where.startsWith(" OR")) {
                 where = where.substring(4);
 		    }
-		    query = query  + " WHERE " + where; //$NON-NLS-1$
+		    query = query  + " WHERE " + where;
 		}
 		return query;
 	}
@@ -146,13 +146,13 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	    this.error = null;
 	    selectAlias = newArtifactAlias();
 	    this.artifactPredicateContext = selectAlias;
-		this.fromBuilder.append("[sramp:baseArtifactType] AS " + selectAlias); //$NON-NLS-1$
+		this.fromBuilder.append("[sramp:baseArtifactType] AS " + selectAlias);
 		this.notDeletedFilter = JCRConstants.NOT_DELETED_FILTER;
 		node.getArtifactSet().accept(this);
 		if (node.getPredicate() != null) {
-			this.whereBuilder.append(" AND ("); //$NON-NLS-1$
+			this.whereBuilder.append(" AND (");
 			node.getPredicate().accept(this);
-			this.whereBuilder.append(")"); //$NON-NLS-1$
+			this.whereBuilder.append(")");
 		}
 		if (node.getSubartifactSet() != null) {
 		    SubartifactSet subartifactSet = node.getSubartifactSet();
@@ -163,36 +163,36 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		        // Add the JOIN on the relationship
                 String oldRelationshipPredicateContext = this.relationshipPredicateContext;
 		        this.relationshipPredicateContext = relationshipAlias;
-		        this.whereBuilder.append(" AND "); //$NON-NLS-1$
+		        this.whereBuilder.append(" AND ");
 		        subartifactSet.getRelationshipPath().accept(this);
                 this.relationshipPredicateContext = oldRelationshipPredicateContext;
 
 		        // Now add another JOIN back around on the "artifact table"
-                this.fromBuilder.append(" JOIN [sramp:baseArtifactType] AS "); //$NON-NLS-1$
+                this.fromBuilder.append(" JOIN [sramp:baseArtifactType] AS ");
                 this.fromBuilder.append(artifactAlias);
-                this.fromBuilder.append(" ON "); //$NON-NLS-1$
+                this.fromBuilder.append(" ON ");
                 this.fromBuilder.append(relationshipAlias);
-                this.fromBuilder.append(".[sramp:relationshipTarget] = "); //$NON-NLS-1$
+                this.fromBuilder.append(".[sramp:relationshipTarget] = ");
                 this.fromBuilder.append(artifactAlias);
-                this.fromBuilder.append(".[jcr:uuid]"); //$NON-NLS-1$
+                this.fromBuilder.append(".[jcr:uuid]");
 
                 // Now add any additional predicates included.
 		        if (subartifactSet.getPredicate() != null) {
 		            String oldArtifactPredicateContext = this.artifactPredicateContext;
 		            this.artifactPredicateContext = artifactAlias;
-		            this.whereBuilder.append(" AND ("); //$NON-NLS-1$
+		            this.whereBuilder.append(" AND (");
 		            subartifactSet.getPredicate().accept(this);
-		            this.whereBuilder.append(")"); //$NON-NLS-1$
+		            this.whereBuilder.append(")");
                     this.artifactPredicateContext = oldArtifactPredicateContext;
 		        }
 
                 this.selectAlias = artifactAlias;
 		    }
 		    if (subartifactSet.getFunctionCall() != null) {
-		          throw new RuntimeException(Messages.i18n.format("XP_SUBARTIFACTSET_NOT_SUPPORTED")); //$NON-NLS-1$
+		          throw new RuntimeException(Messages.i18n.format("XP_SUBARTIFACTSET_NOT_SUPPORTED"));
 		    }
 		    if (subartifactSet.getSubartifactSet() != null) {
-                throw new RuntimeException(Messages.i18n.format("XP_TOPLEVEL_SUBARTIFACTSET_ONLY")); //$NON-NLS-1$
+                throw new RuntimeException(Messages.i18n.format("XP_TOPLEVEL_SUBARTIFACTSET_ONLY"));
 		    }
 		}
 	}
@@ -204,21 +204,21 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	public void visit(LocationPath node) {
 		if (node.getArtifactType() != null) {
 			// If this is explicitely *or* implicitely a extended type search...
-			if ("ext".equals(node.getArtifactModel()) || !ArtifactTypeEnum.hasEnum(node.getArtifactType())) { //$NON-NLS-1$
+			if ("ext".equals(node.getArtifactModel()) || !ArtifactTypeEnum.hasEnum(node.getArtifactType())) {
                 this.whereBuilder.append(artifactPredicateContext);
-                this.whereBuilder.append(".[sramp:artifactType] IN ('" //$NON-NLS-1$
-                        + ArtifactTypeEnum.ExtendedArtifactType + "', '" + ArtifactTypeEnum.ExtendedDocument //$NON-NLS-1$
-                        + "')"); //$NON-NLS-1$
-				this.whereBuilder.append(" AND "); //$NON-NLS-1$
+                this.whereBuilder.append(".[sramp:artifactType] IN ('"
+                        + ArtifactTypeEnum.ExtendedArtifactType + "', '" + ArtifactTypeEnum.ExtendedDocument
+                        + "')");
+				this.whereBuilder.append(" AND ");
                 this.whereBuilder.append(artifactPredicateContext);
-				this.whereBuilder.append(".[sramp:extendedType] = '" + escapeStringLiteral(node.getArtifactType()) + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+				this.whereBuilder.append(".[sramp:extendedType] = '" + escapeStringLiteral(node.getArtifactType()) + "'");
 			} else {
                 this.whereBuilder.append(artifactPredicateContext);
-				this.whereBuilder.append(".[sramp:artifactType] = '" + escapeStringLiteral(node.getArtifactType()) + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+				this.whereBuilder.append(".[sramp:artifactType] = '" + escapeStringLiteral(node.getArtifactType()) + "'");
 			}
 		} else if (node.getArtifactModel() != null) {
             this.whereBuilder.append(artifactPredicateContext);
-			this.whereBuilder.append(".[sramp:artifactModel] = '" + escapeStringLiteral(node.getArtifactModel()) + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+			this.whereBuilder.append(".[sramp:artifactModel] = '" + escapeStringLiteral(node.getArtifactModel()) + "'");
 		}
 	}
 
@@ -231,7 +231,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			node.getLeft().accept(this);
 		} else {
 			node.getLeft().accept(this);
-			this.whereBuilder.append(" AND "); //$NON-NLS-1$
+			this.whereBuilder.append(" AND ");
 			node.getRight().accept(this);
 		}
 	}
@@ -244,7 +244,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		if (node.getPrimaryExpr() != null)
 			node.getPrimaryExpr().accept(this);
 		else
-			throw new RuntimeException(Messages.i18n.format("XP_ONLY_PRIMARY_FUNC_ARGS")); //$NON-NLS-1$
+			throw new RuntimeException(Messages.i18n.format("XP_ONLY_PRIMARY_FUNC_ARGS"));
 	}
 
 	/**
@@ -263,17 +263,17 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		if (node.getSubartifactSet() != null) {
 			node.getSubartifactSet().accept(this);
 		} else if (node.getExpr() != null) {
-			this.whereBuilder.append(" ( "); //$NON-NLS-1$
+			this.whereBuilder.append(" ( ");
 			node.getExpr().accept(this);
-			this.whereBuilder.append(" ) "); //$NON-NLS-1$
+			this.whereBuilder.append(" ) ");
 		} else if (node.getOperator() == null) {
 			node.getLeft().accept(this);
-			this.whereBuilder.append(" IS NOT NULL"); //$NON-NLS-1$
+			this.whereBuilder.append(" IS NOT NULL");
 		} else {
 			node.getLeft().accept(this);
-			this.whereBuilder.append(" "); //$NON-NLS-1$
+			this.whereBuilder.append(" ");
 			this.whereBuilder.append(node.getOperator().symbol());
-			this.whereBuilder.append(" "); //$NON-NLS-1$
+			this.whereBuilder.append(" ");
 			node.getRight().accept(this);
 		}
 	}
@@ -293,7 +293,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	public void visit(ForwardPropertyStep node) {
 		if (node.getPropertyQName() != null) {
 			QName property = node.getPropertyQName();
-			if (property.getNamespaceURI() == null || "".equals(property.getNamespaceURI())) //$NON-NLS-1$
+			if (property.getNamespaceURI() == null || "".equals(property.getNamespaceURI()))
 				property = new QName(SrampConstants.SRAMP_NS, property.getLocalPart());
 
 			if (property.getNamespaceURI().equals(SrampConstants.SRAMP_NS)) {
@@ -301,15 +301,15 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 				if (corePropertyMap.containsKey(property)) {
 					jcrPropName = corePropertyMap.get(property);
 				} else {
-					jcrPropName = JCRConstants.SRAMP_PROPERTIES + ":" + property.getLocalPart(); //$NON-NLS-1$
+					jcrPropName = JCRConstants.SRAMP_PROPERTIES + ":" + property.getLocalPart();
 				}
 				this.whereBuilder.append(this.artifactPredicateContext);
-				this.whereBuilder.append(".["); //$NON-NLS-1$
+				this.whereBuilder.append(".[");
 				this.whereBuilder.append(jcrPropName);
-				this.whereBuilder.append("]"); //$NON-NLS-1$
+				this.whereBuilder.append("]");
 				this.lastFPS = jcrPropName;
 			} else {
-				throw new RuntimeException(Messages.i18n.format("XP_INVALID_PROPERTY_NS", property.getNamespaceURI())); //$NON-NLS-1$
+				throw new RuntimeException(Messages.i18n.format("XP_INVALID_PROPERTY_NS", property.getNamespaceURI()));
 			}
 		}
 	}
@@ -323,74 +323,74 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			String propertyName = null, operator = null;
 			Collection<URI> classifications = resolveArgumentsToClassifications(node.getArguments());
 			if (node.getFunctionName().equals(CLASSIFIED_BY_ALL_OF)) {
-				propertyName = "sramp:normalizedClassifiedBy"; //$NON-NLS-1$
-				operator = "AND"; //$NON-NLS-1$
+				propertyName = JCRConstants.SRAMP_NORMALIZED_CLASSIFIED_BY;
+				operator = "AND";
 			} else if (node.getFunctionName().equals(CLASSIFIED_BY_ANY_OF)) {
-				propertyName = "sramp:normalizedClassifiedBy"; //$NON-NLS-1$
-				operator = "OR"; //$NON-NLS-1$
+				propertyName = JCRConstants.SRAMP_NORMALIZED_CLASSIFIED_BY;
+				operator = "OR";
 			} else if (node.getFunctionName().equals(EXACTLY_CLASSIFIED_BY_ALL_OF)) {
-				propertyName = "sramp:classifiedBy"; //$NON-NLS-1$
-				operator = "AND"; //$NON-NLS-1$
+				propertyName = JCRConstants.SRAMP_CLASSIFIED_BY;
+				operator = "AND";
 			} else if (node.getFunctionName().equals(EXACTLY_CLASSIFIED_BY_ANY_OF)) {
-				propertyName = "sramp:classifiedBy"; //$NON-NLS-1$
-				operator = "OR"; //$NON-NLS-1$
+				propertyName = JCRConstants.SRAMP_CLASSIFIED_BY;
+				operator = "OR";
 			} else {
-			    if (node.getFunctionName().getLocalPart().equals("matches") || node.getFunctionName().getLocalPart().equals("not")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    throw new RuntimeException(Messages.i18n.format("XP_BAD_FUNC_NS", node.getFunctionName().getLocalPart()) ); //$NON-NLS-1$
+			    if (node.getFunctionName().getLocalPart().equals("matches") || node.getFunctionName().getLocalPart().equals("not")) {
+                    throw new RuntimeException(Messages.i18n.format("XP_BAD_FUNC_NS", node.getFunctionName().getLocalPart()) );
 			    }
-				throw new RuntimeException(Messages.i18n.format("XP_FUNC_NOT_SUPPORTED", node.getFunctionName().toString())); //$NON-NLS-1$
+				throw new RuntimeException(Messages.i18n.format("XP_FUNC_NOT_SUPPORTED", node.getFunctionName().toString()));
 			}
 
 			if (classifications.size() > 1) {
-				this.whereBuilder.append("("); //$NON-NLS-1$
+				this.whereBuilder.append("(");
 			}
 			boolean first = true;
 			for (URI classification : classifications) {
 				if (!first) {
-					this.whereBuilder.append(" "); //$NON-NLS-1$
+					this.whereBuilder.append(" ");
 					this.whereBuilder.append(operator);
-					this.whereBuilder.append(" "); //$NON-NLS-1$
+					this.whereBuilder.append(" ");
 				}
                 this.whereBuilder.append(artifactPredicateContext);
-				this.whereBuilder.append(".["); //$NON-NLS-1$
+				this.whereBuilder.append(".[");
 				this.whereBuilder.append(propertyName);
-				this.whereBuilder.append("] = '"); //$NON-NLS-1$
+				this.whereBuilder.append("] = '");
 				this.whereBuilder.append(escapeStringLiteral(classification.toString()));
-				this.whereBuilder.append("'"); //$NON-NLS-1$
+				this.whereBuilder.append("'");
 				first = false;
 			}
 			if (classifications.size() > 1) {
-				this.whereBuilder.append(")"); //$NON-NLS-1$
+				this.whereBuilder.append(")");
 			}
 		} else if (MATCHES.equals(node.getFunctionName())) {
 			if (node.getArguments().size() != 2) {
-				throw new RuntimeException(Messages.i18n.format("XP_MATCHES_FUNC_NUM_ARGS_ERROR", node.getArguments().size()));  //$NON-NLS-1$
+				throw new RuntimeException(Messages.i18n.format("XP_MATCHES_FUNC_NUM_ARGS_ERROR", node.getArguments().size())); 
 			}
 			Argument attributeArg = node.getArguments().get(0);
 			Argument patternArg = node.getArguments().get(1);
 
 			ForwardPropertyStep attribute = reducePropertyArgument(attributeArg);
 			String pattern = reduceStringLiteralArgument(patternArg);
-			pattern = pattern.replace(".*", "%"); // the only valid wildcard //$NON-NLS-1$ //$NON-NLS-2$
+			pattern = pattern.replace(".*", "%"); // the only valid wildcard
 
 			attribute.accept(this);
-			this.whereBuilder.append(" LIKE '"); //$NON-NLS-1$
+			this.whereBuilder.append(" LIKE '");
 			this.whereBuilder.append(escapeStringLiteral(pattern));
-			this.whereBuilder.append("'"); //$NON-NLS-1$
+			this.whereBuilder.append("'");
 		} else if (NOT.equals(node.getFunctionName())) {
 		    if (node.getArguments().size() != 1) {
-		        throw new RuntimeException(Messages.i18n.format("XP_NOT_FUNC_NUM_ARGS_ERROR", node.getArguments().size()));  //$NON-NLS-1$
+		        throw new RuntimeException(Messages.i18n.format("XP_NOT_FUNC_NUM_ARGS_ERROR", node.getArguments().size())); 
 		    }
-		    this.whereBuilder.append("NOT ("); //$NON-NLS-1$
+		    this.whereBuilder.append("NOT (");
 		    Argument argument = node.getArguments().get(0);
 		    if (argument.getExpr() != null) {
 		        argument.getExpr().accept(this);
 		    } else {
 		        argument.accept(this);
 		    }
-		    this.whereBuilder.append(")"); //$NON-NLS-1$
+		    this.whereBuilder.append(")");
 		} else {
-			throw new RuntimeException(Messages.i18n.format("XP_FUNCTION_NOT_SUPPORTED", node.getFunctionName().toString())); //$NON-NLS-1$
+			throw new RuntimeException(Messages.i18n.format("XP_FUNCTION_NOT_SUPPORTED", node.getFunctionName().toString()));
 		}
 	}
 
@@ -403,7 +403,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		for (int idx = 1; idx < arguments.size(); idx++) {
 			Argument arg = arguments.get(idx);
 			if (arg.getPrimaryExpr() == null || arg.getPrimaryExpr().getLiteral() == null) {
-				throw new RuntimeException(Messages.i18n.format("XP_INVALID_CLASSIFIER_FORMAT")); //$NON-NLS-1$
+				throw new RuntimeException(Messages.i18n.format("XP_INVALID_CLASSIFIER_FORMAT"));
 			}
 			classifiedBy.add(arg.getPrimaryExpr().getLiteral());
 		}
@@ -424,7 +424,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			node.getLeft().accept(this);
 		} else {
 			node.getLeft().accept(this);
-			this.whereBuilder.append(" OR "); //$NON-NLS-1$
+			this.whereBuilder.append(" OR ");
 			node.getRight().accept(this);
 		}
 	}
@@ -443,22 +443,22 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	@Override
 	public void visit(PrimaryExpr node) {
 		if (node.getLiteral() != null) {
-		    boolean isDate = ("jcr:lastModified".equals(this.lastFPS) || "jcr:created".equals(this.lastFPS)) //$NON-NLS-1$ //$NON-NLS-2$
+		    boolean isDate = (JCRConstants.JCR_LAST_MODIFIED.equals(this.lastFPS) || JCRConstants.JCR_CREATED.equals(this.lastFPS))
 		            && this.datePattern.matcher(node.getLiteral()).find();
 		    if (isDate) {
-		        this.whereBuilder.append("CAST("); //$NON-NLS-1$
+		        this.whereBuilder.append("CAST(");
 		    }
-			this.whereBuilder.append("'"); //$NON-NLS-1$
+			this.whereBuilder.append("'");
 			// TODO prevent injection here
 			this.whereBuilder.append(node.getLiteral());
-			this.whereBuilder.append("'"); //$NON-NLS-1$
+			this.whereBuilder.append("'");
             if (isDate) {
-                this.whereBuilder.append(" AS DATE)"); //$NON-NLS-1$
+                this.whereBuilder.append(" AS DATE)");
             }
 		} else if (node.getNumber() != null) {
 			this.whereBuilder.append(node.getNumber());
 		} else if (node.getPropertyQName() != null) {
-			throw new RuntimeException(Messages.i18n.format("XP_PROPERTY_PRIMARY_EXPR_NOT_SUPPORTED")); //$NON-NLS-1$
+			throw new RuntimeException(Messages.i18n.format("XP_PROPERTY_PRIMARY_EXPR_NOT_SUPPORTED"));
 		}
 	}
 
@@ -469,18 +469,18 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	public void visit(RelationshipPath node) {
 		String alias = this.relationshipPredicateContext;
 
-		fromBuilder.append(" JOIN [sramp:relationship] AS "); //$NON-NLS-1$
+		fromBuilder.append(" JOIN [sramp:relationship] AS ");
 		fromBuilder.append(alias);
-		fromBuilder.append(" ON ISCHILDNODE("); //$NON-NLS-1$
+		fromBuilder.append(" ON ISCHILDNODE(");
 		fromBuilder.append(alias);
-		fromBuilder.append(", "); //$NON-NLS-1$
+		fromBuilder.append(", ");
         fromBuilder.append(this.artifactPredicateContext);
-        fromBuilder.append(")"); //$NON-NLS-1$
+        fromBuilder.append(")");
 
 		whereBuilder.append(alias);
-		whereBuilder.append(".[sramp:relationshipType] = '"); //$NON-NLS-1$
+		whereBuilder.append(".[sramp:relationshipType] = '");
 		whereBuilder.append(node.getRelationshipType());
-		whereBuilder.append("'"); //$NON-NLS-1$
+		whereBuilder.append("'");
 	}
 
 	/**
@@ -492,7 +492,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			node.getFunctionCall().accept(this);
 		} else if (node.getRelationshipPath() != null) {
 			if (node.getPredicate() != null) {
-				whereBuilder.append("("); // open the predicate paren //$NON-NLS-1$
+				whereBuilder.append("("); // open the predicate paren
 			}
 			String relationshipAlias = newRelationshipAlias();
 			String oldRelationshipPredicateContext = this.relationshipPredicateContext;
@@ -501,25 +501,25 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			this.relationshipPredicateContext = oldRelationshipPredicateContext;
 			if (node.getPredicate() != null) {
 			    String artifactAlias = newArtifactAlias();
-				this.whereBuilder.append(" AND "); //$NON-NLS-1$
+				this.whereBuilder.append(" AND ");
 				this.whereBuilder.append(relationshipAlias);
-				this.whereBuilder.append(".[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS "); //$NON-NLS-1$
+				this.whereBuilder.append(".[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS ");
 				this.whereBuilder.append(artifactAlias);
-				this.whereBuilder.append(" WHERE "); //$NON-NLS-1$
+				this.whereBuilder.append(" WHERE ");
 
 				String oldArtifactPredicateContext = this.artifactPredicateContext;
 				this.artifactPredicateContext = artifactAlias;
 				node.getPredicate().accept(this);
 				this.artifactPredicateContext = oldArtifactPredicateContext;
 
-				this.whereBuilder.append(")"); // close the sub-query paren //$NON-NLS-1$
+				this.whereBuilder.append(")"); // close the sub-query paren
 			}
 			if (node.getPredicate() != null) {
-				whereBuilder.append(")"); // Close the predicate paren //$NON-NLS-1$
+				whereBuilder.append(")"); // Close the predicate paren
 			}
 
 			if (node.getSubartifactSet() != null) {
-				throw new RuntimeException(Messages.i18n.format("XP_MULTILEVEL_SUBARTYSETS_NOT_SUPPORTED")); //$NON-NLS-1$
+				throw new RuntimeException(Messages.i18n.format("XP_MULTILEVEL_SUBARTYSETS_NOT_SUPPORTED"));
 			}
 		}
 	}
@@ -528,14 +528,14 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
      * @return a new (unused) alias for a relationship (typically used in JOINs)
      */
     protected String newRelationshipAlias() {
-        return "relationship" + relationshipJoinCounter++; //$NON-NLS-1$
+        return "relationship" + relationshipJoinCounter++;
     }
 
     /**
      * @return a new (unused) alias for an artifact (typically used in JOINs)
      */
     protected String newArtifactAlias() {
-        return "artifact" + artifactJoinCounter++; //$NON-NLS-1$
+        return "artifact" + artifactJoinCounter++;
     }
 
 	/**
@@ -552,7 +552,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			}
 			return fps;
 		} catch (Throwable t) {
-			throw new RuntimeException(Messages.i18n.format("XP_EXPECTED_PROPERTY_ARG")); //$NON-NLS-1$
+			throw new RuntimeException(Messages.i18n.format("XP_EXPECTED_PROPERTY_ARG"));
 		}
 	}
 
@@ -569,7 +569,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			}
 			return l;
 		} catch (Throwable t) {
-			throw new RuntimeException(Messages.i18n.format("XP_EXPECTED_STRING_LITERAL_ARG")); //$NON-NLS-1$
+			throw new RuntimeException(Messages.i18n.format("XP_EXPECTED_STRING_LITERAL_ARG"));
 		}
 	}
 
@@ -578,7 +578,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 * @param literal
 	 */
 	private String escapeStringLiteral(String literal) {
-		return literal.replace("'", "''"); //$NON-NLS-1$ //$NON-NLS-2$
+		return literal.replace("'", "''");
 	}
 
 }

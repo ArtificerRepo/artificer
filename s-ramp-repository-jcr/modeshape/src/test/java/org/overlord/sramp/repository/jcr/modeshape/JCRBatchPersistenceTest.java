@@ -51,9 +51,9 @@ public class JCRBatchPersistenceTest extends AbstractNoAuditingJCRPersistenceTes
 	@Test
 	public void testSimpleBatch() throws Exception {
 	    List<BatchItem> items = new ArrayList<BatchItem>();
-	    BatchItem item = createBatchItem("/sample-files/batch/simple-1.txt", new Document(), BaseArtifactEnum.DOCUMENT); //$NON-NLS-1$
+	    BatchItem item = createBatchItem("/sample-files/batch/simple-1.txt", new Document(), BaseArtifactEnum.DOCUMENT);
 	    items.add(item);
-	    item = createBatchItem("/sample-files/batch/simple-2.txt", new Document(), BaseArtifactEnum.DOCUMENT); //$NON-NLS-1$
+	    item = createBatchItem("/sample-files/batch/simple-2.txt", new Document(), BaseArtifactEnum.DOCUMENT);
         items.add(item);
 
         List<Object> response = persistenceManager.persistBatch(items);
@@ -64,16 +64,16 @@ public class JCRBatchPersistenceTest extends AbstractNoAuditingJCRPersistenceTes
         BaseArtifactType simple1 = (BaseArtifactType) response.get(0);
         BaseArtifactType simple2 = (BaseArtifactType) response.get(1);
 
-		Assert.assertEquals("simple-1.txt", simple1.getName()); //$NON-NLS-1$
-        Assert.assertEquals("simple-2.txt", simple2.getName()); //$NON-NLS-1$
+		Assert.assertEquals("simple-1.txt", simple1.getName());
+        Assert.assertEquals("simple-2.txt", simple2.getName());
 	}
 
     @Test
     public void testWsdlBatch() throws Exception {
         List<BatchItem> items = new ArrayList<BatchItem>();
-        BatchItem item = createBatchItem("/sample-files/wsdl/jcr-sample-externalrefs.xsd", new XsdDocument(), BaseArtifactEnum.XSD_DOCUMENT); //$NON-NLS-1$
+        BatchItem item = createBatchItem("/sample-files/wsdl/jcr-sample-externalrefs.xsd", new XsdDocument(), BaseArtifactEnum.XSD_DOCUMENT);
         items.add(item);
-        item = createBatchItem("/sample-files/wsdl/jcr-sample-externalrefs.wsdl", new WsdlDocument(), BaseArtifactEnum.WSDL_DOCUMENT); //$NON-NLS-1$
+        item = createBatchItem("/sample-files/wsdl/jcr-sample-externalrefs.wsdl", new WsdlDocument(), BaseArtifactEnum.WSDL_DOCUMENT);
         items.add(item);
 
         List<Object> response = persistenceManager.persistBatch(items);
@@ -83,26 +83,26 @@ public class JCRBatchPersistenceTest extends AbstractNoAuditingJCRPersistenceTes
 
         XsdDocument xsd = (XsdDocument) response.get(0);
         Assert.assertNotNull(xsd);
-        Assert.assertEquals("jcr-sample-externalrefs.xsd", xsd.getName()); //$NON-NLS-1$
-        Assert.assertEquals("urn:s-ramp:test:jcr-sample-externalrefs:types", xsd.getTargetNamespace()); //$NON-NLS-1$
+        Assert.assertEquals("jcr-sample-externalrefs.xsd", xsd.getName());
+        Assert.assertEquals("urn:s-ramp:test:jcr-sample-externalrefs:types", xsd.getTargetNamespace());
 
         WsdlDocument wsdl = (WsdlDocument) response.get(1);
         Assert.assertNotNull(wsdl);
-        Assert.assertEquals("jcr-sample-externalrefs.wsdl", wsdl.getName()); //$NON-NLS-1$
-        Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", wsdl.getTargetNamespace()); //$NON-NLS-1$
+        Assert.assertEquals("jcr-sample-externalrefs.wsdl", wsdl.getName());
+        Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", wsdl.getTargetNamespace());
 
         ElementDeclaration extInput = (ElementDeclaration)
-                assertSingleArtifact(ArtifactTypeEnum.ElementDeclaration, "extInput"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.ElementDeclaration, "extInput");
         ComplexTypeDeclaration extOutputType = (ComplexTypeDeclaration)
-                assertSingleArtifact(ArtifactTypeEnum.ComplexTypeDeclaration, "extOutputType"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.ComplexTypeDeclaration, "extOutputType");
         SimpleTypeDeclaration extSimpleType = (SimpleTypeDeclaration)
-                assertSingleArtifact(ArtifactTypeEnum.SimpleTypeDeclaration, "extSimpleType"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.SimpleTypeDeclaration, "extSimpleType");
         Message findRequestMessage = (Message)
-                assertSingleArtifact(ArtifactTypeEnum.Message, "findRequest"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.Message, "findRequest");
         Message findResponseMessage = (Message)
-                assertSingleArtifact(ArtifactTypeEnum.Message, "findResponse"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.Message, "findResponse");
         Message findRequestSimpleMessage = (Message)
-                assertSingleArtifact(ArtifactTypeEnum.Message, "findRequestSimple"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.Message, "findRequestSimple");
 
         // findRequestMessage assertions
         Part part = (Part) getArtifactByTarget(findRequestMessage.getPart().get(0));
@@ -127,7 +127,7 @@ public class JCRBatchPersistenceTest extends AbstractNoAuditingJCRPersistenceTes
 	 * @throws Exception
 	 */
 	private BaseArtifactType getArtifactByTarget(Target target) throws Exception {
-	    Assert.assertNotNull("Missing target/relationship.", target); //$NON-NLS-1$
+	    Assert.assertNotNull("Missing target/relationship.", target);
 		return getArtifactByUUID(target.getValue());
 	}
 
@@ -138,7 +138,7 @@ public class JCRBatchPersistenceTest extends AbstractNoAuditingJCRPersistenceTes
 	 * @throws Exception
 	 */
 	private BaseArtifactType assertSingleArtifact(ArtifactTypeEnum type, String name) throws Exception {
-		String q = String.format("/s-ramp/%1$s/%2$s[@name = ?]", type.getModel(), type.getType()); //$NON-NLS-1$
+		String q = String.format("/s-ramp/%1$s/%2$s[@name = ?]", type.getModel(), type.getType());
 		SrampQuery query = queryManager.createQuery(q);
 		query.setString(name);
 		ArtifactSet artifactSet = null;
@@ -160,7 +160,7 @@ public class JCRBatchPersistenceTest extends AbstractNoAuditingJCRPersistenceTes
 	 * @throws Exception
 	 */
 	private BaseArtifactType getArtifactByUUID(String uuid) throws Exception {
-		SrampQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]"); //$NON-NLS-1$
+		SrampQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]");
 		query.setString(uuid);
 		ArtifactSet artifactSet = null;
 		try {

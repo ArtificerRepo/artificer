@@ -119,51 +119,51 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
                     // If this is a document artifact then we need to execute phases 2 and 3.  If it's not
                     // then we're done and we should simply store the artifact as the result.
                     if (phase1.isDocumentArtifact) {
-                        item.attributes.put("phase1", phase1); //$NON-NLS-1$
+                        item.attributes.put("phase1", phase1);
                     } else {
                         BaseArtifactType artifact = JCRNodeToArtifactFactory.createArtifact(session, phase1.artifactNode, phase1.artifactType);
-                        item.attributes.put("result", artifact); //$NON-NLS-1$
+                        item.attributes.put("result", artifact);
                     }
                 } catch (Exception e) {
-                    item.attributes.put("result", e); //$NON-NLS-1$
+                    item.attributes.put("result", e);
                 }
             }
 
             // Next, do phase 2 for each item in the batch.
             for (BatchItem item : items) {
                 try {
-                    if (item.attributes.containsKey("phase1")) { //$NON-NLS-1$
-                        Phase1Result phase1 = (Phase1Result) item.attributes.get("phase1"); //$NON-NLS-1$
+                    if (item.attributes.containsKey("phase1")) {
+                        Phase1Result phase1 = (Phase1Result) item.attributes.get("phase1");
                         if (phase1.isDocumentArtifact) {
                             Phase2Result phase2 = JCRArtifactPersister.persistArtifactPhase2(session, item.baseArtifactType, this, phase1);
-                            item.attributes.put("phase2", phase2); //$NON-NLS-1$
+                            item.attributes.put("phase2", phase2);
                         }
                     }
                 } catch (Exception e) {
-                    item.attributes.put("result", e); //$NON-NLS-1$
+                    item.attributes.put("result", e);
                 }
             }
 
             // Lastly, do phase 3 for each item in the batch.
             for (BatchItem item : items) {
                 try {
-                    if (item.attributes.containsKey("phase2")) { //$NON-NLS-1$
-                        Phase1Result phase1 = (Phase1Result) item.attributes.get("phase1"); //$NON-NLS-1$
+                    if (item.attributes.containsKey("phase2")) {
+                        Phase1Result phase1 = (Phase1Result) item.attributes.get("phase1");
                         if (phase1.isDocumentArtifact) {
-                            Phase2Result phase2 = (Phase2Result) item.attributes.get("phase2"); //$NON-NLS-1$
+                            Phase2Result phase2 = (Phase2Result) item.attributes.get("phase2");
                             JCRArtifactPersister.persistArtifactPhase3(session, item.baseArtifactType, this, phase1, phase2);
                             BaseArtifactType artifact = JCRNodeToArtifactFactory.createArtifact(session, phase1.artifactNode, phase1.artifactType);
-                            item.attributes.put("result", artifact); //$NON-NLS-1$
+                            item.attributes.put("result", artifact);
                         }
                     }
                 } catch (Exception e) {
-                    item.attributes.put("result", e); //$NON-NLS-1$
+                    item.attributes.put("result", e);
                 }
             }
 
             // And return the appropriate value for each item
             for (BatchItem item : items) {
-                rval.add(item.attributes.get("result")); //$NON-NLS-1$
+                rval.add(item.attributes.get("result"));
             }
         } catch (Throwable t) {
             throw new SrampServerException(t);
@@ -220,7 +220,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 		try {
 			ArtifactDeriver deriver = ArtifactDeriverFactory.createArtifactDeriver(ArtifactType.valueOf(sourceArtifact));
 			Collection<BaseArtifactType> derivedArtifacts = deriver.derive(sourceArtifact, sourceArtifactContent);
-			log.debug(Messages.i18n.format("SUCCESSFUL_DERIVATION", derivedArtifacts.size(), sourceArtifact.getUuid())); //$NON-NLS-1$
+			log.debug(Messages.i18n.format("SUCCESSFUL_DERIVATION", derivedArtifacts.size(), sourceArtifact.getUuid()));
 			return derivedArtifacts;
 		} catch (IOException e) {
 			throw new SrampServerException(e);
@@ -236,7 +236,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         try {
             ArtifactDeriver deriver = ArtifactDeriverFactory.createArtifactDeriver(ArtifactType.valueOf(sourceArtifact));
             deriver.link(context, sourceArtifact, derivedArtifacts);
-            log.debug(Messages.i18n.format("SUCCESSFUL_LINKAGE", derivedArtifacts.size(), sourceArtifact.getUuid())); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("SUCCESSFUL_LINKAGE", derivedArtifacts.size(), sourceArtifact.getUuid()));
         } catch (Exception e) {
             throw new SrampServerException(e);
         }
@@ -298,7 +298,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 		            type.setExtendedType(e);
 		        }
 		    }
-			Node artifactContentNode = artifactNode.getNode("jcr:content"); //$NON-NLS-1$
+			Node artifactContentNode = artifactNode.getNode(JCRConstants.JCR_CONTENT);
 			File tempFile = JCRArtifactPersister.saveToTempFile(artifactContentNode);
 			return new DeleteOnCloseFileInputStream(tempFile);
         } catch (SrampException se) {
@@ -333,7 +333,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 				throw visitor.getError();
 			session.save();
 
-			log.debug(Messages.i18n.format("UPDATED_ARTY_META_DATA", artifact.getUuid())); //$NON-NLS-1$
+			log.debug(Messages.i18n.format("UPDATED_ARTY_META_DATA", artifact.getUuid()));
 
 			if (log.isDebugEnabled()) {
 				printArtifactGraph(artifact.getUuid(), type);
@@ -367,7 +367,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
                 throw new ArtifactNotFoundException(uuid);
             }
             if (artifactNode.isNodeType(JCRConstants.SRAMP_NON_DOCUMENT_TYPE)) {
-                throw new InvalidArtifactUpdateException(Messages.i18n.format("JCRPersistence.NoArtifactContent")); //$NON-NLS-1$
+                throw new InvalidArtifactUpdateException(Messages.i18n.format("JCRPersistence.NoArtifactContent"));
             }
 			JCRUtils tools = new JCRUtils();
 			tools.uploadFile(session, artifactNode.getPath(), content);
@@ -376,7 +376,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			// Document
 			if (DocumentArtifactType.class.isAssignableFrom(type.getArtifactType().getTypeClass())) {
 				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, type.getMimeType());
-				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty("jcr:content/jcr:data").getLength()); //$NON-NLS-1$
+				artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty(JCRConstants.JCR_CONTENT_DATA).getLength());
 				// TODO also handle the hash here
 			}
 
@@ -384,7 +384,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 			// TODO is "update content" even allowed in s-ramp??
 
 			session.save();
-			log.debug(Messages.i18n.format("UPDATED_ARTY_CONTENT", uuid)); //$NON-NLS-1$
+			log.debug(Messages.i18n.format("UPDATED_ARTY_CONTENT", uuid));
             
             return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
         } catch (SrampException se) {
@@ -415,14 +415,14 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             String parentTrashPath = MapToJCRPath.getTrashPath(srcPath);
             // Append "/[timestamp]" to the trash path.  This allows users to deploy another artifact with the
             // same UUID, then delete it later on without "same name siblings" collisions in the trash.
-            String trashPath = parentTrashPath + "/" + Calendar.getInstance().getTimeInMillis(); //$NON-NLS-1$
+            String trashPath = parentTrashPath + "/" + Calendar.getInstance().getTimeInMillis();
 
             JCRUtils jcrUtils = new JCRUtils();
-            jcrUtils.findOrCreateNode(session, parentTrashPath, "nt:folder"); //$NON-NLS-1$
+            jcrUtils.findOrCreateNode(session, parentTrashPath, JCRConstants.NT_FOLDER);
             // Move the jcr node
             session.move(srcPath, trashPath);
 			session.save();
-			log.debug(Messages.i18n.format("DELETED_ARTY", uuid)); //$NON-NLS-1$
+			log.debug(Messages.i18n.format("DELETED_ARTY", uuid));
 			
 			return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
         } catch (SrampException se) {
@@ -459,11 +459,11 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
                 throw new OntologyAlreadyExistsException(ontology.getUuid());
             } else {
                 JCRUtils tools = new JCRUtils();
-                Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
-                Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), "sramp:ontology"); //$NON-NLS-1$
+                Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", JCRConstants.NT_FOLDER);
+                Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), JCRConstants.SRAMP_ONTOLOGY);
                 o2jcr.write(ontology, ontologyNode);
                 session.save();
-                log.debug(Messages.i18n.format("SAVED_ONTOLOGY", ontology.getUuid())); //$NON-NLS-1$
+                log.debug(Messages.i18n.format("SAVED_ONTOLOGY", ontology.getUuid()));
                 return ontology;
             }
         } catch (SrampException se) {
@@ -515,7 +515,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         try {
             session = JCRRepositoryFactory.getSession();
             JCRUtils tools = new JCRUtils();
-            Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
+            Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", JCRConstants.NT_FOLDER);
             NodeIterator nodes = ontologiesNode.getNodes();
             List<SrampOntology> ontologies = new ArrayList<SrampOntology>();
             while (nodes.hasNext()) {
@@ -548,7 +548,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             } else {
                 throw new OntologyNotFoundException(ontology.getUuid());
             }
-            log.debug(Messages.i18n.format("UPDATED_ONTOLOGY", ontology.getUuid())); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("UPDATED_ONTOLOGY", ontology.getUuid()));
             session.save();
         } catch (SrampException se) {
             throw se;
@@ -576,7 +576,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
                 throw new OntologyNotFoundException(uuid);
             }
             session.save();
-            log.debug(Messages.i18n.format("DELETED_ONTOLOGY", uuid)); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("DELETED_ONTOLOGY", uuid));
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {
@@ -606,11 +606,11 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
                 throw new StoredQueryAlreadyExistsException(name);
             } else {
                 JCRUtils tools = new JCRUtils();
-                Node queriesNode = tools.findOrCreateNode(session, "/s-ramp/queries", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
-                Node queryNode = queriesNode.addNode(name, "sramp:query"); //$NON-NLS-1$
+                Node queriesNode = tools.findOrCreateNode(session, "/s-ramp/queries", JCRConstants.NT_FOLDER);
+                Node queryNode = queriesNode.addNode(name, JCRConstants.SRAMP_QUERY);
                 q2jcr.write(storedQuery, queryNode);
                 session.save();
-                log.debug(Messages.i18n.format("SAVED_STOREDQUERY", name)); //$NON-NLS-1$
+                log.debug(Messages.i18n.format("SAVED_STOREDQUERY", name));
                 return storedQuery;
             }
         } catch (SrampException se) {
@@ -653,7 +653,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         try {
             session = JCRRepositoryFactory.getSession();
             JCRUtils tools = new JCRUtils();
-            Node queriesNode = tools.findOrCreateNode(session, "/s-ramp/queries", "nt:folder"); //$NON-NLS-1$ //$NON-NLS-2$
+            Node queriesNode = tools.findOrCreateNode(session, "/s-ramp/queries", JCRConstants.NT_FOLDER);
             NodeIterator nodes = queriesNode.getNodes();
             List<StoredQuery> storedQueries = new ArrayList<StoredQuery>();
             while (nodes.hasNext()) {
@@ -683,7 +683,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             } else {
                 throw new StoredQueryNotFoundException(queryName);
             }
-            log.debug(Messages.i18n.format("UPDATED_STOREDQUERY", queryName)); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("UPDATED_STOREDQUERY", queryName));
             session.save();
         } catch (SrampException se) {
             throw se;
@@ -708,7 +708,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
                 throw new StoredQueryNotFoundException(queryName);
             }
             session.save();
-            log.debug(Messages.i18n.format("DELETED_STOREDQUERY", queryName)); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("DELETED_STOREDQUERY", queryName));
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {

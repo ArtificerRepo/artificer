@@ -24,7 +24,7 @@ import org.modeshape.jcr.security.SecurityContext;
  */
 public class MockSecurityContext implements SecurityContext {
 
-    public static String currentUser = "junituser"; //$NON-NLS-1$
+    public static String currentUser = "junituser";
 
     /**
      * Constructor.

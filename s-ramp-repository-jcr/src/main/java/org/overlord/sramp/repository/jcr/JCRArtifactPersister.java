@@ -91,12 +91,12 @@ public final class JCRArtifactPersister {
         if (session.nodeExists(artifactPath)) {
             throw new ArtifactAlreadyExistsException(uuid);
         }
-        log.debug(Messages.i18n.format("UPLOADING_TO_JCR", name)); //$NON-NLS-1$
+        log.debug(Messages.i18n.format("UPLOADING_TO_JCR", name));
 
         Node artifactNode = null;
         boolean isDocumentArtifact = SrampModelUtils.isDocumentArtifact(metaData);
         if (content == null && !isDocumentArtifact) {
-            artifactNode = tools.findOrCreateNode(session, artifactPath, "nt:folder", JCRConstants.SRAMP_NON_DOCUMENT_TYPE); //$NON-NLS-1$
+            artifactNode = tools.findOrCreateNode(session, artifactPath, "nt:folder", JCRConstants.SRAMP_NON_DOCUMENT_TYPE);
         } else {
             artifactNode = tools.uploadFile(session, artifactPath, content);
             JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
@@ -120,15 +120,15 @@ public final class JCRArtifactPersister {
         // Document
         if (DocumentArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
             artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, artifactType.getMimeType());
-            artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty("jcr:content/jcr:data").getLength()); //$NON-NLS-1$
+            artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty(JCRConstants.JCR_CONTENT_DATA).getLength());
             String sha1Hash = JCRExtensions.getInstance().getSha1Hash(
-                    artifactNode.getProperty("jcr:content/jcr:data").getBinary()); //$NON-NLS-1$
+                    artifactNode.getProperty(JCRConstants.JCR_CONTENT_DATA).getBinary());
             artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_HASH, sha1Hash);
         }
         // XMLDocument
         if (XmlDocument.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
             // read the encoding from the header
-            artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_ENCODING, "UTF-8"); //$NON-NLS-1$
+            artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_ENCODING, "UTF-8");
         }
 
         // Update the JCR node with any properties included in the meta-data
@@ -138,7 +138,7 @@ public final class JCRArtifactPersister {
         if (visitor.hasError())
             throw visitor.getError();
 
-        log.debug(Messages.i18n.format("SAVED_JCR_NODE", name, uuid)); //$NON-NLS-1$
+        log.debug(Messages.i18n.format("SAVED_JCR_NODE", name, uuid));
         if (SrampConfig.isAuditingEnabled()) {
             auditCreateArtifact(artifactNode);
             session.save();
@@ -176,7 +176,7 @@ public final class JCRArtifactPersister {
         InputStream cis = null;
         File tempFile = null;
         try {
-            Node artifactContentNode = artifactNode.getNode("jcr:content"); //$NON-NLS-1$
+            Node artifactContentNode = artifactNode.getNode(JCRConstants.JCR_CONTENT);
             tempFile = saveToTempFile(artifactContentNode);
             cis = FileUtils.openInputStream(tempFile);
             derivedArtifacts = DerivedArtifactsFactory.newInstance().deriveArtifacts(metaData, cis);
@@ -255,12 +255,12 @@ public final class JCRArtifactPersister {
             // Persist each of the derived nodes
             for (BaseArtifactType derivedArtifact : derivedArtifacts) {
                 if (derivedArtifact.getUuid() == null) {
-                    throw new SrampServerException(Messages.i18n.format("MISSING_DERIVED_UUID", derivedArtifact.getName())); //$NON-NLS-1$
+                    throw new SrampServerException(Messages.i18n.format("MISSING_DERIVED_UUID", derivedArtifact.getName()));
                 }
                 ArtifactType derivedArtifactType = ArtifactType.valueOf(derivedArtifact);
                 String jcrMixinName = derivedArtifactType.getArtifactType().getApiType().value();
                 if (derivedArtifactType.isExtendedType()) {
-                    jcrMixinName = "extendedDerivedArtifactType"; //$NON-NLS-1$
+                    jcrMixinName = "extendedDerivedArtifactType";
                     derivedArtifactType.setExtendedDerivedType(true);
                 }
                 jcrMixinName = JCRConstants.SRAMP_ + StringUtils.uncapitalize(jcrMixinName);
@@ -279,7 +279,7 @@ public final class JCRArtifactPersister {
                 }
 
                 // It's definitely derived.
-                derivedArtifactNode.setProperty("sramp:derived", true); //$NON-NLS-1$
+                derivedArtifactNode.setProperty(JCRConstants.SRAMP_DERIVED, true);
 
                 // Create the visitor that will be used to write the artifact information to the JCR node
                 ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(derivedArtifactType,
@@ -294,14 +294,14 @@ public final class JCRArtifactPersister {
                     auditCreateArtifact(derivedArtifactNode);
                 }
 
-                log.debug(Messages.i18n.format("SAVED_DERIVED_ARTY_TO_JCR", derivedArtifact.getName(), derivedArtifact.getUuid())); //$NON-NLS-1$
+                log.debug(Messages.i18n.format("SAVED_DERIVED_ARTY_TO_JCR", derivedArtifact.getName(), derivedArtifact.getUuid()));
             }
 
             // Save current changes so that references to nodes can be found.  Note that if
             // transactions are enabled, this will not actually persist to final storage.
             session.save();
 
-            log.debug(Messages.i18n.format("SAVED_ARTIFACTS", derivedArtifacts.size())); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("SAVED_ARTIFACTS", derivedArtifacts.size()));
         } catch (SrampException e) {
             throw e;
         } catch (Throwable t) {
@@ -337,13 +337,13 @@ public final class JCRArtifactPersister {
                 if (visitor.hasError())
                     throw visitor.getError();
 
-                log.debug(Messages.i18n.format("SAVED_RELATIONSHIPS", derivedArtifact.getName())); //$NON-NLS-1$
+                log.debug(Messages.i18n.format("SAVED_RELATIONSHIPS", derivedArtifact.getName()));
             }
 
             // Persist phase 2 (the relationships)
             session.save();
 
-            log.debug(Messages.i18n.format("SAVED_ARTIFACTS_2", derivedArtifacts.size())); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("SAVED_ARTIFACTS_2", derivedArtifacts.size()));
         } catch (SrampException e) {
             throw e;
         } catch (Throwable t) {
@@ -359,13 +359,13 @@ public final class JCRArtifactPersister {
      * @throws Exception
      */
     public static File saveToTempFile(Node jcrContentNode) throws Exception {
-        File file = File.createTempFile("sramp", ".jcr"); //$NON-NLS-1$ //$NON-NLS-2$
+        File file = File.createTempFile("sramp", ".jcr");
         Binary binary = null;
         InputStream content = null;
         OutputStream tempFileOS = null;
 
         try {
-            binary = jcrContentNode.getProperty("jcr:data").getBinary(); //$NON-NLS-1$
+            binary = jcrContentNode.getProperty(JCRConstants.JCR_DATA).getBinary();
             content = binary.getStream();
             tempFileOS = new FileOutputStream(file);
             IOUtils.copy(content, tempFileOS);
@@ -408,7 +408,7 @@ public final class JCRArtifactPersister {
             Node classifierAddedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.CLASSIFIERS_ADDED);
             int idx = 0;
             for (String classifier : differ.getClassifiers()) {
-                classifierAddedNode.setProperty("classifier-" + idx++, classifier); //$NON-NLS-1$
+                classifierAddedNode.setProperty("classifier-" + idx++, classifier);
             }
         }
     }
@@ -440,21 +440,21 @@ public final class JCRArtifactPersister {
         if (!diff.getDeletedProperties().isEmpty()) {
             Node propRemovedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.PROPERTY_REMOVED);
             for (String propName : diff.getDeletedProperties()) {
-                propRemovedNode.setProperty(propName, ""); //$NON-NLS-1$
+                propRemovedNode.setProperty(propName, "");
             }
         }
         if (!diff.getAddedClassifiers().isEmpty()) {
             Node classifiersAddedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.CLASSIFIERS_ADDED);
             int idx = 0;
             for (String classifier : diff.getAddedClassifiers()) {
-                classifiersAddedNode.setProperty("classifier-" + idx++, classifier); //$NON-NLS-1$
+                classifiersAddedNode.setProperty("classifier-" + idx++, classifier);
             }
         }
         if (!diff.getDeletedClassifiers().isEmpty()) {
             Node classifiersRemovedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.CLASSIFIERS_REMOVED);
             int idx = 0;
             for (String classifier : diff.getDeletedClassifiers()) {
-                classifiersRemovedNode.setProperty("classifier-" + idx++, classifier); //$NON-NLS-1$
+                classifiersRemovedNode.setProperty("classifier-" + idx++, classifier);
             }
         }
     }
@@ -473,11 +473,11 @@ public final class JCRArtifactPersister {
     public static Node createAuditEntryNode(Node artifactNode, String type) throws ValueFormatException,
             VersionException, LockException, ConstraintViolationException, RepositoryException {
         String auditUuid = UUID.randomUUID().toString();
-        Node auditEntryNode = artifactNode.addNode("audit:" + auditUuid, JCRConstants.SRAMP_AUDIT_ENTRY); //$NON-NLS-1$
+        Node auditEntryNode = artifactNode.addNode("audit:" + auditUuid, JCRConstants.SRAMP_AUDIT_ENTRY);
 
-        auditEntryNode.setProperty("audit:uuid", auditUuid); //$NON-NLS-1$
-        auditEntryNode.setProperty("audit:sortId", System.currentTimeMillis()); //$NON-NLS-1$
-        auditEntryNode.setProperty("audit:type", type); //$NON-NLS-1$
+        auditEntryNode.setProperty("audit:uuid", auditUuid);
+        auditEntryNode.setProperty("audit:sortId", System.currentTimeMillis());
+        auditEntryNode.setProperty("audit:type", type);
 
         return auditEntryNode;
     }
@@ -495,9 +495,9 @@ public final class JCRArtifactPersister {
     public static Node createAuditItemNode(Node auditEntryNode, String auditItemType)
             throws ValueFormatException, VersionException, LockException, ConstraintViolationException,
             RepositoryException {
-        String auditItemNodeName = "audit:" + auditItemType.replace(':', '_'); //$NON-NLS-1$
+        String auditItemNodeName = "audit:" + auditItemType.replace(':', '_');
         Node auditItemNode = auditEntryNode.addNode(auditItemNodeName, JCRConstants.SRAMP_AUDIT_ITEM);
-        auditItemNode.setProperty("audit:type", auditItemType); //$NON-NLS-1$
+        auditItemNode.setProperty("audit:type", auditItemType);
         return auditItemNode;
     }
 

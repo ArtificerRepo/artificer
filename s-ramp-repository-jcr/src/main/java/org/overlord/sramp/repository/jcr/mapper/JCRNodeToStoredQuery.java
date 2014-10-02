@@ -20,6 +20,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
+import org.overlord.sramp.repository.jcr.JCRConstants;
 
 /**
  * @author Brett Meyer
@@ -27,9 +28,9 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 public class JCRNodeToStoredQuery {
 
     public void read(StoredQuery storedQuery, Node jcrNode) throws RepositoryException {
-        storedQuery.setQueryName(JCRMapperUtil.getPropertyString(jcrNode, "sramp:queryName")); //$NON-NLS-1$
-        storedQuery.setQueryExpression(JCRMapperUtil.getPropertyString(jcrNode, "sramp:queryExpression")); //$NON-NLS-1$
-        Value[] propertyNames = JCRMapperUtil.getPropertyArray(jcrNode, "sramp:propertyName"); //$NON-NLS-1$
+        storedQuery.setQueryName(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_QUERY_NAME));
+        storedQuery.setQueryExpression(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_QUERY_EXPRESSION));
+        Value[] propertyNames = JCRMapperUtil.getPropertyArray(jcrNode, JCRConstants.SRAMP_PROPERTY_NAME);
         if (propertyNames != null) {
             for (Value propertyName : propertyNames) {
                 storedQuery.getPropertyName().add(propertyName.getString());

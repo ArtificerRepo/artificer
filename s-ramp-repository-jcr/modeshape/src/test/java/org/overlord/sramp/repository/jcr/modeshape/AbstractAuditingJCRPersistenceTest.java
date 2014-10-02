@@ -28,7 +28,7 @@ public abstract class AbstractAuditingJCRPersistenceTest extends AbstractJCRPers
 
     @BeforeClass
     public static void beforeClass() {
-	    System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "false"); //$NON-NLS-1$
+	    System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "false");
 	    setupPersistence();
     }
 

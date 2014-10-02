@@ -67,37 +67,37 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 
 	@Test
 	public void testWsdlDocument() throws Exception {
-        String uuid = addWsdlArtifact("jcr-sample.wsdl", new WsdlDocument(), BaseArtifactEnum.WSDL_DOCUMENT); //$NON-NLS-1$
+        String uuid = addWsdlArtifact("jcr-sample.wsdl", new WsdlDocument(), BaseArtifactEnum.WSDL_DOCUMENT);
 
 		WsdlDocument wsdl = (WsdlDocument) getArtifactByUUID(uuid);
 		Assert.assertNotNull(wsdl);
-		Assert.assertEquals("jcr-sample.wsdl", wsdl.getName()); //$NON-NLS-1$
-		Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", wsdl.getTargetNamespace()); //$NON-NLS-1$
+		Assert.assertEquals("jcr-sample.wsdl", wsdl.getName());
+		Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", wsdl.getTargetNamespace());
 		// Make sure all of the derived artifacts were properly created.
 		SimpleTypeDeclaration keywordType = (SimpleTypeDeclaration)
-				assertSingleArtifact(ArtifactTypeEnum.SimpleTypeDeclaration, "keywordType"); //$NON-NLS-1$
+				assertSingleArtifact(ArtifactTypeEnum.SimpleTypeDeclaration, "keywordType");
 		ElementDeclaration findElement = (ElementDeclaration)
-				assertSingleArtifact(ArtifactTypeEnum.ElementDeclaration, "find"); //$NON-NLS-1$
+				assertSingleArtifact(ArtifactTypeEnum.ElementDeclaration, "find");
 		ElementDeclaration findResponseElement = (ElementDeclaration)
-				assertSingleArtifact(ArtifactTypeEnum.ElementDeclaration, "findResponse"); //$NON-NLS-1$
+				assertSingleArtifact(ArtifactTypeEnum.ElementDeclaration, "findResponse");
 		Message findRequestMessage = (Message)
-				assertSingleArtifact(ArtifactTypeEnum.Message, "findRequest"); //$NON-NLS-1$
+				assertSingleArtifact(ArtifactTypeEnum.Message, "findRequest");
 		Message findResponseMessage = (Message)
-				assertSingleArtifact(ArtifactTypeEnum.Message, "findResponse"); //$NON-NLS-1$
+				assertSingleArtifact(ArtifactTypeEnum.Message, "findResponse");
 		Message findRequestSimpleMessage = (Message)
-				assertSingleArtifact(ArtifactTypeEnum.Message, "findRequestSimple"); //$NON-NLS-1$
+				assertSingleArtifact(ArtifactTypeEnum.Message, "findRequestSimple");
 		Message findResponseSimpleMessage = (Message)
-				assertSingleArtifact(ArtifactTypeEnum.Message, "findResponseSimple"); //$NON-NLS-1$
+				assertSingleArtifact(ArtifactTypeEnum.Message, "findResponseSimple");
 		Message faultMessage = (Message)
-				assertSingleArtifact(ArtifactTypeEnum.Message, "faultMessage"); //$NON-NLS-1$
+				assertSingleArtifact(ArtifactTypeEnum.Message, "faultMessage");
 		PortType samplePortType = (PortType)
-				assertSingleArtifact(ArtifactTypeEnum.PortType, "SamplePortType"); //$NON-NLS-1$
-		Operation findOp = (Operation) assertSingleArtifact(ArtifactTypeEnum.Operation, "find"); //$NON-NLS-1$
-		Operation findSimpleOp = (Operation) assertSingleArtifact(ArtifactTypeEnum.Operation, "findSimple"); //$NON-NLS-1$
-		Fault errorFault = (Fault) assertSingleArtifact(ArtifactTypeEnum.Fault, "errorFault"); //$NON-NLS-1$
-		Fault unknownFault = (Fault) assertSingleArtifact(ArtifactTypeEnum.Fault, "unknownFault"); //$NON-NLS-1$
-		Binding binding = (Binding) assertSingleArtifact(ArtifactTypeEnum.Binding, "SampleBinding"); //$NON-NLS-1$
-		WsdlService service = (WsdlService) assertSingleArtifact(ArtifactTypeEnum.WsdlService, "SampleService"); //$NON-NLS-1$
+				assertSingleArtifact(ArtifactTypeEnum.PortType, "SamplePortType");
+		Operation findOp = (Operation) assertSingleArtifact(ArtifactTypeEnum.Operation, "find");
+		Operation findSimpleOp = (Operation) assertSingleArtifact(ArtifactTypeEnum.Operation, "findSimple");
+		Fault errorFault = (Fault) assertSingleArtifact(ArtifactTypeEnum.Fault, "errorFault");
+		Fault unknownFault = (Fault) assertSingleArtifact(ArtifactTypeEnum.Fault, "unknownFault");
+		Binding binding = (Binding) assertSingleArtifact(ArtifactTypeEnum.Binding, "SampleBinding");
+		WsdlService service = (WsdlService) assertSingleArtifact(ArtifactTypeEnum.WsdlService, "SampleService");
 
 		// findRequestMessage assertions
 		Part part = (Part) getArtifactByTarget(findRequestMessage.getPart().get(0));
@@ -129,26 +129,26 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 		Assert.assertNotNull(operations);
 		Assert.assertEquals(2, operations.size());
 		// find operation
-		Operation operation = assertHasOperation(samplePortType, "find"); //$NON-NLS-1$
+		Operation operation = assertHasOperation(samplePortType, "find");
 		Assert.assertEquals(findOp.getUuid(), operation.getUuid());
 		OperationInput input = (OperationInput) getArtifactByTarget(operation.getInput());
-		Assert.assertEquals("findRequest", input.getNCName()); //$NON-NLS-1$
+		Assert.assertEquals("findRequest", input.getNCName());
 		Message msg = (Message) getArtifactByTarget(input.getMessage());
 		Assert.assertEquals(findRequestMessage.getUuid(), msg.getUuid());
 		OperationOutput output = (OperationOutput) getArtifactByTarget(operation.getOutput());
-		Assert.assertEquals("findResponse", output.getNCName()); //$NON-NLS-1$
+		Assert.assertEquals("findResponse", output.getNCName());
 		msg = (Message) getArtifactByTarget(output.getMessage());
 		Assert.assertEquals(findResponseMessage.getUuid(), msg.getUuid());
 		List<FaultTarget> faults = operation.getFault();
 		Assert.assertEquals(2, faults.size());
-		Fault fault = assertHasFault(operation, "errorFault"); //$NON-NLS-1$
+		Fault fault = assertHasFault(operation, "errorFault");
 		Assert.assertEquals(errorFault.getUuid(), fault.getUuid());
 		msg = (Message) getArtifactByTarget(fault.getMessage());
 		Assert.assertEquals(faultMessage.getUuid(), msg.getUuid());
-		fault = assertHasFault(operation, "unknownFault"); //$NON-NLS-1$
+		fault = assertHasFault(operation, "unknownFault");
 		Assert.assertEquals(unknownFault.getUuid(), fault.getUuid());
 		// findSimple operation
-		operation = assertHasOperation(samplePortType, "findSimple"); //$NON-NLS-1$
+		operation = assertHasOperation(samplePortType, "findSimple");
 		Assert.assertEquals(findSimpleOp.getUuid(), operation.getUuid());
 		input = (OperationInput) getArtifactByTarget(operation.getInput());
 		output = (OperationOutput) getArtifactByTarget(operation.getOutput());
@@ -159,22 +159,22 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 		Assert.assertEquals(1, binding.getExtension().size());
 		SoapBinding soapBinding = (SoapBinding) getArtifactByTarget(binding.getExtension().get(0));
 		Assert.assertNotNull(soapBinding);
-		Assert.assertEquals("document", soapBinding.getStyle()); //$NON-NLS-1$
-		Assert.assertEquals("http://schemas.xmlsoap.org/soap/http", soapBinding.getTransport()); //$NON-NLS-1$
+		Assert.assertEquals("document", soapBinding.getStyle());
+		Assert.assertEquals("http://schemas.xmlsoap.org/soap/http", soapBinding.getTransport());
 		PortType pt = (PortType) getArtifactByTarget(binding.getPortType());
 		Assert.assertNotNull(pt);
 		Assert.assertEquals(samplePortType.getUuid(), pt.getUuid());
 
 		// binding operations
-		BindingOperation bindingOperation = assertHasOperation(binding, "find"); //$NON-NLS-1$
+		BindingOperation bindingOperation = assertHasOperation(binding, "find");
 		BindingOperationInput bindingInput = (BindingOperationInput) getArtifactByTarget(bindingOperation.getInput());
-		Assert.assertEquals("findRequest", bindingInput.getNCName()); //$NON-NLS-1$
+		Assert.assertEquals("findRequest", bindingInput.getNCName());
 		BindingOperationOutput bindingOutput = (BindingOperationOutput) getArtifactByTarget(bindingOperation.getOutput());
-		Assert.assertEquals("findResponse", bindingOutput.getNCName()); //$NON-NLS-1$
+		Assert.assertEquals("findResponse", bindingOutput.getNCName());
 		List<BindingOperationFaultTarget> bfaults = bindingOperation.getFault();
 		Assert.assertEquals(2, bfaults.size());
-		assertHasFault(bindingOperation, "errorFault"); //$NON-NLS-1$
-		assertHasFault(bindingOperation, "unknownFault"); //$NON-NLS-1$
+		assertHasFault(bindingOperation, "errorFault");
+		assertHasFault(bindingOperation, "unknownFault");
 		Operation op = (Operation) getArtifactByTarget(bindingOperation.getOperation());
 		Assert.assertNotNull(op);
 		Assert.assertEquals(findOp.getUuid(), op.getUuid());
@@ -188,7 +188,7 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 		Assert.assertEquals(1, port.getExtension().size());
 		SoapAddress soapAddress = (SoapAddress) getArtifactByTarget(port.getExtension().get(0));
 		Assert.assertNotNull(soapAddress);
-		Assert.assertEquals("http://localhost:8080/sample/sampleEP", soapAddress.getSoapLocation()); //$NON-NLS-1$
+		Assert.assertEquals("http://localhost:8080/sample/sampleEP", soapAddress.getSoapLocation());
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 				return fault;
 			}
 		}
-		Assert.fail("Failed to find fault with name: " + faultName); //$NON-NLS-1$
+		Assert.fail("Failed to find fault with name: " + faultName);
 		return null;
 	}
 
@@ -225,7 +225,7 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 				return fault;
 			}
 		}
-		Assert.fail("Failed to find fault with name: " + faultName); //$NON-NLS-1$
+		Assert.fail("Failed to find fault with name: " + faultName);
 		return null;
 	}
 
@@ -244,7 +244,7 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 				return op;
 			}
 		}
-		Assert.fail("Failed to find operation with name: " + operationName); //$NON-NLS-1$
+		Assert.fail("Failed to find operation with name: " + operationName);
 		return null;
 	}
 
@@ -263,7 +263,7 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 				return op;
 			}
 		}
-		Assert.fail("Failed to find operation with name: " + operationName); //$NON-NLS-1$
+		Assert.fail("Failed to find operation with name: " + operationName);
 		return null;
 	}
 
@@ -273,7 +273,7 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 	 * @throws Exception
 	 */
 	private BaseArtifactType getArtifactByTarget(Target target) throws Exception {
-	    Assert.assertNotNull("Missing target/relationship.", target); //$NON-NLS-1$
+	    Assert.assertNotNull("Missing target/relationship.", target);
 		return getArtifactByUUID(target.getValue());
 	}
 
@@ -284,7 +284,7 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 	 * @throws Exception
 	 */
 	private BaseArtifactType assertSingleArtifact(ArtifactTypeEnum type, String name) throws Exception {
-		String q = String.format("/s-ramp/%1$s/%2$s[@name = ?]", type.getModel(), type.getType()); //$NON-NLS-1$
+		String q = String.format("/s-ramp/%1$s/%2$s[@name = ?]", type.getModel(), type.getType());
 		SrampQuery query = queryManager.createQuery(q);
 		query.setString(name);
 		ArtifactSet artifactSet = null;
@@ -306,7 +306,7 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 	 * @throws Exception
 	 */
 	private BaseArtifactType getArtifactByUUID(String uuid) throws Exception {
-		SrampQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]"); //$NON-NLS-1$
+		SrampQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]");
 		query.setString(uuid);
 		ArtifactSet artifactSet = null;
 		try {
@@ -322,30 +322,30 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 
     @Test
     public void testWsdlDocumentWithExternalRefs() throws Exception {
-        String xsdUuid = addWsdlArtifact("jcr-sample-externalrefs.xsd", new XsdDocument(), BaseArtifactEnum.XSD_DOCUMENT); //$NON-NLS-1$
-        String uuid = addWsdlArtifact("jcr-sample-externalrefs.wsdl", new WsdlDocument(), BaseArtifactEnum.WSDL_DOCUMENT); //$NON-NLS-1$
+        String xsdUuid = addWsdlArtifact("jcr-sample-externalrefs.xsd", new XsdDocument(), BaseArtifactEnum.XSD_DOCUMENT);
+        String uuid = addWsdlArtifact("jcr-sample-externalrefs.wsdl", new WsdlDocument(), BaseArtifactEnum.WSDL_DOCUMENT);
 
         XsdDocument xsd = (XsdDocument) getArtifactByUUID(xsdUuid);
         Assert.assertNotNull(xsd);
-        Assert.assertEquals("urn:s-ramp:test:jcr-sample-externalrefs:types", xsd.getTargetNamespace()); //$NON-NLS-1$
+        Assert.assertEquals("urn:s-ramp:test:jcr-sample-externalrefs:types", xsd.getTargetNamespace());
 
         WsdlDocument wsdl = (WsdlDocument) getArtifactByUUID(uuid);
         Assert.assertNotNull(wsdl);
-        Assert.assertEquals("jcr-sample-externalrefs.wsdl", wsdl.getName()); //$NON-NLS-1$
-        Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", wsdl.getTargetNamespace()); //$NON-NLS-1$
+        Assert.assertEquals("jcr-sample-externalrefs.wsdl", wsdl.getName());
+        Assert.assertEquals("http://ewittman.redhat.com/sample/2012/09/wsdl/sample.wsdl", wsdl.getTargetNamespace());
 
         ElementDeclaration extInput = (ElementDeclaration)
-                assertSingleArtifact(ArtifactTypeEnum.ElementDeclaration, "extInput"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.ElementDeclaration, "extInput");
         ComplexTypeDeclaration extOutputType = (ComplexTypeDeclaration)
-                assertSingleArtifact(ArtifactTypeEnum.ComplexTypeDeclaration, "extOutputType"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.ComplexTypeDeclaration, "extOutputType");
         SimpleTypeDeclaration extSimpleType = (SimpleTypeDeclaration)
-                assertSingleArtifact(ArtifactTypeEnum.SimpleTypeDeclaration, "extSimpleType"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.SimpleTypeDeclaration, "extSimpleType");
         Message findRequestMessage = (Message)
-                assertSingleArtifact(ArtifactTypeEnum.Message, "findRequest"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.Message, "findRequest");
         Message findResponseMessage = (Message)
-                assertSingleArtifact(ArtifactTypeEnum.Message, "findResponse"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.Message, "findResponse");
         Message findRequestSimpleMessage = (Message)
-                assertSingleArtifact(ArtifactTypeEnum.Message, "findRequestSimple"); //$NON-NLS-1$
+                assertSingleArtifact(ArtifactTypeEnum.Message, "findRequestSimple");
 
         // findRequestMessage assertions
         Part part = (Part) getArtifactByTarget(findRequestMessage.getPart().get(0));
@@ -373,13 +373,13 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
      */
     private String addWsdlArtifact(String fileName, XmlDocument document, BaseArtifactEnum type) throws SrampException {
         String artifactFileName = fileName;
-        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName); //$NON-NLS-1$
+        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
 
         String uuid = null;
         try {
             document.setArtifactType(type);
             document.setName(artifactFileName);
-            document.setContentType("application/xml"); //$NON-NLS-1$
+            document.setContentType("application/xml");
             // Persist the artifact
             BaseArtifactType artifact = persistenceManager.persistArtifact(document, contentStream);
             Assert.assertNotNull(artifact);

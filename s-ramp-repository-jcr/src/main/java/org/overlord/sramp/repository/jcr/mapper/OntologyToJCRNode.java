@@ -25,6 +25,7 @@ import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.ontology.OntologyUpdateException;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.common.ontology.SrampOntology.SrampOntologyClass;
+import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 /**
@@ -47,11 +48,11 @@ public final class OntologyToJCRNode {
 	 * @throws RepositoryException
 	 */
 	public void write(SrampOntology ontology, Node jcrNode) throws RepositoryException {
-		jcrNode.setProperty("sramp:uuid", ontology.getUuid()); //$NON-NLS-1$
-		jcrNode.setProperty("sramp:label", ontology.getLabel()); //$NON-NLS-1$
-		jcrNode.setProperty("sramp:comment", ontology.getComment()); //$NON-NLS-1$
-		jcrNode.setProperty("sramp:base", ontology.getBase()); //$NON-NLS-1$
-		jcrNode.setProperty("sramp:id", ontology.getId()); //$NON-NLS-1$
+		jcrNode.setProperty(JCRConstants.SRAMP_UUID, ontology.getUuid());
+		jcrNode.setProperty(JCRConstants.SRAMP_LABEL, ontology.getLabel());
+		jcrNode.setProperty(JCRConstants.SRAMP_COMMENT, ontology.getComment());
+		jcrNode.setProperty(JCRConstants.SRAMP_BASE, ontology.getBase());
+		jcrNode.setProperty(JCRConstants.SRAMP_ID, ontology.getId());
 
 		for (SrampOntology.SrampOntologyClass sclass : ontology.getRootClasses()) {
 			addClass(jcrNode, sclass);
@@ -65,11 +66,11 @@ public final class OntologyToJCRNode {
 	 * @throws RepositoryException
 	 */
 	private void addClass(Node parentNode, SrampOntology.SrampOntologyClass sclass) throws RepositoryException {
-		Node classNode = parentNode.addNode(sclass.getId(), "sramp:class"); //$NON-NLS-1$
-		classNode.setProperty("sramp:uri", sclass.getUri().toString()); //$NON-NLS-1$
-		classNode.setProperty("sramp:id", sclass.getId()); //$NON-NLS-1$
-		classNode.setProperty("sramp:label", sclass.getLabel()); //$NON-NLS-1$
-		classNode.setProperty("sramp:comment", sclass.getComment()); //$NON-NLS-1$
+		Node classNode = parentNode.addNode(sclass.getId(), JCRConstants.SRAMP_CLASS);
+		classNode.setProperty(JCRConstants.SRAMP_URI, sclass.getUri().toString());
+		classNode.setProperty(JCRConstants.SRAMP_ID, sclass.getId());
+		classNode.setProperty(JCRConstants.SRAMP_LABEL, sclass.getLabel());
+		classNode.setProperty(JCRConstants.SRAMP_COMMENT, sclass.getComment());
 
 		for (SrampOntology.SrampOntologyClass childClass : sclass.getChildren()) {
 			addClass(classNode, childClass);
@@ -85,20 +86,20 @@ public final class OntologyToJCRNode {
      * @throws SrampException
      */
     public void update(SrampOntology ontology, Node ontologyJcrNode) throws RepositoryException, SrampException {
-        String base = ontologyJcrNode.getProperty("sramp:base").getString(); //$NON-NLS-1$
+        String base = ontologyJcrNode.getProperty(JCRConstants.SRAMP_BASE).getString();
         if (!base.equals(ontology.getBase())) {
-            throw new OntologyUpdateException(Messages.i18n.format("CANNOT_CHANGE_ONTOLOGY_BASE")); //$NON-NLS-1$
+            throw new OntologyUpdateException(Messages.i18n.format("CANNOT_CHANGE_ONTOLOGY_BASE"));
         }
 
-        ontologyJcrNode.setProperty("sramp:label", ontology.getLabel()); //$NON-NLS-1$
-        ontologyJcrNode.setProperty("sramp:comment", ontology.getComment()); //$NON-NLS-1$
-        ontologyJcrNode.setProperty("sramp:id", ontology.getId()); //$NON-NLS-1$
+        ontologyJcrNode.setProperty(JCRConstants.SRAMP_LABEL, ontology.getLabel());
+        ontologyJcrNode.setProperty(JCRConstants.SRAMP_COMMENT, ontology.getComment());
+        ontologyJcrNode.setProperty(JCRConstants.SRAMP_ID, ontology.getId());
 
         // Check for deleted root classes first
         NodeIterator childNodes = ontologyJcrNode.getNodes();
         while (childNodes.hasNext()) {
             Node childNode = childNodes.nextNode();
-            String childNodeId = childNode.getProperty("sramp:id").getString(); //$NON-NLS-1$
+            String childNodeId = childNode.getProperty(JCRConstants.SRAMP_ID).getString();
             if (!hasClass(ontology.getRootClasses(), childNodeId)) {
                 childNode.remove();
             }
@@ -121,13 +122,13 @@ public final class OntologyToJCRNode {
     private void addOrUpdateClass(Node parentNode, SrampOntologyClass sclass) throws RepositoryException {
         if (parentNode.hasNode(sclass.getId())) {
             Node classNode = parentNode.getNode(sclass.getId());
-            classNode.setProperty("sramp:label", sclass.getLabel()); //$NON-NLS-1$
-            classNode.setProperty("sramp:comment", sclass.getComment()); //$NON-NLS-1$
+            classNode.setProperty(JCRConstants.SRAMP_LABEL, sclass.getLabel());
+            classNode.setProperty(JCRConstants.SRAMP_COMMENT, sclass.getComment());
             // Check for deleted classes first
             NodeIterator childNodes = classNode.getNodes();
             while (childNodes.hasNext()) {
                 Node childNode = childNodes.nextNode();
-                String childNodeId = childNode.getProperty("sramp:id").getString(); //$NON-NLS-1$
+                String childNodeId = childNode.getProperty(JCRConstants.SRAMP_ID).getString();
                 if (!hasClass(sclass.getChildren(), childNodeId)) {
                     childNode.remove();
                 }

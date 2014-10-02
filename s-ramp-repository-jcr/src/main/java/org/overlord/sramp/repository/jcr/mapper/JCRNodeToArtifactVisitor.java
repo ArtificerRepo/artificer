@@ -117,20 +117,20 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 			artifact.setArtifactType(apiType);
 
 			// First map in the standard s-ramp meta-data
-			artifact.setCreatedBy(getProperty(jcrNode, "jcr:createdBy")); //$NON-NLS-1$
-			XMLGregorianCalendar createdTS = dtFactory.newXMLGregorianCalendar(getProperty(jcrNode, "jcr:created")); //$NON-NLS-1$
+			artifact.setCreatedBy(getProperty(jcrNode, JCRConstants.JCR_CREATED_BY));
+			XMLGregorianCalendar createdTS = dtFactory.newXMLGregorianCalendar(getProperty(jcrNode, JCRConstants.JCR_CREATED));
 			artifact.setCreatedTimestamp(createdTS);
-			artifact.setDescription(getProperty(jcrNode, "sramp:description")); //$NON-NLS-1$
-			artifact.setLastModifiedBy(getProperty(jcrNode, "jcr:lastModifiedBy")); //$NON-NLS-1$
-			XMLGregorianCalendar modifiedTS = dtFactory.newXMLGregorianCalendar(getProperty(jcrNode, "jcr:lastModified")); //$NON-NLS-1$
+			artifact.setDescription(getProperty(jcrNode, JCRConstants.SRAMP_DESCRIPTION));
+			artifact.setLastModifiedBy(getProperty(jcrNode, JCRConstants.JCR_LAST_MODIFIED_BY));
+			XMLGregorianCalendar modifiedTS = dtFactory.newXMLGregorianCalendar(getProperty(jcrNode, JCRConstants.JCR_LAST_MODIFIED));
 			artifact.setLastModifiedTimestamp(modifiedTS);
-			artifact.setName(getProperty(jcrNode, "sramp:name")); //$NON-NLS-1$
-			artifact.setUuid(getProperty(jcrNode, "sramp:uuid")); //$NON-NLS-1$
-			artifact.setVersion(getProperty(jcrNode, "version")); //$NON-NLS-1$
+			artifact.setName(getProperty(jcrNode, JCRConstants.SRAMP_NAME));
+			artifact.setUuid(getProperty(jcrNode, JCRConstants.SRAMP_UUID));
+			artifact.setVersion(getProperty(jcrNode, "version"));
 
 			// Map in the classifications
-			if (jcrNode.hasProperty("sramp:classifiedBy")) { //$NON-NLS-1$
-				Property classifiedByProp = jcrNode.getProperty("sramp:classifiedBy"); //$NON-NLS-1$
+			if (jcrNode.hasProperty(JCRConstants.SRAMP_CLASSIFIED_BY)) {
+				Property classifiedByProp = jcrNode.getProperty(JCRConstants.SRAMP_CLASSIFIED_BY);
 				Value [] values = classifiedByProp.getValues();
 				for (Value value : values) {
 					String classification = value.getString();
@@ -139,7 +139,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 			}
 
 			// Map in all the s-ramp extended properties.
-			String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":"; //$NON-NLS-1$
+			String srampPropsPrefix = JCRConstants.SRAMP_PROPERTIES + ":";
 			int srampPropsPrefixLen = srampPropsPrefix.length();
 			PropertyIterator properties = jcrNode.getProperties();
 			while (properties.hasNext()) {
@@ -159,18 +159,18 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 			NodeIterator rnodes = jcrNode.getNodes();
 			while (rnodes.hasNext()) {
 				Node rNode = rnodes.nextNode();
-				if (rNode.isNodeType("sramp:relationship")) { //$NON-NLS-1$
-					String rtype = getProperty(rNode, "sramp:relationshipType"); //$NON-NLS-1$
+				if (rNode.isNodeType(JCRConstants.SRAMP_RELATIONSHIP)) {
+					String rtype = getProperty(rNode, JCRConstants.SRAMP_RELATIONSHIP_TYPE);
 					boolean generic = false;
-					if (rNode.hasProperty("sramp:generic")) { //$NON-NLS-1$
-						generic = rNode.getProperty("sramp:generic").getBoolean(); //$NON-NLS-1$
+					if (rNode.hasProperty(JCRConstants.SRAMP_GENERIC)) {
+						generic = rNode.getProperty(JCRConstants.SRAMP_GENERIC).getBoolean();
 					}
 					if (!generic)
 						continue;
 					Relationship relationship = new Relationship();
 					relationship.setRelationshipType(rtype);
-					if (rNode.hasProperty("sramp:relationshipTarget")) { //$NON-NLS-1$
-						Property property = rNode.getProperty("sramp:relationshipTarget"); //$NON-NLS-1$
+					if (rNode.hasProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)) {
+						Property property = rNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET);
 						Value[] values = property.getValues();
 						for (Value value : values) {
 							if (value.getType() == PropertyType.REFERENCE) {
@@ -197,13 +197,13 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	protected void visitDerived(DerivedArtifactType artifact) {
 		try {
 			// Pull out the 'relatedDocument' relationship, if one exists (it should!)
-			if (this.jcrNode.hasNode("sramp-relationships:relatedDocument")) { //$NON-NLS-1$
-				Node relatedDocNode = this.jcrNode.getNode("sramp-relationships:relatedDocument"); //$NON-NLS-1$
-				String targetType = getProperty(relatedDocNode, "sramp:targetType"); //$NON-NLS-1$
-				Property property = relatedDocNode.getProperty("sramp:relationshipTarget"); //$NON-NLS-1$
+			if (this.jcrNode.hasNode("sramp-relationships:relatedDocument")) {
+				Node relatedDocNode = this.jcrNode.getNode("sramp-relationships:relatedDocument");
+				String targetType = getProperty(relatedDocNode, JCRConstants.SRAMP_TARGET_TYPE);
+				Property property = relatedDocNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET);
 				Value[] values = property.getValues();
 				if (values.length > 1) {
-					throw new Exception(Messages.i18n.format("MAX_CARDINALITY_FAILED", values.length)); //$NON-NLS-1$
+					throw new Exception(Messages.i18n.format("MAX_CARDINALITY_FAILED", values.length));
 				}
 				Value value = values[0];
 				String targetUUID = referenceResolver.resolveReference(value);
@@ -225,9 +225,9 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
-		artifact.setNamespace(getProperty(jcrNode, "sramp:namespace")); //$NON-NLS-1$
+		artifact.setNamespace(getProperty(jcrNode, JCRConstants.SRAMP_NAMESPACE));
 		try {
-			artifact.getExtension().addAll(getRelationships("extension", WsdlExtensionTarget.class)); //$NON-NLS-1$
+			artifact.getExtension().addAll(getRelationships("extension", WsdlExtensionTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -238,7 +238,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitNamedWsdlDerived(NamedWsdlDerivedArtifactType artifact) {
-		artifact.setNCName(getProperty(jcrNode, "sramp:ncName")); //$NON-NLS-1$
+		artifact.setNCName(getProperty(jcrNode, JCRConstants.SRAMP_NC_NAME));
 	}
 
 	/**
@@ -253,9 +253,9 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitDocument(DocumentArtifactType artifact) {
-		artifact.setContentSize(getPropertyLong(jcrNode,"sramp:contentSize")); //$NON-NLS-1$
-		artifact.setContentType(getProperty(jcrNode, "sramp:contentType")); //$NON-NLS-1$
-		artifact.setContentHash(getProperty(jcrNode, "sramp:contentHash")); //$NON-NLS-1$
+		artifact.setContentSize(getPropertyLong(jcrNode, JCRConstants.SRAMP_CONTENT_SIZE));
+		artifact.setContentType(getProperty(jcrNode, JCRConstants.SRAMP_CONTENT_TYPE));
+		artifact.setContentHash(getProperty(jcrNode, JCRConstants.SRAMP_CONTENT_HASH));
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitXmlDocument(XmlDocument artifact) {
-		artifact.setContentEncoding(getProperty(jcrNode, "sramp:contentEncoding")); //$NON-NLS-1$
+		artifact.setContentEncoding(getProperty(jcrNode, JCRConstants.SRAMP_CONTENT_ENCODING));
 	}
 
 	/**
@@ -271,8 +271,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitExtended(ExtendedArtifactType artifact) {
-        String extendedType = getProperty(jcrNode, "sramp:extendedType"); //$NON-NLS-1$
-        String extendedDerived = getProperty(jcrNode, "sramp:derived", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        String extendedType = getProperty(jcrNode, JCRConstants.SRAMP_EXTENDED_TYPE);
+        String extendedDerived = getProperty(jcrNode, JCRConstants.SRAMP_DERIVED, "false");
 
         artifact.setExtendedType(extendedType);
         artifact.getOtherAttributes().put(SrampConstants.SRAMP_DERIVED_QNAME, extendedDerived);
@@ -283,9 +283,9 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitExtendedDocument(ExtendedDocument artifact) {
-        String extendedType = getProperty(jcrNode, "sramp:extendedType"); //$NON-NLS-1$
-        String contentType = getProperty(jcrNode,"jcr:content/jcr:mimeType"); //$NON-NLS-1$
-        String contentLength = String.valueOf(getPropertyLength(jcrNode,"jcr:content/jcr:data")); //$NON-NLS-1$
+        String extendedType = getProperty(jcrNode, JCRConstants.SRAMP_EXTENDED_TYPE);
+        String contentType = getProperty(jcrNode, JCRConstants.JCR_CONTENT_MIME_TYPE);
+        String contentLength = String.valueOf(getPropertyLength(jcrNode, JCRConstants.JCR_CONTENT_DATA));
 
         artifact.setExtendedType(extendedType);
         if (contentType != null && contentLength != null) {
@@ -301,7 +301,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(XsdDocument artifact) {
 	    super.visit(artifact);
 
-        artifact.setTargetNamespace(getProperty(jcrNode, "sramp:targetNamespace")); //$NON-NLS-1$
+        artifact.setTargetNamespace(getProperty(jcrNode, JCRConstants.SRAMP_TARGET_NAMESPACE));
 	}
 
 	/**
@@ -311,7 +311,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(AttributeDeclaration artifact) {
 	    super.visit(artifact);
 
-        artifact.setNamespace(getProperty(jcrNode, "sramp:namespace")); //$NON-NLS-1$
+        artifact.setNamespace(getProperty(jcrNode, JCRConstants.SRAMP_NAMESPACE));
 	}
 
 	/**
@@ -321,7 +321,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(ComplexTypeDeclaration artifact) {
 	    super.visit(artifact);
 
-        artifact.setNamespace(getProperty(jcrNode, "sramp:namespace")); //$NON-NLS-1$
+        artifact.setNamespace(getProperty(jcrNode, JCRConstants.SRAMP_NAMESPACE));
 	}
 
 	/**
@@ -331,7 +331,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(ElementDeclaration artifact) {
 	    super.visit(artifact);
 
-        artifact.setNamespace(getProperty(jcrNode, "sramp:namespace")); //$NON-NLS-1$
+        artifact.setNamespace(getProperty(jcrNode, JCRConstants.SRAMP_NAMESPACE));
 	}
 
 	/**
@@ -341,7 +341,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(SimpleTypeDeclaration artifact) {
 	    super.visit(artifact);
 
-        artifact.setNamespace(getProperty(jcrNode, "sramp:namespace")); //$NON-NLS-1$
+        artifact.setNamespace(getProperty(jcrNode, JCRConstants.SRAMP_NAMESPACE));
 	}
 
 	/**
@@ -351,7 +351,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(WsdlDocument artifact) {
 		super.visit(artifact);
 
-		artifact.setTargetNamespace(getProperty(jcrNode, "sramp:targetNamespace")); //$NON-NLS-1$
+		artifact.setTargetNamespace(getProperty(jcrNode, JCRConstants.SRAMP_TARGET_NAMESPACE));
 	}
 
 	/**
@@ -361,7 +361,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Message artifact) {
 		super.visit(artifact);
 		try {
-			artifact.getPart().addAll(getRelationships("part", PartTarget.class)); //$NON-NLS-1$
+			artifact.getPart().addAll(getRelationships("part", PartTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -374,8 +374,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Part artifact) {
 		super.visit(artifact);
 		try {
-			artifact.setElement(getRelationship("element", ElementTarget.class)); //$NON-NLS-1$
-			artifact.setType(getRelationship("type", XsdTypeTarget.class)); //$NON-NLS-1$
+			artifact.setElement(getRelationship("element", ElementTarget.class));
+			artifact.setType(getRelationship("type", XsdTypeTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -388,7 +388,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(PortType artifact) {
 		super.visit(artifact);
 		try {
-			artifact.getOperation().addAll(getRelationships("operation", OperationTarget.class)); //$NON-NLS-1$
+			artifact.getOperation().addAll(getRelationships("operation", OperationTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -401,9 +401,9 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Operation artifact) {
 		super.visit(artifact);
 		try {
-			artifact.setInput(getRelationship("input", OperationInputTarget.class)); //$NON-NLS-1$
-			artifact.setOutput(getRelationship("output", OperationOutputTarget.class)); //$NON-NLS-1$
-			artifact.getFault().addAll(getRelationships("fault", FaultTarget.class)); //$NON-NLS-1$
+			artifact.setInput(getRelationship("input", OperationInputTarget.class));
+			artifact.setOutput(getRelationship("output", OperationOutputTarget.class));
+			artifact.getFault().addAll(getRelationships("fault", FaultTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -416,7 +416,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(OperationInput artifact) {
 		super.visit(artifact);
 		try {
-			artifact.setMessage(getRelationship("message", MessageTarget.class)); //$NON-NLS-1$
+			artifact.setMessage(getRelationship("message", MessageTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -429,7 +429,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(OperationOutput artifact) {
 		super.visit(artifact);
 		try {
-			artifact.setMessage(getRelationship("message", MessageTarget.class)); //$NON-NLS-1$
+			artifact.setMessage(getRelationship("message", MessageTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -442,7 +442,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Fault artifact) {
 		super.visit(artifact);
 		try {
-			artifact.setMessage(getRelationship("message", MessageTarget.class)); //$NON-NLS-1$
+			artifact.setMessage(getRelationship("message", MessageTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -455,8 +455,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Binding artifact) {
 		super.visit(artifact);
 		try {
-			artifact.getBindingOperation().addAll(getRelationships("bindingOperation", BindingOperationTarget.class)); //$NON-NLS-1$
-			artifact.setPortType(getRelationship("portType", PortTypeTarget.class)); //$NON-NLS-1$
+			artifact.getBindingOperation().addAll(getRelationships("bindingOperation", BindingOperationTarget.class));
+			artifact.setPortType(getRelationship("portType", PortTypeTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -468,8 +468,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(SoapBinding artifact) {
 		super.visit(artifact);
-		artifact.setStyle(getProperty(jcrNode, "sramp:style")); //$NON-NLS-1$
-		artifact.setTransport(getProperty(jcrNode, "sramp:transport")); //$NON-NLS-1$
+		artifact.setStyle(getProperty(jcrNode, JCRConstants.SRAMP_STYLE));
+		artifact.setTransport(getProperty(jcrNode, JCRConstants.SRAMP_TRANSPORT));
 	}
 
 	/**
@@ -479,10 +479,10 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(BindingOperation artifact) {
 		super.visit(artifact);
 		try {
-			artifact.setInput(getRelationship("input", BindingOperationInputTarget.class)); //$NON-NLS-1$
-			artifact.setOutput(getRelationship("output", BindingOperationOutputTarget.class)); //$NON-NLS-1$
-			artifact.getFault().addAll(getRelationships("fault", BindingOperationFaultTarget.class)); //$NON-NLS-1$
-			artifact.setOperation(getRelationship("operation", OperationTarget.class)); //$NON-NLS-1$
+			artifact.setInput(getRelationship("input", BindingOperationInputTarget.class));
+			artifact.setOutput(getRelationship("output", BindingOperationOutputTarget.class));
+			artifact.getFault().addAll(getRelationships("fault", BindingOperationFaultTarget.class));
+			artifact.setOperation(getRelationship("operation", OperationTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -495,7 +495,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(WsdlService artifact) {
 		super.visit(artifact);
 		try {
-			artifact.getPort().addAll(getRelationships("port", PortTarget.class)); //$NON-NLS-1$
+			artifact.getPort().addAll(getRelationships("port", PortTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -508,7 +508,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Port artifact) {
 		super.visit(artifact);
 		try {
-			artifact.setBinding(getRelationship("binding", BindingTarget.class)); //$NON-NLS-1$
+			artifact.setBinding(getRelationship("binding", BindingTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -520,7 +520,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	@Override
 	public void visit(SoapAddress artifact) {
 		super.visit(artifact);
-		artifact.setSoapLocation(getProperty(jcrNode, "sramp:soapLocation")); //$NON-NLS-1$
+		artifact.setSoapLocation(getProperty(jcrNode, JCRConstants.SRAMP_SOAP_LOCATION));
 	}
 
 	/**
@@ -531,12 +531,12 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @return list of relationship targets
 	 */
 	private <T> T getRelationship(String relationshipType, Class<T> targetClass) throws Exception {
-		String relNodeName = "sramp-relationships:" + relationshipType; //$NON-NLS-1$
+		String relNodeName = "sramp-relationships:" + relationshipType;
 		if (this.jcrNode.hasNode(relNodeName)) {
 			Node relationshipNode = this.jcrNode.getNode(relNodeName);
-			String targetType = relationshipNode.getProperty("sramp:targetType").getString(); //$NON-NLS-1$
-			if (relationshipNode.hasProperty("sramp:relationshipTarget")) { //$NON-NLS-1$
-				Property targetProperty = relationshipNode.getProperty("sramp:relationshipTarget"); //$NON-NLS-1$
+			String targetType = relationshipNode.getProperty(JCRConstants.SRAMP_TARGET_TYPE).getString();
+			if (relationshipNode.hasProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)) {
+				Property targetProperty = relationshipNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET);
 				Value[] values = targetProperty.getValues();
 				Value value = values[0];
 				T t = targetClass.newInstance();
@@ -546,11 +546,11 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 				// most (all?) targets.  Unfortunately, the method and field are
 				// redefined in each subclass of Target.
 				try {
-					Method m = targetClass.getMethod("getArtifactType"); //$NON-NLS-1$
+					Method m = targetClass.getMethod("getArtifactType");
 					Class<?> mc = m.getReturnType();
-					m = mc.getMethod("valueOf", String.class); //$NON-NLS-1$
+					m = mc.getMethod("valueOf", String.class);
 					Object o = m.invoke(null, targetType);
-					m = targetClass.getMethod("setArtifactType", o.getClass()); //$NON-NLS-1$
+					m = targetClass.getMethod("setArtifactType", o.getClass());
 					m.invoke(target, o);
 				} catch (Exception e) {
 					// eat it
@@ -569,12 +569,12 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	private <T> List<T> getRelationships(String relationshipType, Class<T> targetClass) throws Exception {
 		List<T> rval = new ArrayList<T>();
-		String relNodeName = "sramp-relationships:" + relationshipType; //$NON-NLS-1$
+		String relNodeName = "sramp-relationships:" + relationshipType;
 		if (this.jcrNode.hasNode(relNodeName)) {
 			Node relationshipNode = this.jcrNode.getNode(relNodeName);
-			String targetType = relationshipNode.getProperty("sramp:targetType").getString(); //$NON-NLS-1$
-			if (relationshipNode.hasProperty("sramp:relationshipTarget")) { //$NON-NLS-1$
-				Property targetsProperty = relationshipNode.getProperty("sramp:relationshipTarget"); //$NON-NLS-1$
+			String targetType = relationshipNode.getProperty(JCRConstants.SRAMP_TARGET_TYPE).getString();
+			if (relationshipNode.hasProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)) {
+				Property targetsProperty = relationshipNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET);
 				Value[] values = targetsProperty.getValues();
 				for (Value value : values) {
 					T t = targetClass.newInstance();
@@ -584,11 +584,11 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 					// most (all?) targets.  Unfortunately, the method and field are
 					// redefined in each subclass of Target.
 					try {
-						Method m = targetClass.getMethod("getArtifactType"); //$NON-NLS-1$
+						Method m = targetClass.getMethod("getArtifactType");
 						Class<?> mc = m.getReturnType();
-						m = mc.getMethod("valueOf", String.class); //$NON-NLS-1$
+						m = mc.getMethod("valueOf", String.class);
 						Object o = m.invoke(null, targetType);
-						m = targetClass.getMethod("setArtifactType", o.getClass()); //$NON-NLS-1$
+						m = targetClass.getMethod("setArtifactType", o.getClass());
 						m.invoke(target, o);
 					} catch (Exception e) {
 						// eat it

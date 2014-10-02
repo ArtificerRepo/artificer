@@ -25,25 +25,25 @@ import java.util.Set;
 public class JCRAuditConstants {
 
     private static final String [] EXCLUDES = {
-        "jcr:lastModified", //$NON-NLS-1$
-        "jcr:lastModifiedBy", //$NON-NLS-1$
-        "sramp:derived", //$NON-NLS-1$
-        "jcr:primaryType", //$NON-NLS-1$
-        "sramp:uuid", //$NON-NLS-1$
-        "sramp:normalizedClassifiedBy", //$NON-NLS-1$
-        "sramp:contentHash", //$NON-NLS-1$
-        "sramp:contentType", //$NON-NLS-1$
-        "sramp:contentSize", //$NON-NLS-1$
-        "jcr:created", //$NON-NLS-1$
-        "jcr:versionHistory", //$NON-NLS-1$
-        "jcr:baseVersion", //$NON-NLS-1$
-        "jcr:predecessors", //$NON-NLS-1$
-        "jcr:isCheckedOut", //$NON-NLS-1$
-        "jcr:mixinTypes", //$NON-NLS-1$
-        "sramp:artifactType", //$NON-NLS-1$
-        "jcr:uuid", //$NON-NLS-1$
-        "sramp:artifactModel", //$NON-NLS-1$
-        "jcr:createdBy" //$NON-NLS-1$
+        "jcr:lastModified",
+        "jcr:lastModifiedBy",
+        "sramp:derived",
+        "jcr:primaryType",
+        "sramp:uuid",
+        "sramp:normalizedClassifiedBy",
+        "sramp:contentHash",
+        "sramp:contentType",
+        "sramp:contentSize",
+        "jcr:created",
+        "jcr:versionHistory",
+        "jcr:baseVersion",
+        "jcr:predecessors",
+        "jcr:isCheckedOut",
+        "jcr:mixinTypes",
+        "sramp:artifactType",
+        "jcr:uuid",
+        "sramp:artifactModel",
+        "jcr:createdBy"
     };
     public static final Set<String> propertyExcludes = new HashSet<String>();
     static {
@@ -52,6 +52,6 @@ public class JCRAuditConstants {
         }
     }
 
-    public static final String PROP_CLASSIFIED_BY = "sramp:classifiedBy"; //$NON-NLS-1$
+    public static final String PROP_CLASSIFIED_BY = "sramp:classifiedBy";
 
 }

@@ -32,8 +32,8 @@ public class MapToJCRPathTest {
      */
     @Test
     public void testGetTrashPath() throws RepositoryException {
-        String path = MapToJCRPath.getTrashPath("/s-ramp/artifacts/12/e5/12342873"); //$NON-NLS-1$
-        Assert.assertEquals("/s-ramp-trash/artifacts/12/e5/12342873", path); //$NON-NLS-1$
+        String path = MapToJCRPath.getTrashPath("/s-ramp/artifacts/12/e5/12342873");
+        Assert.assertEquals("/s-ramp-trash/artifacts/12/e5/12342873", path);
     }
 
     /**
@@ -41,14 +41,14 @@ public class MapToJCRPathTest {
      */
     @Test
     public void testGetArtifactPath() {
-        String path = MapToJCRPath.getArtifactPath("0123456789"); //$NON-NLS-1$
-        Assert.assertEquals("/s-ramp/artifacts/01/23/45/6789", path); //$NON-NLS-1$
-        path = MapToJCRPath.getArtifactPath("abcdefghijklmnopqrstuvwxyz"); //$NON-NLS-1$
-        Assert.assertEquals("/s-ramp/artifacts/ab/cd/ef/ghijklmnopqrstuvwxyz", path); //$NON-NLS-1$
-        path = MapToJCRPath.getArtifactPath("12345"); //$NON-NLS-1$
-        Assert.assertEquals("/s-ramp/artifacts/12/34/5", path); //$NON-NLS-1$
-        path = MapToJCRPath.getArtifactPath("1"); //$NON-NLS-1$
-        Assert.assertEquals("/s-ramp/artifacts/1", path); //$NON-NLS-1$
+        String path = MapToJCRPath.getArtifactPath("0123456789");
+        Assert.assertEquals("/s-ramp/artifacts/01/23/45/6789", path);
+        path = MapToJCRPath.getArtifactPath("abcdefghijklmnopqrstuvwxyz");
+        Assert.assertEquals("/s-ramp/artifacts/ab/cd/ef/ghijklmnopqrstuvwxyz", path);
+        path = MapToJCRPath.getArtifactPath("12345");
+        Assert.assertEquals("/s-ramp/artifacts/12/34/5", path);
+        path = MapToJCRPath.getArtifactPath("1");
+        Assert.assertEquals("/s-ramp/artifacts/1", path);
     }
 
     /**
@@ -56,8 +56,8 @@ public class MapToJCRPathTest {
      */
     @Test
     public void testGetOntologyPath() {
-        String path = MapToJCRPath.getOntologyPath("0123456789"); //$NON-NLS-1$
-        Assert.assertEquals("/s-ramp/ontologies/0123456789", path); //$NON-NLS-1$
+        String path = MapToJCRPath.getOntologyPath("0123456789");
+        Assert.assertEquals("/s-ramp/ontologies/0123456789", path);
     }
 
     /**
@@ -65,8 +65,8 @@ public class MapToJCRPathTest {
      */
     @Test
     public void testGetStoredQueryPath() {
-        String path = MapToJCRPath.getStoredQueryPath("0123456789"); //$NON-NLS-1$
-        Assert.assertEquals("/s-ramp/queries/0123456789", path); //$NON-NLS-1$
+        String path = MapToJCRPath.getStoredQueryPath("0123456789");
+        Assert.assertEquals("/s-ramp/queries/0123456789", path);
     }
 
 }

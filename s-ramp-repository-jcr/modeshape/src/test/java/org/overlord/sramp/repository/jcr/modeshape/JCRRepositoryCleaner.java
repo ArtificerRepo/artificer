@@ -44,11 +44,11 @@ public class JCRRepositoryCleaner {
 		Session session = null;
 		try {
             session = JCRRepositoryFactory.getSession();
-            Node artifactContentRoot = getNode(session, "/artifact"); //$NON-NLS-1$
+            Node artifactContentRoot = getNode(session, "/artifact");
             if (artifactContentRoot != null) {
 	        	artifactContentRoot.remove();
             }
-            Node srampRoot = getNode(session, "/s-ramp"); //$NON-NLS-1$
+            Node srampRoot = getNode(session, "/s-ramp");
             if (srampRoot != null) {
 	        	srampRoot.remove();
             }

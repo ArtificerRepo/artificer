@@ -49,13 +49,13 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 
 	private static Map<String, String> sOrderByMappings = new HashMap<String, String>();
 	static {
-		sOrderByMappings.put("createdBy", "jcr:createdBy"); //$NON-NLS-1$ //$NON-NLS-2$
-		sOrderByMappings.put("version", "version"); //$NON-NLS-1$ //$NON-NLS-2$
-		sOrderByMappings.put("uuid", "sramp:uuid"); //$NON-NLS-1$ //$NON-NLS-2$
-		sOrderByMappings.put("createdTimestamp", "jcr:created"); //$NON-NLS-1$ //$NON-NLS-2$
-		sOrderByMappings.put("lastModifiedTimestamp", "jcr:lastModified"); //$NON-NLS-1$ //$NON-NLS-2$
-		sOrderByMappings.put("lastModifiedBy", "jcr:lastModifiedBy"); //$NON-NLS-1$ //$NON-NLS-2$
-		sOrderByMappings.put("name", "sramp:name"); //$NON-NLS-1$ //$NON-NLS-2$
+		sOrderByMappings.put("createdBy", JCRConstants.JCR_CREATED_BY);
+		sOrderByMappings.put("version", "version");
+		sOrderByMappings.put("uuid", JCRConstants.JCR_UUID); 
+		sOrderByMappings.put("createdTimestamp", JCRConstants.JCR_CREATED);
+		sOrderByMappings.put("lastModifiedTimestamp", JCRConstants.JCR_LAST_MODIFIED);
+		sOrderByMappings.put("lastModifiedBy", JCRConstants.JCR_LAST_MODIFIED_BY); 
+		sOrderByMappings.put("name", JCRConstants.SRAMP_NAME);
 	}
 
     private Session session;
@@ -91,7 +91,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 				XPathSerializationVisitor visitor = new XPathSerializationVisitor();
 				queryModel.accept(visitor);
 				String originalQuery = visitor.getXPath();
-				System.out.println(Messages.i18n.format("JCR_QUERY_FROM", jcrSql2Query, originalQuery)); //$NON-NLS-1$
+				System.out.println(Messages.i18n.format("JCR_QUERY_FROM", jcrSql2Query, originalQuery));
 			}
 			javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, JCRConstants.JCR_SQL2);
 			long startTime = System.currentTimeMillis();
@@ -99,8 +99,8 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 			NodeIterator jcrNodes = jcrQueryResult.getNodes();
 			long endTime = System.currentTimeMillis();
 
-			log.debug(Messages.i18n.format("QUERY_EXECUTED", jcrSql2Query)); //$NON-NLS-1$
-			log.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime)); //$NON-NLS-1$
+			log.debug(Messages.i18n.format("QUERY_EXECUTED", jcrSql2Query));
+			log.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime));
 
 			return new JCRArtifactSet(session, jcrNodes, logoutOnClose);
 		} catch (SrampException e) {
@@ -136,7 +136,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 		String sql2Query = visitor.getSql2Query();
 		String alias = visitor.getSelectAlias();
 		if (jcrOrderBy != null) {
-			sql2Query += " ORDER BY " + alias + ".[" + jcrOrderBy + "] " + (isOrderAscending() ? "ASC" : "DESC"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			sql2Query += " ORDER BY " + alias + ".[" + jcrOrderBy + "] " + (isOrderAscending() ? "ASC" : "DESC");
 		}
 		return sql2Query;
 	}

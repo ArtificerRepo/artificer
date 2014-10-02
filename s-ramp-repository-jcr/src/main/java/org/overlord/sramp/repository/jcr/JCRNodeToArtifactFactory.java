@@ -56,7 +56,7 @@ public final class JCRNodeToArtifactFactory {
 			String artifactType = jcrNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getValue().getString();
 			return createArtifact(session, jcrNode, ArtifactType.valueOf(artifactType));
 		} catch (PathNotFoundException e) {
-			throw new RuntimeException(Messages.i18n.format("INVALID_JCR_NODE"), e); //$NON-NLS-1$
+			throw new RuntimeException(Messages.i18n.format("INVALID_JCR_NODE"), e);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -79,9 +79,9 @@ public final class JCRNodeToArtifactFactory {
 					try {
 						String ident = reference.getString();
 						Node node = session.getNodeByIdentifier(ident);
-						return node.getProperty("sramp:uuid").getString(); //$NON-NLS-1$
+						return node.getProperty(JCRConstants.SRAMP_UUID).getString();
 					} catch (Exception e) {
-						log.debug(Messages.i18n.format("ERROR_RESOLVING_JCR_REF"), e); //$NON-NLS-1$
+						log.debug(Messages.i18n.format("ERROR_RESOLVING_JCR_REF"), e);
 					}
 					return null;
 				}

@@ -53,17 +53,17 @@ import org.slf4j.LoggerFactory;
 public class JCRAuditManager extends AbstractJCRManager implements AuditManager {
 
     private static Logger log = LoggerFactory.getLogger(JCRAuditManager.class);
-    private static final String AUDIT_ENTRY_QUERY = "SELECT auditEntry.*" //$NON-NLS-1$
-            + " FROM [sramp:baseArtifactType] AS artifact" //$NON-NLS-1$
-            + " JOIN [audit:auditEntry] AS auditEntry ON ISCHILDNODE(auditEntry, artifact) " //$NON-NLS-1$
-            + "WHERE artifact.[sramp:uuid] = '%1$s' AND auditEntry.[audit:uuid] = '%2$s'"; //$NON-NLS-1$
-    private static final String ARTIFACT_AUDIT_TRAIL_QUERY = "SELECT auditEntry.*" //$NON-NLS-1$
-            + " FROM [sramp:baseArtifactType] AS artifact" //$NON-NLS-1$
-            + " JOIN [audit:auditEntry] AS auditEntry ON ISCHILDNODE(auditEntry, artifact) " //$NON-NLS-1$
-            + "WHERE artifact.[sramp:uuid] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC"; //$NON-NLS-1$
-    private static final String USER_AUDIT_TRAIL_QUERY = "SELECT auditEntry.*" //$NON-NLS-1$
-            + " FROM [audit:auditEntry] AS auditEntry " //$NON-NLS-1$
-            + "WHERE auditEntry.[jcr:createdBy] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC"; //$NON-NLS-1$
+    private static final String AUDIT_ENTRY_QUERY = "SELECT auditEntry.*"
+            + " FROM [sramp:baseArtifactType] AS artifact"
+            + " JOIN [audit:auditEntry] AS auditEntry ON ISCHILDNODE(auditEntry, artifact) "
+            + "WHERE artifact.[sramp:uuid] = '%1$s' AND auditEntry.[audit:uuid] = '%2$s'";
+    private static final String ARTIFACT_AUDIT_TRAIL_QUERY = "SELECT auditEntry.*"
+            + " FROM [sramp:baseArtifactType] AS artifact"
+            + " JOIN [audit:auditEntry] AS auditEntry ON ISCHILDNODE(auditEntry, artifact) "
+            + "WHERE artifact.[sramp:uuid] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC";
+    private static final String USER_AUDIT_TRAIL_QUERY = "SELECT auditEntry.*"
+            + " FROM [audit:auditEntry] AS auditEntry "
+            + "WHERE auditEntry.[jcr:createdBy] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC";
 
 	/**
 	 * Default constructor.
@@ -82,19 +82,19 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
             Node artifactNode = findArtifactNodeByUuid(session, artifactUuid);
             if (artifactNode != null) {
                 String auditEntryUuid = UUID.randomUUID().toString();
-                Node auditEntryNode = artifactNode.addNode("audit:" + auditEntryUuid, JCRConstants.SRAMP_AUDIT_ENTRY); //$NON-NLS-1$
+                Node auditEntryNode = artifactNode.addNode("audit:" + auditEntryUuid, JCRConstants.SRAMP_AUDIT_ENTRY);
                 entry.setUuid(auditEntryUuid);
 
-                auditEntryNode.setProperty("audit:uuid", entry.getUuid()); //$NON-NLS-1$
-                auditEntryNode.setProperty("audit:sortId", System.currentTimeMillis()); //$NON-NLS-1$
-                auditEntryNode.setProperty("audit:type", entry.getType()); //$NON-NLS-1$
+                auditEntryNode.setProperty("audit:uuid", entry.getUuid());
+                auditEntryNode.setProperty("audit:sortId", System.currentTimeMillis());
+                auditEntryNode.setProperty("audit:type", entry.getType());
 
                 List<AuditItemType> auditItems = entry.getAuditItem();
                 for (AuditItemType auditItem : auditItems) {
                     String type = auditItem.getType();
-                    String auditItemNodeName = "audit:" + type.replace(':', '_'); //$NON-NLS-1$
+                    String auditItemNodeName = "audit:" + type.replace(':', '_');
                     Node auditItemNode = auditEntryNode.addNode(auditItemNodeName, JCRConstants.SRAMP_AUDIT_ITEM);
-                    auditItemNode.setProperty("audit:type", type); //$NON-NLS-1$
+                    auditItemNode.setProperty("audit:type", type);
                     List<Property> properties = auditItem.getProperty();
                     for (Property property : properties) {
                         String propertyName = property.getName();
@@ -135,8 +135,8 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
             QueryResult jcrQueryResult = jcrQuery.execute();
             NodeIterator jcrNodes = jcrQueryResult.getNodes();
             long endTime = System.currentTimeMillis();
-            log.debug(Messages.i18n.format("QUERY_EXECUTED", jcrSql2Query)); //$NON-NLS-1$
-            log.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime)); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("QUERY_EXECUTED", jcrSql2Query));
+            log.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime));
             if (jcrNodes.getSize() == 1) {
                 Node node = jcrNodes.nextNode();
                 return JCRNodeToAuditEntryFactory.createAuditEntry(session, node);
@@ -188,8 +188,8 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
             QueryResult jcrQueryResult = jcrQuery.execute();
             NodeIterator jcrNodes = jcrQueryResult.getNodes();
             long endTime = System.currentTimeMillis();
-            log.debug(Messages.i18n.format("QUERY_EXECUTED", query)); //$NON-NLS-1$
-            log.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime)); //$NON-NLS-1$
+            log.debug(Messages.i18n.format("QUERY_EXECUTED", query));
+            log.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime));
             return new JCRAuditEntrySet(session, jcrNodes);
         } catch (Throwable t) {
             JCRRepositoryFactory.logoutQuietly(session);

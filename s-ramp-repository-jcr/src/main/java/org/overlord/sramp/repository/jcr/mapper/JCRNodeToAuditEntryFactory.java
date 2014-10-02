@@ -27,6 +27,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType;
+import org.overlord.sramp.repository.jcr.JCRConstants;
 
 /**
  * Maps a JCR auditEntry node to an {@link AuditEntry} bean.
@@ -43,10 +44,10 @@ public class JCRNodeToAuditEntryFactory {
         try {
             DatatypeFactory dtFactory = DatatypeFactory.newInstance();
 
-            String uuid = jcrNode.getProperty("audit:uuid").getString(); //$NON-NLS-1$
-            String type = jcrNode.getProperty("audit:type").getString(); //$NON-NLS-1$
-            String who = jcrNode.getProperty("jcr:createdBy").getString(); //$NON-NLS-1$
-            XMLGregorianCalendar when = dtFactory.newXMLGregorianCalendar((GregorianCalendar)jcrNode.getProperty("jcr:created").getDate()); //$NON-NLS-1$
+            String uuid = jcrNode.getProperty("audit:uuid").getString();
+            String type = jcrNode.getProperty("audit:type").getString();
+            String who = jcrNode.getProperty(JCRConstants.JCR_CREATED_BY).getString();
+            XMLGregorianCalendar when = dtFactory.newXMLGregorianCalendar((GregorianCalendar)jcrNode.getProperty(JCRConstants.JCR_CREATED).getDate());
 
             AuditEntry entry = new AuditEntry();
             entry.setUuid(uuid);
@@ -64,9 +65,9 @@ public class JCRNodeToAuditEntryFactory {
                     Property property = properties.nextProperty();
                     String propName = property.getName();
                     String propValue = property.getString();
-                    if (propName.equals("audit:type")) { //$NON-NLS-1$
+                    if (propName.equals("audit:type")) {
                         auditItem.setType(propValue);
-                    } else if (propName.equals("jcr:primaryType")) { //$NON-NLS-1$
+                    } else if (propName.equals(JCRConstants.JCR_PRIMARY_TYPE)) {
                         // Skip this one
                     } else {
                         org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType.Property p =

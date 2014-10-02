@@ -68,7 +68,7 @@ public class AbstractJCRManager {
      */
     protected static Node findArtifactNodeByUuid(Session session, String artifactUuid) throws Exception {
         javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
-        String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", artifactUuid); //$NON-NLS-1$
+        String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", artifactUuid);
         jcrSql2Query += JCRConstants.NOT_DELETED_FILTER;
         javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, JCRConstants.JCR_SQL2);
         QueryResult jcrQueryResult = jcrQuery.execute();
@@ -77,7 +77,7 @@ public class AbstractJCRManager {
             return null;
         }
         if (jcrNodes.getSize() > 1) {
-            throw new Exception(Messages.i18n.format("TOO_MANY_ARTIFACTS", artifactUuid)); //$NON-NLS-1$
+            throw new Exception(Messages.i18n.format("TOO_MANY_ARTIFACTS", artifactUuid));
         }
         Node node = jcrNodes.nextNode();
         return node;

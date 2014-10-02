@@ -511,7 +511,7 @@ public class ModeshapeStartupHttpServletRequest implements HttpServletRequest {
      */
     @Override
     public Principal getUserPrincipal() {
-        SimplePrincipal sp = SimplePrincipal.newInstance("startup"); //$NON-NLS-1$
+        SimplePrincipal sp = SimplePrincipal.newInstance("startup");
         return sp;
     }
 

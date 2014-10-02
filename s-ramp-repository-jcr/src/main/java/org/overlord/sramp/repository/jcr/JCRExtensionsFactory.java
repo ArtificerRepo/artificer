@@ -35,8 +35,8 @@ public class JCRExtensionsFactory {
         if (instance == null) {
             instance = ServiceRegistryUtil.getSingleService(JCRExtensions.class);
             if (instance == null)
-                throw new RuntimeException(Messages.i18n.format("JCR_EXTENSIONS_NOT_FOUND")); //$NON-NLS-1$
-            log.info(Messages.i18n.format("JCR_EXTENSIONS", instance.getClass())); //$NON-NLS-1$
+                throw new RuntimeException(Messages.i18n.format("JCR_EXTENSIONS_NOT_FOUND"));
+            log.info(Messages.i18n.format("JCR_EXTENSIONS", instance.getClass()));
         }
         return instance;
     }

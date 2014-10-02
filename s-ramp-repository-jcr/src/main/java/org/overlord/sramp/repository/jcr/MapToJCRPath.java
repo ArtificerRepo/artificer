@@ -29,7 +29,7 @@ public class MapToJCRPath {
      * @throws RepositoryException
      */
     public static String getTrashPath(String nodePath) throws RepositoryException {
-        return nodePath.replace(ROOT_PATH, ROOT_PATH + "-trash"); //$NON-NLS-1$
+        return nodePath.replace(ROOT_PATH, ROOT_PATH + "-trash");
     }
 
     /**
@@ -39,7 +39,7 @@ public class MapToJCRPath {
      * @return path: "/s-ramp/artifacts/[btree]"
      */
     public static String getArtifactPath(String uuid) {
-        return ROOT_PATH + "/artifacts/" + bTreePath(uuid); //$NON-NLS-1$
+        return ROOT_PATH + "/artifacts/" + bTreePath(uuid);
     }
 
     /**
@@ -49,7 +49,7 @@ public class MapToJCRPath {
      * @return path: "/s-ramp/ontologies/[UUID]"
      */
     public static String getOntologyPath(String uuid) {
-        return ROOT_PATH + "/ontologies/" + uuid; //$NON-NLS-1$
+        return ROOT_PATH + "/ontologies/" + uuid;
     }
 
     /**
@@ -59,7 +59,7 @@ public class MapToJCRPath {
      * @return path: "/s-ramp/queries/queryName"
      */
     public static String getStoredQueryPath(String queryName) {
-        return ROOT_PATH + "/queries/" + queryName; //$NON-NLS-1$
+        return ROOT_PATH + "/queries/" + queryName;
     }
 
     /**
@@ -68,14 +68,14 @@ public class MapToJCRPath {
      * @param uuid
      */
     private static String bTreePath (String uuid) {
-        String bTreePath = ""; //$NON-NLS-1$
+        String bTreePath = "";
         int segmentStartIdx = 0;
         for (int i=0; i < folderDepth; i++) {
             int segmentEndIdx = segmentStartIdx + 2;
             if (segmentEndIdx > uuid.length()) {
                 break;
             }
-            bTreePath += uuid.substring(segmentStartIdx, segmentEndIdx) + "/"; //$NON-NLS-1$
+            bTreePath += uuid.substring(segmentStartIdx, segmentEndIdx) + "/";
             segmentStartIdx += 2;
         }
         bTreePath += uuid.substring(segmentStartIdx);

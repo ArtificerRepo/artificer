@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 public class JCRRepositoryFactory {
 
-    public static String WORKSPACE_NAME = "default"; //$NON-NLS-1$
+    public static String WORKSPACE_NAME = "default";
 	private static Logger log = LoggerFactory.getLogger(JCRRepositoryFactory.class);
 
 	private static JCRRepository instance;
@@ -44,8 +44,8 @@ public class JCRRepositoryFactory {
         if (instance == null) {
             instance = ServiceRegistryUtil.getSingleService(JCRRepository.class);
             if (instance == null)
-                throw new RuntimeException(Messages.i18n.format("JCR_PROVIDER_NOT_FOUND")); //$NON-NLS-1$
-            log.info(Messages.i18n.format("JCR_PROVIDER", instance.getClass())); //$NON-NLS-1$
+                throw new RuntimeException(Messages.i18n.format("JCR_PROVIDER_NOT_FOUND"));
+            log.info(Messages.i18n.format("JCR_PROVIDER", instance.getClass()));
             instance.startup();
         }
         return instance;
