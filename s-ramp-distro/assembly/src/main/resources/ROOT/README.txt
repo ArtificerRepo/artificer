@@ -15,22 +15,20 @@ This distribution comes with the following:
     4) demos - a number of demo maven projects to help you get started with 
        S-RAMP.
     5) src - all of the S-RAMP source code, in a number of "-sources" JARs.
-    6) build.xml an Ant script that will install and configure S-RAMP into
+    6) build.xml - an Ant script that will install and configure S-RAMP into
        one of:
        A) JBoss EAP 6
        B) Tomcat 7
        C) Jetty 8
-       D) Fuse 6.1
 
 == What do I do next? ==
-When installing into JBoss EAP or JBoss Fuse you must first download the 
-appropriate ZIP distribution and unpack to your preferred location.
+When installing into JBoss EAP you must first download the appropriate ZIP 
+distribution and unpack to your preferred location.
 
     Download JBoss EAP:  http://www.jboss.org/jbossas/downloads
-    Download JBoss Fuse: http://www.jboss.org/products/fuse/overview/
 
 The installer will ask you a couple of questions and then do everything else 
-for you! From the root of this distribution, simply run:
+for you! From the root of the distribution, simply run:
 
     ant
 
@@ -46,4 +44,10 @@ You should be able to log in with the following credentials:
     Username: admin
     Password: <pw-chosen-during-install>
 
-Note: the repository browser UI can be found on port 8181 when runnig in Fuse.
+    
+== Note on Memory Configuration ==
+You will most likely need to increase the default JVM memory settings for
+your application server.  The typical defaults are insufficient.  For
+example, on Tomcat these settings are pretty good:
+
+set CATALINA_OPTS=-Xms1G -Xmx1G -XX:PermSize=384m -XX:MaxPermSize=384m
