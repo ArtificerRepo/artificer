@@ -45,6 +45,15 @@
    <resource>
     <directory>src/main/resources</directory>
     <filtering>true</filtering>
+    <excludes>
+    	<exclude>sramp.properties</exclude>
+    </excludes>
+   </resource>
+   <resource>
+   	<directory>${project.build.directory}</directory>
+   	<includes>
+   		<include>sramp.properties</include>
+   	</includes>
    </resource>
    <resource>
     <directory>../s-ramp-installer/src/main/resources/updates</directory>
@@ -65,17 +74,17 @@
     <configuration>
      <merges>
       <merge>
-       <destination>${build.outputDirectory}/sramp.properties</destination>
+       <destination>${project.build.directory}/sramp.properties</destination>
        <files>
         <file>../s-ramp-installer/src/main/resources/updates/sramp.properties</file>
-        <file>${build.outputDirectory}/sramp.properties</file>
+        <file>src/main/resources/sramp.properties</file>
        </files>
       </merge>
      </merges>
     </configuration>
     <executions>
      <execution>
-      <phase>package</phase>
+      <phase>compile</phase>
       <goals>
        <goal>merge-files</goal>
       </goals>
