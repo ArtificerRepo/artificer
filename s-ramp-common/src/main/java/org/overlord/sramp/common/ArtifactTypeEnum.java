@@ -118,7 +118,6 @@ public enum ArtifactTypeEnum {
     BindingOperationOutput("wsdl", "WSDL Binding Operation Output", BindingOperationOutput.class, BaseArtifactEnum.BINDING_OPERATION_OUTPUT, true), //$NON-NLS-1$ //$NON-NLS-2$
     BindingOperationFault("wsdl", "WSDL Binding Operation Fault", BindingOperationFault.class, BaseArtifactEnum.BINDING_OPERATION_FAULT, true), //$NON-NLS-1$ //$NON-NLS-2$
     // Service Implementation
-    Organization("serviceImplementation", "Organization", Organization.class, BaseArtifactEnum.ORGANIZATION, false), //$NON-NLS-1$ //$NON-NLS-2$
     ServiceEndpoint("serviceImplementation", "Service Endpoint", ServiceEndpoint.class, BaseArtifactEnum.SERVICE_ENDPOINT, false), //$NON-NLS-1$ //$NON-NLS-2$
     ServiceInstance("serviceImplementation", "Service Instance", ServiceInstance.class, BaseArtifactEnum.SERVICE_INSTANCE, false), //$NON-NLS-1$ //$NON-NLS-2$
     ServiceOperation("serviceImplementation", "Service Operation", ServiceOperation.class, BaseArtifactEnum.SERVICE_OPERATION, false), //$NON-NLS-1$ //$NON-NLS-2$
@@ -138,6 +137,7 @@ public enum ArtifactTypeEnum {
     InformationType("soa", "SOA Information Type", InformationType.class, BaseArtifactEnum.INFORMATION_TYPE, false), //$NON-NLS-1$ //$NON-NLS-2$
     Orchestration("soa", "SOA Orchestration", Orchestration.class, BaseArtifactEnum.ORCHESTRATION, false), //$NON-NLS-1$ //$NON-NLS-2$
     OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class, BaseArtifactEnum.ORCHESTRATION_PROCESS, false), //$NON-NLS-1$ //$NON-NLS-2$
+    Organization("serviceImplementation", "Organization", Organization.class, BaseArtifactEnum.ORGANIZATION, false), //$NON-NLS-1$ //$NON-NLS-2$
     Policy("soa", "SOA Policy", Policy.class, BaseArtifactEnum.POLICY, false), //$NON-NLS-1$ //$NON-NLS-2$
     PolicySubject("soa", "SOA Policy Subject", PolicySubject.class, BaseArtifactEnum.POLICY_SUBJECT, false), //$NON-NLS-1$ //$NON-NLS-2$
     Process("soa", "SOA Process", org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Process.class, BaseArtifactEnum.PROCESS, false), //$NON-NLS-1$ //$NON-NLS-2$
