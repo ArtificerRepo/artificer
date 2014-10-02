@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.felix.gogo.commands.Command;
+import org.overlord.commons.codec.AesEncrypter;
 import org.overlord.commons.karaf.commands.configure.AbstractConfigureFabricCommand;
 
 /**
@@ -85,9 +86,13 @@ public class ConfigureFabricCommand extends AbstractConfigureFabricCommand {
                 Properties props = new Properties();
                 props.load(in);
                 FileOutputStream out = null;
+                String aesEncryptedValue = AesEncrypter.encrypt(password);
+                StringBuilder aesEncrypterBuilder = new StringBuilder();
+                aesEncrypterBuilder.append("${crypt:").append(aesEncryptedValue).append("}"); //$NON-NLS-1$ //$NON-NLS-2$
+                aesEncryptedValue = aesEncrypterBuilder.toString();
                 try {
                     out = new FileOutputStream(filePath);
-                    props.setProperty(ConfigureConstants.SRAMP_EVENTS_JMS_PASSWORD, password);
+                    props.setProperty(ConfigureConstants.SRAMP_EVENTS_JMS_PASSWORD, aesEncryptedValue);
                     props.setProperty(ConfigureConstants.SRAMP_EVENTS_JMS_USER, ConfigureConstants.SRAMP_EVENTS_JMS_DEFAULT_USER);
                     props.store(out, null);
                 } finally {
