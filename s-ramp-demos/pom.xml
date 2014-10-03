@@ -48,6 +48,8 @@
         <module>s-ramp-demos-derived-artifacts</module>
         <module>s-ramp-demos-custom-deriver</module>
         <module>s-ramp-demos-shell-command</module>
+        <module>s-ramp-demos-webapp-multimodule/artifacts</module>
+        <module>s-ramp-demos-webapp-multimodule/web</module>
       </modules>
     </profile>
     <profile>
