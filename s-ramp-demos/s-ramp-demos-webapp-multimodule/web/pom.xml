@@ -68,7 +68,6 @@
       <extension>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-wagon</artifactId>
-        <version>${project.version}</version>
       </extension>
     </extensions>
   </build>
