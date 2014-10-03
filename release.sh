@@ -14,7 +14,7 @@ git add .
 git commit -m "Prepare for release $RELEASE_VERSION"
 git push origin master
 
-mvn clean install
+mvn clean install -P generate-docs
 
 git tag -a -m "Tagging release $RELEASE_VERSION" s-ramp-$RELEASE_VERSION
 git push origin s-ramp-$RELEASE_VERSION
@@ -27,3 +27,4 @@ git add .
 git commit -m "Update to next development version: $DEV_VERSION"
 git push origin master
 
+scp s-ramp-distro/assembly/target/s-ramp-$RELEASE_VERSION.zip overlord@filemgmt.jboss.org:/downloads_htdocs/overlord/sramp
