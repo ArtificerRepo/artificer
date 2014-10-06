@@ -86,7 +86,7 @@
 - sramp:relationshipType (string)
 - sramp:generic (boolean)
 - sramp:maxCardinality (long)
-- sramp:targetType (string)
+- sramp:targetType (string) multiple
 - sramp:relationshipTarget (reference) multiple < 'sramp:baseArtifactType'
 
 [sramp:baseArtifactType] > mix:created, mix:lastModified, mix:referenceable, mix:versionable abstract mixin
@@ -234,10 +234,6 @@
 // -------------------------------------------------------
 // S-RAMP SOA Artifacts
 // -------------------------------------------------------
-[sramp:extensionType]
-// TODO (if this is needed, use * nt:base): protected List<Object> any;
-// TODO: private Map<QName, String> otherAttributes = new HashMap<QName, String>();
-
 [sramp:soaModelType] > sramp:baseArtifactType abstract mixin
 - sramp:documentation (reference) < 'sramp:baseArtifactType'
 
@@ -267,9 +263,7 @@
 
 [sramp:organization] > sramp:actor mixin
 - sramp:provides (reference) multiple < 'sramp:baseArtifactType'
-+ sramp:extension (sramp:extensionType)
 - sramp:end (string)
-// TODO (if this is needed, use * nt:base): protected List<Object> any;
 
 [sramp:service] > sramp:element mixin
 - sramp:hasContract (reference) multiple < 'sramp:baseArtifactType'
@@ -317,8 +311,6 @@
 - sramp:documentation (reference) < 'sramp:baseArtifactType'
 // the following are not actually on serviceImplementationModelType, but including here for convenience
 - sramp:end (string)
-+ sramp:extension (sramp:extensionType)
-// TODO (if this is needed, use * nt:base): protected List<Object> any;
 
 [sramp:serviceEndpoint] > sramp:serviceImplementationModelType mixin
 - sramp:endpointDefinedBy (reference) < 'sramp:baseArtifactType'

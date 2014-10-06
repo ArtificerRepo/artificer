@@ -15,14 +15,11 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import java.io.InputStream;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperation;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationFault;
@@ -45,15 +42,10 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.repository.query.ArtifactSet;
-import org.overlord.sramp.repository.query.SrampQuery;
 
 
 
@@ -67,7 +59,8 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 
 	@Test
 	public void testWsdlDocument() throws Exception {
-        String uuid = addWsdlArtifact("jcr-sample.wsdl", new WsdlDocument(), BaseArtifactEnum.WSDL_DOCUMENT);
+        String uuid = addArtifact("/sample-files/wsdl/", "jcr-sample.wsdl", new WsdlDocument(),
+                BaseArtifactEnum.WSDL_DOCUMENT).getUuid();
 
 		WsdlDocument wsdl = (WsdlDocument) getArtifactByUUID(uuid);
 		Assert.assertNotNull(wsdl);
@@ -267,63 +260,12 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 		return null;
 	}
 
-	/**
-	 * Gets an artifact by a {@link Target}.
-	 * @param target
-	 * @throws Exception
-	 */
-	private BaseArtifactType getArtifactByTarget(Target target) throws Exception {
-	    Assert.assertNotNull("Missing target/relationship.", target);
-		return getArtifactByUUID(target.getValue());
-	}
-
-	/**
-	 * Ensures that a single artifact exists of the given type and name.
-	 * @param type
-	 * @param name
-	 * @throws Exception
-	 */
-	private BaseArtifactType assertSingleArtifact(ArtifactTypeEnum type, String name) throws Exception {
-		String q = String.format("/s-ramp/%1$s/%2$s[@name = ?]", type.getModel(), type.getType());
-		SrampQuery query = queryManager.createQuery(q);
-		query.setString(name);
-		ArtifactSet artifactSet = null;
-		try {
-			artifactSet = query.executeQuery();
-			Assert.assertEquals(1, artifactSet.size());
-			BaseArtifactType arty = artifactSet.iterator().next();
-			Assert.assertEquals(name, arty.getName());
-			return arty;
-		} finally {
-			if (artifactSet != null)
-				artifactSet.close();
-		}
-	}
-
-	/**
-	 * Gets a single artifact by UUID.
-	 * @param uuid
-	 * @throws Exception
-	 */
-	private BaseArtifactType getArtifactByUUID(String uuid) throws Exception {
-		SrampQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]");
-		query.setString(uuid);
-		ArtifactSet artifactSet = null;
-		try {
-			artifactSet = query.executeQuery();
-			Assert.assertEquals(1, artifactSet.size());
-			return artifactSet.iterator().next();
-		} finally {
-			if (artifactSet != null)
-				artifactSet.close();
-		}
-	}
-
-
     @Test
     public void testWsdlDocumentWithExternalRefs() throws Exception {
-        String xsdUuid = addWsdlArtifact("jcr-sample-externalrefs.xsd", new XsdDocument(), BaseArtifactEnum.XSD_DOCUMENT);
-        String uuid = addWsdlArtifact("jcr-sample-externalrefs.wsdl", new WsdlDocument(), BaseArtifactEnum.WSDL_DOCUMENT);
+        String xsdUuid = addArtifact("/sample-files/wsdl/", "jcr-sample-externalrefs.xsd", new XsdDocument(),
+                BaseArtifactEnum.XSD_DOCUMENT).getUuid();
+        String uuid = addArtifact("/sample-files/wsdl/", "jcr-sample-externalrefs.wsdl", new WsdlDocument(),
+                BaseArtifactEnum.WSDL_DOCUMENT).getUuid();
 
         XsdDocument xsd = (XsdDocument) getArtifactByUUID(xsdUuid);
         Assert.assertNotNull(xsd);
@@ -363,33 +305,4 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
         SimpleTypeDeclaration type = (SimpleTypeDeclaration) getArtifactByTarget(part.getType());
         Assert.assertEquals(extSimpleType.getUuid(), type.getUuid());
     }
-
-    /**
-     * Adds an artifact to the repo.
-     * @param fileName
-     * @param document
-     * @param type
-     * @throws SrampException
-     */
-    private String addWsdlArtifact(String fileName, XmlDocument document, BaseArtifactEnum type) throws SrampException {
-        String artifactFileName = fileName;
-        InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
-
-        String uuid = null;
-        try {
-            document.setArtifactType(type);
-            document.setName(artifactFileName);
-            document.setContentType("application/xml");
-            // Persist the artifact
-            BaseArtifactType artifact = persistenceManager.persistArtifact(document, contentStream);
-            Assert.assertNotNull(artifact);
-            uuid = artifact.getUuid();
-        } finally {
-            IOUtils.closeQuietly(contentStream);
-        }
-
-        return uuid;
-    }
-
-
 }

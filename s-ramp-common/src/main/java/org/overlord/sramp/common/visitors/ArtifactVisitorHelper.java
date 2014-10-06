@@ -23,8 +23,7 @@ import org.overlord.sramp.common.i18n.Messages;
 /**
  * Helper class used to visit S-RAMP artifacts.  This should be replaced by "accept" methods implemented
  * on each of the generated S-RAMP artifact classes.  I think there might be a jax-b plugin that will do
- * that, but I haven't checked into yet.  This is important because currently the order of the instanceof
- * checks below is vital to the proper visiting of the artifact, which is not ideal.
+ * that, but I haven't checked into yet.  Ex: accept(ArtifactVisitor visitor) { visitor.visit(this); }
  *
  * @author eric.wittmann@redhat.com
  */

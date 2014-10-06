@@ -15,9 +15,22 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampConstants;
+import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.repository.AuditManager;
 import org.overlord.sramp.repository.AuditManagerFactory;
 import org.overlord.sramp.repository.DerivedArtifacts;
@@ -26,6 +39,8 @@ import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.QueryManager;
 import org.overlord.sramp.repository.QueryManagerFactory;
+import org.overlord.sramp.repository.query.ArtifactSet;
+import org.overlord.sramp.repository.query.SrampQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,5 +77,89 @@ public abstract class AbstractJCRPersistenceTest {
         persistenceManager.shutdown();
         System.clearProperty(SrampConstants.SRAMP_CONFIG_AUDITING);
     }
+    
+    /**
+     * Adds an artifact to the repo.
+     * @param resourcePath
+     * @param fileName
+     * @param document
+     * @param type
+     * @throws SrampException
+     */
+    protected BaseArtifactType addArtifact(String resourcePath, String filename, XmlDocument document, BaseArtifactEnum type) throws SrampException {
+        InputStream contentStream = this.getClass().getResourceAsStream(resourcePath + filename);
 
+        BaseArtifactType artifact = null;
+        try {
+            document.setArtifactType(type);
+            document.setName(filename);
+            document.setContentType("application/xml"); //$NON-NLS-1$
+            // Persist the artifact
+            artifact = persistenceManager.persistArtifact(document, contentStream);
+            Assert.assertNotNull(artifact);
+        } finally {
+            IOUtils.closeQuietly(contentStream);
+        }
+
+        return artifact;
+    }
+
+    /**
+     * Ensures that a single artifact exists of the given type and name.
+     * @param type
+     * @param name
+     * @throws Exception
+     */
+    protected BaseArtifactType assertSingleArtifact(ArtifactTypeEnum type, String name) throws Exception {
+        String q = String.format("/s-ramp/%1$s/%2$s[@name = ?]", type.getModel(), type.getType()); //$NON-NLS-1$
+        SrampQuery query = queryManager.createQuery(q);
+        query.setString(name);
+        ArtifactSet artifactSet = null;
+        try {
+            artifactSet = query.executeQuery();
+            Assert.assertEquals(1, artifactSet.size());
+            BaseArtifactType arty = artifactSet.iterator().next();
+            Assert.assertEquals(name, arty.getName());
+            return arty;
+        } finally {
+            if (artifactSet != null)
+                artifactSet.close();
+        }
+    }
+    
+    protected void assertBasic(BaseArtifactType artifact, BaseArtifactType expected) {
+        assertNotNull(artifact);
+        assertNotNull(artifact.getUuid());
+        assertEquals(expected.getArtifactType(), artifact.getArtifactType());
+        assertEquals(expected.getName(), artifact.getName());
+    }
+
+    /**
+     * Gets a single artifact by UUID.
+     * @param uuid
+     * @throws Exception
+     */
+    protected BaseArtifactType getArtifactByUUID(String uuid) throws Exception {
+        SrampQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]"); //$NON-NLS-1$
+        query.setString(uuid);
+        ArtifactSet artifactSet = null;
+        try {
+            artifactSet = query.executeQuery();
+            Assert.assertEquals(1, artifactSet.size());
+            return artifactSet.iterator().next();
+        } finally {
+            if (artifactSet != null)
+                artifactSet.close();
+        }
+    }
+
+    /**
+     * Gets an artifact by a {@link Target}.
+     * @param target
+     * @throws Exception
+     */
+    protected BaseArtifactType getArtifactByTarget(Target target) throws Exception {
+        Assert.assertNotNull("Missing target/relationship.", target); //$NON-NLS-1$
+        return getArtifactByUUID(target.getValue());
+    }
 }

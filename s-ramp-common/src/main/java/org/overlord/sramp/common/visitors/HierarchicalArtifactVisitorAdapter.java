@@ -182,6 +182,22 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
         // Subclasses can do common visit logic here
     }
 
+    /**
+     * Common visit method for Element artifacts.
+     * @param artifact
+     */
+    protected void visitElement(Element artifact) {
+        // Subclasses can do common visit logic here
+    }
+
+    /**
+     * Common visit method for Actor artifacts.
+     * @param artifact
+     */
+    protected void visitActor(Actor artifact) {
+        visitElement(artifact);
+    }
+
 	/**
 	 * @see org.overlord.sramp.common.visitors.ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document)
 	 */
@@ -475,6 +491,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(Organization artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+		visitActor(artifact);
 	}
 
 	/**
@@ -530,6 +547,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(Actor artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitActor(artifact);
 	}
 
 	/**
@@ -539,6 +557,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(Choreography artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -548,6 +567,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(ChoreographyProcess artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -557,6 +577,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(Collaboration artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -566,6 +587,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(CollaborationProcess artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -575,6 +597,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(Composition artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -593,6 +616,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(Element artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+		visitElement(artifact);
 	}
 
 	/**
@@ -620,6 +644,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(Orchestration artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -629,6 +654,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(OrchestrationProcess artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -656,6 +682,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(Process artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -665,6 +692,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(Service artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -683,6 +711,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(ServiceComposition artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -701,6 +730,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(System artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 	/**
@@ -710,6 +740,7 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 	public void visit(Task artifact) {
 		visitBase(artifact);
 		visitSoa(artifact);
+        visitElement(artifact);
 	}
 
 }
