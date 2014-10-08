@@ -88,7 +88,7 @@ public abstract class AbstractWorkspace extends AppWorkspace {
 		}
 
 		Category category = new Category();
-		category.setScheme(SrampAtomConstants.URN_X_S_RAMP_V1_TYPE);
+		category.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
 		category.setTerm(type.getType());
 		category.setLabel(type.getLabel());
 		categories.getCategory().add(category);

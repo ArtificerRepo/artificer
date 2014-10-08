@@ -51,7 +51,7 @@ public class OntologyWorkspace extends AbstractWorkspace {
 		collection.getCategories().add(categories);
 
 		Category category = new Category();
-		category.setScheme(SrampAtomConstants.URN_X_S_RAMP_V1_TYPE);
+		category.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
 		category.setTerm("ontology"); //$NON-NLS-1$
 		category.setLabel("Ontology"); //$NON-NLS-1$
 		categories.getCategory().add(category);

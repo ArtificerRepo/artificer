@@ -51,7 +51,7 @@ public class StoredQueryWorkspace extends AbstractWorkspace {
 
         Category category = new Category();
         try {
-            category.setScheme(SrampAtomConstants.URN_X_S_RAMP_2013_TYPE);
+            category.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

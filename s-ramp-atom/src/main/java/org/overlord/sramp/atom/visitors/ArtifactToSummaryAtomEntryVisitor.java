@@ -31,6 +31,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.SrampAtomConstants;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
@@ -166,14 +167,14 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			Category typeCat = new Category();
 			typeCat.setTerm(artifactType.getType());
 			typeCat.setLabel(artifactType.getLabel());
-			typeCat.setScheme(new URI("x-s-ramp:2010:type")); //$NON-NLS-1$
+			typeCat.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
 			entry.getCategories().add(typeCat);
 
 			// Model category
 			Category modelCat = new Category();
 			modelCat.setTerm(artifactType.getModel());
 			modelCat.setLabel(artifactType.getLabel());
-			modelCat.setScheme(new URI("x-s-ramp:2010:model")); //$NON-NLS-1$
+			modelCat.setScheme(SrampAtomConstants.X_S_RAMP_MODEL_URN);
 			entry.getCategories().add(modelCat);
 
 			setAtomEntry(entry);

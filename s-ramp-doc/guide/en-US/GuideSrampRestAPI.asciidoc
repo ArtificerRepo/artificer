@@ -80,22 +80,22 @@ HTTP/1.1 200 OK
             <atom:title>Core Model Objects</atom:title>
             <app:accept>application/zip</app:accept>
             <app:categories fixed="yes">
-                <atom:category label="Document" scheme="urn:x-s-ramp:v1:type" term="Document"/>
-                <atom:category label="XML Document" scheme="urn:x-s-ramp:v1:type" term="XmlDocument"/>
+                <atom:category label="Document" scheme="urn:x-s-ramp:2013:type" term="Document"/>
+                <atom:category label="XML Document" scheme="urn:x-s-ramp:2013:type" term="XmlDocument"/>
             </app:categories>
         </app:collection>
         <app:collection href="http://example.org/s-ramp/core/Document">
             <atom:title>Documents</atom:title>
             <app:accept>application/octet-stream</app:accept>
             <app:categories fixed="yes">
-                <atom:category label="Document" scheme="urn:x-s-ramp:v1:type" term="Document"/>
+                <atom:category label="Document" scheme="urn:x-s-ramp:2013:type" term="Document"/>
             </app:categories>
         </app:collection>
         <app:collection href="http://example.org/s-ramp/core/XmlDocument">
             <atom:title>XML Documents</atom:title>
             <app:accept>application/xml</app:accept>
             <app:categories fixed="yes">
-                <atom:category label="XML Document" scheme="urn:x-s-ramp:v1:type" term="XmlDocument"/>
+                <atom:category label="XML Document" scheme="urn:x-s-ramp:2013:type" term="XmlDocument"/>
             </app:categories>
         </app:collection>
     </app:workspace>
@@ -164,8 +164,8 @@ HTTP/1.1 200 OK
     rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
   <atom:link href="http://example.org/s-ramp/core/Document/05778de3-be85-4696-b5dc-d889a27f1f6e"
     rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-  <atom:category label="Document" scheme="x-s-ramp:2010:type" term="Document" />
-  <atom:category label="Document" scheme="x-s-ramp:2010:model" term="core" />
+  <atom:category label="Document" scheme="x-s-ramp:2013:type" term="Document" />
+  <atom:category label="Document" scheme="x-s-ramp:2013:model" term="core" />
   <atom:updated>2013-05-14T13:43:09.708-04:00</atom:updated>
   <atom:id>05778de3-be85-4696-b5dc-d889a27f1f6e</atom:id>
   <atom:published>2013-05-14T13:43:09.708-04:00</atom:published>
@@ -231,8 +231,8 @@ HTTP/1.1 200 OK
     rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
   <atom:link href="http://example.org/s-ramp/ext/MavenPom/5f4cbf1e-cafb-4479-8867-fc5df5f21867" rel="edit"
     type="application/atom+xml;type=&quot;entry&quot;" />
-  <atom:category label="Extended Document" scheme="x-s-ramp:2010:type" term="MavenPom" />
-  <atom:category label="Extended Document" scheme="x-s-ramp:2010:model" term="ext" />
+  <atom:category label="Extended Document" scheme="x-s-ramp:2013:type" term="MavenPom" />
+  <atom:category label="Extended Document" scheme="x-s-ramp:2013:model" term="ext" />
   <atom:updated>2013-05-14T13:49:20.645-04:00</atom:updated>
   <atom:id>5f4cbf1e-cafb-4479-8867-fc5df5f21867</atom:id>
   <atom:published>2013-05-14T13:49:20.645-04:00</atom:published>
@@ -330,8 +330,8 @@ HTTP/1.1 200 OK
     rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
   <atom:link href="http://example.org/s-ramp/core/Document/05778de3-be85-4696-b5dc-d889a27f1f6e"
     rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-  <atom:category label="Document" scheme="x-s-ramp:2010:type" term="Document" />
-  <atom:category label="Document" scheme="x-s-ramp:2010:model" term="core" />
+  <atom:category label="Document" scheme="x-s-ramp:2013:type" term="Document" />
+  <atom:category label="Document" scheme="x-s-ramp:2013:model" term="core" />
   <atom:updated>2013-05-14T13:43:09.708-04:00</atom:updated>
   <atom:id>05778de3-be85-4696-b5dc-d889a27f1f6e</atom:id>
   <atom:published>2013-05-14T13:43:09.708-04:00</atom:published>
@@ -468,8 +468,8 @@ HTTP/1.1 200 OK
 <atom:link href="http://localhost:8080/s-ramp-server/s-ramp/xsd/ComplexTypeDeclaration/0104e848-fe91-4d93-a307-fb69ec9fd638" rel="self" type="application/atom+xml;type=&quot;entry&quot;"/>
 <atom:link href="http://localhost:8080/s-ramp-server/s-ramp/xsd/ComplexTypeDeclaration/0104e848-fe91-4d93-a307-fb69ec9fd638/media" rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;"/>
 <atom:link href="http://localhost:8080/s-ramp-server/s-ramp/xsd/ComplexTypeDeclaration/0104e848-fe91-4d93-a307-fb69ec9fd638" rel="edit" type="application/atom+xml;type=&quot;entry&quot;"/>
-<atom:category label="XML Schema Complex Type Declaration" scheme="x-s-ramp:2010:type" term="ComplexTypeDeclaration"/>
-<atom:category label="XML Schema Complex Type Declaration" scheme="x-s-ramp:2010:model" term="xsd"/>
+<atom:category label="XML Schema Complex Type Declaration" scheme="x-s-ramp:2013:type" term="ComplexTypeDeclaration"/>
+<atom:category label="XML Schema Complex Type Declaration" scheme="x-s-ramp:2013:model" term="xsd"/>
 <atom:updated>2013-07-22T12:19:23.554-04:00</atom:updated>
 <atom:id>0104e848-fe91-4d93-a307-fb69ec9fd638</atom:id>
 <atom:published>2013-07-22T12:19:22.630-04:00</atom:published>
@@ -598,8 +598,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/Document/0f6f9b6b-9952-4059-ab70-7ee3442ddcf0"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="Document" scheme="x-s-ramp:2010:type" term="Document" />
-    <atom:category label="Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="Document" scheme="x-s-ramp:2013:type" term="Document" />
+    <atom:category label="Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:22:01.953-04:00</atom:updated>
     <atom:id>0f6f9b6b-9952-4059-ab70-7ee3442ddcf0</atom:id>
     <atom:published>2013-07-22T12:21:49.499-04:00</atom:published>
@@ -619,8 +619,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/20474032-9536-4cef-812c-4fea432fdebd"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:27.660-04:00</atom:updated>
     <atom:id>20474032-9536-4cef-812c-4fea432fdebd</atom:id>
     <atom:published>2013-07-22T12:19:27.644-04:00</atom:published>
@@ -640,8 +640,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/2c21a9d3-0d09-41d8-8783-f3e795d8690d"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:25.576-04:00</atom:updated>
     <atom:id>2c21a9d3-0d09-41d8-8783-f3e795d8690d</atom:id>
     <atom:published>2013-07-22T12:19:25.555-04:00</atom:published>
@@ -661,8 +661,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/5b653bfe-4f58-451e-b738-394e61c0c5f9"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:25.602-04:00</atom:updated>
     <atom:id>5b653bfe-4f58-451e-b738-394e61c0c5f9</atom:id>
     <atom:published>2013-07-22T12:19:25.577-04:00</atom:published>
@@ -682,8 +682,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/a3f9d4d7-0f95-4219-85f6-84df445ef270"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:21.498-04:00</atom:updated>
     <atom:id>a3f9d4d7-0f95-4219-85f6-84df445ef270</atom:id>
     <atom:published>2013-07-22T12:19:21.376-04:00</atom:published>
@@ -744,8 +744,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/Document/0f6f9b6b-9952-4059-ab70-7ee3442ddcf0"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="Document" scheme="x-s-ramp:2010:type" term="Document" />
-    <atom:category label="Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="Document" scheme="x-s-ramp:2013:type" term="Document" />
+    <atom:category label="Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:22:01.953-04:00</atom:updated>
     <atom:id>0f6f9b6b-9952-4059-ab70-7ee3442ddcf0</atom:id>
     <atom:published>2013-07-22T12:21:49.499-04:00</atom:published>
@@ -765,8 +765,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/20474032-9536-4cef-812c-4fea432fdebd"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:27.660-04:00</atom:updated>
     <atom:id>20474032-9536-4cef-812c-4fea432fdebd</atom:id>
     <atom:published>2013-07-22T12:19:27.644-04:00</atom:published>
@@ -786,8 +786,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/2c21a9d3-0d09-41d8-8783-f3e795d8690d"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:25.576-04:00</atom:updated>
     <atom:id>2c21a9d3-0d09-41d8-8783-f3e795d8690d</atom:id>
     <atom:published>2013-07-22T12:19:25.555-04:00</atom:published>
@@ -807,8 +807,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/5b653bfe-4f58-451e-b738-394e61c0c5f9"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:25.602-04:00</atom:updated>
     <atom:id>5b653bfe-4f58-451e-b738-394e61c0c5f9</atom:id>
     <atom:published>2013-07-22T12:19:25.577-04:00</atom:published>
@@ -828,8 +828,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/a3f9d4d7-0f95-4219-85f6-84df445ef270"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:21.498-04:00</atom:updated>
     <atom:id>a3f9d4d7-0f95-4219-85f6-84df445ef270</atom:id>
     <atom:published>2013-07-22T12:19:21.376-04:00</atom:published>
@@ -890,8 +890,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/Document/0f6f9b6b-9952-4059-ab70-7ee3442ddcf0"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="Document" scheme="x-s-ramp:2010:type" term="Document" />
-    <atom:category label="Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="Document" scheme="x-s-ramp:2013:type" term="Document" />
+    <atom:category label="Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:22:01.953-04:00</atom:updated>
     <atom:id>0f6f9b6b-9952-4059-ab70-7ee3442ddcf0</atom:id>
     <atom:published>2013-07-22T12:21:49.499-04:00</atom:published>
@@ -911,8 +911,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/20474032-9536-4cef-812c-4fea432fdebd"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:27.660-04:00</atom:updated>
     <atom:id>20474032-9536-4cef-812c-4fea432fdebd</atom:id>
     <atom:published>2013-07-22T12:19:27.644-04:00</atom:published>
@@ -932,8 +932,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/2c21a9d3-0d09-41d8-8783-f3e795d8690d"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:25.576-04:00</atom:updated>
     <atom:id>2c21a9d3-0d09-41d8-8783-f3e795d8690d</atom:id>
     <atom:published>2013-07-22T12:19:25.555-04:00</atom:published>
@@ -953,8 +953,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/5b653bfe-4f58-451e-b738-394e61c0c5f9"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:25.602-04:00</atom:updated>
     <atom:id>5b653bfe-4f58-451e-b738-394e61c0c5f9</atom:id>
     <atom:published>2013-07-22T12:19:25.577-04:00</atom:published>
@@ -974,8 +974,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/a3f9d4d7-0f95-4219-85f6-84df445ef270"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:21.498-04:00</atom:updated>
     <atom:id>a3f9d4d7-0f95-4219-85f6-84df445ef270</atom:id>
     <atom:published>2013-07-22T12:19:21.376-04:00</atom:published>
@@ -1064,8 +1064,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/Document/0f6f9b6b-9952-4059-ab70-7ee3442ddcf0"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="Document" scheme="x-s-ramp:2010:type" term="Document" />
-    <atom:category label="Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="Document" scheme="x-s-ramp:2013:type" term="Document" />
+    <atom:category label="Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:22:01.953-04:00</atom:updated>
     <atom:id>0f6f9b6b-9952-4059-ab70-7ee3442ddcf0</atom:id>
     <atom:published>2013-07-22T12:21:49.499-04:00</atom:published>
@@ -1085,8 +1085,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/20474032-9536-4cef-812c-4fea432fdebd"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:27.660-04:00</atom:updated>
     <atom:id>20474032-9536-4cef-812c-4fea432fdebd</atom:id>
     <atom:published>2013-07-22T12:19:27.644-04:00</atom:published>
@@ -1106,8 +1106,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/2c21a9d3-0d09-41d8-8783-f3e795d8690d"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:25.576-04:00</atom:updated>
     <atom:id>2c21a9d3-0d09-41d8-8783-f3e795d8690d</atom:id>
     <atom:published>2013-07-22T12:19:25.555-04:00</atom:published>
@@ -1127,8 +1127,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/5b653bfe-4f58-451e-b738-394e61c0c5f9"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:25.602-04:00</atom:updated>
     <atom:id>5b653bfe-4f58-451e-b738-394e61c0c5f9</atom:id>
     <atom:published>2013-07-22T12:19:25.577-04:00</atom:published>
@@ -1148,8 +1148,8 @@ HTTP/1.1 200 OK
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link href="http://localhost:8080/s-ramp/core/XmlDocument/a3f9d4d7-0f95-4219-85f6-84df445ef270"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:type" term="XmlDocument" />
-    <atom:category label="XML Document" scheme="x-s-ramp:2010:model" term="core" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:type" term="XmlDocument" />
+    <atom:category label="XML Document" scheme="x-s-ramp:2013:model" term="core" />
     <atom:updated>2013-07-22T12:19:21.498-04:00</atom:updated>
     <atom:id>a3f9d4d7-0f95-4219-85f6-84df445ef270</atom:id>
     <atom:published>2013-07-22T12:19:21.376-04:00</atom:published>
@@ -1433,9 +1433,9 @@ HTTP/1.1 200 OK
     <atom:link
       href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/f57c30d3-9a9a-4df9-b362-8f0b0816af99"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2010:type"
+    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2013:type"
       term="FooType" />
-    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2010:model"
+    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2013:model"
       term="ext" />
     <atom:updated>2014-09-25T17:03:27.392-04:00</atom:updated>
     <atom:id>f57c30d3-9a9a-4df9-b362-8f0b0816af99</atom:id>
@@ -1458,9 +1458,9 @@ HTTP/1.1 200 OK
     <atom:link
       href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/e8b6aaf2-d787-45d0-a534-b9205d6e8815"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
-    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2010:type"
+    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2013:type"
       term="FooType" />
-    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2010:model"
+    <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2013:model"
       term="ext" />
     <atom:updated>2014-09-25T17:03:29.580-04:00</atom:updated>
     <atom:id>e8b6aaf2-d787-45d0-a534-b9205d6e8815</atom:id>

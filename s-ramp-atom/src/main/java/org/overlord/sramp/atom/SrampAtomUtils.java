@@ -175,7 +175,7 @@ public final class SrampAtomUtils {
         Category category = new Category();
         category.setTerm("query"); //$NON-NLS-1$
         category.setLabel("Stored Query Entry"); //$NON-NLS-1$
-        category.setScheme(SrampAtomConstants.URN_X_S_RAMP_2013_TYPE);
+        category.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
         entry.getCategories().add(category);
         
         return entry;
@@ -225,7 +225,7 @@ public final class SrampAtomUtils {
         // Try the Category
 		List<Category> categories = entry.getCategories();
 		for (Category cat : categories) {
-			if ("x-s-ramp:2010:type".equals(cat.getScheme().toString())) { //$NON-NLS-1$
+			if (SrampAtomConstants.X_S_RAMP_TYPE.equals(cat.getScheme().toString())) {
 				String atype = cat.getTerm();
 				ArtifactType artifactType = ArtifactType.valueOf(atype);
 		        if (artifactType.isExtendedType()) {

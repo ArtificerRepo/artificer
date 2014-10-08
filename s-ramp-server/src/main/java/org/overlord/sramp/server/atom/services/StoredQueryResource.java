@@ -37,6 +37,7 @@ import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.SrampAtomConstants;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.common.SrampConfig;
@@ -198,7 +199,7 @@ public class StoredQueryResource extends AbstractFeedResource {
         // Note: The spec technically requires this for a POST, but it seems useful in other contexts.
         Link linkToResults = new Link();
         linkToResults.setType(MediaType.APPLICATION_ATOM_XML_FEED_TYPE);
-        linkToResults.setRel("urn:x-s-ramp:2013:query:results"); //$NON-NLS-1$
+        linkToResults.setRel(SrampAtomConstants.X_S_RAMP_QUERY_RESULTS);
         linkToResults.setHref(new URI(atomLink + "/results")); //$NON-NLS-1$
         entry.getLinks().add(linkToResults);
         
