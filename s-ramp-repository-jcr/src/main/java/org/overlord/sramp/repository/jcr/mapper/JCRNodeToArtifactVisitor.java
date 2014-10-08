@@ -30,6 +30,8 @@ import javax.jcr.ValueFormatException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -41,16 +43,20 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutputTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.EffectTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Element;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.EventTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.FaultTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.InformationTypeTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.MessageTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.NamedWsdlDerivedArtifactType;
@@ -60,30 +66,48 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInputTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutput;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutputTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OrchestrationTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Organization;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Part;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PartTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Policy;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicySubjectTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Port;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTypeTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Service;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContract;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContractTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceEndpoint;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceImplementationModelTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceImplementationModelType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstance;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstanceTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterface;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterfaceTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceOperation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceOperationTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoaModelType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.TaskTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDerivedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeTarget;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter;
 import org.overlord.sramp.repository.jcr.JCRConstants;
-import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 /**
  * A visitor for going from a JCR node to an S-RAMP artifact instance.
@@ -110,6 +134,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitBase(BaseArtifactType artifact) {
+        super.visitBase(artifact);
 		try {
 			DatatypeFactory dtFactory = DatatypeFactory.newInstance();
 			ArtifactType artifactType = ArtifactType.valueOf(artifact);
@@ -195,26 +220,9 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitDerived(DerivedArtifactType artifact) {
+        super.visitDerived(artifact);
 		try {
-			// Pull out the 'relatedDocument' relationship, if one exists (it should!)
-			if (this.jcrNode.hasNode("sramp-relationships:relatedDocument")) {
-				Node relatedDocNode = this.jcrNode.getNode("sramp-relationships:relatedDocument");
-				String targetType = getProperty(relatedDocNode, JCRConstants.SRAMP_TARGET_TYPE);
-				Property property = relatedDocNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET);
-				Value[] values = property.getValues();
-				if (values.length > 1) {
-					throw new Exception(Messages.i18n.format("MAX_CARDINALITY_FAILED", values.length));
-				}
-				Value value = values[0];
-				String targetUUID = referenceResolver.resolveReference(value);
-
-				DocumentArtifactTarget target = new DocumentArtifactTarget();
-				target.setValue(targetUUID);
-				if (targetType != null) {
-					target.setArtifactType(DocumentArtifactEnum.valueOf(targetType));
-				}
-				artifact.setRelatedDocument(target);
-			}
+		    artifact.setRelatedDocument(getRelationship("relatedDocument", DocumentArtifactTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -225,6 +233,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
+        super.visitWsdlDerived(artifact);
 		artifact.setNamespace(getProperty(jcrNode, JCRConstants.SRAMP_NAMESPACE));
 		try {
 			artifact.getExtension().addAll(getRelationships("extension", WsdlExtensionTarget.class));
@@ -238,14 +247,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitNamedWsdlDerived(NamedWsdlDerivedArtifactType artifact) {
+        super.visitNamedWsdlDerived(artifact);
 		artifact.setNCName(getProperty(jcrNode, JCRConstants.SRAMP_NC_NAME));
-	}
-
-	/**
-	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visitXsdDerived(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType)
-	 */
-	@Override
-	protected void visitXsdDerived(XsdType artifact) {
 	}
 
 	/**
@@ -253,6 +256,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitDocument(DocumentArtifactType artifact) {
+        super.visitDocument(artifact);
 		artifact.setContentSize(getPropertyLong(jcrNode, JCRConstants.SRAMP_CONTENT_SIZE));
 		artifact.setContentType(getProperty(jcrNode, JCRConstants.SRAMP_CONTENT_TYPE));
 		artifact.setContentHash(getProperty(jcrNode, JCRConstants.SRAMP_CONTENT_HASH));
@@ -263,6 +267,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitXmlDocument(XmlDocument artifact) {
+        super.visitXmlDocument(artifact);
 		artifact.setContentEncoding(getProperty(jcrNode, JCRConstants.SRAMP_CONTENT_ENCODING));
 	}
 
@@ -271,6 +276,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitExtended(ExtendedArtifactType artifact) {
+        super.visitExtended(artifact);
         String extendedType = getProperty(jcrNode, JCRConstants.SRAMP_EXTENDED_TYPE);
         String extendedDerived = getProperty(jcrNode, JCRConstants.SRAMP_DERIVED, "false");
 
@@ -283,6 +289,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitExtendedDocument(ExtendedDocument artifact) {
+        super.visitExtendedDocument(artifact);
         String extendedType = getProperty(jcrNode, JCRConstants.SRAMP_EXTENDED_TYPE);
         String contentType = getProperty(jcrNode, JCRConstants.JCR_CONTENT_MIME_TYPE);
         String contentLength = String.valueOf(getPropertyLength(jcrNode, JCRConstants.JCR_CONTENT_DATA));
@@ -293,6 +300,54 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
             artifact.getOtherAttributes().put(SrampConstants.SRAMP_CONTENT_TYPE_QNAME, contentType);
         }
 	}
+    
+    @Override
+    protected void visitServiceImplementation(ServiceImplementationModelType artifact) {
+        super.visitServiceImplementation(artifact);
+        try {
+            artifact.getDocumentation().addAll(getRelationships("documentation", DocumentArtifactTarget.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    protected void visitSoa(SoaModelType artifact) {
+        super.visitSoa(artifact);
+        try {
+            artifact.getDocumentation().addAll(getRelationships("documentation", DocumentArtifactTarget.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    protected void visitElement(Element artifact) {
+        super.visitElement(artifact);
+        try {
+            artifact.getRepresents().addAll(getRelationships("represents", ElementTarget.class));
+            artifact.getUses().addAll(getRelationships("uses", ElementTarget.class));
+            artifact.getPerforms().addAll(getRelationships("performs", ServiceTarget.class));
+            artifact.setDirectsOrchestration(getRelationship("directsOrchestration", OrchestrationTarget.class));
+            artifact.setDirectsOrchestrationProcess(
+                    getRelationship("directsOrchestrationProcess", OrchestrationTarget.class));
+            artifact.getGenerates().addAll(getRelationships("generates", EventTarget.class));
+            artifact.getRespondsTo().addAll(getRelationships("respondsTo", EventTarget.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    protected void visitActor(Actor artifact) {
+        super.visitActor(artifact);
+        try {
+            artifact.getDoes().addAll(getRelationships("does", TaskTarget.class));
+            artifact.getSetsPolicy().addAll(getRelationships("setsPolicy", PolicyTarget.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	/**
 	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument)
@@ -522,6 +577,106 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 		super.visit(artifact);
 		artifact.setSoapLocation(getProperty(jcrNode, JCRConstants.SRAMP_SOAP_LOCATION));
 	}
+    
+    @Override
+    public void visit(ServiceEndpoint artifact) {
+        super.visit(artifact);
+        try {
+            artifact.setEndpointDefinedBy(getRelationship("endpointDefinedBy", DerivedArtifactTarget.class));
+            artifact.setUrl(getProperty(jcrNode, JCRConstants.SRAMP_URL));
+            // TODO: These have to currently be added on the subclass visitors, as they're not currently
+            // on ServiceImplementationModelType itself.
+            artifact.setEnd(getProperty(jcrNode, JCRConstants.SRAMP_END));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(ServiceInstance artifact) {
+        super.visit(artifact);
+        try {
+            artifact.getDescribedBy().addAll(getRelationships("uses", ServiceInstanceTarget.class));
+            artifact.getUses().addAll(getRelationships("describedBy", ServiceInstanceTarget.class));
+            // TODO: These have to currently be added on the subclass visitors, as they're not currently
+            // on ServiceImplementationModelType itself.
+            artifact.setEnd(getProperty(jcrNode, JCRConstants.SRAMP_END));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(ServiceOperation artifact) {
+        super.visit(artifact);
+        try {
+            artifact.setOperationDefinedBy(getRelationship("operationDefinedBy", DerivedArtifactTarget.class));
+            // TODO: These have to currently be added on the subclass visitors, as they're not currently
+            // on ServiceImplementationModelType itself.
+            artifact.setEnd(getProperty(jcrNode, JCRConstants.SRAMP_END));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(Policy artifact) {
+        super.visit(artifact);
+        try {
+            artifact.getAppliesTo().addAll(getRelationships("appliesTo", PolicySubjectTarget.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(ServiceInterface artifact) {
+        super.visit(artifact);
+        try {
+            // TODO: #interfaceDefinedBy needs to be a Target!!!
+//            artifact.setInterfaceDefinedBy(getRelationship("interfaceDefinedBy", DerivedArtifactTarget.class));
+            artifact.setHasOperation(getRelationship("hasOperation", ServiceOperationTarget.class));
+            artifact.getHasOutput().addAll(getRelationships("hasOutput", InformationTypeTarget.class));
+            artifact.getHasInput().addAll(getRelationships("hasInput", InformationTypeTarget.class));
+            artifact.getIsInterfaceOf().addAll(getRelationships("isInterfaceOf", ServiceTarget.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(ServiceContract artifact) {
+        super.visit(artifact);
+        try {
+            artifact.getInvolvesParty().addAll(getRelationships("involvesParty", ActorTarget.class));
+            artifact.getSpecifies().addAll(getRelationships("specifies", EffectTarget.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(Organization artifact) {
+        super.visit(artifact);
+        try {
+            artifact.getProvides().addAll(getRelationships("provides", ServiceImplementationModelTarget.class));
+            artifact.setEnd(getProperty(jcrNode, JCRConstants.SRAMP_END));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(Service artifact) {
+        super.visit(artifact);
+        try {
+            artifact.getHasContract().addAll(getRelationships("hasContract", ServiceContractTarget.class));
+            artifact.getHasInterface().addAll(getRelationships("hasInterface", ServiceInterfaceTarget.class));
+            artifact.setHasInstance(getRelationship("hasInstance", ServiceInstanceTarget.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	/**
 	 * Gets the singular relationship of the given type.  This is called for relationships
@@ -531,34 +686,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @return list of relationship targets
 	 */
 	private <T> T getRelationship(String relationshipType, Class<T> targetClass) throws Exception {
-		String relNodeName = "sramp-relationships:" + relationshipType;
-		if (this.jcrNode.hasNode(relNodeName)) {
-			Node relationshipNode = this.jcrNode.getNode(relNodeName);
-			String targetType = relationshipNode.getProperty(JCRConstants.SRAMP_TARGET_TYPE).getString();
-			if (relationshipNode.hasProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)) {
-				Property targetProperty = relationshipNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET);
-				Value[] values = targetProperty.getValues();
-				Value value = values[0];
-				T t = targetClass.newInstance();
-				Target target = (Target) t;
-				target.setValue(referenceResolver.resolveReference(value));
-				// Use reflection to set the 'artifact type' attribute found on
-				// most (all?) targets.  Unfortunately, the method and field are
-				// redefined in each subclass of Target.
-				try {
-					Method m = targetClass.getMethod("getArtifactType");
-					Class<?> mc = m.getReturnType();
-					m = mc.getMethod("valueOf", String.class);
-					Object o = m.invoke(null, targetType);
-					m = targetClass.getMethod("setArtifactType", o.getClass());
-					m.invoke(target, o);
-				} catch (Exception e) {
-					// eat it
-				}
-				return t;
-			}
-		}
-		return null;
+	    List<T> relationships = getRelationships(relationshipType, targetClass);
+	    return relationships.size() > 0 ? relationships.get(0) : null;
 	}
 
 	/**
@@ -572,17 +701,21 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 		String relNodeName = "sramp-relationships:" + relationshipType;
 		if (this.jcrNode.hasNode(relNodeName)) {
 			Node relationshipNode = this.jcrNode.getNode(relNodeName);
-			String targetType = relationshipNode.getProperty(JCRConstants.SRAMP_TARGET_TYPE).getString();
 			if (relationshipNode.hasProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)) {
-				Property targetsProperty = relationshipNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET);
-				Value[] values = targetsProperty.getValues();
-				for (Value value : values) {
+			    Value[] relationshipTargets = relationshipNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)
+                        .getValues();
+                Value[] targetTypes = relationshipNode.getProperty(JCRConstants.SRAMP_TARGET_TYPE).getValues();
+                for (int i = 0; i < relationshipTargets.length; i++) {
+                    Value relationshipTarget = relationshipTargets[i];
+                    Value targetType = targetTypes[i];
+                    
 					T t = targetClass.newInstance();
 					Target target = (Target) t;
-					target.setValue(referenceResolver.resolveReference(value));
+					target.setValue(referenceResolver.resolveReference(relationshipTarget));
 					// Use reflection to set the 'artifact type' attribute found on
 					// most (all?) targets.  Unfortunately, the method and field are
 					// redefined in each subclass of Target.
+					// TODO: Get ^^^ changed in the spec!
 					try {
 						Method m = targetClass.getMethod("getArtifactType");
 						Class<?> mc = m.getReturnType();

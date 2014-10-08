@@ -16,7 +16,9 @@
 package org.overlord.sramp.repository.jcr.mapper;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +38,8 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
@@ -47,12 +51,18 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInputEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutputEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.EffectTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Element;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.EventTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.FaultEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.InformationTypeTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.MessageEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.NamedWsdlDerivedArtifactType;
@@ -62,17 +72,35 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInput;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInputEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutput;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutputEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Organization;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Part;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PartEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Policy;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicySubjectTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Port;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTypeEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Service;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContract;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContractTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceEndpoint;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceImplementationModelTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceImplementationModelType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstance;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstanceTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterface;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterfaceTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceOperation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoaModelType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.TaskTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDerivedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionEnum;
@@ -121,6 +149,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitBase(BaseArtifactType artifact) {
+        super.visitBase(artifact);
 		try {
 			updateArtifactMetaData(artifact);
 			updateClassifications(artifact);
@@ -136,9 +165,12 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitDerived(DerivedArtifactType artifact) {
+        super.visitDerived(artifact);
 		try {
-			setRelationship("relatedDocument", 1, 1, artifact.getRelatedDocument().getArtifactType().toString(),
-					false, artifact.getRelatedDocument());
+		    if (artifact.getRelatedDocument() != null) {
+    			setRelationship("relatedDocument", 1, 1, false, artifact.getRelatedDocument(),
+    			        artifact.getRelatedDocument().getArtifactType().toString());
+		    }
 		} catch (Exception e) {
 			error = e;
 		}
@@ -149,10 +181,12 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitWsdlDerived(WsdlDerivedArtifactType artifact) {
+        super.visitWsdlDerived(artifact);
 		try {
 			this.jcrNode.setProperty(JCRConstants.SRAMP_NAMESPACE, artifact.getNamespace());
 
-			setRelationships("extension", -1, 1, WsdlExtensionEnum.WSDL_EXTENSION.toString(), false, artifact.getExtension());
+			setRelationships("extension", -1, 1, false, artifact.getExtension(),
+			        WsdlExtensionEnum.WSDL_EXTENSION.toString());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -163,12 +197,109 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 */
 	@Override
 	protected void visitNamedWsdlDerived(NamedWsdlDerivedArtifactType artifact) {
+        super.visitNamedWsdlDerived(artifact);
 		try {
 			this.jcrNode.setProperty(JCRConstants.SRAMP_NC_NAME, artifact.getNCName());
 		} catch (Exception e) {
 			error = e;
 		}
 	}
+    
+    @Override
+    protected void visitServiceImplementation(ServiceImplementationModelType artifact) {
+        super.visitServiceImplementation(artifact);
+        try {
+            List<String> targetTypes = new ArrayList<String>();
+            for (DocumentArtifactTarget documentation : artifact.getDocumentation()) {
+                targetTypes.add(documentation.getArtifactType().toString());
+            }
+            setRelationships("documentation", -1, -1, false, artifact.getDocumentation(), targetTypes);
+        } catch (Exception e) {
+            error = e;
+        }
+    }
+    
+    @Override
+    protected void visitSoa(SoaModelType artifact) {
+        super.visitSoa(artifact);
+        try {
+            List<String> targetTypes = new ArrayList<String>();
+            for (DocumentArtifactTarget documentation : artifact.getDocumentation()) {
+                targetTypes.add(documentation.getArtifactType().toString());
+            }
+            setRelationships("documentation", -1, -1, false, artifact.getDocumentation(), targetTypes);
+        } catch (Exception e) {
+            error = e;
+        }
+    }
+    
+    @Override
+    protected void visitElement(Element artifact) {
+        super.visitElement(artifact);
+        try {
+            List<String> targetTypes = new ArrayList<String>();
+            for (ElementTarget target : artifact.getRepresents()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("represents", -1, -1, false, artifact.getRepresents(), targetTypes);
+            
+            targetTypes = new ArrayList<String>();
+            for (ElementTarget target : artifact.getUses()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("uses", -1, -1, false, artifact.getUses(), targetTypes);
+            
+            targetTypes = new ArrayList<String>();
+            for (ServiceTarget target : artifact.getPerforms()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("performs", -1, -1, false, artifact.getPerforms(), targetTypes);
+            
+            if (artifact.getDirectsOrchestration() != null) {
+                setRelationship("directsOrchestration", -1, 1, false, artifact.getDirectsOrchestration(),
+                        artifact.getDirectsOrchestration().getArtifactType().toString());
+            }
+            
+            if (artifact.getDirectsOrchestrationProcess() != null) {
+                setRelationship("directsOrchestrationProcess", -1, 1, false, artifact.getDirectsOrchestrationProcess(),
+                        artifact.getDirectsOrchestrationProcess().getArtifactType().toString());
+            }
+            
+            targetTypes = new ArrayList<String>();
+            for (EventTarget target : artifact.getGenerates()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("generates", -1, -1, false, artifact.getGenerates(), targetTypes);
+            
+            targetTypes = new ArrayList<String>();
+            for (EventTarget target : artifact.getRespondsTo()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("respondsTo", -1, -1, false, artifact.getRespondsTo(), targetTypes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    protected void visitActor(Actor artifact) {
+        super.visitActor(artifact);
+        try {
+            List<String> targetTypes = new ArrayList<String>();
+            for (TaskTarget target : artifact.getDoes()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("does", -1, -1, false, artifact.getDoes(), targetTypes);
+            
+            targetTypes = new ArrayList<String>();
+            for (PolicyTarget target : artifact.getSetsPolicy()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("setsPolicy", -1, -1, false, artifact.getSetsPolicy(), targetTypes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	/**
 	 * Updates the basic s-ramp meta data.
@@ -252,7 +383,8 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		// Create/Update all the relationships included in the artifact
 		Set<String> updatedRelationshipTypes = new HashSet<String>();
 		for (Relationship relationship : artifact.getRelationship()) {
-			setRelationships(relationship.getRelationshipType(), -1, 0, null, true, relationship.getRelationshipTarget());
+			setRelationships(relationship.getRelationshipType(), -1, 0, true, relationship.getRelationshipTarget(),
+			        Collections.EMPTY_LIST);
 			updatedRelationshipTypes.add(relationship.getRelationshipType());
 		}
 
@@ -392,7 +524,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Message artifact) {
 		super.visit(artifact);
 		try {
-			setRelationships("part", -1, 1, PartEnum.PART.toString(), false, artifact.getPart());
+			setRelationships("part", -1, 1, false, artifact.getPart(), PartEnum.PART.toString());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -409,12 +541,12 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 				if (this.jcrNode.hasNode("sramp-relationships:type")) {
 					this.jcrNode.getNode("sramp-relationships:type").remove();
 				}
-				setRelationship("element", 1, 1, ElementEnum.ELEMENT.toString(), false, artifact.getElement());
+				setRelationship("element", 1, 1, false, artifact.getElement(), ElementEnum.ELEMENT.toString());
 			} else if (artifact.getType() != null) {
 				if (this.jcrNode.hasNode("sramp-relationships:element")) {
 					this.jcrNode.getNode("sramp-relationships:element").remove();
 				}
-				setRelationship("type", 1, 1, XsdTypeEnum.XSD_TYPE.toString(), false, artifact.getType());
+				setRelationship("type", 1, 1, false, artifact.getType(), XsdTypeEnum.XSD_TYPE.toString());
 			}
 		} catch (Exception e) {
 			error = e;
@@ -428,7 +560,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(PortType artifact) {
 		super.visit(artifact);
 		try {
-			setRelationships("operation", -1, 1, OperationEnum.OPERATION.toString(), false, artifact.getOperation());
+			setRelationships("operation", -1, 1, false, artifact.getOperation(), OperationEnum.OPERATION.toString());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -441,9 +573,10 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Operation artifact) {
 		super.visit(artifact);
 		try {
-			setRelationship("input", 1, 1, OperationInputEnum.OPERATION_INPUT.toString(), false, artifact.getInput());
-			setRelationship("output", 1, 1, OperationOutputEnum.OPERATION_OUTPUT.toString(), false, artifact.getOutput());
-			setRelationships("fault", -1, 1, FaultEnum.FAULT.toString(), false, artifact.getFault());
+			setRelationship("input", 1, 1, false, artifact.getInput(), OperationInputEnum.OPERATION_INPUT.toString());
+			setRelationship("output", 1, 1, false, artifact.getOutput(),
+			        OperationOutputEnum.OPERATION_OUTPUT.toString());
+			setRelationships("fault", -1, 1, false, artifact.getFault(), FaultEnum.FAULT.toString());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -456,7 +589,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(OperationInput artifact) {
 		super.visit(artifact);
 		try {
-			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
+			setRelationship("message", 1, 1, false, artifact.getMessage(), MessageEnum.MESSAGE.toString());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -469,7 +602,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(OperationOutput artifact) {
 		super.visit(artifact);
 		try {
-			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
+			setRelationship("message", 1, 1, false, artifact.getMessage(), MessageEnum.MESSAGE.toString());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -482,7 +615,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Fault artifact) {
 		super.visit(artifact);
 		try {
-			setRelationship("message", 1, 1, MessageEnum.MESSAGE.toString(), false, artifact.getMessage());
+			setRelationship("message", 1, 1, false, artifact.getMessage(), MessageEnum.MESSAGE.toString());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -495,8 +628,9 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Binding artifact) {
 		super.visit(artifact);
 		try {
-			setRelationships("bindingOperation", -1, 1, BindingOperationEnum.BINDING_OPERATION.toString(), false, artifact.getBindingOperation());
-			setRelationship("portType", 1, 1, PortTypeEnum.PORT_TYPE.toString(), false, artifact.getPortType());
+			setRelationships("bindingOperation", -1, 1, false, artifact.getBindingOperation(),
+			        BindingOperationEnum.BINDING_OPERATION.toString());
+			setRelationship("portType", 1, 1, false, artifact.getPortType(), PortTypeEnum.PORT_TYPE.toString());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -523,10 +657,13 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(BindingOperation artifact) {
 		super.visit(artifact);
 		try {
-			setRelationship("input", 1, 1, BindingOperationInputEnum.BINDING_OPERATION_INPUT.toString(), false, artifact.getInput());
-			setRelationship("output", 1, 1, BindingOperationOutputEnum.BINDING_OPERATION_OUTPUT.toString(), false, artifact.getOutput());
-			setRelationships("fault", -1, 1, BindingOperationFaultEnum.BINDING_OPERATION_FAULT.toString(), false, artifact.getFault());
-			setRelationship("operation", 1, 1, OperationEnum.OPERATION.toString(), false, artifact.getOperation());
+			setRelationship("input", 1, 1, false, artifact.getInput(),
+			        BindingOperationInputEnum.BINDING_OPERATION_INPUT.toString());
+			setRelationship("output", 1, 1, false, artifact.getOutput(),
+			        BindingOperationOutputEnum.BINDING_OPERATION_OUTPUT.toString());
+			setRelationships("fault", -1, 1, false, artifact.getFault(),
+			        BindingOperationFaultEnum.BINDING_OPERATION_FAULT.toString());
+			setRelationship("operation", 1, 1, false, artifact.getOperation(), OperationEnum.OPERATION.toString());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -539,7 +676,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(WsdlService artifact) {
 		super.visit(artifact);
 		try {
-			setRelationships("port", -1, 1, PortEnum.PORT.toString(), false, artifact.getPort());
+			setRelationships("port", -1, 1, false, artifact.getPort(), PortEnum.PORT.toString());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -552,7 +689,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	public void visit(Port artifact) {
 		super.visit(artifact);
 		try {
-			setRelationship("binding", 1, 1, BindingEnum.BINDING.toString(), false, artifact.getBinding());
+			setRelationship("binding", 1, 1, false, artifact.getBinding(), BindingEnum.BINDING.toString());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -570,6 +707,175 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 			throw new RuntimeException(e);
 		}
 	}
+    
+    @Override
+    public void visit(ServiceEndpoint artifact) {
+        super.visit(artifact);
+        try {
+            if (artifact.getEndpointDefinedBy() != null) {
+                setRelationship("endpointDefinedBy", -1, 1, false, artifact.getEndpointDefinedBy(),
+                        artifact.getEndpointDefinedBy().getArtifactType().toString());
+            }
+            this.jcrNode.setProperty(JCRConstants.SRAMP_URL, artifact.getUrl());
+            // TODO: These have to currently be added on the subclass visitors, as they're not currently
+            // on ServiceImplementationModelType itself.
+            this.jcrNode.setProperty(JCRConstants.SRAMP_END, artifact.getEnd());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(ServiceInstance artifact) {
+        super.visit(artifact);
+        try {
+            List<String> targetTypes = new ArrayList<String>();
+            for (ServiceInstanceTarget target : artifact.getUses()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("uses", -1, -1, false, artifact.getUses(), targetTypes);
+            
+            targetTypes = new ArrayList<String>();
+            for (ServiceInstanceTarget target : artifact.getDescribedBy()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("describedBy", -1, -1, false, artifact.getDescribedBy(), targetTypes);
+            
+            // TODO: These have to currently be added on the subclass visitors, as they're not currently
+            // on ServiceImplementationModelType itself.
+            this.jcrNode.setProperty(JCRConstants.SRAMP_END, artifact.getEnd());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(ServiceOperation artifact) {
+        super.visit(artifact);
+        try {
+            if (artifact.getOperationDefinedBy() != null) {
+                setRelationship("operationDefinedBy", -1, 1, false, artifact.getOperationDefinedBy(),
+                        artifact.getOperationDefinedBy().getArtifactType().toString());
+            }
+            // TODO: These have to currently be added on the subclass visitors, as they're not currently
+            // on ServiceImplementationModelType itself.
+            this.jcrNode.setProperty(JCRConstants.SRAMP_END, artifact.getEnd());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(Policy artifact) {
+        super.visit(artifact);
+        try {
+            List<String> targetTypes = new ArrayList<String>();
+            for (PolicySubjectTarget target : artifact.getAppliesTo()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("appliesTo", -1, -1, false, artifact.getAppliesTo(), targetTypes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(ServiceInterface artifact) {
+        super.visit(artifact);
+        try {
+            if (artifact.getInterfaceDefinedBy() != null) {
+                // TODO: #interfaceDefinedBy needs to be a Target!!!
+//                setRelationship("interfaceDefinedBy", -1, 1, false, artifact.getInterfaceDefinedBy(),
+//                        artifact.getInterfaceDefinedBy().getArtifactType().toString());
+            }
+            
+            if (artifact.getHasOperation() != null) {
+                setRelationship("hasOperation", -1, 1, false, artifact.getHasOperation(),
+                        artifact.getHasOperation().getArtifactType().toString());
+            }
+            
+            List<String> targetTypes = new ArrayList<String>();
+            for (InformationTypeTarget target : artifact.getHasOutput()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("hasOutput", -1, -1, false, artifact.getHasOutput(), targetTypes);
+            
+            targetTypes = new ArrayList<String>();
+            for (InformationTypeTarget target : artifact.getHasInput()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("hasInput", -1, -1, false, artifact.getHasInput(), targetTypes);
+            
+            targetTypes = new ArrayList<String>();
+            for (ServiceTarget target : artifact.getIsInterfaceOf()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("isInterfaceOf", -1, -1, false, artifact.getIsInterfaceOf(), targetTypes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(ServiceContract artifact) {
+        super.visit(artifact);
+        try {
+            List<String> targetTypes = new ArrayList<String>();
+            for (ActorTarget target : artifact.getInvolvesParty()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("involvesParty", -1, -1, false, artifact.getInvolvesParty(), targetTypes);
+            
+            targetTypes = new ArrayList<String>();
+            for (EffectTarget target : artifact.getSpecifies()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("specifies", -1, -1, false, artifact.getSpecifies(), targetTypes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(Organization artifact) {
+        super.visit(artifact);
+        try {
+            List<String> targetTypes = new ArrayList<String>();
+            for (ServiceImplementationModelTarget target : artifact.getProvides()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("provides", -1, -1, false, artifact.getProvides(), targetTypes);
+
+            this.jcrNode.setProperty(JCRConstants.SRAMP_END, artifact.getEnd());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
+    public void visit(Service artifact) {
+        super.visit(artifact);
+        try {
+            List<String> targetTypes = new ArrayList<String>();
+            for (ServiceContractTarget target : artifact.getHasContract()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("hasContract", -1, -1, false, artifact.getHasContract(), targetTypes);
+            
+            targetTypes = new ArrayList<String>();
+            for (ServiceInterfaceTarget target : artifact.getHasInterface()) {
+                targetTypes.add(target.getArtifactType().toString());
+            }
+            setRelationships("hasInterface", -1, -1, false, artifact.getHasInterface(), targetTypes);
+            
+            if (artifact.getHasInstance() != null) {
+                setRelationship("hasInstance", -1, 1, false, artifact.getHasInstance(),
+                        artifact.getHasInstance().getArtifactType().toString());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	/**
 	 * Gets all of the custom properties from the artifact and returns them as a map.
@@ -610,21 +916,26 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @param relationshipType
 	 * @param maxCardinality
 	 * @param minCardinality
-	 * @param targetType
 	 * @param isGeneric
 	 * @param target
+     * @param targetType
 	 * @throws Exception
 	 */
 	private void setRelationship(String relationshipType, int maxCardinality, int minCardinality,
-			String targetType, boolean isGeneric, Target target) throws Exception {
+			boolean isGeneric, Target target, String targetType) throws Exception {
 	    if (!isProcessRelationships())
 	        return;
 		if (target != null || minCardinality == 0) {
-			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType, maxCardinality,
-					targetType, isGeneric);
-			Value [] values = new Value[1];
-			values[0] = this.referenceFactory.createReference(target.getValue());
-			relationshipNode.setProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET, values);
+			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType,
+			        maxCardinality, isGeneric);
+			Value[] targetValues = new Value[1];
+			targetValues[0] = this.referenceFactory.createReference(target.getValue());
+			relationshipNode.setProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET, targetValues);
+            if (targetType != null) {
+                String[] targetTypeValues = new String[1];
+                targetTypeValues[0] = targetType;
+                relationshipNode.setProperty(JCRConstants.SRAMP_TARGET_TYPE, targetTypeValues);
+            }
 		} else {
 			// If the minimum cardinality is > 0 but no targets have been provided, then
 			// remove the relationship node.
@@ -637,29 +948,47 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @param relationshipType
 	 * @param maxCardinality
 	 * @param minCardinality
-	 * @param targetType
 	 * @param isGeneric
 	 * @param targets
+     * @param targetTypes (positions in the list are assumed to match targets)
 	 * @throws Exception
 	 */
 	private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,
-			String targetType, boolean isGeneric, List<? extends Target> targets) throws Exception {
+			boolean isGeneric, List<? extends Target> targets, List<String> targetTypes) throws Exception {
         if (!isProcessRelationships())
             return;
 		if ((targets != null && targets.size() > 0) || minCardinality == 0) {
-			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType, maxCardinality,
-					targetType, isGeneric);
-			Value[] values = new Value[targets.size()];
+			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType,
+			        maxCardinality, isGeneric);
+			
+			Value[] targetValues = new Value[targets.size()];
 			for (int idx = 0; idx < targets.size(); idx++) {
-				values[idx] = this.referenceFactory.createReference(targets.get(idx).getValue());
+			    targetValues[idx] = this.referenceFactory.createReference(targets.get(idx).getValue());
 			}
-			relationshipNode.setProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET, values);
+			relationshipNode.setProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET, targetValues);
+			
+            if (targetTypes != null && targetTypes.size() > 0) {
+                String[] targetTypeValues = new String[targets.size()];
+                for (int idx = 0; idx < targetTypes.size(); idx++) {
+                    targetTypeValues[idx] = targetTypes.get(idx);
+                }
+                relationshipNode.setProperty(JCRConstants.SRAMP_TARGET_TYPE, targetTypeValues);
+            }
 		} else {
 			// If the minimum cardinality is > 0 but no targets have been provided, then
 			// remove the relationship node.
 			removeRelationship(relationshipType);
 		}
 	}
+	
+	private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,
+            boolean isGeneric, List<? extends Target> targets, String targetType) throws Exception {
+        List<String> targetTypes = new ArrayList<String>();
+        for (int i = 0; i < targets.size(); i++) {
+            targetTypes.add(targetType);
+        }
+        setRelationships(relationshipType, maxCardinality, minCardinality, isGeneric, targets, targetTypes);
+    }
 
 	/**
 	 * Removes the relationship of the given type from the JCR node.
@@ -686,7 +1015,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @throws Exception
 	 */
 	private static Node getOrCreateRelationshipNode(Node parentNode, String relationshipType,
-			int maxCardinality, String targetType, boolean isGeneric) throws Exception {
+			int maxCardinality, boolean isGeneric) throws Exception {
 		Node relationshipNode = null;
 		String nodeName = "sramp-relationships:" + relationshipType;
 		if (parentNode.hasNode(nodeName)) {
@@ -696,8 +1025,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 			relationshipNode.setProperty(JCRConstants.SRAMP_RELATIONSHIP_TYPE, relationshipType);
 			if (maxCardinality != -1)
 				relationshipNode.setProperty(JCRConstants.SRAMP_MAX_CARDINALITY, maxCardinality);
-			if (targetType != null)
-				relationshipNode.setProperty(JCRConstants.SRAMP_TARGET_TYPE, targetType);
 			relationshipNode.setProperty(JCRConstants.SRAMP_GENERIC, isGeneric);
 		}
 		return relationshipNode;
