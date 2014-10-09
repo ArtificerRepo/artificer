@@ -44,13 +44,13 @@ public class XsdWorkspace extends AbstractWorkspace {
         AppCollection xsdDocumentCollection = addCollection("/s-ramp/xsd/XsdDocument", "XSD Documents", MediaType.APPLICATION_XML); //$NON-NLS-1$ //$NON-NLS-2$
 
         AppCollection attributeDeclarationCollection =
-        		addCollection("/s-ramp/xsd/AttributeDeclation", "Attribute Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        		addCollection("/s-ramp/xsd/AttributeDeclaration", "Attribute Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         AppCollection elementDeclarationCollection =
-        		addCollection("/s-ramp/xsd/ElementDeclation", "Element Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        		addCollection("/s-ramp/xsd/ElementDeclaration", "Element Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         AppCollection simpleTypeDeclarationCollection =
-        		addCollection("/s-ramp/xsd/SimpleTypeDeclation", "Simple Type Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        		addCollection("/s-ramp/xsd/SimpleTypeDeclaration", "Simple Type Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         AppCollection complexTypeDeclarationCollection =
-        		addCollection("/s-ramp/xsd/ComplexTypeDeclation", "Complex Type Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        		addCollection("/s-ramp/xsd/ComplexTypeDeclaration", "Complex Type Declarations", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         addTypeCategory(xsdCollection, ArtifactTypeEnum.XsdDocument);
         addTypeCategory(xsdCollection, ArtifactTypeEnum.AttributeDeclaration);
