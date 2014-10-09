@@ -15,10 +15,17 @@
  */
 package org.overlord.sramp.server.atom.workspaces;
 
-import org.jboss.resteasy.plugins.providers.atom.Category;
-import org.jboss.resteasy.plugins.providers.atom.app.AppCategories;
+import java.util.List;
+
 import org.jboss.resteasy.plugins.providers.atom.app.AppCollection;
-import org.overlord.sramp.atom.SrampAtomConstants;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
+import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.repository.PersistenceFactory;
+import org.overlord.sramp.repository.PersistenceManager;
+import org.overlord.sramp.server.i18n.Messages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Models the stored query workspace.
@@ -28,6 +35,8 @@ import org.overlord.sramp.atom.SrampAtomConstants;
 public class StoredQueryWorkspace extends AbstractWorkspace {
 
 	private static final long serialVersionUID = 9119601241133543724L;
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(StoredQueryWorkspace.class);
 
     /**
 	 * Constructor.
@@ -42,21 +51,21 @@ public class StoredQueryWorkspace extends AbstractWorkspace {
 	 */
 	@Override
 	protected void configureWorkspace() {
-	    // TODO: What is the last arg?
-        AppCollection collection = addCollection("/s-ramp/query", "Stored Queries", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-		AppCategories categories = new AppCategories();
-        categories.setFixed(true);
-        collection.getCategories().add(categories);
-
-        Category category = new Category();
+        AppCollection collection = addCollection("/s-ramp/query", "Query Model", MediaType.APPLICATION_ZIP); //$NON-NLS-1$ //$NON-NLS-2$
+        addCategory(collection, "query", "StoredQuery"); //$NON-NLS-1$ //$NON-NLS-2$
+        
+        // The spec requires that all queries in the system be listed as a collection.
         try {
-            category.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+            List<StoredQuery> storedQueries = persistenceManager.getStoredQueries();
+            for (StoredQuery storedQuery : storedQueries) {
+                AppCollection queryCollection = addCollection("/s-ramp/query/" + storedQuery.getQueryName(), //$NON-NLS-1$
+                        storedQuery.getQueryName(), ""); //$NON-NLS-1$
+                // I *think* this is necessary since /query/{name} can accept a PUT
+                addCategory(queryCollection, "query", "StoredQuery"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        } catch (SrampException e) {
+            LOGGER.error(Messages.i18n.format("ERROR_GETTING_STOREDQUERIES"), e); //$NON-NLS-1$
         }
-        category.setTerm("queries"); //$NON-NLS-1$
-        category.setLabel("Stored Query Entries"); //$NON-NLS-1$
-        categories.getCategory().add(category);
 	}
 }

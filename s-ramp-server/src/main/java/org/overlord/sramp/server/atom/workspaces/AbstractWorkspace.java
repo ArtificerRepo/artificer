@@ -71,6 +71,25 @@ public abstract class AbstractWorkspace extends AppWorkspace {
         getCollection().add(collection);
         return collection;
 	}
+	
+	protected Category addCategory(AppCollection collection, String term, String label) {
+        AppCategories categories = null;
+        if (collection.getCategories().size() > 0) {
+            categories = collection.getCategories().get(0);
+        } else {
+            categories = new AppCategories();
+            categories.setFixed(true);
+            collection.getCategories().add(categories);
+        }
+
+        Category category = new Category();
+        category.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
+        category.setTerm(term);
+        category.setLabel(label);
+        categories.getCategory().add(category);
+
+        return category;
+    }
 
 	/**
 	 * Adds a single category to the given collection.
@@ -78,22 +97,7 @@ public abstract class AbstractWorkspace extends AppWorkspace {
 	 * @param type
 	 */
 	protected Category addTypeCategory(AppCollection collection, ArtifactTypeEnum type) {
-		AppCategories categories = null;
-		if (collection.getCategories().size() > 0) {
-			categories = collection.getCategories().get(0);
-		} else {
-			categories = new AppCategories();
-			categories.setFixed(true);
-			collection.getCategories().add(categories);
-		}
-
-		Category category = new Category();
-		category.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
-		category.setTerm(type.getType());
-		category.setLabel(type.getLabel());
-		categories.getCategory().add(category);
-
-		return category;
+	    return addCategory(collection, type.getType(), type.getLabel());
 	}
 
     /**
