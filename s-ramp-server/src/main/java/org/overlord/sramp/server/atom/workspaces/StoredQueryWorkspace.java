@@ -43,7 +43,7 @@ public class StoredQueryWorkspace extends AbstractWorkspace {
 	 * @param hrefBase
 	 */
 	public StoredQueryWorkspace(String hrefBase) {
-		super(hrefBase, "Stored Query Model"); //$NON-NLS-1$
+		super(hrefBase, "Query Model"); //$NON-NLS-1$
 	}
 
 	/**

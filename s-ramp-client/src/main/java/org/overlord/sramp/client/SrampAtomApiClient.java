@@ -944,7 +944,7 @@ public class SrampAtomApiClient {
      * @throws SrampAtomException
      */
     public StoredQuery createStoredQuery(StoredQuery storedQuery) throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("queries"); //$NON-NLS-1$
+        assertFeatureEnabled("query"); //$NON-NLS-1$
         ClientResponse<Entry> response = null;
         try {
             String atomUrl = String.format("%1$s/query", this.endpoint); //$NON-NLS-1$
@@ -971,7 +971,7 @@ public class SrampAtomApiClient {
      * @param storedQuery
      */
     public void updateStoredQuery(String queryName, StoredQuery storedQuery) throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("queries"); //$NON-NLS-1$
+        assertFeatureEnabled("query"); //$NON-NLS-1$
         ClientResponse<?> response = null;
         try {
             String atomUrl = String.format("%1$s/query/%2$s", this.endpoint, queryName); //$NON-NLS-1$
@@ -994,7 +994,7 @@ public class SrampAtomApiClient {
      * @throws SrampAtomException
      */
     public List<StoredQuery> getStoredQueries() throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("queries"); //$NON-NLS-1$
+        assertFeatureEnabled("query"); //$NON-NLS-1$
         ClientResponse<Feed> response = null;
         try {
             String atomUrl = String.format("%1$s/query", this.endpoint); //$NON-NLS-1$
@@ -1023,7 +1023,7 @@ public class SrampAtomApiClient {
      * @throws SrampAtomException
      */
     public StoredQuery getStoredQuery(String queryName) throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("queries"); //$NON-NLS-1$
+        assertFeatureEnabled("query"); //$NON-NLS-1$
         ClientResponse<Entry> response = null;
         try {
             String atomUrl = String.format("%1$s/query/%2$s", this.endpoint, queryName); //$NON-NLS-1$
@@ -1048,7 +1048,7 @@ public class SrampAtomApiClient {
      * @throws SrampAtomException
      */
     public void deleteStoredQuery(String queryName) throws SrampClientException, SrampAtomException {
-        assertFeatureEnabled("queries"); //$NON-NLS-1$
+        assertFeatureEnabled("query"); //$NON-NLS-1$
         ClientResponse<?> response = null;
         try {
             String atomUrl = String.format("%1$s/query/%2$s", this.endpoint, queryName); //$NON-NLS-1$

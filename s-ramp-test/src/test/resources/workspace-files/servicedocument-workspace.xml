@@ -45,28 +45,28 @@
                 <atom:category label="XML Schema" scheme="urn:x-s-ramp:2013:type" term="XsdDocument"/>
             </app:categories>
         </app:collection>
-        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/AttributeDeclation">
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/AttributeDeclaration">
             <atom:title>Attribute Declarations</atom:title>
             <app:accept></app:accept>
             <app:categories fixed="yes">
                 <atom:category label="XML Schema Attribute Declaration" scheme="urn:x-s-ramp:2013:type" term="AttributeDeclaration"/>
             </app:categories>
         </app:collection>
-        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/ElementDeclation">
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/ElementDeclaration">
             <atom:title>Element Declarations</atom:title>
             <app:accept></app:accept>
             <app:categories fixed="yes">
                 <atom:category label="XML Schema Element Declaration" scheme="urn:x-s-ramp:2013:type" term="ElementDeclaration"/>
             </app:categories>
         </app:collection>
-        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/SimpleTypeDeclation">
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/SimpleTypeDeclaration">
             <atom:title>Simple Type Declarations</atom:title>
             <app:accept></app:accept>
             <app:categories fixed="yes">
                 <atom:category label="XML Schema Simple Type Declaration" scheme="urn:x-s-ramp:2013:type" term="SimpleTypeDeclaration"/>
             </app:categories>
         </app:collection>
-        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/ComplexTypeDeclation">
+        <app:collection href="http://RE_HOST:RE_PORT/s-ramp-server/s-ramp/xsd/ComplexTypeDeclaration">
             <atom:title>Complex Type Declarations</atom:title>
             <app:accept></app:accept>
             <app:categories fixed="yes">

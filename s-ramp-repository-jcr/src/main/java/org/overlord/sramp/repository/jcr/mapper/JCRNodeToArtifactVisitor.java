@@ -707,7 +707,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
                 Value[] targetTypes = relationshipNode.getProperty(JCRConstants.SRAMP_TARGET_TYPE).getValues();
                 for (int i = 0; i < relationshipTargets.length; i++) {
                     Value relationshipTarget = relationshipTargets[i];
-                    Value targetType = targetTypes[i];
+                    String targetType = targetTypes[i].getString();
                     
 					T t = targetClass.newInstance();
 					Target target = (Target) t;

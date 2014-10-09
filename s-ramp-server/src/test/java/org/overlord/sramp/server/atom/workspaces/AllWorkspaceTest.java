@@ -36,7 +36,8 @@ public class AllWorkspaceTest extends AbstractWorkspaceTest {
 		appService.getWorkspace().add(new WsdlWorkspace(hrefBase));
         appService.getWorkspace().add(new OntologyWorkspace(hrefBase));
         appService.getWorkspace().add(new AuditWorkspace(hrefBase));
-        appService.getWorkspace().add(new StoredQueryWorkspace(hrefBase));
+        // Keep StoredQueryWorkspace out, for now -- requires JCR persistence to be available.
+//        appService.getWorkspace().add(new StoredQueryWorkspace(hrefBase));
 
         String actual = marshall(appService);
         String expected = getExpectedWorkspaceXML("all"); //$NON-NLS-1$

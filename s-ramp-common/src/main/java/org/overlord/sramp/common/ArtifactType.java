@@ -113,8 +113,9 @@ public class ArtifactType {
      */
     private ArtifactType(ArtifactTypeEnum artifactType, String mimeType) {
         setArtifactType(artifactType);
-        // Might need something more interesting than this in the future.
-        if (mimeType == null && artifactType.isDocument()) {
+        // TODO: This needs re-thought.  The mimeType should only be non-null when artifactType.isDocument().  But
+        // if you let null happen, you'll eventually get NPEs within RESTEasy.
+        if (mimeType == null) {
             if (artifactType == ArtifactTypeEnum.Document || artifactType == ArtifactTypeEnum.ExtendedDocument) {
                 mimeType = "application/octet-stream"; //$NON-NLS-1$
             } else {
