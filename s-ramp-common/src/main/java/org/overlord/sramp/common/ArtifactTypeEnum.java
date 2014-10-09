@@ -125,7 +125,7 @@ public enum ArtifactTypeEnum {
     ExtendedArtifactType("ext", "Extended Artifact Type", ExtendedArtifactType.class, BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE, false), //$NON-NLS-1$ //$NON-NLS-2$
     ExtendedDocument("ext", "Extended Document", ExtendedDocument.class, BaseArtifactEnum.EXTENDED_DOCUMENT, false, true), //$NON-NLS-1$ //$NON-NLS-2$
     // SOA
-    HumanActor("soa", "SOA Human Actor", Actor.class, BaseArtifactEnum.ACTOR, false), //$NON-NLS-1$ //$NON-NLS-2$
+    Actor("soa", "SOA Actor", Actor.class, BaseArtifactEnum.ACTOR, false), //$NON-NLS-1$ //$NON-NLS-2$
     Choreography("soa", "SOA Choreography", Choreography.class, BaseArtifactEnum.CHOREOGRAPHY, false), //$NON-NLS-1$ //$NON-NLS-2$
     ChoreographyProcess("soa", "SOA Choreography Process", ChoreographyProcess.class, BaseArtifactEnum.CHOREOGRAPHY_PROCESS, false), //$NON-NLS-1$ //$NON-NLS-2$
     Collaboration("soa", "SOA Collaboration", Collaboration.class, BaseArtifactEnum.COLLABORATION, false), //$NON-NLS-1$ //$NON-NLS-2$
@@ -137,7 +137,7 @@ public enum ArtifactTypeEnum {
     InformationType("soa", "SOA Information Type", InformationType.class, BaseArtifactEnum.INFORMATION_TYPE, false), //$NON-NLS-1$ //$NON-NLS-2$
     Orchestration("soa", "SOA Orchestration", Orchestration.class, BaseArtifactEnum.ORCHESTRATION, false), //$NON-NLS-1$ //$NON-NLS-2$
     OrchestrationProcess("soa", "SOA Orchestration Process", OrchestrationProcess.class, BaseArtifactEnum.ORCHESTRATION_PROCESS, false), //$NON-NLS-1$ //$NON-NLS-2$
-    Organization("serviceImplementation", "Organization", Organization.class, BaseArtifactEnum.ORGANIZATION, false), //$NON-NLS-1$ //$NON-NLS-2$
+    Organization("serviceImplementation", "SOA Organization", Organization.class, BaseArtifactEnum.ORGANIZATION, false), //$NON-NLS-1$ //$NON-NLS-2$
     Policy("soa", "SOA Policy", Policy.class, BaseArtifactEnum.POLICY, false), //$NON-NLS-1$ //$NON-NLS-2$
     PolicySubject("soa", "SOA Policy Subject", PolicySubject.class, BaseArtifactEnum.POLICY_SUBJECT, false), //$NON-NLS-1$ //$NON-NLS-2$
     Process("soa", "SOA Process", org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Process.class, BaseArtifactEnum.PROCESS, false), //$NON-NLS-1$ //$NON-NLS-2$

@@ -29,6 +29,8 @@ import org.overlord.sramp.server.atom.workspaces.CoreWorkspace;
 import org.overlord.sramp.server.atom.workspaces.ExtendedWorkspace;
 import org.overlord.sramp.server.atom.workspaces.OntologyWorkspace;
 import org.overlord.sramp.server.atom.workspaces.PolicyWorkspace;
+import org.overlord.sramp.server.atom.workspaces.ServiceImplementationWorkspace;
+import org.overlord.sramp.server.atom.workspaces.SoaWorkspace;
 import org.overlord.sramp.server.atom.workspaces.SoapWsdlWorkspace;
 import org.overlord.sramp.server.atom.workspaces.StoredQueryWorkspace;
 import org.overlord.sramp.server.atom.workspaces.WsdlWorkspace;
@@ -84,6 +86,8 @@ public class ServiceDocumentResource extends AbstractResource {
 		appService.getWorkspace().add(new OntologyWorkspace(hrefBase));
         appService.getWorkspace().add(new AuditWorkspace(hrefBase));
         appService.getWorkspace().add(new StoredQueryWorkspace(hrefBase));
+        appService.getWorkspace().add(new ServiceImplementationWorkspace(hrefBase));
+        appService.getWorkspace().add(new SoaWorkspace(hrefBase));
 
 		return appService;
 	}
