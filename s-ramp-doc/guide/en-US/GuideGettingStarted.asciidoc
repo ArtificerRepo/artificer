@@ -51,9 +51,9 @@ bin/startup.sh
 bin/jetty.sh run
 ....
 
-.JBoss EAP 6
+.JBoss EAP 6 (standalone-full is required)
 ....
-bin/standalone.sh
+bin/standalone.sh -c standalone-full.xml
 ....
 
 .JBoss Fuse 6.1

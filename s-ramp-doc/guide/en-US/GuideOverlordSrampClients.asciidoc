@@ -156,6 +156,8 @@ S-RAMP supports three JMS environments:
 * When S-RAMP is installed in EAP by using our installation script, JMS is configured automatically.  The existing
 HornetQ configuration is modified to add the default topic, described above, and all necessary credentials.
 Users can add additional topics/queues to their framework, then add them to 'sramp.properties' (see above).
+IMPORTANT: In order for HornetQ to work properly, the standalone-full profile must be used
+('bin/standalone.sh -c standalone-full.xml')!  Without it, errors are guaranteed to occur during startup!
 * For other EE platforms, S-RAMP will always attempt to discover a JMS 'ConnectionFactory' and all
 configured topics/queues through JNDI.  If found, it will simply use that existing framework and setup.
 Users can add additional topics/queues to their framework, then add them to 'sramp.properties' (see above).
