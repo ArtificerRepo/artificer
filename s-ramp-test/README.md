@@ -10,3 +10,10 @@ This module contains a robust suite of integration tests, based on Arquillian an
 *Note: Requires that jboss-eap-6.2.0.zip exists in the project root*
 - EAP 6.1: mvn clean test -P eap61-integration-test<br/>
 *Note: Requires that jboss-eap-6.1.0.zip exists in the project root*
+
+By default, the following assumptions are made by the installer and tests.  However, if you want to manually run a single test *outside* of Arquillian (ex: in your IDE), the values can be overridden by the given system properties.
+
+- host: localhost (sramp.test.host)
+- port: 8080 (sramp.test.port)
+- user: admin (sramp.test.username)
+- password: overlord1! (sramp.test.password)
