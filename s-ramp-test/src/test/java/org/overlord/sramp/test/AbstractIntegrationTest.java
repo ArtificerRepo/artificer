@@ -45,22 +45,22 @@ import org.overlord.sramp.client.query.QueryResultSet;
  */
 @RunWith(Arquillian.class)
 public abstract class AbstractIntegrationTest {
-    
+
     // Note: Running Arquillian in its as-client mode by leaving off the @Deployment.
-    
-    private static final String HOST = "localhost"; //$NON-NLS-1$
-    
-    private static final int PORT = 8080;
-    
+
+    private static final String HOST = System.getProperty("sramp.test.host", "localhost"); //$NON-NLS-1$ //$NON-NLS-2$
+
+    private static final int PORT = Integer.parseInt(System.getProperty("sramp.test.port", "8080")); //$NON-NLS-1$ //$NON-NLS-2$
+
     private static final String BASE_URL = "http://" + HOST + ":" + PORT + "/s-ramp-server"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    
-    protected static final String USERNAME = "admin"; //$NON-NLS-1$
-    
-    protected static final String PASSWORD = "overlord1!"; //$NON-NLS-1$
-    
+
+    protected static final String USERNAME = System.getProperty("sramp.test.username", "admin"); //$NON-NLS-1$ //$NON-NLS-2$
+
+    protected static final String PASSWORD = System.getProperty("sramp.test.password", "overlord1!"); //$NON-NLS-1$ //$NON-NLS-2$
+
     @After
     public void cleanup() {
-        
+
         // delete all artifacts
         try {
             SrampAtomApiClient client = client();
@@ -74,7 +74,7 @@ public abstract class AbstractIntegrationTest {
         } catch (Exception e) {
             fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
         }
-        
+
         // delete all ontologies
         try {
             SrampAtomApiClient client = client();
@@ -86,27 +86,27 @@ public abstract class AbstractIntegrationTest {
             fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
         }
     }
-    
+
     protected String getHost() {
         return HOST;
     }
-    
+
     protected int getPort() {
         return PORT;
     }
-    
+
     protected String getUsername() {
         return USERNAME;
     }
-    
+
     protected String getPassword() {
         return PASSWORD;
     }
-    
+
     protected SrampAtomApiClient client() throws SrampClientException, SrampAtomException {
         return new SrampAtomApiClient(BASE_URL, USERNAME, PASSWORD, true);
     }
-    
+
     protected ClientRequest clientRequest(String endpoint) {
         DefaultHttpClient client = new DefaultHttpClient();
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(USERNAME, PASSWORD);
@@ -118,11 +118,11 @@ public abstract class AbstractIntegrationTest {
         BasicHttpContext localContext = new BasicHttpContext();
         localContext.setAttribute(ClientContext.AUTH_CACHE, authCache);
         ApacheHttpClient4Executor executor = new ApacheHttpClient4Executor(client, localContext);
-        
+
         ClientRequest clientRequest = new ClientRequest(BASE_URL + endpoint, executor);
         return clientRequest;
     }
-    
+
     protected String generateURL(String endpoint) {
         return BASE_URL + endpoint;
     }
