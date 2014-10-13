@@ -106,7 +106,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			ArtifactType artifactType = ArtifactType.valueOf(artifact);
 			Entry entry = new Entry();
 			if (artifact.getUuid() != null)
-				entry.setId(new URI(artifact.getUuid()));
+				entry.setId(new URI("urn:uuid:" + artifact.getUuid())); //$NON-NLS-1$
 			if (artifact.getLastModifiedTimestamp() != null)
 				entry.setUpdated(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
 			if (artifact.getName() != null)

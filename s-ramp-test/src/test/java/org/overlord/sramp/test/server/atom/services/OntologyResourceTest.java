@@ -84,7 +84,7 @@ public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
 		request.body(MediaType.APPLICATION_RDF_XML_TYPE, rdf);
 		ClientResponse<Entry> response = request.post(Entry.class);
 		Entry entry = response.getEntity();
-		String uuid = entry.getId().toString();
+		String uuid = entry.getId().toString().replace("urn:uuid:", "");
 
 		// GET the ontology
 		request = clientRequest("/s-ramp/ontology/" + uuid); //$NON-NLS-1$

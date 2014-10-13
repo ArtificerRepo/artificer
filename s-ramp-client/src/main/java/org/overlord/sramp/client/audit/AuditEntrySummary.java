@@ -41,7 +41,7 @@ public class AuditEntrySummary {
      * @return the uuid
      */
     public String getUuid() {
-        return this.entry.getId().toString();
+        return this.entry.getId().toString().replace("urn:uuid:", "");
     }
 
     /**

@@ -69,7 +69,7 @@ public class AuditResourceTest extends AbstractAuditingResourceTest {
 		Assert.assertEquals(1, entries.size());
 		String auditEntryUuid = null;
 		for (Entry entry : entries) {
-		    auditEntryUuid = entry.getId().toString();
+		    auditEntryUuid = entry.getId().toString().replace("urn:uuid:", "");
         }
 
 		// GET the audit entry (the last one in the list - the artifact:add)

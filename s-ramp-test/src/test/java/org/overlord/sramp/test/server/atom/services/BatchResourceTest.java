@@ -259,7 +259,8 @@ public class BatchResourceTest extends AbstractNoAuditingResourceTest {
 		Feed feed = response.getEntity();
 		Assert.assertEquals(1, feed.getEntries().size());
 		for (Entry entry : feed.getEntries()) {
-			request = clientRequest("/s-ramp/xsd/XsdDocument/" + entry.getId().toString()); //$NON-NLS-1$
+		    String uuid = entry.getId().toString().replace("urn:uuid:", "");
+			request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid); //$NON-NLS-1$
 			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(request.get(Entry.class).getEntity());
 			artyMap.put(artifact.getUuid(), artifact);
 		}
@@ -268,7 +269,8 @@ public class BatchResourceTest extends AbstractNoAuditingResourceTest {
 		feed = response.getEntity();
 		Assert.assertEquals(1, feed.getEntries().size());
 		for (Entry entry : feed.getEntries()) {
-			request = clientRequest("/s-ramp/wsdl/WsdlDocument/" + entry.getId().toString()); //$NON-NLS-1$
+		    String uuid = entry.getId().toString().replace("urn:uuid:", "");
+            request = clientRequest("/s-ramp/wsdl/WsdlDocument/" + uuid); //$NON-NLS-1$
 			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(request.get(Entry.class).getEntity());
 			artyMap.put(artifact.getUuid(), artifact);
 		}
@@ -277,7 +279,8 @@ public class BatchResourceTest extends AbstractNoAuditingResourceTest {
 		feed = response.getEntity();
 		Assert.assertEquals(1, feed.getEntries().size());
 		for (Entry entry : feed.getEntries()) {
-			request = clientRequest("/s-ramp/core/XmlDocument/" + entry.getId().toString()); //$NON-NLS-1$
+		    String uuid = entry.getId().toString().replace("urn:uuid:", "");
+            request = clientRequest("/s-ramp/core/XmlDocument/" + uuid); //$NON-NLS-1$
 			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(request.get(Entry.class).getEntity());
 			artyMap.put(artifact.getUuid(), artifact);
 		}

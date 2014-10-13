@@ -32,6 +32,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.junit.After;
 import org.junit.runner.RunWith;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
@@ -68,8 +69,20 @@ public abstract class AbstractIntegrationTest {
             QueryResultSet results = client.query("/s-ramp", 0, 10000, "name", true); //$NON-NLS-1$ //$NON-NLS-2$
             for (ArtifactSummary summary : results) {
                 if (!summary.isDerived()) {
-                    client.deleteArtifact(summary.getUuid(), summary.getType());
+                    String uuid = summary.getUuid().replace("urn:uuid:", "");
+                    client.deleteArtifact(uuid, summary.getType());
                 }
+            }
+        } catch (Exception e) {
+            fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
+        }
+        
+        // delete all stored queries
+        try {
+            SrampAtomApiClient client = client();
+            List<StoredQuery> storedQueries = client.getStoredQueries();
+            for (StoredQuery storedQuery : storedQueries) {
+                client.deleteStoredQuery(storedQuery.getQueryName());
             }
         } catch (Exception e) {
             fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
@@ -80,7 +93,8 @@ public abstract class AbstractIntegrationTest {
             SrampAtomApiClient client = client();
             List<OntologySummary> ontologies = client.getOntologies();
             for (OntologySummary ontology : ontologies) {
-                client.deleteOntology(ontology.getUuid());
+                String uuid = ontology.getUuid().replace("urn:uuid:", "");
+                client.deleteOntology(uuid);
             }
         } catch (Exception e) {
             fail("Unable to cleanup test artifacts."); //$NON-NLS-1$

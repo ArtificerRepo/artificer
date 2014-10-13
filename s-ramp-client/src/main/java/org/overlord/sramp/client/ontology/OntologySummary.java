@@ -41,7 +41,7 @@ public class OntologySummary {
 	 * @return the ontology uuid
 	 */
 	public String getUuid() {
-		return this.entry.getId().toString();
+		return this.entry.getId().toString().replace("urn:uuid:", "");
 	}
 
 	/**

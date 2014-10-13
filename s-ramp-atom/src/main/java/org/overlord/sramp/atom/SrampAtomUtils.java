@@ -30,6 +30,7 @@ import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
+import org.jboss.resteasy.plugins.providers.atom.Source;
 import org.jboss.resteasy.plugins.providers.jaxb.JAXBContextFinder;
 import org.jboss.resteasy.plugins.providers.jaxb.XmlJAXBContextFinder;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
@@ -41,6 +42,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQueryData;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
+import org.overlord.sramp.common.ontology.SrampOntology;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -135,7 +137,7 @@ public final class SrampAtomUtils {
 		// TODO leverage the artifact->entry visitors here
 		Entry entry = new Entry();
 		if (artifact.getUuid() != null)
-			entry.setId(new URI(artifact.getUuid()));
+			entry.setId(new URI("urn:uuid:" + artifact.getUuid())); //$NON-NLS-1$
 		if (artifact.getLastModifiedTimestamp() != null)
 			entry.setUpdated(artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
 		if (artifact.getName() != null)
@@ -175,6 +177,36 @@ public final class SrampAtomUtils {
         Category category = new Category();
         category.setTerm("query"); //$NON-NLS-1$
         category.setLabel("Stored Query Entry"); //$NON-NLS-1$
+        category.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
+        entry.getCategories().add(category);
+        
+        return entry;
+    }
+    
+    public static Entry wrapOntology(SrampOntology ontology, RDF rdf) throws Exception {
+        Entry entry = new Entry();
+        entry.setId(new URI("urn:uuid:" + ontology.getUuid())); //$NON-NLS-1$
+        entry.setPublished(ontology.getCreatedOn());
+        entry.setUpdated(ontology.getLastModifiedOn());
+        entry.getAuthors().add(new Person(ontology.getCreatedBy()));
+        entry.setTitle(ontology.getLabel());
+        entry.setSummary(ontology.getComment());
+        Source source = new Source();
+        source.setBase(new URI(ontology.getBase()));
+        source.setId(new URI(ontology.getId()));
+        entry.setSource(source);
+
+        if (rdf != null) {
+            entry.setAnyOtherJAXBObject(rdf);
+        }
+        
+        Content content = new Content();
+        content.setText("Classification Entry"); //$NON-NLS-1$
+        entry.setContent(content);
+        
+        Category category = new Category();
+        category.setTerm("classification"); //$NON-NLS-1$
+        category.setLabel("Classification Entry"); //$NON-NLS-1$
         category.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
         entry.getCategories().add(category);
         

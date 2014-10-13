@@ -56,7 +56,7 @@ public class FeedResourceTest extends AbstractNoAuditingResourceTest {
 		for (int i = 0; i < numEntries; i++) {
 			Entry entry = doAddXsd();
 			URI entryId = entry.getId();
-			String uuid = entryId.toString();
+			String uuid = entryId.toString().replace("urn:uuid:", "");
 			uuids.add(uuid);
 		}
 
@@ -66,7 +66,7 @@ public class FeedResourceTest extends AbstractNoAuditingResourceTest {
 		Feed feed = response.getEntity();
 		int uuidsFound = 0;
 		for (Entry entry : feed.getEntries()) {
-			String entryUuid = entry.getId().toString();
+			String entryUuid = entry.getId().toString().replace("urn:uuid:", "");
 			if (uuids.contains(entryUuid))
 				uuidsFound++;
 		}
@@ -131,7 +131,7 @@ public class FeedResourceTest extends AbstractNoAuditingResourceTest {
 		for (int i = 0; i < 5; i++) {
 			Entry entry = doAddExtended("PkgDocument", "/sample-files/ext/defaultPackage.pkg"); //$NON-NLS-1$ //$NON-NLS-2$
 			URI entryId = entry.getId();
-			String uuid = entryId.toString();
+			String uuid = entryId.toString().replace("urn:uuid:", "");
 			pkgUuids.add(uuid);
 		}
 		// Add some bpmn entries
@@ -139,7 +139,7 @@ public class FeedResourceTest extends AbstractNoAuditingResourceTest {
 		for (int i = 0; i < 3; i++) {
 			Entry entry = doAddExtended("BpmnDocument", "/sample-files/ext/Evaluation.bpmn"); //$NON-NLS-1$ //$NON-NLS-2$
 			URI entryId = entry.getId();
-			String uuid = entryId.toString();
+			String uuid = entryId.toString().replace("urn:uuid:", "");
 			bpmnUuids.add(uuid);
 		}
 
@@ -148,7 +148,7 @@ public class FeedResourceTest extends AbstractNoAuditingResourceTest {
 		ClientResponse<Feed> response = request.get(Feed.class);
 		Feed feed = response.getEntity();
 		for (Entry entry : feed.getEntries()) {
-			String entryUuid = entry.getId().toString();
+			String entryUuid = entry.getId().toString().replace("urn:uuid:", "");
 			pkgUuids.remove(entryUuid);
 		}
 		assertEquals("The feed did not contain the expected PkgDocument entries.", 0, pkgUuids.size()); //$NON-NLS-1$
@@ -158,7 +158,7 @@ public class FeedResourceTest extends AbstractNoAuditingResourceTest {
 		response = request.get(Feed.class);
 		feed = response.getEntity();
 		for (Entry entry : feed.getEntries()) {
-			String entryUuid = entry.getId().toString();
+			String entryUuid = entry.getId().toString().replace("urn:uuid:", "");
 			bpmnUuids.remove(entryUuid);
 		}
         assertEquals("The feed did not contain the expected BpmnDocument entries.", 0, pkgUuids.size()); //$NON-NLS-1$

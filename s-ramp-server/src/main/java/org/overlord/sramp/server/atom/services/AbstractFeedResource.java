@@ -134,7 +134,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf((toRow - fromRow) + 1));
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_START_INDEX_QNAME, String.valueOf(fromRow));
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_TOTAL_RESULTS_QNAME, String.valueOf(artifactSet.size()));
-		feed.setId(new URI(UUID.randomUUID().toString()));
+		feed.setId(new URI("urn:uuid:" + UUID.randomUUID().toString())); //$NON-NLS-1$
 		feed.setTitle("S-RAMP Feed"); //$NON-NLS-1$
 		feed.setSubtitle("Ad Hoc query feed"); //$NON-NLS-1$
 		feed.setUpdated(new Date());

@@ -447,7 +447,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 		String findReqMsgUuid = null;
 		for (Entry atomEntry : feed.getEntries()) {
 			if ("findRequest".equals(atomEntry.getTitle())) { //$NON-NLS-1$
-				findReqMsgUuid = atomEntry.getId().toString();
+				findReqMsgUuid = atomEntry.getId().toString().replace("urn:uuid:", "");
 			}
 		}
 		Assert.assertNotNull(findReqMsgUuid);
@@ -654,8 +654,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	 * @throws Exception
 	 */
 	private Entry doGetXsdEntry(URI entryId) throws Exception {
-		// TODO I think the entryId should be of the format urn:{uuid} and we'll need to parse it - this isn't happening right now though
-		String uuid = entryId.toString();
+		String uuid = entryId.toString().replace("urn:uuid:", "");
 
 		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid); //$NON-NLS-1$
 		ClientResponse<Entry> response = request.get(Entry.class);
@@ -673,7 +672,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	 * @throws Exception
 	 */
 	private String doGetXsdContent(URI entryId) throws Exception {
-		String uuid = entryId.toString();
+		String uuid = entryId.toString().replace("urn:uuid:", "");
 
 		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid + "/media"); //$NON-NLS-1$ //$NON-NLS-2$
 		ClientResponse<String> response = request.get(String.class);
@@ -783,7 +782,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	 * @throws Exception
 	 */
 	private void deleteXsdEntry(URI entryId) throws Exception {
-		String uuid = entryId.toString();
+		String uuid = entryId.toString().replace("urn:uuid:", "");
 		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid); //$NON-NLS-1$
 		request.delete(Void.class);
 	}
@@ -793,7 +792,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 	 * @throws Exception
 	 */
 	private void verifyEntryDeleted(URI entryId) throws Exception {
-		String uuid = entryId.toString();
+		String uuid = entryId.toString().replace("urn:uuid:", "");
 
 		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid); //$NON-NLS-1$
 		try {

@@ -59,7 +59,7 @@ public class QueryResourceTest extends AbstractNoAuditingResourceTest {
 		for (int i = 0; i < numEntries; i++) {
 			Entry entry = doAddXsd();
 			URI entryId = entry.getId();
-			String uuid = entryId.toString();
+			String uuid = entryId.toString().replace("urn:uuid:", "");
 			uuids.add(uuid);
 		}
 
@@ -69,7 +69,7 @@ public class QueryResourceTest extends AbstractNoAuditingResourceTest {
 		Feed feed = response.getEntity();
 		int uuidsFound = 0;
 		for (Entry entry : feed.getEntries()) {
-			String entryUuid = entry.getId().toString();
+			String entryUuid = entry.getId().toString().replace("urn:uuid:", "");
 			if (uuids.contains(entryUuid))
 				uuidsFound++;
 		}
@@ -84,7 +84,7 @@ public class QueryResourceTest extends AbstractNoAuditingResourceTest {
 		feed = response.getEntity();
 		uuidsFound = 0;
 		for (Entry entry : feed.getEntries()) {
-			String entryUuid = entry.getId().toString();
+			String entryUuid = entry.getId().toString().replace("urn:uuid:", "");
 			if (uuids.contains(entryUuid))
 				uuidsFound++;
 		}

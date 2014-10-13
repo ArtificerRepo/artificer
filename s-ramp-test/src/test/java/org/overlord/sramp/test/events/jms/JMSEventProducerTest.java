@@ -168,7 +168,7 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
         RDF persistedRdf = client.addOntology(rdf);
         
         String uuid = persistedRdf.getOtherAttributes().get(
-                new QName("http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0", "uuid"));
+                new QName("http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0", "uuid")).replace("urn:uuid:", "");
         
         // update
         persistedRdf.getOntology().setLabel("ColorUpdated");

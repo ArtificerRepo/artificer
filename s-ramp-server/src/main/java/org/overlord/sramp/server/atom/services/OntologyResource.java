@@ -34,6 +34,7 @@ import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.jboss.resteasy.plugins.providers.atom.Source;
 import org.overlord.sramp.atom.MediaType;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.mappers.OntologyToRdfMapper;
 import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
@@ -108,16 +109,7 @@ public class OntologyResource extends AbstractResource {
                 eventProducer.ontologyCreated(responseRDF);
             }
 
-			Entry entry = new Entry();
-			entry.setId(new URI(ontology.getUuid()));
-			entry.setPublished(ontology.getCreatedOn());
-			entry.setUpdated(ontology.getLastModifiedOn());
-			entry.getAuthors().add(new Person(ontology.getCreatedBy()));
-			entry.setTitle(ontology.getLabel());
-			entry.setSummary(ontology.getComment());
-
-			entry.setAnyOtherJAXBObject(responseRDF);
-			return entry;
+			return SrampAtomUtils.wrapOntology(ontology, responseRDF);
         } catch (Exception e) {
         	logError(logger, Messages.i18n.format("ERROR_CREATING_ONTOLOGY"), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
@@ -184,15 +176,7 @@ public class OntologyResource extends AbstractResource {
 			RDF responseRDF = new RDF();
 			o2rdf.map(ontology, responseRDF);
 
-			Entry entry = new Entry();
-			entry.setId(new URI(ontology.getUuid()));
-			entry.setPublished(ontology.getCreatedOn());
-			entry.setUpdated(ontology.getLastModifiedOn());
-			entry.getAuthors().add(new Person(ontology.getCreatedBy()));
-			entry.setTitle(ontology.getLabel());
-			entry.setSummary(ontology.getComment());
-			entry.setAnyOtherJAXBObject(responseRDF);
-			return entry;
+			return SrampAtomUtils.wrapOntology(ontology, responseRDF);
         } catch (Exception e) {
         	logError(logger, Messages.i18n.format("ERROR_GETTING_ONTOLOGY", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
@@ -245,13 +229,7 @@ public class OntologyResource extends AbstractResource {
 			feed.setUpdated(new Date());
 
 			for (SrampOntology ontology : ontologies) {
-		    	Entry entry = new Entry();
-				entry.setId(new URI(ontology.getUuid()));
-				entry.setPublished(ontology.getCreatedOn());
-				entry.setUpdated(ontology.getLastModifiedOn());
-				entry.getAuthors().add(new Person(ontology.getCreatedBy()));
-				entry.setTitle(ontology.getLabel());
-				entry.setSummary(ontology.getComment());
+		    	Entry entry = SrampAtomUtils.wrapOntology(ontology, null);
 				Source source = new Source();
 				source.setBase(new URI(ontology.getBase()));
 				source.setId(new URI(ontology.getId()));

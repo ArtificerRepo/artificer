@@ -16,8 +16,6 @@
 package org.overlord.sramp.common;
 
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
@@ -84,27 +82,6 @@ public class ArtifactType {
     /** for a Extended Type, the type should be stored here */
     private String extendedType;
     private boolean extendedDerivedType;
-    private static Map<String, ModelMime> extendedArtifactTypes;
-    static {
-        extendedArtifactTypes = new ConcurrentHashMap<String, ModelMime>();
-        //TODO use SRAMP documents to store SRAMP internal information? We would put this one in here as
-        // an hard coded ExtendedArtifactType (Extended by us)
-        extendedArtifactTypes.put("sramp",      new ModelMime("SRAMPDocument",   "application/xml")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        //TODO read this from the repo instead (store as an Artifact, can we do TextDocument?)
-        extendedArtifactTypes.put("pkg",        new ModelMime("BrmsPkgDocument", "application/octet-stream")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("package",    new ModelMime("BrmsPkgDocument", "application/octet-stream")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("bpmn",       new ModelMime("BpmnDocument",    "application/xml")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("bpmn2",      new ModelMime("BpmnDocument",    "application/xml")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("txt",        new ModelMime("TextDocument",    "text/plain")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("properties", new ModelMime("TextDocument",    "text/plain")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("css",        new ModelMime("CssDocument",     "text/css")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("html",       new ModelMime("HtmlDocument",    "text/html")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("ftl",        new ModelMime("FtlDocument",     "text/html")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("wid",        new ModelMime("TextDocument",    "text/plain")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("gif",        new ModelMime("ImageDocument",   "application/octet-stream")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("png",        new ModelMime("ImageDocument",   "application/octet-stream")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        extendedArtifactTypes.put("wsla",       new ModelMime("WslaDocument",    "application/xml")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
 
     /**
      * Constructor.
@@ -138,32 +115,6 @@ public class ArtifactType {
             return artifact;
         } catch (Exception e) {
             throw new RuntimeException(Messages.i18n.format("ARTIFACT_UNWRAP_ERROR", getArtifactType().getType()), e); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * Returns an {@link ArtifactType} given a common file extension.
-     * @param extension a file extension
-     * @return an s-ramp artifact type
-     * @deprecated
-     */
-    public static ArtifactType fromFileExtension(String extension) {
-        String ext = extension.toLowerCase();
-        if (ext.equals("xml")) { //$NON-NLS-1$
-            return new ArtifactType(ArtifactTypeEnum.XmlDocument, "application/xml"); //$NON-NLS-1$
-        } else if (ext.equals("xsd")) { //$NON-NLS-1$
-            return new ArtifactType(ArtifactTypeEnum.XsdDocument, "application/xml"); //$NON-NLS-1$
-        } else if (ext.equals("wsdl")) { //$NON-NLS-1$
-            return new ArtifactType(ArtifactTypeEnum.WsdlDocument, "application/xml"); //$NON-NLS-1$
-        } else if (ext.equals("wspolicy")) { //$NON-NLS-1$
-            return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml"); //$NON-NLS-1$
-        } else if (extendedArtifactTypes.containsKey(ext)){
-            ModelMime modelMime = extendedArtifactTypes.get(ext);
-            ArtifactType artifactType = ArtifactType.ExtendedArtifactType(modelMime.extendedModel, false);
-            artifactType.setMimeType(modelMime.mimeType);
-            return artifactType;
-        } else {
-            return new ArtifactType(ArtifactTypeEnum.Document, null);
         }
     }
 

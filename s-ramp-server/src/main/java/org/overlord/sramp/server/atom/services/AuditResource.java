@@ -185,7 +185,7 @@ public class AuditResource extends AbstractResource {
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf((toRow - fromRow) + 1));
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_START_INDEX_QNAME, String.valueOf(fromRow));
         feed.getExtensionAttributes().put(SrampConstants.SRAMP_TOTAL_RESULTS_QNAME, String.valueOf(auditEntrySet.size()));
-        feed.setId(new URI(UUID.randomUUID().toString()));
+        feed.setId(new URI("urn:uuid:" + UUID.randomUUID().toString())); //$NON-NLS-1$
         feed.setTitle("S-RAMP Audit Feed"); //$NON-NLS-1$
         feed.setSubtitle("All Audit Entries for Artifact"); //$NON-NLS-1$
         feed.setUpdated(new Date());
@@ -225,7 +225,7 @@ public class AuditResource extends AbstractResource {
      */
     private Entry auditEntryToAtomEntry(AuditEntry auditEntry) throws URISyntaxException {
         Entry entry = new Entry();
-        entry.setId(new URI(auditEntry.getUuid()));
+        entry.setId(new URI("urn:uuid:" + auditEntry.getUuid())); //$NON-NLS-1$
         entry.setPublished(auditEntry.getWhen().toGregorianCalendar().getTime());
         entry.setUpdated(auditEntry.getWhen().toGregorianCalendar().getTime());
         entry.getAuthors().add(new Person(auditEntry.getWho()));
