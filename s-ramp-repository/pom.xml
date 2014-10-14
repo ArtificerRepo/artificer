@@ -16,6 +16,10 @@
   <dependencies>
     <!-- Project Dependencies -->
     <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-services</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-api</artifactId>
     </dependency>

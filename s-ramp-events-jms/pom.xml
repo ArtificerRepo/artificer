@@ -25,6 +25,10 @@
   <dependencies>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-common</artifactId>
     </dependency>
     <dependency>
@@ -47,11 +51,35 @@
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-broker</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-kahadb-store</artifactId>
+    </dependency>
+    
+    <!-- Declarative Service Annotations -->
+    <dependency>
+	  <groupId>org.apache.felix</groupId>
+	  <artifactId>org.apache.felix.scr.annotations</artifactId>
+	</dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
     </dependency>
   </dependencies>
 

@@ -9,6 +9,17 @@
   <artifactId>s-ramp-ui-war-eap6</artifactId>
   <packaging>war</packaging>
   <name>S-RAMP UI: Web App (EAP 6)</name>
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jboss-as-support</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
   <dependencies>
     <!-- The base WAR being extended -->
     <dependency>

@@ -13,6 +13,11 @@
   <!-- Overrides for Karaf -->
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>javax.security.jacc</groupId>
+        <artifactId>javax.security.jacc-api</artifactId>
+        <version>1.4</version>
+      </dependency>
       <!-- Downgrade to slf4j-ext 1.7.1 so it will run in Fuse 6.1 -->
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -102,6 +107,20 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-karaf-commands</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>log4j</artifactId>
+          <groupId>log4j</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>slf4j-log4j12</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     
     <!-- Additional 3rd party libraries -->
@@ -239,9 +258,9 @@
       <artifactId>overlord-commons-osgi-weld</artifactId>
     </dependency>
     <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>fabric-api</artifactId>
-     </dependency> 
+      <groupId>io.fabric8</groupId>
+      <artifactId>fabric-api</artifactId>
+   </dependency>
   </dependencies>
 
   <build>
