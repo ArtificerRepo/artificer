@@ -558,6 +558,11 @@
 
       <!-- Overlord Commons -->
       <dependency>
+        <groupId>org.overlord.commons.bundles</groupId>
+        <artifactId>overlord-commons-bundles-maven</artifactId>
+        <version>${version.org.overlord.overlord-commons}</version>
+      </dependency>
+      <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-ant</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
