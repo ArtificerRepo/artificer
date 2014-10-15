@@ -197,7 +197,7 @@ public class DeployCommand extends BuiltInShellCommand {
             SrampModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_HASH_MD5, DigestUtils.md5Hex(pom));
             SrampModelUtils.setCustomProperty(pomArtifact, JavaModel.PROP_MAVEN_HASH_SHA1, DigestUtils.shaHex(pom));
 
-            client.uploadArtifact(pomArtifact, pomContent);
+            BaseArtifactType returned = client.uploadArtifact(pomArtifact, pomContent);
 
             // Put the artifact in the session as the active artifact
             QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -328,10 +328,16 @@ public class DeployCommand extends BuiltInShellCommand {
             groupId = split[0];
             artifactId = split[1];
             version = split[2];
+            String filename;
+            if (file.getName().endsWith(".tmp")) {
+                filename = file.getName().substring(0, file.getName().indexOf(".jar") + 4);
+            } else {
+                filename = file.getName();
+            }
             if (split.length >= 4) {
                 type = split[3];
             } else {
-                type = getType(file.getName());
+                type = getType(filename);
             }
             if (split.length >= 5) {
                 classifier = split[5];
@@ -346,8 +352,8 @@ public class DeployCommand extends BuiltInShellCommand {
             IOUtils.closeQuietly(is);
             snapshot = version != null && version.endsWith("-SNAPSHOT"); //$NON-NLS-1$
             snapshotId = null;
-            if (snapshot && !file.getName().contains(version)) {
-                snapshotId = extractSnapshotId(file.getName(), version, type, classifier);
+            if (snapshot && !filename.contains(version)) {
+                snapshotId = extractSnapshotId(filename, version, type, classifier);
             }
 
         }

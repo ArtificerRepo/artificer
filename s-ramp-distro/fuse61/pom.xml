@@ -95,6 +95,10 @@
       <artifactId>s-ramp-server-fuse61</artifactId>
       <type>war</type>
     </dependency>
+    <dependency>
+      <groupId>org.overlord.commons.bundles</groupId>
+      <artifactId>overlord-commons-bundles-maven</artifactId>
+    </dependency>
 
     <!-- Include the Fuse 6.1 version of the UI WAR -->
     <dependency>
@@ -303,6 +307,10 @@
                     <exclude>org.overlord.sramp:s-ramp-*:*</exclude>
                     <exclude>org.overlord:overlord-commons-*:*</exclude>
                     <exclude>org.jboss.spec.javax.el:jboss-el-api*:*</exclude>
+                    <exclude>org.apache.maven:maven-model-builder:*</exclude>
+                    <exclude>org.apache.maven:maven-artifact:*</exclude>
+                    <exclude>org.apache.maven:maven-model:*</exclude>
+                    <exclude>org.apache.maven:maven-core:*</exclude>
                   </excludes>
                   <bundles>
                     <!-- TODO: overlord-commons-maven-plugin isn't picking this up.  For now, be explicit. -->
