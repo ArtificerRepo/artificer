@@ -10,29 +10,6 @@
   <packaging>bundle</packaging>
   <name>S-RAMP Distribution: Fuse 6.1 Support</name>
 
-  <!-- Overrides for Karaf -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>javax.security.jacc</groupId>
-        <artifactId>javax.security.jacc-api</artifactId>
-        <version>1.4</version>
-      </dependency>
-      <!-- Downgrade to slf4j-ext 1.7.1 so it will run in Fuse 6.1 -->
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-ext</artifactId>
-        <version>1.7.1</version>
-      </dependency>
-      <!-- Upgrade to a version of xmlsec that will work in OSGi -->
-      <dependency>
-        <groupId>org.apache.santuario</groupId>
-        <artifactId>xmlsec</artifactId>
-        <version>2.0.0</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <!-- Include the base s-ramp-server WAR to pull in all required dependencies transitively -->
     <dependency>

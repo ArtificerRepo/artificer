@@ -12,16 +12,6 @@
   <name>S-RAMP Events: JMS</name>
   <description>JMS implementation of the S-RAMP Events functionality.</description>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.activemq</groupId>
-        <artifactId>activemq-kahadb-store</artifactId>
-        <version>${version.org.apache.activemq}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
