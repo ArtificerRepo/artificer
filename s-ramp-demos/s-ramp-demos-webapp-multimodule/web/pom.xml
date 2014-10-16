@@ -22,21 +22,6 @@
   <packaging>war</packaging>
   <name>S-RAMP Demos: Multi-Module WebApp Deployment - Web App</name>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>s-ramp-demos-webapp-multimodule-artifacts</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>2.5</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>

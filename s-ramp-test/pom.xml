@@ -13,16 +13,6 @@
   <name>S-RAMP Test</name>
   <description>A general test package supporting various integration tests.</description>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.jboss.arquillian.container</groupId>
-        <artifactId>arquillian-tomcat-managed-7</artifactId>
-        <version>1.0.0.CR7</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>

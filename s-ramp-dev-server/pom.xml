@@ -13,36 +13,6 @@
   <name>S-RAMP Development Test Server</name>
   <description>S-RAMP Development Test Server: Runs S-RAMP within an embedded server for speedy testing during development.</description>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-security</artifactId>
-        <version>${version.org.eclipse.jetty}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-server</artifactId>
-        <version>${version.org.eclipse.jetty}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-servlet</artifactId>
-        <version>${version.org.eclipse.jetty}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-util</artifactId>
-        <version>${version.org.eclipse.jetty}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-bus</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.overlord</groupId>
