@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.common.ontology;
 
-import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.common.SrampNotFoundException;
 import org.overlord.sramp.common.i18n.Messages;
 
 /**
@@ -24,7 +24,7 @@ import org.overlord.sramp.common.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class OntologyNotFoundException extends SrampUserException {
+public class OntologyNotFoundException extends SrampNotFoundException {
 
     private static final long serialVersionUID = 8420594209143921892L;
 

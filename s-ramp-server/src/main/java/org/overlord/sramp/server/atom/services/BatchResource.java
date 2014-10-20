@@ -85,7 +85,7 @@ public class BatchResource extends AbstractResource {
     @Produces(MediaType.MULTIPART_MIXED)
     @PartType("message/http")
 	public MultipartOutput zipPackage(@Context HttpServletRequest request,
-	        @HeaderParam("Slug") String fileName, InputStream content) throws SrampAtomException {
+	        @HeaderParam("Slug") String fileName, InputStream content) throws SrampAtomException, SrampException {
         PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
         InputStream is = content;
@@ -153,6 +153,10 @@ public class BatchResource extends AbstractResource {
             }
 
             return output;
+        } catch (ArtifactNotFoundException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+            // HTTP response type.
+            throw e;
         } catch (Exception e) {
         	logError(logger, Messages.i18n.format("ERROR_CONSUMING_ZIP"), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);

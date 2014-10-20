@@ -24,7 +24,7 @@ import org.overlord.sramp.common.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactAlreadyExistsException extends SrampUserException {
+public class ArtifactAlreadyExistsException extends SrampAlreadyExistsException {
 
     private static final long serialVersionUID = 1131976536249817281L;
 

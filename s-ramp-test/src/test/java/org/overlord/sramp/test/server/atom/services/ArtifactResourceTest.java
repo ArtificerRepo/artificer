@@ -799,7 +799,7 @@ public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
 			request.get(String.class);
 			Assert.fail("Expected an 'Artifact not found.' error here."); //$NON-NLS-1$
 		} catch (SrampAtomException e) {
-			Assert.assertTrue(e.getMessage().startsWith("No artifact found with UUID:")); //$NON-NLS-1$
+			Assert.assertTrue(e.getMessage().contains("not in the repository")); //$NON-NLS-1$
 		}
 	}
 

@@ -70,8 +70,14 @@ public final class JCRNodeToArtifactFactory {
 	 * @throws SrampException
 	 */
     public static BaseArtifactType createArtifact(final Session session, Node jcrNode,
-            ArtifactType artifactType) throws SrampException {
+            ArtifactType artifactType) throws SrampException {        
 		try {
+	        // Early exit.  Atom service needs to 404 if the wrong model was given.
+	        String jcrArtifactType = jcrNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getValue().getString();
+	        if (! jcrArtifactType.equalsIgnoreCase(artifactType.getArtifactType().getApiType().value())) {
+	            return null;
+	        }
+	        
 			BaseArtifactType artifact = artifactType.newArtifactInstance();
 			ArtifactVisitor visitor = new JCRNodeToArtifactVisitor(jcrNode, new JCRReferenceResolver() {
 				@Override
@@ -88,7 +94,7 @@ public final class JCRNodeToArtifactFactory {
 			});
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return artifact;
-		} catch (RuntimeException e) {
+		} catch (Exception e) {
 			if (e.getCause() != null) {
 				throw new SrampServerException(e.getCause());
 			} else {

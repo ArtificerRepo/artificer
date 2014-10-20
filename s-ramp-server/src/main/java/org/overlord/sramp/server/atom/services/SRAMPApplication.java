@@ -20,10 +20,13 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.overlord.sramp.atom.providers.SrampAlreadyExistsExceptionProvider;
+import org.overlord.sramp.atom.providers.SrampNotFoundExceptionProvider;
 import org.overlord.sramp.atom.providers.AuditEntryProvider;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
 import org.overlord.sramp.atom.providers.OntologyProvider;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
+import org.overlord.sramp.atom.providers.WrongModelExceptionProvider;
 
 /**
  * The SRAMP RESTEasy application.  This is essentially the main entry point into a
@@ -48,6 +51,10 @@ public class SRAMPApplication extends Application {
         singletons.add(new AuditResource());
         singletons.add(new StoredQueryResource());
 
+        classes.add(WrongModelExceptionProvider.class);
+        classes.add(SrampAlreadyExistsExceptionProvider.class);
+        classes.add(SrampNotFoundExceptionProvider.class);
+        
 		classes.add(HttpResponseProvider.class);
 		classes.add(SrampAtomExceptionProvider.class);
         classes.add(OntologyProvider.class);

@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.common.storedquery;
 
-import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.common.SrampNotFoundException;
 import org.overlord.sramp.common.i18n.Messages;
 
 /**
@@ -24,7 +24,7 @@ import org.overlord.sramp.common.i18n.Messages;
  *
  * @author Brett Meyer
  */
-public class StoredQueryNotFoundException extends SrampUserException {
+public class StoredQueryNotFoundException extends SrampNotFoundException {
 
     private static final long serialVersionUID = 6962141373474710343L;
 

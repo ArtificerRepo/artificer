@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.common.ontology;
 
-import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.common.SrampAlreadyExistsException;
 import org.overlord.sramp.common.i18n.Messages;
 
 /**
@@ -23,7 +23,7 @@ import org.overlord.sramp.common.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class OntologyAlreadyExistsException extends SrampUserException {
+public class OntologyAlreadyExistsException extends SrampAlreadyExistsException {
 
     private static final long serialVersionUID = -6428175672605313348L;
 

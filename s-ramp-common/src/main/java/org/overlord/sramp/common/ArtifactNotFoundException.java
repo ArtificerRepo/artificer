@@ -23,7 +23,7 @@ import org.overlord.sramp.common.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactNotFoundException extends SrampUserException {
+public class ArtifactNotFoundException extends SrampNotFoundException {
 
     private static final long serialVersionUID = 1131976536249817281L;
 

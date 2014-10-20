@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common.storedquery;
+package org.overlord.sramp.common;
 
-import org.overlord.sramp.common.SrampAlreadyExistsException;
-import org.overlord.sramp.common.i18n.Messages;
 
 /**
- * Exception thrown when the user attempts to add a stored query that already exists.
- *
  * @author Brett Meyer
  */
-public class StoredQueryAlreadyExistsException extends SrampAlreadyExistsException {
+public abstract class SrampNotFoundException extends SrampUserException {
 
-    private static final long serialVersionUID = 632263403445444191L;
-
-    public StoredQueryAlreadyExistsException() {
+    private static final long serialVersionUID = 3266741739558281824L;
+    
+    public SrampNotFoundException() {
+        super();
     }
 
-    public StoredQueryAlreadyExistsException(String queryName) {
-        super(Messages.i18n.format("STOREDQUERY_ALREADY_EXISTS", queryName)); //$NON-NLS-1$
+    public SrampNotFoundException(String message) {
+        super(message);
     }
-
 }

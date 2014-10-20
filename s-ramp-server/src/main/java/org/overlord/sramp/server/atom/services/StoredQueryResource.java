@@ -41,6 +41,9 @@ import org.overlord.sramp.atom.SrampAtomConstants;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.common.SrampConfig;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.storedquery.StoredQueryAlreadyExistsException;
+import org.overlord.sramp.common.storedquery.StoredQueryNotFoundException;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.server.i18n.Messages;
@@ -63,7 +66,7 @@ public class StoredQueryResource extends AbstractFeedResource {
 	@POST
     @Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry create(@Context HttpServletRequest request, Entry atomEntry) throws SrampAtomException {
+    public Entry create(@Context HttpServletRequest request, Entry atomEntry) throws SrampAtomException, SrampException {
         try {
             String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
             StoredQuery storedQuery = SrampAtomUtils.unwrapStoredQuery(atomEntry);
@@ -72,6 +75,10 @@ public class StoredQueryResource extends AbstractFeedResource {
             storedQuery = persistenceManager.persistStoredQuery(storedQuery);
 
             return wrapStoredQuery(storedQuery, baseUrl);
+        } catch (StoredQueryAlreadyExistsException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtifactAlreadyExistsException is mapped to a
+            // unique HTTP response type.
+            throw e;
         } catch (Exception e) {
             logError(logger, Messages.i18n.format("ERROR_CREATING_STOREDQUERY"), e); //$NON-NLS-1$
             throw new SrampAtomException(e);
@@ -81,13 +88,17 @@ public class StoredQueryResource extends AbstractFeedResource {
 	@PUT
 	@Path("{queryName}")
 	@Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public void update(@PathParam("queryName") String queryName, Entry atomEntry) throws SrampAtomException {
+	public void update(@PathParam("queryName") String queryName, Entry atomEntry) throws SrampAtomException, SrampException {
 		try {
 		    StoredQuery storedQuery = SrampAtomUtils.unwrapStoredQuery(atomEntry);
             // TODO: validate?  mainly just whether or not it has a name/query
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             persistenceManager.updateStoredQuery(queryName, storedQuery);
-		} catch (Throwable e) {
+		} catch (StoredQueryNotFoundException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+            // HTTP response type.
+            throw e;
+        } catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_UPDATING_STOREDQUERY", queryName), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
@@ -97,14 +108,18 @@ public class StoredQueryResource extends AbstractFeedResource {
 	@Path("{queryName}")
 	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry get(@Context HttpServletRequest request, @PathParam("queryName") String queryName)
-	        throws SrampAtomException {
+	        throws SrampAtomException, SrampException {
 		try {
 		    String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             StoredQuery storedQuery = persistenceManager.getStoredQuery(queryName);
 
             return wrapStoredQuery(storedQuery, baseUrl);
-		} catch (Throwable e) {
+		} catch (StoredQueryNotFoundException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+            // HTTP response type.
+            throw e;
+        } catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_GETTING_STOREDQUERY", queryName), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
@@ -143,7 +158,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             @QueryParam("count") Integer count,
             @QueryParam("orderBy") String orderBy,
             @QueryParam("ascending") Boolean asc)
-            throws SrampAtomException {
+            throws SrampAtomException, SrampException {
         try {
             String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
             PersistenceManager persistenceManager = PersistenceFactory.newInstance();
@@ -153,6 +168,10 @@ public class StoredQueryResource extends AbstractFeedResource {
             
             return createArtifactFeed(storedQuery.getQueryExpression(), startIndex, count, orderBy, asc,
                     new HashSet<String>(storedQuery.getPropertyName()), baseUrl);
+        } catch (StoredQueryNotFoundException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+            // HTTP response type.
+            throw e;
         } catch (SrampAtomException e) {
             throw e;
         } catch (Throwable e) {
@@ -163,11 +182,15 @@ public class StoredQueryResource extends AbstractFeedResource {
 
 	@DELETE
 	@Path("{queryName}")
-	public void delete(@PathParam("queryName") String queryName) throws SrampAtomException {
+	public void delete(@PathParam("queryName") String queryName) throws SrampAtomException, SrampException {
 		try {
 		    PersistenceManager persistenceManager = PersistenceFactory.newInstance();
             persistenceManager.deleteStoredQuery(queryName);
-		} catch (Throwable e) {
+		} catch (StoredQueryNotFoundException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+            // HTTP response type.
+            throw e;
+        } catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_DELETING_STOREDQUERY", queryName), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}

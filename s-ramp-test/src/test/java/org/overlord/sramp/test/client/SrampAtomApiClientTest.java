@@ -685,7 +685,7 @@ public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
         try {
             rdf = client.getOntology("INVALID_UUID"); //$NON-NLS-1$
         } catch (Exception e) {
-            Assert.assertEquals("No ontology found with UUID: INVALID_UUID", e.getMessage()); //$NON-NLS-1$
+            Assert.assertTrue(e.getMessage().contains("not in the repository")); //$NON-NLS-1$
         }
         Assert.assertNull(rdf);
 

@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common.storedquery;
+package org.overlord.sramp.atom.providers;
 
-import org.overlord.sramp.common.SrampAlreadyExistsException;
-import org.overlord.sramp.common.i18n.Messages;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
+
+import org.overlord.sramp.common.WrongModelException;
 
 /**
- * Exception thrown when the user attempts to add a stored query that already exists.
- *
+ * The spec requires that a 403 is returned when an artifact is published to the incorrect model.
+ * 
  * @author Brett Meyer
  */
-public class StoredQueryAlreadyExistsException extends SrampAlreadyExistsException {
+@Provider
+public class WrongModelExceptionProvider implements ExceptionMapper<WrongModelException> {
 
-    private static final long serialVersionUID = 632263403445444191L;
-
-    public StoredQueryAlreadyExistsException() {
-    }
-
-    public StoredQueryAlreadyExistsException(String queryName) {
-        super(Messages.i18n.format("STOREDQUERY_ALREADY_EXISTS", queryName)); //$NON-NLS-1$
+    @Override
+    public Response toResponse(WrongModelException exception) {
+        return Response.status(Status.FORBIDDEN).entity(exception.getMessage()).build();
     }
 
 }
