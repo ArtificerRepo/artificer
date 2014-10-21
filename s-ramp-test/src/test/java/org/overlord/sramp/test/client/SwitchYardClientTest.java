@@ -15,11 +15,14 @@
  */
 package org.overlord.sramp.test.client;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
@@ -40,7 +43,8 @@ public class SwitchYardClientTest extends AbstractNoAuditingClientTest {
         SrampAtomApiClient client = client();
 
         // Upload the artifacts jar
-        InputStream artifactsIS = this.getClass().getResourceAsStream("/sample-files/switchyard/artifacts.jar"); //$NON-NLS-1$
+        // This requires proper maven profile to be active as maven handles generation of this jar file
+        InputStream artifactsIS = new FileInputStream("target/sample-files/switchyard/artifacts.jar");//$NON-NLS-1$
 		SwitchYardAppToSrampArchive sy2archive = null;
         SrampArchive archive = null;
 		try {
@@ -55,8 +59,9 @@ public class SwitchYardClientTest extends AbstractNoAuditingClientTest {
 
 		doArtifactsJarAssertions(client);
 
-		// Upload the order consumer jar
-        InputStream orderConsumerIS = this.getClass().getResourceAsStream("/sample-files/switchyard/order-consumer.jar"); //$NON-NLS-1$
+        // Upload the order consumer jar
+        // This requires proper maven profile to be active as maven handles generation of this jar file
+        InputStream orderConsumerIS = new FileInputStream("target/sample-files/switchyard/order-consumer.jar"); //$NON-NLS-1$
         sy2archive = null;
         archive = null;
         try {
@@ -72,7 +77,8 @@ public class SwitchYardClientTest extends AbstractNoAuditingClientTest {
         doOrderConsumerAssertions(client);
 
         // Upload the order service jar
-        InputStream orderServiceIS = this.getClass().getResourceAsStream("/sample-files/switchyard/order-service.jar"); //$NON-NLS-1$
+        // This requires proper maven profile to be active as maven handles generation of this jar file
+        InputStream orderServiceIS = new FileInputStream("target/sample-files/switchyard/order-service.jar"); //$NON-NLS-1$
         sy2archive = null;
         archive = null;
         try {
