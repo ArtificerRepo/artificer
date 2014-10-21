@@ -30,6 +30,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Operation;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType;
 
 /**
@@ -49,6 +51,8 @@ public class IndexedArtifactCollection extends LinkedList<BaseArtifactType> {
 	private Map<QName, PortType> portTypeIndex = new HashMap<QName, PortType>();
 	private Map<String, Operation> operationIndex = new HashMap<String, Operation>();
 	private Map<QName, Binding> bindingIndex = new HashMap<QName, Binding>();
+    private Map<String, XsdDocument> xsdDocumentIndex = new HashMap<String, XsdDocument>();
+    private Map<String, WsdlDocument> wsdlDocumentIndex = new HashMap<String, WsdlDocument>();
 
 	private QName mostRecentPortType;
 
@@ -103,7 +107,13 @@ public class IndexedArtifactCollection extends LinkedList<BaseArtifactType> {
 			Binding binding = (Binding) artifact;
 			QName key = new QName(binding.getNamespace(), binding.getNCName());
 			bindingIndex.put(key, binding);
-		}
+		} else if (artifact instanceof XsdDocument) {
+            XsdDocument xsdDocument = (XsdDocument) artifact;
+            xsdDocumentIndex.put(xsdDocument.getTargetNamespace(), xsdDocument);
+        } else if (artifact instanceof WsdlDocument) {
+            WsdlDocument wsdlDocument = (WsdlDocument) artifact;
+            wsdlDocumentIndex.put(wsdlDocument.getTargetNamespace(), wsdlDocument);
+        }
 	}
 
 	/**
@@ -155,5 +165,21 @@ public class IndexedArtifactCollection extends LinkedList<BaseArtifactType> {
 	public Binding lookupBinding(QName name) {
 		return bindingIndex.get(name);
 	}
+
+    /**
+     * Find an XsdDocument by targetNamespace.
+     * @param targetNamespace
+     */
+    public XsdDocument lookupXsdDocument(String targetNamespace) {
+        return xsdDocumentIndex.get(targetNamespace);
+    }
+
+    /**
+     * Find a WsdlDocument by targetNamespace.
+     * @param targetNamespace
+     */
+    public WsdlDocument lookupWsdlDocument(String targetNamespace) {
+        return wsdlDocumentIndex.get(targetNamespace);
+    }
 
 }

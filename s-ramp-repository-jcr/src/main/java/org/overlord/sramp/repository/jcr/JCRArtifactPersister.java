@@ -229,11 +229,17 @@ public final class JCRArtifactPersister {
 
         // Now execute the derived artifact linker phase, creating relationships between the various
         // artifacts derived above.
-        if (derivedArtifacts != null && !derivedArtifacts.isEmpty()) {
-            LinkerContext context = new JCRLinkerContext(session);
-            DerivedArtifactsFactory.newInstance().linkArtifacts(context, metaData, derivedArtifacts);
-            persistDerivedArtifactsRelationships(session, artifactNode, derivedArtifacts, classificationHelper);
-        }
+        LinkerContext context = new JCRLinkerContext(session);
+        // TODO: Refactor DerivedArtifactsFactory.  Name is misleading now that primary artifacts need linked.
+        DerivedArtifactsFactory.newInstance().linkArtifacts(context, metaData, derivedArtifacts);
+        persistDerivedArtifactsRelationships(session, artifactNode, derivedArtifacts, classificationHelper);
+        
+        // Update the JCR node again, this time with any relationships resolved by the linker
+        ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(phase1.artifactType, artifactNode,
+                new JCRReferenceFactoryImpl(session), classificationHelper);
+        ArtifactVisitorHelper.visitArtifact(visitor, metaData);
+        if (visitor.hasError())
+            throw visitor.getError();
 
         // JCR persist point - phase 3 of artifact create (only for document style artifacts
         // with derived content)

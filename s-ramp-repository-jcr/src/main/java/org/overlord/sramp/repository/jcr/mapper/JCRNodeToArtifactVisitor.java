@@ -103,6 +103,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocumentTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeTarget;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
@@ -357,6 +358,14 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 	    super.visit(artifact);
 
         artifact.setTargetNamespace(getProperty(jcrNode, JCRConstants.SRAMP_TARGET_NAMESPACE));
+        
+        try {
+            artifact.getImportedXsds().addAll(getRelationships("importedXsds", XsdDocumentTarget.class));
+            artifact.getIncludedXsds().addAll(getRelationships("includedXsds", XsdDocumentTarget.class));
+            artifact.getRedefinedXsds().addAll(getRelationships("redefinedXsds", XsdDocumentTarget.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 	/**
@@ -407,6 +416,14 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitorAdapter
 		super.visit(artifact);
 
 		artifact.setTargetNamespace(getProperty(jcrNode, JCRConstants.SRAMP_TARGET_NAMESPACE));
+
+		try {
+            artifact.getImportedXsds().addAll(getRelationships("importedXsds", XsdDocumentTarget.class));
+            artifact.getIncludedXsds().addAll(getRelationships("includedXsds", XsdDocumentTarget.class));
+            artifact.getRedefinedXsds().addAll(getRelationships("redefinedXsds", XsdDocumentTarget.class));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 
 	/**

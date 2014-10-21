@@ -15,8 +15,8 @@
  */
 package org.overlord.sramp.common.derived;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -32,9 +32,11 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutput;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Part;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Port;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTypeTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocumentTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocumentTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeTarget;
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.common.visitors.ArtifactVisitorAdapter;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 
 /**
@@ -45,7 +47,7 @@ import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
  *
  * @author eric.wittmann@redhat.com
  */
-public class WsdlLinker extends ArtifactVisitorAdapter {
+public class WsdlLinker extends XsdLinker {
 
     private static ThreadLocal<LinkerContext> linkerContext = new ThreadLocal<LinkerContext>();
 
@@ -201,6 +203,31 @@ public class WsdlLinker extends ArtifactVisitorAdapter {
             }
         }
     }
+    
+    @Override
+    public void visit(WsdlDocument artifact) {
+        super.visit(artifact);
+        
+        visitXsdImports(artifact.getImportedXsds());
+
+        Iterator<WsdlDocumentTarget> itr = artifact.getImportedWsdls().iterator();
+        while (itr.hasNext()) {
+            WsdlDocumentTarget wsdlDocumentTarget = itr.next();
+            if (wsdlDocumentTarget.getOtherAttributes().containsKey(WsdlDeriver.UNRESOLVED_REF)) {
+                String targetNamespace = wsdlDocumentTarget.getOtherAttributes().remove(WsdlDeriver.UNRESOLVED_REF);
+                
+                Map<String, String> criteria = new HashMap<String, String>();
+                criteria.put("targetNamespace", targetNamespace);
+                BaseArtifactType artifactRef = findArtifact(ArtifactTypeEnum.WsdlDocument, criteria);
+                
+                if (artifactRef != null) {
+                    wsdlDocumentTarget.setValue(artifactRef.getUuid());
+                } else {
+                    artifact.getImportedWsdls().remove(wsdlDocumentTarget);
+                }
+            }
+        }
+    }
 
     /**
      * Uses the linker context to search for an artifact
@@ -208,17 +235,10 @@ public class WsdlLinker extends ArtifactVisitorAdapter {
      * @param reference
      */
     private BaseArtifactType findArtifact(ArtifactTypeEnum artifactType, QName reference) {
-        LinkerContext lcontext = linkerContext.get();
         Map<String, String> criteria = new HashMap<String, String>();
         criteria.put("namespace", reference.getNamespaceURI()); //$NON-NLS-1$
         criteria.put("ncName", reference.getLocalPart()); //$NON-NLS-1$
-        Collection<BaseArtifactType> artifacts = lcontext.findArtifacts(artifactType.getModel(), artifactType.getType(), criteria);
-        if (artifacts != null && !artifacts.isEmpty()) {
-            // TODO need a more interesting way to dis-ambiguate the results
-            return artifacts.iterator().next();
-        } else {
-            return null;
-        }
+        return findArtifact(artifactType, criteria);
     }
 
 }

@@ -17,8 +17,10 @@ package org.overlord.sramp.common.derived;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
+import javax.xml.namespace.QName;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -30,6 +32,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocumentEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocumentTarget;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -49,7 +53,11 @@ import org.w3c.dom.NodeList;
  * @author eric.wittmann@redhat.com
  */
 public class XsdDeriver extends AbstractXmlDeriver {
+    
+    public static final QName UNRESOLVED_REF = new QName("urn:s-ramp:xsd-deriver", "unresolvedRef"); //$NON-NLS-1$ //$NON-NLS-2$
 
+    private final XsdLinker linker = new XsdLinker();
+    
 	/**
 	 * Constructor.
 	 */
@@ -98,6 +106,7 @@ public class XsdDeriver extends AbstractXmlDeriver {
 		processAttributeDeclarations(derivedArtifacts, artifact, schema, xpath);
 		processSimpleTypeDeclarations(derivedArtifacts, artifact, schema, xpath);
 		processComplexTypeDeclarations(derivedArtifacts, artifact, schema, xpath);
+		processXsdImports((IndexedArtifactCollection) derivedArtifacts, artifact, schema, xpath);
 
 		// Pre-set the UUIDs for all the derived artifacts.  This is useful
 		// if something downstream needs to reference them.
@@ -217,13 +226,55 @@ public class XsdDeriver extends AbstractXmlDeriver {
 			}
 		}
 	}
-
-	/**
-	 * @see ArtifactDeriver#link(LinkerContext, BaseArtifactType, Collection)
-	 */
-	@Override
-	public void link(LinkerContext context, BaseArtifactType sourceArtifact,
-	        Collection<BaseArtifactType> derivedArtifacts) {
+	
+	private void processXsdImports(IndexedArtifactCollection derivedArtifacts, BaseArtifactType sourceArtifact,
+	        Element schema, XPath xpath) throws XPathExpressionException {
+	    if (sourceArtifact instanceof XsdDocument) {
+	        processXsdImports(derivedArtifacts, sourceArtifact, schema, xpath,
+	                ((XsdDocument) sourceArtifact).getImportedXsds());
+	    }
 	}
+	
+	protected void processXsdImports(IndexedArtifactCollection derivedArtifacts, BaseArtifactType sourceArtifact,
+            Element schema, XPath xpath, List<XsdDocumentTarget> targetCollection) throws XPathExpressionException {
+	    // Important to use .//, rather than ./ -- WsdlDeriver calls this method and its imports are nested
+        // within <wsdl:types><xsd:schema>
+        NodeList nodes = (NodeList) this.query(xpath, schema, ".//xsd:import", XPathConstants.NODESET); //$NON-NLS-1$
+        for (int idx = 0; idx < nodes.getLength(); idx++) {
+            Element node = (Element) nodes.item(idx);
+            if (node.hasAttribute("namespace")) { //$NON-NLS-1$
+                String namespace = node.getAttribute("namespace");
+                XsdDocument xsdDocumentRef = derivedArtifacts.lookupXsdDocument(namespace);
+                XsdDocumentTarget xsdDocumentTarget = new XsdDocumentTarget();
+                xsdDocumentTarget.setArtifactType(XsdDocumentEnum.XSD_DOCUMENT);
+                if (xsdDocumentRef != null) {
+                    xsdDocumentTarget.setValue(xsdDocumentRef.getUuid());
+                } else {
+                    xsdDocumentTarget.getOtherAttributes().put(UNRESOLVED_REF, namespace);
+                }
+                targetCollection.add(xsdDocumentTarget);
+            }
+        }
+	}
+
+    /**
+     * @see XsdDeriver#link(LinkerContext, BaseArtifactType, Collection)
+     */
+    @Override
+    public void link(LinkerContext context, BaseArtifactType sourceArtifact,
+            Collection<BaseArtifactType> derivedArtifacts) {
+        for (BaseArtifactType derivedArtifact : derivedArtifacts) {
+            linker.link(context, derivedArtifact);
+        }
+        linker.link(context, sourceArtifact);
+    }
+
+    /**
+     * @see AbstractXmlDeriver#createDerivedArtifactCollection()
+     */
+    @Override
+    protected Collection<BaseArtifactType> createDerivedArtifactCollection() {
+        return new IndexedArtifactCollection();
+    }
 
 }

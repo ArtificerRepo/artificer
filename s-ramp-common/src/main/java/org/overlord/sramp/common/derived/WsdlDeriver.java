@@ -73,6 +73,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTypeTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocumentEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocumentTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
@@ -140,14 +142,6 @@ public class WsdlDeriver extends XsdDeriver {
 	}
 
 	/**
-	 * @see AbstractXmlDeriver#createDerivedArtifactCollection()
-	 */
-	@Override
-	protected Collection<BaseArtifactType> createDerivedArtifactCollection() {
-	    return new IndexedArtifactCollection();
-	}
-
-	/**
 	 * @see XsdDeriver#derive(Collection, BaseArtifactType, AbstractXmlDeriver.XmlDeriverContext)
 	 */
 	@Override
@@ -181,6 +175,9 @@ public class WsdlDeriver extends XsdDeriver {
 			Element schema = (Element) schemas.item(idx);
 			processSchema(derivedArtifacts, artifact, schema, xpath);
 		}
+
+        processXsdImports(derivedArtifacts, artifact, definitions, xpath);
+        processWsdlImports(derivedArtifacts, artifact, definitions, xpath);
 
 		processMessages(derivedArtifacts, artifact, definitions, xpath);
 		processPortTypes(derivedArtifacts, artifact, definitions, xpath);
@@ -870,6 +867,41 @@ public class WsdlDeriver extends XsdDeriver {
 		}
 		return rval;
 	}
+    
+    private void processXsdImports(IndexedArtifactCollection derivedArtifacts, BaseArtifactType sourceArtifact,
+            Element schema, XPath xpath) throws XPathExpressionException {
+        if (sourceArtifact instanceof WsdlDocument) {
+            processXsdImports(derivedArtifacts, sourceArtifact, schema, xpath,
+                    ((WsdlDocument) sourceArtifact).getImportedXsds());
+        }
+    }
+    
+    private void processWsdlImports(IndexedArtifactCollection derivedArtifacts, BaseArtifactType sourceArtifact,
+            Element schema, XPath xpath) throws XPathExpressionException {
+        WsdlDocument wsdlDocument;
+        if (sourceArtifact instanceof WsdlDocument) {
+            wsdlDocument = (WsdlDocument) sourceArtifact;
+        } else {
+            return;
+        }
+        
+        NodeList nodes = (NodeList) this.query(xpath, schema, ".//wsdl:import", XPathConstants.NODESET); //$NON-NLS-1$
+        for (int idx = 0; idx < nodes.getLength(); idx++) {
+            Element node = (Element) nodes.item(idx);
+            if (node.hasAttribute("namespace")) { //$NON-NLS-1$
+                String namespace = node.getAttribute("namespace");
+                WsdlDocument wsdlDocumentRef = derivedArtifacts.lookupWsdlDocument(namespace);
+                WsdlDocumentTarget wsdlDocumentTarget = new WsdlDocumentTarget();
+                wsdlDocumentTarget.setArtifactType(WsdlDocumentEnum.WSDL_DOCUMENT);
+                if (wsdlDocumentRef != null) {
+                    wsdlDocumentTarget.setValue(wsdlDocumentRef.getUuid());
+                } else {
+                    wsdlDocumentTarget.getOtherAttributes().put(UNRESOLVED_REF, namespace);
+                }
+                wsdlDocument.getImportedWsdls().add(wsdlDocumentTarget);
+            }
+        }
+    }
 
 	/**
 	 * Resolves an encoded QName into a {@link QName}.
@@ -926,6 +958,7 @@ public class WsdlDeriver extends XsdDeriver {
 	    for (BaseArtifactType derivedArtifact : derivedArtifacts) {
 	        linker.link(context, derivedArtifact);
         }
+	    linker.link(context, sourceArtifact);
 	}
 
 }
