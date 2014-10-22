@@ -17,12 +17,17 @@ package org.overlord.sramp.common.derived;
 
 import java.util.Map;
 
+import org.overlord.sramp.common.artifactbuilder.ArtifactBuilderProvider;
+
 /**
  * Implement this interface to provide a Deriver that will be used when an artifact
  * of a specific extended type is added to the repository.
+ * 
+ * @deprecated Replaced by {@link ArtifactBuilderProvider}
  *
  * @author eric.wittmann@redhat.com
  */
+@Deprecated
 public interface DeriverProvider {
 
     /**

@@ -15,8 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.overlord.sramp.common.SrampConstants;
 
@@ -30,18 +28,6 @@ public abstract class AbstractNoAuditingJCRPersistenceTest extends AbstractJCRPe
     public static void beforeClass() {
 	    System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "false");
         setupPersistence();
-    }
-
-    @Override
-    @Before
-    public void prepForTest() {
-        new JCRRepositoryCleaner().clean();
-    }
-
-    @AfterClass
-    public static void cleanup() {
-        persistenceManager.shutdown();
-        System.clearProperty(SrampConstants.SRAMP_CONFIG_AUDITING);
     }
 
 }

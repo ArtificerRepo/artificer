@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  id="WebApp_ID" version="2.5">
+  <display-name>Demo Web Application</display-name>
+
+  <listener>
+    <listener-class>org.overlord.sramp.demos.listeners.Initializer</listener-class>
+  </listener>
+  <listener>
+    <display-name>Bootstrap Listener</display-name>
+    <listener-class>org.overlord.sramp.demos.listeners.BootstrapListener</listener-class>
+  </listener>
+
+  <filter>
+    <display-name>Cache Control Filter</display-name>
+    <filter-name>CacheControl</filter-name>
+    <filter-class>org.overlord.sramp.demos.filters.CacheControlFilter</filter-class>
+  </filter>
+  <filter>
+    <display-name>Resource Cache Control Filter</display-name>
+    <filter-name>ResourceCacheControl</filter-name>
+    <filter-class>org.overlord.sramp.demos.filters.ResourceCacheControlFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>CacheControl</filter-name>
+    <url-pattern>/docs/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>ResourceCacheControl</filter-name>
+    <url-pattern>/resources/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <display-name>Home Servlet</display-name>
+    <servlet-name>Home</servlet-name>
+    <servlet-class>org.overlord.sramp.demos.servlets.HomeServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Upload</servlet-name>
+    <servlet-class>org.overlord.sramp.demos.servlets.UploadServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Download</servlet-name>
+    <servlet-class>org.overlord.sramp.demos.servlets.DownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Home</servlet-name>
+    <url-pattern>/home</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Upload</servlet-name>
+    <url-pattern>/upload</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Download</servlet-name>
+    <url-pattern>/download</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

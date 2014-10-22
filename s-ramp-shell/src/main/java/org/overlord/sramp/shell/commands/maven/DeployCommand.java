@@ -329,8 +329,8 @@ public class DeployCommand extends BuiltInShellCommand {
             artifactId = split[1];
             version = split[2];
             String filename;
-            if (file.getName().endsWith(".tmp")) {
-                filename = file.getName().substring(0, file.getName().indexOf(".jar") + 4);
+            if (file.getName().endsWith(".tmp")) { //$NON-NLS-1$
+                filename = file.getName().substring(0, file.getName().indexOf(".jar") + 4); //$NON-NLS-1$
             } else {
                 filename = file.getName();
             }

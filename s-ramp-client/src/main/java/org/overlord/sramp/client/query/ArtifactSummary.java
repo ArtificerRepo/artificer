@@ -55,7 +55,7 @@ public class ArtifactSummary {
 	 * @return the artifact's uuid
 	 */
 	public String getUuid() {
-		return entry.getId().toString().replace("urn:uuid:", "");
+		return entry.getId().toString().replace("urn:uuid:", ""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**

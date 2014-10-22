@@ -1,4 +1,8 @@
-# S-RAMP Demos: Custom Deriver
+# S-RAMP Demos: Custom Deriver (DEPRECATED)
+
+NOTE: The Deriver concepts have been replaced by ArtifactBuilder.  Please see the
+s-ramp-demos-custom-artifact-builder demo!  The Deriver concepts are now deprecated
+and will be removed in a future release!
 
 ## Summary
 

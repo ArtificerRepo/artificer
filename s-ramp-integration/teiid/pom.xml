@@ -11,4 +11,12 @@
   <packaging>bundle</packaging>
   <name>S-RAMP Integration: Teiid</name>
   <description>S-RAMP Integration: Teiid contains classes used when integrating the S-RAMP repository with Teiid VDBs.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-common</artifactId>
+      <classifier>tests</classifier>
+    </dependency>
+  </dependencies>
 </project>

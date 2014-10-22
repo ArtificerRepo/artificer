@@ -34,6 +34,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.artifactbuilder.AbstractXmlArtifactBuilder;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,9 +43,12 @@ import org.w3c.dom.Element;
  * Base class for all derivers that are based on XML documents.  This base class
  * does some of the boilerplate such as parsing the document.  Child classes are
  * responsible for processing the resulting document in interesting ways.
+ * 
+ * @deprecated See {@link AbstractXmlArtifactBuilder}
  *
  * @author eric.wittmann@redhat.com
  */
+@Deprecated
 public abstract class AbstractXmlDeriver implements ArtifactDeriver {
 
 	/**
