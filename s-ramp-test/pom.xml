@@ -13,6 +13,10 @@
   <name>S-RAMP Test</name>
   <description>A general test package supporting various integration tests.</description>
 
+  <properties>
+    <version.org.switchyard.quickstarts>1.1.0.Final</version.org.switchyard.quickstarts>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
@@ -95,6 +99,50 @@
   <!-- Skipped tests if no container is included by a profile! -->
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-qs</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.switchyard.quickstarts.demos</groupId>
+                  <artifactId>switchyard-quickstart-demo-multi-order-consumer</artifactId>
+                  <version>${version.org.switchyard.quickstarts}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/sample-files/switchyard</outputDirectory>
+                  <destFileName>order-consumer.jar</destFileName>
+                </artifactItem>
+                <artifactItem>
+                   <groupId>org.switchyard.quickstarts.demos</groupId>
+                   <artifactId>switchyard-quickstart-demo-multi-order-service</artifactId>
+                   <version>${version.org.switchyard.quickstarts}</version>
+                   <type>jar</type>
+                   <overWrite>true</overWrite>
+                   <outputDirectory>${project.build.directory}/sample-files/switchyard</outputDirectory>
+                   <destFileName>order-service.jar</destFileName>
+                </artifactItem>
+                <artifactItem>
+                   <groupId>org.switchyard.quickstarts.demos</groupId>
+                   <artifactId>switchyard-quickstart-demo-multi-artifacts</artifactId>
+                   <version>${version.org.switchyard.quickstarts}</version>
+                   <type>jar</type>
+                   <overWrite>true</overWrite>
+                   <outputDirectory>${project.build.directory}/sample-files/switchyard</outputDirectory>
+                   <destFileName>artifacts.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
