@@ -110,7 +110,6 @@
     <version.org.switchyard>2.0.0.Alpha1</version.org.switchyard>
 
     <!-- BOM Overrides -->
-    <version.joda-time>2.1</version.joda-time>
     <version.org.jboss.as>7.4.0.Final-redhat-19</version.org.jboss.as>
     <version.org.apache.httpcomponents.httpclient>4.2.1</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.2.1</version.org.apache.httpcomponents.httpcore>
@@ -820,11 +819,6 @@
         <groupId>org.apache.tika</groupId>
         <artifactId>tika-core</artifactId>
         <version>${version.org.apache.tika}</version>
-      </dependency>
-      <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time</artifactId>
-        <version>${version.joda-time}</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
