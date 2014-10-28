@@ -53,6 +53,10 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-integration-fabric</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-integration-switchyard</artifactId>
     </dependency>
     <dependency>

@@ -64,6 +64,7 @@
     <module>rtgov</module>
     <module>switchyard</module>
     <module>teiid</module>
+    <module>fabric</module>
   </modules>
 
 </project>
