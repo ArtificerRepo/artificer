@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" version="1.0" 
+  xmlns:tns="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" 
+  xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified">
+  <!--
+      (c) 2010 Hewlett-Packard Company (HP), International Business Machines
+      Corporation (IBM), Software AG (SAG) and TIBCO Software Inc. All
+      rights reserved. Permission to copy and display the SOA Repository
+      Artifact Model and Protocol (the “Specification”), in any medium
+      without fee or royalty is hereby granted by Hewlett-Packard Company
+      (HP), International Business Machines Corporation (IBM), Software AG
+      (SAG) and TIBCO Software Inc. (collectively, the "Authors"), provided
+      that you include the following on ALL copies of this document or
+      portions thereof, that you make: 
+      
+      1. A link or URL to this document at this location:
+      http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0/coremodel.xsd
+       
+      2. The copyright notice as shown in the Specification. 
+      
+      The Authors each agree to grant you a royalty-free license, under
+      reasonable, non-discriminatory terms and conditions to their
+      respective patents that they deem necessary to implement the "SOA
+      Repository Artifact Model and Protocol” Specification, including all
+      its constituent documents. THIS DOCUMENT IS PROVIDED "AS IS," AND THE
+      AUTHORS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED,
+      INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS
+      FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE
+      CONTENTS OF THIS DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE
+      IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY
+      PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS. THE AUTHORS WILL NOT
+      BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR
+      CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATING TO ANY USE OR
+      DISTRIBUTION OF THIS DOCUMENT.
+  -->
+
+  <xsd:import namespace="http://www.w3.org/1999/xlink" schemaLocation="xlink.xsd" />
+
+  <!-- Core data types: -->
+  <xsd:simpleType name="baseArtifactEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="BaseArtifactType" />
+      <xsd:enumeration value="DocumentArtifactType" />
+      <xsd:enumeration value="Document" />
+      <xsd:enumeration value="XmlDocument" />
+      <!-- xsd model -->
+      <xsd:enumeration value="XsdDocument" />
+      <!-- wsdl model -->
+      <xsd:enumeration value="WsdlDocument" />
+      <!-- policy model -->
+      <xsd:enumeration value="PolicyDocument" />
+      <!-- derived artifacts -->
+      <xsd:enumeration value="DerivedArtifactType" />
+      <!-- policy model -->
+      <xsd:enumeration value="PolicyAttachment" />
+      <xsd:enumeration value="PolicyExpression" />
+      <!-- xsd model -->
+      <xsd:enumeration value="AttributeDeclaration" />
+      <xsd:enumeration value="ElementDeclaration" />
+      <xsd:enumeration value="XsdType" />
+      <xsd:enumeration value="ComplexTypeDeclaration" />
+      <xsd:enumeration value="SimpleTypeDeclaration" />
+      <!-- wsdl model -->
+      <xsd:enumeration value="WsdlDerivedArtifactType" />
+      <xsd:enumeration value="NamedWsdlDerivedArtifactType" />
+      <xsd:enumeration value="WsdlService" />
+      <xsd:enumeration value="Port" />
+      <xsd:enumeration value="Binding" />
+      <xsd:enumeration value="PortType" />
+      <xsd:enumeration value="BindingOperation" />
+      <xsd:enumeration value="BindingOperationInput" />
+      <xsd:enumeration value="BindingOperationFault" />
+      <xsd:enumeration value="Operation" />
+      <xsd:enumeration value="OperationInput" />
+      <xsd:enumeration value="Fault" />
+      <xsd:enumeration value="Message" />
+      <xsd:enumeration value="Part" />
+      <xsd:enumeration value="BindingOperationOutput" />
+      <xsd:enumeration value="OperationOutput" />
+      <xsd:enumeration value="WsdlExtension" />
+      <!-- soapwsdl model -->
+      <xsd:enumeration value="SoapAddress" />
+      <xsd:enumeration value="SoapBinding" />
+      <!-- extended artifacts -->
+      <xsd:enumeration value="ExtendedArtifactType" />
+      <xsd:enumeration value="ExtendedDocument" />
+      <!-- soa model -->
+      <xsd:enumeration value="SoaModelType" />
+      <xsd:enumeration value="ServiceInterface" />
+      <xsd:enumeration value="Effect" />
+      <xsd:enumeration value="Event" />
+      <xsd:enumeration value="InformationType" />
+      <xsd:enumeration value="Policy" />
+      <xsd:enumeration value="PolicySubject" />
+      <xsd:enumeration value="ServiceContract" />
+      <xsd:enumeration value="Element" />
+      <xsd:enumeration value="Service" />
+      <xsd:enumeration value="Actor" />
+      <xsd:enumeration value="Organization" />
+      <xsd:enumeration value="System" />
+      <xsd:enumeration value="Task" />
+      <xsd:enumeration value="Composition" />
+      <xsd:enumeration value="ServiceComposition" />
+      <xsd:enumeration value="Choreography" />
+      <xsd:enumeration value="Collaboration" />
+      <xsd:enumeration value="Orchestration" />
+      <xsd:enumeration value="Process" />
+      <xsd:enumeration value="ChoreographyProcess" />
+      <xsd:enumeration value="CollaborationProcess" />
+      <xsd:enumeration value="OrchestrationProcess" />
+      <!-- serviceimplementation model -->
+      <xsd:enumeration value="ServiceImplementationModelType" />
+      <xsd:enumeration value="ServiceInstance" />
+      <xsd:enumeration value="ServiceOperation" />
+      <xsd:enumeration value="ServiceEndpoint" />
+      <xsd:enumeration value="ServiceOperation" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="derivedArtifactEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="DerivedArtifactType" />
+      <!-- policy model -->
+      <xsd:enumeration value="PolicyAttachment" />
+      <xsd:enumeration value="PolicyExpression" />
+      <!-- xsd model -->
+      <xsd:enumeration value="AttributeDeclaration" />
+      <xsd:enumeration value="ElementDeclaration" />
+      <xsd:enumeration value="XsdType" />
+      <xsd:enumeration value="ComplexTypeDeclaration" />
+      <xsd:enumeration value="SimpleTypeDeclaration" />
+      <!-- wsdl model -->
+      <xsd:enumeration value="WsdlDerivedArtifactType" />
+      <xsd:enumeration value="NamedWsdlDerivedArtifactType" />
+      <xsd:enumeration value="WsdlService" />
+      <xsd:enumeration value="Port" />
+      <xsd:enumeration value="Binding" />
+      <xsd:enumeration value="PortType" />
+      <xsd:enumeration value="BindingOperation" />
+      <xsd:enumeration value="BindingOperationInput" />
+      <xsd:enumeration value="BindingOperationFault" />
+      <xsd:enumeration value="Operation" />
+      <xsd:enumeration value="OperationInput" />
+      <xsd:enumeration value="Fault" />
+      <xsd:enumeration value="Message" />
+      <xsd:enumeration value="Part" />
+      <xsd:enumeration value="BindingOperationOutput" />
+      <xsd:enumeration value="OperationOutput" />
+      <xsd:enumeration value="WsdlExtension" />
+      <!-- soapwsdl model -->
+      <xsd:enumeration value="SoapAddress" />
+      <xsd:enumeration value="SoapBinding" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="documentArtifactEnum">
+    <xsd:restriction base="s-ramp:baseArtifactEnum">
+      <xsd:enumeration value="DocumentArtifactType" />
+      <xsd:enumeration value="Document" />
+      <xsd:enumeration value="XmlDocument" />
+      <xsd:enumeration value="ExtendedDocument" />
+      <!-- xsd model -->
+      <xsd:enumeration value="XsdDocument" />
+      <!-- wsdl model -->
+      <xsd:enumeration value="WsdlDocument" />
+      <!-- policy model -->
+      <xsd:enumeration value="PolicyDocument" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <!-- Base type for almost all Artifacts in S-RAMP. Most other types in S-RAMP extend this one. Extensions of BaseArtifactType are limited to attributes. -->
+  <xsd:complexType abstract="true" name="BaseArtifactType">
+    <xsd:sequence>
+      <xsd:element ref="tns:classifiedBy" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element ref="tns:relationship" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element ref="tns:property" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+    <xsd:attribute name="artifactType" type="s-ramp:baseArtifactEnum" use="required" />
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+    <xsd:attribute name="description" type="xsd:string" use="optional" />
+    <xsd:attribute name="createdBy" type="xsd:string" use="required" />
+    <xsd:attribute name="version" type="xsd:string" use="optional" />
+    <xsd:attribute name="uuid" type="xsd:string" use="required" />
+    <xsd:attribute name="createdTimestamp" type="xsd:dateTime" use="required" />
+    <xsd:attribute name="lastModifiedTimestamp" type="xsd:dateTime" use="required" />
+    <xsd:attribute name="lastModifiedBy" type="xsd:string" use="required" />
+    <xsd:anyAttribute namespace="##any" />
+  </xsd:complexType>
+
+  <!-- Base type for all Derived Artifacts in S-RAMP -->
+  <xsd:complexType abstract="true" name="DerivedArtifactType">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:BaseArtifactType">
+        <xsd:sequence>
+          <xsd:element name="relatedDocument" type="tns:documentArtifactTarget" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="DerivedArtifactType" type="tns:DerivedArtifactType" />
+
+  <!-- Base type for all Documents in S-RAMP -->
+  <xsd:complexType abstract="true" name="DocumentArtifactType">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:BaseArtifactType">
+        <xsd:attribute name="contentType" type="xsd:string" />
+        <xsd:attribute name="contentSize" type="xsd:long" />
+        <xsd:attribute name="contentHash" type="xsd:string" />
+        <xsd:anyAttribute namespace="##any" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Document type implements DocumentArtifactType -->
+  <xsd:complexType name="Document">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:DocumentArtifactType" />
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Base Type for all XML documents. Specific document types extend XmlDocument -->
+  <xsd:complexType name="XmlDocument">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:DocumentArtifactType">
+        <xsd:attribute name="contentEncoding" type="xsd:string" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Types used for Extended Artifact Models in S-RAMP -->
+  <xsd:complexType name="ExtendedArtifactType">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:BaseArtifactType">
+        <xsd:attribute name="extendedType" type="xsd:string" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="ExtendedDocument">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:DocumentArtifactType">
+        <xsd:attribute name="extendedType" type="xsd:string" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Relationship target artifact's UUID. Used by all types of relationships -->
+  <xsd:complexType name="target">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute ref="xlink:href" use="required" />
+        <xsd:anyAttribute namespace="##any" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <!-- Relationship referencing the artifact's UUID, to reference any BaseArtifact. -->
+  <xsd:complexType name="baseArtifactTarget">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:target">
+        <xsd:attribute name="artifactType" type="s-ramp:baseArtifactEnum" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Relationship referencing the artifact's UUID, to reference any DerivedArtifact. -->
+  <xsd:complexType name="derivedArtifactTarget">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:target">
+        <xsd:attribute name="artifactType" type="s-ramp:derivedArtifactEnum" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Relationship referencing the artifact's UUID, to reference any DocumentArtifact. -->
+  <xsd:complexType name="documentArtifactTarget">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:target">
+        <xsd:attribute name="artifactType" type="s-ramp:documentArtifactEnum" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Global Element Declarations -->
+
+  <!-- Relationship element used for all GENERIC (user-defined) Relationships -->
+  <xsd:element name="relationship">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="tns:relationshipType" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="relationshipTarget" type="tns:target" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+      <xsd:anyAttribute namespace="##any" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Stored Queries Artifact element -->
+  <xsd:element name="StoredQuery">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="tns:propertyName" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="tns:queryExpression" />
+      </xsd:sequence>
+      <xsd:attribute name="queryName" type="xsd:string" />
+      <xsd:anyAttribute namespace="##any" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Property -->
+  <xsd:element name="property">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="tns:propertyName" minOccurs="1" maxOccurs="1" />
+        <xsd:element ref="tns:propertyValue" minOccurs="1" maxOccurs="1" />
+      </xsd:sequence>
+      <xsd:anyAttribute namespace="##any" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="relationshipType" type="xsd:string" />
+  <xsd:element name="classifiedBy" type="xsd:anyURI" />
+  <xsd:element name="propertyName" type="xsd:string" />
+  <xsd:element name="propertyValue" type="xsd:string" />
+  <xsd:element name="queryExpression" type="xsd:string" />
+  <!-- The sourceId and targetId contain the UUID's corresponding to a relationship's source and target -->
+  <xsd:element name="sourceId" type="xsd:string" />
+  <xsd:element name="targetId" type="xsd:string" />
+
+</xsd:schema>

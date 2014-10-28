@@ -18,7 +18,6 @@ package org.overlord.sramp.common.artifactbuilder;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -62,7 +61,9 @@ public class XsdDocumentArtifactBuilder extends AbstractXmlArtifactBuilder {
             }
 
             deriveXsd(rootElement);
-            processXsdImports(rootElement, targetNS);
+            processImportedXsds(rootElement, targetNS);
+            processIncludedXsds(rootElement, targetNS);
+            processRedefinedXsds(rootElement, targetNS);
         } catch (Exception e) {
             throw new IOException(e);
         }
@@ -145,29 +146,97 @@ public class XsdDocumentArtifactBuilder extends AbstractXmlArtifactBuilder {
         }
     }
     
-    private void processXsdImports(Element schema, String targetNS) throws XPathExpressionException {
+    private void processImportedXsds(Element schema, String targetNS) throws XPathExpressionException {
         if (getPrimaryArtifact() instanceof XsdDocument) {
-            processXsdImports(((XsdDocument) getPrimaryArtifact()).getImportedXsds(), schema, targetNS);
+            processImportedXsds(((XsdDocument) getPrimaryArtifact()).getImportedXsds(), schema, targetNS);
         }
     }
     
-    protected void processXsdImports(List<XsdDocumentTarget> targetCollection, Element schema, String targetNS) throws XPathExpressionException {
+    protected void processImportedXsds(List<XsdDocumentTarget> targetCollection, Element schema, String targetNS) throws XPathExpressionException {
         NodeList nodes = (NodeList) query(schema, "./xsd:import", XPathConstants.NODESET); //$NON-NLS-1$
         for (int idx = 0; idx < nodes.getLength(); idx++) {
             Element node = (Element) nodes.item(idx);
-            if (node.hasAttribute("namespace")) { //$NON-NLS-1$
+            if (node.hasAttribute("namespace") && node.hasAttribute("schemaLocation")) { //$NON-NLS-1$
                 String namespace = node.getAttribute("namespace");
-                XsdDocument xsdDocumentRef = derivedArtifacts.lookupXsdDocument(namespace);
+                String schemaLocation = node.getAttribute("schemaLocation");
+                stripPath(schemaLocation);
+                XsdDocument xsdDocumentRef = derivedArtifacts.lookupXsdDocument(namespace, schemaLocation);
                 XsdDocumentTarget xsdDocumentTarget = new XsdDocumentTarget();
                 xsdDocumentTarget.setArtifactType(XsdDocumentEnum.XSD_DOCUMENT);
                 if (xsdDocumentRef != null) {
                     xsdDocumentTarget.setValue(xsdDocumentRef.getUuid());
                 } else {
-                    relationshipSources.add(new NamespaceRelationshipSource(namespace, xsdDocumentTarget, targetCollection,
+                    relationshipSources.add(new NamespaceRelationshipSource(namespace, schemaLocation,
+                            xsdDocumentTarget, targetCollection, ArtifactTypeEnum.XsdDocument.getModel(),
+                            ArtifactTypeEnum.XsdDocument.getType()));
+                }
+                targetCollection.add(xsdDocumentTarget);
+            }
+        }
+    }
+    
+    private void processIncludedXsds(Element schema, String targetNS) throws XPathExpressionException {
+        if (getPrimaryArtifact() instanceof XsdDocument) {
+            processIncludedXsds(((XsdDocument) getPrimaryArtifact()).getIncludedXsds(), schema, targetNS);
+        }
+    }
+    
+    protected void processIncludedXsds(List<XsdDocumentTarget> targetCollection, Element schema, String targetNS) throws XPathExpressionException {
+        NodeList nodes = (NodeList) query(schema, "./xsd:include", XPathConstants.NODESET); //$NON-NLS-1$
+        for (int idx = 0; idx < nodes.getLength(); idx++) {
+            Element node = (Element) nodes.item(idx);
+            if (node.hasAttribute("schemaLocation")) { //$NON-NLS-1$
+                String schemaLocation = node.getAttribute("schemaLocation");
+                stripPath(schemaLocation);
+                XsdDocument xsdDocumentRef = derivedArtifacts.lookupXsdDocument(targetNS, schemaLocation);
+                XsdDocumentTarget xsdDocumentTarget = new XsdDocumentTarget();
+                xsdDocumentTarget.setArtifactType(XsdDocumentEnum.XSD_DOCUMENT);
+                if (xsdDocumentRef != null) {
+                    xsdDocumentTarget.setValue(xsdDocumentRef.getUuid());
+                } else {
+                    relationshipSources.add(new NamespaceRelationshipSource(targetNS, schemaLocation, xsdDocumentTarget, targetCollection,
                             ArtifactTypeEnum.XsdDocument.getModel(), ArtifactTypeEnum.XsdDocument.getType()));
                 }
                 targetCollection.add(xsdDocumentTarget);
             }
+        }
+    }
+    
+    private void processRedefinedXsds(Element schema, String targetNS) throws XPathExpressionException {
+        if (getPrimaryArtifact() instanceof XsdDocument) {
+            processRedefinedXsds(((XsdDocument) getPrimaryArtifact()).getRedefinedXsds(), schema, targetNS);
+        }
+    }
+    
+    protected void processRedefinedXsds(List<XsdDocumentTarget> targetCollection, Element schema, String targetNS) throws XPathExpressionException {
+        NodeList nodes = (NodeList) query(schema, "./xsd:redefine", XPathConstants.NODESET); //$NON-NLS-1$
+        for (int idx = 0; idx < nodes.getLength(); idx++) {
+            Element node = (Element) nodes.item(idx);
+            if (node.hasAttribute("schemaLocation")) { //$NON-NLS-1$
+                String schemaLocation = node.getAttribute("schemaLocation");
+                stripPath(schemaLocation);
+                XsdDocument xsdDocumentRef = derivedArtifacts.lookupXsdDocument(targetNS, schemaLocation);
+                XsdDocumentTarget xsdDocumentTarget = new XsdDocumentTarget();
+                xsdDocumentTarget.setArtifactType(XsdDocumentEnum.XSD_DOCUMENT);
+                if (xsdDocumentRef != null) {
+                    xsdDocumentTarget.setValue(xsdDocumentRef.getUuid());
+                } else {
+                    relationshipSources.add(new NamespaceRelationshipSource(targetNS, schemaLocation, xsdDocumentTarget, targetCollection,
+                            ArtifactTypeEnum.XsdDocument.getModel(), ArtifactTypeEnum.XsdDocument.getType()));
+                }
+                targetCollection.add(xsdDocumentTarget);
+            }
+        }
+    }
+    
+    // TODO: Move to a util?
+    protected void stripPath(String s) {
+        // If it's an absolute path, strip it down.
+        if (s.lastIndexOf("/") > -1) {
+            s = s.substring(s.lastIndexOf("/"));
+        }
+        if (s.lastIndexOf("\\") > -1) {
+            s = s.substring(s.lastIndexOf("\\")); // Shame on you for using Windows...
         }
     }
     

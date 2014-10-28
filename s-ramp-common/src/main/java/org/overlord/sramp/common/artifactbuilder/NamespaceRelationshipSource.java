@@ -21,8 +21,8 @@ import java.util.Map;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
 
 /**
- * Resolves relationships using the target's namespace.  The generated criteria looks for an artifact with a
- * matching "targetNamespace".  This is especially useful for XML documents importing/including external schemas,
+ * Resolves relationships using the target's namespace and filename.  The generated criteria looks for an artifact with a
+ * matching "targetNamespace" and filename.  This is especially useful for XML documents importing/including external schemas,
  * allowing relationships to be later defined using that schema's defined types.
  * 
  * @author Brett Meyer
@@ -30,16 +30,20 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
 public class NamespaceRelationshipSource extends CriteriaQueryRelationshipSource {
     
     private final String namespace;
+    
+    private final String filename;
 
-    public NamespaceRelationshipSource(String namespace, Target target, Collection targetCollection, String model,
-            String... types) {
+    public NamespaceRelationshipSource(String namespace, String filename, Target target, Collection targetCollection,
+            String model, String... types) {
         super(target, targetCollection, model, types);
         this.namespace = namespace;
+        this.filename = filename;
     }
     
     @Override
     protected void addCriteria(Map<String, String> criteria) {
         criteria.put("targetNamespace", namespace);
+        criteria.put("name", filename);
     }
 
 }

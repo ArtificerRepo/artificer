@@ -52,7 +52,7 @@ public class IndexedArtifactCollection extends LinkedList<BaseArtifactType> {
 	private Map<QName, PortType> portTypeIndex = new HashMap<QName, PortType>();
 	private Map<String, Operation> operationIndex = new HashMap<String, Operation>();
 	private Map<QName, Binding> bindingIndex = new HashMap<QName, Binding>();
-    private Map<String, XsdDocument> xsdDocumentIndex = new HashMap<String, XsdDocument>();
+    private Map<String[], XsdDocument> xsdDocumentIndex = new HashMap<String[], XsdDocument>(); // TODO: UGLY
     private Map<String, WsdlDocument> wsdlDocumentIndex = new HashMap<String, WsdlDocument>();
 
 	private QName mostRecentPortType;
@@ -111,7 +111,8 @@ public class IndexedArtifactCollection extends LinkedList<BaseArtifactType> {
 			bindingIndex.put(key, binding);
 		} else if (artifact instanceof XsdDocument) {
             XsdDocument xsdDocument = (XsdDocument) artifact;
-            xsdDocumentIndex.put(xsdDocument.getTargetNamespace(), xsdDocument);
+            String[] key = new String[] { xsdDocument.getTargetNamespace(), xsdDocument.getName() };
+            xsdDocumentIndex.put(key, xsdDocument);
         } else if (artifact instanceof WsdlDocument) {
             WsdlDocument wsdlDocument = (WsdlDocument) artifact;
             wsdlDocumentIndex.put(wsdlDocument.getTargetNamespace(), wsdlDocument);
@@ -169,11 +170,12 @@ public class IndexedArtifactCollection extends LinkedList<BaseArtifactType> {
 	}
 
     /**
-     * Find an XsdDocument by targetNamespace.
+     * Find an XsdDocument by targetNamespace and filename.
      * @param targetNamespace
      */
-    public XsdDocument lookupXsdDocument(String targetNamespace) {
-        return xsdDocumentIndex.get(targetNamespace);
+    public XsdDocument lookupXsdDocument(String targetNamespace, String filename) {
+        String[] key = new String[] { targetNamespace, filename };
+        return xsdDocumentIndex.get(key);
     }
 
     /**

@@ -113,7 +113,9 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
                 
                 deriveXsd(schema);
                 String xsdTargetNS = schema.getAttribute("targetNamespace");
-                processXsdImports(((WsdlDocument) getPrimaryArtifact()).getImportedXsds(), schema, xsdTargetNS);
+                processImportedXsds(((WsdlDocument) getPrimaryArtifact()).getImportedXsds(), schema, xsdTargetNS);
+                processIncludedXsds(((WsdlDocument) getPrimaryArtifact()).getIncludedXsds(), schema, xsdTargetNS);
+                processRedefinedXsds(((WsdlDocument) getPrimaryArtifact()).getRedefinedXsds(), schema, xsdTargetNS);
             }
             
             processWsdlImports();
@@ -695,13 +697,15 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
             Element node = (Element) nodes.item(idx);
             if (node.hasAttribute("namespace")) { //$NON-NLS-1$
                 String namespace = node.getAttribute("namespace");
+                String location = node.getAttribute("location");
+                stripPath(location);
                 WsdlDocument wsdlDocumentRef = derivedArtifacts.lookupWsdlDocument(namespace);
                 WsdlDocumentTarget wsdlDocumentTarget = new WsdlDocumentTarget();
                 wsdlDocumentTarget.setArtifactType(WsdlDocumentEnum.WSDL_DOCUMENT);
                 if (wsdlDocumentRef != null) {
                     wsdlDocumentTarget.setValue(wsdlDocumentRef.getUuid());
                 } else {
-                    relationshipSources.add(new NamespaceRelationshipSource(namespace, wsdlDocumentTarget,
+                    relationshipSources.add(new NamespaceRelationshipSource(namespace, location, wsdlDocumentTarget,
                             wsdlDocument.getImportedWsdls(), ArtifactTypeEnum.WsdlDocument.getModel(),
                             ArtifactTypeEnum.WsdlDocument.getType()));
                 }
