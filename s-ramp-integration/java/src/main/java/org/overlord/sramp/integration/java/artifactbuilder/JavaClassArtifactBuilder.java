@@ -26,11 +26,12 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.artifactbuilder.AbstractArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
+import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 import org.overlord.sramp.common.artifactbuilder.RelationshipContext;
 import org.overlord.sramp.integration.java.model.JavaModel;
 
 /**
- * This deriver operates on the switchyard.xml file found in a typical SwitchYard
+ * This artifact builder operates on the switchyard.xml file found in a typical SwitchYard
  * application JAR/WAR.
  *
  * @author eric.wittmann@redhat.com
@@ -40,9 +41,9 @@ import org.overlord.sramp.integration.java.model.JavaModel;
 public class JavaClassArtifactBuilder extends AbstractArtifactBuilder {
 
     @Override
-    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, byte[] contentBytes)
+    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, ArtifactContent artifactContent)
             throws IOException {
-        super.buildArtifacts(primaryArtifact, contentBytes);
+        super.buildArtifacts(primaryArtifact, artifactContent);
         
         ClassParser parser = new ClassParser(getContentStream(), primaryArtifact.getName());
         JavaClass javaClass = parser.parse();

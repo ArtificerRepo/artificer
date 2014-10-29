@@ -28,7 +28,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 public class BuiltInArtifactBuilderProvider implements ArtifactBuilderProvider {
 
     @Override
-    public List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact, byte[] content) {
+    public List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact, ArtifactContent artifactContent) {
         List<ArtifactBuilder> builders = new ArrayList<ArtifactBuilder>();
         switch (primaryArtifact.getArtifactType()) {
         case XSD_DOCUMENT:

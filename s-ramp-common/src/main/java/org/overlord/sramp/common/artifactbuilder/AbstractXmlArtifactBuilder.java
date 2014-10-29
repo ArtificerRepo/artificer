@@ -55,8 +55,8 @@ public abstract class AbstractXmlArtifactBuilder extends AbstractArtifactBuilder
     protected XPath xpath;
 
     @Override
-    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, byte[] contentBytes) throws IOException {
-        super.buildArtifacts(primaryArtifact, contentBytes);
+    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, ArtifactContent artifactContent) throws IOException {
+        super.buildArtifacts(primaryArtifact, artifactContent);
         
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

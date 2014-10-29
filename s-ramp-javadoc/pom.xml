@@ -47,8 +47,8 @@
                 <packages>org.overlord.sramp.atom.archive.expand.registry*</packages>
               </group>
               <group>
-                <title>S-RAMP Artifact Deriver</title>
-                <packages>org.overlord.sramp.common.derived*</packages>
+                <title>S-RAMP Artifact Builder</title>
+                <packages>org.overlord.sramp.common.artifactbuilder*</packages>
               </group>
               <group>
                 <title>S-RAMP Shell API</title>

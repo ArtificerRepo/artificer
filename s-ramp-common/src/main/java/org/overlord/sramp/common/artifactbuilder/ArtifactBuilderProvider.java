@@ -41,8 +41,8 @@ public interface ArtifactBuilderProvider {
      * in order to allow contextual logic.
      * 
      * @param primaryArtifact
-     * @param content
+     * @param artifactContent
      * @return List<ArtifactBuilder>
      */
-    public List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact, byte[] content);
+    public List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact, ArtifactContent artifactContent);
 }

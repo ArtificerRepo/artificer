@@ -19,13 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
+import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 
 /**
  *
@@ -42,7 +42,7 @@ public class MavenPomArtifactBuilderTest {
         InputStream is = getClass().getResourceAsStream("pom.xml"); //$NON-NLS-1$
         // Derive
         @SuppressWarnings("unused")
-		Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, IOUtils.toByteArray(is))
+		Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent(is))
 		        .getDerivedArtifacts();
         is.close();
         // Assert

@@ -26,13 +26,13 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 import org.overlord.sramp.integration.teiid.model.VdbDataPolicy;
 import org.overlord.sramp.integration.teiid.model.VdbEntry;
 import org.overlord.sramp.integration.teiid.model.VdbImport;
@@ -69,7 +69,7 @@ public final class VdbManifestArtifactBuilderTest extends TeiidIntegrationTest {
 
         // deriver framework will call derive and link methods
         final Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(
-                this.vdbManifestArtifact, IOUtils.toByteArray(vdbStream)).getDerivedArtifacts();
+                this.vdbManifestArtifact, new ArtifactContent(vdbStream)).getDerivedArtifacts();
 
         assertThat(this.vdbManifestArtifact.getName(), is("myVDB"));
         assertThat(this.vdbManifestArtifact.getDescription(), is("vdb description"));
@@ -358,7 +358,7 @@ public final class VdbManifestArtifactBuilderTest extends TeiidIntegrationTest {
 
         // deriver framework will call derive and link methods
         final Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(
-                this.vdbManifestArtifact, IOUtils.toByteArray(vdbStream)).getDerivedArtifacts();
+                this.vdbManifestArtifact, new ArtifactContent(vdbStream)).getDerivedArtifacts();
 
         assertThat(this.vdbManifestArtifact.getName(), is("ProductsSS_VDB"));
         assertThat(this.vdbManifestArtifact.getVersion(), is("1"));
@@ -456,7 +456,7 @@ public final class VdbManifestArtifactBuilderTest extends TeiidIntegrationTest {
 
         // deriver framework will call derive and link methods
         final Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(
-                this.vdbManifestArtifact, IOUtils.toByteArray(vdbStream)).getDerivedArtifacts();
+                this.vdbManifestArtifact, new ArtifactContent(vdbStream)).getDerivedArtifacts();
 
         assertThat(this.vdbManifestArtifact.getName(), is("twitter"));
         assertThat(this.vdbManifestArtifact.getDescription(), is("Shows how to call Web Services"));
@@ -545,7 +545,7 @@ public final class VdbManifestArtifactBuilderTest extends TeiidIntegrationTest {
         assertThat(notAVdbManifestStream, is(not(nullValue())));
 
         // deriver framework will call derive
-        builder.buildArtifacts(this.vdbManifestArtifact, IOUtils.toByteArray(notAVdbManifestStream));
+        builder.buildArtifacts(this.vdbManifestArtifact, new ArtifactContent(notAVdbManifestStream));
     }
 
 }

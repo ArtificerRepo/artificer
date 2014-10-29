@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * This deriver operates on the switchyard.xml file found in a typical SwitchYard
+ * This artifact builder operates on the switchyard.xml file found in a typical SwitchYard
  * application JAR/WAR.
  *
  * @author eric.wittmann@redhat.com

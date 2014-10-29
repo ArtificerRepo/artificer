@@ -15,7 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -50,6 +49,7 @@ import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.SrampServerException;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilderFactory;
+import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 import org.overlord.sramp.common.artifactbuilder.RelationshipContext;
 import org.overlord.sramp.common.ontology.InvalidClassifiedByException;
 import org.overlord.sramp.common.ontology.OntologyAlreadyExistsException;
@@ -189,28 +189,21 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             primaryArtifact.setUuid(UUID.randomUUID().toString());
         }
         
-        // The content needs to be read multiple times (at least once in the AbstractXmlArtifactBuilders, then again
-        // in ModeShape).  So, parse the bytes[].
-        byte[] contentBytes = null;
-        if (contentStream != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            IOUtils.copy(contentStream, baos);
-            contentBytes = baos.toByteArray();
-        }
+        ArtifactContent artifactContent = new ArtifactContent(contentStream);
         
         // NOTE: The artifact builders *must* be run *before* persisting the primary artifact, and *must* be done
         // regardless if it's a doc artifact.  Some builders are responsible for setting custom properties on the
         // primary artifact.  See JavaClassArtifactBuilder as an example.
         persistResult.derivedArtifacts = new ArrayList<BaseArtifactType>();
         persistResult.artifactBuilders = ArtifactBuilderFactory.createArtifactBuilders(
-                primaryArtifact, contentBytes);
+                primaryArtifact, artifactContent);
         for (ArtifactBuilder artifactBuilder : persistResult.artifactBuilders) {
-            artifactBuilder.buildArtifacts(primaryArtifact, contentBytes);
+            artifactBuilder.buildArtifacts(primaryArtifact, artifactContent);
             persistResult.derivedArtifacts.addAll(artifactBuilder.getDerivedArtifacts());
         }
         
         persistResult.primaryArtifactNode = JCRArtifactPersister.persistPrimaryArtifact(session,
-                primaryArtifact, contentBytes, this);
+                primaryArtifact, artifactContent, this);
         JCRArtifactPersister.persistDerivedArtifacts(session, persistResult.primaryArtifactNode,
                 persistResult.derivedArtifacts, this);
 

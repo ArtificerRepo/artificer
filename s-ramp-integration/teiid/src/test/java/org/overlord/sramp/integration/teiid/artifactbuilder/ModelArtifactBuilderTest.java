@@ -23,11 +23,11 @@ import static org.junit.Assert.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 import org.overlord.sramp.integration.teiid.model.TeiidModel;
 import org.overlord.sramp.integration.teiid.model.VdbManifest;
 
@@ -55,7 +55,7 @@ public final class ModelArtifactBuilderTest extends TeiidIntegrationTest {
         assertThat(modelStream, is(not(nullValue())));
 
         // deriver framework will call derive and link methods
-        builder.buildArtifacts(this.modelArtifact, IOUtils.toByteArray(modelStream));
+        builder.buildArtifacts(this.modelArtifact, new ArtifactContent(modelStream));
 
         // check model artifact properties
         assertPropertyValue(this.modelArtifact, TeiidModel.PropertyId.MMUID, "mmuuid:18b6c0ff-aa2a-409b-87f2-c3f1cd742b41");
@@ -76,7 +76,7 @@ public final class ModelArtifactBuilderTest extends TeiidIntegrationTest {
 
         // deriver framework will call derive
         builder.buildArtifacts(
-                this.modelArtifact, IOUtils.toByteArray(notAModelStream)).getDerivedArtifacts();
+                this.modelArtifact, new ArtifactContent(notAModelStream)).getDerivedArtifacts();
     }
 
 }

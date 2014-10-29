@@ -15,7 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -46,6 +45,7 @@ import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.SrampServerException;
+import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
@@ -67,7 +67,7 @@ public final class JCRArtifactPersister {
     private static Logger log = LoggerFactory.getLogger(JCRArtifactPersister.class);
 
     public static Node persistPrimaryArtifact(Session session, BaseArtifactType primaryArtifact,
-            byte[] contentBytes, ClassificationHelper classificationHelper) throws Exception {
+            ArtifactContent artifactContent, ClassificationHelper classificationHelper) throws Exception {
         JCRUtils tools = new JCRUtils();
         String uuid = primaryArtifact.getUuid();
         ArtifactType artifactType = ArtifactType.valueOf(primaryArtifact);
@@ -80,10 +80,10 @@ public final class JCRArtifactPersister {
 
         Node artifactNode = null;
         boolean isDocumentArtifact = SrampModelUtils.isDocumentArtifact(primaryArtifact);
-        if (contentBytes == null && !isDocumentArtifact) {
+        if (artifactContent.getInputStream() == null && !isDocumentArtifact) {
             artifactNode = tools.findOrCreateNode(session, artifactPath, "nt:folder", JCRConstants.SRAMP_NON_DOCUMENT_TYPE);
         } else {
-            artifactNode = tools.uploadFile(session, artifactPath, new ByteArrayInputStream(contentBytes));
+            artifactNode = tools.uploadFile(session, artifactPath, artifactContent.getInputStream());
             JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
         }
 

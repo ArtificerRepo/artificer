@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.common.artifactbuilder;
 
-import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,12 +33,13 @@ public abstract class AbstractArtifactBuilder implements ArtifactBuilder {
     
     private BaseArtifactType primaryArtifact;
     
-    private byte[] contentBytes = null;
+    private ArtifactContent artifactContent = null;
     
     @Override
-    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, byte[] contentBytes) throws IOException {
+    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, ArtifactContent artifactContent)
+            throws IOException {
         this.primaryArtifact = primaryArtifact;
-        this.contentBytes = contentBytes;
+        this.artifactContent = artifactContent;
         
         return this;
     }
@@ -58,7 +59,7 @@ public abstract class AbstractArtifactBuilder implements ArtifactBuilder {
      * 
      * @return InputStream
      */
-    protected InputStream getContentStream() {
-        return new ByteArrayInputStream(contentBytes);
+    protected InputStream getContentStream() throws FileNotFoundException {
+        return artifactContent.getInputStream();
     }
 }

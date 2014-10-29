@@ -57,7 +57,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * A deriver that creates VDB artifacts.
+ * An artifact builder that creates VDB artifacts.
  */
 @Component(name = "VDB Artifact Builder", immediate = true)
 @Service(value = ArtifactBuilder.class)
@@ -88,14 +88,9 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
     
     private final List<BaseArtifactType> derivedArtifacts = new ArrayList<BaseArtifactType>();
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#derive(java.util.Collection, org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.derived.AbstractXmlDeriver.XmlDeriverContext)
-     */
     @Override
     protected void derive() throws IOException {
-        LOGGER.debug("VdbManifestDeriver:root element='{}' of artifact '{}'", rootElement.getLocalName(), getPrimaryArtifact().getName()); //$NON-NLS-1$
+        LOGGER.debug("VdbManifestArtifactBuilder:root element='{}' of artifact '{}'", rootElement.getLocalName(), getPrimaryArtifact().getName()); //$NON-NLS-1$
 
         this.sources.clear();
         this.translators.clear();
@@ -126,7 +121,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                 if (!Utils.isEmpty(translatorName)) {
                     for (final BaseArtifactType translatorArtifact : this.translators) {
                         if (translatorName.equals(translatorArtifact.getName())) {
-                            LOGGER.debug("VdbManifestDeriver:adding relationships between source '{}' and translator '{}'", //$NON-NLS-1$
+                            LOGGER.debug("VdbManifestArtifactBuilder:adding relationships between source '{}' and translator '{}'", //$NON-NLS-1$
                                          sourceArtifact.getName(),
                                          translatorArtifact.getName());
                             Utils.addTwoWayRelationship(sourceArtifact,
@@ -151,7 +146,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                       XPathConstants.NODESET);
 
         if (dataPolicies.getLength() != 0) {
-            LOGGER.debug("VdbManifestDeriver:processing '{}' data policies", dataPolicies.getLength()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' data policies", dataPolicies.getLength()); //$NON-NLS-1$
 
             for (int dataPolicyIndex = 0, numDataPolicies = dataPolicies.getLength(); dataPolicyIndex < numDataPolicies; ++dataPolicyIndex) {
                 final Element dataPolicy = (Element)dataPolicies.item(dataPolicyIndex);
@@ -186,7 +181,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                                XPathConstants.NODESET);
 
                     if (roleNames.getLength() != 0) {
-                        LOGGER.debug("VdbManifestDeriver:processing '{}' mapped role names for data policy '{}'", //$NON-NLS-1$
+                        LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' mapped role names for data policy '{}'", //$NON-NLS-1$
                                      roleNames.getLength(),
                                      dataPolicyArtifact.getName());
 
@@ -203,7 +198,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                             mappedNames.append(name);
 
                             if (LOGGER.isDebugEnabled()) {
-                                LOGGER.debug("VdbManifestDeriver:found mapped role name '{}' for data policy '{}'", dataPolicyArtifact.getName()); //$NON-NLS-1$
+                                LOGGER.debug("VdbManifestArtifactBuilder:found mapped role name '{}' for data policy '{}'", dataPolicyArtifact.getName()); //$NON-NLS-1$
                             }
                         }
 
@@ -214,11 +209,11 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                 }
 
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("VdbManifestDeriver:data policy name '{}'", dataPolicyArtifact.getName()); //$NON-NLS-1$
-                    LOGGER.debug("VdbManifestDeriver:data policy description '{}'", dataPolicyArtifact.getDescription()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:data policy name '{}'", dataPolicyArtifact.getName()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:data policy description '{}'", dataPolicyArtifact.getDescription()); //$NON-NLS-1$
 
                     for (final Property prop : dataPolicyArtifact.getProperty()) {
-                        LOGGER.debug("VdbManifestDeriver:data policy property '{}' with value '{}'", //$NON-NLS-1$
+                        LOGGER.debug("VdbManifestArtifactBuilder:data policy property '{}' with value '{}'", //$NON-NLS-1$
                                      prop.getPropertyName(),
                                      prop.getPropertyValue());
                     }
@@ -230,7 +225,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                                  XPathConstants.NODESET);
 
                     if (permissions.getLength() != 0) {
-                        LOGGER.debug("VdbManifestDeriver:processing '{}' data permissions for data policy '{}'", //$NON-NLS-1$
+                        LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' data permissions for data policy '{}'", //$NON-NLS-1$
                                      permissions.getLength(),
                                      dataPolicyArtifact.getName());
 
@@ -311,11 +306,11 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                         xpath);
 
                             if (LOGGER.isDebugEnabled()) {
-                                LOGGER.debug("VdbManifestDeriver:permission resource name '{}'", permissionArtifact.getName()); //$NON-NLS-1$
+                                LOGGER.debug("VdbManifestArtifactBuilder:permission resource name '{}'", permissionArtifact.getName()); //$NON-NLS-1$
 
                                 // properties
                                 for (final Property prop : permissionArtifact.getProperty()) {
-                                    LOGGER.debug("VdbManifestDeriver:Source property '{}' with value '{}'", //$NON-NLS-1$
+                                    LOGGER.debug("VdbManifestArtifactBuilder:Source property '{}' with value '{}'", //$NON-NLS-1$
                                                  prop.getPropertyName(),
                                                  prop.getPropertyValue());
                                 }
@@ -342,7 +337,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                  XPathConstants.NODESET);
 
         if (entries.getLength() != 0) {
-            LOGGER.debug("VdbManifestDeriver:processing '{}' entries", entries.getLength()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' entries", entries.getLength()); //$NON-NLS-1$
 
             for (int entryIndex = 0, numEntries = entries.getLength(); entryIndex < numEntries; ++entryIndex) {
                 final Element entry = (Element)entries.item(entryIndex);
@@ -358,8 +353,8 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                 setDescriptionFromElementValue(entry, XmlId.DESCRIPTION, entryArtifact, xpath);
 
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("VdbManifestDeriver:entry path '{}'", entryArtifact.getName()); //$NON-NLS-1$
-                    LOGGER.debug("VdbManifestDeriver:entry description '{}'", entryArtifact.getDescription()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:entry path '{}'", entryArtifact.getName()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:entry description '{}'", entryArtifact.getDescription()); //$NON-NLS-1$
                 }
 
                 // properties
@@ -378,7 +373,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                XPathConstants.NODESET);
 
         if (props.getLength() != 0) {
-            LOGGER.debug("VdbManifestDeriver:processing '{}' properties", props.getLength()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' properties", props.getLength()); //$NON-NLS-1$
 
             for (int propIndex = 0, numProps = props.getLength(); propIndex < numProps; ++propIndex) {
                 final Element prop = (Element)props.item(propIndex);
@@ -389,7 +384,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
 
             if (LOGGER.isDebugEnabled()) {
                 for (final Property prop : artifact.getProperty()) {
-                    LOGGER.debug("VdbManifestDeriver:artifact '{}' has property '{}' with value '{}'", //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:artifact '{}' has property '{}' with value '{}'", //$NON-NLS-1$
                                  new Object[] {artifact.getName(), prop.getPropertyName(), prop.getPropertyValue()});
                 }
             }
@@ -402,7 +397,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                  XPathConstants.NODESET);
 
         if (schemas.getLength() != 0) {
-            LOGGER.debug("VdbManifestDeriver:processing '{}' schemas", schemas.getLength()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' schemas", schemas.getLength()); //$NON-NLS-1$
 
             for (int schemaIndex = 0, numSchemas = schemas.getLength(); schemaIndex < numSchemas; ++schemaIndex) {
                 final Element schema = (Element)schemas.item(schemaIndex);
@@ -418,8 +413,8 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                 setDescriptionFromElementValue(schema, XmlId.DESCRIPTION, schemaArtifact, xpath);
 
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("VdbManifestDeriver:schema name '{}'", schemaArtifact.getName()); //$NON-NLS-1$
-                    LOGGER.debug("VdbManifestDeriver:schema description '{}'", schemaArtifact.getDescription()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:schema name '{}'", schemaArtifact.getName()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:schema description '{}'", schemaArtifact.getDescription()); //$NON-NLS-1$
                 }
 
                 { // visible
@@ -491,7 +486,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                  XPathConstants.NODESET);
 
         if (sources.getLength() != 0) {
-            LOGGER.debug("VdbManifestDeriver:processing '{}' sources for schema '{}'", sources.getLength(), schemaArtifact.getName()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' sources for schema '{}'", sources.getLength(), schemaArtifact.getName()); //$NON-NLS-1$
 
             for (int sourceIndex = 0, numSources = sources.getLength(); sourceIndex < numSources; ++sourceIndex) {
                 final Element source = (Element)sources.item(sourceIndex);
@@ -515,11 +510,11 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                 }
 
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("VdbManifestDeriver:schema source name '{}'", sourceArtifact.getName()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:schema source name '{}'", sourceArtifact.getName()); //$NON-NLS-1$
 
                     // properties
                     for (final Property prop : sourceArtifact.getProperty()) {
-                        LOGGER.debug("VdbManifestDeriver:Source property '{}' with value '{}'", //$NON-NLS-1$
+                        LOGGER.debug("VdbManifestArtifactBuilder:Source property '{}' with value '{}'", //$NON-NLS-1$
                                      prop.getPropertyName(),
                                      prop.getPropertyValue());
                     }
@@ -543,7 +538,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                 XPathConstants.NODESET);
 
         if (errors.getLength() != 0) {
-            LOGGER.debug("VdbManifestDeriver:processing '{}' validation errors for schema '{}'", errors.getLength(), schemaArtifact.getName()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' validation errors for schema '{}'", errors.getLength(), schemaArtifact.getName()); //$NON-NLS-1$
 
             for (int i = 0, numErrors = errors.getLength(); i < numErrors; ++i) {
                 final Element errorElement = (Element)errors.item(i);
@@ -571,7 +566,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                 }
 
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("VdbManifestDeriver:model artifact '{}' has validation error with severity '{}', path '{}', and message '{}'", //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:model artifact '{}' has validation error with severity '{}', path '{}', and message '{}'", //$NON-NLS-1$
                                  new Object[] {schemaArtifact.getName(),
                                      SrampModelUtils.getCustomProperty(errorArtifact, VdbValidationError.PropertyId.SEVERITY),
                                      errorArtifact.getName(),
@@ -593,7 +588,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                      XPathConstants.NODESET);
 
         if (translators.getLength() != 0) {
-            LOGGER.debug("VdbManifestDeriver:processing '{}' translators", translators.getLength()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' translators", translators.getLength()); //$NON-NLS-1$
 
             for (int translatorIndex = 0, numTranslators = translators.getLength(); translatorIndex < numTranslators; ++translatorIndex) {
                 final Element translator = (Element)translators.item(translatorIndex);
@@ -612,8 +607,8 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                 }
 
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("VdbManifestDeriver:translator name '{}'", translatorArtifact.getName()); //$NON-NLS-1$
-                    LOGGER.debug("VdbManifestDeriver:translator description '{}'", translatorArtifact.getDescription()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:translator name '{}'", translatorArtifact.getName()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:translator description '{}'", translatorArtifact.getDescription()); //$NON-NLS-1$
                 }
 
                 { // type
@@ -643,9 +638,9 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
         setVdbVersion(rootElement, VdbManifest.ManifestId.VERSION, getPrimaryArtifact(), VdbManifest.PropertyId.VERSION);
 
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("VdbManifestDeriver:VDB name '{}'", getPrimaryArtifact().getName()); //$NON-NLS-1$
-            LOGGER.debug("VdbManifestDeriver:VDB description '{}'", getPrimaryArtifact().getDescription()); //$NON-NLS-1$
-            LOGGER.debug("VdbManifestDeriver:VDB version '{}'", getPrimaryArtifact().getVersion()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:VDB name '{}'", getPrimaryArtifact().getName()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:VDB description '{}'", getPrimaryArtifact().getDescription()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:VDB version '{}'", getPrimaryArtifact().getVersion()); //$NON-NLS-1$
         }
 
         processProperties(getPrimaryArtifact(), rootElement);
@@ -664,7 +659,7 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                                                     XPathConstants.NODESET);
 
         if (vdbImports.getLength() != 0) {
-            LOGGER.debug("VdbManifestDeriver:processing '{}' VDB imports", vdbImports.getLength()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' VDB imports", vdbImports.getLength()); //$NON-NLS-1$
 
             for (int vdbImportIndex = 0, numVdbImports = vdbImports.getLength(); vdbImportIndex < numVdbImports; ++vdbImportIndex) {
                 final Element vdbImport = (Element)vdbImports.item(vdbImportIndex);
@@ -692,12 +687,12 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
                 }
 
                 if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("VdbManifestDeriver:Import VDB name '{}'", vdbImportArtifact.getName()); //$NON-NLS-1$
-                    LOGGER.debug("VdbManifestDeriver:Import VDB version '{}'", vdbImportArtifact.getVersion()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:Import VDB name '{}'", vdbImportArtifact.getName()); //$NON-NLS-1$
+                    LOGGER.debug("VdbManifestArtifactBuilder:Import VDB version '{}'", vdbImportArtifact.getVersion()); //$NON-NLS-1$
 
                     // properties
                     for (final Property prop : vdbImportArtifact.getProperty()) {
-                        LOGGER.debug("VdbManifestDeriver:Import VDB property '{}' with value '{}'", //$NON-NLS-1$
+                        LOGGER.debug("VdbManifestArtifactBuilder:Import VDB property '{}' with value '{}'", //$NON-NLS-1$
                                      prop.getPropertyName(),
                                      prop.getPropertyValue());
                     }
@@ -709,17 +704,11 @@ public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder
         }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see org.overlord.sramp.common.derived.AbstractXmlDeriver#query(javax.xml.xpath.XPath, org.w3c.dom.Element,
-     *      java.lang.String, javax.xml.namespace.QName)
-     */
     @Override
     protected Object query( final Element context,
                             final String query,
                             final QName returnType ) throws XPathExpressionException {
-        LOGGER.debug("VdbManifestDeriver:executing query '{}'", query); //$NON-NLS-1$
+        LOGGER.debug("VdbManifestArtifactBuilder:executing query '{}'", query); //$NON-NLS-1$
         return super.query(context, query, returnType);
     }
 

@@ -26,8 +26,8 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
-import org.junit.Assert;
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
@@ -85,7 +85,7 @@ public class WsdlDocumentArtifactBuilderTest {
 		try {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/deriver.wsdl"); //$NON-NLS-1$
 			Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(testSrcArtifact,
-			        IOUtils.toByteArray(testSrcContent)).getDerivedArtifacts();
+			        new ArtifactContent(testSrcContent)).getDerivedArtifacts();
 			Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(35, derivedArtifacts.size());
 
@@ -307,7 +307,7 @@ public class WsdlDocumentArtifactBuilderTest {
 		try {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/ws-humantask-api.wsdl"); //$NON-NLS-1$
 			Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(testSrcArtifact,
-			        IOUtils.toByteArray(testSrcContent)).getDerivedArtifacts();
+			        new ArtifactContent(testSrcContent)).getDerivedArtifacts();
 			Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(850, derivedArtifacts.size());
 		} finally {

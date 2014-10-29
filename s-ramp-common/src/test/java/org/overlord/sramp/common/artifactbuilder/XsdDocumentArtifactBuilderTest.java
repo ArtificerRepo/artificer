@@ -90,7 +90,7 @@ public class XsdDocumentArtifactBuilderTest {
 		try {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/xsd/ws-humantask.xsd"); //$NON-NLS-1$
 			Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(testSrcArtifact,
-			        IOUtils.toByteArray(testSrcContent)).getDerivedArtifacts();
+			        new ArtifactContent(testSrcContent)).getDerivedArtifacts();
 			Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(83, derivedArtifacts.size());
 			int numElements = 0;

@@ -140,10 +140,11 @@ public class ArtifactBuilderFactory {
         }
     }
 
-	public final static List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact, byte[] content) {
+	public final static List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact,
+	        ArtifactContent artifactContent) {
 	    List<ArtifactBuilder> builders = new ArrayList<ArtifactBuilder>();
 	    for (ArtifactBuilderProvider builderProvider : builderProviders) {
-	        builders.addAll(builderProvider.createArtifactBuilders(primaryArtifact, content));
+	        builders.addAll(builderProvider.createArtifactBuilders(primaryArtifact, artifactContent));
 	    }
 	    return builders;
 	}

@@ -17,7 +17,7 @@ package org.overlord.sramp.integration.kie.model;
 
 
 /**
- * Information about the KIE model defined by the KIE deriver(s). KIE
+ * Information about the KIE model defined by the KIE artifact builder(s). KIE
  * is used by Drools and jBPM.
  *
  */

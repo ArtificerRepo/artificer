@@ -45,11 +45,12 @@ public interface ArtifactBuilder {
      * Build-up the primary artifact properties and generate all derived artifacts.
      * 
      * @param primaryArtifact
-     * @param contentBytes
+     * @param artifactContent
      * @return ArtifactBuilder
      * @throws IOException
      */
-    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, byte[] contentBytes) throws IOException;
+    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, ArtifactContent artifactContent)
+            throws IOException;
 
     /**
      * Build-up the relationships within the primary and derived artifacts.  The {@link RelationshipContext} provides

@@ -22,6 +22,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilderProvider;
+import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 import org.overlord.sramp.integration.java.model.JavaModel;
 
 /**
@@ -30,7 +31,7 @@ import org.overlord.sramp.integration.java.model.JavaModel;
 public class JavaArtifactBuilderProvider implements ArtifactBuilderProvider {
 
     @Override
-    public List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact, byte[] content) {
+    public List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact, ArtifactContent artifactContent) {
         List<ArtifactBuilder> builders = new ArrayList<ArtifactBuilder>();
         ArtifactType artifactType = ArtifactType.valueOf(primaryArtifact);
         if (JavaModel.TYPE_MAVEN_POM_XML.equals(artifactType.getExtendedType())) {

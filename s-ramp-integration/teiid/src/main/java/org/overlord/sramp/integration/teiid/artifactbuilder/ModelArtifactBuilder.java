@@ -41,7 +41,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
- * A deriver for Teiid <coded>*.xmi</code> model files.
+ * An artifact builder for Teiid <coded>*.xmi</code> model files.
  */
 @Component(name = "Teiid Model Artifact Builder", immediate = true)
 @Service(value = ArtifactBuilder.class)
@@ -51,7 +51,7 @@ public final class ModelArtifactBuilder extends AbstractXmlArtifactBuilder {
 
     @Override
     protected void derive() throws IOException {
-        LOGGER.debug("ModelDeriver:root element='{}' of artifact '{}'", rootElement.getLocalName(), getPrimaryArtifact().getName()); //$NON-NLS-1$
+        LOGGER.debug("ModelArtifactBuilder element='{}' of artifact '{}'", rootElement.getLocalName(), getPrimaryArtifact().getName()); //$NON-NLS-1$
 
         // make sure Teiid model
         if (!(getPrimaryArtifact() instanceof ExtendedDocument)
@@ -106,7 +106,7 @@ public final class ModelArtifactBuilder extends AbstractXmlArtifactBuilder {
 
             if (TeiidModel.XmiId.XML_NAMESPACE.equals(attr.getPrefix())) {
                 namespaceContext.addMapping(attr.getLocalName(), attr.getNodeValue());
-                LOGGER.debug("ModelDeriver:adding namespace with prefix '{}' and URI '{}'", attr.getLocalName(), attr.getNodeValue()); //$NON-NLS-1$
+                LOGGER.debug("ModelArtifactBuilder:adding namespace with prefix '{}' and URI '{}'", attr.getLocalName(), attr.getNodeValue()); //$NON-NLS-1$
             }
         }
     }
@@ -115,7 +115,7 @@ public final class ModelArtifactBuilder extends AbstractXmlArtifactBuilder {
     protected Object query( final Element context,
                             final String query,
                             final QName returnType ) throws XPathExpressionException {
-        LOGGER.debug("ModelDeriver:executing query '{}'", query); //$NON-NLS-1$
+        LOGGER.debug("ModelArtifactBuilder:executing query '{}'", query); //$NON-NLS-1$
         return super.query(context, query, returnType);
     }
 

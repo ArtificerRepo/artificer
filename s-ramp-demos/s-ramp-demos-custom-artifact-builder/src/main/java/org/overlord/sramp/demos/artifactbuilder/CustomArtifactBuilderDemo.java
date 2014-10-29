@@ -42,7 +42,7 @@ public class CustomArtifactBuilderDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		System.out.println("\n*** Running S-RAMP Customer Deriver Demo ***\n");
+		System.out.println("\n*** Running S-RAMP Customer ArtifactBuilder Demo ***\n");
 
         String endpoint = System.getProperty("sramp.endpoint");
         String username = System.getProperty("sramp.auth.username");

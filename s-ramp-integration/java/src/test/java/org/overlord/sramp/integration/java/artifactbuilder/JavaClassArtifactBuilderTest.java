@@ -19,13 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 import org.overlord.sramp.integration.java.model.JavaModel;
 
 /**
@@ -47,7 +47,7 @@ public class JavaClassArtifactBuilderTest {
         InputStream is = getClass().getResourceAsStream("MyClass.class"); //$NON-NLS-1$
 
         // Derive
-        Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, IOUtils.toByteArray(is))
+        Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent(is))
                 .getDerivedArtifacts();
         is.close();
         // Assert
@@ -65,7 +65,7 @@ public class JavaClassArtifactBuilderTest {
         is = getClass().getResourceAsStream("MyInterface.class"); //$NON-NLS-1$
 
         // Derive
-        derivedArtifacts = builder.buildArtifacts(artifact, IOUtils.toByteArray(is)).getDerivedArtifacts();
+        derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent(is)).getDerivedArtifacts();
         is.close();
         // Assert
         Assert.assertNotNull(derivedArtifacts);

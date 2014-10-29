@@ -22,6 +22,7 @@ import java.util.Map;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.artifactbuilder.AbstractArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
+import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 import org.overlord.sramp.common.artifactbuilder.RelationshipContext;
 
 /**
@@ -41,8 +42,9 @@ public class ArtifactBuilderAdapter extends AbstractArtifactBuilder {
     }
     
     @Override
-    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, byte[] contentBytes) throws IOException {
-        super.buildArtifacts(primaryArtifact, contentBytes);
+    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, ArtifactContent artifactContent)
+            throws IOException {
+        super.buildArtifacts(primaryArtifact, artifactContent);
         getDerivedArtifacts().addAll(deriver.derive(getPrimaryArtifact(), getContentStream()));
         return this;
     }

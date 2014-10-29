@@ -23,6 +23,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilderProvider;
+import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 
 /**
  * A temporary means to link the old DeriverProvider to the new ArtifactBuilderProvider
@@ -41,7 +42,8 @@ public class ArtifactBuilderProviderAdapter implements ArtifactBuilderProvider {
     }
     
     @Override
-    public List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact, byte[] content) {
+    public List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact, ArtifactContent
+            artifactContent) {
         List<ArtifactBuilder> builders = new ArrayList<ArtifactBuilder>();
         Map<String, ArtifactDeriver> derivers = provider.createArtifactDerivers();
         ArtifactType artifactType = ArtifactType.valueOf(primaryArtifact);
