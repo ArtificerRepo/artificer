@@ -57,4 +57,43 @@ public class BuiltInArtifactBuilderTest extends AbstractIntegrationTest {
             IOUtils.closeQuietly(xsdContent);
         }
     }
+    
+    /**
+     * Ensure that if a duplicate derived artifact exists, the one stemming from the current batch is used
+     * during relationship resolution.  See SRAMP-466
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testRelationshipTargetOrdering() throws Exception {
+        InputStream baseContent1 = null;
+        InputStream baseContent2 = null;
+        InputStream coreContent1 = null;
+        InputStream coreContent2 = null;
+        try {
+            baseContent1 = getClass().getResourceAsStream("/sample-files/xsd/xlink.xsd"); //$NON-NLS-1$
+            XsdDocument uploadedBaseArtifact1 = (XsdDocument) client().uploadArtifact(ArtifactType.XsdDocument(),
+                    baseContent1, "xlink.xsd");
+            coreContent1 = getClass().getResourceAsStream("/sample-files/xsd/coremodel.xsd"); //$NON-NLS-1$
+            XsdDocument uploadedCoreArtifact1 = (XsdDocument) client().uploadArtifact(ArtifactType.XsdDocument(),
+                    coreContent1, "coremodel.xsd");
+            
+            // do it again
+            baseContent2 = getClass().getResourceAsStream("/sample-files/xsd/xlink.xsd"); //$NON-NLS-1$
+            XsdDocument uploadedBaseArtifact2 = (XsdDocument) client().uploadArtifact(ArtifactType.XsdDocument(),
+                    baseContent2, "xlink.xsd");
+            coreContent2 = getClass().getResourceAsStream("/sample-files/xsd/coremodel.xsd"); //$NON-NLS-1$
+            XsdDocument uploadedCoreArtifact2 = (XsdDocument) client().uploadArtifact(ArtifactType.XsdDocument(),
+                    coreContent2, "coremodel.xsd");
+
+            assertEquals(1, uploadedCoreArtifact1.getImportedXsds().size());
+            assertEquals(1, uploadedCoreArtifact2.getImportedXsds().size());
+            // If ordering worked properly... (seems overly simple, but it covers the main issue)
+            assertEquals(uploadedBaseArtifact1.getUuid(), uploadedCoreArtifact1.getImportedXsds().get(0).getValue());
+            assertEquals(uploadedBaseArtifact2.getUuid(), uploadedCoreArtifact2.getImportedXsds().get(0).getValue());
+        } finally {
+            IOUtils.closeQuietly(coreContent1);
+            IOUtils.closeQuietly(coreContent2);
+        }
+    }
 }

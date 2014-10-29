@@ -17,7 +17,10 @@ package org.overlord.sramp.common.artifactbuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -65,15 +68,19 @@ public abstract class CriteriaQueryRelationshipSource implements RelationshipSou
         
         Map<String, String> criteria = new HashMap<String, String>();
         addCriteria(criteria);
-        Collection<BaseArtifactType> artifacts = new ArrayList<BaseArtifactType>();
+        List<BaseArtifactType> artifacts = new ArrayList<BaseArtifactType>();
         
         for (String type : types) {
             Collection<BaseArtifactType> results = context.findArtifacts(model, type, criteria);
             artifacts.addAll(results);
         }
         
+        // This is a cheap fix for SRAMP-466.  If more than one artifact is found (most likely duplicates), we want to
+        // place emphasis on the current batch.  For now, simply do so by comparing the created timestamp.  Newest
+        // should be most "relevant".
+        Collections.sort(artifacts, new CreationDateComparator());
+        
         if (!artifacts.isEmpty()) {
-            // TODO need a more interesting way to dis-ambiguate the results
             BaseArtifactType artifact = artifacts.iterator().next();
             target.setValue(artifact.getUuid());
         } else {
@@ -91,5 +98,12 @@ public abstract class CriteriaQueryRelationshipSource implements RelationshipSou
     
     protected void notFound() {
         
+    }
+    
+    private static class CreationDateComparator implements Comparator<BaseArtifactType> {
+        public int compare(BaseArtifactType o1, BaseArtifactType o2) {
+            // newest first
+            return o2.getCreatedTimestamp().compare(o1.getCreatedTimestamp());
+        }
     }
 }

@@ -23,7 +23,6 @@ import java.util.Map;
 import javax.jcr.Session;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.artifactbuilder.RelationshipContext;
 import org.overlord.sramp.repository.jcr.query.JCRSrampQuery;
