@@ -17,7 +17,7 @@ package org.overlord.sramp.integration.java.model;
 
 
 /**
- * Information about the java model defined by the java deriver(s).
+ * Information about the java model defined by the java artifact builder(s).
  *
  * @author eric.wittmann@redhat.com
  */

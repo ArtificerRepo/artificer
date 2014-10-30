@@ -766,7 +766,7 @@ public class SrampAtomApiClient {
             response = request.post(Entry.class);
             Entry entry = response.getEntity();
             RDF rdf = SrampAtomUtils.unwrap(entry, RDF.class);
-            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", "")); //$NON-NLS-1$
+            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return rdf;
         } catch (SrampAtomException e) {
             throw e;
@@ -796,7 +796,7 @@ public class SrampAtomApiClient {
             response = request.post(Entry.class);
             Entry entry = response.getEntity();
             RDF rdf = SrampAtomUtils.unwrap(entry, RDF.class);
-            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", "")); //$NON-NLS-1$
+            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return rdf;
         } catch (SrampAtomException e) {
             throw e;
@@ -901,7 +901,7 @@ public class SrampAtomApiClient {
             response = request.get(Entry.class);
             Entry entry = response.getEntity();
             RDF rdf = SrampAtomUtils.unwrapRDF(entry);
-            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", "")); //$NON-NLS-1$
+            rdf.getOtherAttributes().put(new QName(SrampConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return rdf;
         } catch (SrampAtomException e) {
             throw e;

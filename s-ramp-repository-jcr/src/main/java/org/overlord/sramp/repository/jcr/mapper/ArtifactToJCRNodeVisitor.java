@@ -38,6 +38,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
+import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
@@ -106,6 +107,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocumentEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeEnum;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
@@ -442,6 +444,12 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	    super.visit(artifact);
         try {
             setProperty(JCRConstants.SRAMP_TARGET_NAMESPACE, artifact.getTargetNamespace());
+            setRelationships("importedXsds", -1, 1, false, artifact.getImportedXsds(),
+                    XsdDocumentEnum.XSD_DOCUMENT.toString());
+            setRelationships("includedXsds", -1, 1, false, artifact.getIncludedXsds(),
+                    XsdDocumentEnum.XSD_DOCUMENT.toString());
+            setRelationships("redefinedXsds", -1, 1, false, artifact.getRedefinedXsds(),
+                    XsdDocumentEnum.XSD_DOCUMENT.toString());
         } catch (Exception e) {
             error = e;
         }
@@ -511,6 +519,12 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		super.visit(artifact);
 		try {
 			setProperty(JCRConstants.SRAMP_TARGET_NAMESPACE, artifact.getTargetNamespace());
+			setRelationships("importedXsds", -1, 1, false, artifact.getImportedXsds(),
+                    XsdDocumentEnum.XSD_DOCUMENT.toString());
+            setRelationships("includedXsds", -1, 1, false, artifact.getIncludedXsds(),
+                    XsdDocumentEnum.XSD_DOCUMENT.toString());
+            setRelationships("redefinedXsds", -1, 1, false, artifact.getRedefinedXsds(),
+                    XsdDocumentEnum.XSD_DOCUMENT.toString());
 		} catch (Exception e) {
 			error = e;
 		}
@@ -928,9 +942,12 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 		if (target != null || minCardinality == 0) {
 			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType,
 			        maxCardinality, isGeneric);
+			
 			Value[] targetValues = new Value[1];
-			targetValues[0] = this.referenceFactory.createReference(target.getValue());
+			targetValues[0] = StringUtils.isNotBlank(target.getValue()) ?
+			        this.referenceFactory.createReference(target.getValue()) : null;
 			relationshipNode.setProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET, targetValues);
+			
             if (targetType != null) {
                 String[] targetTypeValues = new String[1];
                 targetTypeValues[0] = targetType;
@@ -954,19 +971,20 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 	 * @throws Exception
 	 */
 	private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,
-			boolean isGeneric, List<? extends Target> targets, List<String> targetTypes) throws Exception {
+            boolean isGeneric, List<? extends Target> targets, List<String> targetTypes) throws Exception {
         if (!isProcessRelationships())
             return;
-		if ((targets != null && targets.size() > 0) || minCardinality == 0) {
-			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType,
-			        maxCardinality, isGeneric);
-			
-			Value[] targetValues = new Value[targets.size()];
-			for (int idx = 0; idx < targets.size(); idx++) {
-			    targetValues[idx] = this.referenceFactory.createReference(targets.get(idx).getValue());
-			}
-			relationshipNode.setProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET, targetValues);
-			
+        if ((targets != null && targets.size() > 0) || minCardinality == 0) {
+            Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType,
+                    maxCardinality, isGeneric);
+            
+            Value[] targetValues = new Value[targets.size()];
+            for (int idx = 0; idx < targets.size(); idx++) {
+                targetValues[idx] = StringUtils.isNotBlank(targets.get(idx).getValue()) ?
+                        this.referenceFactory.createReference(targets.get(idx).getValue()) : null;
+            }
+            relationshipNode.setProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET, targetValues);
+            
             if (targetTypes != null && targetTypes.size() > 0) {
                 String[] targetTypeValues = new String[targets.size()];
                 for (int idx = 0; idx < targetTypes.size(); idx++) {
@@ -974,12 +992,12 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
                 }
                 relationshipNode.setProperty(JCRConstants.SRAMP_TARGET_TYPE, targetTypeValues);
             }
-		} else {
-			// If the minimum cardinality is > 0 but no targets have been provided, then
-			// remove the relationship node.
-			removeRelationship(relationshipType);
-		}
-	}
+        } else {
+            // If the minimum cardinality is > 0 but no targets have been provided, then
+            // remove the relationship node.
+            removeRelationship(relationshipType);
+        }
+    }
 	
 	private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,
             boolean isGeneric, List<? extends Target> targets, String targetType) throws Exception {

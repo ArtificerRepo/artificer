@@ -21,7 +21,9 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
+
 import java.io.InputStream;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -30,7 +32,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
-import org.overlord.sramp.integration.teiid.deriver.TeiidIntegrationTest;
+import org.overlord.sramp.integration.teiid.artifactbuilder.TeiidIntegrationTest;
 import org.overlord.sramp.integration.teiid.model.TeiidArtifactType;
 import org.overlord.sramp.integration.teiid.model.VdbManifest;
 

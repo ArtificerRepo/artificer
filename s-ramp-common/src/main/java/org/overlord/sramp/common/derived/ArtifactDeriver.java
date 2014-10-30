@@ -20,14 +20,18 @@ import java.io.InputStream;
 import java.util.Collection;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
 
 /**
  * Provides a way to derive artifacts.  Classes that implement this interface must
  * be able to parse a particular type of artifact and produce all of the derived
  * artifacts for it.  Examples include an XSD deriver, WSDL deriver, etc.
+ * 
+ * @deprecated Replaced by {@link ArtifactBuilder}
  *
  * @author eric.wittmann@redhat.com
  */
+@Deprecated
 public interface ArtifactDeriver {
 
 	/**

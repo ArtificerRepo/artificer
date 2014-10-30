@@ -24,7 +24,7 @@ import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 
 /**
  * Information about the SwitchYard model implemented in S-RAMP by the
- * Switchyard Deriver(s).
+ * Switchyard artifact builder(s).
  *
  * @author eric.wittmann@redhat.com
  */

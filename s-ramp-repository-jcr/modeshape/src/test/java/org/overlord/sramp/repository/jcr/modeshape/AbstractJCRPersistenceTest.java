@@ -33,8 +33,6 @@ import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.repository.AuditManager;
 import org.overlord.sramp.repository.AuditManagerFactory;
-import org.overlord.sramp.repository.DerivedArtifacts;
-import org.overlord.sramp.repository.DerivedArtifactsFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.QueryManager;
@@ -53,7 +51,6 @@ public abstract class AbstractJCRPersistenceTest {
 
     protected Logger log = LoggerFactory.getLogger(this.getClass());
     protected static PersistenceManager persistenceManager = null;
-    protected static DerivedArtifacts derivedArtifacts = null;
     protected static QueryManager queryManager = null;
     protected static AuditManager auditManager = null;
 
@@ -62,7 +59,6 @@ public abstract class AbstractJCRPersistenceTest {
 		System.setProperty("sramp.modeshape.config.url", "classpath://" + AbstractJCRPersistenceTest.class.getName()
 				+ "/META-INF/modeshape-configs/junit-sramp-config.json");
         persistenceManager = PersistenceFactory.newInstance();
-        derivedArtifacts = DerivedArtifactsFactory.newInstance();
         queryManager = QueryManagerFactory.newInstance();
         auditManager = AuditManagerFactory.newInstance();
     }

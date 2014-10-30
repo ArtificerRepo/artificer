@@ -17,6 +17,11 @@
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-integration-java</artifactId>
-    </dependency>     
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-common</artifactId>
+      <classifier>tests</classifier>
+    </dependency>   
   </dependencies>
 </project>

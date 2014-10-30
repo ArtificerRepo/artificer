@@ -75,6 +75,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtension;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType;
 import org.overlord.sramp.common.i18n.Messages;
 
 /**
@@ -93,6 +94,7 @@ public enum ArtifactTypeEnum {
     ElementDeclaration("xsd", "XML Schema Element Declaration", ElementDeclaration.class, BaseArtifactEnum.ELEMENT_DECLARATION, true), //$NON-NLS-1$ //$NON-NLS-2$
     SimpleTypeDeclaration("xsd", "XML Schema Simple Type Declaration", SimpleTypeDeclaration.class, BaseArtifactEnum.SIMPLE_TYPE_DECLARATION, true), //$NON-NLS-1$ //$NON-NLS-2$
     ComplexTypeDeclaration("xsd", "XML Schema Complex Type Declaration", ComplexTypeDeclaration.class, BaseArtifactEnum.COMPLEX_TYPE_DECLARATION, true), //$NON-NLS-1$ //$NON-NLS-2$
+    XsdType("xsd", "XML Schema Type Declaration", XsdType.class, BaseArtifactEnum.XSD_TYPE, true), //$NON-NLS-1$ //$NON-NLS-2$
     // Policy
     PolicyDocument("policy", "Policy", PolicyDocument.class, BaseArtifactEnum.POLICY_DOCUMENT, false, true), //$NON-NLS-1$ //$NON-NLS-2$
     PolicyExpression("policy", "Policy Expression", PolicyExpression.class, BaseArtifactEnum.POLICY_EXPRESSION, true), //$NON-NLS-1$ //$NON-NLS-2$
