@@ -128,6 +128,49 @@ The contents of the file should be a single line with the fully qualified
 Java classname of the provider implementation.
 
 
+Important Notes
+^^^^^^^^^^^^^^^
+
+Wildfly and EAP
++++++++++++++++
+
+When using the Java client from within a webapp running on Wildfly or EAP, the 's-ramp-client' Maven dependency
+carries transitive dependencies that conflict with modules on the app server.  At this time, the worst known offender
+is 'jaxb-impl' (causes a PropertyException related to RESTEasy's use of 'NamespacePrefixMapper').  It's vital to do the
+following in your webapp's POM.
+
+Exclude 'jaxb-impl' from the 's-ramp-client' dependency:
+----
+<dependency>
+  <groupId>org.overlord.sramp</groupId>
+  <artifactId>s-ramp-client</artifactId>
+  <version>[version]</version>
+  
+  <exclusions>
+    <exclusion>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+    </exclusion>
+  </exclusions>
+</dependency>
+----
+
+Include the 'com.sun.xml.bind' module in your 'maven-war-plugin' 'manifestEntries':
+----
+<plugin>
+  <artifactId>maven-war-plugin</artifactId>
+  <version>2.3</version>
+  <configuration>
+    <archive>
+      <manifestEntries>
+        <Dependencies>com.sun.xml.bind,...</Dependencies>
+      </manifestEntries>
+    </archive>
+  </configuration>
+</plugin>
+----
+
+
 JMS Client
 ~~~~~~~~~~
 

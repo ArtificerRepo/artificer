@@ -150,7 +150,7 @@ overlorduser
 
 
 Extending: Custom ArtifactBuilder
-^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 As mentioned earlier in this guide, part of the S-RAMP specification is the concept of 
 derived content.  This happens when an artifact of a certain type is added to the S-RAMP 
 repository.  The server is responsible for creating relevant and interesting derived
