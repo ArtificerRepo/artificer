@@ -114,9 +114,8 @@ public class JCRBatchPersistenceTest extends AbstractNoAuditingJCRPersistenceTes
         // findRequestSimpleMessage assertions
         part = (Part) getArtifactByTarget(findRequestSimpleMessage.getPart().get(0));
         Assert.assertNull(part.getElement());
-        // TODO: See SRAMP-608
-//        SimpleTypeDeclaration type = (SimpleTypeDeclaration) getArtifactByTarget(part.getType());
-//        Assert.assertEquals(extSimpleType.getUuid(), type.getUuid());
+        SimpleTypeDeclaration type = (SimpleTypeDeclaration) getArtifactByTarget(part.getType());
+        Assert.assertEquals(extSimpleType.getUuid(), type.getUuid());
     }
     
     /**
