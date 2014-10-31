@@ -67,7 +67,10 @@ public class GetMetaDataCommand extends BuiltInShellCommand {
 		String idType = artifactIdArg.substring(0, artifactIdArg.indexOf(':'));
 		if ("feed".equals(idType)) { //$NON-NLS-1$
 			QueryResultSet rset = (QueryResultSet) getContext().getVariable(feedVarName);
-			int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
+			if (rset == null) {
+                throw new InvalidCommandArgumentException(0, Messages.i18n.format("NoFeed")); //$NON-NLS-1$
+            }
+            int feedIdx = Integer.parseInt(artifactIdArg.substring(artifactIdArg.indexOf(':')+1)) - 1;
 			if (feedIdx < 0 || feedIdx >= rset.size()) {
                 throw new InvalidCommandArgumentException(0, Messages.i18n.format("FeedIndexOutOfRange")); //$NON-NLS-1$
 			}
