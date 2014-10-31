@@ -137,9 +137,12 @@ is designated by the JMSType header field.  All events carry the relevant object
 Installation and Setup
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The 'sramp.properties' configuration file contains 3 properties relevant to the JMS setup:
+The 'sramp.properties' configuration file contains multiple properties relevant to the JMS setup:
 
 ----
+# S-RAMP will automatically attempt to discover a JMS ConnectionFactory through the literal JNDI name
+# "ConnectionFactory".  However, that name can be overridden here.
+sramp.config.events.jms.connectionfactory = ConnectionFactory
 # By default, S-RAMP publishes events through the "sramp/events/topic" JMS topic name (JNDI).  But, it will also publish
 # to any other names listed here (comma-delimited).
 sramp.config.events.jms.topics = sramp/events/topic

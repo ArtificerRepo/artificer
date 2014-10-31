@@ -60,6 +60,7 @@ public class SrampConstants {
     public static final String SRAMP_CONFIG_AUDIT_PASS          = "sramp.config.auditing.password"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_JCR_REPO_JNDI       = "sramp.config.jcr.repository.jndi-path"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_JCR_REPO_NAME       = "sramp.config.jcr.repository.name"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_EVENT_JMS_CONNECTIONFACTORY    = "sramp.config.events.jms.connectionfactory"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_EVENT_JMS_TOPICS    = "sramp.config.events.jms.topics"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_EVENT_JMS_QUEUES    = "sramp.config.events.jms.queues"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_EVENT_JMS_PORT = "sramp.config.events.jms.embedded-activemq-port"; //$NON-NLS-1$

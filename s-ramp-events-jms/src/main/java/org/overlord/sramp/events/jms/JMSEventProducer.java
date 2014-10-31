@@ -82,8 +82,6 @@ public class JMSEventProducer implements EventProducer {
     public static final String JMS_TYPE_ONTOLOGY_UPDATED = "sramp:ontologyUpdated"; //$NON-NLS-1$
     public static final String JMS_TYPE_ONTOLOGY_DELETED = "sramp:ontologyDeleted"; //$NON-NLS-1$
 
-    private static final String CONNECTIONFACTORY_JNDI = "ConnectionFactory"; //$NON-NLS-1$
-
     private static Logger LOG = LoggerFactory.getLogger(JMSEventProducer.class);
 
     private Connection connection = null;
@@ -96,15 +94,16 @@ public class JMSEventProducer implements EventProducer {
     public void startup() {
 
         try {
+            String connectionFactoryName = SrampConfig.getConfigProperty(
+                    SrampConstants.SRAMP_CONFIG_EVENT_JMS_CONNECTIONFACTORY, "ConnectionFactory"); //$NON-NLS-1$
+            
             // Note that both properties end up doing the same thing.  Technically, we could combine both into one
             // single sramp.config.events.jms.destinations, but leaving them split for readability.
-
             String topicNamesProp = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_TOPICS, ""); //$NON-NLS-1$
             String[] topicNames = new String[0];
             if (StringUtils.isNotEmpty(topicNamesProp)) {
                 topicNames = topicNamesProp.split(","); //$NON-NLS-1$
             }
-
             String queueNamesProp = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_QUEUES, ""); //$NON-NLS-1$
             String[] queueNames = new String[0];
             if (StringUtils.isNotEmpty(queueNamesProp)) {
@@ -115,7 +114,7 @@ public class JMSEventProducer implements EventProducer {
                 // First, see if a ConnectionFactory and Topic/Queue exists on JNDI.  If so, assume JMS is properly
                 // setup in a Java EE container and simply use it.
 
-                ConnectionFactory connectionFactory = (ConnectionFactory) jndiLookup(CONNECTIONFACTORY_JNDI);
+                ConnectionFactory connectionFactory = (ConnectionFactory) jndiLookup(connectionFactoryName);
                 connection = connectionFactory.createConnection();
                 session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
