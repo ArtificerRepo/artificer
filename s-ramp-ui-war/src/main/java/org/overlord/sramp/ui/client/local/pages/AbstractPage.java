@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public abstract class AbstractPage extends Composite {
 
+    // TODO: No longer needed?  Or is it still used by internal messaging?
     @Inject
     protected ClientMessageBus bus;
 

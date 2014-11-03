@@ -52,7 +52,6 @@
                 <exclude>WEB-INF/lib/commons-lang-*.jar</exclude>
                 <exclude>WEB-INF/lib/dom4j-*.jar</exclude>
                 <exclude>WEB-INF/lib/el-api*.jar</exclude>
-                <exclude>WEB-INF/lib/errai-cdi-jetty*.jar</exclude>
                 <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
                 <exclude>WEB-INF/lib/errai-data-binding-*.jar</exclude>
                 <exclude>WEB-INF/lib/errai-ioc-*.jar</exclude>
@@ -80,7 +79,6 @@
                 <exclude>WEB-INF/lib/servlet-api*.jar</exclude>
                 <exclude>WEB-INF/lib/slf4j-api-*.jar</exclude>
                 <exclude>WEB-INF/lib/slf4j-ext-*.jar</exclude>
-                <exclude>WEB-INF/lib/weld*.jar</exclude>
                 <exclude>WEB-INF/lib/xercesImpl*.jar</exclude>
                 <exclude>WEB-INF/lib/xml-apis*.jar</exclude>
               </excludes>

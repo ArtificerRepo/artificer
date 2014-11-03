@@ -178,36 +178,17 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
-
+    
     <!-- CDI Integration Modules -->
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-client</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-weld-integration</artifactId>
-    </dependency>
-
-    <!-- Weld -->
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>el-api</artifactId>
-          <groupId>javax.el</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.weld.servlet</groupId>
-      <artifactId>weld-servlet-core</artifactId>
     </dependency>
 
     <!-- GWT -->
@@ -266,7 +247,6 @@
 	  <localWorkers>2</localWorkers>
 	  <failOnError>true</failOnError>
           <hostedWebapp>src/main/webapp/</hostedWebapp>
-          <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
         </configuration>
         <executions>
           <execution>

@@ -10,7 +10,8 @@
         <Item>org.mortbay.jetty.webapp.JettyWebXmlConfiguration</Item>
     </Array>
 
-    <New id="BeanManager" class="org.mortbay.jetty.plus.naming.Resource">
+    <!-- TODO: Weld no longer used -- can this be removed?  Does the above do anything else? -->
+    <!-- <New id="BeanManager" class="org.mortbay.jetty.plus.naming.Resource">
         <Arg><Ref id="sample-weld"/></Arg>
         <Arg>BeanManager</Arg>
         <Arg>
@@ -20,5 +21,5 @@
                 <Arg/>
             </New>
         </Arg>
-    </New>
+    </New> -->
 </Configure>
