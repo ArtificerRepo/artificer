@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +42,7 @@ import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
 import org.overlord.sramp.ui.server.i18n.Messages;
-import org.overlord.sramp.ui.server.services.ArtifactTypeGuessingService;
+import org.overlord.sramp.ui.server.services.ArtifactTypeUtil;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
 
 /**
@@ -55,11 +54,6 @@ import org.overlord.sramp.ui.server.util.ExceptionUtils;
 public class ArtifactUploadServlet extends AbstractUploadServlet {
 
 	private static final long serialVersionUID = ArtifactUploadServlet.class.hashCode();
-
-    @Inject
-    private SrampApiClientAccessor clientAccessor;
-    @Inject
-    private ArtifactTypeGuessingService artifactTypeGuesser;
 
 	/**
 	 * Constructor.
@@ -133,7 +127,7 @@ public class ArtifactUploadServlet extends AbstractUploadServlet {
 		Map<String, String> responseParams = new HashMap<String, String>();
 
 		if (artifactType == null || artifactType.trim().length() == 0) {
-		    artifactType = artifactTypeGuesser.guess(fileName);
+		    artifactType = ArtifactTypeUtil.guess(fileName);
 		}
 
 		try {
@@ -158,7 +152,7 @@ public class ArtifactUploadServlet extends AbstractUploadServlet {
         SrampArchive archive = null;
         try {
             archive = new SrampArchive(tempFile);
-            Map<String, ?> batch = clientAccessor.getClient().uploadBatch(archive);
+            Map<String, ?> batch = SrampApiClientAccessor.getClient().uploadBatch(archive);
             int numSuccess = 0;
             int numFailed = 0;
             for (String key : batch.keySet()) {
@@ -197,7 +191,7 @@ public class ArtifactUploadServlet extends AbstractUploadServlet {
         InputStream contentStream = null;
 		try {
 			contentStream = FileUtils.openInputStream(tempFile);
-			BaseArtifactType artifact = clientAccessor.getClient().uploadArtifact(at, contentStream, fileName);
+			BaseArtifactType artifact = SrampApiClientAccessor.getClient().uploadArtifact(at, contentStream, fileName);
 			responseParams.put("model", at.getArtifactType().getModel()); //$NON-NLS-1$
 			responseParams.put("type", at.getArtifactType().getType()); //$NON-NLS-1$
 			responseParams.put("uuid", artifact.getUuid()); //$NON-NLS-1$
@@ -214,7 +208,7 @@ public class ArtifactUploadServlet extends AbstractUploadServlet {
             if (expander != null) {
                 expander.setContextParam(DefaultMetaDataFactory.PARENT_UUID, uuid);
                 archive = expander.createSrampArchive();
-                clientAccessor.getClient().uploadBatch(archive);
+                SrampApiClientAccessor.getClient().uploadBatch(archive);
             }
         } finally {
             SrampArchive.closeQuietly(archive);

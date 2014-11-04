@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.ui.client.shared.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,8 +30,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class ArtifactFilterBean {
+public class ArtifactFilterBean implements Serializable {
 
+    private static final long serialVersionUID = 3789397680981626569L;
+    
     private String artifactType = ""; //$NON-NLS-1$
     private Date dateCreatedFrom;
     private Date dateCreatedTo;

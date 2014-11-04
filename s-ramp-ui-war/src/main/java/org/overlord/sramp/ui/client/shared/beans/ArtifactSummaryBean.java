@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.ui.client.shared.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +32,10 @@ import org.jboss.errai.databinding.client.api.Bindable;
  */
 @Portable
 @Bindable
-public class ArtifactSummaryBean {
+public class ArtifactSummaryBean implements Serializable {
 
+    private static final long serialVersionUID = 1038258536497848012L;
+    
     private String model;
     private String type;
     private String rawType;

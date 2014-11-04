@@ -34,8 +34,8 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
 import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
-import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.OntologyServiceCaller;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.LoadingAllOntologies;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.OntologyDropDown;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.OntologySelectorWithToolbar;
@@ -57,12 +57,12 @@ import com.google.gwt.user.client.ui.HasValue;
  */
 @Templated("/org/overlord/sramp/ui/client/local/site/dialogs/modify-classifiers-dialog.html#modify-classifiers-dialog")
 @Dependent
-public class ModifyClassifiersDialog extends ModalDialog implements HasValue<List<String>>, IRpcServiceInvocationHandler<List<OntologyBean>> {
+public class ModifyClassifiersDialog extends ModalDialog implements HasValue<List<String>>, IServiceInvocationHandler<List<OntologyBean>> {
 
     @Inject
     protected ClientMessages i18n;
     @Inject
-    private OntologyRpcService ontologyRpcService;
+    private OntologyServiceCaller ontologyServiceCaller;
     @Inject
     private NotificationService notificationService;
 
@@ -124,7 +124,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
         // Add the 'please wait' spinner
         body.add(loading.get());
         // Download all the ontologies
-        ontologyRpcService.getAll(false, this);
+        ontologyServiceCaller.getAll(false, this);
         super.show();
     }
 
@@ -189,7 +189,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
     }
 
     /**
-     * @see org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler#onReturn(java.lang.Object)
+     * @see org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler#onReturn(java.lang.Object)
      */
     @Override
     public void onReturn(List<OntologyBean> ontologies) {
@@ -212,7 +212,7 @@ public class ModifyClassifiersDialog extends ModalDialog implements HasValue<Lis
     }
 
     /**
-     * @see org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler#onError(java.lang.Throwable)
+     * @see org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler#onError(java.lang.Throwable)
      */
     @Override
     public void onError(Throwable error) {

@@ -15,9 +15,14 @@
  */
 package org.overlord.sramp.ui.client.shared.services;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactSearchBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 
 /**
@@ -25,19 +30,17 @@ import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
  *
  * @author eric.wittmann@redhat.com
  */
-@Remote
+@Path("artifacts")
 public interface IArtifactSearchService {
 
     /**
      * Search for artifacts using the given filtersPanel and search text.
-     * @param filters
-     * @param searchText
-     * @param page
-     * @param sortColumnId
-     * @param sortAscending
      * @throws SrampUiException
      */
-    public ArtifactResultSetBean search(ArtifactFilterBean filters, String searchText, int page,
-            String sortColumnId, boolean sortAscending) throws SrampUiException;
+    @POST
+    @Path("search")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ArtifactResultSetBean search(ArtifactSearchBean searchBean) throws SrampUiException;
 
 }

@@ -19,17 +19,17 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit test for the {@link ArtifactTypeGuessingService}.
+ * Unit test for the {@link ArtifactTypeUtil}.
  * @author eric.wittmann@redhat.com
  */
 public class ArtifactTypeGuessingServiceTest {
 
     /**
-     * Test method for {@link org.overlord.sramp.ui.server.services.ArtifactTypeGuessingService#guess(java.lang.String, java.io.File)}.
+     * Test method for {@link org.overlord.sramp.ui.server.services.ArtifactTypeUtil#guess(java.lang.String, java.io.File)}.
      */
     @Test
     public void testGuess() {
-        ArtifactTypeGuessingService service = new ArtifactTypeGuessingService();
+        ArtifactTypeUtil service = new ArtifactTypeUtil();
         Assert.assertEquals("SwitchYardXmlDocument", service.guess("switchyard.xml")); //$NON-NLS-1$ //$NON-NLS-2$
         Assert.assertEquals("MavenPom", service.guess("pom.xml")); //$NON-NLS-1$ //$NON-NLS-2$
         Assert.assertEquals("XmlDocument", service.guess("my-file.xml")); //$NON-NLS-1$ //$NON-NLS-2$

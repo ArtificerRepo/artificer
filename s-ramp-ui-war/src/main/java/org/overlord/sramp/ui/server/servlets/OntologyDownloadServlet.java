@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 
-import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,9 +41,6 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 public class OntologyDownloadServlet extends AbstractDownloadServlet {
 
     private static final long serialVersionUID = ArtifactDownloadServlet.class.hashCode();
-
-    @Inject
-    private SrampApiClientAccessor clientAccessor;
 
     /**
      * Constructor.
@@ -71,7 +67,7 @@ public class OntologyDownloadServlet extends AbstractDownloadServlet {
             IOException {
         HttpServletResponse httpResponse = resp;
         try {
-            SrampAtomApiClient client = clientAccessor.getClient();
+            SrampAtomApiClient client = SrampApiClientAccessor.getClient();
             String uuid = req.getParameter("uuid"); //$NON-NLS-1$
             if (StringUtils.isNotEmpty(uuid)) {
                 doDownloadContent(httpResponse, client, uuid);

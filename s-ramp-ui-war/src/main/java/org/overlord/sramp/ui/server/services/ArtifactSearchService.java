@@ -22,10 +22,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jboss.errai.bus.server.annotations.Service;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
@@ -36,6 +35,7 @@ import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactOriginEnum;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactSearchBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactSearchService;
@@ -46,11 +46,8 @@ import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
  *
  * @author eric.wittmann@redhat.com
  */
-@Service
+@ApplicationScoped
 public class ArtifactSearchService implements IArtifactSearchService {
-
-    @Inject
-    private SrampApiClientAccessor clientAccessor;
 
     /**
      * Constructor.
@@ -62,21 +59,20 @@ public class ArtifactSearchService implements IArtifactSearchService {
      * @see org.overlord.sramp.ui.client.shared.services.IArtifactSearchService#search(org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean, java.lang.String, int, java.lang.String, boolean)
      */
     @Override
-    public ArtifactResultSetBean search(ArtifactFilterBean filters, String searchText, int page,
-            String sortColumnId, boolean sortAscending) throws SrampUiException {
+    public ArtifactResultSetBean search(ArtifactSearchBean searchBean) throws SrampUiException {
         int pageSize = 20;
         try {
             ArtifactResultSetBean rval = new ArtifactResultSetBean();
 
-            int req_startIndex = (page - 1) * pageSize;
+            int req_startIndex = (searchBean.getPage() - 1) * pageSize;
             SrampClientQuery query = null;
-            if (searchText != null && searchText.startsWith("/")) { //$NON-NLS-1$
-                query = clientAccessor.getClient().buildQuery(searchText);
+            if (searchBean.getSearchText() != null && searchBean.getSearchText().startsWith("/")) { //$NON-NLS-1$
+                query = SrampApiClientAccessor.getClient().buildQuery(searchBean.getSearchText());
             } else {
-                query = createQuery(filters, searchText);
+                query = createQuery(searchBean.getFilters(), searchBean.getSearchText());
             }
-            SrampClientQuery sq = query.startIndex(req_startIndex).orderBy(sortColumnId);
-            if (sortAscending) {
+            SrampClientQuery sq = query.startIndex(req_startIndex).orderBy(searchBean.getSortColumnId());
+            if (searchBean.isSortAscending()) {
                 sq.ascending();
             } else {
                 sq.descending();
@@ -236,7 +232,7 @@ public class ArtifactSearchService implements IArtifactSearchService {
         }
 
         // Create the query, and parameterize it
-        SrampAtomApiClient client = clientAccessor.getClient();
+        SrampAtomApiClient client = SrampApiClientAccessor.getClient();
         SrampClientQuery query = client.buildQuery(queryBuilder.toString());
         for (Object param : params) {
             if (param instanceof String) {

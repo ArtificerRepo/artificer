@@ -1026,6 +1026,11 @@
         <artifactId>errai-javax-enterprise</artifactId>
         <version>${version.org.jboss.errai}</version>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jaxrs-client</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
       
       <!-- Declarative Service Annotations -->
       <dependency>

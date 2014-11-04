@@ -62,6 +62,8 @@
                 <exclude>WEB-INF/lib/hsqldb*.jar</exclude>
                 <exclude>WEB-INF/lib/httpclient-*.jar</exclude>
                 <exclude>WEB-INF/lib/httpcore-*.jar</exclude>
+                <exclude>WEB-INF/lib/jackson-core-asl-*.jar</exclude>
+                <exclude>WEB-INF/lib/jackson-mapper-asl-*.jar</exclude>
                 <exclude>WEB-INF/lib/javassist-*.jar</exclude>
                 <exclude>WEB-INF/lib/javax.inject-1.jar</exclude>
                 <exclude>WEB-INF/lib/jaxb-*.jar</exclude>

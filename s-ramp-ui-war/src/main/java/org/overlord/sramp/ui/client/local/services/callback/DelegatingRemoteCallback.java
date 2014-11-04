@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.local.services.rpc;
+package org.overlord.sramp.ui.client.local.services.callback;
 
 import org.jboss.errai.common.client.api.RemoteCallback;
 
@@ -23,13 +23,13 @@ import org.jboss.errai.common.client.api.RemoteCallback;
  */
 public class DelegatingRemoteCallback<T> implements RemoteCallback<T> {
 
-    private IRpcServiceInvocationHandler<T> handler;
+    private IServiceInvocationHandler<T> handler;
 
     /**
      * Constructor.
      * @param handler
      */
-    public DelegatingRemoteCallback(IRpcServiceInvocationHandler<T> handler) {
+    public DelegatingRemoteCallback(IServiceInvocationHandler<T> handler) {
         this.handler = handler;
     }
 

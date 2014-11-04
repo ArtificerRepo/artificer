@@ -26,8 +26,8 @@ import javax.inject.Inject;
 
 import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
-import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.OntologyServiceCaller;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologyClassBean;
@@ -62,7 +62,7 @@ public class OntologyEditor extends FlowPanel implements HasValue<OntologyBean> 
     @Inject
     ClientMessages i18n;
     @Inject
-    OntologyRpcService ontologyService;
+    OntologyServiceCaller ontologyService;
     
     @Inject 
     OntologyValidator validator;
@@ -269,7 +269,7 @@ public class OntologyEditor extends FlowPanel implements HasValue<OntologyBean> 
         final NotificationBean notificationBean = notificationService.startProgressNotification(
                 i18n.format("ontology-editor.saving.title"), //$NON-NLS-1$
                 i18n.format("ontology-editor.saving.message")); //$NON-NLS-1$
-        ontologyService.update(getValue(), new IRpcServiceInvocationHandler<Void>() {
+        ontologyService.update(getValue(), new IServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(), 

@@ -18,10 +18,9 @@ package org.overlord.sramp.ui.server.services;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.errai.bus.server.annotations.Service;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
@@ -42,14 +41,11 @@ import org.overlord.sramp.ui.server.services.util.RelationshipResolver;
  *
  * @author eric.wittmann@redhat.com
  */
-@Service
+@ApplicationScoped
 public class ArtifactService implements IArtifactService {
 
     // Limit content grabs to 2mb
     private static final Long TWO_MEG = 2l * 1024l * 1024l;
-
-    @Inject
-    private SrampApiClientAccessor clientAccessor;
 
     /**
      * Constructor.
@@ -63,7 +59,7 @@ public class ArtifactService implements IArtifactService {
     @Override
     public ArtifactBean get(String uuid) throws SrampUiException {
         try {
-            BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(uuid);
+            BaseArtifactType artifact = SrampApiClientAccessor.getClient().getArtifactMetaData(uuid);
             ArtifactType artifactType = ArtifactType.valueOf(artifact);
             
             ArtifactBean bean = new ArtifactBean();
@@ -114,14 +110,14 @@ public class ArtifactService implements IArtifactService {
     public String getDocumentContent(String uuid, String artifactType) throws SrampUiException {
         try {
             ArtifactType at = ArtifactType.valueOf(artifactType);
-            BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(at, uuid);
+            BaseArtifactType artifact = SrampApiClientAccessor.getClient().getArtifactMetaData(at, uuid);
             String response = Messages.i18n.format("ArtifactService.DownloadContent"); //$NON-NLS-1$
             if (SrampModelUtils.isDocumentArtifact(artifact)) {
                 DocumentArtifactType doc = (DocumentArtifactType) artifact;
                 if (SrampModelUtils.isTextDocumentArtifact(doc) && doc.getContentSize() <= TWO_MEG) {
                     InputStream content = null;
                     try {
-                        content = clientAccessor.getClient().getArtifactContent(at, uuid);
+                        content = SrampApiClientAccessor.getClient().getArtifactContent(at, uuid);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         IOUtils.copy(content, baos);
                         // TODO: obey the document's encoding here (if we can find it) but default to UTF-8
@@ -146,8 +142,8 @@ public class ArtifactService implements IArtifactService {
         ArtifactRelationshipsBean rval = new ArtifactRelationshipsBean();
         try {
             ArtifactType at = ArtifactType.valueOf(artifactType);
-            BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(at, uuid);
-            RelationshipResolver relResolver = new RelationshipResolver(clientAccessor.getClient(), rval);
+            BaseArtifactType artifact = SrampApiClientAccessor.getClient().getArtifactMetaData(at, uuid);
+            RelationshipResolver relResolver = new RelationshipResolver(SrampApiClientAccessor.getClient(), rval);
             relResolver.resolveAll(artifact);
         } catch (SrampClientException e) {
             throw new SrampUiException(e.getMessage());
@@ -166,7 +162,7 @@ public class ArtifactService implements IArtifactService {
         try {
             ArtifactType artifactType = ArtifactType.valueOf(bean.getModel(), bean.getRawType(), null);
             // Grab the latest from the server
-            BaseArtifactType artifact = clientAccessor.getClient().getArtifactMetaData(artifactType, bean.getUuid());
+            BaseArtifactType artifact = SrampApiClientAccessor.getClient().getArtifactMetaData(artifactType, bean.getUuid());
             // Update it with new data from the bean
             artifact.setName(bean.getName());
             artifact.setDescription(bean.getDescription());
@@ -180,7 +176,7 @@ public class ArtifactService implements IArtifactService {
                 artifact.getClassifiedBy().add(classifier);
             }
             // Push the changes back to the server
-            clientAccessor.getClient().updateArtifactMetaData(artifact);
+            SrampApiClientAccessor.getClient().updateArtifactMetaData(artifact);
         } catch (SrampClientException e) {
             throw new SrampUiException(e.getMessage());
         } catch (SrampAtomException e) {
@@ -195,7 +191,7 @@ public class ArtifactService implements IArtifactService {
     public void delete(ArtifactBean bean) throws SrampUiException {
         try {
             ArtifactType artifactType = ArtifactType.valueOf(bean.getModel(), bean.getRawType(), null);
-            clientAccessor.getClient().deleteArtifact(bean.getUuid(), artifactType);
+            SrampApiClientAccessor.getClient().deleteArtifact(bean.getUuid(), artifactType);
         } catch (SrampClientException e) {
             throw new SrampUiException(e.getMessage());
         } catch (SrampAtomException e) {
@@ -210,7 +206,7 @@ public class ArtifactService implements IArtifactService {
      */
     private String getRepositoryLink(BaseArtifactType artifact, ArtifactType artifactType) {
         StringBuilder builder = new StringBuilder();
-        String endpoint = clientAccessor.getClient().getEndpoint();
+        String endpoint = SrampApiClientAccessor.getClient().getEndpoint();
         builder.append(endpoint);
         if (!endpoint.endsWith("/")) { //$NON-NLS-1$
             builder.append("/"); //$NON-NLS-1$

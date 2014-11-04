@@ -15,7 +15,15 @@
  */
 package org.overlord.sramp.ui.client.shared.services;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
@@ -25,7 +33,7 @@ import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
  *
  * @author eric.wittmann@redhat.com
  */
-@Remote
+@Path("artifacts")
 public interface IArtifactService {
 
     /**
@@ -33,7 +41,10 @@ public interface IArtifactService {
      * @param uuid
      * @throws SrampUiException
      */
-    public ArtifactBean get(String uuid) throws SrampUiException;
+    @GET
+    @Path("{uuid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ArtifactBean get(@PathParam("uuid") String uuid) throws SrampUiException;
 
     /**
      * Gets the full document content for an artifact (by UUID).
@@ -41,7 +52,11 @@ public interface IArtifactService {
      * @param artifactType
      * @throws SrampUiException
      */
-    public String getDocumentContent(String uuid, String artifactType) throws SrampUiException;
+    @GET
+    @Path("content/{uuid}/{artifactType}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getDocumentContent(@PathParam("uuid") String uuid, @PathParam("artifactType") String artifactType)
+            throws SrampUiException;
 
     /**
      * Gets all of the relationships (resolved) for an artifact.
@@ -49,13 +64,19 @@ public interface IArtifactService {
      * @param artifactType
      * @throws SrampUiException
      */
-    public ArtifactRelationshipsBean getRelationships(String uuid, String artifactType) throws SrampUiException;
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("relationships/{uuid}/{artifactType}")
+    public ArtifactRelationshipsBean getRelationships(@PathParam("uuid") String uuid,
+            @PathParam("artifactType") String artifactType) throws SrampUiException;
 
     /**
      * Called to update the given artifact bean.
      * @param artifact
      * @throws SrampUiException
      */
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
     public void update(ArtifactBean artifact) throws SrampUiException;
 
     /**
@@ -63,6 +84,7 @@ public interface IArtifactService {
      * @param artifact
      * @throws SrampUiException
      */
+    @DELETE
     public void delete(ArtifactBean artifact) throws SrampUiException;
 
 }
