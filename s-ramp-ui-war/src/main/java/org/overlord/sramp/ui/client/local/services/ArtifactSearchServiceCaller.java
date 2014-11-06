@@ -21,21 +21,21 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.overlord.sramp.ui.client.local.services.rpc.DelegatingErrorCallback;
-import org.overlord.sramp.ui.client.local.services.rpc.DelegatingRemoteCallback;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
+import org.overlord.sramp.ui.client.local.services.callback.DelegatingErrorCallback;
+import org.overlord.sramp.ui.client.local.services.callback.DelegatingRemoteCallback;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactSearchBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactSearchService;
 
 /**
- * Client-side service for making RPC calls to the remote search service.
+ * Client-side service for making Caller calls to the remote search service.
  *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class ArtifactSearchRpcService {
+public class ArtifactSearchServiceCaller {
 
     @Inject
     private Caller<IArtifactSearchService> remoteSearchService;
@@ -43,28 +43,23 @@ public class ArtifactSearchRpcService {
     /**
      * Constructor.
      */
-    public ArtifactSearchRpcService() {
+    public ArtifactSearchServiceCaller() {
     }
 
     /**
-     * Performs the search using the remote service.  Hides the RPC details from
+     * Performs the search using the remote service.  Hides the details from
      * the caller.
-     * @param filters
-     * @param searchText
-     * @param page
-     * @param sortColumnId
-     * @param sortAscending
-     * @param handler
+     * 
+     * @param searchBean
      */
-    public void search(ArtifactFilterBean filters, String searchText, int page, String sortColumnId, boolean sortAscending,
-            final IRpcServiceInvocationHandler<ArtifactResultSetBean> handler) {
+    public void search(ArtifactSearchBean searchBean, final IServiceInvocationHandler<ArtifactResultSetBean> handler) {
         // TODO only allow one search at a time.  If another search comes in before the previous one
         // finished, cancel the previous one.  In other words, only return the results of the *last*
         // search performed.
         RemoteCallback<ArtifactResultSetBean> successCallback = new DelegatingRemoteCallback<ArtifactResultSetBean>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
-            remoteSearchService.call(successCallback, errorCallback).search(filters, searchText, page, sortColumnId, sortAscending);
+            remoteSearchService.call(successCallback, errorCallback).search(searchBean);
         } catch (SrampUiException e) {
             errorCallback.error(null, e);
         }

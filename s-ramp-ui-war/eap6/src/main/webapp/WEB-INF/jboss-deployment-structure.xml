@@ -26,6 +26,8 @@
       <module name="org.dom4j" />
       <module name="com.google.guava" />
       <module name="org.apache.httpcomponents" />
+      <module name="org.codehaus.jackson.jackson-core-asl" />
+      <module name="org.codehaus.jackson.jackson-mapper-asl" />
       <module name="org.javassist" />
       <module name="javax.inject.api" />
       <module name="javax.ws.rs.api" />
@@ -43,17 +45,6 @@
       <module name="org.jboss.netty" />
       <module name="org.jboss.resteasy.resteasy-jaxrs" />
     </dependencies>
-    <exclusions>
-      <!-- Disable Jettison/Jackson.  Need to provide Jackson in order to support its annotations (was not able
-      to get EAP to do that). -->
-      <module name="org.jboss.resteasy.resteasy-jettison-provider" />
-      <module name="org.codehaus.jettison" />
-      <module name="org.jboss.resteasy.resteasy-jackson-provider" />
-      <module name="org.codehaus.jackson.jackson-core-asl" />
-      <module name="org.codehaus.jackson.jackson-mapper-asl" />
-      <module name="org.codehaus.jackson.jackson-jaxrs" />
-      <module name="org.codehaus.jackson.jackson-xc" />
-    </exclusions>
     <exclude-subsystems>
       <subsystem name="webservices" />
     </exclude-subsystems>

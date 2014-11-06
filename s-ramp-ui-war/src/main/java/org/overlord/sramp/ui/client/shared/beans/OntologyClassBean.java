@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.ui.client.shared.beans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +27,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class OntologyClassBean {
+public class OntologyClassBean implements Serializable {
+    private static final long serialVersionUID = -4013105322516952208L;
+    
     private String id;
     private String label;
     private String comment;
     private String uri;
-    private OntologyClassBean parent;
     private List<OntologyClassBean> children = new ArrayList<OntologyClassBean>();
 
     /**
@@ -70,13 +72,6 @@ public class OntologyClassBean {
     }
 
     /**
-     * @return the parent
-     */
-    public OntologyClassBean getParent() {
-        return parent;
-    }
-
-    /**
      * @return the children
      */
     public List<OntologyClassBean> getChildren() {
@@ -112,13 +107,6 @@ public class OntologyClassBean {
     }
 
     /**
-     * @param parent the parent to set
-     */
-    public void setParent(OntologyClassBean parent) {
-        this.parent = parent;
-    }
-
-    /**
      * @param children the children to set
      */
     public void setChildren(List<OntologyClassBean> children) {
@@ -137,7 +125,6 @@ public class OntologyClassBean {
         List<OntologyClassBean> newChildren = new ArrayList<OntologyClassBean>();
         for (OntologyClassBean child : this.getChildren()) {
             OntologyClassBean copy = child.copy();
-            copy.setParent(bean);
             newChildren.add(copy);
         }
         bean.setChildren(newChildren);

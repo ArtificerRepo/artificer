@@ -27,8 +27,8 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
 import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
-import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.OntologyServiceCaller;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.LoadingOntology;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.OntologySelectorWithToolbar;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
@@ -56,7 +56,7 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
     @Inject
     protected ClientMessages i18n;
     @Inject
-    private OntologyRpcService ontologyRpcService;
+    private OntologyServiceCaller ontologyServiceCaller;
     @Inject
     private NotificationService notificationService;
 
@@ -90,7 +90,7 @@ public class ClassifierFilterSelectionDialog extends ModalDialog implements HasV
         LoadingOntology w = loading.get();
         w.getElement().removeClassName("hide"); //$NON-NLS-1$
         body.add(w);
-        ontologyRpcService.get(ontology.getUuid(), false, new IRpcServiceInvocationHandler<OntologyBean>() {
+        ontologyServiceCaller.get(ontology.getUuid(), false, new IServiceInvocationHandler<OntologyBean>() {
             @Override
             public void onReturn(OntologyBean data) {
                 body.clear();

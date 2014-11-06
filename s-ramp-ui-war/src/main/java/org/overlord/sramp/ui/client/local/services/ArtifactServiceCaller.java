@@ -21,21 +21,21 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.overlord.sramp.ui.client.local.services.rpc.DelegatingErrorCallback;
-import org.overlord.sramp.ui.client.local.services.rpc.DelegatingRemoteCallback;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.callback.DelegatingErrorCallback;
+import org.overlord.sramp.ui.client.local.services.callback.DelegatingRemoteCallback;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactService;
 
 /**
- * Client-side service for making RPC calls to the remote artifact service.
+ * Client-side service for making Caller calls to the remote artifact service.
  *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class ArtifactRpcService {
+public class ArtifactServiceCaller {
 
     @Inject
     private Caller<IArtifactService> remoteArtifactService;
@@ -43,13 +43,13 @@ public class ArtifactRpcService {
     /**
      * Constructor.
      */
-    public ArtifactRpcService() {
+    public ArtifactServiceCaller() {
     }
 
     /**
      * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#get(java.lang.String)
      */
-    public void get(String uuid, final IRpcServiceInvocationHandler<ArtifactBean> handler) {
+    public void get(String uuid, final IServiceInvocationHandler<ArtifactBean> handler) {
         RemoteCallback<ArtifactBean> successCallback = new DelegatingRemoteCallback<ArtifactBean>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
@@ -63,7 +63,7 @@ public class ArtifactRpcService {
      * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#getDocumentContent(String, String)
      */
     public void getDocumentContent(String uuid, String artifactType,
-            final IRpcServiceInvocationHandler<String> handler) {
+            final IServiceInvocationHandler<String> handler) {
         RemoteCallback<String> successCallback = new DelegatingRemoteCallback<String>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
@@ -77,7 +77,7 @@ public class ArtifactRpcService {
      * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#getRelationships(String, String)
      */
     public void getRelationships(String uuid, String artifactType,
-            IRpcServiceInvocationHandler<ArtifactRelationshipsBean> handler) {
+            IServiceInvocationHandler<ArtifactRelationshipsBean> handler) {
         RemoteCallback<ArtifactRelationshipsBean> successCallback = new DelegatingRemoteCallback<ArtifactRelationshipsBean>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
@@ -90,7 +90,7 @@ public class ArtifactRpcService {
     /**
      * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#update(org.overlord.sramp.ui.client.shared.beans.ArtifactBean)
      */
-    public void update(ArtifactBean artifact, final IRpcServiceInvocationHandler<Void> handler) {
+    public void update(ArtifactBean artifact, final IServiceInvocationHandler<Void> handler) {
         RemoteCallback<Void> successCallback = new DelegatingRemoteCallback<Void>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
@@ -103,7 +103,7 @@ public class ArtifactRpcService {
     /**
      * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#delete(org.overlord.sramp.ui.client.shared.beans.ArtifactBean)
      */
-    public void delete(ArtifactBean artifact, final IRpcServiceInvocationHandler<Void> handler) {
+    public void delete(ArtifactBean artifact, final IServiceInvocationHandler<Void> handler) {
         RemoteCallback<Void> successCallback = new DelegatingRemoteCallback<Void>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {

@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.ui.client.shared.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -25,8 +26,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
  * @author eric.wittmann@redhat.com
  */
 @Portable
-public class OntologySummaryBean {
+public class OntologySummaryBean implements Serializable {
 
+    private static final long serialVersionUID = -8810949526904944644L;
+    
     private String uuid;
     private String id;
     private String base;

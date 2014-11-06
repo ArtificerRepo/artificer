@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 
-import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,9 +45,6 @@ public class ArtifactDownloadServlet extends AbstractDownloadServlet {
 
 	private static final long serialVersionUID = ArtifactDownloadServlet.class.hashCode();
 
-    @Inject
-    private SrampApiClientAccessor clientAccessor;
-
 	/**
 	 * Constructor.
 	 */
@@ -63,7 +59,7 @@ public class ArtifactDownloadServlet extends AbstractDownloadServlet {
 			IOException {
         HttpServletResponse httpResponse = resp;
 		try {
-			SrampAtomApiClient client = clientAccessor.getClient();
+			SrampAtomApiClient client = SrampApiClientAccessor.getClient();
 			String uuid = req.getParameter("uuid"); //$NON-NLS-1$
             String type = req.getParameter("type"); //$NON-NLS-1$
             String as = req.getParameter("as"); //$NON-NLS-1$

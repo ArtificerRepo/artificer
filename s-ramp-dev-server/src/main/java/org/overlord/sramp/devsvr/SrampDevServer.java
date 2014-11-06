@@ -36,8 +36,6 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.jboss.errai.bus.server.servlet.DefaultBlockingServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
-import org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener;
-import org.jboss.weld.environment.servlet.Listener;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter;
 import org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter;
@@ -166,8 +164,6 @@ public class SrampDevServer extends ErraiDevServer {
         srampUI.setInitParameter("errai.properties", "/WEB-INF/errai.properties");
         srampUI.setInitParameter("login.config", "/WEB-INF/login.config");
         srampUI.setInitParameter("users.properties", "/WEB-INF/users.properties");
-        srampUI.addEventListener(new Listener());
-        srampUI.addEventListener(new BeanManagerResourceBindingListener());
         srampUI.addFilter(HttpRequestThreadLocalFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         srampUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST));
         srampUI.addFilter(GWTCacheControlFilter.class, "/", EnumSet.of(DispatcherType.REQUEST));

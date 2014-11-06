@@ -26,11 +26,11 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.overlord.sramp.ui.client.local.services.rpc.DelegatingErrorCallback;
-import org.overlord.sramp.ui.client.local.services.rpc.DelegatingRemoteCallback;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.callback.DelegatingErrorCallback;
+import org.overlord.sramp.ui.client.local.services.callback.DelegatingRemoteCallback;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
-import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
+import org.overlord.sramp.ui.client.shared.beans.OntologyResultSetBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IOntologyService;
 
@@ -38,50 +38,50 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 
 /**
- * Client-side service for making RPC calls to the remote ontology service.  This service
+ * Client-side service for making Caller calls to the remote ontology service.  This service
  * also caches the ontologies with the expectation that they rarely change.  Consumers
  * should call the clearCache() method to force a re-fetch of data.
  *
  * @author eric.wittmann@redhat.com
  */
 @ApplicationScoped
-public class OntologyRpcService {
+public class OntologyServiceCaller {
 
     @Inject
     private Caller<IOntologyService> remoteOntologyService;
 
-    private List<OntologySummaryBean> summaryCache = new ArrayList<OntologySummaryBean>();
+    private OntologyResultSetBean summaryCache = null;
     private Map<String, OntologyBean> ontologyCache = new HashMap<String, OntologyBean>();
 
     /**
      * Constructor.
      */
-    public OntologyRpcService() {
+    public OntologyServiceCaller() {
     }
 
     /**
      * Invalidates/clears the cache.
      */
     public void clearCache() {
-        summaryCache.clear();
+        summaryCache = null;
         ontologyCache.clear();
     }
 
     /**
      * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#list()
      */
-    public void list(boolean forceRefresh, final IRpcServiceInvocationHandler<List<OntologySummaryBean>> handler) {
-        if (!summaryCache.isEmpty() && !forceRefresh) {
+    public void list(boolean forceRefresh, final IServiceInvocationHandler<OntologyResultSetBean> handler) {
+        if (summaryCache != null && !forceRefresh) {
             Scheduler.get().scheduleDeferred(new Command() {
                 public void execute () {
                     handler.onReturn(summaryCache);
                 }
             });
         } else {
-            RemoteCallback<List<OntologySummaryBean>> successCallback = new DelegatingRemoteCallback<List<OntologySummaryBean>>(handler) {
+            RemoteCallback<OntologyResultSetBean> successCallback = new DelegatingRemoteCallback<OntologyResultSetBean>(handler) {
                 @Override
-                public void callback(List<OntologySummaryBean> response) {
-                    summaryCache = new ArrayList<OntologySummaryBean>(response);
+                public void callback(OntologyResultSetBean response) {
+                    summaryCache = response;
                     super.callback(response);
                 }
             };
@@ -97,7 +97,7 @@ public class OntologyRpcService {
     /**
      * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#get(java.lang.String)
      */
-    public void get(final String uuid, boolean forceRefresh, final IRpcServiceInvocationHandler<OntologyBean> handler) {
+    public void get(final String uuid, boolean forceRefresh, final IServiceInvocationHandler<OntologyBean> handler) {
         if (!forceRefresh && ontologyCache.containsKey(uuid)) {
             Scheduler.get().scheduleDeferred(new Command() {
                 public void execute () {
@@ -125,26 +125,26 @@ public class OntologyRpcService {
      * Gets all of the ontologies in a single async shot.
      * @param handler
      */
-    public void getAll(final boolean forceRefresh, final IRpcServiceInvocationHandler<List<OntologyBean>> handler) {
-        list(forceRefresh, new IRpcServiceInvocationHandler<List<OntologySummaryBean>>() {
+    public void getAll(final boolean forceRefresh, final IServiceInvocationHandler<List<OntologyBean>> handler) {
+        list(forceRefresh, new IServiceInvocationHandler<OntologyResultSetBean>() {
             int ontologyIndex = 0;
             List<OntologyBean> allOntologies = new ArrayList<OntologyBean>();
             @Override
-            public void onReturn(final List<OntologySummaryBean> summaries) {
-                if (summaries.isEmpty()) {
+            public void onReturn(final OntologyResultSetBean summaries) {
+                if (summaries.getOntologies().isEmpty()) {
                     handler.onReturn(allOntologies);
                 } else {
-                    final IRpcServiceInvocationHandler<OntologyBean> handy = new IRpcServiceInvocationHandler<OntologyBean>() {
+                    final IServiceInvocationHandler<OntologyBean> handy = new IServiceInvocationHandler<OntologyBean>() {
                         @Override
                         public void onReturn(OntologyBean ontology) {
                             // add the ontology to the rval
                             allOntologies.add(ontology);
                             // get the next ontology in the list (unless we've got them all)
                             ontologyIndex++;
-                            if (ontologyIndex >= summaries.size()) {
+                            if (ontologyIndex >= summaries.getOntologies().size()) {
                                 handler.onReturn(allOntologies);
                             } else {
-                                get(summaries.get(ontologyIndex).getUuid(), forceRefresh, this);
+                                get(summaries.getOntologies().get(ontologyIndex).getUuid(), forceRefresh, this);
                             }
                         }
                         @Override
@@ -152,7 +152,7 @@ public class OntologyRpcService {
                             handler.onError(error);
                         }
                     };
-                    get(summaries.get(ontologyIndex).getUuid(), forceRefresh, handy);
+                    get(summaries.getOntologies().get(ontologyIndex).getUuid(), forceRefresh, handy);
                 }
             }
             @Override
@@ -165,7 +165,7 @@ public class OntologyRpcService {
     /**
      * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#update(OntologyBean)
      */
-    public void update(OntologyBean ontology, final IRpcServiceInvocationHandler<Void> handler) {
+    public void update(OntologyBean ontology, final IServiceInvocationHandler<Void> handler) {
         ontologyCache.remove(ontology.getUuid());
         RemoteCallback<Void> successCallback = new DelegatingRemoteCallback<Void>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
@@ -179,7 +179,7 @@ public class OntologyRpcService {
     /**
      * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#add(OntologyBean)
      */
-    public void add(OntologyBean ontology, final IRpcServiceInvocationHandler<Void> handler) {
+    public void add(OntologyBean ontology, final IServiceInvocationHandler<Void> handler) {
         RemoteCallback<Void> successCallback = new DelegatingRemoteCallback<Void>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
@@ -192,7 +192,7 @@ public class OntologyRpcService {
     /**
      * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#delete(OntologyBean)
      */
-    public void delete(String uuid, final IRpcServiceInvocationHandler<Void> handler) {
+    public void delete(String uuid, final IServiceInvocationHandler<Void> handler) {
         ontologyCache.remove(uuid);
         RemoteCallback<Void> successCallback = new DelegatingRemoteCallback<Void>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);

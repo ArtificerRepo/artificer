@@ -15,8 +15,6 @@
  */
 package org.overlord.sramp.ui.client.local.pages;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
@@ -33,11 +31,12 @@ import org.overlord.sramp.ui.client.local.pages.ontologies.OntologyEditor;
 import org.overlord.sramp.ui.client.local.pages.ontologies.OntologySummaryPanel;
 import org.overlord.sramp.ui.client.local.pages.ontologies.UploadOntologyDialog;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
-import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.OntologyServiceCaller;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.util.IUploadCompletionHandler;
 import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
+import org.overlord.sramp.ui.client.shared.beans.OntologyResultSetBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -68,7 +67,7 @@ public class OntologiesPage extends AbstractPage {
     @Inject
     ClientMessages i18n;
     @Inject
-    OntologyRpcService ontologyService;
+    OntologyServiceCaller ontologyService;
 
     // Dialog factories
     @Inject
@@ -114,13 +113,13 @@ public class OntologiesPage extends AbstractPage {
      */
     @Override
     protected void onPageShowing() {
-        ontologyService.list(true, new IRpcServiceInvocationHandler<List<OntologySummaryBean>>() {
+        ontologyService.list(true, new IServiceInvocationHandler<OntologyResultSetBean>() {
             @Override
-            public void onReturn(List<OntologySummaryBean> data) {
+            public void onReturn(OntologyResultSetBean data) {
                 String selectedUuid = ontologySummaryPanel.getSelectedOntology() == null
                         ? null : ontologySummaryPanel.getSelectedOntology().getUuid();
                 
-                ontologySummaryPanel.setValue(data);
+                ontologySummaryPanel.setValue(data.getOntologies());
                 
                 // If something was selected, re-select it.  This is mostly to handle add/upload ontologies
                 // refreshing the panel.
@@ -181,7 +180,7 @@ public class OntologiesPage extends AbstractPage {
         final NotificationBean notificationBean = notificationService.startProgressNotification(
                 i18n.format("new-ontology.creating.title"), //$NON-NLS-1$
                 i18n.format("new-ontology.creating.message")); //$NON-NLS-1$
-        ontologyService.add(value, new IRpcServiceInvocationHandler<Void>() {
+        ontologyService.add(value, new IServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
@@ -224,7 +223,7 @@ public class OntologiesPage extends AbstractPage {
      */
     private void reloadOntologyEditor(String uuid) {
         this.editor.clear();
-        this.ontologyService.get(uuid, true, new IRpcServiceInvocationHandler<OntologyBean>() {
+        this.ontologyService.get(uuid, true, new IServiceInvocationHandler<OntologyBean>() {
             @Override
             public void onReturn(OntologyBean data) {
                 editor.setValue(data);

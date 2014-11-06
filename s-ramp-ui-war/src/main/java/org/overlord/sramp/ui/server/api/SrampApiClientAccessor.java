@@ -17,9 +17,6 @@ package org.overlord.sramp.ui.server.api;
 
 import java.util.Locale;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import org.overlord.commons.config.JBossServer;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
@@ -30,7 +27,6 @@ import org.overlord.sramp.ui.server.SrampUIConfig;
  *
  * @author eric.wittmann@redhat.com
  */
-@Singleton
 public class SrampApiClientAccessor {
 
     private transient static ThreadLocal<SrampAtomApiClient> client = new ThreadLocal<SrampAtomApiClient>();
@@ -42,25 +38,16 @@ public class SrampApiClientAccessor {
         tlocale.set(null);
     }
 
-    @Inject
-    private SrampUIConfig config;
-
-	/**
-	 * C'tor.
-	 */
-	public SrampApiClientAccessor() {
-	}
-
     /**
      * Creates a new s-ramp client from configuration.
      * @param config
      */
-    protected SrampAtomApiClient createClient() {
+    private static SrampAtomApiClient createClient() {
     	String defaultSrampApiEndpoint = JBossServer.getBaseUrl() + "/s-ramp-server"; //$NON-NLS-1$
-        String endpoint = config.getConfig().getString(SrampUIConfig.SRAMP_API_ENDPOINT, defaultSrampApiEndpoint);
-        boolean validating = "true".equals(config.getConfig().getString(SrampUIConfig.SRAMP_API_VALIDATING, "true")); //$NON-NLS-1$ //$NON-NLS-2$
+        String endpoint = SrampUIConfig.getConfig().getString(SrampUIConfig.SRAMP_API_ENDPOINT, defaultSrampApiEndpoint);
+        boolean validating = "true".equals(SrampUIConfig.getConfig().getString(SrampUIConfig.SRAMP_API_VALIDATING, "true")); //$NON-NLS-1$ //$NON-NLS-2$
         AuthenticationProvider authProvider = null;
-        String authProviderClass = config.getConfig().getString(SrampUIConfig.SRAMP_API_AUTH_PROVIDER);
+        String authProviderClass = SrampUIConfig.getConfig().getString(SrampUIConfig.SRAMP_API_AUTH_PROVIDER);
         try {
             if (authProviderClass != null && authProviderClass.trim().length() > 0) {
                 Class<?> c = Class.forName(authProviderClass);
@@ -75,7 +62,7 @@ public class SrampApiClientAccessor {
 	/**
 	 * @return the atom api client
 	 */
-	public SrampAtomApiClient getClient() {
+	public static SrampAtomApiClient getClient() {
 	    if (client.get() == null) {
 	        client.set(createClient());
 	    }

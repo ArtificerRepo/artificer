@@ -11,17 +11,25 @@
   <name>S-RAMP UI: Web App (Tomcat 7)</name>
   
   <dependencies>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson-provider</artifactId>
+    </dependency>
+    
     <!-- The base WAR being extended -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war</artifactId>
       <type>war</type>
     </dependency>
-    
-    <!-- Other Tomcat-only dependencies -->
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war</artifactId>
+      <classifier>classes</classifier>
     </dependency>
   </dependencies>
   

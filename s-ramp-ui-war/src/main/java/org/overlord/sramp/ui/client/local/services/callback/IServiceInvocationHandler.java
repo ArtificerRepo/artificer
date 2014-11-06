@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.ui.client.local.services.rpc;
+package org.overlord.sramp.ui.client.local.services.callback;
 
 /**
  * An async handler interface for making service invocations.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface IRpcServiceInvocationHandler<T> {
+public interface IServiceInvocationHandler<T> {
 
     /**
-     * Called when the RPC call successfully returns data.
+     * Called when the Caller call successfully returns data.
      * @param data
      */
     public void onReturn(T data);
 
     /**
-     * Called when the RPC call fails.
+     * Called when the Caller call fails.
      * @param error
      */
     public void onError(Throwable error);

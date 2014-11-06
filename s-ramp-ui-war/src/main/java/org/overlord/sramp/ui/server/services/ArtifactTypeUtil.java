@@ -19,8 +19,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Singleton;
-
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
@@ -30,8 +28,7 @@ import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
  *
  * @author eric.wittmann@redhat.com
  */
-@Singleton
-public class ArtifactTypeGuessingService {
+public class ArtifactTypeUtil {
 
     private static Map<String, String> nameMap = new HashMap<String, String>();
     private static Map<String, String> extensionMap = new HashMap<String, String>();
@@ -51,19 +48,13 @@ public class ArtifactTypeGuessingService {
     }
 
     /**
-     * Constructor.
-     */
-    public ArtifactTypeGuessingService() {
-    }
-
-    /**
      * Guesses the artifact type from the filename.
      *
      * TODO this should be made extensible!
      *
      * @param fileName
      */
-    public String guess(String fileName) {
+    public static String guess(String fileName) {
         try {
             String extension = null;
             String shortName = new File(fileName).getName();

@@ -15,7 +15,6 @@
  */
 package org.overlord.sramp.ui.client.shared.beans;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
  */
 @Portable
 @Bindable
-public class ArtifactBean extends ArtifactSummaryBean implements Serializable {
+public class ArtifactBean extends ArtifactSummaryBean {
 
     private static final long serialVersionUID = ArtifactBean.class.hashCode();
 

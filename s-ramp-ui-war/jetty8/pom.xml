@@ -17,12 +17,6 @@
       <artifactId>s-ramp-ui-war</artifactId>
       <type>war</type>
     </dependency>
-
-    <!-- Other Jetty-only dependencies -->
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
   </dependencies>
 
   <build>

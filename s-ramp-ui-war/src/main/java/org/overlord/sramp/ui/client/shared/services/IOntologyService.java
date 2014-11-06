@@ -15,11 +15,18 @@
  */
 package org.overlord.sramp.ui.client.shared.services;
 
-import java.util.List;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
-import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
+import org.overlord.sramp.ui.client.shared.beans.OntologyResultSetBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 
 /**
@@ -27,27 +34,34 @@ import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
  *
  * @author eric.wittmann@redhat.com
  */
-@Remote
+@Path("ontologies")
 public interface IOntologyService {
 
     /**
      * Gets the list of all ontologies.
      * @throws SrampUiException
      */
-    public List<OntologySummaryBean> list() throws SrampUiException;
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public OntologyResultSetBean list() throws SrampUiException;
 
     /**
      * Gets the full meta data for an ontology, including its full tree of classes.
      * @param uuid
      * @throws SrampUiException
      */
-    public OntologyBean get(String uuid) throws SrampUiException;
+    @GET
+    @Path("{uuid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public OntologyBean get(@PathParam("uuid") String uuid) throws SrampUiException;
 
     /**
      * Called to update the given ontology.
      * @param ontology
      * @throws SrampUiException
      */
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
     public void update(OntologyBean ontology) throws SrampUiException;
     
     /**
@@ -55,6 +69,8 @@ public interface IOntologyService {
      * @param ontology
      * @throws SrampUiException
      */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     public void add(OntologyBean ontology) throws SrampUiException;
 
     /**
@@ -62,6 +78,8 @@ public interface IOntologyService {
      * @param uuid
      * @throws SrampUiException
      */
-    public void delete(String uuid) throws SrampUiException;
+    @DELETE
+    @Path("{uuid}")
+    public void delete(@PathParam("uuid") String uuid) throws SrampUiException;
 
 }

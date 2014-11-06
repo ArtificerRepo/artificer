@@ -15,8 +15,6 @@
  */
 package org.overlord.sramp.ui.server;
 
-import javax.inject.Singleton;
-
 import org.apache.commons.configuration.Configuration;
 import org.overlord.commons.config.ConfigurationFactory;
 import org.overlord.commons.config.JBossServer;
@@ -28,7 +26,6 @@ import org.overlord.sramp.ui.server.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-@Singleton
 public class SrampUIConfig {
 
     public static final String SRAMP_UI_CONFIG_FILE_NAME     = "sramp-ui.config.file.name"; //$NON-NLS-1$
@@ -67,15 +64,9 @@ public class SrampUIConfig {
     }
 
     /**
-     * Constructor.
-     */
-    public SrampUIConfig() {
-    }
-
-    /**
      * @return the configuration
      */
-    public Configuration getConfig() {
+    public static Configuration getConfig() {
         return config;
     }
 

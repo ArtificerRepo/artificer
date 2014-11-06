@@ -35,12 +35,13 @@ import org.overlord.sramp.ui.client.local.pages.artifacts.ArtifactsTable;
 import org.overlord.sramp.ui.client.local.pages.artifacts.ImportArtifactDialog;
 import org.overlord.sramp.ui.client.local.services.ApplicationStateKeys;
 import org.overlord.sramp.ui.client.local.services.ApplicationStateService;
-import org.overlord.sramp.ui.client.local.services.ArtifactSearchRpcService;
+import org.overlord.sramp.ui.client.local.services.ArtifactSearchServiceCaller;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.util.IUploadCompletionHandler;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactFilterBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactResultSetBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactSearchBean;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 
 import com.google.gwt.dom.client.Document;
@@ -64,7 +65,7 @@ public class ArtifactsPage extends AbstractPage {
     @Inject
     protected ClientMessages i18n;
     @Inject
-    protected ArtifactSearchRpcService searchService;
+    protected ArtifactSearchServiceCaller searchService;
     @Inject
     protected NotificationService notificationService;
     @Inject
@@ -225,9 +226,15 @@ public class ArtifactsPage extends AbstractPage {
         stateService.put(ApplicationStateKeys.ARTIFACTS_SEARCH_TEXT, searchText);
         stateService.put(ApplicationStateKeys.ARTIFACTS_PAGE, currentPage);
         stateService.put(ApplicationStateKeys.ARTIFACTS_SORT_COLUMN, currentSortColumn);
+        
+        ArtifactSearchBean searchBean = new ArtifactSearchBean();
+        searchBean.setFilters(filterBean);
+        searchBean.setSearchText(searchText);
+        searchBean.setPage(page);
+        searchBean.setSortColumnId(currentSortColumn.columnId);
+        searchBean.setSortAscending(currentSortColumn.ascending);
 
-		searchService.search(filterBean, searchText, page, currentSortColumn.columnId, currentSortColumn.ascending,
-		        new IRpcServiceInvocationHandler<ArtifactResultSetBean>() {
+		searchService.search(searchBean, new IServiceInvocationHandler<ArtifactResultSetBean>() {
             @Override
             public void onReturn(ArtifactResultSetBean data) {
                 updateArtifactTable(data);

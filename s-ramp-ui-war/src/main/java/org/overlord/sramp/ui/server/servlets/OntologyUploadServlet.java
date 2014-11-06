@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,9 +50,6 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 public class OntologyUploadServlet extends AbstractUploadServlet {
 
 	private static final long serialVersionUID = OntologyUploadServlet.class.hashCode();
-
-    @Inject
-    private SrampApiClientAccessor clientAccessor;
 
 	/**
 	 * Constructor.
@@ -140,7 +136,7 @@ public class OntologyUploadServlet extends AbstractUploadServlet {
         InputStream contentStream = null;
 		try {
 			contentStream = FileUtils.openInputStream(tempFile);
-			RDF ontology = clientAccessor.getClient().uploadOntology(contentStream);
+			RDF ontology = SrampApiClientAccessor.getClient().uploadOntology(contentStream);
 
             if (ontology.getOtherAttributes() != null) {
                 responseParams

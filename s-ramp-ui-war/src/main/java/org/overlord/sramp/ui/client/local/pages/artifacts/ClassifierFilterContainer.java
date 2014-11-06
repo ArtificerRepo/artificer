@@ -27,10 +27,11 @@ import javax.inject.Inject;
 
 import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
-import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.OntologyServiceCaller;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.LoadingOntologies;
 import org.overlord.sramp.ui.client.local.widgets.ontologies.NoOntologiesFound;
+import org.overlord.sramp.ui.client.shared.beans.OntologyResultSetBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 
@@ -54,7 +55,7 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
     @Inject
     protected ClientMessages i18n;
     @Inject
-    private OntologyRpcService ontologyRpcService;
+    private OntologyServiceCaller ontologyServiceCaller;
     @Inject
     private NotificationService notificationService;
     @Inject
@@ -159,14 +160,14 @@ public class ClassifierFilterContainer extends FlowPanel implements HasValue<Map
     public void refresh() {
         clear();
         add(loadingOntologiesFactory.get());
-        ontologyRpcService.list(false, new IRpcServiceInvocationHandler<List<OntologySummaryBean>>() {
+        ontologyServiceCaller.list(false, new IServiceInvocationHandler<OntologyResultSetBean>() {
             @Override
-            public void onReturn(List<OntologySummaryBean> data) {
+            public void onReturn(OntologyResultSetBean data) {
                 clear();
-                if (data.isEmpty()) {
+                if (data.getOntologies().isEmpty()) {
                     add(noOntologiesFoundFactory.get());
                 } else {
-                    for (OntologySummaryBean ontologySummaryBean : data) {
+                    for (OntologySummaryBean ontologySummaryBean : data.getOntologies()) {
                         addClassifierFilterFor(ontologySummaryBean);
                     }
                 }

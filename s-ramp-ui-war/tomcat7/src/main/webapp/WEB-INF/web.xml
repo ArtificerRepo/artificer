@@ -8,14 +8,6 @@
     <location>/403.html</location>
   </error-page>
 
-  <session-config>
-    <session-timeout>60</session-timeout>
-  </session-config>
-
-  <listener>
-    <listener-class>org.overlord.sramp.ui.server.fuse61.Listener</listener-class>
-  </listener>
-
   <!-- Filters -->
   <filter>
     <filter-name>GWTCacheControl</filter-name>
@@ -33,7 +25,7 @@
     <filter-name>GWTCacheControl</filter-name>
     <url-pattern>*.html</url-pattern>
   </filter-mapping>
-
+  
   <filter>
     <filter-name>ResourceCacheControl</filter-name>
     <filter-class>org.overlord.commons.gwt.server.filters.ResourceCacheControlFilter</filter-class>
@@ -69,15 +61,6 @@
   </filter-mapping>
 
   <filter>
-    <filter-name>OverlordHeaderResources</filter-name>
-    <filter-class>org.overlord.commons.ui.header.OverlordHeaderResources</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>OverlordHeaderResources</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <filter>
     <filter-name>AuthenticationFilter</filter-name>
     <filter-class>org.overlord.commons.auth.filters.SamlSPFilter</filter-class>
     <init-param>
@@ -91,9 +74,9 @@
   </filter-mapping>
   <filter-mapping>
     <filter-name>AuthenticationFilter</filter-name>
-    <url-pattern>*.html</url-pattern>
+    <url-pattern>/index.html</url-pattern>
   </filter-mapping>
-
+  
   <filter>
     <filter-name>PicketLinkAuthWrapperFilter</filter-name>
     <filter-class>org.overlord.commons.auth.filters.PicketLinkAuthWrapperFilter</filter-class>
@@ -150,20 +133,7 @@
     <filter-name>UploadAuthFilter</filter-name>
     <url-pattern>/app/services/ontologyUpload</url-pattern>
   </filter-mapping>
-  
-  <filter>
-    <filter-name>WelcomeFileFilter</filter-name>
-    <filter-class>org.overlord.commons.gwt.server.filters.WelcomeFileFilter</filter-class>
-    <init-param>
-      <param-name>welcomeFiles</param-name>
-      <param-value>index.html</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>WelcomeFileFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-  
+
   <!-- Servlets -->
   <servlet>
     <servlet-name>ErraiServlet</servlet-name>
@@ -187,19 +157,41 @@
     <param-value>/WEB-INF/users.properties</param-value>
   </context-param>
   
+  <!-- TOMCAT SPECIFIC -->
+  <listener>
+    <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>RestServlet</servlet-name>
+    <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>org.overlord.sramp.ui.server.services.tomcat.TomcatSRAMPApplication</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RestServlet</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+  <context-param>
+    <param-name>resteasy.servlet.mapping.prefix</param-name>
+    <param-value>/rest</param-value>
+  </context-param>
+  <!-- END TOMCAT SPECIFIC -->
+
   <servlet>
     <servlet-name>OverlordHeaderDataJS</servlet-name>
     <servlet-class>org.overlord.commons.ui.header.OverlordHeaderDataJS</servlet-class>
     <init-param>
-        <param-name>app-id</param-name>
-        <param-value>s-ramp-ui</param-value>
+      <param-name>app-id</param-name>
+      <param-value>s-ramp-ui</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>OverlordHeaderDataJS</servlet-name>
     <url-pattern>/js/overlord-header-data.js</url-pattern>
   </servlet-mapping>
-  
+
   <servlet>
     <servlet-name>ArtifactDownload</servlet-name>
     <servlet-class>org.overlord.sramp.ui.server.servlets.ArtifactDownloadServlet</servlet-class>
@@ -208,7 +200,7 @@
     <servlet-name>ArtifactDownload</servlet-name>
     <url-pattern>/app/services/artifactDownload</url-pattern>
   </servlet-mapping>
-  
+
   <servlet>
     <servlet-name>ArtifactUpload</servlet-name>
     <servlet-class>org.overlord.sramp.ui.server.servlets.ArtifactUploadServlet</servlet-class>
@@ -226,6 +218,7 @@
     <servlet-name>OntologyUpload</servlet-name>
     <url-pattern>/app/services/ontologyUpload</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <servlet-name>OntologyDownload</servlet-name>
     <servlet-class>org.overlord.sramp.ui.server.servlets.OntologyDownloadServlet</servlet-class>

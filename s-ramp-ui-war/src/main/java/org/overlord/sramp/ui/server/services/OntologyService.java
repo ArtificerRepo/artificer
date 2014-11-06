@@ -16,11 +16,12 @@
 package org.overlord.sramp.ui.server.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.overlord.sramp.atom.mappers.OntologyToRdfMapper;
 import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
 import org.overlord.sramp.client.ontology.OntologySummary;
@@ -28,6 +29,7 @@ import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.common.ontology.SrampOntology.SrampOntologyClass;
 import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologyClassBean;
+import org.overlord.sramp.ui.client.shared.beans.OntologyResultSetBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IOntologyService;
@@ -39,13 +41,10 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
  *
  * @author eric.wittmann@redhat.com
  */
-@Service
+@ApplicationScoped
 public class OntologyService implements IOntologyService {
 
     private static OntologyToRdfMapper o2rdf = new OntologyToRdfMapper();
-
-    @Inject
-    private SrampApiClientAccessor clientAccessor;
 
     /**
      * Constructor.
@@ -59,7 +58,7 @@ public class OntologyService implements IOntologyService {
     @Override
     public OntologyBean get(String uuid) throws SrampUiException {
         try {
-            RDF rdf = clientAccessor.getClient().getOntology(uuid);
+            RDF rdf = SrampApiClientAccessor.getClient().getOntology(uuid);
             SrampOntology ontology = RdfToOntologyMapper.rdf2ontology(rdf);
             OntologyBean bean = ontologyToBean(ontology);
             return bean;
@@ -72,13 +71,15 @@ public class OntologyService implements IOntologyService {
      * @see org.overlord.sramp.ui.client.shared.services.IOntologyService#list()
      */
     @Override
-    public List<OntologySummaryBean> list() throws SrampUiException {
+    public OntologyResultSetBean list() throws SrampUiException {
         try {
-            List<OntologySummaryBean> rval = new ArrayList<OntologySummaryBean>();
-            List<OntologySummary> ontologies = clientAccessor.getClient().getOntologies();
+            OntologyResultSetBean rval = new OntologyResultSetBean();
+            List<OntologySummaryBean> ontologyBeans = new ArrayList<OntologySummaryBean>();
+            List<OntologySummary> ontologies = SrampApiClientAccessor.getClient().getOntologies();
             for (OntologySummary ontologySummary : ontologies) {
-                rval.add(ontologySummaryToBean(ontologySummary));
+                ontologyBeans.add(ontologySummaryToBean(ontologySummary));
             }
+            rval.setOntologies(ontologyBeans);
             return rval;
         } catch (Exception e) {
             throw new SrampUiException(e.getMessage());
@@ -92,7 +93,7 @@ public class OntologyService implements IOntologyService {
     public void add(OntologyBean ontology) throws SrampUiException {
         try {
             RDF rdf = ontologyBeanToRDF(ontology);
-            clientAccessor.getClient().addOntology(rdf);
+            SrampApiClientAccessor.getClient().addOntology(rdf);
         } catch (Exception e) {
             throw new SrampUiException(e.getMessage());
         }
@@ -105,7 +106,7 @@ public class OntologyService implements IOntologyService {
     public void update(OntologyBean ontology) throws SrampUiException {
         try {
             RDF rdf = ontologyBeanToRDF(ontology);
-            clientAccessor.getClient().updateOntology(ontology.getUuid(), rdf);
+            SrampApiClientAccessor.getClient().updateOntology(ontology.getUuid(), rdf);
         } catch (Exception e) {
             throw new SrampUiException(e.getMessage());
         }
@@ -117,7 +118,7 @@ public class OntologyService implements IOntologyService {
     @Override
     public void delete(String uuid) throws SrampUiException {
         try {
-            clientAccessor.getClient().deleteOntology(uuid);
+            SrampApiClientAccessor.getClient().deleteOntology(uuid);
         } catch (Exception e) {
             throw new SrampUiException(e.getMessage());
         }
@@ -140,19 +141,21 @@ public class OntologyService implements IOntologyService {
         bean.setLastModifiedOn(ontology.getLastModifiedOn());
         bean.setUuid(ontology.getUuid());
         List<SrampOntologyClass> allClasses = ontology.getAllClasses();
+        
         // Create and index all the classes first
+        Map<String, OntologyClassBean> classIndexById = new HashMap<String, OntologyClassBean>();
         for (SrampOntologyClass cl4ss : allClasses) {
             OntologyClassBean classBean = bean.createClass(cl4ss.getId());
+            classIndexById.put(cl4ss.getId(), classBean);
             classBean.setComment(cl4ss.getComment());
             classBean.setLabel(cl4ss.getLabel());
         }
         // Then go back through and set up the tree.
         for (SrampOntologyClass cl4ss : allClasses) {
-            OntologyClassBean classBean = bean.findClassById(cl4ss.getId());
+            OntologyClassBean classBean = classIndexById.get(cl4ss.getId());
             if (cl4ss.getParent() != null) {
-                OntologyClassBean parentBean = bean.findClassById(cl4ss.getParent().getId());
+                OntologyClassBean parentBean = classIndexById.get(cl4ss.getParent().getId());
                 if (parentBean != null) {
-                    classBean.setParent(parentBean);
                     parentBean.getChildren().add(classBean);
                 }
             } else {

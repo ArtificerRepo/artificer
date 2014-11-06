@@ -24,8 +24,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.sramp.ui.client.local.ClientMessages;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
-import org.overlord.sramp.ui.client.local.services.OntologyRpcService;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.OntologyServiceCaller;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
 import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
 
@@ -61,7 +61,7 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
     @Inject
     ClientMessages i18n;
     @Inject
-    OntologyRpcService ontologyService;
+    OntologyServiceCaller ontologyService;
     @Inject
     NotificationService notificationService;
     
@@ -153,7 +153,7 @@ public class OntologySummaryPanelItem extends Composite implements HasValue<Onto
         final NotificationBean notificationBean = notificationService.startProgressNotification(
                 i18n.format("ontology-deleting.title"), //$NON-NLS-1$
                 i18n.format("ontology-deleting.message")); //$NON-NLS-1$
-        ontologyService.delete(getValue().getUuid(), new IRpcServiceInvocationHandler<Void>() {
+        ontologyService.delete(getValue().getUuid(), new IServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(), 

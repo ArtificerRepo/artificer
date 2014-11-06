@@ -16,9 +16,7 @@
 package org.overlord.sramp.ui.client.shared.beans;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -29,10 +27,10 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class OntologyBean extends OntologySummaryBean {
 
+    private static final long serialVersionUID = 9164017316249330169L;
+    
     private String lastModifiedBy;
     private List<OntologyClassBean> rootClasses = new ArrayList<OntologyClassBean>();
-    private Map<String, OntologyClassBean> classIndexByUri = new HashMap<String, OntologyClassBean>();
-    private Map<String, OntologyClassBean> classIndexById = new HashMap<String, OntologyClassBean>();
 
     /**
      * Constructor.
@@ -62,22 +60,6 @@ public class OntologyBean extends OntologySummaryBean {
     }
 
     /**
-     * Finds a class by its unique id within the ontology.
-     * @param id
-     */
-    public OntologyClassBean findClassById(String id) {
-        return classIndexById.get(id);
-    }
-
-    /**
-     * Finds a class by its unique URI.
-     * @param uri
-     */
-    public OntologyClassBean findClassByUri(String uri) {
-        return classIndexByUri.get(uri);
-    }
-
-    /**
      * Creates a class (and indexes it).
      * @param id
      */
@@ -86,8 +68,6 @@ public class OntologyBean extends OntologySummaryBean {
         c.setId(id);
         String uri = getBase() + "#" + id; //$NON-NLS-1$
         c.setUri(uri);
-        this.classIndexById.put(id, c);
-        this.classIndexByUri.put(uri, c);
         return c;
     }
     

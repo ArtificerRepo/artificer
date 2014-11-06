@@ -48,9 +48,9 @@ import org.overlord.sramp.ui.client.local.pages.details.DescriptionInlineLabel;
 import org.overlord.sramp.ui.client.local.pages.details.ModifyClassifiersDialog;
 import org.overlord.sramp.ui.client.local.pages.details.RelationshipsTable;
 import org.overlord.sramp.ui.client.local.pages.details.SourceEditor;
-import org.overlord.sramp.ui.client.local.services.ArtifactRpcService;
+import org.overlord.sramp.ui.client.local.services.ArtifactServiceCaller;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
-import org.overlord.sramp.ui.client.local.services.rpc.IRpcServiceInvocationHandler;
+import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.util.DOMUtil;
 import org.overlord.sramp.ui.client.local.util.DataBindingDateConverter;
 import org.overlord.sramp.ui.client.local.widgets.common.EditableInlineLabel;
@@ -83,7 +83,7 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject
     protected ClientMessages i18n;
     @Inject
-    protected ArtifactRpcService artifactService;
+    protected ArtifactServiceCaller artifactService;
     @Inject
     protected NotificationService notificationService;
     protected ArtifactBean currentArtifact;
@@ -219,7 +219,7 @@ public class ArtifactDetailsPage extends AbstractPage {
         artifactLoading.getElement().removeClassName("hide"); //$NON-NLS-1$
         sourceTabAnchor.setVisible(false);
         editorWrapper.setAttribute("style", "display:none"); //$NON-NLS-1$ //$NON-NLS-2$
-        artifactService.get(uuid, new IRpcServiceInvocationHandler<ArtifactBean>() {
+        artifactService.get(uuid, new IServiceInvocationHandler<ArtifactBean>() {
             @Override
             public void onReturn(ArtifactBean data) {
                 currentArtifact = data;
@@ -290,7 +290,7 @@ public class ArtifactDetailsPage extends AbstractPage {
         final NotificationBean notificationBean = notificationService.startProgressNotification(
                 i18n.format("artifact-details.deleting-artifact-title"), //$NON-NLS-1$
                 i18n.format("artifact-details.deleting-artifact-msg", artifact.getModel().getName())); //$NON-NLS-1$
-        artifactService.delete(artifact.getModel(), new IRpcServiceInvocationHandler<Void>() {
+        artifactService.delete(artifact.getModel(), new IServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
@@ -335,7 +335,7 @@ public class ArtifactDetailsPage extends AbstractPage {
     protected void loadRelationships(ArtifactBean artifact) {
         relationships.setVisible(false);
         relationshipsTabProgress.setVisible(true);
-        artifactService.getRelationships(artifact.getUuid(), artifact.getType(), new IRpcServiceInvocationHandler<ArtifactRelationshipsBean>() {
+        artifactService.getRelationships(artifact.getUuid(), artifact.getType(), new IServiceInvocationHandler<ArtifactRelationshipsBean>() {
             @Override
             public void onReturn(ArtifactRelationshipsBean data) {
                 relationships.setValue(data.getRelationships());
@@ -359,7 +359,7 @@ public class ArtifactDetailsPage extends AbstractPage {
             return;
         }
         sourceTabProgress.setVisible(true);
-        artifactService.getDocumentContent(artifact.getUuid(), artifact.getType(), new IRpcServiceInvocationHandler<String>() {
+        artifactService.getDocumentContent(artifact.getUuid(), artifact.getType(), new IServiceInvocationHandler<String>() {
             @Override
             public void onReturn(String data) {
                 sourceEditor.setValue(data);
@@ -414,7 +414,7 @@ public class ArtifactDetailsPage extends AbstractPage {
         String noteBody = i18n.format("artifact-details.updating-artifact.message", artifact.getModel().getName()); //$NON-NLS-1$
         final NotificationBean notificationBean = notificationService.startProgressNotification(
                 noteTitle, noteBody);
-        artifactService.update(artifact.getModel(), new IRpcServiceInvocationHandler<Void>() {
+        artifactService.update(artifact.getModel(), new IServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
                 String noteTitle = i18n.format("artifact-details.updated-artifact.title"); //$NON-NLS-1$

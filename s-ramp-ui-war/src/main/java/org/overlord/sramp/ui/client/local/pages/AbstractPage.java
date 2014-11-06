@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public abstract class AbstractPage extends Composite {
 
+    // TODO: No longer needed?  Or is it still used by internal messaging?
     @Inject
     protected ClientMessageBus bus;
 
@@ -57,7 +58,7 @@ public abstract class AbstractPage extends Composite {
     @PageShowing
     private final void _onPageShowing() {
         // Do initial page loading work, but do it as a post-init task
-        // of the errai bus so that all RPC endpoints are ready.  This
+        // of the errai bus so that all endpoints are ready.  This
         // is only necessary on initial app load, but it doesn't hurt
         // to always do it.
         CDI.addPostInitTask(new Runnable() {

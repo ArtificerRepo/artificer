@@ -662,11 +662,6 @@
       </dependency>
       <dependency>
         <groupId>org.overlord</groupId>
-        <artifactId>overlord-commons-osgi-weld</artifactId>
-        <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-services</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
@@ -1008,17 +1003,7 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-cdi-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
         <artifactId>errai-javax-enterprise</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-weld-integration</artifactId>
         <version>${version.org.jboss.errai}</version>
       </dependency>
       <dependency>
@@ -1029,6 +1014,21 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jboss-as-support</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-cdi-client</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-javax-enterprise</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-jaxrs-client</artifactId>
         <version>${version.org.jboss.errai}</version>
       </dependency>
       
