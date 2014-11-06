@@ -50,15 +50,16 @@ import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
-import org.overlord.sramp.common.ArtifactAlreadyExistsException;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.InvalidArtifactCreationException;
+import org.overlord.sramp.common.SrampAlreadyExistsException;
 import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.SrampNameUtil;
 import org.overlord.sramp.common.WrongModelException;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.events.EventProducer;
@@ -117,6 +118,8 @@ public class ArtifactResource extends AbstractResource {
             ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
             BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
             
+            SrampNameUtil.verifyArtifact(artifact);
+            
             if (! artifactType.getArtifactType().getApiType().equals(artifact.getArtifactType())) {
                 throw new WrongModelException(artifactType.getArtifactType().getApiType().value(),
                         artifact.getArtifactType().value());
@@ -145,8 +148,8 @@ public class ArtifactResource extends AbstractResource {
             // Simply re-throw.  Don't allow the following catch it -- WrongModelException is mapped to a unique
             // HTTP response type.
             throw e;
-        } catch (ArtifactAlreadyExistsException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactAlreadyExistsException is mapped to a
+        } catch (SrampAlreadyExistsException e) {
+            // Simply re-throw.  Don't allow the following catch it -- SrampAlreadyExistsException is mapped to a
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -265,6 +268,9 @@ public class ArtifactResource extends AbstractResource {
 			    throw new WrongModelException(artifactType.getArtifactType().getApiType().value(),
 			            artifactMetaData.getArtifactType().value());
             }
+            
+            SrampNameUtil.verifyArtifact(artifactMetaData);
+            
 			String fileName = null;
 			if (artifactMetaData.getName() != null)
 				fileName = artifactMetaData.getName();
@@ -293,8 +299,8 @@ public class ArtifactResource extends AbstractResource {
             // Simply re-throw.  Don't allow the following catch it -- WrongModelException is mapped to a unique
             // HTTP response type.
             throw e;
-        } catch (ArtifactAlreadyExistsException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactAlreadyExistsException is mapped to a
+        } catch (SrampAlreadyExistsException e) {
+            // Simply re-throw.  Don't allow the following catch it -- SrampAlreadyExistsException is mapped to a
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -331,6 +337,9 @@ public class ArtifactResource extends AbstractResource {
 			    throw new WrongModelException(artifactType.getArtifactType().getApiType().value(),
                         artifact.getArtifactType().value());
 			}
+            
+            SrampNameUtil.verifyArtifact(artifact);
+            
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);
             if (oldArtifact == null) {

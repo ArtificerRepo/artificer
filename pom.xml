@@ -822,6 +822,11 @@
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.com.google.guava}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
         <artifactId>guava-gwt</artifactId>
         <version>${version.com.google.guava}</version>
       </dependency>
@@ -919,6 +924,11 @@
         <groupId>org.jboss.arquillian.container</groupId>
         <artifactId>arquillian-tomcat-managed-7</artifactId>
         <version>1.0.0.CR7</version>
+      </dependency>
+      <dependency>
+        <groupId>org.reflections</groupId>
+        <artifactId>reflections</artifactId>
+        <version>0.9.9</version>
       </dependency>
       
       <!-- Downgrade to slf4j-ext 1.7.1 so it will run in Fuse 6.1 -->
