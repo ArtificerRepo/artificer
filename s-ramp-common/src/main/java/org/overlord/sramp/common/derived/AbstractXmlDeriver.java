@@ -34,7 +34,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.AbstractXmlArtifactBuilder;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

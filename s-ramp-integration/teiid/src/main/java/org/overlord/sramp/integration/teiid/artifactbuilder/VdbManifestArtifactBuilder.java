@@ -34,8 +34,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.AbstractXmlArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
+import org.overlord.sramp.common.artifactbuilder.XmlArtifactBuilder;
 import org.overlord.sramp.integration.teiid.Messages;
 import org.overlord.sramp.integration.teiid.Utils;
 import org.overlord.sramp.integration.teiid.model.Describable.XmlId;
@@ -61,7 +61,7 @@ import org.w3c.dom.NodeList;
  */
 @Component(name = "VDB Artifact Builder", immediate = true)
 @Service(value = ArtifactBuilder.class)
-public final class VdbManifestArtifactBuilder extends AbstractXmlArtifactBuilder {
+public final class VdbManifestArtifactBuilder extends XmlArtifactBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VdbManifestArtifactBuilder.class);
 

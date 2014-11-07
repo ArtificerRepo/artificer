@@ -15,8 +15,6 @@
  */
 package org.overlord.sramp.common.artifactbuilder;
 
-import java.io.IOException;
-
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 
 /**
@@ -31,15 +29,11 @@ import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
  *
  * @author eric.wittmann@redhat.com
  */
-public class PolicyArtifactBuilder extends AbstractXmlArtifactBuilder {
+public class PolicyArtifactBuilder extends XmlArtifactBuilder {
 
 	@Override
 	protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
 		super.configureNamespaceMappings(namespaceContext);
 		namespaceContext.addMapping("wsp", "http://www.w3.org/ns/ws-policy"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	@Override
-    protected void derive() throws IOException {
 	}
 }

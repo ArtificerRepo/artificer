@@ -31,9 +31,9 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.AbstractXmlArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.QNameRelationshipSource;
+import org.overlord.sramp.common.artifactbuilder.XmlArtifactBuilder;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
@@ -48,7 +48,7 @@ import org.w3c.dom.NodeList;
  */
 @Component(name = "SwitchYard Artifact Builder", immediate = true)
 @Service(value = ArtifactBuilder.class)
-public class SwitchYardXmlArtifactBuilder extends AbstractXmlArtifactBuilder {
+public class SwitchYardXmlArtifactBuilder extends XmlArtifactBuilder {
 
     @Override
     protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {

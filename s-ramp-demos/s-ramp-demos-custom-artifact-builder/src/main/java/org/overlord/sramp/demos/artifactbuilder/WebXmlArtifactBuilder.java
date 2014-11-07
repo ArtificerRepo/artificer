@@ -26,8 +26,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.AbstractXmlArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
+import org.overlord.sramp.common.artifactbuilder.XmlArtifactBuilder;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
  *
  * @author eric.wittmann@redhat.com
  */
-public class WebXmlArtifactBuilder extends AbstractXmlArtifactBuilder {
+public class WebXmlArtifactBuilder extends XmlArtifactBuilder {
     
     private final WebXmlArtifactCollection derivedArtifacts = new WebXmlArtifactCollection();
 

@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
 /**
  * @author Brett Meyer
  */
-public class XsdDocumentArtifactBuilder extends AbstractXmlArtifactBuilder {
+public class XsdDocumentArtifactBuilder extends XmlArtifactBuilder {
     
     protected IndexedArtifactCollection derivedArtifacts = new IndexedArtifactCollection();
 

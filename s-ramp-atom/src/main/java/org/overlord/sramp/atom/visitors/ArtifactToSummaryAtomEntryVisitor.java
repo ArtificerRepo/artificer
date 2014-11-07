@@ -27,11 +27,15 @@ import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomConstants;
+import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
@@ -49,6 +53,9 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	protected Entry atomEntry;
 	protected Exception failure;
 	protected Set<String> propertyNames;
+	
+	private String atomLink;
+	private String mediaLink;
 
 	/**
 	 * Constructor.
@@ -119,28 +126,10 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 				entry.setSummary(artifact.getDescription());
 			entry.getExtensionAttributes().put(SrampConstants.SRAMP_DERIVED_QNAME, String.valueOf(artifactType.isDerived()));
 
-			String atomLink = baseUrl + "/s-ramp/" //$NON-NLS-1$
+			atomLink = baseUrl + "/s-ramp/" //$NON-NLS-1$
 					+ artifactType.getModel() + "/" //$NON-NLS-1$
 					+ artifactType.getType() + "/" + artifact.getUuid(); //$NON-NLS-1$
-			String mediaLink = atomLink + "/media"; //$NON-NLS-1$
-
-			if (SrampModelUtils.isDocumentArtifact(artifact)) {
-			    // Original content can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
-	            ArtifactContentTypeVisitor ctVisitor = new ArtifactContentTypeVisitor();
-	            ArtifactVisitorHelper.visitArtifact(ctVisitor, artifact);
-	            Content content = new Content();
-	            content.setType(ctVisitor.getContentType());
-	            content.setSrc(new URI(mediaLink));
-	            entry.setContent(content);
-
-	            // Alternate can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
-	            // Only for Document style artifacts.
-	            Link linkToAlternate = new Link();
-                linkToAlternate.setType(ctVisitor.getContentType());
-                linkToAlternate.setRel("alternate"); //$NON-NLS-1$
-                linkToAlternate.setHref(new URI(mediaLink));
-                entry.getLinks().add(linkToAlternate);
-			}
+			mediaLink = atomLink + "/media"; //$NON-NLS-1$
 
 			// Self can be accessed at /s-ramp/{model}/{artifact-type}/{uid}
 			Link linkToSelf = new Link();
@@ -190,6 +179,50 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			this.failure = e;
 		}
 	}
+	
+	@Override
+    public void visit(Document artifact) {
+        super.visit(artifact);
+        visitDocument(artifact);
+    }
+	
+	private void visitDocument(DocumentArtifactType artifact) {
+	    try {
+            if (this.atomEntry != null) {
+                // Original content can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
+                ArtifactContentTypeVisitor ctVisitor = new ArtifactContentTypeVisitor();
+                ArtifactVisitorHelper.visitArtifact(ctVisitor, artifact);
+                Content content = new Content();
+                content.setType(ctVisitor.getContentType());
+                content.setSrc(new URI(mediaLink));
+                atomEntry.setContent(content);
+        
+                // Alternate can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media
+                // Only for Document style artifacts.
+                Link linkToAlternate = new Link();
+                linkToAlternate.setType(ctVisitor.getContentType());
+                linkToAlternate.setRel("alternate"); //$NON-NLS-1$
+                linkToAlternate.setHref(new URI(mediaLink));
+                atomEntry.getLinks().add(linkToAlternate);
+            }
+        } catch (Exception e) {
+            this.failure = e;
+        }
+	}
+	
+	@Override
+    public void visit(XmlDocument artifact) {
+        super.visit(artifact);
+        visitDocument(artifact);
+        
+        try {
+            if (this.atomEntry != null) {
+                SrampAtomUtils.setXmlContentType(artifact, atomLink, atomEntry);
+            }
+        } catch (Exception e) {
+            this.failure = e;
+        }
+    }
 
 	/**
 	 * @see org.overlord.sramp.common.visitors.ArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType)

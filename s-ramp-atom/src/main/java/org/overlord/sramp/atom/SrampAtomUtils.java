@@ -40,6 +40,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQueryData;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.ontology.SrampOntology;
@@ -439,6 +440,17 @@ public final class SrampAtomUtils {
             return storedQuery;
         } catch (JAXBException e) {
             throw new RuntimeException(e);
+        }
+    }
+    
+    public static void setXmlContentType(BaseArtifactType artifact, String src, Entry entry) {
+        if (artifact instanceof XmlDocument) {
+            XmlDocument xmlDocument = (XmlDocument) artifact;
+            Content content = new Content();
+            // Required by spec.  #getContentEncoding guaranteed to be set by XmlArtifactBuilder
+            content.setRawType(MediaType.APPLICATION_XML_TYPE + "; charset=" + xmlDocument.getContentEncoding());
+            content.setSrc(URI.create(src));
+            entry.setContent(content);
         }
     }
 

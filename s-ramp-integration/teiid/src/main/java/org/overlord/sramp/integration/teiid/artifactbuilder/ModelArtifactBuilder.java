@@ -25,8 +25,8 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.AbstractXmlArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
+import org.overlord.sramp.common.artifactbuilder.XmlArtifactBuilder;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.overlord.sramp.integration.teiid.Messages;
 import org.overlord.sramp.integration.teiid.Utils;
@@ -45,7 +45,7 @@ import org.w3c.dom.Node;
  */
 @Component(name = "Teiid Model Artifact Builder", immediate = true)
 @Service(value = ArtifactBuilder.class)
-public final class ModelArtifactBuilder extends AbstractXmlArtifactBuilder {
+public final class ModelArtifactBuilder extends XmlArtifactBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelArtifactBuilder.class);
 

@@ -28,11 +28,13 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.w3c.dom.Document;
@@ -44,7 +46,7 @@ import org.w3c.dom.Element;
  * 
  * @author Brett Meyer
  */
-public abstract class AbstractXmlArtifactBuilder extends AbstractArtifactBuilder {
+public class XmlArtifactBuilder extends AbstractArtifactBuilder {
     
     protected final List<RelationshipSource> relationshipSources = new ArrayList<RelationshipSource>();
     
@@ -69,6 +71,14 @@ public abstract class AbstractXmlArtifactBuilder extends AbstractArtifactBuilder
             Document document = builder.parse(getContentStream());
             // This *must* be setup prior to calling #configureNamespaceMappings.  Most subclasses will need it.
             rootElement = document.getDocumentElement();
+            
+            if (primaryArtifact instanceof XmlDocument) {
+                String encoding = document.getXmlEncoding();
+                if (StringUtils.isBlank(encoding)) {
+                    encoding = "UTF-8";
+                }
+                ((XmlDocument) primaryArtifact).setContentEncoding(encoding);
+            }
             
             XPathFactory xPathfactory = XPathFactory.newInstance();
             xpath = xPathfactory.newXPath();
@@ -113,7 +123,9 @@ public abstract class AbstractXmlArtifactBuilder extends AbstractArtifactBuilder
         return this;
     }
     
-    protected abstract void derive() throws IOException;
+    protected void derive() throws IOException {
+        
+    }
     
     protected void configureNamespaceMappings(StaticNamespaceContext namespaceContext) {
     }

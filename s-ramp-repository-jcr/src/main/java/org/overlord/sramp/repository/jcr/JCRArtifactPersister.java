@@ -111,9 +111,9 @@ public final class JCRArtifactPersister {
             artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_HASH, sha1Hash);
         }
         // XMLDocument
-        if (XmlDocument.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
-            // read the encoding from the header
-            artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_ENCODING, "UTF-8");
+        if (primaryArtifact instanceof XmlDocument) {
+            artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_ENCODING,
+                    ((XmlDocument)primaryArtifact).getContentEncoding());
         }
 
         // Update the JCR node with any properties included in the meta-data

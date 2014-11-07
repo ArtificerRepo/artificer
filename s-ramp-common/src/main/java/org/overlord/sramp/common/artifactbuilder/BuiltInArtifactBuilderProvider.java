@@ -40,6 +40,9 @@ public class BuiltInArtifactBuilderProvider implements ArtifactBuilderProvider {
         case POLICY_DOCUMENT:
             builders.add(new PolicyArtifactBuilder());
             break;
+        case XML_DOCUMENT:
+            builders.add(new XmlArtifactBuilder());
+            break;
         }
         return builders;
     }
