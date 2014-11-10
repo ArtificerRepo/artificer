@@ -159,6 +159,18 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 			typeCat.setScheme(SrampAtomConstants.X_S_RAMP_TYPE_URN);
 			entry.getCategories().add(typeCat);
 
+            // Kind category
+            Category kindCat = new Category();
+            if (artifactType.isDerived()) {
+                kindCat.setTerm("derived");
+                kindCat.setLabel("Derived S-RAMP Artifact");
+            } else {
+                kindCat.setTerm("modeled");
+                kindCat.setLabel("Modeled S-RAMP Artifact");
+            }
+            kindCat.setScheme(SrampAtomConstants.X_S_RAMP_KIND_URN);
+            entry.getCategories().add(kindCat);
+
 			// Model category
 			Category modelCat = new Category();
 			modelCat.setTerm(artifactType.getModel());
