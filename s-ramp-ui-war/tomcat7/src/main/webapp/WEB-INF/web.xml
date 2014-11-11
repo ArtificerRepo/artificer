@@ -53,10 +53,6 @@
   </filter>
   <filter-mapping>
     <filter-name>LocaleFilter</filter-name>
-    <url-pattern>*.erraiBus</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>LocaleFilter</filter-name>
     <url-pattern>/app/services/*</url-pattern>
   </filter-mapping>
 
@@ -110,10 +106,6 @@
   </filter>
   <filter-mapping>
     <filter-name>BusAuthFilter</filter-name>
-    <url-pattern>*.erraiBus</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>BusAuthFilter</filter-name>
     <url-pattern>/app/services/artifactDownload</url-pattern>
   </filter-mapping>
   <filter-mapping>
@@ -133,29 +125,6 @@
     <filter-name>UploadAuthFilter</filter-name>
     <url-pattern>/app/services/ontologyUpload</url-pattern>
   </filter-mapping>
-
-  <!-- Servlets -->
-  <servlet>
-    <servlet-name>ErraiServlet</servlet-name>
-    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ErraiServlet</servlet-name>
-    <url-pattern>*.erraiBus</url-pattern>
-  </servlet-mapping>
-  <context-param>
-    <param-name>errai.properties</param-name>
-    <param-value>/WEB-INF/errai.properties</param-value>
-  </context-param>
-  <context-param>
-    <param-name>login.config</param-name>
-    <param-value>/WEB-INF/login.config</param-value>
-  </context-param>
-  <context-param>
-    <param-name>users.properties</param-name>
-    <param-value>/WEB-INF/users.properties</param-value>
-  </context-param>
   
   <!-- TOMCAT SPECIFIC -->
   <listener>
