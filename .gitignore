@@ -9,3 +9,5 @@ target
 *~
 .checkstyle
 activemq-data
+*.iml
+.idea
