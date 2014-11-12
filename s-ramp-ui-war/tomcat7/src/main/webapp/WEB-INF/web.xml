@@ -8,6 +8,28 @@
     <location>/403.html</location>
   </error-page>
 
+  <!-- TOMCAT SPECIFIC -->
+  <listener>
+    <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>RestServlet</servlet-name>
+    <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>org.overlord.sramp.ui.server.services.tomcat.TomcatSRAMPApplication</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RestServlet</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+  <context-param>
+    <param-name>resteasy.servlet.mapping.prefix</param-name>
+    <param-value>/rest</param-value>
+  </context-param>
+  <!-- END TOMCAT SPECIFIC -->
+
   <!-- Filters -->
   <filter>
     <filter-name>GWTCacheControl</filter-name>
@@ -16,6 +38,10 @@
   <filter-mapping>
     <filter-name>GWTCacheControl</filter-name>
     <url-pattern>/app/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>GWTCacheControl</filter-name>
+    <url-pattern>/rest/*</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>GWTCacheControl</filter-name>
@@ -54,6 +80,10 @@
   <filter-mapping>
     <filter-name>LocaleFilter</filter-name>
     <url-pattern>/app/services/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>LocaleFilter</filter-name>
+    <url-pattern>/rest/*</url-pattern>
   </filter-mapping>
 
   <filter>
@@ -112,6 +142,10 @@
     <filter-name>BusAuthFilter</filter-name>
     <url-pattern>/app/services/ontologyDownload</url-pattern>
   </filter-mapping>
+  <filter-mapping>
+    <filter-name>BusAuthFilter</filter-name>
+    <url-pattern>/rest/*</url-pattern>
+  </filter-mapping>
   
   <filter>
     <filter-name>UploadAuthFilter</filter-name>
@@ -125,28 +159,6 @@
     <filter-name>UploadAuthFilter</filter-name>
     <url-pattern>/app/services/ontologyUpload</url-pattern>
   </filter-mapping>
-  
-  <!-- TOMCAT SPECIFIC -->
-  <listener>
-    <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
-  </listener>
-  <servlet>
-    <servlet-name>RestServlet</servlet-name>
-    <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
-    <init-param>
-      <param-name>javax.ws.rs.Application</param-name>
-      <param-value>org.overlord.sramp.ui.server.services.tomcat.TomcatSRAMPApplication</param-value>
-    </init-param>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>RestServlet</servlet-name>
-    <url-pattern>/rest/*</url-pattern>
-  </servlet-mapping>
-  <context-param>
-    <param-name>resteasy.servlet.mapping.prefix</param-name>
-    <param-value>/rest</param-value>
-  </context-param>
-  <!-- END TOMCAT SPECIFIC -->
 
   <servlet>
     <servlet-name>OverlordHeaderDataJS</servlet-name>

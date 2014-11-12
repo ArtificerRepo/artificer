@@ -831,6 +831,11 @@
         <version>${version.com.google.guava}</version>
       </dependency>
       <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-dev</artifactId>
+        <version>${version.com.google.gwt}</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.bcel</groupId>
         <artifactId>bcel</artifactId>
         <version>${version.org.apache.bcel}</version>

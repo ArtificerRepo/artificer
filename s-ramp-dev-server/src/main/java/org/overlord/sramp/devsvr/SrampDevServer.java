@@ -15,13 +15,6 @@
  */
 package org.overlord.sramp.devsvr;
 
-import java.io.InputStream;
-import java.security.Principal;
-import java.util.EnumSet;
-
-import javax.security.auth.Subject;
-import javax.servlet.DispatcherType;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
@@ -34,7 +27,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
-import org.jboss.errai.bus.server.servlet.DefaultBlockingServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter;
@@ -70,6 +62,12 @@ import org.overlord.sramp.ui.server.servlets.ArtifactDownloadServlet;
 import org.overlord.sramp.ui.server.servlets.ArtifactUploadServlet;
 import org.overlord.sramp.ui.server.servlets.OntologyDownloadServlet;
 import org.overlord.sramp.ui.server.servlets.OntologyUploadServlet;
+
+import javax.security.auth.Subject;
+import javax.servlet.DispatcherType;
+import java.io.InputStream;
+import java.security.Principal;
+import java.util.EnumSet;
 
 /**
  * A dev server for s-ramp.
@@ -159,13 +157,11 @@ public class SrampDevServer extends ErraiDevServer {
         ServletContextHandler srampUI = new ServletContextHandler(ServletContextHandler.SESSIONS);
         srampUI.setSecurityHandler(createSecurityHandler(true));
         srampUI.setContextPath("/s-ramp-ui");
-        srampUI.setWelcomeFiles(new String[] { "index.html" });
+        srampUI.setWelcomeFiles(new String[]{"index.html"});
         srampUI.setResourceBase(environment.getModuleDir("s-ramp-ui").getCanonicalPath());
-        srampUI.setInitParameter("errai.properties", "/WEB-INF/errai.properties");
-        srampUI.setInitParameter("login.config", "/WEB-INF/login.config");
-        srampUI.setInitParameter("users.properties", "/WEB-INF/users.properties");
         srampUI.addFilter(HttpRequestThreadLocalFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         srampUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST));
+        srampUI.addFilter(GWTCacheControlFilter.class, "/rest/*", EnumSet.of(DispatcherType.REQUEST));
         srampUI.addFilter(GWTCacheControlFilter.class, "/", EnumSet.of(DispatcherType.REQUEST));
         srampUI.addFilter(GWTCacheControlFilter.class, "*.html", EnumSet.of(DispatcherType.REQUEST));
         srampUI.addFilter(ResourceCacheControlFilter.class, "/css/*", EnumSet.of(DispatcherType.REQUEST));
@@ -174,13 +170,14 @@ public class SrampDevServer extends ErraiDevServer {
         srampUI.addFilter(org.overlord.sramp.ui.server.filters.LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
 
         // Servlets
-        ServletHolder erraiServlet = new ServletHolder(DefaultBlockingServlet.class);
-        erraiServlet.setInitOrder(1);
-        srampUI.addServlet(erraiServlet, "*.erraiBus");
-        srampUI.addServlet(new ServletHolder(ArtifactDownloadServlet.class), "/app/services/artifactDownload");
         srampUI.addServlet(new ServletHolder(ArtifactUploadServlet.class), "/app/services/artifactUpload");
+        srampUI.addServlet(new ServletHolder(ArtifactDownloadServlet.class), "/app/services/artifactDownload");
         srampUI.addServlet(new ServletHolder(OntologyUploadServlet.class), "/app/services/ontologyUpload");
         srampUI.addServlet(new ServletHolder(OntologyDownloadServlet.class), "/app/services/ontologyDownload");
+        ServletHolder resteasyUIServlet = new ServletHolder(new HttpServletDispatcher());
+        resteasyUIServlet.setInitParameter("javax.ws.rs.Application", JettySRAMPApplication.class.getName());
+        resteasyUIServlet.setInitParameter("resteasy.servlet.mapping.prefix", "/rest");
+        srampUI.addServlet(resteasyUIServlet, "/rest/*");
         ServletHolder headerDataServlet = new ServletHolder(OverlordHeaderDataJS.class);
         headerDataServlet.setInitParameter("app-id", "s-ramp-ui");
         srampUI.addServlet(headerDataServlet, "/js/overlord-header-data.js");
@@ -203,9 +200,9 @@ public class SrampDevServer extends ErraiDevServer {
         srampServer.setSecurityHandler(createSecurityHandler(false));
         srampServer.setContextPath("/s-ramp-server");
         srampServer.addEventListener(new SrampLifeCycle());
-        ServletHolder resteasyServlet = new ServletHolder(new HttpServletDispatcher());
-        resteasyServlet.setInitParameter("javax.ws.rs.Application", SRAMPApplication.class.getName());
-        srampServer.addServlet(resteasyServlet, "/s-ramp/*");
+        ServletHolder resteasyServerServlet = new ServletHolder(new HttpServletDispatcher());
+        resteasyServerServlet.setInitParameter("javax.ws.rs.Application", SRAMPApplication.class.getName());
+        srampServer.addServlet(resteasyServerServlet, "/s-ramp/*");
         //maven repository servlet:
         ServletHolder mvnServlet = new ServletHolder(new MavenRepositoryService());
         srampServer.addServlet(mvnServlet, "/maven/repository/*");

@@ -202,6 +202,12 @@
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>
+    <!-- Needed for GWT debugging in most IDEs -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Runtime / Container dependencies -->
     <dependency>
@@ -247,7 +253,7 @@
           <logLevel>INFO</logLevel>
           <runTarget>index.html</runTarget>
           <extraJvmArgs>-Xmx512m</extraJvmArgs>
-          <soyc>false</soyc>
+          <!--<soyc>false</soyc>-->
           <strict>true</strict>
 	  <localWorkers>2</localWorkers>
 	  <failOnError>true</failOnError>
