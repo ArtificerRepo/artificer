@@ -16,15 +16,10 @@
 package org.overlord.sramp.common;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
+import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -33,17 +28,11 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 /**
- * The S-RAMP spec states that a custom property or generic relationship name cannot duplicate *any* built-in
- * property/relationship name from *any* S-RAMP type.  To conform to that requirement, we'll automate the process
- * by building a list of all field names in the API.  This will define our "reserved keyword" list, even if it is
- * somewhat more restrictive than the spec requires.
- * 
- * The spec also requires that, within an artifact, a custom property name cannot duplicate a generic relationship
- * name (and vice versa).
+ * This visitor verifies numerous logical and spec-required constraints on artifact creations and updates.
  * 
  * @author Brett Meyer
  */
-public class SrampNameUtil {
+public class ArtifactVerifier extends HierarchicalArtifactVisitorAdapter {
     
     private static Set<String> reservedNames = new HashSet<String>();
     static {
@@ -61,8 +50,42 @@ public class SrampNameUtil {
             }
         }
     }
-    
-    public static void verifyArtifact(BaseArtifactType artifact) throws SrampAlreadyExistsException {
+
+    @Override
+    protected void visitBase(BaseArtifactType artifact) {
+        super.visitBase(artifact);
+        verifyNames(artifact);
+    }
+
+    @Override
+    public void visit(XsdDocument artifact) {
+        super.visit(artifact);
+        verifyEmptyDerivedRelationships("importedXsds", artifact.getImportedXsds());
+        verifyEmptyDerivedRelationships("includedXsds", artifact.getIncludedXsds());
+        verifyEmptyDerivedRelationships("redefinedXsds", artifact.getRedefinedXsds());
+    }
+
+    @Override
+    public void visit(WsdlDocument artifact) {
+        super.visit(artifact);
+        verifyEmptyDerivedRelationships("importedXsds", artifact.getImportedXsds());
+        verifyEmptyDerivedRelationships("includedXsds", artifact.getIncludedXsds());
+        verifyEmptyDerivedRelationships("redefinedXsds", artifact.getRedefinedXsds());
+        verifyEmptyDerivedRelationships("importedWsdls", artifact.getImportedWsdls());
+    }
+
+    /**
+     * The S-RAMP spec states that a custom property or generic relationship name cannot duplicate *any* built-in
+     * property/relationship name from *any* S-RAMP type.  To conform to that requirement, we'll automate the process
+     * by building a list of all field names in the API.  This will define our "reserved keyword" list, even if it is
+     * somewhat more restrictive than the spec requires.
+     *
+     * The spec also requires that, within an artifact, a custom property name cannot duplicate a generic relationship
+     * name (and vice versa).
+     *
+     * @param artifact
+     */
+    private void verifyNames(BaseArtifactType artifact) {
         // First, build a list of all the names within this artifact.
         List<String> propertyNames = new ArrayList<String>();
         List<String> relationshipNames = new ArrayList<String>();
@@ -76,26 +99,32 @@ public class SrampNameUtil {
         // Then, compare against both reserved and local names.
         for (String propertyName : propertyNames) {
             if (isReserved(propertyName)) {
-                throw new ReservedNameException(propertyName);
+                error = new ReservedNameException(propertyName);
             }
             if (relationshipNames.contains(propertyName)) {
-                throw new DuplicateNameException(propertyName);
+                error = new DuplicateNameException(propertyName);
             }
             if (Collections.frequency(propertyNames, propertyName) > 1) {
-                throw new DuplicateNameException(propertyName);
+                error = new DuplicateNameException(propertyName);
             }
         }
         for (String relationshipName : relationshipNames) {
             if (isReserved(relationshipName)) {
-                throw new ReservedNameException(relationshipName);
+                error = new ReservedNameException(relationshipName);
             }
             if (propertyNames.contains(relationshipName)) {
-                throw new DuplicateNameException(relationshipName);
+                error = new DuplicateNameException(relationshipName);
             }
         }
     }
     
-    public static boolean isReserved(String s) {
+    private boolean isReserved(String s) {
         return reservedNames.contains(s.toLowerCase());
+    }
+
+    private void verifyEmptyDerivedRelationships(String relationshipType, Collection<?> relationships) {
+        if (!relationships.isEmpty()) {
+            error = new DerivedRelationshipCreationException(relationshipType);
+        }
     }
 }

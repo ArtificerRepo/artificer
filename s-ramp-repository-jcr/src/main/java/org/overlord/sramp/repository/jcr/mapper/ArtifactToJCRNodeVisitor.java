@@ -126,7 +126,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
 
     private ArtifactType artifactType;
 	private Node jcrNode;
-	private Exception error;
 	private JCRReferenceFactory referenceFactory;
 	private ClassificationHelper classificationHelper;
 	private boolean processRelationships = true;
@@ -1121,20 +1120,6 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitorAdapter
             }
         }
     }
-
-	/**
-	 * Returns true if this visitor encountered an error during visitation.
-	 */
-	public boolean hasError() {
-		return error != null;
-	}
-
-	/**
-	 * Returns the error encountered during visitation.
-	 */
-	public Exception getError() {
-		return error;
-	}
 
 	/**
      * @return the processRelationships

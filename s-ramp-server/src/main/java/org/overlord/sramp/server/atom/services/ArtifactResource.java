@@ -15,28 +15,6 @@
  */
 package org.overlord.sramp.server.atom.services;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -50,17 +28,7 @@ import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
-import org.overlord.sramp.common.ArtifactNotFoundException;
-import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.common.InvalidArtifactCreationException;
-import org.overlord.sramp.common.SrampAlreadyExistsException;
-import org.overlord.sramp.common.SrampConfig;
-import org.overlord.sramp.common.SrampConstants;
-import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.SrampNameUtil;
-import org.overlord.sramp.common.WrongModelException;
+import org.overlord.sramp.common.*;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.events.EventProducer;
 import org.overlord.sramp.events.EventProducerFactory;
@@ -72,6 +40,18 @@ import org.overlord.sramp.server.i18n.Messages;
 import org.overlord.sramp.server.mime.MimeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The JAX-RS resource that handles artifact specific tasks, including:
@@ -117,8 +97,12 @@ public class ArtifactResource extends AbstractResource {
             String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
             ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
             BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
-            
-            SrampNameUtil.verifyArtifact(artifact);
+
+			ArtifactVerifier verifier = new ArtifactVerifier();
+			ArtifactVisitorHelper.visitArtifact(verifier, artifact);
+			if (verifier.hasError()) {
+				throw verifier.getError();
+			}
             
             if (! artifactType.getArtifactType().getApiType().equals(artifact.getArtifactType())) {
                 throw new WrongModelException(artifactType.getArtifactType().getApiType().value(),
@@ -268,8 +252,12 @@ public class ArtifactResource extends AbstractResource {
 			    throw new WrongModelException(artifactType.getArtifactType().getApiType().value(),
 			            artifactMetaData.getArtifactType().value());
             }
-            
-            SrampNameUtil.verifyArtifact(artifactMetaData);
+
+			ArtifactVerifier verifier = new ArtifactVerifier();
+			ArtifactVisitorHelper.visitArtifact(verifier, artifactMetaData);
+			if (verifier.hasError()) {
+				throw verifier.getError();
+			}
             
 			String fileName = null;
 			if (artifactMetaData.getName() != null)
@@ -337,8 +325,12 @@ public class ArtifactResource extends AbstractResource {
 			    throw new WrongModelException(artifactType.getArtifactType().getApiType().value(),
                         artifact.getArtifactType().value());
 			}
-            
-            SrampNameUtil.verifyArtifact(artifact);
+
+			ArtifactVerifier verifier = new ArtifactVerifier();
+			ArtifactVisitorHelper.visitArtifact(verifier, artifact);
+			if (verifier.hasError()) {
+				throw verifier.getError();
+			};
             
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);

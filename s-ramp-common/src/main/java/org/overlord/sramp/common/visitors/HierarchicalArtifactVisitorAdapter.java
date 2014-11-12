@@ -88,6 +88,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType;
  */
 public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisitor {
 
+	protected Exception error;
+
 	/**
 	 * Default constructor.
 	 */
@@ -741,6 +743,20 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
 		visitBase(artifact);
 		visitSoa(artifact);
         visitElement(artifact);
+	}
+
+	/**
+	 * Returns true if this visitor encountered an error during visitation.
+	 */
+	public boolean hasError() {
+		return error != null;
+	}
+
+	/**
+	 * Returns the error encountered during visitation.
+	 */
+	public Exception getError() {
+		return error;
 	}
 
 }
