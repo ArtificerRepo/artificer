@@ -88,8 +88,8 @@ public class ArtifactJCRNodeDiffer {
      *
      * @param artifactNode
      */
-    public ArtifactDiff diff(Node artifactNode) throws RepositoryException {
-        ArtifactDiff diff = new ArtifactDiff();
+    public ArtifactJCRNodeDiff diff(Node artifactNode) throws RepositoryException {
+        ArtifactJCRNodeDiff diff = new ArtifactJCRNodeDiff();
 
         // Process all properties and classifiers
         /////////////////////////////////////////

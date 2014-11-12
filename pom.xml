@@ -45,20 +45,12 @@
 
   <developers>
     <developer>
-      <name>Kurt Stam</name>
-      <id>kstam</id>
-      <email>kstam@jboss.com</email>
-      <organization>JBoss, a division of Red Hat</organization>
+      <name>Brett Meyer</name>
+      <id>brmeyer</id>
+      <email>brmeyer@redhat.com</email>
+      <organization>Red Hat</organization>
       <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <name>Randall Hauch</name>
-      <id>randall</id>
-      <email>rhauch@redhat.com</email>
-      <organization>JBoss, a division of Red Hat</organization>
-      <roles>
+        <role>Tech Lead</role>
         <role>Developer</role>
       </roles>
     </developer>
@@ -72,10 +64,19 @@
       </roles>
     </developer>
     <developer>
-      <name>Brett Meyer</name>
-      <id>brmeyer</id>
-      <email>brmeyer@redhat.com</email>
-      <organization>Red Hat</organization>
+      <name>Kurt Stam</name>
+      <id>kstam</id>
+      <email>kstam@jboss.com</email>
+      <organization>JBoss, a division of Red Hat</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Randall Hauch</name>
+      <id>randall</id>
+      <email>rhauch@redhat.com</email>
+      <organization>JBoss, a division of Red Hat</organization>
       <roles>
         <role>Developer</role>
       </roles>

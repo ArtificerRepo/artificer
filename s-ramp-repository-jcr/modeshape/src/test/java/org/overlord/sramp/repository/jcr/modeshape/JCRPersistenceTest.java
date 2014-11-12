@@ -15,28 +15,22 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.Test;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.common.ArtifactAlreadyExistsException;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
+
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -127,7 +121,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         long size = ((DocumentArtifactType) artifact).getContentSize();
-        Assert.assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
+        assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
     }
 
     @Test
@@ -150,7 +144,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         }
         Assert.assertEquals(XmlDocument.class, artifact.getClass());
         long size = ((DocumentArtifactType) artifact).getContentSize();
-        Assert.assertTrue(size >= 825L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
+        assertTrue(size >= 825L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
     }
 
     @Test
@@ -193,7 +187,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         long size = ((DocumentArtifactType) artifact).getContentSize();
-        Assert.assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
+        assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
 
         BaseArtifactType artifact2 = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
         Assert.assertEquals(artifact.getUuid(), artifact2.getUuid());
@@ -222,7 +216,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         long size = ((DocumentArtifactType) artifact).getContentSize();
-        Assert.assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
+        assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
         Assert.assertEquals(artifactFileName, artifact.getName());
 
         // Now update the artifact
@@ -256,7 +250,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         long size = ((DocumentArtifactType) artifact).getContentSize();
-        Assert.assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
+        assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
         Assert.assertEquals(artifactFileName, artifact.getName());
 
         // Now update the artifact content
@@ -266,7 +260,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         // Now verify the content was updated
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
         size = ((DocumentArtifactType) artifact).getContentSize();
-        Assert.assertTrue(size >= 87677L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
+        assertTrue(size >= 87677L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
     }
 
     /**
@@ -286,11 +280,11 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         long size = ((DocumentArtifactType) artifact).getContentSize();
-        Assert.assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
+        assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
 
         // Now update the artifact
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
-        Assert.assertTrue("Expected 0 properties.", artifact.getProperty().isEmpty());
+        assertTrue("Expected 0 properties.", artifact.getProperty().isEmpty());
         Property prop1 = new Property();
         prop1.setPropertyName("prop1");
         prop1.setPropertyValue("propval1");
@@ -303,14 +297,14 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now verify that the properties were stored
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
-        Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
+        assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
         String p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
         String p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
         Set<String> ps = new HashSet<String>();
         ps.add(p1);
         ps.add(p2);
-        Assert.assertTrue("Prop1 missing from properties.", ps.contains("prop1=propval1"));
-        Assert.assertTrue("Prop2 missing from properties.", ps.contains("prop2=propval2"));
+        assertTrue("Prop1 missing from properties.", ps.contains("prop1=propval1"));
+        assertTrue("Prop2 missing from properties.", ps.contains("prop2=propval2"));
         Assert.assertFalse("Prop3 somehow existed!.", ps.contains("prop3=propval3"));
 
         // Now remove one property, add another one, and change the value of one
@@ -327,16 +321,16 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now verify that the properties were updated
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
-        Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
+        assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
         p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
         p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
         ps.clear();
         ps.add(p1);
         ps.add(p2);
         Assert.assertFalse("Prop1 wasn't updated (old value detected).", ps.contains("prop1=propval1"));
-        Assert.assertTrue("Prop1 wasn't updated (new value not found).", ps.contains("prop1=propval1-updated"));
+        assertTrue("Prop1 wasn't updated (new value not found).", ps.contains("prop1=propval1-updated"));
         Assert.assertFalse("Prop2 existed unexpectedly.", ps.contains("prop2=propval2"));
-        Assert.assertTrue("Prop3 missing from properties.", ps.contains("prop3=propval3"));
+        assertTrue("Prop3 missing from properties.", ps.contains("prop3=propval3"));
     }
 
     /**
@@ -361,7 +355,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now update the artifact
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document());
-        Assert.assertTrue("Expected 0 properties.", artifact.getProperty().isEmpty());
+        assertTrue("Expected 0 properties.", artifact.getProperty().isEmpty());
         Property prop1 = new Property();
         prop1.setPropertyName("prop1");
         prop1.setPropertyValue("propval1");
@@ -374,14 +368,14 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now verify that the properties were stored
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document());
-        Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
+        assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
         String p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
         String p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
         Set<String> ps = new HashSet<String>();
         ps.add(p1);
         ps.add(p2);
-        Assert.assertTrue("Prop1 missing from properties.", ps.contains("prop1=propval1"));
-        Assert.assertTrue("Prop2 missing from properties.", ps.contains("prop2=propval2"));
+        assertTrue("Prop1 missing from properties.", ps.contains("prop1=propval1"));
+        assertTrue("Prop2 missing from properties.", ps.contains("prop2=propval2"));
         Assert.assertFalse("Prop3 somehow existed!.", ps.contains("prop3=propval3"));
 
         // Now remove one property, add another one, and change the value of one
@@ -398,16 +392,16 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now verify that the properties were updated
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.Document());
-        Assert.assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
+        assertTrue("Expected 2 properties.", artifact.getProperty().size() == 2);
         p1 = artifact.getProperty().get(0).getPropertyName() + "=" + artifact.getProperty().get(0).getPropertyValue();
         p2 = artifact.getProperty().get(1).getPropertyName() + "=" + artifact.getProperty().get(1).getPropertyValue();
         ps.clear();
         ps.add(p1);
         ps.add(p2);
         Assert.assertFalse("Prop1 wasn't updated (old value detected).", ps.contains("prop1=propval1"));
-        Assert.assertTrue("Prop1 wasn't updated (new value not found).", ps.contains("prop1=propval1-updated"));
+        assertTrue("Prop1 wasn't updated (new value not found).", ps.contains("prop1=propval1-updated"));
         Assert.assertFalse("Prop2 existed unexpectedly.", ps.contains("prop2=propval2"));
-        Assert.assertTrue("Prop3 missing from properties.", ps.contains("prop3=propval3"));
+        assertTrue("Prop3 missing from properties.", ps.contains("prop3=propval3"));
     }
 
     /**
@@ -433,7 +427,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now update the artifact's generic relationships
         artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument());
-        Assert.assertTrue("Expected 0 relationships.", artifact.getRelationship().isEmpty());
+        assertTrue("Expected 0 relationships.", artifact.getRelationship().isEmpty());
         SrampModelUtils.addGenericRelationship(artifact, "NoTargetRelationship", null);
         persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
 
@@ -472,7 +466,6 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Add a third artifact.
         artifactFileName = "PO.xml";
-        contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
         contentStream = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
         Document document3 = new Document();
         document3.setName(artifactFileName);
@@ -542,7 +535,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         query.setString(document.getUuid());
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertEquals(0, artifactSet.size());
-        
+
         // Ensure we can re-create an artifact w/ the same UUID, then delete it again without same-name collisions
         // in the trash folder.
         pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
@@ -552,6 +545,5 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         deleted = persistenceManager.getArtifact(document.getUuid(), at);
         Assert.assertNull(deleted);
     }
-
 
 }

@@ -37,6 +37,7 @@ import org.overlord.sramp.repository.audit.AuditEntrySet;
 import org.overlord.sramp.repository.jcr.audit.JCRAuditEntrySet;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.overlord.sramp.repository.jcr.mapper.JCRNodeToAuditEntryFactory;
+import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.overlord.sramp.repository.query.InvalidQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ import org.slf4j.LoggerFactory;
 
 @Component(name = "JCR Audit Manager", immediate = true)
 @Service(value = org.overlord.sramp.repository.AuditManager.class)
-public class JCRAuditManager extends AbstractJCRManager implements AuditManager {
+public class JCRAuditManager implements AuditManager {
 
     private static Logger log = LoggerFactory.getLogger(JCRAuditManager.class);
     private static final String AUDIT_ENTRY_QUERY = "SELECT auditEntry.*"
@@ -79,7 +80,7 @@ public class JCRAuditManager extends AbstractJCRManager implements AuditManager 
         Session session = null;
         try {
             session = JCRRepositoryFactory.getSession();
-            Node artifactNode = findArtifactNodeByUuid(session, artifactUuid);
+            Node artifactNode = JCRUtils.findArtifactNodeByUuid(session, artifactUuid);
             if (artifactNode != null) {
                 String auditEntryUuid = UUID.randomUUID().toString();
                 Node auditEntryNode = artifactNode.addNode("audit:" + auditEntryUuid, JCRConstants.SRAMP_AUDIT_ENTRY);

@@ -23,13 +23,14 @@ import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampServerException;
 import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
+import org.overlord.sramp.repository.jcr.util.JCRUtils;
 
 /**
  * An impl of a JCR reference factory.
  *
  * @author eric.wittmann@redhat.com
  */
-public class JCRReferenceFactoryImpl extends AbstractJCRManager implements JCRReferenceFactory {
+public class JCRReferenceFactoryImpl implements JCRReferenceFactory {
 
     private Session session;
 
@@ -41,17 +42,14 @@ public class JCRReferenceFactoryImpl extends AbstractJCRManager implements JCRRe
         this.session = session;
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.jcr.mapper.ArtifactToJCRNodeVisitor.JCRReferenceFactory#createReference(java.lang.String)
-     */
     @Override
     public Value createReference(String uuid) throws SrampException {
         try {
-            Node node = findArtifactNodeByUuid(session, uuid);
+            Node node = JCRUtils.findArtifactNodeByUuid(session, uuid);
             if (node == null) {
                 throw new ArtifactNotFoundException(uuid);
             }
-            return session.getValueFactory().createValue(node, false);
+            return session.getValueFactory().createValue(node, true);
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {

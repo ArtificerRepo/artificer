@@ -29,7 +29,7 @@ import javax.jcr.Node;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactDiff {
+public class ArtifactJCRNodeDiff {
 
     private Map<String, String> addedProperties = new HashMap<String, String>();
     private Map<String, String> updatedProperties = new HashMap<String, String>();
@@ -40,7 +40,7 @@ public class ArtifactDiff {
     /**
      * Constructor.
      */
-    public ArtifactDiff() {
+    public ArtifactJCRNodeDiff() {
     }
 
     /**

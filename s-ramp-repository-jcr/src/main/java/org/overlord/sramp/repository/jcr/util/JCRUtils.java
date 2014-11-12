@@ -35,9 +35,12 @@ import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.QueryResult;
 import javax.jcr.version.VersionException;
 
+import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.repository.jcr.JCRConstants;
+import org.overlord.sramp.repository.jcr.MapToJCRPath;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 /**
@@ -76,7 +79,7 @@ public class JCRUtils {
      * @throws RepositoryException
      * @throws IllegalArgumentException if either the parentNode or path argument is null
      */
-    public Node findOrCreateNode( Node parentNode,
+    public static Node findOrCreateNode( Node parentNode,
             String path,
             String defaultNodeType,
             String finalNodeType ) throws RepositoryException {
@@ -125,7 +128,7 @@ public class JCRUtils {
      * @return the existing or newly created child node
      * @throws RepositoryException
      */
-    public Node findOrCreateChild( Node parent,
+    public static Node findOrCreateChild( Node parent,
             String name,
             String nodeType ) throws RepositoryException {
         return findOrCreateNode(parent, name, nodeType, nodeType);
@@ -140,7 +143,7 @@ public class JCRUtils {
      * @throws RepositoryException
      * @throws IllegalArgumentException if either the session or path argument is null
      */
-    public Node findOrCreateNode( Session session,
+    public static Node findOrCreateNode( Session session,
             String path,
             String nodeType ) throws RepositoryException {
         return findOrCreateNode(session, path, nodeType, nodeType);
@@ -156,7 +159,7 @@ public class JCRUtils {
      * @throws RepositoryException
      * @throws IllegalArgumentException if either the session or path argument is null
      */
-    public Node findOrCreateNode( Session session,
+    public static Node findOrCreateNode( Session session,
             String path,
             String defaultNodeType,
             String finalNodeType ) throws RepositoryException {
@@ -181,7 +184,7 @@ public class JCRUtils {
      * @throws IOException if there is a problem using the stream
      * @throws IllegalArgumentException is any of the parameters are null
      */
-    public Node uploadFile( Session session,
+    public static Node uploadFile( Session session,
             String path,
             InputStream stream ) throws RepositoryException, IOException {
         isNotNull(session, "session");
@@ -225,7 +228,7 @@ public class JCRUtils {
      * @param node the root of the subgraph
      * @throws RepositoryException
      */
-    public void printSubgraph( Node node ) throws RepositoryException {
+    public static void printSubgraph( Node node ) throws RepositoryException {
         printSubgraph(node, Integer.MAX_VALUE);
     }
 
@@ -236,7 +239,7 @@ public class JCRUtils {
      * @param maxDepth the maximum depth of the subgraph that should be printed
      * @throws RepositoryException
      */
-    public void printSubgraph( Node node,
+    public static void printSubgraph( Node node,
             int maxDepth ) throws RepositoryException {
         printSubgraph(node, " ", node.getDepth(), maxDepth);
     }
@@ -247,7 +250,7 @@ public class JCRUtils {
      * @param node the node to be printed
      * @throws RepositoryException
      */
-    public void printNode( Node node ) throws RepositoryException {
+    public static void printNode( Node node ) throws RepositoryException {
         printSubgraph(node, " ", node.getDepth(), 1);
     }
 
@@ -260,7 +263,7 @@ public class JCRUtils {
      * @param maxDepthOfSubgraph the maximum depth of the subgraph that should be printed
      * @throws RepositoryException
      */
-    public void printSubgraph( Node node,
+    public static void printSubgraph( Node node,
             String lead,
             int depthOfSubgraph,
             int maxDepthOfSubgraph ) throws RepositoryException {
@@ -342,6 +345,53 @@ public class JCRUtils {
         }
     }
 
+    /**
+     * Finds the JCR node for the given artifact (UUID + type).
+     * @param uuid
+     * @param type
+     * @param session
+     * @throws Exception
+     */
+    public static Node findArtifactNode(String uuid, ArtifactType type, Session session) throws Exception {
+        Node artifactNode = null;
+        if (type.getArtifactType().isDerived()) {
+            artifactNode = findArtifactNodeByUuid(session, uuid);
+        } else {
+            String artifactPath = MapToJCRPath.getArtifactPath(uuid);
+            if (session.nodeExists(artifactPath)) {
+                artifactNode = session.getNode(artifactPath);
+            } else {
+                artifactNode = findArtifactNodeByUuid(session, uuid);
+            }
+        }
+        return artifactNode;
+    }
+
+    /**
+     * Utility method to find an s-ramp artifact node by its UUID.  Returns null if
+     * not found.  Throws an exception if too many JCR nodes are found with the given
+     * UUID.
+     * @param session
+     * @param artifactUuid
+     * @throws Exception
+     */
+    public static Node findArtifactNodeByUuid(Session session, String artifactUuid) throws Exception {
+        javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
+        String jcrSql2Query = String.format("SELECT * FROM [sramp:baseArtifactType] WHERE [sramp:uuid] = '%1$s'", artifactUuid);
+        jcrSql2Query += JCRConstants.NOT_DELETED_FILTER;
+        javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(jcrSql2Query, JCRConstants.JCR_SQL2);
+        QueryResult jcrQueryResult = jcrQuery.execute();
+        NodeIterator jcrNodes = jcrQueryResult.getNodes();
+        if (!jcrNodes.hasNext()) {
+            return null;
+        }
+        if (jcrNodes.getSize() > 1) {
+            throw new Exception(Messages.i18n.format("TOO_MANY_ARTIFACTS", artifactUuid));
+        }
+        Node node = jcrNodes.nextNode();
+        return node;
+    }
+
     private static String createString( final char charToRepeat,
             int numberOfRepeats ) {
         assert numberOfRepeats >= 0;
@@ -352,7 +402,7 @@ public class JCRUtils {
         return sb.toString();
     }
 
-    protected String getStringValue( Value value,
+    protected static String getStringValue( Value value,
             int type ) throws RepositoryException {
         String result = value.getString();
         if (type == PropertyType.STRING) {

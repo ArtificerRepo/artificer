@@ -16,6 +16,7 @@
 package org.overlord.sramp.server.atom.services;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
@@ -23,6 +24,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedInput;
 import org.jboss.resteasy.util.GenericType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
@@ -308,18 +310,19 @@ public class ArtifactResource extends AbstractResource {
 			if (artifactType.isExtendedType()) {
 			    artifactType = SrampAtomUtils.getArtifactType(atomEntry);
 			}
-			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(atomEntry);
 
-			ArtifactVerifier verifier = new ArtifactVerifier(artifactType);
-			ArtifactVisitorHelper.visitArtifact(verifier, artifact);
-			verifier.throwError();
-            
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);
-            if (oldArtifact == null) {
-                throw new ArtifactNotFoundException(uuid);
-            }
-			BaseArtifactType updatedArtifact = persistenceManager.updateArtifact(artifact, artifactType);
+			if (oldArtifact == null) {
+				throw new ArtifactNotFoundException(uuid);
+			}
+			BaseArtifactType updatedArtifact = SrampAtomUtils.unwrapSrampArtifact(atomEntry);
+
+			ArtifactVerifier verifier = new ArtifactVerifier(oldArtifact, artifactType);
+			ArtifactVisitorHelper.visitArtifact(verifier, updatedArtifact);
+			verifier.throwError();
+
+			updatedArtifact = persistenceManager.updateArtifact(updatedArtifact, artifactType);
 			
 			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
             for (EventProducer eventProducer : eventProducers) {
@@ -450,6 +453,13 @@ public class ArtifactResource extends AbstractResource {
 			if (baseArtifact == null || ! artifactType.getArtifactType().getApiType().equals(baseArtifact.getArtifactType())) {
                 throw new ArtifactNotFoundException(uuid);
             }
+			if (!(baseArtifact instanceof DocumentArtifactType)) {
+				throw new ContentNotFoundException(uuid);
+			}
+			DocumentArtifactType documentArtifact = (DocumentArtifactType) baseArtifact;
+			if (documentArtifact.getContentSize() == 0  || StringUtils.isEmpty(documentArtifact.getContentHash())) {
+				throw new ContentNotFoundException(uuid);
+			}
 
 			ArtifactContentTypeVisitor ctVizzy = new ArtifactContentTypeVisitor();
 			ArtifactVisitorHelper.visitArtifact(ctVizzy, baseArtifact);
@@ -501,8 +511,8 @@ public class ArtifactResource extends AbstractResource {
             if (artifactType.isDerived()) {
                 throw new DerivedArtifactDeleteException(artifactType.getArtifactType());
             }
-			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			// Delete the artifact by UUID
 			BaseArtifactType artifact = persistenceManager.deleteArtifact(uuid, artifactType);
 			
@@ -516,6 +526,48 @@ public class ArtifactResource extends AbstractResource {
             throw e;
         } catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY", uuid), e); //$NON-NLS-1$
+			throw new SrampAtomException(e);
+		}
+	}
+
+	/**
+	 * S-RAMP atom DELETE to delete the artifact's content from the repository.
+	 *
+	 * @param model
+	 * @param type
+	 * @param uuid
+	 * @throws SrampAtomException
+	 */
+	@DELETE
+	@Path("{model}/{type}/{uuid}/media")
+	public void deleteContent(@PathParam("model") String model, @PathParam("type") String type,
+			@PathParam("uuid") String uuid) throws SrampAtomException, SrampException {
+		try {
+			ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
+			if (artifactType.isDerived()) {
+				throw new DerivedArtifactDeleteException(artifactType.getArtifactType());
+			}
+
+			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+
+			BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);
+			if (oldArtifact == null) {
+				throw new ArtifactNotFoundException(uuid);
+			}
+
+			// Delete the artifact content
+			BaseArtifactType updatedArtifact = persistenceManager.deleteArtifactContent(uuid, artifactType);
+
+			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+			for (EventProducer eventProducer : eventProducers) {
+				eventProducer.artifactUpdated(updatedArtifact, oldArtifact);
+			}
+		} catch (ArtifactNotFoundException e) {
+			// Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+			// HTTP response type.
+			throw e;
+		} catch (Exception e) {
+			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY_CONTENT", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
 	}
