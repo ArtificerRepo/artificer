@@ -320,8 +320,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(type, artifactNode,
                     new JCRReferenceFactoryImpl(session), this);
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
-            if (visitor.hasError())
-                throw visitor.getError();
+            visitor.throwError();
             session.save();
 
             log.debug(Messages.i18n.format("UPDATED_ARTY_META_DATA", artifact.getUuid()));

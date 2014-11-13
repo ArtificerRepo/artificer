@@ -98,16 +98,10 @@ public class ArtifactResource extends AbstractResource {
             ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
             BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
 
-			ArtifactVerifier verifier = new ArtifactVerifier();
+			ArtifactVerifier verifier = new ArtifactVerifier(artifactType);
 			ArtifactVisitorHelper.visitArtifact(verifier, artifact);
-			if (verifier.hasError()) {
-				throw verifier.getError();
-			}
+			verifier.throwError();
             
-            if (! artifactType.getArtifactType().getApiType().equals(artifact.getArtifactType())) {
-                throw new WrongModelException(artifactType.getArtifactType().getApiType().value(),
-                        artifact.getArtifactType().value());
-            }
             if (artifactType.isDerived()) {
                 throw new DerivedArtifactCreateException(artifactType.getArtifactType());
             }
@@ -248,16 +242,10 @@ public class ArtifactResource extends AbstractResource {
 			// Getting the S-RAMP Artifact
 			Entry atomEntry = firstPart.getBody(new GenericType<Entry>() {});
 			BaseArtifactType artifactMetaData = SrampAtomUtils.unwrapSrampArtifact(atomEntry);
-			if (! artifactType.getArtifactType().getApiType().equals(artifactMetaData.getArtifactType())) {
-			    throw new WrongModelException(artifactType.getArtifactType().getApiType().value(),
-			            artifactMetaData.getArtifactType().value());
-            }
 
-			ArtifactVerifier verifier = new ArtifactVerifier();
+			ArtifactVerifier verifier = new ArtifactVerifier(artifactType);
 			ArtifactVisitorHelper.visitArtifact(verifier, artifactMetaData);
-			if (verifier.hasError()) {
-				throw verifier.getError();
-			}
+			verifier.throwError();
             
 			String fileName = null;
 			if (artifactMetaData.getName() != null)
@@ -321,16 +309,10 @@ public class ArtifactResource extends AbstractResource {
 			    artifactType = SrampAtomUtils.getArtifactType(atomEntry);
 			}
 			BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(atomEntry);
-			if (! artifactType.getArtifactType().getApiType().equals(artifact.getArtifactType())) {
-			    throw new WrongModelException(artifactType.getArtifactType().getApiType().value(),
-                        artifact.getArtifactType().value());
-			}
 
-			ArtifactVerifier verifier = new ArtifactVerifier();
+			ArtifactVerifier verifier = new ArtifactVerifier(artifactType);
 			ArtifactVisitorHelper.visitArtifact(verifier, artifact);
-			if (verifier.hasError()) {
-				throw verifier.getError();
-			};
+			verifier.throwError();
             
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);

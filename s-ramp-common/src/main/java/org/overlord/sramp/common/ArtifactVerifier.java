@@ -33,8 +33,10 @@ import org.reflections.util.FilterBuilder;
  * @author Brett Meyer
  */
 public class ArtifactVerifier extends HierarchicalArtifactVisitorAdapter {
-    
-    private static Set<String> reservedNames = new HashSet<String>();
+
+    private static final Set<String> reservedNames = new HashSet<String>();
+    private final  ArtifactType artifactType;
+
     static {
         Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .setScanners(new SubTypesScanner(false))
@@ -42,7 +44,7 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitorAdapter {
                 .filterInputsBy(new FilterBuilder().include(
                         FilterBuilder.prefix("org.oasis_open.docs.s_ramp.ns.s_ramp_v1"))));
         Set<Class<? extends Object>> classes = reflections.getSubTypesOf(Object.class);
-        
+
         for (Class<? extends Object> clazz : classes) {
             Set<Field> fields = ReflectionUtils.getAllFields(clazz);
             for (Field field : fields) {
@@ -51,9 +53,14 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitorAdapter {
         }
     }
 
+    public ArtifactVerifier(ArtifactType artifactType) {
+        this.artifactType = artifactType;
+    }
+
     @Override
     protected void visitBase(BaseArtifactType artifact) {
         super.visitBase(artifact);
+        verifyModel(artifact);
         verifyNames(artifact);
     }
 
@@ -72,6 +79,13 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitorAdapter {
         verifyEmptyDerivedRelationships("includedXsds", artifact.getIncludedXsds());
         verifyEmptyDerivedRelationships("redefinedXsds", artifact.getRedefinedXsds());
         verifyEmptyDerivedRelationships("importedWsdls", artifact.getImportedWsdls());
+    }
+
+    private void verifyModel(BaseArtifactType artifact) {
+        if (! artifactType.getArtifactType().getApiType().equals(artifact.getArtifactType())) {
+            error = new WrongModelException(artifactType.getArtifactType().getApiType().value(),
+                    artifact.getArtifactType().value());
+        }
     }
 
     /**

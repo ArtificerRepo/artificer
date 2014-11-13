@@ -121,8 +121,7 @@ public final class JCRArtifactPersister {
                 new JCRReferenceFactoryImpl(session), classificationHelper);
         visitor.setProcessRelationships(false);
         ArtifactVisitorHelper.visitArtifact(visitor, primaryArtifact);
-        if (visitor.hasError())
-            throw visitor.getError();
+        visitor.throwError();
 
         log.debug(Messages.i18n.format("SAVED_JCR_NODE", name, uuid));
         if (SrampConfig.isAuditingEnabled()) {
@@ -141,8 +140,7 @@ public final class JCRArtifactPersister {
             ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(ArtifactType.valueOf(primaryArtifact),
                     primaryArtifactNode, new JCRReferenceFactoryImpl(session), classificationHelper);
             ArtifactVisitorHelper.visitArtifact(visitor, primaryArtifact);
-            if (visitor.hasError())
-                throw visitor.getError();
+            visitor.throwError();
             
             session.save();
         } catch (SrampException e) {
@@ -190,8 +188,7 @@ public final class JCRArtifactPersister {
                         derivedArtifactNode, null, classificationHelper);
                 visitor.setProcessRelationships(false);
                 ArtifactVisitorHelper.visitArtifact(visitor, derivedArtifact);
-                if (visitor.hasError())
-                    throw visitor.getError();
+                visitor.throwError();
 
                 // Audit the create event for the derived node
                 if (SrampConfig.isAuditingEnabled() && SrampConfig.isDerivedArtifactAuditingEnabled()) {
@@ -228,8 +225,7 @@ public final class JCRArtifactPersister {
                 ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(derivedArtifactType,
                         derivedArtifactNode, referenceFactory, classificationHelper);
                 ArtifactVisitorHelper.visitArtifact(visitor, derivedArtifact);
-                if (visitor.hasError())
-                    throw visitor.getError();
+                visitor.throwError();
 
                 log.debug(Messages.i18n.format("SAVED_RELATIONSHIPS", derivedArtifact.getName()));
             }

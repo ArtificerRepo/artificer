@@ -745,18 +745,10 @@ public abstract class HierarchicalArtifactVisitorAdapter implements ArtifactVisi
         visitElement(artifact);
 	}
 
-	/**
-	 * Returns true if this visitor encountered an error during visitation.
-	 */
-	public boolean hasError() {
-		return error != null;
-	}
-
-	/**
-	 * Returns the error encountered during visitation.
-	 */
-	public Exception getError() {
-		return error;
+	public void throwError() throws Exception {
+		if (error != null) {
+			throw error;
+		}
 	}
 
 }
