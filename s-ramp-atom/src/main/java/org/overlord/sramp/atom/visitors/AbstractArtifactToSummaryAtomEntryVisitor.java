@@ -39,7 +39,7 @@ import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.visitors.ArtifactVisitorAdapter;
+import org.overlord.sramp.common.visitors.AbstractArtifactVisitor;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 
 /**
@@ -47,7 +47,7 @@ import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
+public class AbstractArtifactToSummaryAtomEntryVisitor extends AbstractArtifactVisitor {
 
     protected String baseUrl = ""; //$NON-NLS-1$
 	protected Entry atomEntry;
@@ -61,7 +61,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	 * Constructor.
 	 * @param baseUrl
 	 */
-	public ArtifactToSummaryAtomEntryVisitor(String baseUrl) {
+	public AbstractArtifactToSummaryAtomEntryVisitor(String baseUrl) {
 	    this.baseUrl = baseUrl;
 	}
 
@@ -70,7 +70,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 	 * @param baseUrl
 	 * @param propNames
 	 */
-	public ArtifactToSummaryAtomEntryVisitor(String baseUrl, Set<String> propNames) {
+	public AbstractArtifactToSummaryAtomEntryVisitor(String baseUrl, Set<String> propNames) {
 	    this.baseUrl = baseUrl;
 		this.propertyNames = propNames;
 	}
@@ -104,7 +104,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
 
 	/**
 	 * Creates the base Atom Entry, doing the stuff that's common to all types of artifacts.
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitorAdapter#visitBase(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType)
+	 * @see org.overlord.sramp.common.visitors.AbstractArtifactVisitor#visitBase(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType)
 	 */
 	@SuppressWarnings("unchecked")
     @Override
@@ -237,7 +237,7 @@ public class ArtifactToSummaryAtomEntryVisitor extends ArtifactVisitorAdapter {
     }
 
 	/**
-	 * @see org.overlord.sramp.common.visitors.ArtifactVisitorAdapter#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType)
+	 * @see org.overlord.sramp.common.visitors.AbstractArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType)
 	 */
 	@SuppressWarnings("unchecked")
     @Override

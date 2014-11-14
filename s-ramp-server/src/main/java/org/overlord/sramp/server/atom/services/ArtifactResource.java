@@ -27,7 +27,7 @@ import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
-import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
+import org.overlord.sramp.atom.visitors.AbstractArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.common.*;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.events.EventProducer;
@@ -119,7 +119,7 @@ public class ArtifactResource extends AbstractResource {
             }
 
             // return the entry containing the s-ramp artifact
-            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
+            AbstractArtifactToFullAtomEntryVisitor visitor = new AbstractArtifactToFullAtomEntryVisitor(baseUrl);
             ArtifactVisitorHelper.visitArtifact(visitor, persistedArtifact);
             return visitor.getAtomEntry();
         } catch (WrongModelException e) {
@@ -192,7 +192,7 @@ public class ArtifactResource extends AbstractResource {
 			}
 
 			// return the entry containing the s-ramp artifact
-			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
+			AbstractArtifactToFullAtomEntryVisitor visitor = new AbstractArtifactToFullAtomEntryVisitor(baseUrl);
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return visitor.getAtomEntry();
 		} catch (Exception e) {
@@ -268,7 +268,7 @@ public class ArtifactResource extends AbstractResource {
             }
 
 			// Convert to a full Atom Entry and return it
-			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
+			AbstractArtifactToFullAtomEntryVisitor visitor = new AbstractArtifactToFullAtomEntryVisitor(baseUrl);
 			ArtifactVisitorHelper.visitArtifact(visitor, artifactRval);
 			return visitor.getAtomEntry();
 		} catch (WrongModelException e) {
@@ -418,7 +418,7 @@ public class ArtifactResource extends AbstractResource {
 			}
 
 			// Return the entry containing the s-ramp artifact
-			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
+			AbstractArtifactToFullAtomEntryVisitor visitor = new AbstractArtifactToFullAtomEntryVisitor(baseUrl);
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			return visitor.getAtomEntry();
 		} catch (ArtifactNotFoundException e) {

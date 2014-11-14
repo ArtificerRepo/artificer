@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
-import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitorAdapter;
+import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitor;
 import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -32,7 +32,7 @@ import org.reflections.util.FilterBuilder;
  * 
  * @author Brett Meyer
  */
-public class ArtifactVerifier extends HierarchicalArtifactVisitorAdapter {
+public class ArtifactVerifier extends HierarchicalArtifactVisitor {
 
     private static final Set<String> reservedNames = new HashSet<String>();
     private final  ArtifactType artifactType;

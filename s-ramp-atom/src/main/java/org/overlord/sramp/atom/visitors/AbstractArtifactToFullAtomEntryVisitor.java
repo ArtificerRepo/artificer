@@ -22,12 +22,12 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVisitor {
+public class AbstractArtifactToFullAtomEntryVisitor extends AbstractArtifactToSummaryAtomEntryVisitor {
 
 	/**
 	 * Constructor.
 	 */
-	public ArtifactToFullAtomEntryVisitor(String baseUrl) {
+	public AbstractArtifactToFullAtomEntryVisitor(String baseUrl) {
 	    super(baseUrl);
 	}
 

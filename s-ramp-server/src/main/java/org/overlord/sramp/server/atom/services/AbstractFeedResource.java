@@ -30,7 +30,7 @@ import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.atom.visitors.ArtifactToSummaryAtomEntryVisitor;
+import org.overlord.sramp.atom.visitors.AbstractArtifactToSummaryAtomEntryVisitor;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.QueryManager;
@@ -150,7 +150,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 		}
 
 		// Now get only the rows we're interested in.
-		ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor(baseUrl, propNames);
+		AbstractArtifactToSummaryAtomEntryVisitor visitor = new AbstractArtifactToSummaryAtomEntryVisitor(baseUrl, propNames);
 		for (int i = fromRow; i <= toRow; i++) {
 			if (!iterator.hasNext())
 				break;

@@ -39,7 +39,7 @@ import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
+import org.overlord.sramp.atom.visitors.AbstractArtifactToFullAtomEntryVisitor;
 import org.overlord.sramp.common.ArtifactNotFoundException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConfig;
@@ -132,7 +132,7 @@ public class BatchResource extends AbstractResource {
                 Object response = batchResponses.get(i);
                 if (response instanceof BaseArtifactType) {
                     BaseArtifactType artifact = (BaseArtifactType) response;
-                    ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
+                    AbstractArtifactToFullAtomEntryVisitor visitor = new AbstractArtifactToFullAtomEntryVisitor(baseUrl);
                     ArtifactVisitorHelper.visitArtifact(visitor, artifact);
                     Entry atomEntry = visitor.getAtomEntry();
                     addCreatedPart(output, bi.batchItemId, atomEntry);
@@ -222,7 +222,7 @@ public class BatchResource extends AbstractResource {
 		artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
 
 		// Return the entry containing the s-ramp artifact
-		ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
+		AbstractArtifactToFullAtomEntryVisitor visitor = new AbstractArtifactToFullAtomEntryVisitor(baseUrl);
 		ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 		Entry atomEntry = visitor.getAtomEntry();
 		return atomEntry;
