@@ -25,14 +25,7 @@ import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomConstants;
 import org.overlord.sramp.atom.SrampAtomUtils;
@@ -41,13 +34,14 @@ import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.visitors.AbstractArtifactVisitor;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
+import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitor;
 
 /**
  * Visitor used to convert an artifact to an Atom entry.
  *
  * @author eric.wittmann@redhat.com
  */
-public class AbstractArtifactToSummaryAtomEntryVisitor extends AbstractArtifactVisitor {
+public class ArtifactToSummaryAtomEntryVisitor extends HierarchicalArtifactVisitor {
 
     protected String baseUrl = ""; //$NON-NLS-1$
 	protected Entry atomEntry;
@@ -61,7 +55,7 @@ public class AbstractArtifactToSummaryAtomEntryVisitor extends AbstractArtifactV
 	 * Constructor.
 	 * @param baseUrl
 	 */
-	public AbstractArtifactToSummaryAtomEntryVisitor(String baseUrl) {
+	public ArtifactToSummaryAtomEntryVisitor(String baseUrl) {
 	    this.baseUrl = baseUrl;
 	}
 
@@ -70,7 +64,7 @@ public class AbstractArtifactToSummaryAtomEntryVisitor extends AbstractArtifactV
 	 * @param baseUrl
 	 * @param propNames
 	 */
-	public AbstractArtifactToSummaryAtomEntryVisitor(String baseUrl, Set<String> propNames) {
+	public ArtifactToSummaryAtomEntryVisitor(String baseUrl, Set<String> propNames) {
 	    this.baseUrl = baseUrl;
 		this.propertyNames = propNames;
 	}
@@ -191,14 +185,10 @@ public class AbstractArtifactToSummaryAtomEntryVisitor extends AbstractArtifactV
 			this.failure = e;
 		}
 	}
-	
+
 	@Override
-    public void visit(Document artifact) {
-        super.visit(artifact);
-        visitDocument(artifact);
-    }
-	
-	private void visitDocument(DocumentArtifactType artifact) {
+	protected void visitDocument(DocumentArtifactType artifact) {
+		super.visitDocument(artifact);
 	    try {
             if (this.atomEntry != null) {
                 // Original content can be accessed at /s-ramp/{model}/{artifact-type}/{uid}/media

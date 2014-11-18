@@ -81,11 +81,10 @@ public final class JCRNodeToArtifactFactory {
 			BaseArtifactType artifact = artifactType.newArtifactInstance();
 			ArtifactVisitor visitor = new JCRNodeToArtifactVisitor(jcrNode, new JCRReferenceResolver() {
 				@Override
-				public String resolveReference(Value reference) {
+				public Node resolveReference(Value reference) {
 					try {
 						String ident = reference.getString();
-						Node node = session.getNodeByIdentifier(ident);
-						return node.getProperty(JCRConstants.SRAMP_UUID).getString();
+						return session.getNodeByIdentifier(ident);
 					} catch (Exception e) {
 						log.debug(Messages.i18n.format("ERROR_RESOLVING_JCR_REF"), e);
 					}

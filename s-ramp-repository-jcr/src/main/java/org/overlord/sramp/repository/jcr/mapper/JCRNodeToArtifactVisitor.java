@@ -126,9 +126,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
 						Value[] values = property.getValues();
 						for (Value value : values) {
 							if (value.getType() == PropertyType.WEAKREFERENCE) {
-								String targetUUID = referenceResolver.resolveReference(value);
-								Target target = new Target();
-								target.setValue(targetUUID);
+								Target target = createTarget(Target.class, value);
 								relationship.getRelationshipTarget().add(target);
 							}
 						}
@@ -652,10 +650,9 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
                 for (int i = 0; i < relationshipTargets.length; i++) {
                     Value relationshipTarget = relationshipTargets[i];
                     String targetType = targetTypes[i].getString();
-                    
-					T t = targetClass.newInstance();
+
+					T t = createTarget(targetClass, relationshipTarget);
 					Target target = (Target) t;
-					target.setValue(referenceResolver.resolveReference(relationshipTarget));
 					// Use reflection to set the 'artifact type' attribute found on
 					// most (all?) targets.  Unfortunately, the method and field are
 					// redefined in each subclass of Target.
@@ -675,6 +672,26 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
 			}
 		}
 		return rval;
+	}
+
+	private <T> T createTarget(Class<T> targetClass, Value relationshipTarget) throws Exception {
+		T t = targetClass.newInstance();
+		Target target = (Target) t;
+		Node targetedNode = referenceResolver.resolveReference(relationshipTarget);
+		if (targetedNode != null) {
+			String targetedUuid = targetedNode.getProperty(JCRConstants.SRAMP_UUID).getString();
+			target.setValue(targetedUuid);
+			// Making a few design decisions here.  1.) Don't attempt to set this when *persisting* into
+			// the repo.  The model/type of the targeted artifact aren't guaranteed to be there.  2.)
+			// Don't try to pass baseUrl in through the server resources.  ArtifactToFullAtomEntryVisitor
+			// will later prepend it.
+			ArtifactType targetedArtifactType = ArtifactType.valueOf(
+					targetedNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getValue().getString());
+			String href = String.format("%1$s/%2$s/%3$s",
+					targetedArtifactType.getModel(), targetedArtifactType.getType(), targetedUuid);
+			target.setHref(href);
+		}
+		return t;
 	}
 
 	/**
@@ -772,11 +789,11 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
 	public static interface JCRReferenceResolver {
 
 		/**
-		 * Resolves a JCR reference into an s-ramp artifact UUID.
+		 * Resolves a JCR reference into an s-ramp artifact Node.
 		 * @param reference a JCR reference
-		 * @return the UUID of an s-ramp artifact (or null if it fails to resolve)
+		 * @return the Node of an s-ramp artifact (or null if it fails to resolve)
 		 */
-		public String resolveReference(Value reference);
+		public Node resolveReference(Value reference);
 
 	}
 
