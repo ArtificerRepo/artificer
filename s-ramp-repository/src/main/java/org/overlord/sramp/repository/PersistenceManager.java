@@ -51,7 +51,7 @@ public interface PersistenceManager {
 	/**
 	 * Gets a previously persisted artifact by its UUID.
 	 * @param uuid the UUID of the s-ramp artifact
-	 * @param artifactType the type of the artifact
+	 * @param type the type of the artifact
 	 * @return an instance of a {@link BaseArtifactType} or null if not found
 	 * @throws SrampException
 	 */
@@ -96,6 +96,14 @@ public interface PersistenceManager {
 	public BaseArtifactType deleteArtifact(String uuid, ArtifactType artifactType) throws SrampException;
 
     /**
+     * Deletes a previously persisted artifact's content from the S-RAMP repository.
+     * @param uuid
+     * @param artifactType
+     * @throws SrampException
+     */
+    public BaseArtifactType deleteArtifactContent(String uuid, ArtifactType artifactType) throws SrampException;
+
+    /**
      * Persists a single ontology.
      * @param ontology
      * @throws SrampException
@@ -119,7 +127,6 @@ public interface PersistenceManager {
 	/**
 	 * Updates a previously persisted ontology.
 	 * @param ontology the s-ramp artifact being updated
-	 * @param type the type of the artifact
 	 * @throws SrampException
 	 */
 	public void updateOntology(SrampOntology ontology) throws SrampException;

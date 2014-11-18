@@ -15,9 +15,6 @@
  */
 package org.overlord.sramp.common;
 
-import java.lang.reflect.Field;
-import java.util.*;
-
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitor;
 import org.reflections.ReflectionUtils;
@@ -27,6 +24,9 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
+import java.lang.reflect.Field;
+import java.util.*;
+
 /**
  * This visitor verifies numerous logical and spec-required constraints on artifact creations and updates.
  * 
@@ -35,7 +35,8 @@ import org.reflections.util.FilterBuilder;
 public class ArtifactVerifier extends HierarchicalArtifactVisitor {
 
     private static final Set<String> reservedNames = new HashSet<String>();
-    private final  ArtifactType artifactType;
+    private final ArtifactType artifactType;
+    private BaseArtifactType oldArtifact = null;
 
     static {
         Reflections reflections = new Reflections(new ConfigurationBuilder()
@@ -57,6 +58,11 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitor {
         this.artifactType = artifactType;
     }
 
+    public ArtifactVerifier(BaseArtifactType oldArtifact, ArtifactType artifactType) {
+        this(artifactType);
+        this.oldArtifact = oldArtifact;
+    }
+
     @Override
     protected void visitBase(BaseArtifactType artifact) {
         super.visitBase(artifact);
@@ -67,18 +73,168 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitor {
     @Override
     public void visit(XsdDocument artifact) {
         super.visit(artifact);
-        verifyEmptyDerivedRelationships("importedXsds", artifact.getImportedXsds());
-        verifyEmptyDerivedRelationships("includedXsds", artifact.getIncludedXsds());
-        verifyEmptyDerivedRelationships("redefinedXsds", artifact.getRedefinedXsds());
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("importedXsds", artifact.getImportedXsds());
+            verifyEmptyDerivedRelationships("includedXsds", artifact.getIncludedXsds());
+            verifyEmptyDerivedRelationships("redefinedXsds", artifact.getRedefinedXsds());
+        } else {
+            XsdDocument castOld = (XsdDocument) oldArtifact;
+            verifyUnchangedDerivedRelationships("importedXsds", artifact.getImportedXsds(), castOld.getImportedXsds());
+            verifyUnchangedDerivedRelationships("includedXsds", artifact.getIncludedXsds(), castOld.getIncludedXsds());
+            verifyUnchangedDerivedRelationships("redefinedXsds", artifact.getRedefinedXsds(), castOld.getRedefinedXsds());
+        }
     }
 
     @Override
     public void visit(WsdlDocument artifact) {
         super.visit(artifact);
-        verifyEmptyDerivedRelationships("importedXsds", artifact.getImportedXsds());
-        verifyEmptyDerivedRelationships("includedXsds", artifact.getIncludedXsds());
-        verifyEmptyDerivedRelationships("redefinedXsds", artifact.getRedefinedXsds());
-        verifyEmptyDerivedRelationships("importedWsdls", artifact.getImportedWsdls());
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("importedXsds", artifact.getImportedXsds());
+            verifyEmptyDerivedRelationships("includedXsds", artifact.getIncludedXsds());
+            verifyEmptyDerivedRelationships("redefinedXsds", artifact.getRedefinedXsds());
+            verifyEmptyDerivedRelationships("importedWsdls", artifact.getImportedWsdls());
+        } else {
+            WsdlDocument castOld = (WsdlDocument) oldArtifact;
+            verifyUnchangedDerivedRelationships("importedXsds", artifact.getImportedXsds(), castOld.getImportedXsds());
+            verifyUnchangedDerivedRelationships("includedXsds", artifact.getIncludedXsds(), castOld.getIncludedXsds());
+            verifyUnchangedDerivedRelationships("redefinedXsds", artifact.getRedefinedXsds(), castOld.getRedefinedXsds());
+            verifyUnchangedDerivedRelationships("importedWsdls", artifact.getImportedWsdls(), castOld.getImportedWsdls());
+        }
+    }
+
+    @Override
+    public void visit(Message artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("part", artifact.getPart());
+        } else {
+            Message castOld = (Message) oldArtifact;
+            verifyUnchangedDerivedRelationships("part", artifact.getPart(), castOld.getPart());
+        }
+    }
+
+    @Override
+    public void visit(Part artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("element", artifact.getElement());
+            verifyEmptyDerivedRelationships("type", artifact.getType());
+        } else {
+            Part castOld = (Part) oldArtifact;
+            verifyUnchangedDerivedRelationships("element", artifact.getElement(), castOld.getElement());
+            verifyUnchangedDerivedRelationships("type", artifact.getType(), castOld.getType());
+        }
+    }
+
+    @Override
+    public void visit(PortType artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("operation", artifact.getOperation());
+        } else {
+            PortType castOld = (PortType) oldArtifact;
+            verifyUnchangedDerivedRelationships("operation", artifact.getOperation(), castOld.getOperation());
+        }
+    }
+
+    @Override
+    public void visit(Operation artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("input", artifact.getInput());
+            verifyEmptyDerivedRelationships("output", artifact.getOutput());
+            verifyEmptyDerivedRelationships("fault", artifact.getFault());
+        } else {
+            Operation castOld = (Operation) oldArtifact;
+            verifyUnchangedDerivedRelationships("input", artifact.getInput(), castOld.getInput());
+            verifyUnchangedDerivedRelationships("output", artifact.getOutput(), castOld.getOutput());
+            verifyUnchangedDerivedRelationships("fault", artifact.getFault(), castOld.getFault());
+        }
+    }
+
+    @Override
+    public void visit(OperationInput artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("message", artifact.getMessage());
+        } else {
+            OperationInput castOld = (OperationInput) oldArtifact;
+            verifyUnchangedDerivedRelationships("message", artifact.getMessage(), castOld.getMessage());
+        }
+    }
+
+    @Override
+    public void visit(OperationOutput artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("message", artifact.getMessage());
+        } else {
+            OperationOutput castOld = (OperationOutput) oldArtifact;
+            verifyUnchangedDerivedRelationships("message", artifact.getMessage(), castOld.getMessage());
+        }
+    }
+
+    @Override
+    public void visit(Fault artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("message", artifact.getMessage());
+        } else {
+            Fault castOld = (Fault) oldArtifact;
+            verifyUnchangedDerivedRelationships("message", artifact.getMessage(), castOld.getMessage());
+        }
+    }
+
+    @Override
+    public void visit(Binding artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("bindingOperation", artifact.getBindingOperation());
+            verifyEmptyDerivedRelationships("portType", artifact.getPortType());
+        } else {
+            Binding castOld = (Binding) oldArtifact;
+            verifyUnchangedDerivedRelationships("bindingOperation", artifact.getBindingOperation(), castOld.getBindingOperation());
+            verifyUnchangedDerivedRelationships("portType", artifact.getPortType(), castOld.getPortType());
+        }
+    }
+
+    @Override
+    public void visit(BindingOperation artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("input", artifact.getInput());
+            verifyEmptyDerivedRelationships("output", artifact.getOutput());
+            verifyEmptyDerivedRelationships("fault", artifact.getFault());
+            verifyEmptyDerivedRelationships("operation", artifact.getOperation());
+        } else {
+            BindingOperation castOld = (BindingOperation) oldArtifact;
+            verifyUnchangedDerivedRelationships("input", artifact.getInput(), castOld.getInput());
+            verifyUnchangedDerivedRelationships("output", artifact.getOutput(), castOld.getOutput());
+            verifyUnchangedDerivedRelationships("fault", artifact.getFault(), castOld.getFault());
+            verifyUnchangedDerivedRelationships("operation", artifact.getOperation(), castOld.getOperation());
+        }
+    }
+
+    @Override
+    public void visit(WsdlService artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("port", artifact.getPort());
+        } else {
+            WsdlService castOld = (WsdlService) oldArtifact;
+            verifyUnchangedDerivedRelationships("port", artifact.getPort(), castOld.getPort());
+        }
+    }
+
+    @Override
+    public void visit(Port artifact) {
+        super.visit(artifact);
+        if (oldArtifact == null) {
+            verifyEmptyDerivedRelationships("binding", artifact.getBinding());
+        } else {
+            Port castOld = (Port) oldArtifact;
+            verifyUnchangedDerivedRelationships("binding", artifact.getBinding(), castOld.getBinding());
+        }
     }
 
     private void verifyModel(BaseArtifactType artifact) {
@@ -138,6 +294,27 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitor {
 
     private void verifyEmptyDerivedRelationships(String relationshipType, Collection<?> relationships) {
         if (!relationships.isEmpty()) {
+            error = new DerivedRelationshipCreationException(relationshipType);
+        }
+    }
+
+    private void verifyEmptyDerivedRelationships(String relationshipType, Object relationship) {
+        if (relationship != null) {
+            error = new DerivedRelationshipCreationException(relationshipType);
+        }
+    }
+
+    private void verifyUnchangedDerivedRelationships(String relationshipType, Collection<?> relationships,
+            Collection<?> oldRelationships) {
+        // TODO: We'll eventually be introducing artifact deep comparisons.  But until then, just keep this simple...
+        if (relationships.size() != oldRelationships.size()) {
+            error = new DerivedRelationshipCreationException(relationshipType);
+        }
+    }
+
+    private void verifyUnchangedDerivedRelationships(String relationshipType, Object relationship, Object oldRelationship) {
+        // TODO: We'll eventually be introducing artifact deep comparisons.  But until then, just keep this simple...
+        if ((oldRelationship != null && relationship == null) || (oldRelationship == null && relationship != null)) {
             error = new DerivedRelationshipCreationException(relationshipType);
         }
     }

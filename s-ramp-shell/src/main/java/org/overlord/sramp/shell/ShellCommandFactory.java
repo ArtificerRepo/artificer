@@ -50,21 +50,7 @@ import org.overlord.sramp.shell.commands.archive.RemoveEntryArchiveCommand;
 import org.overlord.sramp.shell.commands.archive.UpdateEntryArchiveCommand;
 import org.overlord.sramp.shell.commands.archive.UploadArchiveCommand;
 import org.overlord.sramp.shell.commands.audit.ShowAuditTrailCommand;
-import org.overlord.sramp.shell.commands.core.ClassificationCommand;
-import org.overlord.sramp.shell.commands.core.ConnectCommand;
-import org.overlord.sramp.shell.commands.core.CreateArtifactCommand;
-import org.overlord.sramp.shell.commands.core.DeleteCommand;
-import org.overlord.sramp.shell.commands.core.DisconnectCommand;
-import org.overlord.sramp.shell.commands.core.GetContentCommand;
-import org.overlord.sramp.shell.commands.core.GetMetaDataCommand;
-import org.overlord.sramp.shell.commands.core.PropertyCommand;
-import org.overlord.sramp.shell.commands.core.QueryCommand;
-import org.overlord.sramp.shell.commands.core.RefreshMetaDataCommand;
-import org.overlord.sramp.shell.commands.core.ShowMetaDataCommand;
-import org.overlord.sramp.shell.commands.core.StatusCommand;
-import org.overlord.sramp.shell.commands.core.UpdateContentCommand;
-import org.overlord.sramp.shell.commands.core.UpdateMetaDataCommand;
-import org.overlord.sramp.shell.commands.core.UploadArtifactCommand;
+import org.overlord.sramp.shell.commands.core.*;
 import org.overlord.sramp.shell.commands.maven.DeployCommand;
 import org.overlord.sramp.shell.commands.ontology.DeleteOntologyCommand;
 import org.overlord.sramp.shell.commands.ontology.GetOntologyCommand;
@@ -119,7 +105,8 @@ public class ShellCommandFactory {
 		registry.put(new QName("s-ramp", "classification"), ClassificationCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 		registry.put(new QName("s-ramp", "showMetaData"), ShowMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
 		registry.put(new QName("s-ramp", "refreshMetaData"), RefreshMetaDataCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
-        registry.put(new QName("s-ramp", "delete"), DeleteCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "delete"), DeleteCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
+		registry.put(new QName("s-ramp", "deleteContent"), DeleteContentCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
         registry.put(new QName("s-ramp", "create"), CreateArtifactCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
         registry.put(new QName("s-ramp", "exit"), ExitCommand.class); //$NON-NLS-1$ //$NON-NLS-2$
         registry.put(new QName("s-ramp", "createStoredQuery"), CreateStoredQueryCommand.class); //$NON-NLS-1$ //$NON-NLS-2$

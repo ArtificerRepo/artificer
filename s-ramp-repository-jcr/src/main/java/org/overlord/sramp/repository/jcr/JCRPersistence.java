@@ -15,42 +15,14 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Session;
-
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-import org.overlord.sramp.common.ArtifactNotFoundException;
-import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.InvalidArtifactUpdateException;
-import org.overlord.sramp.common.SrampConfig;
-import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.SrampServerException;
-import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
-import org.overlord.sramp.common.artifactbuilder.ArtifactBuilderFactory;
-import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
-import org.overlord.sramp.common.artifactbuilder.RelationshipContext;
+import org.overlord.sramp.common.*;
 import org.overlord.sramp.common.ontology.InvalidClassifiedByException;
 import org.overlord.sramp.common.ontology.OntologyAlreadyExistsException;
 import org.overlord.sramp.common.ontology.OntologyNotFoundException;
@@ -62,19 +34,24 @@ import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
-import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
-import org.overlord.sramp.repository.jcr.mapper.JCRNodeToOntology;
-import org.overlord.sramp.repository.jcr.mapper.JCRNodeToStoredQuery;
-import org.overlord.sramp.repository.jcr.mapper.OntologyToJCRNode;
-import org.overlord.sramp.repository.jcr.mapper.StoredQueryToJCRNode;
+import org.overlord.sramp.repository.jcr.mapper.*;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
+import org.overlord.sramp.repository.jcr.util.JCRArtifactConstraintUtil;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Session;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+
 /**
- * A JCR implementation of both the {@link PersistenceManager} and the {@link DerivedArtifacts}
- * interfaces.  By implementing both of these interfaces, this class provides a JCR backend implementation
+ * A JCR-specific implementation of the {@link PersistenceManager} interface, providing a JCR backend implementation
  * of the S-RAMP repository.
  *
  * This particular implementation leverages the ModeShape sequencing feature to assist with the
@@ -83,7 +60,7 @@ import org.slf4j.LoggerFactory;
 
 @Component(name = "JCR Persistence", immediate = true)
 @Service(value = org.overlord.sramp.repository.PersistenceManager.class)
-public class JCRPersistence extends AbstractJCRManager implements PersistenceManager, ClassificationHelper {
+public class JCRPersistence implements PersistenceManager, ClassificationHelper {
 
     private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
 
@@ -100,9 +77,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
     public JCRPersistence() {
     }
 
-    /**
-     * @see org.overlord.sramp.repository.PersistenceManager#persistBatch(java.util.List)
-     */
     @Override
     public List<Object> persistBatch(List<BatchItem> items) throws SrampException {
         List<Object> rval = new ArrayList<Object>(items.size());
@@ -113,8 +87,9 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             // First, persist each item, *without* relationships.
             for (BatchItem item : items) {
                 try {
-                    PersistResult persistResult = persistArtifact(item.baseArtifactType, item.content, session);
-                    item.attributes.put("persistResult", persistResult);
+                    JCRArtifactPersister persister = new JCRArtifactPersister(item.baseArtifactType, item.content, this);
+                    persister.persistArtifact(session);
+                    item.attributes.put("persister", persister);
                 } catch (Exception e) {
                     item.attributes.put("result", e);
                 }
@@ -124,11 +99,11 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             // for the relationship targets.
             for (BatchItem item : items) {
                 try {
-                    if (item.attributes.containsKey("persistResult")) {
-                        PersistResult persistResult = (PersistResult) item.attributes.get("persistResult");
-                        persistArtifactRelationships(item.baseArtifactType, persistResult, session);
+                    if (item.attributes.containsKey("persister")) {
+                        JCRArtifactPersister persister = (JCRArtifactPersister) item.attributes.get("persister");
+                        persister.persistArtifactRelationships(session);
                         BaseArtifactType artifact = JCRNodeToArtifactFactory.createArtifact(
-                                session, persistResult.primaryArtifactNode, ArtifactType.valueOf(item.baseArtifactType));
+                                session, persister.getPrimaryArtifactNode(), ArtifactType.valueOf(item.baseArtifactType));
                         item.attributes.put("result", artifact);
                     }
                 } catch (Exception e) {
@@ -148,17 +123,16 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         return rval;
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#persistArtifact(java.lang.String, org.overlord.sramp.common.ArtifactType, java.io.InputStream)
-     */
     @Override
     public BaseArtifactType persistArtifact(BaseArtifactType primaryArtifact, InputStream contentStream)
             throws SrampException {
         Session session = null;
         try {
             session = JCRRepositoryFactory.getSession();
-            PersistResult persistResult = persistArtifact(primaryArtifact, contentStream, session);
-            persistArtifactRelationships(primaryArtifact, persistResult, session);
+
+            JCRArtifactPersister persister = new JCRArtifactPersister(primaryArtifact, contentStream, this);
+            persister.persistArtifact(session);
+            persister.persistArtifactRelationships(session);
             
             ArtifactType artifactType = ArtifactType.valueOf(primaryArtifact);
 
@@ -168,7 +142,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             }
 
             // Create the S-RAMP Artifact object from the JCR node
-            return JCRNodeToArtifactFactory.createArtifact(session, findArtifactNode(
+            return JCRNodeToArtifactFactory.createArtifact(session, JCRUtils.findArtifactNode(
                     primaryArtifact.getUuid(), artifactType, session), artifactType);
         } catch (SrampException se) {
             throw se;
@@ -179,69 +153,13 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             JCRRepositoryFactory.logoutQuietly(session);
         }
     }
-    
-    private PersistResult persistArtifact(BaseArtifactType primaryArtifact, InputStream contentStream,
-            Session session) throws Exception {
-        
-        PersistResult persistResult = new PersistResult();
-        
-        if (StringUtils.isBlank(primaryArtifact.getUuid())) {
-            primaryArtifact.setUuid(UUID.randomUUID().toString());
-        }
-        
-        ArtifactContent artifactContent = new ArtifactContent(contentStream);
-        
-        // NOTE: The artifact builders *must* be run *before* persisting the primary artifact, and *must* be done
-        // regardless if it's a doc artifact.  Some builders are responsible for setting custom properties on the
-        // primary artifact.  See JavaClassArtifactBuilder as an example.
-        persistResult.derivedArtifacts = new ArrayList<BaseArtifactType>();
-        persistResult.artifactBuilders = ArtifactBuilderFactory.createArtifactBuilders(
-                primaryArtifact, artifactContent);
-        for (ArtifactBuilder artifactBuilder : persistResult.artifactBuilders) {
-            artifactBuilder.buildArtifacts(primaryArtifact, artifactContent);
-            persistResult.derivedArtifacts.addAll(artifactBuilder.getDerivedArtifacts());
-        }
-        
-        persistResult.primaryArtifactNode = JCRArtifactPersister.persistPrimaryArtifact(session,
-                primaryArtifact, artifactContent, this);
-        JCRArtifactPersister.persistDerivedArtifacts(session, persistResult.primaryArtifactNode,
-                persistResult.derivedArtifacts, this);
 
-        return persistResult;
-    }
-    
-    private void persistArtifactRelationships(BaseArtifactType primaryArtifact, PersistResult persistResult,
-            Session session) throws Exception {
-        if (SrampModelUtils.isDocumentArtifact(primaryArtifact)) {
-            RelationshipContext relationshipContext = new JCRRelationshipContext(session);
-            for (ArtifactBuilder artifactBuilder : persistResult.artifactBuilders) {
-                artifactBuilder.buildRelationships(relationshipContext);
-            }
-            
-            JCRArtifactPersister.persistDerivedArtifactsRelationships(session, persistResult.primaryArtifactNode,
-                    persistResult.derivedArtifacts, this);
-        }
-    
-        JCRArtifactPersister.persistPrimaryArtifactRelationships(session, primaryArtifact, persistResult.primaryArtifactNode,
-                this);
-    }
-    
-    // TODO: Hate this -- horrible design!  Improve the flow somehow.
-    private static class PersistResult {
-        public Node primaryArtifactNode;
-        public List<BaseArtifactType> derivedArtifacts;
-        public List<ArtifactBuilder> artifactBuilders;
-    }
-
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#getArtifact(java.lang.String, org.overlord.sramp.common.ArtifactType)
-     */
     @Override
     public BaseArtifactType getArtifact(String uuid, ArtifactType type) throws SrampException {
         Session session = null;
         try {
             session = JCRRepositoryFactory.getSession();
-            Node artifactNode = findArtifactNode(uuid, type, session);
+            Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
             if (artifactNode != null) {
                 // In the case of an extended type, we might be wrong about which one...
                 if (type.isExtendedType()) {
@@ -266,9 +184,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#getArtifactContent(java.lang.String, org.overlord.sramp.common.ArtifactType)
-     */
     @Override
     public InputStream getArtifactContent(String uuid, ArtifactType type) throws SrampException {
         Session session = null;
@@ -276,7 +191,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         try {
             session = JCRRepositoryFactory.getSession();
 
-            Node artifactNode = findArtifactNode(uuid, type, session);
+            Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
             }
@@ -301,16 +216,14 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#updateArtifact(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType, org.overlord.sramp.common.ArtifactType)
-     */
     @Override
     public BaseArtifactType updateArtifact(BaseArtifactType artifact, ArtifactType type) throws SrampException {
         Session session = null;
         ArtifactJCRNodeDiffer differ = null;
         try {
             session = JCRRepositoryFactory.getSession();
-            Node artifactNode = findArtifactNode(artifact.getUuid(), type, session);
+
+            Node artifactNode = JCRUtils.findArtifactNode(artifact.getUuid(), type, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(artifact.getUuid());
             }
@@ -333,7 +246,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
                 JCRArtifactPersister.auditUpdateArtifact(differ, artifactNode);
                 session.save();
             }
-            
+
             return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
         } catch (SrampException se) {
             throw se;
@@ -344,61 +257,62 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#updateArtifactContent(java.lang.String, org.overlord.sramp.common.ArtifactType, java.io.InputStream)
-     */
     @Override
-    public BaseArtifactType updateArtifactContent(String uuid, ArtifactType type, InputStream content) throws SrampException {
+    public BaseArtifactType updateArtifactContent(String uuid, ArtifactType type, InputStream contentStream) throws SrampException {
         Session session = null;
         try {
             session = JCRRepositoryFactory.getSession();
-            Node artifactNode = findArtifactNode(uuid, type, session);
+
+            Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
             }
             if (artifactNode.isNodeType(JCRConstants.SRAMP_NON_DOCUMENT_TYPE)) {
                 throw new InvalidArtifactUpdateException(Messages.i18n.format("JCRPersistence.NoArtifactContent"));
             }
-            JCRUtils tools = new JCRUtils();
-            tools.uploadFile(session, artifactNode.getPath(), content);
-            JCRUtils.setArtifactContentMimeType(artifactNode, type.getMimeType());
 
-            // Document
-            if (DocumentArtifactType.class.isAssignableFrom(type.getArtifactType().getTypeClass())) {
-                artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, type.getMimeType());
-                artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty(JCRConstants.JCR_CONTENT_DATA).getLength());
-                // TODO also handle the hash here
-            }
+            JCRArtifactConstraintUtil.relationshipConstraintsOnDerived(uuid, artifactNode, session);
+            JCRArtifactConstraintUtil.customMetadataConstraintsOnDerived(uuid, artifactNode);
 
-            // TODO delete and re-create the derived artifacts?  what if some of them have properties or classifications?
-            // TODO is "update content" even allowed in s-ramp??
+            // Delete the current derived artifacts
+            JCRArtifactConstraintUtil.deleteDerivedArtifacts(artifactNode, session);
 
-            session.save();
+            // Re-persist (which re-generates the derived artifacts).
+            BaseArtifactType primaryArtifact = JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
+            JCRArtifactPersister persister = new JCRArtifactPersister(primaryArtifact, contentStream, this);
+            persister.updateArtifactContent(artifactNode, session);
+            persister.persistArtifactRelationships(session);
+
+            // TODO: Audit?
+
             log.debug(Messages.i18n.format("UPDATED_ARTY_CONTENT", uuid));
-            
-            return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
+
+            // Create the S-RAMP Artifact object from the JCR node
+            return JCRNodeToArtifactFactory.createArtifact(session, JCRUtils.findArtifactNode(
+                    primaryArtifact.getUuid(), type, session), type);
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {
             throw new SrampServerException(t);
         } finally {
             JCRRepositoryFactory.logoutQuietly(session);
-            IOUtils.closeQuietly(content);
+            IOUtils.closeQuietly(contentStream);
         }
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#deleteArtifact(java.lang.String, org.overlord.sramp.common.ArtifactType)
-     */
     @Override
     public BaseArtifactType deleteArtifact(String uuid, ArtifactType type) throws SrampException {
         Session session = null;
         try {
             session = JCRRepositoryFactory.getSession();
-            Node artifactNode = findArtifactNode(uuid, type, session);
+
+            Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
             if (artifactNode == null) {
                 throw new ArtifactNotFoundException(uuid);
             }
+
+            JCRArtifactConstraintUtil.relationshipConstraints(uuid, artifactNode, session);
+            JCRArtifactConstraintUtil.deleteDerivedRelationships(artifactNode, session);
             
             // Move the node to the trash.
             String srcPath = artifactNode.getPath();
@@ -407,8 +321,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             // same UUID, then delete it later on without "same name siblings" collisions in the trash.
             String trashPath = parentTrashPath + "/" + Calendar.getInstance().getTimeInMillis();
 
-            JCRUtils jcrUtils = new JCRUtils();
-            jcrUtils.findOrCreateNode(session, parentTrashPath, JCRConstants.NT_FOLDER);
+            JCRUtils.findOrCreateNode(session, parentTrashPath, JCRConstants.NT_FOLDER);
             // Move the jcr node
             session.move(srcPath, trashPath);
             session.save();
@@ -424,9 +337,47 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#persistOntology(org.overlord.sramp.common.ontology.SrampOntology)
-     */
+    @Override
+    public BaseArtifactType deleteArtifactContent(String uuid, ArtifactType type) throws SrampException {
+        Session session = null;
+        try {
+            session = JCRRepositoryFactory.getSession();
+
+            Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
+            if (artifactNode == null) {
+                throw new ArtifactNotFoundException(uuid);
+            }
+            if (artifactNode.isNodeType(JCRConstants.SRAMP_NON_DOCUMENT_TYPE)) {
+                throw new InvalidArtifactUpdateException(Messages.i18n.format("JCRPersistence.NoArtifactContent"));
+            }
+
+            JCRArtifactConstraintUtil.relationshipConstraintsOnDerived(uuid, artifactNode, session);
+
+            // Delete the current derived artifacts
+            JCRArtifactConstraintUtil.deleteDerivedArtifacts(artifactNode, session);
+
+            artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
+
+            // Note: Only "unset" the size and hash, but not the actual mime/content types.  Doing so has quite a few
+            // complications elsewhere in the code.
+            artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, 0);
+            artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_HASH, "");
+            session.save();
+
+            log.debug(Messages.i18n.format("DELETED_ARTY_CONTENT", uuid));
+
+            // Create the S-RAMP Artifact object from the JCR node
+            return JCRNodeToArtifactFactory.createArtifact(session, JCRUtils.findArtifactNode(
+                    uuid, type, session), type);
+        } catch (SrampException se) {
+            throw se;
+        } catch (Throwable t) {
+            throw new SrampServerException(t);
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
+
     @Override
     public SrampOntology persistOntology(SrampOntology ontology) throws SrampException {
         Session session = null;
@@ -448,8 +399,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             if (session.nodeExists(ontologyPath)) {
                 throw new OntologyAlreadyExistsException(ontology.getUuid());
             } else {
-                JCRUtils tools = new JCRUtils();
-                Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", JCRConstants.NT_FOLDER);
+                Node ontologiesNode = JCRUtils.findOrCreateNode(session, "/s-ramp/ontologies", JCRConstants.NT_FOLDER);
                 Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), JCRConstants.SRAMP_ONTOLOGY);
                 o2jcr.write(ontology, ontologyNode);
                 session.save();
@@ -465,9 +415,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#getOntology(java.lang.String)
-     */
     @Override
     public SrampOntology getOntology(String uuid) throws SrampException {
         Session session = null;
@@ -494,9 +441,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#getOntologies()
-     */
     @Override
     public List<SrampOntology> getOntologies() throws SrampException {
         // TODO add caching based on the last modified date of the ontology node
@@ -504,8 +448,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 
         try {
             session = JCRRepositoryFactory.getSession();
-            JCRUtils tools = new JCRUtils();
-            Node ontologiesNode = tools.findOrCreateNode(session, "/s-ramp/ontologies", JCRConstants.NT_FOLDER);
+            Node ontologiesNode = JCRUtils.findOrCreateNode(session, "/s-ramp/ontologies", JCRConstants.NT_FOLDER);
             NodeIterator nodes = ontologiesNode.getNodes();
             List<SrampOntology> ontologies = new ArrayList<SrampOntology>();
             while (nodes.hasNext()) {
@@ -522,9 +465,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#updateOntology(org.overlord.sramp.common.ontology.SrampOntology)
-     */
     @Override
     public void updateOntology(SrampOntology ontology) throws SrampException {
         Session session = null;
@@ -549,9 +489,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#deleteOntology(java.lang.String)
-     */
     @Override
     public void deleteOntology(String uuid) throws SrampException {
         Session session = null;
@@ -595,8 +532,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
             if (session.nodeExists(storedQueryPath)) {
                 throw new StoredQueryAlreadyExistsException(name);
             } else {
-                JCRUtils tools = new JCRUtils();
-                Node queriesNode = tools.findOrCreateNode(session, "/s-ramp/queries", JCRConstants.NT_FOLDER);
+                Node queriesNode = JCRUtils.findOrCreateNode(session, "/s-ramp/queries", JCRConstants.NT_FOLDER);
                 Node queryNode = queriesNode.addNode(name, JCRConstants.SRAMP_QUERY);
                 q2jcr.write(storedQuery, queryNode);
                 session.save();
@@ -642,8 +578,7 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
 
         try {
             session = JCRRepositoryFactory.getSession();
-            JCRUtils tools = new JCRUtils();
-            Node queriesNode = tools.findOrCreateNode(session, "/s-ramp/queries", JCRConstants.NT_FOLDER);
+            Node queriesNode = JCRUtils.findOrCreateNode(session, "/s-ramp/queries", JCRConstants.NT_FOLDER);
             NodeIterator nodes = queriesNode.getNodes();
             List<StoredQuery> storedQueries = new ArrayList<StoredQuery>();
             while (nodes.hasNext()) {
@@ -708,9 +643,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.jcr.ClassificationHelper#resolve(java.lang.String)
-     */
     @Override
     public URI resolve(String classifiedBy) throws SrampException {
         URI classifiedUri = null;
@@ -732,9 +664,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         throw new InvalidClassifiedByException(classifiedBy);
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.jcr.ClassificationHelper#normalize(java.net.URI)
-     */
     @Override
     public Collection<URI> normalize(URI classification) throws SrampException {
         List<SrampOntology> ontologies = getOntologies();
@@ -747,9 +676,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         throw new InvalidClassifiedByException(classification.toString());
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.jcr.ClassificationHelper#resolveAll(java.util.Collection)
-     */
     @Override
     public Collection<URI> resolveAll(Collection<String> classifiedBy) throws SrampException {
         Set<URI> resolved = new HashSet<URI>(classifiedBy.size());
@@ -759,9 +685,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         return resolved;
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.jcr.ClassificationHelper#normalizeAll(java.util.Collection)
-     */
     @Override
     public Collection<URI> normalizeAll(Collection<URI> classifications) throws SrampException {
         Set<URI> resolved = new HashSet<URI>(classifications.size());
@@ -771,18 +694,14 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         return resolved;
     }
 
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#printArtifactGraph(java.lang.String, org.overlord.sramp.common.ArtifactType)
-     */
     @Override
     public void printArtifactGraph(String uuid, ArtifactType type) {
         Session session = null;
         try {
             session = JCRRepositoryFactory.getSession();
-            Node artifactNode = findArtifactNode(uuid, type, session);
+            Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
             if (artifactNode != null) {
-                JCRUtils tools = new JCRUtils();
-                tools.printSubgraph(artifactNode);
+                JCRUtils.printSubgraph(artifactNode);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -791,9 +710,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
 
-    /**
-     * @see org.overlord.sramp.repository.PersistenceManager#startup()
-     */
     @Override
     public void startup() {
         try {
@@ -803,9 +719,6 @@ public class JCRPersistence extends AbstractJCRManager implements PersistenceMan
         }
     }
     
-    /**
-     * @see org.overlord.sramp.common.repository.PersistenceManager#shutdown()
-     */
     @Override
     public void shutdown() {
         JCRRepositoryFactory.destroy();
