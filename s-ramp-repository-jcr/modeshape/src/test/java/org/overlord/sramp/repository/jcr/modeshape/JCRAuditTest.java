@@ -169,7 +169,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
         artifact.setName("S-RAMP Press Release");
         artifact.setDescription("Sample description.");
         SrampModelUtils.setCustomProperty(artifact, "foo", "bar");
-        SrampModelUtils.setCustomProperty(artifact, "hello", null);
+        SrampModelUtils.unsetCustomProperty(artifact, "hello");
         persistenceManager.updateArtifact(artifact, ArtifactType.Document());
 
         int expectedEntries = 2;
