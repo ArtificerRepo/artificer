@@ -114,7 +114,7 @@ public class UpdateEntryArchiveCommand extends AbstractArchiveCommand {
 	 */
 	private void executeSetProperty(SrampArchive archive, String entryPath, ShellContext context) throws Exception {
 		String propNameArg = requiredArgument(2, Messages.i18n.format("UpdateEntry.InvalidArgMsg.PropertyName")); //$NON-NLS-1$
-		String propValArg = requiredArgument(3, Messages.i18n.format("UpdateEntry.InvalidArgMsg.PropertyValue")); //$NON-NLS-1$
+		String propValArg = optionalArgument(3);
 
 		SrampArchiveEntry entry = archive.getEntry(entryPath);
 		BaseArtifactType metaData = entry.getMetaData();

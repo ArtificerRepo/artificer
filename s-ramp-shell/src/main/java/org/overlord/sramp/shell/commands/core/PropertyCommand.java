@@ -51,16 +51,13 @@ public class PropertyCommand extends BuiltInShellCommand {
 	public PropertyCommand() {
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.ShellCommand#execute()
-	 */
 	@Override
 	public boolean execute() throws Exception {
 		String subcmdArg = requiredArgument(0, Messages.i18n.format("Property.InvalidArgMsg.SubCommand")); //$NON-NLS-1$
 		String propNameArg = requiredArgument(1, Messages.i18n.format("Property.InvalidArgMsg.PropertyName")); //$NON-NLS-1$
 		String propValueArg = null;
 		if ("set".equals(subcmdArg)) { //$NON-NLS-1$
-			propValueArg = requiredArgument(2, Messages.i18n.format("Property.InvalidArgMsg.PropertyValue")); //$NON-NLS-1$
+			propValueArg = optionalArgument(2);
 		}
 
 		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -117,12 +114,14 @@ public class PropertyCommand extends BuiltInShellCommand {
 	 * @param propName
 	 */
 	private void unsetProperty(BaseArtifactType artifact, String propName) {
-		setProperty(artifact, propName, null);
+		String propNameLC = propName.toLowerCase();
+		if (CORE_PROPERTIES.contains(propNameLC)) {
+			setProperty(artifact, propName, null);
+		} else {
+			SrampModelUtils.unsetCustomProperty(artifact, propName);
+		}
 	}
 
-	/**
-	 * @see org.overlord.sramp.shell.api.shell.AbstractShellCommand#tabCompletion(java.lang.String, java.util.List)
-	 */
 	@Override
 	public int tabCompletion(String lastArgument, List<CharSequence> candidates) {
 		QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$

@@ -16,6 +16,7 @@
 package org.overlord.sramp.common;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ public class SrampModelUtils {
 
     public static final String ENCRYPT_PREFIX = "${crypt:";
     public static final String ENCRYPT_SUFIX = "}";
+
 	/**
 	 * Convenience method to help set a custom s-ramp property on the given artifact.
 	 * @param artifact
@@ -56,10 +58,21 @@ public class SrampModelUtils {
 			prop.setPropertyName(propName);
 			properties.add(prop);
 		}
-		if (propValue == null) {
-			properties.remove(prop);
-		} else {
-			prop.setPropertyValue(propValue);
+		prop.setPropertyValue(propValue);
+	}
+	/**
+	 * Convenience method to help remove a custom s-ramp property on the given artifact.
+	 * @param artifact
+	 * @param propName
+	 */
+	public static void unsetCustomProperty(BaseArtifactType artifact, String propName) {
+		Iterator<Property> iter = artifact.getProperty().iterator();
+		while (iter.hasNext()) {
+			Property property = iter.next();
+			if (property.getPropertyName().equals(propName)) {
+				iter.remove();
+				break;
+			}
 		}
 	}
 

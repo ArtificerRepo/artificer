@@ -21,11 +21,11 @@ import java.util.Collection;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 /**
- * This contract is the main way both built-in and custom integrations to provide:
+ * This contract allows both built-in and custom integrations to:
  * 
- * 1.) Properties and relationships on the primary artifact
- * 2.) Derived artifacts generated from the primary artifact
- * 3.) Relationships between the derived artifacts and between the derived and primary artifacts.
+ * 1.) Define properties and relationships on the primary artifact
+ * 2.) Generate derived artifacts from the primary artifact
+ * 3.) Define relationships between the derived artifacts and between the derived and primary artifacts.
  * 
  * The contract is used in two separate steps.  The first, buildArtifacts, is responsible for setting properties and
  * generating all derived artifacts.  After this step, all artifacts are persisted in the repository, but *without* any

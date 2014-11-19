@@ -302,6 +302,10 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 			String name = prop.getKey();
 			String qname = srampPropsPrefix + name;
 			String val = prop.getValue();
+			if (val == null) {
+				// Need to support no-value properties, but JCR will remove it if it's null.
+				val = "";
+			}
 			setProperty(qname, val);
 		}
 	}
