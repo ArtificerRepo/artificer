@@ -76,7 +76,7 @@ public class OntologyDownloadServlet extends AbstractDownloadServlet {
             }
 
         } catch (Exception e) {
-            // TODO throw sensible errors (http responses - 404, 500, etc)
+            // TODO throw sensible error (http responses - 404, 500, etc)
             throw new ServletException(e);
         }
     }

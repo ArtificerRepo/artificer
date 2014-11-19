@@ -438,7 +438,7 @@ public final class VdbManifestArtifactBuilder extends XmlArtifactBuilder {
                 // properties
                 processProperties(schemaArtifact, schema);
 
-                // validation errors
+                // validation error
                 processSchemaValidationErrors(derivedArtifacts, schemaArtifact, schema, xpath);
 
                 // sources
@@ -517,7 +517,7 @@ public final class VdbManifestArtifactBuilder extends XmlArtifactBuilder {
                                                 XPathConstants.NODESET);
 
         if (errors.getLength() != 0) {
-            LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' validation errors for schema '{}'", errors.getLength(), schemaArtifact.getName()); //$NON-NLS-1$
+            LOGGER.debug("VdbManifestArtifactBuilder:processing '{}' validation error for schema '{}'", errors.getLength(), schemaArtifact.getName()); //$NON-NLS-1$
 
             for (int i = 0, numErrors = errors.getLength(); i < numErrors; ++i) {
                 final Element errorElement = (Element)errors.item(i);

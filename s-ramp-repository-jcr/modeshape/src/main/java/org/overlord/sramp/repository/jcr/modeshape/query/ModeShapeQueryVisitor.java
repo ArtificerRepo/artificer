@@ -15,10 +15,9 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape.query;
 
-import org.modeshape.jcr.api.query.qom.*;
+import org.modeshape.jcr.api.query.qom.Operator;
 import org.modeshape.jcr.query.model.Column;
 import org.modeshape.jcr.query.model.DynamicOperand;
-import org.modeshape.jcr.query.model.Join;
 import org.modeshape.jcr.query.model.JoinCondition;
 import org.modeshape.jcr.query.model.Ordering;
 import org.modeshape.jcr.query.model.QueryObjectModel;
@@ -26,23 +25,48 @@ import org.modeshape.jcr.query.model.QueryObjectModelFactory;
 import org.modeshape.jcr.query.model.Selector;
 import org.modeshape.jcr.query.model.Source;
 import org.modeshape.jcr.query.model.StaticOperand;
-import org.overlord.sramp.common.*;
-import org.overlord.sramp.common.query.xpath.ast.*;
+import org.overlord.sramp.common.ArtifactTypeEnum;
+import org.overlord.sramp.common.SrampConstants;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.query.xpath.ast.AndExpr;
+import org.overlord.sramp.common.query.xpath.ast.Argument;
 import org.overlord.sramp.common.query.xpath.ast.ArtifactSet;
+import org.overlord.sramp.common.query.xpath.ast.EqualityExpr;
+import org.overlord.sramp.common.query.xpath.ast.Expr;
+import org.overlord.sramp.common.query.xpath.ast.ForwardPropertyStep;
+import org.overlord.sramp.common.query.xpath.ast.FunctionCall;
+import org.overlord.sramp.common.query.xpath.ast.LocationPath;
+import org.overlord.sramp.common.query.xpath.ast.OrExpr;
+import org.overlord.sramp.common.query.xpath.ast.Predicate;
+import org.overlord.sramp.common.query.xpath.ast.PrimaryExpr;
 import org.overlord.sramp.common.query.xpath.ast.Query;
-import org.overlord.sramp.repository.jcr.*;
-import org.overlord.sramp.repository.jcr.i18n.*;
-import org.overlord.sramp.repository.jcr.query.*;
-import org.overlord.sramp.repository.query.*;
+import org.overlord.sramp.common.query.xpath.ast.RelationshipPath;
+import org.overlord.sramp.common.query.xpath.ast.SubartifactSet;
+import org.overlord.sramp.repository.error.QueryExecutionException;
+import org.overlord.sramp.repository.jcr.ClassificationHelper;
+import org.overlord.sramp.repository.jcr.JCRConstants;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
+import org.overlord.sramp.repository.jcr.query.SrampToJcrSql2QueryVisitor;
 
-import javax.jcr.*;
-import javax.jcr.query.*;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.query.QueryManager;
 import javax.jcr.query.qom.Constraint;
 import javax.jcr.query.qom.QueryObjectModelConstants;
-import javax.xml.namespace.*;
-import java.net.*;
-import java.text.*;
-import java.util.*;
+import javax.xml.namespace.QName;
+import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Visitor used to produce a JCR SQL2 query rootFrom an S-RAMP xpath query.

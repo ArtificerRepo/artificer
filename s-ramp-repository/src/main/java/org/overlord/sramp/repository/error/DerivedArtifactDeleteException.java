@@ -13,26 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common.ontology;
+package org.overlord.sramp.repository.error;
 
+import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.error.SrampUserException;
+import org.overlord.sramp.repository.i18n.Messages;
 
 /**
- * Exception thrown when the user attempts to update an ontology but something went
- * wrong (the user did something wrong).
+ * Exception thrown the user attempts to delete a derived artifact.
  *
  * @author eric.wittmann@redhat.com
  */
-public class OntologyUpdateException extends SrampUserException {
+public class DerivedArtifactDeleteException extends SrampUserException {
 
-    private static final long serialVersionUID = OntologyUpdateException.class.hashCode();
+    private static final long serialVersionUID = -2247193241132739490L;
 
     /**
      * Constructor.
-     * @param message
      */
-    public OntologyUpdateException(String message) {
-        super(message);
+    public DerivedArtifactDeleteException() {
+    }
+
+    /**
+     * Constructor.
+     * @param artifactType
+     */
+    public DerivedArtifactDeleteException(ArtifactTypeEnum artifactType) {
+        super(Messages.i18n.format("CANNOT_DELETE_DERIVED_ARTY", artifactType)); //$NON-NLS-1$
     }
 
 }

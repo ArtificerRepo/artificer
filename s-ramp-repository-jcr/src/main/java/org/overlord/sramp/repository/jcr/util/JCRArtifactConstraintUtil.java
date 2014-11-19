@@ -15,9 +15,9 @@
  */
 package org.overlord.sramp.repository.jcr.util;
 
-import org.overlord.sramp.common.ClassifierConstraintException;
-import org.overlord.sramp.common.CustomPropertyConstraintException;
-import org.overlord.sramp.common.RelationshipConstraintException;
+import org.overlord.sramp.repository.error.ClassifierConstraintException;
+import org.overlord.sramp.repository.error.CustomPropertyConstraintException;
+import org.overlord.sramp.repository.error.RelationshipConstraintException;
 import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitor;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 

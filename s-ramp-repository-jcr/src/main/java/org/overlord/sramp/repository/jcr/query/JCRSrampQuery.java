@@ -26,7 +26,7 @@ import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.overlord.sramp.repository.query.AbstractSrampQueryImpl;
 import org.overlord.sramp.repository.query.ArtifactSet;
-import org.overlord.sramp.repository.query.QueryExecutionException;
+import org.overlord.sramp.repository.error.QueryExecutionException;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

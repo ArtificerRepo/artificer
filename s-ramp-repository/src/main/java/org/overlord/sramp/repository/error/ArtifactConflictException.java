@@ -13,32 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common.ontology;
+package org.overlord.sramp.repository.error;
 
-import org.overlord.sramp.common.SrampAlreadyExistsException;
+import org.overlord.sramp.common.error.SrampConflictException;
 import org.overlord.sramp.common.i18n.Messages;
 
 /**
- * Exception thrown when the user attempts to add an ontology that already exists.
+ * Exception thrown when the user attempts add a new artifact with a duplicate UUID.
  *
  * @author eric.wittmann@redhat.com
  */
-public class OntologyAlreadyExistsException extends SrampAlreadyExistsException {
+public class ArtifactConflictException extends SrampConflictException {
 
-    private static final long serialVersionUID = -6428175672605313348L;
+    private static final long serialVersionUID = 1131976536249817281L;
 
     /**
      * Constructor.
      */
-    public OntologyAlreadyExistsException() {
+    public ArtifactConflictException() {
     }
 
     /**
      * Constructor.
-     * @param ontologyUuid
+     * @param message
      */
-    public OntologyAlreadyExistsException(String ontologyUuid) {
-        super(Messages.i18n.format("ONTOLOGY_ALREADY_EXISTS", ontologyUuid)); //$NON-NLS-1$
+    public ArtifactConflictException(String uuid) {
+        super(Messages.i18n.format("ARTIFACT_ALREADY_EXISTS", uuid)); //$NON-NLS-1$
     }
 
 }

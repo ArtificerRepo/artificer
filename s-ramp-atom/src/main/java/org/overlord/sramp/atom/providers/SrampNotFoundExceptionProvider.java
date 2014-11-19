@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.overlord.sramp.common.SrampNotFoundException;
+import org.overlord.sramp.common.error.SrampNotFoundException;
 
 /**
  * The spec requires that a 404 is returned when an artifact is not found.

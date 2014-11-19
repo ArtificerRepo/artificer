@@ -30,7 +30,20 @@ import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.visitors.ArtifactContentTypeVisitor;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
-import org.overlord.sramp.common.*;
+import org.overlord.sramp.common.ArtifactContent;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.ArtifactTypeEnum;
+import org.overlord.sramp.common.ArtifactVerifier;
+import org.overlord.sramp.common.FilenameRequiredException;
+import org.overlord.sramp.common.SrampConfig;
+import org.overlord.sramp.common.SrampConstants;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.error.ArtifactNotFoundException;
+import org.overlord.sramp.common.error.ContentNotFoundException;
+import org.overlord.sramp.common.error.InvalidArtifactCreationException;
+import org.overlord.sramp.common.error.SrampConflictException;
+import org.overlord.sramp.common.error.WrongModelException;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.events.EventProducer;
 import org.overlord.sramp.events.EventProducerFactory;
@@ -38,15 +51,24 @@ import org.overlord.sramp.integration.ArchiveContext;
 import org.overlord.sramp.integration.ExtensionFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
-import org.overlord.sramp.repository.errors.DerivedArtifactCreateException;
-import org.overlord.sramp.repository.errors.DerivedArtifactDeleteException;
+import org.overlord.sramp.repository.error.DerivedArtifactCreateException;
+import org.overlord.sramp.repository.error.DerivedArtifactDeleteException;
 import org.overlord.sramp.server.i18n.Messages;
 import org.overlord.sramp.server.mime.MimeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -132,8 +154,8 @@ public class ArtifactResource extends AbstractResource {
             // Simply re-throw.  Don't allow the following catch it -- WrongModelException is mapped to a unique
             // HTTP response type.
             throw e;
-        } catch (SrampAlreadyExistsException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampAlreadyExistsException is mapped to a
+        } catch (SrampConflictException e) {
+            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -393,8 +415,8 @@ public class ArtifactResource extends AbstractResource {
             // Simply re-throw.  Don't allow the following catch it -- WrongModelException is mapped to a unique
             // HTTP response type.
             throw e;
-        } catch (SrampAlreadyExistsException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampAlreadyExistsException is mapped to a
+        } catch (SrampConflictException e) {
+            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -496,8 +518,8 @@ public class ArtifactResource extends AbstractResource {
             // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
             // HTTP response type.
             throw e;
-        } catch (SrampAlreadyExistsException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampAlreadyExistsException is mapped to a
+        } catch (SrampConflictException e) {
+            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -640,8 +662,8 @@ public class ArtifactResource extends AbstractResource {
             // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
             // HTTP response type.
             throw e;
-        } catch (SrampAlreadyExistsException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampAlreadyExistsException is mapped to a
+        } catch (SrampConflictException e) {
+            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
             // unique HTTP response type.
             throw e;
         } catch (Throwable e) {
@@ -686,8 +708,8 @@ public class ArtifactResource extends AbstractResource {
 			// Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
 			// HTTP response type.
 			throw e;
-		} catch (SrampAlreadyExistsException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampAlreadyExistsException is mapped to a
+		} catch (SrampConflictException e) {
+            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {

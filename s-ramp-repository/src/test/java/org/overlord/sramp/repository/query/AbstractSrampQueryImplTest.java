@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.overlord.sramp.repository.error.InvalidQueryException;
 
 /**
  * Tests the {@link AbstractSrampQueryImpl} class.
@@ -30,7 +31,7 @@ public class AbstractSrampQueryImplTest {
 
 	/**
 	 * Test method for {@link org.overlord.sramp.common.repository.query.AbstractSrampQueryImpl#formatQuery(java.lang.String, java.util.List)}.
-	 * @throws InvalidQueryException 
+	 * @throws org.overlord.sramp.repository.error.InvalidQueryException
 	 */
 	@Test
 	public void testFormatQuery() throws InvalidQueryException {

@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
-
+package org.overlord.sramp.common.error;
 
 import org.overlord.sramp.common.i18n.Messages;
 
-/**
- * Thrown when a derived relationship is manually created by the client.
- */
-public class DerivedRelationshipCreationException extends SrampAlreadyExistsException {
 
-    private static final long serialVersionUID = 1927569341892142710L;
+/**
+ * Exception thrown when an artifact's custom property or generic relationship name duplicates one that's built-in.
+ *
+ * @author Brett Meyer
+ */
+public class ReservedNameException extends SrampConflictException {
+
+    private static final long serialVersionUID = -3535532386495478538L;
 
     /**
      * Constructor.
+     * @param name
      */
-    public DerivedRelationshipCreationException(String relationshipType) {
-        super(Messages.i18n.format("DERIVED_RELATIONSHIP_CREATION", relationshipType));
+    public ReservedNameException(String name) {
+        super(Messages.i18n.format("RESERVED_WORD", name)); //$NON-NLS-1$
     }
+
 }

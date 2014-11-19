@@ -13,27 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
-
-import org.overlord.sramp.common.i18n.Messages;
+package org.overlord.sramp.common.error;
 
 
 /**
- * Exception thrown when an artifact's custom property name duplicates a generic relationship name, 
- * or another custom property, within the same artifact.
+ * Exception thrown when the user attempts to create an artifact incorrectly (for example
+ * trying to directly create a document-style artifact without uploading content).
  *
- * @author Brett Meyer
+ * @author eric.wittmann@redhat.com
  */
-public class DuplicateNameException extends SrampAlreadyExistsException {
+public class InvalidArtifactCreationException extends SrampUserException {
 
-    private static final long serialVersionUID = -3535532386495478538L;
+    private static final long serialVersionUID = 1927569341892142710L;
 
     /**
      * Constructor.
-     * @param message
      */
-    public DuplicateNameException(String name) {
-        super(Messages.i18n.format("DUPLICATE_NAME", name)); //$NON-NLS-1$
+    public InvalidArtifactCreationException(String message) {
+        super(message);
     }
-
 }

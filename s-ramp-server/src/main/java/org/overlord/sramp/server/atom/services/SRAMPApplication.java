@@ -20,7 +20,7 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import org.overlord.sramp.atom.providers.SrampAlreadyExistsExceptionProvider;
+import org.overlord.sramp.atom.providers.SrampConflictExceptionProvider;
 import org.overlord.sramp.atom.providers.SrampNotFoundExceptionProvider;
 import org.overlord.sramp.atom.providers.AuditEntryProvider;
 import org.overlord.sramp.atom.providers.HttpResponseProvider;
@@ -52,7 +52,7 @@ public class SRAMPApplication extends Application {
         singletons.add(new StoredQueryResource());
 
         classes.add(WrongModelExceptionProvider.class);
-        classes.add(SrampAlreadyExistsExceptionProvider.class);
+        classes.add(SrampConflictExceptionProvider.class);
         classes.add(SrampNotFoundExceptionProvider.class);
         
 		classes.add(HttpResponseProvider.class);

@@ -16,6 +16,7 @@
 package org.overlord.sramp.common;
 
 
+import org.overlord.sramp.common.error.SrampUserException;
 import org.overlord.sramp.common.i18n.Messages;
 
 /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
+package org.overlord.sramp.common.error;
+
 
 import org.overlord.sramp.common.i18n.Messages;
 
 /**
- * Thrown when an artifact is published to the incorrect model.
- * 
- * @author Brett Meyer
+ * Thrown when a derived relationship is manually created by the client.
  */
-public class WrongModelException extends SrampUserException {
+public class DerivedRelationshipCreationException extends SrampConflictException {
 
-    private static final long serialVersionUID = -1006199656016992864L;
+    private static final long serialVersionUID = 1927569341892142710L;
 
-    public WrongModelException(String expectedType, String receivedType) {
-        super(Messages.i18n.format("WRONG_MODEL", expectedType, receivedType)); //$NON-NLS-1$ //$NON-NLS-2$
+    /**
+     * Constructor.
+     */
+    public DerivedRelationshipCreationException(String relationshipType) {
+        super(Messages.i18n.format("DERIVED_RELATIONSHIP_CREATION", relationshipType));
     }
 }

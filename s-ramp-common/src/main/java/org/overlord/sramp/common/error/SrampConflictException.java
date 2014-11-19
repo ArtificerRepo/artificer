@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
+package org.overlord.sramp.common.error;
 
-import com.google.common.base.Joiner;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.common.i18n.Messages;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * @author Brett Meyer.
+ * Superclass for Exceptions that result in 409/CONFLICT responses.  See SrampConflictExceptionProvider.
+ *
+ * @author Brett Meyer
  */
-// TODO: SrampAlreadyExistsException needs renamed to a more general conflict-related exception.
-public class CustomPropertyConstraintException extends SrampAlreadyExistsException {
+public abstract class SrampConflictException extends SrampUserException {
+    
+    private static final long serialVersionUID = 8618489938635309807L;
 
-    public CustomPropertyConstraintException(String uuid) {
-        super(Messages.i18n.format("CUSTOM_PROPERTY_CONSTRAINT", uuid));
+    public SrampConflictException() {
+        super();
+    }
+
+    public SrampConflictException(String message) {
+        super(message);
     }
 }

@@ -38,7 +38,7 @@ import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.mappers.OntologyToRdfMapper;
 import org.overlord.sramp.atom.mappers.RdfToOntologyMapper;
 import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.ontology.OntologyAlreadyExistsException;
+import org.overlord.sramp.common.ontology.OntologyConflictException;
 import org.overlord.sramp.common.ontology.OntologyNotFoundException;
 import org.overlord.sramp.common.ontology.OntologyValidator;
 import org.overlord.sramp.common.ontology.SrampOntology;
@@ -112,7 +112,7 @@ public class OntologyResource extends AbstractResource {
             }
 
 			return SrampAtomUtils.wrapOntology(ontology, responseRDF);
-        } catch (OntologyAlreadyExistsException e) {
+        } catch (OntologyConflictException e) {
             // Simply re-throw.  Don't allow the following catch it -- ArtifactAlreadyExistsException is mapped to a
             // unique HTTP response type.
             throw e;

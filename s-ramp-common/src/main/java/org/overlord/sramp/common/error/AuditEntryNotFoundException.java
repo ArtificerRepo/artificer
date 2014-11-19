@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common.storedquery;
+package org.overlord.sramp.common.error;
 
-import org.overlord.sramp.common.SrampAlreadyExistsException;
 import org.overlord.sramp.common.i18n.Messages;
 
+
 /**
- * Exception thrown when the user attempts to add a stored query that already exists.
+ * Exception thrown when the user attempts to access an audit entry that does not exist.
  *
- * @author Brett Meyer
+ * @author eric.wittmann@redhat.com
  */
-public class StoredQueryAlreadyExistsException extends SrampAlreadyExistsException {
+public class AuditEntryNotFoundException extends SrampUserException {
 
-    private static final long serialVersionUID = 632263403445444191L;
+    private static final long serialVersionUID = 8446724007853150213L;
 
-    public StoredQueryAlreadyExistsException() {
-    }
-
-    public StoredQueryAlreadyExistsException(String queryName) {
-        super(Messages.i18n.format("STOREDQUERY_ALREADY_EXISTS", queryName)); //$NON-NLS-1$
+    /**
+     * Constructor.
+     * @param auditEntryUuid
+     * @param artifactUuid
+     */
+    public AuditEntryNotFoundException(String artifactUuid, String auditEntryUuid) {
+        super(Messages.i18n.format("AUDIT_ENTRY_NOT_FOUND", artifactUuid, auditEntryUuid)); //$NON-NLS-1$
     }
 
 }

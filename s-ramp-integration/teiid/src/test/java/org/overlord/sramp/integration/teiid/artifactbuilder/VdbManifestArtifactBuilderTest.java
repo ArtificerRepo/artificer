@@ -364,7 +364,7 @@ public final class VdbManifestArtifactBuilderTest extends TeiidIntegrationTest {
         assertThat(this.vdbManifestArtifact.getVersion(), is("1"));
         assertPropertyValue(this.vdbManifestArtifact, VdbManifest.PropertyId.VERSION, "1");
         assertPropertyValue(this.vdbManifestArtifact, VdbManifest.PropertyId.PREVIEW, Boolean.FALSE.toString());
-        assertThat(derivedArtifacts.size(), is(6)); // model, source, 4 validation errors
+        assertThat(derivedArtifacts.size(), is(6)); // model, source, 4 validation error
 
         boolean foundError1 = false;
         boolean foundError2 = false;

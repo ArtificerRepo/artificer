@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
+package org.overlord.sramp.common.error;
 
-import org.overlord.sramp.common.i18n.Messages;
 
 /**
- * @author Brett Meyer.
+ * Exception thrown when the user attempts to update an artifact incorrectly (for example
+ * trying to update a non-document style artifact).
+ *
+ * @author eric.wittmann@redhat.com
  */
-// TODO: SrampAlreadyExistsException needs renamed to a more general conflict-related exception.
-public class ClassifierConstraintException extends SrampAlreadyExistsException {
+public class InvalidArtifactUpdateException extends SrampUserException {
 
-    public ClassifierConstraintException(String uuid) {
-        super(Messages.i18n.format("CLASSIFIER_CONSTRAINT", uuid));
+    private static final long serialVersionUID = -2343995516760599930L;
+
+    /**
+     * Constructor.
+     */
+    public InvalidArtifactUpdateException(String message) {
+        super(message);
     }
 }

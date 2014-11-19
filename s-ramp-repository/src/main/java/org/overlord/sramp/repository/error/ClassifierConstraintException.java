@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
+package org.overlord.sramp.repository.error;
 
+import org.overlord.sramp.common.error.SrampConflictException;
+import org.overlord.sramp.common.i18n.Messages;
 
 /**
- * @author Brett Meyer
+ * @author Brett Meyer.
  */
-public abstract class SrampAlreadyExistsException extends SrampUserException {
-    
-    private static final long serialVersionUID = 8618489938635309807L;
+public class ClassifierConstraintException extends SrampConflictException {
 
-    public SrampAlreadyExistsException() {
-        super();
-    }
-
-    public SrampAlreadyExistsException(String message) {
-        super(message);
+    public ClassifierConstraintException(String uuid) {
+        super(Messages.i18n.format("CLASSIFIER_CONSTRAINT", uuid));
     }
 }

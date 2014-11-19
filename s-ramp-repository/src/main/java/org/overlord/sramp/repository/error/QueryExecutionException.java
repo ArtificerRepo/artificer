@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.query;
+package org.overlord.sramp.repository.error;
 
-import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.common.error.SrampServerException;
 
 /**
- * Exception thrown when an s-ramp query is not valid.
+ * Exception thrown when an s-ramp query fails.
  *
  * @author eric.wittmann@redhat.com
  */
-public class InvalidQueryException extends SrampUserException {
+public class QueryExecutionException extends SrampServerException {
 
-    private static final long serialVersionUID = InvalidQueryException.class.hashCode();
+    private static final long serialVersionUID = QueryExecutionException.class.hashCode();
 
     /**
      * Default constructor.
      */
-    public InvalidQueryException() {
+    public QueryExecutionException() {
         super();
     }
 
@@ -38,7 +38,7 @@ public class InvalidQueryException extends SrampUserException {
      * @param message
      * @param rootCause
      */
-    public InvalidQueryException(String message, Throwable rootCause) {
+    public QueryExecutionException(String message, Throwable rootCause) {
         super(message, rootCause);
     }
 
@@ -46,7 +46,7 @@ public class InvalidQueryException extends SrampUserException {
      * Constructor.
      * @param message
      */
-    public InvalidQueryException(String message) {
+    public QueryExecutionException(String message) {
         super(message);
     }
 
@@ -54,7 +54,7 @@ public class InvalidQueryException extends SrampUserException {
      * Constructor.
      * @param rootCause
      */
-    public InvalidQueryException(Throwable rootCause) {
+    public QueryExecutionException(Throwable rootCause) {
         super(rootCause);
     }
 

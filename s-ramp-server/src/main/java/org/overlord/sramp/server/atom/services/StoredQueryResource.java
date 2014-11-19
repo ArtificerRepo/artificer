@@ -42,8 +42,8 @@ import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.storedquery.StoredQueryAlreadyExistsException;
-import org.overlord.sramp.common.storedquery.StoredQueryNotFoundException;
+import org.overlord.sramp.common.error.StoredQueryConflictException;
+import org.overlord.sramp.common.error.StoredQueryNotFoundException;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.server.i18n.Messages;
@@ -75,7 +75,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             storedQuery = persistenceManager.persistStoredQuery(storedQuery);
 
             return wrapStoredQuery(storedQuery, baseUrl);
-        } catch (StoredQueryAlreadyExistsException e) {
+        } catch (StoredQueryConflictException e) {
             // Simply re-throw.  Don't allow the following catch it -- ArtifactAlreadyExistsException is mapped to a
             // unique HTTP response type.
             throw e;

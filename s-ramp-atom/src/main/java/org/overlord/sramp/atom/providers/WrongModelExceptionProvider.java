@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.overlord.sramp.common.WrongModelException;
+import org.overlord.sramp.common.error.WrongModelException;
 
 /**
  * The spec requires that a 403 is returned when an artifact is published to the incorrect model.

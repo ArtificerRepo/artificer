@@ -13,33 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.errors;
+package org.overlord.sramp.common.ontology;
 
-import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.common.SrampUserException;
-import org.overlord.sramp.repository.i18n.Messages;
+import org.overlord.sramp.common.error.SrampConflictException;
+import org.overlord.sramp.common.i18n.Messages;
 
 /**
- * Exception thrown the user attempts to create a derived artifact.
+ * Exception thrown when the user attempts to add an ontology that already exists.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DerivedArtifactCreateException extends SrampUserException {
+public class OntologyConflictException extends SrampConflictException {
 
-    private static final long serialVersionUID = -2247193241132739490L;
+    private static final long serialVersionUID = -6428175672605313348L;
 
     /**
      * Constructor.
      */
-    public DerivedArtifactCreateException() {
+    public OntologyConflictException() {
     }
 
     /**
      * Constructor.
-     * @param artifactType
+     * @param ontologyUuid
      */
-    public DerivedArtifactCreateException(ArtifactTypeEnum artifactType) {
-        super(Messages.i18n.format("CANNOT_CREATE_DERIVED_ARTY", artifactType)); //$NON-NLS-1$
+    public OntologyConflictException(String ontologyUuid) {
+        super(Messages.i18n.format("ONTOLOGY_ALREADY_EXISTS", ontologyUuid)); //$NON-NLS-1$
     }
 
 }

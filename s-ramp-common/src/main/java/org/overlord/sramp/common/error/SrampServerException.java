@@ -13,33 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
+package org.overlord.sramp.common.error;
 
-import org.overlord.sramp.common.i18n.Messages;
-
-
+import org.overlord.sramp.common.SrampException;
 
 /**
- * Exception thrown when the user attempts add a new artifact with a duplicate UUID.
+ * Exception thrown when the server fails unexpectedly (e.g. storage error).
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactAlreadyExistsException extends SrampAlreadyExistsException {
+public class SrampServerException extends SrampException {
 
-    private static final long serialVersionUID = 1131976536249817281L;
+    private static final long serialVersionUID = 2648287148198104189L;
 
     /**
      * Constructor.
      */
-    public ArtifactAlreadyExistsException() {
+    public SrampServerException() {
     }
 
     /**
      * Constructor.
      * @param message
      */
-    public ArtifactAlreadyExistsException(String uuid) {
-        super(Messages.i18n.format("ARTIFACT_ALREADY_EXISTS", uuid)); //$NON-NLS-1$
+    public SrampServerException(String message) {
+        super(message);
+    }
+
+    /**
+     * Constructor.
+     * @param message
+     * @param cause
+     */
+    public SrampServerException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * Constructor.
+     * @param cause
+     */
+    public SrampServerException(Throwable cause) {
+        super(cause);
     }
 
 }

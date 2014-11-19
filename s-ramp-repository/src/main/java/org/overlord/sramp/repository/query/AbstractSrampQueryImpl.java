@@ -26,6 +26,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.query.xpath.XPathParser;
 import org.overlord.sramp.common.query.xpath.ast.Query;
+import org.overlord.sramp.repository.error.InvalidQueryException;
 import org.overlord.sramp.repository.i18n.Messages;
 
 /**

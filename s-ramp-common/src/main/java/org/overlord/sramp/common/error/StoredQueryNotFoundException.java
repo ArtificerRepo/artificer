@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
+package org.overlord.sramp.common.error;
 
+import org.overlord.sramp.common.error.SrampNotFoundException;
 import org.overlord.sramp.common.i18n.Messages;
 
 /**
- * @author Brett Meyer.
+ * Exception thrown when the user attempts to access or modify a stored query that
+ * does not exist in the repository.
+ *
+ * @author Brett Meyer
  */
-public class ContentNotFoundException extends SrampNotFoundException {
+public class StoredQueryNotFoundException extends SrampNotFoundException {
 
-    public ContentNotFoundException(String uuid) {
-        super(Messages.i18n.format("CONTENT_NOT_FOUND", uuid)); //$NON-NLS-1$
+    private static final long serialVersionUID = 6962141373474710343L;
+
+    public StoredQueryNotFoundException() {
+    }
+
+    public StoredQueryNotFoundException(String queryName) {
+        super(Messages.i18n.format("STOREDQUERY_NOT_FOUND", queryName)); //$NON-NLS-1$
     }
 
 }

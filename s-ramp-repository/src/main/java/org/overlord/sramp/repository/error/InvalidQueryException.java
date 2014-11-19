@@ -13,26 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common.ontology;
+package org.overlord.sramp.repository.error;
 
 import org.overlord.sramp.common.error.SrampUserException;
 
 /**
- * Exception thrown when the user attempts to update an ontology but something went
- * wrong (the user did something wrong).
+ * Exception thrown when an s-ramp query is not valid.
  *
  * @author eric.wittmann@redhat.com
  */
-public class OntologyUpdateException extends SrampUserException {
+public class InvalidQueryException extends SrampUserException {
 
-    private static final long serialVersionUID = OntologyUpdateException.class.hashCode();
+    private static final long serialVersionUID = InvalidQueryException.class.hashCode();
+
+    /**
+     * Default constructor.
+     */
+    public InvalidQueryException() {
+        super();
+    }
+
+    /**
+     * Constructor.
+     * @param message
+     * @param rootCause
+     */
+    public InvalidQueryException(String message, Throwable rootCause) {
+        super(message, rootCause);
+    }
 
     /**
      * Constructor.
      * @param message
      */
-    public OntologyUpdateException(String message) {
+    public InvalidQueryException(String message) {
         super(message);
+    }
+
+    /**
+     * Constructor.
+     * @param rootCause
+     */
+    public InvalidQueryException(Throwable rootCause) {
+        super(rootCause);
     }
 
 }

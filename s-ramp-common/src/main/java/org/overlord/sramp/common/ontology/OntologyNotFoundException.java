@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.common.ontology;
 
-import org.overlord.sramp.common.SrampNotFoundException;
+import org.overlord.sramp.common.error.SrampNotFoundException;
 import org.overlord.sramp.common.i18n.Messages;
 
 /**

@@ -20,13 +20,16 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.overlord.sramp.common.*;
+import org.overlord.sramp.common.error.ArtifactNotFoundException;
+import org.overlord.sramp.common.error.InvalidArtifactUpdateException;
+import org.overlord.sramp.common.error.SrampServerException;
 import org.overlord.sramp.common.ontology.InvalidClassifiedByException;
-import org.overlord.sramp.common.ontology.OntologyAlreadyExistsException;
+import org.overlord.sramp.common.ontology.OntologyConflictException;
 import org.overlord.sramp.common.ontology.OntologyNotFoundException;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.common.ontology.SrampOntology.SrampOntologyClass;
-import org.overlord.sramp.common.storedquery.StoredQueryAlreadyExistsException;
-import org.overlord.sramp.common.storedquery.StoredQueryNotFoundException;
+import org.overlord.sramp.common.error.StoredQueryConflictException;
+import org.overlord.sramp.common.error.StoredQueryNotFoundException;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiffer;
@@ -383,14 +386,14 @@ public class JCRPersistence implements PersistenceManager, ClassificationHelper 
         List<SrampOntology> ontologies = getOntologies();
         for (SrampOntology existingOntology : ontologies) {
             if (existingOntology.getBase().equals(ontology.getBase())) {
-                throw new OntologyAlreadyExistsException();
+                throw new OntologyConflictException();
             }
         }
 
         try {
             session = JCRRepositoryFactory.getSession();
             if (session.nodeExists(ontologyPath)) {
-                throw new OntologyAlreadyExistsException(ontology.getUuid());
+                throw new OntologyConflictException(ontology.getUuid());
             } else {
                 Node ontologiesNode = JCRUtils.findOrCreateNode(session, "/s-ramp/ontologies", JCRConstants.NT_FOLDER);
                 Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), JCRConstants.SRAMP_ONTOLOGY);
@@ -515,7 +518,7 @@ public class JCRPersistence implements PersistenceManager, ClassificationHelper 
         // Check if a stored query with the given name already exists.
         try {
             getStoredQuery(storedQuery.getQueryName());
-            throw new StoredQueryAlreadyExistsException(name);
+            throw new StoredQueryConflictException(name);
         } catch (StoredQueryNotFoundException e) {
             // do nothing -- success
         }
@@ -523,7 +526,7 @@ public class JCRPersistence implements PersistenceManager, ClassificationHelper 
         try {
             session = JCRRepositoryFactory.getSession();
             if (session.nodeExists(storedQueryPath)) {
-                throw new StoredQueryAlreadyExistsException(name);
+                throw new StoredQueryConflictException(name);
             } else {
                 Node queriesNode = JCRUtils.findOrCreateNode(session, "/s-ramp/queries", JCRConstants.NT_FOLDER);
                 Node queryNode = queriesNode.addNode(name, JCRConstants.SRAMP_QUERY);

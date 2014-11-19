@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.common.ontology;
 
-import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.common.error.SrampUserException;
 import org.overlord.sramp.common.i18n.Messages;
 
 /**

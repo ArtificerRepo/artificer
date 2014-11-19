@@ -19,9 +19,9 @@ import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
-import org.overlord.sramp.common.ArtifactNotFoundException;
+import org.overlord.sramp.common.error.ArtifactNotFoundException;
 import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.SrampServerException;
+import org.overlord.sramp.common.error.SrampServerException;
 import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
 

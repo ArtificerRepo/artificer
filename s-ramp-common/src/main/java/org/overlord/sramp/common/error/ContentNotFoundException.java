@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
+package org.overlord.sramp.common.error;
 
 import org.overlord.sramp.common.i18n.Messages;
 
-
 /**
- * Exception thrown when the user attempts to access an artifact that does not exist.
- *
- * @author eric.wittmann@redhat.com
+ * @author Brett Meyer.
  */
-public class ArtifactNotFoundException extends SrampNotFoundException {
+public class ContentNotFoundException extends SrampNotFoundException {
 
-    private static final long serialVersionUID = 1131976536249817281L;
-
-    /**
-     * Constructor.
-     */
-    public ArtifactNotFoundException() {
-    }
-
-    /**
-     * Constructor.
-     * @param message
-     */
-    public ArtifactNotFoundException(String uuid) {
-        super(Messages.i18n.format("ARTIFACT_NOT_FOUND", uuid)); //$NON-NLS-1$
+    public ContentNotFoundException(String uuid) {
+        super(Messages.i18n.format("CONTENT_NOT_FOUND", uuid)); //$NON-NLS-1$
     }
 
 }

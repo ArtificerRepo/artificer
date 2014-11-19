@@ -23,7 +23,7 @@ import javax.jcr.Value;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.SrampServerException;
+import org.overlord.sramp.common.error.SrampServerException;
 import org.overlord.sramp.common.visitors.ArtifactVisitor;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.jcr.i18n.Messages;

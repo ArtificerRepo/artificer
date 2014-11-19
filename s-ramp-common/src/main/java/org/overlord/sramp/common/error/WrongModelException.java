@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
+package org.overlord.sramp.common.error;
 
 import org.overlord.sramp.common.i18n.Messages;
 
-
 /**
- * Exception thrown when an artifact's custom property or generic relationship name duplicates one that's built-in.
- *
+ * Thrown when an artifact is published to the incorrect model.
+ * 
  * @author Brett Meyer
  */
-public class ReservedNameException extends SrampAlreadyExistsException {
+public class WrongModelException extends SrampUserException {
 
-    private static final long serialVersionUID = -3535532386495478538L;
+    private static final long serialVersionUID = -1006199656016992864L;
 
-    /**
-     * Constructor.
-     * @param message
-     */
-    public ReservedNameException(String name) {
-        super(Messages.i18n.format("RESERVED_WORD", name)); //$NON-NLS-1$
+    public WrongModelException(String expectedType, String receivedType) {
+        super(Messages.i18n.format("WRONG_MODEL", expectedType, receivedType)); //$NON-NLS-1$ //$NON-NLS-2$
     }
-
 }

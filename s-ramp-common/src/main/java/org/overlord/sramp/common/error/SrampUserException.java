@@ -13,49 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.query;
+package org.overlord.sramp.common.error;
 
-import org.overlord.sramp.common.SrampServerException;
+import org.overlord.sramp.common.SrampException;
 
 /**
- * Exception thrown when an s-ramp query fails.
+ * Exception thrown when the user/client did something they shouldn't have done.  This
+ * represents things like invalid query syntax, asking for a UUID that doesn't exist,
+ * etcetera.  It does *not* represent unexpected server error like out of memory or
+ * out of disk space.
  *
  * @author eric.wittmann@redhat.com
  */
-public class QueryExecutionException extends SrampServerException {
+public abstract class SrampUserException extends SrampException {
 
-    private static final long serialVersionUID = QueryExecutionException.class.hashCode();
-
-    /**
-     * Default constructor.
-     */
-    public QueryExecutionException() {
-        super();
-    }
+    private static final long serialVersionUID = -1974585440431377826L;
 
     /**
      * Constructor.
-     * @param message
-     * @param rootCause
      */
-    public QueryExecutionException(String message, Throwable rootCause) {
-        super(message, rootCause);
+    public SrampUserException() {
     }
 
     /**
      * Constructor.
      * @param message
      */
-    public QueryExecutionException(String message) {
+    public SrampUserException(String message) {
         super(message);
     }
 
     /**
      * Constructor.
-     * @param rootCause
+     * @param message
+     * @param cause
      */
-    public QueryExecutionException(Throwable rootCause) {
-        super(rootCause);
+    public SrampUserException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * Constructor.
+     * @param cause
+     */
+    public SrampUserException(Throwable cause) {
+        super(cause);
     }
 
 }

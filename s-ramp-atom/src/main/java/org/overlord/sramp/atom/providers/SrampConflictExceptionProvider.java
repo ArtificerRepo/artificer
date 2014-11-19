@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.overlord.sramp.common.SrampAlreadyExistsException;
+import org.overlord.sramp.common.error.SrampConflictException;
 
 /**
  * The spec requires that a 409 is returned when an artifact conflict exists.
@@ -28,10 +28,10 @@ import org.overlord.sramp.common.SrampAlreadyExistsException;
  * @author Brett Meyer
  */
 @Provider
-public class SrampAlreadyExistsExceptionProvider implements ExceptionMapper<SrampAlreadyExistsException> {
+public class SrampConflictExceptionProvider implements ExceptionMapper<SrampConflictException> {
 
     @Override
-    public Response toResponse(SrampAlreadyExistsException exception) {
+    public Response toResponse(SrampConflictException exception) {
         return Response.status(Status.CONFLICT).entity(exception.getMessage()).build();
     }
 

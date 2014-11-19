@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common.ontology;
+package org.overlord.sramp.common.error;
 
-import org.overlord.sramp.common.error.SrampUserException;
+import org.overlord.sramp.common.i18n.Messages;
+
 
 /**
- * Exception thrown when the user attempts to update an ontology but something went
- * wrong (the user did something wrong).
+ * Exception thrown when an artifact's custom property name duplicates a generic relationship name, 
+ * or another custom property, within the same artifact.
  *
- * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
-public class OntologyUpdateException extends SrampUserException {
+public class DuplicateNameException extends SrampConflictException {
 
-    private static final long serialVersionUID = OntologyUpdateException.class.hashCode();
+    private static final long serialVersionUID = -3535532386495478538L;
 
     /**
      * Constructor.
-     * @param message
+     * @param name
      */
-    public OntologyUpdateException(String message) {
-        super(message);
+    public DuplicateNameException(String name) {
+        super(Messages.i18n.format("DUPLICATE_NAME", name)); //$NON-NLS-1$
     }
 
 }

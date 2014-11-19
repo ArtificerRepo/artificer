@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common.storedquery;
+package org.overlord.sramp.common.error;
 
-import org.overlord.sramp.common.SrampNotFoundException;
+import org.overlord.sramp.common.error.SrampConflictException;
 import org.overlord.sramp.common.i18n.Messages;
 
 /**
- * Exception thrown when the user attempts to access or modify a stored query that
- * does not exist in the repository.
+ * Exception thrown when the user attempts to add a stored query that already exists.
  *
  * @author Brett Meyer
  */
-public class StoredQueryNotFoundException extends SrampNotFoundException {
+public class StoredQueryConflictException extends SrampConflictException {
 
-    private static final long serialVersionUID = 6962141373474710343L;
+    private static final long serialVersionUID = 632263403445444191L;
 
-    public StoredQueryNotFoundException() {
-    }
-
-    public StoredQueryNotFoundException(String queryName) {
-        super(Messages.i18n.format("STOREDQUERY_NOT_FOUND", queryName)); //$NON-NLS-1$
+    public StoredQueryConflictException(String queryName) {
+        super(Messages.i18n.format("STOREDQUERY_ALREADY_EXISTS", queryName)); //$NON-NLS-1$
     }
 
 }

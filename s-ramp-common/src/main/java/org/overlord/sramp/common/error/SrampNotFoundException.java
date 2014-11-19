@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.common;
+package org.overlord.sramp.common.error;
 
 
 /**
- * Exception thrown when the user attempts to update an artifact incorrectly (for example
- * trying to update a non-document style artifact).
- *
- * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
-public class InvalidArtifactUpdateException extends SrampUserException {
+public abstract class SrampNotFoundException extends SrampUserException {
 
-    private static final long serialVersionUID = -2343995516760599930L;
+    private static final long serialVersionUID = 3266741739558281824L;
+    
+    public SrampNotFoundException() {
+        super();
+    }
 
-    /**
-     * Constructor.
-     */
-    public InvalidArtifactUpdateException(String message) {
+    public SrampNotFoundException(String message) {
         super(message);
     }
 }

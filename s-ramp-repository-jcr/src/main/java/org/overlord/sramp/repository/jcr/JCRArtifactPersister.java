@@ -23,6 +23,8 @@ import org.overlord.sramp.integration.artifactbuilder.ArtifactBuilder;
 import org.overlord.sramp.integration.artifactbuilder.RelationshipContext;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
+import org.overlord.sramp.repository.error.ArtifactConflictException;
+import org.overlord.sramp.common.error.SrampServerException;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.integration.ExtensionFactory;
 import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiff;
@@ -134,7 +136,7 @@ public final class JCRArtifactPersister {
         String name = primaryArtifact.getName();
         String artifactPath = MapToJCRPath.getArtifactPath(uuid);
         if (session.nodeExists(artifactPath)) {
-            throw new ArtifactAlreadyExistsException(uuid);
+            throw new ArtifactConflictException(uuid);
         }
         log.debug(Messages.i18n.format("UPLOADING_TO_JCR", name));
 

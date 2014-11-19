@@ -13,33 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.repository.errors;
+package org.overlord.sramp.repository.error;
 
 import org.overlord.sramp.common.ArtifactTypeEnum;
-import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.common.error.SrampUserException;
 import org.overlord.sramp.repository.i18n.Messages;
 
 /**
- * Exception thrown the user attempts to delete a derived artifact.
+ * Exception thrown the user attempts to create a derived artifact.
  *
  * @author eric.wittmann@redhat.com
  */
-public class DerivedArtifactDeleteException extends SrampUserException {
+public class DerivedArtifactCreateException extends SrampUserException {
 
     private static final long serialVersionUID = -2247193241132739490L;
 
     /**
      * Constructor.
      */
-    public DerivedArtifactDeleteException() {
+    public DerivedArtifactCreateException() {
     }
 
     /**
      * Constructor.
      * @param artifactType
      */
-    public DerivedArtifactDeleteException(ArtifactTypeEnum artifactType) {
-        super(Messages.i18n.format("CANNOT_DELETE_DERIVED_ARTY", artifactType)); //$NON-NLS-1$
+    public DerivedArtifactCreateException(ArtifactTypeEnum artifactType) {
+        super(Messages.i18n.format("CANNOT_CREATE_DERIVED_ARTY", artifactType)); //$NON-NLS-1$
     }
 
 }

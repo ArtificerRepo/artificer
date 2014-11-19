@@ -18,8 +18,10 @@ package org.overlord.sramp.repository.jcr.modeshape;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.common.*;
+import org.overlord.sramp.repository.error.ClassifierConstraintException;
+import org.overlord.sramp.repository.error.CustomPropertyConstraintException;
+import org.overlord.sramp.repository.error.RelationshipConstraintException;
 import org.overlord.sramp.common.ontology.SrampOntology;
-import org.overlord.sramp.repository.query.ArtifactSet;
 
 import java.io.InputStream;
 import java.util.Iterator;

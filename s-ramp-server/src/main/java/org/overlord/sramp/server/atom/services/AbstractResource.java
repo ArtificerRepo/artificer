@@ -15,7 +15,7 @@
  */
 package org.overlord.sramp.server.atom.services;
 
-import org.overlord.sramp.common.SrampUserException;
+import org.overlord.sramp.common.error.SrampUserException;
 import org.slf4j.Logger;
 
 /**
