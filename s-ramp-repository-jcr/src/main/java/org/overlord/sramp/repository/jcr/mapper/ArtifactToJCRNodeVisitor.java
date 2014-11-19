@@ -302,9 +302,11 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 			String name = prop.getKey();
 			String qname = srampPropsPrefix + name;
 			String val = prop.getValue();
-			if (val == null) {
-				// Need to support no-value properties, but JCR will remove it if it's null.
-				val = "";
+			if (StringUtils.isEmpty(val)) {
+				// Need to support no-value properties, but JCR will remove it if it's null.  Further, if it's an
+				// empty string, the property existence query fails.  Therefore, use a placeholder that will eventually
+				// be removed by JCRNodeToArtifactVisitor.
+				val = JCRConstants.NO_VALUE;
 			}
 			setProperty(qname, val);
 		}

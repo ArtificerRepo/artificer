@@ -100,6 +100,13 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
 				if (propQName.startsWith(srampPropsPrefix)) {
 					String propName = propQName.substring(srampPropsPrefixLen);
 					String propValue = property.getValue().getString();
+					// Need to support no-value properties, but JCR will remove it if it's null.  Further, if it's an
+					// empty string, the property existence query fails.  Therefore, ArtifactToJCRNodeVisitor uses
+					// this placeholder.
+					if (propValue.equals(JCRConstants.NO_VALUE)) {
+						propValue = null;
+					}
+
 					org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property srampProp = new org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property();
 					srampProp.setPropertyName(propName);
 					srampProp.setPropertyValue(propValue);

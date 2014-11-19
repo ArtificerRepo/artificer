@@ -95,4 +95,6 @@ public class JCRConstants {
 
     public static final String ROOT_PATH          = "/s-ramp";
     public static final String NOT_DELETED_FILTER = " AND (ISDESCENDANTNODE([sramp:baseArtifactType],'" + ROOT_PATH + "'))";
+
+    public static final String NO_VALUE = "{NO_VALUE}";
 }
