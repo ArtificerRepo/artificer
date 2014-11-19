@@ -65,7 +65,6 @@
   "artifact-details.derived" : "Derived:",
   "artifact-details.derived-from" : "Derived from",
   "artifact-details.download-content" : "Download Content",
-  "artifact-details.download-meta-data" : "Download Meta Data",
   "artifact-details.footer" : "© JBoss Overlord 2012",
   "artifact-details.header.classifiers" : "Classifiers",
   "artifact-details.header.core-properties" : "Core Properties",

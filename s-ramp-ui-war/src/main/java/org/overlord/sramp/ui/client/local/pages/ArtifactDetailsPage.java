@@ -118,10 +118,10 @@ public class ArtifactDetailsPage extends AbstractPage {
     InlineLabel htype;
     @Inject @DataField("link-download-content")
     Anchor downloadContentLink;
-    @Inject @DataField("link-download-metaData")
-    Anchor downloadMetaDataLink;
-    @Inject @DataField("link-repository-direct")
-    Anchor linkToRepository;
+    @Inject @DataField("link-repository-content")
+    Anchor linkToRepositoryContent;
+    @Inject @DataField("link-repository-metadata")
+    Anchor linkToRepositoryMetadata;
     @Inject @DataField("core-property-type-2") @Bound(property="type")
     Label type;
     @Inject @DataField("core-property-uuid") @Bound(property="uuid")
@@ -382,13 +382,12 @@ public class ArtifactDetailsPage extends AbstractPage {
         this.artifact.setModel(artifact, InitialState.FROM_MODEL);
         String contentUrl = GWT.getModuleBaseURL() + "services/artifactDownload"; //$NON-NLS-1$
         contentUrl += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType(); //$NON-NLS-1$ //$NON-NLS-2$
-        String metaDataUrl = contentUrl + "&as=meta-data"; //$NON-NLS-1$
         this.downloadContentLink.setHref(contentUrl);
         // hide the link if the artifact is derived or has no content
         this.downloadContentLink.setVisible(!artifact.isDerived() && artifact.isDocument());
-        this.downloadMetaDataLink.setHref(metaDataUrl);
         this.feedLink.setHref(artifact.getRepositoryLink());
-        this.linkToRepository.setHref(artifact.getRepositoryMediaLink());
+        this.linkToRepositoryContent.setHref(artifact.getRepositoryMediaLink());
+        this.linkToRepositoryMetadata.setHref(artifact.getRepositoryLink());
         this.sourceEditor.setValue(""); //$NON-NLS-1$
 
         if (artifact.isTextDocument()) {
