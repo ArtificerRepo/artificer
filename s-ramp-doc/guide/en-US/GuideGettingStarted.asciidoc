@@ -23,15 +23,13 @@ ant install
 The installer will ask you to choose a runtime platform.  Currently the following platforms are supported:
 
 * JBoss EAP 6
-* JBoss Fuse 6.1
 * Tomcat 7
-* Jetty 8
 
 Simply follow the installer instructions to install onto the platform of your choice.  We recommend installing
 into a clean version of which platform you choose, to minimize the risk of colliding with other projects.
 
 Note that you must have already downloaded and installed the platform on which you wish to run, with the 
-exception of Tomcat 7 and Jetty 8 (which the installer will download for you if you choose).
+exception of Tomcat 7 (which the installer will download for you if you choose).
 
 Finally, please make sure the admin password you choose (the installer will prompt you for this) contains
 letters, numbers, and punctuation (and is at least 8 characters long).
@@ -45,22 +43,10 @@ instructions for starting the server depend on the chosen platform:
 ....
 bin/startup.sh
 ....
-
-.Jetty 8
-....
-bin/jetty.sh run
-....
-
 .JBoss EAP 6 (standalone-full is required)
 ....
 bin/standalone.sh -c standalone-full.xml
 ....
-
-.JBoss Fuse 6.1
-....
-bin/fuse
-....
-
 Check your Installation
 ~~~~~~~~~~~~~~~~~~~~~~~
 

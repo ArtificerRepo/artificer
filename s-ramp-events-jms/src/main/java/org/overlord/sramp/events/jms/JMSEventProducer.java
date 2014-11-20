@@ -128,17 +128,17 @@ public class JMSEventProducer implements EventProducer {
                     destinations.add(queue);
                 }
             } catch (NamingException e) {
-                try {
-                    // Second, are we within Fuse?  If so, use the existing ActiveMQ broker.
-                    
-                    String brokerURL = SrampConfig.getConfigProperty(
-                            SrampConstants.SRAMP_CONFIG_EVENT_JMS_URL, "tcp://localhost:61616"); //$NON-NLS-1$
-                    
-                    String username = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_USER, ""); //$NON-NLS-1$
-                    String password = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PASSWORD, ""); //$NON-NLS-1$
-                    ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, password, brokerURL);
-                    initActiveMQ(connectionFactory, topicNames, queueNames);
-                } catch (Exception e1) {
+//                try {
+//                    // Second, are we within Fuse?  If so, use the existing ActiveMQ broker.
+//
+//                    String brokerURL = SrampConfig.getConfigProperty(
+//                            SrampConstants.SRAMP_CONFIG_EVENT_JMS_URL, "tcp://localhost:61616"); //$NON-NLS-1$
+//
+//                    String username = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_USER, ""); //$NON-NLS-1$
+//                    String password = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PASSWORD, ""); //$NON-NLS-1$
+//                    ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, password, brokerURL);
+//                    initActiveMQ(connectionFactory, topicNames, queueNames);
+//                } catch (Exception e1) {
                     // Otherwise, JMS wasn't setup. Assume we need to start an embedded
                     // ActiveMQ broker and create the destinations.
                     
@@ -158,7 +158,7 @@ public class JMSEventProducer implements EventProducer {
                     // protocol. It optimizes performance for connections on the same JVM.
                     ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
                     initActiveMQ(connectionFactory, topicNames, queueNames);
-                }
+//                }
 
             }
         } catch (Exception e) {

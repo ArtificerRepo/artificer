@@ -49,43 +49,6 @@ TOMCAT_HOME/conf/sramp-modeshape.json:
     ...
 ----
 
-Jetty 8
-^^^^^^^
-
-JETTY_HOME/etc/sramp-modeshape.json:
-----
-    ...
-    },"storage": {
-        "cacheName": "sramp",
-        "cacheConfiguration" : "infinispan-configuration-webapp.xml",
-        "binaryStorage": {
-            "type"  : "database",
-            "dataSourceJndiName" : "[DATASOURCE JNDI NAME]",
-            "minimumBinarySizeInBytes" : "${application.min.binary.size:4096}"
-        }
-    },
-    ...
-----
-
-JBoss Fuse 6.1
-^^^^^^^^^^^^^^
-
-* Standalone mode: FUSE_HOME/etc/sramp-modeshape.json
-* Fuse Fabric: FUSE_HOME/fabric/import/fabric/configs/versions/1.0/profiles/overlord/sramp.profile/sramp-modeshape.json
-----
-    ...
-    },"storage": {
-        "cacheName": "sramp",
-        "cacheConfiguration" : "infinispan-configuration-webapp.xml",
-        "binaryStorage": {
-            "type"  : "database",
-            "dataSourceJndiName" : "osgi:service/javax.sql.DataSource/(osgi.jndi.service.name=[DATASOURCE JNDI NAME])",
-            "minimumBinarySizeInBytes" : "${application.min.binary.size:4096}"
-        }
-    },
-    ...
-----
-
 WARNINGS
 ~~~~~~~~
 

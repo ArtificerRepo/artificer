@@ -61,21 +61,6 @@ yes/no? no
 ----
 
 
-JBoss Fuse 6.1
-^^^^^^^^^^^^^^
-When running S-RAMP in JBoss Fuse 6.1, the user credentials are stored in a plain text properties
-file in the `etc` directory.
-
-.etc/users.properties
-....
-#user=password,role1,role2
-admin=ADMIN_PASSWORD,overlorduser,admin.sramp
-....
-
-Simply add users to this file and restart Fuse.  Make sure you include the necessary roles of `overlorduser`
-and `admin.sramp` in any user you create.
-
-
 Tomcat 7
 ^^^^^^^^
 When running S-RAMP in Tomcat 7, the source of authentication is an XML configuration file located
@@ -97,15 +82,5 @@ file look like this:
   <user username="admin" password="4dm1n!" roles="tomcat,overlorduser,admin.sramp"/>
   <user username="fitzuser" password="P4SSW0RD!" roles="tomcat,overlorduser,admin.sramp"/>
 </tomcat-users>
-----
-
-
-Jetty 8
-^^^^^^^
-When running in Jetty 8, the users are configured in the $JETTY_HOME/etc/realm.properties
-file.  The format is the same as the above Fuse 6 documentation:
-
-----
-username=password123!,overlorduser,admin.sramp
 ----
 

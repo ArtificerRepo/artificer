@@ -97,7 +97,7 @@
 
     <!-- S-RAMP only libraries (not in BOM) -->
     <version.commons-beanutils>1.8.2</version.commons-beanutils>
-    <version.io.fabric8>1.0.0.redhat-379</version.io.fabric8>
+    <!--<version.io.fabric8>1.0.0.redhat-379</version.io.fabric8>-->
     <version.org.apache.bcel>5.2</version.org.apache.bcel>
     <version.org.apache.commons.commons-lang3>3.1</version.org.apache.commons.commons-lang3>
     <version.org.eclipse.jetty>8.1.9.v20130131</version.org.eclipse.jetty>
@@ -290,11 +290,11 @@
         <artifactId>s-ramp-integration-java</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-integration-fabric</artifactId>
         <version>${project.version}</version>
-      </dependency>      
+      </dependency>-->
       <dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-integration-kie</artifactId>
@@ -354,7 +354,7 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-server-fuse61</artifactId>
         <version>${project.version}</version>
@@ -365,7 +365,7 @@
         <artifactId>s-ramp-server-jetty8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-server-tomcat7</artifactId>
@@ -400,7 +400,7 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-ui-war-fuse61</artifactId>
         <version>${project.version}</version>
@@ -411,7 +411,7 @@
         <artifactId>s-ramp-ui-war-jetty8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-ui-war-tomcat7</artifactId>
@@ -423,11 +423,11 @@
         <artifactId>s-ramp-ui-widgets</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-karaf-commands</artifactId>
         <version>${project.version}</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.overlord.sramp.demos</groupId>
         <artifactId>s-ramp-demos-mvn-integration-artifacts</artifactId>
@@ -600,11 +600,11 @@
         <artifactId>overlord-commons-auth-jetty8</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-auth-fuse61</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-gwt</artifactId>
@@ -621,11 +621,11 @@
         <version>${version.org.overlord.overlord-commons}</version>
         <type>zip</type>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-errai-fuse-support</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-installer</artifactId>
@@ -650,7 +650,7 @@
         <version>${version.org.overlord.overlord-commons}</version>
         <type>war</type>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-idp-fuse61</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
@@ -660,7 +660,7 @@
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-osgi</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-services</artifactId>
@@ -687,11 +687,11 @@
 	   	<artifactId>overlord-commons-codec</artifactId>
        	<version>${version.org.overlord.overlord-commons}</version>	      
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.overlord</groupId>
         <artifactId>overlord-commons-karaf-commands</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
-      </dependency>
+      </dependency>-->
 
       <!-- Apache Commons -->
       <dependency>
@@ -804,11 +804,11 @@
         <type>zip</type>
         <classifier>jbossas-71-dist</classifier>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>io.fabric8</groupId>
         <artifactId>fabric-api</artifactId>
         <version>${version.io.fabric8}</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>jstl</groupId>
         <artifactId>jstl</artifactId>
@@ -921,11 +921,11 @@
         <artifactId>activemq-kahadb-store</artifactId>
         <version>${version.org.apache.activemq}</version>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.apache.karaf.shell</groupId>
         <artifactId>org.apache.karaf.shell.console</artifactId>
         <version>2.3.5</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.jboss.arquillian.container</groupId>
         <artifactId>arquillian-tomcat-managed-7</artifactId>
@@ -938,18 +938,18 @@
       </dependency>
       
       <!-- Downgrade to slf4j-ext 1.7.1 so it will run in Fuse 6.1 -->
-      <dependency>
+      <!--<dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
         <version>1.7.1</version>
-      </dependency>
+      </dependency>-->
       
       <!-- Upgrade to a version of xmlsec that will work in OSGi -->
-      <dependency>
+      <!--<dependency>
         <groupId>org.apache.santuario</groupId>
         <artifactId>xmlsec</artifactId>
         <version>2.0.0</version>
-      </dependency>
+      </dependency>-->
 
       <!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss AS 7 -->
       <dependency>
@@ -1178,22 +1178,22 @@
     <module>s-ramp-installer</module>
     <module>s-ramp-integration</module>
     <module>s-ramp-javadoc</module>
-    <module>s-ramp-karaf-commands</module>
+    <!--<module>s-ramp-karaf-commands</module>-->
     <module>s-ramp-repository</module>
     <module>s-ramp-repository-jcr</module>
     <module>s-ramp-repository-jcr/modeshape</module>
     <module>s-ramp-server</module>
     <module>s-ramp-server/eap6</module>
-    <module>s-ramp-server/fuse61</module>
-    <module>s-ramp-server/jetty8</module>
+    <!--<module>s-ramp-server/fuse61</module>
+    <module>s-ramp-server/jetty8</module>-->
     <module>s-ramp-server/tomcat7</module>
     <module>s-ramp-shell</module>
     <module>s-ramp-shell-api</module>
     <module>s-ramp-test</module>
     <module>s-ramp-ui-war</module>
     <module>s-ramp-ui-war/eap6</module>
-    <module>s-ramp-ui-war/fuse61</module>
-    <module>s-ramp-ui-war/jetty8</module>
+    <!--<module>s-ramp-ui-war/fuse61</module>
+    <module>s-ramp-ui-war/jetty8</module>-->
     <module>s-ramp-ui-war/tomcat7</module>
     <module>s-ramp-ui-widgets</module>
     <module>s-ramp-wagon</module>

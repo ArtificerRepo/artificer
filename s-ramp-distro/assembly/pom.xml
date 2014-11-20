@@ -40,11 +40,11 @@
       <artifactId>overlord-commons-idp-tomcat7</artifactId>
       <type>war</type>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-idp-jetty8</artifactId>
       <type>war</type>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-codec</artifactId>
@@ -75,11 +75,11 @@
       <artifactId>s-ramp-server-tomcat7</artifactId>
       <type>war</type>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-jetty8</artifactId>
       <type>war</type>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-eap6</artifactId>
@@ -90,11 +90,11 @@
       <artifactId>s-ramp-ui-war-tomcat7</artifactId>
       <type>war</type>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-jetty8</artifactId>
       <type>war</type>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-eap6</artifactId>
