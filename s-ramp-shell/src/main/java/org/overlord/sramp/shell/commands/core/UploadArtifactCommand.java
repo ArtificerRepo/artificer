@@ -15,21 +15,9 @@
  */
 package org.overlord.sramp.shell.commands.core;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
-import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
-import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
@@ -38,6 +26,12 @@ import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
 import org.overlord.sramp.shell.util.FileNameCompleter;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
+
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
 
 /**
  * Uploads an artifact to the s-ramp repository.
@@ -67,8 +61,6 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
             return false;
         }
         InputStream content = null;
-        ZipToSrampArchive expander = null;
-        SrampArchive archive = null;
         try {
 
             File file = new File(filePathArg);
@@ -89,18 +81,9 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
                 if (artifactType.isExtendedType()) {
                     artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
                 }
-            } else {
-                artifactType = determineArtifactType(file);
             }
             BaseArtifactType artifact = client.uploadArtifact(artifactType, content, file.getName());
             IOUtils.closeQuietly(content);
-            // Now also add "expanded" content to the s-ramp repository
-            expander = ZipToSrampArchiveRegistry.createExpander(artifactType, file);
-            if (expander != null) {
-                expander.setContextParam(DefaultMetaDataFactory.PARENT_UUID, artifact.getUuid());
-                archive = expander.createSrampArchive();
-                client.uploadBatch(archive);
-            }
 
             // Put the artifact in the session as the active artifact
             QName artifactVarName = new QName("s-ramp", "artifact"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -115,28 +98,6 @@ public class UploadArtifactCommand extends BuiltInShellCommand {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Try to figure out what kind of artifact we're dealing with.
-     *
-     * @param file
-     */
-    private ArtifactType determineArtifactType(File file) {
-        ArtifactType type = null;
-        String extension = FilenameUtils.getExtension(file.getName());
-        if ("wsdl".equals(extension)) { //$NON-NLS-1$
-            type = ArtifactType.WsdlDocument();
-        } else if ("xsd".equals(extension)) { //$NON-NLS-1$
-            type = ArtifactType.XsdDocument();
-        } else if ("wspolicy".equals(extension)) { //$NON-NLS-1$
-            type = ArtifactType.PolicyDocument();
-        } else if ("xml".equals(extension)) { //$NON-NLS-1$
-            type = ArtifactType.XmlDocument();
-        } else {
-            type = ArtifactType.Document();
-        }
-        return type;
     }
 
     /**

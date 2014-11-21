@@ -15,26 +15,17 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Part;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.repository.PersistenceManager.BatchItem;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -125,14 +116,14 @@ public class JCRBatchPersistenceTest extends AbstractNoAuditingJCRPersistenceTes
      * @param type
      * @throws SrampException
      */
-    private BatchItem createBatchItem(String filePath, DocumentArtifactType document, BaseArtifactEnum type) throws SrampException {
+    private BatchItem createBatchItem(String filePath, DocumentArtifactType document, BaseArtifactEnum type) throws Exception {
         String artifactFileName = filePath.substring(filePath.lastIndexOf('/') + 1);
         InputStream contentStream = this.getClass().getResourceAsStream(filePath);
 
         document.setArtifactType(type);
         document.setName(artifactFileName);
 
-        return new BatchItem(filePath, document, contentStream);
+        return new BatchItem(filePath, document, new ArtifactContent(artifactFileName, contentStream));
     }
 
 

@@ -15,16 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType.Property;
@@ -37,16 +27,18 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
-import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.SrampConstants;
-import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.*;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
 import org.overlord.sramp.common.audit.AuditUtils;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.repository.audit.AuditEntrySet;
 import org.overlord.sramp.repository.jcr.modeshape.auth.MockSecurityContext;
+
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.InputStream;
+import java.util.*;
 
 
 /**
@@ -326,7 +318,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
      * @return a new artifact
      * @throws SrampException
      */
-    private BaseArtifactType createArtifact(Set<String> classifiers, String ... args) throws SrampException {
+    private BaseArtifactType createArtifact(Set<String> classifiers, String ... args) throws Exception {
         String artifactFileName = "s-ramp-press-release.pdf";
         InputStream pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
         Document document = new Document();
@@ -348,7 +340,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
             }
         }
 
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, pdf);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
         Assert.assertNotNull(artifact);
         log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid());
         return artifact;
@@ -358,14 +350,14 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
      * @return a new artifact
      * @throws SrampException
      */
-    private BaseArtifactType createXsdArtifact() throws SrampException {
+    private BaseArtifactType createXsdArtifact() throws Exception {
         String artifactFileName = "PO.xsd";
         InputStream content = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
         XsdDocument document = new XsdDocument();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
 
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, content);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, content));
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
         return artifact;

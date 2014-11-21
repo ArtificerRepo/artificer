@@ -15,28 +15,9 @@
  */
 package org.overlord.sramp.client;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.namespace.QName;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponse;
+import org.apache.http.*;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
@@ -51,11 +32,7 @@ import org.jboss.resteasy.plugins.providers.atom.app.AppCategories;
 import org.jboss.resteasy.plugins.providers.atom.app.AppCollection;
 import org.jboss.resteasy.plugins.providers.atom.app.AppService;
 import org.jboss.resteasy.plugins.providers.atom.app.AppWorkspace;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartInput;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedOutput;
+import org.jboss.resteasy.plugins.providers.multipart.*;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.overlord.sramp.atom.MediaType;
@@ -75,6 +52,13 @@ import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
+
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Class used to communicate with the S-RAMP server via the S-RAMP Atom API.
@@ -386,6 +370,10 @@ public class SrampAtomApiClient {
 	 */
 	public BaseArtifactType uploadArtifact(ArtifactType artifactType, InputStream content, String artifactFileName)
 			throws SrampClientException, SrampAtomException {
+        if (artifactType == null) {
+            return uploadArtifact(content, artifactFileName);
+        }
+
 		assertFeatureEnabled(artifactType);
         ClientResponse<Entry> response = null;
 		try {
@@ -408,6 +396,35 @@ public class SrampAtomApiClient {
             closeQuietly(response);
 		}
 	}
+
+    /**
+     * Creates a new artifact in the repository by uploading a document.  The document will
+     * become the core of a new S-RAMP artifact.
+     *
+     * @param content
+     * @param artifactFileName
+     * @throws SrampClientException
+     * @throws SrampAtomException
+     */
+    public BaseArtifactType uploadArtifact(InputStream content, String artifactFileName)
+            throws SrampClientException, SrampAtomException {
+        ClientResponse<Entry> response = null;
+        try {
+            ClientRequest request = createClientRequest(this.endpoint + "/autodetect");
+            request.header("Slug", artifactFileName); //$NON-NLS-1$
+            request.body("application/octet-stream", content);
+
+            response = request.post(Entry.class);
+            Entry entry = response.getEntity();
+            return SrampAtomUtils.unwrapSrampArtifact(entry);
+        } catch (SrampAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new SrampClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
+    }
 
 	/**
      * Creates a new artifact in the repository by uploading a document.  The document will

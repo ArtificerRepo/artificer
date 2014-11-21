@@ -27,7 +27,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.artifactbuilder.MockRelationshipContext;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
 
@@ -52,7 +52,7 @@ public class SwitchYardXmlDeriverTest {
         InputStream is = getClass().getResourceAsStream("switchyard.xml"); //$NON-NLS-1$
         
         // Derive
-        Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent(is))
+        Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent("switchyard.xml", is))
                 .getDerivedArtifacts();
         builder.buildRelationships(new MockRelationshipContext());
 

@@ -15,21 +15,21 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import java.io.InputStream;
-import java.util.Date;
-import java.util.UUID;
-
 import org.junit.Assert;
-
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
+
+import java.io.InputStream;
+import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -178,14 +178,14 @@ public class JCRQueryManagerTest extends AbstractNoAuditingJCRPersistenceTest {
 	/**
 	 * @throws SrampException
 	 */
-	private BaseArtifactType createDocument(int idx) throws SrampException {
+	private BaseArtifactType createDocument(int idx) throws Exception {
         String artifactFileName = "s-ramp-press-release.pdf";
 		InputStream content = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
         Document document = new Document();
         document.setName(artifactFileName + "-" + idx);
         document.setVersion("1.0.3");
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
-        BaseArtifactType artifact1 = persistenceManager.persistArtifact(document, content);
+        BaseArtifactType artifact1 = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, content));
         Assert.assertNotNull(artifact1);
 		return artifact1;
 	}

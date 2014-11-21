@@ -20,12 +20,11 @@ import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.common.*;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
-import org.overlord.sramp.common.artifactbuilder.ArtifactBuilderFactory;
-import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 import org.overlord.sramp.common.artifactbuilder.RelationshipContext;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
+import org.overlord.sramp.integration.ExtensionFactory;
 import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiff;
 import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
@@ -67,12 +66,12 @@ public final class JCRArtifactPersister {
     private Node primaryArtifactNode;
     private List<BaseArtifactType> derivedArtifacts;
 
-    public JCRArtifactPersister(BaseArtifactType primaryArtifact, InputStream contentStream,
+    public JCRArtifactPersister(BaseArtifactType primaryArtifact, ArtifactContent artifactContent,
             ClassificationHelper classificationHelper) throws Exception {
         this.primaryArtifact = primaryArtifact;
-        this.artifactContent = new ArtifactContent(contentStream);
+        this.artifactContent = artifactContent;
         this.classificationHelper = classificationHelper;
-        artifactBuilders = ArtifactBuilderFactory.createArtifactBuilders(primaryArtifact, artifactContent);
+        artifactBuilders = ExtensionFactory.createArtifactBuilders(primaryArtifact, artifactContent);
     }
 
     public void persistArtifact(Session session) throws Exception {
@@ -144,10 +143,11 @@ public final class JCRArtifactPersister {
 
         Node artifactNode = null;
         boolean isDocumentArtifact = SrampModelUtils.isDocumentArtifact(primaryArtifact);
-        if (artifactContent.getInputStream() == null && !isDocumentArtifact) {
+        if (!isDocumentArtifact) {
             artifactNode = JCRUtils.findOrCreateNode(session, artifactPath, "nt:folder", JCRConstants.SRAMP_NON_DOCUMENT_TYPE);
         } else {
-            artifactNode = JCRUtils.uploadFile(session, artifactPath, artifactContent.getInputStream());
+            InputStream is = artifactContent == null ? null : artifactContent.getInputStream();
+            artifactNode = JCRUtils.uploadFile(session, artifactPath, is);
             JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
         }
 
@@ -191,9 +191,11 @@ public final class JCRArtifactPersister {
         if (DocumentArtifactType.class.isAssignableFrom(artifactType.getArtifactType().getTypeClass())) {
             artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_TYPE, artifactType.getMimeType());
             artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, artifactNode.getProperty(JCRConstants.JCR_CONTENT_DATA).getLength());
-            String sha1Hash = JCRExtensions.getInstance().getSha1Hash(
-                    artifactNode.getProperty(JCRConstants.JCR_CONTENT_DATA).getBinary());
-            artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_HASH, sha1Hash);
+            Binary binary = artifactNode.getProperty(JCRConstants.JCR_CONTENT_DATA).getBinary();
+            if (binary != null) {
+                String sha1Hash = JCRExtensions.getInstance().getSha1Hash(binary);
+                artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_HASH, sha1Hash);
+            }
         }
         // XMLDocument
         if (primaryArtifact instanceof XmlDocument) {

@@ -89,13 +89,13 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         XsdDocument xsd = new XsdDocument();
         xsd.setName(xsdFileName);
         xsd.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        xsd = (XsdDocument) persistenceManager.persistArtifact(xsd, is);
+        xsd = (XsdDocument) persistenceManager.persistArtifact(xsd, new ArtifactContent(xsdFileName, is));
         String wsdlFileName = "jcr-sample-externalrefs.wsdl";
         is = this.getClass().getResourceAsStream("/sample-files/wsdl/" + wsdlFileName);
         WsdlDocument wsdl = new WsdlDocument();
         wsdl.setName(wsdlFileName);
         wsdl.setArtifactType(BaseArtifactEnum.WSDL_DOCUMENT);
-        wsdl = (WsdlDocument) persistenceManager.persistArtifact(wsdl, is);
+        wsdl = (WsdlDocument) persistenceManager.persistArtifact(wsdl, new ArtifactContent(wsdlFileName, is));
         assertEquals(1, wsdl.getImportedXsds().size());
 
         // Create another artifact with a generic relationship targeting one of the XSD's derived artifacts.
@@ -132,7 +132,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         XsdDocument xsd = new XsdDocument();
         xsd.setName(xsdFileName);
         xsd.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        xsd = (XsdDocument) persistenceManager.persistArtifact(xsd, is);
+        xsd = (XsdDocument) persistenceManager.persistArtifact(xsd, new ArtifactContent(xsdFileName, is));
 
         // Grab one of the derived artifacts, to be used later
         BaseArtifactType complexType = queryManager.createQuery("/s-ramp/xsd/ComplexTypeDeclaration").executeQuery().iterator().next();
@@ -150,7 +150,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         boolean caught = false;
         try {
             is = this.getClass().getResourceAsStream("/sample-files/wsdl/" + xsdFileName);
-            persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), is);
+            persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), new ArtifactContent(xsdFileName, is));
         } catch (RelationshipConstraintException e) {
             caught = true;
         }
@@ -170,7 +170,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         caught = false;
         try {
             is = this.getClass().getResourceAsStream("/sample-files/wsdl/" + xsdFileName);
-            persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), is);
+            persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), new ArtifactContent(xsdFileName, is));
         } catch (CustomPropertyConstraintException e) {
             caught = true;
         }
@@ -188,7 +188,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         caught = false;
         try {
             is = this.getClass().getResourceAsStream("/sample-files/wsdl/" + xsdFileName);
-            persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), is);
+            persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), new ArtifactContent(xsdFileName, is));
         } catch (ClassifierConstraintException e) {
             caught = true;
         }
@@ -200,7 +200,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now update the content, for reals
         is = this.getClass().getResourceAsStream("/sample-files/wsdl/" + xsdFileName);
-        persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), is);
+        persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), new ArtifactContent(xsdFileName, is));
 
         // Verify the derived artifacts were re-generated
         Iterator<BaseArtifactType> complexTypes = queryManager.createQuery("/s-ramp/xsd/ComplexTypeDeclaration")
@@ -224,7 +224,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         XsdDocument xsd = new XsdDocument();
         xsd.setName(xsdFileName);
         xsd.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        xsd = (XsdDocument) persistenceManager.persistArtifact(xsd, is);
+        xsd = (XsdDocument) persistenceManager.persistArtifact(xsd, new ArtifactContent(xsdFileName, is));
 
         // Grab one of the derived artifacts, to be used later
         BaseArtifactType complexType = queryManager.createQuery("/s-ramp/xsd/ComplexTypeDeclaration").executeQuery().iterator().next();

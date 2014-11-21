@@ -15,17 +15,6 @@
  */
 package org.overlord.sramp.ui.server.servlets;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -35,15 +24,21 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
-import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
-import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
 import org.overlord.sramp.ui.server.i18n.Messages;
-import org.overlord.sramp.ui.server.services.ArtifactTypeUtil;
 import org.overlord.sramp.ui.server.util.ExceptionUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A standard servlet that artifact content is POSTed to in order to add new artifacts
@@ -126,12 +121,8 @@ public class ArtifactUploadServlet extends AbstractUploadServlet {
 		File tempFile = stashResourceContent(artifactContent);
 		Map<String, String> responseParams = new HashMap<String, String>();
 
-		if (artifactType == null || artifactType.trim().length() == 0) {
-		    artifactType = ArtifactTypeUtil.guess(fileName);
-		}
-
 		try {
-		    if ("SrampArchive".equals(artifactType)) { //$NON-NLS-1$
+            if (artifactType != null && fileName.endsWith(".sramp")) {
 		        uploadPackage(tempFile, responseParams);
 		    } else {
 		        uploadSingleArtifact(artifactType, fileName, tempFile, responseParams);
@@ -178,41 +169,28 @@ public class ArtifactUploadServlet extends AbstractUploadServlet {
      * Uploads a single artifact to the S-RAMP repository.
      * @param artifactType
      * @param fileName
-     * @param client
      * @param tempFile
      * @param responseParams
      * @throws Exception
      */
     private void uploadSingleArtifact(String artifactType, String fileName,
             File tempFile, Map<String, String> responseParams) throws Exception {
-        ArtifactType at = ArtifactType.valueOf(artifactType);
-        String uuid = null;
-		// First, upload the artifact, no matter what kind
         InputStream contentStream = null;
 		try {
 			contentStream = FileUtils.openInputStream(tempFile);
-			BaseArtifactType artifact = SrampApiClientAccessor.getClient().uploadArtifact(at, contentStream, fileName);
-			responseParams.put("model", at.getArtifactType().getModel()); //$NON-NLS-1$
-			responseParams.put("type", at.getArtifactType().getType()); //$NON-NLS-1$
+            BaseArtifactType artifact;
+            if (artifactType != null) {
+                artifact = SrampApiClientAccessor.getClient().uploadArtifact(ArtifactType.valueOf(artifactType),
+                        contentStream, fileName);
+            } else {
+                artifact = SrampApiClientAccessor.getClient().uploadArtifact(contentStream, fileName);
+            }
+            ArtifactType responseArtifactType = ArtifactType.valueOf(artifact);
+			responseParams.put("model", responseArtifactType.getModel()); //$NON-NLS-1$
+			responseParams.put("type", responseArtifactType.getType()); //$NON-NLS-1$
 			responseParams.put("uuid", artifact.getUuid()); //$NON-NLS-1$
-			uuid = artifact.getUuid();
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}
-
-		// Check if this is an expandable file type.  If it is, then expand it!
-        ZipToSrampArchive expander = null;
-        SrampArchive archive = null;
-        try {
-            expander = ZipToSrampArchiveRegistry.createExpander(at, tempFile);
-            if (expander != null) {
-                expander.setContextParam(DefaultMetaDataFactory.PARENT_UUID, uuid);
-                archive = expander.createSrampArchive();
-                SrampApiClientAccessor.getClient().uploadBatch(archive);
-            }
-        } finally {
-            SrampArchive.closeQuietly(archive);
-            ZipToSrampArchive.closeQuietly(expander);
-        }
     }
 }

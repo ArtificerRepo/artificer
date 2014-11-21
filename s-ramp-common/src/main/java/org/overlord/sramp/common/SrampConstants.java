@@ -71,7 +71,7 @@ public class SrampConstants {
     // Deprecated -- use sramp.artifact.builder.provider.customDir instead
     public static final String SRAMP_CUSTOM_DERIVER_DIR   = "sramp.derivers.customDir"; //$NON-NLS-1$
     // Location of a directory containing JARs which provide custom ArtifactBuilderProviders
-    public static final String SRAMP_CUSTOM_ARTIFACT_BUILDER_PROVIDER_DIR   = "sramp.artifact.builder.provider.customDir"; //$NON-NLS-1$
+    public static final String SRAMP_CUSTOM_EXTENSION_DIR = "sramp.extension.customDir"; //$NON-NLS-1$
 
     public static final String SRAMP_CONFIG_MAVEN_READONLY_USERNAME = "sramp.config.maven.readonly-username"; //$NON-NLS-1$
 

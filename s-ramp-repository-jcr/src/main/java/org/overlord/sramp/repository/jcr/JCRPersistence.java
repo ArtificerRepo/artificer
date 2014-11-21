@@ -124,13 +124,13 @@ public class JCRPersistence implements PersistenceManager, ClassificationHelper 
     }
 
     @Override
-    public BaseArtifactType persistArtifact(BaseArtifactType primaryArtifact, InputStream contentStream)
+    public BaseArtifactType persistArtifact(BaseArtifactType primaryArtifact, ArtifactContent content)
             throws SrampException {
         Session session = null;
         try {
             session = JCRRepositoryFactory.getSession();
 
-            JCRArtifactPersister persister = new JCRArtifactPersister(primaryArtifact, contentStream, this);
+            JCRArtifactPersister persister = new JCRArtifactPersister(primaryArtifact, content, this);
             persister.persistArtifact(session);
             persister.persistArtifactRelationships(session);
             
@@ -149,7 +149,6 @@ public class JCRPersistence implements PersistenceManager, ClassificationHelper 
         } catch (Throwable t) {
             throw new SrampServerException(t);
         } finally {
-            IOUtils.closeQuietly(contentStream);
             JCRRepositoryFactory.logoutQuietly(session);
         }
     }
@@ -258,7 +257,7 @@ public class JCRPersistence implements PersistenceManager, ClassificationHelper 
     }
 
     @Override
-    public BaseArtifactType updateArtifactContent(String uuid, ArtifactType type, InputStream contentStream) throws SrampException {
+    public BaseArtifactType updateArtifactContent(String uuid, ArtifactType type, ArtifactContent content) throws SrampException {
         Session session = null;
         try {
             session = JCRRepositoryFactory.getSession();
@@ -279,7 +278,7 @@ public class JCRPersistence implements PersistenceManager, ClassificationHelper 
 
             // Re-persist (which re-generates the derived artifacts).
             BaseArtifactType primaryArtifact = JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
-            JCRArtifactPersister persister = new JCRArtifactPersister(primaryArtifact, contentStream, this);
+            JCRArtifactPersister persister = new JCRArtifactPersister(primaryArtifact, content, this);
             persister.updateArtifactContent(artifactNode, session);
             persister.persistArtifactRelationships(session);
 
@@ -296,7 +295,6 @@ public class JCRPersistence implements PersistenceManager, ClassificationHelper 
             throw new SrampServerException(t);
         } finally {
             JCRRepositoryFactory.logoutQuietly(session);
-            IOUtils.closeQuietly(contentStream);
         }
     }
 

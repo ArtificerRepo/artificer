@@ -15,16 +15,16 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import java.io.InputStream;
-
 import org.junit.Assert;
-
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
+
+import java.io.InputStream;
 
 
 /**
@@ -41,7 +41,7 @@ public class ExtendedArtifactDeriverTest extends AbstractNoAuditingJCRPersistenc
         artifact.setExtendedType("ExtendedArtifactDeriverTestDocument");
         artifact.setName("jrd");
 
-        BaseArtifactType pa = persistenceManager.persistArtifact(artifact, pdf);
+        BaseArtifactType pa = persistenceManager.persistArtifact(artifact, new ArtifactContent(artifactFileName, pdf));
 
         Assert.assertNotNull(pa);
         log.info("persisted gtgjrdih.xml to JCR, returned artifact uuid=" + pa.getUuid());

@@ -15,18 +15,18 @@
  */
 package org.overlord.sramp.integration.java.artifactbuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
 import org.overlord.sramp.integration.java.model.JavaModel;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
 
 /**
  *
@@ -34,10 +34,6 @@ import org.overlord.sramp.integration.java.model.JavaModel;
  */
 public class JavaClassArtifactBuilderTest {
 
-    /**
-     * Test method for {@link org.overlord.sramp.integration.switchyard.deriver.SwitchYardXmlDeriver#derive(java.util.Collection, org.s_ramp.xmlns._2010.s_ramp.BaseArtifactType, org.w3c.dom.Element, javax.xml.xpath.XPath)}.
-     * @throws IOException
-     */
     @Test
     public void testJavaDeriver() throws IOException {
         JavaClassArtifactBuilder builder = new JavaClassArtifactBuilder();
@@ -47,7 +43,7 @@ public class JavaClassArtifactBuilderTest {
         InputStream is = getClass().getResourceAsStream("MyClass.class"); //$NON-NLS-1$
 
         // Derive
-        Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent(is))
+        Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent("MyClass.class", is))
                 .getDerivedArtifacts();
         is.close();
         // Assert
@@ -65,7 +61,7 @@ public class JavaClassArtifactBuilderTest {
         is = getClass().getResourceAsStream("MyInterface.class"); //$NON-NLS-1$
 
         // Derive
-        derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent(is)).getDerivedArtifacts();
+        derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent("MyInterface.class", is)).getDerivedArtifacts();
         is.close();
         // Assert
         Assert.assertNotNull(derivedArtifacts);

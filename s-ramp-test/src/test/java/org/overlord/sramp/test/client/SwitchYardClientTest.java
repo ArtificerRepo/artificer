@@ -15,21 +15,18 @@
  */
 package org.overlord.sramp.test.client;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-
 import org.apache.commons.io.IOUtils;
-
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.client.query.QueryResultSet;
-import org.overlord.sramp.integration.switchyard.expand.SwitchYardAppToSrampArchive;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 /**
  * Unit test for uploading SwitchYard applications.
@@ -38,40 +35,29 @@ import org.overlord.sramp.integration.switchyard.expand.SwitchYardAppToSrampArch
  */
 public class SwitchYardClientTest extends AbstractNoAuditingClientTest {
 
-	@Test
-	public void testUploadArtifact() throws Exception {
+    @Test
+    public void testUploadArtifact() throws Exception {
         SrampAtomApiClient client = client();
 
         // Upload the artifacts jar
         // This requires proper maven profile to be active as maven handles generation of this jar file
         InputStream artifactsIS = new FileInputStream("target/sample-files/switchyard/artifacts.jar");//$NON-NLS-1$
-		SwitchYardAppToSrampArchive sy2archive = null;
-        SrampArchive archive = null;
-		try {
-		    sy2archive = new SwitchYardAppToSrampArchive(artifactsIS);
-		    archive = sy2archive.createSrampArchive();
-		    client.uploadBatch(archive);
-		} finally {
-			IOUtils.closeQuietly(artifactsIS);
-			ZipToSrampArchive.closeQuietly(sy2archive);
-			SrampArchive.closeQuietly(archive);
-		}
+        try {
+            ArtifactType artifactType = ArtifactType.valueOf(SwitchYardModel.SwitchYardApplication, true);
+            client.uploadArtifact(artifactType, artifactsIS, "artifacts.jar");
+        } finally {
+            IOUtils.closeQuietly(artifactsIS);
+        }
 
 		doArtifactsJarAssertions(client);
 
         // Upload the order consumer jar
         // This requires proper maven profile to be active as maven handles generation of this jar file
         InputStream orderConsumerIS = new FileInputStream("target/sample-files/switchyard/order-consumer.jar"); //$NON-NLS-1$
-        sy2archive = null;
-        archive = null;
         try {
-            sy2archive = new SwitchYardAppToSrampArchive(orderConsumerIS);
-            archive = sy2archive.createSrampArchive();
-            client.uploadBatch(archive);
+            client.uploadArtifact(orderConsumerIS, "order-consumer.jar");
         } finally {
             IOUtils.closeQuietly(artifactsIS);
-            ZipToSrampArchive.closeQuietly(sy2archive);
-            SrampArchive.closeQuietly(archive);
         }
 
         doOrderConsumerAssertions(client);
@@ -79,20 +65,14 @@ public class SwitchYardClientTest extends AbstractNoAuditingClientTest {
         // Upload the order service jar
         // This requires proper maven profile to be active as maven handles generation of this jar file
         InputStream orderServiceIS = new FileInputStream("target/sample-files/switchyard/order-service.jar"); //$NON-NLS-1$
-        sy2archive = null;
-        archive = null;
         try {
-            sy2archive = new SwitchYardAppToSrampArchive(orderServiceIS);
-            archive = sy2archive.createSrampArchive();
-            client.uploadBatch(archive);
+            client.uploadArtifact(orderServiceIS, "order-service.jar");
         } finally {
             IOUtils.closeQuietly(artifactsIS);
-            ZipToSrampArchive.closeQuietly(sy2archive);
-            SrampArchive.closeQuietly(archive);
         }
 
         doOrderServiceAssertions(client);
-	}
+    }
 
     /**
      * Do some assertions to make sure that the content we expected to be extracted

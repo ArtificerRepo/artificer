@@ -16,29 +16,12 @@
 
 package org.overlord.sramp.shell.commands.maven;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
-import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
-import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
@@ -55,6 +38,18 @@ import org.overlord.sramp.shell.BuiltInShellCommand;
 import org.overlord.sramp.shell.i18n.Messages;
 import org.overlord.sramp.shell.util.FileNameCompleter;
 import org.overlord.sramp.shell.util.PrintArtifactMetaDataVisitor;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Uploads a file to the S-RAMP repository as a new artifact.  Additionally
@@ -119,8 +114,6 @@ public class DeployCommand extends BuiltInShellCommand {
         }
 
         InputStream content = null;
-        ZipToSrampArchive expander = null;
-        SrampArchive archive = null;
         try {
             ArtifactType artifactType = null;
             if (artifactTypeArg != null) {
@@ -128,8 +121,6 @@ public class DeployCommand extends BuiltInShellCommand {
                 if (artifactType.isExtendedType()) {
                     artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
                 }
-            } else {
-                artifactType = determineArtifactType(file);
             }
             // Process GAV and other meta-data, then update the artifact
             MavenMetaData mmd = new MavenMetaData(gavArg, file);
@@ -180,14 +171,6 @@ public class DeployCommand extends BuiltInShellCommand {
             artifact.setName(artifactName);
             client.updateArtifactMetaData(artifact);
 
-            // Now also add "expanded" content to the s-ramp repository
-            expander = ZipToSrampArchiveRegistry.createExpander(artifactType, file);
-            if (expander != null) {
-                expander.setContextParam(DefaultMetaDataFactory.PARENT_UUID, artifact.getUuid());
-                archive = expander.createSrampArchive();
-                client.uploadBatch(archive);
-            }
-
             // Generate and add a POM for the artifact
             String pom = generatePom(mmd);
             InputStream pomContent = new ByteArrayInputStream(pom.getBytes("UTF-8")); //$NON-NLS-1$
@@ -237,28 +220,6 @@ public class DeployCommand extends BuiltInShellCommand {
         }
         builder.append("</project>"); //$NON-NLS-1$
         return builder.toString();
-    }
-
-    /**
-     * Try to figure out what kind of artifact we're dealing with.
-     *
-     * @param file
-     *            the file
-     * @return the artifact type
-     */
-    private ArtifactType determineArtifactType(File file) {
-        ArtifactType type = null;
-        String extension = FilenameUtils.getExtension(file.getName());
-        if ("jar".equals(extension)) { //$NON-NLS-1$
-            type = ArtifactType.ExtendedDocument(JavaModel.TYPE_ARCHIVE);
-        } else if ("war".equals(extension)) { //$NON-NLS-1$
-            type = ArtifactType.ExtendedDocument(JavaModel.TYPE_WEB_APPLICATION);
-        } else if ("ear".equals(extension)) { //$NON-NLS-1$
-            type = ArtifactType.ExtendedDocument(JavaModel.TYPE_ENTERPRISE_APPLICATION);
-        } else {
-            type = ArtifactType.Document();
-        }
-        return type;
     }
 
     /**

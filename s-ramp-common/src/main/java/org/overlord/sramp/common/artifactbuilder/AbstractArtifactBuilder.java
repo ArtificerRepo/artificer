@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.sramp.common.ArtifactContent;
 
 /**
  * @author Brett Meyer

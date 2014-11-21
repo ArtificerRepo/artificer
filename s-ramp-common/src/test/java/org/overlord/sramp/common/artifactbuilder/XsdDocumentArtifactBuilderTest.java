@@ -15,31 +15,19 @@
  */
 package org.overlord.sramp.common.artifactbuilder;
 
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
+import org.overlord.sramp.common.ArtifactContent;
+
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.InputStream;
+import java.util.*;
 
 /**
- * Unit test for the {@link XsdDocumentArtifactBuilderDeriver} class.
+ * Unit test for the {@link XsdDocumentArtifactBuilder} class.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -90,8 +78,8 @@ public class XsdDocumentArtifactBuilderTest {
 		try {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/xsd/ws-humantask.xsd"); //$NON-NLS-1$
 			Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(testSrcArtifact,
-			        new ArtifactContent(testSrcContent)).getDerivedArtifacts();
-			Assert.assertNotNull(derivedArtifacts);
+                    new ArtifactContent("ws-humantask.xsd", testSrcContent)).getDerivedArtifacts();
+            Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(83, derivedArtifacts.size());
 			int numElements = 0;
 			int numAttributes = 0;

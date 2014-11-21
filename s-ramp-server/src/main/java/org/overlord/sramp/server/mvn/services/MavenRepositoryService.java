@@ -15,35 +15,13 @@
  */
 package org.overlord.sramp.server.mvn.services;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.atom.err.SrampAtomException;
-import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.SrampConfig;
-import org.overlord.sramp.common.SrampConstants;
-import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.*;
 import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
@@ -54,6 +32,16 @@ import org.overlord.sramp.repository.query.SrampQuery;
 import org.overlord.sramp.server.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Implementation of the maven repository service. It connects to s-ramp and
@@ -646,8 +634,8 @@ public class MavenRepositoryService extends HttpServlet {
                     }
                 } else {
                     try {
-                        persistenceManager.updateArtifactContent(baseArtifact.getUuid(), artifactType, content);
-                    } catch (SrampException e) {
+                        persistenceManager.updateArtifactContent(baseArtifact.getUuid(), artifactType, new ArtifactContent(fileName, content));
+                    } catch (Exception e) {
                         throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.error", metadata.toString()), e); //$NON-NLS-1$
                     }
                 }
@@ -661,8 +649,8 @@ public class MavenRepositoryService extends HttpServlet {
                 if (metadata.isSnapshotVersion() || metadata.getFileName().equals("maven-metadata.xml")) { //$NON-NLS-1$
                     ArtifactType artifactType = ArtifactType.valueOf(baseArtifact);
                     try {
-                        persistenceManager.updateArtifactContent(baseArtifact.getUuid(), artifactType, content);
-                    } catch (SrampException e) {
+                        persistenceManager.updateArtifactContent(baseArtifact.getUuid(), artifactType, new ArtifactContent(fileName, content));
+                    } catch (Exception e) {
                         throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.update.content.error", //$NON-NLS-1$
                                 baseArtifact.getUuid()), e);
                     }
@@ -678,8 +666,8 @@ public class MavenRepositoryService extends HttpServlet {
                 ArtifactType artifactType = determineArtifactType(fileName);
                 BaseArtifactType baseArtifactType = artifactType.newArtifactInstance();
                 try {
-                    persisted = persistenceManager.persistArtifact(baseArtifactType, content);
-                } catch (SrampException e1) {
+                    persisted = persistenceManager.persistArtifact(baseArtifactType, new ArtifactContent(fileName, content));
+                } catch (Exception e1) {
                     throw new MavenRepositoryException(Messages.i18n.format("maven.resource.upload.sramp.new.content.error"), e1); //$NON-NLS-1$
                 }
             }

@@ -29,12 +29,12 @@ application server.  For JBoss 7.1, the details can be found here:
 
 Typically it's easier to create a local directory in which Custom Builder JARs can be
 placed.  Once that is done, you must tell S-RAMP about the directory, by setting a 
-system property 'sramp.artifact.builder.provider.customDir'.  For example, I might do this:
+system property 'sramp.extension.customDir'.  For example, I might do this:
 
     $ ~/bin/stopJBoss.sh
     $ mkdir ~/.s-ramp-builders
     $ cp target/*.jar ~/.s-ramp-builders
-    $ ~/bin/runJBoss.sh -Dsramp.artifact.builder.provider.customDir=/home/ewittman/.s-ramp-builders
+    $ ~/bin/runJBoss.sh -Dsramp.extension.customDir=/home/ewittman/.s-ramp-builders
 
 You will need to create the directory, copy the project JAR into it, and then set the
 appropriate -D system property when you start your application server.

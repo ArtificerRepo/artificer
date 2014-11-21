@@ -172,7 +172,7 @@ is done by performing the following steps:
    location:  *META-INF/services*.  The content of that file should simply be one line containing
    the fully qualified classname of the class defined in #2
 4. Package everything up into a JAR and make it available either on the classpath or in an
-   external directory configured by setting property *sramp.artifact.builder.provider.customDir*.
+   external directory configured by setting property *sramp.extension.customDir*.
    
 The Overlord S-RAMP distribution comes with an example of how to write and package a custom 
 builder - the demo is named *s-ramp-demos-custom-artifact-builder*.  Also, see the Javadocs for

@@ -53,6 +53,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtension;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
+import org.overlord.sramp.common.ArtifactContent;
 
 /**
  * Unit test for the {@link WsdlDocumentArtifactBuilder} class.
@@ -85,8 +86,8 @@ public class WsdlDocumentArtifactBuilderTest {
 		try {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/deriver.wsdl"); //$NON-NLS-1$
 			Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(testSrcArtifact,
-			        new ArtifactContent(testSrcContent)).getDerivedArtifacts();
-			Assert.assertNotNull(derivedArtifacts);
+                    new ArtifactContent("deriver.wsdl", testSrcContent)).getDerivedArtifacts();
+                            Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(35, derivedArtifacts.size());
 
 			// Index the results by artifact type and name
@@ -307,8 +308,8 @@ public class WsdlDocumentArtifactBuilderTest {
 		try {
 			testSrcContent = getClass().getResourceAsStream("/sample-files/wsdl/ws-humantask-api.wsdl"); //$NON-NLS-1$
 			Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(testSrcArtifact,
-			        new ArtifactContent(testSrcContent)).getDerivedArtifacts();
-			Assert.assertNotNull(derivedArtifacts);
+                    new ArtifactContent("ws-humantask-api.wsdl", testSrcContent)).getDerivedArtifacts();
+                            Assert.assertNotNull(derivedArtifacts);
 			Assert.assertEquals(850, derivedArtifacts.size());
 		} finally {
 			IOUtils.closeQuietly(testSrcContent);
