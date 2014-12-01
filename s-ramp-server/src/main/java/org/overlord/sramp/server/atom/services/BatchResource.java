@@ -15,19 +15,6 @@
  */
 package org.overlord.sramp.server.atom.services;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -40,10 +27,7 @@ import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.visitors.ArtifactToFullAtomEntryVisitor;
-import org.overlord.sramp.common.ArtifactNotFoundException;
-import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.SrampConfig;
-import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.*;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
@@ -53,6 +37,14 @@ import org.overlord.sramp.server.i18n.Messages;
 import org.overlord.sramp.server.mime.MimeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * The JAX-RS resource that handles pushing artifacts into the repository in batches.  The
@@ -88,7 +80,6 @@ public class BatchResource extends AbstractResource {
 	        @HeaderParam("Slug") String fileName, InputStream content) throws SrampAtomException, SrampException {
         PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
-        InputStream is = content;
     	SrampArchive archive = null;
     	String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
         try {
@@ -100,33 +91,41 @@ public class BatchResource extends AbstractResource {
             // Process all of the entries in the s-ramp package.  First, do all the create
             // entries.  Once the creates are done, do the updates.
             Collection<SrampArchiveEntry> entries = archive.getEntries();
-            List<BatchItem> createItems = new ArrayList<BatchItem>();
+            BatchCreate batchCreates = new BatchCreate();
             List<SrampArchiveEntry> updates = new ArrayList<SrampArchiveEntry>();
             for (SrampArchiveEntry entry : entries) {
                 String path = entry.getPath();
-                String contentId = String.format("<%1$s@package>", path); //$NON-NLS-1$
                 BaseArtifactType metaData = entry.getMetaData();
                 if (isCreate(metaData)) {
-                    InputStream contentStream = ensureSupportsMark(archive.getInputStream(entry));
-                    // Figure out the mime type
                     ArtifactType artifactType = ArtifactType.valueOf(metaData);
+                    String mimeType;
+                    InputStream entryIs = archive.getInputStream(entry);
+                    ArtifactContent entryContent = null;
+                    if (entryIs != null) {
+                        entryContent = new ArtifactContent(path, archive.getInputStream(entry));
+                        mimeType = MimeTypes.determineMimeType(metaData.getName(),
+                                entryContent.getInputStream(), artifactType);
+                    } else {
+                        mimeType = MimeTypes.determineMimeType(metaData.getName(), null, artifactType);
+                    }
+
                     if (artifactType.isDerived()) {
                         throw new DerivedArtifactCreateException(artifactType.getArtifactType());
                     }
-                    String mimeType = MimeTypes.determineMimeType(metaData.getName(), contentStream, artifactType);
                     artifactType.setMimeType(mimeType);
                     if (metaData instanceof DocumentArtifactType) {
                         ((DocumentArtifactType) metaData).setContentType(mimeType);
                     }
-                    BatchItem bi = new BatchItem(contentId, metaData, contentStream);
-                    createItems.add(bi);
+
+                    batchCreates.add(metaData, entryContent, entry.getPath());
                 } else {
                     updates.add(entry);
                 }
             }
 
             // Now, send the creates to the persistence manager in a batch and process the responses.
-            List<Object> batchResponses = persistenceManager.persistBatch(createItems);
+            List<PersistenceManager.BatchItem> createItems = batchCreates.getBatchItems();
+            List<Object> batchResponses = batchCreates.execute(persistenceManager);
             for (int i = 0; i < createItems.size(); i++) {
                 BatchItem bi = createItems.get(i);
                 Object response = batchResponses.get(i);
@@ -143,12 +142,16 @@ public class BatchResource extends AbstractResource {
 
             // Finally, process all the updates.
             for (SrampArchiveEntry updateEntry : updates) {
-                InputStream contentStream = ensureSupportsMark(archive.getInputStream(updateEntry));
                 String path = updateEntry.getPath();
+                InputStream updateIs = archive.getInputStream(updateEntry);
+                ArtifactContent entryContent = null;
+                if (updateIs != null) {
+                    entryContent = new ArtifactContent(path, updateIs);
+                }
                 String contentId = String.format("<%1$s@package>", path); //$NON-NLS-1$
                 BaseArtifactType metaData = updateEntry.getMetaData();
                 ArtifactType artifactType = ArtifactType.valueOf(metaData);
-                Entry atomEntry = processUpdate(artifactType, metaData, contentStream, baseUrl);
+                Entry atomEntry = processUpdate(artifactType, metaData, entryContent, baseUrl);
                 addUpdatedPart(output, contentId, atomEntry);
             }
 
@@ -161,13 +164,13 @@ public class BatchResource extends AbstractResource {
         	logError(logger, Messages.i18n.format("ERROR_CONSUMING_ZIP"), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
         } finally {
-        	IOUtils.closeQuietly(is);
+        	IOUtils.closeQuietly(content);
         	if (archive != null)
         		SrampArchive.closeQuietly(archive);
         }
     }
 
-	/**
+    /**
      * Returns true if the given entry represents an artifact create operation.  Creates can be
      * done either with or without content (document vs. non-document type artifacts).
      * @param metaData
@@ -200,12 +203,12 @@ public class BatchResource extends AbstractResource {
 	 * Process the case where we want to update the artifact's meta-data.
 	 * @param artifactType the artifact type
 	 * @param metaData the artifact meta-data
-	 * @param contentStream the artifact content
+	 * @param content the artifact content
 	 * @return the Atom entry created as a result of the creat operation
 	 * @throws Exception
 	 */
     private Entry processUpdate(ArtifactType artifactType, BaseArtifactType metaData,
-            InputStream contentStream, String baseUrl) throws Exception {
+            ArtifactContent content, String baseUrl) throws Exception {
 		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 		BaseArtifactType artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
 		if (artifact == null)
@@ -214,8 +217,8 @@ public class BatchResource extends AbstractResource {
 		// update the meta data
 		persistenceManager.updateArtifact(metaData, artifactType);
 
-		if (contentStream != null) {
-		    persistenceManager.updateArtifactContent(metaData.getUuid(), artifactType, contentStream);
+		if (content != null) {
+		    persistenceManager.updateArtifactContent(metaData.getUuid(), artifactType, content);
 		}
 
 		// Refetch the data to make sure what we return is up-to-date

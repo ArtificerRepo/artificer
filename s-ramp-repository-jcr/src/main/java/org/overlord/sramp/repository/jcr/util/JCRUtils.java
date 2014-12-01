@@ -189,7 +189,6 @@ public class JCRUtils {
             InputStream stream ) throws RepositoryException, IOException {
         isNotNull(session, "session");
         isNotNull(path, "path");
-        isNotNull(stream, "stream");
         Node fileNode = null;
         boolean error = false;
         try {
@@ -208,7 +207,9 @@ public class JCRUtils {
             throw e;
         } finally {
             try {
-                stream.close();
+                if (stream != null) {
+                    stream.close();
+                }
             } catch (RuntimeException e) {
                 if (!error) throw e; // don't override any exception thrown in the block above
             }

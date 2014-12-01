@@ -41,14 +41,11 @@ import org.overlord.commons.dev.server.discovery.WebAppModuleFromIDEDiscoveryStr
 import org.overlord.commons.gwt.server.filters.GWTCacheControlFilter;
 import org.overlord.commons.gwt.server.filters.ResourceCacheControlFilter;
 import org.overlord.commons.ui.header.OverlordHeaderDataJS;
-import org.overlord.sramp.atom.archive.SrampArchive;
-import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.integration.switchyard.expand.SwitchYardAppToSrampArchive;
 import org.overlord.sramp.repository.jcr.JCRRepository;
 import org.overlord.sramp.repository.jcr.modeshape.filters.ServletCredentialsFilter;
 import org.overlord.sramp.server.SrampLifeCycle;
@@ -355,47 +352,29 @@ public class SrampDevServer extends ErraiDevServer {
     private void doSwitchYardSeed(SrampAtomApiClient client) throws Exception {
         // Upload the artifacts jar
         InputStream artifactsIS = this.getClass().getResourceAsStream("artifacts.jar");
-        SwitchYardAppToSrampArchive sy2archive = null;
-        SrampArchive archive = null;
         try {
-            sy2archive = new SwitchYardAppToSrampArchive(artifactsIS);
-            archive = sy2archive.createSrampArchive();
-            client.uploadBatch(archive);
+            client.uploadArtifact(artifactsIS, "artifacts.jar");
             System.out.println("Added SwitchYard app (artifacts.jar)");
         } finally {
             IOUtils.closeQuietly(artifactsIS);
-            ZipToSrampArchive.closeQuietly(sy2archive);
-            SrampArchive.closeQuietly(archive);
         }
 
         // Upload the order consumer jar
         InputStream orderConsumerIS = this.getClass().getResourceAsStream("order-consumer.jar");
-        sy2archive = null;
-        archive = null;
         try {
-            sy2archive = new SwitchYardAppToSrampArchive(orderConsumerIS);
-            archive = sy2archive.createSrampArchive();
-            client.uploadBatch(archive);
+            client.uploadArtifact(orderConsumerIS, "order-consumer.jar");
             System.out.println("Added SwitchYard app (order-consumer.jar)");
         } finally {
             IOUtils.closeQuietly(artifactsIS);
-            ZipToSrampArchive.closeQuietly(sy2archive);
-            SrampArchive.closeQuietly(archive);
         }
 
         // Upload the order service jar
         InputStream orderServiceIS = this.getClass().getResourceAsStream("order-service.jar");
-        sy2archive = null;
-        archive = null;
         try {
-            sy2archive = new SwitchYardAppToSrampArchive(orderServiceIS);
-            archive = sy2archive.createSrampArchive();
-            client.uploadBatch(archive);
+            client.uploadArtifact(orderServiceIS, "order-service.jar");
             System.out.println("Added SwitchYard app (order-service.jar)");
         } finally {
             IOUtils.closeQuietly(artifactsIS);
-            ZipToSrampArchive.closeQuietly(sy2archive);
-            SrampArchive.closeQuietly(archive);
         }
 
     }

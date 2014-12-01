@@ -17,6 +17,7 @@ package org.overlord.sramp.common;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -123,11 +124,22 @@ public class ArtifactType {
      * @param artifactType
      */
     public static ArtifactType valueOf(String artifactType) {
-        if (ArtifactTypeEnum.hasEnum(artifactType)) {
+        return valueOf(artifactType, false);
+    }
+
+    public static ArtifactType valueOf(String artifactType, boolean isDocument) {
+        if (StringUtils.isEmpty(artifactType)) {
+            return null;
+        } else if (ArtifactTypeEnum.hasEnum(artifactType)) {
             ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.valueOf(artifactType);
             return new ArtifactType(artifactTypeEnum, null);
         } else {
-            ArtifactTypeEnum artifactTypeEnum = ArtifactTypeEnum.ExtendedArtifactType;
+            ArtifactTypeEnum artifactTypeEnum;
+            if (isDocument) {
+                artifactTypeEnum = ArtifactTypeEnum.ExtendedDocument;
+            } else {
+                artifactTypeEnum = ArtifactTypeEnum.ExtendedArtifactType;
+            }
             ArtifactType rval = new ArtifactType(artifactTypeEnum, null);
             rval.setExtendedType(artifactType);
             rval.setMimeType("application/octet-stream"); //$NON-NLS-1$

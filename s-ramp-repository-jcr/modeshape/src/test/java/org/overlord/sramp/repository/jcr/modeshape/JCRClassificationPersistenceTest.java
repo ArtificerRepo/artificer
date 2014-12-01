@@ -15,17 +15,17 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import java.io.InputStream;
-
 import org.junit.Assert;
-
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.ontology.SrampOntology;
+
+import java.io.InputStream;
 
 
 /**
@@ -46,7 +46,7 @@ public class JCRClassificationPersistenceTest extends AbstractNoAuditingJCRPersi
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
         document.getClassifiedBy().add(ontology.findClass("China").getUri().toString());
 
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, contentStream);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, contentStream));
         Assert.assertNotNull(artifact);
         if (log.isDebugEnabled()) {
             persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.Document());

@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.ontology.SrampOntology;
@@ -46,7 +47,7 @@ public interface PersistenceManager {
      * @param content, the artifact content
      * @throws SrampException
      */
-    public BaseArtifactType persistArtifact(BaseArtifactType baseArtifactType, InputStream content) throws SrampException;
+    public BaseArtifactType persistArtifact(BaseArtifactType baseArtifactType, ArtifactContent content) throws SrampException;
 
 	/**
 	 * Gets a previously persisted artifact by its UUID.
@@ -85,7 +86,7 @@ public interface PersistenceManager {
 	 * @param content the new artifact content
 	 * @throws SrampException
 	 */
-	public BaseArtifactType updateArtifactContent(String uuid, ArtifactType artifactType, InputStream content) throws SrampException;
+	public BaseArtifactType updateArtifactContent(String uuid, ArtifactType artifactType, ArtifactContent content) throws SrampException;
 
 	/**
 	 * Deletes a previously persisted artifact from the S-RAMP repository.
@@ -202,7 +203,7 @@ public interface PersistenceManager {
     public static class BatchItem {
         public String batchItemId;
         public BaseArtifactType baseArtifactType;
-        public InputStream content;
+        public ArtifactContent content;
         public Map<String, Object> attributes = new HashMap<String, Object>();
 
         /**
@@ -211,7 +212,7 @@ public interface PersistenceManager {
          * @param baseArtifactType
          * @param content
          */
-        public BatchItem(String batchItemId, BaseArtifactType baseArtifactType, InputStream content) {
+        public BatchItem(String batchItemId, BaseArtifactType baseArtifactType, ArtifactContent content) {
             this.batchItemId = batchItemId;
             this.baseArtifactType = baseArtifactType;
             this.content = content;

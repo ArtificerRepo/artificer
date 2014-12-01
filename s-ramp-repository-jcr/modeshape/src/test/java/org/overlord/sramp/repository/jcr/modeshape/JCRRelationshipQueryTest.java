@@ -15,21 +15,20 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import java.io.InputStream;
-
-import org.junit.Assert;
-
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
+
+import java.io.InputStream;
 
 
 /**
@@ -139,11 +138,7 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         Assert.assertEquals(0, artifactSet.size());
     }
 
-	/**
-	 * @throws RepositoryException
-	 * @throws DerivedArtifactsCreationException
-	 */
-	private WsdlDocument addWsdlDoc() throws SrampException {
+	private WsdlDocument addWsdlDoc() throws Exception {
 		String artifactFileName = "jcr-sample.wsdl";
         InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
 
@@ -153,7 +148,7 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
 	        wsdlDoc.setName(artifactFileName);
 	        wsdlDoc.setContentEncoding("application/xml");
 	        // Persist the artifact
-	        BaseArtifactType artifact = persistenceManager.persistArtifact(wsdlDoc, contentStream);
+	        BaseArtifactType artifact = persistenceManager.persistArtifact(wsdlDoc, new ArtifactContent(artifactFileName, contentStream));
 	        Assert.assertNotNull(artifact);
 
             return (WsdlDocument) artifact;
@@ -162,11 +157,7 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         }
 	}
 
-	/**
-	 * @throws RepositoryException
-	 * @throws DerivedArtifactsCreationException
-	 */
-	private XsdDocument addXsdDoc() throws SrampException {
+	private XsdDocument addXsdDoc() throws Exception {
 		String artifactFileName = "PO.xsd";
         InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 
@@ -176,7 +167,7 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
 	        xsdDoc.setName(artifactFileName);
 	        xsdDoc.setContentEncoding("application/xml");
 	        // Persist the artifact
-	        BaseArtifactType artifact = persistenceManager.persistArtifact(xsdDoc, contentStream);
+	        BaseArtifactType artifact = persistenceManager.persistArtifact(xsdDoc, new ArtifactContent(artifactFileName, contentStream));
 	        Assert.assertNotNull(artifact);
 
             return (XsdDocument) artifact;

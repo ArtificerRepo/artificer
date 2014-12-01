@@ -34,6 +34,8 @@ import org.overlord.sramp.common.*;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.events.EventProducer;
 import org.overlord.sramp.events.EventProducerFactory;
+import org.overlord.sramp.integration.ArchiveContext;
+import org.overlord.sramp.integration.ExtensionFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.errors.DerivedArtifactCreateException;
@@ -48,10 +50,12 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -138,72 +142,186 @@ public class ArtifactResource extends AbstractResource {
         }
     }
 
+    /**
+     * S-RAMP atom POST to upload an artifact to the repository. The artifact content should be POSTed raw.
+     *
+     * @param fileName
+     * @param model
+     * @param type
+     * @param is
+     * @throws SrampAtomException
+     */
+    @POST
+    @Path("{model}/{type}")
+    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+    public Entry create(@Context HttpServletRequest request, @HeaderParam("Slug") String fileName,
+            @PathParam("model") String model, @PathParam("type") String type, InputStream is)
+            throws SrampAtomException {
+        ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
 
-
-	/**
-	 * S-RAMP atom POST to upload an artifact to the repository. The artifact content should be POSTed raw.
-	 *
-	 * @param fileName
-	 * @param model
-	 * @param type
-	 * @param is
-	 * @throws SrampAtomException
-	 */
-	@POST
-	@Path("{model}/{type}")
-	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public Entry create(@Context HttpServletRequest request, @HeaderParam("Slug") String fileName,
-		@PathParam("model") String model, @PathParam("type") String type, InputStream is)
-		throws SrampAtomException {
-		try {
-			String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
-			ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
-			if (artifactType.isDerived()) {
-				throw new DerivedArtifactCreateException(artifactType.getArtifactType());
-			}
-
-			is = ensureSupportsMark(is);
-
-			// Figure out the mime type (from the http header, filename, or default by artifact type)
-			String mimeType = MimeTypes.determineMimeType(fileName, is, artifactType);
-			artifactType.setMimeType(mimeType);
-
-			// Pick a reasonable file name if Slug is not present
-			if (fileName == null) {
-				if (artifactType.getArtifactType() == ArtifactTypeEnum.Document) {
-					fileName = "newartifact.bin"; //$NON-NLS-1$
-				} else if (artifactType.getArtifactType() == ArtifactTypeEnum.XmlDocument) {
-					fileName = "newartifact.xml"; //$NON-NLS-1$
-				} else {
-					fileName = "newartifact." + artifactType.getArtifactType().getModel(); //$NON-NLS-1$
-				}
-			}
-
-			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-			// store the content
-			BaseArtifactType baseArtifactType = artifactType.newArtifactInstance();
-            if (!SrampModelUtils.isDocumentArtifact(baseArtifactType)) {
-                throw new InvalidArtifactCreationException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
+        // Pick a reasonable file name if Slug is not present
+        if (fileName == null) {
+            if (artifactType.getArtifactType() == ArtifactTypeEnum.Document) {
+                fileName = "newartifact.bin"; //$NON-NLS-1$
+            } else if (artifactType.getArtifactType() == ArtifactTypeEnum.XmlDocument) {
+                fileName = "newartifact.xml"; //$NON-NLS-1$
+            } else {
+                fileName = "newartifact." + artifactType.getArtifactType().getModel(); //$NON-NLS-1$
             }
-			baseArtifactType.setName(fileName);
-			BaseArtifactType artifact = persistenceManager.persistArtifact(baseArtifactType, is);
-			
-			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
-			for (EventProducer eventProducer : eventProducers) {
-			    eventProducer.artifactCreated(artifact);
-			}
+        }
 
-			// return the entry containing the s-ramp artifact
-			ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
-			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
-			return visitor.getAtomEntry();
-		} catch (Exception e) {
-		    logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
-			throw new SrampAtomException(e);
-		} finally {
-			IOUtils.closeQuietly(is);
-		}
-	}
+        try {
+            return doSlugPost(request, fileName, is, artifactType);
+        } catch (Exception e) {
+            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
+            throw new SrampAtomException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    /**
+     * S-RAMP atom POST to upload an artifact to the repository. The artifact content should be POSTed raw.  This
+     * endpoint does *not* require the model/type to be provided.  Instead, @link{ArtifactTypeDetector} is called
+     * to automatically identify the type.
+     *
+     * Note that this is not required by the spec!  Also note that the filename slug *is* required.
+     *
+     * The endpoint is /s-ramp/ext/autodetect.
+     *
+     * @param fileName
+     * @param is
+     * @throws SrampAtomException
+     */
+    @POST
+    @Path("autodetect")
+    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+    public Entry create(@Context HttpServletRequest request, @HeaderParam("Slug") String fileName,
+            InputStream is) throws SrampAtomException {
+        try {
+            if (StringUtils.isEmpty(fileName)) {
+                throw new FilenameRequiredException();
+            }
+
+            return doSlugPost(request, fileName, is, null);
+        } catch (Exception e) {
+            logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
+            throw new SrampAtomException(e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+    }
+
+    private Entry doSlugPost(HttpServletRequest request, String fileName, InputStream is,
+            ArtifactType artifactType) throws Exception {
+        ArtifactContent content = null;
+        ArchiveContext archiveContext = null;
+
+        try {
+            content = new ArtifactContent(fileName, is);
+            if (ExtensionFactory.isArchive(content)) {
+                archiveContext = ArchiveContext.createArchiveContext(content);
+
+                if (artifactType == null) {
+                    artifactType = ExtensionFactory.detect(content, archiveContext);
+                }
+            } else {
+                if (artifactType == null) {
+                    artifactType = ExtensionFactory.detect(content);
+                }
+            }
+
+            String mimeType = MimeTypes.determineMimeType(fileName, content.getInputStream(), artifactType);
+            artifactType.setMimeType(mimeType);
+
+            BaseArtifactType artifact = artifactType.newArtifactInstance();
+            artifact.setName(fileName);
+
+            if (archiveContext != null) {
+                // If it's an archive, expand it and upload through a batch (necessary for adequate relationship processing).
+
+                // First, create the archive artifact's metadata.  At least the UUID is necessary for the
+                // expandedFromDocument relationship.
+                PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+                artifact = persistenceManager.persistArtifact(artifact, null);
+
+                // Then, expand (building up a batch).
+                BatchCreate creates = new BatchCreate();
+                // Set the artifact in the context for the type detectors to use.
+                archiveContext.setArchiveArtifactType(artifactType);
+                Collection<File> subFiles = archiveContext.expand();
+                for (File subFile : subFiles) {
+                    String pathInArchive = archiveContext.stripWorkDir(subFile.getAbsolutePath());
+                    ArtifactContent subArtifactContent = new ArtifactContent(pathInArchive, subFile);
+                    if (ExtensionFactory.allowExpansionFromArchive(subArtifactContent, archiveContext)) {
+                        ArtifactType subArtifactType = ExtensionFactory.detect(subArtifactContent, archiveContext);
+                        // detectors do not accept everything...
+                        if (subArtifactType != null) {
+                            String subMimeType = MimeTypes.determineMimeType(subFile.getName(),
+                                    subArtifactContent.getInputStream(), subArtifactType);
+                            subArtifactType.setMimeType(subMimeType);
+
+                            BaseArtifactType subArtifact = subArtifactType.newArtifactInstance();
+                            subArtifact.setName(subFile.getName());
+
+                            // set relevant properties/relationships
+                            SrampModelUtils.setCustomProperty(subArtifact, "expanded.from.archive.path", pathInArchive);
+                            SrampModelUtils.addGenericRelationship(subArtifact, "expandedFromDocument", artifact.getUuid());
+
+                            creates.add(subArtifact, subArtifactContent, subArtifactContent.getPath());
+                        }
+                    }
+                }
+                // Persist the batch.
+                creates.execute(PersistenceFactory.newInstance());
+
+                // Finally, update the archive artifact's content.
+                persistenceManager.updateArtifactContent(artifact.getUuid(), archiveContext.getArchiveArtifactType(), content);
+            } else {
+                // Else, simple upload.
+                artifact = doUpload(artifact, content, artifactType);
+            }
+
+            // return the entry containing the s-ramp artifact
+            String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
+            ArtifactToFullAtomEntryVisitor visitor = new ArtifactToFullAtomEntryVisitor(baseUrl);
+            ArtifactVisitorHelper.visitArtifact(visitor, artifact);
+            return visitor.getAtomEntry();
+        } finally {
+            if (content != null) {
+                content.cleanup();
+            }
+            if (archiveContext != null) {
+                archiveContext.cleanup();
+            }
+        }
+    }
+
+    private BaseArtifactType doUpload(BaseArtifactType artifact, ArtifactContent content, ArtifactType artifactType) throws Exception {
+        if (artifactType == null) {
+            // Early exit.  No detector wanted it, and we don't return general Documents.
+            return null;
+        }
+
+        if (artifactType.isDerived()) {
+            throw new DerivedArtifactCreateException(artifactType.getArtifactType());
+        }
+
+        PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+        // store the content
+        if (!SrampModelUtils.isDocumentArtifact(artifact)) {
+            throw new InvalidArtifactCreationException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
+        }
+
+        artifact = persistenceManager.persistArtifact(artifact, content);
+
+        Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
+        for (EventProducer eventProducer : eventProducers) {
+            eventProducer.artifactCreated(artifact);
+        }
+
+        return artifact;
+    }
 
     /**
 	 * Handles multi-part creates. In S-RAMP, an HTTP multi-part request can be POST'd to the endpoint, which
@@ -222,7 +340,6 @@ public class ArtifactResource extends AbstractResource {
 	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry createMultiPart(@Context HttpServletRequest request, @PathParam("model") String model,
 	        @PathParam("type") String type, MultipartRelatedInput input) throws SrampAtomException, SrampException {
-		InputStream contentStream = null;
 		try {
 			String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
 			ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
@@ -253,16 +370,14 @@ public class ArtifactResource extends AbstractResource {
 			if (artifactMetaData.getName() != null)
 				fileName = artifactMetaData.getName();
 
-			contentStream = ensureSupportsMark(secondpart.getBody(new GenericType<InputStream>() {
-			}));
-			String mimeType = MimeTypes.determineMimeType(fileName, contentStream, artifactType);
+            ArtifactContent content = new ArtifactContent(fileName, secondpart.getBody(new GenericType<InputStream>() {}));
+			String mimeType = MimeTypes.determineMimeType(fileName, content.getInputStream(), artifactType);
 			artifactType.setMimeType(mimeType);
 
 			// Processing the content itself first
 			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 			// store the content
-			BaseArtifactType artifactRval = persistenceManager.persistArtifact(artifactMetaData,
-			        contentStream);
+			BaseArtifactType artifactRval = persistenceManager.persistArtifact(artifactMetaData, content);
 			
 			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
             for (EventProducer eventProducer : eventProducers) {
@@ -284,8 +399,6 @@ public class ArtifactResource extends AbstractResource {
         } catch (Exception e) {
 			logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
-		} finally {
-			IOUtils.closeQuietly(contentStream);
 		}
 	}
 
@@ -348,15 +461,14 @@ public class ArtifactResource extends AbstractResource {
 	 * @param model
 	 * @param type
 	 * @param uuid
-	 * @param content
+	 * @param is
 	 * @throws SrampAtomException
 	 */
 	@PUT
 	@Path("{model}/{type}/{uuid}/media")
 	public void updateContent(@HeaderParam("Slug") String fileName, @PathParam("model") String model,
-	        @PathParam("type") String type, @PathParam("uuid") String uuid, InputStream content)
+	        @PathParam("type") String type, @PathParam("uuid") String uuid, InputStream is)
 	        throws SrampAtomException, SrampException {
-		InputStream is = ensureSupportsMark(content);
 		try {
 	        ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
 	        if (artifactType.isDerived()) {
@@ -372,7 +484,8 @@ public class ArtifactResource extends AbstractResource {
             if (oldArtifact == null) {
                 throw new ArtifactNotFoundException(uuid);
             }
-	        BaseArtifactType updatedArtifact = persistenceManager.updateArtifactContent(uuid, artifactType, is);
+            ArtifactContent content = new ArtifactContent(fileName, is);
+	        BaseArtifactType updatedArtifact = persistenceManager.updateArtifactContent(uuid, artifactType, content);
 			
 			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
             for (EventProducer eventProducer : eventProducers) {
@@ -385,8 +498,6 @@ public class ArtifactResource extends AbstractResource {
         } catch (Exception e) {
 			logError(logger, Messages.i18n.format("ERROR_UPDATING_CONTENT", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
-		} finally {
-			IOUtils.closeQuietly(is);
 		}
 	}
 

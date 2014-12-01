@@ -15,11 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.InputStream;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -28,19 +23,20 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.repository.AuditManager;
-import org.overlord.sramp.repository.AuditManagerFactory;
-import org.overlord.sramp.repository.PersistenceFactory;
-import org.overlord.sramp.repository.PersistenceManager;
-import org.overlord.sramp.repository.QueryManager;
-import org.overlord.sramp.repository.QueryManagerFactory;
+import org.overlord.sramp.repository.*;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 
 /**
@@ -77,12 +73,12 @@ public abstract class AbstractJCRPersistenceTest {
     /**
      * Adds an artifact to the repo.
      * @param resourcePath
-     * @param fileName
+     * @param filename
      * @param document
      * @param type
      * @throws SrampException
      */
-    protected BaseArtifactType addArtifact(String resourcePath, String filename, XmlDocument document, BaseArtifactEnum type) throws SrampException {
+    protected BaseArtifactType addArtifact(String resourcePath, String filename, XmlDocument document, BaseArtifactEnum type) throws Exception {
         InputStream contentStream = this.getClass().getResourceAsStream(resourcePath + filename);
 
         BaseArtifactType artifact = null;
@@ -91,7 +87,7 @@ public abstract class AbstractJCRPersistenceTest {
             document.setName(filename);
             document.setContentType("application/xml"); //$NON-NLS-1$
             // Persist the artifact
-            artifact = persistenceManager.persistArtifact(document, contentStream);
+            artifact = persistenceManager.persistArtifact(document, new ArtifactContent(filename, contentStream));
             Assert.assertNotNull(artifact);
         } finally {
             IOUtils.closeQuietly(contentStream);

@@ -18,10 +18,7 @@ package org.overlord.sramp.repository.jcr.modeshape;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
-import org.overlord.sramp.common.ArtifactAlreadyExistsException;
-import org.overlord.sramp.common.ArtifactNotFoundException;
-import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.*;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 
@@ -46,7 +43,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
 
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, pdf);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
 
         Assert.assertNotNull(artifact);
         log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid());
@@ -68,7 +65,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
         document.setUuid("12345"); // amazing - that's the same UUID as my luggage!
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, pdf);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
         Assert.assertNotNull(artifact);
 
         // Now try to persist another artifact of the same type with the same UUID.
@@ -78,7 +75,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
         document.setUuid("12345"); // amazing - that's the same UUID as my luggage!
         try {
-            persistenceManager.persistArtifact(document, pdf);
+            persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
             Assert.fail("Expected an ArtifactAlreadyExistsException.");
         } catch (ArtifactAlreadyExistsException e) {
             // Expected this!
@@ -93,7 +90,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         extendedArtifact.setName("MyExtendedArtifact");
         extendedArtifact.setUuid("12345");
         try {
-            persistenceManager.persistArtifact(document, pdf);
+            persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
             Assert.fail("Expected an ArtifactAlreadyExistsException.");
         } catch (ArtifactAlreadyExistsException e) {
             // Expected this!
@@ -109,7 +106,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
 
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
 
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
@@ -133,7 +130,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
 
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXml);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXml));
 
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xml to JCR, returned artifact uuid=" + artifact.getUuid());
@@ -180,7 +177,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
 
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
 
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
@@ -211,7 +208,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         Document document = new Document();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
@@ -245,7 +242,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         Document document = new Document();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
@@ -255,7 +252,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now update the artifact content
         InputStream otherXsd = this.getClass().getResourceAsStream("/sample-files/xsd/XMLSchema.xsd");
-        persistenceManager.updateArtifactContent(artifact.getUuid(), ArtifactType.XsdDocument(), otherXsd);
+        persistenceManager.updateArtifactContent(artifact.getUuid(), ArtifactType.XsdDocument(), new ArtifactContent("XMLSchema.xsd", otherXsd));
 
         // Now verify the content was updated
         artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
@@ -275,7 +272,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         Document document = new Document();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, POXsd);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
         Assert.assertNotNull(artifact);
         log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
@@ -347,7 +344,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         document.setName(artifactFileName);
         document.setContentType("application/pdf");
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
-		BaseArtifactType artifact = persistenceManager.persistArtifact(document, pdf);
+		BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
         Assert.assertNotNull(artifact);
         log.info("persisted PDF to JCR, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(Document.class, artifact.getClass());
@@ -420,7 +417,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         Document document = new Document();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, contentStream);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, contentStream));
         Assert.assertNotNull(artifact);
         uuid1 = artifact.getUuid();
         contentStream.close();
@@ -443,7 +440,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         Document document2 = new Document();
         document2.setName(artifactFileName);
         document2.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        BaseArtifactType artifact2 = persistenceManager.persistArtifact(document2, contentStream);
+        BaseArtifactType artifact2 = persistenceManager.persistArtifact(document2, new ArtifactContent(artifactFileName, contentStream));
         Assert.assertNotNull(artifact2);
         uuid2 = artifact2.getUuid();
 
@@ -470,7 +467,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         Document document3 = new Document();
         document3.setName(artifactFileName);
         document3.setArtifactType(BaseArtifactEnum.XML_DOCUMENT);
-        BaseArtifactType artifact3 = persistenceManager.persistArtifact(document3,  contentStream);
+        BaseArtifactType artifact3 = persistenceManager.persistArtifact(document3,  new ArtifactContent(artifactFileName, contentStream));
         Assert.assertNotNull(artifact3);
         uuid3 = artifact3.getUuid();
 
@@ -517,7 +514,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
 
         // Add an artifact
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, pdf);
+        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
         Assert.assertNotNull(artifact);
         Assert.assertEquals(Document.class, artifact.getClass());
         Assert.assertEquals(new Long(18873l), ((DocumentArtifactType) artifact).getContentSize());
@@ -539,7 +536,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         // Ensure we can re-create an artifact w/ the same UUID, then delete it again without same-name collisions
         // in the trash folder.
         pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
-        BaseArtifactType artifact2 = persistenceManager.persistArtifact(document, pdf);
+        BaseArtifactType artifact2 = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
         Assert.assertEquals(artifact.getUuid(), artifact2.getUuid());
         persistenceManager.deleteArtifact(document.getUuid(), at);
         deleted = persistenceManager.getArtifact(document.getUuid(), at);

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.sramp.common.ArtifactContent;
 
 /**
  * This contract allows both built-in and custom integrations to:

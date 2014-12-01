@@ -15,36 +15,11 @@
  */
 package org.overlord.sramp.wagon;
 
-import java.io.Console;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.MessageDigest;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.bind.JAXBException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.conn.HttpHostConnectException;
-import org.apache.maven.wagon.ConnectionException;
-import org.apache.maven.wagon.InputData;
-import org.apache.maven.wagon.OutputData;
-import org.apache.maven.wagon.ResourceDoesNotExistException;
-import org.apache.maven.wagon.StreamWagon;
-import org.apache.maven.wagon.TransferFailedException;
-import org.apache.maven.wagon.Wagon;
+import org.apache.maven.wagon.*;
 import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.authorization.AuthorizationException;
@@ -59,11 +34,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.archive.SrampArchiveEntry;
 import org.overlord.sramp.atom.archive.SrampArchiveException;
-import org.overlord.sramp.atom.archive.expand.DefaultMetaDataFactory;
-import org.overlord.sramp.atom.archive.expand.MetaDataProvider;
-import org.overlord.sramp.atom.archive.expand.ZipToSrampArchive;
-import org.overlord.sramp.atom.archive.expand.registry.ArchiveInfo;
-import org.overlord.sramp.atom.archive.expand.registry.ZipToSrampArchiveRegistry;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
@@ -71,13 +41,17 @@ import org.overlord.sramp.client.SrampClientQuery;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.wagon.i18n.Messages;
 import org.overlord.sramp.wagon.models.MavenGavInfo;
 import org.overlord.sramp.wagon.util.DevNullOutputStream;
+
+import javax.xml.bind.JAXBException;
+import java.io.*;
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Implements a wagon provider that uses the S-RAMP Atom API.
@@ -571,28 +545,21 @@ public class SrampWagon extends StreamWagon {
 	/**
 	 * Gets the artifact type from the resource.
 	 * @param gavInfo
-	 * @param archiveType
 	 */
-	private ArtifactType getArtifactType(MavenGavInfo gavInfo, String archiveType) {
+	private ArtifactType getArtifactType(MavenGavInfo gavInfo) {
 	    String customAT = getParamFromRepositoryUrl("artifactType"); //$NON-NLS-1$
 	    if (gavInfo.getType().equals("pom")) { //$NON-NLS-1$
 	        return ArtifactType.valueOf("MavenPom"); //$NON-NLS-1$
 	    } else if (isPrimaryArtifact(gavInfo) && customAT != null) {
 	        return ArtifactType.valueOf(customAT);
-	    } else if (isPrimaryArtifact(gavInfo) && archiveType != null) {
-	        return ArtifactType.valueOf("ext", archiveType, true); //$NON-NLS-1$
-	    } else if ("jar".equals(gavInfo.getType())) { //$NON-NLS-1$
-	        return ArtifactType.valueOf(JavaModel.TYPE_ARCHIVE);
-	    } else if ("xml".equals(gavInfo.getType())) { //$NON-NLS-1$
-	        return ArtifactType.XmlDocument();
 	    } else {
-	        return ArtifactType.valueOf(ArtifactTypeEnum.Document.name());
-	    }
+            return null;
+        }
 	}
 
 	/**
 	 * Puts the maven resource into the s-ramp repository.
-	 * @param resource
+	 * @param gavInfo
 	 * @param resourceInputStream
 	 * @throws TransferFailedException
 	 */
@@ -658,20 +625,9 @@ public class SrampWagon extends StreamWagon {
 		// context classloader magic.
 		ClassLoader oldCtxCL = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(SrampWagon.class.getClassLoader());
-		File tempResourceFile = null;
-        ZipToSrampArchive expander = null;
 		SrampArchive archive = null;
 		BaseArtifactType artifactGrouping = null;
 		try {
-			// First, stash the content in a temp file - we may need it multiple times.
-			tempResourceFile = stashResourceContent(resourceInputStream);
-			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
-
-			ArchiveInfo archiveInfo = ZipToSrampArchiveRegistry.inspectArchive(resourceInputStream);
-			ArtifactType artifactType = getArtifactType(gavInfo, archiveInfo.type);
-
-			resourceInputStream = FileUtils.openInputStream(tempResourceFile);
-
 			// Is the artifact grouping option enabled?
 			if (isPrimaryArtifact(gavInfo) && getParamFromRepositoryUrl("artifactGrouping") != null) { //$NON-NLS-1$
 			    artifactGrouping = ensureArtifactGrouping();
@@ -685,9 +641,10 @@ public class SrampWagon extends StreamWagon {
                 throw new TransferFailedException(Messages.i18n.format("ARTIFACT_UPDATE_NOT_ALLOWED", gavInfo.getFullName())); //$NON-NLS-1$
 
 			} else {
+                ArtifactType artifactType = getArtifactType(gavInfo);
 				// Upload the content, then add the maven properties to the artifact
 				// as meta-data
-				artifact = client.uploadArtifact(artifactType, resourceInputStream, gavInfo.getName());
+                artifact = client.uploadArtifact(artifactType, resourceInputStream, gavInfo.getName());
 				SrampModelUtils.setCustomProperty(artifact, "maven.groupId", gavInfo.getGroupId()); //$NON-NLS-1$
 				SrampModelUtils.setCustomProperty(artifact, "maven.artifactId", gavInfo.getArtifactId()); //$NON-NLS-1$
 				SrampModelUtils.setCustomProperty(artifact, "maven.version", gavInfo.getVersion()); //$NON-NLS-1$
@@ -709,30 +666,11 @@ public class SrampWagon extends StreamWagon {
 				client.updateArtifactMetaData(artifact);
 				this.archive.addEntry(gavInfo.getFullName(), artifact, null);
 			}
-
-			// Now also add "expanded" content to the s-ramp repository
-            expander = ZipToSrampArchiveRegistry.createExpander(artifactType, tempResourceFile);
-            if (expander != null) {
-                expander.setContextParam(DefaultMetaDataFactory.PARENT_UUID, artifact.getUuid());
-                expander.addMetaDataProvider(new MetaDataProvider() {
-                    @Override
-                    public void provideMetaData(BaseArtifactType artifact) {
-                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-groupId", gavInfo.getGroupId()); //$NON-NLS-1$
-                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-artifactId", gavInfo.getArtifactId()); //$NON-NLS-1$
-                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-version", gavInfo.getVersion()); //$NON-NLS-1$
-                        SrampModelUtils.setCustomProperty(artifact, "maven.parent-type", gavInfo.getType()); //$NON-NLS-1$
-                    }
-                });
-                archive = expander.createSrampArchive();
-                client.uploadBatch(archive);
-            }
 		} catch (Throwable t) {
 			throw new TransferFailedException(t.getMessage(), t);
 		} finally {
 			Thread.currentThread().setContextClassLoader(oldCtxCL);
 			SrampArchive.closeQuietly(archive);
-            ZipToSrampArchive.closeQuietly(expander);
-			FileUtils.deleteQuietly(tempResourceFile);
 		}
 	}
 
@@ -786,7 +724,6 @@ public class SrampWagon extends StreamWagon {
 	/**
 	 * Finds an existing artifact in the s-ramp repository that matches the type and GAV information.
 	 * @param client
-	 * @param artifactType
 	 * @param gavInfo
 	 * @return an s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException
@@ -881,7 +818,6 @@ public class SrampWagon extends StreamWagon {
 	 * any artifact in the s-ramp repository to be referenced as a Maven dependency using the
 	 * model.type and UUID of the artifact.
 	 * @param client
-	 * @param artifactType
 	 * @param gavInfo
 	 * @return an existing s-ramp artifact (if found) or null (if not found)
 	 * @throws SrampClientException

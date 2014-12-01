@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.sramp.common.ArtifactContent;
 
 /**
  * One or more {@link ArtifactBuilder}s are associated with one ArtifactBuilderProvider.  {@link ArtifactBuilder} logic

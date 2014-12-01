@@ -28,7 +28,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.artifactbuilder.AbstractArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
-import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.artifactbuilder.RelationshipContext;
 import org.overlord.sramp.integration.java.model.JavaModel;
 

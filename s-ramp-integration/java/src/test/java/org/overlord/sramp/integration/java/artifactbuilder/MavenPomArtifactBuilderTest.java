@@ -25,7 +25,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
-import org.overlord.sramp.common.artifactbuilder.ArtifactContent;
+import org.overlord.sramp.common.ArtifactContent;
 
 /**
  *
@@ -42,7 +42,7 @@ public class MavenPomArtifactBuilderTest {
         InputStream is = getClass().getResourceAsStream("pom.xml"); //$NON-NLS-1$
         // Derive
         @SuppressWarnings("unused")
-		Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent(is))
+		Collection<BaseArtifactType> derivedArtifacts = builder.buildArtifacts(artifact, new ArtifactContent("pom.xml", is))
 		        .getDerivedArtifacts();
         is.close();
         // Assert

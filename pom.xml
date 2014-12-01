@@ -287,6 +287,11 @@
       </dependency>
       <dependency>
         <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-integration</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-integration-java</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -985,11 +990,6 @@
         <artifactId>jetty-util</artifactId>
         <version>${version.org.eclipse.jetty}</version>
       </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-bus</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
       
       <!-- UI -->
       <dependency>
@@ -1035,11 +1035,6 @@
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-cdi-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-javax-enterprise</artifactId>
         <version>${version.org.jboss.errai}</version>
       </dependency>
       <dependency>
@@ -1177,6 +1172,12 @@
     <module>s-ramp-events-jms</module>
     <module>s-ramp-installer</module>
     <module>s-ramp-integration</module>
+    <module>s-ramp-integration/java</module>
+    <module>s-ramp-integration/kie</module>
+    <module>s-ramp-integration/rtgov</module>
+    <module>s-ramp-integration/switchyard</module>
+    <module>s-ramp-integration/teiid</module>
+    <!--<module>fabric</module>-->
     <module>s-ramp-javadoc</module>
     <!--<module>s-ramp-karaf-commands</module>-->
     <module>s-ramp-repository</module>

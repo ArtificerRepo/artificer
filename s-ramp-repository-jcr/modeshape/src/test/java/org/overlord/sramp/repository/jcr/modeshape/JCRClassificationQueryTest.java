@@ -15,18 +15,18 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import java.io.InputStream;
-
-import org.junit.Assert;
-
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
+
+import java.io.InputStream;
 
 
 /**
@@ -150,7 +150,7 @@ public class JCRClassificationQueryTest extends AbstractNoAuditingJCRPersistence
 	/**
 	 * @throws SrampException
 	 */
-	private Document addDocument(String name, String ... classifications) throws SrampException {
+	private Document addDocument(String name, String ... classifications) throws Exception {
 		InputStream contentStream = null;
 		try {
 			String artifactFileName = "s-ramp-press-release.pdf";
@@ -161,7 +161,7 @@ public class JCRClassificationQueryTest extends AbstractNoAuditingJCRPersistence
 			for (String classification : classifications) {
 				document.getClassifiedBy().add(classification);
 			}
-			return (Document) persistenceManager.persistArtifact(document, contentStream);
+			return (Document) persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, contentStream));
 		} finally {
 			IOUtils.closeQuietly(contentStream);
 		}

@@ -57,11 +57,11 @@ public class RTGovModel {
         HINTS.put(HINT_RTGOV_IP_TEMPLATE, TYPE_RTGOV_IP_TEMPLATE);
     }
     
-    public static boolean accept(ArtifactType artifactType) {
-        if (artifactType.isExtendedType()) {
-            String extendedType = artifactType.getExtendedType();
-            return HINTS.keySet().contains(extendedType);
+    public static ArtifactType detect(String filename) {
+        String type = HINTS.get(filename);
+        if (type != null) {
+            return ArtifactType.valueOf(filename, true);
         }
-        return false;
+        return null;
     }
 }

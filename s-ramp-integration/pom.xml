@@ -10,10 +10,14 @@
 
   <artifactId>s-ramp-integration</artifactId>
   <name>S-RAMP Integration</name>
-  <packaging>pom</packaging>
+  <packaging>bundle</packaging>
 
   <dependencies>
     <!-- Project Dependencies -->
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-services</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-api</artifactId>
@@ -57,14 +61,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <modules>
-    <module>java</module>
-    <module>kie</module>
-    <module>rtgov</module>
-    <module>switchyard</module>
-    <module>teiid</module>
-    <!--<module>fabric</module>-->
-  </modules>
 
 </project>

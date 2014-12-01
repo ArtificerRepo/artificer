@@ -107,8 +107,7 @@ public abstract class AbstractSrampShell {
 				"          /\\__/ /      | |\\ \\| | | | |  | | |     \n" + //$NON-NLS-1$
 				"          \\____/       \\_| \\_\\_| |_|_|  |_|_|     \n" + //$NON-NLS-1$
 				"                                                  \n" + //$NON-NLS-1$
-				"  JBoss S-RAMP Kurt Stam and Eric Wittmann, Licensed under the\n" + //$NON-NLS-1$
-				"  Apache License, V2.0, Copyright 2012\n" + //$NON-NLS-1$
+				"  Overlord S-RAMP, Licensed under Apache License V2.0, Copyright 2014\n" + //$NON-NLS-1$
 				"  Locale: " + Locale.getDefault().toString().trim() + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
 				"**********************************************************************" //$NON-NLS-1$
 				);
