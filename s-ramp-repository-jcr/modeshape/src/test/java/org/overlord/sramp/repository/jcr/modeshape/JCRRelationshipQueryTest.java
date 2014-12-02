@@ -18,17 +18,17 @@ package org.overlord.sramp.repository.jcr.modeshape;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 
+import javax.xml.namespace.QName;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -109,6 +109,14 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
     	SrampModelUtils.addGenericRelationship(xsdDoc, "importedBy", wsdlDoc.getUuid());
     	SrampModelUtils.addGenericRelationship(xsdDoc, "markerRel", null);
 
+        Map<QName, String> otherAttributes = new HashMap<QName, String>();
+        otherAttributes.put(QName.valueOf("FooKey"), "FooValue");
+        SrampModelUtils.addGenericRelationship(xsdDoc, "relWithAttr", wsdlDoc.getUuid(), otherAttributes);
+        Property prop = new Property();
+        prop.setPropertyName("FooProperty");
+        prop.setPropertyValue("FooValue");
+        xsdDoc.getProperty().add(prop);
+
     	persistenceManager.updateArtifact(xsdDoc, ArtifactType.XsdDocument());
 
         SrampQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[markerRel]");
@@ -136,6 +144,32 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(0, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue']]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(1, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey')]]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(1, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'InvalidKey')]]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(0, artifactSet.size());
+
+        // TODO: These won't be supported until after the query visitor uses a builder pattern.  See SRAMP-627
+//        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' and @FooProperty = 'FooValue']]");
+//        artifactSet = query.executeQuery();
+//        Assert.assertNotNull(artifactSet);
+//        Assert.assertEquals(1, artifactSet.size());
+//
+//        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' and @InvalidProperty]]");
+//        artifactSet = query.executeQuery();
+//        Assert.assertNotNull(artifactSet);
+//        Assert.assertEquals(0, artifactSet.size());
     }
 
 	private WsdlDocument addWsdlDoc() throws Exception {

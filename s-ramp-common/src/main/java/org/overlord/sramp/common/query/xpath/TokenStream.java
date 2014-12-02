@@ -24,6 +24,7 @@ import org.overlord.sramp.common.i18n.Messages;
  * A stream of tokens produced by the tokenizer.
  *
  * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
 public class TokenStream {
 
@@ -87,21 +88,16 @@ public class TokenStream {
 	}
 
 	/**
-	 * Attempts to consume the next two tokens, but only if they match the given token values.
-	 * Returns true only if both tokens matched and were consumed.
-	 * @param tokenValue1
-	 * @param tokenValue2
+	 * Attempts to consume the next n tokens, but only if they match the given token values.
+	 * Returns true only if all tokens matched and were consumed.
+	 * @param tokenValues
 	 */
-	public boolean canConsume(String tokenValue1, String tokenValue2) {
-		if ((this.nextTokenPos + 1) < this.stream.length) {
-			Token token1 = this.stream[this.nextTokenPos];
-			Token token2 = this.stream[this.nextTokenPos + 1];
-			if (token1.matches(tokenValue1) && token2.matches(tokenValue2)) {
-				this.nextTokenPos += 2;
-				return true;
-			}
-		}
-		return false;
+	public boolean canConsume(String... tokenValues) {
+        boolean rval = matches(tokenValues);
+        if (rval) {
+            this.nextTokenPos += tokenValues.length;
+        }
+        return rval;
 	}
 
 	/**
@@ -146,18 +142,36 @@ public class TokenStream {
 		}
 	}
 
-	/**
-	 * Returns true if the next token in the stream matches any of the given token values.
-	 * @param tokenValue
-	 */
-	public boolean matches(String tokenValue) {
-		if (hasNext()) {
-			Token nextToken = this.stream[this.nextTokenPos];
-			return nextToken.matches(tokenValue);
-		} else {
-			return false;
-		}
-	}
+    /**
+     * Returns true if the next token in the stream matches any of the given token values.
+     * @param tokenValue
+     */
+    public boolean matches(String tokenValue) {
+        if (hasNext()) {
+            Token nextToken = this.stream[this.nextTokenPos];
+            return nextToken.matches(tokenValue);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns true if the next tokens in the stream match the given token values.
+     * @param tokenValues
+     */
+    public boolean matches(String... tokenValues) {
+        int n = tokenValues.length;
+        if ((this.nextTokenPos + n) <= this.stream.length) {
+            for (int i = 0; i < n; i++) {
+                Token token = this.stream[this.nextTokenPos + i];
+                if (!token.matches(tokenValues[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
 	/**
 	 * Returns true if the next token in the stream matches any of the given token values.

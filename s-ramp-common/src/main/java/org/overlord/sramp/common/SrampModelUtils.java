@@ -15,10 +15,7 @@
  */
 package org.overlord.sramp.common;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -27,6 +24,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
 import org.overlord.commons.codec.AesEncrypter;
+
+import javax.xml.namespace.QName;
 
 /**
  * A collection of utilities for dealing with the s-ramp models.
@@ -83,8 +82,6 @@ public class SrampModelUtils {
      * @param artifact
      * @param propName
      * @param propValue
-     * @param encrypt
-     *            *
      */
     public static void setCustomEncryptedProperty(BaseArtifactType artifact, String propName, String propValue) {
         StringBuilder builder = new StringBuilder();
@@ -119,10 +116,12 @@ public class SrampModelUtils {
 	 * Adds a new generic {@link Relationship} to the artifact.
 	 * @param artifact
 	 * @param relationshipType
-	 * @param targetUUID
+     * @param targetUUID
+     * @param otherAttributes
 	 * @return the created {@link Relationship}
 	 */
-	public static Relationship addGenericRelationship(BaseArtifactType artifact, String relationshipType, String targetUUID) {
+	public static Relationship addGenericRelationship(BaseArtifactType artifact, String relationshipType,
+            String targetUUID, Map<QName, String> otherAttributes) {
 		Relationship relationship = null;
 		for (Relationship r : artifact.getRelationship()) {
 			if (r.getRelationshipType().equals(relationshipType)) {
@@ -143,8 +142,22 @@ public class SrampModelUtils {
 			relationship.getRelationshipTarget().add(target);
 		}
 
+        relationship.getOtherAttributes().putAll(otherAttributes);
+
 		return relationship;
 	}
+
+    /**
+     * Adds a new generic {@link Relationship} to the artifact.
+     * @param artifact
+     * @param relationshipType
+     * @param targetUUID
+     * @return the created {@link Relationship}
+     */
+    public static Relationship addGenericRelationship(BaseArtifactType artifact, String relationshipType,
+            String targetUUID) {
+        return addGenericRelationship(artifact, relationshipType, targetUUID, Collections.EMPTY_MAP);
+    }
 
 	/**
 	 * Gets the generic relationship from the artifact (by type).
