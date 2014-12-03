@@ -55,7 +55,7 @@ public final class Token {
 	 */
 	public boolean matches(String ... values) {
 		for (String value : values) {
-			if (getValue().equals(value)) {
+			if (getValue().equalsIgnoreCase(value)) {
 				return true;
 			}
 		}
