@@ -2,7 +2,7 @@
   "no-value" : "<no value>",
   "dashboard.artifacts" : "Artifacts",
   "dashboard.coming-soon" : "Coming Soon!",
-  "dashboard.footer" : "© JBoss Overlord 2012",
+  "dashboard.footer" : "© Artificer 2015",
   "dashboard.hero-description" : " Welcome to the S-RAMP browser. This browser is intended to allow you to manage the content in your S-RAMP repository. It provides a low level view of the data - you may want to learn more about S-RAMP by reviewing the specification and other documentation. ",
   "dashboard.hero-link-docs" : "S-RAMP Documentation",
   "dashboard.hero-link-overlord" : "JBoss Overlord",
@@ -37,7 +37,7 @@
   "artifacts.filters.core-properties-header" : "Core Properties",
   "artifacts.filters.custom-properties-header" : "Custom Properties",
   "artifacts.finding-artifacts" : "Finding artifacts, please wait...",
-  "artifacts.footer" : "© JBoss Overlord 2012",
+  "artifacts.footer" : "© Artificer 2015",
   "artifacts.import-artifacts" : "Import Artifacts",
   "artifacts.last-modified" : "Last Modified",
   "artifacts.lastModifiedBy-placeholder" : "Any",
@@ -65,7 +65,7 @@
   "artifact-details.derived" : "Derived:",
   "artifact-details.derived-from" : "Derived from",
   "artifact-details.download-content" : "Download Content",
-  "artifact-details.footer" : "© JBoss Overlord 2012",
+  "artifact-details.footer" : "© Artificer 2015",
   "artifact-details.header.classifiers" : "Classifiers",
   "artifact-details.header.core-properties" : "Core Properties",
   "artifact-details.header.custom-properties" : "Custom Properties",
@@ -218,7 +218,7 @@
   "modify-classifiers-dialog.modify-classifiers" : "Modify Classifiers",
   "ontologies.breadcrumb.dashboard" : "S-RAMP Dashboard",
   "ontologies.breadcrumb.ontologies" : "Ontologies",
-  "ontologies.footer" : "© JBoss Overlord 2012",
+  "ontologies.footer" : "© Artificer 2015",
   "ontologies.new-ontology" : "New",
   "ontologies.ontologies" : "Ontologies",
   "ontologies.upload-ontology" : "Upload",
@@ -229,5 +229,6 @@
   "upload-ontology-dialog.remove" : "Remove",
   "upload-ontology-dialog.select" : "Select",
   "upload-ontology-dialog.upload" : "Upload",
-  "modify-classifiers-dialog.error" : "Error Getting Ontologies"
+  "modify-classifiers-dialog.error" : "Error Getting Ontologies",
+  "user-actions.logout" : "Logout"
 }

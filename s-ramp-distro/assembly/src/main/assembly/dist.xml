@@ -24,27 +24,12 @@
     </moduleSet>
   </moduleSets>
   <dependencySets>
-  	<dependencySet>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>commons-codec:commons-codec:jar</include>      
-      </includes>
-      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-    </dependencySet>
-  
-    <!-- Overlord Commons components -->
+  	<!-- Overlord Commons components -->
     <dependencySet>
       <outputDirectory>bin</outputDirectory>
       <includes>    
         <include>org.overlord:overlord-commons-*:war</include>
         <include>org.overlord:overlord-commons-*:jar</include>
-        <include>org.overlord:overlord-commons-dist-eap6:zip</include>
       </includes>
       <outputFileNameMapping>${artifact.artifactId}-${version.org.overlord.overlord-commons}.${artifact.extension}</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
@@ -114,11 +99,12 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
-    <!-- Modeshape EAP Modules -->
+    <!-- Modeshape Modules -->
     <dependencySet>
       <outputDirectory>AS/EAP</outputDirectory>
       <includes>
         <include>org.modeshape:modeshape-distribution:zip:jbosseap-dist</include>
+        <include>org.modeshape:modeshape-distribution:zip:jbosseap-61-dist</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>
@@ -126,6 +112,53 @@
       <useTransitiveFiltering>false</useTransitiveFiltering>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>Wildfly</outputDirectory>
+      <includes>
+        <include>org.modeshape:modeshape-distribution:zip:jboss-wf8-dist</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
+    <!-- Keycloak Modules -->
+    <dependencySet>
+      <outputDirectory>bin</outputDirectory>
+      <includes>
+        <include>org.keycloak:keycloak-war-dist-all:zip</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <includes>
+          <include>**/configuration/**</include>
+          <include>**/deployments/**</include>
+        </includes>
+      </unpackOptions>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>bin</outputDirectory>
+      <includes>
+        <include>org.keycloak:keycloak-eap6-adapter-dist:zip</include>
+        <include>org.keycloak:keycloak-tomcat7-adapter-dist:zip</include>
+        <include>org.keycloak:keycloak-wildfly-adapter-dist:zip</include>
+      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+      <unpack>false</unpack>
     </dependencySet>
     <!-- The S-RAMP demos -->
     <dependencySet>
@@ -184,14 +217,6 @@
         <include>*.sh</include>
         <include>*.bat</include>
       </includes>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-    </fileSet>
-    <!-- NOTE: Need to temporarily include the ModeShape 3.6 distro (EAP 6.1) here, without declaring it as a
-    dependency.  Note that thethe later 3.x distro (EAP 6.2+) is declared above as a dependencySet. -->
-    <fileSet>
-      <directory>${project.build.directory}/modeshape</directory>
-      <outputDirectory>AS/EAP</outputDirectory>
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </fileSet>

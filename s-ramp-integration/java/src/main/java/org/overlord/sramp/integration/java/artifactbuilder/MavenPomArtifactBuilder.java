@@ -15,30 +15,26 @@
  */
 package org.overlord.sramp.integration.java.artifactbuilder;
 
-import java.io.IOException;
-
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.artifactbuilder.AbstractArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
-import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.artifactbuilder.RelationshipContext;
 import org.overlord.sramp.integration.java.model.JavaModel;
+
+import java.io.IOException;
 
 /**
  * This artifact builder operates on a Maven pom.
  *
  * @author kurt.stam@redhat.com
  */
-@Component(name = "Maven POM Artifact Builder", immediate = true)
-@Service(value = ArtifactBuilder.class)
 public class MavenPomArtifactBuilder extends AbstractArtifactBuilder {
 
     @Override

@@ -21,6 +21,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -191,17 +192,21 @@ public class ArtifactsPage extends AbstractPage {
     protected void onPageShowing() {
         ArtifactFilterBean filterBean = (ArtifactFilterBean) stateService.get(ApplicationStateKeys.ARTIFACTS_FILTER, new ArtifactFilterBean());
         String searchText = (String) stateService.get(ApplicationStateKeys.ARTIFACTS_SEARCH_TEXT, ""); //$NON-NLS-1$
-        Integer page = (Integer) stateService.get(ApplicationStateKeys.ARTIFACTS_PAGE, 1);
         SortColumn sortColumn = (SortColumn) stateService.get(ApplicationStateKeys.ARTIFACTS_SORT_COLUMN, artifactsTable.getDefaultSortColumn());
 
         this.filtersPanel.setValue(filterBean);
     	this.searchBox.setValue(searchText);
     	this.artifactsTable.sortBy(sortColumn.columnId, sortColumn.ascending);
-    	
-        // Kick off an artifact search
-        doArtifactSearch(page);
+
         // Refresh the artifact filters
         filtersPanel.refresh();
+    }
+
+    @PageShown
+    public void onPageShown() {
+        Integer page = (Integer) stateService.get(ApplicationStateKeys.ARTIFACTS_PAGE, 1);
+        // Kick off an artifact search
+        doArtifactSearch(page);
     }
 
     /**

@@ -39,7 +39,6 @@ import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.archive.SrampArchive;
 import org.overlord.sramp.atom.beans.HttpResponseBean;
-import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.audit.AuditResultSet;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
@@ -69,9 +68,12 @@ public class SrampAtomApiClient {
 
 	private String endpoint;
 	private boolean validating;
-	private AuthenticationProvider authProvider;
 	private Set<String> enabledFeatures = new HashSet<String>();
 	private Locale locale;
+
+    private AuthenticationProvider authProvider;
+    // TODO: Not a huge fan of this.  We need *some* way
+    private String bearerToken;
 
 	/**
 	 * Constructor.
@@ -681,7 +683,6 @@ public class SrampAtomApiClient {
      * @param count the size of the page of results to return
      * @param orderBy the s-ramp property to use for sorting (name, uuid, createdOn, etc)
      * @param ascending the direction of the sort
-     * @param propertyNames an optional collection of names of custom s-ramp properties to be returned as part of the result set
      * @return an Atom {@link Feed}
      * @throws SrampClientException
      * @throws SrampAtomException
@@ -882,7 +883,6 @@ public class SrampAtomApiClient {
      * replaced with this new version.  This may fail if the new version removes classes from
      * the ontology that are currently in-use.
      * @param ontologyUuid
-     * @param content
      */
     public void updateOntology(String ontologyUuid, RDF ontology) throws SrampClientException, SrampAtomException {
         assertFeatureEnabled("ontology"); //$NON-NLS-1$
@@ -1125,7 +1125,6 @@ public class SrampAtomApiClient {
      * See {@link #query(String, int, int, String, boolean, Collection)}.
      * Note that {@link StoredQuery#getPropertyName()} is automatically given to #query.
      * 
-     * @param storedQuery
      * @param startIndex
      * @param count
      * @param orderBy
@@ -1166,7 +1165,7 @@ public class SrampAtomApiClient {
     /**
      * See {@link #buildQuery(String)}
      * 
-     * @param query
+     * @param storedQuery
      * @return SrampClientQuery
      */
     public SrampClientQuery buildQueryWithStoredQuery(StoredQuery storedQuery) {

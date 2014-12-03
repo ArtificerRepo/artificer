@@ -30,7 +30,6 @@
               <groupId>${project.groupId}</groupId>
               <artifactId>s-ramp-server</artifactId>
               <excludes>
-                <exclude>WEB-INF/lib/commons-codec-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-collections-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-configuration-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-io-*.jar</exclude>
@@ -46,6 +45,7 @@
                 <exclude>WEB-INF/lib/staxmapper-*.jar</exclude>
                 <exclude>WEB-INF/lib/jaxb-impl-*.jar</exclude>
                 <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
+                <exclude>WEB-INF/lib/jackson-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>

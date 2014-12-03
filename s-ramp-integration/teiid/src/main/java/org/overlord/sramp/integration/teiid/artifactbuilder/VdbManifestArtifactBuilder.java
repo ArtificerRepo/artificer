@@ -15,52 +15,31 @@
  */
 package org.overlord.sramp.integration.teiid.artifactbuilder;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
+import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.artifactbuilder.XmlArtifactBuilder;
+import org.overlord.sramp.integration.teiid.Messages;
+import org.overlord.sramp.integration.teiid.Utils;
+import org.overlord.sramp.integration.teiid.model.Describable.XmlId;
+import org.overlord.sramp.integration.teiid.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import javax.xml.namespace.QName;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.namespace.QName;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
-import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
-import org.overlord.sramp.common.artifactbuilder.XmlArtifactBuilder;
-import org.overlord.sramp.integration.teiid.Messages;
-import org.overlord.sramp.integration.teiid.Utils;
-import org.overlord.sramp.integration.teiid.model.Describable.XmlId;
-import org.overlord.sramp.integration.teiid.model.Propertied;
-import org.overlord.sramp.integration.teiid.model.TeiidExtendedType;
-import org.overlord.sramp.integration.teiid.model.Vdb;
-import org.overlord.sramp.integration.teiid.model.VdbDataPolicy;
-import org.overlord.sramp.integration.teiid.model.VdbEntry;
-import org.overlord.sramp.integration.teiid.model.VdbImport;
-import org.overlord.sramp.integration.teiid.model.VdbManifest;
-import org.overlord.sramp.integration.teiid.model.VdbPermission;
-import org.overlord.sramp.integration.teiid.model.VdbSchema;
-import org.overlord.sramp.integration.teiid.model.VdbSchemaSource;
-import org.overlord.sramp.integration.teiid.model.VdbTranslator;
-import org.overlord.sramp.integration.teiid.model.VdbValidationError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 /**
  * An artifact builder that creates VDB artifacts.
  */
-@Component(name = "VDB Artifact Builder", immediate = true)
-@Service(value = ArtifactBuilder.class)
 public final class VdbManifestArtifactBuilder extends XmlArtifactBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VdbManifestArtifactBuilder.class);

@@ -8,7 +8,6 @@
   </parent>
 
   <artifactId>s-ramp-integration-teiid</artifactId>
-  <packaging>bundle</packaging>
   <name>S-RAMP Integration: Teiid</name>
   <description>S-RAMP Integration: Teiid contains classes used when integrating the S-RAMP repository with Teiid VDBs.</description>
 
@@ -40,26 +39,10 @@
       <artifactId>log4j</artifactId>
     </dependency>
 
-    <!-- Declarative Service Annotations -->
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.scr.annotations</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-common</artifactId>
       <classifier>tests</classifier>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

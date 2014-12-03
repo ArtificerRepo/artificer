@@ -15,16 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import java.util.List;
-import java.util.UUID;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Session;
-import javax.jcr.query.QueryResult;
-
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType.Property;
@@ -42,6 +32,13 @@ import org.overlord.sramp.repository.query.InvalidQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Session;
+import javax.jcr.query.QueryResult;
+import java.util.List;
+import java.util.UUID;
+
 /**
  * An implementation of the {@link AuditManager} using JCR.  Works along with the
  * JCR PersistenceManager implementation ({@link JCRPersistence}).
@@ -49,8 +46,6 @@ import org.slf4j.LoggerFactory;
  * @author eric.wittmann@redhat.com
  */
 
-@Component(name = "JCR Audit Manager", immediate = true)
-@Service(value = org.overlord.sramp.repository.AuditManager.class)
 public class JCRAuditManager implements AuditManager {
 
     private static Logger log = LoggerFactory.getLogger(JCRAuditManager.class);

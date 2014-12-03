@@ -15,23 +15,12 @@
  */
 package org.overlord.sramp.integration.switchyard.artifactbuilder;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.UUID;
-
-import javax.xml.namespace.QName;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.QNameRelationshipSource;
 import org.overlord.sramp.common.artifactbuilder.XmlArtifactBuilder;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
@@ -40,14 +29,19 @@ import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javax.xml.namespace.QName;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.UUID;
+
 /**
  * This artifact builder operates on the switchyard.xml file found in a typical SwitchYard
  * application JAR/WAR.
  *
  * @author eric.wittmann@redhat.com
  */
-@Component(name = "SwitchYard Artifact Builder", immediate = true)
-@Service(value = ArtifactBuilder.class)
 public class SwitchYardXmlArtifactBuilder extends XmlArtifactBuilder {
 
     @Override

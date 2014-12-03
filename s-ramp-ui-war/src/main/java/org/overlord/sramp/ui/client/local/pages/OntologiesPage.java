@@ -21,6 +21,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -34,10 +35,7 @@ import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.OntologyServiceCaller;
 import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.local.util.IUploadCompletionHandler;
-import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
-import org.overlord.sramp.ui.client.shared.beans.OntologyBean;
-import org.overlord.sramp.ui.client.shared.beans.OntologyResultSetBean;
-import org.overlord.sramp.ui.client.shared.beans.OntologySummaryBean;
+import org.overlord.sramp.ui.client.shared.beans.*;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -106,32 +104,32 @@ public class OntologiesPage extends AbstractPage {
         });
     }
 
-    /**
-     * On page showing.
-     *
-     * @see org.overlord.sramp.ui.client.local.pages.AbstractPage#onPageShowing()
-     */
-    @Override
-    protected void onPageShowing() {
+    private void doOntologyList() {
         ontologyService.list(true, new IServiceInvocationHandler<OntologyResultSetBean>() {
             @Override
             public void onReturn(OntologyResultSetBean data) {
                 String selectedUuid = ontologySummaryPanel.getSelectedOntology() == null
                         ? null : ontologySummaryPanel.getSelectedOntology().getUuid();
-                
+
                 ontologySummaryPanel.setValue(data.getOntologies());
-                
+
                 // If something was selected, re-select it.  This is mostly to handle add/upload ontologies
                 // refreshing the panel.
                 if (selectedUuid != null) {
                     ontologySummaryPanel.restoreSelectedItem(selectedUuid);
                 }
             }
+
             @Override
             public void onError(Throwable error) {
                 notificationService.sendErrorNotification(i18n.format("ontologies-page.error-getting-ontologies"), error); //$NON-NLS-1$
             }
         });
+    }
+
+    @PageShown
+    public void onPageShown() {
+        doOntologyList();
     }
 
     /**
@@ -164,7 +162,7 @@ public class OntologiesPage extends AbstractPage {
         dialog.setCompletionHandler(new IUploadCompletionHandler() {
             @Override
             public void onImportComplete() {
-                onPageShowing();
+                doOntologyList();
             }
         });
         dialog.show();
@@ -186,7 +184,7 @@ public class OntologiesPage extends AbstractPage {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
                         i18n.format("new-ontology.created.title"), //$NON-NLS-1$
                         i18n.format("new-ontology.created.message", value.getId())); //$NON-NLS-1$
-                onPageShowing();
+                doOntologyList();
             }
             @Override
             public void onError(Throwable error) {

@@ -29,8 +29,6 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter;
-import org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
@@ -40,7 +38,6 @@ import org.overlord.commons.dev.server.discovery.JarModuleFromMavenDiscoveryStra
 import org.overlord.commons.dev.server.discovery.WebAppModuleFromIDEDiscoveryStrategy;
 import org.overlord.commons.gwt.server.filters.GWTCacheControlFilter;
 import org.overlord.commons.gwt.server.filters.ResourceCacheControlFilter;
-import org.overlord.commons.ui.header.OverlordHeaderDataJS;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
@@ -54,11 +51,8 @@ import org.overlord.sramp.server.filters.LocaleFilter;
 import org.overlord.sramp.server.filters.MavenRepositoryAuthFilter;
 import org.overlord.sramp.server.mvn.services.MavenRepositoryService;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
-import org.overlord.sramp.ui.server.api.SAMLBearerTokenAuthenticationProvider;
-import org.overlord.sramp.ui.server.servlets.ArtifactDownloadServlet;
-import org.overlord.sramp.ui.server.servlets.ArtifactUploadServlet;
-import org.overlord.sramp.ui.server.servlets.OntologyDownloadServlet;
-import org.overlord.sramp.ui.server.servlets.OntologyUploadServlet;
+import org.overlord.sramp.ui.server.api.KeycloakBearerTokenAuthenticationProvider;
+import org.overlord.sramp.ui.server.servlets.*;
 
 import javax.security.auth.Subject;
 import javax.servlet.DispatcherType;
@@ -108,10 +102,7 @@ public class SrampDevServer extends ErraiDevServer {
                 + "/META-INF/modeshape-configs/inmemory-sramp-config.json");
 
         // Authentication provider
-        System.setProperty("s-ramp-ui.atom-api.authentication.provider", SAMLBearerTokenAuthenticationProvider.class.getName());
-        System.setProperty("s-ramp-ui.atom-api.authentication.saml.issuer", "/s-ramp-ui");
-        System.setProperty("s-ramp-ui.atom-api.authentication.saml.service", "/s-ramp-server");
-        System.setProperty("s-ramp-ui.atom-api.authentication.saml.sign-assertions", "false");
+        System.setProperty("s-ramp-ui.atom-api.authentication.provider", KeycloakBearerTokenAuthenticationProvider.class.getName());
 
         // Don't do any resource caching!
         System.setProperty("overlord.resource-caching.disabled", "true");
@@ -136,9 +127,6 @@ public class SrampDevServer extends ErraiDevServer {
         environment.addModule("s-ramp-ui",
                 new WebAppModuleFromIDEDiscoveryStrategy(ArtifactSummaryBean.class),
                 new ErraiWebAppModuleFromMavenDiscoveryStrategy(ArtifactSummaryBean.class));
-        environment.addModule("overlord-commons-uiheader",
-                new JarModuleFromIDEDiscoveryStrategy(OverlordHeaderDataJS.class, "src/main/resources/META-INF/resources"),
-                new JarModuleFromMavenDiscoveryStrategy(OverlordHeaderDataJS.class, "/META-INF/resources"));
     }
 
     /**
@@ -156,7 +144,6 @@ public class SrampDevServer extends ErraiDevServer {
         srampUI.setContextPath("/s-ramp-ui");
         srampUI.setWelcomeFiles(new String[]{"index.html"});
         srampUI.setResourceBase(environment.getModuleDir("s-ramp-ui").getCanonicalPath());
-        srampUI.addFilter(HttpRequestThreadLocalFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         srampUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST));
         srampUI.addFilter(GWTCacheControlFilter.class, "/rest/*", EnumSet.of(DispatcherType.REQUEST));
         srampUI.addFilter(GWTCacheControlFilter.class, "/", EnumSet.of(DispatcherType.REQUEST));
@@ -171,18 +158,15 @@ public class SrampDevServer extends ErraiDevServer {
         srampUI.addServlet(new ServletHolder(ArtifactDownloadServlet.class), "/app/services/artifactDownload");
         srampUI.addServlet(new ServletHolder(OntologyUploadServlet.class), "/app/services/ontologyUpload");
         srampUI.addServlet(new ServletHolder(OntologyDownloadServlet.class), "/app/services/ontologyDownload");
+        srampUI.addServlet(new ServletHolder(KeyCloakLogoutServlet.class), "/app/services/logout");
         ServletHolder resteasyUIServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyUIServlet.setInitParameter("javax.ws.rs.Application", JettySRAMPApplication.class.getName());
         resteasyUIServlet.setInitParameter("resteasy.servlet.mapping.prefix", "/rest");
         srampUI.addServlet(resteasyUIServlet, "/rest/*");
-        ServletHolder headerDataServlet = new ServletHolder(OverlordHeaderDataJS.class);
-        headerDataServlet.setInitParameter("app-id", "s-ramp-ui");
-        srampUI.addServlet(headerDataServlet, "/js/overlord-header-data.js");
         // File resources
         ServletHolder resources = new ServletHolder(new MultiDefaultServlet());
         resources.setInitParameter("resourceBase", "/");
-        resources.setInitParameter("resourceBases", environment.getModuleDir("s-ramp-ui").getCanonicalPath()
-                + "|" + environment.getModuleDir("overlord-commons-uiheader").getCanonicalPath());
+        resources.setInitParameter("resourceBases", environment.getModuleDir("s-ramp-ui").getCanonicalPath());
         resources.setInitParameter("dirAllowed", "true");
         resources.setInitParameter("pathInfoOnly", "false");
         String[] fileTypes = new String[] { "html", "js", "css", "png", "gif" };
@@ -205,11 +189,11 @@ public class SrampDevServer extends ErraiDevServer {
         srampServer.addServlet(mvnServlet, "/maven/repository/*");
         srampServer.addServlet(mvnServlet, "/maven/repository");
         // TODO enable JSP support to test the repository listing
-        
-        srampServer.addFilter(SamlBearerTokenAuthFilter.class, "/s-ramp/*", EnumSet.of(DispatcherType.REQUEST))
-            .setInitParameter("allowedIssuers", "/s-ramp-ui,/dtgov,/dtgov-ui");
+
+        srampServer.addFilter(BasicAuthFilter.class, "/s-ramp/*", EnumSet.of(DispatcherType.REQUEST))
+                .setInitParameter("allowedIssuers", "/s-ramp-ui,/dtgov,/dtgov-ui");
         srampServer.addFilter(MavenRepositoryAuthFilter.class, "/maven/repository/*", EnumSet.of(DispatcherType.REQUEST))
-        .setInitParameter("allowedIssuers", "/s-ramp-ui,/dtgov,/dtgov-ui");
+                .setInitParameter("allowedIssuers", "/s-ramp-ui,/dtgov,/dtgov-ui");
         srampServer.addFilter(LocaleFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         srampServer.addFilter(ServletCredentialsFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
 
@@ -224,7 +208,7 @@ public class SrampDevServer extends ErraiDevServer {
     private SecurityHandler createSecurityHandler(boolean forUI) {
         Constraint constraint = new Constraint();
         constraint.setName(Constraint.__BASIC_AUTH);
-        constraint.setRoles(new String[]{"overlorduser"});
+        constraint.setRoles(new String[]{"user"});
         constraint.setAuthenticate(true);
 
         ConstraintMapping cm = new ConstraintMapping();
@@ -234,7 +218,7 @@ public class SrampDevServer extends ErraiDevServer {
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setSessionRenewedOnAuthentication(false);
         csh.setAuthenticator(new BasicAuthenticator());
-        csh.setRealmName("overlord");
+        csh.setRealmName("governance");
         if (forUI) {
             csh.addConstraintMapping(cm);
         }
@@ -247,7 +231,7 @@ public class SrampDevServer extends ErraiDevServer {
                 Subject subject = new Subject();
                 subject.getPrincipals().add(userPrincipal);
                 subject.getPrivateCredentials().add(credential);
-                String[] roles = new String[] { "overlorduser", "admin.sramp" };
+                String[] roles = new String[] { "user","readonly","readwrite","admin" };
                 for (String role : roles) {
                     subject.getPrincipals().add(new RolePrincipal(role));
                 }

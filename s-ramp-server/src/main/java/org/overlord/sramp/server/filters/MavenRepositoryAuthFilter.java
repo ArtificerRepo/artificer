@@ -19,6 +19,8 @@ package org.overlord.sramp.server.filters;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -31,7 +33,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.overlord.commons.auth.filters.SimplePrincipal;
 import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.server.i18n.Messages;
 
@@ -199,6 +200,28 @@ public class MavenRepositoryAuthFilter implements Filter {
         public Creds(String username, String password) {
             this.username = username;
             this.password = password;
+        }
+    }
+
+    // TODO: Not currently needed elsewhere, but probably good to move this.
+    private static class SimplePrincipal implements Principal {
+        private String username;
+        private Set<String> roles = new HashSet();
+
+        public SimplePrincipal(String username) {
+            this.username = username;
+        }
+
+        public String getName() {
+            return this.username;
+        }
+
+        public void addRole(String role) {
+            this.roles.add(role);
+        }
+
+        public Set<String> getRoles() {
+            return this.roles;
         }
     }
 

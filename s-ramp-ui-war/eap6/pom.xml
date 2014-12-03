@@ -45,7 +45,6 @@
                 <exclude>WEB-INF/lib/activation-*.jar</exclude>
                 <exclude>WEB-INF/lib/apache-mime4j-*.jar</exclude>
                 <exclude>WEB-INF/lib/cal10n-api*.jar</exclude>
-                <exclude>WEB-INF/lib/commons-codec-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-collections-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-configuration-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-io-*.jar</exclude>

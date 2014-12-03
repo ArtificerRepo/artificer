@@ -7,7 +7,6 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>s-ramp-atom</artifactId>
-  <packaging>bundle</packaging>
   <name>S-RAMP ATOM</name>
   <description>S-RAMP Atom API related shared code.</description>
 
@@ -68,15 +67,5 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

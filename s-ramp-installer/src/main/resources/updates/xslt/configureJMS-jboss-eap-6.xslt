@@ -27,12 +27,12 @@
   <!-- Adds the JMS security -->
   <xsl:template name="add-jms-security">
     <security-setting match="jms.topic.SRAMPTopic">
-      <permission type="send" roles="overlorduser" />
-      <permission type="consume" roles="overlorduser" />
-      <permission type="createNonDurableQueue" roles="overlorduser" />
-      <permission type="deleteNonDurableQueue" roles="overlorduser" />
-      <permission type="createDurableQueue" roles="overlorduser" />
-      <permission type="deleteDurableQueue" roles="overlorduser" />
+      <permission type="send" roles="artificeruser" />
+      <permission type="consume" roles="artificeruser" />
+      <permission type="createNonDurableQueue" roles="artificeruser" />
+      <permission type="deleteNonDurableQueue" roles="artificeruser" />
+      <permission type="createDurableQueue" roles="artificeruser" />
+      <permission type="deleteDurableQueue" roles="artificeruser" />
     </security-setting>
   </xsl:template>
 

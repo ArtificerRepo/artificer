@@ -34,6 +34,9 @@ import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * The main entry point into the S-RAMP browser UI app.
  *
@@ -43,32 +46,36 @@ import com.google.gwt.user.client.ui.RootPanel;
 @Bundle("messages.json")
 public class App {
 
-	@Inject
-	private RootPanel rootPanel;
-	@Inject
-	private Navigation navigation;
-	@Inject
-	private ClientMessageBus bus;
+    // Used by com.google.gwt.logging.Logging
+    private static final Logger logger = Logger.getLogger(App.class.getName());
+
+    @Inject
+    private RootPanel rootPanel;
+    @Inject
+    private Navigation navigation;
+    @Inject
+    private ClientMessageBus bus;
     @Inject
     LoggedOutDialog loggedOutDialog;
     @Inject
     NotificationService notificationService;
 
-	@PostConstruct
-	public void buildUI() {
-		rootPanel.add(navigation.getContentPanel());
-		GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+    @PostConstruct
+    public void buildUI() {
+        rootPanel.add(navigation.getContentPanel());
+        GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable e) {
-                GWT.log("Uncaught error!", e); //$NON-NLS-1$
+                GWT.log("Uncaught GWT Error!", e); //$NON-NLS-1$
                 notificationService.sendErrorNotification("Uncaught GWT Error!", e); //$NON-NLS-1$
+                logger.log(Level.SEVERE, "Uncaught GWT Error!", e);
             }
         });
-		bus.addLifecycleListener(new BusLifecycleAdapter() {
-		    @Override
-		    public void busAssociating(BusLifecycleEvent e) {
+        bus.addLifecycleListener(new BusLifecycleAdapter() {
+            @Override
+            public void busAssociating(BusLifecycleEvent e) {
                 GWT.log("Bus is associating"); //$NON-NLS-1$
-		    }
+            }
             @Override
             public void busOnline(BusLifecycleEvent e) {
                 GWT.log("Bus is now online"); //$NON-NLS-1$
@@ -85,7 +92,7 @@ public class App {
                 GWT.log("Bus is now offline"); //$NON-NLS-1$
             }
         });
-		bus.addTransportErrorHandler(new TransportErrorHandler() {
+        bus.addTransportErrorHandler(new TransportErrorHandler() {
             @Override
             public void onError(TransportError error) {
                 GWT.log("Transport error: " + error.getStatusCode()); //$NON-NLS-1$
@@ -96,6 +103,6 @@ public class App {
                 }
             }
         });
-	}
+    }
 
 }

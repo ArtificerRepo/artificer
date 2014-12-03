@@ -36,13 +36,6 @@ public class SrampUIConfig {
     public static final String SRAMP_API_AUTH_PROVIDER = "s-ramp-ui.atom-api.authentication.provider"; //$NON-NLS-1$
     public static final String SRAMP_API_BASIC_AUTH_USER = "s-ramp-ui.atom-api.authentication.basic.user"; //$NON-NLS-1$
     public static final String SRAMP_API_BASIC_AUTH_PASS = "s-ramp-ui.atom-api.authentication.basic.password"; //$NON-NLS-1$
-    public static final String SRAMP_API_SAML_AUTH_ISSUER = "s-ramp-ui.atom-api.authentication.saml.issuer"; //$NON-NLS-1$
-    public static final String SRAMP_API_SAML_AUTH_SERVICE = "s-ramp-ui.atom-api.authentication.saml.service"; //$NON-NLS-1$
-    public static final String SRAMP_API_SAML_AUTH_SIGN_ASSERTIONS = "s-ramp-ui.atom-api.authentication.saml.sign-assertions"; //$NON-NLS-1$
-    public static final String SRAMP_API_SAML_AUTH_KEYSTORE = "s-ramp-ui.atom-api.authentication.saml.keystore"; //$NON-NLS-1$
-    public static final String SRAMP_API_SAML_AUTH_KEYSTORE_PASSWORD = "s-ramp-ui.atom-api.authentication.saml.keystore-password"; //$NON-NLS-1$
-    public static final String SRAMP_API_SAML_AUTH_KEY_ALIAS = "s-ramp-ui.atom-api.authentication.saml.key-alias"; //$NON-NLS-1$
-    public static final String SRAMP_API_SAML_AUTH_KEY_PASSWORD = "s-ramp-ui.atom-api.authentication.saml.key-password"; //$NON-NLS-1$
 
     public static Configuration config;
     static {

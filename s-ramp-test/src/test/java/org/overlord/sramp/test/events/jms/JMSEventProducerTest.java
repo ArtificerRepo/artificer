@@ -55,6 +55,11 @@ import org.w3._2002._07.owl_.Ontology;
  *
  */
 public class JMSEventProducerTest extends AbstractIntegrationTest {
+
+    private static final String WILDFLY_INITIAL_CONTEXT_FACTORY = "org.jboss.naming.remote.client.InitialContextFactory";
+    private static final String WILDFLY_PROVIDER_URL = "http-remoting://localhost:8080";
+    private static final String WILDFLY_CONNECTIONFACTORY_JNDI = "jms/RemoteConnectionFactory";
+    private static final String WILDFLY_TOPIC_JNDI = "jms/sramp/events/topic";
     
     private static final String EAP_INITIAL_CONTEXT_FACTORY = "org.jboss.naming.remote.client.InitialContextFactory";
     private static final String EAP_PROVIDER_URL = "remote://localhost:4447";
@@ -226,9 +231,14 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
     
     private Connection subscribe(final CountDownLatch lock) {
         try {
-            return subscribe(EAP_INITIAL_CONTEXT_FACTORY, EAP_PROVIDER_URL, EAP_CONNECTIONFACTORY_JNDI, EAP_TOPIC_JNDI, lock);
+            return subscribe(WILDFLY_INITIAL_CONTEXT_FACTORY, WILDFLY_PROVIDER_URL, WILDFLY_CONNECTIONFACTORY_JNDI, WILDFLY_TOPIC_JNDI, lock);
         } catch (Exception e) {
 //          e.printStackTrace();
+        }
+        try {
+            return subscribe(EAP_INITIAL_CONTEXT_FACTORY, EAP_PROVIDER_URL, EAP_CONNECTIONFACTORY_JNDI, EAP_TOPIC_JNDI, lock);
+        } catch (Exception e) {
+          e.printStackTrace();
         }
         try {
             return subscribe(TOMCAT_INITIAL_CONTEXT_FACTORY, TOMCAT_PROVIDER_URL, TOMCAT_CONNECTIONFACTORY_JNDI,

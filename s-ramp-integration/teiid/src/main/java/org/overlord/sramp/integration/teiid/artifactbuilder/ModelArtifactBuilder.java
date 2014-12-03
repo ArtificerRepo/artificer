@@ -15,17 +15,8 @@
  */
 package org.overlord.sramp.integration.teiid.artifactbuilder;
 
-import java.io.IOException;
-
-import javax.xml.namespace.QName;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.XmlArtifactBuilder;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.overlord.sramp.integration.teiid.Messages;
@@ -40,11 +31,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import javax.xml.namespace.QName;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+
 /**
  * An artifact builder for Teiid <coded>*.xmi</code> model files.
  */
-@Component(name = "Teiid Model Artifact Builder", immediate = true)
-@Service(value = ArtifactBuilder.class)
 public final class ModelArtifactBuilder extends XmlArtifactBuilder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelArtifactBuilder.class);

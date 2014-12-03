@@ -1,5 +1,0 @@
-org.infinispan.configuration.parsing.Parser51
-org.infinispan.configuration.parsing.Parser52
-org.infinispan.configuration.as.ParserAS7
-org.infinispan.loaders.jdbc.configuration.JdbcCacheStoreConfigurationParser52
-org.infinispan.loaders.jdbc.configuration.as.JdbcCacheStoreConfigurationParserAS7

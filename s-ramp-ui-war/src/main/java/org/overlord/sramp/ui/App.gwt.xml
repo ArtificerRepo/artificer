@@ -11,4 +11,7 @@
   <inherits name="org.jboss.errai.databinding.DataBinding" />
   <inherits name="org.jboss.errai.ui.UI" />
   <inherits name="org.jboss.errai.ui.nav.Navigation" />
+
+  <inherits name="com.google.gwt.logging.Logging"/>
+  <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
 </module>

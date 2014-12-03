@@ -87,91 +87,17 @@
   </filter-mapping>
 
   <filter>
-    <filter-name>AuthenticationFilter</filter-name>
-    <filter-class>org.overlord.commons.auth.filters.SamlSPFilter</filter-class>
-    <init-param>
-      <param-name>ROLES</param-name>
-      <param-value>overlorduser</param-value>
-    </init-param>
+    <filter-name>KeycloakBearerTokenFilter</filter-name>
+    <filter-class>org.overlord.sramp.ui.server.filters.KeycloakBearerTokenFilter</filter-class>
   </filter>
   <filter-mapping>
-    <filter-name>AuthenticationFilter</filter-name>
-    <url-pattern>/</url-pattern>
+    <filter-name>KeycloakBearerTokenFilter</filter-name>
+    <url-pattern>/app/services/*</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>AuthenticationFilter</filter-name>
-    <url-pattern>/index.html</url-pattern>
-  </filter-mapping>
-  
-  <filter>
-    <filter-name>PicketLinkAuthWrapperFilter</filter-name>
-    <filter-class>org.overlord.commons.auth.filters.PicketLinkAuthWrapperFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>PicketLinkAuthWrapperFilter</filter-name>
-    <url-pattern>*</url-pattern>
-  </filter-mapping>
-  
-  <filter>
-    <filter-name>PostAuthenticationRedirectFilter</filter-name>
-    <filter-class>org.overlord.commons.gwt.server.filters.PostAuthenticationRedirectFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>PostAuthenticationRedirectFilter</filter-name>
-    <url-pattern>*</url-pattern>
-  </filter-mapping>
-
-  <filter>
-    <filter-name>HttpRequestThreadLocalFilter</filter-name>
-    <filter-class>org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>HttpRequestThreadLocalFilter</filter-name>
-    <url-pattern>*</url-pattern>
-  </filter-mapping>
-  
-  <filter>
-    <filter-name>BusAuthFilter</filter-name>
-    <filter-class>org.overlord.commons.gwt.server.filters.BusAuthenticationFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>BusAuthFilter</filter-name>
-    <url-pattern>/app/services/artifactDownload</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>BusAuthFilter</filter-name>
-    <url-pattern>/app/services/ontologyDownload</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>BusAuthFilter</filter-name>
+    <filter-name>KeycloakBearerTokenFilter</filter-name>
     <url-pattern>/rest/*</url-pattern>
   </filter-mapping>
-  
-  <filter>
-    <filter-name>UploadAuthFilter</filter-name>
-    <filter-class>org.overlord.commons.gwt.server.filters.UploadAuthenticationFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>UploadAuthFilter</filter-name>
-    <url-pattern>/app/services/artifactUpload</url-pattern>
-  </filter-mapping>
-  <filter-mapping>
-    <filter-name>UploadAuthFilter</filter-name>
-    <url-pattern>/app/services/ontologyUpload</url-pattern>
-  </filter-mapping>
-
-  <servlet>
-    <servlet-name>OverlordHeaderDataJS</servlet-name>
-    <servlet-class>org.overlord.commons.ui.header.OverlordHeaderDataJS</servlet-class>
-    <init-param>
-      <param-name>app-id</param-name>
-      <param-value>s-ramp-ui</param-value>
-    </init-param>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>OverlordHeaderDataJS</servlet-name>
-    <url-pattern>/js/overlord-header-data.js</url-pattern>
-  </servlet-mapping>
 
   <servlet>
     <servlet-name>ArtifactDownload</servlet-name>
@@ -208,5 +134,42 @@
     <servlet-name>OntologyDownload</servlet-name>
     <url-pattern>/app/services/ontologyDownload</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>KeyCloakLogout</servlet-name>
+    <servlet-class>org.overlord.sramp.ui.server.servlets.KeyCloakLogoutServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>KeyCloakLogout</servlet-name>
+    <url-pattern>/app/services/logout</url-pattern>
+  </servlet-mapping>
+
+  <!-- Security -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>s-ramp-ui</web-resource-name>
+      <url-pattern>/index.html</url-pattern>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>s-ramp-rest</web-resource-name>
+      <url-pattern>/rest/*</url-pattern>
+    </web-resource-collection>
+    <web-resource-collection>
+      <web-resource-name>s-ramp-app</web-resource-name>
+      <url-pattern>/app/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>user</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>governance</realm-name>
+  </login-config>
+
+  <security-role>
+    <role-name>user</role-name>
+  </security-role>
 
 </web-app>

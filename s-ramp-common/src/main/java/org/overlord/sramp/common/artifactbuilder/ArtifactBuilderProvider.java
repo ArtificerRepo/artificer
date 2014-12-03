@@ -31,8 +31,6 @@ import org.overlord.sramp.common.ArtifactContent;
  * 
  * src/main/resources/META-INF/services/org.overlord.sramp.common.artifactbuilder.ArtifactBuilderProvider
  * 
- * Note that these are also discoverable through the OSGi service registry, if available.
- * 
  * @author Brett Meyer
  */
 public interface ArtifactBuilderProvider {

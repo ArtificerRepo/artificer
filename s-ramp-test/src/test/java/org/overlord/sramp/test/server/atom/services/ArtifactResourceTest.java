@@ -15,45 +15,28 @@
  */
 package org.overlord.sramp.test.server.atom.services;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.util.List;
-
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedOutput;
-import org.jgroups.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PartEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PartTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
-import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.providers.SrampAtomExceptionProvider;
+import org.overlord.sramp.client.ClientRequest;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.test.TestUtils;
+
+import java.io.*;
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Test of the jax-rs resource that handles Artifacts.

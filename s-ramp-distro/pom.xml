@@ -16,8 +16,6 @@
     <module>assembly-cli</module>
     <module>assembly-demos</module>
     <module>assembly</module>
-    <!--<module>fabric</module>
-    <module>fuse61</module>-->
     <module>shell</module>
   </modules>
 

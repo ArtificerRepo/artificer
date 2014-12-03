@@ -8,7 +8,6 @@
   </parent>
 
   <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
-  <packaging>bundle</packaging>
   <name>S-RAMP JCR Repository ModeShape</name>
   <description>S-RAMP JCR ModeShape Connector</description>
 
@@ -33,11 +32,6 @@
       <artifactId>jcr</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
     
     <!-- Servlets -->
     <dependency>
@@ -46,7 +40,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- ModeShape -->
+    <!-- ModeShape/Infinispan -->
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-jcr-api</artifactId>
@@ -58,6 +52,13 @@
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-jcr</artifactId>
+      <exclusions>
+        <exclusion>
+          <!-- Override with the newer infinispan, further below -->
+          <groupId>org.infinispan</groupId>
+          <artifactId>infinispan-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.marshalling</groupId>
@@ -74,6 +75,15 @@
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>staxmapper</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-commons</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-core</artifactId>
     </dependency>
 
     <!-- Apache Commons -->
@@ -95,26 +105,5 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency>
-    
-    <!-- Declarative Service Annotations -->
-    <dependency>
-	  <groupId>org.apache.felix</groupId>
-	  <artifactId>org.apache.felix.scr.annotations</artifactId>
-	</dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Bundle-Activator>org.overlord.sramp.repository.jcr.modeshape.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

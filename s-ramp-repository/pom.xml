@@ -9,7 +9,6 @@
   </parent>
 
   <artifactId>s-ramp-repository</artifactId>
-  <packaging>bundle</packaging>
   <name>S-RAMP Repository</name>
   <description>S-RAMP Repository module.</description>
 
@@ -47,14 +46,4 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

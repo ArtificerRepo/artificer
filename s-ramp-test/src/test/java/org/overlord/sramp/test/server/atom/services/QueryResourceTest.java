@@ -36,7 +36,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
-import org.overlord.sramp.atom.client.ClientRequest;
+import org.overlord.sramp.client.ClientRequest;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.test.TestUtils;
 

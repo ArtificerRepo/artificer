@@ -16,4 +16,4 @@ By default, the following assumptions are made by the installer and tests.  Howe
 - host: localhost (sramp.test.host)
 - port: 8080 (sramp.test.port)
 - user: admin (sramp.test.username)
-- password: overlord1! (sramp.test.password)
+- password: artificer1! (sramp.test.password)

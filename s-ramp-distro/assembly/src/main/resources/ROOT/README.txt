@@ -19,7 +19,6 @@ This distribution comes with the following:
        one of:
        A) JBoss EAP 6
        B) Tomcat 7
-       C) Jetty 8
 
 == What do I do next? ==
 When installing into JBoss EAP you must first download the appropriate ZIP 

@@ -15,20 +15,18 @@
  */
 package org.overlord.sramp.integration.java.artifactbuilder;
 
-import java.io.IOException;
-
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.artifactbuilder.AbstractArtifactBuilder;
 import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
-import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.artifactbuilder.RelationshipContext;
 import org.overlord.sramp.integration.java.model.JavaModel;
+
+import java.io.IOException;
 
 /**
  * This artifact builder operates on the switchyard.xml file found in a typical SwitchYard
@@ -36,8 +34,6 @@ import org.overlord.sramp.integration.java.model.JavaModel;
  *
  * @author eric.wittmann@redhat.com
  */
-@Component(name = "Java Artifact Builder", immediate = true)
-@Service(value = ArtifactBuilder.class)
 public class JavaClassArtifactBuilder extends AbstractArtifactBuilder {
 
     @Override

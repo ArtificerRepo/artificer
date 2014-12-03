@@ -34,7 +34,7 @@ public class CustomArtifactBuilderDemo {
 
 	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
     private static final String DEFAULT_USER = "admin";
-    private static final String DEFAULT_PASSWORD = "overlord1!";
+    private static final String DEFAULT_PASSWORD = "artificer1!";
 
 	/**
 	 * Main.

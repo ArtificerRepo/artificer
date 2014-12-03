@@ -8,7 +8,6 @@
   </parent>
   
   <artifactId>s-ramp-integration-java</artifactId>
-  <packaging>bundle</packaging>
   <name>S-RAMP Integration: Java</name>
   <description>S-RAMP Integration: Java contains classes used when integrating the S-RAMP repository with Java projects.</description>
 
@@ -40,12 +39,6 @@
       <artifactId>log4j</artifactId>
     </dependency>
 
-    <!-- Declarative Service Annotations -->
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.scr.annotations</artifactId>
-    </dependency>
-
     <!-- Third party libraries -->
     <dependency>
       <groupId>org.apache.bcel</groupId>
@@ -75,14 +68,4 @@
       <classifier>tests</classifier>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

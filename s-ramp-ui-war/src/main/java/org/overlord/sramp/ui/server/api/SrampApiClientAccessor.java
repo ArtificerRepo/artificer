@@ -15,12 +15,12 @@
  */
 package org.overlord.sramp.ui.server.api;
 
-import java.util.Locale;
-
 import org.overlord.commons.config.JBossServer;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.auth.AuthenticationProvider;
 import org.overlord.sramp.ui.server.SrampUIConfig;
+
+import java.util.Locale;
 
 /**
  * The class used whenever an Atom API request for data needs to be made.
@@ -30,17 +30,18 @@ import org.overlord.sramp.ui.server.SrampUIConfig;
 public class SrampApiClientAccessor {
 
     private transient static ThreadLocal<SrampAtomApiClient> client = new ThreadLocal<SrampAtomApiClient>();
-    private transient static ThreadLocal<Locale> tlocale = new ThreadLocal<Locale>();
+
+    private transient static ThreadLocal<Locale> tLocale = new ThreadLocal<Locale>();
+
     public static void setLocale(Locale locale) {
-        tlocale.set(locale);
+        tLocale.set(locale);
     }
     public static void clearLocale() {
-        tlocale.set(null);
+        tLocale.set(null);
     }
 
     /**
      * Creates a new s-ramp client from configuration.
-     * @param config
      */
     private static SrampAtomApiClient createClient() {
     	String defaultSrampApiEndpoint = JBossServer.getBaseUrl() + "/s-ramp-server"; //$NON-NLS-1$
@@ -66,7 +67,7 @@ public class SrampApiClientAccessor {
 	    if (client.get() == null) {
 	        client.set(createClient());
 	    }
-	    client.get().setLocale(tlocale.get());
+	    client.get().setLocale(tLocale.get());
 	    return client.get();
 	}
 

@@ -38,17 +38,3 @@ directory. You can start the server by going into the target/apache-tomcat-<vers
 and then issuing
 
   ./bin/startup.sh
-
-4. Installing S-RAMP to Jetty-8.x
-----------------------------------
-In the s-ramp-installer directory issue
-
-  mvn clean install -Ptest-install-jetty8
-  
-This will download and configure a jetty server in the target/jetty-distribution-<version>
-directory. You can start the server by going into the target/jetty-distribution-<version> directory
-and then issuing
-
-  ./bin/jetty.sh start
-  
-  

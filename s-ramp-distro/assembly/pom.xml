@@ -10,45 +10,38 @@
   <packaging>pom</packaging>
   <name>S-RAMP Distribution: Assembly</name>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-distribution</artifactId>
+        <version>${version.org.modeshape}</version>
+        <classifier>jboss-wf8-dist</classifier>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-distribution</artifactId>
+        <version>3.8.0.Final</version>
+        <classifier>jbosseap-dist</classifier>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-distribution</artifactId>
+        <version>3.6.0.Final</version>
+        <classifier>jbosseap-61-dist</classifier>
+        <type>zip</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- Overlord Commons -->
     <dependency>
       <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-installer</artifactId>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-dist-eap6</artifactId>
-      <type>zip</type>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-ant</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth-jboss7</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-idp-eap6</artifactId>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-idp-tomcat7</artifactId>
-      <type>war</type>
-    </dependency>
-    <!--<dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-idp-jetty8</artifactId>
-      <type>war</type>
-    </dependency>-->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-codec</artifactId>
-    </dependency>    
     <!-- S-RAMP Installer -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
@@ -75,11 +68,6 @@
       <artifactId>s-ramp-server-tomcat7</artifactId>
       <type>war</type>
     </dependency>
-    <!--<dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server-jetty8</artifactId>
-      <type>war</type>
-    </dependency>-->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-eap6</artifactId>
@@ -87,17 +75,22 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-war-tomcat7</artifactId>
+      <artifactId>s-ramp-server-wildfly8</artifactId>
       <type>war</type>
     </dependency>
-    <!--<dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-war-jetty8</artifactId>
-      <type>war</type>
-    </dependency>-->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-eap6</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war-tomcat7</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-ui-war-wildfly8</artifactId>
       <type>war</type>
     </dependency>
 
@@ -180,11 +173,23 @@
       <type>jdocbook</type>
     </dependency>
 
-    <!-- ModeShape Distro -->
+    <!-- ModeShape Distros -->
+    <dependency>
+      <groupId>org.modeshape</groupId>
+      <artifactId>modeshape-distribution</artifactId>
+      <classifier>jboss-wf8-dist</classifier>
+      <type>zip</type>
+    </dependency>
     <dependency>
       <groupId>org.modeshape</groupId>
       <artifactId>modeshape-distribution</artifactId>
       <classifier>jbosseap-dist</classifier>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.modeshape</groupId>
+      <artifactId>modeshape-distribution</artifactId>
+      <classifier>jbosseap-61-dist</classifier>
       <type>zip</type>
     </dependency>
     
@@ -197,12 +202,59 @@
       <artifactId>s-ramp-javadoc</artifactId>
       <classifier>javadoc</classifier>
     </dependency>
-    
-    
-	<dependency>
-		<groupId>commons-codec</groupId>
-		<artifactId>commons-codec</artifactId>
-	</dependency>    
+
+    <!-- Keycloak -->
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-war-dist-all</artifactId>
+      <type>zip</type>
+      <exclusions>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-as7-adapter-dist</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-tomcat6-adapter-dist</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-tomcat8-adapter-dist</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-jetty81-adapter-dist</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-jetty91-adapter-dist</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-jetty92-adapter-dist</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-example-themes-dist</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-wildfly-adapter-dist</artifactId>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-eap6-adapter-dist</artifactId>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.keycloak</groupId>
+      <artifactId>keycloak-tomcat7-adapter-dist</artifactId>
+      <type>zip</type>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -243,46 +295,6 @@
   </build>
 
   <profiles>
-    <profile>
-      <id>community</id>
-      <activation>
-        <property>
-          <name>!product</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <!-- NOTE: Need to temporarily include the old ModeShape 3.6 distro (EAP 6.1) for the assembly,
-               *without* declaring it as a dependency.  The assembly pulls this in as a fileSet. -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>copy</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.modeshape</groupId>
-                      <artifactId>modeshape-distribution</artifactId>
-                      <version>3.6.0.Final</version>
-                      <classifier>jbosseap-61-dist</classifier>
-                      <type>zip</type>
-                    </artifactItem>
-                  </artifactItems>
-                  <outputDirectory>${project.build.directory}/modeshape</outputDirectory>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
     <!-- ***************************************** -->
     <!-- Profile to *test* installing into EAP 6 -->
     <!-- ***************************************** -->
@@ -307,9 +319,6 @@
                 <phase>install</phase>
                 <configuration>
                   <tasks>
-                    <property name="overlord-commons.idp.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
-                    <property name="overlord-commons.auth.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
-
                     <ant dir="${basedir}/src/main/resources/ROOT" antfile="${basedir}/src/main/resources/ROOT/build.xml">
                       <target name="install" />
                     </ant>
@@ -331,19 +340,7 @@
     <profile>
       <id>test-install-tomcat7</id>
       <dependencies>
-        <dependency>
-          <groupId>org.overlord</groupId>
-          <artifactId>overlord-commons-auth</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.overlord</groupId>
-          <artifactId>overlord-commons-auth-tomcat7</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.overlord</groupId>
-          <artifactId>overlord-commons-idp-tomcat7</artifactId>
-          <type>war</type>
-        </dependency>
+
       </dependencies>
       <build>
         <plugins>
@@ -366,14 +363,6 @@
                   <tasks>
                     <unzip src="apache-tomcat-7.0.47.zip" dest="${project.build.directory}" overwrite="false" />
                     <property name="appserver.id" value="tomcat-7" />
-                    <property name="overlord-commons.install.dir" value="${project.build.directory}" />
-                    <property name="overlord-commons.appserver.dir" location="${project.build.directory}/apache-tomcat-7.0.47" />
-
-                    <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="overlord-commons.idp.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
-                    <property name="overlord-commons.lib.overlord-commons-auth.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
-                    <property name="overlord-commons.lib.overlord-commons-auth-tomcat7.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-auth-tomcat7.jar.path}" />
-
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
                       <target name="install" />
                     </ant>

@@ -31,6 +31,7 @@ import org.jboss.errai.databinding.client.api.InitialState;
 import org.jboss.errai.databinding.client.api.PropertyChangeEvent;
 import org.jboss.errai.databinding.client.api.PropertyChangeHandler;
 import org.jboss.errai.ui.nav.client.local.Page;
+import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.nav.client.local.PageState;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
 import org.jboss.errai.ui.shared.api.annotations.AutoBound;
@@ -48,6 +49,7 @@ import org.overlord.sramp.ui.client.local.pages.details.DescriptionInlineLabel;
 import org.overlord.sramp.ui.client.local.pages.details.ModifyClassifiersDialog;
 import org.overlord.sramp.ui.client.local.pages.details.RelationshipsTable;
 import org.overlord.sramp.ui.client.local.pages.details.SourceEditor;
+import org.overlord.sramp.ui.client.local.services.ApplicationStateKeys;
 import org.overlord.sramp.ui.client.local.services.ArtifactServiceCaller;
 import org.overlord.sramp.ui.client.local.services.NotificationService;
 import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
@@ -219,17 +221,7 @@ public class ArtifactDetailsPage extends AbstractPage {
         artifactLoading.getElement().removeClassName("hide"); //$NON-NLS-1$
         sourceTabAnchor.setVisible(false);
         editorWrapper.setAttribute("style", "display:none"); //$NON-NLS-1$ //$NON-NLS-2$
-        artifactService.get(uuid, new IServiceInvocationHandler<ArtifactBean>() {
-            @Override
-            public void onReturn(ArtifactBean data) {
-                currentArtifact = data;
-                update(data);
-            }
-            @Override
-            public void onError(Throwable error) {
-                notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-details"), error); //$NON-NLS-1$
-            }
-        });
+
         relationshipsTabAnchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -246,6 +238,22 @@ public class ArtifactDetailsPage extends AbstractPage {
                     loadSource(currentArtifact);
                 }
                 sourceTabAnchor.setFocus(false);
+            }
+        });
+    }
+
+    @PageShown
+    public void onPageShown() {
+        artifactService.get(uuid, new IServiceInvocationHandler<ArtifactBean>() {
+            @Override
+            public void onReturn(ArtifactBean data) {
+                currentArtifact = data;
+                update(data);
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-details"), error); //$NON-NLS-1$
             }
         });
     }

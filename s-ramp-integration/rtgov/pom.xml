@@ -9,7 +9,6 @@
   </parent>
 
   <artifactId>s-ramp-integration-rtgov</artifactId>
-  <packaging>bundle</packaging>
   <name>S-RAMP Integration: RTGov</name>
   <description>S-RAMP Integration: RTGov contains classes used when tightly integrating the S-RAMP repository with RTGov artifacts.</description>
 
@@ -44,21 +43,5 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency>
-
-    <!-- Declarative Service Annotations -->
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.scr.annotations</artifactId>
-    </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

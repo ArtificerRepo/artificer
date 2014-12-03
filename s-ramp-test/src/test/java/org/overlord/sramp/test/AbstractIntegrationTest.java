@@ -15,10 +15,6 @@
  */
 package org.overlord.sramp.test;
 
-import static org.junit.Assert.fail;
-
-import java.util.List;
-
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -34,13 +30,17 @@ import org.junit.After;
 import org.junit.runner.RunWith;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-import org.overlord.sramp.atom.client.ClientRequest;
 import org.overlord.sramp.atom.err.SrampAtomException;
+import org.overlord.sramp.client.ClientRequest;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.client.ontology.OntologySummary;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
+
+import java.util.List;
+
+import static org.junit.Assert.fail;
 
 /**
  * @author Brett Meyer
@@ -58,7 +58,7 @@ public abstract class AbstractIntegrationTest {
 
     protected static final String USERNAME = System.getProperty("sramp.test.username", "admin"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    protected static final String PASSWORD = System.getProperty("sramp.test.password", "overlord1!"); //$NON-NLS-1$ //$NON-NLS-2$
+    protected static final String PASSWORD = System.getProperty("sramp.test.password", "artificer1!"); //$NON-NLS-1$ //$NON-NLS-2$
 
     @After
     public void cleanup() {

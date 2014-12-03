@@ -45,9 +45,6 @@ public class HttpHeaderAuthenticationProvider implements AuthenticationProvider 
         setHeaderValue(headerValue);
     }
 
-    /**
-     * @see org.overlord.sramp.client.auth.AuthenticationProvider#provideAuthentication(org.apache.http.HttpRequest)
-     */
     @Override
     public void provideAuthentication(HttpRequest request) {
         request.setHeader(headerName, headerValue);

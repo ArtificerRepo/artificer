@@ -8,7 +8,6 @@
   </parent>
   
   <artifactId>s-ramp-integration-switchyard</artifactId>
-  <packaging>bundle</packaging>
   <name>S-RAMP Integration: SwitchYard</name>
   <description>S-RAMP Integration: SwitchYard contains classes used when tightly integrating the S-RAMP repository with SwitchYard.</description>
 
@@ -49,21 +48,5 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency>
-
-    <!-- Declarative Service Annotations -->
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.scr.annotations</artifactId>
-    </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

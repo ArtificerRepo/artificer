@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <infinispan
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="urn:infinispan:config:5.2 http://www.infinispan.org/schemas/infinispan-config-5.2.xsd
-                       urn:infinispan:config:jdbc:5.2 http://www.infinispan.org/schemas/infinispan-cachestore-jdbc-config-5.2.xsd"
-   xmlns="urn:infinispan:config:5.2"
-   xmlns:jdbc="urn:infinispan:config:jdbc:5.2" >
-    <global>
-    </global>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="urn:infinispan:config:6.0 http://docs.jboss.org/infinispan/schemas/infinispan-config-6.0.xsd
+                       urn:infinispan:config:jdbc:6.0 http://docs.jboss.org/infinispan/schemas/infinispan-cachestore-jdbc-config-6.0.xsd"
+    xmlns="urn:infinispan:config:6.0"
+    xmlns:jdbc="urn:infinispan:config:jdbc:6.0">
+  <global>
+  </global>
 
-    <default>
-    </default>
+  <default>
+  </default>
 
-    <namedCache name="sramp">
-        <loaders passivation="false" shared="false" preload="false">
-            <jdbc:stringKeyedJdbcStore xmlns="urn:infinispan:config:jdbc:5.2" 
-            	fetchPersistentState="true" ignoreModifications="false" purgeOnStartup="false">
-              
-              <jdbc:dataSource jndiUrl="java:comp/env/jdbc/sramp" xmlns="urn:infinispan:config:jdbc:5.2"/>
-              <stringKeyedTable
-               dropOnExit="false" createOnStart="true" prefix="ISPN_STRING_TABLE">
-				<idColumn name="ID_COLUMN" type="VARCHAR(255)" />
-				<dataColumn name="DATA_COLUMN" type="BINARY" />
-				<timestampColumn name="TIMESTAMP_COLUMN" type="BIGINT" />
-			  </stringKeyedTable>
-			</jdbc:stringKeyedJdbcStore>
-        </loaders>
-        <transaction
-            transactionManagerLookupClass="org.infinispan.transaction.lookup.DummyTransactionManagerLookup"
-            transactionMode="TRANSACTIONAL" lockingMode="PESSIMISTIC" />
-            
-    </namedCache>
+  <namedCache name="sramp">
+    <persistence passivation="false">
+      <jdbc:stringKeyedJdbcStore xmlns="urn:infinispan:config:jdbc:6.0"
+                                 fetchPersistentState="true" ignoreModifications="false" purgeOnStartup="false">
+
+        <jdbc:dataSource jndiUrl="java:comp/env/jdbc/sramp" xmlns="urn:infinispan:config:jdbc:6.0"/>
+        <stringKeyedTable
+            dropOnExit="false" createOnStart="true" prefix="ISPN_STRING_TABLE">
+          <idColumn name="ID_COLUMN" type="VARCHAR(255)"/>
+          <dataColumn name="DATA_COLUMN" type="BINARY"/>
+          <timestampColumn name="TIMESTAMP_COLUMN" type="BIGINT"/>
+        </stringKeyedTable>
+      </jdbc:stringKeyedJdbcStore>
+    </persistence>
+    <transaction
+        transactionManagerLookupClass="org.infinispan.transaction.lookup.DummyTransactionManagerLookup"
+        transactionMode="TRANSACTIONAL" lockingMode="PESSIMISTIC"/>
+
+  </namedCache>
 
 </infinispan>

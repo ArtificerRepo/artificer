@@ -8,7 +8,6 @@
   </parent>
 
   <artifactId>s-ramp-events-jms</artifactId>
-  <packaging>bundle</packaging>
   <name>S-RAMP Events: JMS</name>
   <description>JMS implementation of the S-RAMP Events functionality.</description>
 
@@ -32,12 +31,10 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
@@ -51,12 +48,6 @@
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-kahadb-store</artifactId>
     </dependency>
-    
-    <!-- Declarative Service Annotations -->
-    <dependency>
-	  <groupId>org.apache.felix</groupId>
-	  <artifactId>org.apache.felix.scr.annotations</artifactId>
-	</dependency>
 
     <!-- Logging -->
     <dependency>
@@ -72,15 +63,5 @@
       <artifactId>log4j</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

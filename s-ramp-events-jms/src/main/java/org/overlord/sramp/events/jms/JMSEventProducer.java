@@ -15,26 +15,9 @@
  */
 package org.overlord.sramp.events.jms;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.MessageProducer;
-import javax.jms.Queue;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-import javax.jms.Topic;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.SrampConfig;
@@ -47,6 +30,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
+import javax.jms.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Provides a JMS implementation of the {@link EventProducer}.
  *
@@ -56,7 +46,7 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
  * correctly configured. We simply use the existing JMS framework and the
  * pre-existing topics/queues.
  *
- * Otherwise, we assume we're on a non-JavaEE server (Tomcat, Jetty, EAP without
+ * Otherwise, we assume we're on a non-JavaEE server (Tomcat, EAP without
  * standalone-full, etc). We then create an embedded ActiveMQ broker over a TCP
  * port, then programmatically create all topics/queues. External clients can
  * then connect to it in one of two ways: 1.) Simply use the ActiveMQ libs and
@@ -71,8 +61,6 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
  *
  * @author Brett Meyer
  */
-@Component(name = "JMS Event Producer", immediate = true)
-@Service(value = EventProducer.class)
 public class JMSEventProducer implements EventProducer {
 
     public static final String JMS_TYPE_ARTIFACT_CREATED = "sramp:artifactCreated"; //$NON-NLS-1$
@@ -128,38 +116,25 @@ public class JMSEventProducer implements EventProducer {
                     destinations.add(queue);
                 }
             } catch (NamingException e) {
-//                try {
-//                    // Second, are we within Fuse?  If so, use the existing ActiveMQ broker.
-//
-//                    String brokerURL = SrampConfig.getConfigProperty(
-//                            SrampConstants.SRAMP_CONFIG_EVENT_JMS_URL, "tcp://localhost:61616"); //$NON-NLS-1$
-//
-//                    String username = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_USER, ""); //$NON-NLS-1$
-//                    String password = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PASSWORD, ""); //$NON-NLS-1$
-//                    ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, password, brokerURL);
-//                    initActiveMQ(connectionFactory, topicNames, queueNames);
-//                } catch (Exception e1) {
-                    // Otherwise, JMS wasn't setup. Assume we need to start an embedded
-                    // ActiveMQ broker and create the destinations.
-                    
-                    String bindAddress = "tcp://localhost:" //$NON-NLS-1$
-                            + SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, "61616"); //$NON-NLS-1$
-                    
-                    LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", bindAddress)); //$NON-NLS-1$
+                // Otherwise, JMS wasn't setup. Assume we need to start an embedded
+                // ActiveMQ broker and create the destinations.
 
-                    session = null;
-                    destinations.clear();
+                String bindAddress = "tcp://localhost:" //$NON-NLS-1$
+                        + SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, "61616"); //$NON-NLS-1$
 
-                    BrokerService broker = new BrokerService();
-                    broker.addConnector(bindAddress);
-                    broker.start();
+                LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", bindAddress)); //$NON-NLS-1$
 
-                    // Event though we added a TCP connector, above, ActiveMQ also exposes the broker over the "vm"
-                    // protocol. It optimizes performance for connections on the same JVM.
-                    ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
-                    initActiveMQ(connectionFactory, topicNames, queueNames);
-//                }
+                session = null;
+                destinations.clear();
 
+                BrokerService broker = new BrokerService();
+                broker.addConnector(bindAddress);
+                broker.start();
+
+                // Event though we added a TCP connector, above, ActiveMQ also exposes the broker over the "vm"
+                // protocol. It optimizes performance for connections on the same JVM.
+                ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
+                initActiveMQ(connectionFactory, topicNames, queueNames);
             }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);

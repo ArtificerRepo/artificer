@@ -15,9 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
@@ -58,8 +55,6 @@ import java.util.*;
  * creation of the S-RAMP derived artifacts.
  */
 
-@Component(name = "JCR Persistence", immediate = true)
-@Service(value = org.overlord.sramp.repository.PersistenceManager.class)
 public class JCRPersistence implements PersistenceManager, ClassificationHelper {
 
     private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);

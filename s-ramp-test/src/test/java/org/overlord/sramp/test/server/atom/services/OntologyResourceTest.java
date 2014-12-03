@@ -28,7 +28,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
-import org.overlord.sramp.atom.client.ClientRequest;
+import org.overlord.sramp.client.ClientRequest;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 import org.w3._2002._07.owl_.Class;
 import org.w3._2002._07.owl_.Ontology;

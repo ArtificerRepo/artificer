@@ -10,9 +10,11 @@
   <!-- ****************************************************** -->
   <!-- Customize these properties when calling this installer -->
   <!-- ****************************************************** -->
-  <property name="appserver.id" value="jboss-eap-6" />
-  <property name="s-ramp.install.dir" location="target" />
-  <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/${appserver.id}" />
+  <property name="appserver.id" value="" />
+  <property name="s-ramp.install.dir" location="" />
+  <property name="s-ramp.appserver.dir" location="" />
+  <property name="s-ramp.keycloak.path" location="" />
+  <property name="s-ramp.keycloak.adapter" location="" />
   <!-- ****************************************************** -->
 
   <!-- Install S-RAMP -->

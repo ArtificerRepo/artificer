@@ -15,17 +15,10 @@
  */
 package org.overlord.sramp.common;
 
-import java.util.*;
-
-import org.apache.commons.lang.StringUtils;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
-import org.overlord.commons.codec.AesEncrypter;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 
 import javax.xml.namespace.QName;
+import java.util.*;
 
 /**
  * A collection of utilities for dealing with the s-ramp models.
@@ -33,9 +26,6 @@ import javax.xml.namespace.QName;
  * @author eric.wittmann@redhat.com
  */
 public class SrampModelUtils {
-
-    public static final String ENCRYPT_PREFIX = "${crypt:";
-    public static final String ENCRYPT_SUFIX = "}";
 
 	/**
 	 * Convenience method to help set a custom s-ramp property on the given artifact.
@@ -75,21 +65,6 @@ public class SrampModelUtils {
 		}
 	}
 
-    /**
-     * Convenience method to help set a custom s-ramp property on the given
-     * artifact.
-     *
-     * @param artifact
-     * @param propName
-     * @param propValue
-     */
-    public static void setCustomEncryptedProperty(BaseArtifactType artifact, String propName, String propValue) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(ENCRYPT_PREFIX).append(AesEncrypter.encrypt(propValue)).append(ENCRYPT_SUFIX);
-        setCustomProperty(artifact, propName, builder.toString());
-
-    }
-
 	/**
 	 * Gets the value of one of the s-ramp custom properties.
 	 * @param artifact the s-ramp artifact
@@ -105,10 +80,6 @@ public class SrampModelUtils {
 				break;
 			}
 		}
-        if (StringUtils.isNotBlank(rval) && rval.startsWith(ENCRYPT_PREFIX) && rval.endsWith(ENCRYPT_SUFIX)) {
-            String encrypted_value = rval.substring(ENCRYPT_PREFIX.length(), rval.length() - ENCRYPT_SUFIX.length());
-            return AesEncrypter.decrypt(encrypted_value);
-        }
 		return rval;
 	}
 

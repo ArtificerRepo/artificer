@@ -35,7 +35,6 @@
       <module name="net.jcip" />
       <module name="org.jgroups" />
       <module name="org.apache.log4j" />
-      <module name="org.osgi.core" />
       <module name="org.scannotation.scannotation" />
       <module name="org.slf4j" />
       <module name="org.slf4j.ext" />

@@ -33,9 +33,6 @@ public class NoAuthenticationProvider implements AuthenticationProvider {
     public NoAuthenticationProvider() {
     }
 
-    /**
-     * @see org.overlord.sramp.client.auth.AuthenticationProvider#provideAuthentication(org.apache.http.HttpRequest)
-     */
     @Override
     public void provideAuthentication(HttpRequest request) {
     }

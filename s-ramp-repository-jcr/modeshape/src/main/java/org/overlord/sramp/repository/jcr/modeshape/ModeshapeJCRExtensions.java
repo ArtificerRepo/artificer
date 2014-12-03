@@ -15,14 +15,12 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import javax.jcr.Binary;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.modeshape.jcr.api.ServletCredentials;
 import org.overlord.sramp.repository.jcr.JCRExtensions;
 import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
+
+import javax.jcr.Binary;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * The ModeShape-specific implementation of the JCR Extensions, allowing ModeShape
@@ -30,8 +28,6 @@ import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
  * 
  * @author Brett Meyer
  */
-@Component(name = "Modeshape JCR Extensions", immediate = true)
-@Service(value = org.overlord.sramp.repository.jcr.JCRExtensions.class)
 public class ModeshapeJCRExtensions extends JCRExtensions {
     
     /**

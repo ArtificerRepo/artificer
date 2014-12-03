@@ -132,12 +132,6 @@
           <artifactId>maven-assembly-plugin</artifactId>
           <version>${maven.assembly.plugin.version}</version>
         </plugin>
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>${maven.bundle.plugin.version}</version>
-          <extensions>true</extensions>
-        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -222,11 +216,6 @@
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons.io.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-codec</groupId>
-        <artifactId>commons-codec</artifactId>
-        <version>${commons.codec.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-configuration</groupId>

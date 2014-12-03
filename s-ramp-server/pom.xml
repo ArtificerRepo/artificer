@@ -14,18 +14,6 @@
   <description>S-RAMP Atom binding module.</description>
 
   <dependencies>
-    <!-- Overlord Commons -->
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth</artifactId>
-    </dependency>
-    
-    <!-- PicketLink -->
-    <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-federation</artifactId>
-    </dependency>
-  
     <!-- S-RAMP project dependencies -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
@@ -100,13 +88,11 @@
       <artifactId>jaxrs-api</artifactId>
     </dependency>
     
-    <!-- Apache Commons -->
+    <!-- Third Party Dependencies -->
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
-    
-    <!-- Third Party Dependencies -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>

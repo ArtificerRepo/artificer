@@ -10,7 +10,6 @@
 
   <artifactId>s-ramp-integration</artifactId>
   <name>S-RAMP Integration</name>
-  <packaging>bundle</packaging>
 
   <dependencies>
     <!-- Project Dependencies -->
@@ -44,22 +43,6 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency>
-
-    <!-- Declarative Service Annotations -->
-    <dependency>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>org.apache.felix.scr.annotations</artifactId>
-    </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

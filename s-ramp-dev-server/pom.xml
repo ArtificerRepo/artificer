@@ -9,7 +9,6 @@
   </parent>
 
   <artifactId>s-ramp-dev-server</artifactId>
-  <packaging>jar</packaging>
   <name>S-RAMP Development Test Server</name>
   <description>S-RAMP Development Test Server: Runs S-RAMP within an embedded server for speedy testing during development.</description>
 
@@ -20,19 +19,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-auth-jetty8</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-gwt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-uiheader</artifactId>
     </dependency>
 
     <!-- S-RAMP Server -->
@@ -191,10 +178,6 @@
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-federation</artifactId>
     </dependency>
   </dependencies>
 

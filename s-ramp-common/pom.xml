@@ -8,7 +8,6 @@
   </parent>
 
   <artifactId>s-ramp-common</artifactId>
-  <packaging>bundle</packaging>
   <name>S-RAMP Common</name>
   <description>S-RAMP Common contains functionality that is core to S-RAMP concepts as described in the S-RAMP functional specification.</description>
 
@@ -28,10 +27,6 @@
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-config</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.overlord</groupId>
-      <artifactId>overlord-commons-codec</artifactId>
-    </dependency>    
 
     <!-- Third party libraries -->
     <dependency>
@@ -87,13 +82,6 @@
   			<filtering>true</filtering>
   		</resource>
   	</resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
   </build>
 
 </project>

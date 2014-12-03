@@ -156,8 +156,6 @@ In order to enable JRebel for the server-side components, follow these steps:
         <!-- S-RAMP UI -->
         <dir name="/home/sholmes/git/s-ramp-ui/s-ramp-ui-war/src/main/webapp/WEB-INF/classes"></dir>
         <dir name="/home/sholmes/git/s-ramp-ui/s-ramp-ui-widgets/target/classes"></dir>
-        <!-- Overlord Commons -->
-        <dir name="/home/sholmes/git/overlord-commons/overlord-commons-uiheader/target/classes"></dir>
     </classpath>
 </application>
 

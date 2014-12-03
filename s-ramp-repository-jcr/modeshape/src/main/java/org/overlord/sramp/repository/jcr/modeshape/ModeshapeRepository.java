@@ -15,31 +15,8 @@
  */
 package org.overlord.sramp.repository.jcr.modeshape;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.jcr.LoginException;
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.RepositoryFactory;
-import javax.jcr.Session;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
@@ -54,8 +31,20 @@ import org.overlord.sramp.repository.jcr.modeshape.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(name = "Modeshape JCR Repository", immediate = true)
-@Service(value = org.overlord.sramp.repository.jcr.JCRRepository.class)
+import javax.jcr.*;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ModeshapeRepository extends JCRRepository {
 
 	private static Logger log = LoggerFactory.getLogger(ModeshapeRepository.class);
