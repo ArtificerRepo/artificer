@@ -276,7 +276,8 @@ public class ArtifactResource extends AbstractResource {
                 creates.execute(PersistenceFactory.newInstance());
 
                 // Finally, update the archive artifact's content.
-                persistenceManager.updateArtifactContent(artifact.getUuid(), archiveContext.getArchiveArtifactType(), content);
+                artifact = persistenceManager.updateArtifactContent(artifact.getUuid(),
+                        archiveContext.getArchiveArtifactType(), content);
             } else {
                 // Else, simple upload.
                 artifact = doUpload(artifact, content, artifactType);
