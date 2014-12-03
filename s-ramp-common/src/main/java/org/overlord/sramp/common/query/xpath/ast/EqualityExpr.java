@@ -33,7 +33,7 @@ import org.overlord.sramp.common.query.xpath.visitors.XPathVisitor;
  *
  * @author eric.wittmann@redhat.com
  */
-public class EqualityExpr extends AbstractBinaryExpr<ForwardPropertyStep, PrimaryExpr> {
+public class EqualityExpr extends AbstractBinaryExpr<AbstractXPathNode, PrimaryExpr> {
 
 	// Note: the following three are mutually exclusive.
 	private SubartifactSet subartifactSet;

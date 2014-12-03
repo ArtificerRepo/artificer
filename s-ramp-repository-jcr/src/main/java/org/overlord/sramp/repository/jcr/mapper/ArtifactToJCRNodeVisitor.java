@@ -37,6 +37,7 @@ import javax.jcr.Value;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
+import javax.xml.namespace.QName;
 
 import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
@@ -322,7 +323,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 		Set<String> updatedRelationshipTypes = new HashSet<String>();
 		for (Relationship relationship : artifact.getRelationship()) {
 			setRelationships(relationship.getRelationshipType(), -1, 0, true, false,
-					relationship.getRelationshipTarget(), Collections.EMPTY_LIST);
+					relationship.getRelationshipTarget(), Collections.EMPTY_LIST, relationship.getOtherAttributes());
 			updatedRelationshipTypes.add(relationship.getRelationshipType());
 		}
 
@@ -899,19 +900,9 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 		}
 	}
 
-	/**
-	 * Sets a relationship on the given artifact parent node.
-	 * @param relationshipType
-	 * @param maxCardinality
-	 * @param minCardinality
-	 * @param isGeneric
-	 * @param isDerived
-	 * @param targets
-     * @param targetTypes (positions in the list are assumed to match targets)
-	 * @throws Exception
-	 */
-	private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,
-            boolean isGeneric, boolean isDerived, List<? extends Target> targets, List<String> targetTypes) throws Exception {
+    private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,
+            boolean isGeneric, boolean isDerived, List<? extends Target> targets, List<String> targetTypes,
+            Map<QName, String> otherAttributes) throws Exception {
         if (!isProcessRelationships())
             return;
         if ((targets != null && targets.size() > 0) || minCardinality == 0) {
@@ -932,11 +923,31 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
                 }
                 relationshipNode.setProperty(JCRConstants.SRAMP_TARGET_TYPE, targetTypeValues);
             }
+
+            // store any 'other' attributes
+            String attributeKeyPrefix = JCRConstants.SRAMP_OTHER_ATTRIBUTES + ":";
+            for (QName qname : otherAttributes.keySet()) {
+                String attributeKey = attributeKeyPrefix + qname.toString();
+                String attributeValue = otherAttributes.get(qname);
+                if (StringUtils.isEmpty(attributeValue)) {
+                    // Need to support no-value properties, but JCR will remove it if it's null.  Further, if it's an
+                    // empty string, the property existence query fails.  Therefore, use a placeholder that will eventually
+                    // be removed by JCRNodeToArtifactVisitor.
+                    attributeValue = JCRConstants.NO_VALUE;
+                }
+                relationshipNode.setProperty(attributeKey, attributeValue);
+            }
         } else {
             // If the minimum cardinality is > 0 but no targets have been provided, then
             // remove the relationship node.
             removeRelationship(relationshipType);
         }
+    }
+
+    private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,
+            boolean isGeneric, boolean isDerived, List<? extends Target> targets, List<String> targetTypes) throws Exception {
+        setRelationships(relationshipType, maxCardinality, minCardinality, isGeneric, isDerived, targets,
+                targetTypes, Collections.EMPTY_MAP);
     }
 
 	private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,

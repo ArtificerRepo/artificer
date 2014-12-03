@@ -15,38 +15,19 @@
  */
 package org.overlord.sramp.repository.jcr.query;
 
-import java.net.URI;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.xml.namespace.QName;
-
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.query.xpath.ast.AndExpr;
-import org.overlord.sramp.common.query.xpath.ast.Argument;
-import org.overlord.sramp.common.query.xpath.ast.ArtifactSet;
-import org.overlord.sramp.common.query.xpath.ast.EqualityExpr;
-import org.overlord.sramp.common.query.xpath.ast.Expr;
-import org.overlord.sramp.common.query.xpath.ast.ForwardPropertyStep;
-import org.overlord.sramp.common.query.xpath.ast.FunctionCall;
-import org.overlord.sramp.common.query.xpath.ast.LocationPath;
-import org.overlord.sramp.common.query.xpath.ast.OrExpr;
-import org.overlord.sramp.common.query.xpath.ast.Predicate;
-import org.overlord.sramp.common.query.xpath.ast.PrimaryExpr;
-import org.overlord.sramp.common.query.xpath.ast.Query;
-import org.overlord.sramp.common.query.xpath.ast.RelationshipPath;
-import org.overlord.sramp.common.query.xpath.ast.SubartifactSet;
+import org.overlord.sramp.common.query.xpath.ast.*;
 import org.overlord.sramp.common.query.xpath.visitors.XPathVisitor;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
+
+import javax.xml.namespace.QName;
+import java.net.URI;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Visitor used to produce a JCR SQL2 query from an S-RAMP xpath query.
@@ -55,13 +36,17 @@ import org.overlord.sramp.repository.jcr.i18n.Messages;
  */
 public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 
-	private static QName CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAnyOf");
-	private static QName CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAllOf");
-	private static QName EXACTLY_CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAnyOf");
-	private static QName EXACTLY_CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAllOf");
-    private static QName MATCHES = new QName("http://www.w3.org/2005/xpath-functions", "matches");
-    private static QName NOT = new QName("http://www.w3.org/2005/xpath-functions", "not");
-	private static Map<QName, String> corePropertyMap = new HashMap<QName, String>();
+	private static final QName CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAnyOf");
+	private static final QName CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "classifiedByAllOf");
+	private static final QName EXACTLY_CLASSIFIED_BY_ANY_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAnyOf");
+	private static final QName EXACTLY_CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAllOf");
+
+    public static final QName GET_RELATIONSHIP_ATTRIBUTE = new QName(SrampConstants.SRAMP_NS, "getRelationshipAttribute");
+
+    private static final QName MATCHES = new QName("http://www.w3.org/2005/xpath-functions", "matches");
+    private static final QName NOT = new QName("http://www.w3.org/2005/xpath-functions", "not");
+
+	private static final Map<QName, String> corePropertyMap = new HashMap<QName, String>();
 	static {
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "createdBy"), JCRConstants.JCR_CREATED_BY);
 		corePropertyMap.put(new QName(SrampConstants.SRAMP_NS, "version"), "version");
@@ -98,6 +83,13 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	private String lastFPS = null;
     private Pattern datePattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d");
 	private SrampException error;
+	// Ugly, dirty hack.  Ex query: /s-ramp/wsdl/WsdlDocument[someRelationship[s-ramp:getRelationshipAttribute(., 'someAttribute') = 'true']]
+	// Note that the predicate function needs to affect the preceding relationship itself, *not* the target artifact
+	// subselect.  The relevant visitor will set this String, which will block the subselect and instead appear
+	// on the root where condition.
+	// TODO: This isn't introduced in every method (nor should it), so you may need to add handling elsewhere.  See
+	// the switch in visit(PrimaryExpr node) as an example.
+    private StringBuilder relationshipWhereBuilder = null;
 
 	/**
 	 * Default constructor.
@@ -260,6 +252,8 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(EqualityExpr node) {
+
+
 		if (node.getSubartifactSet() != null) {
 			node.getSubartifactSet().accept(this);
 		} else if (node.getExpr() != null) {
@@ -268,13 +262,24 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			this.whereBuilder.append(" ) ");
 		} else if (node.getOperator() == null) {
 			node.getLeft().accept(this);
-			this.whereBuilder.append(" IS NOT NULL");
+			if (relationshipWhereBuilder != null) {
+				relationshipWhereBuilder.append(" IS NOT NULL");
+			} else {
+				this.whereBuilder.append(" IS NOT NULL");
+			}
 		} else {
 			node.getLeft().accept(this);
-			this.whereBuilder.append(" ");
-			this.whereBuilder.append(node.getOperator().symbol());
-			this.whereBuilder.append(" ");
-			node.getRight().accept(this);
+			if (relationshipWhereBuilder != null) {
+				relationshipWhereBuilder.append(" ");
+				relationshipWhereBuilder.append(node.getOperator().symbol());
+				relationshipWhereBuilder.append(" ");
+				node.getRight().accept(this);
+			} else {
+				this.whereBuilder.append(" ");
+				this.whereBuilder.append(node.getOperator().symbol());
+				this.whereBuilder.append(" ");
+				node.getRight().accept(this);
+			}
 		}
 	}
 
@@ -320,47 +325,29 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	@Override
 	public void visit(FunctionCall node) {
 		if (SrampConstants.SRAMP_NS.equals(node.getFunctionName().getNamespaceURI())) {
-			String propertyName = null, operator = null;
-			Collection<URI> classifications = resolveArgumentsToClassifications(node.getArguments());
 			if (node.getFunctionName().equals(CLASSIFIED_BY_ALL_OF)) {
-				propertyName = JCRConstants.SRAMP_NORMALIZED_CLASSIFIED_BY;
-				operator = "AND";
+                visitClassifications(node, JCRConstants.SRAMP_NORMALIZED_CLASSIFIED_BY, "AND");
 			} else if (node.getFunctionName().equals(CLASSIFIED_BY_ANY_OF)) {
-				propertyName = JCRConstants.SRAMP_NORMALIZED_CLASSIFIED_BY;
-				operator = "OR";
+                visitClassifications(node, JCRConstants.SRAMP_NORMALIZED_CLASSIFIED_BY, "OR");
 			} else if (node.getFunctionName().equals(EXACTLY_CLASSIFIED_BY_ALL_OF)) {
-				propertyName = JCRConstants.SRAMP_CLASSIFIED_BY;
-				operator = "AND";
+                visitClassifications(node, JCRConstants.SRAMP_CLASSIFIED_BY, "AND");
 			} else if (node.getFunctionName().equals(EXACTLY_CLASSIFIED_BY_ANY_OF)) {
-				propertyName = JCRConstants.SRAMP_CLASSIFIED_BY;
-				operator = "OR";
-			} else {
+                visitClassifications(node, JCRConstants.SRAMP_CLASSIFIED_BY, "OR");
+			} else if (node.getFunctionName().equals(GET_RELATIONSHIP_ATTRIBUTE)) {
+                if (node.getArguments().size() != 2) {
+                    // TODO: throw?
+                }
+				// Dirty hack.  Ex query: /s-ramp/wsdl/WsdlDocument[someRelationship[s-ramp:getRelationshipAttribute(., 'someAttribute') = 'true']]
+				// Note that the predicate function needs to affect the preceding relationship itself, *not* the target artifact
+				// subselect.  The relevant visitor will set this String, which will block the subselect and instead appear
+				// on the root where condition.
+                String otherAttributeKey = reduceStringLiteralArgument(node.getArguments().get(1));
+				relationshipWhereBuilder = new StringBuilder("%1$s.[" + JCRConstants.SRAMP_OTHER_ATTRIBUTES + ":" + otherAttributeKey + "]");
+            } else {
 			    if (node.getFunctionName().getLocalPart().equals("matches") || node.getFunctionName().getLocalPart().equals("not")) {
                     throw new RuntimeException(Messages.i18n.format("XP_BAD_FUNC_NS", node.getFunctionName().getLocalPart()) );
 			    }
 				throw new RuntimeException(Messages.i18n.format("XP_FUNC_NOT_SUPPORTED", node.getFunctionName().toString()));
-			}
-
-			if (classifications.size() > 1) {
-				this.whereBuilder.append("(");
-			}
-			boolean first = true;
-			for (URI classification : classifications) {
-				if (!first) {
-					this.whereBuilder.append(" ");
-					this.whereBuilder.append(operator);
-					this.whereBuilder.append(" ");
-				}
-                this.whereBuilder.append(artifactPredicateContext);
-				this.whereBuilder.append(".[");
-				this.whereBuilder.append(propertyName);
-				this.whereBuilder.append("] = '");
-				this.whereBuilder.append(escapeStringLiteral(classification.toString()));
-				this.whereBuilder.append("'");
-				first = false;
-			}
-			if (classifications.size() > 1) {
-				this.whereBuilder.append(")");
 			}
 		} else if (MATCHES.equals(node.getFunctionName())) {
 			if (node.getArguments().size() != 2) {
@@ -394,26 +381,52 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		}
 	}
 
-	/**
-	 * Resolves the list of arguments to a collection of classification URIs.
-	 * @param arguments
-	 */
-	private Collection<URI> resolveArgumentsToClassifications(List<Argument> arguments) {
-		Collection<String> classifiedBy = new HashSet<String>();
-		for (int idx = 1; idx < arguments.size(); idx++) {
-			Argument arg = arguments.get(idx);
-			if (arg.getPrimaryExpr() == null || arg.getPrimaryExpr().getLiteral() == null) {
-				throw new RuntimeException(Messages.i18n.format("XP_INVALID_CLASSIFIER_FORMAT"));
-			}
-			classifiedBy.add(arg.getPrimaryExpr().getLiteral());
-		}
-		try {
-			return this.classificationHelper.resolveAll(classifiedBy);
-		} catch (SrampException e) {
-		    this.error = e;
-		    return Collections.emptySet();
-		}
-	}
+    private void visitClassifications(FunctionCall node, String propertyName, String operator) {
+        Collection<URI> classifications = resolveArgumentsToClassifications(node.getArguments());
+
+        if (classifications.size() > 1) {
+            this.whereBuilder.append("(");
+        }
+        boolean first = true;
+        for (URI classification : classifications) {
+            if (!first) {
+                this.whereBuilder.append(" ");
+                this.whereBuilder.append(operator);
+                this.whereBuilder.append(" ");
+            }
+            this.whereBuilder.append(artifactPredicateContext);
+            this.whereBuilder.append(".[");
+            this.whereBuilder.append(propertyName);
+            this.whereBuilder.append("] = '");
+            this.whereBuilder.append(escapeStringLiteral(classification.toString()));
+            this.whereBuilder.append("'");
+            first = false;
+        }
+        if (classifications.size() > 1) {
+            this.whereBuilder.append(")");
+        }
+    }
+
+    /**
+     * Resolves the list of arguments to a collection of classification URIs.
+     * @param arguments
+     */
+    private Collection<URI> resolveArgumentsToClassifications(List<Argument> arguments) {
+        Collection<String> classifiedBy = new HashSet<String>();
+        for (int idx = 1; idx < arguments.size(); idx++) {
+            Argument arg = arguments.get(idx);
+            if (arg.getPrimaryExpr() == null || arg.getPrimaryExpr().getLiteral() == null) {
+                throw new RuntimeException(Messages.i18n.format("XP_INVALID_CLASSIFIER_FORMAT"));
+            }
+            classifiedBy.add(arg.getPrimaryExpr().getLiteral());
+        }
+        try {
+            return this.classificationHelper.resolveAll(classifiedBy);
+        } catch (SrampException e) {
+            this.error = e;
+            return Collections.emptySet();
+        }
+    }
 
 	/**
 	 * @see org.overlord.sramp.common.query.xpath.visitors.XPathVisitor#visit(org.overlord.sramp.common.query.xpath.ast.OrExpr)
@@ -442,21 +455,28 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(PrimaryExpr node) {
+		StringBuilder sb;
+		if (relationshipWhereBuilder != null) {
+			sb = relationshipWhereBuilder;
+		} else {
+			sb = whereBuilder;
+		}
+
 		if (node.getLiteral() != null) {
 		    boolean isDate = (JCRConstants.JCR_LAST_MODIFIED.equals(this.lastFPS) || JCRConstants.JCR_CREATED.equals(this.lastFPS))
 		            && this.datePattern.matcher(node.getLiteral()).find();
 		    if (isDate) {
-		        this.whereBuilder.append("CAST(");
+		        sb.append("CAST(");
 		    }
-			this.whereBuilder.append("'");
+			sb.append("'");
 			// TODO prevent injection here
-			this.whereBuilder.append(node.getLiteral());
-			this.whereBuilder.append("'");
+			sb.append(node.getLiteral());
+			sb.append("'");
             if (isDate) {
-                this.whereBuilder.append(" AS DATE)");
+                sb.append(" AS DATE)");
             }
 		} else if (node.getNumber() != null) {
-			this.whereBuilder.append(node.getNumber());
+			sb.append(node.getNumber());
 		} else if (node.getPropertyQName() != null) {
 			throw new RuntimeException(Messages.i18n.format("XP_PROPERTY_PRIMARY_EXPR_NOT_SUPPORTED"));
 		}
@@ -513,6 +533,22 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 				this.artifactPredicateContext = oldArtifactPredicateContext;
 
 				this.whereBuilder.append(")"); // close the sub-query paren
+
+				// If the predicate resulted in the *sole* use of relationshipWhereBuilder, we need to remove the
+				// useless " WHERE " from the end of the sub-query.
+				// Holy crap, this is terrible.
+				int i = this.whereBuilder.indexOf(" WHERE )");
+				if (i != -1) {
+					this.whereBuilder.delete(i, i + 7);
+				}
+
+				if (relationshipWhereBuilder != null) {
+					String relationshipWhere = relationshipWhereBuilder.toString();
+					// Includes '%1$s' as a placeholders.
+					relationshipWhere = String.format(relationshipWhere, relationshipAlias);
+					this.whereBuilder.append(" AND " + relationshipWhere);
+					relationshipWhereBuilder = null;
+				}
 			}
 			if (node.getPredicate() != null) {
 				whereBuilder.append(")"); // Close the predicate paren
@@ -546,7 +582,7 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	private ForwardPropertyStep reducePropertyArgument(Argument argument) {
 		try {
-			ForwardPropertyStep fps = argument.getExpr().getAndExpr().getLeft().getLeft().getLeft();
+			ForwardPropertyStep fps = (ForwardPropertyStep) argument.getExpr().getAndExpr().getLeft().getLeft().getLeft();
 			if (fps == null) {
 				throw new NullPointerException();
 			}

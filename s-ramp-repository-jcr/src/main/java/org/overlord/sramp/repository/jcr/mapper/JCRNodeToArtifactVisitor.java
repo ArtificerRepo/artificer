@@ -29,6 +29,7 @@ import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.common.ArtifactType;
@@ -114,38 +115,62 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
 				}
 			}
 
-			// Map in the generic relationships
-			NodeIterator rnodes = jcrNode.getNodes();
-			while (rnodes.hasNext()) {
-				Node rNode = rnodes.nextNode();
-				if (rNode.isNodeType(JCRConstants.SRAMP_RELATIONSHIP)) {
-					String rtype = getProperty(rNode, JCRConstants.SRAMP_RELATIONSHIP_TYPE);
-					boolean generic = false;
-					if (rNode.hasProperty(JCRConstants.SRAMP_GENERIC)) {
-						generic = rNode.getProperty(JCRConstants.SRAMP_GENERIC).getBoolean();
-					}
-					if (!generic)
-						continue;
-					Relationship relationship = new Relationship();
-					relationship.setRelationshipType(rtype);
-					if (rNode.hasProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)) {
-						Property property = rNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET);
-						Value[] values = property.getValues();
-						for (Value value : values) {
-							if (value.getType() == PropertyType.WEAKREFERENCE) {
-								Target target = createTarget(Target.class, value);
-								relationship.getRelationshipTarget().add(target);
-							}
-						}
-					}
-
-					artifact.getRelationship().add(relationship);
-				}
-			}
+            // Map in the generic relationships
+            visitGenericRelationships(artifact);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
+
+    private void visitGenericRelationships(BaseArtifactType artifact) throws Exception {
+        NodeIterator rnodes = jcrNode.getNodes();
+        while (rnodes.hasNext()) {
+            Node rNode = rnodes.nextNode();
+            if (rNode.isNodeType(JCRConstants.SRAMP_RELATIONSHIP)) {
+                String rtype = getProperty(rNode, JCRConstants.SRAMP_RELATIONSHIP_TYPE);
+                boolean generic = false;
+                if (rNode.hasProperty(JCRConstants.SRAMP_GENERIC)) {
+                    generic = rNode.getProperty(JCRConstants.SRAMP_GENERIC).getBoolean();
+                }
+                if (!generic)
+                    continue;
+
+                Relationship relationship = new Relationship();
+                relationship.setRelationshipType(rtype);
+                if (rNode.hasProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)) {
+                    Property property = rNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET);
+                    Value[] values = property.getValues();
+                    for (Value value : values) {
+                        if (value.getType() == PropertyType.WEAKREFERENCE) {
+                            Target target = createTarget(Target.class, value);
+                            relationship.getRelationshipTarget().add(target);
+                        }
+                    }
+                }
+
+                String attributeKeyPrefix = JCRConstants.SRAMP_OTHER_ATTRIBUTES + ":";
+                PropertyIterator properties = rNode.getProperties();
+                while (properties.hasNext()) {
+                    Property property = properties.nextProperty();
+                    String propName = property.getName();
+                    if (propName.startsWith(attributeKeyPrefix)) {
+                        String qname = propName.substring(attributeKeyPrefix.length());
+                        String propValue = property.getValue().getString();
+                        // Need to support no-value properties, but JCR will remove it if it's null.  Further, if it's an
+                        // empty string, the property existence query fails.  Therefore, ArtifactToJCRNodeVisitor uses
+                        // this placeholder.
+                        if (propValue.equals(JCRConstants.NO_VALUE)) {
+                            propValue = null;
+                        }
+
+                        relationship.getOtherAttributes().put(QName.valueOf(qname), propValue);
+                    }
+                }
+
+                artifact.getRelationship().add(relationship);
+            }
+        }
+    }
 
 	/**
 	 * @see org.overlord.sramp.common.visitors.HierarchicalArtifactVisitor#visitDerived(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType)

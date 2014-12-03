@@ -194,7 +194,8 @@ public class ModeshapeRepository extends JCRRepository {
 			namespaceRegistry.registerNamespace(JCRConstants.SRAMP, JCRConstants.SRAMP_NS);
 			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_PROPERTIES, JCRConstants.SRAMP_PROPERTIES_NS);
 			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_RELATIONSHIPS, JCRConstants.SRAMP_RELATIONSHIPS_NS);
-			namespaceRegistry.registerNamespace(JCRConstants.SRAMP_AUDIT, JCRConstants.SRAMP_AUDIT_NS);
+            namespaceRegistry.registerNamespace(JCRConstants.SRAMP_AUDIT, JCRConstants.SRAMP_AUDIT_NS);
+            namespaceRegistry.registerNamespace(JCRConstants.SRAMP_OTHER_ATTRIBUTES, JCRConstants.SRAMP_OTHER_ATTRIBUTES_NS);
 
 			NodeTypeManager manager = (NodeTypeManager) session.getWorkspace().getNodeTypeManager();
 

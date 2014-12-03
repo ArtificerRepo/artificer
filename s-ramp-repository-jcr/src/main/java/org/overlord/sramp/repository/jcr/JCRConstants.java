@@ -17,6 +17,8 @@ package org.overlord.sramp.repository.jcr;
 
 import org.overlord.sramp.common.SrampConstants;
 
+import javax.xml.namespace.QName;
+
 
 public class JCRConstants {
 
@@ -39,14 +41,16 @@ public class JCRConstants {
     
     public static final String JCR_SQL2 = "JCR-SQL2";
 
-    public static final String SRAMP                  = "sramp";
-	public static final String SRAMP_NS               = SrampConstants.SRAMP_NS;
-	public static final String SRAMP_PROPERTIES       = "sramp-properties";
-	public static final String SRAMP_PROPERTIES_NS    = SRAMP_NS + "#properties";
-	public static final String SRAMP_RELATIONSHIPS    = "sramp-relationships";
-	public static final String SRAMP_RELATIONSHIPS_NS = SRAMP_NS + "#relationships";
-    public static final String SRAMP_AUDIT            = "audit";
-    public static final String SRAMP_AUDIT_NS         = SrampConstants.SRAMP_AUDIT_NS;
+    public static final String SRAMP                            = "sramp";
+	public static final String SRAMP_NS                         = SrampConstants.SRAMP_NS;
+	public static final String SRAMP_PROPERTIES                 = "sramp-properties";
+	public static final String SRAMP_PROPERTIES_NS              = SRAMP_NS + "#properties";
+	public static final String SRAMP_RELATIONSHIPS               = "sramp-relationships";
+	public static final String SRAMP_RELATIONSHIPS_NS           = SRAMP_NS + "#relationships";
+    public static final String SRAMP_AUDIT                      = "audit";
+    public static final String SRAMP_AUDIT_NS                   = SrampConstants.SRAMP_AUDIT_NS;
+    public static final String SRAMP_OTHER_ATTRIBUTES           = "sramp-other-attributes";
+    public static final String SRAMP_OTHER_ATTRIBUTES_NS        = SRAMP_NS + "#otherAttributes";
 
     public static final String SRAMP_                           = SRAMP + ":";
     public static final String SRAMP_ARTIFACT_MODEL             = SRAMP_ + "artifactModel";

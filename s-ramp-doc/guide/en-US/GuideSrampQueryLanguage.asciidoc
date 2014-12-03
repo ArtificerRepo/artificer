@@ -40,3 +40,12 @@ provide the following table of examples of a range of queries:
 |/s-ramp/ext/ServletFilter[relatedDocument[@uuid=\'12345']]              |All servlet filter artifacts derived from (i.e. contain a 'relatedDocument' relationship to) an artifact with UUID '12345'.
 |/s-ramp/wsdl/Message[xp2:matches(.,\'get.*')]/part[element]             |Element style WSDL parts from WSDL messages with names starting with 'get'.
 |=============================
+
+In addition, Overlord S-RAMP provides extensions to the S-RAMP query language, providing extra capabilities.
+
+[width="100%",options="header"]
+|=============================
+|Query                                                                                                      |What It Selects
+|/s-ramp/xsd/XsdDocument[someRelationship[s-ramp:getRelationshipAttribute(., 'someName')]]                  |All XSD artifacts that contain a generic relationship named 'someRelationship', and that relationship has an 'otherAttribute' named 'someName'.
+|/s-ramp/xsd/XsdDocument[someRelationship[s-ramp:getRelationshipAttribute(., 'someName') = 'someValue']]    |All XSD artifacts that contain a generic relationship named 'someRelationship', and that relationship has an 'otherAttribute' named 'someName' with a 'someValue' value.
+|=============================

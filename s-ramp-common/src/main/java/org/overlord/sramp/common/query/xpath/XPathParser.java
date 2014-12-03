@@ -23,32 +23,18 @@
  */
 package org.overlord.sramp.common.query.xpath;
 
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampConstants;
+import org.overlord.sramp.common.i18n.Messages;
+import org.overlord.sramp.common.query.xpath.ast.*;
+import org.overlord.sramp.common.query.xpath.ast.EqualityExpr.Operator;
+
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.namespace.QName;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.namespace.QName;
-
-import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.common.SrampConstants;
-import org.overlord.sramp.common.i18n.Messages;
-import org.overlord.sramp.common.query.xpath.ast.AndExpr;
-import org.overlord.sramp.common.query.xpath.ast.Argument;
-import org.overlord.sramp.common.query.xpath.ast.ArtifactSet;
-import org.overlord.sramp.common.query.xpath.ast.EqualityExpr;
-import org.overlord.sramp.common.query.xpath.ast.Expr;
-import org.overlord.sramp.common.query.xpath.ast.ForwardPropertyStep;
-import org.overlord.sramp.common.query.xpath.ast.FunctionCall;
-import org.overlord.sramp.common.query.xpath.ast.LocationPath;
-import org.overlord.sramp.common.query.xpath.ast.OrExpr;
-import org.overlord.sramp.common.query.xpath.ast.Predicate;
-import org.overlord.sramp.common.query.xpath.ast.PrimaryExpr;
-import org.overlord.sramp.common.query.xpath.ast.Query;
-import org.overlord.sramp.common.query.xpath.ast.RelationshipPath;
-import org.overlord.sramp.common.query.xpath.ast.SubartifactSet;
-import org.overlord.sramp.common.query.xpath.ast.EqualityExpr.Operator;
 
 /**
  * Parses an XPath query string and creates an abstract syntax tree representation. The supported grammar is
@@ -272,31 +258,41 @@ public class XPathParser {
 				throw new XPathParserException(Messages.i18n.format("XPATH_MISSING_PAREN")); //$NON-NLS-1$
 		} else if (tokens.canConsume("@")) { //$NON-NLS-1$
 			ForwardPropertyStep forwardPropertyStep = parseForwardPropertyStep(tokens);
-			PrimaryExpr primaryExpr = null;
-			if (tokens.canConsume("!", "=")) { //$NON-NLS-1$ //$NON-NLS-2$
-				equalityExpr.setOperator(Operator.NE);
-				primaryExpr = parsePrimaryExpr(tokens);
-			} else if (tokens.canConsume("<", "=")) { //$NON-NLS-1$ //$NON-NLS-2$
-				equalityExpr.setOperator(Operator.LTE);
-				primaryExpr = parsePrimaryExpr(tokens);
-			} else if (tokens.canConsume(">", "=")) { //$NON-NLS-1$ //$NON-NLS-2$
-				equalityExpr.setOperator(Operator.GTE);
-				primaryExpr = parsePrimaryExpr(tokens);
-			} else if (tokens.matchesAnyOf("=", "<", ">")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				String symbol = tokens.consume().toString();
-				Operator operator = Operator.valueOfSymbol(symbol);
-				equalityExpr.setOperator(operator);
-				primaryExpr = parsePrimaryExpr(tokens);
-			}
-
 			equalityExpr.setLeft(forwardPropertyStep);
-			equalityExpr.setRight(primaryExpr);
+            parseEqualityExprRight(tokens, equalityExpr);
+
+		} else if (tokens.canConsume("s-ramp", ":", "getRelationshipAttribute")) {
+            // Allow functions as the left side of equality expressions.
+			// TODO: Some functions are equality expressions (ie, getRelationshipAttribute).  Most others
+			// (classifiers, etc.) are not and need to be handled by parseSubartifactSet, below.  Not sure how to
+			// better differentiate in a general way, rather than maintaining a list of functions here...
+            FunctionCall functionCall = parseFunctionCall(tokens, "s-ramp", "getRelationshipAttribute");
+			equalityExpr.setLeft(functionCall);
+            parseEqualityExprRight(tokens, equalityExpr);
 		} else {
-			SubartifactSet subartifactSet = parseSubartifactSet(tokens);
-			equalityExpr.setSubArtifactSet(subartifactSet);
-		}
+            // Else, assume the expression belongs in the subArtifactSelect.
+            equalityExpr.setSubArtifactSet(parseSubartifactSet(tokens));
+        }
 		return equalityExpr;
 	}
+
+    private void parseEqualityExprRight(TokenStream tokens, EqualityExpr equalityExpr) {
+        if (tokens.canConsume("!", "=")) { //$NON-NLS-1$ //$NON-NLS-2$
+            equalityExpr.setOperator(Operator.NE);
+			equalityExpr.setRight(parsePrimaryExpr(tokens));
+        } else if (tokens.canConsume("<", "=")) { //$NON-NLS-1$ //$NON-NLS-2$
+            equalityExpr.setOperator(Operator.LTE);
+			equalityExpr.setRight(parsePrimaryExpr(tokens));
+        } else if (tokens.canConsume(">", "=")) { //$NON-NLS-1$ //$NON-NLS-2$
+            equalityExpr.setOperator(Operator.GTE);
+			equalityExpr.setRight(parsePrimaryExpr(tokens));
+        } else if (tokens.matchesAnyOf("=", "<", ">")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            String symbol = tokens.consume().toString();
+            Operator operator = Operator.valueOfSymbol(symbol);
+            equalityExpr.setOperator(operator);
+			equalityExpr.setRight(parsePrimaryExpr(tokens));
+        }
+    }
 
 	/**
 	 * Parses a {@link ForwardPropertyStep} from the token stream.
@@ -394,8 +390,9 @@ public class XPathParser {
 		if (tokens.canConsume("[")) { //$NON-NLS-1$
 			RelationshipPath relationshipPath = new RelationshipPath(relationshipOrFunction);
 			Predicate predicate = parsePredicate(tokens);
-			if (!tokens.canConsume("]")) //$NON-NLS-1$
+			if (!tokens.canConsume("]")) { //$NON-NLS-1$
 				throw new XPathParserException(Messages.i18n.format("XPATH_UNTERMINATED_PREDICATE")); //$NON-NLS-1$
+            }
 
 			subartifactSet.setRelationshipPath(relationshipPath);
 			subartifactSet.setPredicate(predicate);
@@ -409,16 +406,8 @@ public class XPathParser {
 			if (!tokens.matches(TokenType.name))
 				throw new XPathParserException(Messages.i18n.format("XPATH_FUNCTION_EXPECTED")); //$NON-NLS-1$
 			String localName = tokens.consume().toString();
-			String namespace = getNamespaceContext().getNamespaceURI(prefix);
-			QName functionName = new QName(namespace, localName, prefix);
-			if (!tokens.matches("(")) //$NON-NLS-1$
-				throw new XPathParserException(Messages.i18n.format("XPATH_ARGS_EXPECTED")); //$NON-NLS-1$
-			List<Argument> arguments = parseFunctionArguments(tokens);
-
-			FunctionCall functionCall = new FunctionCall();
-			functionCall.setFunctionName(functionName);
-			functionCall.setArguments(arguments);
-			subartifactSet.setFunctionCall(functionCall);
+            FunctionCall functionCall = parseFunctionCall(tokens, prefix, localName);
+            subartifactSet.setFunctionCall(functionCall);
 		} else if (tokens.matches("(")) { //$NON-NLS-1$
 			String prefix = getDefaultPrefix();
 			String localName = relationshipOrFunction;
@@ -436,6 +425,19 @@ public class XPathParser {
 		}
 		return subartifactSet;
 	}
+
+    private FunctionCall parseFunctionCall(TokenStream tokens, String prefix, String localName) {
+        String namespace = getNamespaceContext().getNamespaceURI(prefix);
+        QName functionName = new QName(namespace, localName, prefix);
+        if (!tokens.matches("(")) //$NON-NLS-1$
+            throw new XPathParserException(Messages.i18n.format("XPATH_ARGS_EXPECTED")); //$NON-NLS-1$
+        List<Argument> arguments = parseFunctionArguments(tokens);
+
+        FunctionCall functionCall = new FunctionCall();
+        functionCall.setFunctionName(functionName);
+        functionCall.setArguments(arguments);
+        return functionCall;
+    }
 
     /**
      * Parses a list of {@link Argument}s from the token stream.
