@@ -29,7 +29,7 @@ import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactService;
 import org.overlord.sramp.ui.server.api.SrampApiClientAccessor;
@@ -137,9 +137,9 @@ public class ArtifactService implements IArtifactService {
      * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#getRelationships(java.lang.String, java.lang.String)
      */
     @Override
-    public ArtifactRelationshipsBean getRelationships(String uuid, String artifactType)
+    public ArtifactRelationshipsIndexBean getRelationships(String uuid, String artifactType)
             throws SrampUiException {
-        ArtifactRelationshipsBean rval = new ArtifactRelationshipsBean();
+        ArtifactRelationshipsIndexBean rval = new ArtifactRelationshipsIndexBean();
         try {
             ArtifactType at = ArtifactType.valueOf(artifactType);
             BaseArtifactType artifact = SrampApiClientAccessor.getClient().getArtifactMetaData(at, uuid);

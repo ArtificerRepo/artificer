@@ -15,24 +15,21 @@
  */
 package org.overlord.sramp.ui.client.shared.beans;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
- * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
 @Portable
 public class ArtifactRelationshipsBean implements Serializable {
 
     private static final long serialVersionUID = ArtifactRelationshipsBean.class.hashCode();
 
-    private Map<String, List<ArtifactRelationshipBean>> relationships = new HashMap<String, List<ArtifactRelationshipBean>>();
+    private List<ArtifactRelationshipBean> relationships = new ArrayList<ArtifactRelationshipBean>();
 
     /**
      * Constructor.
@@ -43,23 +40,7 @@ public class ArtifactRelationshipsBean implements Serializable {
     /**
      * @return the relationships
      */
-    public Map<String, List<ArtifactRelationshipBean>> getRelationships() {
+    public List<ArtifactRelationshipBean> getRelationships() {
         return relationships;
     }
-
-    /**
-     * Adds a single relationship.  The relationship gets added to the internal
-     * state, indexed by its relationship type.
-     * @param relationship
-     */
-    public void addRelationship(ArtifactRelationshipBean relationship) {
-        String type = relationship.getRelationshipType();
-        List<ArtifactRelationshipBean> list = relationships.get(type);
-        if (list == null) {
-            list = new ArrayList<ArtifactRelationshipBean>();
-            relationships.put(type, list);
-        }
-        list.add(relationship);
-    }
-
 }

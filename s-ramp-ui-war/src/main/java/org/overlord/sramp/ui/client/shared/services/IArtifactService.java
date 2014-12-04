@@ -25,7 +25,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 
 /**
@@ -67,7 +67,7 @@ public interface IArtifactService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("relationships/{uuid}/{artifactType}")
-    public ArtifactRelationshipsBean getRelationships(@PathParam("uuid") String uuid,
+    public ArtifactRelationshipsIndexBean getRelationships(@PathParam("uuid") String uuid,
             @PathParam("artifactType") String artifactType) throws SrampUiException;
 
     /**

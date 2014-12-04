@@ -15,25 +15,23 @@
  */
 package org.overlord.sramp.ui.client.local.pages.details;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
-import org.overlord.commons.gwt.client.local.widgets.TemplatedWidgetTable;
-import org.overlord.sramp.ui.client.local.pages.ArtifactDetailsPage;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipBean;
-
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
+import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
+import org.overlord.commons.gwt.client.local.widgets.TemplatedWidgetTable;
+import org.overlord.sramp.ui.client.local.pages.ArtifactDetailsPage;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A table of artifacts.
@@ -41,7 +39,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class RelationshipsTable extends TemplatedWidgetTable implements HasValue<Map<String, List<ArtifactRelationshipBean>>> {
+public class RelationshipsTable extends TemplatedWidgetTable implements HasValue<Map<String, ArtifactRelationshipsBean>> {
 
     @Inject
     protected TransitionAnchorFactory<ArtifactDetailsPage> toDetailsPageLinkFactory;
@@ -57,7 +55,7 @@ public class RelationshipsTable extends TemplatedWidgetTable implements HasValue
      */
     @Override
     public HandlerRegistration addValueChangeHandler(
-            ValueChangeHandler<Map<String, List<ArtifactRelationshipBean>>> handler) {
+            ValueChangeHandler<Map<String, ArtifactRelationshipsBean>> handler) {
         return null;
     }
 
@@ -65,7 +63,7 @@ public class RelationshipsTable extends TemplatedWidgetTable implements HasValue
      * @see com.google.gwt.user.client.ui.HasValue#getValue()
      */
     @Override
-    public Map<String, List<ArtifactRelationshipBean>> getValue() {
+    public Map<String, ArtifactRelationshipsBean> getValue() {
         return null;
     }
 
@@ -73,7 +71,7 @@ public class RelationshipsTable extends TemplatedWidgetTable implements HasValue
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(Map<String, List<ArtifactRelationshipBean>> value) {
+    public void setValue(Map<String, ArtifactRelationshipsBean> value) {
         setValue(value, false);
     }
 
@@ -81,12 +79,12 @@ public class RelationshipsTable extends TemplatedWidgetTable implements HasValue
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
     @Override
-    public void setValue(Map<String, List<ArtifactRelationshipBean>> value, boolean fireEvents) {
+    public void setValue(Map<String, ArtifactRelationshipsBean> value, boolean fireEvents) {
         Set<String> keys = new TreeSet<String>(value.keySet());
         for (String key : keys) {
             addHeadingRow(key);
-            List<ArtifactRelationshipBean> relationships = value.get(key);
-            for (ArtifactRelationshipBean relationship : relationships) {
+            ArtifactRelationshipsBean relationships = value.get(key);
+            for (ArtifactRelationshipBean relationship : relationships.getRelationships()) {
                 addDataRow(relationship);
             }
         }
@@ -106,7 +104,7 @@ public class RelationshipsTable extends TemplatedWidgetTable implements HasValue
 
     /**
      * Adds a single data row to the table.
-     * @param artifactSummaryBean
+     * @param relationship
      */
     public void addDataRow(final ArtifactRelationshipBean relationship) {
         int rowIdx = this.rowElements.size();

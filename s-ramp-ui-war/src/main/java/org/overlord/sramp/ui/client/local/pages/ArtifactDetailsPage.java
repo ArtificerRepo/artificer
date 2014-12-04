@@ -55,7 +55,7 @@ import org.overlord.sramp.ui.client.local.util.DOMUtil;
 import org.overlord.sramp.ui.client.local.util.DataBindingDateConverter;
 import org.overlord.sramp.ui.client.local.widgets.common.EditableInlineLabel;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.overlord.sramp.ui.client.shared.beans.NotificationBean;
 
 import com.google.gwt.core.client.GWT;
@@ -335,9 +335,9 @@ public class ArtifactDetailsPage extends AbstractPage {
     protected void loadRelationships(ArtifactBean artifact) {
         relationships.setVisible(false);
         relationshipsTabProgress.setVisible(true);
-        artifactService.getRelationships(artifact.getUuid(), artifact.getType(), new IServiceInvocationHandler<ArtifactRelationshipsBean>() {
+        artifactService.getRelationships(artifact.getUuid(), artifact.getType(), new IServiceInvocationHandler<ArtifactRelationshipsIndexBean>() {
             @Override
-            public void onReturn(ArtifactRelationshipsBean data) {
+            public void onReturn(ArtifactRelationshipsIndexBean data) {
                 relationships.setValue(data.getRelationships());
                 relationshipsTabProgress.setVisible(false);
                 relationships.setVisible(true);

@@ -22,7 +22,7 @@ import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.common.visitors.RelationshipArtifactVisitor;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipBean;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 
 /**
  * Visits an artifact to resolve all of its relationships.
@@ -32,14 +32,14 @@ import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
 public class RelationshipResolver {
 
     private SrampAtomApiClient client;
-    private ArtifactRelationshipsBean indexedRelationships;
+    private ArtifactRelationshipsIndexBean indexedRelationships;
 
     /**
      * Constructor.
      * @param client
      * @param indexedRelationships
      */
-    public RelationshipResolver(SrampAtomApiClient client, ArtifactRelationshipsBean indexedRelationships) {
+    public RelationshipResolver(SrampAtomApiClient client, ArtifactRelationshipsIndexBean indexedRelationships) {
         this.client = client;
         this.indexedRelationships = indexedRelationships;
     }

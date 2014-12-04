@@ -25,7 +25,7 @@ import org.overlord.sramp.ui.client.local.services.callback.DelegatingErrorCallb
 import org.overlord.sramp.ui.client.local.services.callback.DelegatingRemoteCallback;
 import org.overlord.sramp.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactBean;
-import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsBean;
+import org.overlord.sramp.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.overlord.sramp.ui.client.shared.exceptions.SrampUiException;
 import org.overlord.sramp.ui.client.shared.services.IArtifactService;
 
@@ -77,8 +77,8 @@ public class ArtifactServiceCaller {
      * @see org.overlord.sramp.ui.client.shared.services.IArtifactService#getRelationships(String, String)
      */
     public void getRelationships(String uuid, String artifactType,
-            IServiceInvocationHandler<ArtifactRelationshipsBean> handler) {
-        RemoteCallback<ArtifactRelationshipsBean> successCallback = new DelegatingRemoteCallback<ArtifactRelationshipsBean>(handler);
+            IServiceInvocationHandler<ArtifactRelationshipsIndexBean> handler) {
+        RemoteCallback<ArtifactRelationshipsIndexBean> successCallback = new DelegatingRemoteCallback<ArtifactRelationshipsIndexBean>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
             remoteArtifactService.call(successCallback, errorCallback).getRelationships(uuid, artifactType);
