@@ -187,7 +187,7 @@ public class ArtifactResource extends AbstractResource {
      *
      * Note that this is not required by the spec!  Also note that the filename slug *is* required.
      *
-     * The endpoint is /s-ramp/ext/autodetect.
+     * The endpoint is /s-ramp/autodetect.
      *
      * @param fileName
      * @param is

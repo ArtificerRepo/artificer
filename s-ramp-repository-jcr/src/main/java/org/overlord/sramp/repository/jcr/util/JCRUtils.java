@@ -193,7 +193,7 @@ public class JCRUtils {
         boolean error = false;
         try {
             // Create an 'nt:file' node at the supplied path, creating any missing intermediate nodes of type 'nt:folder' ...
-            fileNode = findOrCreateNode(session.getRootNode(), path, JCRConstants.NT_FOLDER,JCRConstants.NT_FILE);
+            fileNode = findOrCreateNode(session.getRootNode(), path, JCRConstants.NT_FOLDER, JCRConstants.NT_FILE);
 
             // Upload the file to that node ...
             Node contentNode = findOrCreateChild(fileNode, JCRConstants.JCR_CONTENT, JCRConstants.NT_RESOURCE);

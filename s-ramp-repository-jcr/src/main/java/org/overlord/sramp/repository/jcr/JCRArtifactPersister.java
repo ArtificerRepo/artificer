@@ -37,10 +37,7 @@ import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.System;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +143,8 @@ public final class JCRArtifactPersister {
         if (!isDocumentArtifact) {
             artifactNode = JCRUtils.findOrCreateNode(session, artifactPath, "nt:folder", JCRConstants.SRAMP_NON_DOCUMENT_TYPE);
         } else {
-            InputStream is = artifactContent == null ? null : artifactContent.getInputStream();
+            // Some versions of ModeShape do not allow 'null' Binary values, so we must give a valid IS.
+            InputStream is = artifactContent == null ? new ByteArrayInputStream(new byte[0]) : artifactContent.getInputStream();
             artifactNode = JCRUtils.uploadFile(session, artifactPath, is);
             JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
         }
