@@ -1021,6 +1021,11 @@
         <artifactId>errai-jboss-as-support</artifactId>
         <version>${version.org.jboss.errai}</version>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-marshalling</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
       
       <!-- Declarative Service Annotations -->
       <dependency>
