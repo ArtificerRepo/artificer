@@ -105,7 +105,7 @@
     <version.org.jboss.errai>2.4.4.Final</version.org.jboss.errai>
     <version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>2.1.19.Final</version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>
     <version.org.modeshape>3.8.0.Final</version.org.modeshape>
-    <version.org.overlord.overlord-commons>2.0.12-SNAPSHOT</version.org.overlord.overlord-commons>
+    <version.org.overlord.overlord-commons>2.0.12.Final</version.org.overlord.overlord-commons>
     <version.org.picketbox>4.0.19.SP4</version.org.picketbox>
     <version.org.picketlink>2.5.3.SP4</version.org.picketlink>
     <version.org.switchyard>2.0.0.Alpha1</version.org.switchyard>
