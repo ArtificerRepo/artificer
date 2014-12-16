@@ -496,6 +496,10 @@ public class ArtifactResource extends AbstractResource {
             // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
             // HTTP response type.
             throw e;
+        } catch (SrampAlreadyExistsException e) {
+            // Simply re-throw.  Don't allow the following catch it -- SrampAlreadyExistsException is mapped to a
+            // unique HTTP response type.
+            throw e;
         } catch (Exception e) {
 			logError(logger, Messages.i18n.format("ERROR_UPDATING_CONTENT", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
@@ -636,6 +640,10 @@ public class ArtifactResource extends AbstractResource {
             // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
             // HTTP response type.
             throw e;
+        } catch (SrampAlreadyExistsException e) {
+            // Simply re-throw.  Don't allow the following catch it -- SrampAlreadyExistsException is mapped to a
+            // unique HTTP response type.
+            throw e;
         } catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
@@ -678,7 +686,11 @@ public class ArtifactResource extends AbstractResource {
 			// Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
 			// HTTP response type.
 			throw e;
-		} catch (Exception e) {
+		} catch (SrampAlreadyExistsException e) {
+            // Simply re-throw.  Don't allow the following catch it -- SrampAlreadyExistsException is mapped to a
+            // unique HTTP response type.
+            throw e;
+        } catch (Exception e) {
 			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY_CONTENT", uuid), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
 		}
