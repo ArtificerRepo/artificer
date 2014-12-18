@@ -287,7 +287,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
             artifact.getPerforms().addAll(getRelationships("performs", ServiceTarget.class));
             artifact.setDirectsOrchestration(getRelationship("directsOrchestration", OrchestrationTarget.class));
             artifact.setDirectsOrchestrationProcess(
-                    getRelationship("directsOrchestrationProcess", OrchestrationTarget.class));
+                    getRelationship("directsOrchestrationProcess", OrchestrationProcessTarget.class));
             artifact.getGenerates().addAll(getRelationships("generates", EventTarget.class));
             artifact.getRespondsTo().addAll(getRelationships("respondsTo", EventTarget.class));
         } catch (Exception e) {

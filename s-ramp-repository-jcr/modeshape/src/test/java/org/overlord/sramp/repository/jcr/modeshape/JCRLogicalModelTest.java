@@ -23,68 +23,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Choreography;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ChoreographyProcess;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Collaboration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.CollaborationProcess;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Composition;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Effect;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.EffectEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.EffectTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Element;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Event;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.EventEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.EventTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.InformationType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Operation;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Orchestration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OrchestrationEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OrchestrationProcess;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OrchestrationTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Organization;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Policy;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicySubject;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Port;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Service;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceComposition;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContract;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContractEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContractTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceEndpoint;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceImplementationModelEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceImplementationModelTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstance;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstanceEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstanceTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterface;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterfaceEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterfaceTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceOperation;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceOperationEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceOperationTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoaModelType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Task;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.TaskEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.TaskTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 
 /**
@@ -328,6 +267,8 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
     private EventTarget eventTarget3;
     private Orchestration orchestration1;
     private OrchestrationTarget orchestrationTarget1;
+    private OrchestrationProcess orchestrationProcess1;
+    private OrchestrationProcessTarget orchestrationProcessTarget1;
     private Policy policy1;
     private PolicyTarget policyTarget1;
     private Service service1;
@@ -374,6 +315,12 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         orchestrationTarget1 = new OrchestrationTarget();
         orchestrationTarget1.setArtifactType(OrchestrationEnum.ORCHESTRATION);
         orchestrationTarget1.setValue(orchestration1.getUuid());
+        orchestrationProcess1 = new OrchestrationProcess();
+        orchestrationProcess1.setArtifactType(BaseArtifactEnum.ORCHESTRATION_PROCESS);
+        orchestrationProcess1 = persistAndAssert(orchestrationProcess1);
+        orchestrationProcessTarget1 = new OrchestrationProcessTarget();
+        orchestrationProcessTarget1.setArtifactType(OrchestrationProcessEnum.ORCHESTRATION_PROCESS);
+        orchestrationProcessTarget1.setValue(orchestrationProcess1.getUuid());
         policy1 = new Policy();
         policy1.setArtifactType(BaseArtifactEnum.POLICY);
         policy1 = persistAndAssert(policy1);
@@ -413,7 +360,7 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         artifact.getUses().add(elementTarget2);
         artifact.getPerforms().add(serviceTarget1);
         artifact.setDirectsOrchestration(orchestrationTarget1);
-        // TODO: Test directsOrchestrationProcess, once it's corrected to use OrchestrationProcessTarget
+        artifact.setDirectsOrchestrationProcess(orchestrationProcessTarget1);
         artifact.getGenerates().add(eventTarget1);
         artifact.getRespondsTo().add(eventTarget2);
         // Just to make sure we can add more than one, make 'er so.
@@ -425,6 +372,7 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         assertElementTargets(artifact.getUses(), 1, element2);
         assertElementTargets(artifact.getPerforms(), 1, service1);
         assertElementTarget(artifact.getDirectsOrchestration(), orchestration1);
+        assertElementTarget(artifact.getDirectsOrchestrationProcess(), orchestrationProcess1);
         assertElementTargets(artifact.getGenerates(), 1, event1);
         assertElementTargets(artifact.getRespondsTo(), 2, event2, event3);
         

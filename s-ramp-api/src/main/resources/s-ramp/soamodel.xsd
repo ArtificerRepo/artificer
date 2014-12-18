@@ -211,7 +211,7 @@
           <!-- Modeled Relationship to Orchestration: -->
           <xsd:element minOccurs="0" name="directsOrchestration" type="s-ramp:orchestrationTarget" maxOccurs="1" />
           <!-- Modeled Relationship to OrchestrationProcess: -->
-          <xsd:element minOccurs="0" name="directsOrchestrationProcess" type="s-ramp:orchestrationTarget" maxOccurs="1" />
+          <xsd:element minOccurs="0" name="directsOrchestrationProcess" type="s-ramp:orchestrationProcessTarget" maxOccurs="1" />
           <!-- Modeled Relationship to Event: -->
           <xsd:element minOccurs="0" name="generates" type="s-ramp:eventTarget" maxOccurs="unbounded" />
           <!-- Modeled Relationship to Event: -->
