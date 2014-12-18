@@ -669,13 +669,13 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
         super.visit(artifact);
         try {
             List<String> targetTypes = new ArrayList<String>();
-            for (ServiceInstanceTarget target : artifact.getUses()) {
+            for (BaseArtifactTarget target : artifact.getUses()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
             setRelationships("uses", -1, -1, false, false, artifact.getUses(), targetTypes);
             
             targetTypes = new ArrayList<String>();
-            for (ServiceInstanceTarget target : artifact.getDescribedBy()) {
+            for (BaseArtifactTarget target : artifact.getDescribedBy()) {
                 targetTypes.add(target.getArtifactType().toString());
             }
             setRelationships("describedBy", -1, -1, false, false, artifact.getDescribedBy(), targetTypes);

@@ -43,7 +43,8 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         ServiceInstance persistedServiceInstance = (ServiceInstance) getArtifactByUUID(serviceInstance.getUuid());
         assertBasic(persistedServiceInstance, serviceInstance);
         assertDocumentation(persistedServiceInstance.getDocumentation());
-        // TODO: test #uses and #describedBy, once the above TODOs are fixed
+        assertTargets(persistedServiceInstance.getUses(), 1, port);
+        assertTargets(persistedServiceInstance.getDescribedBy(), 1, wsdl);
         
         ServiceOperation persistedServiceOperation = (ServiceOperation) getArtifactByUUID(serviceOperation.getUuid());
         assertBasic(persistedServiceOperation, serviceOperation);
@@ -100,15 +101,15 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         serviceImplementationModelTarget.setValue(serviceEndpoint.getUuid());
         organization.getProvides().add(serviceImplementationModelTarget);
         organization = (Organization) persistAndAssertActor(organization);
-        assertElementTargets(organization.getProvides(), 1, serviceEndpoint);
+        assertTargets(organization.getProvides(), 1, serviceEndpoint);
 
         ServiceContract serviceContract = new ServiceContract();
         serviceContract.setArtifactType(BaseArtifactEnum.SERVICE_CONTRACT);
         serviceContract.getInvolvesParty().add(actorTarget);
         serviceContract.getSpecifies().add(effectTarget);
         serviceContract = persistAndAssert(serviceContract);
-        assertElementTargets(serviceContract.getInvolvesParty(), 1, actor);
-        assertElementTargets(serviceContract.getSpecifies(), 1, effect);
+        assertTargets(serviceContract.getInvolvesParty(), 1, actor);
+        assertTargets(serviceContract.getSpecifies(), 1, effect);
         
         ServiceContractTarget serviceContractTarget = new ServiceContractTarget();
         serviceContractTarget.setArtifactType(ServiceContractEnum.SERVICE_CONTRACT);
@@ -123,7 +124,7 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         serviceOperationTarget.setValue(serviceOperation.getUuid());
         serviceInterface.setHasOperation(serviceOperationTarget);
         serviceInterface = persistAndAssert(serviceInterface);
-        assertElementTarget(serviceInterface.getHasOperation(), serviceOperation);
+        assertTarget(serviceInterface.getHasOperation(), serviceOperation);
         // TODO: check #interfaceDefinedBy after the above is corrected
         
         ServiceInterfaceTarget serviceInterfaceTarget = new ServiceInterfaceTarget();
@@ -139,9 +140,9 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         serviceInstanceTarget.setValue(serviceInstance.getUuid());
         service.setHasInstance(serviceInstanceTarget);
         service = (Service) persistAndAssertElement(service);
-        assertElementTargets(service.getHasContract(), 1, serviceContract);
-        assertElementTargets(service.getHasInterface(), 1, serviceInterface);
-        assertElementTarget(service.getHasInstance(), serviceInstance);
+        assertTargets(service.getHasContract(), 1, serviceContract);
+        assertTargets(service.getHasInterface(), 1, serviceInterface);
+        assertTarget(service.getHasInstance(), serviceInstance);
         
         org.oasis_open.docs.s_ramp.ns.s_ramp_v1.System system = new org.oasis_open.docs.s_ramp.ns.s_ramp_v1.System();
         system.setArtifactType(BaseArtifactEnum.SYSTEM);
@@ -230,18 +231,14 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         serviceInstance.setArtifactType(BaseArtifactEnum.SERVICE_INSTANCE);
         serviceInstance.setName("SampleServiceInstance");
         serviceInstance.getDocumentation().add(documentationTarget);
-//        ServiceInstanceTarget portTarget = new ServiceInstanceTarget();
-//        // TODO: THIS SHOULD BE A BLOCKER IN THE SPEC JIRA!  ServiceInstanceEnum includes SERVICE_INSTANCE only,
-//        // so this can't actually point at anything!
-//        portTarget.setArtifactType(ServiceInstanceEnum.PORT);
-//        portTarget.setValue(port.getUuid());
-//        serviceInstance.getUses().add(portTarget);
-//        ServiceInstanceTarget wsdlTarget = new ServiceInstanceTarget();
-//        // TODO: THIS SHOULD BE A BLOCKER IN THE SPEC JIRA!  ServiceInstanceEnum includes SERVICE_INSTANCE only,
-//        // so this can't actually point at anything!
-//        wsdlTarget.setArtifactType(ServiceInstanceEnum.WSDL);
-//        wsdlTarget.setValue(wsdl.getUuid());
-//        serviceInstance.getDescribedBy().add(wsdlTarget);
+        BaseArtifactTarget portTarget = new BaseArtifactTarget();
+        portTarget.setArtifactType(BaseArtifactEnum.PORT);
+        portTarget.setValue(port.getUuid());
+        serviceInstance.getUses().add(portTarget);
+        BaseArtifactTarget wsdlTarget = new BaseArtifactTarget();
+        wsdlTarget.setArtifactType(BaseArtifactEnum.WSDL_DOCUMENT);
+        wsdlTarget.setValue(wsdl.getUuid());
+        serviceInstance.getDescribedBy().add(wsdlTarget);
         serviceInstance = (ServiceInstance) persistenceManager.persistArtifact(serviceInstance, null);
         
         serviceOperation = new ServiceOperation();
@@ -368,13 +365,13 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         
         artifact = persistAndAssert(artifact);
 
-        assertElementTargets(artifact.getRepresents(), 1, element1);
-        assertElementTargets(artifact.getUses(), 1, element2);
-        assertElementTargets(artifact.getPerforms(), 1, service1);
-        assertElementTarget(artifact.getDirectsOrchestration(), orchestration1);
-        assertElementTarget(artifact.getDirectsOrchestrationProcess(), orchestrationProcess1);
-        assertElementTargets(artifact.getGenerates(), 1, event1);
-        assertElementTargets(artifact.getRespondsTo(), 2, event2, event3);
+        assertTargets(artifact.getRepresents(), 1, element1);
+        assertTargets(artifact.getUses(), 1, element2);
+        assertTargets(artifact.getPerforms(), 1, service1);
+        assertTarget(artifact.getDirectsOrchestration(), orchestration1);
+        assertTarget(artifact.getDirectsOrchestrationProcess(), orchestrationProcess1);
+        assertTargets(artifact.getGenerates(), 1, event1);
+        assertTargets(artifact.getRespondsTo(), 2, event2, event3);
         
         return artifact;
     }
@@ -385,8 +382,8 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         
         artifact = (Actor) persistAndAssertElement(artifact);
 
-        assertElementTargets(artifact.getDoes(), 1, task1);
-        assertElementTargets(artifact.getSetsPolicy(), 1, policy1);
+        assertTargets(artifact.getDoes(), 1, task1);
+        assertTargets(artifact.getSetsPolicy(), 1, policy1);
         
         return artifact;
     }
@@ -400,16 +397,16 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
         }
     }
     
-    private <T extends Target> void assertElementTargets(List<T> elementTargets, int expectedSize,
+    private <T extends Target> void assertTargets(List<T> elementTargets, int expectedSize,
             BaseArtifactType... expectedArtifacts) throws Exception {
         assertNotNull(elementTargets);
         assertEquals(expectedSize, elementTargets.size());
         for (int i = 0; i < elementTargets.size(); i++) {
-            assertElementTarget(elementTargets.get(i), expectedArtifacts[i]);
+            assertTarget(elementTargets.get(i), expectedArtifacts[i]);
         }
     }
     
-    private <T extends Target> void assertElementTarget(T elementTarget, BaseArtifactType expectedArtifact)
+    private <T extends Target> void assertTarget(T elementTarget, BaseArtifactType expectedArtifact)
             throws Exception {
         BaseArtifactType artifactByTarget = (BaseArtifactType) getArtifactByTarget(elementTarget);
         assertBasic(artifactByTarget, expectedArtifact);

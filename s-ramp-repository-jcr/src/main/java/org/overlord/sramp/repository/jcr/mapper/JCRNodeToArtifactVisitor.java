@@ -570,8 +570,8 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
     public void visit(ServiceInstance artifact) {
         super.visit(artifact);
         try {
-            artifact.getDescribedBy().addAll(getRelationships("uses", ServiceInstanceTarget.class));
-            artifact.getUses().addAll(getRelationships("describedBy", ServiceInstanceTarget.class));
+            artifact.getDescribedBy().addAll(getRelationships("describedBy", BaseArtifactTarget.class));
+            artifact.getUses().addAll(getRelationships("uses", BaseArtifactTarget.class));
             // TODO: These have to currently be added on the subclass visitors, as they're not currently
             // on ServiceImplementationModelType itself.
             artifact.setEnd(getProperty(jcrNode, JCRConstants.SRAMP_END));
