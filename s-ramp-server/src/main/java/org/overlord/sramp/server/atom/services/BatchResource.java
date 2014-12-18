@@ -76,12 +76,34 @@ public class BatchResource extends AbstractResource {
     @Consumes(MediaType.APPLICATION_ZIP)
     @Produces(MediaType.MULTIPART_MIXED)
     @PartType("message/http")
-	public MultipartOutput zipPackage(@Context HttpServletRequest request,
+	public MultipartOutput zipPackagePost(@Context HttpServletRequest request,
 	        @HeaderParam("Slug") String fileName, InputStream content) throws SrampAtomException, SrampException {
+        return doZipPackage(request, content);
+    }
+
+    /**
+     * S-RAMP atom PUT of a package file (.zip) containing the artifacts and meta data that
+     * should be published in the repository.
+     * @param fileName the name of the .zip file (optional)
+     * @param content the zip content
+     * @return a multipart/mixed response as defined in the S-RAMP Atom binding document
+     * @throws SrampAtomException
+     */
+    @PUT
+    @Consumes(MediaType.APPLICATION_ZIP)
+    @Produces(MediaType.MULTIPART_MIXED)
+    @PartType("message/http")
+    public MultipartOutput zipPackagePut(@Context HttpServletRequest request,
+            @HeaderParam("Slug") String fileName, InputStream content) throws SrampAtomException, SrampException {
+        return doZipPackage(request, content);
+    }
+
+    private MultipartOutput doZipPackage(HttpServletRequest request, InputStream content)
+            throws SrampAtomException, SrampException {
         PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
-    	SrampArchive archive = null;
-    	String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
+        SrampArchive archive = null;
+        String baseUrl = SrampConfig.getBaseUrl(request.getRequestURL().toString());
         try {
             archive = new SrampArchive(content);
 
@@ -161,12 +183,12 @@ public class BatchResource extends AbstractResource {
             // HTTP response type.
             throw e;
         } catch (Exception e) {
-        	logError(logger, Messages.i18n.format("ERROR_CONSUMING_ZIP"), e); //$NON-NLS-1$
-			throw new SrampAtomException(e);
+            logError(logger, Messages.i18n.format("ERROR_CONSUMING_ZIP"), e); //$NON-NLS-1$
+            throw new SrampAtomException(e);
         } finally {
-        	IOUtils.closeQuietly(content);
-        	if (archive != null)
-        		SrampArchive.closeQuietly(archive);
+            IOUtils.closeQuietly(content);
+            if (archive != null)
+                SrampArchive.closeQuietly(archive);
         }
     }
 
