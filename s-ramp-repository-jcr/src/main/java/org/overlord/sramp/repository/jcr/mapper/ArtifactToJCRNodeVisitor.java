@@ -480,7 +480,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 				if (this.jcrNode.hasNode("sramp-relationships:type")) {
 					this.jcrNode.getNode("sramp-relationships:type").remove();
 				}
-				setRelationship("element", 1, 1, false, true, artifact.getElement(), ElementEnum.ELEMENT.toString());
+				setRelationship("element", 1, 1, false, true, artifact.getElement(), ElementDeclarationEnum.ELEMENT_DECLARATION.toString());
 			} else if (artifact.getType() != null) {
 				if (this.jcrNode.hasNode("sramp-relationships:element")) {
 					this.jcrNode.getNode("sramp-relationships:element").remove();

@@ -25,58 +25,7 @@ import javax.xml.soap.Node;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperation;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationFault;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationFaultEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationFaultTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInput;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInputEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInputTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutput;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutputEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutputTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.FaultEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.FaultTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.MessageEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.MessageTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Operation;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInput;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInputEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInputTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutput;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutputEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutputTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Part;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PartEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PartTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Port;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTypeEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTypeTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocumentEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocumentTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.common.ArtifactTypeEnum;
 import org.overlord.sramp.common.query.xpath.StaticNamespaceContext;
 import org.w3c.dom.Element;
@@ -177,17 +126,15 @@ public class WsdlDocumentArtifactBuilder extends XsdDocumentArtifactBuilder {
                     String encodedQName = partElem.getAttribute("element"); //$NON-NLS-1$
                     QName qname = resolveQName(partElem, targetNS, encodedQName);
                     ElementDeclaration elementRef = derivedArtifacts.lookupElement(qname);
-                    // TODO: The spec is incorrect here!  ElementTarget is for the SOA Model's Element.  Instead,
-                    // we need an *ElementDeclaration* target!  Until that's fixed, skip.
-//                    ElementTarget elementTarget = new ElementTarget();
-//                    elementTarget.setArtifactType(ElementEnum.ELEMENT);
-//                    if (elementRef != null) {
-//                        elementTarget.setValue(elementRef.getUuid());
-//                    } else {
-//                        relationshipSources.add(new QNameRelationshipSource(qname, elementTarget, null,
-//                                ArtifactTypeEnum.ElementDeclaration.getModel(), ArtifactTypeEnum.ElementDeclaration.getType()));
-//                    }
-//                    part.setElement(elementTarget);
+                    ElementDeclarationTarget elementTarget = new ElementDeclarationTarget();
+                    elementTarget.setArtifactType(ElementDeclarationEnum.ELEMENT_DECLARATION);
+                    if (elementRef != null) {
+                        elementTarget.setValue(elementRef.getUuid());
+                    } else {
+                        relationshipSources.add(new QNameRelationshipSource(qname, elementTarget, null,
+                                ArtifactTypeEnum.ElementDeclaration.getModel(), ArtifactTypeEnum.ElementDeclaration.getType()));
+                    }
+                    part.setElement(elementTarget);
                 } else if (partElem.hasAttribute("type")) { //$NON-NLS-1$
                     String encodedQName = partElem.getAttribute("type"); //$NON-NLS-1$
                     QName qname = resolveQName(partElem, targetNS, encodedQName);

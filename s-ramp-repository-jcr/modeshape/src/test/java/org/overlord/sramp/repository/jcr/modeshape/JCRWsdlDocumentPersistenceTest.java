@@ -95,13 +95,13 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 		// findRequestMessage assertions
 		Part part = (Part) getArtifactByTarget(findRequestMessage.getPart().get(0));
 		Assert.assertNull(part.getType());
-//		ElementDeclaration elem = (ElementDeclaration) getArtifactByTarget(part.getElement());
-//		Assert.assertEquals(findElement.getUuid(), elem.getUuid());
+		ElementDeclaration elem = (ElementDeclaration) getArtifactByTarget(part.getElement());
+		Assert.assertEquals(findElement.getUuid(), elem.getUuid());
 		// findResponseMessage assertions
 		part = (Part) getArtifactByTarget(findResponseMessage.getPart().get(0));
 		Assert.assertNull(part.getType());
-//		elem = (ElementDeclaration) getArtifactByTarget(part.getElement());
-//		Assert.assertEquals(findResponseElement.getUuid(), elem.getUuid());
+		elem = (ElementDeclaration) getArtifactByTarget(part.getElement());
+		Assert.assertEquals(findResponseElement.getUuid(), elem.getUuid());
 		// findRequestSimpleMessage assertions
 		part = (Part) getArtifactByTarget(findRequestSimpleMessage.getPart().get(0));
 		Assert.assertNull(part.getElement());
@@ -110,8 +110,8 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
 		// findResponseSimpleMessage assertions
 		part = (Part) getArtifactByTarget(findResponseSimpleMessage.getPart().get(0));
 		Assert.assertNull(part.getType());
-//		elem = (ElementDeclaration) getArtifactByTarget(part.getElement());
-//		Assert.assertEquals(findResponseElement.getUuid(), elem.getUuid());
+		elem = (ElementDeclaration) getArtifactByTarget(part.getElement());
+		Assert.assertEquals(findResponseElement.getUuid(), elem.getUuid());
 		// faultMessage assertions
 		part = (Part) getArtifactByTarget(faultMessage.getPart().get(0));
 		Assert.assertNull(part.getType());
@@ -292,8 +292,8 @@ public class JCRWsdlDocumentPersistenceTest extends AbstractNoAuditingJCRPersist
         // findRequestMessage assertions
         Part part = (Part) getArtifactByTarget(findRequestMessage.getPart().get(0));
         Assert.assertNull(part.getType());
-//        ElementDeclaration elem = (ElementDeclaration) getArtifactByTarget(part.getElement());
-//        Assert.assertEquals(extInput.getUuid(), elem.getUuid());
+        ElementDeclaration elem = (ElementDeclaration) getArtifactByTarget(part.getElement());
+        Assert.assertEquals(extInput.getUuid(), elem.getUuid());
         // findResponseMessage assertions
         part = (Part) getArtifactByTarget(findResponseMessage.getPart().get(0));
         Assert.assertNull(part.getElement());

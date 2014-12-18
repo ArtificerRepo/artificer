@@ -31,15 +31,15 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for messageTarget complex type.
+ * <p>Java class for elementDeclarationTarget complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="messageTarget">
+ * &lt;complexType name="elementDeclarationTarget">
  *   &lt;simpleContent>
  *     &lt;extension base="&lt;http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0>target">
- *       &lt;attribute name="artifactType" use="required" type="{http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0}messageEnum" />
+ *       &lt;attribute name="artifactType" use="required" type="{http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0}elementDeclarationEnum" />
  *       &lt;anyAttribute/>
  *     &lt;/extension>
  *   &lt;/simpleContent>
@@ -49,25 +49,25 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "messageTarget")
-public class MessageTarget
+@XmlType(name = "elementDeclarationTarget")
+public class ElementDeclarationTarget
     extends Target
     implements Serializable
 {
 
-    private static final long serialVersionUID = -1143934488890985463L;
+    private static final long serialVersionUID = 5102263586751567786L;
     @XmlAttribute(name = "artifactType", required = true)
-    protected MessageEnum artifactType;
+    protected ElementDeclarationEnum artifactType;
 
     /**
      * Gets the value of the artifactType property.
      * 
      * @return
      *     possible object is
-     *     {@link MessageEnum }
+     *     {@link ElementDeclarationEnum }
      *     
      */
-    public MessageEnum getArtifactType() {
+    public ElementDeclarationEnum getArtifactType() {
         return artifactType;
     }
 
@@ -76,10 +76,10 @@ public class MessageTarget
      * 
      * @param value
      *     allowed object is
-     *     {@link MessageEnum }
+     *     {@link ElementDeclarationEnum }
      *     
      */
-    public void setArtifactType(MessageEnum value) {
+    public void setArtifactType(ElementDeclarationEnum value) {
         this.artifactType = value;
     }
 

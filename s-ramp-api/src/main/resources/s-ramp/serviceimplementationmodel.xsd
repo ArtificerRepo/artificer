@@ -100,9 +100,9 @@
       <xsd:extension base="tns:ServiceImplementationModelType">
         <xsd:sequence>
           <!-- Modeled Relationship(s) to ServiceInstance(s): -->
-          <xsd:element name="uses" type="s-ramp:target" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="uses" type="s-ramp:baseArtifactTarget" minOccurs="0" maxOccurs="unbounded" />
           <!-- Modeled Relationship(s) to ServiceEndpoint(s): -->
-          <xsd:element name="describedBy" type="s-ramp:target" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="describedBy" type="s-ramp:baseArtifactTarget" minOccurs="0" maxOccurs="unbounded" />
           <xsd:element name="extension" type="tns:ExtensionType" minOccurs="0" />
           <xsd:element name="end" type="xsd:string" minOccurs="1" maxOccurs="1" />
           <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />

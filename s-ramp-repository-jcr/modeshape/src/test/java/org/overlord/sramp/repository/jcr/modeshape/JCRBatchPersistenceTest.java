@@ -95,8 +95,8 @@ public class JCRBatchPersistenceTest extends AbstractNoAuditingJCRPersistenceTes
         // findRequestMessage assertions
         Part part = (Part) getArtifactByTarget(findRequestMessage.getPart().get(0));
         Assert.assertNull(part.getType());
-//        ElementDeclaration elem = (ElementDeclaration) getArtifactByTarget(part.getElement());
-//        Assert.assertEquals(extInput.getUuid(), elem.getUuid());
+        ElementDeclaration elem = (ElementDeclaration) getArtifactByTarget(part.getElement());
+        Assert.assertEquals(extInput.getUuid(), elem.getUuid());
         // findResponseMessage assertions
         part = (Part) getArtifactByTarget(findResponseMessage.getPart().get(0));
         Assert.assertNull(part.getElement());

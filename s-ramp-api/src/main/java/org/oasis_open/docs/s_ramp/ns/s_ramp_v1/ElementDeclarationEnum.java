@@ -29,28 +29,28 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for portEnum.
+ * <p>Java class for elementDeclarationEnum.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="portEnum">
+ * &lt;simpleType name="elementDeclarationEnum">
  *   &lt;restriction base="{http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0}derivedArtifactEnum">
- *     &lt;enumeration value="Port"/>
+ *     &lt;enumeration value="ElementDeclaration"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
  * 
  */
-@XmlType(name = "portEnum")
+@XmlType(name = "elementDeclarationEnum")
 @XmlEnum(DerivedArtifactEnum.class)
-public enum PortEnum {
+public enum ElementDeclarationEnum {
 
-    @XmlEnumValue("Port")
-    PORT(DerivedArtifactEnum.PORT);
+    @XmlEnumValue("ElementDeclaration")
+    ELEMENT_DECLARATION(DerivedArtifactEnum.ELEMENT_DECLARATION);
     private final DerivedArtifactEnum value;
 
-    PortEnum(DerivedArtifactEnum v) {
+    ElementDeclarationEnum(DerivedArtifactEnum v) {
         value = v;
     }
 
@@ -58,8 +58,8 @@ public enum PortEnum {
         return value;
     }
 
-    public static PortEnum fromValue(DerivedArtifactEnum v) {
-        for (PortEnum c: PortEnum.values()) {
+    public static ElementDeclarationEnum fromValue(DerivedArtifactEnum v) {
+        for (ElementDeclarationEnum c: ElementDeclarationEnum.values()) {
             if (c.value.equals(v)) {
                 return c;
             }

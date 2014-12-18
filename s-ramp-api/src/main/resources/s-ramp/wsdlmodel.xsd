@@ -120,6 +120,11 @@
       <xsd:enumeration value="XsdType" />
     </xsd:restriction>
   </xsd:simpleType>
+  <xsd:simpleType name="elementDeclarationEnum">
+    <xsd:restriction base="s-ramp:derivedArtifactEnum">
+      <xsd:enumeration value="ElementDeclaration" />
+    </xsd:restriction>
+  </xsd:simpleType>
 
   <xsd:complexType name="WsdlDocument">
     <xsd:complexContent>
@@ -264,9 +269,9 @@
     <xsd:complexContent>
       <xsd:extension base="tns:NamedWsdlDerivedArtifactType">
         <xsd:sequence>
-          <!-- Derived Relationships with ElementDeclaraion and XSDType artifacts: -->
+          <!-- Derived Relationships with ElementDeclaration and XSDType artifacts: -->
           <xsd:element name="type" type="s-ramp:xsdTypeTarget" minOccurs="0" maxOccurs="1" />
-          <xsd:element name="element" type="s-ramp:elementTarget" minOccurs="0" maxOccurs="1" />
+          <xsd:element name="element" type="s-ramp:elementDeclarationTarget" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -428,6 +433,14 @@
     <xsd:complexContent>
       <xsd:extension base="s-ramp:target">
         <xsd:attribute name="artifactType" type="s-ramp:xsdTypeEnum" use="required" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <!-- Relationship referencing the artifact's UUID, to reference any ElementDeclaration. -->
+  <xsd:complexType name="elementDeclarationTarget">
+    <xsd:complexContent>
+      <xsd:extension base="s-ramp:target">
+        <xsd:attribute name="artifactType" type="s-ramp:elementDeclarationEnum" use="required" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>

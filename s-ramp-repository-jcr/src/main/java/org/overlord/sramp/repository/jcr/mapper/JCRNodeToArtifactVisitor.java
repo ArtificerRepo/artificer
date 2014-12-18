@@ -403,7 +403,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
 	public void visit(Part artifact) {
 		super.visit(artifact);
 		try {
-			artifact.setElement(getRelationship("element", ElementTarget.class));
+			artifact.setElement(getRelationship("element", ElementDeclarationTarget.class));
 			artifact.setType(getRelationship("type", XsdTypeTarget.class));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
