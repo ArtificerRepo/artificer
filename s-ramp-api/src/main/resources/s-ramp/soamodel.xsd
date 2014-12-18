@@ -121,7 +121,7 @@
       <xsd:extension base="tns:SoaModelType">
         <xsd:sequence>
           <!-- Modeled Relationship to abstract DerivedArtifactType: -->
-          <xsd:element minOccurs="0" maxOccurs="1" name="interfaceDefinedBy" type="s-ramp:DerivedArtifactType" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="interfaceDefinedBy" type="s-ramp:derivedArtifactTarget" />
           <!-- Modeled Relationship to ServiceOperation: -->
           <xsd:element minOccurs="0" name="hasOperation" type="s-ramp:serviceOperationTarget" />
           <!-- Modeled Relationship to InformationType: -->

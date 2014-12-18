@@ -15,30 +15,6 @@
  */
 package org.overlord.sramp.repository.jcr.mapper;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.version.VersionException;
-import javax.xml.namespace.QName;
-
 import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.overlord.sramp.common.ArtifactType;
@@ -46,6 +22,16 @@ import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitor;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
+
+import javax.jcr.*;
+import javax.jcr.Property;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
+import javax.xml.namespace.QName;
+import java.net.URI;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * An artifact visitor used to update a JCR node.  This class is responsible
@@ -737,9 +723,8 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
         super.visit(artifact);
         try {
             if (artifact.getInterfaceDefinedBy() != null) {
-                // TODO: #interfaceDefinedBy needs to be a Target!!!
-//                setRelationship("interfaceDefinedBy", -1, 1, false, artifact.getInterfaceDefinedBy(),
-//                        artifact.getInterfaceDefinedBy().getArtifactType().toString());
+                setRelationship("interfaceDefinedBy", -1, 1, false, false, artifact.getInterfaceDefinedBy(),
+                        artifact.getInterfaceDefinedBy().getArtifactType().toString());
             }
             
             if (artifact.getHasOperation() != null) {

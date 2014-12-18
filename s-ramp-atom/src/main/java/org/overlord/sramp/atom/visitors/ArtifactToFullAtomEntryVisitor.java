@@ -200,8 +200,7 @@ public class ArtifactToFullAtomEntryVisitor extends ArtifactToSummaryAtomEntryVi
 
 	@Override
 	public void visit(ServiceInterface artifact) {
-		// TODO: #interfaceDefinedBy needs to be a Target!!!
-//		setTargetHref(artifact.getInterfaceDefinedBy());
+		setTargetHref(artifact.getInterfaceDefinedBy());
 		setTargetHref(artifact.getHasOperation());
 		setTargetHref(artifact.getHasOutput());
 		setTargetHref(artifact.getHasInput());

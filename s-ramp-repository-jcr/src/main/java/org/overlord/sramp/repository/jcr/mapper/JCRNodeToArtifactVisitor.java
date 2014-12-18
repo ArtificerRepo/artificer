@@ -607,8 +607,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
     public void visit(ServiceInterface artifact) {
         super.visit(artifact);
         try {
-            // TODO: #interfaceDefinedBy needs to be a Target!!!
-//            artifact.setInterfaceDefinedBy(getRelationship("interfaceDefinedBy", DerivedArtifactTarget.class));
+            artifact.setInterfaceDefinedBy(getRelationship("interfaceDefinedBy", DerivedArtifactTarget.class));
             artifact.setHasOperation(getRelationship("hasOperation", ServiceOperationTarget.class));
             artifact.getHasOutput().addAll(getRelationships("hasOutput", InformationTypeTarget.class));
             artifact.getHasInput().addAll(getRelationships("hasInput", InformationTypeTarget.class));

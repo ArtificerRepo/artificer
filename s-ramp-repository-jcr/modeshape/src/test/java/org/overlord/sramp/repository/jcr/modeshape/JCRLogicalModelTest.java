@@ -177,8 +177,7 @@ public class JCRLogicalModelTest extends AbstractNoAuditingJCRPersistenceTest {
 
         ServiceInterface serviceInterface = new ServiceInterface();
         serviceInterface.setArtifactType(BaseArtifactEnum.SERVICE_INTERFACE);
-        // TODO: #interfaceDefinedBy needs to be a Target!!!
-//        serviceInterface.setInterfaceDefinedBy(derivedPortTypeTarget);
+        serviceInterface.setInterfaceDefinedBy(derivedPortTypeTarget);
         // TODO: Also can't test hasOutput, hasInput, and isInterfaceOf until the target enums are corrected
         ServiceOperationTarget serviceOperationTarget = new ServiceOperationTarget();
         serviceOperationTarget.setArtifactType(ServiceOperationEnum.SERVICE_OPERATION);
