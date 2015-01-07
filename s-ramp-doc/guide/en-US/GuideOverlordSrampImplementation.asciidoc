@@ -30,123 +30,52 @@ by the specification.
 specification (S-RAMP XSD schemas).
 
 
-Configuring
-^^^^^^^^^^^
-Configuration of the server can be done by providing a configuration file to the server on
-startup.  The configuration file can be provided in a number of ways:
-
-1. sramp.properties - an external file can be provided in the JBoss application server's
-configuration directory.  An alernative location is the home directory of the user running
-the application server.
-
-2. custom external file - a custom location for an sramp.properties file can be specified
-by starting the application server with the *sramp.config.file.name* system property set.
-This is typically done using *-Dsramp.config.file.name=<pathToFile>* on the application
-server's command line startup script (often in JAVA_OPTS).
-
-3. on the classpath - if no external file is found, the classpath is used to lookup a 
-default configuration.
-
-The configuration file is a simple Java properties file, with the following properties
-available to be set:
-
-----
-# The base URL of the S-RAMP server - can be useful in some advanced configurations where
-# the incoming Request URL is not the canonical server address.
-sramp.config.baseurl
-# Turn on/off auditing of changes to S-RAMP artifacts
-sramp.config.auditing.enabled
-# Turn on/off auditing of changes to derived S-RAMP artifacts
-sramp.config.auditing.enabled-derived
-----
-
-
-Configuring (EAP)
-^^^^^^^^^^^^^^^^^
-When running in JBoss EAP this same configuration information is instead stored in the 
-*JBOSS/standalone/configuration/standalone.xml* file under the 
+Configuration
+^^^^^^^^^^^^^
+The UI is configured with numerous properties in the Wildfly/EAP
+*standalone/configuration/standalone-full.xml* file under the
 *urn:jboss:domain:overlord-configuration:1.0* subsystem. For example:
 
 ----
     <subsystem xmlns="urn:jboss:domain:overlord-configuration:1.0">
       <configurations>
-        <configuration name="sramp">
+        <configuration name="sramp-ui">
           <properties>
-            <property name="sramp.config.auditing.enabled" value="true" />
-            <property name="sramp.config.auditing.enabled-derived" value="true" />
+            <!-- The location of the S-RAMP server's Atom API -->
+            <property name="s-ramp-ui.atom-api.endpoint" value="http://localhost:8080/s-ramp-server" />
+            <!-- Whether or not to validate the S-RAMP server endpoint when connecting to it -->
+            <property name="s-ramp-ui.atom-api.validating" value="true" />
+            <!-- The authentication provider to use when connecting -->
+            <property name="s-ramp-ui.atom-api.authentication.provider" value="org.overlord.sramp.ui.server.api.KeycloakBearerTokenAuthenticationProvider" />
           </properties>
         </configuration>
       </configurations>
     </subsystem>
 ----
 
-Security (Authentication)
-^^^^^^^^^^^^^^^^^^^^^^^^^
-The S-RAMP repository Atom API is protected using standard web application security
-and JAAS on the backend.  When deploying to an application server, security should
-be configured according to the specifics of the container.  Typically the API would
-be protected by a simple BASIC authentication scheme, but in some more advanced 
-configurations it would be appropriate to use OAuth or SAML Bearer Token authentication
-mechanisms.
 
-When deploying into JBoss, the S-RAMP distribution adds a JBoss security domain named
-"overlord-jaxrs".  This security domain is configured to accept either a username
-and password (standard BASIC authentication) or a SAML Assertion (bearer token auth).
+Security
+^^^^^^^^
+The S-RAMP Browser is protected using web application security mechanisms
+configured in the WARs' web.xml.
+
+By default, the UI uses single-sign-on (SSO) as the actual authentication
+mechanism.  The SSO is provided via integration with the Keycloak framework.
+The actual web.xml configuration uses a standard basic security-context, but SSO
+is provided under-the-hood.
+
+The security domain is configured to accept either a username
+and password (standard BASIC authentication) or a bearer token.
 If invoking the Atom API directly, then typically BASIC authentication would be used.
-When invoking the Atom API from an application that has already authenticated the 
-user in some way, then it is appropriate to use SAML.  For example, the S-RAMP CLI
+When invoking the Atom API from an application that has already authenticated the
+user in some way, then it is appropriate to use the bearer token as a request header ("Authorization", "Bearer " + bearerToken).
+For example, the S-RAMP CLI
 application uses BASIC authentication when invoking the S-RAMP Atom API.  The S-RAMP
 Browser (a web application) requires the user be authenticated into it, and thus is
-able to use SAML rather than propagate user credentials.
+able to use the bearer tokens rather than propagate user credentials.
 
-When using simple BASIC authentication, the security domain must be configured with a
-source of users and passwords.  For example, in JBoss EAP this information can be 
-configured by modifying the following files:
-
-----
-jboss-eap-6.x/standalone/configuration/application-users.properties
-----
-
-Alternative mechanisms can be used by making changes to the security domains configured
-in the JBoss configuration.  For example:
-
-----
-jboss-eap-6.x/standalone/configuration/standalone.xml
-----
-
-The relevant section looks something like this:
-
-----
-<security-domain name="overlord-jaxrs" cache-type="default">
-  <authentication>
-    <login-module code="RealmDirect" flag="required">
-      <module-option name="password-stacking" value="useFirstPass"/>
-    </login-module>
-  </authentication>
-</security-domain>
-----
-
-For example, the RealmDirect (which passes through the authentication to the Application
-Realm) login module could be replaced with a LDAP login module.
-
-
-Security (Authorization)
-^^^^^^^^^^^^^^^^^^^^^^^^
-When accessing the S-RAMP Atom API, the authenticated user must have certain roles.
-Because the implementation leverages ModeShape as its persistence store by default,
-the authenticated user must have the following JAAS role, which is required by 
-ModeShape:
-
-----
-admin.sramp
-----
-
-Additionally, the S-RAMP Atom API web application requires that the user has the
-following role:
-
-----
-overlorduser
-----
+The app uses a Keycloak realm named *artificer*, which you'll see used in *standalone-full.xml*'s Keycloak subsystem
+resources.  See *Getting Started* for more info.
 
 
 Extending: Custom ArtifactBuilder

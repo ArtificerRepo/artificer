@@ -199,7 +199,7 @@ sramp.config.events.jms.embedded-activemq-port = 61616
 
 S-RAMP supports three JMS environments:
 
-* When S-RAMP is installed in EAP by using our installation script, JMS is configured automatically.  The existing
+* When S-RAMP is installed in Wildfly/EAP by using our installation script, JMS is configured automatically.  The existing
 HornetQ configuration is modified to add the default topic, described above, and all necessary credentials.
 Users can add additional topics/queues to their framework, then add them to 'sramp.properties' (see above).
 IMPORTANT: In order for HornetQ to work properly, the standalone-full profile must be used
@@ -216,8 +216,12 @@ configured topics and queues are created automatically.  External clients can co
    properties file, the client is able to use generic JNDI and JMS without any ActiveMQ APIs.
 ** Simply use the ActiveMQ libraries and API
 
-TIP: If your existing JMS framework requires authentication, S-RAMP will automatically use proper credentials.
-Therefore, it's vital to include the 'overlorduser' role in the JMS security settings.
+Authorization
+^^^^^^^^^^^^^
+
+During installation, you were prompted for a password.  This set up a standard Wildfly/EAP *admin* user (including the
+*artificer* role used by the HornetQ configuration in standalone*.xml).  These credentials must be used when connecting
+to the JMS topics/queues as a subscriber!
 
 Artifact JMS Events
 ^^^^^^^^^^^^^^^^^^^

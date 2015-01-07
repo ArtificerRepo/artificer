@@ -10,8 +10,8 @@ The S-RAMP application is written in Java. To get started make sure your system 
 * Apache Ant 1.7 or newer to use the installer
 * Maven 3.0.3 or newer to build and run the examples
 
-Download, Installation and Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Download and Installation
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The `s-ramp-<version>.zip` (or tar.gz) archive can be downloaded from the http://www.jboss.org/overlord[http://www.jboss.org/overlord]
 website. Grab the latest, extract the archive and run:
@@ -22,35 +22,58 @@ ant install
 
 The installer will ask you to choose a runtime platform.  Currently the following platforms are supported:
 
-* JBoss EAP 6
-* Tomcat 7
+* Wildfly 8
+* JBoss EAP 6.2+
 
 Simply follow the installer instructions to install onto the platform of your choice.  We recommend installing
 into a clean version of which platform you choose, to minimize the risk of colliding with other projects.
-
-Note that you must have already downloaded and installed the platform on which you wish to run, with the 
-exception of Tomcat 7 (which the installer will download for you if you choose).
+Note that you must have already downloaded and installed the platform on which you wish to run
 
 Finally, please make sure the admin password you choose (the installer will prompt you for this) contains
 letters, numbers, and punctuation (and is at least 8 characters long).
 
 TIP: Read the installer output carefully - extra instructions are given for certain platforms.
 
-Once S-RAMP is installed on your preferred platform, you should be able to go ahead and start it up.  The
-instructions for starting the server depend on the chosen platform:
+User Management
+~~~~~~~~~~~~~~~
 
-.Tomcat 7
-....
-bin/startup.sh
-....
-.JBoss EAP 6 (standalone-full is required)
+The S-RAMP WARs are protected using web application security mechanisms
+configured in the web.xml.  By default, S-RAMP uses single-sign-on (SSO) as the actual authentication
+mechanism.  The SSO is provided via integration with the Keycloak framework, a powerful out-of-the-box auth solution.
+The actual web.xml configuration uses a standard basic security-context, but SSO
+is provided under-the-hood.
+
+The S-RAMP distribution ships with a *artificer-realm.json* file that's completely pre-configured and can be
+directly imported into Keycloak.  Startup Wildfly/EAP and visit *localhost:8080/auth/admin/master/console/#/create/realm*.  The initial
+administrator account uses "admin" for both the username and password.  There, you can upload the *artificer-realm.json*
+file and tweak the realm/accounts.
+
+By default, the realm import creates an "admin" user (password: "artificer1!").  This user is used to access the S-RAMP
+server, UI, shell, and other tools.  Again, the user is configurable through the Keycloak admin console.
+
+Feel free to manually create a realm for scratch.  However, there are a few requirements
+(see *artificer-realm.json* for example values):
+
+1. The realm must be named *artificer*
+2. Defined applications must include *s-ramp-server* and *s-ramp-ui*
+3. To use our themed login page, use *artificer* for the *loginTheme*
+4. Each user must have at least *admin* and *user* values for the *realmRole*
+
+Startup
+~~~~~~~
+
+Once S-RAMP is installed on your preferred platform, you should be able to go ahead and start it up.
+
+Wildfly & EAP (standalone-full is required)
 ....
 bin/standalone.sh -c standalone-full.xml
 ....
+
 Check your Installation
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-To make sure your installation works you can fire up the http://localhost:8080/s-ramp-ui[s-ramp-ui]. You
+To make sure your installation works you can fire up the http://localhost:8080/s-ramp-ui[s-ramp-ui]. By default,
+the username is "admin" and the password "artificer1!".  You
 should see the GUI dashboard and be able to navigate to either the Artifacts or Ontologies management pages:
 
 [[figure-gs-screenshot-of-the-s-ramp-ui]]
