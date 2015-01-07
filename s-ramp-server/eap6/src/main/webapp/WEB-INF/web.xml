@@ -76,7 +76,7 @@
 
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>governance</realm-name>
+    <realm-name>artificer</realm-name>
   </login-config>
 
   <security-role>

@@ -121,7 +121,7 @@
       <arg value="-r"/>
       <arg value="ApplicationRealm"/>
       <arg value="-ro"/>
-      <arg value="artificeruser,admin.sramp,dev,qa,stage,prod,ba,arch"/>
+      <arg value="artificer,admin,dev,qa,stage,prod,ba,arch"/>
     </java>
   </target>
 

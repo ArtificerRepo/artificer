@@ -218,7 +218,7 @@ public class SrampDevServer extends ErraiDevServer {
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setSessionRenewedOnAuthentication(false);
         csh.setAuthenticator(new BasicAuthenticator());
-        csh.setRealmName("governance");
+        csh.setRealmName("artificer");
         if (forUI) {
             csh.addConstraintMapping(cm);
         }
