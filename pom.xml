@@ -113,7 +113,7 @@
     <version.org.apache.httpcomponents.httpmime>4.2.1</version.org.apache.httpcomponents.httpmime>
     <version.org.modeshape>4.0.0.Final</version.org.modeshape>
     <version.org.infinispan>6.0.2.Final</version.org.infinispan>
-    <version.resteasy>3.0.8.Final</version.resteasy>
+    <!--<version.org.jboss.resteasy>3.0.8.Final</version.org.jboss.resteasy>-->
   </properties>
 
   <build>
@@ -897,27 +897,33 @@
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jaxrs</artifactId>
-        <version>${version.resteasy}</version>
+        <version>${version.org.jboss.resteasy}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-atom-provider</artifactId>
-        <version>${version.resteasy}</version>
+        <version>${version.org.jboss.resteasy}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jaxb-provider</artifactId>
-        <version>${version.resteasy}</version>
+        <version>${version.org.jboss.resteasy}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-multipart-provider</artifactId>
-        <version>${version.resteasy}</version>
+        <version>${version.org.jboss.resteasy}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>jaxrs-api</artifactId>
-        <version>${version.resteasy}</version>
+        <version>${version.org.jboss.resteasy}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${version.com.fasterxml.jackson}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -45,7 +45,6 @@
                 <exclude>WEB-INF/lib/staxmapper-*.jar</exclude>
                 <exclude>WEB-INF/lib/jaxb-impl-*.jar</exclude>
                 <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
-                <exclude>WEB-INF/lib/jackson-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>
