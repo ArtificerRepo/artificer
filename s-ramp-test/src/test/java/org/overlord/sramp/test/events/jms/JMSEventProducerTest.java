@@ -66,10 +66,10 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
     private static final String EAP_CONNECTIONFACTORY_JNDI = "jms/RemoteConnectionFactory";
     private static final String EAP_TOPIC_JNDI = "jms/sramp/events/topic";
     
-    private static final String TOMCAT_INITIAL_CONTEXT_FACTORY = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
-    private static final String TOMCAT_PROVIDER_URL = "tcp://localhost:61616";
-    private static final String TOMCAT_CONNECTIONFACTORY_JNDI = "ConnectionFactory";
-    private static final String TOMCAT_TOPIC_JNDI = "sramp/events/topic";
+//    private static final String TOMCAT_INITIAL_CONTEXT_FACTORY = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
+//    private static final String TOMCAT_PROVIDER_URL = "tcp://localhost:61616";
+//    private static final String TOMCAT_CONNECTIONFACTORY_JNDI = "ConnectionFactory";
+//    private static final String TOMCAT_TOPIC_JNDI = "sramp/events/topic";
     
     private List<TextMessage> textMessages;
     
@@ -240,12 +240,12 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
         } catch (Exception e) {
           e.printStackTrace();
         }
-        try {
-            return subscribe(TOMCAT_INITIAL_CONTEXT_FACTORY, TOMCAT_PROVIDER_URL, TOMCAT_CONNECTIONFACTORY_JNDI,
-                    TOMCAT_TOPIC_JNDI, lock);
-        } catch (Exception e) {
-//            e.printStackTrace();
-        }
+//        try {
+//            return subscribe(TOMCAT_INITIAL_CONTEXT_FACTORY, TOMCAT_PROVIDER_URL, TOMCAT_CONNECTIONFACTORY_JNDI,
+//                    TOMCAT_TOPIC_JNDI, lock);
+//        } catch (Exception e) {
+////            e.printStackTrace();
+//        }
         fail("Could not create a JMS client.");
         return null;
     }

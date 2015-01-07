@@ -335,12 +335,12 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-server-tomcat7</artifactId>
         <version>${project.version}</version>
         <type>war</type>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-server-wildfly8</artifactId>
@@ -375,12 +375,12 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-ui-war-tomcat7</artifactId>
         <version>${project.version}</version>
         <type>war</type>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-ui-war-wildfly8</artifactId>
@@ -698,12 +698,12 @@
         <version>${version.org.keycloak}</version>
         <type>zip</type>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-tomcat7-adapter-dist</artifactId>
         <version>${version.org.keycloak}</version>
         <type>zip</type>
-      </dependency>
+      </dependency>-->
 
       <!-- Third party libraries -->
       <dependency>
@@ -1045,14 +1045,14 @@
     <module>s-ramp-repository-jcr/modeshape</module>
     <module>s-ramp-server</module>
     <module>s-ramp-server/eap6</module>
-    <module>s-ramp-server/tomcat7</module>
+    <!--<module>s-ramp-server/tomcat7</module>-->
     <module>s-ramp-server/wildfly8</module>
     <module>s-ramp-shell</module>
     <module>s-ramp-shell-api</module>
     <module>s-ramp-test</module>
     <module>s-ramp-ui-war</module>
     <module>s-ramp-ui-war/eap6</module>
-    <module>s-ramp-ui-war/tomcat7</module>
+    <!--<module>s-ramp-ui-war/tomcat7</module>-->
     <module>s-ramp-ui-war/wildfly8</module>
     <module>s-ramp-ui-widgets</module>
     <module>s-ramp-wagon</module>

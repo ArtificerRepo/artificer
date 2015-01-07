@@ -6,26 +6,26 @@
   <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}" />
   <property name="overlord-commons.admin.password" value="artificer1!" />
 
-  <target name="install-sramp-tomcat">
-    <property name="appserver.id" value="tomcat-7" />
-    <property name="s-ramp.appserver.dir" location="${project.build.directory}/apache-tomcat-7.0.54" />
+  <!--<target name="install-sramp-tomcat">-->
+    <!--<property name="appserver.id" value="tomcat-7" />-->
+    <!--<property name="s-ramp.appserver.dir" location="${project.build.directory}/apache-tomcat-7.0.54" />-->
 
-    <property name="s-ramp.s-ramp-server.war.path"
-      value="${maven.dependency.org.overlord.sramp.s-ramp-server-tomcat7.war.path}" />
-    <property name="s-ramp.s-ramp-ui.war.path"
-      value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-tomcat7.war.path}" />
+    <!--<property name="s-ramp.s-ramp-server.war.path"-->
+      <!--value="${maven.dependency.org.overlord.sramp.s-ramp-server-tomcat7.war.path}" />-->
+    <!--<property name="s-ramp.s-ramp-ui.war.path"-->
+      <!--value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-tomcat7.war.path}" />-->
 
-    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-tomcat7-adapter-dist.zip.path}" />
+    <!--<property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-tomcat7-adapter-dist.zip.path}" />-->
 
-    <ant antfile="../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
-        inheritall="true" target="install" />
+    <!--<ant antfile="../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"-->
+        <!--inheritall="true" target="install" />-->
 
-    <!-- Manager user/pass needed so Arquillian can control the Tomcat server.  Overwrite what was
-    created by the S-RAMP installer.-->
-    <copy todir="${s-ramp.appserver.dir}" overwrite="true">
-      <fileset dir="src/test/resources/tomcat"/>
-    </copy>
-  </target>
+    <!--&lt;!&ndash; Manager user/pass needed so Arquillian can control the Tomcat server.  Overwrite what was-->
+    <!--created by the S-RAMP installer.&ndash;&gt;-->
+    <!--<copy todir="${s-ramp.appserver.dir}" overwrite="true">-->
+      <!--<fileset dir="src/test/resources/tomcat"/>-->
+    <!--</copy>-->
+  <!--</target>-->
 
   <target name="install-sramp-eap61">
     <property name="appserver.id" value="jboss-eap-6" />

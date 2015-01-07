@@ -46,7 +46,7 @@ import java.util.List;
  * correctly configured. We simply use the existing JMS framework and the
  * pre-existing topics/queues.
  *
- * Otherwise, we assume we're on a non-JavaEE server (Tomcat, EAP without
+ * Otherwise, we assume we're on a non-JavaEE server (EAP without
  * standalone-full, etc). We then create an embedded ActiveMQ broker over a TCP
  * port, then programmatically create all topics/queues. External clients can
  * then connect to it in one of two ways: 1.) Simply use the ActiveMQ libs and

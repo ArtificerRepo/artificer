@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="S-RAMP Integration Tests: Setup">
 
-  <property name="filename.tomcat" value="apache-tomcat-7.0.54.zip" />
-  <property name="download.url.tomcat"
-    value="http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.54/bin/${filename.tomcat}" />
-  <property name="dir.tomcat" value="apache-tomcat-7.0.54" />
+  <!--<property name="filename.tomcat" value="apache-tomcat-7.0.54.zip" />-->
+  <!--<property name="download.url.tomcat"-->
+    <!--value="http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.54/bin/${filename.tomcat}" />-->
+  <!--<property name="dir.tomcat" value="apache-tomcat-7.0.54" />-->
 
   <property name="filename.eap61" value="jboss-eap-6.1.0.zip" />
   <property name="dir.eap61" value="jboss-eap-6.1" />
@@ -17,16 +17,16 @@
 
   <property name="filename.wildfly8" value="wildfly-8.2.0.Final.zip" />
   <property name="download.url.wildfly8"
-            value="http://download.jboss.org/wildfly/8.2.0.Final/${filename.tomcat}" />
+            value="http://download.jboss.org/wildfly/8.2.0.Final/${filename.wildfly8}" />
   <property name="dir.wildfly8" value="wildfly-8.2.0.Final" />
 
-  <target name="install-tomcat">
-    <property name="name" value="Tomcat" />
-    <property name="filename" value="${filename.tomcat}" />
-    <property name="dir" value="target/${dir.tomcat}" />
-    <property name="download.url" value="${download.url.tomcat}" />
-    <antcall target="install" />
-  </target>
+  <!--<target name="install-tomcat">-->
+    <!--<property name="name" value="Tomcat" />-->
+    <!--<property name="filename" value="${filename.tomcat}" />-->
+    <!--<property name="dir" value="target/${dir.tomcat}" />-->
+    <!--<property name="download.url" value="${download.url.tomcat}" />-->
+    <!--<antcall target="install" />-->
+  <!--</target>-->
 
   <target name="install-eap61">
     <!-- TODO: Fail is the ZIP isn't in the root? -->

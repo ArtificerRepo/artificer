@@ -24,11 +24,11 @@
       <artifactId>s-ramp-server-eap6</artifactId>
       <type>war</type>
     </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-server-tomcat7</artifactId>
-      <type>war</type>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.overlord.sramp</groupId>-->
+      <!--<artifactId>s-ramp-server-tomcat7</artifactId>-->
+      <!--<type>war</type>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-server-wildfly8</artifactId>
@@ -39,11 +39,11 @@
       <artifactId>s-ramp-ui-war-eap6</artifactId>
       <type>war</type>
     </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-ui-war-tomcat7</artifactId>
-      <type>war</type>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.overlord.sramp</groupId>-->
+      <!--<artifactId>s-ramp-ui-war-tomcat7</artifactId>-->
+      <!--<type>war</type>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war-wildfly8</artifactId>
@@ -84,14 +84,14 @@
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-as7-adapter-dist</artifactId>
             </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat6-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat8-adapter-dist</artifactId>
-            </exclusion>
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat6-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat8-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
             <exclusion>
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-jetty81-adapter-dist</artifactId>
@@ -214,14 +214,14 @@
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-as7-adapter-dist</artifactId>
             </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat6-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat8-adapter-dist</artifactId>
-            </exclusion>
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat6-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat8-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
             <exclusion>
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-jetty81-adapter-dist</artifactId>
@@ -315,77 +315,77 @@
     <!-- ****************************************** -->
     <!-- Profile to *test* installing into Tomcat 7 -->
     <!-- ****************************************** -->
-    <profile>
-      <id>test-install-tomcat7</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-tomcat7-adapter-dist</artifactId>
-          <type>zip</type>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <dependencies>
-              <dependency>
-                <groupId>ant</groupId>
-                <artifactId>ant-trax</artifactId>
-                <version>1.6.5</version>
-              </dependency>
-              <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>2.7.1</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>install-tomcat7</id>
-                <phase>install</phase>
-                <configuration>
-                  <tasks>
-                    <property name="appserver.id" value="tomcat-7" />
-                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/apache-tomcat-7.0.54" />
+    <!--<profile>-->
+      <!--<id>test-install-tomcat7</id>-->
+      <!--<dependencies>-->
+        <!--<dependency>-->
+          <!--<groupId>org.keycloak</groupId>-->
+          <!--<artifactId>keycloak-tomcat7-adapter-dist</artifactId>-->
+          <!--<type>zip</type>-->
+        <!--</dependency>-->
+      <!--</dependencies>-->
+      <!--<build>-->
+        <!--<plugins>-->
+          <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-antrun-plugin</artifactId>-->
+            <!--<dependencies>-->
+              <!--<dependency>-->
+                <!--<groupId>ant</groupId>-->
+                <!--<artifactId>ant-trax</artifactId>-->
+                <!--<version>1.6.5</version>-->
+              <!--</dependency>-->
+              <!--<dependency>-->
+                <!--<groupId>xalan</groupId>-->
+                <!--<artifactId>xalan</artifactId>-->
+                <!--<version>2.7.1</version>-->
+              <!--</dependency>-->
+            <!--</dependencies>-->
+            <!--<executions>-->
+              <!--<execution>-->
+                <!--<id>install-tomcat7</id>-->
+                <!--<phase>install</phase>-->
+                <!--<configuration>-->
+                  <!--<tasks>-->
+                    <!--<property name="appserver.id" value="tomcat-7" />-->
+                    <!--<property name="s-ramp.install.dir" value="${project.build.directory}" />-->
+                    <!--<property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/apache-tomcat-7.0.54" />-->
 
-                    <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <!--&lt;!&ndash; Overlord Commons Installer and Dependencies &ndash;&gt;-->
+                    <!--<property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>-->
 
-                    <!-- S-RAMP WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-tomcat7.war.path}" />
-                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-tomcat7.war.path}" />
+                    <!--&lt;!&ndash; S-RAMP WARs &ndash;&gt;-->
+                    <!--<property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-tomcat7.war.path}" />-->
+                    <!--<property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-tomcat7.war.path}" />-->
 
-                    <property file="build.properties" />
-                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.zip" value="${basedir}/apache-tomcat-7.0.54.zip" />
-                    <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
-                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
-                      <include name="*.sh" />
-                    </chmod>
+                    <!--<property file="build.properties" />-->
+                    <!--<property name="s-ramp.install.dir" value="${project.build.directory}" />-->
+                    <!--<property name="s-ramp.appserver.zip" value="${basedir}/apache-tomcat-7.0.54.zip" />-->
+                    <!--<unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />-->
+                    <!--<chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">-->
+                      <!--<include name="*.sh" />-->
+                    <!--</chmod>-->
 
-                    <!-- The commons ant jar location -->
-                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
+                    <!--&lt;!&ndash; The commons ant jar location &ndash;&gt;-->
+                    <!--<property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />-->
 
-                    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-tomcat7-adapter-dist.zip.path}" />
+                    <!--<property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-tomcat7-adapter-dist.zip.path}" />-->
 
-                    <!-- Call the installer -->
-                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
-                      <target name="install" />
-                    </ant>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
+                    <!--&lt;!&ndash; Call the installer &ndash;&gt;-->
+                    <!--<ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">-->
+                      <!--<target name="install" />-->
+                    <!--</ant>-->
+                  <!--</tasks>-->
+                <!--</configuration>-->
+                <!--<goals>-->
+                  <!--<goal>run</goal>-->
+                <!--</goals>-->
+              <!--</execution>-->
+            <!--</executions>-->
+          <!--</plugin>-->
+        <!--</plugins>-->
+      <!--</build>-->
+    <!--</profile>-->
   </profiles>
 
 </project>

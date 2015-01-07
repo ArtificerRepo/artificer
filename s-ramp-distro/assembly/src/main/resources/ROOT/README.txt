@@ -47,6 +47,6 @@ You should be able to log in with the following credentials:
 == Note on Memory Configuration ==
 You will most likely need to increase the default JVM memory settings for
 your application server.  The typical defaults are insufficient.  For
-example, on Tomcat these settings are pretty good:
+example, these settings are pretty good:
 
-set CATALINA_OPTS=-Xms1G -Xmx1G -XX:PermSize=384m -XX:MaxPermSize=384m
+-Xms1G -Xmx1G -XX:PermSize=384m -XX:MaxPermSize=384m

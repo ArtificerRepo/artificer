@@ -140,79 +140,79 @@
   </build>
 
   <profiles>
-    <profile>
-      <id>tomcat-integration-test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <skipTests>false</skipTests>
-            </configuration>
-          </plugin>
-          <!--<plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>generate-test-resources</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-tomcat" />
-                    <ant antfile="${basedir}/src/test/resources/install-sramp.xml" target="install-sramp-tomcat" />
-                  </tasks>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>-->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <systemPropertyVariables>
-                <arquillian.launch>tomcat</arquillian.launch>
-              </systemPropertyVariables>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-tomcat-managed-7</artifactId>
-            <version>1.0.0.CR7</version>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
-      <dependencies>
-        <dependency>
-          <groupId>org.jboss.arquillian.container</groupId>
-          <artifactId>arquillian-tomcat-managed-7</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.overlord.sramp</groupId>
-          <artifactId>s-ramp-server-tomcat7</artifactId>
-          <type>war</type>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.overlord.sramp</groupId>
-          <artifactId>s-ramp-ui-war-tomcat7</artifactId>
-          <type>war</type>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.activemq</groupId>
-          <artifactId>activemq-client</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
+    <!--<profile>-->
+      <!--<id>tomcat-integration-test</id>-->
+      <!--<build>-->
+        <!--<plugins>-->
+          <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-surefire-plugin</artifactId>-->
+            <!--<configuration>-->
+              <!--<skipTests>false</skipTests>-->
+            <!--</configuration>-->
+          <!--</plugin>-->
+          <!--&lt;!&ndash;<plugin>-->
+            <!--<artifactId>maven-antrun-plugin</artifactId>-->
+            <!--<executions>-->
+              <!--<execution>-->
+                <!--<phase>generate-test-resources</phase>-->
+                <!--<goals>-->
+                  <!--<goal>run</goal>-->
+                <!--</goals>-->
+                <!--<configuration>-->
+                  <!--<tasks>-->
+                    <!--<ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-tomcat" />-->
+                    <!--<ant antfile="${basedir}/src/test/resources/install-sramp.xml" target="install-sramp-tomcat" />-->
+                  <!--</tasks>-->
+                <!--</configuration>-->
+              <!--</execution>-->
+            <!--</executions>-->
+          <!--</plugin>&ndash;&gt;-->
+          <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-surefire-plugin</artifactId>-->
+            <!--<configuration>-->
+              <!--<systemPropertyVariables>-->
+                <!--<arquillian.launch>tomcat</arquillian.launch>-->
+              <!--</systemPropertyVariables>-->
+            <!--</configuration>-->
+          <!--</plugin>-->
+        <!--</plugins>-->
+      <!--</build>-->
+      <!--<dependencyManagement>-->
+        <!--<dependencies>-->
+          <!--<dependency>-->
+            <!--<groupId>org.jboss.arquillian.container</groupId>-->
+            <!--<artifactId>arquillian-tomcat-managed-7</artifactId>-->
+            <!--<version>1.0.0.CR7</version>-->
+          <!--</dependency>-->
+        <!--</dependencies>-->
+      <!--</dependencyManagement>-->
+      <!--<dependencies>-->
+        <!--<dependency>-->
+          <!--<groupId>org.jboss.arquillian.container</groupId>-->
+          <!--<artifactId>arquillian-tomcat-managed-7</artifactId>-->
+          <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+          <!--<groupId>org.overlord.sramp</groupId>-->
+          <!--<artifactId>s-ramp-server-tomcat7</artifactId>-->
+          <!--<type>war</type>-->
+          <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+          <!--<groupId>org.overlord.sramp</groupId>-->
+          <!--<artifactId>s-ramp-ui-war-tomcat7</artifactId>-->
+          <!--<type>war</type>-->
+          <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+          <!--<groupId>org.apache.activemq</groupId>-->
+          <!--<artifactId>activemq-client</artifactId>-->
+          <!--<scope>test</scope>-->
+        <!--</dependency>-->
+      <!--</dependencies>-->
+    <!--</profile>-->
     <profile>
       <id>eap61-integration-test</id>
       <build>
@@ -300,14 +300,14 @@
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-as7-adapter-dist</artifactId>
             </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat6-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat8-adapter-dist</artifactId>
-            </exclusion>
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat6-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat8-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
             <exclusion>
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-jetty81-adapter-dist</artifactId>
@@ -424,14 +424,14 @@
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-as7-adapter-dist</artifactId>
             </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat6-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat8-adapter-dist</artifactId>
-            </exclusion>
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat6-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat8-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
             <exclusion>
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-jetty81-adapter-dist</artifactId>
@@ -551,14 +551,14 @@
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-as7-adapter-dist</artifactId>
             </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat6-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat8-adapter-dist</artifactId>
-            </exclusion>
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat6-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat8-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
             <exclusion>
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-jetty81-adapter-dist</artifactId>
@@ -710,14 +710,14 @@
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-as7-adapter-dist</artifactId>
             </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat6-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-tomcat8-adapter-dist</artifactId>
-            </exclusion>
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat6-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
+            <!--<exclusion>-->
+              <!--<groupId>org.keycloak</groupId>-->
+              <!--<artifactId>keycloak-tomcat8-adapter-dist</artifactId>-->
+            <!--</exclusion>-->
             <exclusion>
               <groupId>org.keycloak</groupId>
               <artifactId>keycloak-jetty81-adapter-dist</artifactId>
