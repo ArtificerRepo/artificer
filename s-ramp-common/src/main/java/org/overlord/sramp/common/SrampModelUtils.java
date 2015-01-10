@@ -88,11 +88,12 @@ public class SrampModelUtils {
 	 * @param artifact
 	 * @param relationshipType
      * @param targetUUID
-     * @param otherAttributes
+     * @param relationshipOtherAttributes
+     * @param targetOtherAttributes
 	 * @return the created {@link Relationship}
 	 */
 	public static Relationship addGenericRelationship(BaseArtifactType artifact, String relationshipType,
-            String targetUUID, Map<QName, String> otherAttributes) {
+            String targetUUID, Map<QName, String> relationshipOtherAttributes, Map<QName, String> targetOtherAttributes) {
 		Relationship relationship = null;
 		for (Relationship r : artifact.getRelationship()) {
 			if (r.getRelationshipType().equals(relationshipType)) {
@@ -110,10 +111,11 @@ public class SrampModelUtils {
 		if (targetUUID != null) {
 			Target target = new Target();
 			target.setValue(targetUUID);
+            target.getOtherAttributes().putAll(targetOtherAttributes);
 			relationship.getRelationshipTarget().add(target);
 		}
 
-        relationship.getOtherAttributes().putAll(otherAttributes);
+        relationship.getOtherAttributes().putAll(relationshipOtherAttributes);
 
 		return relationship;
 	}
@@ -127,7 +129,7 @@ public class SrampModelUtils {
      */
     public static Relationship addGenericRelationship(BaseArtifactType artifact, String relationshipType,
             String targetUUID) {
-        return addGenericRelationship(artifact, relationshipType, targetUUID, Collections.EMPTY_MAP);
+        return addGenericRelationship(artifact, relationshipType, targetUUID, Collections.EMPTY_MAP, Collections.EMPTY_MAP);
     }
 
 	/**

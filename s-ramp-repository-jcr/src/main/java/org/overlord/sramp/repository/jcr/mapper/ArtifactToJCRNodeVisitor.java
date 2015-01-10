@@ -867,16 +867,10 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 		if (target != null || minCardinality == 0) {
 			Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType,
 			        maxCardinality, isGeneric, isDerived);
-
-			Value[] targetValues = new Value[1];
-			targetValues[0] = StringUtils.isNotBlank(target.getValue()) ?
-			        this.referenceFactory.createReference(target.getValue()) : null;
-			relationshipNode.setProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET, targetValues);
-
-            if (targetType != null) {
-                String[] targetTypeValues = new String[1];
-                targetTypeValues[0] = targetType;
-                relationshipNode.setProperty(JCRConstants.SRAMP_TARGET_TYPE, targetTypeValues);
+            if (StringUtils.isNotBlank(target.getValue())) {
+                Value targetValue = this.referenceFactory.createReference(target.getValue());
+                Node targetNode = getOrCreateTargetNode(relationshipNode, targetType, target.getValue(), targetValue);
+                setOtherAttributes(targetNode, target.getOtherAttributes());
             }
 		} else {
 			// If the minimum cardinality is > 0 but no targets have been provided, then
@@ -887,41 +881,23 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 
     private void setRelationships(String relationshipType, int maxCardinality, int minCardinality,
             boolean isGeneric, boolean isDerived, List<? extends Target> targets, List<String> targetTypes,
-            Map<QName, String> otherAttributes) throws Exception {
+            Map<QName, String> relationshipOtherAttributes) throws Exception {
         if (!isProcessRelationships())
             return;
         if ((targets != null && targets.size() > 0) || minCardinality == 0) {
             Node relationshipNode = getOrCreateRelationshipNode(this.jcrNode, relationshipType,
                     maxCardinality, isGeneric, isDerived);
-
-            Value[] targetValues = new Value[targets.size()];
-            for (int idx = 0; idx < targets.size(); idx++) {
-                targetValues[idx] = StringUtils.isNotBlank(targets.get(idx).getValue()) ?
-                        this.referenceFactory.createReference(targets.get(idx).getValue()) : null;
-            }
-            relationshipNode.setProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET, targetValues);
-
-            if (targetTypes != null && targetTypes.size() > 0) {
-                String[] targetTypeValues = new String[targets.size()];
-                for (int idx = 0; idx < targetTypes.size(); idx++) {
-                    targetTypeValues[idx] = targetTypes.get(idx);
+            for (int i = 0; i < targets.size(); i++) {
+                Target target = targets.get(i);
+                if (StringUtils.isNotBlank(target.getValue())) {
+                    Value targetValue = this.referenceFactory.createReference(target.getValue());
+                    String targetType = targetTypes.size() > i ? targetTypes.get(i) : null;
+                    Node targetNode = getOrCreateTargetNode(relationshipNode, targetType, target.getValue(), targetValue);
+                    setOtherAttributes(targetNode, target.getOtherAttributes());
                 }
-                relationshipNode.setProperty(JCRConstants.SRAMP_TARGET_TYPE, targetTypeValues);
             }
 
-            // store any 'other' attributes
-            String attributeKeyPrefix = JCRConstants.SRAMP_OTHER_ATTRIBUTES + ":";
-            for (QName qname : otherAttributes.keySet()) {
-                String attributeKey = attributeKeyPrefix + qname.toString();
-                String attributeValue = otherAttributes.get(qname);
-                if (StringUtils.isEmpty(attributeValue)) {
-                    // Need to support no-value properties, but JCR will remove it if it's null.  Further, if it's an
-                    // empty string, the property existence query fails.  Therefore, use a placeholder that will eventually
-                    // be removed by JCRNodeToArtifactVisitor.
-                    attributeValue = JCRConstants.NO_VALUE;
-                }
-                relationshipNode.setProperty(attributeKey, attributeValue);
-            }
+            setOtherAttributes(relationshipNode, relationshipOtherAttributes);
         } else {
             // If the minimum cardinality is > 0 but no targets have been provided, then
             // remove the relationship node.
@@ -942,6 +918,22 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
             targetTypes.add(targetType);
         }
         setRelationships(relationshipType, maxCardinality, minCardinality, isGeneric, isDerived, targets, targetTypes);
+    }
+
+    private void setOtherAttributes(Node node, Map<QName, String> otherAttributes) throws Exception {
+        // store any 'other' attributes
+        String attributeKeyPrefix = JCRConstants.SRAMP_OTHER_ATTRIBUTES + ":";
+        for (QName qname : otherAttributes.keySet()) {
+            String attributeKey = attributeKeyPrefix + qname.toString();
+            String attributeValue = otherAttributes.get(qname);
+            if (StringUtils.isEmpty(attributeValue)) {
+                // Need to support no-value properties, but JCR will remove it if it's null.  Further, if it's an
+                // empty string, the property existence query fails.  Therefore, use a placeholder that will eventually
+                // be removed by JCRNodeToArtifactVisitor.
+                attributeValue = JCRConstants.NO_VALUE;
+            }
+            node.setProperty(attributeKey, attributeValue);
+        }
     }
 
 	/**
@@ -984,6 +976,19 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 		}
 		return relationshipNode;
 	}
+
+    private static Node getOrCreateTargetNode(Node parentNode, String targetType, String targetUuid, Value targetValue) throws Exception {
+        Node targetNode = null;
+        String nodeName = "sramp-targets:" + targetUuid;
+        if (parentNode.hasNode(nodeName)) {
+            targetNode = parentNode.getNode(nodeName);
+        } else {
+            targetNode = parentNode.addNode(nodeName, JCRConstants.SRAMP_TARGET);
+            targetNode.setProperty(JCRConstants.SRAMP_TARGET_TYPE, targetType);
+            targetNode.setProperty(JCRConstants.SRAMP_TARGET_ARTIFACT, targetValue);
+        }
+        return targetNode;
+    }
 
 	/**
 	 * Sets the named property.  Only sets the value if it has changed.  Call this method

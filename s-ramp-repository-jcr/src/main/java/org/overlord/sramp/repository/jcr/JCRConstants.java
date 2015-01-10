@@ -91,7 +91,11 @@ public class JCRConstants {
     public static final String SRAMP_SOAP_LOCATION              = SRAMP_ + "soapLocation";
     public static final String SRAMP_STYLE                      = SRAMP_ + "style";
     public static final String SRAMP_TARGET_NAMESPACE           = SRAMP_ + "targetNamespace";
+    public static final String SRAMP_TARGET                     = SRAMP_ + "target";
+    public static final String SRAMP_TARGET_ARTIFACT            = SRAMP_ + "targetArtifact";
     public static final String SRAMP_TARGET_TYPE                = SRAMP_ + "targetType";
+    public static final String SRAMP_TARGETS                    = "sramp-targets";
+    public static final String SRAMP_TARGETS_NS                 = SRAMP_NS + "#targets";
     public static final String SRAMP_TRANSPORT                  = SRAMP_ + "transport";
     public static final String SRAMP_URI                        = SRAMP_ + "uri";
     public static final String SRAMP_URL                        = SRAMP_ + "url";

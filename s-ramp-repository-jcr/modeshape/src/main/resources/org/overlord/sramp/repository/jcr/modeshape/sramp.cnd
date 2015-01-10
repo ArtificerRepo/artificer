@@ -82,13 +82,18 @@
 
 [sramp:derivedArtifactPrimaryType] > nt:hierarchyNode
 
+[sramp:target]
+- sramp:targetType (string)
+- sramp:targetArtifact (weakreference) < 'sramp:baseArtifactType'
+- * (string)
+- * (string) multiple
+
 [sramp:relationship]
 - sramp:relationshipType (string)
 - sramp:generic (boolean)
 - sramp:derived (boolean)
 - sramp:maxCardinality (long)
-- sramp:targetType (string) multiple
-- sramp:relationshipTarget (weakreference) multiple < 'sramp:baseArtifactType'
++ * (sramp:target)
 - * (string)
 - * (string) multiple
 

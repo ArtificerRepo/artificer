@@ -27,6 +27,7 @@ import org.overlord.sramp.repository.query.SrampQuery;
 
 import javax.xml.namespace.QName;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,7 +112,9 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
 
         Map<QName, String> otherAttributes = new HashMap<QName, String>();
         otherAttributes.put(QName.valueOf("FooKey"), "FooValue");
-        SrampModelUtils.addGenericRelationship(xsdDoc, "relWithAttr", wsdlDoc.getUuid(), otherAttributes);
+        Map<QName, String> otherAttributes2 = new HashMap<QName, String>();
+        otherAttributes2.put(QName.valueOf("FooKey2"), "FooValue2");
+        SrampModelUtils.addGenericRelationship(xsdDoc, "relWithAttr", wsdlDoc.getUuid(), otherAttributes, otherAttributes2);
         Property prop = new Property();
         prop.setPropertyName("FooProperty");
         prop.setPropertyValue("FooValue");
@@ -145,12 +148,12 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(0, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue']]");
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey')]]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
-        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey')]]");
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
@@ -170,6 +173,8 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
 //        artifactSet = query.executeQuery();
 //        Assert.assertNotNull(artifactSet);
 //        Assert.assertEquals(0, artifactSet.size());
+
+        // TODO: After SRAMP-625, test getTargetAttribute using
     }
 
 	private WsdlDocument addWsdlDoc() throws Exception {

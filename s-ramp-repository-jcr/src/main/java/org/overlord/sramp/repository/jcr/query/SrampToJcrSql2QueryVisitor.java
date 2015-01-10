@@ -77,7 +77,9 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	private StringBuilder whereBuilder = new StringBuilder();
     private String artifactPredicateContext = null;
 	private String relationshipPredicateContext = null;
-	private int relationshipJoinCounter = 1;
+    private int relationshipJoinCounter = 1;
+    private String targetPredicateContext = null;
+    private int targetJoinCounter = 1;
 	private int artifactJoinCounter = 1;
 	private ClassificationHelper classificationHelper;
 	private String lastFPS = null;
@@ -150,21 +152,25 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 		    SubartifactSet subartifactSet = node.getSubartifactSet();
 		    if (subartifactSet.getRelationshipPath() != null) {
 		        String relationshipAlias = newRelationshipAlias();
+                String targetAlias = newTargetAlias();
 		        String artifactAlias = newArtifactAlias();
 
 		        // Add the JOIN on the relationship
                 String oldRelationshipPredicateContext = this.relationshipPredicateContext;
 		        this.relationshipPredicateContext = relationshipAlias;
+                String oldTargetPredicateContext = this.targetPredicateContext;
+                this.targetPredicateContext = targetAlias;
 		        this.whereBuilder.append(" AND ");
 		        subartifactSet.getRelationshipPath().accept(this);
                 this.relationshipPredicateContext = oldRelationshipPredicateContext;
+                this.targetPredicateContext = oldTargetPredicateContext;
 
 		        // Now add another JOIN back around on the "artifact table"
                 this.fromBuilder.append(" JOIN [sramp:baseArtifactType] AS ");
                 this.fromBuilder.append(artifactAlias);
                 this.fromBuilder.append(" ON ");
-                this.fromBuilder.append(relationshipAlias);
-                this.fromBuilder.append(".[sramp:relationshipTarget] = ");
+                this.fromBuilder.append(targetAlias);
+                this.fromBuilder.append(".[sramp:targetArtifact] = ");
                 this.fromBuilder.append(artifactAlias);
                 this.fromBuilder.append(".[jcr:uuid]");
 
@@ -487,17 +493,28 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 	 */
 	@Override
 	public void visit(RelationshipPath node) {
-		String alias = this.relationshipPredicateContext;
+		String relationshipAlias = this.relationshipPredicateContext;
+        String targetAlias = this.targetPredicateContext;
 
 		fromBuilder.append(" JOIN [sramp:relationship] AS ");
-		fromBuilder.append(alias);
+		fromBuilder.append(relationshipAlias);
 		fromBuilder.append(" ON ISCHILDNODE(");
-		fromBuilder.append(alias);
+		fromBuilder.append(relationshipAlias);
 		fromBuilder.append(", ");
         fromBuilder.append(this.artifactPredicateContext);
         fromBuilder.append(")");
 
-		whereBuilder.append(alias);
+        if (targetAlias != null) {
+            fromBuilder.append(" JOIN [sramp:target] AS ");
+            fromBuilder.append(targetAlias);
+            fromBuilder.append(" ON ISCHILDNODE(");
+            fromBuilder.append(targetAlias);
+            fromBuilder.append(", ");
+            fromBuilder.append(relationshipAlias);
+            fromBuilder.append(")");
+        }
+
+		whereBuilder.append(relationshipAlias);
 		whereBuilder.append(".[sramp:relationshipType] = '");
 		whereBuilder.append(node.getRelationshipType());
 		whereBuilder.append("'");
@@ -517,13 +534,19 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
 			String relationshipAlias = newRelationshipAlias();
 			String oldRelationshipPredicateContext = this.relationshipPredicateContext;
 			this.relationshipPredicateContext = relationshipAlias;
+            // TODO: Incredibly hacky.  Should not create the sramp:target JOIN in visit(RelationshipPath) unless
+            // the target is actually needed below.
+            String targetAlias = node.getPredicate() != null ? newTargetAlias() : null;
+            String oldTargetPredicateContext = this.targetPredicateContext;
+            this.targetPredicateContext = targetAlias;
 			node.getRelationshipPath().accept(this);
-			this.relationshipPredicateContext = oldRelationshipPredicateContext;
+            this.relationshipPredicateContext = oldRelationshipPredicateContext;
+            this.targetPredicateContext = oldTargetPredicateContext;
 			if (node.getPredicate() != null) {
 			    String artifactAlias = newArtifactAlias();
 				this.whereBuilder.append(" AND ");
-				this.whereBuilder.append(relationshipAlias);
-				this.whereBuilder.append(".[sramp:relationshipTarget] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS ");
+				this.whereBuilder.append(targetAlias);
+				this.whereBuilder.append(".[sramp:targetArtifact] IN (SELECT [jcr:uuid] FROM [sramp:baseArtifactType] AS ");
 				this.whereBuilder.append(artifactAlias);
 				this.whereBuilder.append(" WHERE ");
 
@@ -565,6 +588,13 @@ public class SrampToJcrSql2QueryVisitor implements XPathVisitor {
      */
     protected String newRelationshipAlias() {
         return "relationship" + relationshipJoinCounter++;
+    }
+
+    /**
+     * @return a new (unused) alias for a target (typically used in JOINs)
+     */
+    protected String newTargetAlias() {
+        return "target" + targetJoinCounter++;
     }
 
     /**

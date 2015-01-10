@@ -18,6 +18,7 @@ package org.overlord.sramp.repository.jcr.mapper;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -123,51 +124,54 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
 	}
 
     private void visitGenericRelationships(BaseArtifactType artifact) throws Exception {
-        NodeIterator rnodes = jcrNode.getNodes();
-        while (rnodes.hasNext()) {
-            Node rNode = rnodes.nextNode();
-            if (rNode.isNodeType(JCRConstants.SRAMP_RELATIONSHIP)) {
-                String rtype = getProperty(rNode, JCRConstants.SRAMP_RELATIONSHIP_TYPE);
+        NodeIterator relationshipNodes = jcrNode.getNodes();
+        while (relationshipNodes.hasNext()) {
+            Node relationshipNode = relationshipNodes.nextNode();
+            if (relationshipNode.isNodeType(JCRConstants.SRAMP_RELATIONSHIP)) {
+                String rtype = getProperty(relationshipNode, JCRConstants.SRAMP_RELATIONSHIP_TYPE);
                 boolean generic = false;
-                if (rNode.hasProperty(JCRConstants.SRAMP_GENERIC)) {
-                    generic = rNode.getProperty(JCRConstants.SRAMP_GENERIC).getBoolean();
+                if (relationshipNode.hasProperty(JCRConstants.SRAMP_GENERIC)) {
+                    generic = relationshipNode.getProperty(JCRConstants.SRAMP_GENERIC).getBoolean();
                 }
                 if (!generic)
                     continue;
 
                 Relationship relationship = new Relationship();
                 relationship.setRelationshipType(rtype);
-                if (rNode.hasProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)) {
-                    Property property = rNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET);
-                    Value[] values = property.getValues();
-                    for (Value value : values) {
-                        if (value.getType() == PropertyType.WEAKREFERENCE) {
-                            Target target = createTarget(Target.class, value);
-                            relationship.getRelationshipTarget().add(target);
-                        }
+                NodeIterator targetNodes = relationshipNode.getNodes();
+                while (targetNodes.hasNext()) {
+                    Node targetNode = targetNodes.nextNode();
+                    Value value = targetNode.getProperty(JCRConstants.SRAMP_TARGET_ARTIFACT).getValue();
+                    if (value.getType() == PropertyType.WEAKREFERENCE) {
+                        Target target = createTarget(Target.class, value);
+                        relationship.getRelationshipTarget().add(target);
                     }
                 }
 
-                String attributeKeyPrefix = JCRConstants.SRAMP_OTHER_ATTRIBUTES + ":";
-                PropertyIterator properties = rNode.getProperties();
-                while (properties.hasNext()) {
-                    Property property = properties.nextProperty();
-                    String propName = property.getName();
-                    if (propName.startsWith(attributeKeyPrefix)) {
-                        String qname = propName.substring(attributeKeyPrefix.length());
-                        String propValue = property.getValue().getString();
-                        // Need to support no-value properties, but JCR will remove it if it's null.  Further, if it's an
-                        // empty string, the property existence query fails.  Therefore, ArtifactToJCRNodeVisitor uses
-                        // this placeholder.
-                        if (propValue.equals(JCRConstants.NO_VALUE)) {
-                            propValue = null;
-                        }
-
-                        relationship.getOtherAttributes().put(QName.valueOf(qname), propValue);
-                    }
-                }
+                setOtherAttributes(relationshipNode, relationship.getOtherAttributes());
 
                 artifact.getRelationship().add(relationship);
+            }
+        }
+    }
+
+    private void setOtherAttributes(Node node, Map<QName, String> otherAttributes) throws Exception {
+        String attributeKeyPrefix = JCRConstants.SRAMP_OTHER_ATTRIBUTES + ":";
+        PropertyIterator properties = node.getProperties();
+        while (properties.hasNext()) {
+            Property property = properties.nextProperty();
+            String propName = property.getName();
+            if (propName.startsWith(attributeKeyPrefix)) {
+                String qname = propName.substring(attributeKeyPrefix.length());
+                String propValue = property.getValue().getString();
+                // Need to support no-value properties, but JCR will remove it if it's null.  Further, if it's an
+                // empty string, the property existence query fails.  Therefore, ArtifactToJCRNodeVisitor uses
+                // this placeholder.
+                if (propValue.equals(JCRConstants.NO_VALUE)) {
+                    propValue = null;
+                }
+
+                otherAttributes.put(QName.valueOf(qname), propValue);
             }
         }
     }
@@ -674,32 +678,33 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
 		String relNodeName = "sramp-relationships:" + relationshipType;
 		if (this.jcrNode.hasNode(relNodeName)) {
 			Node relationshipNode = this.jcrNode.getNode(relNodeName);
-			if (relationshipNode.hasProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)) {
-			    Value[] relationshipTargets = relationshipNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TARGET)
-                        .getValues();
-                Value[] targetTypes = relationshipNode.getProperty(JCRConstants.SRAMP_TARGET_TYPE).getValues();
-                for (int i = 0; i < relationshipTargets.length; i++) {
-                    Value relationshipTarget = relationshipTargets[i];
-                    String targetType = targetTypes[i].getString();
+            NodeIterator targetNodes = relationshipNode.getNodes();
+			while (targetNodes.hasNext()) {
+                Node targetNode = targetNodes.nextNode();
+                Value relationshipTarget = targetNode.getProperty(JCRConstants.SRAMP_TARGET_ARTIFACT).getValue();
+                String targetType = null;
+                if (targetNode.hasProperty(JCRConstants.SRAMP_TARGET_TYPE)) {
+                    targetType = targetNode.getProperty(JCRConstants.SRAMP_TARGET_TYPE).getValue().getString();
+                }
 
-					T t = createTarget(targetClass, relationshipTarget);
-					Target target = (Target) t;
-					// Use reflection to set the 'artifact type' attribute found on
-					// most (all?) targets.  Unfortunately, the method and field are
-					// redefined in each subclass of Target.
-					// TODO: Get ^^^ changed in the spec!
-					try {
-						Method m = targetClass.getMethod("getArtifactType");
-						Class<?> mc = m.getReturnType();
-						m = mc.getMethod("valueOf", String.class);
-						Object o = m.invoke(null, targetType);
-						m = targetClass.getMethod("setArtifactType", o.getClass());
-						m.invoke(target, o);
-					} catch (Exception e) {
-						// eat it
-					}
-					rval.add(t);
-				}
+                T t = createTarget(targetClass, relationshipTarget);
+                Target target = (Target) t;
+                // Use reflection to set the 'artifact type' attribute found on
+                // most (all?) targets.  Unfortunately, the method and field are
+                // redefined in each subclass of Target.
+                // TODO: Get ^^^ changed in the spec!
+                try {
+                    Method m = targetClass.getMethod("getArtifactType");
+                    Class<?> mc = m.getReturnType();
+                    m = mc.getMethod("valueOf", String.class);
+                    Object o = m.invoke(null, targetType);
+                    m = targetClass.getMethod("setArtifactType", o.getClass());
+                    m.invoke(target, o);
+                } catch (Exception e) {
+                    // eat it
+                }
+                setOtherAttributes(targetNode, target.getOtherAttributes());
+                rval.add(t);
 			}
 		}
 		return rval;

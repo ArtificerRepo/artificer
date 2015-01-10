@@ -44,15 +44,16 @@ public class JCRArtifactConstraintUtil extends HierarchicalArtifactVisitor {
      * @throws Exception
      */
     public static void relationshipConstraints(String uuid, Node primaryNode, Session session) throws Exception {
-        String query = String.format("SELECT * FROM [sramp:relationship] " +
+        String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
+                        "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
                         // root path, *not* in the trash
-                        "WHERE ISDESCENDANTNODE('" + JCRConstants.ROOT_PATH + "') " +
+                        "WHERE ISDESCENDANTNODE(r, '" + JCRConstants.ROOT_PATH + "') " +
                         // relationship is not from one of the given artifact's children
-                        "AND NOT(ISDESCENDANTNODE('%2$s')) " +
+                        "AND NOT(ISDESCENDANTNODE(r, '%2$s')) " +
                         // only generic or modeled, but not derived
-                        "AND ([sramp:generic] = true OR [sramp:derived] = false) " +
+                        "AND (r.[sramp:generic] = true OR r.[sramp:derived] = false) " +
                         // targets any of the primary artifact's derived artifacts
-                        "AND (REFERENCE() = '%1$s' OR REFERENCE() IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s')))",
+                        "AND (REFERENCE(t) = '%1$s' OR REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s')))",
                 primaryNode.getIdentifier(), primaryNode.getPath());
         relationshipConstraints(uuid, query, session);
     }
@@ -67,15 +68,16 @@ public class JCRArtifactConstraintUtil extends HierarchicalArtifactVisitor {
      * @throws Exception
      */
     public static void relationshipConstraintsOnDerived(String uuid, Node primaryNode, Session session) throws Exception {
-        String query = String.format("SELECT * FROM [sramp:relationship] " +
+        String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
+                        "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
                         // root path, *not* in the trash
-                        "WHERE ISDESCENDANTNODE('" + JCRConstants.ROOT_PATH + "') " +
+                        "WHERE ISDESCENDANTNODE(r, '" + JCRConstants.ROOT_PATH + "') " +
                         // relationship is not from one of the given artifact's children
-                        "AND NOT(ISDESCENDANTNODE('%2$s')) " +
+                        "AND NOT(ISDESCENDANTNODE(r, '%2$s')) " +
                         // only generic or modeled, but not derived
-                        "AND ([sramp:generic] = true OR [sramp:derived] = false) " +
+                        "AND (r.[sramp:generic] = true OR r.[sramp:derived] = false) " +
                         // targets any of the primary artifact's derived artifacts
-                        "AND REFERENCE() IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s'))",
+                        "AND REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s'))",
                 primaryNode.getIdentifier(), primaryNode.getPath());
         relationshipConstraints(uuid, query, session);
     }
@@ -130,15 +132,16 @@ public class JCRArtifactConstraintUtil extends HierarchicalArtifactVisitor {
      * @throws Exception
      */
     public static void deleteDerivedRelationships(Node primaryNode, Session session) throws Exception {
-        String query = String.format("SELECT * FROM [sramp:relationship] " +
+        String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
+                "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
                 // root path, *not* in the trash
-                "WHERE ISDESCENDANTNODE('" + JCRConstants.ROOT_PATH + "') " +
+                "WHERE ISDESCENDANTNODE(r, '" + JCRConstants.ROOT_PATH + "') " +
                 // relationship is not from one of the given artifact's children
-                "AND NOT(ISDESCENDANTNODE('%2$s')) " +
+                "AND NOT(ISDESCENDANTNODE(r, '%2$s')) " +
                 // derived relationships only
-                "AND [sramp:derived] = true " +
+                "AND r.[sramp:derived] = true " +
                 // targets the primary artifact or any of its derived artifacts
-                "AND (REFERENCE() = '%1$s' OR REFERENCE() IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s')))",
+                "AND (REFERENCE(t) = '%1$s' OR REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s')))",
                 primaryNode.getIdentifier(), primaryNode.getPath());
         javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
         javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(query, JCRConstants.JCR_SQL2);
@@ -162,9 +165,10 @@ public class JCRArtifactConstraintUtil extends HierarchicalArtifactVisitor {
      */
     public static void deleteDerivedArtifacts(Node primaryNode, Session session) throws Exception {
         // Delete all of the primary artifact's relationships that target one of its derived artifacts.
-        String query = String.format("SELECT * FROM [sramp:relationship] " +
-                "WHERE ISDESCENDANTNODE('%1$s') " +
-                "AND REFERENCE() IN (SELECT referenced.[jcr:uuid] FROM [sramp:derivedArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%1$s'))",
+        String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
+                "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
+                "WHERE ISDESCENDANTNODE(r, '%1$s') " +
+                "AND REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:derivedArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%1$s'))",
                 primaryNode.getPath());
         javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
         javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(query, JCRConstants.JCR_SQL2);
