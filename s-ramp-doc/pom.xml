@@ -130,7 +130,7 @@
                       trust="true"
                       failonerror="false"
                       keyfile="${keyfile}"
-                      todir="overlord@filemgmt.jboss.org:/docs_htdocs/overlord/sramp/${project.version}">
+                      todir="artificer@filemgmt.jboss.org:/docs_htdocs/artificer/${project.version}">
                       <fileset dir="${project.build.directory}/docbook/publish/en-US" />
                     </scp>
                   </tasks>
