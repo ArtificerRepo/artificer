@@ -23,6 +23,10 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-repository</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-repository-jcr</artifactId>
     </dependency>
 

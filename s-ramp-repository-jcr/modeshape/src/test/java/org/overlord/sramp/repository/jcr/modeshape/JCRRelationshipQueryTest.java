@@ -46,24 +46,21 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
     public void testDerivedRelationshipQueries() throws Exception {
         addWsdlDoc();
 
-        // TODO: The spec is incorrect here!  ElementTarget is for the SOA Model's Element.  Instead,
-        // we need an *ElementDeclaration* target!  Until that's fixed, skip.
-        // See WsdlDocumentArtifactBuilder#processParts
-//        // Get all the element style WSDL message parts
-//        SrampQuery query = queryManager.createQuery("/s-ramp/wsdl/Part[element]");
-//        ArtifactSet artifactSet = query.executeQuery();
-//        Assert.assertNotNull(artifactSet);
-//        Assert.assertEquals(3, artifactSet.size());
-//
-//        // Get all the element style WSDL message parts that refer to the element with name 'findRequest'
-//        query = queryManager.createQuery("/s-ramp/wsdl/Part[element[@name = 'find']]");
-//        artifactSet = query.executeQuery();
-//        Assert.assertNotNull(artifactSet);
-//        Assert.assertEquals(1, artifactSet.size());
+        // Get all the element style WSDL message parts
+        SrampQuery query = queryManager.createQuery("/s-ramp/wsdl/Part[element]");
+        ArtifactSet artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(3, artifactSet.size());
+
+        // Get all the element style WSDL message parts that refer to the element with name 'findRequest'
+        query = queryManager.createQuery("/s-ramp/wsdl/Part[element[@name = 'find']]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(1, artifactSet.size());
 
         // Get all the messages that have at least one part
-        SrampQuery query = queryManager.createQuery("/s-ramp/wsdl/Message[part]");
-        ArtifactSet artifactSet = query.executeQuery();
+        query = queryManager.createQuery("/s-ramp/wsdl/Message[part]");
+        artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(5, artifactSet.size());
 
@@ -105,22 +102,29 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
     @Test
     public void testGenericRelationshipQueries() throws Exception {
     	XsdDocument xsdDoc = addXsdDoc();
-    	WsdlDocument wsdlDoc = addWsdlDoc();
+    	WsdlDocument wsdlDoc1 = addWsdlDoc();
+        WsdlDocument wsdlDoc2 = addWsdlDoc();
 
-    	SrampModelUtils.addGenericRelationship(xsdDoc, "importedBy", wsdlDoc.getUuid());
+        SrampModelUtils.addGenericRelationship(xsdDoc, "importedBy", wsdlDoc1.getUuid());
+        SrampModelUtils.addGenericRelationship(xsdDoc, "importedBy", wsdlDoc2.getUuid());
     	SrampModelUtils.addGenericRelationship(xsdDoc, "markerRel", null);
 
         Map<QName, String> otherAttributes = new HashMap<QName, String>();
         otherAttributes.put(QName.valueOf("FooKey"), "FooValue");
         Map<QName, String> otherAttributes2 = new HashMap<QName, String>();
         otherAttributes2.put(QName.valueOf("FooKey2"), "FooValue2");
-        SrampModelUtils.addGenericRelationship(xsdDoc, "relWithAttr", wsdlDoc.getUuid(), otherAttributes, otherAttributes2);
+        SrampModelUtils.addGenericRelationship(xsdDoc, "relWithAttr", wsdlDoc1.getUuid(), otherAttributes, otherAttributes2);
+        SrampModelUtils.addGenericRelationship(xsdDoc, "relWithAttr", wsdlDoc2.getUuid(), otherAttributes, otherAttributes2);
+
+        persistenceManager.updateArtifact(xsdDoc, ArtifactType.XsdDocument());
+
+        // add custom properties only to one of the wsdls
         Property prop = new Property();
         prop.setPropertyName("FooProperty");
         prop.setPropertyValue("FooValue");
-        xsdDoc.getProperty().add(prop);
+        wsdlDoc1.getProperty().add(prop);
 
-    	persistenceManager.updateArtifact(xsdDoc, ArtifactType.XsdDocument());
+        persistenceManager.updateArtifact(wsdlDoc1, ArtifactType.WsdlDocument());
 
         SrampQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[markerRel]");
         ArtifactSet artifactSet = query.executeQuery();
@@ -133,7 +137,7 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         Assert.assertEquals(1, artifactSet.size());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[importedBy[@uuid = ?]]");
-        query.setString(wsdlDoc.getUuid());
+        query.setString(wsdlDoc1.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
@@ -151,30 +155,39 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey')]]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(2, artifactSet.size());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(2, artifactSet.size());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'InvalidKey')]]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(0, artifactSet.size());
 
-        // TODO: These won't be supported until after the query visitor uses a builder pattern.  See SRAMP-627
-//        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' and @FooProperty = 'FooValue']]");
-//        artifactSet = query.executeQuery();
-//        Assert.assertNotNull(artifactSet);
-//        Assert.assertEquals(1, artifactSet.size());
-//
-//        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' and @InvalidProperty]]");
-//        artifactSet = query.executeQuery();
-//        Assert.assertNotNull(artifactSet);
-//        Assert.assertEquals(0, artifactSet.size());
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' and @FooProperty = 'FooValue']]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(1, artifactSet.size());
 
-        // TODO: After SRAMP-625, test getTargetAttribute using
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' and @InvalidProperty]]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(0, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' or @FooProperty = 'FooValue']]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(2, artifactSet.size());
+
+        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'InvalidValue' or @FooProperty = 'FooValue']]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(1, artifactSet.size());
+
+        // TODO: After SRAMP-625, test getTargetAttribute
     }
 
 	private WsdlDocument addWsdlDoc() throws Exception {

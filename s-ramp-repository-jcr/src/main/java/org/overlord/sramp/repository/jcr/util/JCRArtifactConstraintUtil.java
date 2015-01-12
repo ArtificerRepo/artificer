@@ -149,8 +149,9 @@ public class JCRArtifactConstraintUtil extends HierarchicalArtifactVisitor {
         NodeIterator jcrNodes = jcrQueryResult.getNodes();
 
         while (jcrNodes.hasNext()) {
+            Node node = jcrNodes.nextNode();
             // delete it
-            jcrNodes.nextNode().remove();
+            node.remove();
         }
 
         session.save();

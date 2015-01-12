@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,14 @@
 package org.overlord.sramp.repository.jcr.query;
 
 import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.query.xpath.visitors.XPathVisitor;
+import org.overlord.sramp.repository.jcr.ClassificationHelper;
 
-import javax.jcr.query.Query;
+import javax.jcr.Session;
 
 /**
- * Visitor used to produce a JCR SQL2 query from an S-RAMP xpath query.
- *
- * @author eric.wittmann@redhat.com
+ * @author Brett Meyer.
  */
-public interface SrampToJcrSql2QueryVisitor extends XPathVisitor {
+public interface SrampToJcrSql2QueryVisitorProvider {
 
-    public void setOrder(String order);
-
-    public void setOrderAscending(boolean orderAscending);
-
-    public Query buildQuery() throws SrampException;
-
+    public SrampToJcrSql2QueryVisitor createQueryVisitor(Session session, ClassificationHelper classificationHelper) throws SrampException;
 }
