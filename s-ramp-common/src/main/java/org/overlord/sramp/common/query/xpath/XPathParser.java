@@ -263,13 +263,21 @@ public class XPathParser {
 
 		} else if (tokens.canConsume("s-ramp", ":", "getRelationshipAttribute")) {
             // Allow functions as the left side of equality expressions.
-			// TODO: Some functions are equality expressions (ie, getRelationshipAttribute).  Most others
-			// (classifiers, etc.) are not and need to be handled by parseSubartifactSet, below.  Not sure how to
-			// better differentiate in a general way, rather than maintaining a list of functions here...
+            // TODO: Some functions are equality expressions (ie, getRelationshipAttribute).  Most others
+            // (classifiers, etc.) are not and need to be handled by parseSubartifactSet, below.  Not sure how to
+            // better differentiate in a general way, rather than maintaining a list of functions here...
             FunctionCall functionCall = parseFunctionCall(tokens, "s-ramp", "getRelationshipAttribute");
-			equalityExpr.setLeft(functionCall);
+            equalityExpr.setLeft(functionCall);
             parseEqualityExprRight(tokens, equalityExpr);
-		} else {
+        } else if (tokens.canConsume("s-ramp", ":", "getTargetAttribute")) {
+            // Allow functions as the left side of equality expressions.
+            // TODO: Some functions are equality expressions (ie, getTargetAttribute).  Most others
+            // (classifiers, etc.) are not and need to be handled by parseSubartifactSet, below.  Not sure how to
+            // better differentiate in a general way, rather than maintaining a list of functions here...
+            FunctionCall functionCall = parseFunctionCall(tokens, "s-ramp", "getTargetAttribute");
+            equalityExpr.setLeft(functionCall);
+            parseEqualityExprRight(tokens, equalityExpr);
+        } else {
             // Else, assume the expression belongs in the subArtifactSelect.
             equalityExpr.setSubArtifactSet(parseSubartifactSet(tokens));
         }

@@ -58,6 +58,7 @@ public class ModeShapeQueryVisitor implements SrampToJcrSql2QueryVisitor {
     private static final QName EXACTLY_CLASSIFIED_BY_ALL_OF = new QName(SrampConstants.SRAMP_NS, "exactlyClassifiedByAllOf");
 
     public static final QName GET_RELATIONSHIP_ATTRIBUTE = new QName(SrampConstants.SRAMP_NS, "getRelationshipAttribute");
+    public static final QName GET_TARGET_ATTRIBUTE = new QName(SrampConstants.SRAMP_NS, "getTargetAttribute");
 
     private static final QName MATCHES = new QName("http://www.w3.org/2005/xpath-functions", "matches");
     private static final QName NOT = new QName("http://www.w3.org/2005/xpath-functions", "not");
@@ -97,7 +98,7 @@ public class ModeShapeQueryVisitor implements SrampToJcrSql2QueryVisitor {
     private QueryObjectModelFactory factory;
 
     private Source rootSource;
-    private Selector rootFrom;
+//    private Selector rootFrom;
 
     private String order;
     private boolean orderAscending;
@@ -173,8 +174,7 @@ public class ModeShapeQueryVisitor implements SrampToJcrSql2QueryVisitor {
         String selectAlias = newArtifactAlias();
         this.selectorContext = selectAlias;
 
-        rootFrom = factory.selector("sramp:baseArtifactType", selectAlias);
-        rootSource = rootFrom;
+        rootSource = factory.selector("sramp:baseArtifactType", selectAlias);
 
         node.getArtifactSet().accept(this);
         if (node.getPredicate() != null) {
@@ -193,19 +193,20 @@ public class ModeShapeQueryVisitor implements SrampToJcrSql2QueryVisitor {
                 String oldTargetPredicateContext = this.targetContext;
                 this.targetContext = targetAlias;
                 subartifactSet.getRelationshipPath().accept(this);
-                this.relationshipContext = oldRelationshipPredicateContext;
-                this.targetContext = oldTargetPredicateContext;
 
                 // Now add another JOIN back around on the "artifact table"
                 joinEq("sramp:baseArtifactType", targetAlias, "sramp:targetArtifact", artifactAlias, "jcr:uuid");
 
+                // Root selector now needs to be the relationship targets.
+                selectorContext = artifactAlias;
+
                 // Now add any additional predicates included.
                 if (subartifactSet.getPredicate() != null) {
-                    String oldArtifactPredicateContext = this.selectorContext;
-                    this.selectorContext = artifactAlias;
                     subartifactSet.getPredicate().accept(this);
-                    this.selectorContext = oldArtifactPredicateContext;
                 }
+
+                this.relationshipContext = oldRelationshipPredicateContext;
+                this.targetContext = oldTargetPredicateContext;
             }
             if (subartifactSet.getFunctionCall() != null) {
                 throw new RuntimeException(Messages.i18n.format("XP_SUBARTIFACTSET_NOT_SUPPORTED"));
@@ -343,14 +344,18 @@ public class ModeShapeQueryVisitor implements SrampToJcrSql2QueryVisitor {
             } else if (node.getFunctionName().equals(EXACTLY_CLASSIFIED_BY_ANY_OF)) {
                 visitClassifications(node, JCRConstants.SRAMP_CLASSIFIED_BY, true);
             } else if (node.getFunctionName().equals(GET_RELATIONSHIP_ATTRIBUTE)) {
-                if (node.getArguments().size() != 2) {
-                    // TODO: throw?
-                }
                 String otherAttributeKey = reduceStringLiteralArgument(node.getArguments().get(1));
                 // Ex. query: /s-ramp/wsdl/WsdlDocument[someRelationship[s-ramp:getRelationshipAttribute(., 'someAttribute') = 'true']]
                 // Note that the predicate function needs to add a condition on the relationship selector itself, *not*
                 // the artifact targeted by the relationship.
                 singleUseSelectorContext = relationshipContext;
+                propertyContext = JCRConstants.SRAMP_OTHER_ATTRIBUTES + ":" + otherAttributeKey;
+            } else if (node.getFunctionName().equals(GET_TARGET_ATTRIBUTE)) {
+                String otherAttributeKey = reduceStringLiteralArgument(node.getArguments().get(1));
+                // Ex. query: /s-ramp/wsdl/WsdlDocument[someRelationship[s-ramp:getTargetAttribute(., 'someAttribute') = 'true']]
+                // Note that the predicate function needs to add a condition on the relationship target selector itself, *not*
+                // the artifact targeted by the relationship.
+                singleUseSelectorContext = targetContext;
                 propertyContext = JCRConstants.SRAMP_OTHER_ATTRIBUTES + ":" + otherAttributeKey;
             } else {
                 if (node.getFunctionName().getLocalPart().equals("matches") || node.getFunctionName().getLocalPart().equals("not")) {
@@ -620,11 +625,7 @@ public class ModeShapeQueryVisitor implements SrampToJcrSql2QueryVisitor {
                 leftSelectorName, leftPropertyName, rightSelectorName, rightPropertyName);
         // If this is the first join, convert the rootSource into the Join itself.  If it's not, rootSource is already
         // a Join and we should simply add to it.
-        if (rootSource instanceof Join) {
-            rootSource = factory.join(rootSource, rightSelector, QueryObjectModelConstants.JCR_JOIN_TYPE_INNER, condition);
-        } else {
-            rootSource = factory.join(rootFrom, rightSelector, QueryObjectModelConstants.JCR_JOIN_TYPE_INNER, condition);
-        }
+        rootSource = factory.join(rootSource, rightSelector, QueryObjectModelConstants.JCR_JOIN_TYPE_INNER, condition);
     }
 
     private void joinChild(String nodeType, String childSelectorName, String parentSelectorName) {
@@ -632,11 +633,7 @@ public class ModeShapeQueryVisitor implements SrampToJcrSql2QueryVisitor {
         JoinCondition condition = factory.childNodeJoinCondition(childSelectorName, parentSelectorName);
         // If this is the first join, convert the rootSource into the Join itself.  If it's not, rootSource is already
         // a Join and we should simply add to it.
-        if (rootSource instanceof Join) {
-            rootSource = factory.join(rootSource, childSelector, QueryObjectModelConstants.JCR_JOIN_TYPE_INNER, condition);
-        } else {
-            rootSource = factory.join(rootFrom, childSelector, QueryObjectModelConstants.JCR_JOIN_TYPE_INNER, condition);
-        }
+        rootSource = factory.join(rootSource, childSelector, QueryObjectModelConstants.JCR_JOIN_TYPE_INNER, condition);
     }
 
     private void operation(String selectorName, String propertyName, String operator, String value) {
