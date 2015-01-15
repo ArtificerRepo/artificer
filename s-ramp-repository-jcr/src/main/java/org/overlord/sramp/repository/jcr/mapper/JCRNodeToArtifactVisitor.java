@@ -728,7 +728,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
                     || ExtendedDocument.class.isAssignableFrom(targetedArtifactType.getArtifactType().getTypeClass())) {
                 type = targetedNode.getProperty(JCRConstants.SRAMP_EXTENDED_TYPE).getValue().getString();
             } else {
-                type = targetedArtifactType.getModel();
+                type = targetedArtifactType.getType();
             }
 			String href = String.format("%1$s/%2$s/%3$s", targetedArtifactType.getModel(), type, targetedUuid);
 			target.setHref(href);
