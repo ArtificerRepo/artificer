@@ -68,8 +68,6 @@ public class SrampConstants {
     public static final String SRAMP_CONFIG_EVENT_JMS_USER = "sramp.config.events.jms.user"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_EVENT_JMS_PASSWORD = "sramp.config.events.jms.password"; //$NON-NLS-1$
 
-    // Deprecated -- use sramp.artifact.builder.provider.customDir instead
-    public static final String SRAMP_CUSTOM_DERIVER_DIR   = "sramp.derivers.customDir"; //$NON-NLS-1$
     // Location of a directory containing JARs which provide custom ArtifactBuilderProviders
     public static final String SRAMP_CUSTOM_EXTENSION_DIR = "sramp.extension.customDir"; //$NON-NLS-1$
 

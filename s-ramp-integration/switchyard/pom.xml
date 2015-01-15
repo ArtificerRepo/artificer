@@ -31,7 +31,7 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-common</artifactId>
+      <artifactId>s-ramp-integration</artifactId>
       <classifier>tests</classifier>
     </dependency>
 

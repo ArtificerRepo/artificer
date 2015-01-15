@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.artifactbuilder.XmlArtifactBuilder;
+import org.overlord.sramp.integration.artifactbuilder.XmlArtifactBuilder;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

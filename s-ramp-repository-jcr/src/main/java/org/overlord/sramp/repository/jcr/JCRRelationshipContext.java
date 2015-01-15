@@ -24,7 +24,7 @@ import javax.jcr.Session;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.SrampException;
-import org.overlord.sramp.common.artifactbuilder.RelationshipContext;
+import org.overlord.sramp.integration.artifactbuilder.RelationshipContext;
 import org.overlord.sramp.repository.jcr.query.JCRSrampQuery;
 import org.overlord.sramp.repository.query.ArtifactSet;
 
@@ -45,7 +45,7 @@ public class JCRRelationshipContext implements RelationshipContext {
     }
 
     /**
-     * @see org.overlord.sramp.common.artifactbuilder.RelationshipContext#findArtifacts(java.lang.String, java.lang.String, java.util.Map)
+     * @see org.overlord.sramp.integration.artifactbuilder.RelationshipContext#findArtifacts(java.lang.String, java.lang.String, java.util.Map)
      */
     @Override
     public Collection<BaseArtifactType> findArtifacts(String model, String type,

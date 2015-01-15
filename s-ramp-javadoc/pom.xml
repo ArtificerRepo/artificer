@@ -26,6 +26,10 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-integration</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-shell-api</artifactId>
     </dependency>
   </dependencies>
@@ -48,7 +52,7 @@
               </group>
               <group>
                 <title>S-RAMP Artifact Builder</title>
-                <packages>org.overlord.sramp.common.artifactbuilder*</packages>
+                <packages>org.overlord.sramp.integration.artifactbuilder*</packages>
               </group>
               <group>
                 <title>S-RAMP Shell API</title>

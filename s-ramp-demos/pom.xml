@@ -46,10 +46,10 @@
         <module>s-ramp-demos-mvn-integration</module>
         <module>s-ramp-demos-relationships</module>
         <module>s-ramp-demos-derived-artifacts</module>
-        <module>s-ramp-demos-custom-deriver</module>
         <module>s-ramp-demos-shell-command</module>
         <module>s-ramp-demos-webapp-multimodule/artifacts</module>
         <module>s-ramp-demos-webapp-multimodule/web</module>
+        <module>s-ramp-demos-custom-artifact-builder</module>
       </modules>
     </profile>
     <profile>

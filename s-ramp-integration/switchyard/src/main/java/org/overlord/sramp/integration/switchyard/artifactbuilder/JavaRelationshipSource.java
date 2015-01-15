@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
-import org.overlord.sramp.common.artifactbuilder.CriteriaQueryRelationshipSource;
+import org.overlord.sramp.integration.artifactbuilder.CriteriaQueryRelationshipSource;
 import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.integration.switchyard.i18n.Messages;
 import org.slf4j.Logger;

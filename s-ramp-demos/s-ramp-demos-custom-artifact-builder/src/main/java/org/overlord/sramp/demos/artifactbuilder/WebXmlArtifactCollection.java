@@ -15,13 +15,13 @@
  */
 package org.overlord.sramp.demos.artifactbuilder;
 
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.overlord.sramp.integration.artifactbuilder.IndexedArtifactCollection;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
-import org.overlord.sramp.common.artifactbuilder.IndexedArtifactCollection;
 
 /**
  * A {@link List} implementation that also indexes the web.xml related artifacts

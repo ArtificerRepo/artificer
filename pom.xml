@@ -273,6 +273,12 @@
       </dependency>
       <dependency>
         <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-integration</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-integration-java</artifactId>
         <version>${project.version}</version>
       </dependency>

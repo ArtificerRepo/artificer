@@ -13,32 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.integration.teiid.artifactbuilder;
+package org.overlord.sramp.integration.artifactbuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.integration.artifactbuilder.ArtifactBuilder;
-import org.overlord.sramp.integration.artifactbuilder.ArtifactBuilderProvider;
 import org.overlord.sramp.common.ArtifactContent;
-import org.overlord.sramp.integration.teiid.model.TeiidArtifactType;
-import org.overlord.sramp.integration.teiid.model.VdbManifest;
 
 /**
+ * Provides all built-in {@link ArtifactBuilderProvider}s.
+ * 
  * @author Brett Meyer
  */
-public class TeiidArtifactBuilderProvider implements ArtifactBuilderProvider {
+public class BuiltInArtifactBuilderProvider implements ArtifactBuilderProvider {
 
     @Override
     public List<ArtifactBuilder> createArtifactBuilders(BaseArtifactType primaryArtifact, ArtifactContent artifactContent) {
         List<ArtifactBuilder> builders = new ArrayList<ArtifactBuilder>();
-        ArtifactType artifactType = ArtifactType.valueOf(primaryArtifact);
-        if (VdbManifest.ARTIFACT_TYPE.extendedType().equals(artifactType.getExtendedType())) {
-            builders.add(new VdbManifestArtifactBuilder());
-        } else if (TeiidArtifactType.MODEL.extendedType().equals(artifactType.getExtendedType())) {
-            builders.add(new ModelArtifactBuilder());
+        switch (primaryArtifact.getArtifactType()) {
+        case XSD_DOCUMENT:
+            builders.add(new XsdDocumentArtifactBuilder());
+            break;
+        case WSDL_DOCUMENT:
+            builders.add(new WsdlDocumentArtifactBuilder());
+            break;
+        case POLICY_DOCUMENT:
+            builders.add(new PolicyArtifactBuilder());
+            break;
+        case XML_DOCUMENT:
+            builders.add(new XmlArtifactBuilder());
+            break;
         }
         return builders;
     }

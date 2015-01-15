@@ -15,21 +15,21 @@
  */
 package org.overlord.sramp.integration.switchyard.artifactbuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
-import org.overlord.sramp.common.ArtifactContent;
-import org.overlord.sramp.common.artifactbuilder.MockRelationshipContext;
+import org.overlord.sramp.integration.artifactbuilder.MockRelationshipContext;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
 
 /**
  * JUnit test for {@link SwitchYardXmlArtifactBuilder}.

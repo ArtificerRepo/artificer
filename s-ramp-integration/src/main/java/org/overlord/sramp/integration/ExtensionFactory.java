@@ -21,11 +21,9 @@ import org.overlord.commons.services.ServiceRegistryUtil;
 import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConstants;
-import org.overlord.sramp.common.artifactbuilder.ArtifactBuilder;
-import org.overlord.sramp.common.artifactbuilder.ArtifactBuilderProvider;
-import org.overlord.sramp.common.artifactbuilder.BuiltInArtifactBuilderProvider;
-import org.overlord.sramp.common.derived.ArtifactBuilderProviderAdapter;
-import org.overlord.sramp.common.derived.DeriverProvider;
+import org.overlord.sramp.integration.artifactbuilder.ArtifactBuilder;
+import org.overlord.sramp.integration.artifactbuilder.ArtifactBuilderProvider;
+import org.overlord.sramp.integration.artifactbuilder.BuiltInArtifactBuilderProvider;
 import org.overlord.sramp.integration.artifacttypedetector.ArtifactTypeDetector;
 import org.overlord.sramp.integration.artifacttypedetector.DefaultArtifactTypeDetector;
 import org.slf4j.Logger;
@@ -35,7 +33,14 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.Set;
 
 /**
  * @author Brett Meyer.
@@ -51,7 +56,6 @@ public class ExtensionFactory {
     static {
         loadBuiltIn();
         loadExtended();
-        loadDerivers();
 
         // sort by priority
         Collections.sort(typeDetectors, new ArtifactTypeDetectorComparator());
@@ -104,49 +108,6 @@ public class ExtensionFactory {
             }
             for (ArtifactBuilderProvider builderProvider : ServiceLoader.load(ArtifactBuilderProvider.class, loader)) {
                 builderProviders.add(builderProvider);
-            }
-        }
-    }
-
-    /**
-     * Temporarily load the old derivers.
-     */
-    @Deprecated
-    private static void loadDerivers() {
-        // First load via the standard ServiceRegistry mechanism.
-        Set<DeriverProvider> deriverProviders = ServiceRegistryUtil.getServices(
-                DeriverProvider.class);
-        for (DeriverProvider deriverProvider : deriverProviders) {
-            builderProviders.add(new ArtifactBuilderProviderAdapter(deriverProvider));
-            LOGGER.warn("ArtifactDeriver and DeriverProvider have been deprecated and will be removed in a future release!  Please see ArtifactBuilder and ArtifactBuilderProvider!");
-        }
-
-        // Allow users to provide a directory path where we will check for JARs that
-        // contain ArtifactBuilderProvider implementations.
-        Collection<ClassLoader> loaders = new LinkedList<ClassLoader>();
-        String customDirPath = System.getProperty(SrampConstants.SRAMP_CUSTOM_DERIVER_DIR);
-        if (customDirPath != null && customDirPath.trim().length() > 0) {
-            File directory = new File(customDirPath);
-            if (directory.isDirectory()) {
-                List<URL> jarURLs = new ArrayList<URL>();
-                Collection<File> jarFiles = FileUtils.listFiles(directory, new String[] { "jar" }, false); //$NON-NLS-1$
-                for (File jarFile : jarFiles) {
-                    try {
-                        URL jarUrl = jarFile.toURI().toURL();
-                        jarURLs.add(jarUrl);
-                    } catch (MalformedURLException e) {
-                    }
-                }
-                URL[] urls = jarURLs.toArray(new URL[jarURLs.size()]);
-                ClassLoader jarCL = new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
-                loaders.add(jarCL);
-            }
-        }
-        // Now load all of these contributed ArtifactBuilderProvider implementations
-        for (ClassLoader loader : loaders) {
-            for (DeriverProvider deriverProvider : ServiceLoader.load(DeriverProvider.class, loader)) {
-                builderProviders.add(new ArtifactBuilderProviderAdapter(deriverProvider));
-                LOGGER.warn("ArtifactDeriver and DeriverProvider have been deprecated and will be removed in a future release!  Please see ArtifactBuilder and ArtifactBuilderProvider!");
             }
         }
     }

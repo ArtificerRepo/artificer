@@ -96,8 +96,8 @@ is done by performing the following steps:
 
 1. Write a custom ArtifactBuilder Java class - it must implement *ArtifactBuilder*
 2. Create an ArtifactBuilderProvider (a class that implements *ArtifactBuilderProvider*) - 
-   used to map artifact types to implementations of ArtifactDeriver
-3. Provide a text file named *org.overlord.sramp.common.artifactbuilder.ArtifactBuilderProvider* in the following
+   used to map artifact types to implementations of ArtifactBuilder
+3. Provide a text file named *org.overlord.sramp.integration.artifactbuilder.ArtifactBuilderProvider* in the following
    location:  *META-INF/services*.  The content of that file should simply be one line containing
    the fully qualified classname of the class defined in #2
 4. Package everything up into a JAR and make it available either on the classpath or in an
