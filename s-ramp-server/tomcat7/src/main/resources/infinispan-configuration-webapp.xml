@@ -20,7 +20,7 @@
         <stringKeyedTable
             dropOnExit="false" createOnStart="true" prefix="ISPN_STRING_TABLE">
           <idColumn name="ID_COLUMN" type="VARCHAR(255)"/>
-          <dataColumn name="DATA_COLUMN" type="BINARY"/>
+          <dataColumn name="DATA_COLUMN" type="BLOB"/>
           <timestampColumn name="TIMESTAMP_COLUMN" type="BIGINT"/>
         </stringKeyedTable>
       </jdbc:stringKeyedJdbcStore>

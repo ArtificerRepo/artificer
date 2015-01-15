@@ -18,7 +18,7 @@ Standalone modes: JBOSS_HOME/standalone/configuration/standalone*.xml
           <string-keyed-jdbc-store purge="false" passivation="false" datasource="[DATASOURCE JNDI NAME]">
             <string-keyed-table prefix="ispn_bucket">
               <id-column type="VARCHAR(500)" name="id"/>
-              <data-column type="VARBINARY(60000)" name="datum"/>
+              <data-column type="VARBINARY" name="datum"/>
               <timestamp-column type="BIGINT" name="version"/>
             </string-keyed-table>
           </string-keyed-jdbc-store>

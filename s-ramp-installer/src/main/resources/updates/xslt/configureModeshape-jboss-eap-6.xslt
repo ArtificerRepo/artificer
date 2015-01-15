@@ -43,7 +43,7 @@
                     <string-keyed-jdbc-store datasource="java:jboss/datasources/srampDS" passivation="false" purge="false">
                         <string-keyed-table prefix="ispn_bucket">
                             <id-column name="id" type="VARCHAR(500)"/>
-                            <data-column name="datum" type="VARBINARY(60000)"/>
+                            <data-column name="datum" type="BLOB"/>
                             <timestamp-column name="version" type="BIGINT"/>
                         </string-keyed-table>
                     </string-keyed-jdbc-store>
@@ -85,7 +85,7 @@
                     <string-keyed-jdbc-store datasource="java:jboss/datasources/srampDS" passivation="false" purge="false">
                         <string-keyed-table prefix="ispn_bucket">
                             <id-column name="id" type="VARCHAR(500)"/>
-                            <data-column name="datum" type="VARBINARY(60000)"/>
+                            <data-column name="datum" type="BLOB"/>
                             <timestamp-column name="version" type="BIGINT"/>
                         </string-keyed-table>
                     </string-keyed-jdbc-store>
@@ -127,7 +127,7 @@
                     <string-keyed-jdbc-store datasource="java:jboss/datasources/srampDS" passivation="false" purge="false">
                         <string-keyed-table prefix="ispn_bucket">
                             <id-column name="id" type="VARCHAR(500)"/>
-                            <data-column name="datum" type="VARBINARY(60000)"/>
+                            <data-column name="datum" type="BLOB"/>
                             <timestamp-column name="version" type="BIGINT"/>
                         </string-keyed-table>
                     </string-keyed-jdbc-store>

@@ -16,15 +16,13 @@
 package org.overlord.sramp.common;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
-import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitor;
-import org.reflections.ReflectionUtils;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Error;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Process;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.System;
+import org.overlord.sramp.common.visitors.*;
+import org.reflections.*;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.util.*;
 
 /**
@@ -39,14 +37,171 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitor {
     private BaseArtifactType oldArtifact = null;
 
     static {
-        Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .setScanners(new SubTypesScanner(false))
-                .setUrls(ClasspathHelper.forClassLoader(BaseArtifactType.class.getClassLoader()))
-                .filterInputsBy(new FilterBuilder().include(
-                        FilterBuilder.prefix("org.oasis_open.docs.s_ramp.ns.s_ramp_v1"))));
-        Set<Class<? extends Object>> classes = reflections.getSubTypesOf(Object.class);
+        // TODO: This is not working reliably -- works well in EAP, but fails in Wildfly (different module system,
+        // etc.).  For now, just hard-code the classes.
+//        Reflections reflections = new Reflections(new ConfigurationBuilder()
+//                .setScanners(new SubTypesScanner(false))
+//                .setUrls(ClasspathHelper.forClassLoader(ArtifactVerifier.class.getClassLoader()))
+//                .filterInputsBy(new FilterBuilder().include(
+//                        FilterBuilder.prefix("org.oasis_open.docs.s_ramp.ns.s_ramp_v1"))));
+//        Set<Class<? extends Object>> classes = reflections.getSubTypesOf(Object.class);
+        Class[] classes = new Class[] {
+            Actor.class,
+            ActorEnum.class,
+            ActorTarget.class,
+            Artifact.class,
+            AttributeDeclaration.class,
+            BaseArtifactEnum.class,
+            BaseArtifactTarget.class,
+            BaseArtifactType.class,
+            Binding.class,
+            BindingEnum.class,
+            BindingOperation.class,
+            BindingOperationEnum.class,
+            BindingOperationFault.class,
+            BindingOperationFaultEnum.class,
+            BindingOperationFaultTarget.class,
+            BindingOperationInput.class,
+            BindingOperationInputEnum.class,
+            BindingOperationInputTarget.class,
+            BindingOperationOutput.class,
+            BindingOperationOutputEnum.class,
+            BindingOperationOutputTarget.class,
+            BindingOperationTarget.class,
+            BindingTarget.class,
+            Choreography.class,
+            ChoreographyProcess.class,
+            ClassificationData.class,
+            Collaboration.class,
+            CollaborationProcess.class,
+            ComplexTypeDeclaration.class,
+            Composition.class,
+            DerivedArtifactEnum.class,
+            DerivedArtifactTarget.class,
+            DerivedArtifactType.class,
+            Document.class,
+            DocumentArtifactEnum.class,
+            DocumentArtifactTarget.class,
+            DocumentArtifactType.class,
+            Effect.class,
+            EffectEnum.class,
+            EffectTarget.class,
+            Element.class,
+            ElementDeclaration.class,
+            ElementDeclarationEnum.class,
+            ElementDeclarationTarget.class,
+            ElementEnum.class,
+            ElementTarget.class,
+            Error.class,
+            ErrorResponse.class,
+            Event.class,
+            EventEnum.class,
+            EventTarget.class,
+            ExtendedArtifactType.class,
+            ExtendedDocument.class,
+            ExtensionType.class,
+            Fault.class,
+            FaultEnum.class,
+            FaultTarget.class,
+            InformationType.class,
+            InformationTypeEnum.class,
+            InformationTypeTarget.class,
+            Message.class,
+            MessageEnum.class,
+            MessageTarget.class,
+            NamedWsdlDerivedArtifactType.class,
+            ObjectFactory.class,
+            Operation.class,
+            OperationEnum.class,
+            OperationInput.class,
+            OperationInputEnum.class,
+            OperationInputTarget.class,
+            OperationOutput.class,
+            OperationOutputEnum.class,
+            OperationOutputTarget.class,
+            OperationTarget.class,
+            Orchestration.class,
+            OrchestrationEnum.class,
+            OrchestrationProcess.class,
+            OrchestrationProcessEnum.class,
+            OrchestrationProcessTarget.class,
+            OrchestrationTarget.class,
+            Organization.class,
+            Part.class,
+            PartEnum.class,
+            PartTarget.class,
+            Policy.class,
+            PolicyAttachment.class,
+            PolicyDocument.class,
+            PolicyEnum.class,
+            PolicyExpression.class,
+            PolicyExpressionEnum.class,
+            PolicyExpressionTarget.class,
+            PolicySubject.class,
+            PolicySubjectEnum.class,
+            PolicySubjectTarget.class,
+            PolicyTarget.class,
+            Port.class,
+            PortEnum.class,
+            PortTarget.class,
+            PortType.class,
+            PortTypeEnum.class,
+            PortTypeTarget.class,
+            Process.class,
+            Property.class,
+            PropertyData.class,
+            Relationship.class,
+            RelationshipData.class,
+            RelationshipTypeData.class,
+            Service.class,
+            ServiceComposition.class,
+            ServiceContract.class,
+            ServiceContractEnum.class,
+            ServiceContractTarget.class,
+            ServiceEndpoint.class,
+            ServiceEnum.class,
+            ServiceImplementationModelEnum.class,
+            ServiceImplementationModelTarget.class,
+            ServiceImplementationModelType.class,
+            ServiceInstance.class,
+            ServiceInstanceEnum.class,
+            ServiceInstanceTarget.class,
+            ServiceInterface.class,
+            ServiceInterfaceEnum.class,
+            ServiceInterfaceTarget.class,
+            ServiceOperation.class,
+            ServiceOperationEnum.class,
+            ServiceOperationTarget.class,
+            ServiceTarget.class,
+            SimpleTypeDeclaration.class,
+            SoaModelType.class,
+            SoapAddress.class,
+            SoapBinding.class,
+            StoredQuery.class,
+            StoredQueryData.class,
+            System.class,
+            Target.class,
+            Task.class,
+            TaskEnum.class,
+            TaskTarget.class,
+            WsdlDerivedArtifactType.class,
+            WsdlDocument.class,
+            WsdlDocumentEnum.class,
+            WsdlDocumentTarget.class,
+            WsdlExtension.class,
+            WsdlExtensionEnum.class,
+            WsdlExtensionTarget.class,
+            WsdlService.class,
+            XmlDocument.class,
+            XsdDocument.class,
+            XsdDocumentEnum.class,
+            XsdDocumentTarget.class,
+            XsdType.class,
+            XsdTypeEnum.class,
+            XsdTypeTarget.class
+        };
 
-        for (Class<? extends Object> clazz : classes) {
+        for (Class clazz : classes) {
             Set<Field> fields = ReflectionUtils.getAllFields(clazz);
             for (Field field : fields) {
                 reservedNames.add(field.getName().toLowerCase());
