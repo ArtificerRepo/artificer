@@ -74,7 +74,7 @@
       </dirset>
     </delete>
     <xslt
-      style="${s-ramp.updates.dir}/xslt/modeshape-module-${appserver.id}.xslt"
+      style="${s-ramp.updates.dir}/xslt/modeshape-module-jboss.xslt"
       in="${s-ramp.jboss.module.path}/org/modeshape/main/module.xml"
       out="${s-ramp.install.dir}/_tmp_modeshape_module.xml" />
     <copy file="${s-ramp.install.dir}/_tmp_modeshape_module.xml" tofile="${s-ramp.jboss.module.path}/org/modeshape/main/module.xml" overwrite="true" />
@@ -101,7 +101,7 @@
     <copy file="${s-ramp.updates.dir}/sramp-ds.xml" todir="${s-ramp.jboss.deployments.dir}" overwrite="true" />
     
     <xslt
-      style="${s-ramp.updates.dir}/xslt/configureJMS-jboss-eap-6.xslt"
+      style="${s-ramp.updates.dir}/xslt/configureJMS-jboss.xslt"
       in="${s-ramp.jboss.config.dir}/standalone-full.xml"
       out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
     <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone-full.xml" overwrite="true" />
@@ -113,7 +113,7 @@
     <attribute name="config"/>
     <sequential>
       <xslt
-        style="${s-ramp.updates.dir}/xslt/configureModeshape-${appserver.id}.xslt"
+        style="${s-ramp.updates.dir}/xslt/configureModeshape-jboss-eap-6.xslt"
         in="@{config}"
         out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
       <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="@{config}" overwrite="true" />
