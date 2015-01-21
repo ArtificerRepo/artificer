@@ -25,7 +25,7 @@ import org.overlord.sramp.repository.query.SrampQuery;
  *
  * @author eric.wittmann@redhat.com
  */
-public class JCRQueryManager implements QueryManager {
+public class JCRQueryManager extends JCRAbstractManager implements QueryManager {
 
 	/**
 	 * Default constructor.

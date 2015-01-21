@@ -37,6 +37,7 @@ import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.PersistenceManager.BatchItem;
 import org.overlord.sramp.repository.error.DerivedArtifactCreateException;
+import org.overlord.sramp.server.BatchCreate;
 import org.overlord.sramp.server.i18n.Messages;
 import org.overlord.sramp.server.mime.MimeTypes;
 import org.slf4j.Logger;

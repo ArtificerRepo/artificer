@@ -158,7 +158,7 @@ public class QueryResourceTest extends AbstractNoAuditingResourceTest {
         int itemsPerPage = Integer.parseInt(String.valueOf(itemsPerPageAttr));
         int totalResults = Integer.parseInt(String.valueOf(totalResultsAttr));
         Assert.assertEquals(0, startIndex);
-        Assert.assertEquals(100, itemsPerPage);
+        Assert.assertEquals(20, itemsPerPage);
         Assert.assertEquals(20, totalResults);
 
         // Query with some params

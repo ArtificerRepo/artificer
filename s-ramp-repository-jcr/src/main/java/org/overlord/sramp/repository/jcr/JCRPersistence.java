@@ -19,22 +19,29 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-import org.overlord.sramp.common.*;
+import org.overlord.sramp.common.ArtifactContent;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampConfig;
+import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.error.ArtifactNotFoundException;
 import org.overlord.sramp.common.error.InvalidArtifactUpdateException;
 import org.overlord.sramp.common.error.SrampServerException;
+import org.overlord.sramp.common.error.StoredQueryConflictException;
+import org.overlord.sramp.common.error.StoredQueryNotFoundException;
 import org.overlord.sramp.common.ontology.InvalidClassifiedByException;
 import org.overlord.sramp.common.ontology.OntologyConflictException;
 import org.overlord.sramp.common.ontology.OntologyNotFoundException;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.common.ontology.SrampOntology.SrampOntologyClass;
-import org.overlord.sramp.common.error.StoredQueryConflictException;
-import org.overlord.sramp.common.error.StoredQueryNotFoundException;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.repository.PersistenceManager;
 import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
-import org.overlord.sramp.repository.jcr.mapper.*;
+import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
+import org.overlord.sramp.repository.jcr.mapper.JCRNodeToOntology;
+import org.overlord.sramp.repository.jcr.mapper.JCRNodeToStoredQuery;
+import org.overlord.sramp.repository.jcr.mapper.OntologyToJCRNode;
+import org.overlord.sramp.repository.jcr.mapper.StoredQueryToJCRNode;
 import org.overlord.sramp.repository.jcr.util.DeleteOnCloseFileInputStream;
 import org.overlord.sramp.repository.jcr.util.JCRArtifactConstraintUtil;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
@@ -48,7 +55,13 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * A JCR-specific implementation of the {@link PersistenceManager} interface, providing a JCR backend implementation
@@ -58,7 +71,7 @@ import java.util.*;
  * creation of the S-RAMP derived artifacts.
  */
 
-public class JCRPersistence implements PersistenceManager, ClassificationHelper {
+public class JCRPersistence extends JCRAbstractManager implements PersistenceManager, ClassificationHelper {
 
     private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
 

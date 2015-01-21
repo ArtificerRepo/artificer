@@ -15,14 +15,6 @@
  */
 package org.overlord.sramp.server.atom.services;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.UUID;
-
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;
@@ -33,13 +25,18 @@ import org.overlord.sramp.atom.err.SrampAtomException;
 import org.overlord.sramp.atom.visitors.ArtifactToSummaryAtomEntryVisitor;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
-import org.overlord.sramp.repository.QueryManager;
-import org.overlord.sramp.repository.QueryManagerFactory;
-import org.overlord.sramp.repository.query.ArtifactSet;
-import org.overlord.sramp.repository.query.SrampQuery;
+import org.overlord.sramp.server.QueryServiceImpl;
+import org.overlord.sramp.server.core.api.PagedResult;
 import org.overlord.sramp.server.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.util.Date;
+import java.util.Set;
+import java.util.UUID;
 
 
 /**
@@ -49,11 +46,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractFeedResource.class);
 
-	/**
-	 * Constructor.
-	 */
-	protected AbstractFeedResource() {
-	}
+	protected final QueryServiceImpl queryService = new QueryServiceImpl();
 
 	/**
 	 * Common method that performs a query for artifacts and returns them in an Atom {@link Feed}.
@@ -66,45 +59,20 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	 * @return an Atom {@link Feed}
 	 * @throws SrampAtomException
 	 */
-	protected Feed createArtifactFeed(String query, Integer startIndex, Integer count, String orderBy,
+	protected Feed createArtifactFeed(String query, Integer startPage, Integer startIndex, Integer count, String orderBy,
 			Boolean ascending, Set<String> propNames, String baseUrl) throws SrampAtomException {
 	    if (query == null)
             throw new SrampAtomException(Messages.i18n.format("MISSING_QUERY_PARAM")); //$NON-NLS-1$
 
-        // Add on the "/s-ramp/" if it's missing
-        String xpath = query;
-        if (!xpath.startsWith("/s-ramp")) { //$NON-NLS-1$
-            if (query.startsWith("/")) //$NON-NLS-1$
-                xpath = "/s-ramp" + query; //$NON-NLS-1$
-            else
-                xpath = "/s-ramp/" + query; //$NON-NLS-1$
-        }
-        
-		if (startIndex == null)
-			startIndex = 0;
-		if (count == null)
-			count = 100;
-		if (orderBy == null)
-			orderBy = "name"; //$NON-NLS-1$
-		if (ascending == null)
-			ascending = true;
-
-		ArtifactSet artifactSet = null;
 		try {
-			QueryManager queryManager = QueryManagerFactory.newInstance();
-			SrampQuery srampQuery = queryManager.createQuery(xpath, orderBy, ascending);
-			artifactSet = srampQuery.executeQuery();
-			int startIdx = startIndex;
-			int endIdx = startIdx + count - 1;
-			Feed feed = createFeed(artifactSet, startIdx, endIdx, propNames, baseUrl);
-			addPaginationLinks(feed, artifactSet, xpath, startIndex, count, orderBy, ascending, baseUrl);
+            PagedResult<BaseArtifactType> artifactSet = queryService.query(
+                    query, startPage, startIndex, count, orderBy, ascending);
+            Feed feed = createFeed(artifactSet, propNames, baseUrl);
+			addPaginationLinks(feed, artifactSet, baseUrl);
 			return feed;
 		} catch (Throwable e) {
 			logError(logger, Messages.i18n.format("Error trying to create an Artifact Feed."), e); //$NON-NLS-1$
 			throw new SrampAtomException(e);
-		} finally {
-			if (artifactSet != null)
-				artifactSet.close();
 		}
 	}
 
@@ -120,41 +88,26 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	 *   <link rel="last" href="http://www.example.org/feed?page=147"/>
 	 * </pre>
 	 *
-	 * @param artifactSet the set of artifacts that matched the query
-	 * @param fromRow return rows starting at this index (inclusive)
-	 * @param toRow return rows ending at this index (inclusive)
+     * @param pagedResult
 	 * @param propNames the additional s-ramp properties to return in the {@link Feed}
 	 * @return an Atom {@link Feed}
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-    private Feed createFeed(ArtifactSet artifactSet, int fromRow, int toRow, Set<String> propNames, String baseUrl) throws Exception {
+    private Feed createFeed(PagedResult<BaseArtifactType> pagedResult, Set<String> propNames, String baseUrl) throws Exception {
 		Feed feed = new Feed();
 		feed.getExtensionAttributes().put(SrampConstants.SRAMP_PROVIDER_QNAME, "JBoss Overlord"); //$NON-NLS-1$
-        feed.getExtensionAttributes().put(SrampConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf((toRow - fromRow) + 1));
-        feed.getExtensionAttributes().put(SrampConstants.SRAMP_START_INDEX_QNAME, String.valueOf(fromRow));
-        feed.getExtensionAttributes().put(SrampConstants.SRAMP_TOTAL_RESULTS_QNAME, String.valueOf(artifactSet.size()));
+        feed.getExtensionAttributes().put(SrampConstants.SRAMP_ITEMS_PER_PAGE_QNAME, String.valueOf(pagedResult.getPageSize()));
+        feed.getExtensionAttributes().put(SrampConstants.SRAMP_START_INDEX_QNAME, String.valueOf(pagedResult.getStartIndex()));
+        feed.getExtensionAttributes().put(SrampConstants.SRAMP_TOTAL_RESULTS_QNAME, String.valueOf(pagedResult.getTotalSize()));
 		feed.setId(new URI("urn:uuid:" + UUID.randomUUID().toString())); //$NON-NLS-1$
 		feed.setTitle("S-RAMP Feed"); //$NON-NLS-1$
 		feed.setSubtitle("Ad Hoc query feed"); //$NON-NLS-1$
 		feed.setUpdated(new Date());
 		feed.getAuthors().add(new Person("anonymous")); //$NON-NLS-1$
 
-		Iterator<BaseArtifactType> iterator = artifactSet.iterator();
-
-		// Skip any initial rows
-		for (int i = 0; i < fromRow; i++) {
-			if (!iterator.hasNext())
-				break;
-			iterator.next();
-		}
-
-		// Now get only the rows we're interested in.
 		ArtifactToSummaryAtomEntryVisitor visitor = new ArtifactToSummaryAtomEntryVisitor(baseUrl, propNames);
-		for (int i = fromRow; i <= toRow; i++) {
-			if (!iterator.hasNext())
-				break;
-			BaseArtifactType artifact = iterator.next();
+       for (BaseArtifactType artifact : pagedResult.getResults()) {
 			ArtifactVisitorHelper.visitArtifact(visitor, artifact);
 			Entry entry = visitor.getAtomEntry();
 			feed.getEntries().add(entry);
@@ -167,29 +120,25 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	/**
 	 * Add pagination links to the feed.
 	 *
-	 * TODO use real URLs rather than hard-coded localhost:8080 values
-	 *
 	 * @param feed
-	 * @param artifactSet
-	 * @param query
-	 * @param startIndex
-	 * @param count
-	 * @param orderBy
-	 * @param ascending
+     * @param pagedResult
 	 * @param baseUrl
 	 * @throws UnsupportedEncodingException
 	 */
-	private void addPaginationLinks(Feed feed, ArtifactSet artifactSet, String query, int startIndex, int count,
-			String orderBy, boolean ascending, String baseUrl) throws UnsupportedEncodingException {
-
-		String hrefPattern = "%1$s?query=%2$s&page=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s"; //$NON-NLS-1$
-		String encodedQuery = URLEncoder.encode(query, "UTF-8"); //$NON-NLS-1$
-		String firstHref = String.format(hrefPattern, baseUrl, encodedQuery, 0, String.valueOf(count),
+	private void addPaginationLinks(Feed feed, PagedResult<BaseArtifactType> pagedResult, String baseUrl)
+            throws UnsupportedEncodingException {
+        int pageSize = pagedResult.getPageSize();
+        int startIndex = pagedResult.getStartIndex();
+        String orderBy = pagedResult.getOrderBy();
+        boolean ascending = pagedResult.isAscending();
+        String hrefPattern = "%1$s?query=%2$s&page=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s"; //$NON-NLS-1$
+		String encodedQuery = URLEncoder.encode(pagedResult.getQuery(), "UTF-8"); //$NON-NLS-1$
+		String firstHref = String.format(hrefPattern, baseUrl, encodedQuery, 0, String.valueOf(pageSize),
 				String.valueOf(orderBy), String.valueOf(ascending));
-		int prevIndex = Math.max(0,  startIndex - count);
-		String prevHref = String.format(hrefPattern, baseUrl, encodedQuery, prevIndex, String.valueOf(count),
+		int prevIndex = Math.max(0,  startIndex - pageSize);
+		String prevHref = String.format(hrefPattern, baseUrl, encodedQuery, prevIndex, String.valueOf(pageSize),
 				String.valueOf(orderBy), String.valueOf(ascending));
-		String nextHref = String.format(hrefPattern, baseUrl, encodedQuery, startIndex + count, String.valueOf(count),
+		String nextHref = String.format(hrefPattern, baseUrl, encodedQuery, startIndex + pageSize, String.valueOf(pageSize),
 				String.valueOf(orderBy), String.valueOf(ascending));
 
 		Link first = new Link("first", firstHref, MediaType.APPLICATION_ATOM_XML_FEED_TYPE); //$NON-NLS-1$
@@ -200,7 +149,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 			feed.getLinks().add(first);
 			feed.getLinks().add(prev);
 		}
-		if (artifactSet.iterator().hasNext()) {
+		if (startIndex + pageSize >= pagedResult.getTotalSize()) {
 			feed.getLinks().add(next);
 		}
 

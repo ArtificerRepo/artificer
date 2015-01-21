@@ -15,21 +15,21 @@
  */
 package org.overlord.sramp.events;
 
-import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
+import org.overlord.sramp.common.ontology.SrampOntology;
 
 /**
  * @author Brett Meyer
  */
 public class OntologyUpdateEvent {
     
-    private RDF updatedOntology = null;
+    private SrampOntology updatedOntology = null;
     
-    private RDF oldOntology = null;
+    private SrampOntology oldOntology = null;
     
     public OntologyUpdateEvent() {
     }
     
-    public OntologyUpdateEvent(RDF updatedOntology, RDF oldOntology) {
+    public OntologyUpdateEvent(SrampOntology updatedOntology, SrampOntology oldOntology) {
         this.updatedOntology = updatedOntology;
         this.oldOntology = oldOntology;
     }
@@ -37,28 +37,28 @@ public class OntologyUpdateEvent {
     /**
      * @return the updatedOntology
      */
-    public RDF getUpdatedOntology() {
+    public SrampOntology getUpdatedOntology() {
         return updatedOntology;
     }
 
     /**
      * @param updatedOntology the updatedOntology to set
      */
-    public void setUpdatedOntology(RDF updatedOntology) {
+    public void setUpdatedOntology(SrampOntology updatedOntology) {
         this.updatedOntology = updatedOntology;
     }
 
     /**
      * @return the oldOntology
      */
-    public RDF getOldOntology() {
+    public SrampOntology getOldOntology() {
         return oldOntology;
     }
 
     /**
      * @param oldOntology the oldOntology to set
      */
-    public void setOldOntology(RDF oldOntology) {
+    public void setOldOntology(SrampOntology oldOntology) {
         this.oldOntology = oldOntology;
     }
 

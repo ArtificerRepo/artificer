@@ -72,8 +72,6 @@ public class SrampAtomApiClient {
 	private Locale locale;
 
     private AuthenticationProvider authProvider;
-    // TODO: Not a huge fan of this.  We need *some* way
-    private String bearerToken;
 
 	/**
 	 * Constructor.

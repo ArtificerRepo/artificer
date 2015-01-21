@@ -16,22 +16,24 @@
 package org.overlord.sramp.repository.audit;
 
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
+import org.overlord.sramp.repository.AbstractSet;
+
+import java.util.List;
 
 /**
  * A set of audit entries returned from the audit manager.
  *
  * @author eric.wittmann@redhat.com
  */
-public interface AuditEntrySet extends Iterable<AuditEntry> {
+public interface AuditEntrySet extends Iterable<AuditEntry>, AbstractSet {
 
     /**
-     * Returns the size of the artifact set.
+     * After the query has been executed, this is called by the REST/EJB service to return all results.
      */
-    public long size();
+    public List<AuditEntry> list() throws Exception;
 
     /**
-     * Called to close the artifact set when the caller is done with it.
+     * After the query has been executed, this is called by the REST/EJB service to page the results.
      */
-    public void close();
-
+    public List<AuditEntry> pagedList(long startIndex, long endIndex) throws Exception;
 }

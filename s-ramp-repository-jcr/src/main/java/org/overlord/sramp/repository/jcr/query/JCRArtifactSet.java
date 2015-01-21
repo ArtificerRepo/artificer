@@ -15,26 +15,26 @@
  */
 package org.overlord.sramp.repository.jcr.query;
 
-import java.util.Iterator;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.sramp.repository.jcr.JCRAbstractSet;
+import org.overlord.sramp.repository.jcr.JCRNodeToArtifactFactory;
+import org.overlord.sramp.repository.query.ArtifactSet;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
-
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.overlord.sramp.repository.jcr.JCRNodeToArtifactFactory;
-import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
-import org.overlord.sramp.repository.query.ArtifactSet;
+import javax.jcr.query.QueryResult;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A JCR implementation of an {@link ArtifactSet}.
  *
  * @author eric.wittmann@redhat.com
  */
-public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
+public class JCRArtifactSet extends JCRAbstractSet implements ArtifactSet, Iterator<BaseArtifactType> {
 
-	private Session session;
-	private NodeIterator jcrNodes;
 	private boolean logoutOnClose = true;
 
 	/**
@@ -42,9 +42,8 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 	 * @param session
 	 * @param jcrNodes
 	 */
-	public JCRArtifactSet(Session session, NodeIterator jcrNodes) {
-		this.session = session;
-		this.jcrNodes = jcrNodes;
+	public JCRArtifactSet(Session session, NodeIterator jcrNodes) throws Exception {
+		super(session, jcrNodes);
 	}
 
     /**
@@ -53,7 +52,7 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
      * @param jcrNodes
      * @param logoutOnClose
      */
-    public JCRArtifactSet(Session session, NodeIterator jcrNodes, boolean logoutOnClose) {
+    public JCRArtifactSet(Session session, NodeIterator jcrNodes, boolean logoutOnClose) throws Exception {
         this(session, jcrNodes);
         this.logoutOnClose = logoutOnClose;
     }
@@ -66,21 +65,10 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 		return this;
 	}
 
-	/**
-	 * @see org.overlord.sramp.common.repository.query.ArtifactSet#size()
-	 */
-	@Override
-	public long size() {
-		return this.jcrNodes.getSize();
-	}
-
-	/**
-	 * @see org.overlord.sramp.common.repository.query.ArtifactSet#close()
-	 */
 	@Override
 	public void close() {
 	    if (logoutOnClose)
-	        JCRRepositoryFactory.logoutQuietly(this.session);
+	        super.close();
 	}
 
 	/**
@@ -88,7 +76,7 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 	 */
 	@Override
 	public boolean hasNext() {
-		return this.jcrNodes.hasNext();
+		return jcrNodes.hasNext();
 	}
 
 	/**
@@ -96,7 +84,7 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 	 */
 	@Override
 	public BaseArtifactType next() {
-		Node jcrNode = this.jcrNodes.nextNode();
+        Node jcrNode = jcrNodes.nextNode();
 		return JCRNodeToArtifactFactory.createArtifact(this.session, jcrNode);
 	}
 
@@ -107,5 +95,32 @@ public class JCRArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
+
+    @Override
+    public List<BaseArtifactType> list() throws Exception {
+        List<BaseArtifactType> artifacts = new ArrayList<BaseArtifactType>();
+        while (hasNext()) {
+            artifacts.add(next());
+        }
+        return artifacts;
+    }
+
+    @Override
+    public List<BaseArtifactType> pagedList(long startIndex, long endIndex) throws Exception {
+        // Get only the rows we're interested in.
+        List<BaseArtifactType> artifacts = new ArrayList<BaseArtifactType>();
+        int i = 0;
+        while (hasNext()) {
+           if (i >= startIndex && i <= endIndex) {
+               artifacts.add(next());
+            } else {
+                // burn it
+                jcrNodes.next();
+            }
+            i++;
+        }
+
+        return artifacts;
+    }
 
 }

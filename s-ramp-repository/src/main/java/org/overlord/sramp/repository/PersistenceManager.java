@@ -30,7 +30,7 @@ import org.overlord.sramp.common.ontology.SrampOntology;
 /**
  * Service used to persist artifacts to some (permanent?) storage.
  */
-public interface PersistenceManager {
+public interface PersistenceManager extends AbstractManager {
 
     /**
      * Persists a batch of artifacts.  For each item in the batch, either a {@link BaseArtifactType}

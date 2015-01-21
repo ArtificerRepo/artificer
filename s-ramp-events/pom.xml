@@ -21,6 +21,10 @@
       <artifactId>s-ramp-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.overlord.sramp</groupId>
+      <artifactId>s-ramp-common</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
     </dependency>

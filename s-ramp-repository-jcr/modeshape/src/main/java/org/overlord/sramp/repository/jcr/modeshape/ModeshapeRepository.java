@@ -82,7 +82,7 @@ public class ModeshapeRepository extends JCRRepository {
 	    }
 	    //Using the Modeshape Service
 	    if (configUrl==null) {
-	        String srampJndiLocation = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_JCR_REPO_JNDI, S_RAMP_JNDI);
+	        String srampJndiLocation = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_JCR_REPO_JNDI_PATH, S_RAMP_JNDI);
             log.info(Messages.i18n.format("CONNECT_TO_MS", srampJndiLocation));
             try {
                 InitialContext context = new InitialContext();

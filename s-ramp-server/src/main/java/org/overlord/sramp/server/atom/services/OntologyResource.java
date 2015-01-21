@@ -46,6 +46,8 @@ import org.overlord.sramp.events.EventProducer;
 import org.overlord.sramp.events.EventProducerFactory;
 import org.overlord.sramp.repository.PersistenceFactory;
 import org.overlord.sramp.repository.PersistenceManager;
+import org.overlord.sramp.server.OntologyServiceImpl;
+import org.overlord.sramp.server.core.api.OntologyService;
 import org.overlord.sramp.server.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,18 +73,11 @@ public class OntologyResource extends AbstractResource {
 	private static OntologyToRdfMapper o2rdf = new OntologyToRdfMapper();
 	private static RdfToOntologyMapper rdf2o = new RdfToOntologyMapper();
 
-	/**
-	 * Constructor.
-	 */
-	public OntologyResource() {
-	}
+    private final OntologyService ontologyService = new OntologyServiceImpl();
 
     /**
      * S-RAMP atom POST to add an ontology to the repository.
-     * @param fileName
-     * @param model
-     * @param type
-     * @param content
+     * @param rdf
      * @throws SrampAtomException
      */
     @POST
@@ -94,22 +89,11 @@ public class OntologyResource extends AbstractResource {
         try {
             ontology = new SrampOntology();
             rdf2o.map(rdf, ontology);
-            OntologyValidator.validateOntology(ontology);
-        } catch (Exception e) {
-            throw new SrampAtomException(e);
-        }
 
-        try {
-			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-			ontology = persistenceManager.persistOntology(ontology);
+            ontology = ontologyService.create(ontology);
 
 			RDF responseRDF = new RDF();
 			o2rdf.map(ontology, responseRDF);
-			
-			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
-            for (EventProducer eventProducer : eventProducers) {
-                eventProducer.ontologyCreated(responseRDF);
-            }
 
 			return SrampAtomUtils.wrapOntology(ontology, responseRDF);
         } catch (OntologyConflictException e) {
@@ -137,26 +121,11 @@ public class OntologyResource extends AbstractResource {
             ontology = new SrampOntology();
             rdf2o.map(rdf, ontology);
             ontology.setUuid(uuid);
-            OntologyValidator.validateOntology(ontology);
-        } catch (Exception e) {
-            throw new SrampAtomException(e);
-        }
 
-        try {
-            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-            SrampOntology oldOntology = persistenceManager.getOntology(uuid);
-            RDF oldRDF = new RDF();
-            o2rdf.map(oldOntology, oldRDF);
-            
-			persistenceManager.updateOntology(ontology);
+            ontologyService.update(uuid, ontology);
 			
 			RDF updatedRDF = new RDF();
             o2rdf.map(ontology, updatedRDF);
-            
-			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
-            for (EventProducer eventProducer : eventProducers) {
-                eventProducer.ontologyUpdated(updatedRDF, oldRDF);
-            }
         } catch (OntologyNotFoundException e) {
             // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
             // HTTP response type.
@@ -170,8 +139,6 @@ public class OntologyResource extends AbstractResource {
     /**
      * Called to get a single ontology by its UUID.  This returns an Atom Entry document
      * wrapping the OWL RDF.
-     * @param model
-     * @param type
      * @param uuid
      * @throws SrampAtomException
      */
@@ -180,8 +147,7 @@ public class OntologyResource extends AbstractResource {
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry get(@PathParam("uuid") String uuid) throws SrampAtomException, SrampException {
     	try {
-			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-			SrampOntology ontology = persistenceManager.getOntology(uuid);
+			SrampOntology ontology = ontologyService.get(uuid);
 
 			RDF responseRDF = new RDF();
 			o2rdf.map(ontology, responseRDF);
@@ -199,8 +165,6 @@ public class OntologyResource extends AbstractResource {
 
     /**
      * Called to delete a single s-ramp ontology.
-     * @param model
-     * @param type
      * @param uuid
      * @throws SrampAtomException
      */
@@ -208,17 +172,7 @@ public class OntologyResource extends AbstractResource {
     @Path("ontology/{uuid}")
 	public void delete(@PathParam("uuid") String uuid) throws SrampAtomException, SrampException {
     	try {
-    	    PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-            SrampOntology ontology = persistenceManager.getOntology(uuid);
-            RDF rdf = new RDF();
-            o2rdf.map(ontology, rdf);
-    	    
-			persistenceManager.deleteOntology(uuid);
-			
-			Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
-            for (EventProducer eventProducer : eventProducers) {
-                eventProducer.ontologyDeleted(rdf);
-            }
+    	    ontologyService.delete(uuid);
         } catch (OntologyNotFoundException e) {
             // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
             // HTTP response type.
@@ -231,7 +185,6 @@ public class OntologyResource extends AbstractResource {
 
 	/**
 	 * Gets a feed of ontologies.
-	 * @param uri
 	 * @throws Exception
 	 */
 	@GET
@@ -239,8 +192,7 @@ public class OntologyResource extends AbstractResource {
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
 	public Feed list() throws SrampAtomException {
     	try {
-			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
-			List<SrampOntology> ontologies = persistenceManager.getOntologies();
+			List<SrampOntology> ontologies = ontologyService.get();
 
 			Feed feed = new Feed();
 			feed.setTitle("S-RAMP ontology feed"); //$NON-NLS-1$

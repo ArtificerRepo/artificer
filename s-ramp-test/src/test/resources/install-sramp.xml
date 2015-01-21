@@ -4,7 +4,6 @@
   <property name="s-ramp.install.dir" value="${project.build.directory}" />
   <property name="s-ramp.updates.dir" location="../s-ramp-installer/src/main/resources/updates" />
   <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}" />
-  <property name="overlord-commons.admin.password" value="artificer1!" />
 
   <!--<target name="install-sramp-tomcat">-->
     <!--<property name="appserver.id" value="tomcat-7" />-->

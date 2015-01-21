@@ -58,7 +58,7 @@ public class SrampConstants {
     public static final String SRAMP_CONFIG_DERIVED_AUDITING    = "sramp.config.auditing.enabled-derived"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_AUDIT_USER          = "sramp.config.auditing.user"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_AUDIT_PASS          = "sramp.config.auditing.password"; //$NON-NLS-1$
-    public static final String SRAMP_CONFIG_JCR_REPO_JNDI       = "sramp.config.jcr.repository.jndi-path"; //$NON-NLS-1$
+    public static final String SRAMP_CONFIG_JCR_REPO_JNDI_PATH  = "sramp.config.jcr.repository.jndi-path"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_JCR_REPO_NAME       = "sramp.config.jcr.repository.name"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_EVENT_JMS_CONNECTIONFACTORY    = "sramp.config.events.jms.connectionfactory"; //$NON-NLS-1$
     public static final String SRAMP_CONFIG_EVENT_JMS_TOPICS    = "sramp.config.events.jms.topics"; //$NON-NLS-1$

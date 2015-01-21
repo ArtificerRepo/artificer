@@ -19,6 +19,7 @@ import org.overlord.sramp.common.SrampException;
 import org.overlord.sramp.common.query.xpath.ast.Query;
 import org.overlord.sramp.common.query.xpath.visitors.XPathSerializationVisitor;
 import org.overlord.sramp.repository.PersistenceFactory;
+import org.overlord.sramp.repository.error.QueryExecutionException;
 import org.overlord.sramp.repository.jcr.ClassificationHelper;
 import org.overlord.sramp.repository.jcr.JCRConstants;
 import org.overlord.sramp.repository.jcr.JCRPersistence;
@@ -26,12 +27,10 @@ import org.overlord.sramp.repository.jcr.JCRRepositoryFactory;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
 import org.overlord.sramp.repository.query.AbstractSrampQueryImpl;
 import org.overlord.sramp.repository.query.ArtifactSet;
-import org.overlord.sramp.repository.error.QueryExecutionException;
 import org.overlord.sramp.repository.query.SrampQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.query.QueryResult;
 import java.util.HashMap;
@@ -107,13 +106,12 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
 			}
 			long startTime = System.currentTimeMillis();
 			QueryResult jcrQueryResult = jcrQuery.execute();
-			NodeIterator jcrNodes = jcrQueryResult.getNodes();
 			long endTime = System.currentTimeMillis();
 
 			log.debug(Messages.i18n.format("QUERY_EXECUTED", jcrQueryString));
 			log.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime));
 
-			return new JCRArtifactSet(session, jcrNodes, logoutOnClose);
+			return new JCRArtifactSet(session, jcrQueryResult.getNodes(), logoutOnClose);
 		} catch (SrampException e) {
             // Only logout of the session on a throw.  Otherwise, the JCRArtifactSet will be
             // responsible for closing the session.

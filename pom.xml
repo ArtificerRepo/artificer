@@ -325,6 +325,11 @@
       </dependency>
       <dependency>
         <groupId>org.overlord.sramp</groupId>
+        <artifactId>s-ramp-server-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-server</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
@@ -1050,6 +1055,7 @@
     <module>s-ramp-repository-jcr</module>
     <module>s-ramp-repository-jcr/modeshape</module>
     <module>s-ramp-server</module>
+    <module>s-ramp-server/api</module>
     <module>s-ramp-server/eap6</module>
     <!--<module>s-ramp-server/tomcat7</module>-->
     <module>s-ramp-server/wildfly8</module>

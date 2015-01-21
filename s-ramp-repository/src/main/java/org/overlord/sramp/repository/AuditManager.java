@@ -25,7 +25,7 @@ import org.overlord.sramp.repository.audit.AuditEntrySet;
  *
  * @author eric.wittmann@redhat.com
  */
-public interface AuditManager {
+public interface AuditManager extends AbstractManager {
 
     /**
      * Adds an audit entry for an artifact by UUID.

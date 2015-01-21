@@ -16,6 +16,7 @@
 package org.overlord.sramp.events;
 
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.sramp.common.ontology.SrampOntology;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 /**
@@ -52,7 +53,7 @@ public interface EventProducer {
      * 
      * @param ontology The new ontology
      */
-    public void ontologyCreated(RDF ontology);
+    public void ontologyCreated(SrampOntology ontology);
     
     /**
      * An ontology was replaced
@@ -60,14 +61,14 @@ public interface EventProducer {
      * @param updatedOntology The new version of the ontology
      * @param oldOntology The previous version of the ontology
      */
-    public void ontologyUpdated(RDF updatedOntology, RDF oldOntology);
+    public void ontologyUpdated(SrampOntology updatedOntology, SrampOntology oldOntology);
     
     /**
      * An ontology was deleted
      * 
      * @param ontology The deleted ontology
      */
-    public void ontologyDeleted(RDF ontology);
+    public void ontologyDeleted(SrampOntology ontology);
     
     /**
      * Called by SrampLifeCycle during startup.  This method should be utilized for internal logic setup, rather than

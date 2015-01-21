@@ -654,11 +654,6 @@
           </dependency>
           <dependency>
             <groupId>org.jboss.xnio</groupId>
-            <artifactId>xnio-api</artifactId>
-            <version>3.3.0.Final</version>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.xnio</groupId>
             <artifactId>xnio-nio</artifactId>
             <version>3.3.0.Final</version>
           </dependency>

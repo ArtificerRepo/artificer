@@ -23,7 +23,7 @@ import org.overlord.sramp.repository.query.SrampQuery;
  *
  * @author eric.wittmann@redhat.com
  */
-public interface QueryManager {
+public interface QueryManager extends AbstractManager {
 
 	/**
 	 * Create an s-ramp query from the given xpath template.  This template can

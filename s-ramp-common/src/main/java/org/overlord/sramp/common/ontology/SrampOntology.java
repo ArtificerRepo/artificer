@@ -15,6 +15,9 @@
  */
 package org.overlord.sramp.common.ontology;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ import java.util.Set;
  *
  * @author eric.wittmann@redhat.com
  */
-public class SrampOntology {
+public class SrampOntology implements Serializable {
 
 	private String uuid;
 	private String label;
@@ -277,12 +280,13 @@ public class SrampOntology {
 	 *
 	 * @author eric.wittmann@redhat.com
 	 */
-	public static class SrampOntologyClass {
+	public static class SrampOntologyClass implements Serializable {
 
 		private String id;
 		private String label;
 		private String comment;
 		private URI uri;
+        @JsonIgnore // MUST ignore to prevent stack overflow during marshalling
 		private SrampOntology.SrampOntologyClass parent;
 		private List<SrampOntology.SrampOntologyClass> children = new ArrayList<SrampOntology.SrampOntologyClass>();
 

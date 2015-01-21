@@ -27,7 +27,7 @@ import org.overlord.commons.config.JBossServer;
 public class SrampConfig {
 
     private static Configuration configuration = null;
-    
+
     static {
         String configFile = System.getProperty(SrampConstants.SRAMP_CONFIG_FILE_NAME);
         String refreshDelayStr = System.getProperty(SrampConstants.SRAMP_CONFIG_FILE_REFRESH);
@@ -46,8 +46,8 @@ public class SrampConfig {
      */
     public static String getBaseUrl(String requestUrl) {
 
-    	String baseUrl = null;
-    	//Try grabbing it from the call
+        String baseUrl = null;
+        //Try grabbing it from the call
         if (requestUrl!=null) {
             int index = requestUrl.lastIndexOf("/s-ramp/"); //$NON-NLS-1$
             if (index < 0) index = requestUrl.lastIndexOf("/s-ramp"); //$NON-NLS-1$
@@ -57,7 +57,7 @@ public class SrampConfig {
         }
         //If that failed, try constructing it from the JBoss system parameters
         if (baseUrl==null){
-        	baseUrl = JBossServer.getBaseUrl() + "/s-ramp-server" ; //$NON-NLS-1$
+            baseUrl = JBossServer.getBaseUrl() + "/s-ramp-server" ; //$NON-NLS-1$
         }
         return configuration.getString(SrampConstants.SRAMP_CONFIG_BASEURL, baseUrl);
     }

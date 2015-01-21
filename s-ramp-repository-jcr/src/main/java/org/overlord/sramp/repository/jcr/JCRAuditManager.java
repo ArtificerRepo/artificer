@@ -46,7 +46,7 @@ import java.util.UUID;
  * @author eric.wittmann@redhat.com
  */
 
-public class JCRAuditManager implements AuditManager {
+public class JCRAuditManager extends JCRAbstractManager implements AuditManager {
 
     private static Logger log = LoggerFactory.getLogger(JCRAuditManager.class);
     private static final String AUDIT_ENTRY_QUERY = "SELECT auditEntry.*"
@@ -182,11 +182,10 @@ public class JCRAuditManager implements AuditManager {
             javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(query, JCRConstants.JCR_SQL2);
             long startTime = System.currentTimeMillis();
             QueryResult jcrQueryResult = jcrQuery.execute();
-            NodeIterator jcrNodes = jcrQueryResult.getNodes();
             long endTime = System.currentTimeMillis();
             log.debug(Messages.i18n.format("QUERY_EXECUTED", query));
             log.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime));
-            return new JCRAuditEntrySet(session, jcrNodes);
+            return new JCRAuditEntrySet(session, jcrQueryResult.getNodes());
         } catch (Throwable t) {
             JCRRepositoryFactory.logoutQuietly(session);
             throw new SrampServerException(t);

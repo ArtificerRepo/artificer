@@ -22,15 +22,22 @@ import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampConstants;
+import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.events.ArtifactUpdateEvent;
 import org.overlord.sramp.events.EventProducer;
 import org.overlord.sramp.events.OntologyUpdateEvent;
 import org.overlord.sramp.events.jms.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
-import javax.jms.*;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -173,18 +180,18 @@ public class JMSEventProducer implements EventProducer {
     }
 
     @Override
-    public void ontologyCreated(RDF ontology) {
+    public void ontologyCreated(SrampOntology ontology) {
         publishEvent(ontology, JMS_TYPE_ONTOLOGY_CREATED);
     }
 
     @Override
-    public void ontologyUpdated(RDF updatedOntology, RDF oldOntology) {
+    public void ontologyUpdated(SrampOntology updatedOntology, SrampOntology oldOntology) {
         OntologyUpdateEvent event = new OntologyUpdateEvent(updatedOntology, oldOntology);
         publishEvent(event, JMS_TYPE_ONTOLOGY_UPDATED);
     }
 
     @Override
-    public void ontologyDeleted(RDF ontology) {
+    public void ontologyDeleted(SrampOntology ontology) {
         publishEvent(ontology, JMS_TYPE_ONTOLOGY_DELETED);
     }
 

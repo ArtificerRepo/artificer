@@ -20,6 +20,7 @@ import javax.jcr.LoginException;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 
 import org.overlord.commons.services.ServiceRegistryUtil;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
@@ -36,6 +37,10 @@ public class JCRRepositoryFactory {
 	public static void setLoginCredentials(Credentials credentials) {
 	    loginCredentials.set(credentials);
 	}
+    public static void setLoginCredentials(String username, String password) {
+        SimpleCredentials credentials = new SimpleCredentials(username, password.toCharArray());
+        loginCredentials.set(credentials);
+    }
 	public static void clearLoginCredentials() {
 	    loginCredentials.remove();
 	}
@@ -76,7 +81,8 @@ public class JCRRepositoryFactory {
         // the anonymous auth provider (if configured) or any other auth provider that might
         // be configured *and* can accept null creds.  Typically this means the JAAS provider,
         // which should use the current JAAS subject in the absence of credentials.
-        return getInstance().getRepo().login(loginCredentials.get(), WORKSPACE_NAME);
+        Credentials credentials = loginCredentials.get();
+        return getInstance().getRepo().login(credentials, WORKSPACE_NAME);
     }
 
     /**
