@@ -77,6 +77,13 @@ public class SrampConfig {
     }
 
     /**
+     * @return true if JMS is enabled
+     */
+    public static boolean isJmsEnabled() {
+        return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_EVENT_JMS_ENABLED, false);
+    }
+
+    /**
      * Gets a property from the s-ramp configuration.
      * @param propertyName
      * @param propertyDefault

@@ -22,6 +22,7 @@
       </protocol>
       <configuration>
          <property name="jbossHome">target/jboss-eap-6.1</property>
+         <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dsramp.config.events.jms.enabled=true -Dsramp.config.auditing.enabled=true -Dsramp.config.auditing.enabled-derived=true</property>
          <!-- Needed for JMS -->
          <property name="serverConfig">standalone-full.xml</property>
       </configuration>
@@ -33,6 +34,7 @@
       </protocol>
       <configuration>
          <property name="jbossHome">target/jboss-eap-6.2</property>
+         <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dsramp.config.events.jms.enabled=true -Dsramp.config.auditing.enabled=true -Dsramp.config.auditing.enabled-derived=true</property>
          <!-- Needed for JMS -->
          <property name="serverConfig">standalone-full.xml</property>
       </configuration>
@@ -44,6 +46,7 @@
       </protocol>
       <configuration>
          <property name="jbossHome">target/jboss-eap-6.3</property>
+         <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dsramp.config.events.jms.enabled=true -Dsramp.config.auditing.enabled=true -Dsramp.config.auditing.enabled-derived=true</property>
          <!-- Needed for JMS -->
          <property name="serverConfig">standalone-full.xml</property>
       </configuration>
@@ -55,6 +58,7 @@
     </protocol>
     <configuration>
       <property name="jbossHome">target/wildfly-8.2.0.Final</property>
+      <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dsramp.config.events.jms.enabled=true -Dsramp.config.auditing.enabled=true -Dsramp.config.auditing.enabled-derived=true</property>
       <!-- Needed for JMS -->
       <property name="serverConfig">standalone-full.xml</property>
     </configuration>

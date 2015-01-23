@@ -16,11 +16,13 @@
 package org.overlord.sramp.test.events.jms;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.overlord.sramp.events.ArtifactUpdateEvent;
 import org.overlord.sramp.events.OntologyUpdateEvent;
@@ -72,6 +74,11 @@ public class JMSEventProducerTest extends AbstractIntegrationTest {
 //    private static final String TOMCAT_TOPIC_JNDI = "sramp/events/topic";
     
     private List<TextMessage> textMessages;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        System.setProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_ENABLED, "true"); //$NON-NLS-1$
+    }
     
     @Test
     public void testArtifactTopic() throws Exception {

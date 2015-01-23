@@ -87,64 +87,65 @@ public class JMSEventProducer implements EventProducer {
 
     @Override
     public void startup() {
-
-        try {
-            String connectionFactoryName = SrampConfig.getConfigProperty(
-                    SrampConstants.SRAMP_CONFIG_EVENT_JMS_CONNECTIONFACTORY, "ConnectionFactory"); //$NON-NLS-1$
-            
-            // Note that both properties end up doing the same thing.  Technically, we could combine both into one
-            // single sramp.config.events.jms.destinations, but leaving them split for readability.
-            String topicNamesProp = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_TOPICS, ""); //$NON-NLS-1$
-            String[] topicNames = new String[0];
-            if (StringUtils.isNotEmpty(topicNamesProp)) {
-                topicNames = topicNamesProp.split(","); //$NON-NLS-1$
-            }
-            String queueNamesProp = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_QUEUES, ""); //$NON-NLS-1$
-            String[] queueNames = new String[0];
-            if (StringUtils.isNotEmpty(queueNamesProp)) {
-                queueNames = queueNamesProp.split(","); //$NON-NLS-1$
-            }
-
+        if (SrampConfig.isJmsEnabled()) {
             try {
-                // First, see if a ConnectionFactory and Topic/Queue exists on JNDI.  If so, assume JMS is properly
-                // setup in a Java EE container and simply use it.
+                String connectionFactoryName = SrampConfig.getConfigProperty(
+                        SrampConstants.SRAMP_CONFIG_EVENT_JMS_CONNECTIONFACTORY, "ConnectionFactory"); //$NON-NLS-1$
 
-                ConnectionFactory connectionFactory = (ConnectionFactory) jndiLookup(connectionFactoryName);
-                connection = connectionFactory.createConnection();
-                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-                for (String topicName : topicNames) {
-                    Topic topic = (Topic) jndiLookup(topicName);
-                    destinations.add(topic);
+                // Note that both properties end up doing the same thing.  Technically, we could combine both into one
+                // single sramp.config.events.jms.destinations, but leaving them split for readability.
+                String topicNamesProp = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_TOPICS, ""); //$NON-NLS-1$
+                String[] topicNames = new String[0];
+                if (StringUtils.isNotEmpty(topicNamesProp)) {
+                    topicNames = topicNamesProp.split(","); //$NON-NLS-1$
+                }
+                String queueNamesProp = SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_QUEUES, ""); //$NON-NLS-1$
+                String[] queueNames = new String[0];
+                if (StringUtils.isNotEmpty(queueNamesProp)) {
+                    queueNames = queueNamesProp.split(","); //$NON-NLS-1$
                 }
 
-                for (String queueName : queueNames) {
-                    Queue queue = (Queue) jndiLookup(queueName);
-                    destinations.add(queue);
+                try {
+                    // First, see if a ConnectionFactory and Topic/Queue exists on JNDI.  If so, assume JMS is properly
+                    // setup in a Java EE container and simply use it.
+
+                    ConnectionFactory connectionFactory = (ConnectionFactory) jndiLookup(connectionFactoryName);
+                    connection = connectionFactory.createConnection();
+                    session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+                    for (String topicName : topicNames) {
+                        Topic topic = (Topic) jndiLookup(topicName);
+                        destinations.add(topic);
+                    }
+
+                    for (String queueName : queueNames) {
+                        Queue queue = (Queue) jndiLookup(queueName);
+                        destinations.add(queue);
+                    }
+                } catch (NamingException e) {
+                    // Otherwise, JMS wasn't setup. Assume we need to start an embedded
+                    // ActiveMQ broker and create the destinations.
+
+                    String bindAddress = "tcp://localhost:" //$NON-NLS-1$
+                            + SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, "61616"); //$NON-NLS-1$
+
+                    LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", bindAddress)); //$NON-NLS-1$
+
+                    session = null;
+                    destinations.clear();
+
+                    BrokerService broker = new BrokerService();
+                    broker.addConnector(bindAddress);
+                    broker.start();
+
+                    // Event though we added a TCP connector, above, ActiveMQ also exposes the broker over the "vm"
+                    // protocol. It optimizes performance for connections on the same JVM.
+                    ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
+                    initActiveMQ(connectionFactory, topicNames, queueNames);
                 }
-            } catch (NamingException e) {
-                // Otherwise, JMS wasn't setup. Assume we need to start an embedded
-                // ActiveMQ broker and create the destinations.
-
-                String bindAddress = "tcp://localhost:" //$NON-NLS-1$
-                        + SrampConfig.getConfigProperty(SrampConstants.SRAMP_CONFIG_EVENT_JMS_PORT, "61616"); //$NON-NLS-1$
-
-                LOG.warn(Messages.i18n.format("org.overlord.sramp.events.jms.embedded_broker", bindAddress)); //$NON-NLS-1$
-
-                session = null;
-                destinations.clear();
-
-                BrokerService broker = new BrokerService();
-                broker.addConnector(bindAddress);
-                broker.start();
-
-                // Event though we added a TCP connector, above, ActiveMQ also exposes the broker over the "vm"
-                // protocol. It optimizes performance for connections on the same JVM.
-                ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
-                initActiveMQ(connectionFactory, topicNames, queueNames);
+            } catch (Exception e) {
+                LOG.error(e.getMessage(), e);
             }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
         }
     }
     
@@ -165,34 +166,46 @@ public class JMSEventProducer implements EventProducer {
 
     @Override
     public void artifactCreated(BaseArtifactType artifact) {
-        publishEvent(artifact, JMS_TYPE_ARTIFACT_CREATED);
+        if (SrampConfig.isJmsEnabled()) {
+            publishEvent(artifact, JMS_TYPE_ARTIFACT_CREATED);
+        }
     }
 
     @Override
     public void artifactUpdated(BaseArtifactType updatedArtifact, BaseArtifactType oldArtifact) {
-        ArtifactUpdateEvent event = new ArtifactUpdateEvent(updatedArtifact, oldArtifact);
-        publishEvent(event, JMS_TYPE_ARTIFACT_UPDATED);
+        if (SrampConfig.isJmsEnabled()) {
+            ArtifactUpdateEvent event = new ArtifactUpdateEvent(updatedArtifact, oldArtifact);
+            publishEvent(event, JMS_TYPE_ARTIFACT_UPDATED);
+        }
     }
 
     @Override
     public void artifactDeleted(BaseArtifactType artifact) {
-        publishEvent(artifact, JMS_TYPE_ARTIFACT_DELETED);
+        if (SrampConfig.isJmsEnabled()) {
+            publishEvent(artifact, JMS_TYPE_ARTIFACT_DELETED);
+        }
     }
 
     @Override
     public void ontologyCreated(SrampOntology ontology) {
-        publishEvent(ontology, JMS_TYPE_ONTOLOGY_CREATED);
+        if (SrampConfig.isJmsEnabled()) {
+            publishEvent(ontology, JMS_TYPE_ONTOLOGY_CREATED);
+        }
     }
 
     @Override
     public void ontologyUpdated(SrampOntology updatedOntology, SrampOntology oldOntology) {
-        OntologyUpdateEvent event = new OntologyUpdateEvent(updatedOntology, oldOntology);
-        publishEvent(event, JMS_TYPE_ONTOLOGY_UPDATED);
+        if (SrampConfig.isJmsEnabled()) {
+            OntologyUpdateEvent event = new OntologyUpdateEvent(updatedOntology, oldOntology);
+            publishEvent(event, JMS_TYPE_ONTOLOGY_UPDATED);
+        }
     }
 
     @Override
     public void ontologyDeleted(SrampOntology ontology) {
-        publishEvent(ontology, JMS_TYPE_ONTOLOGY_DELETED);
+        if (SrampConfig.isJmsEnabled()) {
+            publishEvent(ontology, JMS_TYPE_ONTOLOGY_DELETED);
+        }
     }
 
     private void publishEvent(Object payload, String type) {
@@ -235,13 +248,15 @@ public class JMSEventProducer implements EventProducer {
 
     @Override
     public void shutdown() {
-        try {
-            session.close();
-        } catch (Exception e) {
-        }
-        try {
-            connection.close();
-        } catch (Exception e) {
+        if (SrampConfig.isJmsEnabled()) {
+            try {
+                session.close();
+            } catch (Exception e) {
+            }
+            try {
+                connection.close();
+            } catch (Exception e) {
+            }
         }
     }
 }
