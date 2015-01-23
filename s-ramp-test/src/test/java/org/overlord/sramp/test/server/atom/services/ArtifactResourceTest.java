@@ -23,7 +23,20 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedOutput;
 import org.junit.Assert;
 import org.junit.Test;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PartEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PartTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.atom.SrampAtomUtils;
 import org.overlord.sramp.atom.err.SrampAtomException;
@@ -33,7 +46,11 @@ import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.test.TestUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -43,7 +60,7 @@ import java.util.UUID;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactResourceTest extends AbstractNoAuditingResourceTest {
+public class ArtifactResourceTest extends AbstractResourceTest {
 
     String uuid = null;
 

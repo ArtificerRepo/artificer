@@ -21,7 +21,7 @@ import org.junit.Test;
  * @author <a href="mailto:kurt.stam@gmail.com">Kurt Stam</a>
  * @version $Revision: 1 $
  */
-public class ServiceDocumentResourceTest extends AbstractNoAuditingResourceTest {
+public class ServiceDocumentResourceTest extends AbstractResourceTest {
 
     @Test
     public void testServiceDocument() throws Exception {

@@ -23,7 +23,7 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.integration.kie.model.KieJarModel;
-import org.overlord.sramp.test.client.AbstractNoAuditingClientTest;
+import org.overlord.sramp.test.client.AbstractClientTest;
 
 import java.io.InputStream;
 
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Brett Meyer
  */
-public class KieArtifactTypeDetectorTest extends AbstractNoAuditingClientTest {
+public class KieArtifactTypeDetectorTest extends AbstractClientTest {
 
 	@Test
 	public void testKieIntegration() throws Exception {

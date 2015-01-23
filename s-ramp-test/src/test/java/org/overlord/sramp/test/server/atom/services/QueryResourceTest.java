@@ -15,13 +15,6 @@
  */
 package org.overlord.sramp.test.server.atom.services;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -40,12 +33,19 @@ import org.overlord.sramp.client.ClientRequest;
 import org.overlord.sramp.common.SrampConstants;
 import org.overlord.sramp.test.TestUtils;
 
+import java.io.InputStream;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 /**
  * Tests the s-ramp query features of the atom api binding.
  *
  * @author eric.wittmann@redhat.com
  */
-public class QueryResourceTest extends AbstractNoAuditingResourceTest {
+public class QueryResourceTest extends AbstractResourceTest {
 
 	/**
 	 * @throws Exception

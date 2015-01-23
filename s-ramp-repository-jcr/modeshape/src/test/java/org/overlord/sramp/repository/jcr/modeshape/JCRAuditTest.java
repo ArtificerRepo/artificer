@@ -51,6 +51,7 @@ public class JCRAuditTest extends AbstractAuditingJCRPersistenceTest {
     @BeforeClass
     public static void enableAuditing() {
         System.setProperty(SrampConstants.SRAMP_CONFIG_AUDITING, "true");
+        System.setProperty(SrampConstants.SRAMP_CONFIG_DERIVED_AUDITING, "true");
     }
 
     @Test

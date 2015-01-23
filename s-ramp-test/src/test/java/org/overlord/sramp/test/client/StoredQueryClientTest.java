@@ -15,11 +15,6 @@
  */
 package org.overlord.sramp.test.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.List;
-
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -29,10 +24,15 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Brett Meyer
  */
-public class StoredQueryClientTest extends AbstractNoAuditingClientTest {
+public class StoredQueryClientTest extends AbstractClientTest {
     
     @Test
     public void testStoredQuery() throws Exception {

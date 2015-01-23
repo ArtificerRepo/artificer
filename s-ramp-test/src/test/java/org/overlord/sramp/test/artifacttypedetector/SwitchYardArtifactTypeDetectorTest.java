@@ -25,7 +25,7 @@ import org.overlord.sramp.client.query.ArtifactSummary;
 import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.integration.java.model.JavaModel;
 import org.overlord.sramp.integration.switchyard.model.SwitchYardModel;
-import org.overlord.sramp.test.client.AbstractNoAuditingClientTest;
+import org.overlord.sramp.test.client.AbstractClientTest;
 
 import java.io.InputStream;
 
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Brett Meyer
  */
-public class SwitchYardArtifactTypeDetectorTest extends AbstractNoAuditingClientTest {
+public class SwitchYardArtifactTypeDetectorTest extends AbstractClientTest {
 
 	@Test
 	public void testSwitchYardIntegration() throws Exception {

@@ -15,12 +15,6 @@
  */
 package org.overlord.sramp.test.client;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,12 +23,17 @@ import org.overlord.sramp.client.SrampAtomApiClient;
 import org.overlord.sramp.client.audit.AuditEntrySummary;
 import org.overlord.sramp.client.audit.AuditResultSet;
 
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 /**
  * Unit test for the
  *
  * @author eric.wittmann@redhat.com
  */
-public class AuditingClientTest extends AbstractAuditingClientTest {
+public class AuditingClientTest extends AbstractClientTest {
 
     @Test
     public void testAuditing() throws Exception {

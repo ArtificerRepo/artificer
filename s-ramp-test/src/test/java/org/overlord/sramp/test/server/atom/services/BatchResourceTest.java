@@ -15,15 +15,6 @@
  */
 package org.overlord.sramp.test.server.atom.services;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
@@ -46,6 +37,15 @@ import org.overlord.sramp.client.ClientRequest;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.server.atom.services.BatchResource;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 
 /**
  * Unit test for the {@link BatchResource} class.
@@ -54,7 +54,7 @@ import org.overlord.sramp.server.atom.services.BatchResource;
  *
  * @author eric.wittmann@redhat.com
  */
-public class BatchResourceTest extends AbstractNoAuditingResourceTest {
+public class BatchResourceTest extends AbstractResourceTest {
 
 	/**
 	 * Test method for {@link org.overlord.sramp.common.server.atom.services.BatchResource#zipPackage(java.lang.String, java.io.InputStream)}.

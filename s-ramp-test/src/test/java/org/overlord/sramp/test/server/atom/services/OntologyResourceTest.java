@@ -15,12 +15,6 @@
  */
 package org.overlord.sramp.test.server.atom.services;
 
-import java.net.URL;
-import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
@@ -33,12 +27,17 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 import org.w3._2002._07.owl_.Class;
 import org.w3._2002._07.owl_.Ontology;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.net.URL;
+import java.util.List;
+
 /**
  * Unit test for the ontology rest api.
  *
  * @author eric.wittmann@redhat.com
  */
-public class OntologyResourceTest extends AbstractNoAuditingResourceTest {
+public class OntologyResourceTest extends AbstractResourceTest {
 
     @Test
     public void testCreate() throws Exception {

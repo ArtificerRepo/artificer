@@ -15,14 +15,6 @@
  */
 package org.overlord.sramp.test.server.atom.services;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -36,12 +28,20 @@ import org.overlord.sramp.atom.MediaType;
 import org.overlord.sramp.client.ClientRequest;
 import org.overlord.sramp.test.TestUtils;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+
 /**
  * Tests the s-ramp query features of the atom api binding.
  *
  * @author eric.wittmann@redhat.com
  */
-public class FeedResourceTest extends AbstractNoAuditingResourceTest {
+public class FeedResourceTest extends AbstractResourceTest {
 
 	/**
 	 * Tests the artifact feed.

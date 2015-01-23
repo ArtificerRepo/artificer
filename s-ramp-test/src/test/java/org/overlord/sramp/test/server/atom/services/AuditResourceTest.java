@@ -15,14 +15,6 @@
  */
 package org.overlord.sramp.test.server.atom.services;
 
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.apache.commons.io.IOUtils;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditEntry;
 import org.jboss.downloads.overlord.sramp._2013.auditing.AuditItemType;
@@ -42,12 +34,19 @@ import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
 import org.overlord.sramp.common.audit.AuditUtils;
 
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
 /**
  * Unit test for the auditing rest api.
  *
  * @author eric.wittmann@redhat.com
  */
-public class AuditResourceTest extends AbstractAuditingResourceTest {
+public class AuditResourceTest extends AbstractResourceTest {
 
     @Test
 	public void testListAndGet() throws Exception {

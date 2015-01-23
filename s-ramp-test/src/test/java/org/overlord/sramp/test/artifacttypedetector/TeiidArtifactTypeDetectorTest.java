@@ -26,7 +26,7 @@ import org.overlord.sramp.client.query.QueryResultSet;
 import org.overlord.sramp.integration.teiid.model.TeiidArtifactType;
 import org.overlord.sramp.integration.teiid.model.Vdb;
 import org.overlord.sramp.integration.teiid.model.VdbManifest;
-import org.overlord.sramp.test.client.AbstractNoAuditingClientTest;
+import org.overlord.sramp.test.client.AbstractClientTest;
 
 import java.io.InputStream;
 
@@ -36,7 +36,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * @author Brett Meyer
  */
-public final class TeiidArtifactTypeDetectorTest extends AbstractNoAuditingClientTest {
+public final class TeiidArtifactTypeDetectorTest extends AbstractClientTest {
 
     private void assertManifest(SrampAtomApiClient client) throws Exception {
         QueryResultSet results = client.buildQuery("/s-ramp/ext/" + VdbManifest.ARTIFACT_TYPE.extendedType()).query();

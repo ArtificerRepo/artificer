@@ -66,14 +66,14 @@ public class SrampConfig {
      * @return true if auditing is enabled
      */
     public static boolean isAuditingEnabled() {
-        return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_AUDITING, true);
+        return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_AUDITING, false);
     }
 
     /**
      * @return true if auditing is enabled for derived artifacts
      */
     public static boolean isDerivedArtifactAuditingEnabled() {
-        return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_DERIVED_AUDITING, true);
+        return configuration.getBoolean(SrampConstants.SRAMP_CONFIG_DERIVED_AUDITING, false);
     }
 
     /**

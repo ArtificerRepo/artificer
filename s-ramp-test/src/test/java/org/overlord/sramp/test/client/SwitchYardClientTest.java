@@ -33,7 +33,7 @@ import java.io.InputStream;
  *
  * @author eric.wittmann@redhat.com
  */
-public class SwitchYardClientTest extends AbstractNoAuditingClientTest {
+public class SwitchYardClientTest extends AbstractClientTest {
 
     @Test
     public void testUploadArtifact() throws Exception {

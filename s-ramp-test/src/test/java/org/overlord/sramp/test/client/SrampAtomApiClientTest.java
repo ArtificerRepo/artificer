@@ -15,19 +15,6 @@
  */
 package org.overlord.sramp.test.client;
 
-import static org.junit.Assert.fail;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,13 +36,26 @@ import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.ontology.SrampOntology;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import static org.junit.Assert.fail;
+
 /**
  * Unit test for the bulk of the s-ramp client features.
  *
  * @author eric.wittmann@redhat.com
  * @author Brett Meyer
  */
-public class SrampAtomApiClientTest extends AbstractNoAuditingClientTest {
+public class SrampAtomApiClientTest extends AbstractClientTest {
 
 	/**
 	 * Test method for {@link SrampAtomApiClient#uploadArtifact(java.lang.String, java.lang.String, java.io.InputStream, java.lang.String)}.
