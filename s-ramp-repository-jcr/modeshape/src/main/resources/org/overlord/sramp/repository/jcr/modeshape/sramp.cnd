@@ -97,7 +97,7 @@
 - * (string)
 - * (string) multiple
 
-[sramp:baseArtifactType] > mix:created, mix:lastModified, mix:referenceable, mix:versionable abstract mixin
+[sramp:baseArtifactType] > mix:created, mix:lastModified, mix:referenceable abstract mixin
 - sramp:uuid (string) mandatory
 - sramp:name (string)
 - sramp:artifactModel (string)
@@ -308,7 +308,7 @@
 // -------------------------------------------------------
 // Type used for deleted artifacts
 // -------------------------------------------------------
-[sramp:deletedArtifact] > mix:created, mix:lastModified, mix:referenceable, mix:versionable mixin
+[sramp:deletedArtifact] > mix:created, mix:lastModified, mix:referenceable mixin
 - sramp:uuid (string)
 - * (string)
 - * (boolean)

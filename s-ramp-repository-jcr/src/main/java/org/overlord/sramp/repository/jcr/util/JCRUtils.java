@@ -15,11 +15,10 @@
  */
 package org.overlord.sramp.repository.jcr.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.repository.jcr.JCRConstants;
+import org.overlord.sramp.repository.jcr.MapToJCRPath;
+import org.overlord.sramp.repository.jcr.i18n.Messages;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
@@ -37,11 +36,11 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.QueryResult;
 import javax.jcr.version.VersionException;
-
-import org.overlord.sramp.common.ArtifactType;
-import org.overlord.sramp.repository.jcr.JCRConstants;
-import org.overlord.sramp.repository.jcr.MapToJCRPath;
-import org.overlord.sramp.repository.jcr.i18n.Messages;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Some common utils for working with JCR.
@@ -94,6 +93,30 @@ public class JCRUtils {
         } catch (PathNotFoundException e) {
             // continue
         }
+        // Create the node
+        return createNode(parentNode, path, defaultNodeType, finalNodeType);
+    }
+
+    /**
+     * Create a node at the specified path.
+     *
+     * @param parentNode the parent node. may not be null
+     * @param path the path of the desired child node. may not be null
+     * @param defaultNodeType the default node type. may be null
+     * @param finalNodeType the optional final node type. may be null
+     * @return the newly created node
+     * @throws RepositoryException
+     * @throws IllegalArgumentException if either the parentNode or path argument is null
+     */
+    public static Node createNode( Node parentNode,
+            String path,
+            String defaultNodeType,
+            String finalNodeType ) throws RepositoryException {
+        isNotNull(parentNode, "parentNode");
+        isNotNull(path, "path");
+        // Remove leading and trailing slashes ...
+        String relPath = path.replaceAll("^/+", "").replaceAll("/+$", "");
+
         // Create the node, which has to be done segment by segment ...
         String[] pathSegments = relPath.split("/");
         Node node = parentNode;
@@ -101,7 +124,9 @@ public class JCRUtils {
             String pathSegment = pathSegments[i];
             pathSegment = pathSegment.trim();
             if (pathSegment.length() == 0) continue;
-            if (node.hasNode(pathSegment)) {
+            // The 'i < len - 1' is a bit of optimization.  Since we're purely *creating*, we know that the last segment
+            // must never exist.
+            if (i < len - 1 && node.hasNode(pathSegment)) {
                 // Find the existing node ...
                 node = node.getNode(pathSegment);
             } else {
@@ -179,6 +204,7 @@ public class JCRUtils {
      * @param session the JCR session
      * @param path the path to the file
      * @param stream the stream containing the content to be uploaded
+     * @param isUpdate whether or not the upload action is an update (vs. a creation)
      * @return the newly created 'nt:file' node
      * @throws RepositoryException if there is a problem uploading the file
      * @throws IOException if there is a problem using the stream
@@ -186,17 +212,25 @@ public class JCRUtils {
      */
     public static Node uploadFile( Session session,
             String path,
-            InputStream stream ) throws RepositoryException, IOException {
+            InputStream stream,
+            boolean isUpdate) throws RepositoryException, IOException {
         isNotNull(session, "session");
         isNotNull(path, "path");
         Node fileNode = null;
         boolean error = false;
         try {
             // Create an 'nt:file' node at the supplied path, creating any missing intermediate nodes of type 'nt:folder' ...
-            fileNode = findOrCreateNode(session.getRootNode(), path, JCRConstants.NT_FOLDER, JCRConstants.NT_FILE);
+            Node contentNode;
+            if (isUpdate) {
+                // May already exist -- find, then create
+                fileNode = findOrCreateNode(session.getRootNode(), path, JCRConstants.NT_FOLDER, JCRConstants.NT_FILE);
+                contentNode = findOrCreateChild(fileNode, JCRConstants.JCR_CONTENT, JCRConstants.NT_RESOURCE);
+            } else {
+                // Shouldn't exist -- create
+                fileNode = createNode(session.getRootNode(), path, JCRConstants.NT_FOLDER, JCRConstants.NT_FILE);
+                contentNode = createNode(fileNode, JCRConstants.JCR_CONTENT, JCRConstants.NT_RESOURCE, JCRConstants.NT_RESOURCE);
+            }
 
-            // Upload the file to that node ...
-            Node contentNode = findOrCreateChild(fileNode, JCRConstants.JCR_CONTENT, JCRConstants.NT_RESOURCE);
             Binary binary = session.getValueFactory().createBinary(stream);
             contentNode.setProperty(JCRConstants.JCR_DATA, binary);
         } catch (RepositoryException e) {
@@ -346,6 +380,14 @@ public class JCRUtils {
         }
     }
 
+    public static Node findNode(String path, Session session) throws Exception {
+        try {
+            return session.getNode(path);
+        } catch (PathNotFoundException e) {
+            return null;
+        }
+    }
+
     /**
      * Finds the JCR node for the given artifact (UUID + type).
      * @param uuid
@@ -354,18 +396,16 @@ public class JCRUtils {
      * @throws Exception
      */
     public static Node findArtifactNode(String uuid, ArtifactType type, Session session) throws Exception {
-        Node artifactNode = null;
-        if (type.getArtifactType().isDerived()) {
-            artifactNode = findArtifactNodeByUuid(session, uuid);
-        } else {
-            String artifactPath = MapToJCRPath.getArtifactPath(uuid);
-            if (session.nodeExists(artifactPath)) {
-                artifactNode = session.getNode(artifactPath);
-            } else {
-                artifactNode = findArtifactNodeByUuid(session, uuid);
+        if (!type.getArtifactType().isDerived()) {
+            try {
+                return session.getNode(MapToJCRPath.getArtifactPath(uuid));
+            } catch (PathNotFoundException e) {
+                return null;
             }
+        } else {
+            // Since we don't know the derived artifact's parent, we have to query by UUID.
+            return findArtifactNodeByUuid(session, uuid);
         }
-        return artifactNode;
     }
 
     /**

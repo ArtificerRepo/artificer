@@ -17,16 +17,24 @@ package org.overlord.sramp.repository.jcr;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
-import org.overlord.sramp.common.*;
-import org.overlord.sramp.integration.artifactbuilder.ArtifactBuilder;
-import org.overlord.sramp.integration.artifactbuilder.RelationshipContext;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.overlord.sramp.common.ArtifactContent;
+import org.overlord.sramp.common.ArtifactType;
+import org.overlord.sramp.common.SrampConfig;
+import org.overlord.sramp.common.SrampException;
+import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.audit.AuditEntryTypes;
 import org.overlord.sramp.common.audit.AuditItemTypes;
-import org.overlord.sramp.repository.error.ArtifactConflictException;
 import org.overlord.sramp.common.error.SrampServerException;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.integration.ExtensionFactory;
+import org.overlord.sramp.integration.artifactbuilder.ArtifactBuilder;
+import org.overlord.sramp.integration.artifactbuilder.RelationshipContext;
+import org.overlord.sramp.repository.error.ArtifactConflictException;
 import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiff;
 import org.overlord.sramp.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.overlord.sramp.repository.jcr.i18n.Messages;
@@ -35,12 +43,20 @@ import org.overlord.sramp.repository.jcr.util.JCRUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.*;
+import javax.jcr.Binary;
+import javax.jcr.ItemExistsException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
-import java.io.*;
-import java.lang.System;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -90,7 +106,7 @@ public final class JCRArtifactPersister {
 
         runArtifactBuilders();
 
-        JCRUtils.uploadFile(session, primaryArtifactNode.getPath(), artifactContent.getInputStream());
+        JCRUtils.uploadFile(session, primaryArtifactNode.getPath(), artifactContent.getInputStream(), true);
         JCRUtils.setArtifactContentMimeType(primaryArtifactNode, artifactType.getMimeType());
         persistDocumentProperties(primaryArtifactNode, artifactType);
 
@@ -135,20 +151,22 @@ public final class JCRArtifactPersister {
         ArtifactType artifactType = ArtifactType.valueOf(primaryArtifact);
         String name = primaryArtifact.getName();
         String artifactPath = MapToJCRPath.getArtifactPath(uuid);
-        if (session.nodeExists(artifactPath)) {
-            throw new ArtifactConflictException(uuid);
-        }
+
         log.debug(Messages.i18n.format("UPLOADING_TO_JCR", name));
 
         Node artifactNode = null;
-        boolean isDocumentArtifact = SrampModelUtils.isDocumentArtifact(primaryArtifact);
-        if (!isDocumentArtifact) {
-            artifactNode = JCRUtils.findOrCreateNode(session, artifactPath, "nt:folder", JCRConstants.SRAMP_NON_DOCUMENT_TYPE);
-        } else {
-            // Some versions of ModeShape do not allow 'null' Binary values, so we must give a valid IS.
-            InputStream is = artifactContent == null ? new ByteArrayInputStream(new byte[0]) : artifactContent.getInputStream();
-            artifactNode = JCRUtils.uploadFile(session, artifactPath, is);
-            JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
+        try {
+            boolean isDocumentArtifact = SrampModelUtils.isDocumentArtifact(primaryArtifact);
+            if (!isDocumentArtifact) {
+                artifactNode = JCRUtils.createNode(session.getRootNode(), artifactPath, "nt:folder", JCRConstants.SRAMP_NON_DOCUMENT_TYPE);
+            } else {
+                // Some versions of ModeShape do not allow 'null' Binary values, so we must give a valid IS.
+                InputStream is = artifactContent == null ? new ByteArrayInputStream(new byte[0]) : artifactContent.getInputStream();
+                artifactNode = JCRUtils.uploadFile(session, artifactPath, is, false);
+                JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
+            }
+        } catch (ItemExistsException e) {
+            throw new ArtifactConflictException(uuid);
         }
 
         String jcrMixinName = artifactType.getArtifactType().getApiType().value();

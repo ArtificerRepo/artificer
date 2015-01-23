@@ -432,8 +432,8 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
         try {
             SrampOntology ontology = null;
             session = JCRRepositoryFactory.getSession();
-            if (session.nodeExists(ontologyPath)) {
-                Node ontologyNode = session.getNode(ontologyPath);
+            Node ontologyNode = JCRUtils.findNode(ontologyPath, session);
+            if (ontologyNode != null) {
                 ontology = new SrampOntology();
                 ontology.setUuid(uuid);
                 jcr2o.read(ontology, ontologyNode);
@@ -481,8 +481,8 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
         try {
             session = JCRRepositoryFactory.getSession();
-            if (session.nodeExists(ontologyPath)) {
-                Node ontologyNode = session.getNode(ontologyPath);
+            Node ontologyNode = JCRUtils.findNode(ontologyPath, session);
+            if (ontologyNode != null) {
                 o2jcr.update(ontology, ontologyNode);
             } else {
                 throw new OntologyNotFoundException(ontology.getUuid());
@@ -505,8 +505,8 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
         try {
             session = JCRRepositoryFactory.getSession();
-            if (session.nodeExists(ontologyPath)) {
-                Node ontologyNode = session.getNode(ontologyPath);
+            Node ontologyNode = JCRUtils.findNode(ontologyPath, session);
+            if (ontologyNode != null) {
                 ontologyNode.remove();
             } else {
                 throw new OntologyNotFoundException(uuid);
@@ -564,8 +564,8 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
         try {
             session = JCRRepositoryFactory.getSession();
-            if (session.nodeExists(storedQueryPath)) {
-                Node queryNode = session.getNode(storedQueryPath);
+            Node queryNode = JCRUtils.findNode(storedQueryPath, session);
+            if (queryNode != null) {
                 StoredQuery storedQuery = new StoredQuery();
                 jcr2q.read(storedQuery, queryNode);
                 return storedQuery;
@@ -611,8 +611,8 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
         try {
             session = JCRRepositoryFactory.getSession();
-            if (session.nodeExists(storedQueryPath)) {
-                Node queryNode = session.getNode(storedQueryPath);
+            Node queryNode = JCRUtils.findNode(storedQueryPath, session);
+            if (queryNode != null) {
                 q2jcr.write(storedQuery, queryNode);
             } else {
                 throw new StoredQueryNotFoundException(queryName);
@@ -635,8 +635,8 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
         try {
             session = JCRRepositoryFactory.getSession();
-            if (session.nodeExists(storedQueryPath)) {
-                Node queryNode = session.getNode(storedQueryPath);
+            Node queryNode = JCRUtils.findNode(storedQueryPath, session);
+            if (queryNode != null) {
                 queryNode.remove();
             } else {
                 throw new StoredQueryNotFoundException(queryName);
