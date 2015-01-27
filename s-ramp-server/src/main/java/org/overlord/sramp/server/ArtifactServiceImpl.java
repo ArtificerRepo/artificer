@@ -63,7 +63,11 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
     @Override
     public BaseArtifactType create(BaseArtifactType artifact) throws Exception {
         ArtifactType artifactType = ArtifactType.valueOf(artifact);
+        return create(artifactType, artifact);
+    }
 
+    @Override
+    public BaseArtifactType create(ArtifactType artifactType, BaseArtifactType artifact) throws Exception {
         ArtifactVerifier verifier = new ArtifactVerifier(artifactType);
         ArtifactVisitorHelper.visitArtifact(verifier, artifact);
         verifier.throwError();

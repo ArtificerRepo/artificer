@@ -104,7 +104,9 @@ public class ArtifactResource extends AbstractResource {
         throws SrampAtomException, SrampException {
         try {
             BaseArtifactType artifact = SrampAtomUtils.unwrapSrampArtifact(entry);
-			BaseArtifactType persistedArtifact = artifactService.create(artifact);
+            // create artifactType here, in case it doesn't match what's actually sent
+			ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
+            BaseArtifactType persistedArtifact = artifactService.create(artifactType, artifact);
             return wrapArtifact(persistedArtifact, request);
         } catch (WrongModelException e) {
             // Simply re-throw.  Don't allow the following catch it -- WrongModelException is mapped to a unique

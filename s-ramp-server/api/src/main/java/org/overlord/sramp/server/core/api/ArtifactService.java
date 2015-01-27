@@ -30,6 +30,8 @@ public interface ArtifactService extends AbstractService {
 
     public BaseArtifactType create(BaseArtifactType artifact) throws Exception;
 
+    public BaseArtifactType create(ArtifactType artifactType, BaseArtifactType artifact) throws Exception;
+
     /**
      * Upload the given artifact.
      *
