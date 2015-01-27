@@ -66,6 +66,7 @@ public class ArtifactContent {
             }
             throw e;
         } finally {
+            IOUtils.closeQuietly(is);
             IOUtils.closeQuietly(os);
         }
     }

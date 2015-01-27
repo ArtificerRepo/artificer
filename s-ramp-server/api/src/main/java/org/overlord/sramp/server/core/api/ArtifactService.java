@@ -21,18 +21,86 @@ import org.overlord.sramp.common.ArtifactType;
 import java.io.InputStream;
 
 /**
+ * A service contract for interacting with artifacts.  Used as the logic/actions behind the Atom REST services, in
+ * addition to impls exposed as EJBs.
+ *
  * @author Brett Meyer.
  */
 public interface ArtifactService extends AbstractService {
 
     public BaseArtifactType create(BaseArtifactType artifact) throws Exception;
 
+    /**
+     * Upload the given artifact.
+     *
+     * @param model
+     * @param type
+     * @param fileName
+     * @param is
+     * @return BaseArtifactType
+     * @throws Exception
+     */
     public BaseArtifactType upload(String model, String type, String fileName, InputStream is)
             throws Exception;
 
+    /**
+     * Upload the given artifact.
+     *
+     * @param fileName
+     * @param is
+     * @return BaseArtifactType
+     * @throws Exception
+     */
     public BaseArtifactType upload(String fileName, InputStream is) throws Exception;
 
+    /**
+     * Upload the given artifact.
+     *
+     * @param artifactType
+     * @param fileName
+     * @param is
+     * @return BaseArtifactType
+     * @throws Exception
+     */
     public BaseArtifactType upload(ArtifactType artifactType, String fileName, InputStream is)
+            throws Exception;
+
+    /**
+     * Upload the given artifact.  This byte[] version exists primarily for EJB clients, where the non-Serializable
+     * InputStreams/Files cannot be sent.
+     *
+     * @param model
+     * @param type
+     * @param fileName
+     * @param contentBytes
+     * @return BaseArtifactType
+     * @throws Exception
+     */
+    public BaseArtifactType upload(String model, String type, String fileName, byte[] contentBytes)
+            throws Exception;
+
+    /**
+     * Upload the given artifact.  This byte[] version exists primarily for EJB clients, where the non-Serializable
+     * InputStreams/Files cannot be sent.
+     *
+     * @param fileName
+     * @param contentBytes
+     * @return BaseArtifactType
+     * @throws Exception
+     */
+    public BaseArtifactType upload(String fileName, byte[] contentBytes) throws Exception;
+
+    /**
+     * Upload the given artifact.  This byte[] version exists primarily for EJB clients, where the non-Serializable
+     * InputStreams/Files cannot be sent.
+     *
+     * @param artifactType
+     * @param fileName
+     * @param contentBytes
+     * @return BaseArtifactType
+     * @throws Exception
+     */
+    public BaseArtifactType upload(ArtifactType artifactType, String fileName, byte[] contentBytes)
             throws Exception;
 
     public void updateMetaData(String model, String type, String uuid, BaseArtifactType updatedArtifact)
@@ -46,6 +114,33 @@ public interface ArtifactService extends AbstractService {
 
     public void updateContent(ArtifactType artifactType, String uuid,
             String fileName, InputStream is) throws Exception;
+
+    /**
+     * Update the given artifact content.  This byte[] version exists primarily for EJB clients, where the non-Serializable
+     * InputStreams/Files cannot be sent.
+     *
+     * @param model
+     * @param type
+     * @param uuid
+     * @param fileName
+     * @param contentBytes
+     * @throws Exception
+     */
+    public void updateContent(String model, String type, String uuid, String fileName, byte[] contentBytes)
+            throws Exception;
+
+    /**
+     * Update the given artifact content.  This byte[] version exists primarily for EJB clients, where the non-Serializable
+     * InputStreams/Files cannot be sent.
+     *
+     * @param artifactType
+     * @param uuid
+     * @param fileName
+     * @param contentBytes
+     * @throws Exception
+     */
+    public void updateContent(ArtifactType artifactType, String uuid,
+            String fileName, byte[] contentBytes) throws Exception;
 
     public BaseArtifactType getMetaData(String model, String type, String uuid) throws Exception;
 

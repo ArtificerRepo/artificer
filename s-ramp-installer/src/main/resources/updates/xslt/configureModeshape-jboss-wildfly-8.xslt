@@ -43,6 +43,7 @@
           </xsl:element>
           <xsl:element name="transaction" namespace="{$currentNS}">
             <xsl:attribute name="mode">NON_XA</xsl:attribute>
+            <xsl:attribute name="locking">PESSIMISTIC</xsl:attribute>
           </xsl:element>
           <xsl:element name="eviction" namespace="{$currentNS}">
             <xsl:attribute name="strategy">LRU</xsl:attribute>

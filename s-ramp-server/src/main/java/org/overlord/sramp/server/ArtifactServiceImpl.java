@@ -45,6 +45,7 @@ import javax.ejb.Remote;
 import javax.ejb.Stateful;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -192,6 +193,23 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         }
     }
 
+    @Override
+    public BaseArtifactType upload(String model, String type, String fileName, byte[] contentBytes)
+            throws Exception {
+        return upload(model, type, fileName, new ByteArrayInputStream(contentBytes));
+    }
+
+    @Override
+    public BaseArtifactType upload(String fileName, byte[] contentBytes) throws Exception {
+        return upload(fileName, new ByteArrayInputStream(contentBytes));
+    }
+
+    @Override
+    public BaseArtifactType upload(ArtifactType artifactType, String fileName, byte[] contentBytes)
+            throws Exception {
+        return upload(artifactType, fileName, new ByteArrayInputStream(contentBytes));
+    }
+
     private BaseArtifactType doUpload(BaseArtifactType artifact, ArtifactContent content,
             ArtifactType artifactType) throws Exception {
         if (artifactType == null) {
@@ -277,6 +295,18 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         for (EventProducer eventProducer : eventProducers) {
             eventProducer.artifactUpdated(updatedArtifact, oldArtifact);
         }
+    }
+
+    @Override
+    public void updateContent(String model, String type, String uuid, String fileName, byte[] contentBytes)
+            throws Exception {
+        updateContent(model, type, uuid, fileName, new ByteArrayInputStream(contentBytes));
+    }
+
+    @Override
+    public void updateContent(ArtifactType artifactType, String uuid,
+            String fileName, byte[] contentBytes) throws Exception {
+        updateContent(artifactType, uuid, fileName, new ByteArrayInputStream(contentBytes));
     }
 
     @Override
