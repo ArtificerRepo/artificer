@@ -98,8 +98,8 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
             // First, persist each item, *without* relationships.
             for (BatchItem item : items) {
                 try {
-                    JCRArtifactPersister persister = new JCRArtifactPersister(item.baseArtifactType, item.content, this);
-                    persister.persistArtifact(session);
+                    JCRArtifactPersister persister = new JCRArtifactPersister(item.baseArtifactType, item.content, this, session);
+                    persister.persistArtifact();
                     item.attributes.put("persister", persister);
                 } catch (Exception e) {
                     item.attributes.put("result", e);
@@ -112,7 +112,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                 try {
                     if (item.attributes.containsKey("persister")) {
                         JCRArtifactPersister persister = (JCRArtifactPersister) item.attributes.get("persister");
-                        persister.persistArtifactRelationships(session);
+                        persister.persistArtifactRelationships();
                         BaseArtifactType artifact = JCRNodeToArtifactFactory.createArtifact(
                                 session, persister.getPrimaryArtifactNode(), ArtifactType.valueOf(item.baseArtifactType));
                         item.attributes.put("result", artifact);
@@ -141,9 +141,9 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
         try {
             session = JCRRepositoryFactory.getSession();
 
-            JCRArtifactPersister persister = new JCRArtifactPersister(primaryArtifact, content, this);
-            persister.persistArtifact(session);
-            persister.persistArtifactRelationships(session);
+            JCRArtifactPersister persister = new JCRArtifactPersister(primaryArtifact, content, this, session);
+            persister.persistArtifact();
+            persister.persistArtifactRelationships();
             
             ArtifactType artifactType = ArtifactType.valueOf(primaryArtifact);
 
@@ -289,9 +289,9 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
             // Re-persist (which re-generates the derived artifacts).
             BaseArtifactType primaryArtifact = JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
-            JCRArtifactPersister persister = new JCRArtifactPersister(primaryArtifact, content, this);
-            persister.updateArtifactContent(artifactNode, session);
-            persister.persistArtifactRelationships(session);
+            JCRArtifactPersister persister = new JCRArtifactPersister(primaryArtifact, content, this, session);
+            persister.updateArtifactContent(artifactNode);
+            persister.persistArtifactRelationships();
 
             // TODO: Audit?
 

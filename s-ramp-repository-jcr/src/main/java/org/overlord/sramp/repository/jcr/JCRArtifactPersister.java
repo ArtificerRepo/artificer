@@ -63,8 +63,9 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 /**
- * Helper class - breaks up the work of persisting an artifact into composable phases.  The phases are mainly necessary
- * to simultaneously support single and batch actions.
+ * Helper class - breaks up the work of persisting an artifact into composable phases.  The phases are necessary
+ * to simultaneously support single and batch actions.  They also separate saving the artifacts and their relationships,
+ * allowing relationship resolution to query for all available artifacts (including the new ones) in the repo.
  *
  * @author Brett Meyer
  * @author eric.wittmann@redhat.com
@@ -77,30 +78,38 @@ public final class JCRArtifactPersister {
     private final ArtifactContent artifactContent;
     private final List<ArtifactBuilder> artifactBuilders;
     private final ClassificationHelper classificationHelper;
+    private final Session session;
+    private final JCRReferenceFactoryImpl referenceFactory;
 
     private Node primaryArtifactNode;
     private List<BaseArtifactType> derivedArtifacts;
 
     public JCRArtifactPersister(BaseArtifactType primaryArtifact, ArtifactContent artifactContent,
-            ClassificationHelper classificationHelper) throws Exception {
+            ClassificationHelper classificationHelper, Session session) throws Exception {
         this.primaryArtifact = primaryArtifact;
         this.artifactContent = artifactContent;
         this.classificationHelper = classificationHelper;
+        this.session = session;
         artifactBuilders = ExtensionFactory.createArtifactBuilders(primaryArtifact, artifactContent);
+        referenceFactory = new JCRReferenceFactoryImpl(session);
     }
 
-    public void persistArtifact(Session session) throws Exception {
+    public void persistArtifact() throws Exception {
         if (StringUtils.isBlank(primaryArtifact.getUuid())) {
             primaryArtifact.setUuid(UUID.randomUUID().toString());
         }
 
         runArtifactBuilders();
 
-        primaryArtifactNode = persistPrimaryArtifact(session);
-        persistDerivedArtifacts(session);
+        primaryArtifactNode = persistPrimaryArtifact();
+        referenceFactory.trackNode(primaryArtifact.getUuid(), primaryArtifactNode);
+
+        persistDerivedArtifacts();
+
+        session.save();
     }
 
-    public void updateArtifactContent(Node primaryArtifactNode, Session session) throws Exception {
+    public void updateArtifactContent(Node primaryArtifactNode) throws Exception {
         this.primaryArtifactNode = primaryArtifactNode;
         ArtifactType artifactType = ArtifactType.valueOf(primaryArtifact);
 
@@ -112,27 +121,29 @@ public final class JCRArtifactPersister {
 
         // Update the JCR node with any properties included in the meta-data
         ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(artifactType, primaryArtifactNode,
-                new JCRReferenceFactoryImpl(session), classificationHelper);
+                referenceFactory, classificationHelper);
         visitor.setProcessRelationships(false);
         ArtifactVisitorHelper.visitArtifact(visitor, primaryArtifact);
         visitor.throwError();
 
-        session.save();
+        persistDerivedArtifacts();
 
-        persistDerivedArtifacts(session);
+        session.save();
     }
 
-    public void persistArtifactRelationships(Session session) throws Exception {
+    public void persistArtifactRelationships() throws Exception {
         if (SrampModelUtils.isDocumentArtifact(primaryArtifact)) {
             RelationshipContext relationshipContext = new JCRRelationshipContext(session);
             for (ArtifactBuilder artifactBuilder : artifactBuilders) {
                 artifactBuilder.buildRelationships(relationshipContext);
             }
 
-            persistDerivedArtifactsRelationships(session);
+            persistDerivedArtifactsRelationships();
         }
 
-        persistPrimaryArtifactRelationships(session);
+        persistPrimaryArtifactRelationships();
+
+        session.save();
     }
 
     private void runArtifactBuilders() throws Exception {
@@ -146,7 +157,7 @@ public final class JCRArtifactPersister {
         }
     }
 
-    private Node persistPrimaryArtifact(Session session) throws Exception {
+    private Node persistPrimaryArtifact() throws Exception {
         String uuid = primaryArtifact.getUuid();
         ArtifactType artifactType = ArtifactType.valueOf(primaryArtifact);
         String name = primaryArtifact.getName();
@@ -189,7 +200,7 @@ public final class JCRArtifactPersister {
 
         // Update the JCR node with any properties included in the meta-data
         ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(artifactType, artifactNode,
-                new JCRReferenceFactoryImpl(session), classificationHelper);
+                referenceFactory, classificationHelper);
         visitor.setProcessRelationships(false);
         ArtifactVisitorHelper.visitArtifact(visitor, primaryArtifact);
         visitor.throwError();
@@ -197,9 +208,7 @@ public final class JCRArtifactPersister {
         log.debug(Messages.i18n.format("SAVED_JCR_NODE", name, uuid));
         if (SrampConfig.isAuditingEnabled()) {
             auditCreateArtifact(artifactNode);
-            session.save();
         }
-        session.save();
 
         return artifactNode;
     }
@@ -222,15 +231,13 @@ public final class JCRArtifactPersister {
         }
     }
     
-    private void persistPrimaryArtifactRelationships(Session session) throws SrampException {
+    private void persistPrimaryArtifactRelationships() throws SrampException {
         try {
             // Update the JCR node again, this time with any relationships resolved by the linker
             ArtifactToJCRNodeVisitor visitor = new ArtifactToJCRNodeVisitor(ArtifactType.valueOf(primaryArtifact),
-                    primaryArtifactNode, new JCRReferenceFactoryImpl(session), classificationHelper);
+                    primaryArtifactNode, referenceFactory, classificationHelper);
             ArtifactVisitorHelper.visitArtifact(visitor, primaryArtifact);
             visitor.throwError();
-            
-            session.save();
         } catch (SrampException e) {
             throw e;
         } catch (Throwable t) {
@@ -238,7 +245,7 @@ public final class JCRArtifactPersister {
         }
     }
 
-    private void persistDerivedArtifacts(Session session) throws SrampException {
+    private void persistDerivedArtifacts() throws SrampException {
         try {
             // Persist each of the derived nodes
             for (BaseArtifactType derivedArtifact : derivedArtifacts) {
@@ -282,11 +289,9 @@ public final class JCRArtifactPersister {
                 }
 
                 log.debug(Messages.i18n.format("SAVED_DERIVED_ARTY_TO_JCR", derivedArtifact.getName(), derivedArtifact.getUuid()));
-            }
 
-            // Save current changes so that references to nodes can be found.  Note that if
-            // transactions are enabled, this will not actually persist to final storage.
-            session.save();
+                referenceFactory.trackNode(derivedArtifact.getUuid(), derivedArtifactNode);
+            }
         } catch (SrampException e) {
             throw e;
         } catch (Throwable t) {
@@ -294,10 +299,9 @@ public final class JCRArtifactPersister {
         }
     }
 
-    private void persistDerivedArtifactsRelationships(Session session) throws SrampException {
+    private void persistDerivedArtifactsRelationships() throws SrampException {
         try {
             // Persist each of the derived nodes
-            JCRReferenceFactoryImpl referenceFactory = new JCRReferenceFactoryImpl(session);
             for (BaseArtifactType derivedArtifact : derivedArtifacts) {
                 ArtifactType derivedArtifactType = ArtifactType.valueOf(derivedArtifact);
                 if (derivedArtifactType.isExtendedType()) {

@@ -25,14 +25,23 @@ import org.overlord.sramp.common.error.SrampServerException;
 import org.overlord.sramp.repository.jcr.mapper.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
 import org.overlord.sramp.repository.jcr.util.JCRUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An impl of a JCR reference factory.
  *
  * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
 public class JCRReferenceFactoryImpl implements JCRReferenceFactory {
 
-    private Session session;
+    private final Session session;
+
+    // Optimization.  When a new artifact is (derived and) stored, JCRArtifactPersiter tracks the S-RAMP UUIDs
+    // and JCR nodes here.  When creating the actual relationships in ArtifactToJCRNodeVisitor, this saves
+    // *many* needless queries.
+    private final Map<String, Node> nodes = new HashMap<String, Node>();
 
     /**
      * Constructor.
@@ -45,16 +54,27 @@ public class JCRReferenceFactoryImpl implements JCRReferenceFactory {
     @Override
     public Value createReference(String uuid) throws SrampException {
         try {
-            Node node = JCRUtils.findArtifactNodeByUuid(session, uuid);
+            Node node;
+            if (nodes.containsKey(uuid)) {
+                node = nodes.get(uuid);
+            } else {
+                node  = JCRUtils.findArtifactNodeByUuid(session, uuid);
+            }
+
             if (node == null) {
                 throw new ArtifactNotFoundException(uuid);
             }
+
             return session.getValueFactory().createValue(node, true);
         } catch (SrampException se) {
             throw se;
         } catch (Throwable t) {
             throw new SrampServerException(t);
         }
+    }
+
+    public void trackNode(String uuid, Node node) {
+        nodes.put(uuid, node);
     }
 
 }
