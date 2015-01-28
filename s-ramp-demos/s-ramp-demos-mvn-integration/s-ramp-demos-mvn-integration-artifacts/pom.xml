@@ -19,12 +19,6 @@
   </dependencies>
 
   <build>
-    <extensions>
-      <extension>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-wagon</artifactId>
-      </extension>
-    </extensions>
     <plugins>
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -87,12 +81,12 @@
         <repository>
           <id>local-sramp-repo</id>
           <name>S-RAMP Releases Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server</url>
+          <url>http://localhost:8080/s-ramp-server/maven/repository</url>
         </repository>
         <snapshotRepository>
           <id>local-sramp-repo-snapshots</id>
           <name>S-RAMP Snapshots Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server</url>
+          <url>http://localhost:8080/s-ramp-server/maven/repository</url>
         </snapshotRepository>
       </distributionManagement>
     </profile>

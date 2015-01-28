@@ -27,6 +27,8 @@ public interface QueryService extends AbstractService {
 
     public List<BaseArtifactType> query(String query) throws Exception;
 
+    public List<BaseArtifactType> query(String query, String orderBy, Boolean ascending) throws Exception;
+
     public PagedResult<BaseArtifactType> query(String query, Integer startPage, Integer startIndex, Integer count,
             String orderBy, Boolean ascending) throws Exception;
 

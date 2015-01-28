@@ -43,13 +43,10 @@ import org.overlord.sramp.server.mime.MimeTypes;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.StreamingOutput;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Set;
 
@@ -134,6 +131,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
                 }
             }
 
+            // Important to do this *after* creating ArtifactContent.  Tika does not clone the InputStream!
             String mimeType = MimeTypes.determineMimeType(fileName, content.getInputStream(), artifactType);
             artifactType.setMimeType(mimeType);
 
@@ -249,6 +247,12 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
     }
 
     @Override
+    public void updateMetaData(BaseArtifactType updatedArtifact) throws Exception {
+        ArtifactType artifactType = ArtifactType.valueOf(updatedArtifact);
+        updateMetaData(artifactType, updatedArtifact.getUuid(), updatedArtifact);
+    }
+
+    @Override
     public void updateMetaData(ArtifactType artifactType, String uuid,
             BaseArtifactType updatedArtifact) throws Exception {
         PersistenceManager persistenceManager = persistenceManager();
@@ -282,6 +286,10 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         if (artifactType.isDerived()) {
             throw new DerivedArtifactCreateException(artifactType.getArtifactType());
         }
+
+        ArtifactContent content = new ArtifactContent(fileName, is);
+
+        // Important to do this *after* creating ArtifactContent.  Tika does not clone the InputStream!
         String mimeType = MimeTypes.determineMimeType(fileName, is, artifactType);
         artifactType.setMimeType(mimeType);
 
@@ -292,7 +300,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         if (oldArtifact == null) {
             throw new ArtifactNotFoundException(uuid);
         }
-        ArtifactContent content = new ArtifactContent(fileName, is);
+
         BaseArtifactType updatedArtifact = persistenceManager.updateArtifactContent(uuid, artifactType, content);
 
         Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
@@ -338,20 +346,20 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
     }
 
     @Override
-    public Object getContent(String model, String type, String uuid) throws Exception {
+    public InputStream getContent(String model, String type, String uuid) throws Exception {
         ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
         BaseArtifactType artifact = getMetaData(artifactType, uuid);
         return getContent(artifactType, artifact);
     }
 
     @Override
-    public Object getContent(ArtifactType artifactType, String uuid) throws Exception {
+    public InputStream getContent(ArtifactType artifactType, String uuid) throws Exception {
         BaseArtifactType artifact = getMetaData(artifactType, uuid);
         return getContent(artifactType, artifact);
     }
 
     @Override
-    public Object getContent(ArtifactType artifactType, BaseArtifactType artifact) throws Exception {
+    public InputStream getContent(ArtifactType artifactType, BaseArtifactType artifact) throws Exception {
         if (!(artifact instanceof DocumentArtifactType)) {
             throw new ContentNotFoundException(artifact.getUuid());
         }
@@ -366,18 +374,22 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         ArtifactVisitorHelper.visitArtifact(ctVizzy, artifact);
         javax.ws.rs.core.MediaType mediaType = ctVizzy.getContentType();
         artifactType.setMimeType(mediaType.toString());
-        final InputStream artifactContent = persistenceManager.getArtifactContent(artifact.getUuid(), artifactType);
-        Object output = new StreamingOutput() {
-            @Override
-            public void write(OutputStream output) throws IOException, WebApplicationException {
-                try {
-                    IOUtils.copy(artifactContent, output);
-                } finally {
-                    IOUtils.closeQuietly(artifactContent);
-                }
-            }
-        };
-        return output;
+        return persistenceManager.getArtifactContent(artifact.getUuid(), artifactType);
+    }
+
+    @Override
+    public byte[] getContentBytes(String model, String type, String uuid) throws Exception {
+        return IOUtils.toByteArray(getContent(model, type, uuid));
+    }
+
+    @Override
+    public byte[] getContentBytes(ArtifactType artifactType, String uuid) throws Exception {
+        return IOUtils.toByteArray(getContent(artifactType, uuid));
+    }
+
+    @Override
+    public byte[] getContentBytes(ArtifactType artifactType, BaseArtifactType artifact) throws Exception {
+        return IOUtils.toByteArray(getContent(artifactType, artifact));
     }
 
     @Override

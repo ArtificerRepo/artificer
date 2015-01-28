@@ -36,23 +36,39 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
 
     @Override
     public List<BaseArtifactType> query(String query) throws Exception {
-        // Add on the "/s-ramp/" if it's missing
-        String xpath = query;
-        if (!xpath.startsWith("/s-ramp")) { //$NON-NLS-1$
-            if (query.startsWith("/")) //$NON-NLS-1$
-                xpath = "/s-ramp" + query; //$NON-NLS-1$
-            else
-                xpath = "/s-ramp/" + query; //$NON-NLS-1$
-        }
+        return query(query, "name", true);
+    }
 
-        QueryManager queryManager = queryManager();
-        SrampQuery srampQuery = queryManager.createQuery(xpath, "name", true);
-        return srampQuery.executeQuery().list();
+    @Override
+    public List<BaseArtifactType> query(String query, String orderBy, Boolean ascending) throws Exception {
+        ArtifactSet artifactSet = executeQuery(query, orderBy, ascending);
+        try {
+            return artifactSet.list();
+        } finally {
+            artifactSet.close();
+        }
     }
 
     @Override
     public PagedResult<BaseArtifactType> query(String query, Integer startPage, Integer startIndex, Integer count,
             String orderBy, Boolean ascending) throws Exception {
+        ArtifactSet artifactSet = executeQuery(query, orderBy, ascending);
+
+        startIndex = startIndex(startPage, startIndex, count);
+        if (count == null)
+            count = 100;
+
+        int startIdx = startIndex;
+        int endIdx = startIdx + count - 1;
+        try {
+            List<BaseArtifactType> results = artifactSet.pagedList(startIdx, endIdx);
+            return new PagedResult<BaseArtifactType>(results, query, artifactSet.size(), startIndex, orderBy, ascending);
+        } finally {
+            artifactSet.close();
+        }
+    }
+
+    private ArtifactSet executeQuery(String query, String orderBy, Boolean ascending) throws Exception {
         // Add on the "/s-ramp/" if it's missing
         String xpath = query;
         if (!xpath.startsWith("/s-ramp")) { //$NON-NLS-1$
@@ -69,20 +85,7 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
 
         QueryManager queryManager = queryManager();
         SrampQuery srampQuery = queryManager.createQuery(xpath, orderBy, ascending);
-        ArtifactSet artifactSet = srampQuery.executeQuery();
-
-        startIndex = startIndex(startPage, startIndex, count);
-        if (count == null)
-            count = 100;
-
-        int startIdx = startIndex;
-        int endIdx = startIdx + count - 1;
-        try {
-            List<BaseArtifactType> results = artifactSet.pagedList(startIdx, endIdx);
-            return new PagedResult<BaseArtifactType>(results, xpath, artifactSet.size(), startIndex, orderBy, ascending);
-        } finally {
-            artifactSet.close();
-        }
+        return srampQuery.executeQuery();
     }
 
     @Override

@@ -63,7 +63,7 @@ public class ModeshapeJCRExtensions extends JCRExtensions {
         } catch (Throwable t) {
             throw new RuntimeException(t);
         } finally {
-            JCRRepositoryFactory.setLoginCredentials(null);
+            JCRRepositoryFactory.clearLoginCredentials();
         }
     }
 }
