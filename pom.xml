@@ -104,7 +104,7 @@
     <version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>2.1.19.Final</version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>
     <version.org.overlord.overlord-commons>3.0.0-SNAPSHOT</version.org.overlord.overlord-commons>
     <version.org.switchyard>2.0.0.Alpha1</version.org.switchyard>
-    <version.org.keycloak>1.1.0.Final-SNAPSHOT</version.org.keycloak>
+    <version.org.keycloak>1.1.0.Final</version.org.keycloak>
 
     <!-- BOM Overrides -->
     <version.org.jboss.as>7.4.0.Final-redhat-19</version.org.jboss.as>
