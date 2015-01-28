@@ -93,6 +93,15 @@ public class SrampConfig {
     }
 
     /**
+     * Gets a property from the s-ramp configuration.
+     * @param propertyName
+     * @param propertyDefault
+     */
+    public static boolean getConfigProperty(String propertyName, boolean propertyDefault) {
+        return configuration.getBoolean(propertyName, propertyDefault);
+    }
+
+    /**
      * @return the name of the JCR repository being used
      */
     public static String getJCRRepositoryName() {
@@ -115,15 +124,11 @@ public class SrampConfig {
     }
 
     public static boolean isSnapshotAllowed() {
-        // Need to support both system properties (wagon, cli) and sramp.properties (maven facade)
-        if ("true".equalsIgnoreCase(System.getProperty(SrampConstants.SRAMP_SNAPSHOT_ALLOWED))) { //$NON-NLS-1$
+        if (isSnapshot()) {
+            // Mainly for development purposes, always allow snapshot deployments if Artificer is itself a snapshot.
             return true;
-        }
-        if (containsKey(SrampConstants.SRAMP_SNAPSHOT_ALLOWED)) {
-            String value = getConfigProperty(SrampConstants.SRAMP_SNAPSHOT_ALLOWED, "false"); //$NON-NLS-1$
-            return StringUtils.isNotBlank(value) && value.equals("true"); //$NON-NLS-1$
         } else {
-            return isSnapshot();
+            return getConfigProperty(SrampConstants.SRAMP_SNAPSHOT_ALLOWED, false);
         }
     }
 

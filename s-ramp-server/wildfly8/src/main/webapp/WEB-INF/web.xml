@@ -17,11 +17,10 @@
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/s-ramp/*</url-pattern>
   </servlet-mapping>
-  
+
   <servlet>
     <servlet-name>MavenRepository</servlet-name>
-    <servlet-class>org.overlord.sramp.server.mvn.services.MavenRepositoryService</servlet-class>
-    <jsp-file>/list_items.jsp</jsp-file>
+    <servlet-class>org.overlord.sramp.server.mvn.services.MavenFacadeServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>MavenRepository</servlet-name>
@@ -36,7 +35,6 @@
   <filter>
     <filter-name>LocaleFilter</filter-name>
     <filter-class>org.overlord.sramp.server.filters.LocaleFilter</filter-class>
-    <description>Used to configure the current locale in the i18n layer.</description>
   </filter>
   <filter-mapping>
     <filter-name>LocaleFilter</filter-name>
@@ -67,7 +65,7 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>s-ramp-server</web-resource-name>
-      <url-pattern>/*</url-pattern>
+      <url-pattern>/s-ramp/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>user</role-name>

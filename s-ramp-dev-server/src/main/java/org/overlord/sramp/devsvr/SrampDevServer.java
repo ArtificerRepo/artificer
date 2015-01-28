@@ -33,8 +33,6 @@ import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
 import org.overlord.commons.dev.server.discovery.ErraiWebAppModuleFromMavenDiscoveryStrategy;
-import org.overlord.commons.dev.server.discovery.JarModuleFromIDEDiscoveryStrategy;
-import org.overlord.commons.dev.server.discovery.JarModuleFromMavenDiscoveryStrategy;
 import org.overlord.commons.dev.server.discovery.WebAppModuleFromIDEDiscoveryStrategy;
 import org.overlord.commons.gwt.server.filters.GWTCacheControlFilter;
 import org.overlord.commons.gwt.server.filters.ResourceCacheControlFilter;
@@ -49,7 +47,7 @@ import org.overlord.sramp.server.SrampLifeCycle;
 import org.overlord.sramp.server.atom.services.SRAMPApplication;
 import org.overlord.sramp.server.filters.LocaleFilter;
 import org.overlord.sramp.server.filters.MavenRepositoryAuthFilter;
-import org.overlord.sramp.server.mvn.services.MavenRepositoryService;
+import org.overlord.sramp.server.mvn.services.MavenFacadeServlet;
 import org.overlord.sramp.ui.client.shared.beans.ArtifactSummaryBean;
 import org.overlord.sramp.ui.server.api.KeycloakBearerTokenAuthenticationProvider;
 import org.overlord.sramp.ui.server.servlets.*;
@@ -185,7 +183,7 @@ public class SrampDevServer extends ErraiDevServer {
         resteasyServerServlet.setInitParameter("javax.ws.rs.Application", SRAMPApplication.class.getName());
         srampServer.addServlet(resteasyServerServlet, "/s-ramp/*");
         //maven repository servlet:
-        ServletHolder mvnServlet = new ServletHolder(new MavenRepositoryService());
+        ServletHolder mvnServlet = new ServletHolder(new MavenFacadeServlet());
         srampServer.addServlet(mvnServlet, "/maven/repository/*");
         srampServer.addServlet(mvnServlet, "/maven/repository");
         // TODO enable JSP support to test the repository listing

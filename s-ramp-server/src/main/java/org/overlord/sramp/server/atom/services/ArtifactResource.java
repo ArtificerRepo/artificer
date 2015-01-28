@@ -59,9 +59,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Set;
@@ -377,7 +381,17 @@ public class ArtifactResource extends AbstractResource {
 		try {
             ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
             BaseArtifactType artifact = artifactService.getMetaData(artifactType, uuid);
-            Object output = artifactService.getContent(artifactType, artifact);
+            final InputStream inputStream = artifactService.getContent(artifactType, artifact);
+            Object output = new StreamingOutput() {
+                @Override
+                public void write(OutputStream output) throws IOException, WebApplicationException {
+                    try {
+                        IOUtils.copy(inputStream, output);
+                    } finally {
+                        IOUtils.closeQuietly(inputStream);
+                    }
+                }
+            };
 
 			String lastModifiedDate = dateFormat.get().format(
                     artifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());

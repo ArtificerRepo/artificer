@@ -111,6 +111,8 @@ public interface ArtifactService extends AbstractService {
     public void updateMetaData(ArtifactType artifactType, String uuid,
             BaseArtifactType updatedArtifact) throws Exception;
 
+    public void updateMetaData(BaseArtifactType updatedArtifact) throws Exception;
+
     public void updateContent(String model, String type, String uuid, String fileName, InputStream is)
             throws Exception;
 
@@ -148,11 +150,17 @@ public interface ArtifactService extends AbstractService {
 
     public BaseArtifactType getMetaData(ArtifactType artifactType, String uuid) throws Exception;
 
-    public Object getContent(String model, String type, String uuid) throws Exception;
+    public InputStream getContent(String model, String type, String uuid) throws Exception;
 
-    public Object getContent(ArtifactType artifactType, String uuid) throws Exception;
+    public InputStream getContent(ArtifactType artifactType, String uuid) throws Exception;
 
-    public Object getContent(ArtifactType artifactType, BaseArtifactType artifact) throws Exception;
+    public InputStream getContent(ArtifactType artifactType, BaseArtifactType artifact) throws Exception;
+
+    public byte[] getContentBytes(String model, String type, String uuid) throws Exception;
+
+    public byte[] getContentBytes(ArtifactType artifactType, String uuid) throws Exception;
+
+    public byte[] getContentBytes(ArtifactType artifactType, BaseArtifactType artifact) throws Exception;
 
     public void delete(String model, String type, String uuid) throws Exception;
 
