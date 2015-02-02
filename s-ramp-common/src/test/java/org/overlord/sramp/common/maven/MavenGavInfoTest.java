@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.server.mvn.services;
+package org.overlord.sramp.common.maven;
 
 import org.junit.Assert;
 import org.junit.Test;
