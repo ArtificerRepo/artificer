@@ -16,11 +16,12 @@
 package org.overlord.sramp.server.mvn.services;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampConfig;
 import org.overlord.sramp.common.SrampModelUtils;
+import org.overlord.sramp.common.maven.MavenGavInfo;
+import org.overlord.sramp.common.maven.MavenUtil;
 import org.overlord.sramp.server.ArtifactServiceImpl;
 import org.overlord.sramp.server.QueryServiceImpl;
 import org.overlord.sramp.server.i18n.Messages;
@@ -35,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -307,31 +307,9 @@ public class MavenFacadeServlet extends HttpServlet {
      * @throws Exception
      */
     private BaseArtifactType findExistingArtifactByGAV(MavenGavInfo gavInfo) throws Exception {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("/s-ramp");
-        List<String> criteria = new ArrayList<String>();
+        String query = MavenUtil.gavQuery(gavInfo);
 
-        criteria.add("@maven.groupId = '" + gavInfo.getGroupId() + "'");
-        criteria.add("@maven.artifactId = '" + gavInfo.getArtifactId() + "'");
-        criteria.add("@maven.version = '" + gavInfo.getVersion() + "'");
-        if (StringUtils.isNotBlank(gavInfo.getType())) {
-            criteria.add("@maven.type = '" + gavInfo.getType() + "'");
-        }
-        if (StringUtils.isNotBlank(gavInfo.getClassifier())) {
-            criteria.add("@maven.classifier = '" + gavInfo.getClassifier() + "'");
-        }
-        if (StringUtils.isNotBlank(gavInfo.getSnapshotId())) {
-            criteria.add("@maven.snapshot.id = '" + gavInfo.getSnapshotId() + "'");
-        }
-
-        if (criteria.size() > 0) {
-            queryBuilder.append("[");
-            queryBuilder.append(StringUtils.join(criteria, " and "));
-            queryBuilder.append("]");
-        }
-
-        List<BaseArtifactType> artifacts = queryService.query(queryBuilder.toString(),
-                "createdTimestamp", false);
+        List<BaseArtifactType> artifacts = queryService.query(query, "createdTimestamp", false);
         if (artifacts.size() > 0) {
             for (BaseArtifactType artifact : artifacts) {
                 // If no classifier in the GAV info, only return the artifact that also has no classifier

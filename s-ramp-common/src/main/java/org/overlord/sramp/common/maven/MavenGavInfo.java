@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.overlord.sramp.server.mvn.services;
+package org.overlord.sramp.common.maven;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,8 +64,7 @@ public class MavenGavInfo {
 			type = type.substring(type.lastIndexOf('.') + 1) + ".sha1";
 			hash = true;
 			hashAlgorithm = "SHA1";
-		}
-		if (filename.endsWith(".md5")) {
+		} else if (filename.endsWith(".md5")) {
 			type = filename.substring(0, filename.length() - 4);
 			type = type.substring(type.lastIndexOf('.') + 1) + ".md5";
 			hash = true;
@@ -86,7 +89,6 @@ public class MavenGavInfo {
 		}
 
 		MavenGavInfo gav = new MavenGavInfo();
-		gav.setFullName(url);
 		gav.setName(filename);
 		gav.setGroupId(groupId);
 		gav.setArtifactId(artifactId);
@@ -100,6 +102,55 @@ public class MavenGavInfo {
 		gav.setMavenMetaData(metaData);
 		return gav;
 	}
+
+    public static MavenGavInfo fromCommandLine(String gavArg, File file) throws Exception {
+        String [] split = gavArg.split(":"); //$NON-NLS-1$
+        String groupId = split[0];
+        String artifactId = split[1];
+        String version = split[2];
+        String filename = file.getName();
+        if (file.getName().endsWith(".tmp")) { //$NON-NLS-1$
+            filename = filename.substring(0, filename.indexOf(".jar") + 4); //$NON-NLS-1$
+        }
+        String type = filename.substring(filename.lastIndexOf('.') + 1);
+        if (filename.endsWith(".sha1")) {
+            type = filename.substring(0, filename.length() - 5);
+            type = type.substring(type.lastIndexOf('.') + 1) + ".sha1";
+        } else if (filename.endsWith(".md5")) {
+            type = filename.substring(0, filename.length() - 4);
+            type = type.substring(type.lastIndexOf('.') + 1) + ".md5";
+        }
+        String classifier = null;
+        if (split.length >= 5) {
+            classifier = split[5];
+        }
+        boolean snapshot = version != null && version.endsWith("-SNAPSHOT");
+        String snapshotId = null;
+        if (snapshot && !filename.contains(version)) {
+            snapshotId = extractSnapshotId(filename, version, type, classifier);
+        }
+        // MD5 hash
+        InputStream is = new FileInputStream(file);
+        String md5 = DigestUtils.md5Hex(is);
+        IOUtils.closeQuietly(is);
+        // SHA-1 hash
+        is = new FileInputStream(file);
+        String sha1 = DigestUtils.shaHex(is);
+        IOUtils.closeQuietly(is);
+
+        MavenGavInfo gav = new MavenGavInfo();
+        gav.setName(filename);
+        gav.setGroupId(groupId);
+        gav.setArtifactId(artifactId);
+        gav.setVersion(version);
+        gav.setClassifier(classifier);
+        gav.setType(type);
+        gav.setSnapshot(snapshot);
+        gav.setSnapshotId(snapshotId);
+        gav.setMd5(md5);
+        gav.setSha1(sha1);
+        return gav;
+    }
 
 	/**
 	 * Extract the classifier information (if any) from the file name.  Examples include:
@@ -182,7 +233,6 @@ public class MavenGavInfo {
 		}
 	}
 
-	private String fullName;
 	private String name;
 	private String groupId;
 	private String artifactId;
@@ -194,6 +244,8 @@ public class MavenGavInfo {
 	private boolean snapshot;
 	private String snapshotId;
 	private boolean mavenMetaData;
+    private String md5;
+    private String sha1;
 
 	/**
 	 * Default constructor.
@@ -257,6 +309,120 @@ public class MavenGavInfo {
 		this.type = type;
 	}
 
+    /**
+     * @return the classifier
+     */
+    public String getClassifier() {
+        return classifier;
+    }
+
+    /**
+     * @param classifier the classifier to set
+     */
+    public void setClassifier(String classifier) {
+        this.classifier = classifier;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the hash
+     */
+    public boolean isHash() {
+        return hash;
+    }
+
+    /**
+     * @param hash the hash to set
+     */
+    public void setHash(boolean hash) {
+        this.hash = hash;
+    }
+
+    /**
+     * @return the snapshot
+     */
+    public boolean isSnapshot() {
+        return snapshot;
+    }
+
+    /**
+     * @param snapshot the snapshot to set
+     */
+    public void setSnapshot(boolean snapshot) {
+        this.snapshot = snapshot;
+    }
+
+    /**
+     * @return the snapshotId
+     */
+    public String getSnapshotId() {
+        return snapshotId;
+    }
+
+    /**
+     * @param snapshotId the snapshotId to set
+     */
+    public void setSnapshotId(String snapshotId) {
+        this.snapshotId = snapshotId;
+    }
+
+    /**
+     * @return the mavenMetaData
+     */
+    public boolean isMavenMetaData() {
+        return mavenMetaData;
+    }
+
+    /**
+     * @param mavenMetaData the mavenMetaData to set
+     */
+    public void setMavenMetaData(boolean mavenMetaData) {
+        this.mavenMetaData = mavenMetaData;
+    }
+
+    /**
+     * @return the hashAlgorithm
+     */
+    public String getHashAlgorithm() {
+        return hashAlgorithm;
+    }
+
+    /**
+     * @param hashAlgorithm the hashAlgorithm to set
+     */
+    public void setHashAlgorithm(String hashAlgorithm) {
+        this.hashAlgorithm = hashAlgorithm;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
+    }
+
+    public String getSha1() {
+        return sha1;
+    }
+
+    public void setSha1(String sha1) {
+        this.sha1 = sha1;
+    }
+
 	/**
 	 * @see Object#toString()
 	 */
@@ -291,118 +457,6 @@ public class MavenGavInfo {
         builder.append(getClassifier()).append(":");
         builder.append(getType()).append(":");
         return builder.toString();
-    }
-
-	/**
-	 * @return the classifier
-	 */
-	public String getClassifier() {
-		return classifier;
-	}
-
-	/**
-	 * @param classifier the classifier to set
-	 */
-	public void setClassifier(String classifier) {
-		this.classifier = classifier;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the hash
-	 */
-	public boolean isHash() {
-		return hash;
-	}
-
-	/**
-	 * @param hash the hash to set
-	 */
-	public void setHash(boolean hash) {
-		this.hash = hash;
-	}
-
-	/**
-	 * @return the snapshot
-	 */
-	public boolean isSnapshot() {
-		return snapshot;
-	}
-
-	/**
-	 * @param snapshot the snapshot to set
-	 */
-	public void setSnapshot(boolean snapshot) {
-		this.snapshot = snapshot;
-	}
-
-	/**
-	 * @return the snapshotId
-	 */
-	public String getSnapshotId() {
-		return snapshotId;
-	}
-
-	/**
-	 * @param snapshotId the snapshotId to set
-	 */
-	public void setSnapshotId(String snapshotId) {
-		this.snapshotId = snapshotId;
-	}
-
-	/**
-	 * @return the fullName
-	 */
-	public String getFullName() {
-		return fullName;
-	}
-
-	/**
-	 * @param fullName the fullName to set
-	 */
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-
-    /**
-     * @return the mavenMetaData
-     */
-    public boolean isMavenMetaData() {
-        return mavenMetaData;
-    }
-
-    /**
-     * @param mavenMetaData the mavenMetaData to set
-     */
-    public void setMavenMetaData(boolean mavenMetaData) {
-        this.mavenMetaData = mavenMetaData;
-    }
-
-    /**
-     * @return the hashAlgorithm
-     */
-    public String getHashAlgorithm() {
-        return hashAlgorithm;
-    }
-
-    /**
-     * @param hashAlgorithm the hashAlgorithm to set
-     */
-    public void setHashAlgorithm(String hashAlgorithm) {
-        this.hashAlgorithm = hashAlgorithm;
     }
 
 }
