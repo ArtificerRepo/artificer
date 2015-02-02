@@ -489,17 +489,6 @@
       </dependency>
       <dependency>
         <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-wagon</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-wagon</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-ui-war</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
@@ -756,11 +745,6 @@
         <groupId>com.datastax.cassandra</groupId>
         <artifactId>cassandra-driver-core</artifactId>
         <version>1.0.4</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-provider-test</artifactId>
-        <version>${version.org.apache.maven.wagon}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -1067,7 +1051,6 @@
     <!--<module>s-ramp-ui-war/tomcat7</module>-->
     <module>s-ramp-ui-war/wildfly8</module>
     <module>s-ramp-ui-widgets</module>
-    <module>s-ramp-wagon</module>
   </modules>
   
   <profiles>

@@ -22,15 +22,6 @@
   <packaging>jar</packaging>
   <name>S-RAMP Demos: Multi-Module WebApp Deployment - Service Artifacts</name>
 
-  <build>
-    <extensions>
-      <extension>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-wagon</artifactId>
-      </extension>
-    </extensions>
-  </build>
-
   <profiles>
     <profile>
       <id>default</id>
@@ -61,7 +52,7 @@
             </configuration>
           </plugin>
           <!-- Prevent this from being installed locally, in order to show the web project downloading it from
-          the S-RAMP wagon. -->
+          the S-RAMP Maven integration. -->
           <plugin>
             <artifactId>maven-install-plugin</artifactId>
             <configuration>
@@ -74,12 +65,12 @@
         <repository>
           <id>local-sramp-repo</id>
           <name>S-RAMP Releases Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server?artifactGrouping=${project.groupId}</url>
+          <url>http://localhost:8080/s-ramp-server/maven/repository</url>
         </repository>
         <snapshotRepository>
           <id>local-sramp-repo-snapshots</id>
           <name>S-RAMP Snapshots Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server?artifactGrouping=${project.groupId}</url>
+          <url>http://localhost:8080/s-ramp-server/maven/repository</url>
         </snapshotRepository>
       </distributionManagement>
     </profile>
