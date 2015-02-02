@@ -157,11 +157,6 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-wagon</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-ui-war</artifactId>
       <classifier>sources</classifier>
     </dependency>

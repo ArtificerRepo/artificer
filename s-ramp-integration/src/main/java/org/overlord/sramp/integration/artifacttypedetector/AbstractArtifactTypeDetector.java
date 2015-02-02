@@ -35,7 +35,7 @@ public abstract class AbstractArtifactTypeDetector implements ArtifactTypeDetect
         if (
                 // core
                 content.getFilename().endsWith(".xsd") || content.getFilename().endsWith(".wsdl") || content.getFilename().endsWith(".wspolicy")
-                // Maven Facade/Wagon support
+                // Maven Facade support
                 || content.getFilename().endsWith(".sha1") || content.getFilename().endsWith(".pom")) {
             return true;
         }

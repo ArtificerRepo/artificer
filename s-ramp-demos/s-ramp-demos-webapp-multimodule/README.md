@@ -2,7 +2,7 @@
 
 ## Summary
 
-This demo shows a multi-project application, its use of the S-RAMP Maven Wagon, and S-RAMP's ability to act as a full-featured artifact repository.  The Wagon is used for 2 purposes:
+This demo shows a multi-project application, its use of the S-RAMP Maven integration, and S-RAMP's ability to act as a full-featured artifact repository.  The Wagon is used for 2 purposes:
 
 1.) Deploying the artifacts
 2.) Downloading dependencies
@@ -22,7 +22,7 @@ To run the demo, simply do the following:
   $ cd artifacts
   $ mvn -Pdemo clean deploy
 
-Note that the artifacts jar is uploaded to S-RAMP via the Maven Wagon.  Then:
+Note that the artifacts jar is uploaded to S-RAMP via Maven.  Then:
 
   $ cd ../web
   $ mvn -Pdemo clean deploy

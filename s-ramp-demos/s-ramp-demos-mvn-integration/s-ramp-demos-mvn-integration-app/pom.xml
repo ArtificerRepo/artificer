@@ -40,7 +40,7 @@
     </profile>
     <profile>
       <id>demo</id>
-      <!-- Download the artifacts jar from the wagon. -->
+      <!-- Download the artifacts jar from the Maven integration. -->
       <repositories>
         <repository>
           <id>local-sramp-repo</id>

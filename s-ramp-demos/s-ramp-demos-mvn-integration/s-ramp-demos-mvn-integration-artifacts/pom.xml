@@ -68,7 +68,7 @@
             </configuration>
           </plugin>
           <!-- Prevent this from being installed locally, in order to show the web project downloading it from
-          the S-RAMP wagon. -->
+          the S-RAMP Maven integration. -->
           <plugin>
             <artifactId>maven-install-plugin</artifactId>
             <configuration>

@@ -48,13 +48,6 @@
         </configuration>
       </plugin>
     </plugins>
-
-    <extensions>
-      <extension>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-wagon</artifactId>
-      </extension>
-    </extensions>
   </build>
 
   <profiles>
@@ -92,20 +85,20 @@
         <repository>
           <id>local-sramp-repo</id>
           <name>S-RAMP Releases Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server?artifactGrouping=${project.groupId}</url>
+          <url>http://localhost:8080/s-ramp-server/maven/repository</url>
         </repository>
         <snapshotRepository>
           <id>local-sramp-repo-snapshots</id>
           <name>S-RAMP Snapshots Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server?artifactGrouping=${project.groupId}</url>
+          <url>http://localhost:8080/s-ramp-server/maven/repository</url>
         </snapshotRepository>
       </distributionManagement>
-      <!-- Download the artifacts jar from the wagon. -->
+      <!-- Download the artifacts jar from the Maven integration. -->
       <repositories>
         <repository>
           <id>local-sramp-repo</id>
           <name>S-RAMP Releases Repository</name>
-          <url>sramp://localhost:8080/s-ramp-server</url>
+          <url>http://localhost:8080/s-ramp-server/maven/repository</url>
         </repository>
       </repositories>
     </profile>

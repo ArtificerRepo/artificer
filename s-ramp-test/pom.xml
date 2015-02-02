@@ -55,16 +55,6 @@
       <artifactId>s-ramp-integration-switchyard</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-wagon</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.wagon</groupId>
-      <artifactId>wagon-provider-api</artifactId>
-      <scope>test</scope>
-    </dependency>
     
     <dependency>
       <groupId>javax.jms</groupId>
