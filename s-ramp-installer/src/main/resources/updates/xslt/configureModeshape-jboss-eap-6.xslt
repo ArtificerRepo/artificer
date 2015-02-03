@@ -24,6 +24,9 @@
           <xsl:attribute name="cache-container">modeshape</xsl:attribute>
           <xsl:attribute name="use-anonymous-upon-failed-authentication">false</xsl:attribute>
           <xsl:attribute name="anonymous-roles">readonly</xsl:attribute>
+          <xsl:element name="file-binary-storage" namespace="urn:jboss:domain:modeshape:1.0">
+            <xsl:attribute name="path">artificer-data/binary</xsl:attribute>
+          </xsl:element>
         </xsl:element>
       </xsl:element>
     </xsl:element>
