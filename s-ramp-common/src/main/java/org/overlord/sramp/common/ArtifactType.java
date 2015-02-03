@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.common;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,7 +32,7 @@ import org.overlord.sramp.common.i18n.Messages;
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtifactType {
+public class ArtifactType implements Serializable {
 
     /**
      * Returns true if the given artifact type is valid.  It must be alphanumeric only.
