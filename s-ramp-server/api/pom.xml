@@ -24,9 +24,10 @@
     </dependency>
 
     <!-- Include the following so that EJB clients have everything they need. -->
-    <!--<dependency>
-      <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-repository-jcr</artifactId>
-    </dependency>-->
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 </project>
