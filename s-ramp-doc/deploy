@@ -1,0 +1,1 @@
+mvn clean deploy -Pgenerate-docs -Pupload-docs -Dkeyfile=/home/[you]/.ssh/id_rsa
