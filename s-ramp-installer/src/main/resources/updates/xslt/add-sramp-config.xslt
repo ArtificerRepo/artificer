@@ -19,7 +19,7 @@
             <xsl:element name="resource" namespace="urn:jboss:domain:keycloak:1.0">s-ramp-ui</xsl:element>
             <xsl:element name="credential" namespace="urn:jboss:domain:keycloak:1.0">
                 <xsl:attribute name="name">secret</xsl:attribute>
-                password
+                2b0ad840-ab4d-11e4-bcd8-0800200c9a66
             </xsl:element>
           </xsl:element>
       </xsl:if>
@@ -30,7 +30,7 @@
             <xsl:element name="resource" namespace="urn:jboss:domain:keycloak:1.0">s-ramp-server</xsl:element>
             <xsl:element name="credential" namespace="urn:jboss:domain:keycloak:1.0">
                 <xsl:attribute name="name">secret</xsl:attribute>
-                password
+                6d274880-ab4d-11e4-bcd8-0800200c9a66
             </xsl:element>
             <xsl:element name="enable-basic-auth" namespace="urn:jboss:domain:keycloak:1.0">true</xsl:element>
           </xsl:element>
