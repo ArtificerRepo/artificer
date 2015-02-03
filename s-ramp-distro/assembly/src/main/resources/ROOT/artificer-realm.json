@@ -52,7 +52,7 @@
             "redirectUris": [
                 "/s-ramp-ui/*"
             ],
-            "secret": "password"
+            "secret": "2b0ad840-ab4d-11e4-bcd8-0800200c9a66"
         },
         {
             "name": "s-ramp-server",
@@ -61,7 +61,7 @@
             "redirectUris": [
                 "/s-ramp-server/*"
             ],
-            "secret": "password"
+            "secret": "6d274880-ab4d-11e4-bcd8-0800200c9a66"
         }
     ]
 }
