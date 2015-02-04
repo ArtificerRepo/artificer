@@ -19,6 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
 import org.overlord.sramp.common.ArtifactContent;
 import org.overlord.sramp.common.SrampException;
@@ -27,6 +28,7 @@ import org.overlord.sramp.repository.query.ArtifactSet;
 import org.overlord.sramp.repository.query.SrampQuery;
 
 import java.io.InputStream;
+import java.util.List;
 
 
 /**
@@ -40,12 +42,12 @@ public class JCRClassificationQueryTest extends AbstractNoAuditingJCRPersistence
 	public void testDerivedRelationshipQueries() throws Exception {
 		createOntology();
 
-		addDocument("no-classifications");
-		addDocument("one-classification: china", "China");
-		addDocument("one-classification: japan", "Japan");
-		addDocument("one-classification: germany", "Germany");
+        Document doc = addDocument("no-classifications");
+        Document docChina = addDocument("one-classification: china", "China");
+        Document docJapan = addDocument("one-classification: japan", "Japan");
+        Document docGermany = addDocument("one-classification: germany", "Germany");
 
-		// Verify that both docs are available
+		// Verify that the docs are available
 		SrampQuery query = queryManager.createQuery("/s-ramp/core/Document");
 		ArtifactSet artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
@@ -55,17 +57,15 @@ public class JCRClassificationQueryTest extends AbstractNoAuditingJCRPersistence
 		query = queryManager.createQuery("/s-ramp/core/Document[@name = ?]");
 		query.setString("no-classifications");
 		artifactSet = query.executeQuery();
-		Assert.assertNotNull(artifactSet);
-		Assert.assertEquals(1, artifactSet.size());
+        assertResults(artifactSet, doc);
 
 		// Should get just the one classified by China
 		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'China')]");
 		artifactSet = query.executeQuery();
-		Assert.assertNotNull(artifactSet);
-		Assert.assertEquals(1, artifactSet.size());
+        assertResults(artifactSet, docChina);
 
 		// Should get zero artifacts
-		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'Asia')]");
+        query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'Asia')]");
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(0, artifactSet.size());
@@ -73,11 +73,10 @@ public class JCRClassificationQueryTest extends AbstractNoAuditingJCRPersistence
 		// Should get just the one classified by Germany
 		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'Germany')]");
 		artifactSet = query.executeQuery();
-		Assert.assertNotNull(artifactSet);
-		Assert.assertEquals(1, artifactSet.size());
+        assertResults(artifactSet, docGermany);
 
 		// Should get zero artifacts
-		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'China', 'Germany')]");
+        query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'China', 'Germany')]");
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
 		Assert.assertEquals(0, artifactSet.size());
@@ -85,22 +84,38 @@ public class JCRClassificationQueryTest extends AbstractNoAuditingJCRPersistence
 		// Should get all classified artifacts
 		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:classifiedByAllOf(., 'World')]");
 		artifactSet = query.executeQuery();
-		Assert.assertNotNull(artifactSet);
-		Assert.assertEquals(3, artifactSet.size());
+        assertResults(artifactSet, docJapan, docChina, docGermany);
 
-		// Should get two artifacts - japan and china
+        // Should get two artifacts - japan and china
 		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:classifiedByAllOf(., 'Asia')]");
 		artifactSet = query.executeQuery();
-		Assert.assertNotNull(artifactSet);
-		Assert.assertEquals(2, artifactSet.size());
+        assertResults(artifactSet, docJapan, docChina);
 
 		// Should get two artifacts - japan and china
 		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:classifiedByAnyOf(., 'Japan', 'China')]");
 		artifactSet = query.executeQuery();
-		Assert.assertNotNull(artifactSet);
-		Assert.assertEquals(2, artifactSet.size());
+        assertResults(artifactSet, docJapan, docChina);
 
+        // Test not()
+        query = queryManager.createQuery("/s-ramp/core/Document[xp2:not(s-ramp:classifiedByAnyOf(., 'Japan', 'China'))]");
+        artifactSet = query.executeQuery();
+        assertResults(artifactSet, doc, docGermany);
 	}
+
+    private void assertResults(ArtifactSet artifactSet, Document... docs) throws Exception {
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(docs.length, artifactSet.size());
+        List<BaseArtifactType> artifacts = artifactSet.list();
+        for (BaseArtifactType artifact : artifacts) {
+            boolean found = false;
+            for (Document doc : docs) {
+                if (doc.getUuid().equals(artifact.getUuid())) {
+                    found = true;
+                }
+            }
+            Assert.assertTrue(found);
+        }
+    }
 
 	/**
 	 * @throws SrampException
