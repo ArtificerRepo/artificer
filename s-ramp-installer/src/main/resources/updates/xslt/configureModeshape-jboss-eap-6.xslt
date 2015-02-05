@@ -42,18 +42,15 @@
         <xsl:element name="local-cache" namespace="{$currentNS}">
           <xsl:attribute name="name">sramp</xsl:attribute>
           <xsl:element name="locking" namespace="{$currentNS}">
-            <!-- TODO: Desirable to enable this, but hitting too many known issues with ISPN+Wildfly transactions -->
-            <!--<xsl:attribute name="isolation">READ_COMMITTED</xsl:attribute>-->
-            <xsl:attribute name="isolation">NONE</xsl:attribute>
+            <xsl:attribute name="isolation">READ_COMMITTED</xsl:attribute>
           </xsl:element>
           <xsl:element name="transaction" namespace="{$currentNS}">
             <xsl:attribute name="mode">NON_XA</xsl:attribute>
-            <!-- TODO: Desirable to enable this, but hitting too many known issues with ISPN+Wildfly transactions -->
-            <!--<xsl:attribute name="locking">PESSIMISTIC</xsl:attribute>-->
+            <xsl:attribute name="locking">OPTIMISTIC</xsl:attribute>
           </xsl:element>
           <xsl:element name="eviction" namespace="{$currentNS}">
             <xsl:attribute name="strategy">LRU</xsl:attribute>
-            <xsl:attribute name="max-entries">1000</xsl:attribute>
+            <xsl:attribute name="max-entries">10000</xsl:attribute>
           </xsl:element>
           <xsl:element name="string-keyed-jdbc-store" namespace="{$currentNS}">
             <xsl:attribute name="datasource">java:jboss/datasources/srampDS</xsl:attribute>
