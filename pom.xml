@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-parent</artifactId>
-    <version>6.0.0.CR14</version>
+    <version>6.0.0.CR25</version>
   </parent>
 
   <groupId>org.overlord.sramp</groupId>
@@ -114,6 +114,7 @@
     <version.org.apache.httpcomponents.httpclient>4.2.1</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.2.1</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpmime>4.2.1</version.org.apache.httpcomponents.httpmime>
+    <version.org.codehaus.plexus>3.0.17</version.org.codehaus.plexus>
   </properties>
 
   <build>
@@ -232,7 +233,7 @@
       <dependency>
         <groupId>org.jboss.integration-platform</groupId>
         <artifactId>jboss-integration-platform-bom</artifactId>
-        <version>6.0.0.CR14</version>
+        <version>6.0.0.CR25</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -928,6 +929,11 @@
         <groupId>org.apache.santuario</groupId>
         <artifactId>xmlsec</artifactId>
         <version>2.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>${version.org.codehaus.plexus}</version>
       </dependency>
 
       <!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss AS 7 -->
