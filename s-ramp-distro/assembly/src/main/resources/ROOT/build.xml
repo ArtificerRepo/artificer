@@ -93,11 +93,20 @@
             <property name="s-ramp.modeshape-distribution.zip.path" location="${s-ramp-distro.rootdir}/AS/EAP/modeshape-distribution-${version.org.modeshape}-jbosseap-dist.zip" />
         </else>
     </if>
+    <if>
+      <contains string="${eap-version}" substring="6.4" />
+      <then>
+        <!-- 6.4 needs special handling of keystore generation, among other things.  Split off into separate script. -->
+        <property name="appserver.id" value="jboss-eap-64" />
+      </then>
+      <else>
+        <property name="appserver.id" value="jboss-eap-6" />
+      </else>
+    </if>
 
     <!-- Call the S-RAMP installer -->
     <ant antfile="${s-ramp-distro.s-ramp-installer.dir}/build.xml" inheritall="true" target="install" 
          dir="${s-ramp-distro.s-ramp-installer.dir}">
-      <property name="appserver.id" value="jboss-eap-6" />
       <property name="s-ramp.install.dir" location="${s-ramp-distro.tempdir}" />
       <property name="s-ramp.appserver.dir" location="${s-ramp-distro.choices.platform.jboss-eap-6.path}" />
       <property name="s-ramp.overlord-commons.installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${version.org.overlord.overlord-commons}.jar" />

@@ -180,13 +180,7 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-jaxrs-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-marshalling</artifactId>
-      <scope>provided</scope>
     </dependency>
     
     <!-- CDI Integration Modules -->

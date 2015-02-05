@@ -64,12 +64,12 @@
       <artifactId>overlord-commons-dist-eap6</artifactId>
       <type>zip</type>
     </dependency>
-    
+
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-codec</artifactId>
-    </dependency>    
-    
+    </dependency>
+
     <!-- S-RAMP -->
     <dependency>
       <groupId>org.overlord.sramp</groupId>
@@ -111,18 +111,19 @@
       <artifactId>s-ramp-ui-war-eap6</artifactId>
       <type>war</type>
     </dependency>
+
     <dependency>
-        <groupId>commons-codec</groupId>
-        <artifactId>commons-codec</artifactId>
-    </dependency>    
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
   </dependencies>
 
   <profiles>
     <!-- ***************************************** -->
-    <!-- Profile to *test* installing into EAP 6 -->
+    <!-- Profile to *test* installing into EAP 6.3 -->
     <!-- ***************************************** -->
     <profile>
-      <id>test-install-eap6</id>
+      <id>test-install-eap63</id>
       <build>
         <plugins>
           <plugin>
@@ -139,10 +140,22 @@
                 <artifactId>xalan</artifactId>
                 <version>2.7.1</version>
               </dependency>
+
+              <!-- Needed by CreateKeystore in overlord-commons-ant -->
+              <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${version.commons-lang}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.picketbox</groupId>
+                <artifactId>picketbox</artifactId>
+                <version>${version.org.picketbox}</version>
+              </dependency>
             </dependencies>
             <executions>
               <execution>
-                <id>install-eap6</id>
+                <id>install-eap63</id>
                 <phase>install</phase>
                 <configuration>
                   <tasks>
@@ -151,7 +164,7 @@
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.3" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>               
+                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
                     <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
                     <property name="overlord-commons.eap-dist.file" value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
@@ -163,7 +176,7 @@
 
                     <!-- ModeShape Distribution -->
                     <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
-                    
+
                     <property file="build.properties" />
                     <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.3.0.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
@@ -173,7 +186,7 @@
 
                     <!-- The commons ant jar location -->
                     <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-                    
+
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
                       <target name="install" />
@@ -188,26 +201,6 @@
           </plugin>
         </plugins>
       </build>
-<<<<<<< HEAD
-=======
-    </profile>
-    <!-- ***************************************** -->
-    <!-- Profile to *test* installing into EAP 6.3 -->
-    <!-- ***************************************** -->
-    <profile>
-      <id>test-install-eap63</id>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-distribution</artifactId>
-            <version>3.8.0.Final</version>
-            <type>zip</type>
-            <classifier>jbosseap-dist</classifier>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
->>>>>>> f89ed94... ARTIF-636 Support EAP 6.4
       <dependencies>
         <dependency>
           <groupId>org.modeshape</groupId>
@@ -215,49 +208,97 @@
           <type>zip</type>
           <classifier>jbosseap-dist</classifier>
         </dependency>
-<<<<<<< HEAD
-=======
+      </dependencies>
+    </profile>
+    <!-- ***************************************** -->
+    <!-- Profile to *test* installing into EAP 6.4 -->
+    <!-- ***************************************** -->
+    <profile>
+      <id>test-install-eap64</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-trax</artifactId>
+                <version>1.6.5</version>
+              </dependency>
+              <dependency>
+                <groupId>xalan</groupId>
+                <artifactId>xalan</artifactId>
+                <version>2.7.1</version>
+              </dependency>
+
+              <!-- Needed by CreateKeystore in overlord-commons-ant -->
+              <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${version.commons-lang}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.picketbox</groupId>
+                <artifactId>picketbox</artifactId>
+                <version>${version.org.picketbox}</version>
+              </dependency>
+            </dependencies>
+            <executions>
+              <execution>
+                <id>install-eap64</id>
+                <phase>install</phase>
+                <configuration>
+                  <tasks>
+                    <property name="appserver.id" value="jboss-eap-64" />
+                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
+                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.4" />
+
+                    <!-- Overlord Commons Installer and Dependencies -->
+                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+                    <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
+                    <property name="overlord-commons.eap-dist.file" value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
+                    <property name="overlord-commons.auth.jboss7.file" value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
+
+                    <!-- S-RAMP WARs -->
+                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-eap6.war.path}" />
+                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap6.war.path}" />
+
+                    <!-- ModeShape Distribution -->
+                    <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
+
+                    <property file="build.properties" />
+                    <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.4.0.Alpha.zip" />
+                    <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
+                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
+                      <include name="*.sh" />
+                    </chmod>
+
+                    <!-- The commons ant jar location -->
+                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
+
+                    <!-- Call the installer -->
+                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
+                      <target name="install" />
+                    </ant>
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencies>
         <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-war-dist-all</artifactId>
+          <groupId>org.modeshape</groupId>
+          <artifactId>modeshape-distribution</artifactId>
           <type>zip</type>
-          <exclusions>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-as7-adapter-dist</artifactId>
-            </exclusion>
-            <!--<exclusion>-->
-            <!--<groupId>org.keycloak</groupId>-->
-            <!--<artifactId>keycloak-tomcat6-adapter-dist</artifactId>-->
-            <!--</exclusion>-->
-            <!--<exclusion>-->
-            <!--<groupId>org.keycloak</groupId>-->
-            <!--<artifactId>keycloak-tomcat8-adapter-dist</artifactId>-->
-            <!--</exclusion>-->
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-example-themes-dist</artifactId>
-            </exclusion>
-          </exclusions>
+          <classifier>jbosseap-dist</classifier>
         </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-eap6-adapter-dist</artifactId>
-          <type>zip</type>
-        </dependency>
->>>>>>> f89ed94... ARTIF-636 Support EAP 6.4
       </dependencies>
     </profile>
     <!-- ****************************************** -->
@@ -281,14 +322,22 @@
                 <artifactId>xalan</artifactId>
                 <version>2.7.1</version>
               </dependency>
+
+              <!-- Needed by CreateKeystore in overlord-commons-ant -->
+              <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${version.commons-lang}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.picketbox</groupId>
+                <artifactId>picketbox</artifactId>
+                <version>${version.org.picketbox}</version>
+              </dependency>
             </dependencies>
             <executions>
               <execution>
-<<<<<<< HEAD
                 <id>install-tomcat7</id>
-=======
-                <id>install-eap63</id>
->>>>>>> f89ed94... ARTIF-636 Support EAP 6.4
                 <phase>install</phase>
                 <configuration>
                   <tasks>
@@ -297,25 +346,15 @@
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/apache-tomcat-7.0.54" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-<<<<<<< HEAD
                     <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
-                    <property name="s-ramp-overlord-commons.codec.jar.path" value="${maven.dependency.org.overlord.overlord-commons-codec.jar.path}"/>                         
+                    <property name="s-ramp-overlord-commons.codec.jar.path" value="${maven.dependency.org.overlord.overlord-commons-codec.jar.path}"/>
                     <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
-=======
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
->>>>>>> f89ed94... ARTIF-636 Support EAP 6.4
 
                     <!-- S-RAMP WARs -->
                     <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-tomcat7.war.path}" />
                     <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-tomcat7.war.path}" />
 
-<<<<<<< HEAD
-=======
-                    <!-- ModeShape Distribution -->
-                    <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
-
->>>>>>> f89ed94... ARTIF-636 Support EAP 6.4
                     <property file="build.properties" />
                     <property name="s-ramp.install.dir" value="${project.build.directory}" />
                     <property name="s-ramp.appserver.zip" value="${basedir}/apache-tomcat-7.0.54.zip" />
@@ -326,214 +365,7 @@
 
                     <!-- The commons ant jar location -->
                     <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-<<<<<<< HEAD
-                    <property name="overlord-commons.codec.jar" location="${s-ramp-overlord-commons.codec.jar.path}" />                    
-                    <property name="commons-codec.jar" location="${maven.dependency.commons-codec.commons-codec.jar.path}" />
-=======
-
-                    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-                    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-                    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
-
-                    <!-- Call the installer -->
-                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
-                      <target name="install" />
-                    </ant>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- ***************************************** -->
-    <!-- Profile to *test* installing into EAP 6.4 -->
-    <!-- ***************************************** -->
-    <profile>
-      <id>test-install-eap64</id>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-distribution</artifactId>
-            <version>3.8.0.Final</version>
-            <type>zip</type>
-            <classifier>jbosseap-dist</classifier>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
-      <dependencies>
-        <dependency>
-          <groupId>org.modeshape</groupId>
-          <artifactId>modeshape-distribution</artifactId>
-          <type>zip</type>
-          <classifier>jbosseap-dist</classifier>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-war-dist-all</artifactId>
-          <type>zip</type>
-          <exclusions>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-as7-adapter-dist</artifactId>
-            </exclusion>
-            <!--<exclusion>-->
-            <!--<groupId>org.keycloak</groupId>-->
-            <!--<artifactId>keycloak-tomcat6-adapter-dist</artifactId>-->
-            <!--</exclusion>-->
-            <!--<exclusion>-->
-            <!--<groupId>org.keycloak</groupId>-->
-            <!--<artifactId>keycloak-tomcat8-adapter-dist</artifactId>-->
-            <!--</exclusion>-->
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-example-themes-dist</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-eap6-adapter-dist</artifactId>
-          <type>zip</type>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <dependencies>
-              <dependency>
-                <groupId>ant</groupId>
-                <artifactId>ant-trax</artifactId>
-                <version>1.6.5</version>
-              </dependency>
-              <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>2.7.1</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>install-eap64</id>
-                <phase>install</phase>
-                <configuration>
-                  <tasks>
-                    <property name="appserver.id" value="jboss-eap-6" />
-                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.4" />
-
-                    <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
-
-                    <!-- S-RAMP WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-eap6.war.path}" />
-                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-eap6.war.path}" />
-
-                    <!-- ModeShape Distribution -->
-                    <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
-
-                    <property file="build.properties" />
-                    <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.4.0.Alpha.zip" />
-                    <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
-                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
-                      <include name="*.sh" />
-                    </chmod>
-
-                    <!-- The commons ant jar location -->
-                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-
-                    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-                    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-                    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
-
->>>>>>> f89ed94... ARTIF-636 Support EAP 6.4
-                    <!-- Call the installer -->
-                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
-                      <target name="install" />
-                    </ant>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- ****************************************** -->
-    <!-- Profile to *test* installing into TomEE 1.7 -->
-    <!-- ****************************************** -->
-    <profile>
-      <id>test-install-tomee17</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <dependencies>
-              <dependency>
-                <groupId>ant</groupId>
-                <artifactId>ant-trax</artifactId>
-                <version>1.6.5</version>
-              </dependency>
-              <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>2.7.1</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>install-tomee17</id>
-                <phase>install</phase>
-                <configuration>
-                  <tasks>
-                    <property name="appserver.id" value="tomcat-7" />
-                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/apache-tomee-plus-1.7.0" />
-
-                    <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
-                    <property name="s-ramp-overlord-commons.codec.jar.path" value="${maven.dependency.org.overlord.overlord-commons-codec.jar.path}"/>                         
-                    <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-tomcat7.war.path}" />
-
-                    <!-- S-RAMP WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-tomcat7.war.path}" />
-                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-tomcat7.war.path}" />
-
-                    <property file="build.properties" />
-                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.zip" value="${basedir}/apache-tomee-1.7.0-plus.zip" />
-                    <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
-                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
-                      <include name="*.sh" />
-                    </chmod>
-
-                    <!-- The commons ant jar location -->
-                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-                    <property name="overlord-commons.codec.jar" location="${s-ramp-overlord-commons.codec.jar.path}" />                    
+                    <property name="overlord-commons.codec.jar" location="${s-ramp-overlord-commons.codec.jar.path}" />
                     <property name="commons-codec.jar" location="${maven.dependency.commons-codec.commons-codec.jar.path}" />
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
@@ -571,6 +403,18 @@
                 <artifactId>xalan</artifactId>
                 <version>2.7.1</version>
               </dependency>
+
+              <!-- Needed by CreateKeystore in overlord-commons-ant -->
+              <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${version.commons-lang}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.picketbox</groupId>
+                <artifactId>picketbox</artifactId>
+                <version>${version.org.picketbox}</version>
+              </dependency>
             </dependencies>
             <executions>
               <execution>
@@ -587,9 +431,9 @@
                     <!-- Overlord Commons Installer and Dependencies -->
                     <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
-                    <property name="s-ramp-overlord-commons.codec.jar.path" value="${maven.dependency.org.overlord.overlord-commons-codec.jar.path}"/>                         
+                    <property name="s-ramp-overlord-commons.codec.jar.path" value="${maven.dependency.org.overlord.overlord-commons-codec.jar.path}"/>
                     <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-jetty8.war.path}" />
-                    
+
                     <!-- S-RAMP WARs -->
                     <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-server-jetty8.war.path}" />
                     <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.overlord.sramp.s-ramp-ui-war-jetty8.war.path}" />
@@ -604,7 +448,7 @@
 
                     <!-- The commons ant jar location -->
                     <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-                    <property name="overlord-commons.codec.jar" location="${s-ramp-overlord-commons.codec.jar.path}" />                    
+                    <property name="overlord-commons.codec.jar" location="${s-ramp-overlord-commons.codec.jar.path}" />
                     <property name="commons-codec.jar" location="${maven.dependency.commons-codec.commons-codec.jar.path}" />
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
