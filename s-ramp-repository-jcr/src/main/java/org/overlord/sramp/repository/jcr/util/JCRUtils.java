@@ -396,15 +396,18 @@ public class JCRUtils {
      * @throws Exception
      */
     public static Node findArtifactNode(String uuid, ArtifactType type, Session session) throws Exception {
-        if (!type.getArtifactType().isDerived()) {
+        if (type.getArtifactType().isDerived() || type.isExtendedType()) {
+            // Since we don't know the derived artifact's parent, we have to query by UUID.
+            // Also, if it's extended, we won't know whether or not it's derived ahead of time.  To be safe, simply
+            // query by uuid.
+            return findArtifactNodeByUuid(session, uuid);
+        } else {
             try {
+                // Optimization.  We know it's a primary, so simply use the path.
                 return session.getNode(MapToJCRPath.getArtifactPath(uuid));
             } catch (PathNotFoundException e) {
                 return null;
             }
-        } else {
-            // Since we don't know the derived artifact's parent, we have to query by UUID.
-            return findArtifactNodeByUuid(session, uuid);
         }
     }
 
