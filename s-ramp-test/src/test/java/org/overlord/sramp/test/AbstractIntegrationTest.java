@@ -88,8 +88,8 @@ public abstract class AbstractIntegrationTest {
                 }
             }
         } catch (Exception e) {
-//            e.printStackTrace();
-//            fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
+            e.printStackTrace();
+            fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
         }
         
         // delete all stored queries
@@ -100,6 +100,7 @@ public abstract class AbstractIntegrationTest {
                 client.deleteStoredQuery(storedQuery.getQueryName());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
         }
 
@@ -112,6 +113,7 @@ public abstract class AbstractIntegrationTest {
                 client.deleteOntology(uuid);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             fail("Unable to cleanup test artifacts."); //$NON-NLS-1$
         }
     }

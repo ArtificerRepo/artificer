@@ -32,7 +32,7 @@
     <!-- TODO: Fail is the ZIP isn't in the root? -->
     <property name="name" value="JBoss EAP 6.1" />
     <property name="filename" value="${filename.eap61}" />
-    <property name="dir" value="target/${dir.eap61}" />
+    <property name="dir" value="${project.build.directory}/${dir.eap61}" />
     <antcall target="install" />
   </target>
 
@@ -40,7 +40,7 @@
     <!-- TODO: Fail is the ZIP isn't in the root? -->
     <property name="name" value="JBoss EAP 6.2" />
     <property name="filename" value="${filename.eap62}" />
-    <property name="dir" value="target/${dir.eap62}" />
+    <property name="dir" value="${project.build.directory}/${dir.eap62}" />
     <antcall target="install" />
   </target>
 
@@ -48,14 +48,14 @@
     <!-- TODO: Fail is the ZIP isn't in the root? -->
     <property name="name" value="JBoss EAP 6.3" />
     <property name="filename" value="${filename.eap63}" />
-    <property name="dir" value="target/${dir.eap63}" />
+    <property name="dir" value="${project.build.directory}/${dir.eap63}" />
     <antcall target="install" />
   </target>
 
   <target name="install-wildfly8">
     <property name="name" value="Wildfly 8.2" />
     <property name="filename" value="${filename.wildfly8}" />
-    <property name="dir" value="target/${dir.wildfly8}" />
+    <property name="dir" value="${project.build.directory}/${dir.wildfly8}" />
     <property name="download.url" value="${download.url.wildfly8}" />
     <antcall target="install" />
   </target>

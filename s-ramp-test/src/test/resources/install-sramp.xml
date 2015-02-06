@@ -2,7 +2,7 @@
 <project name="S-RAMP Integration Tests: Install S-RAMP">
     
   <property name="s-ramp.install.dir" value="${project.build.directory}" />
-  <property name="s-ramp.updates.dir" location="../s-ramp-installer/src/main/resources/updates" />
+  <property name="s-ramp.updates.dir" location="${basedir}/../s-ramp-installer/src/main/resources/updates" />
   <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}" />
 
   <!--<target name="install-sramp-tomcat">-->
@@ -42,7 +42,7 @@
     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
     <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
 
-    <ant antfile="../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
+    <ant antfile="${basedir}/../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
         inheritall="true" target="install" />
   </target>
 
@@ -62,7 +62,7 @@
     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
     <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
 
-    <ant antfile="../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
+    <ant antfile="${basedir}/../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
         inheritall="true" target="install" />
   </target>
 
@@ -82,7 +82,7 @@
     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
     <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
 
-    <ant antfile="../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
+    <ant antfile="${basedir}/../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
          inheritall="true" target="install" />
   </target>
 
@@ -102,8 +102,12 @@
     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
     <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-wildfly-adapter-dist.zip.path}" />
 
-    <ant antfile="../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
+    <property name="ejb-jms.password" value="artificer1!" />
+
+    <ant antfile="${basedir}/../s-ramp-installer/src/main/resources/scripts/${appserver.id}.xml"
          inheritall="true" target="install" />
+
+    <copy file="${basedir}/src/test/resources/sramp.properties" todir="${s-ramp.appserver.dir}/standalone/configuration" overwrite="true"/>
   </target>
 
 </project>

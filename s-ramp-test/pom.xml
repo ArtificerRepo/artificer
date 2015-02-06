@@ -583,9 +583,6 @@
     </profile>
     <profile>
       <id>wildfly8-integration-test</id>
-      <!--<activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>-->
       <build>
         <plugins>
           <plugin>
@@ -595,7 +592,7 @@
               <skipTests>false</skipTests>
             </configuration>
           </plugin>
-          <!--<plugin>
+          <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
@@ -611,7 +608,7 @@
                 </configuration>
               </execution>
             </executions>
-          </plugin>-->
+          </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
