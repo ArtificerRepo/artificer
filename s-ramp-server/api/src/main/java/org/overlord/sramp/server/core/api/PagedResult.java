@@ -30,15 +30,18 @@ public class PagedResult<T> {
 
     private final int startIndex;
 
+    private final int pageSize;
+
     private final String orderBy;
 
     private final boolean ascending;
 
-    public PagedResult(List<T> results, String query, int totalSize, int startIndex, String orderBy, boolean ascending) {
+    public PagedResult(List<T> results, String query, int totalSize, int startIndex, int pageSize, String orderBy, boolean ascending) {
         this.results = results;
         this.query = query;
         this.totalSize = totalSize;
         this.startIndex = startIndex;
+        this.pageSize = pageSize;
         this.orderBy = orderBy;
         this.ascending = ascending;
     }
@@ -56,7 +59,7 @@ public class PagedResult<T> {
     }
 
     public int getPageSize() {
-        return results.size();
+        return pageSize;
     }
 
     public int getStartIndex() {

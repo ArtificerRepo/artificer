@@ -83,7 +83,7 @@ public class AuditServiceImpl extends AbstractServiceImpl implements AuditServic
         int endIdx = startIdx + count - 1;
         try {
             List<AuditEntry> entries = results.pagedList(startIdx, endIdx);
-            return new PagedResult<AuditEntry>(entries, "", results.size(), startIndex, "", true);
+            return new PagedResult<AuditEntry>(entries, "", results.size(), startIndex, count, "", true);
         } finally {
             results.close();
         }

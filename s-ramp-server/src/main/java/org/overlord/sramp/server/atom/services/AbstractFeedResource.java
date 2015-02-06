@@ -131,7 +131,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
         int startIndex = pagedResult.getStartIndex();
         String orderBy = pagedResult.getOrderBy();
         boolean ascending = pagedResult.isAscending();
-        String hrefPattern = "%1$s?query=%2$s&page=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s"; //$NON-NLS-1$
+        String hrefPattern = "%1$s?query=%2$s&startIndex=%3$s&pageSize=%4$s&orderBy=%5$s&ascending=%6$s"; //$NON-NLS-1$
 		String encodedQuery = URLEncoder.encode(pagedResult.getQuery(), "UTF-8"); //$NON-NLS-1$
 		String firstHref = String.format(hrefPattern, baseUrl, encodedQuery, 0, String.valueOf(pageSize),
 				String.valueOf(orderBy), String.valueOf(ascending));
@@ -149,7 +149,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 			feed.getLinks().add(first);
 			feed.getLinks().add(prev);
 		}
-		if (startIndex + pageSize >= pagedResult.getTotalSize()) {
+		if (startIndex + pageSize < pagedResult.getTotalSize()) {
 			feed.getLinks().add(next);
 		}
 

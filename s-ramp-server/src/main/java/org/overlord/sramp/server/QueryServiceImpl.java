@@ -89,7 +89,8 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
         int endIdx = startIdx + count - 1;
         try {
             List<BaseArtifactType> results = artifactSet.pagedList(startIdx, endIdx);
-            return new PagedResult<BaseArtifactType>(results, xpath, artifactSet.size(), startIndex, orderBy, ascending);
+            return new PagedResult<BaseArtifactType>(results, xpath, artifactSet.size(), startIndex, count,
+                    orderBy, ascending);
         } finally {
             artifactSet.close();
         }
