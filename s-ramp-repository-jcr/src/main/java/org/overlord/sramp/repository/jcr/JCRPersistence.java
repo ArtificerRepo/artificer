@@ -15,6 +15,7 @@
  */
 package org.overlord.sramp.repository.jcr;
 
+import org.apache.commons.lang.StringUtils;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
@@ -526,7 +527,11 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
     public StoredQuery persistStoredQuery(StoredQuery storedQuery) throws SrampException {
         String name = storedQuery.getQueryName();
         Session session = null;
-        String storedQueryPath = MapToJCRPath.getStoredQueryPath(name);
+
+        // Validate the name
+        if (StringUtils.isBlank(name)) {
+            throw new StoredQueryConflictException();
+        }
 
         // Check if a stored query with the given name already exists.
         try {
@@ -535,6 +540,8 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
         } catch (StoredQueryNotFoundException e) {
             // do nothing -- success
         }
+
+        String storedQueryPath = MapToJCRPath.getStoredQueryPath(name);
 
         try {
             session = JCRRepositoryFactory.getSession();

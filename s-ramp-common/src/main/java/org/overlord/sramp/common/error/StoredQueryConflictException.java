@@ -27,6 +27,10 @@ public class StoredQueryConflictException extends SrampConflictException {
 
     private static final long serialVersionUID = 632263403445444191L;
 
+    public StoredQueryConflictException() {
+        super(Messages.i18n.format("STOREDQUERY_NAME_REQUIRED")); //$NON-NLS-1$
+    }
+
     public StoredQueryConflictException(String queryName) {
         super(Messages.i18n.format("STOREDQUERY_ALREADY_EXISTS", queryName)); //$NON-NLS-1$
     }

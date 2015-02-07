@@ -71,7 +71,7 @@ public class StoredQueryResource extends AbstractFeedResource {
 
             return wrapStoredQuery(storedQuery, baseUrl);
         } catch (StoredQueryConflictException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactAlreadyExistsException is mapped to a
+            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -88,7 +88,7 @@ public class StoredQueryResource extends AbstractFeedResource {
 		    StoredQuery storedQuery = SrampAtomUtils.unwrapStoredQuery(atomEntry);
             queryService.updateStoredQuery(queryName, storedQuery);
 		} catch (StoredQueryNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+            // Simply re-throw.  Don't allow the following catch it -- SrampNotFoundException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
@@ -108,7 +108,7 @@ public class StoredQueryResource extends AbstractFeedResource {
 
             return wrapStoredQuery(storedQuery, baseUrl);
 		} catch (StoredQueryNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+            // Simply re-throw.  Don't allow the following catch it -- SrampNotFoundException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
@@ -159,7 +159,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             return createArtifactFeed(storedQuery.getQueryExpression(), startPage, startIndex, count, orderBy, asc,
                     new HashSet<String>(storedQuery.getPropertyName()), baseUrl);
         } catch (StoredQueryNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+            // Simply re-throw.  Don't allow the following catch it -- SrampNotFoundException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (SrampAtomException e) {
@@ -176,7 +176,7 @@ public class StoredQueryResource extends AbstractFeedResource {
 		try {
             queryService.deleteStoredQuery(queryName);
 		} catch (StoredQueryNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+            // Simply re-throw.  Don't allow the following catch it -- SrampNotFoundException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
