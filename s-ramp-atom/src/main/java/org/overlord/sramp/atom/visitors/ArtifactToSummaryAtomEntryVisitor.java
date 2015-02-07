@@ -15,11 +15,14 @@
  */
 package org.overlord.sramp.atom.visitors;
 
+import java.beans.Introspector;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -35,6 +38,7 @@ import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.common.visitors.AbstractArtifactVisitor;
 import org.overlord.sramp.common.visitors.ArtifactVisitorHelper;
 import org.overlord.sramp.common.visitors.HierarchicalArtifactVisitor;
+import org.reflections.ReflectionUtils;
 
 /**
  * Visitor used to convert an artifact to an Atom entry.
@@ -271,12 +275,24 @@ public class ArtifactToSummaryAtomEntryVisitor extends HierarchicalArtifactVisit
 	protected BaseArtifactType createIncludedArtifact(BaseArtifactType artifact) throws InstantiationException, IllegalAccessException {
 		if (includeArtifact()) {
 			BaseArtifactType includedArtifact = artifact.getClass().newInstance();
-			List<Property> properties = artifact.getProperty();
-			for (Property prop : properties) {
-				if (this.propertyNames.contains(prop.getPropertyName())) {
-					SrampModelUtils.setCustomProperty(includedArtifact, prop.getPropertyName(), prop.getPropertyValue());
-				}
-			}
+            for (String propertyName : propertyNames) {
+                for (Property customProperty : artifact.getProperty()) {
+                    // Custom property?
+                    if (propertyName.equalsIgnoreCase(customProperty.getPropertyName())) {
+                        SrampModelUtils.setCustomProperty(includedArtifact,
+                                customProperty.getPropertyName(), customProperty.getPropertyValue());
+                        break;
+                    }
+
+                    // Otherwise, we need to use reflection to check other built-in properties.  Simplify with BeanUtils
+                    try {
+                        BeanUtils.setProperty(includedArtifact, propertyName,
+                                BeanUtils.getProperty(artifact, propertyName));
+                    } catch (Exception e) {
+                        // Eat it, with contempt
+                    }
+                }
+            }
 			return includedArtifact;
 		} else {
 			return null;
