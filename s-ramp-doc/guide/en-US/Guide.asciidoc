@@ -24,6 +24,8 @@ include::GuideOverlordSrampBrowser.asciidoc[]
 
 include::GuideUserManagement.asciidoc[]
 
+include::GuideExtensionPoints.asciidoc[]
+
 include::GuideOverlordSrampImplementation.asciidoc[]
 
 include::GuideSrampSamples.asciidoc[]
