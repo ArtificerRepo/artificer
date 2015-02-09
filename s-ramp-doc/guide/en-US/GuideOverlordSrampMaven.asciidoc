@@ -104,11 +104,16 @@ the following dependency.
 ----
 
 
-A Note About Authentication
+Authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Whenever the S-RAMP Maven integration features are used, it is likely that you will need to provide 
-valid authentication credentials.  You can provide the S-RAMP repository username and password in the
+Whenever the S-RAMP Maven integration features are used, you will need to provide valid authentication credentials in the
 http://maven.apache.org/settings.html[Maven settings.xml] file.
+However, the typical "username" and "password" values are not sufficient, since they are ignored during artifact
+retrieval (ie, GET calls to the repo).  Instead, you must explicitly define the BASIC authentication header value.
+Unfortunately, this also means you have to manually Base64 encode the value.  For example, "Basic admin:artificer1!"
+becomes "Basic YWRtaW46YXJ0aWZpY2VyMSE=".
+
+It's a pain, but at least as of Maven 3.0.5, it's the best option we could find (PLEASE correct us if we're wrong!).
 
 An example of providing credentials in the settings.xml file:
 
@@ -120,13 +125,25 @@ An example of providing credentials in the settings.xml file:
   <servers>
     <server>
       <id>local-sramp-repo</id>
-      <username>admin</username>
-      <password>ADMIN_PASSWORD</password>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Authorization</name>
+            <value>Basic YWRtaW46YXJ0aWZpY2VyMSE=</value>
+          </property>
+        </httpHeaders>
+      </configuration>
     </server>
     <server>
       <id>local-sramp-repo-snapshots</id>
-      <username>admin</username>
-      <password>ADMIN_PASSWORD</password>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Authorization</name>
+            <value>Basic YWRtaW46YXJ0aWZpY2VyMSE=</value>
+          </property>
+        </httpHeaders>
+      </configuration>
     </server>
   </servers>
 </settings>
