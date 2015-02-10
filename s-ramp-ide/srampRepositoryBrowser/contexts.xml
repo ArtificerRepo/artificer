@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<contexts>
-	<context id="cz.muni.fi.srampRepositoryBrowser.views.RepositoryBrowser" >
-		<description>S-RAMP repository browser provides view for using S-RAMP repository.</description>
-		
-	</context>
-</contexts>

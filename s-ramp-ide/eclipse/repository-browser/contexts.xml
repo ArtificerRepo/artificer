@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contexts>
+	<context id="org.overlord.sramp.srampRepositoryBrowser.views.RepositoryBrowser" >
+		<description>The S-RAMP Repository Browser provides search and browsing within the S-RAMP repository, as well as a means to download and re-use artifacts stored within it.</description>
+		
+	</context>
+</contexts>
