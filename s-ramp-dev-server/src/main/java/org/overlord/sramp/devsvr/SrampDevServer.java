@@ -42,7 +42,7 @@ import org.overlord.sramp.client.SrampClientException;
 import org.overlord.sramp.common.ArtifactType;
 import org.overlord.sramp.common.SrampModelUtils;
 import org.overlord.sramp.repository.jcr.JCRRepository;
-import org.overlord.sramp.repository.jcr.modeshape.filters.ServletCredentialsFilter;
+import org.overlord.sramp.repository.jcr.filter.ServletCredentialsFilter;
 import org.overlord.sramp.server.SrampLifeCycle;
 import org.overlord.sramp.server.atom.services.SRAMPApplication;
 import org.overlord.sramp.server.filters.LocaleFilter;

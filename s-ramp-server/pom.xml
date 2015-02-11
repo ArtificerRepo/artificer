@@ -128,11 +128,6 @@
     </dependency>
     <dependency>
       <groupId>org.overlord.sramp</groupId>
-      <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.overlord.sramp</groupId>
       <artifactId>s-ramp-events-jms</artifactId>
       <scope>runtime</scope>
     </dependency>

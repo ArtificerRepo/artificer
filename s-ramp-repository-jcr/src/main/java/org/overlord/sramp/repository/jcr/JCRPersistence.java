@@ -16,6 +16,7 @@
 package org.overlord.sramp.repository.jcr;
 
 import org.apache.commons.lang.StringUtils;
+import org.modeshape.jcr.api.ServletCredentials;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
@@ -52,6 +53,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -729,7 +731,16 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
     @Override
     public void startup() {
         try {
-            JCRExtensions.getInstance().startup();
+            // Set credentials (manufactured for full privileges)
+            HttpServletRequest request = new JCRStartupHttpServletRequest();
+            ServletCredentials credentials = new ServletCredentials((HttpServletRequest) request);
+            JCRRepositoryFactory.setLoginCredentials(credentials);
+
+            try {
+                JCRRepositoryFactory.getSession();
+            } finally {
+                JCRRepositoryFactory.clearLoginCredentials();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

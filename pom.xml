@@ -315,11 +315,6 @@
       </dependency>
       <dependency>
         <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-server</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -461,12 +456,6 @@
       <dependency>
         <groupId>org.overlord.sramp</groupId>
         <artifactId>s-ramp-repository-jcr</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-repository-jcr-modeshape</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -1053,7 +1042,6 @@
     <module>s-ramp-javadoc</module>
     <module>s-ramp-repository</module>
     <module>s-ramp-repository-jcr</module>
-    <module>s-ramp-repository-jcr/modeshape</module>
     <module>s-ramp-server</module>
     <module>s-ramp-server/api</module>
     <module>s-ramp-server/eap6</module>

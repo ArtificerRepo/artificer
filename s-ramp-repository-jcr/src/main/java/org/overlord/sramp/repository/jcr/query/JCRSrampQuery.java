@@ -88,7 +88,7 @@ public class JCRSrampQuery extends AbstractSrampQueryImpl {
                     jcrOrderBy = jcrPropName;
                 }
             }
-            SrampToJcrSql2QueryVisitor visitor = SrampToJcrSql2QueryVisitorFactory.newInstance(session, (ClassificationHelper) PersistenceFactory.newInstance());
+            SrampToJcrSql2QueryVisitor visitor = new SrampToJcrSql2QueryVisitor(session, (ClassificationHelper) PersistenceFactory.newInstance());
             queryModel.accept(visitor);
             if (jcrOrderBy != null) {
                 visitor.setOrder(jcrOrderBy);
