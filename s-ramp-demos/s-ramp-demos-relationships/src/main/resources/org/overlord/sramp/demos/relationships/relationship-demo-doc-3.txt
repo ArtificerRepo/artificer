@@ -1,2 +1,0 @@
-This is yet another sample document, it also doesn't need any content, because we still don't
-actually care about it.

@@ -40,7 +40,7 @@ S-RAMP is open source and we welcome anyone who wants to participate and contrib
 
 If you want to fix a bug or create a new feature, please log an issue in the [S-RAMP JIRA](http://issues.jboss.org/browse/SRAMP) describing the task. Then we highly recommend making the changes on a topic branch named with the JIRA issue number. For example, this command creates a branch for the SRAMP-1234 issue:
 
-	$ git checkout -b sramp-1234
+	$ git checkout -b artificer-1234
 
 After you're happy with your changes and a full build (with unit tests) runs successfully, commit your changes on your topic branch.  Please ensure that the comment is descriptive and starts with the JIRA code (e.g. "SRAMP-1234 Added the feature to …..").  Then it's time to pull any recent changes that were made in the official repository.  The following fetches all 'upstream' changes and reapplies your changes on top (i.e., the latest from master will be the new base for your changes).
 
@@ -49,7 +49,7 @@ After you're happy with your changes and a full build (with unit tests) runs suc
 If the pull grabbed a lot of changes, you should rerun your build to ensure your changes are still good.
 You can then push your topic branch and its changes into your public fork repository
 
-	$ git push origin sramp-1234         # pushes your topic branch into your public fork of S-RAMP
+	$ git push origin artificer-1234         # pushes your topic branch into your public fork of S-RAMP
 
 and [generate a pull-request](http://help.github.com/pull-requests/). 
 

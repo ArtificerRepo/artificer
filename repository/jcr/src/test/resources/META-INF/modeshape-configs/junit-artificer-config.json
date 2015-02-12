@@ -1,0 +1,28 @@
+{
+    "name" : "Artificer-Repository",
+    "jndiName" : "",
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "storage" : {
+        "binaryStorage" : {
+            "type"  : "transient",
+            "minimumBinarySizeInBytes" : 99999999,
+            "minimumStringSize" : 99999999,
+        }
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        },
+        "providers" : [
+            {
+                "classname" : "org.artificer.repository.jcr.auth.MockAuthenticationProvider",
+                "policyName" : "overlord-idp"
+            }
+         ]
+    }
+}

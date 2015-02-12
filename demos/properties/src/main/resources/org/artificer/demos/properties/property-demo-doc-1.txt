@@ -1,0 +1,2 @@
+This is a sample document, it doesn't need any content, because we don't
+actually care about it.  :(  This demo is all about meta-data.

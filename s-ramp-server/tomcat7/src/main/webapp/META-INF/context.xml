@@ -1,8 +1,0 @@
-<Context>
-
-  <Resource name="jdbc/sramp" auth="Container" type="javax.sql.DataSource" username="sa" password=""
-    driverClassName="org.h2.Driver" url="jdbc:h2:file:overlord-data/sramp" maxActive="8" />
-
-  <Valve className="org.keycloak.adapters.tomcat.KeycloakAuthenticatorValve"/>
-
-</Context>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="S-RAMP Integration Tests: Setup">
+
+  <property name="filename.eap61" value="jboss-eap-6.1.0.zip" />
+  <property name="dir.eap61" value="jboss-eap-6.1" />
+
+  <property name="filename.eap62" value="jboss-eap-6.2.0.zip" />
+  <property name="dir.eap62" value="jboss-eap-6.2" />
+
+  <property name="filename.eap63" value="jboss-eap-6.3.0.zip" />
+  <property name="dir.eap63" value="jboss-eap-6.3" />
+
+  <property name="filename.wildfly8" value="wildfly-8.2.0.Final.zip" />
+  <property name="download.url.wildfly8"
+            value="http://download.jboss.org/wildfly/8.2.0.Final/${filename.wildfly8}" />
+  <property name="dir.wildfly8" value="wildfly-8.2.0.Final" />
+
+  <target name="install-eap61">
+    <!-- TODO: Fail is the ZIP isn't in the root? -->
+    <property name="name" value="JBoss EAP 6.1" />
+    <property name="filename" value="${filename.eap61}" />
+    <property name="dir" value="${project.build.directory}/${dir.eap61}" />
+    <antcall target="install" />
+  </target>
+
+  <target name="install-eap62">
+    <!-- TODO: Fail is the ZIP isn't in the root? -->
+    <property name="name" value="JBoss EAP 6.2" />
+    <property name="filename" value="${filename.eap62}" />
+    <property name="dir" value="${project.build.directory}/${dir.eap62}" />
+    <antcall target="install" />
+  </target>
+
+  <target name="install-eap63">
+    <!-- TODO: Fail is the ZIP isn't in the root? -->
+    <property name="name" value="JBoss EAP 6.3" />
+    <property name="filename" value="${filename.eap63}" />
+    <property name="dir" value="${project.build.directory}/${dir.eap63}" />
+    <antcall target="install" />
+  </target>
+
+  <target name="install-wildfly8">
+    <property name="name" value="Wildfly 8.2" />
+    <property name="filename" value="${filename.wildfly8}" />
+    <property name="dir" value="${project.build.directory}/${dir.wildfly8}" />
+    <property name="download.url" value="${download.url.wildfly8}" />
+    <antcall target="install" />
+  </target>
+
+  <target name="install" depends="download">
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Unzipping ${name}...                 #" />
+    <echo message="########################################" />
+    <echo message=" " />
+    <delete dir="${dir}" />
+    <unzip src="${filename}" dest="target" />
+
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Installing S-RAMP on ${name}...      #" />
+    <echo message="########################################" />
+    <echo message=" " />
+  </target>
+
+  <target name="download" if="missing" depends="find">
+    <echo message=" " />
+    <echo message="########################################" />
+    <echo message="# Downloading ${name}...               #" />
+    <echo message="########################################" />
+    <echo message=" " />
+    <get src="${download.url}" dest="." />
+  </target>
+
+  <target name="find">
+    <condition property="missing">
+      <not>
+        <resourceexists>
+          <file file="${filename}" />
+        </resourceexists>
+      </not>
+    </condition>
+  </target>
+
+</project>

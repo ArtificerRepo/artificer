@@ -1,0 +1,43 @@
+Overlord S-RAMP Guide
+=====================
+SOA Repository Artifact Model and Protocol
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:doctype: book
+
+include::GuideIntroduction.asciidoc[]
+
+include::GuideGettingStarted.asciidoc[]
+
+include::GuideSrampDataModels.asciidoc[]
+
+include::GuideSrampQueryLanguage.asciidoc[]
+
+include::GuideSrampRestAPI.asciidoc[]
+
+include::GuideArtificerClients.asciidoc[]
+
+include::GuideArtificerCLI.asciidoc[]
+
+include::GuideArtificerMaven.asciidoc[]
+
+include::GuideArtificerBrowser.asciidoc[]
+
+include::GuideUserManagement.asciidoc[]
+
+include::GuideExtensionPoints.asciidoc[]
+
+include::GuideArtificerImplementation.asciidoc[]
+
+include::GuideArtificerServerConfiguration.asciidoc[]
+
+:numbered!:
+
+[bibliography]
+Bibliography
+------------
+
+[bibliography]
+.Books
+- [[[walsh-muellner]]] Norman Walsh & Leonard Muellner.
+'DocBook - The Definitive Guide'. O'Reilly & Associates. 1999.
+ISBN 1-56592-580-7.

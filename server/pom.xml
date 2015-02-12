@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.artificer</groupId>
+    <artifactId>artificer</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>artificer-server</artifactId>
+  <packaging>war</packaging>
+  <name>Artificer Server</name>
+  <description>Artificer Atom binding module.</description>
+
+  <dependencies>
+    <!-- Artificer project dependencies -->
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-atom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-repository</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-integration</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-integration-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-integration-kie</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-integration-switchyard</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-integration-teiid</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-integration-rtgov</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-events</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-server-api</artifactId>
+    </dependency>
+
+    <!-- RESTEasy -->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-atom-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxb-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-multipart-provider</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>servlet-api</artifactId>
+          <groupId>javax.servlet</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+    </dependency>
+    
+    <!-- Third Party Dependencies -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+    </dependency>
+
+    <!-- Artificer Providers-->
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-repository-jcr</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-events-jms</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>jstl</groupId>
+      <artifactId>jstl</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <attachClasses>true</attachClasses>
+          <classesClassifier>classes</classesClassifier>
+          <warName>${project.artifactId}</warName>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

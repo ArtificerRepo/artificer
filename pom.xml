@@ -8,13 +8,13 @@
     <version>6.0.0.CR25</version>
   </parent>
 
-  <groupId>org.overlord.sramp</groupId>
-  <artifactId>s-ramp</artifactId>
-  <version>0.8.0-SNAPSHOT</version>
+  <groupId>org.artificer</groupId>
+  <artifactId>artificer</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>S-RAMP</name>
-  <description>S-RAMP is a SOA Repository Artifact Model and Protocol (S-RAMP) implementation.</description>
+  <name>Artificer</name>
+  <description>Artificer is a SOA Repository Artifact Model and Protocol (Artificer) implementation.</description>
   <url>http://www.jboss.org/overlord</url>
   <inceptionYear>2011</inceptionYear>
 
@@ -37,9 +37,9 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:git:git@github.com:Governance/s-ramp.git</connection>
-    <developerConnection>scm:git:git@github.com:Governance/s-ramp.git</developerConnection>
-    <url>scm:git:git@github.com:Governance/s-ramp.git</url>
+    <connection>scm:git:git@github.com:ArtificerRepo/artificer.git</connection>
+    <developerConnection>scm:git:git@github.com:ArtificerRepo/artificer.git</developerConnection>
+    <url>scm:git:git@github.com:ArtificerRepo/artificer.git</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -94,7 +94,7 @@
     <version.org.apache.maven.plugins>2.4.3</version.org.apache.maven.plugins>
     <version.org.codehaus.mojo>1.2.1</version.org.codehaus.mojo>
 
-    <!-- S-RAMP only libraries (not in BOM) -->
+    <!-- Artificer only libraries (not in BOM) -->
     <version.commons-beanutils>1.8.2</version.commons-beanutils>
     <version.org.apache.bcel>5.2</version.org.apache.bcel>
     <version.org.apache.commons.commons-lang3>3.1</version.org.apache.commons.commons-lang3>
@@ -222,303 +222,286 @@
 
       <!-- Internal Dependencies -->
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-api</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-atom</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-atom</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-client</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-common</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-common</artifactId>
-        <version>${project.version}</version>
-        <classifier>tests</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-distro-shell</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-events</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-events-jms</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-installer</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-integration</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-integration</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-common</artifactId>
         <version>${project.version}</version>
         <classifier>tests</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-integration-java</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-distro-shell</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-integration-kie</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-events</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-integration-switchyard</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-events-jms</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-integration-teiid</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-installer</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-integration-rtgov</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-integration</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-repository</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-integration</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-integration-java</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-repository-jcr</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-integration-kie</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-server</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-integration-switchyard</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-integration-teiid</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-integration-rtgov</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-repository</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-repository-jcr</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-server</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-server-api</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-server-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-server</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-server</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-server</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-server</artifactId>
         <version>${project.version}</version>
         <classifier>tests</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-server-eap6</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <!--<dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-server-tomcat7</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>-->
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-server-wildfly8</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-server-eap6</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-shell-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-shell</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-ui-war</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-server-wildfly8</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-ui-war</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-shell-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-shell</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-ui</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-ui</artifactId>
         <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-ui-war-eap6</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <!--<dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-ui-war-tomcat7</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>-->
-      <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-ui-war-wildfly8</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-ui-eap6</artifactId>
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-ui-widgets</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-ui-wildfly8</artifactId>
         <version>${project.version}</version>
+        <type>war</type>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp.demos</groupId>
-        <artifactId>s-ramp-demos-mvn-integration-artifacts</artifactId>
+        <groupId>org.artificer.demos</groupId>
+        <artifactId>artificer-demos-mvn-integration-artifacts</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>s-ramp-demos-webapp-multimodule-artifacts</artifactId>
+        <artifactId>artificer-demos-webapp-multimodule-artifacts</artifactId>
         <version>${project.version}</version>
       </dependency>
 
-      <!-- S-RAMP Sources -->
+      <!-- Artificer Sources -->
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-api</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-api</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-atom</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-atom</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-client</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-client</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-common</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-common</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-events</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-events</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-events-jms</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-events-jms</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-repository</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-repository</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-repository-jcr</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-repository-jcr</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-server</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-server</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-shell</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-shell</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-shell-api</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-shell-api</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-ui-war</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-ui</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
-        <groupId>org.overlord.sramp.demos</groupId>
-        <artifactId>s-ramp-demos-assembly</artifactId>
+        <groupId>org.artificer.demos</groupId>
+        <artifactId>artificer-demos-assembly</artifactId>
         <version>${project.version}</version>
         <type>zip</type>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp.demos.switchyard.multiapp</groupId>
+        <groupId>org.artificer.demos.switchyard.multiapp</groupId>
         <artifactId>switchyard-quickstart-demo-multi-artifacts</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-distro-shell</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-distro-shell</artifactId>
         <version>${project.version}</version>
         <classifier>onejar</classifier>
       </dependency>
 
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-javadoc</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-javadoc</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-javadoc</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-javadoc</artifactId>
         <version>${project.version}</version>
         <classifier>javadoc</classifier>
       </dependency>
 
-      <!-- S-RAMP documentation (jdocbook) -->
+      <!-- Artificer documentation (jdocbook) -->
       <dependency>
-        <groupId>org.overlord.sramp</groupId>
-        <artifactId>s-ramp-doc</artifactId>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-doc</artifactId>
         <version>${project.version}</version>
         <type>jdocbook</type>
       </dependency>
@@ -688,12 +671,6 @@
         <version>${version.org.keycloak}</version>
         <type>zip</type>
       </dependency>
-      <!--<dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-tomcat7-adapter-dist</artifactId>
-        <version>${version.org.keycloak}</version>
-        <type>zip</type>
-      </dependency>-->
 
       <!-- Third party libraries -->
       <dependency>
@@ -1023,38 +1000,35 @@
 
   <!-- modules in alphabetical order -->
   <modules>
-    <module>s-ramp-api</module>
-    <module>s-ramp-atom</module>
-    <module>s-ramp-client</module>
-    <module>s-ramp-common</module>
-    <module>s-ramp-demos</module>
-    <module>s-ramp-dev-server</module>
-    <module>s-ramp-distro</module>
-    <module>s-ramp-events</module>
-    <module>s-ramp-events-jms</module>
-    <module>s-ramp-installer</module>
-    <module>s-ramp-integration</module>
-    <module>s-ramp-integration/java</module>
-    <module>s-ramp-integration/kie</module>
-    <module>s-ramp-integration/rtgov</module>
-    <module>s-ramp-integration/switchyard</module>
-    <module>s-ramp-integration/teiid</module>
-    <module>s-ramp-javadoc</module>
-    <module>s-ramp-repository</module>
-    <module>s-ramp-repository-jcr</module>
-    <module>s-ramp-server</module>
-    <module>s-ramp-server/api</module>
-    <module>s-ramp-server/eap6</module>
-    <!--<module>s-ramp-server/tomcat7</module>-->
-    <module>s-ramp-server/wildfly8</module>
-    <module>s-ramp-shell</module>
-    <module>s-ramp-shell-api</module>
-    <module>s-ramp-test</module>
-    <module>s-ramp-ui-war</module>
-    <module>s-ramp-ui-war/eap6</module>
-    <!--<module>s-ramp-ui-war/tomcat7</module>-->
-    <module>s-ramp-ui-war/wildfly8</module>
-    <module>s-ramp-ui-widgets</module>
+    <module>api</module>
+    <module>atom</module>
+    <module>client</module>
+    <module>common</module>
+    <module>demos</module>
+    <module>dev-server</module>
+    <module>distro</module>
+    <module>events</module>
+    <module>events/jms</module>
+    <module>installer</module>
+    <module>integration</module>
+    <module>integration/java</module>
+    <module>integration/kie</module>
+    <module>integration/rtgov</module>
+    <module>integration/switchyard</module>
+    <module>integration/teiid</module>
+    <module>javadoc</module>
+    <module>repository</module>
+    <module>repository/jcr</module>
+    <module>server</module>
+    <module>server/api</module>
+    <module>server/eap6</module>
+    <module>server/wildfly8</module>
+    <module>shell</module>
+    <module>shell/api</module>
+    <module>test</module>
+    <module>ui</module>
+    <module>ui/eap6</module>
+    <module>ui/wildfly8</module>
   </modules>
   
   <profiles>
@@ -1062,7 +1036,7 @@
       <id>generate-docs</id>
       <modules>
         <!-- Don't run asciidoctor/jdocbook by default.  CI and the release plugin will use this profile. -->
-        <module>s-ramp-doc</module>
+        <module>doc</module>
       </modules>
     </profile>
   </profiles>
