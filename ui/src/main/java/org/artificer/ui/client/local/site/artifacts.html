@@ -4,22 +4,22 @@
     <meta charset="utf-8">
     <title data-role="dummy">S-RAMP Repository Browser - Artifacts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
-    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
-    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-datepicker.css" rel="stylesheet" media="screen"></link>
-    <link href="../../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-fileupload.min.css" rel="stylesheet" media="screen"></link>
-    <link href="../../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
-    <link href="../../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
+    <link href="../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-datepicker.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../webapp/bootstrap-2.3.1/css/bootstrap-fileupload.min.css" rel="stylesheet" media="screen"></link>
+    <link href="../../../../../../../webapp/css/s-ramp-ui.css" rel="stylesheet"></link>
+    <link href="../../../../../../../webapp/css/s-ramp-ui-responsive.css" rel="stylesheet"></link>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <script type="text/javascript" src="../../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-datepicker.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-fileupload.min.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-responsive.js"></script>
-    <script type="text/javascript" src="../../../../../../../../webapp/js/s-ramp-widgets.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/jquery-1.8.3/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/bootstrap-2.3.1/js/bootstrap-fileupload.min.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/js/s-ramp-responsive.js"></script>
+    <script type="text/javascript" src="../../../../../../../webapp/js/s-ramp-widgets.js"></script>
   </head>
 
   <body>
@@ -70,6 +70,29 @@
                                    autocomplete="off">
                           </div>
                           <div class="controls controls-row">
+                            <label class="sramp-filter-label" data-i18n-key="origin">Origin</label>
+                            <label class="radio offset1">
+                              <input data-field="originAny" type="radio" name="origin" id="origin-any" value=""></input>
+                              <span data-i18n-key="any">Any</span>
+                            </label>
+                            <label class="radio offset1">
+                              <input data-field="originPrimary" type="radio" name="origin" id="origin-primary" value="primary" checked="checked"></input>
+                              <span data-i18n-key="primary">Primary</span>
+                            </label>
+                            <label class="radio offset1">
+                              <input data-field="originDerived" type="radio" name="origin" id="origin-derived" value="derived"></input>
+                              <span data-i18n-key="derived">Derived</span>
+                            </label>
+                          </div>
+                          <div class="controls">
+                            <label class="sramp-filter-label" data-i18n-key="uuid">UUID</label>
+                            <input data-field="uuid" class="span12" type="text" placeholder="Any"></input>
+                          </div>
+                          <div class="controls">
+                            <label class="sramp-filter-label" data-i18n-key="name">Name</label>
+                            <input data-field="name" class="span12" type="text" placeholder="Any"></input>
+                          </div>
+                          <div class="controls controls-row">
                             <label class="sramp-filter-label" data-i18n-key="date-created">Date Created</label>
                             <input data-field="dateCreatedFrom" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
                             <span class="span2 desktop-only" style="padding-top: 4px; text-align: center" data-i18n-key="to">to</span>
@@ -88,21 +111,6 @@
                           <div class="controls">
                             <label class="sramp-filter-label" data-i18n-key="modified-by">Last Modified By</label>
                             <input data-field="lastModifiedBy" class="span12" type="text" placeholder="Any"></input>
-                          </div>
-                          <div class="controls controls-row">
-                            <label class="sramp-filter-label" data-i18n-key="origin">Origin</label>
-                            <label class="radio offset1">
-                              <input data-field="originAny" type="radio" name="origin" id="origin-any" value=""></input>
-                              <span data-i18n-key="any">Any</span>
-                            </label>
-                            <label class="radio offset1">
-                              <input data-field="originPrimary" type="radio" name="origin" id="origin-primary" value="primary" checked="checked"></input>
-                              <span data-i18n-key="primary">Primary</span>
-                            </label>
-                            <label class="radio offset1">
-                              <input data-field="originDerived" type="radio" name="origin" id="origin-derived" value="derived"></input>
-                              <span data-i18n-key="derived">Derived</span>
-                            </label>
                           </div>
                           <div class="controls">
                             <button data-field="clearCoreFilters" class="btn btn-focus btn-clear" data-i18n-key="clear-all-filters">Clear All Filters</button>
@@ -214,7 +222,7 @@
           <div class="span9">
             <div class="row-fluid">
               <div class="span12 sramp-search">
-                <input data-field="sramp-search-box" id="sramp-search-box" type="text" class="span12 sramp-search-box" placeholder="Search..."></input>
+                <input data-field="sramp-search-box" id="sramp-search-box" type="text" class="span12 sramp-search-box" placeholder="Query..."></input>
               </div>
             </div>
             <div class="row-fluid sramp-artifacts">

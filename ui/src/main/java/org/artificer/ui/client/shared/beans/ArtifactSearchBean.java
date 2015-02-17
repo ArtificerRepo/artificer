@@ -27,9 +27,7 @@ public class ArtifactSearchBean implements Serializable {
 
     private static final long serialVersionUID = ArtifactSearchBean.class.hashCode();
     
-    private ArtifactFilterBean filters;
-    
-    private String searchText;
+    private String queryText;
     
     private int page;
     
@@ -37,32 +35,19 @@ public class ArtifactSearchBean implements Serializable {
     
     private boolean sortAscending;
 
+
     /**
-     * @return the filters
+     * @return the queryText
      */
-    public ArtifactFilterBean getFilters() {
-        return filters;
+    public String getQueryText() {
+        return queryText;
     }
 
     /**
-     * @param filters the filters to set
+     * @param queryText the searchText to set
      */
-    public void setFilters(ArtifactFilterBean filters) {
-        this.filters = filters;
-    }
-
-    /**
-     * @return the searchText
-     */
-    public String getSearchText() {
-        return searchText;
-    }
-
-    /**
-     * @param searchText the searchText to set
-     */
-    public void setSearchText(String searchText) {
-        this.searchText = searchText;
+    public void setQueryText(String queryText) {
+        this.queryText = queryText;
     }
 
     /**

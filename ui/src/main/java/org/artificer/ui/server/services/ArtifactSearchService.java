@@ -55,9 +55,6 @@ public class ArtifactSearchService implements IArtifactSearchService {
     public ArtifactSearchService() {
     }
 
-    /**
-     * @see org.artificer.ui.client.shared.services.IArtifactSearchService#search(org.artificer.ui.client.shared.beans.ArtifactFilterBean, java.lang.String, int, java.lang.String, boolean)
-     */
     @Override
     public ArtifactResultSetBean search(ArtifactSearchBean searchBean) throws ArtificerUiException {
         int pageSize = 20;
@@ -65,12 +62,7 @@ public class ArtifactSearchService implements IArtifactSearchService {
             ArtifactResultSetBean rval = new ArtifactResultSetBean();
 
             int req_startIndex = (searchBean.getPage() - 1) * pageSize;
-            ArtificerClientQuery query = null;
-            if (searchBean.getSearchText() != null && searchBean.getSearchText().startsWith("/")) { //$NON-NLS-1$
-                query = ArtificerApiClientAccessor.getClient().buildQuery(searchBean.getSearchText());
-            } else {
-                query = createQuery(searchBean.getFilters(), searchBean.getSearchText());
-            }
+            ArtificerClientQuery query = ArtificerApiClientAccessor.getClient().buildQuery(searchBean.getQueryText());
             ArtificerClientQuery sq = query.startIndex(req_startIndex).orderBy(searchBean.getSortColumnId());
             if (searchBean.isSortAscending()) {
                 sq.ascending();
@@ -120,90 +112,80 @@ public class ArtifactSearchService implements IArtifactSearchService {
         }
     }
 
-    /**
-     * Creates a query given the selected filters and search text.
-     */
-    protected ArtificerClientQuery createQuery(ArtifactFilterBean filters, String searchText) {
+    @Override
+    public String query(ArtifactFilterBean filters) throws ArtificerUiException {
+
         StringBuilder queryBuilder = new StringBuilder();
         // Initial query
-        queryBuilder.append("/s-ramp"); //$NON-NLS-1$
+        queryBuilder.append("/s-ramp");
         // Artifact type
         if (filters.getArtifactType() != null && filters.getArtifactType().trim().length() > 0) {
             ArtifactType type = ArtifactType.valueOf(filters.getArtifactType());
-            queryBuilder.append("/").append(type.getModel()).append("/").append(type.getType()); //$NON-NLS-1$ //$NON-NLS-2$
+            queryBuilder.append("/").append(type.getModel()).append("/").append(type.getType());
         }
         List<String> criteria = new ArrayList<String>();
-        List<Object> params = new ArrayList<Object>();
-
-        // Search Text
-        if (searchText != null && searchText.trim().length() > 0) {
-            criteria.add("fn:matches(@name, ?)"); //$NON-NLS-1$
-            params.add(searchText.replace("*", ".*")); //$NON-NLS-1$ //$NON-NLS-2$
+        
+        if (filters.getUuid() != null && filters.getUuid().trim().length() > 0) {
+            criteria.add("@uuid = '" + filters.getUuid() + "'");
+        }
+        if (filters.getName() != null && filters.getName().trim().length() > 0) {
+            criteria.add("@name = '" + filters.getName() + "'");
         }
         // Created on
         if (filters.getDateCreatedFrom() != null) {
-            criteria.add("@createdTimestamp >= ?"); //$NON-NLS-1$
             Calendar cal = Calendar.getInstance();
             cal.setTime(filters.getDateCreatedFrom());
             zeroOutTime(cal);
-            params.add(cal);
+            criteria.add("@createdTimestamp >= " + cal.getTimeInMillis());
         }
         if (filters.getDateCreatedTo() != null) {
-            criteria.add("@createdTimestamp < ?"); //$NON-NLS-1$
             Calendar cal = Calendar.getInstance();
             cal.setTime(filters.getDateCreatedTo());
             zeroOutTime(cal);
             cal.add(Calendar.DAY_OF_YEAR, 1);
-            params.add(cal);
+            criteria.add("@createdTimestamp < " + cal.getTimeInMillis());
         }
         // Last Modified on
         if (filters.getDateModifiedFrom() != null) {
-            criteria.add("@lastModifiedTimestamp >= ?"); //$NON-NLS-1$
             Calendar cal = Calendar.getInstance();
             cal.setTime(filters.getDateModifiedFrom());
             zeroOutTime(cal);
-            params.add(cal);
+            criteria.add("@lastModifiedTimestamp >= " + cal.getTimeInMillis());
         }
         if (filters.getDateModifiedTo() != null) {
-            criteria.add("@lastModifiedTimestamp < ?"); //$NON-NLS-1$
             Calendar cal = Calendar.getInstance();
             cal.setTime(filters.getDateModifiedTo());
             zeroOutTime(cal);
             cal.add(Calendar.DAY_OF_YEAR, 1);
-            params.add(cal);
+            criteria.add("@lastModifiedTimestamp < " + cal.getTimeInMillis());
         }
         // Created By
         if (filters.getCreatedBy() != null && filters.getCreatedBy().trim().length() > 0) {
-            criteria.add("@createdBy = ?"); //$NON-NLS-1$
-            params.add(filters.getCreatedBy());
+            criteria.add("@createdBy = '" + filters.getCreatedBy() + "'");
         }
         // Last Modified By
         if (filters.getLastModifiedBy() != null && filters.getLastModifiedBy().trim().length() > 0) {
-            criteria.add("@lastModifiedBy = ?"); //$NON-NLS-1$
-            params.add(filters.getLastModifiedBy());
+            criteria.add("@lastModifiedBy = '" + filters.getLastModifiedBy() + "'");
         }
         // Origin
         if (filters.getOrigin() == ArtifactOriginEnum.primary) {
-            criteria.add("@derived = ?"); //$NON-NLS-1$
-            params.add("false"); //$NON-NLS-1$
+            criteria.add("@derived = 'false'");
         } else if (filters.getOrigin() == ArtifactOriginEnum.derived) {
-            criteria.add("@derived = ?"); //$NON-NLS-1$
-            params.add("true"); //$NON-NLS-1$
+            criteria.add("@derived = 'true'");
         }
         // Classifiers
         if (hasClassifiers(filters)) {
             Set<String> ontologyBases = filters.getClassifiers().keySet();
             StringBuilder classifierCriteria = new StringBuilder();
-            classifierCriteria.append("s-ramp:classifiedByAllOf(."); //$NON-NLS-1$
+            classifierCriteria.append("s-ramp:classifiedByAllOf(.");
             for (String base : ontologyBases) {
                 Set<String> ids = filters.getClassifiers().get(base);
                 for (String id : ids) {
-                    String classifierUri = base + "#" + id; //$NON-NLS-1$
-                    classifierCriteria.append(",?"); //$NON-NLS-1$
-                    params.add(classifierUri);
+                    String classifierUri = base + "#" + id;
+                    classifierCriteria.append("," + classifierUri);
                 }
             }
-            classifierCriteria.append(")"); //$NON-NLS-1$
+            classifierCriteria.append(")");
             criteria.add(classifierCriteria.toString());
         }
         // Custom properties
@@ -216,33 +198,21 @@ public class ArtifactSearchService implements IArtifactSearchService {
                 // the user to input any query they want anyway (via the
                 // query text box)...
                 if (propVal == null || propVal.trim().length() == 0) {
-                    criteria.add("@" + propName); //$NON-NLS-1$
+                    criteria.add("@" + propName);
                 } else {
-                    criteria.add("@" + propName + " = ?"); //$NON-NLS-1$ //$NON-NLS-2$
-                    params.add(propVal);
+                    criteria.add("@" + propName + " = '" + propVal + "'");
                 }
             }
         }
 
         // Now create the query predicate from the generated criteria
         if (criteria.size() > 0) {
-            queryBuilder.append("["); //$NON-NLS-1$
-            queryBuilder.append(StringUtils.join(criteria, " and ")); //$NON-NLS-1$
-            queryBuilder.append("]"); //$NON-NLS-1$
+            queryBuilder.append("[");
+            queryBuilder.append(StringUtils.join(criteria, " and "));
+            queryBuilder.append("]");
         }
-
-        // Create the query, and parameterize it
-        ArtificerAtomApiClient client = ArtificerApiClientAccessor.getClient();
-        ArtificerClientQuery query = client.buildQuery(queryBuilder.toString());
-        for (Object param : params) {
-            if (param instanceof String) {
-                query.parameter((String) param);
-            }
-            if (param instanceof Calendar) {
-                query.parameter((Calendar) param);
-            }
-        }
-        return query;
+        
+        return queryBuilder.toString();
     }
 
     /**

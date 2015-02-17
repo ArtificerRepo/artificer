@@ -122,7 +122,7 @@ public class ArtifactsPage extends AbstractPage {
         filtersPanel.addValueChangeHandler(new ValueChangeHandler<ArtifactFilterBean>() {
             @Override
             public void onValueChange(ValueChangeEvent<ArtifactFilterBean> event) {
-                doArtifactSearch();
+                populateQueryBox();
             }
         });
         searchBox.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -209,6 +209,28 @@ public class ArtifactsPage extends AbstractPage {
         doArtifactSearch(page);
     }
 
+    // Theoretically, query generation could be done right here.  However, numerous conveniences are used (Calendar, etc.)
+    // that are not supported by GWT emulation.  So, for now, offloading to the server-side services.
+    protected void populateQueryBox() {
+        final ArtifactFilterBean filterBean = filtersPanel.getValue();
+        stateService.put(ApplicationStateKeys.ARTIFACTS_FILTER, filterBean);
+
+        searchService.query(filterBean, new IServiceInvocationHandler<String>() {
+            @Override
+            public void onReturn(String data) {
+                searchBox.setValue(data);
+                doArtifactSearch();
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                notificationService.sendErrorNotification(i18n.format("artifacts.error-searching"), error); //$NON-NLS-1$
+                noDataMessage.setVisible(true);
+                searchInProgressMessage.setVisible(false);
+            }
+        });
+    }
+
     /**
      * Search for artifacts based on the current filter settings and search text.
      */
@@ -223,18 +245,18 @@ public class ArtifactsPage extends AbstractPage {
     protected void doArtifactSearch(int page) {
         onSearchStarting();
         currentPage = page;
-        final ArtifactFilterBean filterBean = filtersPanel.getValue();
-		final String searchText = this.searchBox.getValue();
+		String searchText = this.searchBox.getValue();
+        if (searchText == null || searchText.length() == 0) {
+            searchText = "/s-ramp";
+        }
         final SortColumn currentSortColumn = this.artifactsTable.getCurrentSortColumn();
 
-        stateService.put(ApplicationStateKeys.ARTIFACTS_FILTER, filterBean);
         stateService.put(ApplicationStateKeys.ARTIFACTS_SEARCH_TEXT, searchText);
         stateService.put(ApplicationStateKeys.ARTIFACTS_PAGE, currentPage);
         stateService.put(ApplicationStateKeys.ARTIFACTS_SORT_COLUMN, currentSortColumn);
         
         ArtifactSearchBean searchBean = new ArtifactSearchBean();
-        searchBean.setFilters(filterBean);
-        searchBean.setSearchText(searchText);
+        searchBean.setQueryText(searchText);
         searchBean.setPage(page);
         searchBean.setSortColumnId(currentSortColumn.columnId);
         searchBean.setSortAscending(currentSortColumn.ascending);

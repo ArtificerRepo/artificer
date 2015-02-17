@@ -54,6 +54,11 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
     @Inject @DataField
     protected TextBox artifactType;
 
+    @Inject @DataField
+    protected TextBox uuid;
+    @Inject @DataField
+    protected TextBox name;
+
     // Date Created
     @Inject @DataField
     protected DateBox dateCreatedFrom;
@@ -135,6 +140,8 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
             }
         };
         artifactType.addValueChangeHandler(valueChangeHandler);
+        uuid.addValueChangeHandler(valueChangeHandler);
+        name.addValueChangeHandler(valueChangeHandler);
         dateCreatedFrom.addValueChangeHandler(valueChangeHandler);
         dateCreatedTo.addValueChangeHandler(valueChangeHandler);
         dateModifiedFrom.addValueChangeHandler(valueChangeHandler);
@@ -154,6 +161,8 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
     protected void onFilterValueChange() {
         ArtifactFilterBean newState = new ArtifactFilterBean();
         newState.setArtifactType(artifactType.getValue())
+            .setUuid(uuid.getValue())
+            .setName(name.getValue())
             .setDateCreatedFrom(dateCreatedFrom.getDateValue())
             .setDateCreatedTo(dateCreatedTo.getDateValue())
             .setDateModifiedFrom(dateModifiedFrom.getDateValue())
@@ -206,13 +215,15 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
      */
     @Override
     public void setValue(ArtifactFilterBean value, boolean fireEvents) {
-        artifactType.setValue(value.getArtifactType() == null ? "" : value.getArtifactType()); //$NON-NLS-1$
+        artifactType.setValue(value.getArtifactType() == null ? "" : value.getArtifactType());
+        uuid.setValue(value.getCreatedBy() == null ? "" : value.getUuid());
+        name.setValue(value.getCreatedBy() == null ? "" : value.getName());
         dateCreatedFrom.setDateValue(value.getDateCreatedFrom() == null ? null : value.getDateCreatedFrom());
         dateCreatedTo.setDateValue(value.getDateCreatedTo() == null ? null : value.getDateCreatedTo());
         dateModifiedFrom.setDateValue(value.getDateModifiedFrom() == null ? null : value.getDateModifiedFrom());
         dateModifiedTo.setDateValue(value.getDateModifiedTo() == null ? null : value.getDateModifiedTo());
-        createdBy.setValue(value.getCreatedBy() == null ? "" : value.getCreatedBy()); //$NON-NLS-1$
-        lastModifiedBy.setValue(value.getLastModifiedBy() == null ? "" : value.getLastModifiedBy()); //$NON-NLS-1$
+        createdBy.setValue(value.getCreatedBy() == null ? "" : value.getCreatedBy());
+        lastModifiedBy.setValue(value.getLastModifiedBy() == null ? "" : value.getLastModifiedBy());
         if (value.getOrigin() == ArtifactOriginEnum.any) {
             originAny.setValue(true);
         } else if (value.getOrigin() == ArtifactOriginEnum.derived) {

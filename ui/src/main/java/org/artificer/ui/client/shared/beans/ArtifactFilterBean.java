@@ -33,14 +33,16 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class ArtifactFilterBean implements Serializable {
 
     private static final long serialVersionUID = 3789397680981626569L;
-    
-    private String artifactType = ""; //$NON-NLS-1$
+
+    private String artifactType = "";
+    private String uuid = "";
+    private String name = "";
     private Date dateCreatedFrom;
     private Date dateCreatedTo;
     private Date dateModifiedFrom;
     private Date dateModifiedTo;
-    private String createdBy = ""; //$NON-NLS-1$
-    private String lastModifiedBy = ""; //$NON-NLS-1$
+    private String createdBy = "";
+    private String lastModifiedBy = "";
     private ArtifactOriginEnum origin = ArtifactOriginEnum.primary;
     /**
      * The classifiers selected by the user in the 'Classifiers' filter section.  This is
@@ -66,6 +68,14 @@ public class ArtifactFilterBean implements Serializable {
      */
     public String getArtifactType() {
         return artifactType;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public String getName() {
+        return name;
     }
 
     /**
@@ -122,6 +132,16 @@ public class ArtifactFilterBean implements Serializable {
      */
     public ArtifactFilterBean setArtifactType(String artifactType) {
         this.artifactType = artifactType;
+        return this;
+    }
+
+    public ArtifactFilterBean setUuid(String uuid) {
+        this.uuid = uuid;
+        return this;
+    }
+
+    public ArtifactFilterBean setName(String name) {
+        this.name = name;
         return this;
     }
 
@@ -218,6 +238,8 @@ public class ArtifactFilterBean implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((artifactType == null) ? 0 : artifactType.hashCode());
+        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
         result = prime * result + ((dateCreatedFrom == null) ? 0 : dateCreatedFrom.hashCode());
         result = prime * result + ((dateCreatedTo == null) ? 0 : dateCreatedTo.hashCode());
@@ -246,6 +268,16 @@ public class ArtifactFilterBean implements Serializable {
             if (other.artifactType != null)
                 return false;
         } else if (!artifactType.equals(other.artifactType))
+            return false;
+        if (uuid == null) {
+            if (other.uuid != null)
+                return false;
+        } else if (!uuid.equals(other.uuid))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
             return false;
         if (createdBy == null) {
             if (other.createdBy != null)
