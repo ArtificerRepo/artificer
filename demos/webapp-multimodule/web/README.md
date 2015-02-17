@@ -4,4 +4,4 @@ The web project contains a simple RESTEasy-based web application.  It depends on
 
 ## Using the Web Application
 
-The project builds s-ramp-demos-webapp-multimodule-web.war which is directly deployable into any Java application server.
+The project builds artificer-demos-webapp-multimodule-web.war which is directly deployable into any Java application server.

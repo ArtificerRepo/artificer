@@ -1,21 +1,21 @@
 
 == Welcome ==
-Welcome to the S-RAMP Distribution (${project.version}), thanks for 
+Welcome to the Artificer Distribution (${project.version}), thanks for
 downloading!
 
 
 == Overview ==
 This distribution comes with the following:
 
-    1) bin/*.war - the WARs that make up the S-RAMP runtime, including
+    1) bin/*.war - the WARs that make up the Artificer runtime, including
        (but not limited to) the server WAR and the Repository Browser UI WAR
-    2) bin/s-ramp-shell-${project.version}.jar - the S-RAMP interactive shell.
-    3) bin/s-ramp.* - shell and batch scripts to run the S-RAMP interactive 
+    2) bin/artificer-shell-${project.version}.jar - the Artificer interactive shell.
+    3) bin/artificer.* - shell and batch scripts to run the Artificer interactive
        shell.
     4) demos - a number of demo maven projects to help you get started with 
-       S-RAMP.
-    5) src - all of the S-RAMP source code, in a number of "-sources" JARs.
-    6) build.xml - an Ant script that will install and configure S-RAMP into
+       Artificer.
+    5) src - all of the Artificer source code, in a number of "-sources" JARs.
+    6) build.xml - an Ant script that will install and configure Artificer into
        one of:
        B) JBoss Wildfly 8
        B) JBoss EAP 6
@@ -34,9 +34,9 @@ for you! From the root of the distribution, simply run:
 Once the installation completes, you can start your preferred runtime using 
 the standard startup scripts and then try out any of the following:
 
-        - S-RAMP demos (included)
-        - S-RAMP repository browser UI (http://localhost:8080/s-ramp-ui)
-        - S-RAMP interactive shell (bin/s-ramp.sh)
+        - Artificer demos (included)
+        - Artificer repository browser UI (http://localhost:8080/artificer-ui)
+        - Artificer interactive shell (bin/artificer.sh)
 
 You should be able to log in with the following credentials:
 

@@ -1,4 +1,4 @@
-# S-RAMP Integration Tests
+# Artificer Integration Tests
 
 This module contains a robust suite of integration tests, based on Arquillian and runnable on multiple S-RAMP-supported platforms.  The real S-RAMP installer is run against the target platform, Arquillian runs it in a "managed mode", and the tests operate purely "as-client".  All that is to say that the environment is *real world*.  To run the tests:
 
