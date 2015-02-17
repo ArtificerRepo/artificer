@@ -1,5 +1,5 @@
-Introduction to S-RAMP
-----------------------
+Introduction to Artificer
+-------------------------
 
 The S-RAMP Specification
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,7 +20,7 @@ provide a common data model and protocol for interacting with a repository of (p
 SOA artifacts.  The goal of the specification is to foster interoperability between 
 repository implementations by standardizing on a data model and API. 
 
-This guide will discuss both the OASIS standard and the Overlord open source implementation.
+This guide will discuss both the OASIS standard and the Artificer open source implementation.
 
 
 Overview
@@ -43,7 +43,7 @@ meta-data:
 Core Properties
 ~~~~~~~~~~~~~~~
 
-All artifacts in S-RAMP contain a set of core properties such as name, description, 
+All artifacts in Artificer contain a set of core properties such as name, description,
 creation date, etc.  Many of these properties are automatically set by the server when the
 artifact is added and/or updated.  Others, such as description, can be set by clients.
 

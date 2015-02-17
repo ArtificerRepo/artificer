@@ -1,36 +1,36 @@
-Overlord S-RAMP Maven Integration
----------------------------------
+Artificer Maven Integration
+---------------------------
 
 Overview
 ~~~~~~~~
-A key feature of the Overlord S-RAMP project is its integration with Maven.  Currently
+A key feature of the Artificer project is its integration with Maven.  Currently
 there are two mechanisms provided to integrate with Maven.  First, the project provides
-an HTTP servlet which acts as a facade in front of the S-RAMP repository.  This can be used for dependency retrieval
+an HTTP servlet which acts as a facade in front of the Artificer repository.  This can be used for dependency retrieval
 and artifact deployments, just as any other Maven repository.  Second, there is a "maven"
-namespace in the S-RAMP Shell (CLI) providing integration between the CLI and Maven.
+namespace in the Artificer Shell (CLI) providing integration between the CLI and Maven.
 
 
-Deploying to S-RAMP
-~~~~~~~~~~~~~~~~~~~
-The S-RAMP URL can be directly used in the distributionManagement section.  For example:
+Deploying to Artificer
+~~~~~~~~~~~~~~~~~~~~~~
+The Artificer URL can be directly used in the distributionManagement section.  For example:
 
 ----
 <distributionManagement>
   <repository>
     <id>local-artificer-repo</id>
-    <name>S-RAMP Releases Repository</name>
-    <url>http://localhost:8080/s-ramp-server/maven/repository</url>
+    <name>Artificer Releases Repository</name>
+    <url>http://localhost:8080/artificer-server/maven/repository</url>
   </repository>
   <snapshotRepository>
     <id>local-artificer-repo-snapshots</id>
-    <name>S-RAMP Snapshots Repository</name>
-    <url>http://localhost:8080/s-ramp-server/maven/repository</url>
+    <name>Artificer Snapshots Repository</name>
+    <url>http://localhost:8080/artificer-server/maven/repository</url>
   </snapshotRepository>
 </distributionManagement>
 ----
 
-With these settings, maven deployments will be sent directly to the S-RAMP repository using
-the S-RAMP API.  Note that artifacts will be added to the S-RAMP repository with an artifact
+With these settings, maven deployments will be sent directly to the Artificer repository using
+the Artificer API.  Note that artifacts will be added to the Artificer repository with an artifact
 type based on the maven type of the project.  This behavior can be overridden by adding a
 query parameter to the repository URL in the pom.xml.  For example:
 
@@ -38,8 +38,8 @@ query parameter to the repository URL in the pom.xml.  For example:
 <distributionManagement>
   <repository>
     <id>local-artificer-repo</id>
-    <name>S-RAMP Releases Repository</name>
-    <url>http://localhost:8080/s-ramp-server/maven/repository?artifactType=SwitchYardApplication</url>
+    <name>Artificer Releases Repository</name>
+    <url>http://localhost:8080/artificer-server/maven/repository?artifactType=SwitchYardApplication</url>
   </repository>
 </distributionManagement>
 ----
@@ -47,52 +47,52 @@ query parameter to the repository URL in the pom.xml.  For example:
 The above example will cause the maven artifact to be uploaded with an S-RAMP artifact type 
 of "SwitchYardApplication" whenever a maven deployment or release build is performed.
 
-For example, the following maven command could be run to deploy the maven artifact directly into s-ramp:
+For example, the following maven command could be run to deploy the maven artifact directly into Artificer:
 
 ----
 mvn clean deploy
 ----
 
 
-Adding S-RAMP Artifacts as Dependencies
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Additionally, artifacts from the S-RAMP repository can
+Adding Artificer Artifacts as Dependencies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Additionally, artifacts from the Artificer repository can
 be used as dependencies in your maven project.
 
-First, the S-RAMP repository must be configured in the maven project as a maven repository.  This 
+First, the Artificer repository must be configured in the maven project as a maven repository.  This
 can be done with the following markup in the pom.xml.
 
 ----
 <repositories>
   <repository>
     <id>local-artificer-repo</id>
-    <name>Local S-RAMP Repository</name>
-    <url>http://localhost:8080/s-ramp-server/maven/repository</url>
+    <name>Local Artificer Repository</name>
+    <url>http://localhost:8080/artificer-server/maven/repository</url>
     <layout>default</layout>
   </repository>
 </repositories>
 ----
 
-Once the repository is configured, an S-RAMP artifact can be referenced as a dependency in two 
-ways.  First, if the artifact was added to S-RAMP using the maven integration to deploy it, then 
-the artifact in S-RAMP will contain maven specific properties, allowing it to be referenced as a 
+Once the repository is configured, an Artificer artifact can be referenced as a dependency in two
+ways.  First, if the artifact was added to Artificer using the maven integration to deploy it, then
+the artifact in Artificer will contain maven specific properties, allowing it to be referenced as a
 dependency using those maven specific properties.  In this case, simply add the dependency as you 
 normally would in a maven project.  For example:
 
 ----
 <dependency>
   <groupId>org.artificer.wiki</groupId>
-  <artifactId>s-ramp-wiki-example</artifactId>
+  <artifactId>artificer-wiki-example</artifactId>
   <version>1.0</version>
 </dependency>
 ----
 
-However, even if an artifact was added to the S-RAMP repository in some other way (and therefore 
+However, even if an artifact was added to the Artificer repository in some other way (and therefore
 does not have any maven specific properties) it can be used as a dependency.  In this case, you 
-can reference the dependency by using its S-RAMP artifact model, type, and UUID.  The model and 
+can reference the dependency by using its Artificer artifact model, type, and UUID.  The model and
 type are used to make up a maven groupId, while the UUID becomes the maven artifactId.  The 
 version information is not used (but still required in the pom.xml).  For example, if a JAR is 
-added to the S-RAMP repository and you wish to use it as a dependency, your pom.xml might contain 
+added to the Artificer repository and you wish to use it as a dependency, your pom.xml might contain
 the following dependency.
 
 ----
@@ -105,8 +105,8 @@ the following dependency.
 
 
 Authentication
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Whenever the S-RAMP Maven integration features are used, you will need to provide valid authentication credentials in the
+~~~~~~~~~~~~~~
+Whenever the Artificer Maven integration features are used, you will need to provide valid authentication credentials in the
 http://maven.apache.org/settings.html[Maven settings.xml] file.
 However, the typical "username" and "password" values are not sufficient, since they are ignored during artifact
 retrieval (ie, GET calls to the repo).  Instead, you must explicitly define the BASIC authentication header value.
@@ -152,11 +152,11 @@ An example of providing credentials in the settings.xml file:
 
 Maven Integration in the CLI
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-_Note_:  For more general information about the S-RAMP Shell please see the S-RAMP CLI chapter 
+_Note_:  For more general information about the Artificer Shell please see the Artificer CLI chapter
 in this guide.
 
-Another available mechanism for integrating with maven is the S-RAMP CLI's "maven" command 
-namespace.  For help on the maven commands in the CLI, run the S-RAMP shell (artificer.sh) and
+Another available mechanism for integrating with maven is the Artificer CLI's "maven" command
+namespace.  For help on the maven commands in the CLI, run the Artificer shell (artificer.sh) and
 type the following from the resulting prompt:
 
 ----
@@ -164,4 +164,4 @@ help maven
 ----
 
 Using the maven CLI commands is often a good choice if you wish to incorporate maven related
-S-RAMP operations into a script of some kind.
+Artificer operations into a script of some kind.

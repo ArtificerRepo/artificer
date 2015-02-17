@@ -1,11 +1,11 @@
-The S-RAMP Browser (UI)
------------------------
+The Artificer Browser (UI)
+--------------------------
 
 Overview
 ~~~~~~~~
-The Overlord S-RAMP project comes with a user interface that allows end users (or 
-more likely business admins) to browse all of the artifacts in the S-RAMP repository.
-This UI is capable of viewing and manipulating all S-RAMP artifacts in a very 
+The Artificer project comes with a user interface that allows end users (or
+more likely business admins) to browse all of the artifacts in the Artificer repository.
+This UI is capable of viewing and manipulating all Artificer artifacts in a very
 generic way, supporting all aspects of the S-RAMP specification (properties, 
 classifiers, relationships, etc).
 

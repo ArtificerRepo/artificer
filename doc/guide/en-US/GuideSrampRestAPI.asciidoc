@@ -1,5 +1,5 @@
-Overlord S-RAMP REST API Endpoints
-----------------------------------
+Artificer REST API Endpoints
+----------------------------
 
 The intent of the S-RAMP specification is to outline the data model and protocol designed to define how a repository
 should store and manipulate artifacts. The foundation document defines the former, while various protocol binding
@@ -8,7 +8,7 @@ documents define the latter. Version 1 of the S-RAMP specification includes a si
 The S-RAMP specification does not dictate the format of the Atom REST endpoints.  Instead, the 
 client is expected to query a xref:api-get-service-document[service document endpoint] and inspect it to find the
 various relevant endpoints.  The specification does present a notional format, but implementations are not required
-to follow it.  This Guide will give examples based on the spec's notional format, as well as Overlord-specific
+to follow it.  This Guide will give examples based on the spec's notional format, as well as Artificer-specific
 extensions.  But it bears repeating that for any given server implementation, a client should first query the
 xref:api-get-service-document[Atom service document].
 
@@ -17,7 +17,7 @@ used for each of the supported operations.  In general, the Atom API data models
 custom S-RAMP specific XML structures.  Atom Entry documents are used when dealing with individual
 artifacts, while Atom Feed documents are used when dealing with lists of documents.
 
-The following table lists the endpoints available in the Overlord implementation:
+The following table lists the endpoints available in the Artificer implementation:
 
 [width="100%",options="header"]
 |=============================
@@ -465,9 +465,9 @@ HTTP/1.1 200 OK
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <atom:entry xmlns:atom="http://www.w3.org/2005/Atom" xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" xmlns:xlink="http://www.w3.org/1999/xlink" s-ramp:derived="true">
 <atom:title>submitOrderResponseType</atom:title>
-<atom:link href="http://localhost:8080/s-ramp-server/s-ramp/xsd/ComplexTypeDeclaration/0104e848-fe91-4d93-a307-fb69ec9fd638" rel="self" type="application/atom+xml;type=&quot;entry&quot;"/>
-<atom:link href="http://localhost:8080/s-ramp-server/s-ramp/xsd/ComplexTypeDeclaration/0104e848-fe91-4d93-a307-fb69ec9fd638/media" rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;"/>
-<atom:link href="http://localhost:8080/s-ramp-server/s-ramp/xsd/ComplexTypeDeclaration/0104e848-fe91-4d93-a307-fb69ec9fd638" rel="edit" type="application/atom+xml;type=&quot;entry&quot;"/>
+<atom:link href="http://localhost:8080/artificer-server/s-ramp/xsd/ComplexTypeDeclaration/0104e848-fe91-4d93-a307-fb69ec9fd638" rel="self" type="application/atom+xml;type=&quot;entry&quot;"/>
+<atom:link href="http://localhost:8080/artificer-server/s-ramp/xsd/ComplexTypeDeclaration/0104e848-fe91-4d93-a307-fb69ec9fd638/media" rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;"/>
+<atom:link href="http://localhost:8080/artificer-server/s-ramp/xsd/ComplexTypeDeclaration/0104e848-fe91-4d93-a307-fb69ec9fd638" rel="edit" type="application/atom+xml;type=&quot;entry&quot;"/>
 <atom:category label="XML Schema Complex Type Declaration" scheme="x-s-ramp:2013:type" term="ComplexTypeDeclaration"/>
 <atom:category label="XML Schema Complex Type Declaration" scheme="x-s-ramp:2013:model" term="xsd"/>
 <atom:updated>2013-07-22T12:19:23.554-04:00</atom:updated>
@@ -580,7 +580,7 @@ HTTP/1.1 200 OK
 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <atom:feed xmlns:atom="http://www.w3.org/2005/Atom" xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
-  s-ramp:itemsPerPage="100" s-ramp:provider="JBoss Overlord" s-ramp:startIndex="0" s-ramp:totalResults="5">
+  s-ramp:itemsPerPage="100" s-ramp:provider="Artificer" s-ramp:startIndex="0" s-ramp:totalResults="5">
   <atom:title>S-RAMP Feed</atom:title>
   <atom:subtitle>Ad Hoc query feed</atom:subtitle>
   <atom:updated>2013-07-22T12:50:16.605-04:00</atom:updated>
@@ -726,7 +726,7 @@ HTTP/1.1 200 OK
 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <atom:feed xmlns:atom="http://www.w3.org/2005/Atom" xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
-  s-ramp:itemsPerPage="100" s-ramp:provider="JBoss Overlord" s-ramp:startIndex="0" s-ramp:totalResults="5">
+  s-ramp:itemsPerPage="100" s-ramp:provider="Artificer" s-ramp:startIndex="0" s-ramp:totalResults="5">
   <atom:title>S-RAMP Feed</atom:title>
   <atom:subtitle>Ad Hoc query feed</atom:subtitle>
   <atom:updated>2013-07-22T12:50:16.605-04:00</atom:updated>
@@ -872,7 +872,7 @@ HTTP/1.1 200 OK
 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <atom:feed xmlns:atom="http://www.w3.org/2005/Atom" xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
-  s-ramp:itemsPerPage="100" s-ramp:provider="JBoss Overlord" s-ramp:startIndex="0" s-ramp:totalResults="5">
+  s-ramp:itemsPerPage="100" s-ramp:provider="Artificer" s-ramp:startIndex="0" s-ramp:totalResults="5">
   <atom:title>S-RAMP Feed</atom:title>
   <atom:subtitle>Ad Hoc query feed</atom:subtitle>
   <atom:updated>2013-07-22T12:50:16.605-04:00</atom:updated>
@@ -1046,7 +1046,7 @@ HTTP/1.1 200 OK
 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <atom:feed xmlns:atom="http://www.w3.org/2005/Atom" xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
-  s-ramp:itemsPerPage="100" s-ramp:provider="JBoss Overlord" s-ramp:startIndex="0" s-ramp:totalResults="5">
+  s-ramp:itemsPerPage="100" s-ramp:provider="Artificer" s-ramp:startIndex="0" s-ramp:totalResults="5">
   <atom:title>S-RAMP Feed</atom:title>
   <atom:subtitle>Ad Hoc query feed</atom:subtitle>
   <atom:updated>2013-07-22T12:50:16.605-04:00</atom:updated>
@@ -1240,12 +1240,12 @@ HTTP/1.1 200 OK
 <atom:entry xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:atom="http://www.w3.org/2005/Atom">
   <atom:title>Stored Query: FooQuery</atom:title>
-  <atom:link href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+  <atom:link href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery"
     rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
-  <atom:link href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+  <atom:link href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery"
     rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
   <atom:link
-    href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery/results"
+    href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery/results"
     rel="urn:x-s-ramp:2013:query:results" type="application/atom+xml;type=&quot;feed&quot;" />
   <atom:category label="Stored Query Entry" scheme="urn:x-s-ramp:2013:type"
     term="query" />
@@ -1301,13 +1301,13 @@ HTTP/1.1 200 OK
   <atom:entry>
     <atom:title>Stored Query: FooQuery</atom:title>
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+      href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery"
       rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+      href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery/results"
+      href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery/results"
       rel="urn:x-s-ramp:2013:query:results" type="application/atom+xml;type=&quot;feed&quot;" />
     <atom:category label="Stored Query Entry" scheme="urn:x-s-ramp:2013:type"
       term="query" />
@@ -1323,13 +1323,13 @@ HTTP/1.1 200 OK
   <atom:entry>
     <atom:title>Stored Query: FooQuery2</atom:title>
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery2"
+      href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery2"
       rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery2"
+      href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery2"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery2/results"
+      href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery2/results"
       rel="urn:x-s-ramp:2013:query:results" type="application/atom+xml;type=&quot;feed&quot;" />
     <atom:category label="Stored Query Entry" scheme="urn:x-s-ramp:2013:type"
       term="query" />
@@ -1365,12 +1365,12 @@ HTTP/1.1 200 OK
 <atom:entry xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:atom="http://www.w3.org/2005/Atom">
   <atom:title>Stored Query: FooQuery</atom:title>
-  <atom:link href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+  <atom:link href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery"
     rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
-  <atom:link href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery"
+  <atom:link href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery"
     rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
   <atom:link
-    href="http://localhost:9093/s-ramp-server/s-ramp/query/FooQuery/results"
+    href="http://localhost:9093/artificer-server/s-ramp/query/FooQuery/results"
     rel="urn:x-s-ramp:2013:query:results" type="application/atom+xml;type=&quot;feed&quot;" />
   <atom:category label="Stored Query Entry" scheme="urn:x-s-ramp:2013:type"
     term="query" />
@@ -1401,7 +1401,7 @@ Similar to a normal, ad-hoc xref:api-query[Query], this returns an Atom Feed of 
 
 'Example Request'
 ----
-GET /s-ramp-server/s-ramp/query/FooQuery/results?startIndex=0&count=20&orderBy=name&ascending=true HTTP/1.1
+GET /artificer-server/s-ramp/query/FooQuery/results?startIndex=0&count=20&orderBy=name&ascending=true HTTP/1.1
 ----
 
 Note that the paging and ordering parameters are optional and have reasonable defaults (defaults are shown values).
@@ -1413,7 +1413,7 @@ HTTP/1.1 200 OK
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <atom:feed xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:atom="http://www.w3.org/2005/Atom"
-  s-ramp:provider="JBoss Overlord" s-ramp:itemsPerPage="20"
+  s-ramp:provider="Artificer" s-ramp:itemsPerPage="20"
   s-ramp:startIndex="0" s-ramp:totalResults="2">
   <atom:title>S-RAMP Feed</atom:title>
   <atom:subtitle>Ad Hoc query feed</atom:subtitle>
@@ -1425,13 +1425,13 @@ HTTP/1.1 200 OK
   <atom:entry s-ramp:derived="false" s-ramp:extendedType="FooType">
     <atom:title>FooArtifact</atom:title>
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/f57c30d3-9a9a-4df9-b362-8f0b0816af99"
+      href="http://localhost:9093/artificer-server/s-ramp/ext/FooType/f57c30d3-9a9a-4df9-b362-8f0b0816af99"
       rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/f57c30d3-9a9a-4df9-b362-8f0b0816af99/media"
+      href="http://localhost:9093/artificer-server/s-ramp/ext/FooType/f57c30d3-9a9a-4df9-b362-8f0b0816af99/media"
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/f57c30d3-9a9a-4df9-b362-8f0b0816af99"
+      href="http://localhost:9093/artificer-server/s-ramp/ext/FooType/f57c30d3-9a9a-4df9-b362-8f0b0816af99"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2013:type"
       term="FooType" />
@@ -1450,13 +1450,13 @@ HTTP/1.1 200 OK
   <atom:entry s-ramp:derived="false" s-ramp:extendedType="FooType">
     <atom:title>FooArtifact2</atom:title>
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/e8b6aaf2-d787-45d0-a534-b9205d6e8815"
+      href="http://localhost:9093/artificer-server/s-ramp/ext/FooType/e8b6aaf2-d787-45d0-a534-b9205d6e8815"
       rel="self" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/e8b6aaf2-d787-45d0-a534-b9205d6e8815/media"
+      href="http://localhost:9093/artificer-server/s-ramp/ext/FooType/e8b6aaf2-d787-45d0-a534-b9205d6e8815/media"
       rel="edit-media" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:link
-      href="http://localhost:9093/s-ramp-server/s-ramp/ext/FooType/e8b6aaf2-d787-45d0-a534-b9205d6e8815"
+      href="http://localhost:9093/artificer-server/s-ramp/ext/FooType/e8b6aaf2-d787-45d0-a534-b9205d6e8815"
       rel="edit" type="application/atom+xml;type=&quot;entry&quot;" />
     <atom:category label="Extended Artifact Type" scheme="x-s-ramp:2013:type"
       term="FooType" />
@@ -1896,7 +1896,7 @@ HTTP/1.1 200 OK
 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <atom:feed xmlns:atom="http://www.w3.org/2005/Atom" xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
-  s-ramp:itemsPerPage="100" s-ramp:provider="JBoss Overlord" s-ramp:startIndex="0" s-ramp:totalResults="2">
+  s-ramp:itemsPerPage="100" s-ramp:provider="Artificer" s-ramp:startIndex="0" s-ramp:totalResults="2">
   <atom:title>S-RAMP Audit Feed</atom:title>
   <atom:subtitle>All Audit Entries for Artifact</atom:subtitle>
   <atom:updated>2013-07-23T11:14:07.189-04:00</atom:updated>
@@ -1957,7 +1957,7 @@ HTTP/1.1 200 OK
 
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <atom:feed xmlns:atom="http://www.w3.org/2005/Atom" xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
-  s-ramp:itemsPerPage="100" s-ramp:provider="JBoss Overlord" s-ramp:startIndex="0" s-ramp:totalResults="2">
+  s-ramp:itemsPerPage="100" s-ramp:provider="Artificer" s-ramp:startIndex="0" s-ramp:totalResults="2">
   <atom:title>S-RAMP Audit Feed</atom:title>
   <atom:subtitle>All Audit Entries for Artifact</atom:subtitle>
   <atom:updated>2013-07-23T11:16:00.545-04:00</atom:updated>

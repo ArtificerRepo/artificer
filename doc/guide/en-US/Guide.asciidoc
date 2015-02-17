@@ -1,7 +1,6 @@
-Overlord S-RAMP Guide
-=====================
-SOA Repository Artifact Model and Protocol
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Artificer User Guide
+====================
+
 :doctype: book
 
 include::GuideIntroduction.asciidoc[]

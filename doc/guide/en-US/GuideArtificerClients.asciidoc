@@ -3,44 +3,44 @@ Clients
 
 Java Client
 ~~~~~~~~~~~
-The Overlord S-RAMP implementation provides a full-featured Java client library that can be
+The Artificer implementation provides a full-featured Java client library that can be
 used to integrate with S-RAMP compliant servers.  This section of the guide describes how to use
 this library.
 
 
 Basic Usage
 ^^^^^^^^^^^
-The S-RAMP client is a simple Java based client library and can be included in a Maven project
+The Artificer client is a simple Java based client library and can be included in a Maven project
 by including the following pom.xml dependency:
 
 ----
     <dependency>
       <groupId>org.artificer</groupId>
-      <artifactId>s-ramp-client</artifactId>
-      <version>${sramp.client.version}</version>
+      <artifactId>artificer-client</artifactId>
+      <version>${artificer.client.version}</version>
     </dependency>
 ----
 
 Once the library is included in your project, you can use the client by instantiating the 
-*SrampAtomApiClient* class.  Note that the client class supports pluggable authentication
+*ArtificerAtomApiClient* class.  Note that the client class supports pluggable authentication
 mechanisms, although BASIC auth is a simple matter of including the username and password
 upon construction of the client. 
 
 Please refer to the javadoc of that class for details, but here are some usage examples to 
 help you get started (code simplified for readability):
 
-.'Upload an XSD document to S-RAMP'
+.'Upload an XSD document to Artificer'
 ----
-SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+ArtificerAtomApiClient client = new ArtificerAtomApiClient(urlToArtificer);
 String artifactFileName = getXSDArtifactName();
 InputStream is = getXSDArtifactContentStream();
 ArtifactType type = ArtifactType.XsdDocument();
 BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 ----
 
-.'Create a custom artifact in S-RAMP (meta-data only, no file content)'
+.'Create a custom artifact in Artificer (meta-data only, no file content)'
 ----
-SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+ArtificerAtomApiClient client = new ArtificerAtomApiClient(urlToArtificer);
 ExtendedArtifactType artifact = new ExtendedArtifactType();
 artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
 artifact.setExtendedType("MyArtifactType");
@@ -51,21 +51,21 @@ BaseArtifactType createdArtifact = client.createArtifact(artifact);
 
 .'Retrieve full meta-data for an XSD artifact by its UUID'
 ----
-SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+ArtificerAtomApiClient client = new ArtificerAtomApiClient(urlToArtificer);
 String uuid = getArtifactUUID();
 BaseArtifactType metaData = client.getArtifactMetaData(ArtifactType.XsdDocument(), uuid);
 ----
 
 .'Retrieve artifact content'
 ----
-SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+ArtificerAtomApiClient client = new ArtificerAtomApiClient(urlToArtificer);
 String uuid = getArtifactUUID();
 InputStream content = client.getArtifactContent(ArtifactType.XsdDocument(), uuid);
 ----
 
-.'Query the S-RAMP repository (by artifact name)'
+.'Query the Artificer repository (by artifact name)'
 ----
-SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+ArtificerAtomApiClient client = new ArtificerAtomApiClient(urlToArtificer);
 String artifactName = getArtifactName();
 QueryResultSet rset = client.buildQuery("/s-ramp/xsd/XsdDocument[@name = ?]")
         .parameter(artifactName)
@@ -73,9 +73,9 @@ QueryResultSet rset = client.buildQuery("/s-ramp/xsd/XsdDocument[@name = ?]")
         .query();
 ----
 
-.'Query the S-RAMP repository using a stored query'
+.'Query the Artificer repository using a stored query'
 ----
-SrampAtomApiClient client = new SrampAtomApiClient(urlToSramp);
+ArtificerAtomApiClient client = new ArtificerAtomApiClient(urlToArtificer);
 
 StoredQuery storedQuery = new StoredQuery();
 storedQuery.setQueryName("FooQuery");
@@ -91,41 +91,19 @@ QueryResultSet rset = client.queryWithStoredQuery(storedQuery.getQueryName());
 Extended Feature: Ontologies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Although the S-RAMP specification is silent on how the API should support the
-management of ontologies, the Overlord S-RAMP implementation provides an extension
+management of ontologies, the Artificer implementation provides an extension
 to the Atom based REST API to support this.  Using any of the client's ontology
-related methods will work when communicating with the Overlord implementation of
+related methods will work when communicating with the Artificer implementation of
 S-RAMP, but will likely fail when communicating with any other S-RAMP server.
 
 The client supports adding, updating, and getting (both individual and a full list)
-ontologies from the S-RAMP repository.
+ontologies from the Artificer repository.
 
 
 Extended Feature: Auditing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-The Overlord S-RAMP implementation also offers an extension to the Atom based
+The Artificer implementation also offers an extension to the Atom based
 REST API to get and set auditing information for artifacts in the repository.
-
-
-Extending: Custom Expander
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-A special feature of the client is the ability to automatically expand archive
-style artifacts (artifacts that are JARs, WARs, ZIPs, etc).  This feature is 
-similar to how the server creates Derived content.  The result is that certain
-files from the archive being uploaded as an S-RAMP artifact are extracted from
-the archive and also uploaded to the server.  When this happens these "expanded"
-artifacts are added with an S-RAMP relationship (expandedFromDocument) that 
-points to the archive artifact they were expanded from.
-
-The Overlord S-RAMP implementation comes with a few built-in expanders (e.g.
-java archive, SwitchYard archive, etc).  Additionally, custom expanders can 
-be created and provided by implementing *ZipToSrampArchiveProvider*.  In order
-to tell the client about the custom provider, put it in a JAR along with a
-file named:
-
-*META-INF/services/org.artificer.atom.archive.expand.registry.ZipToSrampArchiveProvider*
-  
-The contents of the file should be a single line with the fully qualified 
-Java classname of the provider implementation.
 
 
 Important Notes
@@ -134,16 +112,16 @@ Important Notes
 Wildfly and EAP
 +++++++++++++++
 
-When using the Java client from within a webapp running on Wildfly or EAP, the 's-ramp-client' Maven dependency
+When using the Java client from within a webapp running on Wildfly or EAP, the 'artificer-client' Maven dependency
 carries transitive dependencies that conflict with modules on the app server.  At this time, the worst known offender
 is 'jaxb-impl' (causes a PropertyException related to RESTEasy's use of 'NamespacePrefixMapper').  It's vital to do the
 following in your webapp's POM.
 
-Exclude 'jaxb-impl' from the 's-ramp-client' dependency:
+Exclude 'jaxb-impl' from the 'artificer-client' dependency:
 ----
 <dependency>
   <groupId>org.artificer</groupId>
-  <artifactId>s-ramp-client</artifactId>
+  <artifactId>artificer-client</artifactId>
   <version>[version]</version>
   
   <exclusions>
@@ -183,8 +161,8 @@ To use it, you'll need to add the following dependencies:
 ----
 <dependency>
   <groupId>org.artificer</groupId>
-  <artifactId>s-ramp-server-api</artifactId>
-  <version>[S-RAMP VERSION]</version>
+  <artifactId>artificer-server-api</artifactId>
+  <version>[ARTIFICER VERSION]</version>
 </dependency>
 <dependency>
   <groupId>org.wildfly</groupId>
@@ -199,7 +177,7 @@ There are a couple of things to note with the dependencies.  1.) We're "cheating
 to pull in quite a bit.  With out it, you'll need the EJB API, JTA API, etc.  2.) xercesImpl is currently required
 during runtime, mostly due to XMLGregorianCalendarImpl use during (un)marshalling.
 
-Then, interacting with S-RAMP is as simple as:
+Then, interacting with Artificer is as simple as:
 
 ----
 ExtendedArtifactType artifact = new ExtendedArtifactType();
@@ -216,12 +194,12 @@ try {
     Context context = new InitialContext(jndiProps);
 
     final ArtifactService artifactService =  (ArtifactService) context.lookup(
-            "s-ramp-server/ArtifactService!" + ArtifactService.class.getName());
+            "artificer-server/ArtifactService!" + ArtifactService.class.getName());
     artifactService.login("artificer", "artificer1!");
     artifactService.create(artifact);
 
     final QueryService queryService =  (QueryService) context.lookup(
-            "s-ramp-server/QueryService!" + QueryService.class.getName());
+            "artificer-server/QueryService!" + QueryService.class.getName());
     queryService.login("artificer", "artificer1!");
     ArtifactSet artifactSet = queryService.query("/s-ramp/ext/FooArtifactType");
     Iterator<BaseArtifactType> iterator = artifactSet.iterator();
@@ -247,40 +225,40 @@ during installation!
 JMS Client
 ~~~~~~~~~~
 
-Overlord S-RAMP publishes JMS messages to both topics and queues for several types of events.  The type of event
+Artificer publishes JMS messages to both topics and queues for several types of events.  The type of event
 is designated by the JMSType header field.  All events carry the relevant object marshalled into a JSON payload.
 
 Installation and Setup
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The 'sramp.properties' configuration file contains multiple properties relevant to the JMS setup:
+The 'artificer.properties' configuration file contains multiple properties relevant to the JMS setup:
 
 ----
-# S-RAMP will automatically attempt to discover a JMS ConnectionFactory through the literal JNDI name
+# Artificer will automatically attempt to discover a JMS ConnectionFactory through the literal JNDI name
 # "ConnectionFactory".  However, that name can be overridden here.
-sramp.config.events.jms.connectionfactory = ConnectionFactory
-# By default, S-RAMP publishes events through the "sramp/events/topic" JMS topic name (JNDI).  But, it will also publish
+artificer.config.events.jms.connectionfactory = ConnectionFactory
+# By default, Artificer publishes events through the "artificer/events/topic" JMS topic name (JNDI).  But, it will also publish
 # to any other names listed here (comma-delimited).
-sramp.config.events.jms.topics = sramp/events/topic
-# In addition to the above topics, S-RAMP will also publish non-expiring events to any JMS queue names (JNDI)
+artificer.config.events.jms.topics = artificer/events/topic
+# In addition to the above topics, Artificer will also publish non-expiring events to any JMS queue names (JNDI)
 # listed here (comma-delimited).
-sramp.config.events.jms.queues = 
-# If S-RAMP is running on a non-JavaEE server, or a server where JMS/JNDI is not properly configured, it will start
+artificer.config.events.jms.queues =
+# If Artificer is running on a non-JavaEE server, or a server where JMS/JNDI is not properly configured, it will start
 # an embedded ActiveMQ broker over TCP.  The property controls that port.
-sramp.config.events.jms.embedded-activemq-port = 61616
+artificer.config.events.jms.embedded-activemq-port = 61616
 ----
 
-S-RAMP supports three JMS environments:
+Artificer supports three JMS environments:
 
-* When S-RAMP is installed in Wildfly/EAP by using our installation script, JMS is configured automatically.  The existing
+* When Artificer is installed in Wildfly/EAP by using our installation script, JMS is configured automatically.  The existing
 HornetQ configuration is modified to add the default topic, described above, and all necessary credentials.
-Users can add additional topics/queues to their framework, then add them to 'sramp.properties' (see above).
+Users can add additional topics/queues to their framework, then add them to 'artificer.properties' (see above).
 IMPORTANT: In order for HornetQ to work properly, the standalone-full profile must be used
 ('bin/standalone.sh -c standalone-full.xml')!  Without it, errors are guaranteed to occur during startup!
-* For other EE platforms, S-RAMP will always attempt to discover a JMS 'ConnectionFactory' and all
+* For other EE platforms, Artificer will always attempt to discover a JMS 'ConnectionFactory' and all
 configured topics/queues through JNDI.  If found, it will simply use that existing framework and setup.
-Users can add additional topics/queues to their framework, then add them to 'sramp.properties' (see above).
-* If the no existing JMS setup is discovered, S-RAMP kicks off an embedded ActiveMQ broker over TCP.  Then, all
+Users can add additional topics/queues to their framework, then add them to 'artificer.properties' (see above).
+* If the no existing JMS setup is discovered, Artificer kicks off an embedded ActiveMQ broker over TCP.  Then, all
 configured topics and queues are created automatically.  External clients can connect to this broker in one of two ways:
 ** The ActiveMQ broker provides a lightweight JNDI implementation and automatically exposes the ConnectionFactory
    (literally named "ConnectionFactory"). To expose the topics/queues, the *client app* needs to include a
@@ -301,14 +279,14 @@ Artifact JMS Events
 
 [width="50%",options="header"]
 |=============================
-|#Event#              |#JMSType Header#          |#Payload#
-|Artifact Created     |sramp:artifactCreated     |Artifact JSON
-|Artifact Updated     |sramp:artifactUpdated     |Old/New Artifacts JSON
-|Artifact Deleted     |sramp:artifactDeleted     |Artifact JSON
+|#Event#              |#JMSType Header#              |#Payload#
+|Artifact Created     |artificer:artifactCreated     |Artifact JSON
+|Artifact Updated     |artificer:artifactUpdated     |Old/New Artifacts JSON
+|Artifact Deleted     |artificer:artifactDeleted     |Artifact JSON
 |=============================
 
 These events carry the artifacts, marshalled into JSON, as payloads.  Note that these can be easily unmarshalled
-back into the s-ramp-api module's Java bindings.  Here's a brief example using Jackson:
+back into the artificer-api module's Java bindings.  Here's a brief example using Jackson:
 
 ----
 // The TextMessage is received through a typical JMS MessageListener.
@@ -411,13 +389,13 @@ Ontology JMS Events
 
 [width="50%",options="header"]
 |=============================
-|#Event#              |#JMSType Header#          |#Payload#
-|Ontology Created     |sramp:ontologyCreated     |Ontology JSON
-|Ontology Updated     |sramp:ontologyUpdated     |Old/New Ontologies JSON
-|Ontology Deleted     |sramp:ontologyDeleted     |Ontology JSON
+|#Event#              |#JMSType Header#              |#Payload#
+|Ontology Created     |artificer:ontologyCreated     |Ontology JSON
+|Ontology Updated     |artificer:ontologyUpdated     |Old/New Ontologies JSON
+|Ontology Deleted     |artificer:ontologyDeleted     |Ontology JSON
 |=============================
 
-These events work similarly to Artifacts, but carry the ontology payload using the s-ramp-api module's
+These events work similarly to Artifacts, but carry the ontology payload using the artificer-api module's
 binding: RDF.
 
 'Example Ontology Created JSON'

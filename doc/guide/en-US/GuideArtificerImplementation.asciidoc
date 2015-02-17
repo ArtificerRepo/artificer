@@ -1,9 +1,9 @@
-Overlord S-RAMP Implementation
-------------------------------
+Artificer Implementation
+------------------------
 
 Overview
 ~~~~~~~~
-The Overlord S-RAMP implementation strives to be a fully compliant reference implementation of the
+The Artificer implementation strives to be a fully compliant reference implementation of the
 S-RAMP specification.  This chapter describes the overall architecture of the implementation and also
 provides some information about how to configure it.
 
@@ -15,14 +15,14 @@ Description
 The server implementation is a conventional Java web application (WAR).  The following technologies
 are used to provide the various components that make up the server implementation:
 
-1. JCR (ModeShape) - used as the persistence engine, where all S-RAMP data is stored.  Artifacts
-and ontologies are both stored as nodes in a JCR tree.  All S-RAMP queries are mapped to JCRSQL2
+1. JCR (ModeShape) - used as the persistence engine, where all Artificer data is stored.  Artifacts
+and ontologies are both stored as nodes in a JCR tree.  All Artificer queries are mapped to JCRSQL2
 queries for processing by the JCR API.  The ModeShape JCR implementation is used by default.
 However, the persistence layer is pluggable allowing alternative providers to be implemented in
 the future.
 
-2. JAX-RS (RESTEasy) - used to provide the S-RAMP Atom based REST API.  The S-RAMP specification
-documents an Atom based REST API that implementations should make available.  The Overlord S-RAMP
+2. JAX-RS (RESTEasy) - used to provide the Artificer Atom based REST API.  The S-RAMP specification
+documents an Atom based REST API that implementations should make available.  The Artificer
 implementation uses JAX-RS (specifically RESTEasy) to expose all of the REST endpoints defined
 by the specification.
 
@@ -30,33 +30,9 @@ by the specification.
 specification (S-RAMP XSD schemas).
 
 
-Configuration
-^^^^^^^^^^^^^
-The UI is configured with numerous properties in the Wildfly/EAP
-*standalone/configuration/standalone-full.xml* file under the
-*urn:jboss:domain:overlord-configuration:1.0* subsystem. For example:
-
-----
-    <subsystem xmlns="urn:jboss:domain:overlord-configuration:1.0">
-      <configurations>
-        <configuration name="sramp-ui">
-          <properties>
-            <!-- The location of the S-RAMP server's Atom API -->
-            <property name="s-ramp-ui.atom-api.endpoint" value="http://localhost:8080/s-ramp-server" />
-            <!-- Whether or not to validate the S-RAMP server endpoint when connecting to it -->
-            <property name="s-ramp-ui.atom-api.validating" value="true" />
-            <!-- The authentication provider to use when connecting -->
-            <property name="s-ramp-ui.atom-api.authentication.provider" value="org.artificer.ui.server.api.KeycloakBearerTokenAuthenticationProvider" />
-          </properties>
-        </configuration>
-      </configurations>
-    </subsystem>
-----
-
-
 Security
 ^^^^^^^^
-The S-RAMP Browser is protected using web application security mechanisms
+The Artificer Browser is protected using web application security mechanisms
 configured in the WARs' web.xml.
 
 By default, the UI uses single-sign-on (SSO) as the actual authentication
@@ -69,8 +45,8 @@ and password (standard BASIC authentication) or a bearer token.
 If invoking the Atom API directly, then typically BASIC authentication would be used.
 When invoking the Atom API from an application that has already authenticated the
 user in some way, then it is appropriate to use the bearer token as a request header ("Authorization", "Bearer " + bearerToken).
-For example, the S-RAMP CLI
-application uses BASIC authentication when invoking the S-RAMP Atom API.  The S-RAMP
+For example, the Artificer CLI
+application uses BASIC authentication when invoking the Artificer Atom API.  The Artificer
 Browser (a web application) requires the user be authenticated into it, and thus is
 able to use the bearer tokens rather than propagate user credentials.
 

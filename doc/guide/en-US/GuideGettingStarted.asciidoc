@@ -4,7 +4,7 @@ Getting Started
 Prerequisites
 ~~~~~~~~~~~~~
 
-The S-RAMP application is written in Java. To get started make sure your system has the following:
+The Artificer application is written in Java. To get started make sure your system has the following:
 
 * Java JDK 1.6 or newer
 * Apache Ant 1.7 or newer to use the installer
@@ -13,7 +13,7 @@ The S-RAMP application is written in Java. To get started make sure your system 
 Download and Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The `s-ramp-<version>.zip` (or tar.gz) archive can be downloaded from the http://www.jboss.org/overlord[http://www.jboss.org/overlord]
+The `artificer-<version>.zip` (or tar.gz) archive can be downloaded from the http://www.jboss.org/overlord[http://www.jboss.org/overlord]
 website. Grab the latest, extract the archive and run:
 
 ....
@@ -37,32 +37,32 @@ TIP: Read the installer output carefully - extra instructions are given for cert
 User Management
 ~~~~~~~~~~~~~~~
 
-The S-RAMP WARs are protected using web application security mechanisms
-configured in the web.xml.  By default, S-RAMP uses single-sign-on (SSO) as the actual authentication
+The Artificer WARs are protected using web application security mechanisms
+configured in the web.xml.  By default, Artificer uses single-sign-on (SSO) as the actual authentication
 mechanism.  The SSO is provided via integration with the Keycloak framework, a powerful out-of-the-box auth solution.
 The actual web.xml configuration uses a standard basic security-context, but SSO
 is provided under-the-hood.
 
-The S-RAMP distribution ships with a *artificer-realm.json* file that's completely pre-configured and can be
+The Artificer distribution ships with a *artificer-realm.json* file that's completely pre-configured and can be
 directly imported into Keycloak.  Startup Wildfly/EAP and visit *localhost:8080/auth/admin/master/console/#/create/realm*.  The initial
 administrator account uses "admin" for both the username and password.  There, you can upload the *artificer-realm.json*
 file and tweak the realm/accounts.
 
-By default, the realm import creates an "admin" user (password: "artificer1!").  This user is used to access the S-RAMP
+By default, the realm import creates an "admin" user (password: "artificer1!").  This user is used to access the Artificer
 server, UI, shell, and other tools.  Again, the user is configurable through the Keycloak admin console.
 
 Feel free to manually create a realm for scratch.  However, there are a few requirements
 (see *artificer-realm.json* for example values):
 
 1. The realm must be named *artificer*
-2. Defined applications must include *s-ramp-server* and *s-ramp-ui*
+2. Defined applications must include *artificer-server* and *artificer-ui*
 3. To use our themed login page, use *artificer* for the *loginTheme*
 4. Each user must have at least *admin* and *user* values for the *realmRole*
 
 Startup
 ~~~~~~~
 
-Once S-RAMP is installed on your preferred platform, you should be able to go ahead and start it up.
+Once Artificer is installed on your preferred platform, you should be able to go ahead and start it up.
 
 Wildfly & EAP (standalone-full is required)
 ....
@@ -72,41 +72,29 @@ bin/standalone.sh -c standalone-full.xml
 Check your Installation
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-To make sure your installation works you can fire up the http://localhost:8080/s-ramp-ui[s-ramp-ui]. By default,
+To make sure your installation works you can fire up the http://localhost:8080/artificer-ui[artificer-ui]. By default,
 the username is "admin" and the password "artificer1!".  You
 should see the GUI dashboard and be able to navigate to either the Artifacts or Ontologies management pages:
 
-[[figure-gs-screenshot-of-the-s-ramp-ui]]
-.Welcome screen of the s-ramp-ui.
-image::images/srampui.png[Screenshot of the s-ramp-ui]
+[[figure-gs-screenshot-of-the-artificer-ui]]
+.Welcome screen of the artificer-ui.
+image::images/srampui.png[Screenshot of the artificer-ui]
 
-You can click on `Artifacts` and see a list of files related to the S-RAMP default workflows.
+You can click on `Artifacts` and see a list of files related to the Artificer default workflows.
 
-Alternatively you can fire up the `s-ramp shell` in the `bin` directory of the distribution:
+Alternatively you can fire up the `artificer shell` in the `bin` directory of the distribution:
 ....
-./bin/s-ramp.sh
-**********************************************************************
-           _____       ______  ___ ___  ________  
-          /  ___|      | ___ \/ _ \|  \/  | ___ \ 
-          \ `--. ______| |_/ / /_\ \ .  . | |_/ / 
-           `--. \______|    /|  _  | |\/| |  __/  
-          /\__/ /      | |\ \| | | | |  | | |     
-          \____/       \_| \_\_| |_|_|  |_|_|     
-                                                  
-  JBoss S-RAMP Kurt Stam and Eric Wittmann, Licensed under the
-  Apache License, V2.0, Copyright 2012
-**********************************************************************
-s-ramp>
+./bin/artificer.sh
 ....
 
 To connect the shell to the server type `connect` and hit the tab key. It should auto-complete
-to say `s-ramp:connect http://localhost:8080/s-ramp-server` and when hitting the return key
+to say `s-ramp:connect http://localhost:8080/artificer-server` and when hitting the return key
 you should be prompted for user credentials.  Use 'admin' and whatever password you entered
 during installation.  If this succeeds, the shell cursor/prompt will go from red to green. To 
 browse the artifacts in the repository (there will likely not be any) run the following query:
 
 ....
-s-ramp> s-ramp:query "/s-ramp"
+artificer> s-ramp:query "/s-ramp"
 Querying the S-RAMP repository:
 	/s-ramp
 Atom Feed (0 entries)
