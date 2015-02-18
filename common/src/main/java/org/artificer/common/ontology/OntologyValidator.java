@@ -36,14 +36,14 @@ public class OntologyValidator {
         try {
             new URI(ontology.getId());
         } catch (Exception e) {
-            throw new Exception(Messages.i18n.format("INVALID_ONTOLOGY_ID", ontology.getId())); //$NON-NLS-1$
+            throw new OntologyException(Messages.i18n.format("INVALID_ONTOLOGY_ID", ontology.getId())); //$NON-NLS-1$
         }
         List<ArtificerOntology.ArtificerOntologyClass> classes = ontology.getAllClasses();
         for (ArtificerOntology.ArtificerOntologyClass oclass : classes) {
             try {
                 new URI(oclass.getId());
             } catch (Exception e) {
-                throw new Exception(Messages.i18n.format("INVALID_CLASS_ID", oclass.getId())); //$NON-NLS-1$
+                throw new OntologyException(Messages.i18n.format("INVALID_CLASS_ID", oclass.getId())); //$NON-NLS-1$
             }
         }
     }

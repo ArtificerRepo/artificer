@@ -22,7 +22,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.artificer.common.ArtificerException;
-import org.artificer.common.ontology.OntologyUpdateException;
+import org.artificer.common.ontology.OntologyException;
 import org.artificer.common.ontology.ArtificerOntology;
 import org.artificer.common.ontology.ArtificerOntology.ArtificerOntologyClass;
 import org.artificer.repository.jcr.JCRConstants;
@@ -88,7 +88,7 @@ public final class OntologyToJCRNode {
     public void update(ArtificerOntology ontology, Node ontologyJcrNode) throws RepositoryException, ArtificerException {
         String base = ontologyJcrNode.getProperty(JCRConstants.SRAMP_BASE).getString();
         if (!base.equals(ontology.getBase())) {
-            throw new OntologyUpdateException(Messages.i18n.format("CANNOT_CHANGE_ONTOLOGY_BASE"));
+            throw new OntologyException(Messages.i18n.format("CANNOT_CHANGE_ONTOLOGY_BASE"));
         }
 
         ontologyJcrNode.setProperty(JCRConstants.SRAMP_LABEL, ontology.getLabel());

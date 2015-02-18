@@ -18,20 +18,20 @@ package org.artificer.common.ontology;
 import org.artificer.common.error.ArtificerUserException;
 
 /**
- * Exception thrown when the user attempts to update an ontology but something went
+ * Exception thrown when the user attempts to create/update an ontology but something went
  * wrong (the user did something wrong).
  *
  * @author eric.wittmann@redhat.com
  */
-public class OntologyUpdateException extends ArtificerUserException {
+public class OntologyException extends ArtificerUserException {
 
-    private static final long serialVersionUID = OntologyUpdateException.class.hashCode();
+    private static final long serialVersionUID = OntologyException.class.hashCode();
 
     /**
      * Constructor.
      * @param message
      */
-    public OntologyUpdateException(String message) {
+    public OntologyException(String message) {
         super(message);
     }
 
