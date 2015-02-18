@@ -110,10 +110,10 @@ public class RelationshipsTable extends TemplatedWidgetTable implements HasValue
         int rowIdx = this.rowElements.size();
         DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy"); //$NON-NLS-1$
 
-        Anchor name = toDetailsPageLinkFactory.get("uuid", relationship.getTargetUuid()); //$NON-NLS-1$
-        name.setText(relationship.getTargetName());
-        InlineLabel type = new InlineLabel(relationship.getTargetType());
-        InlineLabel modified = new InlineLabel(format.format(relationship.getTargetLastModified()));
+        Anchor name = toDetailsPageLinkFactory.get("uuid", relationship.getUuid()); //$NON-NLS-1$
+        name.setText(relationship.getName());
+        InlineLabel type = new InlineLabel(relationship.getType());
+        InlineLabel modified = new InlineLabel(format.format(relationship.getLastModified()));
 //        InlineLabel actions = new InlineLabel("");
 
         add(rowIdx, 0, name);

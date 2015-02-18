@@ -32,6 +32,8 @@ public class ArtifactRelationshipsIndexBean implements Serializable {
 
     private Map<String, ArtifactRelationshipsBean> relationships = new HashMap<String, ArtifactRelationshipsBean>();
 
+    private Map<String, ArtifactRelationshipsBean> reverseRelationships = new HashMap<String, ArtifactRelationshipsBean>();
+
     /**
      * Constructor.
      */
@@ -46,6 +48,13 @@ public class ArtifactRelationshipsIndexBean implements Serializable {
     }
 
     /**
+     * @return the reverseRelationships
+     */
+    public Map<String, ArtifactRelationshipsBean> getReverseRelationships() {
+        return reverseRelationships;
+    }
+
+    /**
      * Adds a single relationship.  The relationship gets added to the internal
      * state, indexed by its relationship type.
      * @param relationship
@@ -56,6 +65,16 @@ public class ArtifactRelationshipsIndexBean implements Serializable {
         if (list == null) {
             list = new ArtifactRelationshipsBean();
             relationships.put(type, list);
+        }
+        list.getRelationships().add(relationship);
+    }
+
+    public void addReverseRelationship(ArtifactRelationshipBean relationship) {
+        String type = relationship.getRelationshipType();
+        ArtifactRelationshipsBean list = reverseRelationships.get(type);
+        if (list == null) {
+            list = new ArtifactRelationshipsBean();
+            reverseRelationships.put(type, list);
         }
         list.getRelationships().add(relationship);
     }

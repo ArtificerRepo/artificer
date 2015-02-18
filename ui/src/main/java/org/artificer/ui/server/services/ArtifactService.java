@@ -211,6 +211,7 @@ public class ArtifactService implements IArtifactService {
         if (!endpoint.endsWith("/")) { //$NON-NLS-1$
             builder.append("/"); //$NON-NLS-1$
         }
+        builder.append("s-ramp/");
         builder.append(artifactType.getModel());
         builder.append("/"); //$NON-NLS-1$
         builder.append(artifactType.getType());

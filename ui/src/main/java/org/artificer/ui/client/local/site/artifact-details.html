@@ -170,8 +170,10 @@
               </div>
               <!-- Relationships Tab -->
               <div class="tab-pane fade container-fluid" id="relationships">
-                <div class="row-fluid">
+
+                <div class="row-fluid sramp-meta-data-section">
                   <div class="span12">
+                    <div class="sramp-meta-data-section-header"><span data-field="relationships-header" data-role="dummy">Targeted by Artifact 1</span></div>
                     <table data-field="relationships-table" style="" class="sramp-relationship-table table table-condensed table-bordered">
                       <thead>
                         <tr>
@@ -206,6 +208,49 @@
                           <td class="desktop-only">08/21/2012</td>
 <!--                           <td class="desktop-only"></td> -->
                         </tr>
+                      </tbody>
+                    </table>
+                    <div data-field="relationship-tab-progress" style="display:none" class="spinner sramp-details-tab-spinner pull-left" data-i18n-key="loading-relationships">Loading relationships, please wait...</div>
+                  </div>
+                </div>
+
+                <div class="row-fluid sramp-meta-data-section">
+                  <div class="span12">
+                    <div class="sramp-meta-data-section-header"><span data-field="reverse-relationships-header" data-role="dummy">Targets Artifact 1</span></div>
+                    <table data-field="reverse-relationships-table" style="" class="sramp-relationship-table table table-condensed table-bordered">
+                      <thead>
+                      <tr>
+                        <th data-i18n-key="column.name">Name</th>
+                        <th data-i18n-key="column.type">Type</th>
+                        <th data-i18n-key="column.last-modified" class="desktop-only">Last Modified</th>
+                        <!--                           <th class="desktop-only">Actions</th> -->
+                      </tr>
+                      </thead>
+                      <tbody data-role="dummy">
+                      <tr class="sramp-relationship-type">
+                        <td colspan="4">Derived From</td>
+                      </tr>
+                      <tr>
+                        <td><a href="artifact-details.html">Master Artifact 0</a></td>
+                        <td>WsdlDocument</td>
+                        <td class="desktop-only">02/12/2011</td>
+                        <!--                           <td class="desktop-only"></td> -->
+                      </tr>
+                      <tr class="sramp-relationship-type">
+                        <td colspan="4">Documented By</td>
+                      </tr>
+                      <tr>
+                        <td><a href="artifact-details.html">Documentation Alpha</a></td>
+                        <td>OfficeDocument</td>
+                        <td class="desktop-only">03/17/2012</td>
+                        <!--                           <td class="desktop-only"></td> -->
+                      </tr>
+                      <tr>
+                        <td><a href="artifact-details.html">Documentation Beta</a></td>
+                        <td>OfficeDocument</td>
+                        <td class="desktop-only">08/21/2012</td>
+                        <!--                           <td class="desktop-only"></td> -->
+                      </tr>
                       </tbody>
                     </table>
                     <div data-field="relationship-tab-progress" style="display:none" class="spinner sramp-details-tab-spinner pull-left" data-i18n-key="loading-relationships">Loading relationships, please wait...</div>

@@ -16,37 +16,36 @@
 package org.artificer.repository.jcr;
 
 import org.apache.commons.lang.StringUtils;
+import org.artificer.common.ArtifactContent;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerConfig;
+import org.artificer.common.ArtificerException;
+import org.artificer.common.error.ArtifactNotFoundException;
+import org.artificer.common.error.ArtificerServerException;
+import org.artificer.common.error.InvalidArtifactUpdateException;
+import org.artificer.common.error.StoredQueryConflictException;
+import org.artificer.common.error.StoredQueryNotFoundException;
+import org.artificer.common.ontology.ArtificerOntology;
+import org.artificer.common.ontology.ArtificerOntology.ArtificerOntologyClass;
+import org.artificer.common.ontology.InvalidClassifiedByException;
+import org.artificer.common.ontology.OntologyConflictException;
+import org.artificer.common.ontology.OntologyNotFoundException;
+import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.artificer.repository.PersistenceManager;
+import org.artificer.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.artificer.repository.jcr.i18n.Messages;
 import org.artificer.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
 import org.artificer.repository.jcr.mapper.JCRNodeToOntology;
+import org.artificer.repository.jcr.mapper.JCRNodeToStoredQuery;
 import org.artificer.repository.jcr.mapper.OntologyToJCRNode;
 import org.artificer.repository.jcr.mapper.StoredQueryToJCRNode;
 import org.artificer.repository.jcr.util.DeleteOnCloseFileInputStream;
-import org.artificer.repository.jcr.util.JCRArtifactConstraintUtil;
 import org.artificer.repository.jcr.util.JCRUtils;
 import org.modeshape.jcr.api.ServletCredentials;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-import org.artificer.common.ArtifactContent;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtificerConfig;
-import org.artificer.common.ArtificerException;
-import org.artificer.common.error.ArtifactNotFoundException;
-import org.artificer.common.error.InvalidArtifactUpdateException;
-import org.artificer.common.error.ArtificerServerException;
-import org.artificer.common.error.StoredQueryConflictException;
-import org.artificer.common.error.StoredQueryNotFoundException;
-import org.artificer.common.ontology.InvalidClassifiedByException;
-import org.artificer.common.ontology.OntologyConflictException;
-import org.artificer.common.ontology.OntologyNotFoundException;
-import org.artificer.common.ontology.ArtificerOntology;
-import org.artificer.common.ontology.ArtificerOntology.ArtificerOntologyClass;
-import org.artificer.common.visitors.ArtifactVisitorHelper;
-import org.artificer.repository.jcr.audit.ArtifactJCRNodeDiffer;
-import org.artificer.repository.jcr.mapper.JCRNodeToStoredQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,15 +173,6 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
             session = JCRRepositoryFactory.getSession();
             Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
             if (artifactNode != null) {
-                // In the case of an extended type, we might be wrong about which one...
-                if (type.isExtendedType()) {
-                    String t = artifactNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getString();
-                    if (ExtendedDocument.class.getSimpleName().equals(t)) {
-                        String e = type.getExtendedType();
-                        type = ArtifactType.valueOf(BaseArtifactEnum.EXTENDED_DOCUMENT);
-                        type.setExtendedType(e);
-                    }
-                }
                 // Create an artifact from the sequenced node
                 return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
             } else {
@@ -284,11 +274,11 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                 throw new InvalidArtifactUpdateException(Messages.i18n.format("JCRPersistence.NoArtifactContent"));
             }
 
-            JCRArtifactConstraintUtil.relationshipConstraintsOnDerived(uuid, artifactNode, session);
-            JCRArtifactConstraintUtil.customMetadataConstraintsOnDerived(uuid, artifactNode);
+            JCRUtils.relationshipConstraintsOnDerived(uuid, artifactNode, session);
+            JCRUtils.customMetadataConstraintsOnDerived(uuid, artifactNode);
 
             // Delete the current derived artifacts
-            JCRArtifactConstraintUtil.deleteDerivedArtifacts(artifactNode, session);
+            JCRUtils.deleteDerivedArtifacts(artifactNode, session);
 
             // Re-persist (which re-generates the derived artifacts).
             BaseArtifactType primaryArtifact = JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
@@ -323,8 +313,8 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                 throw new ArtifactNotFoundException(uuid);
             }
 
-            JCRArtifactConstraintUtil.relationshipConstraints(uuid, artifactNode, session);
-            JCRArtifactConstraintUtil.deleteDerivedRelationships(artifactNode, session);
+            JCRUtils.relationshipConstraints(uuid, artifactNode, session);
+            JCRUtils.deleteDerivedRelationships(artifactNode, session);
             
             // Move the node to the trash.
             String srcPath = artifactNode.getPath();
@@ -363,10 +353,10 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                 throw new InvalidArtifactUpdateException(Messages.i18n.format("JCRPersistence.NoArtifactContent"));
             }
 
-            JCRArtifactConstraintUtil.relationshipConstraintsOnDerived(uuid, artifactNode, session);
+            JCRUtils.relationshipConstraintsOnDerived(uuid, artifactNode, session);
 
             // Delete the current derived artifacts
-            JCRArtifactConstraintUtil.deleteDerivedArtifacts(artifactNode, session);
+            JCRUtils.deleteDerivedArtifacts(artifactNode, session);
 
             artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
 

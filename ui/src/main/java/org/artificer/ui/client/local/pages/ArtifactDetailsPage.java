@@ -159,6 +159,12 @@ public class ArtifactDetailsPage extends AbstractPage {
     HtmlSnippet relationshipsTabProgress;
     @Inject @DataField("relationships-table")
     RelationshipsTable relationships;
+    @Inject @DataField("reverse-relationships-table")
+    RelationshipsTable reverseRelationships;
+    @Inject @DataField("relationships-header")
+    InlineLabel relationshipsHeader;
+    @Inject @DataField("reverse-relationships-header")
+    InlineLabel reverseRelationshipsHeader;
     protected boolean relationshipsLoaded;
 
     // Source tab
@@ -339,15 +345,20 @@ public class ArtifactDetailsPage extends AbstractPage {
      * Loads the artifact's relationships and displays them in the proper table.
      * @param artifact
      */
-    protected void loadRelationships(ArtifactBean artifact) {
+    protected void loadRelationships(final ArtifactBean artifact) {
         relationships.setVisible(false);
         relationshipsTabProgress.setVisible(true);
         artifactService.getRelationships(artifact.getUuid(), artifact.getType(), new IServiceInvocationHandler<ArtifactRelationshipsIndexBean>() {
             @Override
             public void onReturn(ArtifactRelationshipsIndexBean data) {
+                relationshipsHeader.setText("Targeted by " + artifact.getName());
+                reverseRelationshipsHeader.setText("Targets " + artifact.getName());
+
                 relationships.setValue(data.getRelationships());
+                reverseRelationships.setValue(data.getReverseRelationships());
                 relationshipsTabProgress.setVisible(false);
                 relationships.setVisible(true);
+                reverseRelationships.setVisible(true);
                 relationshipsLoaded = true;
             }
             @Override

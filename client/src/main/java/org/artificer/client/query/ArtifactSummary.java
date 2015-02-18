@@ -15,15 +15,15 @@
  */
 package org.artificer.client.query;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.artificer.atom.ArtificerAtomUtils;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
+import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Models a summary of a single S-RAMP artifact from a Feed (result of an
@@ -114,16 +114,16 @@ public class ArtifactSummary {
 	 * @param propertyName the name of the property
 	 * @return the property value or null if not present
 	 */
-	public String getCustomPropertyValue(String propertyName) {
-	    if (artifact == null) {
-	        artifact = ArtificerAtomUtils.unwrapSrampArtifact(entry);
-	    }
-	    if (artifact != null) {
-	        return ArtificerModelUtils.getCustomProperty(artifact, propertyName);
-	    } else {
-	        return null;
-	    }
-	}
+    public String getCustomPropertyValue(String propertyName) {
+        if (artifact == null) {
+            artifact = ArtificerAtomUtils.unwrapSrampArtifact(entry);
+        }
+        if (artifact != null) {
+            return ArtificerModelUtils.getCustomProperty(artifact, propertyName);
+        } else {
+            return null;
+        }
+    }
 
 	/**
 	 * Returns all custom properties included in the query result set that begin
@@ -140,5 +140,9 @@ public class ArtifactSummary {
             result = ArtificerModelUtils.getCustomPropertiesByPrefix(artifact, prefix);
         }
         return result;
+    }
+
+    public Object getExtensionAttribute(Object name) {
+        return entry.getExtensionAttributes().get(name);
     }
 }

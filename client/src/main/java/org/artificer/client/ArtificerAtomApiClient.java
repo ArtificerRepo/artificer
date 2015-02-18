@@ -17,16 +17,29 @@ package org.artificer.client;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
+import org.artificer.atom.ArtificerAtomUtils;
+import org.artificer.atom.MediaType;
+import org.artificer.atom.archive.ArtificerArchive;
+import org.artificer.atom.beans.HttpResponseBean;
+import org.artificer.atom.err.ArtificerAtomException;
 import org.artificer.client.audit.AuditResultSet;
 import org.artificer.client.auth.AuthenticationProvider;
 import org.artificer.client.auth.BasicAuthenticationProvider;
+import org.artificer.client.i18n.Messages;
 import org.artificer.client.ontology.OntologySummary;
 import org.artificer.client.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerConstants;
+import org.artificer.common.ArtificerModelUtils;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientResponse;
@@ -38,18 +51,13 @@ import org.jboss.resteasy.plugins.providers.atom.app.AppCategories;
 import org.jboss.resteasy.plugins.providers.atom.app.AppCollection;
 import org.jboss.resteasy.plugins.providers.atom.app.AppService;
 import org.jboss.resteasy.plugins.providers.atom.app.AppWorkspace;
-import org.jboss.resteasy.plugins.providers.multipart.*;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataOutput;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartInput;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedOutput;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-import org.artificer.atom.MediaType;
-import org.artificer.atom.ArtificerAtomUtils;
-import org.artificer.atom.archive.ArtificerArchive;
-import org.artificer.atom.beans.HttpResponseBean;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.client.i18n.Messages;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtificerConstants;
-import org.artificer.common.ArtificerModelUtils;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 import javax.xml.namespace.QName;
@@ -57,7 +65,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Class used to communicate with the S-RAMP server via the S-RAMP Atom API.
@@ -67,6 +82,8 @@ import java.util.*;
 public class ArtificerAtomApiClient {
 
 	private String endpoint;
+    private String srampEndpoint;
+    private String artificerEndpoint;
 	private boolean validating;
 	private Set<String> enabledFeatures = new HashSet<String>();
 	private Locale locale;
@@ -79,12 +96,18 @@ public class ArtificerAtomApiClient {
 	 */
 	public ArtificerAtomApiClient(String endpoint) {
 		this.endpoint = endpoint;
-		if (this.endpoint.endsWith("/")) { //$NON-NLS-1$
-			this.endpoint = this.endpoint.substring(0, this.endpoint.length()-1);
+		if (this.endpoint.endsWith("/")) {
+			this.endpoint = this.endpoint.substring(0, this.endpoint.length() - 1);
 		}
-		if (!this.endpoint.endsWith("/s-ramp")) { //$NON-NLS-1$
-		    this.endpoint += "/s-ramp"; //$NON-NLS-1$
-		}
+        if (this.endpoint.endsWith("/s-ramp")) {
+            this.endpoint = this.endpoint.substring(0, this.endpoint.length() - 7);
+        }
+        if (this.endpoint.endsWith("/artificer")) {
+            this.endpoint = this.endpoint.substring(0, this.endpoint.length() - 10);
+        }
+
+        srampEndpoint = endpoint + "/s-ramp";
+        artificerEndpoint = endpoint + "/artificer";
 	}
 
 	/**
@@ -171,7 +194,7 @@ public class ArtificerAtomApiClient {
 	private void assertFeatureEnabled(String feature) throws ArtificerClientException {
 		if (this.validating) {
 			if (!this.enabledFeatures.contains(feature)) {
-				throw new ArtificerClientException(Messages.i18n.format("FEATURE_NOT_SUPPORTED")); //$NON-NLS-1$
+				throw new ArtificerClientException(Messages.i18n.format("FEATURE_NOT_SUPPORTED"));
 			}
 		}
 	}
@@ -186,7 +209,7 @@ public class ArtificerAtomApiClient {
 	private void assertFeatureEnabled(ArtifactType feature) throws ArtificerClientException {
 		if (this.validating) {
 			if (!this.enabledFeatures.contains(feature.getArtifactType().getType())) {
-                throw new ArtificerClientException(Messages.i18n.format("FEATURE_NOT_SUPPORTED")); //$NON-NLS-1$
+                throw new ArtificerClientException(Messages.i18n.format("FEATURE_NOT_SUPPORTED"));
 			}
 		}
 	}
@@ -199,7 +222,7 @@ public class ArtificerAtomApiClient {
 	public AppService getServiceDocument() throws ArtificerClientException, ArtificerAtomException {
 	    ClientResponse<AppService> response = null;
 		try {
-			String atomUrl = String.format("%1$s/servicedocument", this.endpoint); //$NON-NLS-1$
+			String atomUrl = String.format("%1$s/servicedocument", srampEndpoint);
 			ClientRequest request = createClientRequest(atomUrl);
 			response = request.get(AppService.class);
 			return response.getEntity();
@@ -230,9 +253,9 @@ public class ArtificerAtomApiClient {
     public BaseArtifactType getArtifactMetaData(String artifactUuid) throws ArtificerClientException,
 			ArtificerAtomException {
         try {
-            QueryResultSet uuidRS = buildQuery("/s-ramp[@uuid = ?]").parameter(artifactUuid).count(1).query(); //$NON-NLS-1$
+            QueryResultSet uuidRS = buildQuery("/s-ramp[@uuid = ?]").parameter(artifactUuid).count(1).query();
             if (uuidRS.size() == 0)
-                throw new ArtificerClientException(Messages.i18n.format("ARTIFACT_NOT_FOUND", artifactUuid)); //$NON-NLS-1$
+                throw new ArtificerClientException(Messages.i18n.format("ARTIFACT_NOT_FOUND", artifactUuid));
             ArtifactType artifactType = uuidRS.iterator().next().getType();
             return getArtifactMetaData(artifactType, artifactUuid);
         } catch (ArtificerAtomException e) {
@@ -266,7 +289,7 @@ public class ArtificerAtomApiClient {
 		assertFeatureEnabled(artifactType);
 		ClientResponse<Entry> response = null;
 		try {
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, //$NON-NLS-1$
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", srampEndpoint,
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
 					artifactUuid);
 			ClientRequest request = createClientRequest(atomUrl);
@@ -294,7 +317,7 @@ public class ArtificerAtomApiClient {
 			throws ArtificerClientException, ArtificerAtomException {
 		assertFeatureEnabled(artifactType);
 		try {
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, //$NON-NLS-1$
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", srampEndpoint,
 					artifactType.getArtifactType().getModel(), artifactType.getArtifactType().getType(),
 					artifactUuid);
 
@@ -335,14 +358,14 @@ public class ArtificerAtomApiClient {
     public BaseArtifactType createArtifact(BaseArtifactType artifact) throws ArtificerClientException, ArtificerAtomException {
         ArtifactType artifactType = ArtifactType.valueOf(artifact);
         if (ArtificerModelUtils.isDocumentArtifact(artifact)) {
-            throw new ArtificerClientException(Messages.i18n.format("MISSING_ARTIFACT_CONTEN")); //$NON-NLS-1$
+            throw new ArtificerClientException(Messages.i18n.format("MISSING_ARTIFACT_CONTEN"));
         }
 
         assertFeatureEnabled(artifactType);
         ClientResponse<Entry> response = null;
         try {
             String type = artifactType.getType();
-            String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/%2$s/%3$s", srampEndpoint,
                     artifactType.getModel(), type);
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, ArtificerAtomUtils.wrapSrampArtifact(artifact));
@@ -378,11 +401,11 @@ public class ArtificerAtomApiClient {
         ClientResponse<Entry> response = null;
 		try {
 			String type = artifactType.getType();
-			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, //$NON-NLS-1$
+			String atomUrl = String.format("%1$s/%2$s/%3$s", srampEndpoint,
 					artifactType.getArtifactType().getModel(), type);
 			ClientRequest request = createClientRequest(atomUrl);
 			if (artifactFileName != null)
-				request.header("Slug", artifactFileName); //$NON-NLS-1$
+				request.header("Slug", artifactFileName);
 			request.body(artifactType.getMimeType(), content);
 
 			response = request.post(Entry.class);
@@ -410,8 +433,8 @@ public class ArtificerAtomApiClient {
             throws ArtificerClientException, ArtificerAtomException {
         ClientResponse<Entry> response = null;
         try {
-            ClientRequest request = createClientRequest(this.endpoint + "/autodetect");
-            request.header("Slug", artifactFileName); //$NON-NLS-1$
+            ClientRequest request = createClientRequest(srampEndpoint + "/autodetect");
+            request.header("Slug", artifactFileName);
             request.body("application/octet-stream", content);
 
             response = request.post(Entry.class);
@@ -441,8 +464,8 @@ public class ArtificerAtomApiClient {
         ClientResponse<Entry> response = null;
 		try {
 			String type = artifactType.getType();
-			String atomUrl = String.format("%1$s/%2$s/%3$s", this.endpoint, //$NON-NLS-1$
-					artifactType.getArtifactType().getModel(), type);
+			String atomUrl = String.format("%1$s/%2$s/%3$s", srampEndpoint,
+                    artifactType.getArtifactType().getModel(), type);
 			ClientRequest request = createClientRequest(atomUrl);
 
 			MultipartRelatedOutput output = new MultipartRelatedOutput();
@@ -450,7 +473,7 @@ public class ArtificerAtomApiClient {
 			//1. Add first part, the S-RAMP entry
 			Entry atomEntry = ArtificerAtomUtils.wrapSrampArtifact(baseArtifactType);
 
-			MediaType mediaType = new MediaType("application", "atom+xml"); //$NON-NLS-1$ //$NON-NLS-2$
+			MediaType mediaType = new MediaType("application", "atom+xml");
 			output.addPart(atomEntry, mediaType);
 
 			//2. Add second part, the content
@@ -496,8 +519,8 @@ public class ArtificerAtomApiClient {
 
 	        packageFile = archive.pack();
 			packageStream = FileUtils.openInputStream(packageFile);
-			ClientRequest request = createClientRequest(this.endpoint);
-			request.header("Content-Type", "application/zip"); //$NON-NLS-1$ //$NON-NLS-2$
+			ClientRequest request = createClientRequest(srampEndpoint);
+			request.header("Content-Type", "application/zip");
 			request.body(MediaType.APPLICATION_ZIP, packageStream);
 
 			clientResponse = request.post(MultipartInput.class);
@@ -506,7 +529,7 @@ public class ArtificerAtomApiClient {
 
 			Map<String, Object> rval = new HashMap<String, Object>(parts.size());
 			for (InputPart part : parts) {
-				String contentId = part.getHeaders().getFirst("Content-ID"); //$NON-NLS-1$
+				String contentId = part.getHeaders().getFirst("Content-ID");
 				String path = contentId.substring(1, contentId.lastIndexOf('@'));
 				HttpResponseBean rbean = part.getBody(HttpResponseBean.class, null);
 				if (rbean.getCode() == 201) {
@@ -514,7 +537,7 @@ public class ArtificerAtomApiClient {
 					BaseArtifactType artifact = ArtificerAtomUtils.unwrapSrampArtifact(entry);
 					rval.put(path, artifact);
 				} else if (rbean.getCode() == 409) {
-					if (MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION.equals(rbean.getHeaders().get("Content-Type"))) { //$NON-NLS-1$
+					if (MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION.equals(rbean.getHeaders().get("Content-Type"))) {
 						ArtificerAtomException exception = (ArtificerAtomException) rbean.getBody();
 						rval.put(path, exception);
 					} else {
@@ -524,7 +547,7 @@ public class ArtificerAtomApiClient {
 					}
 				} else {
 					// Only a non-compliant s-ramp impl could cause this
-					ArtificerAtomException exception = new ArtificerAtomException(Messages.i18n.format("BAD_RETURN_CODE", rbean.getCode(), contentId));  //$NON-NLS-1$
+					ArtificerAtomException exception = new ArtificerAtomException(Messages.i18n.format("BAD_RETURN_CODE", rbean.getCode(), contentId)); 
 					rval.put(path, exception);
 				}
 			}
@@ -554,11 +577,11 @@ public class ArtificerAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) { //$NON-NLS-1$
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
 				artifactType = type.getExtendedType();
 			}
 			String artifactUuid = artifact.getUuid();
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid); //$NON-NLS-1$
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", srampEndpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = createClientRequest(atomUrl);
 
 			Entry entry = ArtificerAtomUtils.wrapSrampArtifact(artifact);
@@ -589,11 +612,11 @@ public class ArtificerAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) { //$NON-NLS-1$
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
 				artifactType = type.getExtendedType();
 			}
 			String artifactUuid = artifact.getUuid();
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid); //$NON-NLS-1$
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", srampEndpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = createClientRequest(atomUrl);
 			request.body(type.getMimeType(), content);
 			response = request.put();
@@ -619,11 +642,11 @@ public class ArtificerAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) { //$NON-NLS-1$
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
 				artifactType = type.getExtendedType();
 			}
 			String artifactUuid = uuid;
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", this.endpoint, artifactModel, artifactType, artifactUuid); //$NON-NLS-1$
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", srampEndpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = createClientRequest(atomUrl);
 			response = request.delete();
 		} catch (ArtificerAtomException e) {
@@ -648,11 +671,11 @@ public class ArtificerAtomApiClient {
 		try {
 			String artifactModel = type.getArtifactType().getModel();
 			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) { //$NON-NLS-1$
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
 				artifactType = type.getExtendedType();
 			}
 			String artifactUuid = uuid;
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", this.endpoint, artifactModel, artifactType, artifactUuid); //$NON-NLS-1$
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", srampEndpoint, artifactModel, artifactType, artifactUuid);
 			ClientRequest request = createClientRequest(atomUrl);
 			response = request.delete();
 		} catch (ArtificerAtomException e) {
@@ -671,7 +694,7 @@ public class ArtificerAtomApiClient {
 	 * @throws org.artificer.atom.err.ArtificerAtomException
 	 */
 	public QueryResultSet query(String srampQuery) throws ArtificerClientException, ArtificerAtomException {
-		return query(srampQuery, 0, 20, "name", true); //$NON-NLS-1$
+		return query(srampQuery, 0, 20, "name", true);
 	}
 
     /**
@@ -708,11 +731,11 @@ public class ArtificerAtomApiClient {
 		try {
 			String xpath = srampQuery;
 			if (xpath == null)
-				throw new Exception(Messages.i18n.format("INVALID_QUERY_FORMAT")); //$NON-NLS-1$
+				throw new Exception(Messages.i18n.format("INVALID_QUERY_FORMAT"));
 			// Remove the leading /s-ramp/ prior to POSTing to the atom endpoint
-			if (xpath.startsWith("/s-ramp/")) //$NON-NLS-1$
+			if (xpath.startsWith("/s-ramp/"))
 				xpath = xpath.substring(8);
-			String atomUrl = this.endpoint;
+			String atomUrl = srampEndpoint;
 
 			// Do a GET if multiple propertyNames are provided.  We would like to always
 			// do a POST but the RESTEasy client doesn't seem to have a way to send multiple
@@ -720,14 +743,14 @@ public class ArtificerAtomApiClient {
 			if (propertyNames == null || propertyNames.size() < 2) {
     			ClientRequest request = createClientRequest(atomUrl);
     			MultipartFormDataOutput formData = new MultipartFormDataOutput();
-    			formData.addFormData("query", xpath, MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
-    			formData.addFormData("startIndex", String.valueOf(startIndex), MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
-    			formData.addFormData("count", String.valueOf(count), MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
-    			formData.addFormData("orderBy", orderBy, MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
-    			formData.addFormData("ascending", String.valueOf(ascending), MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
+    			formData.addFormData("query", xpath, MediaType.TEXT_PLAIN_TYPE);
+    			formData.addFormData("startIndex", String.valueOf(startIndex), MediaType.TEXT_PLAIN_TYPE);
+    			formData.addFormData("count", String.valueOf(count), MediaType.TEXT_PLAIN_TYPE);
+    			formData.addFormData("orderBy", orderBy, MediaType.TEXT_PLAIN_TYPE);
+    			formData.addFormData("ascending", String.valueOf(ascending), MediaType.TEXT_PLAIN_TYPE);
     			if (propertyNames != null) {
     			    for (String propertyName : propertyNames) {
-                        formData.addFormData("propertyName", propertyName, MediaType.TEXT_PLAIN_TYPE); //$NON-NLS-1$
+                        formData.addFormData("propertyName", propertyName, MediaType.TEXT_PLAIN_TYPE);
                     }
     			}
 
@@ -737,19 +760,19 @@ public class ArtificerAtomApiClient {
 			} else {
 			    StringBuilder urlBuilder = new StringBuilder();
 			    urlBuilder.append(atomUrl);
-                urlBuilder.append("?query="); //$NON-NLS-1$
-                urlBuilder.append(URLEncoder.encode(srampQuery, "UTF8")); //$NON-NLS-1$
-                urlBuilder.append("&startIndex="); //$NON-NLS-1$
+                urlBuilder.append("?query=");
+                urlBuilder.append(URLEncoder.encode(srampQuery, "UTF8"));
+                urlBuilder.append("&startIndex=");
                 urlBuilder.append(String.valueOf(startIndex));
-                urlBuilder.append("&count="); //$NON-NLS-1$
+                urlBuilder.append("&count=");
                 urlBuilder.append(String.valueOf(count));
-                urlBuilder.append("&orderBy="); //$NON-NLS-1$
-                urlBuilder.append(URLEncoder.encode(orderBy, "UTF8")); //$NON-NLS-1$
-                urlBuilder.append("&ascending="); //$NON-NLS-1$
+                urlBuilder.append("&orderBy=");
+                urlBuilder.append(URLEncoder.encode(orderBy, "UTF8"));
+                urlBuilder.append("&ascending=");
                 urlBuilder.append(String.valueOf(ascending));
                 for (String propName : propertyNames) {
-                    urlBuilder.append("&propertyName="); //$NON-NLS-1$
-                    urlBuilder.append(URLEncoder.encode(propName, "UTF8")); //$NON-NLS-1$
+                    urlBuilder.append("&propertyName=");
+                    urlBuilder.append(URLEncoder.encode(propName, "UTF8"));
                 }
                 ClientRequest request = createClientRequest(urlBuilder.toString());
                 response = request.get(Feed.class);
@@ -801,17 +824,17 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public RDF addOntology(RDF ontology) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("ontology"); //$NON-NLS-1$
+        assertFeatureEnabled("ontology");
         ClientResponse<Entry> response = null;
         try {
-            String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/ontology", srampEndpoint);
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_RDF_XML_TYPE, ontology);
 
             response = request.post(Entry.class);
             Entry entry = response.getEntity();
             RDF rdf = ArtificerAtomUtils.unwrap(entry, RDF.class);
-            rdf.getOtherAttributes().put(new QName(ArtificerConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            rdf.getOtherAttributes().put(new QName(ArtificerConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", ""));
             return rdf;
         } catch (ArtificerAtomException e) {
             throw e;
@@ -831,17 +854,17 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public RDF uploadOntology(InputStream content) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("ontology"); //$NON-NLS-1$
+        assertFeatureEnabled("ontology");
         ClientResponse<Entry> response = null;
         try {
-            String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/ontology", srampEndpoint);
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_RDF_XML_TYPE, content);
 
             response = request.post(Entry.class);
             Entry entry = response.getEntity();
             RDF rdf = ArtificerAtomUtils.unwrap(entry, RDF.class);
-            rdf.getOtherAttributes().put(new QName(ArtificerConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            rdf.getOtherAttributes().put(new QName(ArtificerConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", ""));
             return rdf;
         } catch (ArtificerAtomException e) {
             throw e;
@@ -860,10 +883,10 @@ public class ArtificerAtomApiClient {
      * @param content
      */
     public void updateOntology(String ontologyUuid, InputStream content) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("ontology"); //$NON-NLS-1$
+        assertFeatureEnabled("ontology");
         ClientResponse<?> response = null;
         try {
-            String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/ontology/%2$s", srampEndpoint, ontologyUuid);
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_RDF_XML_TYPE, content);
             response = request.put();
@@ -883,10 +906,10 @@ public class ArtificerAtomApiClient {
      * @param ontologyUuid
      */
     public void updateOntology(String ontologyUuid, RDF ontology) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("ontology"); //$NON-NLS-1$
+        assertFeatureEnabled("ontology");
         ClientResponse<?> response = null;
         try {
-            String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/ontology/%2$s", srampEndpoint, ontologyUuid);
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_RDF_XML_TYPE, ontology);
             response = request.put();
@@ -907,10 +930,10 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public List<OntologySummary> getOntologies() throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("ontology"); //$NON-NLS-1$
+        assertFeatureEnabled("ontology");
         ClientResponse<Feed> response = null;
         try {
-            String atomUrl = String.format("%1$s/ontology", this.endpoint); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/ontology", srampEndpoint);
             ClientRequest request = createClientRequest(atomUrl);
             response = request.get(Feed.class);
             Feed feed = response.getEntity();
@@ -937,15 +960,15 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public RDF getOntology(String ontologyUuid) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("ontology"); //$NON-NLS-1$
+        assertFeatureEnabled("ontology");
         ClientResponse<Entry> response = null;
         try {
-            String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/ontology/%2$s", srampEndpoint, ontologyUuid);
             ClientRequest request = createClientRequest(atomUrl);
             response = request.get(Entry.class);
             Entry entry = response.getEntity();
             RDF rdf = ArtificerAtomUtils.unwrapRDF(entry);
-            rdf.getOtherAttributes().put(new QName(ArtificerConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            rdf.getOtherAttributes().put(new QName(ArtificerConstants.SRAMP_NS, "uuid"), entry.getId().toString().replace("urn:uuid:", ""));
             return rdf;
         } catch (ArtificerAtomException e) {
             throw e;
@@ -965,10 +988,10 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public void deleteOntology(String ontologyUuid) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("ontology"); //$NON-NLS-1$
+        assertFeatureEnabled("ontology");
         ClientResponse<?> response = null;
         try {
-            String atomUrl = String.format("%1$s/ontology/%2$s", this.endpoint, ontologyUuid); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/ontology/%2$s", srampEndpoint, ontologyUuid);
             ClientRequest request = createClientRequest(atomUrl);
             response = request.delete();
         } catch (ArtificerAtomException e) {
@@ -988,10 +1011,10 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public StoredQuery createStoredQuery(StoredQuery storedQuery) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("query"); //$NON-NLS-1$
+        assertFeatureEnabled("query");
         ClientResponse<Entry> response = null;
         try {
-            String atomUrl = String.format("%1$s/query", this.endpoint); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/query", srampEndpoint);
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, ArtificerAtomUtils.wrapStoredQuery(storedQuery));
                     
@@ -1015,10 +1038,10 @@ public class ArtificerAtomApiClient {
      * @param storedQuery
      */
     public void updateStoredQuery(String queryName, StoredQuery storedQuery) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("query"); //$NON-NLS-1$
+        assertFeatureEnabled("query");
         ClientResponse<?> response = null;
         try {
-            String atomUrl = String.format("%1$s/query/%2$s", this.endpoint, queryName); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/query/%2$s", srampEndpoint, queryName);
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_ATOM_XML_ENTRY, ArtificerAtomUtils.wrapStoredQuery(storedQuery));
             response = request.put();
@@ -1038,10 +1061,10 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public List<StoredQuery> getStoredQueries() throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("query"); //$NON-NLS-1$
+        assertFeatureEnabled("query");
         ClientResponse<Feed> response = null;
         try {
-            String atomUrl = String.format("%1$s/query", this.endpoint); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/query", srampEndpoint);
             ClientRequest request = createClientRequest(atomUrl);
             response = request.get(Feed.class);
             Feed feed = response.getEntity();
@@ -1067,10 +1090,10 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public StoredQuery getStoredQuery(String queryName) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("query"); //$NON-NLS-1$
+        assertFeatureEnabled("query");
         ClientResponse<Entry> response = null;
         try {
-            String atomUrl = String.format("%1$s/query/%2$s", this.endpoint, queryName); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/query/%2$s", srampEndpoint, queryName);
             ClientRequest request = createClientRequest(atomUrl);
             response = request.get(Entry.class);
             Entry entry = response.getEntity();
@@ -1092,10 +1115,10 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public void deleteStoredQuery(String queryName) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("query"); //$NON-NLS-1$
+        assertFeatureEnabled("query");
         ClientResponse<?> response = null;
         try {
-            String atomUrl = String.format("%1$s/query/%2$s", this.endpoint, queryName); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/query/%2$s", srampEndpoint, queryName);
             ClientRequest request = createClientRequest(atomUrl);
             response = request.delete();
         } catch (ArtificerAtomException e) {
@@ -1116,7 +1139,7 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public QueryResultSet queryWithStoredQuery(String queryName) throws ArtificerClientException, ArtificerAtomException {
-        return queryWithStoredQuery(queryName, 0, 20, "name", true); //$NON-NLS-1$
+        return queryWithStoredQuery(queryName, 0, 20, "name", true);
     }
 
     /**
@@ -1135,17 +1158,17 @@ public class ArtificerAtomApiClient {
             boolean ascending) throws ArtificerClientException, ArtificerAtomException {
         ClientResponse<Feed> response = null;
         try {
-            String atomUrl = String.format("%1$s/query/%2$s/results", this.endpoint, queryName); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/query/%2$s/results", srampEndpoint, queryName);
 
             StringBuilder urlBuilder = new StringBuilder();
             urlBuilder.append(atomUrl);
-            urlBuilder.append("?startIndex="); //$NON-NLS-1$
+            urlBuilder.append("?startIndex=");
             urlBuilder.append(String.valueOf(startIndex));
-            urlBuilder.append("&count="); //$NON-NLS-1$
+            urlBuilder.append("&count=");
             urlBuilder.append(String.valueOf(count));
-            urlBuilder.append("&orderBy="); //$NON-NLS-1$
-            urlBuilder.append(URLEncoder.encode(orderBy, "UTF8")); //$NON-NLS-1$
-            urlBuilder.append("&ascending="); //$NON-NLS-1$
+            urlBuilder.append("&orderBy=");
+            urlBuilder.append(URLEncoder.encode(orderBy, "UTF8"));
+            urlBuilder.append("&ascending=");
             urlBuilder.append(String.valueOf(ascending));
             
             ClientRequest request = createClientRequest(urlBuilder.toString());
@@ -1178,17 +1201,17 @@ public class ArtificerAtomApiClient {
 	 * @throws org.artificer.atom.err.ArtificerAtomException
 	 */
     public AuditEntry addAuditEntry(String artifactUuid, AuditEntry auditEntry) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("audit"); //$NON-NLS-1$
+        assertFeatureEnabled("audit");
         ClientResponse<Entry> response = null;
         try {
-            String atomUrl = String.format("%1$s/audit/artifact/%2$s", this.endpoint, artifactUuid); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s", srampEndpoint, artifactUuid);
             ClientRequest request = createClientRequest(atomUrl);
             request.body(MediaType.APPLICATION_AUDIT_ENTRY_XML_TYPE, auditEntry);
 
             response = request.post(Entry.class);
             Entry entry = response.getEntity();
             if (entry == null)
-                throw new ArtificerAtomException(Messages.i18n.format("AUDIT_ENTRY_ADD_FAILED")); //$NON-NLS-1$
+                throw new ArtificerAtomException(Messages.i18n.format("AUDIT_ENTRY_ADD_FAILED"));
             return ArtificerAtomUtils.unwrap(entry, AuditEntry.class);
         } catch (ArtificerAtomException e) {
             throw e;
@@ -1206,10 +1229,10 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public AuditResultSet getAuditTrailForArtifact(String artifactUuid) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("audit"); //$NON-NLS-1$
+        assertFeatureEnabled("audit");
         ClientResponse<Feed> response = null;
         try {
-            String atomUrl = String.format("%1$s/audit/artifact/%2$s", this.endpoint, artifactUuid); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s", srampEndpoint, artifactUuid);
             ClientRequest request = createClientRequest(atomUrl);
             response = request.get(Feed.class);
             Feed feed = response.getEntity();
@@ -1233,11 +1256,11 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public AuditResultSet getAuditTrailForArtifact(String artifactUuid, int startIndex, int count) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("audit"); //$NON-NLS-1$
+        assertFeatureEnabled("audit");
         ClientResponse<Feed> response = null;
         try {
-            String atomUrl = String.format("%1$s/audit/artifact/%2$s?startIndex=%3$s&count=%4$s", //$NON-NLS-1$
-                    this.endpoint, artifactUuid, String.valueOf(startIndex), String.valueOf(count));
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s?startIndex=%3$s&count=%4$s",
+                    srampEndpoint, artifactUuid, String.valueOf(startIndex), String.valueOf(count));
             ClientRequest request = createClientRequest(atomUrl);
             response = request.get(Feed.class);
             Feed feed = response.getEntity();
@@ -1259,10 +1282,10 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public AuditResultSet getAuditTrailForUser(String username) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("audit"); //$NON-NLS-1$
+        assertFeatureEnabled("audit");
         ClientResponse<Feed> response = null;
         try {
-            String atomUrl = String.format("%1$s/audit/user/%2$s", this.endpoint, username); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/audit/user/%2$s", srampEndpoint, username);
             ClientRequest request = createClientRequest(atomUrl);
             response = request.get(Feed.class);
             Feed feed = response.getEntity();
@@ -1286,11 +1309,11 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public AuditResultSet getAuditTrailForUser(String username, int startIndex, int count) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("audit"); //$NON-NLS-1$
+        assertFeatureEnabled("audit");
         ClientResponse<Feed> response = null;
         try {
-            String atomUrl = String.format("%1$s/audit/user/%2$s?startIndex=%3$s&count=%4$s", //$NON-NLS-1$
-                    this.endpoint, username, String.valueOf(startIndex), String.valueOf(count));
+            String atomUrl = String.format("%1$s/audit/user/%2$s?startIndex=%3$s&count=%4$s",
+                    srampEndpoint, username, String.valueOf(startIndex), String.valueOf(count));
             ClientRequest request = createClientRequest(atomUrl);
             response = request.get(Feed.class);
             Feed feed = response.getEntity();
@@ -1313,10 +1336,10 @@ public class ArtificerAtomApiClient {
      * @throws org.artificer.atom.err.ArtificerAtomException
      */
     public AuditEntry getAuditEntry(String artifactUuid, String auditEntryUuid) throws ArtificerClientException, ArtificerAtomException {
-        assertFeatureEnabled("audit"); //$NON-NLS-1$
+        assertFeatureEnabled("audit");
         ClientResponse<Entry> response = null;
         try {
-            String atomUrl = String.format("%1$s/audit/artifact/%2$s/%3$s", this.endpoint, artifactUuid, auditEntryUuid); //$NON-NLS-1$
+            String atomUrl = String.format("%1$s/audit/artifact/%2$s/%3$s", srampEndpoint, artifactUuid, auditEntryUuid);
             ClientRequest request = createClientRequest(atomUrl);
             response = request.get(Entry.class);
             Entry entry = response.getEntity();
@@ -1354,7 +1377,7 @@ public class ArtificerAtomApiClient {
                 if (l == null) {
                     l = Locale.getDefault();
                 }
-                request.addHeader("Accept-Language", l.toString()); //$NON-NLS-1$
+                request.addHeader("Accept-Language", l.toString());
             }
         });
         if (this.authProvider != null) {
@@ -1380,6 +1403,25 @@ public class ArtificerAtomApiClient {
      */
     public void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    public QueryResultSet reverseRelationships(String uuid) throws ArtificerClientException, ArtificerAtomException {
+        ClientResponse<Feed> response = null;
+        try {
+            StringBuilder urlBuilder = new StringBuilder();
+            urlBuilder.append(artificerEndpoint);
+            urlBuilder.append("/reverseRelationship/");
+            urlBuilder.append(uuid);
+            ClientRequest request = createClientRequest(urlBuilder.toString());
+            response = request.get(Feed.class);
+            return new QueryResultSet(response.getEntity());
+        } catch (ArtificerAtomException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new ArtificerClientException(e);
+        } finally {
+            closeQuietly(response);
+        }
     }
 
     /**

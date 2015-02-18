@@ -50,6 +50,7 @@ public class ArtificerApplication extends Application {
         singletons.add(new OntologyResource());
         singletons.add(new AuditResource());
         singletons.add(new StoredQueryResource());
+        singletons.add(new ArtificerResource());
 
         classes.add(WrongModelExceptionProvider.class);
         classes.add(ArtificerConflictExceptionProvider.class);

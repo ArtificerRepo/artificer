@@ -17,6 +17,10 @@
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/s-ramp/*</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Resteasy</servlet-name>
+    <url-pattern>/artificer/*</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <servlet-name>MavenRepository</servlet-name>

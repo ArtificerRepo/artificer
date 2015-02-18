@@ -185,6 +185,7 @@ public class ArtificerDevServer extends ErraiDevServer {
         ServletHolder resteasyServerServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyServerServlet.setInitParameter("javax.ws.rs.Application", ArtificerApplication.class.getName());
         artificerServer.addServlet(resteasyServerServlet, "/s-ramp/*");
+        artificerServer.addServlet(resteasyServerServlet, "/artificer/*");
         //maven repository servlet:
         ServletHolder mvnServlet = new ServletHolder(new MavenFacadeServlet());
         artificerServer.addServlet(mvnServlet, "/maven/repository/*");
@@ -192,6 +193,8 @@ public class ArtificerDevServer extends ErraiDevServer {
         // TODO enable JSP support to test the repository listing
 
         artificerServer.addFilter(BasicAuthFilter.class, "/s-ramp/*", EnumSet.of(DispatcherType.REQUEST))
+                .setInitParameter("allowedIssuers", "/artificer-ui,/dtgov,/dtgov-ui");
+        artificerServer.addFilter(BasicAuthFilter.class, "/artificer/*", EnumSet.of(DispatcherType.REQUEST))
                 .setInitParameter("allowedIssuers", "/artificer-ui,/dtgov,/dtgov-ui");
         artificerServer.addFilter(MavenRepositoryAuthFilter.class, "/maven/repository/*", EnumSet.of(DispatcherType.REQUEST))
                 .setInitParameter("allowedIssuers", "/artificer-ui,/dtgov,/dtgov-ui");

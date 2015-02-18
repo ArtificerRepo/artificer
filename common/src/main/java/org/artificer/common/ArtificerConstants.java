@@ -26,9 +26,12 @@ public class ArtificerConstants {
 
     public static final String DATE_FORMAT  = "EEE, d MMM yyyy HH:mm:ss Z"; //$NON-NLS-1$
 
-	public static final String SRAMP_NS        = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"; //$NON-NLS-1$
-	public static final String SRAMP_PREFIX    = "s-ramp"; //$NON-NLS-1$
-    public static final String SRAMP_AUDIT_NS  = "http://downloads.jboss.org/artificer/2013/auditing.xsd"; //$NON-NLS-1$
+	public static final String SRAMP_NS         = "http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"; //$NON-NLS-1$
+	public static final String SRAMP_PREFIX     = "s-ramp"; //$NON-NLS-1$
+    public static final String SRAMP_AUDIT_NS   = "http://downloads.jboss.org/artificer/2013/auditing.xsd"; //$NON-NLS-1$
+    public static final String ARTIFICER_PREFIX = "artificer"; //$NON-NLS-1$
+    // TODO: Not sure if we'll need an actual schema...
+    public static final String ARTIFICER_NS     = "http://artificer.jboss.org"; //$NON-NLS-1$
 
 	private static final String SRAMP_CONTENT_SIZE         = "contentSize"; //$NON-NLS-1$
 	private static final String SRAMP_CONTENT_TYPE         = "contentType"; //$NON-NLS-1$
@@ -49,6 +52,9 @@ public class ArtificerConstants {
     public static final QName SRAMP_START_INDEX_QNAME     = new QName(SRAMP_NS, SRAMP_START_INDEX, SRAMP_PREFIX);
     public static final QName SRAMP_ITEMS_PER_PAGE_QNAME  = new QName(SRAMP_NS, SRAMP_ITEMS_PER_PAGE_INDEX, SRAMP_PREFIX);
     public static final QName SRAMP_TOTAL_RESULTS_QNAME   = new QName(SRAMP_NS, SRAMP_TOTAL_RESULTS, SRAMP_PREFIX);
+
+    public static final String ARTIFICER_RELATIONSHIP_TYPE = "relationshipType";
+    public static final QName ARTIFICER_RELATIONSHIP_TYPE_QNAME = new QName(ARTIFICER_NS, ARTIFICER_RELATIONSHIP_TYPE, ARTIFICER_PREFIX);
 
     // Configuration constants
     public static final String ARTIFICER_CONFIG_FILE_NAME = "artificer.config.file.name"; //$NON-NLS-1$

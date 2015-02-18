@@ -83,7 +83,7 @@
 [sramp:derivedArtifactPrimaryType] > nt:hierarchyNode
 
 [sramp:target]
-- sramp:targetType (string)
+- sramp:type (string)
 - sramp:targetArtifact (weakreference) < 'sramp:baseArtifactType'
 - * (string)
 - * (string) multiple

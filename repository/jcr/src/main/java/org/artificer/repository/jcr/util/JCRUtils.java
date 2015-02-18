@@ -16,6 +16,9 @@
 package org.artificer.repository.jcr.util;
 
 import org.artificer.common.ArtifactType;
+import org.artificer.repository.error.ClassifierConstraintException;
+import org.artificer.repository.error.CustomPropertyConstraintException;
+import org.artificer.repository.error.RelationshipConstraintException;
 import org.artificer.repository.jcr.JCRConstants;
 import org.artificer.repository.jcr.MapToJCRPath;
 import org.artificer.repository.jcr.i18n.Messages;
@@ -35,6 +38,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.QueryResult;
+import javax.jcr.query.RowIterator;
 import javax.jcr.version.VersionException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -436,6 +440,192 @@ public class JCRUtils {
         return node;
     }
 
+    /**
+     * Finds all generic and non-derived modeled relationship nodes that point *to* the given artifact.  Also finds
+     * relationships pointing to the given artifact's derived artifacts.  If any are found, throws RelationshipConstraintException
+     *
+     * @param uuid
+     * @param primaryNode
+     * @param session
+     * @throws Exception
+     */
+    public static void relationshipConstraints(String uuid, Node primaryNode, Session session) throws Exception {
+        String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
+                        "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
+                        // root path, *not* in the trash
+                        "WHERE ISDESCENDANTNODE(r, '" + JCRConstants.ROOT_PATH + "') " +
+                        // relationship is not from one of the given artifact's children
+                        "AND NOT(ISDESCENDANTNODE(r, '%2$s')) " +
+                        // only generic or modeled, but not derived
+                        "AND (r.[sramp:generic] = true OR r.[sramp:derived] = false) " +
+                        // targets any of the primary artifact's derived artifacts
+                        "AND (REFERENCE(t) = '%1$s' OR REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s')))",
+                primaryNode.getIdentifier(), primaryNode.getPath());
+        relationshipConstraints(uuid, query, session);
+    }
+
+    /**
+     * Finds relationships pointing to the given artifact's derived artifacts.
+     * If any are found, throws RelationshipConstraintException
+     *
+     * @param uuid
+     * @param primaryNode
+     * @param session
+     * @throws Exception
+     */
+    public static void relationshipConstraintsOnDerived(String uuid, Node primaryNode, Session session) throws Exception {
+        String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
+                        "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
+                        // root path, *not* in the trash
+                        "WHERE ISDESCENDANTNODE(r, '" + JCRConstants.ROOT_PATH + "') " +
+                        // relationship is not from one of the given artifact's children
+                        "AND NOT(ISDESCENDANTNODE(r, '%2$s')) " +
+                        // only generic or modeled, but not derived
+                        "AND (r.[sramp:generic] = true OR r.[sramp:derived] = false) " +
+                        // targets any of the primary artifact's derived artifacts
+                        "AND REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s'))",
+                primaryNode.getIdentifier(), primaryNode.getPath());
+        relationshipConstraints(uuid, query, session);
+    }
+
+    private static void relationshipConstraints(String uuid, String query, Session session) throws Exception {
+        javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
+        javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(query, JCRConstants.JCR_SQL2);
+        QueryResult jcrQueryResult = jcrQuery.execute();
+        NodeIterator jcrNodes = jcrQueryResult.getNodes();
+
+        if (jcrNodes.hasNext()) {
+            throw new RelationshipConstraintException(uuid);
+        }
+    }
+
+    /**
+     * Finds any relationships targeting the given artifact UUID.
+     *
+     * @param targetedUuid
+     * @param session
+     * @return NodeIterator
+     * @throws Exception
+     */
+    public static NodeIterator reverseRelationships(String targetedUuid, Session session) throws Exception {
+        Node targetedNode = findArtifactNodeByUuid(session, targetedUuid);
+        String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
+                        "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
+                        // root path, *not* in the trash
+                        "WHERE ISDESCENDANTNODE(r, '" + JCRConstants.ROOT_PATH + "') " +
+                        // targets the primary artifact
+                        "AND REFERENCE(t) = '%1$s'",
+                targetedNode.getIdentifier());
+        javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
+        javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(query, JCRConstants.JCR_SQL2);
+        QueryResult jcrQueryResult = jcrQuery.execute();
+        return jcrQueryResult.getNodes();
+    }
+
+    /**
+     * If the given artifact's *derived artifacts* have any custom properties or classifiers attached, throw a
+     * CustomPropertyConstraintException or ClassifierConstraintException (respectively).
+     *
+     * @param uuid
+     * @param primaryNode
+     * @throws Exception
+     */
+    public static void customMetadataConstraintsOnDerived(String uuid, Node primaryNode) throws Exception {
+        NodeIterator childNodes = primaryNode.getNodes();
+        while (childNodes.hasNext()) {
+            Node childNode = childNodes.nextNode();
+
+            // Does the Node have custom properties?
+            PropertyIterator customProperties = childNode.getProperties(JCRConstants.SRAMP_PROPERTIES + ":*");
+            if (customProperties.hasNext()) {
+                throw new CustomPropertyConstraintException(uuid);
+            }
+
+            // Does the Node have classifiers?
+            if (childNode.hasProperty(JCRConstants.SRAMP_CLASSIFIED_BY)
+                    && childNode.getProperty(JCRConstants.SRAMP_CLASSIFIED_BY).getValues().length > 0) {
+                throw new ClassifierConstraintException(uuid);
+            }
+            if (childNode.hasProperty(JCRConstants.SRAMP_NORMALIZED_CLASSIFIED_BY)
+                    && childNode.getProperty(JCRConstants.SRAMP_NORMALIZED_CLASSIFIED_BY).getValues().length > 0) {
+                throw new ClassifierConstraintException(uuid);
+            }
+        }
+    }
+
+    /**
+     * Deletes all derived relationship nodes that point *to* the given artifact or its derived artifacts
+     *
+     * @param primaryNode
+     * @param session
+     * @throws Exception
+     */
+    public static void deleteDerivedRelationships(Node primaryNode, Session session) throws Exception {
+        String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
+                        "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
+                        // root path, *not* in the trash
+                        "WHERE ISDESCENDANTNODE(r, '" + JCRConstants.ROOT_PATH + "') " +
+                        // relationship is not from one of the given artifact's children
+                        "AND NOT(ISDESCENDANTNODE(r, '%2$s')) " +
+                        // derived relationships only
+                        "AND r.[sramp:derived] = true " +
+                        // targets the primary artifact or any of its derived artifacts
+                        "AND (REFERENCE(t) = '%1$s' OR REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s')))",
+                primaryNode.getIdentifier(), primaryNode.getPath());
+        javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
+        javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(query, JCRConstants.JCR_SQL2);
+        QueryResult jcrQueryResult = jcrQuery.execute();
+        NodeIterator jcrNodes = jcrQueryResult.getNodes();
+
+        while (jcrNodes.hasNext()) {
+            Node node = jcrNodes.nextNode();
+            // delete it
+            node.remove();
+        }
+
+        session.save();
+    }
+
+    /**
+     * Deletes all derived artifact nodes from the given primary artifact
+     *
+     * @param primaryNode
+     * @param session
+     * @throws Exception
+     */
+    public static void deleteDerivedArtifacts(Node primaryNode, Session session) throws Exception {
+        // Delete all of the primary artifact's relationships that target one of its derived artifacts.
+        String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
+                        "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
+                        "WHERE ISDESCENDANTNODE(r, '%1$s') " +
+                        "AND REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:derivedArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%1$s'))",
+                primaryNode.getPath());
+        javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
+        javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(query, JCRConstants.JCR_SQL2);
+        QueryResult jcrQueryResult = jcrQuery.execute();
+        NodeIterator jcrNodes = jcrQueryResult.getNodes();
+        while (jcrNodes.hasNext()) {
+            // delete it
+            jcrNodes.nextNode().remove();
+        }
+
+        // Necessary to save, prior to the next step, in order to prevent a ReferentialIntegrityException
+        session.save();
+
+        // Delete all derived artifacts that descend from the primary
+        query = String.format("SELECT * FROM [sramp:derivedArtifactType] WHERE ISDESCENDANTNODE('%1$s')",
+                primaryNode.getPath());
+        jcrQuery = jcrQueryManager.createQuery(query, JCRConstants.JCR_SQL2);
+        jcrQueryResult = jcrQuery.execute();
+        jcrNodes = jcrQueryResult.getNodes();
+        while (jcrNodes.hasNext()) {
+            // delete it
+            jcrNodes.nextNode().remove();
+        }
+
+        session.save();
+    }
+
     private static String createString( final char charToRepeat,
             int numberOfRepeats ) {
         assert numberOfRepeats >= 0;
@@ -446,7 +636,7 @@ public class JCRUtils {
         return sb.toString();
     }
 
-    protected static String getStringValue( Value value,
+    private static String getStringValue( Value value,
             int type ) throws RepositoryException {
         String result = value.getString();
         if (type == PropertyType.STRING) {

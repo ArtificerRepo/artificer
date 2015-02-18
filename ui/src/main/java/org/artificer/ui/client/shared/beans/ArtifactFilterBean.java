@@ -43,7 +43,7 @@ public class ArtifactFilterBean implements Serializable {
     private Date dateModifiedTo;
     private String createdBy = "";
     private String lastModifiedBy = "";
-    private ArtifactOriginEnum origin = ArtifactOriginEnum.primary;
+    private ArtifactOriginEnum origin = ArtifactOriginEnum.any;
     /**
      * The classifiers selected by the user in the 'Classifiers' filter section.  This is
      * a simple map of Ontology Base (URI) to Set of Ontology Class IDs.  In other words,

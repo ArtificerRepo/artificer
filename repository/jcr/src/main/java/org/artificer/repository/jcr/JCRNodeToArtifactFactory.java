@@ -21,6 +21,7 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.artificer.repository.jcr.i18n.Messages;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerException;
@@ -29,6 +30,7 @@ import org.artificer.common.visitors.ArtifactVisitor;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.artificer.repository.jcr.mapper.JCRNodeToArtifactVisitor;
 import org.artificer.repository.jcr.mapper.JCRNodeToArtifactVisitor.JCRReferenceResolver;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +74,16 @@ public final class JCRNodeToArtifactFactory {
     public static BaseArtifactType createArtifact(final Session session, Node jcrNode,
             ArtifactType artifactType) throws ArtificerException {
 		try {
+            // In the case of an extended type, we might be wrong about which one...
+            if (artifactType.isExtendedType()) {
+                String t = jcrNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getString();
+                if (ExtendedDocument.class.getSimpleName().equals(t)) {
+                    String e = artifactType.getExtendedType();
+                    artifactType = ArtifactType.valueOf(BaseArtifactEnum.EXTENDED_DOCUMENT);
+                    artifactType.setExtendedType(e);
+                }
+            }
+
 	        // Early exit.  Atom service needs to 404 if the wrong model was given.
 	        String jcrArtifactType = jcrNode.getProperty(JCRConstants.SRAMP_ARTIFACT_TYPE).getValue().getString();
 	        if (! jcrArtifactType.equalsIgnoreCase(artifactType.getArtifactType().getApiType().value())) {

@@ -16,7 +16,10 @@
 package org.artificer.repository;
 
 import org.artificer.common.ArtificerException;
+import org.artificer.common.ReverseRelationship;
 import org.artificer.repository.query.ArtificerQuery;
+
+import java.util.List;
 
 /**
  * Service used to query the repository using the s-ramp query api.
@@ -59,5 +62,13 @@ public interface QueryManager extends AbstractManager {
 	 * @throws org.artificer.common.ArtificerException
 	 */
 	public ArtificerQuery createQuery(String xpathTemplate) throws ArtificerException;
+
+    /**
+     * Return all artifacts and relationships that target the given artifact UUID.
+     * @param uuid
+     * @returnList<ReverseRelationship>
+     * @throws ArtificerException
+     */
+    public List<ReverseRelationship> reverseRelationships(String uuid) throws ArtificerException;
 
 }

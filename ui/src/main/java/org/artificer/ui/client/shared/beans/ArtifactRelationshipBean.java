@@ -30,10 +30,10 @@ public class ArtifactRelationshipBean implements Serializable {
     private static final long serialVersionUID = ArtifactRelationshipBean.class.hashCode();
 
     private String relationshipType;
-    private String targetUuid;
-    private String targetName;
-    private String targetType;
-    private Date targetLastModified;
+    private String uuid;
+    private String name;
+    private String type;
+    private Date lastModified;
 
     /**
      * Constructor.
@@ -49,31 +49,31 @@ public class ArtifactRelationshipBean implements Serializable {
     }
 
     /**
-     * @return the targetUuid
+     * @return the uuid
      */
-    public String getTargetUuid() {
-        return targetUuid;
+    public String getUuid() {
+        return uuid;
     }
 
     /**
-     * @return the targetName
+     * @return the name
      */
-    public String getTargetName() {
-        return targetName;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @return the targetType
+     * @return the type
      */
-    public String getTargetType() {
-        return targetType;
+    public String getType() {
+        return type;
     }
 
     /**
-     * @return the targetLastModified
+     * @return the lastModified
      */
-    public Date getTargetLastModified() {
-        return targetLastModified;
+    public Date getLastModified() {
+        return lastModified;
     }
 
     /**
@@ -84,31 +84,31 @@ public class ArtifactRelationshipBean implements Serializable {
     }
 
     /**
-     * @param targetUuid the targetUuid to set
+     * @param uuid the uuid to set
      */
-    public void setTargetUuid(String targetUuid) {
-        this.targetUuid = targetUuid;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     /**
-     * @param targetName the targetName to set
+     * @param name the name to set
      */
-    public void setTargetName(String targetName) {
-        this.targetName = targetName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
-     * @param targetType the targetType to set
+     * @param type the type to set
      */
-    public void setTargetType(String targetType) {
-        this.targetType = targetType;
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**
-     * @param targetLastModified the targetLastModified to set
+     * @param lastModified the lastModified to set
      */
-    public void setTargetLastModified(Date targetLastModified) {
-        this.targetLastModified = targetLastModified;
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 
 }

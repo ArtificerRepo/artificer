@@ -15,6 +15,7 @@
  */
 package org.artificer.server.core.api;
 
+import org.artificer.common.ReverseRelationship;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 
@@ -41,4 +42,12 @@ public interface QueryService extends AbstractService {
     public List<StoredQuery> getStoredQueries() throws Exception;
 
     public void deleteStoredQuery(String queryName) throws Exception;
+
+    /**
+     * Return all artifacts and relationships that target the given artifact UUID.
+     * @param uuid
+     * @returnList<ReverseRelationship>
+     * @throws Exception
+     */
+    public List<ReverseRelationship> reverseRelationships(String uuid) throws Exception;
 }
