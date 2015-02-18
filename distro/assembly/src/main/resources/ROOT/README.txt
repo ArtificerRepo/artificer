@@ -24,15 +24,19 @@ This distribution comes with the following:
 When installing into JBoss EAP you must first download the appropriate ZIP 
 distribution and unpack to your preferred location.
 
-    Download JBoss EAP:  http://www.jboss.org/jbossas/downloads
+    Download Wildfly or JBoss EAP:  http://www.jboss.org/jbossas/downloads
 
 The installer will ask you a couple of questions and then do everything else 
 for you! From the root of the distribution, simply run:
 
     ant
 
-Once the installation completes, you can start your preferred runtime using 
-the standard startup scripts and then try out any of the following:
+Once the installation completes, you can start Wildfly/EAP using the standard startup scripts, but make sure to
+use the standalone-full profile.
+
+    [JBOSS_HOME]/bin/standalone.sh -c standalone-full.xml
+
+Then, try out any of the following:
 
         - Artificer demos (included)
         - Artificer repository browser UI (http://localhost:8080/artificer-ui)
@@ -41,7 +45,7 @@ the standard startup scripts and then try out any of the following:
 You should be able to log in with the following credentials:
 
     Username: admin
-    Password: <pw-chosen-during-install>
+    Password: artificer1! (unless modified in Keycloak)
 
     
 == Note on Memory Configuration ==
