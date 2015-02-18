@@ -64,8 +64,6 @@ public class ArtificerConstants {
     public static final String ARTIFICER_CONFIG_EVENT_JMS_CONNECTIONFACTORY = "artificer.config.events.jms.connectionfactory"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_EVENT_JMS_TOPICS = "artificer.config.events.jms.topics"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_EVENT_JMS_QUEUES = "artificer.config.events.jms.queues"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_EVENT_JMS_PORT = "artificer.config.events.jms.embedded-activemq-port"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_EVENT_JMS_URL = "artificer.config.events.jms.activemq-url"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_EVENT_JMS_USER = "artificer.config.events.jms.user"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_EVENT_JMS_PASSWORD = "artificer.config.events.jms.password"; //$NON-NLS-1$
 

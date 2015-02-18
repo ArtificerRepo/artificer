@@ -243,12 +243,9 @@ artificer.config.events.jms.topics = artificer/events/topic
 # In addition to the above topics, Artificer will also publish non-expiring events to any JMS queue names (JNDI)
 # listed here (comma-delimited).
 artificer.config.events.jms.queues =
-# If Artificer is running on a non-JavaEE server, or a server where JMS/JNDI is not properly configured, it will start
-# an embedded ActiveMQ broker over TCP.  The property controls that port.
-artificer.config.events.jms.embedded-activemq-port = 61616
 ----
 
-Artificer supports three JMS environments:
+Artificer supports two JMS environments:
 
 * When Artificer is installed in Wildfly/EAP by using our installation script, JMS is configured automatically.  The existing
 HornetQ configuration is modified to add the default topic, described above, and all necessary credentials.
@@ -258,14 +255,6 @@ IMPORTANT: In order for HornetQ to work properly, the standalone-full profile mu
 * For other EE platforms, Artificer will always attempt to discover a JMS 'ConnectionFactory' and all
 configured topics/queues through JNDI.  If found, it will simply use that existing framework and setup.
 Users can add additional topics/queues to their framework, then add them to 'artificer.properties' (see above).
-* If the no existing JMS setup is discovered, Artificer kicks off an embedded ActiveMQ broker over TCP.  Then, all
-configured topics and queues are created automatically.  External clients can connect to this broker in one of two ways:
-** The ActiveMQ broker provides a lightweight JNDI implementation and automatically exposes the ConnectionFactory
-   (literally named "ConnectionFactory"). To expose the topics/queues, the *client app* needs to include a
-   'jndi.properties' file (and ActiveMQ jars) on the classpath. The contents of that file should contain something like
-   'topic.[jndi name] = [activemq topic name]'. '[jndi name]' is then available to the client. Other than that
-   properties file, the client is able to use generic JNDI and JMS without any ActiveMQ APIs.
-** Simply use the ActiveMQ libraries and API
 
 Authorization
 ^^^^^^^^^^^^^

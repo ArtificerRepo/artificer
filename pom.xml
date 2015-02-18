@@ -754,11 +754,6 @@
         <version>1.4</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.activemq</groupId>
-        <artifactId>activemq-kahadb-store</artifactId>
-        <version>${version.org.apache.activemq}</version>
-      </dependency>
-      <dependency>
         <groupId>org.reflections</groupId>
         <artifactId>reflections</artifactId>
         <version>0.9.9</version>

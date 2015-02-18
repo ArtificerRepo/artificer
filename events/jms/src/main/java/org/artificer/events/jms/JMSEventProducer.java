@@ -16,17 +16,14 @@
 package org.artificer.events.jms;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.broker.BrokerService;
 import org.apache.commons.lang.StringUtils;
-import org.artificer.events.ArtifactUpdateEvent;
-import org.artificer.events.jms.i18n.Messages;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerConstants;
 import org.artificer.common.ontology.ArtificerOntology;
+import org.artificer.events.ArtifactUpdateEvent;
 import org.artificer.events.EventProducer;
 import org.artificer.events.OntologyUpdateEvent;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,19 +49,6 @@ import java.util.List;
  * names. If they exist, it means we're in a JavaEE environment and things are
  * correctly configured. We simply use the existing JMS framework and the
  * pre-existing topics/queues.
- *
- * Otherwise, we assume we're on a non-JavaEE server (EAP without
- * standalone-full, etc). We then create an embedded ActiveMQ broker over a TCP
- * port, then programmatically create all topics/queues. External clients can
- * then connect to it in one of two ways: 1.) Simply use the ActiveMQ libs and
- * API 2.) The ActiveMQ broker provides a lightweight JNDI implementation and
- * automatically exposes the ConnectionFactory (literally named
- * "ConnectionFactory"). To expose the topics/queues, the *client app* needs to
- * include a jndi.properties file (and ActiveMQ jar) on the classpath. The
- * contents should contain something like
- * "topic.[jndi name] = [activemq topic name]". [jndi name] is then available to
- * the client. Other than that properties file, the client is able to use
- * generic JNDI and JMS without any ActiveMQ APIs.
  *
  * @author Brett Meyer
  */
@@ -105,62 +89,25 @@ public class JMSEventProducer implements EventProducer {
                     queueNames = queueNamesProp.split(","); //$NON-NLS-1$
                 }
 
-                try {
-                    // First, see if a ConnectionFactory and Topic/Queue exists on JNDI.  If so, assume JMS is properly
-                    // setup in a Java EE container and simply use it.
+                // See if a ConnectionFactory and Topic/Queue exists on JNDI.  If so, assume JMS is properly
+                // setup in a Java EE container and use it.
 
-                    ConnectionFactory connectionFactory = (ConnectionFactory) jndiLookup(connectionFactoryName);
-                    connection = connectionFactory.createConnection();
-                    session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                ConnectionFactory connectionFactory = (ConnectionFactory) jndiLookup(connectionFactoryName);
+                connection = connectionFactory.createConnection();
+                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-                    for (String topicName : topicNames) {
-                        Topic topic = (Topic) jndiLookup(topicName);
-                        destinations.add(topic);
-                    }
+                for (String topicName : topicNames) {
+                    Topic topic = (Topic) jndiLookup(topicName);
+                    destinations.add(topic);
+                }
 
-                    for (String queueName : queueNames) {
-                        Queue queue = (Queue) jndiLookup(queueName);
-                        destinations.add(queue);
-                    }
-                } catch (NamingException e) {
-                    // Otherwise, JMS wasn't setup. Assume we need to start an embedded
-                    // ActiveMQ broker and create the destinations.
-
-                    String bindAddress = "tcp://localhost:" //$NON-NLS-1$
-                            + ArtificerConfig.getConfigProperty(ArtificerConstants.ARTIFICER_CONFIG_EVENT_JMS_PORT, "61616"); //$NON-NLS-1$
-
-                    LOG.warn(Messages.i18n.format("org.artificer.events.jms.embedded_broker", bindAddress)); //$NON-NLS-1$
-
-                    session = null;
-                    destinations.clear();
-
-                    BrokerService broker = new BrokerService();
-                    broker.addConnector(bindAddress);
-                    broker.start();
-
-                    // Event though we added a TCP connector, above, ActiveMQ also exposes the broker over the "vm"
-                    // protocol. It optimizes performance for connections on the same JVM.
-                    ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost"); //$NON-NLS-1$
-                    initActiveMQ(connectionFactory, topicNames, queueNames);
+                for (String queueName : queueNames) {
+                    Queue queue = (Queue) jndiLookup(queueName);
+                    destinations.add(queue);
                 }
             } catch (Exception e) {
                 LOG.error(e.getMessage(), e);
             }
-        }
-    }
-    
-    private void initActiveMQ(ConnectionFactory connectionFactory, String[] topicNames, String[] queueNames)
-            throws Exception {
-        connection = connectionFactory.createConnection();
-        connection.start();
-        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-        for (String topicName : topicNames) {
-            destinations.add(session.createTopic(topicName));
-        }
-
-        for (String queueName : queueNames) {
-            destinations.add(session.createQueue(queueName));
         }
     }
 

@@ -8,6 +8,5 @@ target
 *.versionsBackup
 *~
 .checkstyle
-activemq-data
 *.iml
 .idea

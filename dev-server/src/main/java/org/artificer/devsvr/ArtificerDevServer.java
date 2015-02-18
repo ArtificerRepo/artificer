@@ -110,7 +110,6 @@ public class ArtificerDevServer extends ErraiDevServer {
         System.setProperty("overlord.resource-caching.disabled", "true");
 
         System.setProperty("artificer.config.events.jms.topics", "artificer/events/topic");
-        System.setProperty("artificer.config.events.jms.embedded-activemq-port", "61616");
     }
 
     /**
