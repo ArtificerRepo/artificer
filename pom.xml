@@ -684,11 +684,6 @@
         <version>${version.com.google.guava}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava-gwt</artifactId>
-        <version>${version.com.google.guava}</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${version.com.google.gwt}</version>
@@ -702,11 +697,6 @@
         <groupId>org.jboss.aesh</groupId>
         <artifactId>aesh</artifactId>
         <version>${version.org.jboss.aesh}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-tools</artifactId>
-        <version>${version.org.jboss.errai}</version>
       </dependency>
       <dependency>
         <groupId>com.datastax.cassandra</groupId>
@@ -832,32 +822,12 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-javax-enterprise</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
         <artifactId>errai-common</artifactId>
         <version>${version.org.jboss.errai}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-jboss-as-support</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-cdi-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jaxrs-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-marshalling</artifactId>
         <version>${version.org.jboss.errai}</version>
       </dependency>
 

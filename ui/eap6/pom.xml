@@ -17,18 +17,6 @@
       <artifactId>artificer-ui</artifactId>
       <type>war</type>
     </dependency>
-
-    <!-- Other JBoss-only dependencies -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-jboss-as-support</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>xml-apis</artifactId>
-          <groupId>xml-apis</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
