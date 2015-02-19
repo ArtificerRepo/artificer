@@ -15,17 +15,15 @@
  */
 package org.artificer.ui.client.local.pages;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import org.artificer.ui.client.local.ClientMessages;
 import org.artificer.ui.client.local.pages.details.AddCustomPropertyDialog;
 import org.artificer.ui.client.local.pages.details.ClassifiersPanel;
@@ -59,16 +57,15 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.HtmlSnippet;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * The page shown to the user when she clicks on one of the artifacts
@@ -117,8 +114,6 @@ public class ArtifactDetailsPage extends AbstractPage {
     InlineLabel version;
     @Inject @DataField("core-property-type-1") @Bound(property="type")
     InlineLabel htype;
-    @Inject @DataField("link-download-content")
-    Anchor downloadContentLink;
     @Inject @DataField("link-repository-content")
     Anchor linkToRepositoryContent;
     @Inject @DataField("link-repository-metadata")
@@ -398,11 +393,6 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     protected void update(ArtifactBean artifact) {
         this.artifact.setModel(artifact, InitialState.FROM_MODEL);
-        String contentUrl = GWT.getModuleBaseURL() + "services/artifactDownload"; //$NON-NLS-1$
-        contentUrl += "?uuid=" + artifact.getUuid() + "&type=" + artifact.getType(); //$NON-NLS-1$ //$NON-NLS-2$
-        this.downloadContentLink.setHref(contentUrl);
-        // hide the link if the artifact is derived or has no content
-        this.downloadContentLink.setVisible(!artifact.isDerived() && artifact.isDocument());
         this.feedLink.setHref(artifact.getRepositoryLink());
         this.linkToRepositoryContent.setHref(artifact.getRepositoryMediaLink());
         this.linkToRepositoryMetadata.setHref(artifact.getRepositoryLink());
@@ -410,11 +400,6 @@ public class ArtifactDetailsPage extends AbstractPage {
 
         if (artifact.isTextDocument()) {
             sourceTabAnchor.setVisible(true);
-        }
-        if (artifact.isDocument()) {
-            this.downloadContentLink.getElement().removeClassName("hidden"); //$NON-NLS-1$
-        } else {
-            this.downloadContentLink.getElement().addClassName("hidden"); //$NON-NLS-1$
         }
 
         deleteButton.setVisible(!artifact.isDerived());
