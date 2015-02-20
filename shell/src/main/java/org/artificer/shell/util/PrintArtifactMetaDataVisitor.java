@@ -15,11 +15,10 @@
  */
 package org.artificer.shell.util;
 
-import java.util.List;
-
 import org.artificer.common.ArtifactType;
 import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 import org.artificer.shell.i18n.Messages;
+import org.jboss.aesh.console.command.invocation.CommandInvocation;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
@@ -30,17 +29,22 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 
+import java.util.List;
+
 /**
  * Visitor that knows how to print out details of an artifact.
  *
  * @author eric.wittmann@redhat.com
  */
 public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
+	
+	private final CommandInvocation commandInvocation;
 
 	/**
 	 * Constructor.
 	 */
-	public PrintArtifactMetaDataVisitor() {
+	public PrintArtifactMetaDataVisitor(CommandInvocation commandInvocation) {
+		this.commandInvocation = commandInvocation;
 	}
 
 	/**
@@ -49,7 +53,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
 	@Override
 	protected void visitBase(BaseArtifactType artifact) {
 		ArtifactType artifactType = ArtifactType.valueOf(artifact);
-		System.out.println(Messages.i18n.format("PrintArtifact.CoreHeading")); //$NON-NLS-1$
+		commandInvocation.getShell().out().println(Messages.i18n.format("PrintArtifact.CoreHeading")); //$NON-NLS-1$
         if (artifactType.isExtendedType())
             printProperty(Messages.i18n.format("PrintArtifact.Type"), artifactType.getExtendedType()); //$NON-NLS-1$
         else
@@ -66,23 +70,23 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
 		if (artifact.getLastModifiedTimestamp() != null)
 			printProperty(Messages.i18n.format("PrintArtifact.ModifiedOn"), artifact.getLastModifiedTimestamp().toXMLFormat()); //$NON-NLS-1$
 		if (artifact.getDescription() != null) {
-			System.out.println(Messages.i18n.format("PrintArtifact.DescriptionHeading")); //$NON-NLS-1$
-			System.out.println(artifact.getDescription());
+			commandInvocation.getShell().out().println(Messages.i18n.format("PrintArtifact.DescriptionHeading")); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(artifact.getDescription());
 		}
 		if (artifact.getClassifiedBy().size() > 0) {
-			System.out.println(Messages.i18n.format("PrintArtifact.ClassifiersHeading")); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("PrintArtifact.ClassifiersHeading")); //$NON-NLS-1$
 			for (String classification : artifact.getClassifiedBy()) {
 				printProperty(Messages.i18n.format("PrintArtifact.ClassifiedBy"), classification); //$NON-NLS-1$
 			}
 		}
 		if (artifact.getProperty().size() > 0) {
-			System.out.println(Messages.i18n.format("PrintArtifact.CustomPropsHeading")); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("PrintArtifact.CustomPropsHeading")); //$NON-NLS-1$
 			for (Property property : artifact.getProperty()) {
 				printProperty(property.getPropertyName(), property.getPropertyValue());
 			}
 		}
 		if (artifact.getRelationship().size() > 0) {
-			System.out.println(Messages.i18n.format("PrintArtifact.GenericRelationshipsHeading")); //$NON-NLS-1$
+			commandInvocation.getShell().out().println(Messages.i18n.format("PrintArtifact.GenericRelationshipsHeading")); //$NON-NLS-1$
 			for (Relationship relationship : artifact.getRelationship()) {
 				List<Target> targets = relationship.getRelationshipTarget();
 				printRelationship(relationship.getRelationshipType(), targets);
@@ -95,7 +99,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
 	 */
 	@Override
 	protected void visitDerived(DerivedArtifactType artifact) {
-		System.out.println(Messages.i18n.format("PrintArtifact.DerivedArtifactInfoHeading")); //$NON-NLS-1$
+		commandInvocation.getShell().out().println(Messages.i18n.format("PrintArtifact.DerivedArtifactInfoHeading")); //$NON-NLS-1$
 		DocumentArtifactTarget relatedDocument = artifact.getRelatedDocument();
 		printRelationship(Messages.i18n.format("PrintArtifact.RelatedDoc"), relatedDocument); //$NON-NLS-1$
 	}
@@ -105,7 +109,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
 	 */
 	@Override
 	protected void visitDocument(DocumentArtifactType artifact) {
-		System.out.println(Messages.i18n.format("PrintArtifact.DocumentInfoHeading")); //$NON-NLS-1$
+		commandInvocation.getShell().out().println(Messages.i18n.format("PrintArtifact.DocumentInfoHeading")); //$NON-NLS-1$
 		printProperty(Messages.i18n.format("PrintArtifact.ContentType"), artifact.getContentType()); //$NON-NLS-1$
 		printProperty(Messages.i18n.format("PrintArtifact.ContentSize"), String.valueOf(artifact.getContentSize())); //$NON-NLS-1$
 	}
@@ -115,7 +119,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
 	 */
 	@Override
 	protected void visitXmlDocument(XmlDocument artifact) {
-		System.out.println(Messages.i18n.format("PrintArtifact.XmlDocumentHeading")); //$NON-NLS-1$
+		commandInvocation.getShell().out().println(Messages.i18n.format("PrintArtifact.XmlDocumentHeading")); //$NON-NLS-1$
 		printProperty(Messages.i18n.format("PrintArtifact.ContentEncoding"), artifact.getContentEncoding()); //$NON-NLS-1$
 	}
 
@@ -124,7 +128,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
 	 */
 	@Override
 	protected void visitNamedWsdlDerived(NamedWsdlDerivedArtifactType artifact) {
-		System.out.println(Messages.i18n.format("PrintArtifact.NamedWsdlHeading")); //$NON-NLS-1$
+		commandInvocation.getShell().out().println(Messages.i18n.format("PrintArtifact.NamedWsdlHeading")); //$NON-NLS-1$
 		printProperty(Messages.i18n.format("PrintArtifact.NCName"), artifact.getNCName()); //$NON-NLS-1$
 	}
 
@@ -133,9 +137,9 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
 	 * @param propertyName
 	 * @param propertyValue
 	 */
-	private static void printProperty(String propertyName, String propertyValue) {
+	private void printProperty(String propertyName, String propertyValue) {
 		if (propertyValue != null)
-			System.out.printf("  %1$s: %2$s\n", propertyName, propertyValue); //$NON-NLS-1$
+			commandInvocation.getShell().out().printf("  %1$s: %2$s\n", propertyName, propertyValue); //$NON-NLS-1$
 	}
 
 	/**
@@ -143,7 +147,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
 	 * @param name
 	 * @param target
 	 */
-	private static void printRelationship(String name, Target target) {
+	private void printRelationship(String name, Target target) {
 		String targetStr = target.getValue();
 		printProperty(name, targetStr);
 	}
@@ -153,7 +157,7 @@ public class PrintArtifactMetaDataVisitor extends HierarchicalArtifactVisitor {
 	 * @param name
 	 * @param targets
 	 */
-	private static void printRelationship(String name, List<? extends Target> targets) {
+	private void printRelationship(String name, List<? extends Target> targets) {
 		String targetStr = ""; //$NON-NLS-1$
 		boolean first = true;
 		for (Target target : targets) {

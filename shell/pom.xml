@@ -11,6 +11,11 @@
   <name>Artificer Interactive Shell</name>
   <description>An interactive command line interface (CLI) used to connect to an Artificer repository.</description>
 
+  <properties>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
+
   <dependencies>
     <!-- Artificer project dependencies -->
     <dependency>
@@ -27,15 +32,7 @@
     </dependency>
     <dependency>
       <groupId>org.artificer</groupId>
-      <artifactId>artificer-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.artificer</groupId>
       <artifactId>artificer-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.artificer</groupId>
-      <artifactId>artificer-shell-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.artificer</groupId>
@@ -95,6 +92,10 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
     
     <!-- Third party libraries -->
     <dependency>
@@ -116,9 +117,13 @@
       <artifactId>log4j</artifactId>
       <scope>compile</scope>
     </dependency>
-   <dependency>
+    <dependency>
       <groupId>org.jboss.aesh</groupId>
       <artifactId>aesh</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.aesh</groupId>
+      <artifactId>aesh-extensions</artifactId>
     </dependency>
 
   </dependencies>

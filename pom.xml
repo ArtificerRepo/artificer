@@ -99,7 +99,6 @@
     <version.org.apache.bcel>5.2</version.org.apache.bcel>
     <version.org.apache.commons.commons-lang3>3.1</version.org.apache.commons.commons-lang3>
     <version.org.eclipse.jetty>8.1.9.v20130131</version.org.eclipse.jetty>
-    <version.org.jboss.aesh>0.33.13</version.org.jboss.aesh>
     <version.org.jboss.errai>2.4.4.Final</version.org.jboss.errai>
     <version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>2.1.19.Final</version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>
     <version.org.overlord.overlord-commons>3.1.0-SNAPSHOT</version.org.overlord.overlord-commons>
@@ -139,13 +138,12 @@
     </pluginManagement>
 
     <plugins>
-      <!-- Include the maven-compiler-plugin settings here so that Eclipse/m2e will properly import the projects. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.7</source>
+          <target>1.7</target>
           <showDeprecation>false</showDeprecation>
           <showWarnings>false</showWarnings>
         </configuration>
@@ -696,7 +694,12 @@
       <dependency>
         <groupId>org.jboss.aesh</groupId>
         <artifactId>aesh</artifactId>
-        <version>${version.org.jboss.aesh}</version>
+        <version>0.57</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.aesh</groupId>
+        <artifactId>aesh-extensions</artifactId>
+        <version>0.57</version>
       </dependency>
       <dependency>
         <groupId>com.datastax.cassandra</groupId>
@@ -989,7 +992,6 @@
     <module>server/eap6</module>
     <module>server/wildfly8</module>
     <module>shell</module>
-    <module>shell/api</module>
     <module>test</module>
     <module>ui</module>
     <module>ui/eap6</module>
