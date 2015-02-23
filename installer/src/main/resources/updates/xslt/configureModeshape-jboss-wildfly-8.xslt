@@ -27,6 +27,14 @@
           <xsl:element name="file-binary-storage" namespace="urn:jboss:domain:modeshape:2.0">
             <xsl:attribute name="path">artificer-data/binary</xsl:attribute>
           </xsl:element>
+          <xsl:element name="index-providers" namespace="urn:jboss:domain:modeshape:2.0">
+            <xsl:element name="index-provider" namespace="urn:jboss:domain:modeshape:2.0">
+              <xsl:attribute name="name">local</xsl:attribute>
+              <xsl:attribute name="classname">local</xsl:attribute>
+              <xsl:attribute name="path">artificer-data/query-index</xsl:attribute>
+              <xsl:attribute name="relative-to">jboss.server.data.dir</xsl:attribute>
+            </xsl:element>
+          </xsl:element>
         </xsl:element>
       </xsl:element>
     </xsl:element>

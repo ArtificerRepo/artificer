@@ -16,19 +16,21 @@
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.artificer.common.ArtificerConfig;
+import org.artificer.common.ArtificerConstants;
 import org.artificer.repository.jcr.i18n.Messages;
+import org.artificer.repository.jcr.util.JCRQueryIndexUtil;
 import org.modeshape.common.collection.Problems;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
 import org.overlord.commons.services.ServiceRegistryUtil;
-import org.artificer.common.ArtificerConfig;
-import org.artificer.common.ArtificerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.LoginException;
 import javax.jcr.NamespaceRegistry;
 import javax.jcr.NoSuchWorkspaceException;
+import javax.jcr.PropertyType;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
@@ -117,7 +119,10 @@ public class JCRRepository {
                 }
             }
         }
+
         configureNodeTypes();
+
+        createQueryIndexes();
     }
 
     /**
@@ -187,7 +192,7 @@ public class JCRRepository {
             if (is == null) {
                 throw new RuntimeException(Messages.i18n.format("CND_NOT_FOUND"));
             }
-            manager.registerNodeTypes(is,true);
+            manager.registerNodeTypes(is, true);
         } catch (LoginException e) {
             throw e;
         } catch (NoSuchWorkspaceException e) {
@@ -200,6 +205,35 @@ public class JCRRepository {
             throw e;
         } finally {
             IOUtils.closeQuietly(is);
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
+
+    private void createQueryIndexes() throws RepositoryException {
+        Session session = null;
+        try {
+            session = JCRRepositoryFactory.getSession();
+
+            try {
+                // used everywhere
+                JCRQueryIndexUtil.createQueryIndex(session, "sramp:baseArtifactType:uuid", true,
+                        "sramp:baseArtifactType", "sramp:uuid", PropertyType.STRING);
+                // JCRAuditManager
+                JCRQueryIndexUtil.createQueryIndex(session, "audit:auditEntry:uuid", true,
+                        "audit:auditEntry", "audit:uuid", PropertyType.STRING);
+                JCRQueryIndexUtil.createQueryIndex(session, "audit:auditEntry:createdBy", false,
+                        "audit:auditEntry", "jcr:createdBy", PropertyType.STRING);
+            } catch (Throwable e) {
+            if (e instanceof NoClassDefFoundError || e instanceof ClassNotFoundException) {
+                // Temporary fix -- eat it.  For EAP 6 (ModeShape 3), JCRRepository's use of the query index API
+                // (new in ModeShape 4) will fail.
+            } else if (e instanceof RepositoryException) {
+                throw (RepositoryException) e;
+            } else {
+                // TODO
+            }
+        }
+        } finally {
             JCRRepositoryFactory.logoutQuietly(session);
         }
     }

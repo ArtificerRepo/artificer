@@ -20,17 +20,17 @@
   <!-- Install Artificer -->
   <target name="install">
     <echo message=" " />
-    <echo message="#############################################" />
+    <echo message="################################################" />
     <echo message="# Running the Artificer installer.             #" />
-    <echo message="#############################################" />
+    <echo message="################################################" />
 
     <property name="s-ramp.script.dir" location="scripts" />
     <ant antfile="${s-ramp.script.dir}/${appserver.id}.xml" inheritall="true" target="install" />
 
     <echo message=" " />
-    <echo message="############################################" />
+    <echo message="###############################################" />
     <echo message="# Artificer installer completed successfully! #" />
-    <echo message="############################################" />
+    <echo message="###############################################" />
     <echo message=" " />
   </target>
 
