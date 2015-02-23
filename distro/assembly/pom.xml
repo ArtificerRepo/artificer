@@ -225,6 +225,7 @@
   </dependencies>
 
   <build>
+    <finalName>artificer-${project.version}</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -244,7 +245,7 @@
               <goal>single</goal>
             </goals>
             <configuration>
-              <finalName>artificer-${project.version}</finalName>
+
               <attach>true</attach>
               <descriptors>
                 <descriptor>src/main/assembly/dist.xml</descriptor>
@@ -300,6 +301,40 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>docker</id>
+      <build>
+        <finalName>artificer</finalName>
+        <plugins>
+          <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.1.1</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <imageName>artificer:${project.version}</imageName>
+              <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+              <resources>
+                <resource>
+                  <targetPath>/artificer.zip</targetPath>
+                  <directory>${project.build.directory}</directory>
+                  <include>artificer.zip</include>
+                </resource>
+              </resources>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
   
 </project>
