@@ -46,6 +46,7 @@ import org.artificer.shell.maven.DeployCommand;
 import org.artificer.shell.ontology.DeleteOntologyCommand;
 import org.artificer.shell.ontology.GetOntologyCommand;
 import org.artificer.shell.ontology.ListOntologiesCommand;
+import org.artificer.shell.ontology.OntologyStatusCommand;
 import org.artificer.shell.ontology.UpdateOntologyCommand;
 import org.artificer.shell.ontology.UploadOntologyCommand;
 import org.artificer.shell.storedquery.CreateStoredQueryCommand;
@@ -64,6 +65,7 @@ import org.jboss.aesh.console.command.invocation.CommandInvocation;
 import org.jboss.aesh.console.command.registry.AeshCommandRegistryBuilder;
 import org.jboss.aesh.console.command.registry.CommandRegistry;
 import org.jboss.aesh.console.settings.SettingsBuilder;
+import org.jboss.aesh.extensions.clear.Clear;
 import org.jboss.aesh.extensions.echo.Echo;
 import org.jboss.aesh.extensions.exit.Exit;
 
@@ -105,7 +107,7 @@ public class ArtificerShell {
 
     @GroupCommandDefinition(name = "ontology", description = "",
             groupCommands = {DeleteOntologyCommand.class, GetOntologyCommand.class, ListOntologiesCommand.class,
-                    UpdateOntologyCommand.class, UploadOntologyCommand.class})
+                    OntologyStatusCommand.class, UpdateOntologyCommand.class, UploadOntologyCommand.class})
     public static class OntologyCommands implements Command {
         @Override
         public CommandResult execute(CommandInvocation commandInvocation) throws IOException, InterruptedException {
@@ -126,6 +128,7 @@ public class ArtificerShell {
     public static void main(String[] args) {
         CommandRegistry registry = new AeshCommandRegistryBuilder()
                 // aesh-extensions
+                .command(Clear.class)
                 .command(Echo.class)
                 .command(Exit.class)
                 // artificer core
