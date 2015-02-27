@@ -74,16 +74,16 @@ public class ExecuteStoredQueryCommand extends AbstractCommand {
             
             int entryIndex = 1;
             commandInvocation.getShell().out().println(Messages.i18n.format("Query.AtomFeedSummary", rset.size()));
-            commandInvocation.getShell().out().println("  Idx                    Type Name");
-            commandInvocation.getShell().out().println("  ---                    ---- ----");
+            commandInvocation.getShell().out().println("  Idx, UUID, Type, Name");
+            commandInvocation.getShell().out().println("  ---------------------");
             for (ArtifactSummary summary : rset) {
                 ArtifactType type = summary.getType();
                 String displayType = type.getArtifactType().getType().toString();
                 if (type.isExtendedType() && type.getExtendedType() != null) {
                     displayType = type.getExtendedType();
                 }
-                commandInvocation.getShell().out().printf("  %1$3d %2$23s %3$-40s\n", entryIndex++, displayType,
-                        summary.getName());
+                commandInvocation.getShell().out().printf("  %d, %s, %s, %s\n", entryIndex++, summary.getUuid(),
+                        displayType, summary.getName());
             }
 
             context(commandInvocation).setCurrentArtifactFeed(rset);

@@ -46,12 +46,11 @@ public class ListOntologiesCommand extends AbstractCommand {
 		try {
 			List<OntologySummary> ontologies = client.getOntologies();
 			commandInvocation.getShell().out().println(Messages.i18n.format("ListOntologies.Summary", ontologies.size()));
-			commandInvocation.getShell().out().println("  Idx  " + Messages.i18n.format("ListOntologies.Base"));
-			commandInvocation.getShell().out().println("  ---  ----");
+			commandInvocation.getShell().out().println("  Idx, UUID, Base");
+			commandInvocation.getShell().out().println("  ---------------");
 			int idx = 1;
 			for (OntologySummary ontology : ontologies) {
-				String base = ontology.getBase();
-				commandInvocation.getShell().out().printf("  %1$3d  %2$s\n", idx++, base);
+				commandInvocation.getShell().out().printf("  %d, %s, %s\n", idx++, ontology.getUuid(), ontology.getBase());
 			}
 
 			context(commandInvocation).setCurrentOntologyFeed(ontologies);
