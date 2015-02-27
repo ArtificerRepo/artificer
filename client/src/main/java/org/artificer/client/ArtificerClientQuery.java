@@ -15,18 +15,18 @@
  */
 package org.artificer.client;
 
+import org.artificer.client.i18n.Messages;
+import org.artificer.client.query.QueryResultSet;
+import org.artificer.common.error.ArtificerServerException;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.artificer.client.query.QueryResultSet;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.client.i18n.Messages;
 
 
 /**
@@ -195,7 +195,7 @@ public class ArtificerClientQuery {
      * @throws org.artificer.atom.err.ArtificerAtomException
      * @throws ArtificerClientException
      */
-    public QueryResultSet query() throws ArtificerClientException, ArtificerAtomException {
+    public QueryResultSet query() throws ArtificerClientException, ArtificerServerException {
         String query = formatQuery();
         return client.query(query, startIndex, count, orderBy, ascending, propertyNames);
     }

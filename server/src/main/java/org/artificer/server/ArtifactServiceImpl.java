@@ -17,29 +17,26 @@ package org.artificer.server;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.artificer.repository.PersistenceManager;
-import org.artificer.repository.error.DerivedArtifactCreateException;
-import org.artificer.server.core.api.ArtifactService;
-import org.artificer.server.i18n.Messages;
-import org.artificer.server.mime.MimeTypes;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.artificer.atom.visitors.ArtifactContentTypeVisitor;
 import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtifactTypeEnum;
 import org.artificer.common.ArtifactVerifier;
 import org.artificer.common.ArtificerModelUtils;
-import org.artificer.common.error.ArtifactNotFoundException;
-import org.artificer.common.error.ContentNotFoundException;
-import org.artificer.common.error.InvalidArtifactCreationException;
+import org.artificer.common.error.ArtificerNotFoundException;
+import org.artificer.common.error.ArtificerUserException;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.artificer.events.EventProducer;
 import org.artificer.events.EventProducerFactory;
 import org.artificer.integration.ArchiveContext;
 import org.artificer.integration.ExtensionFactory;
-import org.artificer.repository.error.DerivedArtifactDeleteException;
+import org.artificer.repository.PersistenceManager;
+import org.artificer.server.core.api.ArtifactService;
+import org.artificer.server.i18n.Messages;
+import org.artificer.server.mime.MimeTypes;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
@@ -69,10 +66,10 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         verifier.throwError();
 
         if (artifactType.isDerived()) {
-            throw new DerivedArtifactCreateException(artifactType.getArtifactType());
+            throw ArtificerUserException.derivedArtifactCreate(artifactType.getArtifactType());
         }
         if (artifactType.isDocument()) {
-            throw new InvalidArtifactCreationException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
+            throw new ArtificerUserException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
         }
 
         PersistenceManager persistenceManager = persistenceManager();
@@ -219,13 +216,13 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         }
 
         if (artifactType.isDerived()) {
-            throw new DerivedArtifactCreateException(artifactType.getArtifactType());
+            throw ArtificerUserException.derivedArtifactCreate(artifactType.getArtifactType());
         }
 
         PersistenceManager persistenceManager = persistenceManager();
         // store the content
         if (!ArtificerModelUtils.isDocumentArtifact(artifact)) {
-            throw new InvalidArtifactCreationException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
+            throw new ArtificerUserException(Messages.i18n.format("INVALID_DOCARTY_CREATE")); //$NON-NLS-1$
         }
 
         artifact = persistenceManager.persistArtifact(artifact, content);
@@ -257,7 +254,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         PersistenceManager persistenceManager = persistenceManager();
         BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);
         if (oldArtifact == null) {
-            throw new ArtifactNotFoundException(uuid);
+            throw ArtificerNotFoundException.artifactNotFound(uuid);
         }
 
         ArtifactVerifier verifier = new ArtifactVerifier(oldArtifact, artifactType);
@@ -283,7 +280,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
     public void updateContent(ArtifactType artifactType, String uuid,
             String fileName, InputStream is) throws Exception {
         if (artifactType.isDerived()) {
-            throw new DerivedArtifactCreateException(artifactType.getArtifactType());
+            throw ArtificerUserException.derivedArtifactCreate(artifactType.getArtifactType());
         }
 
         ArtifactContent content = new ArtifactContent(fileName, is);
@@ -297,7 +294,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         PersistenceManager persistenceManager = persistenceManager();
         BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);
         if (oldArtifact == null) {
-            throw new ArtifactNotFoundException(uuid);
+            throw ArtificerNotFoundException.artifactNotFound(uuid);
         }
 
         BaseArtifactType updatedArtifact = persistenceManager.updateArtifactContent(uuid, artifactType, content);
@@ -338,7 +335,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         BaseArtifactType artifact = persistenceManager.getArtifact(uuid, artifactType);
         if (artifact == null || (!artifactType.getArtifactType().getApiType().equals(artifact.getArtifactType())
                 && !(artifactType.getArtifactType().equals(ArtifactTypeEnum.ExtendedArtifactType) && artifact.getArtifactType().equals(BaseArtifactEnum.EXTENDED_DOCUMENT)))) {
-            throw new ArtifactNotFoundException(uuid);
+            throw ArtificerNotFoundException.artifactNotFound(uuid);
         }
 
         return artifact;
@@ -360,11 +357,11 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
     @Override
     public InputStream getContent(ArtifactType artifactType, BaseArtifactType artifact) throws Exception {
         if (!(artifact instanceof DocumentArtifactType)) {
-            throw new ContentNotFoundException(artifact.getUuid());
+            throw ArtificerNotFoundException.contentNotFound(artifact.getUuid());
         }
         DocumentArtifactType documentArtifact = (DocumentArtifactType) artifact;
         if (documentArtifact.getContentSize() == 0  || StringUtils.isEmpty(documentArtifact.getContentHash())) {
-            throw new ContentNotFoundException(artifact.getUuid());
+            throw ArtificerNotFoundException.contentNotFound(artifact.getUuid());
         }
 
         PersistenceManager persistenceManager = persistenceManager();
@@ -400,7 +397,7 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
     @Override
     public void delete(ArtifactType artifactType, String uuid) throws Exception {
         if (artifactType.isDerived()) {
-            throw new DerivedArtifactDeleteException(artifactType.getArtifactType());
+            throw ArtificerUserException.derivedArtifactDelete(artifactType.getArtifactType());
         }
 
         PersistenceManager persistenceManager = persistenceManager();
@@ -422,14 +419,14 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
     @Override
     public void deleteContent(ArtifactType artifactType, String uuid) throws Exception {
         if (artifactType.isDerived()) {
-            throw new DerivedArtifactDeleteException(artifactType.getArtifactType());
+            throw ArtificerUserException.derivedArtifactDelete(artifactType.getArtifactType());
         }
 
         PersistenceManager persistenceManager = persistenceManager();
 
         BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);
         if (oldArtifact == null) {
-            throw new ArtifactNotFoundException(uuid);
+            throw ArtificerNotFoundException.artifactNotFound(uuid);
         }
 
         // Delete the artifact content

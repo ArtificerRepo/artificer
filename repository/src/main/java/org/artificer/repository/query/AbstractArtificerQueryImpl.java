@@ -15,19 +15,19 @@
  */
 package org.artificer.repository.query;
 
+import org.artificer.common.ArtificerException;
+import org.artificer.common.error.ArtificerUserException;
+import org.artificer.common.query.xpath.XPathParser;
+import org.artificer.common.query.xpath.ast.Query;
+import org.artificer.repository.i18n.Messages;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import org.artificer.repository.error.InvalidQueryException;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
-import org.artificer.common.ArtificerException;
-import org.artificer.common.query.xpath.XPathParser;
-import org.artificer.common.query.xpath.ast.Query;
-import org.artificer.repository.i18n.Messages;
 
 /**
  * A base class for concrete implementations of the {@link ArtificerQuery} interface.  This
@@ -157,7 +157,7 @@ public abstract class AbstractArtificerQueryImpl implements ArtificerQuery {
 	 * @return final xpath used to query the s-ramp repository
 	 */
 	protected static final String formatQuery(String xpathTemplate, List<QueryReplacementParam<?>> replacementParams)
-			throws InvalidQueryException {
+			throws ArtificerUserException {
 		StringBuilder builder = new StringBuilder();
 		String [] xpathSegments = xpathTemplate.split("\\?"); //$NON-NLS-1$
 		int paramCounter = 0;
@@ -166,14 +166,14 @@ public abstract class AbstractArtificerQueryImpl implements ArtificerQuery {
 			boolean isLastSegment = segment == xpathSegments[xpathSegments.length - 1];
 			if (!isLastSegment) {
 				if (paramCounter >= replacementParams.size())
-					throw new InvalidQueryException(Messages.i18n.format("TOO_FEW_QUERY_PARAMS")); //$NON-NLS-1$
+					throw new ArtificerUserException(Messages.i18n.format("TOO_FEW_QUERY_PARAMS")); //$NON-NLS-1$
 				QueryReplacementParam<?> param = replacementParams.get(paramCounter);
 				builder.append(param.getFormattedValue());
 				paramCounter++;
 			}
 		}
 		if (replacementParams.size() > paramCounter)
-			throw new InvalidQueryException(Messages.i18n.format("TOO_MANY_QUERY_PARAMS")); //$NON-NLS-1$
+			throw new ArtificerUserException(Messages.i18n.format("TOO_MANY_QUERY_PARAMS")); //$NON-NLS-1$
 
 		return builder.toString();
 	}
@@ -182,22 +182,22 @@ public abstract class AbstractArtificerQueryImpl implements ArtificerQuery {
 	 * Parse the given xpath into an AST.
 	 * @param xpath an s-ramp xpath query
 	 * @return a {@link Query}
-	 * @throws InvalidQueryException
+	 * @throws ArtificerUserException
 	 */
-	protected static final Query parseXPath(String xpath) throws InvalidQueryException {
+	protected static final Query parseXPath(String xpath) throws ArtificerUserException {
 		try {
 			return sParser.parseXPath(xpath);
 		} catch (Throwable e) {
-			throw new InvalidQueryException(Messages.i18n.format("QUERY_PARSE_FAILED"), e); //$NON-NLS-1$
+			throw new ArtificerUserException(Messages.i18n.format("QUERY_PARSE_FAILED"), e); //$NON-NLS-1$
 		}
 	}
 
 	/**
 	 * Perform some static validation of the s-ramp query.
 	 * @param queryModel the parsed s-ramp query model
-	 * @throws InvalidQueryException
+	 * @throws ArtificerUserException
 	 */
-	protected void validateQuery(Query queryModel) throws InvalidQueryException {
+	protected void validateQuery(Query queryModel) throws ArtificerUserException {
 		// TODO static validation of the query goes here
 	}
 

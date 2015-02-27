@@ -15,7 +15,8 @@
  */
 package org.artificer.common.error;
 
-import org.artificer.common.ArtificerException;
+import org.artificer.common.ArtifactTypeEnum;
+import org.artificer.common.i18n.Messages;
 
 /**
  * Exception thrown when the user/client did something they shouldn't have done.  This
@@ -25,7 +26,7 @@ import org.artificer.common.ArtificerException;
  *
  * @author eric.wittmann@redhat.com
  */
-public abstract class ArtificerUserException extends ArtificerException {
+public class ArtificerUserException extends ArtificerServerException {
 
     private static final long serialVersionUID = -1974585440431377826L;
 
@@ -52,6 +53,10 @@ public abstract class ArtificerUserException extends ArtificerException {
         super(message, cause);
     }
 
+    public ArtificerUserException(String msg, String stackTrace) {
+        super(msg, stackTrace);
+    }
+
     /**
      * Constructor.
      * @param cause
@@ -60,4 +65,23 @@ public abstract class ArtificerUserException extends ArtificerException {
         super(cause);
     }
 
+    public static ArtificerUserException invalidClassifiedBy(String classifiedBy) {
+        return new ArtificerUserException(Messages.i18n.format("INVALID_CLASSIFIED_BY", classifiedBy));
+    }
+
+    public static ArtificerUserException derivedArtifactCreate(ArtifactTypeEnum artifactType) {
+        return new ArtificerUserException(Messages.i18n.format("CANNOT_CREATE_DERIVED_ARTY", artifactType));
+    }
+
+    public static ArtificerUserException filenameRequired() {
+        return new ArtificerUserException(Messages.i18n.format("FILENAME_REQUIRED"));
+    }
+
+    public static ArtificerUserException derivedArtifactDelete(ArtifactTypeEnum artifactType) {
+        return new ArtificerUserException(Messages.i18n.format("CANNOT_DELETE_DERIVED_ARTY", artifactType));
+    }
+
+    public static ArtificerUserException auditEntryNotFound(String artifactUuid, String auditEntryUuid) {
+        return new ArtificerUserException(Messages.i18n.format("AUDIT_ENTRY_NOT_FOUND", artifactUuid, auditEntryUuid));
+    }
 }

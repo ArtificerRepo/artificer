@@ -16,14 +16,14 @@
 package org.artificer.test.client;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Test;
-import org.artificer.atom.err.ArtificerAtomException;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.ArtificerClientException;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
+import org.artificer.common.error.ArtificerServerException;
 import org.artificer.integration.switchyard.model.SwitchYardModel;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -81,7 +81,7 @@ public class SwitchYardClientTest extends AbstractClientTest {
      * @throws org.artificer.atom.err.ArtificerAtomException
      * @throws org.artificer.client.ArtificerClientException
      */
-    private void doArtifactsJarAssertions(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerAtomException {
+    private void doArtifactsJarAssertions(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerServerException {
         QueryResultSet result = client.buildQuery("/s-ramp/wsdl/WsdlDocument[@name = ?]").parameter("OrderService.wsdl").query(); //$NON-NLS-1$ //$NON-NLS-2$
         Assert.assertEquals(1, result.size());
         result = client.buildQuery("/s-ramp/wsdl/WsdlDocument[@name = ?]").parameter("OrderService.wsdl").query(); //$NON-NLS-1$ //$NON-NLS-2$
@@ -119,7 +119,7 @@ public class SwitchYardClientTest extends AbstractClientTest {
      * @throws org.artificer.atom.err.ArtificerAtomException
      * @throws org.artificer.client.ArtificerClientException
      */
-    private void doOrderConsumerAssertions(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerAtomException {
+    private void doOrderConsumerAssertions(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerServerException {
         QueryResultSet result = client.buildQuery("/s-ramp/ext/SwitchYardXmlDocument").query(); //$NON-NLS-1$
         Assert.assertEquals(1, result.size());
         result = client.buildQuery("/s-ramp/ext/SwitchYardService").query(); //$NON-NLS-1$
@@ -138,7 +138,7 @@ public class SwitchYardClientTest extends AbstractClientTest {
      * @throws org.artificer.atom.err.ArtificerAtomException
      * @throws org.artificer.client.ArtificerClientException
      */
-    private void doOrderServiceAssertions(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerAtomException {
+    private void doOrderServiceAssertions(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerServerException {
         QueryResultSet result = client.buildQuery("/s-ramp/ext/SwitchYardXmlDocument").query(); //$NON-NLS-1$
         Assert.assertEquals(2, result.size());
         result = client.buildQuery("/s-ramp/ext/SwitchYardXmlDocument[@name = ?]").parameter("orders").query(); //$NON-NLS-1$ //$NON-NLS-2$

@@ -16,6 +16,16 @@
 package org.artificer.test.client;
 
 import org.apache.commons.io.IOUtils;
+import org.artificer.atom.archive.ArtificerArchive;
+import org.artificer.atom.mappers.RdfToOntologyMapper;
+import org.artificer.client.ArtificerAtomApiClient;
+import org.artificer.client.ontology.OntologySummary;
+import org.artificer.client.query.ArtifactSummary;
+import org.artificer.client.query.QueryResultSet;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.error.ArtificerServerException;
+import org.artificer.common.ontology.ArtificerOntology;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
@@ -24,16 +34,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
-import org.artificer.atom.archive.ArtificerArchive;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.atom.mappers.RdfToOntologyMapper;
-import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.ontology.OntologySummary;
-import org.artificer.client.query.ArtifactSummary;
-import org.artificer.client.query.QueryResultSet;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtificerModelUtils;
-import org.artificer.common.ontology.ArtificerOntology;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 import java.io.BufferedReader;
@@ -431,7 +431,7 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 		try {
 			QueryResultSet rset = client.query("12345", 0, 20, "name", false); //$NON-NLS-1$ //$NON-NLS-2$
 			fail("Expected a remote exception from the s-ramp server, but got: " + rset); //$NON-NLS-1$
-		} catch (ArtificerAtomException e) {
+		} catch (ArtificerServerException e) {
 			Assert.assertEquals("Invalid artifact set (step 2).", e.getMessage()); //$NON-NLS-1$
 		}
 	}
@@ -685,7 +685,7 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
         try {
             rdf = client.getOntology("INVALID_UUID"); //$NON-NLS-1$
         } catch (Exception e) {
-            Assert.assertTrue(e.getMessage().contains("not in the repository")); //$NON-NLS-1$
+            Assert.assertTrue(e.getMessage().contains("No ontology found")); //$NON-NLS-1$
         }
         Assert.assertNull(rdf);
 

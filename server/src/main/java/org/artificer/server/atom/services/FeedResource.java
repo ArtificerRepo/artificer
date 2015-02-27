@@ -16,7 +16,7 @@
 package org.artificer.server.atom.services;
 
 import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.artificer.atom.MediaType;
+import org.artificer.common.MediaType;
 import org.artificer.common.ArtificerConfig;
 
 import javax.servlet.http.HttpServletRequest;

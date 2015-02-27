@@ -18,14 +18,6 @@ package org.artificer.repository.jcr;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.artificer.repository.jcr.audit.ArtifactJCRNodeDiff;
-import org.artificer.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
-import org.artificer.repository.jcr.util.JCRUtils;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConfig;
@@ -33,14 +25,22 @@ import org.artificer.common.ArtificerException;
 import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.audit.AuditEntryTypes;
 import org.artificer.common.audit.AuditItemTypes;
+import org.artificer.common.error.ArtificerConflictException;
 import org.artificer.common.error.ArtificerServerException;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.artificer.integration.ExtensionFactory;
 import org.artificer.integration.artifactbuilder.ArtifactBuilder;
 import org.artificer.integration.artifactbuilder.RelationshipContext;
-import org.artificer.repository.error.ArtifactConflictException;
+import org.artificer.repository.jcr.audit.ArtifactJCRNodeDiff;
 import org.artificer.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.artificer.repository.jcr.i18n.Messages;
+import org.artificer.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
+import org.artificer.repository.jcr.util.JCRUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,7 +178,7 @@ public final class JCRArtifactPersister {
                 JCRUtils.setArtifactContentMimeType(artifactNode, artifactType.getMimeType());
             }
         } catch (ItemExistsException e) {
-            throw new ArtifactConflictException(uuid);
+            throw ArtificerConflictException.artifactConflict(uuid);
         }
 
         String jcrMixinName = artifactType.getArtifactType().getApiType().value();

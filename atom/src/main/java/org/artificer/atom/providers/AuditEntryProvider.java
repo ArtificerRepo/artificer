@@ -70,7 +70,7 @@ public class AuditEntryProvider implements MessageBodyReader<AuditEntry>, Messag
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		return AuditEntry.class.isAssignableFrom(type)
-				|| org.artificer.atom.MediaType.APPLICATION_AUDIT_ENTRY_XML_TYPE.equals(mediaType);
+				|| org.artificer.common.MediaType.APPLICATION_AUDIT_ENTRY_XML_TYPE.equals(mediaType);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class AuditEntryProvider implements MessageBodyReader<AuditEntry>, Messag
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		return AuditEntry.class.isAssignableFrom(type)
-				|| org.artificer.atom.MediaType.APPLICATION_AUDIT_ENTRY_XML_TYPE.equals(mediaType);
+				|| org.artificer.common.MediaType.APPLICATION_AUDIT_ENTRY_XML_TYPE.equals(mediaType);
 	}
 
 	/**

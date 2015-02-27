@@ -15,20 +15,19 @@
  */
 package org.artificer.repository.jcr;
 
+import org.artificer.common.ArtificerException;
+import org.artificer.common.error.ArtificerNotFoundException;
+import org.artificer.common.error.ArtificerServerException;
+import org.artificer.common.error.ArtificerUserException;
+import org.artificer.repository.AuditManager;
 import org.artificer.repository.audit.AuditEntrySet;
-import org.artificer.repository.error.InvalidQueryException;
+import org.artificer.repository.jcr.audit.JCRAuditEntrySet;
 import org.artificer.repository.jcr.i18n.Messages;
 import org.artificer.repository.jcr.mapper.JCRNodeToAuditEntryFactory;
 import org.artificer.repository.jcr.util.JCRUtils;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 import org.jboss.downloads.artificer._2013.auditing.AuditItemType;
 import org.jboss.downloads.artificer._2013.auditing.AuditItemType.Property;
-import org.artificer.common.error.ArtifactNotFoundException;
-import org.artificer.common.error.AuditEntryNotFoundException;
-import org.artificer.common.ArtificerException;
-import org.artificer.common.error.ArtificerServerException;
-import org.artificer.repository.AuditManager;
-import org.artificer.repository.jcr.audit.JCRAuditEntrySet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +101,7 @@ public class JCRAuditManager extends JCRAbstractManager implements AuditManager 
                 session.save();
                 return entry;
             } else {
-                throw new ArtifactNotFoundException(artifactUuid);
+                throw ArtificerNotFoundException.artifactNotFound(artifactUuid);
             }
         } catch (ArtificerException se) {
             throw se;
@@ -120,7 +119,7 @@ public class JCRAuditManager extends JCRAbstractManager implements AuditManager 
     public AuditEntry getArtifactAuditEntry(String artifactUuid, String auditEntryUuid) throws ArtificerException {
         // Prevent injection.
         if (artifactUuid.indexOf('\'') >= 0 || auditEntryUuid.indexOf('\'') >= 0)
-            throw new InvalidQueryException();
+            throw new ArtificerUserException();
         String jcrSql2Query = String.format(AUDIT_ENTRY_QUERY, artifactUuid, auditEntryUuid);
         Session session = null;
         try {
@@ -137,7 +136,7 @@ public class JCRAuditManager extends JCRAbstractManager implements AuditManager 
                 Node node = jcrNodes.nextNode();
                 return JCRNodeToAuditEntryFactory.createAuditEntry(session, node);
             } else {
-                throw new AuditEntryNotFoundException(artifactUuid, auditEntryUuid);
+                throw ArtificerUserException.auditEntryNotFound(artifactUuid, auditEntryUuid);
             }
         } catch (Throwable t) {
             JCRRepositoryFactory.logoutQuietly(session);
@@ -152,7 +151,7 @@ public class JCRAuditManager extends JCRAbstractManager implements AuditManager 
     public AuditEntrySet getArtifactAuditEntries(String artifactUuid) throws ArtificerException {
         // Prevent injection.
         if (artifactUuid.indexOf('\'') >= 0)
-            throw new InvalidQueryException();
+            throw new ArtificerUserException();
         String jcrSql2Query = String.format(ARTIFACT_AUDIT_TRAIL_QUERY, artifactUuid);
         return doAuditQuery(jcrSql2Query);
     }
@@ -164,7 +163,7 @@ public class JCRAuditManager extends JCRAbstractManager implements AuditManager 
     public AuditEntrySet getUserAuditEntries(String username) throws ArtificerException {
         // Prevent injection.
         if (username.indexOf('\'') >= 0)
-            throw new InvalidQueryException();
+            throw new ArtificerUserException();
         String jcrSql2Query = String.format(USER_AUDIT_TRAIL_QUERY, username);
         return doAuditQuery(jcrSql2Query);
     }

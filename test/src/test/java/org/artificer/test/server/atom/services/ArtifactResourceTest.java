@@ -16,6 +16,13 @@
 package org.artificer.test.server.atom.services;
 
 import org.apache.commons.io.IOUtils;
+import org.artificer.atom.ArtificerAtomUtils;
+import org.artificer.atom.providers.ArtificerServerExceptionProvider;
+import org.artificer.client.ClientRequest;
+import org.artificer.common.ArtificerConstants;
+import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.MediaType;
+import org.artificer.common.error.ArtificerServerException;
 import org.artificer.test.TestUtils;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -38,13 +45,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PartTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
-import org.artificer.atom.MediaType;
-import org.artificer.atom.ArtificerAtomUtils;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.atom.providers.ArtificerAtomExceptionProvider;
-import org.artificer.client.ClientRequest;
-import org.artificer.common.ArtificerConstants;
-import org.artificer.common.ArtificerModelUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -85,9 +85,9 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		try {
 			request.post(String.class);
 			Assert.fail("Expected an error here."); //$NON-NLS-1$
-		} catch (ArtificerAtomException e) {
+		} catch (ArtificerServerException e) {
 			Assert.assertEquals("Failed to create artifact because \"ElementDeclaration\" is a derived type.", e.getMessage()); //$NON-NLS-1$
-			String stack = ArtificerAtomExceptionProvider.getRootStackTrace(e);
+			String stack = ArtificerServerExceptionProvider.getRootStackTrace(e);
 			Assert.assertTrue(stack.contains("ArtifactResource.create")); //$NON-NLS-1$
 		}
 	}
@@ -798,8 +798,8 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		try {
 			request.get(String.class);
 			Assert.fail("Expected an 'Artifact not found.' error here."); //$NON-NLS-1$
-		} catch (ArtificerAtomException e) {
-			Assert.assertTrue(e.getMessage().contains("not in the repository")); //$NON-NLS-1$
+		} catch (ArtificerServerException e) {
+			Assert.assertTrue(e.getMessage().contains("No artifact found")); //$NON-NLS-1$
 		}
 	}
 

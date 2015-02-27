@@ -16,6 +16,19 @@
 package org.artificer.devsvr;
 
 import org.apache.commons.io.IOUtils;
+import org.artificer.client.ArtificerAtomApiClient;
+import org.artificer.client.ArtificerClientException;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.error.ArtificerServerException;
+import org.artificer.repository.jcr.JCRRepository;
+import org.artificer.repository.jcr.filter.ServletCredentialsFilter;
+import org.artificer.server.ArtificerLifeCycle;
+import org.artificer.server.atom.services.ArtificerApplication;
+import org.artificer.server.filters.MavenRepositoryAuthFilter;
+import org.artificer.server.mvn.services.MavenFacadeServlet;
+import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
+import org.artificer.ui.server.api.KeycloakBearerTokenAuthenticationProvider;
 import org.artificer.ui.server.filters.LocaleFilter;
 import org.artificer.ui.server.servlets.ArtifactDownloadServlet;
 import org.artificer.ui.server.servlets.ArtifactUploadServlet;
@@ -42,19 +55,6 @@ import org.overlord.commons.dev.server.discovery.ErraiWebAppModuleFromMavenDisco
 import org.overlord.commons.dev.server.discovery.WebAppModuleFromIDEDiscoveryStrategy;
 import org.overlord.commons.gwt.server.filters.GWTCacheControlFilter;
 import org.overlord.commons.gwt.server.filters.ResourceCacheControlFilter;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.ArtificerClientException;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtificerModelUtils;
-import org.artificer.repository.jcr.JCRRepository;
-import org.artificer.repository.jcr.filter.ServletCredentialsFilter;
-import org.artificer.server.ArtificerLifeCycle;
-import org.artificer.server.atom.services.ArtificerApplication;
-import org.artificer.server.filters.MavenRepositoryAuthFilter;
-import org.artificer.server.mvn.services.MavenFacadeServlet;
-import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
-import org.artificer.ui.server.api.KeycloakBearerTokenAuthenticationProvider;
 
 import javax.security.auth.Subject;
 import javax.servlet.DispatcherType;
@@ -275,7 +275,7 @@ public class ArtificerDevServer extends ErraiDevServer {
      * @throws org.artificer.atom.err.ArtificerAtomException
      * @throws org.artificer.client.ArtificerClientException
      */
-    private void doStandardSeed(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerAtomException {
+    private void doStandardSeed(ArtificerAtomApiClient client) throws ArtificerClientException, ArtificerServerException {
         InputStream is = null;
 
         // Ontology #1

@@ -15,18 +15,17 @@
  */
 package org.artificer.repository.jcr.mapper;
 
-import java.util.List;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-
 import org.artificer.common.ArtificerException;
-import org.artificer.common.ontology.OntologyException;
+import org.artificer.common.error.ArtificerUserException;
 import org.artificer.common.ontology.ArtificerOntology;
 import org.artificer.common.ontology.ArtificerOntology.ArtificerOntologyClass;
 import org.artificer.repository.jcr.JCRConstants;
 import org.artificer.repository.jcr.i18n.Messages;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import java.util.List;
 
 /**
  * Class that knows how to write an ontology to the given JCR node.
@@ -88,7 +87,7 @@ public final class OntologyToJCRNode {
     public void update(ArtificerOntology ontology, Node ontologyJcrNode) throws RepositoryException, ArtificerException {
         String base = ontologyJcrNode.getProperty(JCRConstants.SRAMP_BASE).getString();
         if (!base.equals(ontology.getBase())) {
-            throw new OntologyException(Messages.i18n.format("CANNOT_CHANGE_ONTOLOGY_BASE"));
+            throw new ArtificerUserException(Messages.i18n.format("CANNOT_CHANGE_ONTOLOGY_BASE"));
         }
 
         ontologyJcrNode.setProperty(JCRConstants.SRAMP_LABEL, ontology.getLabel());

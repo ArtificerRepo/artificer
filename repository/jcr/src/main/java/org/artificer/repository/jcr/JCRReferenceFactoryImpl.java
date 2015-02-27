@@ -15,16 +15,15 @@
  */
 package org.artificer.repository.jcr;
 
-import javax.jcr.Node;
-import javax.jcr.Session;
-import javax.jcr.Value;
-
-import org.artificer.common.error.ArtifactNotFoundException;
 import org.artificer.common.ArtificerException;
+import org.artificer.common.error.ArtificerNotFoundException;
 import org.artificer.common.error.ArtificerServerException;
 import org.artificer.repository.jcr.mapper.ArtifactToJCRNodeVisitor.JCRReferenceFactory;
 import org.artificer.repository.jcr.util.JCRUtils;
 
+import javax.jcr.Node;
+import javax.jcr.Session;
+import javax.jcr.Value;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +61,7 @@ public class JCRReferenceFactoryImpl implements JCRReferenceFactory {
             }
 
             if (node == null) {
-                throw new ArtifactNotFoundException(uuid);
+                throw ArtificerNotFoundException.artifactNotFound(uuid);
             }
 
             return session.getValueFactory().createValue(node, true);

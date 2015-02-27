@@ -15,12 +15,14 @@
  */
 package org.artificer.client;
 
+import org.artificer.common.ArtificerException;
+
 /**
  * Exception thrown by the S-RAMP client when an error of some kind is encountered.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtificerClientException extends Exception {
+public class ArtificerClientException extends ArtificerException {
 
 	private static final long serialVersionUID = -5164848692868850533L;
 

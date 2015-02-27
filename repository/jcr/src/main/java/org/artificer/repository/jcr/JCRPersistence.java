@@ -20,16 +20,12 @@ import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerException;
-import org.artificer.common.error.ArtifactNotFoundException;
+import org.artificer.common.error.ArtificerConflictException;
+import org.artificer.common.error.ArtificerNotFoundException;
 import org.artificer.common.error.ArtificerServerException;
-import org.artificer.common.error.InvalidArtifactUpdateException;
-import org.artificer.common.error.StoredQueryConflictException;
-import org.artificer.common.error.StoredQueryNotFoundException;
+import org.artificer.common.error.ArtificerUserException;
 import org.artificer.common.ontology.ArtificerOntology;
 import org.artificer.common.ontology.ArtificerOntology.ArtificerOntologyClass;
-import org.artificer.common.ontology.InvalidClassifiedByException;
-import org.artificer.common.ontology.OntologyConflictException;
-import org.artificer.common.ontology.OntologyNotFoundException;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.artificer.repository.PersistenceManager;
 import org.artificer.repository.jcr.audit.ArtifactJCRNodeDiffer;
@@ -196,7 +192,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
             Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
             if (artifactNode == null) {
-                throw new ArtifactNotFoundException(uuid);
+                throw ArtificerNotFoundException.artifactNotFound(uuid);
             }
             // In the case of an extended type, we might be wrong about which one...
             if (type.isExtendedType()) {
@@ -228,7 +224,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
             Node artifactNode = JCRUtils.findArtifactNode(artifact.getUuid(), type, session);
             if (artifactNode == null) {
-                throw new ArtifactNotFoundException(artifact.getUuid());
+                throw ArtificerNotFoundException.artifactNotFound(artifact.getUuid());
             }
             if (ArtificerConfig.isAuditingEnabled()) {
                 differ = new ArtifactJCRNodeDiffer(artifactNode);
@@ -268,10 +264,10 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
             Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
             if (artifactNode == null) {
-                throw new ArtifactNotFoundException(uuid);
+                throw ArtificerNotFoundException.artifactNotFound(uuid);
             }
             if (artifactNode.isNodeType(JCRConstants.SRAMP_NON_DOCUMENT_TYPE)) {
-                throw new InvalidArtifactUpdateException(Messages.i18n.format("JCRPersistence.NoArtifactContent"));
+                throw new ArtificerUserException(Messages.i18n.format("JCRPersistence.NoArtifactContent"));
             }
 
             JCRUtils.relationshipConstraintsOnDerived(uuid, artifactNode, session);
@@ -310,7 +306,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
             Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
             if (artifactNode == null) {
-                throw new ArtifactNotFoundException(uuid);
+                throw ArtificerNotFoundException.artifactNotFound(uuid);
             }
 
             JCRUtils.relationshipConstraints(uuid, artifactNode, session);
@@ -347,10 +343,10 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
             Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
             if (artifactNode == null) {
-                throw new ArtifactNotFoundException(uuid);
+                throw ArtificerNotFoundException.artifactNotFound(uuid);
             }
             if (artifactNode.isNodeType(JCRConstants.SRAMP_NON_DOCUMENT_TYPE)) {
-                throw new InvalidArtifactUpdateException(Messages.i18n.format("JCRPersistence.NoArtifactContent"));
+                throw new ArtificerUserException(Messages.i18n.format("JCRPersistence.NoArtifactContent"));
             }
 
             JCRUtils.relationshipConstraintsOnDerived(uuid, artifactNode, session);
@@ -392,14 +388,14 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
         List<ArtificerOntology> ontologies = getOntologies();
         for (ArtificerOntology existingOntology : ontologies) {
             if (existingOntology.getBase().equals(ontology.getBase())) {
-                throw new OntologyConflictException();
+                throw ArtificerConflictException.ontologyConflict(ontology.getUuid());
             }
         }
 
         try {
             session = JCRRepositoryFactory.getSession();
             if (session.nodeExists(ontologyPath)) {
-                throw new OntologyConflictException(ontology.getUuid());
+                throw ArtificerConflictException.ontologyConflict(ontology.getUuid());
             } else {
                 Node ontologiesNode = JCRUtils.findOrCreateNode(session, "/s-ramp/ontologies", JCRConstants.NT_FOLDER);
                 Node ontologyNode = ontologiesNode.addNode(ontology.getUuid(), JCRConstants.SRAMP_ONTOLOGY);
@@ -431,7 +427,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                 ontology.setUuid(uuid);
                 jcr2o.read(ontology, ontologyNode);
             } else {
-                throw new OntologyNotFoundException(uuid);
+                throw ArtificerNotFoundException.ontologyNotFound(uuid);
             }
             return ontology;
         } catch (ArtificerException se) {
@@ -478,7 +474,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
             if (ontologyNode != null) {
                 o2jcr.update(ontology, ontologyNode);
             } else {
-                throw new OntologyNotFoundException(ontology.getUuid());
+                throw ArtificerNotFoundException.ontologyNotFound(ontology.getUuid());
             }
             log.debug(Messages.i18n.format("UPDATED_ONTOLOGY", ontology.getUuid()));
             session.save();
@@ -502,7 +498,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
             if (ontologyNode != null) {
                 ontologyNode.remove();
             } else {
-                throw new OntologyNotFoundException(uuid);
+                throw ArtificerNotFoundException.ontologyNotFound(uuid);
             }
             session.save();
             log.debug(Messages.i18n.format("DELETED_ONTOLOGY", uuid));
@@ -522,14 +518,14 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
         // Validate the name
         if (StringUtils.isBlank(name)) {
-            throw new StoredQueryConflictException();
+            throw ArtificerConflictException.storedQueryConflict();
         }
 
         // Check if a stored query with the given name already exists.
         try {
             getStoredQuery(storedQuery.getQueryName());
-            throw new StoredQueryConflictException(name);
-        } catch (StoredQueryNotFoundException e) {
+            throw ArtificerConflictException.storedQueryConflict(name);
+        } catch (ArtificerNotFoundException e) {
             // do nothing -- success
         }
 
@@ -538,7 +534,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
         try {
             session = JCRRepositoryFactory.getSession();
             if (session.nodeExists(storedQueryPath)) {
-                throw new StoredQueryConflictException(name);
+                throw ArtificerConflictException.storedQueryConflict(name);
             } else {
                 Node queriesNode = JCRUtils.findOrCreateNode(session, "/s-ramp/queries", JCRConstants.NT_FOLDER);
                 Node queryNode = queriesNode.addNode(name, JCRConstants.SRAMP_QUERY);
@@ -569,7 +565,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                 jcr2q.read(storedQuery, queryNode);
                 return storedQuery;
             } else {
-                throw new StoredQueryNotFoundException(queryName);
+                throw ArtificerNotFoundException.storedQueryNotFound(queryName);
             }
         } catch (ArtificerException se) {
             throw se;
@@ -614,7 +610,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
             if (queryNode != null) {
                 q2jcr.write(storedQuery, queryNode);
             } else {
-                throw new StoredQueryNotFoundException(queryName);
+                throw ArtificerNotFoundException.storedQueryNotFound(queryName);
             }
             log.debug(Messages.i18n.format("UPDATED_STOREDQUERY", queryName));
             session.save();
@@ -638,7 +634,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
             if (queryNode != null) {
                 queryNode.remove();
             } else {
-                throw new StoredQueryNotFoundException(queryName);
+                throw ArtificerNotFoundException.storedQueryNotFound(queryName);
             }
             session.save();
             log.debug(Messages.i18n.format("DELETED_STOREDQUERY", queryName));
@@ -657,7 +653,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
         try {
             classifiedUri = new URI(classifiedBy);
         } catch (URISyntaxException e) {
-            throw new InvalidClassifiedByException(classifiedBy);
+            throw ArtificerUserException.invalidClassifiedBy(classifiedBy);
         }
         Collection<ArtificerOntology> ontologies = getOntologies();
         for (ArtificerOntology ontology : ontologies) {
@@ -669,7 +665,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                 return sclass.getUri();
             }
         }
-        throw new InvalidClassifiedByException(classifiedBy);
+        throw ArtificerUserException.invalidClassifiedBy(classifiedBy);
     }
 
     @Override
@@ -681,7 +677,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                 return sclass.normalize();
             }
         }
-        throw new InvalidClassifiedByException(classification.toString());
+        throw ArtificerUserException.invalidClassifiedBy(classification.toString());
     }
 
     @Override

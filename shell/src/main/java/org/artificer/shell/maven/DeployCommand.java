@@ -21,7 +21,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.artificer.atom.err.ArtificerAtomException;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.ArtificerClientException;
 import org.artificer.client.ArtificerClientQuery;
@@ -30,6 +29,7 @@ import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.error.ArtificerServerException;
 import org.artificer.common.maven.MavenGavInfo;
 import org.artificer.common.maven.MavenUtil;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
@@ -254,7 +254,7 @@ public class DeployCommand extends AbstractCommand {
      * @throws javax.xml.bind.JAXBException
      *             the JAXB exception
      */
-    private BaseArtifactType findExistingArtifactByGAV(ArtificerAtomApiClient client, MavenGavInfo mavenGavInfo) throws ArtificerAtomException,
+    private BaseArtifactType findExistingArtifactByGAV(ArtificerAtomApiClient client, MavenGavInfo mavenGavInfo) throws ArtificerServerException,
             ArtificerClientException, JAXBException {
         String query = MavenUtil.gavQuery(mavenGavInfo);
         ArtificerClientQuery clientQuery = client.buildQuery(query);

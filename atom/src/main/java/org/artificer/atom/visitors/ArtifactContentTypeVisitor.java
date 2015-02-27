@@ -19,7 +19,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
-import org.artificer.atom.MediaType;
+import org.artificer.common.MediaType;
 import org.artificer.common.ArtificerConstants;
 import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 

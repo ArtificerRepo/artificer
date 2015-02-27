@@ -15,7 +15,7 @@
  */
 package org.artificer.atom.providers;
 
-import org.artificer.common.error.ArtificerConflictException;
+import org.artificer.common.error.ArtificerWrongModelException;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 
 import javax.ws.rs.Consumes;
@@ -34,25 +34,25 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
- * The spec requires that a 409 is returned when an artifact conflict exists.
+ * The spec requires that a 403 is returned when an artifact is published to the incorrect model.
  * 
  * @author Brett Meyer
  */
 @Provider
 @ServerInterceptor
-@Produces(org.artificer.common.MediaType.APPLICATION_ARTIFICER_CONFLICT_EXCEPTION)
-@Consumes(org.artificer.common.MediaType.APPLICATION_ARTIFICER_CONFLICT_EXCEPTION)
-public class ArtificerConflictExceptionProvider extends AbstractArtificerExceptionProvider
-        implements ExceptionMapper<ArtificerConflictException>, MessageBodyWriter<ArtificerConflictException>,
-        MessageBodyReader<ArtificerConflictException> {
+@Produces(org.artificer.common.MediaType.APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION)
+@Consumes(org.artificer.common.MediaType.APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION)
+public class ArtificerWrongModelExceptionProvider extends AbstractArtificerExceptionProvider
+        implements ExceptionMapper<ArtificerWrongModelException>, MessageBodyWriter<ArtificerWrongModelException>,
+        MessageBodyReader<ArtificerWrongModelException> {
 
     /**
      * @see javax.ws.rs.ext.ExceptionMapper#toResponse(java.lang.Throwable)
      */
     @Override
-    public Response toResponse(ArtificerConflictException exception) {
-        return super.toResponse(exception, Response.Status.CONFLICT,
-                org.artificer.common.MediaType.APPLICATION_ARTIFICER_CONFLICT_EXCEPTION);
+    public Response toResponse(ArtificerWrongModelException exception) {
+        return super.toResponse(exception, Response.Status.FORBIDDEN,
+                org.artificer.common.MediaType.APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION);
     }
 
     /**
@@ -60,14 +60,14 @@ public class ArtificerConflictExceptionProvider extends AbstractArtificerExcepti
      */
     @Override
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, javax.ws.rs.core.MediaType mediaType) {
-        return ArtificerConflictException.class.equals(type);
+        return ArtificerWrongModelException.class.equals(type);
     }
 
     /**
      * @see javax.ws.rs.ext.MessageBodyWriter#getSize(java.lang.Object, java.lang.Class, java.lang.reflect.Type, java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType)
      */
     @Override
-    public long getSize(ArtificerConflictException t, Class<?> type, Type genericType, Annotation[] annotations,
+    public long getSize(ArtificerWrongModelException t, Class<?> type, Type genericType, Annotation[] annotations,
                         javax.ws.rs.core.MediaType mediaType) {
         return -1l;
     }
@@ -76,7 +76,7 @@ public class ArtificerConflictExceptionProvider extends AbstractArtificerExcepti
      * @see javax.ws.rs.ext.MessageBodyWriter#writeTo(java.lang.Object, java.lang.Class, java.lang.reflect.Type, java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap, java.io.OutputStream)
      */
     @Override
-    public void writeTo(ArtificerConflictException error, Class<?> type, Type genericType, Annotation[] annotations,
+    public void writeTo(ArtificerWrongModelException error, Class<?> type, Type genericType, Annotation[] annotations,
                         javax.ws.rs.core.MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
             throws IOException, WebApplicationException {
         super.writeTo(error, httpHeaders, entityStream);
@@ -88,20 +88,20 @@ public class ArtificerConflictExceptionProvider extends AbstractArtificerExcepti
     @Override
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations,
                               javax.ws.rs.core.MediaType mediaType) {
-        return ArtificerConflictException.class.isAssignableFrom(type)
-                || mediaType.equals(org.artificer.common.MediaType.APPLICATION_ARTIFICER_CONFLICT_EXCEPTION_TYPE);
+        return ArtificerWrongModelException.class.isAssignableFrom(type)
+                || mediaType.equals(org.artificer.common.MediaType.APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION_TYPE);
     }
 
     /**
      * @see javax.ws.rs.ext.MessageBodyReader#readFrom(java.lang.Class, java.lang.reflect.Type, java.lang.annotation.Annotation[], javax.ws.rs.core.MediaType, javax.ws.rs.core.MultivaluedMap, java.io.InputStream)
      */
     @Override
-    public ArtificerConflictException readFrom(Class<ArtificerConflictException> type, Type genericType, Annotation[] annotations,
+    public ArtificerWrongModelException readFrom(Class<ArtificerWrongModelException> type, Type genericType, Annotation[] annotations,
                                              javax.ws.rs.core.MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
             throws IOException, WebApplicationException {
         String stackTrace = getStacktrace(entityStream);
         String msg = getMessage(httpHeaders);
-        return new ArtificerConflictException(msg, stackTrace);
+        return new ArtificerWrongModelException(msg, stackTrace);
     }
 
 }

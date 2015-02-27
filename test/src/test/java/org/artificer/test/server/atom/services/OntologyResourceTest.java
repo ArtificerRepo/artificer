@@ -20,7 +20,7 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.junit.Assert;
 import org.junit.Test;
-import org.artificer.atom.MediaType;
+import org.artificer.common.MediaType;
 import org.artificer.atom.ArtificerAtomUtils;
 import org.artificer.client.ClientRequest;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;

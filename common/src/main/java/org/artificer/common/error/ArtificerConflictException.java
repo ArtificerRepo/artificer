@@ -16,12 +16,14 @@
 package org.artificer.common.error;
 
 
+import org.artificer.common.i18n.Messages;
+
 /**
  * Superclass for Exceptions that result in 409/CONFLICT responses.  See SrampConflictExceptionProvider.
  *
  * @author Brett Meyer
  */
-public abstract class ArtificerConflictException extends ArtificerUserException {
+public class ArtificerConflictException extends ArtificerUserException {
     
     private static final long serialVersionUID = 8618489938635309807L;
 
@@ -31,5 +33,49 @@ public abstract class ArtificerConflictException extends ArtificerUserException 
 
     public ArtificerConflictException(String message) {
         super(message);
+    }
+
+    public ArtificerConflictException(String msg, String stackTrace) {
+        super(msg, stackTrace);
+    }
+
+    public static ArtificerConflictException artifactConflict(String uuid) {
+       return new ArtificerConflictException(Messages.i18n.format("ARTIFACT_ALREADY_EXISTS", uuid));
+    }
+
+    public static ArtificerConflictException derivedRelationshipCreation(String relationshipType) {
+        return new ArtificerConflictException(Messages.i18n.format("DERIVED_RELATIONSHIP_CREATION", relationshipType));
+    }
+
+    public static ArtificerConflictException relationshipConstraint(String uuid) {
+        return new ArtificerConflictException(Messages.i18n.format("RELATIONSHIP_CONSTRAINT", uuid));
+    }
+
+    public static ArtificerConflictException reservedName(String name) {
+        return new ArtificerConflictException(Messages.i18n.format("RESERVED_WORD", name));
+    }
+
+    public static ArtificerConflictException customPropertyConstraint(String uuid) {
+        return new ArtificerConflictException(Messages.i18n.format("CUSTOM_PROPERTY_CONSTRAINT", uuid));
+    }
+
+    public static ArtificerConflictException classifierConstraint(String uuid) {
+        return new ArtificerConflictException(Messages.i18n.format("CLASSIFIER_CONSTRAINT", uuid));
+    }
+
+    public static ArtificerConflictException ontologyConflict(String ontologyUuid) {
+        return new ArtificerConflictException(Messages.i18n.format("ONTOLOGY_ALREADY_EXISTS", ontologyUuid));
+    }
+
+    public static ArtificerConflictException storedQueryConflict() {
+        return new ArtificerConflictException(Messages.i18n.format("STOREDQUERY_NAME_REQUIRED"));
+    }
+
+    public static ArtificerConflictException storedQueryConflict(String queryName) {
+        return new ArtificerConflictException(Messages.i18n.format("STOREDQUERY_ALREADY_EXISTS", queryName));
+    }
+
+    public static ArtificerConflictException duplicateName(String name) {
+        return new ArtificerConflictException(Messages.i18n.format("DUPLICATE_NAME", name));
     }
 }

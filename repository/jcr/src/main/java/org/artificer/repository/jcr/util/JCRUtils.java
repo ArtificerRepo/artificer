@@ -16,9 +16,7 @@
 package org.artificer.repository.jcr.util;
 
 import org.artificer.common.ArtifactType;
-import org.artificer.repository.error.ClassifierConstraintException;
-import org.artificer.repository.error.CustomPropertyConstraintException;
-import org.artificer.repository.error.RelationshipConstraintException;
+import org.artificer.common.error.ArtificerConflictException;
 import org.artificer.repository.jcr.JCRConstants;
 import org.artificer.repository.jcr.MapToJCRPath;
 import org.artificer.repository.jcr.i18n.Messages;
@@ -38,7 +36,6 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.QueryResult;
-import javax.jcr.query.RowIterator;
 import javax.jcr.version.VersionException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -495,7 +492,7 @@ public class JCRUtils {
         NodeIterator jcrNodes = jcrQueryResult.getNodes();
 
         if (jcrNodes.hasNext()) {
-            throw new RelationshipConstraintException(uuid);
+            throw ArtificerConflictException.relationshipConstraint(uuid);
         }
     }
 
@@ -538,17 +535,17 @@ public class JCRUtils {
             // Does the Node have custom properties?
             PropertyIterator customProperties = childNode.getProperties(JCRConstants.SRAMP_PROPERTIES + ":*");
             if (customProperties.hasNext()) {
-                throw new CustomPropertyConstraintException(uuid);
+                throw ArtificerConflictException.customPropertyConstraint(uuid);
             }
 
             // Does the Node have classifiers?
             if (childNode.hasProperty(JCRConstants.SRAMP_CLASSIFIED_BY)
                     && childNode.getProperty(JCRConstants.SRAMP_CLASSIFIED_BY).getValues().length > 0) {
-                throw new ClassifierConstraintException(uuid);
+                throw ArtificerConflictException.classifierConstraint(uuid);
             }
             if (childNode.hasProperty(JCRConstants.SRAMP_NORMALIZED_CLASSIFIED_BY)
                     && childNode.getProperty(JCRConstants.SRAMP_NORMALIZED_CLASSIFIED_BY).getValues().length > 0) {
-                throw new ClassifierConstraintException(uuid);
+                throw ArtificerConflictException.classifierConstraint(uuid);
             }
         }
     }

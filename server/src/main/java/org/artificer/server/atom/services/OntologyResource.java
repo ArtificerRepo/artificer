@@ -15,9 +15,22 @@
  */
 package org.artificer.server.atom.services;
 
-import java.net.URI;
-import java.util.Date;
-import java.util.List;
+import org.artificer.atom.ArtificerAtomUtils;
+import org.artificer.atom.err.ArtificerAtomException;
+import org.artificer.atom.mappers.OntologyToRdfMapper;
+import org.artificer.atom.mappers.RdfToOntologyMapper;
+import org.artificer.common.MediaType;
+import org.artificer.common.error.ArtificerServerException;
+import org.artificer.common.ontology.ArtificerOntology;
+import org.artificer.server.OntologyServiceImpl;
+import org.artificer.server.core.api.OntologyService;
+import org.artificer.server.i18n.Messages;
+import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.atom.Source;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -27,25 +40,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
-import org.artificer.server.core.api.OntologyService;
-import org.artificer.server.i18n.Messages;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.jboss.resteasy.plugins.providers.atom.Source;
-import org.artificer.atom.MediaType;
-import org.artificer.atom.ArtificerAtomUtils;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.atom.mappers.OntologyToRdfMapper;
-import org.artificer.atom.mappers.RdfToOntologyMapper;
-import org.artificer.common.ArtificerException;
-import org.artificer.common.ontology.OntologyConflictException;
-import org.artificer.common.ontology.OntologyNotFoundException;
-import org.artificer.common.ontology.ArtificerOntology;
-import org.artificer.server.OntologyServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
+import java.net.URI;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The JAX-RS resource that handles ontology specific tasks, including:
@@ -78,7 +75,7 @@ public class OntologyResource extends AbstractResource {
     @Path("ontology")
     @Consumes(MediaType.APPLICATION_RDF_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public Entry create(RDF rdf) throws ArtificerAtomException, ArtificerException {
+	public Entry create(RDF rdf) throws ArtificerServerException {
         ArtificerOntology ontology;
         try {
             ontology = new ArtificerOntology();
@@ -90,8 +87,8 @@ public class OntologyResource extends AbstractResource {
 			o2rdf.map(ontology, responseRDF);
 
 			return ArtificerAtomUtils.wrapOntology(ontology, responseRDF);
-        } catch (OntologyConflictException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactAlreadyExistsException is mapped to a
+        } catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -109,7 +106,7 @@ public class OntologyResource extends AbstractResource {
     @PUT
     @Path("ontology/{uuid}")
     @Consumes(MediaType.APPLICATION_RDF_XML)
-    public void update(@PathParam("uuid") String uuid, RDF rdf) throws ArtificerAtomException, ArtificerException {
+    public void update(@PathParam("uuid") String uuid, RDF rdf) throws ArtificerServerException {
         ArtificerOntology ontology;
         try {
             ontology = new ArtificerOntology();
@@ -120,8 +117,8 @@ public class OntologyResource extends AbstractResource {
 			
 			RDF updatedRDF = new RDF();
             o2rdf.map(ontology, updatedRDF);
-        } catch (OntologyNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+        } catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -139,7 +136,7 @@ public class OntologyResource extends AbstractResource {
     @GET
     @Path("ontology/{uuid}")
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public Entry get(@PathParam("uuid") String uuid) throws ArtificerAtomException, ArtificerException {
+	public Entry get(@PathParam("uuid") String uuid) throws ArtificerServerException {
     	try {
 			ArtificerOntology ontology = ontologyService.get(uuid);
 
@@ -147,8 +144,8 @@ public class OntologyResource extends AbstractResource {
 			o2rdf.map(ontology, responseRDF);
 
 			return ArtificerAtomUtils.wrapOntology(ontology, responseRDF);
-        } catch (OntologyNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+        } catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -164,11 +161,11 @@ public class OntologyResource extends AbstractResource {
      */
     @DELETE
     @Path("ontology/{uuid}")
-	public void delete(@PathParam("uuid") String uuid) throws ArtificerAtomException, ArtificerException {
+	public void delete(@PathParam("uuid") String uuid) throws ArtificerServerException {
     	try {
     	    ontologyService.delete(uuid);
-        } catch (OntologyNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+        } catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Exception e) {

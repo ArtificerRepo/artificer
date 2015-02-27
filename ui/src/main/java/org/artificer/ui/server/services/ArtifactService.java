@@ -15,26 +15,25 @@
  */
 package org.artificer.ui.server.services;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-
-import javax.enterprise.context.ApplicationScoped;
-
 import org.apache.commons.io.IOUtils;
-import org.artificer.ui.client.shared.services.IArtifactService;
-import org.artificer.ui.server.i18n.Messages;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
-import org.artificer.atom.err.ArtificerAtomException;
 import org.artificer.client.ArtificerClientException;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.error.ArtificerServerException;
 import org.artificer.ui.client.shared.beans.ArtifactBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
+import org.artificer.ui.client.shared.services.IArtifactService;
 import org.artificer.ui.server.api.ArtificerApiClientAccessor;
+import org.artificer.ui.server.i18n.Messages;
 import org.artificer.ui.server.services.util.RelationshipResolver;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 /**
  * Concrete implementation of the artifact service.
@@ -98,7 +97,7 @@ public class ArtifactService implements IArtifactService {
             return bean;
         } catch (ArtificerClientException e) {
             throw new ArtificerUiException(e.getMessage());
-        } catch (ArtificerAtomException e) {
+        } catch (ArtificerServerException e) {
             throw new ArtificerUiException(e.getMessage());
         }
     }
@@ -147,7 +146,7 @@ public class ArtifactService implements IArtifactService {
             relResolver.resolveAll(artifact);
         } catch (ArtificerClientException e) {
             throw new ArtificerUiException(e.getMessage());
-        } catch (ArtificerAtomException e) {
+        } catch (ArtificerServerException e) {
             throw new ArtificerUiException(e.getMessage());
         }
 
@@ -179,7 +178,7 @@ public class ArtifactService implements IArtifactService {
             ArtificerApiClientAccessor.getClient().updateArtifactMetaData(artifact);
         } catch (ArtificerClientException e) {
             throw new ArtificerUiException(e.getMessage());
-        } catch (ArtificerAtomException e) {
+        } catch (ArtificerServerException e) {
             throw new ArtificerUiException(e.getMessage());
         }
     }
@@ -194,7 +193,7 @@ public class ArtifactService implements IArtifactService {
             ArtificerApiClientAccessor.getClient().deleteArtifact(bean.getUuid(), artifactType);
         } catch (ArtificerClientException e) {
             throw new ArtificerUiException(e.getMessage());
-        } catch (ArtificerAtomException e) {
+        } catch (ArtificerServerException e) {
             throw new ArtificerUiException(e.getMessage());
         }
     }

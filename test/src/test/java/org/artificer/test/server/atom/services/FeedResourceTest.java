@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
-import org.artificer.atom.MediaType;
+import org.artificer.common.MediaType;
 import org.artificer.client.ClientRequest;
 
 import java.io.File;

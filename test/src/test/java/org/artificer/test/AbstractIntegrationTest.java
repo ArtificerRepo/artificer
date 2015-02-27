@@ -24,19 +24,19 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
+import org.artificer.client.ArtificerAtomApiClient;
+import org.artificer.client.ArtificerClientException;
+import org.artificer.client.ClientRequest;
+import org.artificer.client.ontology.OntologySummary;
+import org.artificer.client.query.ArtifactSummary;
+import org.artificer.client.query.QueryResultSet;
+import org.artificer.common.error.ArtificerServerException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.junit.After;
 import org.junit.runner.RunWith;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.client.ClientRequest;
-import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.ArtificerClientException;
-import org.artificer.client.ontology.OntologySummary;
-import org.artificer.client.query.ArtifactSummary;
-import org.artificer.client.query.QueryResultSet;
 
 import java.util.List;
 
@@ -134,7 +134,7 @@ public abstract class AbstractIntegrationTest {
         return PASSWORD;
     }
 
-    protected ArtificerAtomApiClient client() throws ArtificerClientException, ArtificerAtomException {
+    protected ArtificerAtomApiClient client() throws ArtificerClientException, ArtificerServerException {
         return new ArtificerAtomApiClient(BASE_URL, USERNAME, PASSWORD, true);
     }
 

@@ -15,7 +15,13 @@
  */
 package org.artificer.repository.jcr;
 
+import org.artificer.common.ArtifactContent;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.error.ArtificerConflictException;
+import org.artificer.common.error.ArtificerNotFoundException;
 import org.artificer.repository.query.ArtifactSet;
+import org.artificer.repository.query.ArtificerQuery;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
@@ -27,12 +33,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
-import org.artificer.common.ArtifactContent;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtificerModelUtils;
-import org.artificer.common.error.ArtifactNotFoundException;
-import org.artificer.repository.error.ArtifactConflictException;
-import org.artificer.repository.query.ArtificerQuery;
 
 import java.io.InputStream;
 import java.util.Collections;
@@ -89,7 +89,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         try {
             persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
             Assert.fail("Expected an ArtifactAlreadyExistsException.");
-        } catch (ArtifactConflictException e) {
+        } catch (ArtificerConflictException e) {
             // Expected this!
             Assert.assertEquals("Artifact with UUID 12345 already exists.", e.getMessage());
         }
@@ -104,7 +104,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         try {
             persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
             Assert.fail("Expected an ArtifactAlreadyExistsException.");
-        } catch (ArtifactConflictException e) {
+        } catch (ArtificerConflictException e) {
             // Expected this!
             Assert.assertEquals("Artifact with UUID 12345 already exists.", e.getMessage());
         }
@@ -512,7 +512,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 			persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
 			Assert.fail("Expected an update failure.");
 		} catch (Exception e) {
-		    Assert.assertEquals(ArtifactNotFoundException.class, e.getClass());
+		    Assert.assertEquals(ArtificerNotFoundException.class, e.getClass());
 			Assert.assertEquals("No artifact found with UUID: not-a-valid-uuid", e.getMessage());
 		}
     }

@@ -15,17 +15,25 @@
  */
 package org.artificer.client;
 
+import org.artificer.atom.err.ArtificerAtomException;
+import org.artificer.atom.i18n.Messages;
+import org.artificer.atom.providers.ArtificerConflictExceptionProvider;
+import org.artificer.atom.providers.ArtificerNotFoundExceptionProvider;
+import org.artificer.atom.providers.ArtificerServerExceptionProvider;
+import org.artificer.atom.providers.ArtificerWrongModelExceptionProvider;
+import org.artificer.atom.providers.HttpResponseProvider;
+import org.artificer.common.MediaType;
+import org.artificer.common.error.ArtificerConflictException;
+import org.artificer.common.error.ArtificerNotFoundException;
+import org.artificer.common.error.ArtificerServerException;
+import org.artificer.common.error.ArtificerWrongModelException;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.util.HttpHeaderNames;
-import org.artificer.atom.MediaType;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.atom.i18n.Messages;
-import org.artificer.atom.providers.HttpResponseProvider;
-import org.artificer.atom.providers.ArtificerAtomExceptionProvider;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.lang.reflect.Method;
 
@@ -47,7 +55,10 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 	private static final ResteasyProviderFactory providerFactory = new ResteasyProviderFactory();
 	static {
 		RegisterBuiltin.register(providerFactory);
-		providerFactory.registerProvider(ArtificerAtomExceptionProvider.class);
+		providerFactory.registerProvider(ArtificerServerExceptionProvider.class);
+		providerFactory.registerProvider(ArtificerConflictExceptionProvider.class);
+		providerFactory.registerProvider(ArtificerNotFoundExceptionProvider.class);
+		providerFactory.registerProvider(ArtificerWrongModelExceptionProvider.class);
 		providerFactory.registerProvider(HttpResponseProvider.class);
 	}
 
@@ -191,30 +202,34 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
 	 */
 	private <T> void handlePotentialServerError(ClientResponse<T> response) throws Exception {
 		String contentType = String.valueOf(response.getMetadata().getFirst(HttpHeaderNames.CONTENT_TYPE));
-		if (response.getStatus() == 500) {
-			Exception error = new Exception(Messages.i18n.format("UNKNOWN_ARTIFICER_ERROR")); //$NON-NLS-1$
-			if (MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION.equals(contentType)) {
-				try {
-					ArtificerAtomException entity = response.getEntity(ArtificerAtomException.class);
-					if (entity != null)
-						error = entity;
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
-			}
-			throw error;
+		Response.Status status = Response.Status.fromStatusCode(response.getStatus());
+
+		if (MediaType.APPLICATION_ARTIFICER_SERVER_EXCEPTION.equals(contentType)) {
+			throw response.getEntity(ArtificerServerException.class);
 		}
-		if (response.getStatus() == 404 || response.getStatus() == 415) {
-			ArtificerAtomException error = new ArtificerAtomException(Messages.i18n.format("ENDPOINT_NOT_FOUND")); //$NON-NLS-1$
-			throw error;
+
+		if (MediaType.APPLICATION_ARTIFICER_CONFLICT_EXCEPTION.equals(contentType)) {
+			throw response.getEntity(ArtificerConflictException.class);
 		}
-		if (response.getStatus() == 403) {
-			ArtificerAtomException error = new ArtificerAtomException(Messages.i18n.format("AUTHORIZATION_FAILED")); //$NON-NLS-1$
-			throw error;
+
+		if (MediaType.APPLICATION_ARTIFICER_NOTFOUND_EXCEPTION.equals(contentType)) {
+			throw response.getEntity(ArtificerNotFoundException.class);
 		}
-		if (response.getStatus() == 401) {
-            ArtificerAtomException error = new ArtificerAtomException(Messages.i18n.format("AUTHENTICATION_FAILED")); //$NON-NLS-1$
-            throw error;
+
+		if (MediaType.APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION.equals(contentType)) {
+			throw response.getEntity(ArtificerWrongModelException.class);
+		}
+
+		switch (status) {
+			case INTERNAL_SERVER_ERROR:
+				throw new Exception(Messages.i18n.format("UNKNOWN_ARTIFICER_ERROR")); //$NON-NLS-1$
+			case NOT_FOUND:
+			case UNSUPPORTED_MEDIA_TYPE:
+				throw new ArtificerAtomException(Messages.i18n.format("ENDPOINT_NOT_FOUND")); //$NON-NLS-1$
+			case FORBIDDEN:
+				throw new ArtificerAtomException(Messages.i18n.format("AUTHORIZATION_FAILED")); //$NON-NLS-1$
+			case UNAUTHORIZED:
+				throw new ArtificerAtomException(Messages.i18n.format("AUTHENTICATION_FAILED")); //$NON-NLS-1$
 		}
 	}
 

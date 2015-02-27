@@ -15,18 +15,17 @@
  */
 package org.artificer.server.atom.services;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.ws.rs.core.Application;
-
 import org.artificer.atom.providers.ArtificerConflictExceptionProvider;
 import org.artificer.atom.providers.ArtificerNotFoundExceptionProvider;
+import org.artificer.atom.providers.ArtificerServerExceptionProvider;
+import org.artificer.atom.providers.ArtificerWrongModelExceptionProvider;
 import org.artificer.atom.providers.AuditEntryProvider;
 import org.artificer.atom.providers.HttpResponseProvider;
 import org.artificer.atom.providers.OntologyProvider;
-import org.artificer.atom.providers.ArtificerAtomExceptionProvider;
-import org.artificer.atom.providers.WrongModelExceptionProvider;
+
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The SRAMP RESTEasy application.  This is essentially the main entry point into a
@@ -52,12 +51,12 @@ public class ArtificerApplication extends Application {
         singletons.add(new StoredQueryResource());
         singletons.add(new ArtificerResource());
 
-        classes.add(WrongModelExceptionProvider.class);
+		classes.add(ArtificerServerExceptionProvider.class);
+        classes.add(ArtificerWrongModelExceptionProvider.class);
         classes.add(ArtificerConflictExceptionProvider.class);
         classes.add(ArtificerNotFoundExceptionProvider.class);
         
 		classes.add(HttpResponseProvider.class);
-		classes.add(ArtificerAtomExceptionProvider.class);
         classes.add(OntologyProvider.class);
         classes.add(AuditEntryProvider.class);
 	}

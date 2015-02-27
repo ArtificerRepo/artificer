@@ -15,12 +15,13 @@
  */
 package org.artificer.server.atom.services;
 
+import org.artificer.common.error.ArtificerServerException;
 import org.artificer.server.i18n.Messages;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.util.GenericType;
-import org.artificer.atom.MediaType;
+import org.artificer.common.MediaType;
 import org.artificer.atom.err.ArtificerAtomException;
 import org.artificer.common.ArtificerConfig;
 import org.slf4j.Logger;
@@ -91,7 +92,7 @@ public class QueryResource extends AbstractFeedResource {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_ATOM_XML_FEED)
-	public Feed queryFromPost(@Context HttpServletRequest request, MultipartFormDataInput input) throws ArtificerAtomException {
+	public Feed queryFromPost(@Context HttpServletRequest request, MultipartFormDataInput input) throws ArtificerServerException {
 		String query = null;
 		try {
 			String baseUrl = ArtificerConfig.getBaseUrl(request.getRequestURL().toString());
@@ -110,7 +111,7 @@ public class QueryResource extends AbstractFeedResource {
 			}
 
 			return createArtifactFeed(query, startPage, startIndex, count, orderBy, asc, propNames, baseUrl);
-		} catch (ArtificerAtomException e) {
+		} catch (ArtificerServerException e) {
 			throw e;
 		} catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_EXECUTING_QUERY", query), e); //$NON-NLS-1$

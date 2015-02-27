@@ -16,12 +16,6 @@
 package org.artificer.server.atom.services;
 
 import org.apache.commons.io.IOUtils;
-import org.jboss.resteasy.annotations.providers.multipart.PartType;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
-import org.artificer.atom.MediaType;
 import org.artificer.atom.archive.ArtificerArchive;
 import org.artificer.atom.archive.ArtificerArchiveEntry;
 import org.artificer.atom.beans.HttpResponseBean;
@@ -31,15 +25,22 @@ import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerException;
-import org.artificer.common.error.ArtifactNotFoundException;
+import org.artificer.common.MediaType;
+import org.artificer.common.error.ArtificerNotFoundException;
+import org.artificer.common.error.ArtificerServerException;
+import org.artificer.common.error.ArtificerUserException;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.artificer.repository.PersistenceFactory;
 import org.artificer.repository.PersistenceManager;
 import org.artificer.repository.PersistenceManager.BatchItem;
-import org.artificer.repository.error.DerivedArtifactCreateException;
 import org.artificer.server.BatchCreate;
 import org.artificer.server.i18n.Messages;
 import org.artificer.server.mime.MimeTypes;
+import org.jboss.resteasy.annotations.providers.multipart.PartType;
+import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,12 +105,12 @@ public class BatchResource extends AbstractResource {
     @Produces(MediaType.MULTIPART_MIXED)
     @PartType("message/http")
     public MultipartOutput zipPackagePut(@Context HttpServletRequest request,
-            @HeaderParam("Slug") String fileName, InputStream content) throws ArtificerAtomException, ArtificerException {
+            @HeaderParam("Slug") String fileName, InputStream content) throws ArtificerServerException {
         return doZipPackage(request, content);
     }
 
     private MultipartOutput doZipPackage(HttpServletRequest request, InputStream content)
-            throws ArtificerAtomException, ArtificerException {
+            throws ArtificerServerException {
         PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 
         ArtificerArchive archive = null;
@@ -142,7 +143,7 @@ public class BatchResource extends AbstractResource {
                     }
 
                     if (artifactType.isDerived()) {
-                        throw new DerivedArtifactCreateException(artifactType.getArtifactType());
+                        throw ArtificerUserException.derivedArtifactCreate(artifactType.getArtifactType());
                     }
                     artifactType.setMimeType(mimeType);
                     if (metaData instanceof DocumentArtifactType) {
@@ -188,8 +189,8 @@ public class BatchResource extends AbstractResource {
             }
 
             return output;
-        } catch (ArtifactNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+        } catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -244,7 +245,7 @@ public class BatchResource extends AbstractResource {
 		PersistenceManager persistenceManager = PersistenceFactory.newInstance();
 		BaseArtifactType artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
 		if (artifact == null)
-			throw new ArtifactNotFoundException(metaData.getUuid());
+			throw ArtificerNotFoundException.artifactNotFound(metaData.getUuid());
 
 		// update the meta data
 		persistenceManager.updateArtifact(metaData, artifactType);
@@ -299,7 +300,7 @@ public class BatchResource extends AbstractResource {
 	private void addErrorPart(MultipartOutput output, String contentId, Exception error) {
         HttpResponseBean errorResponse = new HttpResponseBean(409, "Conflict"); //$NON-NLS-1$
         ArtificerAtomException e = new ArtificerAtomException(error);
-        errorResponse.setBody(e, MediaType.APPLICATION_SRAMP_ATOM_EXCEPTION_TYPE);
+        errorResponse.setBody(e, MediaType.APPLICATION_ARTIFICER_SERVER_EXCEPTION_TYPE);
         output.addPart(errorResponse, MediaType.MESSAGE_HTTP_TYPE).getHeaders().putSingle("Content-ID", contentId); //$NON-NLS-1$
 	}
 

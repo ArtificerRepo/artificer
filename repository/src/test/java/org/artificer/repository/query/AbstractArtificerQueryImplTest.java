@@ -15,12 +15,12 @@
  */
 package org.artificer.repository.query;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-
-import org.artificer.repository.error.InvalidQueryException;
+import org.artificer.common.error.ArtificerUserException;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.math.BigInteger;
+import java.util.Arrays;
 
 /**
  * Tests the {@link AbstractArtificerQueryImpl} class.
@@ -30,7 +30,7 @@ import org.junit.Test;
 public class AbstractArtificerQueryImplTest {
 
 	@Test
-	public void testFormatQuery() throws InvalidQueryException {
+	public void testFormatQuery() throws ArtificerUserException {
 		doFormatQueryTest("/s-ramp/xsd/XsdDocument", "/s-ramp/xsd/XsdDocument"); //$NON-NLS-1$ //$NON-NLS-2$
 		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@prop = ?]", //$NON-NLS-1$
 				"/s-ramp/xsd/XsdDocument[@prop = 'hello-world']",  //$NON-NLS-1$
@@ -55,13 +55,13 @@ public class AbstractArtificerQueryImplTest {
 				new NumberReplacementParam(17));
 	}
 
-	@Test(expected=InvalidQueryException.class)
-	public void testFormatQuery_tooManyParams() throws InvalidQueryException {
+	@Test(expected=ArtificerUserException.class)
+	public void testFormatQuery_tooManyParams() throws ArtificerUserException {
 		doFormatQueryTest("/s-ramp/xsd/XsdDocument", null, new StringReplacementParam("val1")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
-	@Test(expected=InvalidQueryException.class)
-	public void testFormatQuery_notEnoughParams() throws InvalidQueryException {
+	@Test(expected=ArtificerUserException.class)
+	public void testFormatQuery_notEnoughParams() throws ArtificerUserException {
 		doFormatQueryTest("/s-ramp/xsd/XsdDocument[@prop1 = ? or @prop2 = ?]", null, new StringReplacementParam("val1")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
@@ -70,10 +70,10 @@ public class AbstractArtificerQueryImplTest {
 	 * @param xpathTemplate
 	 * @param expectedXpath
 	 * @param params
-	 * @throws InvalidQueryException
+	 * @throws ArtificerUserException
 	 */
 	private void doFormatQueryTest(String xpathTemplate, String expectedXpath,
-			QueryReplacementParam<?>... params) throws InvalidQueryException {
+			QueryReplacementParam<?>... params) throws ArtificerUserException {
 		String formattedQuery = AbstractArtificerQueryImpl.formatQuery(xpathTemplate, Arrays.asList(params));
 		Assert.assertEquals(expectedXpath, formattedQuery);
 	}

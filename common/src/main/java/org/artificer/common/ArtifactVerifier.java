@@ -15,6 +15,9 @@
  */
 package org.artificer.common;
 
+import org.artificer.common.error.ArtificerConflictException;
+import org.artificer.common.error.ArtificerWrongModelException;
+import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
@@ -168,11 +171,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocumentTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeTarget;
-import org.artificer.common.error.DerivedRelationshipCreationException;
-import org.artificer.common.error.DuplicateNameException;
-import org.artificer.common.error.ReservedNameException;
-import org.artificer.common.error.WrongModelException;
-import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 import org.reflections.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -552,7 +550,7 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitor {
 
     private void verifyModel(BaseArtifactType artifact) {
         if (! artifactType.getArtifactType().getApiType().equals(artifact.getArtifactType())) {
-            error = new WrongModelException(artifactType.getArtifactType().getApiType().value(),
+            error = new ArtificerWrongModelException(artifactType.getArtifactType().getApiType().value(),
                     artifact.getArtifactType().value());
         }
     }
@@ -582,21 +580,21 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitor {
         // Then, compare against both reserved and local names.
         for (String propertyName : propertyNames) {
             if (isReserved(propertyName)) {
-                error = new ReservedNameException(propertyName);
+                error = ArtificerConflictException.reservedName(propertyName);
             }
             if (relationshipNames.contains(propertyName)) {
-                error = new DuplicateNameException(propertyName);
+                error = ArtificerConflictException.duplicateName(propertyName);
             }
             if (Collections.frequency(propertyNames, propertyName) > 1) {
-                error = new DuplicateNameException(propertyName);
+                error = ArtificerConflictException.duplicateName(propertyName);
             }
         }
         for (String relationshipName : relationshipNames) {
             if (isReserved(relationshipName)) {
-                error = new ReservedNameException(relationshipName);
+                error = ArtificerConflictException.reservedName(relationshipName);
             }
             if (propertyNames.contains(relationshipName)) {
-                error = new DuplicateNameException(relationshipName);
+                error = ArtificerConflictException.duplicateName(relationshipName);
             }
         }
     }
@@ -607,13 +605,13 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitor {
 
     private void verifyEmptyDerivedRelationships(String relationshipType, Collection<?> relationships) {
         if (!relationships.isEmpty()) {
-            error = new DerivedRelationshipCreationException(relationshipType);
+            error = ArtificerConflictException.derivedRelationshipCreation(relationshipType);
         }
     }
 
     private void verifyEmptyDerivedRelationships(String relationshipType, Object relationship) {
         if (relationship != null) {
-            error = new DerivedRelationshipCreationException(relationshipType);
+            error = ArtificerConflictException.derivedRelationshipCreation(relationshipType);
         }
     }
 
@@ -621,14 +619,14 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitor {
             Collection<?> oldRelationships) {
         // TODO: We'll eventually be introducing artifact deep comparisons.  But until then, just keep this simple...
         if (relationships.size() != oldRelationships.size()) {
-            error = new DerivedRelationshipCreationException(relationshipType);
+            error = ArtificerConflictException.derivedRelationshipCreation(relationshipType);
         }
     }
 
     private void verifyUnchangedDerivedRelationships(String relationshipType, Object relationship, Object oldRelationship) {
         // TODO: We'll eventually be introducing artifact deep comparisons.  But until then, just keep this simple...
         if ((oldRelationship != null && relationship == null) || (oldRelationship == null && relationship != null)) {
-            error = new DerivedRelationshipCreationException(relationshipType);
+            error = ArtificerConflictException.derivedRelationshipCreation(relationshipType);
         }
     }
 }

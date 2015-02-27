@@ -70,7 +70,7 @@ public class OntologyProvider implements MessageBodyReader<RDF>, MessageBodyWrit
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		return RDF.class.isAssignableFrom(type)
-				|| org.artificer.atom.MediaType.APPLICATION_RDF_XML_TYPE.equals(mediaType);
+				|| org.artificer.common.MediaType.APPLICATION_RDF_XML_TYPE.equals(mediaType);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class OntologyProvider implements MessageBodyReader<RDF>, MessageBodyWrit
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		return RDF.class.isAssignableFrom(type)
-				|| org.artificer.atom.MediaType.APPLICATION_RDF_XML_TYPE.equals(mediaType);
+				|| org.artificer.common.MediaType.APPLICATION_RDF_XML_TYPE.equals(mediaType);
 	}
 
 	/**

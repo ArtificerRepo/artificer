@@ -28,7 +28,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
-import org.artificer.atom.MediaType;
+import org.artificer.common.MediaType;
 import org.artificer.atom.ArtificerAtomUtils;
 import org.artificer.client.ClientRequest;
 import org.artificer.common.ArtificerConstants;

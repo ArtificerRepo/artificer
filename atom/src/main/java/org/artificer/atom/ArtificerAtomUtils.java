@@ -24,6 +24,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
+import org.artificer.common.MediaType;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Content;

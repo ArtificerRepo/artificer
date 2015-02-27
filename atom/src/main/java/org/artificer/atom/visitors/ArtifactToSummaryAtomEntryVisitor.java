@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.artificer.atom.MediaType;
+import org.artificer.common.MediaType;
 import org.artificer.atom.ArtificerAtomConstants;
 import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Content;

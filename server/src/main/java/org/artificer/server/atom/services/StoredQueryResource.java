@@ -15,19 +15,17 @@
  */
 package org.artificer.server.atom.services;
 
+import org.artificer.atom.ArtificerAtomConstants;
+import org.artificer.atom.ArtificerAtomUtils;
+import org.artificer.atom.err.ArtificerAtomException;
+import org.artificer.common.ArtificerConfig;
+import org.artificer.common.MediaType;
+import org.artificer.common.error.ArtificerServerException;
 import org.artificer.server.i18n.Messages;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-import org.artificer.atom.MediaType;
-import org.artificer.atom.ArtificerAtomConstants;
-import org.artificer.atom.ArtificerAtomUtils;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.common.ArtificerConfig;
-import org.artificer.common.ArtificerException;
-import org.artificer.common.error.StoredQueryConflictException;
-import org.artificer.common.error.StoredQueryNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,15 +61,15 @@ public class StoredQueryResource extends AbstractFeedResource {
 	@POST
     @Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
-    public Entry create(@Context HttpServletRequest request, Entry atomEntry) throws ArtificerAtomException, ArtificerException {
+    public Entry create(@Context HttpServletRequest request, Entry atomEntry) throws ArtificerServerException {
         try {
             String baseUrl = ArtificerConfig.getBaseUrl(request.getRequestURL().toString());
             StoredQuery storedQuery = ArtificerAtomUtils.unwrapStoredQuery(atomEntry);
             storedQuery = queryService.createStoredQuery(storedQuery);
 
             return wrapStoredQuery(storedQuery, baseUrl);
-        } catch (StoredQueryConflictException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
+        } catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a
             // unique HTTP response type.
             throw e;
         } catch (Exception e) {
@@ -83,12 +81,12 @@ public class StoredQueryResource extends AbstractFeedResource {
 	@PUT
 	@Path("{queryName}")
 	@Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
-	public void update(@PathParam("queryName") String queryName, Entry atomEntry) throws ArtificerAtomException, ArtificerException {
+	public void update(@PathParam("queryName") String queryName, Entry atomEntry) throws ArtificerServerException {
 		try {
 		    StoredQuery storedQuery = ArtificerAtomUtils.unwrapStoredQuery(atomEntry);
             queryService.updateStoredQuery(queryName, storedQuery);
-		} catch (StoredQueryNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampNotFoundException is mapped to a unique
+		} catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
@@ -101,14 +99,14 @@ public class StoredQueryResource extends AbstractFeedResource {
 	@Path("{queryName}")
 	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry get(@Context HttpServletRequest request, @PathParam("queryName") String queryName)
-	        throws ArtificerAtomException, ArtificerException {
+	        throws ArtificerServerException {
 		try {
 		    String baseUrl = ArtificerConfig.getBaseUrl(request.getRequestURL().toString());
             StoredQuery storedQuery = queryService.getStoredQuery(queryName);
 
             return wrapStoredQuery(storedQuery, baseUrl);
-		} catch (StoredQueryNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampNotFoundException is mapped to a unique
+		} catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
@@ -149,7 +147,7 @@ public class StoredQueryResource extends AbstractFeedResource {
             @QueryParam("count") Integer count,
             @QueryParam("orderBy") String orderBy,
             @QueryParam("ascending") Boolean asc)
-            throws ArtificerAtomException, ArtificerException {
+            throws ArtificerServerException {
         try {
             String baseUrl = ArtificerConfig.getBaseUrl(request.getRequestURL().toString());
             StoredQuery storedQuery = queryService.getStoredQuery(queryName);
@@ -158,11 +156,9 @@ public class StoredQueryResource extends AbstractFeedResource {
             
             return createArtifactFeed(storedQuery.getQueryExpression(), startPage, startIndex, count, orderBy, asc,
                     new HashSet<String>(storedQuery.getPropertyName()), baseUrl);
-        } catch (StoredQueryNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampNotFoundException is mapped to a unique
+        } catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
-            throw e;
-        } catch (ArtificerAtomException e) {
             throw e;
         } catch (Throwable e) {
             logError(logger, Messages.i18n.format("ERROR_EXECUTING_STOREDQUERY", queryName), e); //$NON-NLS-1$
@@ -172,11 +168,11 @@ public class StoredQueryResource extends AbstractFeedResource {
 
 	@DELETE
 	@Path("{queryName}")
-	public void delete(@PathParam("queryName") String queryName) throws ArtificerAtomException, ArtificerException {
+	public void delete(@PathParam("queryName") String queryName) throws ArtificerServerException {
 		try {
             queryService.deleteStoredQuery(queryName);
-		} catch (StoredQueryNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampNotFoundException is mapped to a unique
+		} catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Throwable e) {

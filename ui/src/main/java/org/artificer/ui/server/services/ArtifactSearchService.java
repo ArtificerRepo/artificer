@@ -15,31 +15,29 @@
  */
 package org.artificer.ui.server.services;
 
+import org.apache.commons.lang3.StringUtils;
+import org.artificer.client.ArtificerClientException;
+import org.artificer.client.ArtificerClientQuery;
+import org.artificer.client.query.ArtifactSummary;
+import org.artificer.client.query.QueryResultSet;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.error.ArtificerServerException;
+import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
+import org.artificer.ui.client.shared.beans.ArtifactOriginEnum;
+import org.artificer.ui.client.shared.beans.ArtifactResultSetBean;
+import org.artificer.ui.client.shared.beans.ArtifactSearchBean;
+import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
+import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
+import org.artificer.ui.client.shared.services.IArtifactSearchService;
+import org.artificer.ui.server.api.ArtificerApiClientAccessor;
+
+import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-
-import org.apache.commons.lang3.StringUtils;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.ArtificerClientException;
-import org.artificer.client.ArtificerClientQuery;
-import org.artificer.client.query.ArtifactSummary;
-import org.artificer.client.query.QueryResultSet;
-import org.artificer.common.ArtifactType;
-import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
-import org.artificer.ui.client.shared.services.IArtifactSearchService;
-import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
-import org.artificer.ui.client.shared.beans.ArtifactOriginEnum;
-import org.artificer.ui.client.shared.beans.ArtifactResultSetBean;
-import org.artificer.ui.client.shared.beans.ArtifactSearchBean;
-import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
-import org.artificer.ui.server.api.ArtificerApiClientAccessor;
 
 /**
  * Concrete implementation of the artifact search service.
@@ -107,7 +105,7 @@ public class ArtifactSearchService implements IArtifactSearchService {
             return rval;
         } catch (ArtificerClientException e) {
             throw new ArtificerUiException(e.getMessage());
-        } catch (ArtificerAtomException e) {
+        } catch (ArtificerServerException e) {
             throw new ArtificerUiException(e.getMessage());
         }
     }

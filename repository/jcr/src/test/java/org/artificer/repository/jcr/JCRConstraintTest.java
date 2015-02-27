@@ -15,7 +15,12 @@
  */
 package org.artificer.repository.jcr;
 
-import org.artificer.repository.error.RelationshipConstraintException;
+import org.artificer.common.ArtifactContent;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerException;
+import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.error.ArtificerConflictException;
+import org.artificer.common.ontology.ArtificerOntology;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
@@ -26,13 +31,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.TaskEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.TaskTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
-import org.artificer.common.ArtifactContent;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtificerException;
-import org.artificer.common.ArtificerModelUtils;
-import org.artificer.common.ontology.ArtificerOntology;
-import org.artificer.repository.error.ClassifierConstraintException;
-import org.artificer.repository.error.CustomPropertyConstraintException;
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -64,7 +62,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         boolean caught = false;
         try {
             persistenceManager.deleteArtifact(task.getUuid(), ArtifactType.valueOf(task));
-        } catch (RelationshipConstraintException e) {
+        } catch (ArtificerConflictException e) {
             caught = true;
         }
         assertTrue(caught);
@@ -81,7 +79,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         caught = false;
         try {
             persistenceManager.deleteArtifact(task.getUuid(), ArtifactType.valueOf(task));
-        } catch (RelationshipConstraintException e) {
+        } catch (ArtificerConflictException e) {
             caught = true;
         }
         assertTrue(caught);
@@ -121,7 +119,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         boolean caught = false;
         try {
             persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd));
-        } catch (RelationshipConstraintException e) {
+        } catch (ArtificerConflictException e) {
             caught = true;
         }
         assertTrue(caught);
@@ -164,7 +162,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         try {
             is = this.getClass().getResourceAsStream("/sample-files/wsdl/" + xsdFileName);
             persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), new ArtifactContent(xsdFileName, is));
-        } catch (RelationshipConstraintException e) {
+        } catch (ArtificerConflictException e) {
             caught = true;
         }
         assertTrue(caught);
@@ -184,7 +182,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         try {
             is = this.getClass().getResourceAsStream("/sample-files/wsdl/" + xsdFileName);
             persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), new ArtifactContent(xsdFileName, is));
-        } catch (CustomPropertyConstraintException e) {
+        } catch (ArtificerConflictException e) {
             caught = true;
         }
         assertTrue(caught);
@@ -202,7 +200,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         try {
             is = this.getClass().getResourceAsStream("/sample-files/wsdl/" + xsdFileName);
             persistenceManager.updateArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd), new ArtifactContent(xsdFileName, is));
-        } catch (ClassifierConstraintException e) {
+        } catch (ArtificerConflictException e) {
             caught = true;
         }
         assertTrue(caught);
@@ -255,7 +253,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         boolean caught = false;
         try {
             persistenceManager.deleteArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd));
-        } catch (RelationshipConstraintException e) {
+        } catch (ArtificerConflictException e) {
             caught = true;
         }
         assertTrue(caught);

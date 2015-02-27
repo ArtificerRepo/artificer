@@ -17,8 +17,22 @@ package org.artificer.server.atom.services;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.artificer.atom.ArtificerAtomUtils;
+import org.artificer.atom.err.ArtificerAtomException;
+import org.artificer.atom.visitors.ArtifactToFullAtomEntryVisitor;
+import org.artificer.common.ArtifactContent;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtifactVerifier;
+import org.artificer.common.ArtificerConfig;
+import org.artificer.common.ArtificerConstants;
+import org.artificer.common.MediaType;
+import org.artificer.common.error.ArtificerServerException;
+import org.artificer.common.error.ArtificerUserException;
+import org.artificer.common.visitors.ArtifactVisitorHelper;
+import org.artificer.events.EventProducer;
+import org.artificer.events.EventProducerFactory;
+import org.artificer.repository.PersistenceFactory;
 import org.artificer.repository.PersistenceManager;
-import org.artificer.repository.error.DerivedArtifactCreateException;
 import org.artificer.server.ArtifactServiceImpl;
 import org.artificer.server.i18n.Messages;
 import org.artificer.server.mime.MimeTypes;
@@ -28,24 +42,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartConstants;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartRelatedInput;
 import org.jboss.resteasy.util.GenericType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.artificer.atom.MediaType;
-import org.artificer.atom.ArtificerAtomUtils;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.atom.visitors.ArtifactToFullAtomEntryVisitor;
-import org.artificer.common.ArtifactContent;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtifactVerifier;
-import org.artificer.common.FilenameRequiredException;
-import org.artificer.common.ArtificerConfig;
-import org.artificer.common.ArtificerConstants;
-import org.artificer.common.ArtificerException;
-import org.artificer.common.error.ArtifactNotFoundException;
-import org.artificer.common.error.ArtificerConflictException;
-import org.artificer.common.error.WrongModelException;
-import org.artificer.common.visitors.ArtifactVisitorHelper;
-import org.artificer.events.EventProducer;
-import org.artificer.events.EventProducerFactory;
-import org.artificer.repository.PersistenceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,20 +101,16 @@ public class ArtifactResource extends AbstractResource {
     @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
     public Entry create(@Context HttpServletRequest request,
         @PathParam("model") String model, @PathParam("type") String type, Entry entry)
-        throws ArtificerAtomException, ArtificerException {
+        throws ArtificerServerException {
         try {
             BaseArtifactType artifact = ArtificerAtomUtils.unwrapSrampArtifact(entry);
             // create artifactType here, in case it doesn't match what's actually sent
 			ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
             BaseArtifactType persistedArtifact = artifactService.create(artifactType, artifact);
             return wrapArtifact(persistedArtifact, request);
-        } catch (WrongModelException e) {
-            // Simply re-throw.  Don't allow the following catch it -- WrongModelException is mapped to a unique
+        } catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
-            throw e;
-        } catch (ArtificerConflictException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
-            // unique HTTP response type.
             throw e;
         } catch (Exception e) {
             logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
@@ -172,7 +164,7 @@ public class ArtifactResource extends AbstractResource {
             InputStream is) throws ArtificerAtomException {
         try {
             if (StringUtils.isEmpty(fileName)) {
-                throw new FilenameRequiredException();
+                throw ArtificerUserException.filenameRequired();
             }
             BaseArtifactType artifact = artifactService.upload(fileName, is);
             return wrapArtifact(artifact, request);
@@ -201,19 +193,19 @@ public class ArtifactResource extends AbstractResource {
 	 * @param input
 	 * @return the newly created artifact as an Atom {@link Entry}
 	 * @throws org.artificer.atom.err.ArtificerAtomException
-     * @throws WrongModelException 
+     * @throws org.artificer.common.error.ArtificerWrongModelException
 	 */
 	@POST
 	@Path("{model}/{type}")
 	@Consumes(MultipartConstants.MULTIPART_RELATED)
 	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry createMultiPart(@Context HttpServletRequest request, @PathParam("model") String model,
-	        @PathParam("type") String type, MultipartRelatedInput input) throws ArtificerAtomException, ArtificerException {
+	        @PathParam("type") String type, MultipartRelatedInput input) throws ArtificerServerException {
 		try {
 			String baseUrl = ArtificerConfig.getBaseUrl(request.getRequestURL().toString());
 			ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
 			if (artifactType.isDerived()) {
-				throw new DerivedArtifactCreateException(artifactType.getArtifactType());
+				throw ArtificerUserException.derivedArtifactCreate(artifactType.getArtifactType());
 			}
 			if (artifactType.isExtendedType()) {
 			    artifactType = ArtifactType.ExtendedDocument(artifactType.getExtendedType());
@@ -255,13 +247,9 @@ public class ArtifactResource extends AbstractResource {
 
 			// Convert to a full Atom Entry and return it
             return wrapArtifact(artifactRval, request);
-		} catch (WrongModelException e) {
-            // Simply re-throw.  Don't allow the following catch it -- WrongModelException is mapped to a unique
+		} catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
-            throw e;
-        } catch (ArtificerConflictException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
-            // unique HTTP response type.
             throw e;
         } catch (Exception e) {
 			logError(logger, Messages.i18n.format("ERROR_CREATING_ARTY"), e); //$NON-NLS-1$
@@ -278,13 +266,13 @@ public class ArtifactResource extends AbstractResource {
 	 * @param uuid
 	 * @param atomEntry
 	 * @throws org.artificer.atom.err.ArtificerAtomException
-	 * @throws WrongModelException 
+	 * @throws org.artificer.common.error.ArtificerWrongModelException
 	 */
 	@PUT
 	@Path("{model}/{type}/{uuid}")
 	@Consumes(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public void updateMetaData(@PathParam("model") String model, @PathParam("type") String type,
-	        @PathParam("uuid") String uuid, Entry atomEntry) throws ArtificerAtomException, ArtificerException {
+	        @PathParam("uuid") String uuid, Entry atomEntry) throws ArtificerServerException {
 		try {
 			ArtifactType artifactType = ArtifactType.valueOf(model, type, null);
 			if (artifactType.isExtendedType()) {
@@ -293,12 +281,8 @@ public class ArtifactResource extends AbstractResource {
             BaseArtifactType updatedArtifact = ArtificerAtomUtils.unwrapSrampArtifact(atomEntry);
 
             artifactService.updateMetaData(artifactType, uuid, updatedArtifact);
-		} catch (WrongModelException e) {
-            // Simply re-throw.  Don't allow the following catch it -- WrongModelException is mapped to a unique
-            // HTTP response type.
-            throw e;
-        } catch (ArtifactNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+		} catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
@@ -320,16 +304,12 @@ public class ArtifactResource extends AbstractResource {
 	@Path("{model}/{type}/{uuid}/media")
 	public void updateContent(@HeaderParam("Slug") String fileName, @PathParam("model") String model,
 	        @PathParam("type") String type, @PathParam("uuid") String uuid, InputStream is)
-	        throws ArtificerAtomException, ArtificerException {
+	        throws ArtificerServerException {
 		try {
             artifactService.updateContent(model, type, uuid, fileName, is);
-		} catch (ArtifactNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+		} catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
-            throw e;
-        } catch (ArtificerConflictException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
-            // unique HTTP response type.
             throw e;
         } catch (Exception e) {
 			logError(logger, Messages.i18n.format("ERROR_UPDATING_CONTENT", uuid), e); //$NON-NLS-1$
@@ -350,14 +330,14 @@ public class ArtifactResource extends AbstractResource {
 	@Path("{model}/{type}/{uuid}")
 	@Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
 	public Entry getMetaData(@Context HttpServletRequest request, @PathParam("model") String model,
-	        @PathParam("type") String type, @PathParam("uuid") String uuid) throws ArtificerAtomException, ArtificerException {
+	        @PathParam("type") String type, @PathParam("uuid") String uuid) throws ArtificerServerException {
 		try {
 			BaseArtifactType artifact = artifactService.getMetaData(model, type, uuid);
 
 			// Return the entry containing the s-ramp artifact
             return wrapArtifact(artifact, request);
-		} catch (ArtifactNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+		} catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
@@ -377,7 +357,7 @@ public class ArtifactResource extends AbstractResource {
 	@GET
 	@Path("{model}/{type}/{uuid}/media")
 	public Response getContent(@PathParam("model") String model, @PathParam("type") String type,
-	        @PathParam("uuid") String uuid) throws ArtificerAtomException, ArtificerException {
+	        @PathParam("uuid") String uuid) throws ArtificerServerException {
 		try {
             ArtifactType artifactType = ArtifactType.valueOf(model, type, true);
             BaseArtifactType artifact = artifactService.getMetaData(artifactType, uuid);
@@ -401,8 +381,8 @@ public class ArtifactResource extends AbstractResource {
 			        .header("Content-Length", //$NON-NLS-1$
                             artifact.getOtherAttributes().get(ArtificerConstants.SRAMP_CONTENT_SIZE_QNAME))
 			        .header("Last-Modified", lastModifiedDate).build(); //$NON-NLS-1$
-		} catch (ArtifactNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+		} catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
             throw e;
         } catch (Throwable e) {
@@ -422,16 +402,12 @@ public class ArtifactResource extends AbstractResource {
 	@DELETE
 	@Path("{model}/{type}/{uuid}")
 	public void delete(@PathParam("model") String model, @PathParam("type") String type,
-	        @PathParam("uuid") String uuid) throws ArtificerAtomException, ArtificerException {
+	        @PathParam("uuid") String uuid) throws ArtificerServerException {
 		try {
             artifactService.delete(model, type, uuid);
-		} catch (ArtifactNotFoundException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+		} catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
             // HTTP response type.
-            throw e;
-        } catch (ArtificerConflictException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
-            // unique HTTP response type.
             throw e;
         } catch (Throwable e) {
 			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY", uuid), e); //$NON-NLS-1$
@@ -450,18 +426,14 @@ public class ArtifactResource extends AbstractResource {
 	@DELETE
 	@Path("{model}/{type}/{uuid}/media")
 	public void deleteContent(@PathParam("model") String model, @PathParam("type") String type,
-			@PathParam("uuid") String uuid) throws ArtificerAtomException, ArtificerException {
+			@PathParam("uuid") String uuid) throws ArtificerServerException {
 		try {
             artifactService.deleteContent(model, type, uuid);
-		} catch (ArtifactNotFoundException e) {
-			// Simply re-throw.  Don't allow the following catch it -- ArtifactNotFoundException is mapped to a unique
+		} catch (ArtificerServerException e) {
+			// Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
 			// HTTP response type.
 			throw e;
-		} catch (ArtificerConflictException e) {
-            // Simply re-throw.  Don't allow the following catch it -- SrampConflictException is mapped to a
-            // unique HTTP response type.
-            throw e;
-        } catch (Exception e) {
+		} catch (Exception e) {
 			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY_CONTENT", uuid), e); //$NON-NLS-1$
 			throw new ArtificerAtomException(e);
 		}

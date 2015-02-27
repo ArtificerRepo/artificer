@@ -23,7 +23,7 @@ import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.jboss.resteasy.plugins.providers.atom.Person;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.artificer.atom.MediaType;
+import org.artificer.common.MediaType;
 import org.artificer.atom.err.ArtificerAtomException;
 import org.artificer.atom.visitors.ArtifactToSummaryAtomEntryVisitor;
 import org.artificer.common.ArtificerConstants;

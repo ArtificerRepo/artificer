@@ -15,12 +15,14 @@
  */
 package org.artificer.atom.archive;
 
+import org.artificer.common.error.ArtificerServerException;
+
 /**
  * Error thrown by the {@link ArtificerArchive} whenever something goes wrong in there.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtificerArchiveException extends Exception {
+public class ArtificerArchiveException extends ArtificerServerException {
 
     private static final long serialVersionUID = 4145271500140947910L;
 

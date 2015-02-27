@@ -15,7 +15,7 @@
  */
 package org.artificer.server.atom.services;
 
-import org.artificer.atom.MediaType;
+import org.artificer.common.MediaType;
 import org.artificer.atom.visitors.ArtifactToSummaryAtomEntryVisitor;
 import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerConstants;

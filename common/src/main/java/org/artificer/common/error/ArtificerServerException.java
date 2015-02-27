@@ -17,14 +17,19 @@ package org.artificer.common.error;
 
 import org.artificer.common.ArtificerException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
- * Exception thrown when the server fails unexpectedly (e.g. storage error).
- *
  * @author eric.wittmann@redhat.com
  */
 public class ArtificerServerException extends ArtificerException {
 
     private static final long serialVersionUID = 2648287148198104189L;
+
+    private static final Pattern ST_PATTERN = Pattern.compile("([a-zA-Z0-9_\\.]*)\\.([a-zA-Z0-9_\\.]*)\\(([a-zA-Z0-9_\\.]*):([\\d]*)\\)"); //$NON-NLS-1$
 
     /**
      * Constructor.
@@ -55,6 +60,37 @@ public class ArtificerServerException extends ArtificerException {
      */
     public ArtificerServerException(Throwable cause) {
         super(cause);
+    }
+
+    /**
+     * Constructor.
+     * @param msg
+     * @param stackTrace
+     */
+    public ArtificerServerException(String msg, String stackTrace) {
+        super(msg);
+        setStackTrace(parseStackTrace(stackTrace));
+    }
+
+    /**
+     * Parses a stack trace string into an array of stack trace elements.  Basically
+     * reverses the "printStackTrace" process.
+     * @param stackTrace string formatted java stack trace
+     * @return stack trace element array
+     */
+    private static StackTraceElement[] parseStackTrace(String stackTrace) {
+        List<StackTraceElement> stElements = new ArrayList<StackTraceElement>();
+
+        Matcher matcher = ST_PATTERN.matcher(stackTrace);
+        while (matcher.find()){
+            String className = matcher.group(1);
+            String methodName = matcher.group(2);
+            String fileName = matcher.group(3);
+            int lineNumber = Integer.parseInt(matcher.group(4) == null ? "0" : matcher.group(4)); //$NON-NLS-1$
+            stElements.add(new StackTraceElement(className, methodName, fileName, lineNumber));
+        }
+
+        return stElements.toArray(new StackTraceElement[stElements.size()]);
     }
 
 }

@@ -16,10 +16,12 @@
 package org.artificer.common.error;
 
 
+import org.artificer.common.i18n.Messages;
+
 /**
  * @author Brett Meyer
  */
-public abstract class ArtificerNotFoundException extends ArtificerUserException {
+public class ArtificerNotFoundException extends ArtificerUserException {
 
     private static final long serialVersionUID = 3266741739558281824L;
     
@@ -29,5 +31,25 @@ public abstract class ArtificerNotFoundException extends ArtificerUserException 
 
     public ArtificerNotFoundException(String message) {
         super(message);
+    }
+
+    public ArtificerNotFoundException(String msg, String stackTrace) {
+        super(msg, stackTrace);
+    }
+
+    public static ArtificerNotFoundException storedQueryNotFound(String queryName) {
+        return new ArtificerNotFoundException(Messages.i18n.format("STOREDQUERY_NOT_FOUND", queryName));
+    }
+
+    public static ArtificerNotFoundException contentNotFound(String uuid) {
+        return new ArtificerNotFoundException(Messages.i18n.format("CONTENT_NOT_FOUND", uuid));
+    }
+
+    public static ArtificerNotFoundException artifactNotFound(String uuid) {
+        return new ArtificerNotFoundException(Messages.i18n.format("ARTIFACT_NOT_FOUND", uuid));
+    }
+
+    public static ArtificerNotFoundException ontologyNotFound(String ontologyUuid) {
+        return new ArtificerNotFoundException(Messages.i18n.format("ONTOLOGY_NOT_FOUND", ontologyUuid));
     }
 }

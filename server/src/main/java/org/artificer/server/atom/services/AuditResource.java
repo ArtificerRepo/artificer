@@ -15,10 +15,18 @@
  */
 package org.artificer.server.atom.services;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.UUID;
+import org.artificer.atom.err.ArtificerAtomException;
+import org.artificer.common.ArtificerConstants;
+import org.artificer.common.MediaType;
+import org.artificer.server.AuditServiceImpl;
+import org.artificer.server.core.api.PagedResult;
+import org.artificer.server.i18n.Messages;
+import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
+import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.atom.Person;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,19 +35,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-
-import org.artificer.server.AuditServiceImpl;
-import org.artificer.server.core.api.PagedResult;
-import org.artificer.server.i18n.Messages;
-import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.jboss.resteasy.plugins.providers.atom.Person;
-import org.artificer.atom.MediaType;
-import org.artificer.atom.err.ArtificerAtomException;
-import org.artificer.common.ArtificerConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * The JAX-RS resource that handles endpoints related to auditing.  This includes:

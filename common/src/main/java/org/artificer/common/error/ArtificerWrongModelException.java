@@ -13,17 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.artificer.repository.error;
+package org.artificer.common.error;
 
-import org.artificer.common.error.ArtificerConflictException;
 import org.artificer.common.i18n.Messages;
 
 /**
- * @author Brett Meyer.
+ * Thrown when an artifact is published to the incorrect model.
+ * 
+ * @author Brett Meyer
  */
-public class RelationshipConstraintException extends ArtificerConflictException {
+public class ArtificerWrongModelException extends ArtificerUserException {
 
-    public RelationshipConstraintException(String uuid) {
-        super(Messages.i18n.format("RELATIONSHIP_CONSTRAINT", uuid));
+    private static final long serialVersionUID = -1006199656016992864L;
+
+    public ArtificerWrongModelException(String message) {
+        super(message);
+    }
+
+    public ArtificerWrongModelException(String expectedType, String receivedType) {
+        super(Messages.i18n.format("WRONG_MODEL", expectedType, receivedType));
     }
 }

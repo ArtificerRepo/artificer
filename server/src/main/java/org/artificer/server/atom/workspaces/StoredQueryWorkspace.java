@@ -21,7 +21,7 @@ import org.artificer.repository.PersistenceManager;
 import org.artificer.server.i18n.Messages;
 import org.jboss.resteasy.plugins.providers.atom.app.AppCollection;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-import org.artificer.atom.MediaType;
+import org.artificer.common.MediaType;
 import org.artificer.common.ArtificerException;
 import org.artificer.repository.PersistenceFactory;
 import org.slf4j.Logger;

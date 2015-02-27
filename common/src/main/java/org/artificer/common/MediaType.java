@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.artificer.atom;
+package org.artificer.common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,9 +43,21 @@ public class MediaType extends javax.ws.rs.core.MediaType {
     public final static String MULTIPART_MIXED = "multipart/mixed"; //$NON-NLS-1$
     public final static MediaType MULTIPART_MIXED_TYPE = new MediaType("multipart", "mixed"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    /** "application/sramp-atom-exception" */
-    public final static String APPLICATION_SRAMP_ATOM_EXCEPTION = "application/sramp-atom-exception"; //$NON-NLS-1$
-    public final static MediaType APPLICATION_SRAMP_ATOM_EXCEPTION_TYPE = new MediaType("application", "sramp-atom-exception"); //$NON-NLS-1$ //$NON-NLS-2$
+    /** "application/artificer-server-exception" */
+    public final static String APPLICATION_ARTIFICER_SERVER_EXCEPTION = "application/artificer-server-exception"; //$NON-NLS-1$
+    public final static MediaType APPLICATION_ARTIFICER_SERVER_EXCEPTION_TYPE = new MediaType("application", "artificer-server-exception"); //$NON-NLS-1$ //$NON-NLS-2$
+
+    /** "application/artificer-conflict-exception" */
+    public final static String APPLICATION_ARTIFICER_CONFLICT_EXCEPTION = "application/artificer-conflict-exception"; //$NON-NLS-1$
+    public final static MediaType APPLICATION_ARTIFICER_CONFLICT_EXCEPTION_TYPE = new MediaType("application", "artificer-conflict-exception"); //$NON-NLS-1$ //$NON-NLS-2$
+
+    /** "application/artificer-notfound-exception" */
+    public final static String APPLICATION_ARTIFICER_NOTFOUND_EXCEPTION = "application/artificer-notfound-exception"; //$NON-NLS-1$
+    public final static MediaType APPLICATION_ARTIFICER_NOTFOUND_EXCEPTION_TYPE = new MediaType("application", "artificer-notfound-exception"); //$NON-NLS-1$ //$NON-NLS-2$
+
+    /** "application/artificer-wrongmodel-exception" */
+    public final static String APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION = "application/artificer-wrongmodel-exception"; //$NON-NLS-1$
+    public final static MediaType APPLICATION_ARTIFICER_WRONGMODEL_EXCEPTION_TYPE = new MediaType("application", "artificer-wrongmodel-exception"); //$NON-NLS-1$ //$NON-NLS-2$
 
     /** "application/rdf+xml" */
     public final static String APPLICATION_RDF_XML = "application/rdf+xml"; //$NON-NLS-1$
