@@ -1093,6 +1093,8 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 		 * @throws org.artificer.common.ArtificerException
 		 */
 		public Value createReference(String uuid) throws ArtificerException;
+
+        public void trackNode(String uuid, Node node);
 	}
 
 }

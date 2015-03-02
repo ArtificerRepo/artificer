@@ -55,6 +55,9 @@ public class JCRBatchPersistenceTest extends AbstractNoAuditingJCRPersistenceTes
 
         List<Object> response = persistenceManager.persistBatch(items);
         for (Object object : response) {
+            if (object instanceof Exception) {
+                ((Exception) object).printStackTrace();
+            }
             Assert.assertTrue(object instanceof BaseArtifactType);
         }
 

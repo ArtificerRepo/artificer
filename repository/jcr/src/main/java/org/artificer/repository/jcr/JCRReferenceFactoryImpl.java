@@ -72,6 +72,7 @@ public class JCRReferenceFactoryImpl implements JCRReferenceFactory {
         }
     }
 
+    @Override
     public void trackNode(String uuid, Node node) {
         nodes.put(uuid, node);
     }

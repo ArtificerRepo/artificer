@@ -80,19 +80,25 @@ public final class JCRArtifactPersister {
     private final List<ArtifactBuilder> artifactBuilders;
     private final ClassificationHelper classificationHelper;
     private final Session session;
-    private final JCRReferenceFactoryImpl referenceFactory;
+    private final ArtifactToJCRNodeVisitor.JCRReferenceFactory referenceFactory;
 
     private Node primaryArtifactNode;
     private List<BaseArtifactType> derivedArtifacts;
 
     public JCRArtifactPersister(BaseArtifactType primaryArtifact, ArtifactContent artifactContent,
             ClassificationHelper classificationHelper, Session session) throws Exception {
+        this(primaryArtifact, artifactContent, classificationHelper, new JCRReferenceFactoryImpl(session), session);
+    }
+
+    public JCRArtifactPersister(BaseArtifactType primaryArtifact, ArtifactContent artifactContent,
+            ClassificationHelper classificationHelper, ArtifactToJCRNodeVisitor.JCRReferenceFactory referenceFactory, Session session)
+            throws Exception {
         this.primaryArtifact = primaryArtifact;
         this.artifactContent = artifactContent;
         this.classificationHelper = classificationHelper;
         this.session = session;
         artifactBuilders = ExtensionFactory.createArtifactBuilders(primaryArtifact, artifactContent);
-        referenceFactory = new JCRReferenceFactoryImpl(session);
+        this.referenceFactory = referenceFactory;
     }
 
     public void persistArtifact() throws Exception {
@@ -106,8 +112,6 @@ public final class JCRArtifactPersister {
         referenceFactory.trackNode(primaryArtifact.getUuid(), primaryArtifactNode);
 
         persistDerivedArtifacts();
-
-        session.save();
     }
 
     public void updateArtifactContent(Node primaryArtifactNode) throws Exception {
@@ -128,8 +132,6 @@ public final class JCRArtifactPersister {
         visitor.throwError();
 
         persistDerivedArtifacts();
-
-        session.save();
     }
 
     public void persistArtifactRelationships() throws Exception {
@@ -143,8 +145,6 @@ public final class JCRArtifactPersister {
         }
 
         persistPrimaryArtifactRelationships();
-
-        session.save();
     }
 
     private void runArtifactBuilders() throws Exception {

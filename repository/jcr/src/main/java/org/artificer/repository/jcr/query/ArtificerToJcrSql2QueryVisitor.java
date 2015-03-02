@@ -71,7 +71,7 @@ import java.util.Map;
 /**
  * Visitor used to produce a JCR SQL2 query from an S-RAMP xpath query.
  *
- * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
 public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
 

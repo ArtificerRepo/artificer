@@ -92,17 +92,23 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
         Session session = null;
         try {
             session = JCRRepositoryFactory.getSession();
+            // use a single JCRReferenceFactory for the entire batch
+            ArtifactToJCRNodeVisitor.JCRReferenceFactory jcrReferenceFactory = new JCRReferenceFactoryImpl(session);
 
             // First, persist each item, *without* relationships.
             for (BatchItem item : items) {
                 try {
-                    JCRArtifactPersister persister = new JCRArtifactPersister(item.baseArtifactType, item.content, this, session);
+                    JCRArtifactPersister persister = new JCRArtifactPersister(
+                            item.baseArtifactType, item.content, this, jcrReferenceFactory, session);
                     persister.persistArtifact();
                     item.attributes.put("persister", persister);
                 } catch (Exception e) {
                     item.attributes.put("result", e);
                 }
             }
+
+            // Save so that necessary artifacts are persisted for relationship lookups, below.
+            session.save();
 
             // Then, persist all relationships.  Splitting up the steps allows the entire batch to have some context
             // for the relationship targets.
@@ -111,18 +117,27 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                     if (item.attributes.containsKey("persister")) {
                         JCRArtifactPersister persister = (JCRArtifactPersister) item.attributes.get("persister");
                         persister.persistArtifactRelationships();
-                        BaseArtifactType artifact = JCRNodeToArtifactFactory.createArtifact(
-                                session, persister.getPrimaryArtifactNode(), ArtifactType.valueOf(item.baseArtifactType));
-                        item.attributes.put("result", artifact);
+                        item.attributes.put("result", persister.getPrimaryArtifactNode());
                     }
                 } catch (Exception e) {
                     item.attributes.put("result", e);
                 }
             }
 
+            session.save();
+
             // And return the appropriate value for each item
             for (BatchItem item : items) {
-                rval.add(item.attributes.get("result"));
+                if (item.attributes.get("result") instanceof Node) {
+                    Node node = (Node) item.attributes.get("result");
+                    // It's important to do this *after* save, rather than before it (when the node is first added
+                    // to the "result" attribute, above).  We rely on several ModeShape default values (created by,
+                    // creation time, etc.).  Rather than try to fill those out on our own, delay until saved.
+                    rval.add(JCRNodeToArtifactFactory.createArtifact(
+                            session, node, ArtifactType.valueOf(item.baseArtifactType)));
+                } else {
+                    rval.add(item.attributes.get("result"));
+                }
             }
         } catch (Throwable t) {
             throw new ArtificerServerException(t);
@@ -147,12 +162,13 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
             // If debug is enabled, print the artifact graph
             if (log.isDebugEnabled()) {
-                printArtifactGraph(primaryArtifact.getUuid(), artifactType);
+                JCRUtils.printSubgraph(persister.getPrimaryArtifactNode());
             }
 
+            session.save();
+
             // Create the S-RAMP Artifact object from the JCR node
-            return JCRNodeToArtifactFactory.createArtifact(session, JCRUtils.findArtifactNode(
-                    primaryArtifact.getUuid(), artifactType, session), artifactType);
+            return JCRNodeToArtifactFactory.createArtifact(session, persister.getPrimaryArtifactNode(), artifactType);
         } catch (ArtificerException se) {
             throw se;
         } catch (Throwable t) {
@@ -233,18 +249,18 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                     new JCRReferenceFactoryImpl(session), this);
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
             visitor.throwError();
-            session.save();
 
             log.debug(Messages.i18n.format("UPDATED_ARTY_META_DATA", artifact.getUuid()));
 
             if (log.isDebugEnabled()) {
-                printArtifactGraph(artifact.getUuid(), type);
+                JCRUtils.printSubgraph(artifactNode);
             }
 
             if (ArtificerConfig.isAuditingEnabled()) {
                 JCRArtifactPersister.auditUpdateArtifact(differ, artifactNode);
-                session.save();
             }
+
+            session.save();
 
             return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
         } catch (ArtificerException se) {
@@ -284,11 +300,12 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
             // TODO: Audit?
 
+            session.save();
+
             log.debug(Messages.i18n.format("UPDATED_ARTY_CONTENT", uuid));
 
             // Create the S-RAMP Artifact object from the JCR node
-            return JCRNodeToArtifactFactory.createArtifact(session, JCRUtils.findArtifactNode(
-                    primaryArtifact.getUuid(), type, session), type);
+            return JCRNodeToArtifactFactory.createArtifact(session, persister.getPrimaryArtifactNode(), type);
         } catch (ArtificerException se) {
             throw se;
         } catch (Throwable t) {
@@ -354,8 +371,6 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
             // Delete the current derived artifacts
             JCRUtils.deleteDerivedArtifacts(artifactNode, session);
 
-            artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
-
             // Note: Only "unset" the size and hash, but not the actual mime/content types.  Doing so has quite a few
             // complications elsewhere in the code.
             artifactNode.setProperty(JCRConstants.SRAMP_CONTENT_SIZE, 0);
@@ -365,8 +380,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
             log.debug(Messages.i18n.format("DELETED_ARTY_CONTENT", uuid));
 
             // Create the S-RAMP Artifact object from the JCR node
-            return JCRNodeToArtifactFactory.createArtifact(session, JCRUtils.findArtifactNode(
-                    uuid, type, session), type);
+            return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
         } catch (ArtificerException se) {
             throw se;
         } catch (Throwable t) {

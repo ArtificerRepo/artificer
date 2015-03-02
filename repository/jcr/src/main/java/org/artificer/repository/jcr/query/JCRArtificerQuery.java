@@ -79,7 +79,6 @@ public class JCRArtificerQuery extends AbstractArtificerQueryImpl {
 		        session = JCRRepositoryFactory.getSession();
                 logoutOnClose = true;
 		    }
-			javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
             String jcrOrderBy = null;
             if (getOrderByProperty() != null) {
                 String jcrPropName = sOrderByMappings.get(getOrderByProperty());
