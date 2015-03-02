@@ -58,13 +58,16 @@ import org.artificer.shell.storedquery.UpdateStoredQueryCommand;
 import org.jboss.aesh.cl.GroupCommandDefinition;
 import org.jboss.aesh.console.AeshConsole;
 import org.jboss.aesh.console.AeshConsoleBuilder;
+import org.jboss.aesh.console.Console;
 import org.jboss.aesh.console.Prompt;
 import org.jboss.aesh.console.command.Command;
 import org.jboss.aesh.console.command.CommandResult;
 import org.jboss.aesh.console.command.invocation.CommandInvocation;
 import org.jboss.aesh.console.command.registry.AeshCommandRegistryBuilder;
 import org.jboss.aesh.console.command.registry.CommandRegistry;
+import org.jboss.aesh.console.helper.InterruptHook;
 import org.jboss.aesh.console.settings.SettingsBuilder;
+import org.jboss.aesh.edit.actions.Action;
 import org.jboss.aesh.extensions.clear.Clear;
 import org.jboss.aesh.extensions.echo.Echo;
 import org.jboss.aesh.extensions.exit.Exit;
@@ -161,6 +164,20 @@ public class ArtificerShell {
         settingsBuilder.readInputrc(false);
         settingsBuilder.logging(true);
         settingsBuilder.aeshContext(new ArtificerContext());
+
+        // map Ctrl+C to a 'clear' action, rather than 'exit'
+        settingsBuilder.interruptHook(new InterruptHook() {
+            @Override
+            public void handleInterrupt(Console console, Action action) {
+                if (action == Action.INTERRUPT) {
+                    console.getShell().out().println("^C");
+                    console.clearBufferAndDisplayPrompt();
+                } else {
+                    console.stop();
+                    console.currentProcessFinished(null);
+                }
+            }
+        });
 
         AeshConsole console = new AeshConsoleBuilder()
                 .commandRegistry(registry)
