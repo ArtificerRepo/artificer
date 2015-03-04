@@ -149,13 +149,14 @@ the (already mentioned) SOA Data Model.
 Custom/Extension Data Models (ext)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Clients can define their own (implicit) data models by using the "ext" model space defined
-by the S-RAMP specification.  This allows clients to add documents with custom artifact types.
-For example, a client can add an artifact to /s-ramp/ext/PdfDocument.  This provides a way
-for clients to define their own data models with their own properties and relationships.
-Note however that the server will not have a definition of the model - it is up to the client
-to properly conform to their own implicit model.  Custom properties and user-defined 
-relationships allow clients to richly define their own models.
+Clients can define their own ad-hoc data models, during *runtime*, by using the "ext" model space.  This allows clients
+to add both logical and document artifacts with custom artifact types.
+For example, a client can add an artifact to /ext/MyDocumentType.  Clients could also specify "MyDocumentType" when
+creating an artifact through the CLI, UI, etc. -- the "/ext" space is automatically assumed.
+
+This provides a way for clients to define their own data models with their own properties and relationships.
+Note however that the server will not have an explicitly definition of the model - it is up to the client
+to properly conform to their own implicit model.
 
 As an example, a client might define the following Data Model for a J2EE web application
 domain:
