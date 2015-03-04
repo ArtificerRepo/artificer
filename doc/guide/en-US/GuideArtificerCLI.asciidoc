@@ -275,31 +275,6 @@ Atom Feed (1 entries)
     1                 FooType FooArtifact
 ....
 
-Extending the Artificer CLI
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The Artificer CLI has a number of built-in commands that are ready to be used.  However, it is 
-also possible to extend the CLI with new custom commands.  This section describes how to do 
-it.
-
-New CLI commands are contributed by creating a class that implements the 'ShellCommandProvider'
-interface.  The provider will indicate a namespace for its commands along with a Map of 
-commands (command name -> command).  The provider and command implementations should be 
-packaged up into a JAR along with a file named:
-
-----
-META-INF/services/org.artificer.shell.api.ShellCommandProvider
-----
-
-The JAR must be made available to the Artificer CLI, either by putting it on the classpath,
-or else by putting it in the following directory:
-
-----
-~/.artificer/commands
-----
-
-For a working example of a custom Artificer CLI command, there is a demo in the Artificer 
-distribution called *artificer-demos-shell-command*.
-
 Running Commands in Batch
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 An interesting thing you can do with the Artificer CLI is to use it as a batch processor.
