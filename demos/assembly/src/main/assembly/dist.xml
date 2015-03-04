@@ -20,7 +20,7 @@
                 <exclude>**/.gitignore</exclude>
                 <exclude>**/target/**</exclude>
                 <exclude>src/**</exclude>
-                <exclude>artificer-demos-assembly/**</exclude>
+                <exclude>assembly/**</exclude>
             </excludes>
             <directoryMode>0755</directoryMode>
             <fileMode>0755</fileMode>

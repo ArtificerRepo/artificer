@@ -15,30 +15,30 @@
  */
 package org.artificer.demos.archivepkg;
 
-import java.io.InputStream;
-import java.util.Map;
-
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.artificer.atom.archive.ArtificerArchive;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtificerModelUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+
+import java.io.InputStream;
+import java.util.Map;
 
 /**
- * Demonstrates the S-RAMP package archive feature.  The S-RAMP specification defines
+ * Demonstrates the Artificer package archive feature.  The S-RAMP specification defines
  * how to upload multiple artifacts all at once, using a ZIP formatted package file.
- * The S-RAMP client supports this mechanism, and this demo shows how.
+ * The Artificer client supports this mechanism, and this demo shows how.
  *
  * @author eric.wittmann@redhat.com
  */
 public class ArchivePackageDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/artificer-server";
     private static final String DEFAULT_USER = "admin";
-    private static final String DEFAULT_PASSWORD = "overlord";
+    private static final String DEFAULT_PASSWORD = "artificer1!";
 
 	/**
 	 * Main.
@@ -46,7 +46,7 @@ public class ArchivePackageDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		System.out.println("\n*** Running S-RAMP Archive Package Demo ***\n");
+		System.out.println("\n*** Running Artificer Archive Package Demo ***\n");
 
         String endpoint = System.getProperty("artificer.endpoint");
         String username = System.getProperty("artificer.auth.username");
@@ -60,8 +60,8 @@ public class ArchivePackageDemo {
         if (password == null || password.trim().length() == 0) {
             password = DEFAULT_PASSWORD;
         }
-        System.out.println("S-RAMP Endpoint: " + endpoint);
-        System.out.println("S-RAMP User: " + username);
+        System.out.println("Artificer Endpoint: " + endpoint);
+        System.out.println("Artificer User: " + username);
         ArtificerAtomApiClient client = new ArtificerAtomApiClient(endpoint, username, password, true);
 
 		// Have we already run this demo?
@@ -155,7 +155,7 @@ public class ArchivePackageDemo {
 		}
 
 		// Now query the S-RAMP repository (for the Schemas only)
-		System.out.print("Querying the S-RAMP repository for Schemas...");
+		System.out.print("Querying the Artificer repository for Schemas...");
 		QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument");
 		System.out.println("success: " + rset.size() + " Schemas found:");
 		for (ArtifactSummary summary : rset) {

@@ -36,7 +36,7 @@ For more information see:  http://maven.apache.org/settings.html
 Your settings.xml file should contain two additional server entries in the servers section:
 
     <server>
-      <id>local-artificerrepo</id>
+      <id>local-artificer-repo</id>
       <username>admin</username>
       <password>PASSWORD</password>
     </server>

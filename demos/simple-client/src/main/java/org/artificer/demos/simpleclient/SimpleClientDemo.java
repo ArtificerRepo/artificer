@@ -15,14 +15,14 @@
  */
 package org.artificer.demos.simpleclient;
 
-import java.io.InputStream;
-
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+
+import java.io.InputStream;
 
 /**
  * A simple S-RAMP client demo. This class strives to demonstrate how to use the S-RAMP client.
@@ -31,9 +31,9 @@ import org.artificer.common.ArtificerModelUtils;
  */
 public class SimpleClientDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/artificer-server";
     private static final String DEFAULT_USER = "admin";
-    private static final String DEFAULT_PASSWORD = "overlord";
+    private static final String DEFAULT_PASSWORD = "artificer1!";
 	private static final String[] FILES = { "ws-humantask.xsd", "ws-humantask-context.xsd",
 			"ws-humantask-policy.xsd", "ws-humantask-types.xsd", "ws-humantask-leantask-api.wsdl",
 			"ws-humantask-protocol.wsdl" };
@@ -44,7 +44,7 @@ public class SimpleClientDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		System.out.println("\n*** Running S-RAMP Simple Client Demo ***\n");
+		System.out.println("\n*** Running Artificer Simple Client Demo ***\n");
 
         String endpoint = System.getProperty("artificer.endpoint");
         String username = System.getProperty("artificer.auth.username");
@@ -58,8 +58,8 @@ public class SimpleClientDemo {
         if (password == null || password.trim().length() == 0) {
             password = DEFAULT_PASSWORD;
         }
-        System.out.println("S-RAMP Endpoint: " + endpoint);
-        System.out.println("S-RAMP User: " + username);
+        System.out.println("Artificer Endpoint: " + endpoint);
+        System.out.println("Artificer User: " + username);
         ArtificerAtomApiClient client = new ArtificerAtomApiClient(endpoint, username, password, true);
 
         // Have we already run this demo?
@@ -72,7 +72,7 @@ public class SimpleClientDemo {
             System.exit(1);
         }
 
-        // Upload some artifacts to the S-RAMP repository
+        // Upload some artifacts to the Artificer repository
         System.out.println("Uploading some XML schemas...");
 		for (String file : FILES) {
 			// Get an InputStream over the file content
@@ -85,7 +85,7 @@ public class SimpleClientDemo {
 					type = ArtifactType.WsdlDocument();
 				}
 
-				// Upload that content to S-RAMP
+				// Upload that content to Artificer
 				System.out.print("\tUploading artifact " + file + "...");
 				BaseArtifactType artifact = client.uploadArtifact(type, is, file);
 				System.out.println("done.");
@@ -103,8 +103,8 @@ public class SimpleClientDemo {
 			}
 		}
 
-		// Now query the S-RAMP repository (for the Schemas only)
-		System.out.print("Querying the S-RAMP repository for Schemas...");
+		// Now query the Artificer repository (for the Schemas only)
+		System.out.print("Querying the Artificer repository for Schemas...");
 		QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument");
 		System.out.println("success: " + rset.size() + " Schemas found:");
 		for (ArtifactSummary entry : rset) {

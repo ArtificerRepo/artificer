@@ -21,15 +21,15 @@ import org.artificer.client.query.QueryResultSet;
 
 /**
  * Demonstrates a number of different queries supported by S-RAMP.  Also, more generally,
- * shows how to query the S-RAMP repository using the S-RAMP client.
+ * shows how to query the Artificer repository using the S-RAMP client.
  *
  * @author eric.wittmann@redhat.com
  */
 public class QueryDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/artificer-server";
     private static final String DEFAULT_USER = "admin";
-    private static final String DEFAULT_PASSWORD = "overlord";
+    private static final String DEFAULT_PASSWORD = "artificer1!";
 
 	/**
 	 * Main.
@@ -37,7 +37,7 @@ public class QueryDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		System.out.println("\n*** Running S-RAMP Query Demo ***\n");
+		System.out.println("\n*** Running Artificer Query Demo ***\n");
 
         String endpoint = System.getProperty("artificer.endpoint");
         String username = System.getProperty("artificer.auth.username");
@@ -51,8 +51,8 @@ public class QueryDemo {
         if (password == null || password.trim().length() == 0) {
             password = DEFAULT_PASSWORD;
         }
-        System.out.println("S-RAMP Endpoint: " + endpoint);
-        System.out.println("S-RAMP User: " + username);
+        System.out.println("Artificer Endpoint: " + endpoint);
+        System.out.println("Artificer User: " + username);
         ArtificerAtomApiClient client = new ArtificerAtomApiClient(endpoint, username, password, true);
 
         // Have we already run this demo?
@@ -75,7 +75,7 @@ public class QueryDemo {
     		// on which to search.
     		ArtificerArchive archive = new ArtificerArchive(QueryDemo.class.getResourceAsStream("archive-package.sramp"));
     		try {
-    			System.out.print("Uploading some content to the S-RAMP repository...");
+    			System.out.print("Uploading some content to the Artificer repository...");
     			client.uploadBatch(archive);
     			System.out.println("done!");
     		} finally {
@@ -84,7 +84,7 @@ public class QueryDemo {
         }
 
 		// First, a simple query for the XSDs.
-		System.out.print("Querying the S-RAMP repository for Schemas...");
+		System.out.print("Querying the Artificer repository for Schemas...");
 		QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument");
 		if (rset.size() >= 2)
 		    System.out.println("success: " + rset.size() + " Schema(s) found (expected AT LEAST 2)");
@@ -92,7 +92,7 @@ public class QueryDemo {
             System.out.println("** PROBLEM ** : " + rset.size() + " Schema(s) found (expected AT LEAST 2)");
 
 		// Now a simple query for the WSDLs.
-		System.out.print("Querying the S-RAMP repository for WSDLs...");
+		System.out.print("Querying the Artificer repository for WSDLs...");
 		rset = client.query("/s-ramp/wsdl/WsdlDocument");
         if (rset.size() >= 1)
             System.out.println("success: " + rset.size() + " WSDL(s) found (expected AT LEAST 1)");
@@ -100,7 +100,7 @@ public class QueryDemo {
             System.out.println("** PROBLEM ** : " + rset.size() + " WSDL(s) found (expected AT LEAST 1)");
 
 		// Try searching for everything with a version of 1.1 (should be at least 2)
-		System.out.print("Querying the S-RAMP repository for all artifacts version 1.1...");
+		System.out.print("Querying the Artificer repository for all artifacts version 1.1...");
 		rset = client.query("/s-ramp[@version = '1.1']");
         if (rset.size() >= 2)
             System.out.println("success: " + rset.size() + " artifact(s) found (expected AT LEAST 2)");
@@ -108,7 +108,7 @@ public class QueryDemo {
             System.out.println("** PROBLEM ** : " + rset.size() + " artifact(s) found (expected AT LEAST 2)");
 
 		// Try searching for everything with a version of 1.2 (should be at least 1)
-		System.out.print("Querying the S-RAMP repository for all artifacts version 1.2...");
+		System.out.print("Querying the Artificerrepository for all artifacts version 1.2...");
 		rset = client.query("/s-ramp[@version = '1.2']");
         if (rset.size() >= 1)
             System.out.println("success: " + rset.size() + " artifact(s) found (expected AT LEAST 1)");
@@ -116,7 +116,7 @@ public class QueryDemo {
             System.out.println("** PROBLEM ** : " + rset.size() + " artifact(s) found (expected AT LEAST 1)");
 
 		// Find just a single artifact by name and version
-		System.out.print("Querying the S-RAMP repository for a unique artifact by name + version...");
+		System.out.print("Querying the Artificer repository for a unique artifact by name + version...");
 		rset = client.query("/s-ramp[@name = 'wsrm-1.1-schema-200702.xsd' and @version = '1.1']");
         if (rset.size() >= 1)
             System.out.println("success: " + rset.size() + " artifact(s) found (expected AT LEAST 1)");
@@ -124,7 +124,7 @@ public class QueryDemo {
             System.out.println("** PROBLEM ** : " + rset.size() + " artifact(s) found (expected AT LEAST 1)");
 
         // Let's do the *same* search, but use the "buildQuery" method on the client
-        System.out.print("Querying the S-RAMP repository for a unique artifact by name + version (again)...");
+        System.out.print("Querying the Artificer repository for a unique artifact by name + version (again)...");
         rset = client.buildQuery("/s-ramp[@name = ? and @version = ?]")
                 .parameter("wsrm-1.1-schema-200702.xsd")
                 .parameter("1.1").query();
@@ -134,7 +134,7 @@ public class QueryDemo {
             System.out.println("** PROBLEM ** : " + rset.size() + " artifact(s) found (expected AT LEAST 1)");
 
 		// If we search for conflicting meta-data we should get 0 results, right?
-		System.out.print("Querying the S-RAMP repository for conflicting meta data...");
+		System.out.print("Querying the Artificer repository for conflicting meta data...");
 		rset = client.query("/s-ramp[@name = 'wsrm-1.1-schema-200702.xsd' and @version = '1.2']");
 		if (rset.size() == 0)
             System.out.println("success: " + rset.size() + " artifact(s) found (expected 0)");

@@ -15,17 +15,17 @@
  */
 package org.artificer.demos.classifications;
 
-import java.io.InputStream;
-import java.util.List;
-
 import org.apache.commons.io.IOUtils;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.ontology.OntologySummary;
 import org.artificer.client.query.ArtifactSummary;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * Demonstrates how to get and set artifact classifications.  Also shows how to query
@@ -35,9 +35,9 @@ import org.artificer.common.ArtificerModelUtils;
  */
 public class ClassificationDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/artificer-server";
     private static final String DEFAULT_USER = "admin";
-    private static final String DEFAULT_PASSWORD = "overlord";
+    private static final String DEFAULT_PASSWORD = "artificer1!";
 
 	/**
 	 * Main.
@@ -45,7 +45,7 @@ public class ClassificationDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		System.out.println("\n*** Running S-RAMP Classification Demo ***\n");
+		System.out.println("\n*** Running Artificer Classification Demo ***\n");
 
         String endpoint = System.getProperty("artificer.endpoint");
         String username = System.getProperty("artificer.auth.username");
@@ -59,8 +59,8 @@ public class ClassificationDemo {
         if (password == null || password.trim().length() == 0) {
             password = DEFAULT_PASSWORD;
         }
-        System.out.println("S-RAMP Endpoint: " + endpoint);
-        System.out.println("S-RAMP User: " + username);
+        System.out.println("Artificer Endpoint: " + endpoint);
+        System.out.println("Artificer User: " + username);
         ArtificerAtomApiClient client = new ArtificerAtomApiClient(endpoint, username, password, true);
 
         // Have we already run this demo?
@@ -74,14 +74,14 @@ public class ClassificationDemo {
         }
 
 		// The first thing we need to do is install the "regions.owl" ontology
-		// into the S-RAMP repository.  We can't do anything with classifications
+		// into the Artificer repository.  We can't do anything with classifications
 		// until at least one ontology (which defines the classifications/classes)
-		// exists in the repo.  More information about how to manage the S-RAMP
-		// ontologies can be found in the "s-ramp-demos-ontologies" demo.
+		// exists in the repo.  More information about how to manage the Artificer
+		// ontologies can be found in the "ontologies" demo.
 		System.out.println("Installing 'regions.owl' ontology.");
 		installRegionsOntology(client);
 
-		// Next, let's upload an artifact to the S-RAMP repository.  The call to
+		// Next, let's upload an artifact to the Artificer repository.  The call to
 		// upload will return the new artifact's meta data.  Once we have that,
 		// we can add classifications to it.  Note that those classifications must
 		// be defined by the ontology we installed above.
@@ -159,7 +159,7 @@ public class ClassificationDemo {
 
 	/**
 	 * Installs (or ensures that it already exists) the Regions S-RAMP ontology in
-	 * the S-RAMP repository.
+	 * the Artificer repository.
 	 * @param client
 	 * @throws Exception
 	 */

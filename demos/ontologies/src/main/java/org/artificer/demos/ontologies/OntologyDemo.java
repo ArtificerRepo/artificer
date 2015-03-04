@@ -15,14 +15,14 @@
  */
 package org.artificer.demos.ontologies;
 
+import org.artificer.client.ArtificerAtomApiClient;
+import org.artificer.client.ontology.OntologySummary;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.artificer.client.ArtificerAtomApiClient;
-import org.artificer.client.ontology.OntologySummary;
 
 /**
  * Demonstrates how to manage ontologies in the S-RAMP repository.
@@ -31,9 +31,9 @@ import org.artificer.client.ontology.OntologySummary;
  */
 public class OntologyDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/artificer-server";
     private static final String DEFAULT_USER = "admin";
-    private static final String DEFAULT_PASSWORD = "overlord";
+    private static final String DEFAULT_PASSWORD = "artificer1!";
 
 	/**
 	 * Main.
@@ -41,7 +41,7 @@ public class OntologyDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		System.out.println("\n*** Running S-RAMP Ontology Demo ***\n");
+		System.out.println("\n*** Running Artificer Ontology Demo ***\n");
 
         String endpoint = System.getProperty("artificer.endpoint");
         String username = System.getProperty("artificer.auth.username");
@@ -55,11 +55,11 @@ public class OntologyDemo {
         if (password == null || password.trim().length() == 0) {
             password = DEFAULT_PASSWORD;
         }
-        System.out.println("S-RAMP Endpoint: " + endpoint);
-        System.out.println("S-RAMP User: " + username);
+        System.out.println("Artificer Endpoint: " + endpoint);
+        System.out.println("Artificer User: " + username);
         ArtificerAtomApiClient client = new ArtificerAtomApiClient(endpoint, username, password, true);
 
-		// Presumably we start off without any ontologies installed in the S-RAMP repository.
+		// Presumably we start off without any ontologies installed in the Artificer repository.
 		// So we need to get the ball rolling, by adding some!  Let's check first.
 		System.out.println("Searching for ontologies.");
 		List<OntologySummary> ontologies = client.getOntologies();

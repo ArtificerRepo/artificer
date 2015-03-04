@@ -46,7 +46,6 @@
         <module>mvn-integration</module>
         <module>relationships</module>
         <module>derived-artifacts</module>
-        <module>shell-command</module>
         <module>webapp-multimodule/artifacts</module>
         <module>webapp-multimodule/web</module>
         <module>custom-artifact-builder</module>

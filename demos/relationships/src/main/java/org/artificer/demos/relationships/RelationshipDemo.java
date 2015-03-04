@@ -31,9 +31,9 @@ import org.artificer.common.ArtificerModelUtils;
  */
 public class RelationshipDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/artificer-server";
     private static final String DEFAULT_USER = "admin";
-    private static final String DEFAULT_PASSWORD = "overlord";
+    private static final String DEFAULT_PASSWORD = "artificer1!";
 
 	/**
 	 * Main.
@@ -41,7 +41,7 @@ public class RelationshipDemo {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		System.out.println("\n*** Running S-RAMP Query Demo ***\n");
+		System.out.println("\n*** Running Artificer Query Demo ***\n");
 
         String endpoint = System.getProperty("artificer.endpoint");
         String username = System.getProperty("artificer.auth.username");
@@ -55,8 +55,8 @@ public class RelationshipDemo {
         if (password == null || password.trim().length() == 0) {
             password = DEFAULT_PASSWORD;
         }
-        System.out.println("S-RAMP Endpoint: " + endpoint);
-        System.out.println("S-RAMP User: " + username);
+        System.out.println("Artificer Endpoint: " + endpoint);
+        System.out.println("Artificer User: " + username);
         ArtificerAtomApiClient client = new ArtificerAtomApiClient(endpoint, username, password, true);
 
         // Have we already run this demo?
@@ -69,7 +69,7 @@ public class RelationshipDemo {
             System.exit(1);
         }
 
-		// First thing to do is add a few artifacts to the S-RAMP repo.
+		// First thing to do is add a few artifacts to the Artificer repo.
 		ArtifactType type = ArtifactType.valueOf("Document");
 		System.out.print("Uploading three artifacts...");
 		BaseArtifactType artifact1 = client.uploadArtifact(type, RelationshipDemo.class.getResourceAsStream("relationship-demo-doc-1.txt"), "relationship-document-1.txt");

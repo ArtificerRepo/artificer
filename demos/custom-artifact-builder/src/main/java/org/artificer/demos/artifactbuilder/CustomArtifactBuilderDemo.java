@@ -15,13 +15,13 @@
  */
 package org.artificer.demos.artifactbuilder;
 
-import java.io.InputStream;
-
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.artificer.client.ArtificerAtomApiClient;
 import org.artificer.client.query.QueryResultSet;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+
+import java.io.InputStream;
 
 /**
  * Demonstrates how to create a custom artifact builder for extended artifacts.  Note
@@ -32,7 +32,7 @@ import org.artificer.common.ArtificerModelUtils;
  */
 public class CustomArtifactBuilderDemo {
 
-	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/s-ramp-server";
+	private static final String DEFAULT_ENDPOINT = "http://localhost:8080/artificer-server";
     private static final String DEFAULT_USER = "admin";
     private static final String DEFAULT_PASSWORD = "artificer1!";
 
@@ -56,8 +56,8 @@ public class CustomArtifactBuilderDemo {
         if (password == null || password.trim().length() == 0) {
             password = DEFAULT_PASSWORD;
         }
-        System.out.println("S-RAMP Endpoint: " + endpoint);
-        System.out.println("S-RAMP User: " + username);
+        System.out.println("Artificer Endpoint: " + endpoint);
+        System.out.println("Artificer User: " + username);
         ArtificerAtomApiClient client = new ArtificerAtomApiClient(endpoint, username, password, true);
 
         // Have we already run this demo?
