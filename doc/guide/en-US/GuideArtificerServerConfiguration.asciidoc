@@ -1,25 +1,28 @@
 Artificer Server Configuration
 ------------------------------
 
-Out-of-the-box, Artificer provides a useful, default server configuration.  However, if you'd like to mold it into an existing setup, here are a few areas that can be modified.
+Out-of-the-box, Artificer provides a useful, default server configuration.  However, if you'd like to mold it into an
+existing setup, here are a few areas that can be modified.
 
 Datasource
 ~~~~~~~~~~
 
-By default, Artificer uses a simple file-based H2 datasource.  However, any existing datasource can be used.  Swap-out the datasource's JNDI name in the following location:
+By default, Artificer uses a simple file-based H2 datasource.  However, any existing datasource can be used.
+Swap-out the datasource's JNDI name in the following location:
 
 Standalone modes: JBOSS_HOME/standalone/configuration/standalone*.xml
 ----
       ...
       <cache-container name="modeshape">
         <local-cache name="artificer">
-          <locking isolation="NONE"/>
-          <transaction mode="NON_XA"/>
-          <string-keyed-jdbc-store purge="false" passivation="false" datasource="[DATASOURCE JNDI NAME]">
+          <locking isolation="READ_COMMITTED"/>
+          <transaction mode="NON_XA" locking="OPTIMISTIC"/>
+          <eviction strategy="LRU" max-entries="10000"/>
+          <string-keyed-jdbc-store datasource="[DATASOURCE JNDI NAME]" passivation="false" purge="false">
             <string-keyed-table prefix="ispn_bucket">
-              <id-column type="VARCHAR(500)" name="id"/>
-              <data-column type="VARBINARY" name="datum"/>
-              <timestamp-column type="BIGINT" name="version"/>
+              <id-column name="id" type="VARCHAR(500)"/>
+              <data-column name="datum" type="BLOB"/>
+              <timestamp-column name="version" type="BIGINT"/>
             </string-keyed-table>
           </string-keyed-jdbc-store>
         </local-cache>

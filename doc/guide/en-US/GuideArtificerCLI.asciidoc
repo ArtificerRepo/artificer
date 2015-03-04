@@ -11,7 +11,7 @@ The shell supports auto-completion and keeps a command history for duration of t
 Connecting to Artificer server
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 To connect the shell to the server type `connect` and hit the tab key. It should auto-complete
-to say `s-ramp:connect http://localhost:8080/artificer-server` and when hitting the return key
+to say `connect http://localhost:8080/artificer-server` and when hitting the return key
 you will be prompted for user credentials.  If everything is successful, the cursor should go 
 from red to green.  Of course you will need to update the server and port information if your 
 Artificer repository runs elsewhere.
@@ -21,7 +21,7 @@ Browsing the Artificer repository
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 To browse the artifacts in the repository run the following query:
 ....
-artificer> s-ramp:query /s-ramp
+artificer> query /s-ramp
 Querying the S-RAMP repository:
     /s-ramp
 Atom Feed (9 entries)
@@ -39,7 +39,7 @@ Atom Feed (9 entries)
 ....
 To obtain the metaData of `overlord.demo.SimpleReleaseProcess.bpmn`, which is number 8 in the list, issue
 ....
-artificer> s-ramp:getMetaData feed:8
+artificer> getMetaData feed:8
 Meta Data for: 31b3acbc-cda8-4856-9e34-d3e645283035
 --------------
   -- Core S-RAMP Info --
@@ -60,21 +60,21 @@ Updating artifact MetaData
 
 Properties
 ^^^^^^^^^^
-To update a property on the artifact use `s-ramp:property set` and hit the `tab` key
+To update a property on the artifact use `property set` and hit the `tab` key
 ....
-artificer> s-ramp:property set 
+artificer> property set
 description       name           version 
 ....
 this shows a list of properties that can be updated. To add a description to this artifact use
 ....
-artificer> s-ramp:property set description "BPMN2 artifact representing the SimpleReleaseProcess"
+artificer> property set description "BPMN2 artifact representing the SimpleReleaseProcess"
 Successfully set property description.
-artificer> s-ramp:updateMetaData 
+artificer> updateMetaData
 Successfully updated artifact overlord.demo.SimpleReleaseProcess.bpmn.
 ....
 To verify issue
 ....
-artificer> s-ramp:getMetaData feed:8
+artificer> getMetaData feed:8
 Meta Data for: 31b3acbc-cda8-4856-9e34-d3e645283035
 --------------
   -- Core S-RAMP Info --
@@ -96,14 +96,14 @@ Custom Properties
 ^^^^^^^^^^^^^^^^^
 To add a `custom property` called `kurt` with value `stam` you can run
 ....
-artificer> s-ramp:property set kurt stam
+artificer> property set kurt stam
 Successfully set property kurt.
-artificer> s-ramp:updateMetaData 
+artificer> updateMetaData
 Successfully updated artifact overlord.demo.SimpleReleaseProcess.bpmn.
 ....
 and to verify that the `custom property` was added issue
 ....
-artificer> s-ramp:getMetaData feed:8
+artificer> getMetaData feed:8
 Meta Data for: 31b3acbc-cda8-4856-9e34-d3e645283035
 --------------
   -- Core S-RAMP Info --
@@ -122,9 +122,9 @@ BPMN2 artifact representing the SimpleReleaseProcess
   kurt: stam
 artificer> 
 ....
-When hitting the `tab` key on `s-ramp:property set` results in
+When hitting the `tab` key on `property set` results in
 ....
-artificer> s-ramp:property set 
+artificer> property set
 description    kurt           name           version 
 ....
 which now had the added `custom property` `kurt`.
@@ -133,14 +133,14 @@ Classifications
 ^^^^^^^^^^^^^^^
 To add a `classification` of `deployment-status` to your artifact use
 ....
-artificer> s-ramp:classification add "http://www.jboss.org/overlord/deployment-status.owl#Dev"
+artificer> classification add "http://www.jboss.org/overlord/deployment-status.owl#Dev"
 Successfully added classification 'http://www.jboss.org/overlord/deployment-status.owl#Dev'.
-artificer> s-ramp:updateMetaData 
+artificer> updateMetaData
 Successfully updated artifact overlord.demo.SimpleReleaseProcess.bpmn.
 ....
 and to verify that it was added
 ....
-artificer> s-ramp:getMetaData feed:8
+artificer> getMetaData feed:8
 Meta Data for: 31b3acbc-cda8-4856-9e34-d3e645283035
 --------------
   -- Core S-RAMP Info --
@@ -166,7 +166,7 @@ Querying the Artificer Repository using XPath2 Syntax
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 S-RAMP supports an XPath2 Syntax for querying. For example to obtain all WSDL models in the repository use
 ....
-artificer> s-ramp:query /s-ramp/wsdl/WsdlDocument
+artificer> query /s-ramp/wsdl/WsdlDocument
 Querying the S-RAMP repository:
     /s-ramp/wsdl/WsdlDocument
 Atom Feed (1 entries)
@@ -175,9 +175,9 @@ Atom Feed (1 entries)
     1            WsdlDocument OrderService.wsdl                       
 artificer> 
 ....
-When this WSDL file was uploaded `derived` information was extracted from it and stored a WSDL model. TO see the various data structures it derived simply hit the tab on `s-ramp:query /s-ramp/wsdl`
+When this WSDL file was uploaded `derived` information was extracted from it and stored a WSDL model. TO see the various data structures it derived simply hit the tab on `query /s-ramp/wsdl`
 ....
-artificer> s-ramp:query /s-ramp/wsdl/
+artificer> query /s-ramp/wsdl/
 Binding                  BindingOperation         BindingOperationFault    BindingOperationInput    BindingOperationOutput   
 Fault                    Message                  Operation                OperationInput           OperationOutput          
 Part                     Port                     PortType                 WsdlDocument             WsdlExtension            
@@ -188,7 +188,7 @@ Note that derived data is `read only`, and cannot be updated by the user.
 
 To obtain all Operations in this WSDL use
 ....
-s-ramp:query /s-ramp/wsdl/Operation
+query /s-ramp/wsdl/Operation
 Querying the S-RAMP repository:
     /s-ramp/wsdl/Operation
 Atom Feed (1 entries)
@@ -200,7 +200,7 @@ artificer>
 
 You can narrow this query down even more by adding that the name needs to start with `submit`
 ....
-s-ramp:query "/s-ramp/wsdl/Operation[xp2:matches(@name, 'submit.*')]"
+query "/s-ramp/wsdl/Operation[xp2:matches(@name, 'submit.*')]"
 Querying the S-RAMP repository:
     /s-ramp/wsdl/Operation[xp2:matches(@name, 'submit.*')]
 Atom Feed (1 entries)
@@ -217,7 +217,7 @@ To obtain all the artifacts that were derived from an artifact you can use
 ....
 In this case we use the uuid of a wsdl and get all the artifacts derived from the wsdl
 ....
-s-ramp:query "/s-ramp[relatedDocument[@uuid = '15a94308-a088-4a03-ad83-e60239af74e4']]"
+query "/s-ramp[relatedDocument[@uuid = '15a94308-a088-4a03-ad83-e60239af74e4']]"
 Querying the S-RAMP repository:
 	/s-ramp[relatedDocument[@uuid = '15a94308-a088-4a03-ad83-e60239af74e4']]
 Atom Feed (16 entries)
@@ -243,11 +243,11 @@ Atom Feed (16 entries)
 
 To get a list of all artifacts that were extracted from another archive use
 ....
-s-ramp:query "/s-ramp[expandedFromDocument[@uuid = '<uuid>']"
+query "/s-ramp[expandedFromDocument[@uuid = '<uuid>']"
 ....
 let's say we uploaded a jar file containing switchyard artifacts, with uddi '67c6f2d3-0f10-4f0d-ada6-d85f92f02a33':
 ....
-s-ramp:query "/s-ramp[expandedFromDocument[@uuid = '67c6f2d3-0f10-4f0d-ada6-d85f92f02a33']]"
+query "/s-ramp[expandedFromDocument[@uuid = '67c6f2d3-0f10-4f0d-ada6-d85f92f02a33']]"
 Querying the S-RAMP repository:
 	/s-ramp[expandedFromDocument[@uuid = '67c6f2d3-0f10-4f0d-ada6-d85f92f02a33']]
 Atom Feed (3 entries)
@@ -265,8 +265,8 @@ Stored Queries
 ^^^^^^^^^^^^^^^
 The above queries can also be executed using Stored Queries:
 ....
-artificer> s-ramp:createStoredQuery FooQuery /s-ramp/ext/FooType
-artificer> s-ramp:executeStoredQuery FooQuery
+artificer> createStoredQuery FooQuery /s-ramp/ext/FooType
+artificer> executeStoredQuery FooQuery
 Querying the S-RAMP repository:
     /s-ramp/ext/FooType
 Atom Feed (1 entries)

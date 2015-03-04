@@ -1,43 +1,94 @@
 Introduction to Artificer
 -------------------------
 
-The S-RAMP Specification
-~~~~~~~~~~~~~~~~~~~~~~~~
+Why?
+~~~~
 
-S-RAMP stands for SOA Repository Artifact Model and Protocol. https://www.oasis-open.org/committees/s-ramp/charter.php[S-RAMP] is a new specification worked on by the OASIS Technical Committee. 
-[quote, OASIS Charter, https://www.oasis-open.org/committees/s-ramp/charter.php]
-____
-The SOA Repository Artifact Model and Protocol (S-RAMP) TC defines a common data model for SOA repositories as well as an interaction protocol to facilitate the use of common tooling and sharing of data. The TC will define an ATOM binding which documents the syntax for interaction with a compliant repository for create, read, update, delete and query operations.
-____
-The first version of the specification (1.0) should be finalized in the first half of 2013. Two of the developers on the project participated in the Technical Committee. 
+All individuals, teams, and organizations tend to have a tangled mess of "stuff".  That bucket can include bits of
+information, logical metadata, and physical files.  Those "artifacts" are almost never isolated in nature.  They're all
+connected and inter-dependent, but the relationships can be difficult to understand.
 
-
-Purpose
-~~~~~~~
-
-The OASIS S-RAMP (SOA Repository Artifact Model and Protocol) specification is intended to 
-provide a common data model and protocol for interacting with a repository of (primarily)
-SOA artifacts.  The goal of the specification is to foster interoperability between 
-repository implementations by standardizing on a data model and API. 
-
-This guide will discuss both the OASIS standard and the Artificer open source implementation.
+In the software development world, this is an especially important problem to solve.  Dictionary.com defines "artifact"
+as "any object made by human beings, especially with a view to *subsequent use*".  That's key!  The development process
+often spews out a huge amount of artifacts, needed for future analysis and actions.  Without the ability to
+analyze how the information, artifacts, and content within the artifacts are connected, development
+processes become difficult, at best, or nearly impossible, at worst.  Both the publisher and the consumer need help!
 
 
 Overview
 ~~~~~~~~
 
-The S-RAMP specification includes a foundation document and an Atom based protocol binding
-document.  The foundation document describes core concepts and will be the focus of the 
-first part of this guide.  The Atom binding document describes an Atom based API that 
-implementations should provide.
+In steps Artificer.  Artificer is a software artifact, logical metadata, and information repository.  It consists of a
+common data model, multiple interfaces, useful tools, and exensibility.  In less words?
+It's a powerful platform that *untangles everything*.
 
-An S-RAMP repository primarily stores artifacts.  An artifact is comprised of the following
-meta-data:
 
-.Core Properties
-.Custom Properties
-.Classifiers
-.Relationships
+Use Cases
+~~~~~~~~~
+
+More specifically, here are a few brief examples of how Artificer can be used.  Obviously, this is not exhaustive!
+
+* Software artifact and metadata repository (publish and consume)
+* Software lifecycle management and workflows
+* Impact analysis
+* Discovery and reuse
+* Relationship comprehension and hierarchical analysis
+* Common configuration and policy management
+* Data auditing
+* Other "out of the box" uses:
+** "Getting Things Done"
+*** Reference system
+*** Project and action lists (with hierarchical classifications)
+
+For more details on specific use cases, take a look at Artificer's available
+https://developer.jboss.org/en/artificer/blog[blog posts].  We plan to periodically provide in-depth walkthroughs.
+
+
+Benefits
+~~~~~~~~
+
+Although all the features are described in detail, further in the guide, here's a brief overview of what Artificer
+provides.  The bottom line is that Artificer is *not* "just another software repository"!
+
+* Automatically extracts content from archives (ZIPs, JARs, WARs, etc.)
+* Automatically derives content from documents -- examples:
+** Type declarations in XSDs
+** Messages/ports/endpoints in WSDLs
+** Many others
+** Automatically detects content type
+* Powerful query language
+* Many interfaces & integrations
+** REST/Atom
+** UI
+** Java client
+** CLI
+** Maven (+ Gradle and other Maven dependency based systems)
+** EJB
+** JMS
+** Others under evaluation
+* Hierarchical classifiers/ontologies
+* Powerful & rich built-in/modeled metadata and relationships
+* Ad-hoc metadata and relationships
+* Model does not have to be defined at compile time -- can be completely ad-hoc
+* Full-blown auditing of historical changes
+* Easily extended
+* Performance -- supports enterprise-level usage
+
+
+The S-RAMP Specification
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Much of Artificer's capabilities are defined by the OASIS S-RAMP specification.
+S-RAMP is the https://www.oasis-open.org/committees/s-ramp/charter.php[SOA Repository Artifact Model and Protocol],
+a newer specification provided by an OASIS Technical Committee.
+[quote, OASIS Charter, https://www.oasis-open.org/committees/s-ramp/charter.php]
+____
+The SOA Repository Artifact Model and Protocol (S-RAMP) TC defines a common data model for SOA repositories as well as an interaction protocol to facilitate the use of common tooling and sharing of data. The TC will define an ATOM binding which documents the syntax for interaction with a compliant repository for create, read, update, delete and query operations.
+____
+Two of the developers on the project currently participate in the Technical Committee, one of which is the co-chair.
+
+It's important to note that Artificer is not simply an S-RAMP implementation!  The capabilities extend well beyond
+what's required by the spec.
 
 
 Core Properties
@@ -51,7 +102,7 @@ However, most importantly every artifact has an Artifact Model and an Artifact T
 These two properties determine what kind of artifact it is (more on artifact types later, 
 in the Data Models section of this Guide).  
 
-Additionally, some artifact types contain additional core properties.  For example, the 
+Some artifact types contain additional core properties.  For example, the
 Document artifact type includes additional core properties of contentType and contentSize, 
 while the XsdDocument artifact type includes the targetNamespace property.
 
@@ -59,7 +110,7 @@ while the XsdDocument artifact type includes the targetNamespace property.
 Custom Properties
 ~~~~~~~~~~~~~~~~~
 
-An artifact may have additional properties set on it by clients.  These custom properties
+An artifact may have additional properties set by clients.  These custom properties
 are simply arbitrary name/value pairs.  The only restriction is that a custom property
 may not have the same name as a Core Property.
 
@@ -67,14 +118,9 @@ may not have the same name as a Core Property.
 Classifiers
 ~~~~~~~~~~~
 
-Another type of meta-data found on S-RAMP artifacts are classifiers.  Classifiers are a 
-lot like keywords or tags except that they are hierarchical.  Every artifact has a 
-collection of classifiers configured by the client, where each classifier must be a node
-in an ontology previously uploaded to the repository (presumably by an admin).
-
-An ontology is simply a hierarchy of tags (defined as a subset of the OWL Lite format).  
-This approach allows the repository to be configured with a pre-defined set of hierarchical
-tags (classifiers) that can be associated with an artifact.
+Another type of metadata found on artifacts are "classifiers".  Classifiers are a
+lot like keywords or tags except that they are *hierarchical*.  Classifiers are defined in the repository through
+the OWL Lite format, a subset of the Web Ontology Language.
 
 An example is helpful in this case.  First, a repository administrator would define and
 upload an ontology:
@@ -103,9 +149,9 @@ S-RAMP Foundation document.
 Relationships
 ~~~~~~~~~~~~~
 
-The final bit of meta-data that can be found on an artifact are relationships  An S-RAMP
-relationship is a uni-directional link between a source artifact and a target artifact.
-Artifacts can have arbitrary, client-defined relationships.  Every relationship has a
-name and a target artifact.  For example, a client might define a relationship named
-"documentedBy" between a wsdl artifact and a text or PDF artifact, indicating that the
+The final bit of metadata that can be found on an artifact is relationships.  These are
+uni-directional links between a source artifact and a target artifact.  Artificer automatically defines a handful of
+useful relationships on its own, but artifacts can also have arbitrary, client-defined, ad hoc relationships defined
+during runtime.  All relationships have both a name and a target artifact.  For example, a client might define a relationship named
+"documentedBy" between a WSDL artifact and a text or PDF artifact, indicating that the
 latter provides documentation for the former.

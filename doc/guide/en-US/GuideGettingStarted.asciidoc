@@ -6,15 +6,16 @@ Prerequisites
 
 The Artificer application is written in Java. To get started make sure your system has the following:
 
-* Java JDK 1.6 or newer
+* Java JDK 1.7 or newer
 * Apache Ant 1.7 or newer to use the installer
 * Maven 3.0.3 or newer to build and run the examples
 
 Download and Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The `artificer-<version>.zip` (or tar.gz) archive can be downloaded from the http://www.jboss.org/overlord[http://www.jboss.org/overlord]
-website. Grab the latest, extract the archive and run:
+The `artificer-<version>.zip` (or tar.gz) archive can be downloaded from the
+http://artificer.jboss.org/downloads.html[http://artificer.jboss.org/downloads.html]
+website. Grab the latest, extract the archive, and run:
 
 ....
 ant install
@@ -26,10 +27,10 @@ The installer will ask you to choose a runtime platform.  Currently the followin
 * JBoss EAP 6.2+
 
 Simply follow the installer instructions to install onto the platform of your choice.  We recommend installing
-into a clean version of which platform you choose, to minimize the risk of colliding with other projects.
+into a clean version of whatever platform you choose, to minimize the risk of colliding with other projects.
 Note that you must have already downloaded and installed the platform on which you wish to run
 
-Finally, please make sure the admin password you choose (the installer will prompt you for this) contains
+Finally, please make sure the JBoss password you choose (the installer will prompt you for this) contains
 letters, numbers, and punctuation (and is at least 8 characters long).
 
 TIP: Read the installer output carefully - extra instructions are given for certain platforms.
@@ -46,7 +47,12 @@ is provided under-the-hood.
 The Artificer distribution ships with a *artificer-realm.json* file that's completely pre-configured and can be
 directly imported into Keycloak.  Startup Wildfly/EAP and visit *localhost:8080/auth/admin/master/console/#/create/realm*.  The initial
 administrator account uses "admin" for both the username and password.  There, you can upload the *artificer-realm.json*
-file and tweak the realm/accounts.
+file and tweak the realm/accounts.  Note that you can also import the realm the first time you start up Wildfly/EAP.
+Simply include the following argument:
+
+....
+bin/standalone.sh -c standalone-full.xml -Dkeycloak.import=[ARTIFICER HOME]/artificer-realm.json
+....
 
 By default, the realm import creates an "admin" user (password: "artificer1!").  This user is used to access the Artificer
 server, UI, shell, and other tools.  Again, the user is configurable through the Keycloak admin console.
@@ -88,13 +94,13 @@ Alternatively you can fire up the `artificer shell` in the `bin` directory of th
 ....
 
 To connect the shell to the server type `connect` and hit the tab key. It should auto-complete
-to say `s-ramp:connect http://localhost:8080/artificer-server` and when hitting the return key
+to say `connect http://localhost:8080/artificer-server` and when hitting the return key
 you should be prompted for user credentials.  Use 'admin' and whatever password you entered
 during installation.  If this succeeds, the shell cursor/prompt will go from red to green. To 
 browse the artifacts in the repository (there will likely not be any) run the following query:
 
 ....
-artificer> s-ramp:query "/s-ramp"
+artificer> query /s-ramp
 Querying the S-RAMP repository:
 	/s-ramp
 Atom Feed (0 entries)

@@ -15,11 +15,10 @@ Description
 The server implementation is a conventional Java web application (WAR).  The following technologies
 are used to provide the various components that make up the server implementation:
 
-1. JCR (ModeShape) - used as the persistence engine, where all Artificer data is stored.  Artifacts
-and ontologies are both stored as nodes in a JCR tree.  All Artificer queries are mapped to JCRSQL2
-queries for processing by the JCR API.  The ModeShape JCR implementation is used by default.
-However, the persistence layer is pluggable allowing alternative providers to be implemented in
-the future.
+1. JCR (ModeShape) + Infinispan + JDBC (H2) - used as the persistence engine, where all Artificer data is stored.  Artifacts
+and ontologies are both stored as nodes in a JCR tree.  All Artificer queries are mapped to JCR-SQL2
+queries for processing by the JCR API.  Performant data caching is provided by Infinispan, while the backing
+storage utilizes H2 JDBC.  Note that all of this is fully configurable and replaceable!
 
 2. JAX-RS (RESTEasy) - used to provide the Artificer Atom based REST API.  The S-RAMP specification
 documents an Atom based REST API that implementations should make available.  The Artificer

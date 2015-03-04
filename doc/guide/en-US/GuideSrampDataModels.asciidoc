@@ -1,9 +1,9 @@
-S-RAMP Data Models
-------------------
+Data Models
+-----------
 
 The S-RAMP specification defines a number of built-in artifact types, while also allowing
 clients to define their own (implicit) types.  This section of the Guide describes these
-different models.
+different models, as well as additional models provided by Artificer.
 
 An artifact may have document (e.g file) content or it may be a purely logical artifact.
 In either case, clients typically add artifacts to the repository directly (e.g. via the
@@ -172,7 +172,7 @@ domain:
 Java Data Model
 ~~~~~~~~~~~~~~~
 
-The S-RAMP server adds a custom (ext) model for dealing with Java artifacts.  The following
+The Artificer server adds a custom (ext) model for dealing with Java artifacts.  The following
 table lists the Java artifact types that are supported out of the box.  These artifacts can
 either be directly added to the repository or they can be added as part of the expansion
 of some other artifact.  A typical example of the latter is how JavaClass artifacts may be
@@ -194,7 +194,7 @@ added because they are contained within an archive of some kind.
 KIE Data Model (Knowledge is Everything)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The S-RAMP server includes basic out of the box support for Drools (KIE) artifact types.
+The Artificer server includes basic out of the box support for Drools (KIE) artifact types.
 The following table lists the KIE artifact types that are currently supported.
 
 [width="75%",options="header"]
@@ -210,7 +210,7 @@ The following table lists the KIE artifact types that are currently supported.
 SwitchYard Data Model
 ~~~~~~~~~~~~~~~~~~~~~
 
-The S-RAMP server inclues a custom (ext) data model for SwitchYard artifacts.  The following
+The Artificer server includes a custom (ext) data model for SwitchYard artifacts.  The following
 table lists the artifact types currently supported.  The non-derived artifacts can be added
 directly to the repository or expanded out of some archive type artifact.
 
