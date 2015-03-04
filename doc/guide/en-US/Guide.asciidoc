@@ -29,4 +29,6 @@ include::GuideArtificerImplementation.asciidoc[]
 
 include::GuideArtificerServerConfiguration.asciidoc[]
 
+include::MigrationGuides.asciidoc[]
+
 :numbered!:

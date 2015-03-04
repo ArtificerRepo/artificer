@@ -1,0 +1,26 @@
+Migration Guides
+----------------
+
+0.x -> 1.0
+~~~~~~~~~~
+
+* Support for Jetty, Tomcat, Fuse/Fabric/OSGi, and EAP 6.1 has been dropped.  Attention is now solely on Wildfly 8
+and EAP 6.2+.  (If any of these are truly a need by community users, we'd love to https://developer.jboss.org/en/artificer[hear from you]!)
+* Several areas of our JCR node definitions (CND) have changed.  Therefore, out of the box, Artificer 1.0 will probably
+not work with existing Overlord S-RAMP 0.x repository data.  An automated migration script is relatively easy to create.
+Please https://developer.jboss.org/en/artificer[contact us] if this would be helpful!
+* All modules renamed from s-ramp-* to artificer-*.  Any dependencies on these modules will need updated.
+* All Java packages renamed from org.overlord.sramp.* to org.artificer.*
+* URL endpoints changed: /s-ramp-server -> /artificer-server and /s-ramp-ui -> /artificer-ui
+* Names and paths have been changed in the ModeShape, Infinispan, H2, etc. configurations.  If an automated migration
+utility is needed in this area, please https://developer.jboss.org/en/artificer[contact us].
+* sramp.properties and sramp-ui.properties have been replaced by artificer.properties and artificer-ui.properties.
+All configuration keys have been changed to reflect "artificer".
+* The default JMS topic has changed to "artificer/events/topic".
+* The old "Deriver" and "Expander" contracts have been replaced by "ArtifactBuilder".  For more info, see the
+"Artificer Extension Points" chapter.
+* The Artificer CLI no longer uses the default "s-ramp:" command namespace.  Core commands can be typed without a ns.
+* The Artificer Exception architecture has changed somewhat dramatically.  Uses of the Java Client or EJB may require
+modifications to Exception catching.
+* s-ramp-wagon has been completely replaced by a "Maven Facade" servlet in the Artificer Server.  This can be used like
+any other Maven repository.  For more info, see the "Artificer Maven Integration" chapter.
