@@ -50,6 +50,7 @@
         <module>webapp-multimodule/artifacts</module>
         <module>webapp-multimodule/web</module>
         <module>custom-artifact-builder</module>
+        <module>end-to-end-use-case/xsd-wsdl-impact-analysis</module>
       </modules>
     </profile>
     <profile>
