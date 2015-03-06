@@ -48,7 +48,7 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
      */
     @Test
     public void testDerivedRelationshipQueries() throws Exception {
-        addWsdlDoc();
+        WsdlDocument wsdlDoc = addWsdlDoc();
 
         // Get all the element style WSDL message parts
         ArtificerQuery query = queryManager.createQuery("/s-ramp/wsdl/Part[element]");
@@ -97,6 +97,13 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
+
+        // Ensure predicate conjunctions work w/ relationships
+        // TODO: Un-comment after ARTIF-656
+//        query = queryManager.createQuery(String.format("/s-ramp/wsdl/Part[relatedDocument[@uuid = '%1$s'] and element]", wsdlDoc.getUuid()));
+//        artifactSet = query.executeQuery();
+//        Assert.assertNotNull(artifactSet);
+//        Assert.assertEquals(1, artifactSet.size());
     }
 
     /**
