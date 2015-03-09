@@ -4,6 +4,7 @@
     <groupId>org.artificer.demos</groupId>
     <artifactId>artificer-demos</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>artificer-demos-xsd-wsdl-impact-analysis</artifactId>
   <name>Artificer End-to-End Use Case: Impact Analysis with XSDs, WSDLs, and Large Development Teams</name>
