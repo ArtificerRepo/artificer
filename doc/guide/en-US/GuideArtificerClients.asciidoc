@@ -215,6 +215,7 @@ try {
 The complete list of services include the following.  Have a look at their javadocs -- the capabilities are fairly extensive.
 * org.artificer.server.core.api.ArtifactService
 * org.artificer.server.core.api.AuditService
+* org.artificer.server.core.api.BatchService
 * org.artificer.server.core.api.OntologyService
 * org.artificer.server.core.api.QueryService
 

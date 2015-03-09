@@ -16,6 +16,10 @@
     </dependency>
     <dependency>
       <groupId>org.artificer</groupId>
+      <artifactId>artificer-atom</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
       <artifactId>artificer-common</artifactId>
     </dependency>
     <dependency>

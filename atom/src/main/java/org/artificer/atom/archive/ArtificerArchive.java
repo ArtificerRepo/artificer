@@ -15,11 +15,18 @@
  */
 package org.artificer.atom.archive;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.artificer.atom.i18n.Messages;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -27,19 +34,12 @@ import java.util.Collection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.xml.bind.JAXBException;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.artificer.atom.i18n.Messages;
-
 /**
  * Models the archive format defined in the S-RAMP Atom Binding document.
  *
  * @author eric.wittmann@redhat.com
  */
-public class ArtificerArchive {
+public class ArtificerArchive implements Serializable {
 
 	private File originalFile;
 	private boolean shouldDeleteOriginalFile;
