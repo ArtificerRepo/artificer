@@ -911,7 +911,7 @@
     <repository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <url>http://repository.jboss.org/nexus/content/groups/public</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
@@ -925,7 +925,7 @@
     <repository>
       <id>redhat-tech-preview-repository</id>
       <name>Red Hat Tech Preview Repository</name>
-      <url>http://maven.repository.redhat.com/techpreview/all/</url>
+      <url>http://maven.repository.redhat.com/techpreview/all</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
@@ -942,7 +942,7 @@
     <pluginRepository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/developer/</url>
+      <url>http://repository.jboss.org/nexus/content/groups/public</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -950,7 +950,7 @@
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
       </snapshots>
-    </pluginRepository>   
+    </pluginRepository>
   </pluginRepositories>
 
   <distributionManagement>

@@ -137,119 +137,6 @@
 
   <profiles>
     <profile>
-      <id>eap61-integration-test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <skipTests>false</skipTests>
-              <!-- TODO: JMS/HornetQ API conflict for MessageListener. -->
-              <excludes>
-                <exclude>**/JMSEventProducerTest.java</exclude>
-              </excludes>
-            </configuration>
-          </plugin>
-          <!--<plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>generate-test-resources</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-eap61" />
-                    <ant antfile="${basedir}/src/test/resources/install-sramp.xml" target="install-sramp-eap61" />
-                  </tasks>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>-->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <systemPropertyVariables>
-                <arquillian.launch>eap61</arquillian.launch>
-              </systemPropertyVariables>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-distribution</artifactId>
-            <version>3.6.0.Final</version>
-            <type>zip</type>
-            <classifier>jbosseap-61-dist</classifier>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
-      <dependencies>
-        <dependency>
-          <groupId>org.jboss.as</groupId>
-          <artifactId>jboss-as-arquillian-container-managed</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.artificer</groupId>
-          <artifactId>artificer-server-eap6</artifactId>
-          <type>war</type>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.artificer</groupId>
-          <artifactId>artificer-ui-eap6</artifactId>
-          <type>war</type>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.hornetq</groupId>
-          <artifactId>hornetq-jms-client</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-war-dist-all</artifactId>
-          <type>zip</type>
-          <scope>test</scope>
-          <exclusions>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-as7-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-example-themes-dist</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-eap6-adapter-dist</artifactId>
-          <type>zip</type>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
       <id>eap62-integration-test</id>
       <build>
         <plugins>
@@ -260,7 +147,7 @@
               <skipTests>false</skipTests>
             </configuration>
           </plugin>
-          <!--<plugin>
+          <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
@@ -271,12 +158,12 @@
                 <configuration>
                   <tasks>
                     <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-eap62" />
-                    <ant antfile="${basedir}/src/test/resources/install-sramp.xml" target="install-sramp-eap62" />
+                    <ant antfile="${basedir}/src/test/resources/install-artificer.xml" target="install-artificer-eap62" />
                   </tasks>
                 </configuration>
               </execution>
             </executions>
-          </plugin>-->
+          </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
@@ -297,124 +184,11 @@
             <type>zip</type>
             <classifier>jbosseap-dist</classifier>
           </dependency>
-        </dependencies>
-      </dependencyManagement>
-      <dependencies>
-        <dependency>
-          <groupId>org.jboss.as</groupId>
-          <artifactId>jboss-as-arquillian-container-managed</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.modeshape</groupId>
-          <artifactId>modeshape-distribution</artifactId>
-          <type>zip</type>
-          <classifier>jbosseap-dist</classifier>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.artificer</groupId>
-          <artifactId>artificer-server-eap6</artifactId>
-          <type>war</type>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.artificer</groupId>
-          <artifactId>artificer-ui-eap6</artifactId>
-          <type>war</type>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.hornetq</groupId>
-          <artifactId>hornetq-jms-client</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-war-dist-all</artifactId>
-          <type>zip</type>
-          <scope>test</scope>
-          <exclusions>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-as7-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-example-themes-dist</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-eap6-adapter-dist</artifactId>
-          <type>zip</type>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>eap63-integration-test</id>
-      <!--<activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>-->
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <skipTests>false</skipTests>
-            </configuration>
-          </plugin>
-          <!--<plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>generate-test-resources</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-eap63" />
-                    <ant antfile="${basedir}/src/test/resources/install-sramp.xml" target="install-sramp-eap63" />
-                  </tasks>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>-->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <systemPropertyVariables>
-                <arquillian.launch>eap63</arquillian.launch>
-              </systemPropertyVariables>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <dependencyManagement>
-        <dependencies>
+          <!-- Override transitive dependencies - a few are different in the techpreview repo. -->
           <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-distribution</artifactId>
-            <version>3.8.0.Final</version>
-            <type>zip</type>
-            <classifier>jbosseap-dist</classifier>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-controller</artifactId>
+            <version>7.5.0.Final-redhat-17</version>
           </dependency>
         </dependencies>
       </dependencyManagement>
@@ -484,6 +258,256 @@
         </dependency>
       </dependencies>
     </profile>
+
+    <profile>
+      <id>eap63-integration-test</id>
+      <!--<activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>-->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>false</skipTests>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>generate-test-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-eap63" />
+                    <ant antfile="${basedir}/src/test/resources/install-artificer.xml" target="install-artificer-eap63" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <arquillian.launch>eap63</arquillian.launch>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-distribution</artifactId>
+            <version>3.8.0.Final</version>
+            <type>zip</type>
+            <classifier>jbosseap-dist</classifier>
+          </dependency>
+          <!-- Override transitive dependencies - a few are different in the techpreview repo. -->
+          <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-controller</artifactId>
+            <version>7.5.0.Final-redhat-17</version>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-arquillian-container-managed</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.modeshape</groupId>
+          <artifactId>modeshape-distribution</artifactId>
+          <type>zip</type>
+          <classifier>jbosseap-dist</classifier>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.artificer</groupId>
+          <artifactId>artificer-server-eap6</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.artificer</groupId>
+          <artifactId>artificer-ui-eap6</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.hornetq</groupId>
+          <artifactId>hornetq-jms-client</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-war-dist-all</artifactId>
+          <type>zip</type>
+          <scope>test</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>org.keycloak</groupId>
+              <artifactId>keycloak-as7-adapter-dist</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.keycloak</groupId>
+              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.keycloak</groupId>
+              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.keycloak</groupId>
+              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.keycloak</groupId>
+              <artifactId>keycloak-example-themes-dist</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-eap6-adapter-dist</artifactId>
+          <type>zip</type>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>eap64-integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>false</skipTests>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>generate-test-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <ant antfile="${basedir}/src/test/resources/install-container.xml" target="install-eap64" />
+                    <ant antfile="${basedir}/src/test/resources/install-artificer.xml" target="install-artificer-eap64" />
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <arquillian.launch>eap64</arquillian.launch>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-distribution</artifactId>
+            <version>3.8.0.Final</version>
+            <type>zip</type>
+            <classifier>jbosseap-dist</classifier>
+          </dependency>
+          <!-- Override transitive dependencies - a few are different in the techpreview repo. -->
+          <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-controller</artifactId>
+            <version>7.5.0.Final-redhat-17</version>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.jboss.as</groupId>
+          <artifactId>jboss-as-arquillian-container-managed</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.modeshape</groupId>
+          <artifactId>modeshape-distribution</artifactId>
+          <type>zip</type>
+          <classifier>jbosseap-dist</classifier>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.artificer</groupId>
+          <artifactId>artificer-server-eap6</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.artificer</groupId>
+          <artifactId>artificer-ui-eap6</artifactId>
+          <type>war</type>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.hornetq</groupId>
+          <artifactId>hornetq-jms-client</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-war-dist-all</artifactId>
+          <type>zip</type>
+          <scope>test</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>org.keycloak</groupId>
+              <artifactId>keycloak-as7-adapter-dist</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.keycloak</groupId>
+              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.keycloak</groupId>
+              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.keycloak</groupId>
+              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>org.keycloak</groupId>
+              <artifactId>keycloak-example-themes-dist</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.keycloak</groupId>
+          <artifactId>keycloak-eap6-adapter-dist</artifactId>
+          <type>zip</type>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+
     <profile>
       <id>wildfly8-integration-test</id>
       <build>

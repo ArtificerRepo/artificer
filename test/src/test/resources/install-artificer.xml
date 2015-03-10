@@ -5,26 +5,6 @@
   <property name="s-ramp.updates.dir" location="${basedir}/../installer/src/main/resources/updates" />
   <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}" />
 
-  <target name="install-artificer-eap61">
-    <property name="appserver.id" value="jboss-eap-6" />
-    <property name="s-ramp.appserver.dir" location="${project.build.directory}/jboss-eap-6.1" />
-    
-    <property name="s-ramp.s-ramp-server.war.path"
-      value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
-    <property name="s-ramp.s-ramp-ui.war.path"
-      value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
-    
-    <property name="s-ramp.modeshape-distribution.zip.path"
-        location="${project.build.directory}/modeshape-distribution-3.6.0.Final-jbosseap-61-dist.zip" />
-
-    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
-
-    <ant antfile="${basedir}/../installer/src/main/resources/scripts/${appserver.id}.xml"
-        inheritall="true" target="install" />
-  </target>
-
   <target name="install-artificer-eap62">
     <property name="appserver.id" value="jboss-eap-6" />
     <property name="s-ramp.appserver.dir" location="${project.build.directory}/jboss-eap-6.2" />
@@ -41,8 +21,12 @@
     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
     <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
 
+    <property name="ejb-jms.password" value="artificer1!" />
+
     <ant antfile="${basedir}/../installer/src/main/resources/scripts/${appserver.id}.xml"
         inheritall="true" target="install" />
+
+    <copy file="${basedir}/src/test/resources/artificer.properties" todir="${s-ramp.appserver.dir}/standalone/configuration" overwrite="true"/>
   </target>
 
   <target name="install-artificer-eap63">
@@ -61,8 +45,36 @@
     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
     <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
 
+    <property name="ejb-jms.password" value="artificer1!" />
+
     <ant antfile="${basedir}/../installer/src/main/resources/scripts/${appserver.id}.xml"
          inheritall="true" target="install" />
+
+    <copy file="${basedir}/src/test/resources/artificer.properties" todir="${s-ramp.appserver.dir}/standalone/configuration" overwrite="true"/>
+  </target>
+
+  <target name="install-artificer-eap64">
+    <property name="appserver.id" value="jboss-eap-6" />
+    <property name="s-ramp.appserver.dir" location="${project.build.directory}/jboss-eap-6.4" />
+
+    <property name="s-ramp.s-ramp-server.war.path"
+              value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
+    <property name="s-ramp.s-ramp-ui.war.path"
+              value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
+
+    <property name="s-ramp.modeshape-distribution.zip.path"
+              value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
+
+    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
+    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
+    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
+
+    <property name="ejb-jms.password" value="artificer1!" />
+
+    <ant antfile="${basedir}/../installer/src/main/resources/scripts/${appserver.id}.xml"
+         inheritall="true" target="install" />
+
+    <copy file="${basedir}/src/test/resources/artificer.properties" todir="${s-ramp.appserver.dir}/standalone/configuration" overwrite="true"/>
   </target>
 
   <target name="install-artificer-wildfly8">

@@ -10,18 +10,13 @@
   <property name="filename.eap63" value="jboss-eap-6.3.0.zip" />
   <property name="dir.eap63" value="jboss-eap-6.3" />
 
+  <property name="filename.eap64" value="jboss-eap-6.4.0.Beta.zip" />
+  <property name="dir.eap64" value="jboss-eap-6.4" />
+
   <property name="filename.wildfly8" value="wildfly-8.2.0.Final.zip" />
   <property name="download.url.wildfly8"
             value="http://download.jboss.org/wildfly/8.2.0.Final/${filename.wildfly8}" />
   <property name="dir.wildfly8" value="wildfly-8.2.0.Final" />
-
-  <target name="install-eap61">
-    <!-- TODO: Fail is the ZIP isn't in the root? -->
-    <property name="name" value="JBoss EAP 6.1" />
-    <property name="filename" value="${filename.eap61}" />
-    <property name="dir" value="${project.build.directory}/${dir.eap61}" />
-    <antcall target="install" />
-  </target>
 
   <target name="install-eap62">
     <!-- TODO: Fail is the ZIP isn't in the root? -->
@@ -36,6 +31,14 @@
     <property name="name" value="JBoss EAP 6.3" />
     <property name="filename" value="${filename.eap63}" />
     <property name="dir" value="${project.build.directory}/${dir.eap63}" />
+    <antcall target="install" />
+  </target>
+
+  <target name="install-eap64">
+    <!-- TODO: Fail is the ZIP isn't in the root? -->
+    <property name="name" value="JBoss EAP 6.4" />
+    <property name="filename" value="${filename.eap64}" />
+    <property name="dir" value="${project.build.directory}/${dir.eap64}" />
     <antcall target="install" />
   </target>
 
