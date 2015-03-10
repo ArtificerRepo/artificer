@@ -180,7 +180,7 @@ public class ArtifactSearchService implements IArtifactSearchService {
                 Set<String> ids = filters.getClassifiers().get(base);
                 for (String id : ids) {
                     String classifierUri = base + "#" + id;
-                    classifierCriteria.append("," + classifierUri);
+                    classifierCriteria.append(",'" + classifierUri + "'");
                 }
             }
             classifierCriteria.append(")");
