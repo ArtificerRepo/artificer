@@ -28,10 +28,6 @@
       <groupId>org.artificer</groupId>
       <artifactId>artificer-integration</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.artificer</groupId>
-      <artifactId>artificer-shell-api</artifactId>
-    </dependency>
   </dependencies>
 
   <build>

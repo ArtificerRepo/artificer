@@ -272,7 +272,6 @@
     <module>artificer-repository-jcr/modeshape</module>
     <module>artificer-server</module>
     <module>artificer-shell</module>
-    <module>artificer-shell-api</module>
     <module>artificer-ui</module>
   </modules>
 </project>

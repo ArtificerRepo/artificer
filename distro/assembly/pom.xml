@@ -137,11 +137,6 @@
     </dependency>
     <dependency>
       <groupId>org.artificer</groupId>
-      <artifactId>artificer-shell-api</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.artificer</groupId>
       <artifactId>artificer-ui</artifactId>
       <classifier>sources</classifier>
     </dependency>
