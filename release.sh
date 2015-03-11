@@ -12,7 +12,7 @@ mvn versions:set -DnewVersion=$RELEASE_VERSION
 find . -name '*.versionsBackup' -exec rm -f {} \;
 
 # sanity check
-mvn clean install -P generate-docs
+mvn clean install -Pgenerate-docs
 
 git add .
 git commit -m "Prepare for release $RELEASE_VERSION"
@@ -22,7 +22,7 @@ git tag -a -m "Tagging release $RELEASE_VERSION" artificer-$RELEASE_VERSION
 git push origin artificer-$RELEASE_VERSION
 
 mvn deploy -Pgenerate-docs,upload-docs -Dkeyfile=$KEYFILE
-scp artificer-distro/assembly/target/artificer-$RELEASE_VERSION.zip artificer@filemgmt.jboss.org:/downloads_htdocs/artificer
+scp distro/assembly/target/artificer-$RELEASE_VERSION.zip artificer@filemgmt.jboss.org:/downloads_htdocs/artificer
 
 mvn versions:set -DnewVersion=$DEV_VERSION
 find . -name '*.versionsBackup' -exec rm -f {} \;
