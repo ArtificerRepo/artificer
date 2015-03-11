@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.artificer.demos</groupId>
     <artifactId>artificer-demos</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.Alpha1</version>
   </parent>
   <artifactId>artificer-demos-archive-package</artifactId>
   <name>Artificer Demos: Archive Package</name>
