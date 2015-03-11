@@ -224,6 +224,15 @@
             </execution>
           </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ban-uberjars</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -1038,6 +1047,13 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>org.apache.felix.scr.annotations</artifactId>
         <version>1.7.0</version>
+      </dependency>
+
+      <!-- Override transitive dependencies - a few are different in the techpreview repo. -->
+      <dependency>
+        <groupId>org.jboss.as</groupId>
+        <artifactId>jboss-as-controller</artifactId>
+        <version>7.5.0.Final-redhat-17</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
