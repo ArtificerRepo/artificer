@@ -7,7 +7,6 @@ Prerequisites
 The Artificer application is written in Java. To get started make sure your system has the following:
 
 * Java JDK 1.7 or newer
-* Apache Ant 1.7 or newer to use the installer
 * Maven 3.0.3 or newer to build and run the examples
 
 Download and Installation
@@ -18,8 +17,12 @@ http://artificer.jboss.org/downloads.html[http://artificer.jboss.org/downloads.h
 website. Grab the latest, extract the archive, and run:
 
 ....
-ant install
+./install.sh
+or
+install.bat
 ....
+
+Alternatively, if you have Apache Ant 1.7 (or later) installed, simply run 'ant install'.
 
 The installer will ask you to choose a runtime platform.  Currently the following platforms are supported:
 

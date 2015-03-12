@@ -191,6 +191,21 @@
         </excludes>
       </unpackOptions>
     </dependencySet>
+    <!-- ant -->
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>org.apache.ant:ant:jar</include>
+        <include>org.apache.ant:ant-launcher:jar</include>
+      </includes>
+      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
   </dependencySets>
   <fileSets>
     <!-- Files at the root of the distribution -->
