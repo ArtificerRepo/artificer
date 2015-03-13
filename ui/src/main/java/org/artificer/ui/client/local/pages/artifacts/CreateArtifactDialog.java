@@ -17,7 +17,12 @@ package org.artificer.ui.client.local.pages.artifacts;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.TextBox;
 import org.artificer.ui.client.local.util.IUploadCompletionHandler;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -41,6 +46,10 @@ public class CreateArtifactDialog extends ModalDialog {
 
     @Inject @DataField("create-dialog-form")
     private TemplatedFormPanel form;
+    @Inject @DataField("create-dialog-type")
+    protected TextBox artifactType;
+    @Inject @DataField("create-dialog-name")
+    protected TextBox artifactName;
     @Inject @DataField("create-dialog-submit-button")
     private Button submitButton;
     @Inject
@@ -64,6 +73,37 @@ public class CreateArtifactDialog extends ModalDialog {
         formHandler.setDialog(this);
         form.addSubmitHandler(formHandler);
         form.addSubmitCompleteHandler(formHandler);
+
+        artifactType.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                enableSubmitButton();
+            }
+        });
+        artifactType.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                enableSubmitButton();
+            }
+        });
+        artifactName.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                enableSubmitButton();
+            }
+        });
+        artifactName.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                enableSubmitButton();
+            }
+        });
+    }
+
+    private void enableSubmitButton() {
+        boolean enabled = artifactType.getValue() != null && artifactType.getValue().trim().length() > 0
+                && artifactName.getValue() != null && artifactName.getValue().trim().length() > 0;
+        submitButton.setEnabled(enabled);
     }
 
     /**
@@ -71,7 +111,8 @@ public class CreateArtifactDialog extends ModalDialog {
      */
     @Override
     public void show() {
-        form.setAction(GWT.getModuleBaseURL() + "services/artifactCreate"); //$NON-NLS-1$
+        form.setAction(GWT.getModuleBaseURL() + "services/artifactCreate");
+        submitButton.setEnabled(false);
         super.show();
     }
 

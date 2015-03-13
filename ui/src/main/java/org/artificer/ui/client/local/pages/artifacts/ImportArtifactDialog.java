@@ -15,21 +15,25 @@
  */
 package org.artificer.ui.client.local.pages.artifacts;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.TextBox;
+import org.artificer.ui.client.local.util.IUploadCompletionHandler;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
 import org.overlord.commons.gwt.client.local.widgets.TemplatedFormPanel;
-import org.artificer.ui.client.local.util.IUploadCompletionHandler;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Button;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 /**
  * A modal dialog used to import artifacts into S-RAMP.
@@ -41,6 +45,8 @@ public class ImportArtifactDialog extends ModalDialog {
 
     @Inject @DataField("import-dialog-form")
     private TemplatedFormPanel form;
+    @Inject @DataField("import-dialog-file")
+    protected TextBox importFile;
     @Inject @DataField("import-dialog-submit-button")
     private Button submitButton;
     @Inject
@@ -64,6 +70,24 @@ public class ImportArtifactDialog extends ModalDialog {
         formHandler.setDialog(this);
         form.addSubmitHandler(formHandler);
         form.addSubmitCompleteHandler(formHandler);
+
+        importFile.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                enableSubmitButton();
+            }
+        });
+        importFile.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                enableSubmitButton();
+            }
+        });
+    }
+
+    private void enableSubmitButton() {
+        boolean enabled = importFile.getValue() != null && importFile.getValue().trim().length() > 0;
+        submitButton.setEnabled(enabled);
     }
 
     /**
@@ -71,7 +95,8 @@ public class ImportArtifactDialog extends ModalDialog {
      */
     @Override
     public void show() {
-        form.setAction(GWT.getModuleBaseURL() + "services/artifactUpload"); //$NON-NLS-1$
+        form.setAction(GWT.getModuleBaseURL() + "services/artifactUpload");
+        submitButton.setEnabled(false);
         super.show();
     }
 
