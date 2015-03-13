@@ -15,13 +15,28 @@
  */
 package org.artificer.ui.client.local.pages;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.TextBox;
 import org.artificer.ui.client.local.ClientMessages;
+import org.artificer.ui.client.local.pages.artifacts.ArtifactFilters;
+import org.artificer.ui.client.local.pages.artifacts.ArtifactsTable;
+import org.artificer.ui.client.local.pages.artifacts.CreateArtifactDialog;
+import org.artificer.ui.client.local.pages.artifacts.ImportArtifactDialog;
+import org.artificer.ui.client.local.services.ApplicationStateKeys;
+import org.artificer.ui.client.local.services.ApplicationStateService;
+import org.artificer.ui.client.local.services.ArtifactSearchServiceCaller;
 import org.artificer.ui.client.local.services.NotificationService;
+import org.artificer.ui.client.local.services.callback.IServiceInvocationHandler;
+import org.artificer.ui.client.local.util.IUploadCompletionHandler;
+import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
+import org.artificer.ui.client.shared.beans.ArtifactResultSetBean;
+import org.artificer.ui.client.shared.beans.ArtifactSearchBean;
+import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
@@ -32,26 +47,11 @@ import org.overlord.commons.gwt.client.local.events.TableSortEvent;
 import org.overlord.commons.gwt.client.local.widgets.HtmlSnippet;
 import org.overlord.commons.gwt.client.local.widgets.Pager;
 import org.overlord.commons.gwt.client.local.widgets.SortableTemplatedWidgetTable.SortColumn;
-import org.artificer.ui.client.local.pages.artifacts.ArtifactFilters;
-import org.artificer.ui.client.local.pages.artifacts.ArtifactsTable;
-import org.artificer.ui.client.local.pages.artifacts.ImportArtifactDialog;
-import org.artificer.ui.client.local.services.ApplicationStateKeys;
-import org.artificer.ui.client.local.services.ApplicationStateService;
-import org.artificer.ui.client.local.services.ArtifactSearchServiceCaller;
-import org.artificer.ui.client.local.services.callback.IServiceInvocationHandler;
-import org.artificer.ui.client.local.util.IUploadCompletionHandler;
-import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
-import org.artificer.ui.client.shared.beans.ArtifactResultSetBean;
-import org.artificer.ui.client.shared.beans.ArtifactSearchBean;
-import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.TextBox;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 /**
  * The default "Artifacts" page.
@@ -83,8 +83,12 @@ public class ArtifactsPage extends AbstractPage {
 
     @Inject @DataField("btn-import")
     protected Button importDialogButton;
+    @Inject @DataField("btn-create")
+    protected Button createDialogButton;
     @Inject
     protected Instance<ImportArtifactDialog> importDialog;
+    @Inject
+    protected Instance<CreateArtifactDialog> createDialog;
     @Inject @DataField("btn-refresh")
     protected Button refreshButton;
 
@@ -163,6 +167,24 @@ public class ArtifactsPage extends AbstractPage {
     @EventHandler("btn-import")
     public void onImportClick(ClickEvent event) {
         ImportArtifactDialog dialog = importDialog.get();
+        dialog.setCompletionHandler(new IUploadCompletionHandler() {
+            @Override
+            public void onImportComplete() {
+                if (isAttached()) {
+                    refreshButton.click();
+                }
+            }
+        });
+        dialog.show();
+    }
+
+    /**
+     * Event handler that fires when the user clicks the Create Artifact button.
+     * @param event
+     */
+    @EventHandler("btn-create")
+    public void onCreateClick(ClickEvent event) {
+        CreateArtifactDialog dialog = createDialog.get();
         dialog.setCompletionHandler(new IUploadCompletionHandler() {
             @Override
             public void onImportComplete() {

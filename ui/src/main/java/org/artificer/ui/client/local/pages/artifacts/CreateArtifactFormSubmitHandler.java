@@ -35,12 +35,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 /**
- * The form submit handler used by the {@link ImportArtifactDialog}.
+ * The form submit handler used by the {@link org.artificer.ui.client.local.pages.artifacts.ImportArtifactDialog}.
  *
  * @author eric.wittmann@redhat.com
  */
 @Dependent
-public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCompleteHandler {
+public class CreateArtifactFormSubmitHandler implements SubmitHandler, SubmitCompleteHandler {
 
     @Inject
     protected ClientMessages i18n;
@@ -56,7 +56,7 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
     /**
      * Constructor.
      */
-    public ImportArtifactFormSubmitHandler() {
+    public CreateArtifactFormSubmitHandler() {
     }
 
     /**
@@ -73,8 +73,8 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
     public void onSubmit(SubmitEvent event) {
         dialog.hide(false);
         notification = notificationService.startProgressNotification(
-                i18n.format("import-artifact-submit.importing.title"), //$NON-NLS-1$
-                i18n.format("import-artifact-submit.importing.msg")); //$NON-NLS-1$
+                i18n.format("create-artifact-submit.creating.title"),
+                i18n.format("create-artifact-submit.creating.msg"));
     }
 
 
@@ -90,35 +90,26 @@ public class ImportArtifactFormSubmitHandler implements SubmitHandler, SubmitCom
             if (results.getError() != null) {
                 notificationService.completeProgressNotification(
                         notification.getUuid(),
-                        i18n.format("import-artifact-submit.import-error.title"), //$NON-NLS-1$
+                        i18n.format("create-artifact-submit.create-error.title"),
                         results.getError());
             } else {
                 notificationService.completeProgressNotification(
                         notification.getUuid(),
-                        i18n.format("import-artifact-submit.import-error.title"), //$NON-NLS-1$
-                        i18n.format("import-artifact-submit.import-error.msg")); //$NON-NLS-1$
+                        i18n.format("create-artifact-submit.create-error.title"),
+                        i18n.format("create-artifact-submit.create-error.msg"));
             }
-        } else if (results.isBatch()) {
-            String message = i18n.format(
-                    "import-artifact-submit.import-success.msg",  //$NON-NLS-1$
-                    results.getBatchNumSuccess(),
-                    results.getBatchNumFailed());
-            notificationService.completeProgressNotification(
-                    notification.getUuid(),
-                    i18n.format("import-artifact-submit.import-batch-success.title"), //$NON-NLS-1$
-                    message);
         } else {
-            Widget ty = new InlineLabel(i18n.format("import-artifact-submit.import-complete.msg")); //$NON-NLS-1$
-            TransitionAnchor<ArtifactDetailsPage> clickHere = toDetailsFactory.get("uuid", results.getUuid()); //$NON-NLS-1$
-            clickHere.setText(i18n.format("import-artifact-submit.click-here-1")); //$NON-NLS-1$
-            Widget postAmble = new InlineLabel(i18n.format("import-artifact-submit.click-here-2")); //$NON-NLS-1$
+            Widget ty = new InlineLabel(i18n.format("create-artifact-submit.create-complete.msg"));
+            TransitionAnchor<ArtifactDetailsPage> clickHere = toDetailsFactory.get("uuid", results.getUuid());
+            clickHere.setText(i18n.format("create-artifact-submit.click-here-1"));
+            Widget postAmble = new InlineLabel(i18n.format("create-artifact-submit.click-here-2"));
             FlowPanel body = new FlowPanel();
             body.add(ty);
             body.add(clickHere);
             body.add(postAmble);
             notificationService.completeProgressNotification(
                     notification.getUuid(),
-                    i18n.format("import-artifact-submit.import-complete.title"), //$NON-NLS-1$
+                    i18n.format("create-artifact-submit.create-complete.title"),
                     body);
             if (completionHandler != null) {
                 completionHandler.onImportComplete();
