@@ -15,19 +15,6 @@
  */
 package org.artificer.ui.client.local.pages.artifacts;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.commons.gwt.client.local.widgets.DateBox;
-import org.overlord.commons.gwt.client.local.widgets.RadioButton;
-import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
-import org.artificer.ui.client.shared.beans.ArtifactOriginEnum;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -37,6 +24,18 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TextBox;
+import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
+import org.artificer.ui.client.shared.beans.ArtifactOriginEnum;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.commons.gwt.client.local.widgets.DateBox;
+import org.overlord.commons.gwt.client.local.widgets.RadioButton;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 /**
  * The artifact filtersPanel sidebar.  Whenever the user changes any of the settings in
@@ -88,11 +87,7 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
     protected RadioButton originDerived;
 
     @Inject @DataField
-    protected Button clearCoreFilters;
-    @Inject @DataField
-    protected Button clearClassifierFilters;
-    @Inject @DataField
-    protected Button clearCustomPropertyFilters;
+    protected Button clearAllFilters;
 
     @Inject @DataField("classifier-filter-container")
     protected ClassifierFilterContainer classifierFilters;
@@ -123,9 +118,7 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
                 setValue(new ArtifactFilterBean(), true);
             }
         };
-        clearCoreFilters.addClickHandler(clearFilterHandler);
-        clearClassifierFilters.addClickHandler(clearFilterHandler);
-        clearCustomPropertyFilters.addClickHandler(clearFilterHandler);
+        clearAllFilters.addClickHandler(clearFilterHandler);
         @SuppressWarnings("rawtypes")
         ValueChangeHandler valueChangeHandler = new ValueChangeHandler() {
             @Override
