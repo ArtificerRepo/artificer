@@ -170,7 +170,7 @@ public final class JCRArtifactPersister {
         try {
             boolean isDocumentArtifact = ArtificerModelUtils.isDocumentArtifact(primaryArtifact);
             if (!isDocumentArtifact) {
-                artifactNode = JCRUtils.createNode(session.getRootNode(), artifactPath, "nt:folder", JCRConstants.SRAMP_NON_DOCUMENT_TYPE);
+                artifactNode = JCRUtils.createNode(session.getRootNode(), artifactPath, JCRConstants.NT_FOLDER, JCRConstants.SRAMP_NON_DOCUMENT_TYPE);
             } else {
                 // Some versions of ModeShape do not allow 'null' Binary values, so we must give a valid IS.
                 InputStream is = artifactContent == null ? new ByteArrayInputStream(new byte[0]) : artifactContent.getInputStream();

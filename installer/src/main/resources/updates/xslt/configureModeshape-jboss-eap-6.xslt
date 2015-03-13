@@ -27,6 +27,13 @@
           <xsl:element name="file-binary-storage" namespace="urn:jboss:domain:modeshape:1.0">
             <xsl:attribute name="path">artificer-data/binary</xsl:attribute>
           </xsl:element>
+          <xsl:element name="text-extractors" namespace="urn:jboss:domain:modeshape:1.0">
+            <xsl:element name="text-extractor" namespace="urn:jboss:domain:modeshape:1.0">
+              <xsl:attribute name="classname">tika</xsl:attribute>
+              <xsl:attribute name="name">tika-extractor</xsl:attribute>
+              <xsl:attribute name="module">org.modeshape.extractor.tika</xsl:attribute>
+            </xsl:element>
+          </xsl:element>
         </xsl:element>
       </xsl:element>
     </xsl:element>

@@ -15,9 +15,9 @@
  */
 package org.artificer.common.query.xpath.ast;
 
-import javax.xml.namespace.QName;
-
 import org.artificer.common.query.xpath.visitors.XPathVisitor;
+
+import javax.xml.namespace.QName;
 
 /**
  * Models a primary expression.
@@ -35,6 +35,8 @@ public class PrimaryExpr extends AbstractXPathNode {
 	private String literal;
 	private Number number;
 	private QName propertyQName;
+	// ex: '.' or '*', used in xp2:matches(<primaryexpr>, '.*foo.*')
+	private String xpathValue;
 	
 	/**
 	 * Default constructor.
@@ -91,5 +93,12 @@ public class PrimaryExpr extends AbstractXPathNode {
 	public void accept(XPathVisitor visitor) {
 		visitor.visit(this);
 	}
-	
+
+	public String getXpathValue() {
+		return xpathValue;
+	}
+
+	public void setXpathValue(String xpathValue) {
+		this.xpathValue = xpathValue;
+	}
 }

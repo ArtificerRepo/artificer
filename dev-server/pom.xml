@@ -81,6 +81,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.modeshape</groupId>
+      <artifactId>modeshape-extractor-tika</artifactId>
+    </dependency>
 
     <!-- Artificer UI -->
     <dependency>

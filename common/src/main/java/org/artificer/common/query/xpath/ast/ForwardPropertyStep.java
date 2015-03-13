@@ -15,9 +15,9 @@
  */
 package org.artificer.common.query.xpath.ast;
 
-import javax.xml.namespace.QName;
-
 import org.artificer.common.query.xpath.visitors.XPathVisitor;
+
+import javax.xml.namespace.QName;
 
 /**
  * Models a forward property step.
@@ -59,5 +59,4 @@ public class ForwardPropertyStep extends AbstractXPathNode {
 	public void accept(XPathVisitor visitor) {
 		visitor.visit(this);
 	}
-
 }

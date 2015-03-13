@@ -122,7 +122,10 @@ public class ArtifactSearchService implements IArtifactSearchService {
             queryBuilder.append("/").append(type.getModel()).append("/").append(type.getType());
         }
         List<String> criteria = new ArrayList<String>();
-        
+
+        if (filters.getKeywords() != null && filters.getKeywords().trim().length() > 0) {
+            criteria.add("xp2:matches(., '" + filters.getKeywords() + "')");
+        }
         if (filters.getUuid() != null && filters.getUuid().trim().length() > 0) {
             criteria.add("@uuid = '" + filters.getUuid() + "'");
         }

@@ -15,24 +15,23 @@
  */
 package org.artificer.common.query.xpath.visitors;
 
-import java.util.Iterator;
-
-import javax.xml.namespace.QName;
-
 import org.artificer.common.query.xpath.ast.AndExpr;
-import org.artificer.common.query.xpath.ast.FunctionCall;
-import org.artificer.common.query.xpath.ast.PrimaryExpr;
-import org.artificer.common.query.xpath.ast.SubartifactSet;
 import org.artificer.common.query.xpath.ast.Argument;
 import org.artificer.common.query.xpath.ast.ArtifactSet;
 import org.artificer.common.query.xpath.ast.EqualityExpr;
 import org.artificer.common.query.xpath.ast.Expr;
 import org.artificer.common.query.xpath.ast.ForwardPropertyStep;
+import org.artificer.common.query.xpath.ast.FunctionCall;
 import org.artificer.common.query.xpath.ast.LocationPath;
 import org.artificer.common.query.xpath.ast.OrExpr;
 import org.artificer.common.query.xpath.ast.Predicate;
+import org.artificer.common.query.xpath.ast.PrimaryExpr;
 import org.artificer.common.query.xpath.ast.Query;
 import org.artificer.common.query.xpath.ast.RelationshipPath;
+import org.artificer.common.query.xpath.ast.SubartifactSet;
+
+import javax.xml.namespace.QName;
+import java.util.Iterator;
 
 /**
  * Visitor used to serialize a query to a string.
@@ -207,7 +206,9 @@ public class XPathSerializationVisitor implements XPathVisitor {
 		} else if (node.getPropertyQName() != null) {
 			this.builder.append("$"); //$NON-NLS-1$
 			appendQName(node.getPropertyQName());
-		}
+		} else if (node.getXpathValue() != null) {
+            this.builder.append(node.getXpathValue());
+        }
 	}
 
 	/**

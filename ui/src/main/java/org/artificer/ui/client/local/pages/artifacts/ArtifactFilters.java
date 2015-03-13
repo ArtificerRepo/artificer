@@ -50,6 +50,9 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
 
     private ArtifactFilterBean currentState = new ArtifactFilterBean();
 
+    @Inject @DataField
+    protected TextBox keywords;
+
     // Artifact Type
     @Inject @DataField
     protected TextBox artifactType;
@@ -139,6 +142,7 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
                 onFilterValueChange();
             }
         };
+        keywords.addValueChangeHandler(valueChangeHandler);
         artifactType.addValueChangeHandler(valueChangeHandler);
         uuid.addValueChangeHandler(valueChangeHandler);
         name.addValueChangeHandler(valueChangeHandler);
@@ -160,7 +164,8 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
      */
     protected void onFilterValueChange() {
         ArtifactFilterBean newState = new ArtifactFilterBean();
-        newState.setArtifactType(artifactType.getValue())
+        newState.setKeywords(keywords.getValue())
+            .setArtifactType(artifactType.getValue())
             .setUuid(uuid.getValue())
             .setName(name.getValue())
             .setDateCreatedFrom(dateCreatedFrom.getDateValue())
@@ -215,9 +220,10 @@ public class ArtifactFilters extends Composite implements HasValue<ArtifactFilte
      */
     @Override
     public void setValue(ArtifactFilterBean value, boolean fireEvents) {
+        keywords.setValue(value.getKeywords() == null ? "" : value.getKeywords());
         artifactType.setValue(value.getArtifactType() == null ? "" : value.getArtifactType());
-        uuid.setValue(value.getCreatedBy() == null ? "" : value.getUuid());
-        name.setValue(value.getCreatedBy() == null ? "" : value.getName());
+        uuid.setValue(value.getUuid() == null ? "" : value.getUuid());
+        name.setValue(value.getName() == null ? "" : value.getName());
         dateCreatedFrom.setDateValue(value.getDateCreatedFrom() == null ? null : value.getDateCreatedFrom());
         dateCreatedTo.setDateValue(value.getDateCreatedTo() == null ? null : value.getDateCreatedTo());
         dateModifiedFrom.setDateValue(value.getDateModifiedFrom() == null ? null : value.getDateModifiedFrom());

@@ -14,10 +14,10 @@
 		<state>PA</state>
 		<zip>95819</zip>
 	</billTo>
-	<comment>Hurry, my lawn is going wild</comment>
+	<comment>Hurry, my leaves are out of control</comment>
 		<items>
 			<item partNum="872-AA">
-				<productName>Lawn Mower</productName>
+				<productName>Leaf Blower</productName>
 				<quantity>1</quantity>
 				<USPrice>148.95</USPrice>
 				<comment>Confirm this is electric</comment>
