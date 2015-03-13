@@ -47,17 +47,22 @@
             <div class="row-fluid mobile-header mobile-only">
               <a class="span12" data-toggle="slide" data-target="#sramp-filters"><span data-i18n-key="filters">Filters</span> <span class="caret pull-right"></span></a>
             </div>
+
+            <p>
+              <button data-field="clearAllFilters" class="btn btn-focus btn-clear" data-i18n-key="clear-all-filters">Clear All Filters</button>
+            </p>
+
             <!-- The actual Filters (accordion-like control) -->
             <div id="sramp-filters" class="row-fluid close-on-mobile closed-on-mobile open-on-desktop">
               <div class="span12">
                 <!-- Filter Accordian -->
                 <div class="" id="accordion-filters">
                 
-                  <!-- Core Property Filters -->
+                  <!-- Core Filters -->
                   <div class="sramp-filter-group">
                     <div class="s-ramp-filter-header">
                       <a class="sramp-filter-toggle" data-toggle="slide" data-target="#accordion-filters-core">
-                        <span data-i18n-key="filters.core-properties-header">Core Properties</span>
+                        <span data-i18n-key="filters.core-filters-header">Core Filters</span>
                       </a>
                     </div>
                     <div id="accordion-filters-core" class="sramp-filter-body closed-on-mobile close-on-mobile open-on-desktop">
@@ -89,13 +94,33 @@
                             </label>
                           </div>
                           <div class="controls">
-                            <label class="sramp-filter-label" data-i18n-key="uuid">UUID</label>
-                            <input data-field="uuid" class="span12" type="text" placeholder="Any"></input>
-                          </div>
-                          <div class="controls">
                             <label class="sramp-filter-label" data-i18n-key="name">Name</label>
                             <input data-field="name" class="span12" type="text" placeholder="Any"></input>
                           </div>
+                          <div class="controls">
+                            <label class="sramp-filter-label" data-i18n-key="uuid">UUID</label>
+                            <input data-field="uuid" class="span12" type="text" placeholder="Any"></input>
+                          </div>
+                        </form>
+                      </div>
+                      <div class="s-ramp-filter-footer">
+                        <a class="sramp-filter-toggle dropup" data-toggle="slide" data-target="#accordion-filters-core">
+                          <span class="pull-right caret"></span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Time Filters -->
+                  <div class="sramp-filter-group">
+                    <div class="s-ramp-filter-header">
+                      <a class="sramp-filter-toggle" data-toggle="slide" data-target="#accordion-filters-time">
+                        <span data-i18n-key="filters.time-filters-header">Time Filters</span>
+                      </a>
+                    </div>
+                    <div id="accordion-filters-time" class="sramp-filter-body closed">
+                      <div class="sramp-filter-inner">
+                        <form class="" onSubmit="return false;">
                           <div class="controls controls-row">
                             <label class="sramp-filter-label" data-i18n-key="date-created">Date Created</label>
                             <input data-field="dateCreatedFrom" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
@@ -108,6 +133,26 @@
                             <span class="span2 desktop-only" style="padding-top: 4px; text-align: center" data-i18n-key="to">to</span>
                             <input data-field="dateModifiedTo" class="span5 sramp-date" type="text" placeholder="Any" readonly="readonly"></input>
                           </div>
+                        </form>
+                      </div>
+                      <div class="s-ramp-filter-footer">
+                        <a class="sramp-filter-toggle dropup" data-toggle="slide" data-target="#accordion-filters-time">
+                          <span class="pull-right caret"></span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- User Filters -->
+                  <div class="sramp-filter-group">
+                    <div class="s-ramp-filter-header">
+                      <a class="sramp-filter-toggle" data-toggle="slide" data-target="#accordion-filters-user">
+                        <span data-i18n-key="filters.user-filters-header">User Filters</span>
+                      </a>
+                    </div>
+                    <div id="accordion-filters-user" class="sramp-filter-body closed">
+                      <div class="sramp-filter-inner">
+                        <form class="" onSubmit="return false;">
                           <div class="controls">
                             <label class="sramp-filter-label" data-i18n-key="created-by">Created By</label>
                             <input data-field="createdBy" class="span12" type="text" placeholder="Any"></input>
@@ -116,13 +161,10 @@
                             <label class="sramp-filter-label" data-i18n-key="modified-by">Last Modified By</label>
                             <input data-field="lastModifiedBy" class="span12" type="text" placeholder="Any"></input>
                           </div>
-                          <div class="controls">
-                            <button data-field="clearCoreFilters" class="btn btn-focus btn-clear" data-i18n-key="clear-all-filters">Clear All Filters</button>
-                          </div>
                         </form>
                       </div>
                       <div class="s-ramp-filter-footer">
-                        <a class="sramp-filter-toggle dropup" data-toggle="slide" data-target="#accordion-filters-core">
+                        <a class="sramp-filter-toggle dropup" data-toggle="slide" data-target="#accordion-filters-user">
                           <span class="pull-right caret"></span>
                         </a>
                       </div>
@@ -159,11 +201,6 @@
                             <span data-i18n-key="no-ontologies">No ontologies found.</span>
                           </li>
                         </ul>
-                        <form class="" onSubmit="return false;">
-                          <div class="controls">
-                            <button data-field="clearClassifierFilters" class="btn btn-focus btn-clear" data-i18n-key="clear-all-filters">Clear All Filters</button>
-                          </div>
-                        </form>
                       </div>
                       <div class="clearfix"></div>
                       <div class="s-ramp-filter-footer">
@@ -205,9 +242,6 @@
                         </div>
                         <div class="controls">
                           <button data-field="addCustomPropertyFilter" class="btn btn-focus btn-filter" data-i18n-key="add-property-filter">Add Property Filter</button>
-                        </div>
-                        <div class="controls">
-                          <button data-field="clearCustomPropertyFilters" class="btn btn-focus btn-clear" data-i18n-key="clear-all-filters">Clear All Filters</button>
                         </div>
                         </form>
                       </div>
