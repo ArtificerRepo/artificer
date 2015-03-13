@@ -30,6 +30,7 @@ import org.artificer.server.mvn.services.MavenFacadeServlet;
 import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
 import org.artificer.ui.server.api.KeycloakBearerTokenAuthenticationProvider;
 import org.artificer.ui.server.filters.LocaleFilter;
+import org.artificer.ui.server.servlets.ArtifactCreateServlet;
 import org.artificer.ui.server.servlets.ArtifactDownloadServlet;
 import org.artificer.ui.server.servlets.ArtifactUploadServlet;
 import org.artificer.ui.server.servlets.KeyCloakLogoutServlet;
@@ -156,6 +157,7 @@ public class ArtificerDevServer extends ErraiDevServer {
 
         // Servlets
         artificerUI.addServlet(new ServletHolder(ArtifactUploadServlet.class), "/app/services/artifactUpload");
+        artificerUI.addServlet(new ServletHolder(ArtifactCreateServlet.class), "/app/services/artifactCreate");
         artificerUI.addServlet(new ServletHolder(ArtifactDownloadServlet.class), "/app/services/artifactDownload");
         artificerUI.addServlet(new ServletHolder(OntologyUploadServlet.class), "/app/services/ontologyUpload");
         artificerUI.addServlet(new ServletHolder(OntologyDownloadServlet.class), "/app/services/ontologyDownload");

@@ -96,6 +96,15 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>ArtifactCreate</servlet-name>
+    <servlet-class>org.artificer.ui.server.servlets.ArtifactCreateServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ArtifactCreate</servlet-name>
+    <url-pattern>/app/services/artifactCreate</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>OntologyUpload</servlet-name>
     <servlet-class>org.artificer.ui.server.servlets.OntologyUploadServlet</servlet-class>
   </servlet>
