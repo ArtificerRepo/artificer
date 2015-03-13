@@ -1,23 +1,9 @@
 {
-  "name" : "Artificer-Repository",
+  "name" : "Test Repository",
   "jndiName" : "",
   "workspaces" : {
-    "predefined" : ["otherWorkspace"],
     "default" : "default",
     "allowCreation" : true
-  },
-  "storage" : {
-    "binaryStorage" : {
-      "type"  : "transient",
-      "minimumBinarySizeInBytes" : 99999999,
-      "minimumStringSize" : 99999999
-    }
-  },
-  "indexProviders" : {
-    "local" : {
-      "classname" : "org.modeshape.jcr.index.local.LocalIndexProvider",
-      "directory" : "target/indexes"
-    }
   },
   "security" : {
     "anonymous" : {
@@ -26,9 +12,17 @@
     },
     "providers" : [
       {
-        "classname" : "org.artificer.repository.jcr.auth.MockAuthenticationProvider",
-        "policyName" : "overlord-idp"
+        "classname": "org.artificer.repository.jcr.auth.MockAuthenticationProvider",
+        "policyName": "overlord-idp"
       }
     ]
+  },
+  "textExtraction": {
+    "extractors" : {
+      "tikaExtractor":{
+        "name" : "Tika content-based extractor",
+        "classname" : "tika"
+      }
+    }
   }
 }

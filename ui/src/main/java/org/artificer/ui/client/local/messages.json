@@ -47,6 +47,7 @@
   "artifacts.loading-ontologies" : "Loading ontologies...",
   "artifacts.modified-by" : "Last Modified By",
   "artifacts.name" : "Name",
+  "artifacts.keywords" : "Keywords",
   "artifacts.no-artifacts" : "No artifacts found.",
   "artifacts.no-ontologies" : "No ontologies found.",
   "artifacts.of" : "of",

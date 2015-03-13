@@ -15,13 +15,13 @@
  */
 package org.artificer.ui.client.shared.beans;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * All of the user's filter settings (configured on the left-hand sidebar of
@@ -34,6 +34,7 @@ public class ArtifactFilterBean implements Serializable {
 
     private static final long serialVersionUID = 3789397680981626569L;
 
+    private String keywords = "";
     private String artifactType = "";
     private String uuid = "";
     private String name = "";
@@ -61,6 +62,10 @@ public class ArtifactFilterBean implements Serializable {
      * Constructor.
      */
     public ArtifactFilterBean() {
+    }
+
+    public String getKeywords() {
+        return keywords;
     }
 
     /**
@@ -125,6 +130,11 @@ public class ArtifactFilterBean implements Serializable {
      */
     public ArtifactOriginEnum getOrigin() {
         return origin;
+    }
+
+    public ArtifactFilterBean setKeywords(String keywords) {
+        this.keywords = keywords;
+        return this;
     }
 
     /**
@@ -237,6 +247,7 @@ public class ArtifactFilterBean implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((keywords == null) ? 0 : keywords.hashCode());
         result = prime * result + ((artifactType == null) ? 0 : artifactType.hashCode());
         result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -264,6 +275,11 @@ public class ArtifactFilterBean implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         ArtifactFilterBean other = (ArtifactFilterBean) obj;
+        if (keywords == null) {
+            if (other.keywords != null)
+                return false;
+        } else if (!keywords.equals(other.keywords))
+            return false;
         if (artifactType == null) {
             if (other.artifactType != null)
                 return false;

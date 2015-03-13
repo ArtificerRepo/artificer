@@ -629,6 +629,11 @@
         <version>${version.org.modeshape}</version>
       </dependency>
       <dependency>
+        <groupId>org.modeshape</groupId>
+        <artifactId>modeshape-extractor-tika</artifactId>
+        <version>${version.org.modeshape}</version>
+      </dependency>
+      <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-commons</artifactId>
         <version>${version.org.infinispan}</version>

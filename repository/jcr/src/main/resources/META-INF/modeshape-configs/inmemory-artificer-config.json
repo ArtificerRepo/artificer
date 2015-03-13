@@ -23,5 +23,13 @@
                 "classname" : "org.modeshape.jcr.security.ServletProvider"
             }
          ]
+    },
+    "textExtraction": {
+      "extractors" : {
+        "tikaExtractor":{
+          "name" : "Tika content-based extractor",
+          "classname" : "tika"
+        }
+      }
     }
 }

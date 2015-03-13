@@ -15,6 +15,7 @@ already discussed artifact meta-data, including:
 *Custom Properties
 *Classifiers
 *Relationships
+*Full-text searches on both metadata and content
 
 The basic structure of a typical S-RAMP query looks like this:
 
@@ -46,8 +47,9 @@ In addition, Artificer provides extensions to the S-RAMP query language, providi
 [width="100%",options="header"]
 |=============================
 |Query                                                                                                      |What It Selects
-|/s-ramp/xsd/XsdDocument[someRelationship[s-ramp:getRelationshipAttribute(., 'someName')]]                  |All XSD artifacts that contain a generic relationship named 'someRelationship', and that relationship has an 'otherAttribute' named 'someName'.
-|/s-ramp/xsd/XsdDocument[someRelationship[s-ramp:getRelationshipAttribute(., 'someName') = 'someValue']]    |All XSD artifacts that contain a generic relationship named 'someRelationship', and that relationship has an 'otherAttribute' named 'someName' with a 'someValue' value.
-|/s-ramp/xsd/XsdDocument[someRelationship[s-ramp:getTargetAttribute(., 'someName')]]                        |All XSD artifacts that contain a generic relationship named 'someRelationship', and that relationship's target has an 'otherAttribute' named 'someName'.
-|/s-ramp/xsd/XsdDocument[someRelationship[s-ramp:getTargetAttribute(., 'someName') = 'someValue']]          |All XSD artifacts that contain a generic relationship named 'someRelationship', and that relationship's target has an 'otherAttribute' named 'someName' with a 'someValue' value.
+|/s-ramp/xsd/XsdDocument[xp2:matches(., \'.*foo.*')]                                                        |Full-text search: XSD artifacts where "foo" appears in the metadata or content
+|/s-ramp/xsd/XsdDocument[someRelationship[s-ramp:getRelationshipAttribute(., 'someName')]]                  |XSD artifacts that contain a generic relationship named 'someRelationship', and that relationship has an 'otherAttribute' named 'someName'.
+|/s-ramp/xsd/XsdDocument[someRelationship[s-ramp:getRelationshipAttribute(., 'someName') = 'someValue']]    |XSD artifacts that contain a generic relationship named 'someRelationship', and that relationship has an 'otherAttribute' named 'someName' with a 'someValue' value.
+|/s-ramp/xsd/XsdDocument[someRelationship[s-ramp:getTargetAttribute(., 'someName')]]                        |XSD artifacts that contain a generic relationship named 'someRelationship', and that relationship's target has an 'otherAttribute' named 'someName'.
+|/s-ramp/xsd/XsdDocument[someRelationship[s-ramp:getTargetAttribute(., 'someName') = 'someValue']]          |XSD artifacts that contain a generic relationship named 'someRelationship', and that relationship's target has an 'otherAttribute' named 'someName' with a 'someValue' value.
 |=============================
