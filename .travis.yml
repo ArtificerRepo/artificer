@@ -1,0 +1,26 @@
+language: java
+
+jdk:
+  - oraclejdk7
+
+env:
+  global:
+    - secure: "T4m4w+yL5sOtqaTcOm6lMjBHlPTLL//ihCCsC9rsMoLlNusW2tRieNCkGRikGPrQBwkmqtDXi8EPiypSarQ6q8jOf34sKYMbyNceIjndRkch0wyQk4+tQDAmoBAxUdO157eQw8vYb4c9ox8hQAVxVKynH7I/7mLYfv00nTr4zY8="
+    - secure: "DKej+NuWNHavxLML0KvFZwPEKZ2fEHIG+kGMaUrYjVp9lR3TBwszb6kVJicbF6oCs/qYl+EqI/WJy+45CyE+aEo3t5qjpyg2wrK0EEZ99PEuq9kC9TrGucbGpxGdyqVdyl7VnSaYqEdpt5PXpunDzyL/fREyNRVep6qMIBz1FTs="
+  
+branches:
+  only:
+    - master
+    - 1.0
+
+install:
+  - mvn -version -B
+
+script:
+  - mvn -fae install -Pgenerate-docs,wildfly8-integration-test | grep -vF "Downloading:" | grep -vF "Downloaded:"
+
+after_success:
+  - test "${TRAVIS_PULL_REQUEST}" = "false" && mvn -s .travis.maven.settings.xml -DskipTests=true deploy
+
+notifications:
+  email: brmeyer@redhat.com
