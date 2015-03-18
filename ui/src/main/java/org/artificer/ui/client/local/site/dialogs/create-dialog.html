@@ -32,14 +32,14 @@
       </div>
       <div class="modal-body">
         <form data-field="create-dialog-form" method="post">
-          <p>
-            <span data-i18n-key="dialog.create.type">Provide a custom (alphanumerical) artifact type.</span><br/>
+          <fieldset>
+            <label data-i18n-key="dialog.create.type">Provide a custom (alphanumerical) artifact type:</label>
             <input data-field="create-dialog-type" type="text" name="artifactType" value="" placeholder="e.g. FooType"/>
-          </p>
-          <p>
-            <span data-i18n-key="dialog.create.name">Provide an artifact name.</span><br/>
+            <label data-i18n-key="dialog.create.name">Provide an artifact name:</label>
             <input data-field="create-dialog-name" type="text" name="artifactName" value=""/>
-          </p>
+            <label data-i18n-key="dialog.create.description">Provide a description (optional):</label>
+            <textarea data-field="create-dialog-description" name="artifactDescription" class="input-value" rows="5" cols=""></textarea>
+          </fieldset>
         </form>
       </div>
       <div class="modal-footer">
