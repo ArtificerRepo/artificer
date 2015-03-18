@@ -4,6 +4,15 @@ Artificer Server Configuration
 Out-of-the-box, Artificer provides a useful, default server configuration.  However, if you'd like to mold it into an
 existing setup, here are a few areas that can be modified.
 
+Remote Connections
+~~~~~~~~~~~~~~~~~~
+
+If you'd like to allow remote, non-localhost connections to Artificer, you'll need to change two items in
+standalone-full.xml:
+
+* In <interface name="public">, change the inet-address from "127.0.0.1" to "0.0.0.0".
+* In the Keycloak subsystem, change the "auth-server-url" from "localhost" to your IP.
+
 Datasource
 ~~~~~~~~~~
 
