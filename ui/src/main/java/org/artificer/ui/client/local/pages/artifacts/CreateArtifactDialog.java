@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import org.artificer.ui.client.local.util.IUploadCompletionHandler;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -50,6 +51,8 @@ public class CreateArtifactDialog extends ModalDialog {
     protected TextBox artifactType;
     @Inject @DataField("create-dialog-name")
     protected TextBox artifactName;
+    @Inject @DataField("create-dialog-description")
+    protected TextArea artifactDescription;
     @Inject @DataField("create-dialog-submit-button")
     private Button submitButton;
     @Inject

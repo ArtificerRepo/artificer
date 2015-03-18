@@ -35,9 +35,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 /**
- * The form submit handler used by the {@link org.artificer.ui.client.local.pages.artifacts.ImportArtifactDialog}.
+ * The form submit handler used by the {@link org.artificer.ui.client.local.pages.artifacts.CreateArtifactDialog}.
  *
- * @author eric.wittmann@redhat.com
+ * @author Brett Meyer
  */
 @Dependent
 public class CreateArtifactFormSubmitHandler implements SubmitHandler, SubmitCompleteHandler {

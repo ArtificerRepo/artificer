@@ -15,6 +15,7 @@
  */
 package org.artificer.ui.server.servlets;
 
+import org.apache.commons.lang.StringUtils;
 import org.artificer.atom.err.ArtificerAtomException;
 import org.artificer.common.ArtifactType;
 import org.artificer.ui.server.api.ArtificerApiClientAccessor;
@@ -47,10 +48,14 @@ public class ArtifactCreateServlet extends AbstractUploadServlet {
 		try {
 			String artifactTypeString = req.getParameter("artifactType");
 			String artifactName = req.getParameter("artifactName");
+			String artifactDescription = req.getParameter("artifactDescription");
 
 			ArtifactType artifactType = ArtifactType.valueOf(artifactTypeString);
 			BaseArtifactType artifact = artifactType.newArtifactInstance();
 			artifact.setName(artifactName);
+			if (StringUtils.isNotBlank(artifactDescription)) {
+				artifact.setDescription(artifactDescription);
+			}
 
 			artifact = ArtificerApiClientAccessor.getClient().createArtifact(artifact);
 
