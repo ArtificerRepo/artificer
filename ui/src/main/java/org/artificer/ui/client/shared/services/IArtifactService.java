@@ -15,6 +15,10 @@
  */
 package org.artificer.ui.client.shared.services;
 
+import org.artificer.ui.client.shared.beans.ArtifactBean;
+import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
+import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -23,10 +27,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import org.artificer.ui.client.shared.beans.ArtifactBean;
-import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
-import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 
 /**
  * Provides a way to get and set Artifact meta data.
@@ -85,6 +85,7 @@ public interface IArtifactService {
      * @throws org.artificer.ui.client.shared.exceptions.ArtificerUiException
      */
     @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
     public void delete(ArtifactBean artifact) throws ArtificerUiException;
 
 }

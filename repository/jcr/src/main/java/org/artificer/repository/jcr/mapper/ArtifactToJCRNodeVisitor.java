@@ -367,11 +367,11 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 	    super.visit(artifact);
         try {
             setProperty(JCRConstants.SRAMP_TARGET_NAMESPACE, artifact.getTargetNamespace());
-            setRelationships("importedXsds", -1, 1, false, true, artifact.getImportedXsds(),
+            setRelationships("importedXsds", -1, 1, false, false, artifact.getImportedXsds(),
                     XsdDocumentEnum.XSD_DOCUMENT.toString());
-            setRelationships("includedXsds", -1, 1, false, true, artifact.getIncludedXsds(),
+            setRelationships("includedXsds", -1, 1, false, false, artifact.getIncludedXsds(),
                     XsdDocumentEnum.XSD_DOCUMENT.toString());
-            setRelationships("redefinedXsds", -1, 1, false, true, artifact.getRedefinedXsds(),
+            setRelationships("redefinedXsds", -1, 1, false, false, artifact.getRedefinedXsds(),
                     XsdDocumentEnum.XSD_DOCUMENT.toString());
         } catch (Exception e) {
             error = e;
@@ -442,13 +442,13 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 		super.visit(artifact);
 		try {
 			setProperty(JCRConstants.SRAMP_TARGET_NAMESPACE, artifact.getTargetNamespace());
-			setRelationships("importedXsds", -1, 1, false, true, artifact.getImportedXsds(),
+			setRelationships("importedXsds", -1, 1, false, false, artifact.getImportedXsds(),
                     XsdDocumentEnum.XSD_DOCUMENT.toString());
-            setRelationships("includedXsds", -1, 1, false, true, artifact.getIncludedXsds(),
+            setRelationships("includedXsds", -1, 1, false, false, artifact.getIncludedXsds(),
                     XsdDocumentEnum.XSD_DOCUMENT.toString());
-            setRelationships("redefinedXsds", -1, 1, false, true, artifact.getRedefinedXsds(),
+            setRelationships("redefinedXsds", -1, 1, false, false, artifact.getRedefinedXsds(),
                     XsdDocumentEnum.XSD_DOCUMENT.toString());
-			setRelationships("importedWsdls", -1, 1, false, true, artifact.getImportedWsdls(),
+			setRelationships("importedWsdls", -1, 1, false, false, artifact.getImportedWsdls(),
 					WsdlDocumentEnum.WSDL_DOCUMENT.toString());
 		} catch (Exception e) {
 			error = e;
