@@ -455,7 +455,7 @@ public class JCRUtils {
                         "AND NOT(ISDESCENDANTNODE(r, '%2$s')) " +
                         // only generic or modeled, but not derived
                         "AND (r.[sramp:generic] = true OR r.[sramp:derived] = false) " +
-                        // targets any of the primary artifact's derived artifacts
+                        // targets the primary artifact or any of its derived artifacts
                         "AND (REFERENCE(t) = '%1$s' OR REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s')))",
                 primaryNode.getIdentifier(), primaryNode.getPath());
         relationshipConstraints(uuid, query, session);

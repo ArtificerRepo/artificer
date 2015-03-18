@@ -127,12 +127,20 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         // Clear the generic relationship
         persistenceManager.deleteArtifact(fooArtifact.getUuid(), ArtifactType.valueOf(fooArtifact));
 
+        // Verify the XSD still cannot be deleted (the WSDL still imports it)
+        caught = false;
+        try {
+            persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd));
+        } catch (ArtificerConflictException e) {
+            caught = true;
+        }
+        assertTrue(caught);
+
+        // Delete the WSDL
+        persistenceManager.deleteArtifact(wsdl.getUuid(), ArtifactType.valueOf(wsdl));
+
         // Delete the XSD
         persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd));
-
-        // Re-obtain the WSDL and verify the derived relationship was automatically deleted
-        wsdl = (WsdlDocument) getArtifactByUUID(wsdl.getUuid());
-        assertEquals(0, wsdl.getImportedXsds().size());
     }
 
     @Test
