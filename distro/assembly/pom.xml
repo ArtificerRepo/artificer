@@ -307,7 +307,7 @@
     </profile>
 
     <profile>
-      <id>docker</id>
+      <id>docker-test</id>
       <build>
         <finalName>artificer</finalName>
         <plugins>
@@ -328,7 +328,7 @@
               <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
               <resources>
                 <resource>
-                  <targetPath>/artificer.zip</targetPath>
+                  <targetPath>/</targetPath>
                   <directory>${project.build.directory}</directory>
                   <include>artificer.zip</include>
                 </resource>
