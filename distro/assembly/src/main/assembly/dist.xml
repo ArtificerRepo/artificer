@@ -101,7 +101,7 @@
     </dependencySet>
     <!-- Modeshape Modules -->
     <dependencySet>
-      <outputDirectory>AS/EAP</outputDirectory>
+      <outputDirectory>EAP</outputDirectory>
       <includes>
         <include>org.modeshape:modeshape-distribution:zip:jbosseap-dist</include>
         <include>org.modeshape:modeshape-distribution:zip:jbosseap-61-dist</include>

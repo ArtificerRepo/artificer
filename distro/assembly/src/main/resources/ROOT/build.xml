@@ -114,16 +114,7 @@
     <!-- Find the specific version -->
     <loadfile property="eap-version" srcFile="${s-ramp-distro.choices.platform.jboss-eap-6.path}/version.txt"/>
     <echo message="eap-version: ${eap-version}"/>
-    <if>
-        <contains string="${eap-version}" substring="6.1" />
-        <then>
-            <property name="s-ramp.modeshape-distribution.zip.path" location="${s-ramp-distro.rootdir}/AS/EAP/modeshape-distribution-3.6.0.Final-jbosseap-61-dist.zip" />
-        </then>
-        <else>
-            <!-- default to 6.2+ -->
-            <property name="s-ramp.modeshape-distribution.zip.path" location="${s-ramp-distro.rootdir}/AS/EAP/modeshape-distribution-3.8.0.Final-jbosseap-dist.zip" />
-        </else>
-    </if>
+    <property name="s-ramp.modeshape-distribution.zip.path" location="${s-ramp-distro.rootdir}/EAP/modeshape-distribution-3.8.0.Final-jbosseap-dist.zip" />
 
     <!-- Call the Artificer installer -->
     <ant antfile="${s-ramp-distro.s-ramp-installer.dir}/build.xml" inheritall="true" target="install" 
