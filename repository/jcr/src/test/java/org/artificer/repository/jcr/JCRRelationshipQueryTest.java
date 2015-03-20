@@ -98,12 +98,17 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
-        // Ensure predicate conjunctions work w/ relationships
-        // TODO: Un-comment after ARTIF-656
-//        query = queryManager.createQuery(String.format("/s-ramp/wsdl/Part[relatedDocument[@uuid = '%1$s'] and element]", wsdlDoc.getUuid()));
+        // Test multiple levels of relationships
+//        query = queryManager.createQuery("/s-ramp/wsdl/Message/part/element");
 //        artifactSet = query.executeQuery();
 //        Assert.assertNotNull(artifactSet);
 //        Assert.assertEquals(1, artifactSet.size());
+
+        // Ensure predicate conjunctions work w/ relationships
+        query = queryManager.createQuery(String.format("/s-ramp/wsdl/Part[relatedDocument[@uuid = '%1$s'] and element]", wsdlDoc.getUuid()));
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(3, artifactSet.size());
     }
 
     /**
@@ -118,17 +123,11 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
 
         ArtificerModelUtils.addGenericRelationship(xsdDoc, "importedBy", wsdlDoc1.getUuid());
         ArtificerModelUtils.addGenericRelationship(xsdDoc, "importedBy", wsdlDoc2.getUuid());
-        ArtificerModelUtils.addGenericRelationship(xsdDoc, "markerRel", null);
 
         persistenceManager.updateArtifact(xsdDoc, ArtifactType.XsdDocument());
 
-        ArtificerQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[markerRel]");
+        ArtificerQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[importedBy]");
         ArtifactSet artifactSet = query.executeQuery();
-        Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
-
-        query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[importedBy]");
-        artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
@@ -177,12 +176,12 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         ArtificerQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey')]]");
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.size());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.size());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'InvalidKey')]]");
         artifactSet = query.executeQuery();
@@ -202,7 +201,7 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' or @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.size());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'InvalidValue' or @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
@@ -269,12 +268,12 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         ArtificerQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey')]]");
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.size());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey') = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.size());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'InvalidKey')]]");
         artifactSet = query.executeQuery();
@@ -294,7 +293,7 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey') = 'FooValue' or @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.size());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey') = 'InvalidValue' or @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
