@@ -5,4 +5,4 @@
 /bin
 /repos
 /target
-/target
+**/overlays
