@@ -69,7 +69,7 @@ public class UpdateEntryArchiveCommand extends AbstractArchiveCommand {
 
 	@Override
 	protected String getName() {
-		return "updateEntry";
+		return "archive updateEntry";
 	}
 
 	@Override

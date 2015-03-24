@@ -101,7 +101,7 @@ public class DeployCommand extends AbstractCommand {
 
     @Override
     protected String getName() {
-        return "deploy";
+        return "maven deploy";
     }
 
     @Override

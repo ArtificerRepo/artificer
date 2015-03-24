@@ -50,7 +50,7 @@ public class GetStoredQueryCommand extends AbstractCommand {
 
     @Override
     protected String getName() {
-        return "get";
+        return "storedQuery get";
     }
 
     @Override

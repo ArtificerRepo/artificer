@@ -54,7 +54,7 @@ public class UploadOntologyCommand extends AbstractCommand {
 
     @Override
     protected String getName() {
-        return "upload";
+        return "ontology upload";
     }
 
     @Override

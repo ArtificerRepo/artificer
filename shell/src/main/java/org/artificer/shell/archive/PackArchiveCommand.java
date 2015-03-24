@@ -50,7 +50,7 @@ public class PackArchiveCommand extends AbstractArchiveCommand {
 
     @Override
     protected String getName() {
-        return "pack";
+        return "archive pack";
     }
 
     @Override

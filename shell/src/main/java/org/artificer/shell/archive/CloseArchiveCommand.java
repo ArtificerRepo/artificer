@@ -33,7 +33,7 @@ public class CloseArchiveCommand extends AbstractArchiveCommand {
 
     @Override
     protected String getName() {
-        return "close";
+        return "archive close";
     }
 
     @Override

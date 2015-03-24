@@ -49,7 +49,7 @@ public class OpenArchiveCommand extends AbstractArchiveCommand {
 
     @Override
     protected String getName() {
-        return "open";
+        return "archive open";
     }
 
     @Override
