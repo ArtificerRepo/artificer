@@ -37,7 +37,7 @@ public class ListOntologiesCommand extends AbstractCommand {
 
 	@Override
 	protected String getName() {
-		return "list";
+		return "ontology list";
 	}
 
 	@Override

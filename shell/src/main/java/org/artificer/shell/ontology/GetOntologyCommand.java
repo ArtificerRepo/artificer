@@ -60,7 +60,7 @@ public class GetOntologyCommand extends AbstractOntologyCommand {
 
 	@Override
 	protected String getName() {
-		return "get";
+		return "ontology get";
 	}
 
 	@Override

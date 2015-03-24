@@ -48,7 +48,7 @@ public class DeleteOntologyCommand extends AbstractOntologyCommand {
 
 	@Override
 	protected String getName() {
-		return "delete";
+		return "ontology delete";
 	}
 
 	@Override

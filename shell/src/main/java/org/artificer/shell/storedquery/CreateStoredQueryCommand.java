@@ -55,7 +55,7 @@ public class CreateStoredQueryCommand extends AbstractCommand {
 
     @Override
     protected String getName() {
-        return "create";
+        return "storedQuery create";
     }
 
     @Override

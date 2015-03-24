@@ -33,7 +33,7 @@ public class NewArchiveCommand extends AbstractArchiveCommand {
 
 	@Override
 	protected String getName() {
-		return "new";
+		return "archive new";
 	}
 
 	@Override

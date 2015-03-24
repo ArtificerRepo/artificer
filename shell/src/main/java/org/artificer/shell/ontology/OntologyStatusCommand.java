@@ -38,6 +38,11 @@ public class OntologyStatusCommand extends AbstractCommand {
 			description = "Display help")
 	private boolean help;
 
+    @Override
+    protected String getName() {
+        return "ontology status";
+    }
+
 	@Override
 	protected CommandResult doExecute(CommandInvocation commandInvocation) throws Exception {
 		if (help) {
@@ -60,11 +65,6 @@ public class OntologyStatusCommand extends AbstractCommand {
 		}
 
         return CommandResult.SUCCESS;
-	}
-
-	@Override
-	protected String getName() {
-		return "status";
 	}
 
 }

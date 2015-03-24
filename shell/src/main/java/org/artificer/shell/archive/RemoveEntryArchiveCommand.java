@@ -45,7 +45,7 @@ public class RemoveEntryArchiveCommand extends AbstractArchiveCommand {
 
     @Override
     protected String getName() {
-        return "removeEntry";
+        return "archive removeEntry";
     }
 
     @Override

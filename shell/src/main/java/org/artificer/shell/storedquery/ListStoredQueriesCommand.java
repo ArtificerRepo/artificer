@@ -42,7 +42,7 @@ public class ListStoredQueriesCommand extends AbstractCommand {
 
     @Override
     protected String getName() {
-        return "list";
+        return "storedQuery list";
     }
 
     @Override

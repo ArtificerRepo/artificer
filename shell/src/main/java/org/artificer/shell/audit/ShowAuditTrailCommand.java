@@ -49,7 +49,7 @@ public class ShowAuditTrailCommand extends AbstractCommand {
 
     @Override
     protected String getName() {
-        return "showAuditTrail";
+        return "audit showAuditTrail";
     }
 
     @Override

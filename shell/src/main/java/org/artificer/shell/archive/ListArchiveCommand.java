@@ -37,7 +37,7 @@ public class ListArchiveCommand extends AbstractArchiveCommand {
 
 	@Override
 	protected String getName() {
-		return "list";
+		return "archive list";
 	}
 
 	@Override

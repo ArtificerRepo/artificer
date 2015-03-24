@@ -64,7 +64,7 @@ public class AddEntryArchiveCommand extends AbstractArchiveCommand {
 
     @Override
     protected String getName() {
-        return "addEntry";
+        return "archive addEntry";
     }
 
     @Override

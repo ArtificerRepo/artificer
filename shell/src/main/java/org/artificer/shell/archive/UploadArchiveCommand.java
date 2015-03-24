@@ -38,7 +38,7 @@ public class UploadArchiveCommand extends AbstractArchiveCommand {
 
     @Override
     protected String getName() {
-        return "upload";
+        return "archive upload";
     }
 
     @Override

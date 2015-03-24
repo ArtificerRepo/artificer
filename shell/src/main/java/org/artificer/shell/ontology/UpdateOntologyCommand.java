@@ -63,7 +63,7 @@ public class UpdateOntologyCommand extends AbstractOntologyCommand {
 
     @Override
     protected String getName() {
-        return "update";
+        return "ontology update";
     }
 
     @Override

@@ -57,7 +57,7 @@ public class UpdateStoredQueryCommand extends AbstractCommand {
 
     @Override
     protected String getName() {
-        return "update";
+        return "storedQuery update";
     }
 
     @Override

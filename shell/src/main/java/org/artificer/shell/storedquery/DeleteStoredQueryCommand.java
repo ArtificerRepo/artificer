@@ -47,7 +47,7 @@ public class DeleteStoredQueryCommand extends AbstractCommand {
 
     @Override
     protected String getName() {
-        return "delete";
+        return "storedQuery delete";
     }
 
     @Override
