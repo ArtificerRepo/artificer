@@ -22,7 +22,7 @@
       <dependency>
         <groupId>org.modeshape</groupId>
         <artifactId>modeshape-distribution</artifactId>
-        <version>3.8.0.Final</version>
+        <version>3.8.1.Final</version>
         <classifier>jbosseap-dist</classifier>
         <type>zip</type>
       </dependency>
