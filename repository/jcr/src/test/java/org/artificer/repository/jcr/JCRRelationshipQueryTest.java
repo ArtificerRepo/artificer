@@ -98,6 +98,12 @@ public class JCRRelationshipQueryTest extends AbstractNoAuditingJCRPersistenceTe
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());
 
+        // Negation test
+        query = queryManager.createQuery("/s-ramp/wsdl/Part[xp2:not(element)]");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(2, artifactSet.size());
+
         // Test multiple levels of relationships
 //        query = queryManager.createQuery("/s-ramp/wsdl/Message/part/element");
 //        artifactSet = query.executeQuery();
