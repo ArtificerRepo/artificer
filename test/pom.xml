@@ -180,7 +180,7 @@
           <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-distribution</artifactId>
-            <version>3.8.0.Final</version>
+            <version>3.8.1.Final</version>
             <type>zip</type>
             <classifier>jbosseap-dist</classifier>
           </dependency>
@@ -306,7 +306,7 @@
           <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-distribution</artifactId>
-            <version>3.8.0.Final</version>
+            <version>3.8.1.Final</version>
             <type>zip</type>
             <classifier>jbosseap-dist</classifier>
           </dependency>
@@ -429,7 +429,7 @@
           <dependency>
             <groupId>org.modeshape</groupId>
             <artifactId>modeshape-distribution</artifactId>
-            <version>3.8.0.Final</version>
+            <version>3.8.1.Final</version>
             <type>zip</type>
             <classifier>jbosseap-dist</classifier>
           </dependency>
