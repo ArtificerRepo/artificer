@@ -103,7 +103,7 @@
     <version.org.apache.bcel>5.2</version.org.apache.bcel>
     <version.org.apache.commons.commons-lang3>3.1</version.org.apache.commons.commons-lang3>
     <version.org.eclipse.jetty>8.1.9.v20130131</version.org.eclipse.jetty>
-    <version.org.jboss.errai>2.4.4.Final</version.org.jboss.errai>
+    <version.org.jboss.errai>3.1.2.Final</version.org.jboss.errai>
     <version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>2.1.19.Final</version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>
     <version.org.overlord.overlord-commons>3.1.0-SNAPSHOT</version.org.overlord.overlord-commons>
     <version.org.switchyard>2.0.0.Alpha1</version.org.switchyard>
@@ -119,6 +119,7 @@
     <version.org.infinispan>6.0.2.Final</version.org.infinispan>
     <!--<version.org.jboss.resteasy>3.0.8.Final</version.org.jboss.resteasy>-->
     <version.org.codehaus.plexus>3.0.17</version.org.codehaus.plexus>
+    <version.com.google.gwt>2.7.0</version.com.google.gwt>
   </properties>
 
   <build>
@@ -687,11 +688,6 @@
         <version>${version.com.google.guava}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-dev</artifactId>
-        <version>${version.com.google.gwt}</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.bcel</groupId>
         <artifactId>bcel</artifactId>
         <version>${version.org.apache.bcel}</version>
@@ -815,6 +811,11 @@
       </dependency>
       <dependency>
         <groupId>org.jboss.errai</groupId>
+        <artifactId>errai-cdi-client</artifactId>
+        <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
         <artifactId>errai-data-binding</artifactId>
         <version>${version.org.jboss.errai}</version>
       </dependency>
@@ -837,6 +838,11 @@
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jaxrs-client</artifactId>
         <version>${version.org.jboss.errai}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-user</artifactId>
+        <version>${version.com.google.gwt}</version>
       </dependency>
 
       <dependency>
