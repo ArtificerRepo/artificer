@@ -140,6 +140,11 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
       <artifactId>errai-data-binding</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -170,12 +175,6 @@
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!-- Needed for GWT debugging in most IDEs -->
-    <!--<dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-      <scope>provided</scope>
-    </dependency>-->
 
     <!-- Runtime / Container dependencies -->
     <dependency>
