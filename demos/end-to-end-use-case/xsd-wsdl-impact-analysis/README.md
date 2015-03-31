@@ -34,7 +34,7 @@ you can customize where the demo looks for the Atom API.  For example:
 
 The demo should output some interesting information before completing successfully.
 
-*Note* - you can also use the Artificer UI (browser) to take a look at the artifactsthat were
+*Note* - you can also use the Artificer UI (browser) to take a look at the artifacts that were
 uploaded by this demo.  By default you can find the UI here:
 
 	http://localhost:8080/artificer-ui/
