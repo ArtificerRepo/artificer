@@ -15,17 +15,17 @@
  */
 package org.artificer.common;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
 import org.apache.commons.lang.StringUtils;
+import org.artificer.common.i18n.Messages;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Artifact;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
-import org.artificer.common.i18n.Messages;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
  * A class representing all of the Artifact Types defined by S-RAMP.
@@ -66,6 +66,9 @@ public class ArtifactType implements Serializable {
     }
     public static final ArtifactType PolicyDocument() {
         return new ArtifactType(ArtifactTypeEnum.PolicyDocument, "application/xml"); //$NON-NLS-1$
+    }
+    public static final ArtifactType ExtendedArtifactType(String extendedType) {
+        return ExtendedArtifactType(extendedType, false);
     }
     public static final ArtifactType ExtendedArtifactType(String extendedType, boolean derived) {
         ArtifactType at = new ArtifactType(ArtifactTypeEnum.ExtendedArtifactType, null);
