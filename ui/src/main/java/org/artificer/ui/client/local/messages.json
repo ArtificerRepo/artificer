@@ -228,6 +228,7 @@
   "edit-ontology-node-dialog.cancel" : "Cancel",
   "edit-ontology-node-dialog.dialog.edit-ontology-node.title" : "Edit Ontology Node",
   "edit-ontology-node-dialog.node-comment" : "Comment:",
+  "edit-ontology-node-dialog.node-id" : "ID:",
   "edit-ontology-node-dialog.node-name" : "Label:",
   "logged-out-dialog.dialog.logged-out.message" : " We have detected that you have either logged out (possibly from another browser tab) or some other authentication error has occured. Please log back in by reloading this page. ",
   "logged-out-dialog.dialog.logged-out.title" : "Authentication Problem",

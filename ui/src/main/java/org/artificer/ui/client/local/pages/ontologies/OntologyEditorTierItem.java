@@ -16,16 +16,6 @@
 
 package org.artificer.ui.client.local.pages.ontologies;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
-import org.artificer.ui.client.local.ClientMessages;
-import org.artificer.ui.client.shared.beans.OntologyClassBean;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,6 +31,15 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineLabel;
+import org.artificer.ui.client.local.ClientMessages;
+import org.artificer.ui.client.shared.beans.OntologyClassBean;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 /**
  * A single item in an ontology tier.
@@ -152,6 +151,7 @@ public class OntologyEditorTierItem extends Composite implements HasValue<Ontolo
             public void onValueChange(ValueChangeEvent<OntologyClassBean> event) {
                 OntologyClassBean updatedValue = event.getValue();
                 OntologyClassBean currentValue = getValue();
+                currentValue.setId(updatedValue.getId());
                 currentValue.setLabel(updatedValue.getLabel());
                 currentValue.setComment(updatedValue.getComment());
                 label.setText(createLabel(currentValue));
@@ -212,9 +212,9 @@ public class OntologyEditorTierItem extends Composite implements HasValue<Ontolo
     private static String createLabel(OntologyClassBean value) {
         String id = value.getId();
         String label = value.getLabel();
-        String rval = id;
-        if (label != null && label.trim().length() > 0 && !label.equals(id)) {
-            rval += " (" + label + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        String rval = label;
+        if (rval != null && rval.trim().length() > 0 && !rval.equals(id)) {
+            rval += " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return rval;
     }
