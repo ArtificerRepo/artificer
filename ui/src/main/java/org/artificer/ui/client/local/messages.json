@@ -93,6 +93,8 @@
   "artifact-details.tab.overview" : "Overview",
   "artifact-details.tab.relationships" : "Relationships",
   "artifact-details.tab.comments" : "Comments",
+  "artifact-details.tab.relationships-graph" : "Relationships Graph",
+  "artifact-details.tab.relationships-tree" : "Relationships Tree",
   "artifact-details.tab.source" : "Source",
   "artifact-details.type" : "Type:",
   "artifact-details.uuid" : "UUID:",

@@ -22,6 +22,8 @@ import org.artificer.ui.client.shared.beans.ArtifactBean;
 import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
+import org.artificer.ui.client.shared.beans.RelationshipGraphBean;
+import org.artificer.ui.client.shared.beans.RelationshipTreeBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 import org.artificer.ui.client.shared.services.IArtifactService;
 import org.jboss.errai.common.client.api.Caller;
@@ -75,15 +77,33 @@ public class ArtifactServiceCaller {
         }
     }
 
-    /**
-     * @see org.artificer.ui.client.shared.services.IArtifactService#getRelationships(String, String)
-     */
-    public void getRelationships(String uuid, String artifactType,
-            IServiceInvocationHandler<ArtifactRelationshipsIndexBean> handler) {
-        RemoteCallback<ArtifactRelationshipsIndexBean> successCallback = new DelegatingRemoteCallback<ArtifactRelationshipsIndexBean>(handler);
+    public void getRelationships(String uuid, IServiceInvocationHandler<ArtifactRelationshipsIndexBean> handler) {
+        RemoteCallback<ArtifactRelationshipsIndexBean> successCallback = new DelegatingRemoteCallback<>(handler);
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
-            remoteArtifactService.call(successCallback, errorCallback).getRelationships(uuid, artifactType);
+            remoteArtifactService.call(successCallback, errorCallback).getRelationships(uuid);
+        } catch (ArtificerUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
+    public void getRelationshipsGraph(String startUuid,
+            IServiceInvocationHandler<RelationshipGraphBean> handler) {
+        RemoteCallback<RelationshipGraphBean> successCallback = new DelegatingRemoteCallback<>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteArtifactService.call(successCallback, errorCallback).getRelationshipGraph(startUuid);
+        } catch (ArtificerUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
+    public void getRelationshipsTree(String startUuid,
+            IServiceInvocationHandler<RelationshipTreeBean> handler) {
+        RemoteCallback<RelationshipTreeBean> successCallback = new DelegatingRemoteCallback<>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteArtifactService.call(successCallback, errorCallback).getRelationshipTree(startUuid);
         } catch (ArtificerUiException e) {
             errorCallback.error(null, e);
         }

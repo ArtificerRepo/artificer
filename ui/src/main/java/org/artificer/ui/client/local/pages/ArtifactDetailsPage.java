@@ -15,6 +15,7 @@
  */
 package org.artificer.ui.client.local.pages;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -47,8 +48,13 @@ import org.artificer.ui.client.local.util.DataBindingDateConverter;
 import org.artificer.ui.client.local.widgets.common.EditableInlineLabel;
 import org.artificer.ui.client.shared.beans.ArtifactBean;
 import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
+import org.artificer.ui.client.shared.beans.ArtifactRelationshipBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
+import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
 import org.artificer.ui.client.shared.beans.NotificationBean;
+import org.artificer.ui.client.shared.beans.RelationshipGraphBean;
+import org.artificer.ui.client.shared.beans.RelationshipGraphNodeBean;
+import org.artificer.ui.client.shared.beans.RelationshipTreeBean;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.databinding.client.api.InitialState;
 import org.jboss.errai.databinding.client.api.PropertyChangeEvent;
@@ -190,6 +196,20 @@ public class ArtifactDetailsPage extends AbstractPage {
     CommentsPanel comments;
     protected boolean commentsLoaded;
 
+    // Relationships Graph tab
+    @Inject @DataField("sramp-artifact-tabs-relationships-graph")
+    Anchor relationshipsGraphTabAnchor;
+    @Inject @DataField("relationships-graph-tab-progress")
+    HtmlSnippet relationshipsGraphTabProgress;
+    protected boolean relationshipsGraphLoaded;
+
+    // Relationships Graph tab
+    @Inject @DataField("sramp-artifact-tabs-relationships-tree")
+    Anchor relationshipsTreeTabAnchor;
+    @Inject @DataField("relationships-tree-tab-progress")
+    HtmlSnippet relationshipsTreeTabProgress;
+    protected boolean relationshipsTreeLoaded;
+
     // Source tab
     @Inject @DataField("sramp-artifact-tabs-source")
     Anchor sourceTabAnchor;
@@ -260,6 +280,25 @@ public class ArtifactDetailsPage extends AbstractPage {
             }
         });
 
+        relationshipsGraphTabAnchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (!relationshipsGraphLoaded) {
+                    loadRelationshipsGraph(currentArtifact);
+                }
+                relationshipsGraphTabAnchor.setFocus(false);
+            }
+        });
+        relationshipsTreeTabAnchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (!relationshipsTreeLoaded) {
+                    loadRelationshipsTree(currentArtifact);
+                }
+                relationshipsTreeTabAnchor.setFocus(false);
+            }
+        });
+
         sourceTabAnchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -304,14 +343,14 @@ public class ArtifactDetailsPage extends AbstractPage {
     @EventHandler("add-property-button")
     protected void onAddProperty(ClickEvent event) {
         AddCustomPropertyDialog dialog = addPropertyDialogFactory.get();
-        dialog.addValueChangeHandler(new ValueChangeHandler<Map.Entry<String,String>>() {
+        dialog.addValueChangeHandler(new ValueChangeHandler<Map.Entry<String, String>>() {
             @Override
             public void onValueChange(ValueChangeEvent<Entry<String, String>> event) {
                 Entry<String, String> value = event.getValue();
                 if (value != null) {
                     String propName = value.getKey();
                     String propValue = value.getValue();
-                    Map<String, String> newProps = new HashMap<String,String>(artifact.getModel().getProperties());
+                    Map<String, String> newProps = new HashMap<String, String>(artifact.getModel().getProperties());
                     newProps.put(propName, propValue);
                     customProperties.setValue(newProps, true);
                 }
@@ -345,6 +384,7 @@ public class ArtifactDetailsPage extends AbstractPage {
                         i18n.format("artifact-details.delete-success-msg", artifact.getModel().getName()));
                 backToArtifacts.click();
             }
+
             @Override
             public void onError(Throwable error) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
@@ -443,18 +483,170 @@ public class ArtifactDetailsPage extends AbstractPage {
     }
 
     private void doLoadRelationships(final ArtifactBean artifact) {
-        artifactService.getRelationships(artifact.getUuid(), artifact.getType(), new IServiceInvocationHandler<ArtifactRelationshipsIndexBean>() {
+        artifactService.getRelationships(artifact.getUuid(), new IServiceInvocationHandler<ArtifactRelationshipsIndexBean>() {
             @Override
             public void onReturn(ArtifactRelationshipsIndexBean data) {
                 relationships.setValue(data.getRelationships());
                 reverseRelationships.setValue(data.getReverseRelationships());
             }
+
             @Override
             public void onError(Throwable error) {
                 notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-relationships"), error);
             }
         });
     }
+
+    protected void loadRelationshipsGraph(final ArtifactBean artifact) {
+        relationshipsGraphTabProgress.setVisible(true);
+        artifactService.getRelationshipsGraph(artifact.getUuid(),
+                new IServiceInvocationHandler<RelationshipGraphBean>() {
+                    @Override
+                    public void onReturn(RelationshipGraphBean data) {
+                        relationshipsGraphTabProgress.setVisible(false);
+                        relationshipsGraphLoaded = true;
+
+                        // The following seems a little ridiculous, but we need to separate the processing into
+                        // multiple passes.  It seems like the visualization JS package has issues if the nodes are not
+                        // given in parent-first, children-second order.  Further, we want to favor source->target
+                        // relationships first, then fill in with reverse relationships only when they don't duplicate
+                        // the former.
+
+                        // 1.) Generate the primary artifact nodes.
+                        for (RelationshipGraphNodeBean node : data.getGraph()) {
+                            if (!node.getArtifact().isDerived()) {
+                                // primary artifacts are the root nodes
+                                addRelationshipsGraphNode(node.getArtifact(), null);
+                            }
+                        }
+
+                        // 2.) Generate the derived artifact nodes.
+                        for (RelationshipGraphNodeBean node : data.getGraph()) {
+                            ArtifactRelationshipsIndexBean relIndex = node.getRelationships();
+                            if (node.getArtifact().isDerived()) {
+                                // derived artifacts have a parent -- find it using the 'relatedDocument' relationship
+                                for (String relType : relIndex.getRelationships().keySet()) {
+                                    if (relType.equalsIgnoreCase("relatedDocument")) {
+                                        // should only be one...
+                                        String parent = relIndex.getRelationships().get(relType).getRelationships()
+                                                .get(0).getTargetUuid();
+                                        addRelationshipsGraphNode(node.getArtifact(), parent);
+                                    }
+                                }
+                            }
+                        }
+
+                        // 3.) Generate source->target relationships.
+                        List<String> processedRels = new ArrayList<>();
+                        for (RelationshipGraphNodeBean node : data.getGraph()) {
+                            ArtifactRelationshipsIndexBean relIndex = node.getRelationships();
+                            for (String relType : relIndex.getRelationships().keySet()) {
+                                if (!relType.equalsIgnoreCase("relatedDocument")) {
+                                    for (ArtifactRelationshipBean rel : relIndex.getRelationships().get(relType).getRelationships()) {
+                                        String processedKey = node.getArtifact().getUuid() + ":" + rel.getTargetUuid();
+                                        if (!processedRels.contains(processedKey)) {
+                                            addRelationshipsGraphLink(node.getArtifact().getUuid(), rel.getTargetUuid(), relType);
+                                            processedRels.add(processedKey);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // 4.) Generate target->source reverse relationships.
+                        for (RelationshipGraphNodeBean node : data.getGraph()) {
+                            ArtifactRelationshipsIndexBean relIndex = node.getRelationships();
+                            for (String relType : relIndex.getReverseRelationships().keySet()) {
+                                if (!relType.equalsIgnoreCase("relatedDocument")) {
+                                    for (ArtifactRelationshipBean rel : relIndex.getReverseRelationships().get(relType).getRelationships()) {
+                                        // Note that this is *backwards* here -- we're primarily concerned with
+                                        // duplicating a relationship we've already created above, but here they're
+                                        // reversed.
+                                        String processedKey = rel.getTargetUuid() + ":" + node.getArtifact().getUuid();
+                                        if (!processedRels.contains(processedKey)) {
+                                            addRelationshipsGraphLink(node.getArtifact().getUuid(), rel.getTargetUuid(), relType);
+                                            processedRels.add(processedKey);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        buildRelationshipsGraph();
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-relationships"), error); //$NON-NLS-1$
+                    }
+                });
+    }
+
+    private void addRelationshipsGraphNode(ArtifactSummaryBean artifact, String parent) {
+        addRelationshipsGraphNode(artifact.getType(), artifact.getUuid(), parent,
+                artifact.getName() + " (" + artifact.getType() + ")");
+    }
+
+    private native void addRelationshipsGraphNode(String type, String id, String parent, String name) /*-{
+        $wnd.addRelationshipsGraphNode(type, id, parent, name);
+    }-*/;
+
+    private native void addRelationshipsGraphLink(String source, String target, String relType) /*-{
+        $wnd.addRelationshipsGraphLink(source, target, 1, relType);
+    }-*/;
+
+    private native void buildRelationshipsGraph() /*-{
+        $wnd.buildRelationshipsGraph();
+    }-*/;
+
+    protected void loadRelationshipsTree(final ArtifactBean artifact) {
+        relationshipsTreeTabProgress.setVisible(true);
+        artifactService.getRelationshipsTree(artifact.getUuid(),
+                new IServiceInvocationHandler<RelationshipTreeBean>() {
+                    @Override
+                    public void onReturn(RelationshipTreeBean data) {
+                        relationshipsTreeTabProgress.setVisible(false);
+                        relationshipsTreeLoaded = true;
+
+                        JavaScriptObject relationshipsTree = buildRelationshipsTreeNode(data);
+                        buildRelationshipsTree(relationshipsTree);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-relationships"), error); //$NON-NLS-1$
+                    }
+                });
+    }
+
+    protected JavaScriptObject buildRelationshipsTreeNode(RelationshipTreeBean treeNode) {
+        // TODO: Use description for relationship info?
+        JavaScriptObject jsNode = buildRelationshipsTreeNode(treeNode.getArtifact().getName(), "");
+        if (treeNode.getChildren().size() > 0) {
+            initRelationshipsTreeNodeChildren(jsNode);
+            for (RelationshipTreeBean childNode : treeNode.getChildren()) {
+                JavaScriptObject jsChildNode = buildRelationshipsTreeNode(childNode);
+                addRelationshipsTreeNodeChild(jsNode, jsChildNode);
+            }
+        }
+        return jsNode;
+    }
+
+    private native JavaScriptObject buildRelationshipsTreeNode(String name, String description) /*-{
+        return {name:name, description:description};
+    }-*/;
+
+    private native void initRelationshipsTreeNodeChildren(JavaScriptObject jsNode) /*-{
+        jsNode.children = [];
+    }-*/;
+
+    private native void addRelationshipsTreeNodeChild(JavaScriptObject jsNode, JavaScriptObject jsChildNode) /*-{
+        jsNode.children.push(jsChildNode);
+    }-*/;
+
+    private native void buildRelationshipsTree(JavaScriptObject relationshipsTree) /*-{
+        $wnd.buildRelationshipsTree(relationshipsTree);
+    }-*/;
 
     /**
      * Called when the user clicks the Add Relationship button.
@@ -496,6 +688,7 @@ public class ArtifactDetailsPage extends AbstractPage {
                 editorWrapper.removeAttribute("style");
                 sourceLoaded = true;
             }
+
             @Override
             public void onError(Throwable error) {
                 notificationService.sendErrorNotification(i18n.format("Error getting artifact content."), error);
