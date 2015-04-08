@@ -629,6 +629,31 @@ public class ArtificerAtomApiClient {
 		}
 	}
 
+	public BaseArtifactType addComment(String uuid, ArtifactType type, String text) throws ArtificerClientException, ArtificerServerException {
+		assertFeatureEnabled(type);
+		ClientResponse<Entry> response = null;
+		try {
+			String artifactModel = type.getArtifactType().getModel();
+			String artifactType = type.getArtifactType().getType();
+			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType() != null) {
+				artifactType = type.getExtendedType();
+			}
+			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/comment", srampEndpoint, artifactModel, artifactType, uuid);
+			ClientRequest request = createClientRequest(atomUrl);
+
+			request.body(MediaType.TEXT_PLAIN, text);
+			response = request.post(Entry.class);
+            Entry entry = response.getEntity();
+            return ArtificerAtomUtils.unwrapSrampArtifact(type, entry);
+		} catch (ArtificerServerException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new ArtificerClientException(e);
+		} finally {
+			closeQuietly(response);
+		}
+	}
+
 	/**
 	 * Delets an artifact from the s-ramp repository.
 	 * @param uuid

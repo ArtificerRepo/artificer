@@ -317,6 +317,29 @@ public class ArtifactResource extends AbstractResource {
 		}
 	}
 
+    @POST
+    @Path("{model}/{type}/{uuid}/comment")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_ATOM_XML_ENTRY)
+    public Entry addComment(@Context HttpServletRequest request, @PathParam("model") String model,
+            @PathParam("type") String type, @PathParam("uuid") String uuid, String text)
+            throws ArtificerServerException {
+        try {
+            ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
+            BaseArtifactType artifact = artifactService.addComment(artifactType, uuid, text);
+
+            // Return the entry containing the s-ramp artifact
+            return wrapArtifact(artifact, request);
+        } catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
+            // HTTP response type.
+            throw e;
+        } catch (Exception e) {
+            logError(logger, Messages.i18n.format("ERROR_CREATING_COMMENT", uuid), e); //$NON-NLS-1$
+            throw new ArtificerAtomException(e);
+        }
+    }
+
 	/**
 	 * Called to get the meta data for an s-ramp artifact. This will return an Atom {@link Entry} with the
 	 * full information about the artifact.

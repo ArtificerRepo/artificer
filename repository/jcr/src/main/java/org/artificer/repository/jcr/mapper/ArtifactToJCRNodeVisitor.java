@@ -477,13 +477,13 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 		super.visit(artifact);
 		try {
 			if (artifact.getElement() != null) {
-				if (this.jcrNode.hasNode("sramp-relationships:type")) {
-					this.jcrNode.getNode("sramp-relationships:type").remove();
+				if (this.jcrNode.hasNode(JCRConstants.SRAMP_RELATIONSHIPS + ":type")) {
+					this.jcrNode.getNode(JCRConstants.SRAMP_RELATIONSHIPS + ":type").remove();
 				}
 				setRelationship("element", 1, 1, false, true, artifact.getElement(), ElementDeclarationEnum.ELEMENT_DECLARATION.toString());
 			} else if (artifact.getType() != null) {
-				if (this.jcrNode.hasNode("sramp-relationships:element")) {
-					this.jcrNode.getNode("sramp-relationships:element").remove();
+				if (this.jcrNode.hasNode(JCRConstants.SRAMP_RELATIONSHIPS + ":element")) {
+					this.jcrNode.getNode(JCRConstants.SRAMP_RELATIONSHIPS + ":element").remove();
 				}
 				setRelationship("type", 1, 1, false, true, artifact.getType(), XsdTypeEnum.XSD_TYPE.toString());
 			}
@@ -514,7 +514,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 		try {
 			setRelationship("input", 1, 1, false, true, artifact.getInput(), OperationInputEnum.OPERATION_INPUT.toString());
 			setRelationship("output", 1, 1, false, true, artifact.getOutput(),
-			        OperationOutputEnum.OPERATION_OUTPUT.toString());
+                    OperationOutputEnum.OPERATION_OUTPUT.toString());
 			setRelationships("fault", -1, 1, false, true, artifact.getFault(), FaultEnum.FAULT.toString());
 		} catch (Exception e) {
 			error = e;
@@ -568,7 +568,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 		super.visit(artifact);
 		try {
 			setRelationships("bindingOperation", -1, 1, false, true, artifact.getBindingOperation(),
-			        BindingOperationEnum.BINDING_OPERATION.toString());
+                    BindingOperationEnum.BINDING_OPERATION.toString());
 			setRelationship("portType", 1, 1, false, true, artifact.getPortType(), PortTypeEnum.PORT_TYPE.toString());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -599,7 +599,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 			setRelationship("input", 1, 1, false, true, artifact.getInput(),
 			        BindingOperationInputEnum.BINDING_OPERATION_INPUT.toString());
 			setRelationship("output", 1, 1, false, true, artifact.getOutput(),
-			        BindingOperationOutputEnum.BINDING_OPERATION_OUTPUT.toString());
+                    BindingOperationOutputEnum.BINDING_OPERATION_OUTPUT.toString());
 			setRelationships("fault", -1, 1, false, true, artifact.getFault(),
 			        BindingOperationFaultEnum.BINDING_OPERATION_FAULT.toString());
 			setRelationship("operation", 1, 1, false, true, artifact.getOperation(), OperationEnum.OPERATION.toString());
@@ -943,7 +943,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 	 */
 	private void removeRelationship(String relationshipType) throws RepositoryException, VersionException,
 	LockException, ConstraintViolationException, AccessDeniedException, PathNotFoundException {
-		String nodeName = "sramp-relationships:" + relationshipType;
+		String nodeName = JCRConstants.SRAMP_RELATIONSHIPS + ":" + relationshipType;
 		if (this.jcrNode.hasNode(nodeName)) {
 			this.jcrNode.getNode(nodeName).remove();
 		}
@@ -963,7 +963,7 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 	private static Node getOrCreateRelationshipNode(Node parentNode, String relationshipType,
 			int maxCardinality, boolean isGeneric, boolean isDerived) throws Exception {
 		Node relationshipNode = null;
-		String nodeName = "sramp-relationships:" + relationshipType;
+		String nodeName = JCRConstants.SRAMP_RELATIONSHIPS + ":" + relationshipType;
 		if (parentNode.hasNode(nodeName)) {
 			relationshipNode = parentNode.getNode(nodeName);
 		} else {

@@ -22,6 +22,7 @@
 <mix='http://www.jcp.org/jcr/mix/1.0'>
 <sramp='http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0'>
 <audit='http://downloads.jboss.org/artificer/2013/auditing.xsd'>
+<artificer='http://artificer.jboss.org'>
 
 //------------------------------------------------------------------------------
 // N O D E T Y P E S
@@ -97,6 +98,9 @@
 - * (string)
 - * (string) multiple
 
+[artificer:comment] > mix:created
+- artificer:text (string)
+
 [sramp:baseArtifactType] > mix:created, mix:lastModified, mix:referenceable abstract mixin
 - sramp:uuid (string) mandatory
 - sramp:name (string)
@@ -110,6 +114,7 @@
 - * (string) multiple
 + * (sramp:relationship)
 + * (audit:auditEntry)
++ * (artificer:comment)
 
 [sramp:documentArtifactType] > sramp:baseArtifactType abstract mixin
 - sramp:contentType (string)

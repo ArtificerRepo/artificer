@@ -15,17 +15,17 @@
  */
 package org.artificer.repository;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.ontology.ArtificerOntology;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Service used to persist artifacts to some (permanent?) storage.
@@ -87,6 +87,16 @@ public interface PersistenceManager extends AbstractManager {
 	 * @throws org.artificer.common.ArtificerException
 	 */
 	public BaseArtifactType updateArtifactContent(String uuid, ArtifactType artifactType, ArtifactContent content) throws ArtificerException;
+
+    /**
+     * Adds a comment to an artifact.
+     * @param uuid
+     * @param type
+     * @param text
+     * @return
+     * @throws ArtificerException
+     */
+    public BaseArtifactType addComment(String uuid, ArtifactType type, String text) throws ArtificerException;
 
 	/**
 	 * Deletes a previously persisted artifact from the S-RAMP repository.

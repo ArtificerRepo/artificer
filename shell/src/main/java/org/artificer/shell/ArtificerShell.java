@@ -26,6 +26,7 @@ import org.artificer.shell.archive.RemoveEntryArchiveCommand;
 import org.artificer.shell.archive.UpdateEntryArchiveCommand;
 import org.artificer.shell.archive.UploadArchiveCommand;
 import org.artificer.shell.audit.ShowAuditTrailCommand;
+import org.artificer.shell.core.AddCommentCommand;
 import org.artificer.shell.core.ClassificationCommand;
 import org.artificer.shell.core.ConnectCommand;
 import org.artificer.shell.core.CreateArtifactCommand;
@@ -135,6 +136,7 @@ public class ArtificerShell {
                 .command(Echo.class)
                 .command(Exit.class)
                 // artificer core
+                .command(AddCommentCommand.class)
                 .command(ClassificationCommand.class)
                 .command(ConnectCommand.class)
                 .command(CreateArtifactCommand.class)

@@ -26,6 +26,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Comment;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Document;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
@@ -515,6 +516,30 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 		    Assert.assertEquals(ArtificerNotFoundException.class, e.getClass());
 			Assert.assertEquals("No artifact found with UUID: not-a-valid-uuid", e.getMessage());
 		}
+    }
+
+    @Test
+    public void testArtifactComments() throws Exception {
+        BaseArtifactType artifact = ArtifactType.ExtendedArtifactType("FooType").newArtifactInstance();
+        artifact.setName("FooArtifact");
+
+        artifact = persistenceManager.persistArtifact(artifact, null);
+
+        persistenceManager.addComment(artifact.getUuid(), ArtifactType.valueOf(artifact), "xyz");
+        persistenceManager.addComment(artifact.getUuid(), ArtifactType.valueOf(artifact), "abc");
+        artifact = persistenceManager.addComment(artifact.getUuid(), ArtifactType.valueOf(artifact), "lmn");
+
+        Assert.assertEquals(3, artifact.getComment().size());
+        // ensure they were ordered by timestamp asc
+        commentAssertions(artifact.getComment().get(0), "xyz");
+        commentAssertions(artifact.getComment().get(1), "abc");
+        commentAssertions(artifact.getComment().get(2), "lmn");
+    }
+
+    private void commentAssertions(Comment comment, String text) {
+        Assert.assertEquals(text, comment.getText());
+        Assert.assertNotNull(comment.getCreatedTimestamp());
+        Assert.assertEquals("junituser", comment.getCreatedBy());
     }
 
     @Test

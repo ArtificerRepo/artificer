@@ -85,6 +85,7 @@
   "artifact-details.modify-classifiers" : "Modify Classifiers",
   "artifact-details.tab.overview" : "Overview",
   "artifact-details.tab.relationships" : "Relationships",
+  "artifact-details.tab.comments" : "Comments",
   "artifact-details.tab.source" : "Source",
   "artifact-details.type" : "Type:",
   "artifact-details.uuid" : "UUID:",
@@ -253,5 +254,12 @@
   "upload-ontology-dialog.select" : "Select",
   "upload-ontology-dialog.upload" : "Upload",
   "modify-classifiers-dialog.error" : "Error Getting Ontologies",
-  "user-actions.logout" : "Logout"
+  "user-actions.logout" : "Logout",
+  "artifact-details.add-comment-form.add-comment-text" : "Add a comment:",
+  "artifact-details.add-comment-form.add-comment-form-submit-button" : "Submit",
+  "artifact-details.adding-comment" : "Adding Comment",
+  "artifact-details.adding-comment-msg" : "Adding comment to artifact '{0}'.",
+  "artifact-details.comment-added" : "Comment Added",
+  "artifact-details.comment-added-success-msg" : "Comment successfully added to artifact '{0}'.",
+  "artifact-details.error-adding-comment" : "Error Adding Comment"
 }

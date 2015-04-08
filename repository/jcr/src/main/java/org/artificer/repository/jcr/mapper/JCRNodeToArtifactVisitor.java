@@ -15,6 +15,9 @@
  */
 package org.artificer.repository.jcr.mapper;
 
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerConstants;
+import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 import org.artificer.repository.jcr.JCRConstants;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
@@ -29,6 +32,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInputTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutputTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Comment;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
@@ -95,9 +99,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocumentTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeTarget;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtificerConstants;
-import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -202,6 +203,9 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
 
             // Map in the generic relationships
             visitGenericRelationships(artifact);
+
+            // Map all comments
+            visitComments(artifact);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -209,8 +213,11 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
 
     private void visitGenericRelationships(BaseArtifactType artifact) throws Exception {
         NodeIterator relationshipNodes = jcrNode.getNodes();
+        // TODO: After ARTIF-658, switch to using the following.  This doesn't work in 4.0 due to MODE-2338.
+//        NodeIterator relationshipNodes = jcrNode.getNodes(JCRConstants.SRAMP_RELATIONSHIPS + "*");
         while (relationshipNodes.hasNext()) {
             Node relationshipNode = relationshipNodes.nextNode();
+            // TODO: See above.  This check can also be removed.
             if (relationshipNode.isNodeType(JCRConstants.SRAMP_RELATIONSHIP)) {
                 String rtype = getProperty(relationshipNode, JCRConstants.SRAMP_RELATIONSHIP_TYPE);
                 boolean generic = false;
@@ -235,6 +242,29 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
                 setOtherAttributes(relationshipNode, relationship.getOtherAttributes());
 
                 artifact.getRelationship().add(relationship);
+            }
+        }
+    }
+
+    private void visitComments(BaseArtifactType artifact) throws Exception {
+        NodeIterator commentNodes = jcrNode.getNodes();
+        // TODO: After ARTIF-658, switch to using the following.  This doesn't work in 4.0 due to MODE-2338.
+//        NodeIterator commentNodes = jcrNode.getNodes(JCRConstants.ARTIFICER_COMMENTS);
+        while (commentNodes.hasNext()) {
+            Node commentNode = commentNodes.nextNode();
+
+            // TODO: See above.  This check can also be removed.
+            if (commentNode.isNodeType(JCRConstants.ARTIFICER_COMMENT)) {
+                String createdBy = getProperty(commentNode, JCRConstants.JCR_CREATED_BY);
+                XMLGregorianCalendar createdTimestamp = dtFactory.newXMLGregorianCalendar(getProperty(jcrNode, JCRConstants.JCR_CREATED));
+                String text = getProperty(commentNode, JCRConstants.ARTIFICER_TEXT);
+
+                Comment comment = new Comment();
+                comment.setCreatedBy(createdBy);
+                comment.setCreatedTimestamp(createdTimestamp);
+                comment.setText(text);
+
+                artifact.getComment().add(comment);
             }
         }
     }
@@ -759,7 +789,7 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
      */
     private <T> List<T> getRelationships(String relationshipType, Class<T> targetClass) throws Exception {
         List<T> rval = new ArrayList<T>();
-        String relNodeName = "sramp-relationships:" + relationshipType;
+        String relNodeName = JCRConstants.SRAMP_RELATIONSHIPS + ":" + relationshipType;
         if (this.jcrNode.hasNode(relNodeName)) {
             Node relationshipNode = this.jcrNode.getNode(relNodeName);
             NodeIterator targetNodes = relationshipNode.getNodes();

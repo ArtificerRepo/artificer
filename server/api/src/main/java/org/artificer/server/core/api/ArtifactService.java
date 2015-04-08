@@ -15,8 +15,8 @@
  */
 package org.artificer.server.core.api;
 
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.artificer.common.ArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 import java.io.InputStream;
 
@@ -145,6 +145,8 @@ public interface ArtifactService extends AbstractService {
      */
     public void updateContent(ArtifactType artifactType, String uuid,
             String fileName, byte[] contentBytes) throws Exception;
+
+    public BaseArtifactType addComment(ArtifactType artifactType, String uuid, String text) throws Exception;
 
     public BaseArtifactType getMetaData(String model, String type, String uuid) throws Exception;
 

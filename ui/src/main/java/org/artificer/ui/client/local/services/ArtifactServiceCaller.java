@@ -15,19 +15,20 @@
  */
 package org.artificer.ui.client.local.services;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.artificer.ui.client.shared.services.IArtifactService;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.artificer.ui.client.local.services.callback.DelegatingErrorCallback;
 import org.artificer.ui.client.local.services.callback.DelegatingRemoteCallback;
 import org.artificer.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.artificer.ui.client.shared.beans.ArtifactBean;
+import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
+import org.artificer.ui.client.shared.services.IArtifactService;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 /**
  * Client-side service for making Caller calls to the remote artifact service.
@@ -95,6 +96,17 @@ public class ArtifactServiceCaller {
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
             remoteArtifactService.call(successCallback, errorCallback).update(artifact);
+        } catch (ArtificerUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
+    public void addComment(String uuid, String artifactType, String text,
+            final IServiceInvocationHandler<ArtifactCommentBean> handler) {
+        RemoteCallback<ArtifactCommentBean> successCallback = new DelegatingRemoteCallback<ArtifactCommentBean>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteArtifactService.call(successCallback, errorCallback).addComment(uuid, artifactType, text);
         } catch (ArtificerUiException e) {
             errorCallback.error(null, e);
         }
