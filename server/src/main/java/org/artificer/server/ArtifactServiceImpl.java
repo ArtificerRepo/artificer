@@ -318,6 +318,11 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
     }
 
     @Override
+    public BaseArtifactType addComment(ArtifactType artifactType, String uuid, String text) throws Exception {
+        return persistenceManager().addComment(uuid, artifactType, text);
+    }
+
+    @Override
     public BaseArtifactType getMetaData(String model, String type, String uuid) throws Exception {
         ArtifactType artifactType = ArtifactType.valueOf(model, type, false);
         return getMetaData(artifactType, uuid);

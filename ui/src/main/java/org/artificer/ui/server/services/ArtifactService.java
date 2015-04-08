@@ -21,6 +21,7 @@ import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.error.ArtificerServerException;
 import org.artificer.ui.client.shared.beans.ArtifactBean;
+import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 import org.artificer.ui.client.shared.services.IArtifactService;
@@ -28,12 +29,14 @@ import org.artificer.ui.server.api.ArtificerApiClientAccessor;
 import org.artificer.ui.server.i18n.Messages;
 import org.artificer.ui.server.services.util.RelationshipResolver;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Comment;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Concrete implementation of the artifact service.
@@ -94,12 +97,25 @@ public class ArtifactService implements IArtifactService {
             int numRelationships = artifact.getRelationship() == null ? 0 : artifact.getRelationship().size();
             bean.setNumRelationships(numRelationships);
 
+            // Comments
+            for (Comment comment : artifact.getComment()) {
+                bean.getComments().add(toCommentBean(comment));
+            }
+
             return bean;
         } catch (ArtificerClientException e) {
             throw new ArtificerUiException(e.getMessage());
         } catch (ArtificerServerException e) {
             throw new ArtificerUiException(e.getMessage());
         }
+    }
+
+    private ArtifactCommentBean toCommentBean(Comment comment) {
+        ArtifactCommentBean commentBean = new ArtifactCommentBean();
+        commentBean.setCreatedBy(comment.getCreatedBy());
+        commentBean.setCreatedOn(comment.getCreatedTimestamp().toGregorianCalendar().getTime());
+        commentBean.setText(comment.getText());
+        return commentBean;
     }
 
     /**
@@ -176,6 +192,21 @@ public class ArtifactService implements IArtifactService {
             }
             // Push the changes back to the server
             ArtificerApiClientAccessor.getClient().updateArtifactMetaData(artifact);
+        } catch (ArtificerClientException e) {
+            throw new ArtificerUiException(e.getMessage());
+        } catch (ArtificerServerException e) {
+            throw new ArtificerUiException(e.getMessage());
+        }
+    }
+
+    @Override
+    public ArtifactCommentBean addComment(String uuid, String artifactType, String text) throws ArtificerUiException {
+        try {
+            ArtifactType at = ArtifactType.valueOf(artifactType);
+            BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().addComment(uuid, at, text);
+            List<Comment> comments = artifact.getComment();
+            // latest should be last
+            return(toCommentBean(comments.get(comments.size() - 1)));
         } catch (ArtificerClientException e) {
             throw new ArtificerUiException(e.getMessage());
         } catch (ArtificerServerException e) {

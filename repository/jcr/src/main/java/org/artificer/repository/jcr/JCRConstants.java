@@ -99,6 +99,12 @@ public class JCRConstants {
     public static final String SRAMP_URL                        = SRAMP_ + "url";
     public static final String SRAMP_UUID                       = SRAMP_ + "uuid";
 
+    public static final String ARTIFICER                        = "artificer";
+    public static final String ARTIFICER_                       = ARTIFICER + ":";
+    public static final String ARTIFICER_COMMENT                = ARTIFICER_ + "comment";
+    public static final String ARTIFICER_COMMENTS               = ARTIFICER_ + "comments";
+    public static final String ARTIFICER_TEXT                   = ARTIFICER_ + "text";
+
     public static final String ROOT_PATH          = "/s-ramp";
     public static final String NOT_DELETED_FILTER = " AND (ISDESCENDANTNODE([sramp:baseArtifactType],'" + ROOT_PATH + "'))";
 

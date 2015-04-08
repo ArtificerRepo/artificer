@@ -80,6 +80,7 @@
             <ul id="myTab" class="nav nav-tabs sramp-nav-tabs">
               <li class="active"><a onclick="$(this).blur();" href="#overview" data-toggle="tab" data-i18n-key="tab.overview">Overview</a></li>
               <li class=""><a onclick="$(this).blur();" href="#relationships" data-field="sramp-artifact-tabs-relationships" data-toggle="tab" data-i18n-key="tab.relationships">Relationships</a></li>
+              <li class=""><a onclick="$(this).blur();" href="#comments" data-field="sramp-artifact-tabs-comments" data-toggle="tab" data-i18n-key="tab.comments">Comments</a></li>
               <li class=""><a onclick="$(this).blur();" href="#source" data-field="sramp-artifact-tabs-source" data-toggle="tab" data-i18n-key="tab.source">Source</a></li>
 <!--               <li class=""><a href="#history" data-toggle="tab">History</a></li> -->
             </ul>
@@ -292,6 +293,41 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Comments Tab -->
+              <div class="tab-pane fade container-fluid" id="comments">
+
+                <div class="row-fluid sramp-meta-data-section">
+                  <div class="span4">
+                    <form class="" onSubmit="return false;">
+                      <fieldset>
+                        <label data-i18n-key="add-comment-text">Add a comment:</label>
+                        <textarea data-field="add-comment-text" name="commentText" class="input-value" rows="5" cols=""></textarea>
+                      </fieldset>
+                      <button data-field="add-comment-form-submit-button" class="btn btn-focus" data-i18n-key="add-comment-form-submit-button">Create</button>
+                    </form>
+                  </div>
+                  <div class="span8" data-field="comments-container">
+                    <p>
+                      <strong>Carl Spackler (07/25/1980)</strong><br/>
+                      A looper, you know, a caddy, a looper, a jock. So, I tell them I'm a pro jock, and who do you think they give me? The Dalai Lama, himself. Twelfth son of the Lama. The flowing robes, the grace, bald... striking. So, I'm on the first tee with him. I give him the driver. He hauls off and whacks one - big hitter, the Lama - long, into a ten-thousand foot crevasse, right at the base of this glacier. Do you know what the Lama says? Gunga galunga... gunga, gunga-lagunga. So we finish the eighteenth and he's gonna stiff me. And I say, "Hey, Lama, hey, how about a little something, you know, for the effort, you know." And he says, "Oh, uh, there won't be any money, but when you die, on your deathbed, you will receive total consciousness." So I got that goin' for me, which is nice.
+                    </p>
+                    <p>
+                      <strong>Carl Spackler (07/25/1980)</strong><br/>
+                      Cinderella story. Outta nowhere. A former greenskeeper, now, about to become the Masters champion. It looks like a mirac... It's in the hole! It's in the hole! It's in the hole!
+                    </p>
+                    <p>
+                      <strong>Carl Spackler (07/25/1980)</strong><br/>
+                      License to kill gophers by the government of the United Nations. Man, free to kill gophers at will. To kill, you must know your enemy, and in this case my enemy is a varmint. And a varmint will never quit - ever. They're like the Viet Cong - Varmint Cong. So you have to fall back on superior intelligence and superior firepower. And that's all she wrote.
+                    </p>
+                    <p>
+                      <strong>Carl Spackler (07/25/1980)</strong><br/>
+                      I have to laugh, because I've outsmarted even myself. My enemy, my foe, is an animal. In order to conquer the animal, I have to learn to think like an animal. And, whenever possible, to look like one. I've gotta get inside this guy's pelt and crawl around for a few days. Who's the gopher's ally. His friends. The harmless squirrel and the friendly rabbit.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <!-- Source Tab -->
               <div class="tab-pane fade container-fluid" id="source">
                 <div id="editor-wrapper" class="sramp-source-editor-wrapper span12">

@@ -15,11 +15,11 @@
  */
 package org.artificer.ui.client.shared.beans;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Models the full details of an artifact in the S-RAMP repository.
@@ -41,6 +41,7 @@ public class ArtifactBean extends ArtifactSummaryBean {
     private boolean textDocument;
     private String repositoryLink;
     private String repositoryMediaLink;
+    private List<ArtifactCommentBean> comments = new ArrayList<>();
 
     /**
      * Constructor.
@@ -203,4 +204,11 @@ public class ArtifactBean extends ArtifactSummaryBean {
         this.repositoryMediaLink = repositoryMediaLink;
     }
 
+    public List<ArtifactCommentBean> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<ArtifactCommentBean> comments) {
+        this.comments = comments;
+    }
 }

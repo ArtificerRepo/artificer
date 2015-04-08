@@ -24,7 +24,9 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextArea;
 import org.artificer.ui.client.local.ClientMessages;
+import org.artificer.ui.client.local.pages.artifacts.CommentsPanel;
 import org.artificer.ui.client.local.pages.details.AddCustomPropertyDialog;
 import org.artificer.ui.client.local.pages.details.ClassifiersPanel;
 import org.artificer.ui.client.local.pages.details.CustomPropertiesPanel;
@@ -40,6 +42,7 @@ import org.artificer.ui.client.local.util.DOMUtil;
 import org.artificer.ui.client.local.util.DataBindingDateConverter;
 import org.artificer.ui.client.local.widgets.common.EditableInlineLabel;
 import org.artificer.ui.client.shared.beans.ArtifactBean;
+import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.artificer.ui.client.shared.beans.NotificationBean;
 import org.jboss.errai.databinding.client.api.DataBinder;
@@ -161,6 +164,17 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject @DataField("reverse-relationships-header")
     InlineLabel reverseRelationshipsHeader;
     protected boolean relationshipsLoaded;
+    
+    // Comments tab
+    @Inject @DataField("sramp-artifact-tabs-comments")
+    Anchor commentsTabAnchor;
+    @Inject @DataField("add-comment-text")
+    TextArea commentText;
+    @Inject @DataField("add-comment-form-submit-button")
+    Button commentButton;
+    @Inject @DataField("comments-container")
+    CommentsPanel comments;
+    protected boolean commentsLoaded;
 
     // Source tab
     @Inject @DataField("sramp-artifact-tabs-source")
@@ -187,9 +201,9 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     @PostConstruct
     protected void onPostConstruct() {
-        pageContent = DOMUtil.findElementById(getElement(), "artifact-details-content-wrapper"); //$NON-NLS-1$
-        pageContent.addClassName("hide"); //$NON-NLS-1$
-        editorWrapper = DOMUtil.findElementById(getElement(), "editor-wrapper"); //$NON-NLS-1$
+        pageContent = DOMUtil.findElementById(getElement(), "artifact-details-content-wrapper");
+        pageContent.addClassName("hide");
+        editorWrapper = DOMUtil.findElementById(getElement(), "editor-wrapper");
         artifact.addPropertyChangeHandler(new PropertyChangeHandler<Object>() {
             @Override
             public void onPropertyChange(PropertyChangeEvent<Object> event) {
@@ -203,11 +217,11 @@ public class ArtifactDetailsPage extends AbstractPage {
             }
         });
 
-        name.setDialogTitle(i18n.format("artifact-details.edit-name")); //$NON-NLS-1$
-        name.setDialogLabel(i18n.format("artifact-details.new-name")); //$NON-NLS-1$
+        name.setDialogTitle(i18n.format("artifact-details.edit-name"));
+        name.setDialogLabel(i18n.format("artifact-details.new-name"));
 
-        description.setDialogTitle(i18n.format("artifact-details.edit-descr")); //$NON-NLS-1$
-        description.setDialogLabel(i18n.format("artifact-details.new-descr")); //$NON-NLS-1$
+        description.setDialogTitle(i18n.format("artifact-details.edit-descr"));
+        description.setDialogLabel(i18n.format("artifact-details.new-descr"));
     }
 
     /**
@@ -217,10 +231,10 @@ public class ArtifactDetailsPage extends AbstractPage {
     protected void onPageShowing() {
         sourceLoaded = false;
         currentArtifact = null;
-        pageContent.addClassName("hide"); //$NON-NLS-1$
-        artifactLoading.getElement().removeClassName("hide"); //$NON-NLS-1$
+        pageContent.addClassName("hide");
+        artifactLoading.getElement().removeClassName("hide");
         sourceTabAnchor.setVisible(false);
-        editorWrapper.setAttribute("style", "display:none"); //$NON-NLS-1$ //$NON-NLS-2$
+        editorWrapper.setAttribute("style", "display:none");
 
         relationshipsTabAnchor.addClickHandler(new ClickHandler() {
             @Override
@@ -231,6 +245,7 @@ public class ArtifactDetailsPage extends AbstractPage {
                 relationshipsTabAnchor.setFocus(false);
             }
         });
+
         sourceTabAnchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -238,6 +253,16 @@ public class ArtifactDetailsPage extends AbstractPage {
                     loadSource(currentArtifact);
                 }
                 sourceTabAnchor.setFocus(false);
+            }
+        });
+
+        commentsTabAnchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                if (!commentsLoaded) {
+                    loadComments(currentArtifact);
+                }
+                commentsTabAnchor.setFocus(false);
             }
         });
     }
@@ -253,7 +278,7 @@ public class ArtifactDetailsPage extends AbstractPage {
 
             @Override
             public void onError(Throwable error) {
-                notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-details"), error); //$NON-NLS-1$
+                notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-details"), error);
             }
         });
     }
@@ -296,20 +321,20 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     protected void onDeleteConfirm() {
         final NotificationBean notificationBean = notificationService.startProgressNotification(
-                i18n.format("artifact-details.deleting-artifact-title"), //$NON-NLS-1$
-                i18n.format("artifact-details.deleting-artifact-msg", artifact.getModel().getName())); //$NON-NLS-1$
+                i18n.format("artifact-details.deleting-artifact-title"),
+                i18n.format("artifact-details.deleting-artifact-msg", artifact.getModel().getName()));
         artifactService.delete(artifact.getModel(), new IServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        i18n.format("artifact-details.artifact-deleted"), //$NON-NLS-1$
-                        i18n.format("artifact-details.delete-success-msg", artifact.getModel().getName())); //$NON-NLS-1$
+                        i18n.format("artifact-details.artifact-deleted"),
+                        i18n.format("artifact-details.delete-success-msg", artifact.getModel().getName()));
                 backToArtifacts.click();
             }
             @Override
             public void onError(Throwable error) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        i18n.format("artifact-details.delete-error"), //$NON-NLS-1$
+                        i18n.format("artifact-details.delete-error"),
                         error);
             }
         });
@@ -358,7 +383,7 @@ public class ArtifactDetailsPage extends AbstractPage {
             }
             @Override
             public void onError(Throwable error) {
-                notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-relationships"), error); //$NON-NLS-1$
+                notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-relationships"), error);
             }
         });
     }
@@ -377,12 +402,12 @@ public class ArtifactDetailsPage extends AbstractPage {
             public void onReturn(String data) {
                 sourceEditor.setValue(data);
                 sourceTabProgress.setVisible(false);
-                editorWrapper.removeAttribute("style"); //$NON-NLS-1$
+                editorWrapper.removeAttribute("style");
                 sourceLoaded = true;
             }
             @Override
             public void onError(Throwable error) {
-                notificationService.sendErrorNotification(i18n.format("Error getting artifact content."), error); //$NON-NLS-1$
+                notificationService.sendErrorNotification(i18n.format("Error getting artifact content."), error);
             }
         });
     }
@@ -396,7 +421,7 @@ public class ArtifactDetailsPage extends AbstractPage {
         this.feedLink.setHref(artifact.getRepositoryLink());
         this.linkToRepositoryContent.setHref(artifact.getRepositoryMediaLink());
         this.linkToRepositoryMetadata.setHref(artifact.getRepositoryLink());
-        this.sourceEditor.setValue(""); //$NON-NLS-1$
+        this.sourceEditor.setValue("");
 
         if (artifact.isTextDocument()) {
             sourceTabAnchor.setVisible(true);
@@ -404,33 +429,76 @@ public class ArtifactDetailsPage extends AbstractPage {
 
         deleteButton.setVisible(!artifact.isDerived());
 
-        artifactLoading.getElement().addClassName("hide"); //$NON-NLS-1$
-        pageContent.removeClassName("hide"); //$NON-NLS-1$
+        artifactLoading.getElement().addClassName("hide");
+        pageContent.removeClassName("hide");
     }
 
     /**
      * Sends the model back up to the server (saves local changes).
      */
     protected void pushModelToServer() {
-        String noteTitle = i18n.format("artifact-details.updating-artifact.title"); //$NON-NLS-1$
-        String noteBody = i18n.format("artifact-details.updating-artifact.message", artifact.getModel().getName()); //$NON-NLS-1$
+        String noteTitle = i18n.format("artifact-details.updating-artifact.title");
+        String noteBody = i18n.format("artifact-details.updating-artifact.message", artifact.getModel().getName());
         final NotificationBean notificationBean = notificationService.startProgressNotification(
                 noteTitle, noteBody);
         artifactService.update(artifact.getModel(), new IServiceInvocationHandler<Void>() {
             @Override
             public void onReturn(Void data) {
-                String noteTitle = i18n.format("artifact-details.updated-artifact.title"); //$NON-NLS-1$
-                String noteBody = i18n.format("artifact-details.updated-artifact.message", artifact.getModel().getName()); //$NON-NLS-1$
+                String noteTitle = i18n.format("artifact-details.updated-artifact.title");
+                String noteBody = i18n.format("artifact-details.updated-artifact.message", artifact.getModel().getName());
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
                         noteTitle, noteBody);
             }
             @Override
             public void onError(Throwable error) {
                 notificationService.completeProgressNotification(notificationBean.getUuid(),
-                        i18n.format("artifact-details.error-updating-arty"), //$NON-NLS-1$
+                        i18n.format("artifact-details.error-updating-arty"),
                         error);
             }
         });
+    }
+
+
+    protected void loadComments(final ArtifactBean artifact) {
+        comments.setValue(artifact.getComments());
+        commentButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                addComment(artifact);
+            }
+        });
+        commentsLoaded = true;
+    }
+    
+    protected void addComment(final ArtifactBean artifact) {
+        String comment = commentText.getValue();
+        if (comment != null && comment.length() > 0) {
+            final NotificationBean notificationBean = notificationService.startProgressNotification(
+                    i18n.format("artifact-details.adding-comment"),
+                    i18n.format("artifact-details.adding-comment-msg", artifact.getName()));
+
+            artifactService.addComment(artifact.getUuid(), artifact.getType(), comment, new IServiceInvocationHandler<ArtifactCommentBean>() {
+                @Override
+                public void onReturn(ArtifactCommentBean data) {
+                    notificationService.completeProgressNotification(notificationBean.getUuid(),
+                            i18n.format("artifact-details.comment-added"),
+                            i18n.format("artifact-details.comment-added-success-msg", artifact.getName()));
+
+                    // add to the list
+                    comments.addComment(data);
+                }
+
+                @Override
+                public void onError(Throwable error) {
+                    notificationService.completeProgressNotification(notificationBean.getUuid(),
+                            i18n.format("artifact-details.error-adding-comment"),
+                            error);
+                }
+            });
+
+            // reset form
+            commentText.setValue("");
+        }
     }
 
 }

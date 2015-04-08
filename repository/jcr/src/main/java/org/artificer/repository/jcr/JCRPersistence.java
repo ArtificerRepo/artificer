@@ -316,6 +316,35 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
     }
 
     @Override
+    public BaseArtifactType addComment(String uuid, ArtifactType type, String text) throws ArtificerException {
+        Session session = null;
+        try {
+            session = JCRRepositoryFactory.getSession();
+
+            Node artifactNode = JCRUtils.findArtifactNode(uuid, type, session);
+            if (artifactNode == null) {
+                throw ArtificerNotFoundException.artifactNotFound(uuid);
+            }
+
+            // Need a unique node name, but don't really care about what it is specifically.  Use a UUID...
+            String nodeName = JCRConstants.ARTIFICER_COMMENTS + ":" + UUID.randomUUID().toString();
+            Node commentNode = artifactNode.addNode(nodeName, JCRConstants.ARTIFICER_COMMENT);
+            commentNode.setProperty(JCRConstants.ARTIFICER_TEXT, text);
+
+            session.save();
+
+            // Create the S-RAMP Artifact object from the JCR node
+            return JCRNodeToArtifactFactory.createArtifact(session, artifactNode, type);
+        } catch (ArtificerException se) {
+            throw se;
+        } catch (Throwable t) {
+            throw new ArtificerServerException(t);
+        } finally {
+            JCRRepositoryFactory.logoutQuietly(session);
+        }
+    }
+
+    @Override
     public BaseArtifactType deleteArtifact(String uuid, ArtifactType type) throws ArtificerException {
         Session session = null;
         try {

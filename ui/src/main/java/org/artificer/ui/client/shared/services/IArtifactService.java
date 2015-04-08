@@ -16,12 +16,14 @@
 package org.artificer.ui.client.shared.services;
 
 import org.artificer.ui.client.shared.beans.ArtifactBean;
+import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -78,6 +80,13 @@ public interface IArtifactService {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public void update(ArtifactBean artifact) throws ArtificerUiException;
+
+    @POST
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("comment/{uuid}/{artifactType}")
+    public ArtifactCommentBean addComment(@PathParam("uuid") String uuid,
+            @PathParam("artifactType") String artifactType, String text) throws ArtificerUiException;
 
     /**
      * Called to delete an artifact.
