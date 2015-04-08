@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema targetNamespace="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" version="1.0" 
-  xmlns:tns="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" 
+<xsd:schema targetNamespace="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0" version="1.0"
+  xmlns:tns="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
   xmlns:s-ramp="http://docs.oasis-open.org/s-ramp/ns/s-ramp-v1.0"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified">
   <!--
       (c) 2010 Hewlett-Packard Company (HP), International Business Machines
@@ -169,7 +169,7 @@
       <xsd:enumeration value="PolicyDocument" />
     </xsd:restriction>
   </xsd:simpleType>
-  
+
   <!-- Base type for almost all Artifacts in S-RAMP. Most other types in S-RAMP extend this one. Extensions of BaseArtifactType are limited to attributes. -->
   <xsd:complexType abstract="true" name="BaseArtifactType">
     <xsd:sequence>
