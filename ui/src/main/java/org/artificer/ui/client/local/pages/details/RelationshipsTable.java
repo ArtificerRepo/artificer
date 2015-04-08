@@ -113,12 +113,12 @@ public class RelationshipsTable extends TemplatedWidgetTable implements HasValue
         Anchor name = toDetailsPageLinkFactory.get("uuid", relationship.getUuid()); //$NON-NLS-1$
         name.setText(relationship.getName());
         InlineLabel type = new InlineLabel(relationship.getType());
-        InlineLabel modified = new InlineLabel(format.format(relationship.getLastModified()));
+        InlineLabel derived = new InlineLabel(relationship.getDerived().toString());
 //        InlineLabel actions = new InlineLabel("");
 
         add(rowIdx, 0, name);
         add(rowIdx, 1, type);
-        add(rowIdx, 2, modified);
+        add(rowIdx, 2, derived);
 //        add(rowIdx, 3, actions);
     }
 

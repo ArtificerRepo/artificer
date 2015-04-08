@@ -36,7 +36,6 @@
             <li><a data-field="back-to-dashboard" href="dashboard.html" data-i18n-key="breadcrumb.dashboard">S-RAMP Dashboard</a> <span class="divider">/<span data-role="dummy"/></span></li>
             <li><a data-field="back-to-artifacts" href="artifacts.html" data-i18n-key="breadcrumb.artifacts">Artifacts</a> <span class="divider">/<span data-role="dummy"/></span></li>
             <li class="active" data-i18n-key="breadcrumb.artifact-details">Artifact Details</li>
-            <li class="pull-right"><a data-field="feed-link" href="#"><i class="icon icon-feed"></i></a></li>
           </ul>
         </div>
 
@@ -51,6 +50,7 @@
               <span class="sramp-artifact-details-title" data-field="core-property-name" data-role="dummy">Artifact 1</span>
               <span class="sramp-artifact-details-version" data-field="core-property-version" data-role="dummy">v1.1.2</span>
               <span class="sramp-artifact-details-type">[<span data-field="core-property-type-1" data-role="dummy">XmlDocument</span>]</span>
+              <span class="pull-right"><a data-field="feed-link" href="#"><i class="icon icon-feed"></i></a></span>
             </span>
             <!-- 
             <div class="btn-group" style="margin-left: 20px; visibility: hidden">
@@ -86,7 +86,7 @@
             <div id="tabContent" class="tab-content sramp-tab-content">
               <!-- Overview Tab -->
               <div class="tab-pane fade in active container-fluid" id="overview">
-                <div class="span6">
+                <div class="span4">
                   <!-- Links Section -->
                   <div class="row-fluid sramp-meta-data-section">
                     <div class="sramp-meta-data-section-header" data-i18n-key="links">Links</div>
@@ -139,7 +139,7 @@
                     </span>
                   </div>
                 </div>
-                <div class="span6">
+                <div class="span4">
                   <!-- Custom Properties -->
                   <div class="row-fluid sramp-meta-data-section">
                     <div class="sramp-meta-data-section-header" data-i18n-key="header.custom-properties">Custom Properties</div>
@@ -186,7 +186,8 @@
                     <button data-field="add-property-button" class="btn btn-mini" data-i18n-key="add-property">Add Property</button>
                     <div class="clearfix"></div>
                   </div>
-
+                </div>
+                <div class="span4">
                   <!-- Classifiers -->
                   <div class="row-fluid sramp-meta-data-section">
                     <div class="sramp-meta-data-section-header" data-i18n-key="header.classifiers">Classifiers</div>
@@ -221,8 +222,7 @@
                         <tr>
                           <th data-i18n-key="column.name">Name</th>
                           <th data-i18n-key="column.type">Type</th>
-                          <th data-i18n-key="column.last-modified" class="desktop-only">Last Modified</th>
-<!--                           <th class="desktop-only">Actions</th> -->
+                          <th data-i18n-key="column.derived">Derived?</th>
                         </tr>
                       </thead>
                       <tbody data-role="dummy">
@@ -232,8 +232,7 @@
                         <tr>
                           <td><a href="artifact-details.html">Master Artifact 0</a></td>
                           <td>WsdlDocument</td>
-                          <td class="desktop-only">02/12/2011</td>
-<!--                           <td class="desktop-only"></td> -->
+                          <td>true</td>
                         </tr>
                         <tr class="sramp-relationship-type">
                           <td colspan="4">Documented By</td>
@@ -241,14 +240,12 @@
                         <tr>
                           <td><a href="artifact-details.html">Documentation Alpha</a></td>
                           <td>OfficeDocument</td>
-                          <td class="desktop-only">03/17/2012</td>
-<!--                           <td class="desktop-only"></td> -->
+                          <td>true</td>
                         </tr>
                         <tr>
                           <td><a href="artifact-details.html">Documentation Beta</a></td>
                           <td>OfficeDocument</td>
-                          <td class="desktop-only">08/21/2012</td>
-<!--                           <td class="desktop-only"></td> -->
+                          <td>true</td>
                         </tr>
                       </tbody>
                     </table>
@@ -264,8 +261,7 @@
                       <tr>
                         <th data-i18n-key="column.name">Name</th>
                         <th data-i18n-key="column.type">Type</th>
-                        <th data-i18n-key="column.last-modified" class="desktop-only">Last Modified</th>
-                        <!--                           <th class="desktop-only">Actions</th> -->
+                        <th data-i18n-key="column.derived">Derived?</th>
                       </tr>
                       </thead>
                       <tbody data-role="dummy">
@@ -275,8 +271,7 @@
                       <tr>
                         <td><a href="artifact-details.html">Master Artifact 0</a></td>
                         <td>WsdlDocument</td>
-                        <td class="desktop-only">02/12/2011</td>
-                        <!--                           <td class="desktop-only"></td> -->
+                        <td>true</td>
                       </tr>
                       <tr class="sramp-relationship-type">
                         <td colspan="4">Documented By</td>
@@ -284,14 +279,12 @@
                       <tr>
                         <td><a href="artifact-details.html">Documentation Alpha</a></td>
                         <td>OfficeDocument</td>
-                        <td class="desktop-only">03/17/2012</td>
-                        <!--                           <td class="desktop-only"></td> -->
+                        <td>true</td>
                       </tr>
                       <tr>
                         <td><a href="artifact-details.html">Documentation Beta</a></td>
                         <td>OfficeDocument</td>
-                        <td class="desktop-only">08/21/2012</td>
-                        <!--                           <td class="desktop-only"></td> -->
+                        <td>true</td>
                       </tr>
                       </tbody>
                     </table>

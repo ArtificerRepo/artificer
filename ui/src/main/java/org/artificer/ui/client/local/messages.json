@@ -62,7 +62,7 @@
   "artifact-details.breadcrumb.artifacts" : "Artifacts",
   "artifact-details.breadcrumb.dashboard" : "Artificer Dashboard",
   "artifact-details.by" : "by",
-  "artifact-details.column.last-modified" : "Last Modified",
+  "artifact-details.column.derived" : "Derived?",
   "artifact-details.column.name" : "Name",
   "artifact-details.column.type" : "Type",
   "artifact-details.date-created" : "Date Created:",

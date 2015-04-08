@@ -15,10 +15,9 @@
  */
 package org.artificer.ui.client.shared.beans;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
+
+import java.io.Serializable;
 
 /**
  *
@@ -33,82 +32,45 @@ public class ArtifactRelationshipBean implements Serializable {
     private String uuid;
     private String name;
     private String type;
-    private Date lastModified;
+    private Boolean derived;
 
-    /**
-     * Constructor.
-     */
-    public ArtifactRelationshipBean() {
-    }
-
-    /**
-     * @return the relationshipType
-     */
     public String getRelationshipType() {
         return relationshipType;
     }
 
-    /**
-     * @return the uuid
-     */
-    public String getUuid() {
-        return uuid;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return the type
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * @return the lastModified
-     */
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    /**
-     * @param relationshipType the relationshipType to set
-     */
     public void setRelationshipType(String relationshipType) {
         this.relationshipType = relationshipType;
     }
 
-    /**
-     * @param uuid the uuid to set
-     */
+    public String getUuid() {
+        return uuid;
+    }
+
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
-    /**
-     * @param name the name to set
-     */
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * @param type the type to set
-     */
+    public String getType() {
+        return type;
+    }
+
     public void setType(String type) {
         this.type = type;
     }
 
-    /**
-     * @param lastModified the lastModified to set
-     */
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
+    public Boolean getDerived() {
+        return derived;
     }
 
+    public void setDerived(Boolean derived) {
+        this.derived = derived;
+    }
 }

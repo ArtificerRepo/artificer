@@ -65,7 +65,7 @@ public class RelationshipResolver {
                     ArtifactType targetArtifactType = ArtifactType.valueOf(targetArtifact);
                     ArtifactRelationshipBean bean = new ArtifactRelationshipBean();
                     bean.setRelationshipType(type);
-                    bean.setLastModified(targetArtifact.getLastModifiedTimestamp().toGregorianCalendar().getTime());
+                    bean.setDerived(targetArtifactType.isDerived());
                     bean.setName(targetArtifact.getName());
                     bean.setUuid(targetUuid);
                     bean.setType(targetArtifactType.getType());
@@ -86,7 +86,7 @@ public class RelationshipResolver {
                 ArtifactRelationshipBean bean = new ArtifactRelationshipBean();
                 bean.setRelationshipType((String) sourceArtifactSummary.getExtensionAttribute(
                         ArtificerConstants.ARTIFICER_RELATIONSHIP_TYPE_QNAME));
-                bean.setLastModified(sourceArtifactSummary.getLastModifiedTimestamp());
+                bean.setDerived(sourceArtifactSummary.getType().isDerived());
                 bean.setName(sourceArtifactSummary.getName());
                 bean.setUuid(sourceArtifactSummary.getUuid());
                 bean.setType(sourceArtifactSummary.getType().getType());
