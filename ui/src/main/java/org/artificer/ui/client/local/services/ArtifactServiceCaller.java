@@ -20,6 +20,7 @@ import org.artificer.ui.client.local.services.callback.DelegatingRemoteCallback;
 import org.artificer.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.artificer.ui.client.shared.beans.ArtifactBean;
 import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
+import org.artificer.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 import org.artificer.ui.client.shared.services.IArtifactService;
@@ -120,6 +121,41 @@ public class ArtifactServiceCaller {
         ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
         try {
             remoteArtifactService.call(successCallback, errorCallback).delete(artifact);
+        } catch (ArtificerUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
+    public void addRelationships(String sourceUuid, ArtifactRelationshipsBean relationships,
+            final IServiceInvocationHandler<Void> handler) {
+        RemoteCallback<Void> successCallback = new DelegatingRemoteCallback<Void>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteArtifactService.call(successCallback, errorCallback).addRelationships(sourceUuid, relationships);
+        } catch (ArtificerUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
+    public void editRelationship(String oldRelationshipType, String newRelationshipType, String sourceUuid, String targetUuid,
+            final IServiceInvocationHandler<Void> handler) {
+        RemoteCallback<Void> successCallback = new DelegatingRemoteCallback<Void>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteArtifactService.call(successCallback, errorCallback).editRelationship(
+                    oldRelationshipType, newRelationshipType, sourceUuid, targetUuid);
+        } catch (ArtificerUiException e) {
+            errorCallback.error(null, e);
+        }
+    }
+
+    public void deleteRelationship(String relationshipType, String sourceUuid, String targetUuid,
+            final IServiceInvocationHandler<Void> handler) {
+        RemoteCallback<Void> successCallback = new DelegatingRemoteCallback<Void>(handler);
+        ErrorCallback<?> errorCallback = new DelegatingErrorCallback(handler);
+        try {
+            remoteArtifactService.call(successCallback, errorCallback).deleteRelationship(
+                    relationshipType, sourceUuid, targetUuid);
         } catch (ArtificerUiException e) {
             errorCallback.error(null, e);
         }

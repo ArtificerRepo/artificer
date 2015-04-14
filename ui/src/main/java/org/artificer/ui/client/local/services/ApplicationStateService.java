@@ -1,7 +1,7 @@
 package org.artificer.ui.client.local.services;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
+import org.overlord.commons.gwt.client.local.widgets.SortableTemplatedWidgetTable;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -13,42 +13,69 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class ApplicationStateService {
 
-	private Map<String, Object> state = new HashMap<String, Object>();
+    // ArtifactsPage
+	private Integer artifactsPage = 1;
+    private ArtifactFilterBean artifactsFilter = new ArtifactFilterBean();
+    private String artifactsSearchText = "";
+    private SortableTemplatedWidgetTable.SortColumn artifactsSortColumn = null;
 
-	/**
-	 * Constructor.
-	 */
-	public ApplicationStateService() {
-	}
+    // ArtifactsDetailsPage add relationship
+    private String newRelationshipSourceUuid = null;
+    private String newRelationshipType = null;
 
-	/**
-	 * Gets application state by key.
-	 * @param key
-	 */
-	public Object get(String key) {
-		return state.get(key);
-	}
+    public Integer getArtifactsPage() {
+        return artifactsPage;
+    }
 
-	/**
-	 * Gets the application state by key, returning the given default if
-	 * not found in the state map.
-	 * @param key
-	 * @param defaultValue
-	 */
-	public Object get(String key, Object defaultValue) {
-		Object value = get(key);
-		if (value == null) {
-			value = defaultValue;
-		}
-		return value;
-	}
+    public void setArtifactsPage(Integer artifactsPage) {
+        this.artifactsPage = artifactsPage;
+    }
 
-	/**
-	 * Store some application state by key.
-	 * @param key
-	 * @param value
-	 */
-	public void put(String key, Object value) {
-		state.put(key, value);
-	}
+    public ArtifactFilterBean getArtifactsFilter() {
+        return artifactsFilter;
+    }
+
+    public void setArtifactsFilter(ArtifactFilterBean artifactsFilter) {
+        this.artifactsFilter = artifactsFilter;
+    }
+
+    public String getArtifactsSearchText() {
+        return artifactsSearchText;
+    }
+
+    public void setArtifactsSearchText(String artifactsSearchText) {
+        this.artifactsSearchText = artifactsSearchText;
+    }
+
+    public SortableTemplatedWidgetTable.SortColumn getArtifactsSortColumn() {
+        return artifactsSortColumn;
+    }
+
+    public SortableTemplatedWidgetTable.SortColumn getArtifactsSortColumn(SortableTemplatedWidgetTable.SortColumn defaultValue) {
+        return artifactsSortColumn != null ? artifactsSortColumn : defaultValue;
+    }
+
+    public void setArtifactsSortColumn(SortableTemplatedWidgetTable.SortColumn artifactsSortColumn) {
+        this.artifactsSortColumn = artifactsSortColumn;
+    }
+
+    public String getNewRelationshipSourceUuid() {
+        return newRelationshipSourceUuid;
+    }
+
+    public void setNewRelationshipSourceUuid(String newRelationshipSourceUuid) {
+        this.newRelationshipSourceUuid = newRelationshipSourceUuid;
+    }
+
+    public String getNewRelationshipType() {
+        return newRelationshipType;
+    }
+
+    public void setNewRelationshipType(String newRelationshipType) {
+        this.newRelationshipType = newRelationshipType;
+    }
+
+    public boolean inNewRelationshipMode() {
+        return newRelationshipSourceUuid != null && newRelationshipType != null;
+    }
 }

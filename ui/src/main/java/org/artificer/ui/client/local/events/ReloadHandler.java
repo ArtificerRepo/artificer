@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2014 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.artificer.ui.client.local.services;
+package org.artificer.ui.client.local.events;
 
 /**
- * Constants used when storing state in the app state service.
+ * Used by components to notify their parent that they need to be refreshed/re-loaded.
  *
- * @author eric.wittmann@redhat.com
+ * @author Brett Meyer.
  */
-public final class ApplicationStateKeys {
+public interface ReloadHandler {
 
-	public static final String ARTIFACTS_FILTER = "artifacts.filter-bean"; //$NON-NLS-1$
-	public static final String ARTIFACTS_PAGE = "artifacts.page"; //$NON-NLS-1$
-	public static final String ARTIFACTS_SEARCH_TEXT = "artifacts.search-text"; //$NON-NLS-1$
-    public static final String ARTIFACTS_SORT_COLUMN = "artifacts.sort-column"; //$NON-NLS-1$
-	
+    public void reload();
 }

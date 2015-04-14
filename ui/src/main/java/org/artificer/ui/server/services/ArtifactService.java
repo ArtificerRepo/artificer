@@ -22,6 +22,8 @@ import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.error.ArtificerServerException;
 import org.artificer.ui.client.shared.beans.ArtifactBean;
 import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
+import org.artificer.ui.client.shared.beans.ArtifactRelationshipBean;
+import org.artificer.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 import org.artificer.ui.client.shared.services.IArtifactService;
@@ -32,10 +34,13 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Comment;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -226,6 +231,79 @@ public class ArtifactService implements IArtifactService {
             throw new ArtificerUiException(e.getMessage());
         } catch (ArtificerServerException e) {
             throw new ArtificerUiException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void addRelationships(String sourceUuid, ArtifactRelationshipsBean relationships)
+            throws ArtificerUiException {
+        try {
+            BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().getArtifactMetaData(sourceUuid);
+            for (ArtifactRelationshipBean relationshipBean : relationships.getRelationships()) {
+                Relationship relationship = new Relationship();
+                relationship.setRelationshipType(relationshipBean.getRelationshipType());
+                Target target = new Target();
+                target.setValue(relationshipBean.getTargetUuid());
+                relationship.getRelationshipTarget().add(target);
+                artifact.getRelationship().add(relationship);
+            }
+            ArtificerApiClientAccessor.getClient().updateArtifactMetaData(artifact);
+        } catch (ArtificerClientException e) {
+            throw new ArtificerUiException(e.getMessage());
+        } catch (ArtificerServerException e) {
+            throw new ArtificerUiException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void editRelationship(String relationshipType, String newRelationshipType, String sourceUuid, String targetUuid)
+            throws ArtificerUiException {
+        try {
+            BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().getArtifactMetaData(sourceUuid);
+
+            doDeleteRelationship(artifact, relationshipType, targetUuid);
+
+            Relationship relationship = new Relationship();
+            relationship.setRelationshipType(newRelationshipType);
+            Target target = new Target();
+            target.setValue(targetUuid);
+            relationship.getRelationshipTarget().add(target);
+            artifact.getRelationship().add(relationship);
+
+            ArtificerApiClientAccessor.getClient().updateArtifactMetaData(artifact);
+        } catch (ArtificerClientException e) {
+            throw new ArtificerUiException(e.getMessage());
+        } catch (ArtificerServerException e) {
+            throw new ArtificerUiException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteRelationship(String relationshipType, String sourceUuid, String targetUuid)
+            throws ArtificerUiException {
+        try {
+            BaseArtifactType artifact = ArtificerApiClientAccessor.getClient().getArtifactMetaData(sourceUuid);
+            doDeleteRelationship(artifact, relationshipType, targetUuid);
+            ArtificerApiClientAccessor.getClient().updateArtifactMetaData(artifact);
+        } catch (ArtificerClientException e) {
+            throw new ArtificerUiException(e.getMessage());
+        } catch (ArtificerServerException e) {
+            throw new ArtificerUiException(e.getMessage());
+        }
+    }
+
+    private void doDeleteRelationship(BaseArtifactType artifact, String relationshipType, String targetUuid) {
+        for (Relationship relationship : artifact.getRelationship()) {
+            if (relationship.getRelationshipType().equals(relationshipType)) {
+                Iterator<Target> itr = relationship.getRelationshipTarget().iterator();
+                while (itr.hasNext()) {
+                    Target target = itr.next();
+                    if (target.getValue().equals(targetUuid)) {
+                        itr.remove();
+                        break;
+                    }
+                }
+            }
         }
     }
 

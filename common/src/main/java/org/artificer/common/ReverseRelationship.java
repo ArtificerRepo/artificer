@@ -31,9 +31,12 @@ public class ReverseRelationship implements Serializable {
 
     private BaseArtifactType sourceArtifact;
 
-    public ReverseRelationship(String relationshipType, BaseArtifactType sourceArtifact) {
+    private Boolean generic;
+
+    public ReverseRelationship(String relationshipType, BaseArtifactType sourceArtifact, Boolean generic) {
         this.relationshipType = relationshipType;
         this.sourceArtifact = sourceArtifact;
+        this.generic = generic;
     }
 
     public String getRelationshipType() {
@@ -50,5 +53,13 @@ public class ReverseRelationship implements Serializable {
 
     public void setSourceArtifact(BaseArtifactType sourceArtifact) {
         this.sourceArtifact = sourceArtifact;
+    }
+
+    public Boolean isGeneric() {
+        return generic;
+    }
+
+    public void setGeneric(Boolean generic) {
+        this.generic = generic;
     }
 }

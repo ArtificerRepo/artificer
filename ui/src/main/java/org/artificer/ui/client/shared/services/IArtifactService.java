@@ -17,6 +17,7 @@ package org.artificer.ui.client.shared.services;
 
 import org.artificer.ui.client.shared.beans.ArtifactBean;
 import org.artificer.ui.client.shared.beans.ArtifactCommentBean;
+import org.artificer.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.artificer.ui.client.shared.beans.ArtifactRelationshipsIndexBean;
 import org.artificer.ui.client.shared.exceptions.ArtificerUiException;
 
@@ -96,5 +97,24 @@ public interface IArtifactService {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     public void delete(ArtifactBean artifact) throws ArtificerUiException;
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("relationship/{sourceUuid}")
+    public void addRelationships(@PathParam("sourceUuid") String sourceUuid, ArtifactRelationshipsBean relationships)
+            throws ArtificerUiException;
+
+    @PUT
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Path("relationship/{relationshipType}/{sourceUuid}/{targetUuid}")
+    public void editRelationship(@PathParam("relationshipType") String relationshipType, String newRelationshipType,
+            @PathParam("sourceUuid") String sourceUuid, @PathParam("targetUuid") String targetUuid)
+            throws ArtificerUiException;
+
+    @DELETE
+    @Path("relationship/{relationshipType}/{sourceUuid}/{targetUuid}")
+    public void deleteRelationship(@PathParam("relationshipType") String relationshipType,
+            @PathParam("sourceUuid") String sourceUuid, @PathParam("targetUuid") String targetUuid)
+            throws ArtificerUiException;
 
 }
