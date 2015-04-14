@@ -56,7 +56,7 @@ public class RelationshipResolver {
         // relationships originating from artifact
         ArtifactVisitorHelper.visitArtifact(new RelationshipArtifactVisitor() {
             @Override
-            protected void visitRelationship(String type, Target target) {
+            protected void visitRelationship(String type, Target target, boolean generic) {
                 if (target == null)
                     return;
                 String targetUuid = target.getValue();
@@ -65,10 +65,11 @@ public class RelationshipResolver {
                     ArtifactType targetArtifactType = ArtifactType.valueOf(targetArtifact);
                     ArtifactRelationshipBean bean = new ArtifactRelationshipBean();
                     bean.setRelationshipType(type);
-                    bean.setDerived(targetArtifactType.isDerived());
-                    bean.setName(targetArtifact.getName());
-                    bean.setUuid(targetUuid);
-                    bean.setType(targetArtifactType.getType());
+                    bean.setTargetDerived(targetArtifactType.isDerived());
+                    bean.setTargetName(targetArtifact.getName());
+                    bean.setTargetUuid(targetUuid);
+                    bean.setTargetType(targetArtifactType.getType());
+                    bean.setRelationshipGeneric(generic);
                     indexedRelationships.addRelationship(bean);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -86,10 +87,13 @@ public class RelationshipResolver {
                 ArtifactRelationshipBean bean = new ArtifactRelationshipBean();
                 bean.setRelationshipType((String) sourceArtifactSummary.getExtensionAttribute(
                         ArtificerConstants.ARTIFICER_RELATIONSHIP_TYPE_QNAME));
-                bean.setDerived(sourceArtifactSummary.getType().isDerived());
-                bean.setName(sourceArtifactSummary.getName());
-                bean.setUuid(sourceArtifactSummary.getUuid());
-                bean.setType(sourceArtifactSummary.getType().getType());
+                String generic = (String) sourceArtifactSummary.getExtensionAttribute(
+                        ArtificerConstants.ARTIFICER_RELATIONSHIP_GENERIC_QNAME);
+                bean.setRelationshipGeneric(Boolean.valueOf(generic));
+                bean.setTargetDerived(sourceArtifactSummary.getType().isDerived());
+                bean.setTargetName(sourceArtifactSummary.getName());
+                bean.setTargetUuid(sourceArtifactSummary.getUuid());
+                bean.setTargetType(sourceArtifactSummary.getType().getType());
                 indexedRelationships.addReverseRelationship(bean);
             }
         } catch (Exception e) {

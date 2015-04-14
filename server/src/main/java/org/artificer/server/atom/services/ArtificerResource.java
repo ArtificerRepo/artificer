@@ -66,9 +66,11 @@ public class ArtificerResource extends AbstractFeedResource {
             BaseArtifactType artifact = relationship.getSourceArtifact();
             ArtifactVisitorHelper.visitArtifact(visitor, artifact);
             Entry entry = visitor.getAtomEntry();
-            // Set the relationship type here
+            // Set the relationship metadata
             entry.getExtensionAttributes().put(ArtificerConstants.ARTIFICER_RELATIONSHIP_TYPE_QNAME,
                     String.valueOf(relationship.getRelationshipType()));
+            entry.getExtensionAttributes().put(ArtificerConstants.ARTIFICER_RELATIONSHIP_GENERIC_QNAME,
+                    String.valueOf(relationship.isGeneric()));
             feed.getEntries().add(entry);
             visitor.reset();
         }

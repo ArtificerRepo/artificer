@@ -29,10 +29,11 @@ public class ArtifactRelationshipBean implements Serializable {
     private static final long serialVersionUID = ArtifactRelationshipBean.class.hashCode();
 
     private String relationshipType;
-    private String uuid;
-    private String name;
-    private String type;
-    private Boolean derived;
+    private String targetUuid;
+    private String targetName;
+    private String targetType;
+    private Boolean targetDerived;
+    private Boolean relationshipGeneric;
 
     public String getRelationshipType() {
         return relationshipType;
@@ -42,35 +43,43 @@ public class ArtifactRelationshipBean implements Serializable {
         this.relationshipType = relationshipType;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getTargetUuid() {
+        return targetUuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setTargetUuid(String targetUuid) {
+        this.targetUuid = targetUuid;
     }
 
-    public String getName() {
-        return name;
+    public String getTargetName() {
+        return targetName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTargetName(String targetName) {
+        this.targetName = targetName;
     }
 
-    public String getType() {
-        return type;
+    public String getTargetType() {
+        return targetType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTargetType(String targetType) {
+        this.targetType = targetType;
     }
 
-    public Boolean getDerived() {
-        return derived;
+    public Boolean getTargetDerived() {
+        return targetDerived;
     }
 
-    public void setDerived(Boolean derived) {
-        this.derived = derived;
+    public void setTargetDerived(Boolean targetDerived) {
+        this.targetDerived = targetDerived;
+    }
+
+    public Boolean getRelationshipGeneric() {
+        return relationshipGeneric;
+    }
+
+    public void setRelationshipGeneric(Boolean relationshipGeneric) {
+        this.relationshipGeneric = relationshipGeneric;
     }
 }

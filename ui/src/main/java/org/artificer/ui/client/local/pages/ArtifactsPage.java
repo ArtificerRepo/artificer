@@ -15,28 +15,37 @@
  */
 package org.artificer.ui.client.local.pages;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.artificer.ui.client.local.ClientMessages;
 import org.artificer.ui.client.local.pages.artifacts.ArtifactFilters;
 import org.artificer.ui.client.local.pages.artifacts.ArtifactsTable;
 import org.artificer.ui.client.local.pages.artifacts.CreateArtifactDialog;
 import org.artificer.ui.client.local.pages.artifacts.ImportArtifactDialog;
-import org.artificer.ui.client.local.services.ApplicationStateKeys;
 import org.artificer.ui.client.local.services.ApplicationStateService;
 import org.artificer.ui.client.local.services.ArtifactSearchServiceCaller;
+import org.artificer.ui.client.local.services.ArtifactServiceCaller;
 import org.artificer.ui.client.local.services.NotificationService;
 import org.artificer.ui.client.local.services.callback.IServiceInvocationHandler;
 import org.artificer.ui.client.local.util.IUploadCompletionHandler;
 import org.artificer.ui.client.shared.beans.ArtifactFilterBean;
+import org.artificer.ui.client.shared.beans.ArtifactRelationshipBean;
+import org.artificer.ui.client.shared.beans.ArtifactRelationshipsBean;
 import org.artificer.ui.client.shared.beans.ArtifactResultSetBean;
 import org.artificer.ui.client.shared.beans.ArtifactSearchBean;
 import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
+import org.artificer.ui.client.shared.beans.NotificationBean;
+import org.jboss.errai.ui.nav.client.local.Navigation;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchor;
@@ -52,6 +61,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The default "Artifacts" page.
@@ -68,9 +79,13 @@ public class ArtifactsPage extends AbstractPage {
     @Inject
     protected ArtifactSearchServiceCaller searchService;
     @Inject
+    protected ArtifactServiceCaller artifactService;
+    @Inject
     protected NotificationService notificationService;
     @Inject
     protected ApplicationStateService stateService;
+    @Inject
+    protected Navigation navigation;
 
     // Breadcrumbs
     @Inject @DataField("back-to-dashboard")
@@ -109,6 +124,12 @@ public class ArtifactsPage extends AbstractPage {
     protected SpanElement rangeSpan2 = Document.get().createSpanElement();
     @DataField("sramp-artifacts-total-2")
     protected SpanElement totalSpan2 = Document.get().createSpanElement();
+
+    @Inject @DataField("add-relationship-instructions")
+    protected InlineLabel addRelationshipInstructions;
+    @Inject @DataField("add-relationship-save")
+    protected Button addRelationshipSave;
+    private List<String> addRelationshipTargets = new ArrayList<>();
 
     private int currentPage = 1;
 
@@ -158,6 +179,60 @@ public class ArtifactsPage extends AbstractPage {
         this.rangeSpan2.setInnerText("?"); //$NON-NLS-1$
         this.totalSpan1.setInnerText("?"); //$NON-NLS-1$
         this.totalSpan2.setInnerText("?"); //$NON-NLS-1$
+
+        if (stateService.inNewRelationshipMode()) {
+            initRelationshipMode();
+        }
+    }
+
+    private void initRelationshipMode() {
+        // in "new relationship" mode -- hide import/create buttons, display instructions, display checkboxes,
+        // and display a "create relationship" button
+        importDialogButton.setVisible(false);
+        createDialogButton.setVisible(false);
+        addRelationshipInstructions.getElement().removeClassName("hide");
+        addRelationshipInstructions.setText(i18n.format("artifacts.add-relationship-instructions",
+                stateService.getNewRelationshipType()));
+        addRelationshipSave.getElement().removeClassName("hide");
+        addRelationshipSave.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                ArtifactRelationshipsBean relationships = new ArtifactRelationshipsBean();
+                for (String target : addRelationshipTargets) {
+                    ArtifactRelationshipBean relationship = new ArtifactRelationshipBean();
+                    relationship.setRelationshipType(stateService.getNewRelationshipType());
+                    relationship.setTargetUuid(target);
+                    relationships.getRelationships().add(relationship);
+                }
+
+                final NotificationBean notificationBean = notificationService.startProgressNotification(
+                        i18n.format("artifacts.adding-relationship"),
+                        i18n.format("artifacts.adding-relationship-msg", stateService.getNewRelationshipType()));
+                artifactService.addRelationships(stateService.getNewRelationshipSourceUuid(), relationships,
+                        new IServiceInvocationHandler<Void>() {
+                            @Override
+                            public void onReturn(Void data) {
+                                notificationService.completeProgressNotification(notificationBean.getUuid(),
+                                        i18n.format("artifacts.add-relationship-success"),
+                                        i18n.format("artifacts.add-relationship-success-msg", stateService.getNewRelationshipType()));
+                                addRelationshipRedirect();
+                            }
+
+                            @Override
+                            public void onError(Throwable error) {
+                                notificationService.completeProgressNotification(notificationBean.getUuid(),
+                                        i18n.format("artifacts.add-relationship-error"), error);
+                                addRelationshipRedirect();
+                            }
+                        });
+            }
+        });
+    }
+
+    private void addRelationshipRedirect() {
+        // navigate back to the artifact details page
+        Multimap<String, String> multimap = ImmutableMultimap.of("uuid", stateService.getNewRelationshipSourceUuid());
+        navigation.goTo(ArtifactDetailsPage.class, multimap);
     }
 
     /**
@@ -212,9 +287,9 @@ public class ArtifactsPage extends AbstractPage {
      */
     @Override
     protected void onPageShowing() {
-        ArtifactFilterBean filterBean = (ArtifactFilterBean) stateService.get(ApplicationStateKeys.ARTIFACTS_FILTER, new ArtifactFilterBean());
-        String searchText = (String) stateService.get(ApplicationStateKeys.ARTIFACTS_SEARCH_TEXT, ""); //$NON-NLS-1$
-        SortColumn sortColumn = (SortColumn) stateService.get(ApplicationStateKeys.ARTIFACTS_SORT_COLUMN, artifactsTable.getDefaultSortColumn());
+        ArtifactFilterBean filterBean = stateService.getArtifactsFilter();
+        String searchText = stateService.getArtifactsSearchText();
+        SortColumn sortColumn = stateService.getArtifactsSortColumn(artifactsTable.getDefaultSortColumn());
 
         this.filtersPanel.setValue(filterBean);
     	this.searchBox.setValue(searchText);
@@ -226,7 +301,7 @@ public class ArtifactsPage extends AbstractPage {
 
     @PageShown
     public void onPageShown() {
-        Integer page = (Integer) stateService.get(ApplicationStateKeys.ARTIFACTS_PAGE, 1);
+        Integer page = stateService.getArtifactsPage();
         // Kick off an artifact search
         doArtifactSearch(page);
     }
@@ -235,7 +310,7 @@ public class ArtifactsPage extends AbstractPage {
     // that are not supported by GWT emulation.  So, for now, offloading to the server-side services.
     protected void populateQueryBox() {
         final ArtifactFilterBean filterBean = filtersPanel.getValue();
-        stateService.put(ApplicationStateKeys.ARTIFACTS_FILTER, filterBean);
+        stateService.setArtifactsFilter(filterBean);
 
         searchService.query(filterBean, new IServiceInvocationHandler<String>() {
             @Override
@@ -273,9 +348,9 @@ public class ArtifactsPage extends AbstractPage {
         }
         final SortColumn currentSortColumn = this.artifactsTable.getCurrentSortColumn();
 
-        stateService.put(ApplicationStateKeys.ARTIFACTS_SEARCH_TEXT, searchText);
-        stateService.put(ApplicationStateKeys.ARTIFACTS_PAGE, currentPage);
-        stateService.put(ApplicationStateKeys.ARTIFACTS_SORT_COLUMN, currentSortColumn);
+        stateService.setArtifactsSearchText(searchText);
+        stateService.setArtifactsPage(currentPage);
+        stateService.setArtifactsSortColumn(currentSortColumn);
         
         ArtifactSearchBean searchBean = new ArtifactSearchBean();
         searchBean.setQueryText(searchText);
@@ -320,8 +395,30 @@ public class ArtifactsPage extends AbstractPage {
         this.artifactsTable.clear();
         this.searchInProgressMessage.setVisible(false);
         if (data.getArtifacts().size() > 0) {
-            for (ArtifactSummaryBean artifactSummaryBean : data.getArtifacts()) {
-                this.artifactsTable.addRow(artifactSummaryBean);
+            for (final ArtifactSummaryBean artifactSummaryBean : data.getArtifacts()) {
+                // If in "new relationship" mode, add checkboxes to the last column.  Maintain the target list
+                // based on the clicks.
+                if (stateService.inNewRelationshipMode()) {
+                    final CheckBox checkbox = new CheckBox();
+                    boolean checked = addRelationshipTargets.contains(artifactSummaryBean.getUuid());
+                    checkbox.setValue(checked);
+
+                    checkbox.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            boolean checked = checkbox.getValue();
+                            if (checked) {
+                                addRelationshipTargets.add(artifactSummaryBean.getUuid());
+                            } else {
+                                addRelationshipTargets.remove(artifactSummaryBean.getUuid());
+                            }
+                        }
+                    });
+
+                    this.artifactsTable.addRow(artifactSummaryBean, checkbox);
+                } else {
+                    this.artifactsTable.addRow(artifactSummaryBean);
+                }
             }
             this.artifactsTable.setVisible(true);
             // Important to set this here.  If you click on a search suggestion, filtersPanel's ValueChangeHandler

@@ -16,22 +16,105 @@
 package org.artificer.repository.jcr.mapper;
 
 import org.apache.commons.lang.StringUtils;
-import org.artificer.repository.jcr.JCRConstants;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.*;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.visitors.HierarchicalArtifactVisitor;
 import org.artificer.repository.jcr.ClassificationHelper;
+import org.artificer.repository.jcr.JCRConstants;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationFaultEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationInputEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperationOutputEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ComplexTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.EffectTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Element;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementDeclarationEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ElementTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.EventTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Fault;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.FaultEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.InformationTypeTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Message;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.MessageEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.NamedWsdlDerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Operation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationInputEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutput;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.OperationOutputEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Organization;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Part;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PartEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Policy;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicySubjectTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PolicyTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Port;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.PortTypeEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Service;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContract;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceContractTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceEndpoint;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceImplementationModelTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceImplementationModelType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInstance;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterface;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceInterfaceTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceOperation;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ServiceTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoaModelType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Target;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.TaskTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocumentEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlExtensionEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlService;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocumentEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdTypeEnum;
 
-import javax.jcr.*;
+import javax.jcr.AccessDeniedException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 import javax.xml.namespace.QName;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * An artifact visitor used to update a JCR node.  This class is responsible
@@ -305,28 +388,22 @@ public class ArtifactToJCRNodeVisitor extends HierarchicalArtifactVisitor {
 	 * @throws RepositoryException
 	 */
 	private void updateGenericRelationships(BaseArtifactType artifact) throws Exception {
-		// Create/Update all the relationships included in the artifact
-		Set<String> updatedRelationshipTypes = new HashSet<String>();
-		for (Relationship relationship : artifact.getRelationship()) {
-			setRelationships(relationship.getRelationshipType(), -1, 0, true, false,
-					relationship.getRelationshipTarget(), Collections.EMPTY_LIST, relationship.getOtherAttributes());
-			updatedRelationshipTypes.add(relationship.getRelationshipType());
-		}
-
-		// Now remove any relationships that weren't just updated or created (the ones
-		// not included on the artifact but that have existing JCR nodes).
+		// To make this simple, first bulk-delete all relationships under this artifact.
 		NodeIterator existingNodes = this.jcrNode.getNodes();
 		while (existingNodes.hasNext()) {
 			Node node = existingNodes.nextNode();
 			// Only remove generic relationships
 			if (node.isNodeType(JCRConstants.SRAMP_RELATIONSHIP) && node.hasProperty(JCRConstants.SRAMP_GENERIC)
 					&& node.getProperty(JCRConstants.SRAMP_GENERIC).getBoolean()) {
-				String type = node.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TYPE).getString();
-				// If this relationship type was *not* updated above, then remove it because
-				// it's not included in the latest artifact meta-data
-				if (!updatedRelationshipTypes.contains(type)) {
-					node.remove();
-				}
+				node.remove();
+			}
+		}
+
+		// Now (re-)create all the relationships
+		for (Relationship relationship : artifact.getRelationship()) {
+			if (relationship.getRelationshipTarget().size() > 0) {
+				setRelationships(relationship.getRelationshipType(), -1, 0, true, false,
+						relationship.getRelationshipTarget(), Collections.EMPTY_LIST, relationship.getOtherAttributes());
 			}
 		}
 	}

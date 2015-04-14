@@ -718,3 +718,8 @@ ul.ontology-selector {
 #fileupload-import .uneditable-input, #fileupload-upload .uneditable-input {
   width: 60%;
 }
+
+
+.add-relationship-instructions {
+    font-weight: bold;
+}

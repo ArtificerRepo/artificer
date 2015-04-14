@@ -36,7 +36,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -435,17 +434,8 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         uuid1 = artifact.getUuid();
         contentStream.close();
 
-        // Now update the artifact's generic relationships
         artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument());
         assertTrue("Expected 0 relationships.", artifact.getRelationship().isEmpty());
-        ArtificerModelUtils.addGenericRelationship(artifact, "NoTargetRelationship", null);
-        persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
-
-        // Now verify that the relationship was stored
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
-        Assert.assertEquals("Expected 1 relationship.", 1, artifact.getRelationship().size());
-        Assert.assertEquals("NoTargetRelationship", artifact.getRelationship().get(0).getRelationshipType());
-        Assert.assertEquals(Collections.EMPTY_LIST, artifact.getRelationship().get(0).getRelationshipTarget());
 
         // Add a second artifact.
         artifactFileName = "XMLSchema.xsd";
@@ -457,18 +447,14 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         Assert.assertNotNull(artifact2);
         uuid2 = artifact2.getUuid();
 
-        // Add a second relationship, this time with a target.
+        // Add a relationship
         ArtificerModelUtils.addGenericRelationship(artifact, "TargetedRelationship", uuid2);
         persistenceManager.updateArtifact(artifact, ArtifactType.XsdDocument());
 
         // Now verify that the targeted relationship was stored
         artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument());
-        Assert.assertEquals("Expected 2 relationships.", 2, artifact.getRelationship().size());
-        Relationship relationship = ArtificerModelUtils.getGenericRelationship(artifact, "NoTargetRelationship");
-        Assert.assertNotNull(relationship);
-        Assert.assertEquals("NoTargetRelationship", relationship.getRelationshipType());
-        Assert.assertEquals(Collections.EMPTY_LIST, relationship.getRelationshipTarget());
-        relationship = ArtificerModelUtils.getGenericRelationship(artifact, "TargetedRelationship");
+        Assert.assertEquals("Expected 1 relationship.", 1, artifact.getRelationship().size());
+        Relationship relationship = ArtificerModelUtils.getGenericRelationship(artifact, "TargetedRelationship");
         Assert.assertNotNull(relationship);
         Assert.assertEquals("TargetedRelationship", relationship.getRelationshipType());
         Assert.assertEquals(1, relationship.getRelationshipTarget().size()); // has only one target
@@ -490,11 +476,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // More verifications
         artifact = persistenceManager.getArtifact(uuid1, ArtifactType.XsdDocument());
-        Assert.assertEquals("Expected 2 relationships.", 2, artifact.getRelationship().size());
-        relationship = ArtificerModelUtils.getGenericRelationship(artifact, "NoTargetRelationship");
-        Assert.assertNotNull(relationship);
-        Assert.assertEquals("NoTargetRelationship", relationship.getRelationshipType());
-        Assert.assertEquals(Collections.EMPTY_LIST, relationship.getRelationshipTarget());
+        Assert.assertEquals("Expected 1 relationships.", 1, artifact.getRelationship().size());
         relationship = ArtificerModelUtils.getGenericRelationship(artifact, "TargetedRelationship");
         Assert.assertNotNull(relationship);
         Assert.assertEquals("TargetedRelationship", relationship.getRelationshipType());

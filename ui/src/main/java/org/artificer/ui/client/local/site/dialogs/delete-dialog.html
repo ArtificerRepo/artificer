@@ -24,15 +24,15 @@
 
   <body>
     <!-- Delete Artifact dialog -->
-    <div class="modal hide" data-field="delete-artifact-dialog" id="delete-artifact-dialog">
+    <div class="modal hide" data-field="delete-dialog" id="delete-dialog">
       <div class="modal-header">
         <button aria-hidden="true" class="close" data-dismiss="modal" type="button">&times;<span data-role="dummy"/></button>
-        <h4 data-i18n-key="dialog.delete.title">Delete Artifact</h4>
+        <h4 data-i18n-key="dialog.delete.title">Delete</h4>
       </div>
       <div class="modal-body">
         <p>
-          <span data-i18n-key="delete-confirm">Are you sure you want to delete artifact</span>
-          <span data-field="artifact-name" data-role="dummy">Artifact Name</span>
+          <span data-i18n-key="delete-confirm">Are you sure you want to delete</span>
+          <span data-field="label" data-role="dummy">Artifact Name</span>
           <span data-i18n-key="delete-confirm-punc">?</span>
         </p>
       </div>
@@ -43,7 +43,7 @@
     </div>
 
     <script>
-      $('#delete-artifact-dialog').modal({keyboard:false,backdrop:'static'});
+      $('#delete-dialog').modal({keyboard:false,backdrop:'static'});
     </script>
 
   </body>

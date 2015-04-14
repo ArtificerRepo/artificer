@@ -125,7 +125,6 @@ public class NotificationService {
      * Sends an warning notification to the user.
      * @param title
      * @param message
-     * @param exception
      */
     public final void sendWarningNotification(String title, String message) {
         NotificationBean bean = new NotificationBean();

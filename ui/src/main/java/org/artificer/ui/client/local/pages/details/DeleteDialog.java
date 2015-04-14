@@ -15,41 +15,34 @@
  */
 package org.artificer.ui.client.local.pages.details;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.InlineLabel;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.overlord.commons.gwt.client.local.widgets.ModalDialog;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 /**
- * Dialog that allows the user to delete an artifact.
+ * Dialog that allows the user to delete *something*.
  *
  * @author eric.wittmann@redhat.com
  */
-@Templated("/org/artificer/ui/client/local/site/dialogs/delete-artifact-dialog.html#delete-artifact-dialog")
+@Templated("/org/artificer/ui/client/local/site/dialogs/delete-dialog.html#delete-dialog")
 @Dependent
-public class DeleteArtifactDialog extends ModalDialog implements HasClickHandlers {
+public class DeleteDialog extends ModalDialog implements HasClickHandlers {
 
-    @Inject @DataField("artifact-name")
-    protected InlineLabel artifactName;
+    @Inject @DataField("label")
+    protected InlineLabel label;
     @Inject @DataField("delete-artifact-submit-button")
     protected Button submitButton;
-
-    /**
-     * Constructor.
-     */
-    public DeleteArtifactDialog() {
-    }
 
     /**
      * Called when the dialog is constructed by Errai.
@@ -58,12 +51,8 @@ public class DeleteArtifactDialog extends ModalDialog implements HasClickHandler
     protected void onPostConstruct() {
     }
 
-    /**
-     * Sets the artifact name in the dialog UI.
-     * @param name
-     */
-    public void setArtifactName(String name) {
-        this.artifactName.setText(name);
+    public void setLabel(String label) {
+        this.label.setText(label);
     }
 
     /**

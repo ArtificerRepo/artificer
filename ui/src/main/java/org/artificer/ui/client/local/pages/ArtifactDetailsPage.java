@@ -26,15 +26,19 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import org.artificer.ui.client.local.ClientMessages;
+import org.artificer.ui.client.local.events.ReloadHandler;
 import org.artificer.ui.client.local.pages.artifacts.CommentsPanel;
 import org.artificer.ui.client.local.pages.details.AddCustomPropertyDialog;
+import org.artificer.ui.client.local.pages.details.AddRelationshipDialog;
 import org.artificer.ui.client.local.pages.details.ClassifiersPanel;
 import org.artificer.ui.client.local.pages.details.CustomPropertiesPanel;
-import org.artificer.ui.client.local.pages.details.DeleteArtifactDialog;
+import org.artificer.ui.client.local.pages.details.DeleteDialog;
 import org.artificer.ui.client.local.pages.details.DescriptionInlineLabel;
 import org.artificer.ui.client.local.pages.details.ModifyClassifiersDialog;
+import org.artificer.ui.client.local.pages.details.RelationshipActionHandler;
 import org.artificer.ui.client.local.pages.details.RelationshipsTable;
 import org.artificer.ui.client.local.pages.details.SourceEditor;
+import org.artificer.ui.client.local.services.ApplicationStateService;
 import org.artificer.ui.client.local.services.ArtifactServiceCaller;
 import org.artificer.ui.client.local.services.NotificationService;
 import org.artificer.ui.client.local.services.callback.IServiceInvocationHandler;
@@ -49,6 +53,7 @@ import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.databinding.client.api.InitialState;
 import org.jboss.errai.databinding.client.api.PropertyChangeEvent;
 import org.jboss.errai.databinding.client.api.PropertyChangeHandler;
+import org.jboss.errai.ui.nav.client.local.Navigation;
 import org.jboss.errai.ui.nav.client.local.Page;
 import org.jboss.errai.ui.nav.client.local.PageShown;
 import org.jboss.errai.ui.nav.client.local.PageState;
@@ -87,6 +92,11 @@ public class ArtifactDetailsPage extends AbstractPage {
     protected ArtifactServiceCaller artifactService;
     @Inject
     protected NotificationService notificationService;
+    @Inject
+    protected ApplicationStateService stateService;
+    @Inject
+    private Navigation navigation;
+
     protected ArtifactBean currentArtifact;
 
     @PageState
@@ -108,7 +118,7 @@ public class ArtifactDetailsPage extends AbstractPage {
     @Inject  @DataField("btn-delete")
     Button deleteButton;
     @Inject
-    DeleteArtifactDialog deleteDialog;
+    DeleteDialog deleteDialog;
 
     // Overview tab
     @Inject @DataField("core-property-name") @Bound(property="name")
@@ -163,6 +173,10 @@ public class ArtifactDetailsPage extends AbstractPage {
     InlineLabel relationshipsHeader;
     @Inject @DataField("reverse-relationships-header")
     InlineLabel reverseRelationshipsHeader;
+    @Inject @DataField("btn-add-relationship")
+    Button addRelationshipButton;
+    @Inject
+    Instance<AddRelationshipDialog> addRelationshipDialogFactory;
     protected boolean relationshipsLoaded;
     
     // Comments tab
@@ -312,7 +326,7 @@ public class ArtifactDetailsPage extends AbstractPage {
      */
     @EventHandler("btn-delete")
     protected void onDeleteClick(ClickEvent event) {
-        deleteDialog.setArtifactName(artifact.getModel().getName());
+        deleteDialog.setLabel(artifact.getModel().getName());
         deleteDialog.show();
     }
 
@@ -368,24 +382,101 @@ public class ArtifactDetailsPage extends AbstractPage {
     protected void loadRelationships(final ArtifactBean artifact) {
         relationships.setVisible(false);
         relationshipsTabProgress.setVisible(true);
+        relationshipsHeader.setText("Targeted by " + artifact.getName());
+        reverseRelationshipsHeader.setText("Targets " + artifact.getName());
+        relationshipsTabProgress.setVisible(false);
+        relationships.setVisible(true);
+        reverseRelationships.setVisible(true);
+        relationshipsLoaded = true;
+
+        relationships.setRelationshipActionHandler(new RelationshipActionHandler() {
+            @Override
+            public void editRelationship(String oldRelationshipType, String newRelationshipType, String uuid,
+                    IServiceInvocationHandler<Void> deleteArtifactHandler) {
+                // delete relationships originating from this artifact
+                artifactService.editRelationship(oldRelationshipType, newRelationshipType, artifact.getUuid(), uuid,
+                        deleteArtifactHandler);
+            }
+
+            @Override
+            public void deleteRelationship(String relationshipType, String uuid,
+                    IServiceInvocationHandler<Void> deleteArtifactHandler) {
+                // delete relationships originating from this artifact
+                artifactService.deleteRelationship(relationshipType, artifact.getUuid(), uuid,
+                        deleteArtifactHandler);
+            }
+        });
+
+        reverseRelationships.setRelationshipActionHandler(new RelationshipActionHandler() {
+            @Override
+            public void editRelationship(String oldRelationshipType, String newRelationshipType, String uuid,
+                    IServiceInvocationHandler<Void> deleteArtifactHandler) {
+                // delete relationships originating from this artifact
+                artifactService.editRelationship(oldRelationshipType, newRelationshipType, uuid, artifact.getUuid(),
+                        deleteArtifactHandler);
+            }
+
+            @Override
+            public void deleteRelationship(String relationshipType, String uuid,
+                    IServiceInvocationHandler<Void> deleteArtifactHandler) {
+                // delete relationships targeting this artifact
+                artifactService.deleteRelationship(relationshipType, uuid, artifact.getUuid(),
+                        deleteArtifactHandler);
+            }
+        });
+
+        relationships.setReloadHandler(new ReloadHandler() {
+            @Override
+            public void reload() {
+                doLoadRelationships(artifact);
+            }
+        });
+
+        reverseRelationships.setReloadHandler(new ReloadHandler() {
+            @Override
+            public void reload() {
+                doLoadRelationships(artifact);
+            }
+        });
+
+        doLoadRelationships(artifact);
+    }
+
+    private void doLoadRelationships(final ArtifactBean artifact) {
         artifactService.getRelationships(artifact.getUuid(), artifact.getType(), new IServiceInvocationHandler<ArtifactRelationshipsIndexBean>() {
             @Override
             public void onReturn(ArtifactRelationshipsIndexBean data) {
-                relationshipsHeader.setText("Targeted by " + artifact.getName());
-                reverseRelationshipsHeader.setText("Targets " + artifact.getName());
-
                 relationships.setValue(data.getRelationships());
                 reverseRelationships.setValue(data.getReverseRelationships());
-                relationshipsTabProgress.setVisible(false);
-                relationships.setVisible(true);
-                reverseRelationships.setVisible(true);
-                relationshipsLoaded = true;
             }
             @Override
             public void onError(Throwable error) {
                 notificationService.sendErrorNotification(i18n.format("artifact-details.error-getting-relationships"), error);
             }
         });
+    }
+
+    /**
+     * Called when the user clicks the Add Relationship button.
+     * @param event
+     */
+    @EventHandler("btn-add-relationship")
+    protected void onAddRelationship(ClickEvent event) {
+        AddRelationshipDialog dialog = addRelationshipDialogFactory.get();
+        dialog.addValueChangeHandler(new ValueChangeHandler<String>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String relationshipType = event.getValue();
+                if (relationshipType != null) {
+                    // set the app into "new relationship" mode
+                    stateService.setNewRelationshipSourceUuid(uuid);
+                    stateService.setNewRelationshipType(relationshipType);
+                    // redirect to artifacts page
+                    navigation.goTo("ArtifactsPage");
+                }
+            }
+        });
+        dialog.show();
     }
 
     /**
@@ -431,6 +522,17 @@ public class ArtifactDetailsPage extends AbstractPage {
 
         artifactLoading.getElement().addClassName("hide");
         pageContent.removeClassName("hide");
+
+        if (stateService.inNewRelationshipMode() && stateService.getNewRelationshipSourceUuid().equals(uuid)) {
+            // ie, we've just gotten back from selecting relationship targets and saving it -- go directly to that tab
+            // TODO: Doesn't work.
+            // TODO: Consider just reloading the relationships, then showing a success message?
+//            relationshipsTabAnchor.fireEvent(new ClickEvent(){});
+
+            // reset the state
+            stateService.setNewRelationshipType(null);
+            stateService.setNewRelationshipSourceUuid(null);
+        }
     }
 
     /**

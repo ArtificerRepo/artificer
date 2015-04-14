@@ -53,7 +53,9 @@ public class ArtificerConstants {
     public static final QName SRAMP_ITEMS_PER_PAGE_QNAME  = new QName(SRAMP_NS, SRAMP_ITEMS_PER_PAGE_INDEX, SRAMP_PREFIX);
     public static final QName SRAMP_TOTAL_RESULTS_QNAME   = new QName(SRAMP_NS, SRAMP_TOTAL_RESULTS, SRAMP_PREFIX);
 
+    public static final String ARTIFICER_RELATIONSHIP_GENERIC = "relationshipGeneric";
     public static final String ARTIFICER_RELATIONSHIP_TYPE = "relationshipType";
+    public static final QName ARTIFICER_RELATIONSHIP_GENERIC_QNAME = new QName(ARTIFICER_NS, ARTIFICER_RELATIONSHIP_GENERIC, ARTIFICER_PREFIX);
     public static final QName ARTIFICER_RELATIONSHIP_TYPE_QNAME = new QName(ARTIFICER_NS, ARTIFICER_RELATIONSHIP_TYPE, ARTIFICER_PREFIX);
 
     // Configuration constants

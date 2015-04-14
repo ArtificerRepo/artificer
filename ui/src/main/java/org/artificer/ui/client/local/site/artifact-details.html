@@ -52,7 +52,7 @@
               <span class="sramp-artifact-details-type">[<span data-field="core-property-type-1" data-role="dummy">XmlDocument</span>]</span>
               <span class="pull-right"><a data-field="feed-link" href="#"><i class="icon icon-feed"></i></a></span>
             </span>
-            <!-- 
+            <!--
             <div class="btn-group" style="margin-left: 20px; visibility: hidden">
               <button class="btn">Actions</button>
               <button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -217,6 +217,8 @@
 
                 <div class="row-fluid sramp-meta-data-section">
                   <div class="span12">
+                    <button data-field="btn-add-relationship" class="btn pull-right" data-i18n-key="add-relationship">Add Relationship</button>
+                    <div class="clearfix"></div>
                     <div class="sramp-meta-data-section-header"><span data-field="relationships-header" data-role="dummy">Targeted by Artifact 1</span></div>
                     <table data-field="relationships-table" style="" class="sramp-relationship-table table table-condensed table-bordered">
                       <thead>
@@ -224,6 +226,7 @@
                           <th data-i18n-key="column.name">Name</th>
                           <th data-i18n-key="column.type">Type</th>
                           <th data-i18n-key="column.derived">Derived?</th>
+                          <th></th>
                         </tr>
                       </thead>
                       <tbody data-role="dummy">
@@ -234,6 +237,18 @@
                           <td><a href="artifact-details.html">Master Artifact 0</a></td>
                           <td>WsdlDocument</td>
                           <td>true</td>
+                          <td>
+                            <div class="btn-group">
+                              <button class="btn">Actions</button>
+                              <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a>Edit</a></li>
+                                <li><a>Delete</a></li>
+                              </ul>
+                            </div>
+                          </td>
                         </tr>
                         <tr class="sramp-relationship-type">
                           <td colspan="4">Documented By</td>
@@ -263,6 +278,7 @@
                         <th data-i18n-key="column.name">Name</th>
                         <th data-i18n-key="column.type">Type</th>
                         <th data-i18n-key="column.derived">Derived?</th>
+                        <th></th>
                       </tr>
                       </thead>
                       <tbody data-role="dummy">

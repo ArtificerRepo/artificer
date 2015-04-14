@@ -27,9 +27,6 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,9 +64,10 @@ public class JCRQueryManager extends JCRAbstractManager implements QueryManager 
             while (relationshipNodes.hasNext()) {
                 Node relationshipNode = relationshipNodes.nextNode();
                 String relationshipType = relationshipNode.getProperty(JCRConstants.SRAMP_RELATIONSHIP_TYPE).getString();
+                boolean generic = relationshipNode.getProperty(JCRConstants.SRAMP_GENERIC).getBoolean();
                 Node artifactNode = relationshipNode.getParent();
                 BaseArtifactType artifact = JCRNodeToArtifactFactory.createArtifact(session, artifactNode);
-                ReverseRelationship relationship = new ReverseRelationship(relationshipType, artifact);
+                ReverseRelationship relationship = new ReverseRelationship(relationshipType, artifact, generic);
                 relationships.add(relationship);
             }
             return relationships;

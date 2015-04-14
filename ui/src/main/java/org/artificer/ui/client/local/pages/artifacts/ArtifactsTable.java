@@ -15,18 +15,18 @@
  */
 package org.artificer.ui.client.local.pages.artifacts;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Widget;
+import org.artificer.ui.client.local.pages.ArtifactDetailsPage;
 import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
 import org.artificer.ui.client.shared.beans.Constants;
 import org.jboss.errai.ui.nav.client.local.TransitionAnchorFactory;
 import org.overlord.commons.gwt.client.local.widgets.SortableTemplatedWidgetTable;
-import org.artificer.ui.client.local.pages.ArtifactDetailsPage;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.InlineLabel;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 /**
  * A table of artifacts.
@@ -60,11 +60,11 @@ public class ArtifactsTable extends SortableTemplatedWidgetTable {
         sortBy(Constants.SORT_COLID_NAME, true);
     }
 
-    /**
-     * Adds a single row to the table.
-     * @param artifactSummaryBean
-     */
     public void addRow(final ArtifactSummaryBean artifactSummaryBean) {
+        addRow(artifactSummaryBean, new InlineLabel(""));
+    }
+
+    public void addRow(final ArtifactSummaryBean artifactSummaryBean, Widget extraColumnWidget) {
         int rowIdx = this.rowElements.size();
         DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy"); //$NON-NLS-1$
 
@@ -73,13 +73,12 @@ public class ArtifactsTable extends SortableTemplatedWidgetTable {
         InlineLabel type = new InlineLabel(artifactSummaryBean.getType());
         InlineLabel derived = new InlineLabel(artifactSummaryBean.isDerived() ? "true" : ""); //$NON-NLS-1$ //$NON-NLS-2$
         InlineLabel modified = new InlineLabel(format.format(artifactSummaryBean.getUpdatedOn()));
-//        InlineLabel actions = new InlineLabel("");
 
         add(rowIdx, 0, name);
         add(rowIdx, 1, type);
         add(rowIdx, 2, derived);
         add(rowIdx, 3, modified);
-//        add(rowIdx, 4, actions);
+        add(rowIdx, 4, extraColumnWidget);
     }
 
 }
