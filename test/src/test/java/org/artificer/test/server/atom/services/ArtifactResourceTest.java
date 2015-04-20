@@ -709,7 +709,6 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		String uuid = xsdDocument.getUuid();
 		xsdDocument.setDescription("** Updated description! **"); //$NON-NLS-1$
 		ArtificerModelUtils.setCustomProperty(xsdDocument, "my.property", "Hello World"); //$NON-NLS-1$ //$NON-NLS-2$
-		ArtificerModelUtils.addGenericRelationship(xsdDocument, "NoTargetRel", null); //$NON-NLS-1$
 
 		Artifact arty = new Artifact();
 		arty.setXsdDocument(xsdDocument);
@@ -733,7 +732,6 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		Assert.assertEquals("** Updated description! **", xsdDocument.getDescription()); //$NON-NLS-1$
 		Assert.assertEquals("Hello World", ArtificerModelUtils.getCustomProperty(xsdDocument, "my.property")); //$NON-NLS-1$ //$NON-NLS-2$
 		Assert.assertNull(ArtificerModelUtils.getCustomProperty(xsdDocument, "my.missing.property")); //$NON-NLS-1$
-		Assert.assertNotNull(ArtificerModelUtils.getGenericRelationship(xsdDocument, "NoTargetRel")); //$NON-NLS-1$
 		Assert.assertNull(ArtificerModelUtils.getGenericRelationship(xsdDocument, "MissingRel")); //$NON-NLS-1$
 	}
 
