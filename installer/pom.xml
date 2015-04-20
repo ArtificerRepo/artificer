@@ -380,7 +380,7 @@
                     <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
 
                     <property file="build.properties" />
-                    <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.4.0.Beta.zip" />
+                    <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.4.0.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
                       <include name="*.sh" />
