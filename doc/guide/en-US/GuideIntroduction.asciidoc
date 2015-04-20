@@ -19,7 +19,7 @@ Overview
 ~~~~~~~~
 
 In steps Artificer.  Artificer is a software artifact, logical metadata, and information repository.  It consists of a
-common data model, multiple interfaces, useful tools, and exensibility.  In less words?
+common data model, multiple interfaces, useful tools, and extensibility.  In less words?
 It's a powerful platform that *untangles everything*.
 
 
