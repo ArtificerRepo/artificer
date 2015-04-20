@@ -10,7 +10,7 @@
   <property name="filename.eap63" value="jboss-eap-6.3.0.zip" />
   <property name="dir.eap63" value="jboss-eap-6.3" />
 
-  <property name="filename.eap64" value="jboss-eap-6.4.0.Beta.zip" />
+  <property name="filename.eap64" value="jboss-eap-6.4.0.zip" />
   <property name="dir.eap64" value="jboss-eap-6.4" />
 
   <property name="filename.wildfly8" value="wildfly-8.2.0.Final.zip" />
