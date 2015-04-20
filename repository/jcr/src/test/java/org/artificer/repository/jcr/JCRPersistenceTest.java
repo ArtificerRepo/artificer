@@ -541,7 +541,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
 
         // Now delete that artifact
         ArtifactType at = ArtifactType.valueOf(artifact);
-        persistenceManager.deleteArtifact(document.getUuid(), at);
+        persistenceManager.deleteArtifact(document.getUuid(), at, false);
 
         // Now make sure we can't load it back up
         BaseArtifactType deleted = persistenceManager.getArtifact(document.getUuid(), at);
@@ -557,7 +557,7 @@ public class JCRPersistenceTest extends AbstractNoAuditingJCRPersistenceTest {
         pdf = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
         BaseArtifactType artifact2 = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
         Assert.assertEquals(artifact.getUuid(), artifact2.getUuid());
-        persistenceManager.deleteArtifact(document.getUuid(), at);
+        persistenceManager.deleteArtifact(document.getUuid(), at, false);
         deleted = persistenceManager.getArtifact(document.getUuid(), at);
         Assert.assertNull(deleted);
     }

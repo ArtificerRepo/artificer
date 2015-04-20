@@ -550,22 +550,54 @@ public class JCRUtils {
         }
     }
 
+//    /**
+//     * Deletes all derived relationship nodes that point *to* the given artifact or its derived artifacts
+//     *
+//     * @param primaryNode
+//     * @param session
+//     * @throws Exception
+//     */
+//    public static void deleteDerivedReverseRelationships(Node primaryNode, Session session) throws Exception {
+//        String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
+//                        "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
+//                        // root path, *not* in the trash
+//                        "WHERE ISDESCENDANTNODE(r, '" + JCRConstants.ROOT_PATH + "') " +
+//                        // relationship is not from one of the given artifact's children
+//                        "AND NOT(ISDESCENDANTNODE(r, '%2$s')) " +
+//                        // derived relationships only
+//                        "AND r.[sramp:derived] = true " +
+//                        // targets the primary artifact or any of its derived artifacts
+//                        "AND (REFERENCE(t) = '%1$s' OR REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s')))",
+//                primaryNode.getIdentifier(), primaryNode.getPath());
+//        javax.jcr.query.QueryManager jcrQueryManager = session.getWorkspace().getQueryManager();
+//        javax.jcr.query.Query jcrQuery = jcrQueryManager.createQuery(query, JCRConstants.JCR_SQL2);
+//        QueryResult jcrQueryResult = jcrQuery.execute();
+//        NodeIterator jcrNodes = jcrQueryResult.getNodes();
+//
+//        while (jcrNodes.hasNext()) {
+//            Node node = jcrNodes.nextNode();
+//            // delete it
+//            node.remove();
+//        }
+//
+//        session.save();
+//    }
+
     /**
-     * Deletes all derived relationship nodes that point *to* the given artifact or its derived artifacts
+     * Deletes *all* relationship nodes that point *to* the given artifact or its derived artifacts.  Primarily used
+     * for force deletes.
      *
      * @param primaryNode
      * @param session
      * @throws Exception
      */
-    public static void deleteDerivedRelationships(Node primaryNode, Session session) throws Exception {
+    public static void deleteReverseRelationships(Node primaryNode, Session session) throws Exception {
         String query = String.format("SELECT r.* FROM [sramp:relationship] AS r " +
                         "JOIN [sramp:target] AS t ON ISCHILDNODE(t, r) " +
                         // root path, *not* in the trash
                         "WHERE ISDESCENDANTNODE(r, '" + JCRConstants.ROOT_PATH + "') " +
                         // relationship is not from one of the given artifact's children
                         "AND NOT(ISDESCENDANTNODE(r, '%2$s')) " +
-                        // derived relationships only
-                        "AND r.[sramp:derived] = true " +
                         // targets the primary artifact or any of its derived artifacts
                         "AND (REFERENCE(t) = '%1$s' OR REFERENCE(t) IN (SELECT referenced.[jcr:uuid] FROM [sramp:baseArtifactType] AS referenced WHERE ISDESCENDANTNODE(referenced, '%2$s')))",
                 primaryNode.getIdentifier(), primaryNode.getPath());

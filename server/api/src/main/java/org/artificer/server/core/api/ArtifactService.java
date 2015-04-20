@@ -166,7 +166,11 @@ public interface ArtifactService extends AbstractService {
 
     public void delete(String model, String type, String uuid) throws Exception;
 
+    public void delete(String model, String type, String uuid, boolean force) throws Exception;
+
     public void delete(ArtifactType artifactType, String uuid) throws Exception;
+
+    public void delete(ArtifactType artifactType, String uuid, boolean force) throws Exception;
 
     public void deleteContent(String model, String type, String uuid) throws Exception;
 
