@@ -395,19 +395,29 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
 
     @Override
     public void delete(String model, String type, String uuid) throws Exception {
+        delete(model, type, uuid, false);
+    }
+
+    @Override
+    public void delete(String model, String type, String uuid, boolean force) throws Exception {
         ArtifactType artifactType = ArtifactType.valueOf(model, type, null);
-        delete(artifactType, uuid);
+        delete(artifactType, uuid, force);
     }
 
     @Override
     public void delete(ArtifactType artifactType, String uuid) throws Exception {
+        delete(artifactType, uuid, false);
+    }
+
+    @Override
+    public void delete(ArtifactType artifactType, String uuid, boolean force) throws Exception {
         if (artifactType.isDerived()) {
             throw ArtificerUserException.derivedArtifactDelete(artifactType.getArtifactType());
         }
 
         PersistenceManager persistenceManager = persistenceManager();
         // Delete the artifact by UUID
-        BaseArtifactType artifact = persistenceManager.deleteArtifact(uuid, artifactType);
+        BaseArtifactType artifact = persistenceManager.deleteArtifact(uuid, artifactType, force);
 
         Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
         for (EventProducer eventProducer : eventProducers) {

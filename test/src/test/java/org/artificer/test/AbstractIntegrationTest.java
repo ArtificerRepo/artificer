@@ -35,7 +35,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.junit.After;
 import org.junit.runner.RunWith;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 
 import java.util.List;
@@ -70,21 +69,8 @@ public abstract class AbstractIntegrationTest {
             QueryResultSet results = client.query("/s-ramp", 0, 10000, "name", true); //$NON-NLS-1$ //$NON-NLS-2$
             for (ArtifactSummary summary : results) {
                 String uuid = summary.getUuid().replace("urn:uuid:", "");
-                // First, need to clear the relationships, custom properties, and classifiers to prevent
-                // constraint Exceptions.  Note that modeled relationships must be manually cleared by tests!
-                BaseArtifactType artifact = client.getArtifactMetaData(uuid);
-                // This is expensive, so prevent it if possible.
-                if (artifact.getRelationship().size() > 0 || artifact.getProperty().size() > 0 || artifact.getClassifiedBy().size() > 0) {
-                    artifact.getRelationship().clear();
-                    artifact.getProperty().clear();
-                    artifact.getClassifiedBy().clear();
-                    client.updateArtifactMetaData(artifact);
-                }
-            }
-            for (ArtifactSummary summary : results) {
-                String uuid = summary.getUuid().replace("urn:uuid:", "");
                 if (!summary.isDerived()) {
-                    client.deleteArtifact(uuid, summary.getType());
+                    client.deleteArtifact(uuid, summary.getType(), true);
                 }
             }
         } catch (Exception e) {

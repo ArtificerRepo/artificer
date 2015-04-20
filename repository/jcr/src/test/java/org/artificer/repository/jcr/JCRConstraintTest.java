@@ -61,7 +61,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         // Verify deleting the original fails
         boolean caught = false;
         try {
-            persistenceManager.deleteArtifact(task.getUuid(), ArtifactType.valueOf(task));
+            persistenceManager.deleteArtifact(task.getUuid(), ArtifactType.valueOf(task), false);
         } catch (ArtificerConflictException e) {
             caught = true;
         }
@@ -78,7 +78,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         // Verify deleting the original fails
         caught = false;
         try {
-            persistenceManager.deleteArtifact(task.getUuid(), ArtifactType.valueOf(task));
+            persistenceManager.deleteArtifact(task.getUuid(), ArtifactType.valueOf(task), false);
         } catch (ArtificerConflictException e) {
             caught = true;
         }
@@ -89,7 +89,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         persistenceManager.updateArtifact(actor, ArtifactType.valueOf(task));
 
         // Deleting the original should now work
-        persistenceManager.deleteArtifact(task.getUuid(), ArtifactType.valueOf(task));
+        persistenceManager.deleteArtifact(task.getUuid(), ArtifactType.valueOf(task), false);
     }
 
     @Test
@@ -118,29 +118,29 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         // Verify the XSD cannot be deleted
         boolean caught = false;
         try {
-            persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd));
+            persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd), false);
         } catch (ArtificerConflictException e) {
             caught = true;
         }
         assertTrue(caught);
 
         // Clear the generic relationship
-        persistenceManager.deleteArtifact(fooArtifact.getUuid(), ArtifactType.valueOf(fooArtifact));
+        persistenceManager.deleteArtifact(fooArtifact.getUuid(), ArtifactType.valueOf(fooArtifact), false);
 
         // Verify the XSD still cannot be deleted (the WSDL still imports it)
         caught = false;
         try {
-            persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd));
+            persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd), false);
         } catch (ArtificerConflictException e) {
             caught = true;
         }
         assertTrue(caught);
 
         // Delete the WSDL
-        persistenceManager.deleteArtifact(wsdl.getUuid(), ArtifactType.valueOf(wsdl));
+        persistenceManager.deleteArtifact(wsdl.getUuid(), ArtifactType.valueOf(wsdl), false);
 
         // Delete the XSD
-        persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd));
+        persistenceManager.deleteArtifact(xsd.getUuid(), ArtifactType.valueOf(xsd), false);
     }
 
     @Test
@@ -176,7 +176,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         assertTrue(caught);
 
         // Clear the generic relationship
-        persistenceManager.deleteArtifact(fooArtifact.getUuid(), ArtifactType.valueOf(fooArtifact));
+        persistenceManager.deleteArtifact(fooArtifact.getUuid(), ArtifactType.valueOf(fooArtifact), false);
 
         // Add a custom property to one of the XSD's derived artifacts
         Property property = new Property();
@@ -267,7 +267,7 @@ public class JCRConstraintTest extends AbstractNoAuditingJCRPersistenceTest {
         assertTrue(caught);
 
         // Clear the generic relationship
-        persistenceManager.deleteArtifact(fooArtifact.getUuid(), ArtifactType.valueOf(fooArtifact));
+        persistenceManager.deleteArtifact(fooArtifact.getUuid(), ArtifactType.valueOf(fooArtifact), false);
 
         // Now delete the content, for reals
         persistenceManager.deleteArtifactContent(xsd.getUuid(), ArtifactType.valueOf(xsd));

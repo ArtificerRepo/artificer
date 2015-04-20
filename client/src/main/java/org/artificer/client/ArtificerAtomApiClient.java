@@ -654,34 +654,51 @@ public class ArtificerAtomApiClient {
 		}
 	}
 
-	/**
-	 * Delets an artifact from the s-ramp repository.
-	 * @param uuid
-	 * @param type
-	 * @throws ArtificerClientException
-	 * @throws ArtificerServerException
-	 */
-	public void deleteArtifact(String uuid, ArtifactType type) throws ArtificerClientException, ArtificerServerException {
-		assertFeatureEnabled(type);
+    /**
+     * Delets an artifact from the s-ramp repository.
+     * @param uuid
+     * @param type
+     * @throws ArtificerClientException
+     * @throws ArtificerServerException
+     */
+    public void deleteArtifact(String uuid, ArtifactType type) throws ArtificerClientException, ArtificerServerException {
+        deleteArtifact(uuid, type, false);
+    }
+
+    /**
+     * Delets an artifact from the s-ramp repository.
+     * @param uuid
+     * @param type
+     * @param force
+     * @throws ArtificerClientException
+     * @throws ArtificerServerException
+     */
+    public void deleteArtifact(String uuid, ArtifactType type, boolean force) throws ArtificerClientException, ArtificerServerException {
+        assertFeatureEnabled(type);
         ClientResponse<?> response = null;
-		try {
-			String artifactModel = type.getArtifactType().getModel();
-			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
-				artifactType = type.getExtendedType();
-			}
-			String artifactUuid = uuid;
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", srampEndpoint, artifactModel, artifactType, artifactUuid);
-			ClientRequest request = createClientRequest(atomUrl);
-			response = request.delete();
-		} catch (ArtificerServerException e) {
-			throw e;
-		} catch (Throwable e) {
-			throw new ArtificerClientException(e);
+        try {
+            String artifactModel = type.getArtifactType().getModel();
+            String artifactType = type.getArtifactType().getType();
+            if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
+                artifactType = type.getExtendedType();
+            }
+            String artifactUuid = uuid;
+            String atomUrl;
+            if (force) {
+                atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/force", srampEndpoint, artifactModel, artifactType, artifactUuid);
+            } else {
+                atomUrl = String.format("%1$s/%2$s/%3$s/%4$s", srampEndpoint, artifactModel, artifactType, artifactUuid);
+            }
+            ClientRequest request = createClientRequest(atomUrl);
+            response = request.delete();
+        } catch (ArtificerServerException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new ArtificerClientException(e);
         } finally {
             closeQuietly(response);
-		}
-	}
+        }
+    }
 
 	/**
 	 * Deletes an artifact's content from the s-ramp repository.

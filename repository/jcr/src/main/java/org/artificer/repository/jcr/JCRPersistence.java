@@ -345,7 +345,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
     }
 
     @Override
-    public BaseArtifactType deleteArtifact(String uuid, ArtifactType type) throws ArtificerException {
+    public BaseArtifactType deleteArtifact(String uuid, ArtifactType type, boolean force) throws ArtificerException {
         Session session = null;
         try {
             session = JCRRepositoryFactory.getSession();
@@ -355,8 +355,11 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
                 throw ArtificerNotFoundException.artifactNotFound(uuid);
             }
 
-            JCRUtils.relationshipConstraints(uuid, artifactNode, session);
-            JCRUtils.deleteDerivedRelationships(artifactNode, session);
+            if (force) {
+                JCRUtils.deleteReverseRelationships(artifactNode, session);
+            } else {
+                JCRUtils.relationshipConstraints(uuid, artifactNode, session);
+            }
             
             // Move the node to the trash.
             String srcPath = artifactNode.getPath();

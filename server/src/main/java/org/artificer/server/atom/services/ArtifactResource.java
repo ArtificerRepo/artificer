@@ -438,6 +438,30 @@ public class ArtifactResource extends AbstractResource {
 		}
 	}
 
+    /**
+     * Called to forcefully delete an s-ramp artifact from the repository, ignoring all constraints.
+     *
+     * @param model
+     * @param type
+     * @param uuid
+     * @throws org.artificer.atom.err.ArtificerAtomException
+     */
+    @DELETE
+    @Path("{model}/{type}/{uuid}/force")
+    public void forceDelete(@PathParam("model") String model, @PathParam("type") String type,
+            @PathParam("uuid") String uuid) throws ArtificerServerException {
+        try {
+            artifactService.delete(model, type, uuid, true);
+        } catch (ArtificerServerException e) {
+            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
+            // HTTP response type.
+            throw e;
+        } catch (Throwable e) {
+            logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY", uuid), e); //$NON-NLS-1$
+            throw new ArtificerAtomException(e);
+        }
+    }
+
 	/**
 	 * S-RAMP atom DELETE to delete the artifact's content from the repository.
 	 *

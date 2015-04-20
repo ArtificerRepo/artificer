@@ -102,9 +102,10 @@ public interface PersistenceManager extends AbstractManager {
 	 * Deletes a previously persisted artifact from the S-RAMP repository.
 	 * @param uuid
 	 * @param artifactType
+     * @param force
 	 * @throws org.artificer.common.ArtificerException
 	 */
-	public BaseArtifactType deleteArtifact(String uuid, ArtifactType artifactType) throws ArtificerException;
+	public BaseArtifactType deleteArtifact(String uuid, ArtifactType artifactType, boolean force) throws ArtificerException;
 
     /**
      * Deletes a previously persisted artifact's content from the S-RAMP repository.
