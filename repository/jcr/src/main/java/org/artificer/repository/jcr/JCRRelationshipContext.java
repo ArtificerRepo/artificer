@@ -15,18 +15,17 @@
  */
 package org.artificer.repository.jcr;
 
+import org.artificer.common.ArtificerException;
+import org.artificer.integration.artifactbuilder.RelationshipContext;
+import org.artificer.repository.jcr.query.JCRArtificerQuery;
+import org.artificer.repository.query.ArtifactSet;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+
+import javax.jcr.Session;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import javax.jcr.Session;
-
-import org.artificer.repository.query.ArtifactSet;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.artificer.common.ArtificerException;
-import org.artificer.integration.artifactbuilder.RelationshipContext;
-import org.artificer.repository.jcr.query.JCRArtificerQuery;
 
 /**
  * RelationshipContext provided by the JCR implementation.
@@ -49,7 +48,7 @@ public class JCRRelationshipContext implements RelationshipContext {
      */
     @Override
     public Collection<BaseArtifactType> findArtifacts(String model, String type,
-            Map<String, String> criteria) {
+            Map<String, String> criteria) throws Exception {
         StringBuilder builder = new StringBuilder();
         builder.append("/s-ramp/").append(model).append("/").append(type);
         if (!criteria.isEmpty()) {

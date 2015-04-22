@@ -45,7 +45,7 @@ import java.util.UUID;
  * @author eric.wittmann@redhat.com
  */
 
-public class JCRAuditManager extends JCRAbstractManager implements AuditManager {
+public class JCRAuditManager implements AuditManager {
 
     private static Logger log = LoggerFactory.getLogger(JCRAuditManager.class);
     private static final String AUDIT_ENTRY_QUERY = "SELECT auditEntry.*"
@@ -60,11 +60,10 @@ public class JCRAuditManager extends JCRAbstractManager implements AuditManager 
             + " FROM [audit:auditEntry] AS auditEntry "
             + "WHERE auditEntry.[jcr:createdBy] = '%1$s' ORDER BY auditEntry.[audit:sortId] DESC";
 
-	/**
-	 * Default constructor.
-	 */
-	public JCRAuditManager() {
-	}
+    @Override
+    public void login(String username, String password) {
+        JCRRepositoryFactory.setLoginCredentials(username, password);
+    }
 
     /**
      * @see org.artificer.repository.AuditManager#addAuditEntry(java.lang.String, org.jboss.downloads.artificer._2013.auditing.AuditEntry)

@@ -34,17 +34,19 @@
                 <exclude>WEB-INF/lib/commons-configuration-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-io-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-lang-*.jar</exclude>
+                <exclude>WEB-INF/lib/hibernate-*.jar</exclude>
+                <exclude>WEB-INF/lib/jackson-*.jar</exclude>
                 <exclude>WEB-INF/lib/jakarta-regexp-*.jar</exclude>
+                <exclude>WEB-INF/lib/jaxb-impl-*.jar</exclude>
                 <exclude>WEB-INF/lib/jboss-marshalling-*.jar</exclude>
                 <exclude>WEB-INF/lib/jcr-*.jar</exclude>
                 <exclude>WEB-INF/lib/log4j-*.jar</exclude>
-                <exclude>WEB-INF/lib/lucene-core-*.jar</exclude>
+                <exclude>WEB-INF/lib/lucene-*.jar</exclude>
                 <exclude>WEB-INF/lib/modeshape-common-*.jar</exclude>
                 <exclude>WEB-INF/lib/modeshape-jcr-api-*.jar</exclude>
+                <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
                 <exclude>WEB-INF/lib/slf4j-api-*.jar</exclude>
                 <exclude>WEB-INF/lib/staxmapper-*.jar</exclude>
-                <exclude>WEB-INF/lib/jaxb-impl-*.jar</exclude>
-                <exclude>WEB-INF/lib/resteasy-*.jar</exclude>
               </excludes>
             </overlay>
           </overlays>

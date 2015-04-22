@@ -137,10 +137,10 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
             if (archiveContext != null) {
                 // If it's an archive, expand it and upload through a batch (necessary for adequate relationship processing).
 
-                // First, create the archive artifact's metadata.  At least the UUID is necessary for the
+                // First, upload the archive artifact.  At least the UUID is necessary for the
                 // expandedFromDocument relationship.
                 PersistenceManager persistenceManager = persistenceManager();
-                artifact = persistenceManager.persistArtifact(artifact, null);
+                artifact = persistenceManager.persistArtifact(artifact, content);
 
                 // Then, expand (building up a batch).
                 BatchCreate creates = new BatchCreate();
@@ -171,10 +171,6 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
                 }
                 // Persist the batch.
                 creates.execute(persistenceManager());
-
-                // Finally, update the archive artifact's content.
-                artifact = persistenceManager.updateArtifactContent(artifact.getUuid(),
-                        archiveContext.getArchiveArtifactType(), content);
             } else {
                 // Else, simple upload.
                 artifact = doUpload(artifact, content, artifactType);

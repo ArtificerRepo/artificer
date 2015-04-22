@@ -36,5 +36,5 @@ public interface RelationshipSource {
      * 
      * @param context
      */
-    public void build(RelationshipContext context);
+    public void build(RelationshipContext context) throws Exception;
 }

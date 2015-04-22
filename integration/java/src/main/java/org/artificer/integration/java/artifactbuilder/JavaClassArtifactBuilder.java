@@ -38,7 +38,7 @@ public class JavaClassArtifactBuilder extends AbstractArtifactBuilder {
 
     @Override
     public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, ArtifactContent artifactContent)
-            throws IOException {
+            throws Exception {
         super.buildArtifacts(primaryArtifact, artifactContent);
         
         ClassParser parser = new ClassParser(getContentStream(), primaryArtifact.getName());

@@ -81,7 +81,9 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdType;
 /**
  * A base class for visitors that are interested in specific sections of the
  * S-RAMP class hierarchy.  This class provides methods for the various
- * shared (abstract) base classes within the hierachy.
+ * shared (abstract) base classes within the hierarchy.
+ *
+ * Processing is ordered most-specific to most-generic, as some impls require it and the rest aren't affected.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -196,8 +198,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Document artifact) {
-		super.visit(artifact);
 		visitDocument(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -205,9 +207,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(XmlDocument artifact) {
-		super.visit(artifact);
+        visitXmlDocument(artifact);
 		visitDocument(artifact);
-		visitXmlDocument(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -215,9 +217,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(XsdDocument artifact) {
-		super.visit(artifact);
+        visitXmlDocument(artifact);
 		visitDocument(artifact);
-		visitXmlDocument(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -225,8 +227,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(AttributeDeclaration artifact) {
-		super.visit(artifact);
 		visitDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -234,18 +236,18 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ElementDeclaration artifact) {
-		super.visit(artifact);
 		visitDerived(artifact);
-	}
+        super.visit(artifact);
+    }
 
 	/**
 	 * @see ArtifactVisitor#visit(org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SimpleTypeDeclaration)
 	 */
 	@Override
 	public void visit(SimpleTypeDeclaration artifact) {
-		super.visit(artifact);
+        visitXsdDerived(artifact);
 		visitDerived(artifact);
-		visitXsdDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -253,9 +255,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ComplexTypeDeclaration artifact) {
-		super.visit(artifact);
+        visitXsdDerived(artifact);
 		visitDerived(artifact);
-		visitXsdDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -263,9 +265,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(PolicyDocument artifact) {
-		super.visit(artifact);
+        visitXmlDocument(artifact);
 		visitDocument(artifact);
-		visitXmlDocument(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -273,8 +275,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(PolicyExpression artifact) {
-		super.visit(artifact);
 		visitDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -282,8 +284,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(PolicyAttachment artifact) {
-		super.visit(artifact);
 		visitDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -291,8 +293,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(SoapAddress artifact) {
-		super.visit(artifact);
 		visitDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -300,8 +302,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(SoapBinding artifact) {
-		super.visit(artifact);
 		visitDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -309,9 +311,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(WsdlDocument artifact) {
-		super.visit(artifact);
+        visitXmlDocument(artifact);
 		visitDocument(artifact);
-		visitXmlDocument(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -319,10 +321,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(WsdlService artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -330,10 +332,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Port artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -341,8 +343,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(WsdlExtension artifact) {
-		super.visit(artifact);
 		visitDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -350,10 +352,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Part artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -361,10 +363,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Message artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -372,10 +374,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Fault artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -383,10 +385,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(PortType artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -394,10 +396,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Operation artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -405,10 +407,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(OperationInput artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -416,10 +418,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(OperationOutput artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -427,10 +429,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Binding artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -438,10 +440,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(BindingOperation artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -449,10 +451,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(BindingOperationInput artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -460,10 +462,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(BindingOperationOutput artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -471,10 +473,10 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(BindingOperationFault artifact) {
-		super.visit(artifact);
+        visitNamedWsdlDerived(artifact);
+        visitWsdlDerived(artifact);
 		visitDerived(artifact);
-		visitWsdlDerived(artifact);
-		visitNamedWsdlDerived(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -482,9 +484,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Organization artifact) {
-		super.visit(artifact);
+        visitActor(artifact);
 		visitSoa(artifact);
-		visitActor(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -492,8 +494,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ServiceEndpoint artifact) {
-		super.visit(artifact);
 		visitServiceImplementation(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -501,8 +503,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ServiceInstance artifact) {
-		super.visit(artifact);
 		visitServiceImplementation(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -510,8 +512,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ServiceOperation artifact) {
-		super.visit(artifact);
 		visitServiceImplementation(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -519,8 +521,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ExtendedArtifactType artifact) {
-		super.visit(artifact);
 		visitExtended(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -528,9 +530,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ExtendedDocument artifact) {
-        super.visit(artifact);
-        visitDocument(artifact);
         visitExtendedDocument(artifact);
+        visitDocument(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -538,9 +540,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Actor artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitActor(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -548,9 +550,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Choreography artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -558,9 +560,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ChoreographyProcess artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -568,9 +570,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Collaboration artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -578,9 +580,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(CollaborationProcess artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -588,9 +590,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Composition artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -598,8 +600,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Effect artifact) {
-		super.visit(artifact);
 		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -607,9 +609,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Element artifact) {
-		super.visit(artifact);
+        visitElement(artifact);
 		visitSoa(artifact);
-		visitElement(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -617,8 +619,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Event artifact) {
-		super.visit(artifact);
 		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -626,8 +628,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(InformationType artifact) {
-		super.visit(artifact);
 		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -635,9 +637,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Orchestration artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -645,9 +647,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(OrchestrationProcess artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -655,8 +657,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Policy artifact) {
-		super.visit(artifact);
 		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -664,8 +666,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(PolicySubject artifact) {
-		super.visit(artifact);
 		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -673,9 +675,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Process artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -683,9 +685,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Service artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -693,8 +695,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ServiceContract artifact) {
-		super.visit(artifact);
 		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -702,9 +704,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ServiceComposition artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -712,8 +714,8 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(ServiceInterface artifact) {
-		super.visit(artifact);
 		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -721,9 +723,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(System artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	/**
@@ -731,9 +733,9 @@ public abstract class HierarchicalArtifactVisitor extends AbstractArtifactVisito
 	 */
 	@Override
 	public void visit(Task artifact) {
-		super.visit(artifact);
-		visitSoa(artifact);
         visitElement(artifact);
+		visitSoa(artifact);
+        super.visit(artifact);
 	}
 
 	public void throwError() throws Exception {

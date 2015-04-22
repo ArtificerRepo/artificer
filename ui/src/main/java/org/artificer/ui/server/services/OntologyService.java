@@ -26,7 +26,7 @@ import org.artificer.atom.mappers.OntologyToRdfMapper;
 import org.artificer.atom.mappers.RdfToOntologyMapper;
 import org.artificer.client.ontology.OntologySummary;
 import org.artificer.common.ontology.ArtificerOntology;
-import org.artificer.common.ontology.ArtificerOntology.ArtificerOntologyClass;
+import org.artificer.common.ontology.ArtificerOntologyClass;
 import org.artificer.ui.client.shared.beans.OntologySummaryBean;
 import org.artificer.ui.client.shared.services.IOntologyService;
 import org.artificer.ui.client.shared.beans.OntologyBean;

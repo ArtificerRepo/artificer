@@ -1,11 +1,11 @@
 package org.artificer.server;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
 import org.artificer.events.EventProducer;
 import org.artificer.events.EventProducerFactory;
-import org.artificer.repository.PersistenceFactory;
+import org.artificer.repository.RepositoryProviderFactory;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 /**
  * Listener for deploy/undeploy events.
@@ -18,7 +18,7 @@ public class ArtificerLifeCycle implements ServletContextListener {
 	@Override
     public void contextInitialized(ServletContextEvent sce) {
 	    // TODO make this async
-	    PersistenceFactory.newInstance().startup();
+        RepositoryProviderFactory.persistenceManager().startup();
 	    
 	    for (EventProducer eventProducer : EventProducerFactory.getEventProducers()) {
 	        eventProducer.startup();
@@ -30,7 +30,7 @@ public class ArtificerLifeCycle implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        PersistenceFactory.newInstance().shutdown();
+        RepositoryProviderFactory.persistenceManager().shutdown();
         
         for (EventProducer eventProducer : EventProducerFactory.getEventProducers()) {
             eventProducer.shutdown();

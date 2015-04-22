@@ -31,8 +31,8 @@ import org.artificer.common.error.ArtificerUserException;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.artificer.events.EventProducer;
 import org.artificer.events.EventProducerFactory;
-import org.artificer.repository.PersistenceFactory;
 import org.artificer.repository.PersistenceManager;
+import org.artificer.repository.RepositoryProviderFactory;
 import org.artificer.server.ArtifactServiceImpl;
 import org.artificer.server.i18n.Messages;
 import org.artificer.server.mime.MimeTypes;
@@ -236,7 +236,7 @@ public class ArtifactResource extends AbstractResource {
 			artifactType.setMimeType(mimeType);
 
 			// Processing the content itself first
-			PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+			PersistenceManager persistenceManager = RepositoryProviderFactory.persistenceManager();
 			// store the content
 			BaseArtifactType artifactRval = persistenceManager.persistArtifact(artifactMetaData, content);
 			

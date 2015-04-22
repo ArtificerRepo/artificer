@@ -48,11 +48,9 @@
     <servlet-name>MavenRepository</servlet-name>
   </filter-mapping>
 
-<!-- Not sure what to do about this one?
   <filter>
     <filter-name>ServletCredentials</filter-name>
-    <filter-class>ServletCredentialsFilter</filter-class>
-    <description>Stores the inbound request so it can be used to log in to ModeShape.</description>
+    <filter-class>org.artificer.repository.filter.ServletCredentialsFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>ServletCredentials</filter-name>
@@ -62,7 +60,6 @@
     <filter-name>ServletCredentials</filter-name>
     <servlet-name>MavenRepository</servlet-name>
   </filter-mapping>
--->
 
   <!-- Security -->
   <security-constraint>

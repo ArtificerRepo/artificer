@@ -54,7 +54,7 @@ public abstract class CriteriaQueryRelationshipSource implements RelationshipSou
     }
     
     @Override
-    public void build(RelationshipContext context) {
+    public void build(RelationshipContext context) throws Exception {
         // If a specific Target was not provided, assume it's generic and needs created/added.
         if (target == null) {
             target = new Target();

@@ -19,7 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.visitors.HierarchicalArtifactVisitor;
-import org.artificer.repository.jcr.ClassificationHelper;
+import org.artificer.repository.ClassificationHelper;
 import org.artificer.repository.jcr.JCRConstants;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;

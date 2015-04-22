@@ -116,10 +116,10 @@
     <version.org.apache.httpcomponents.httpcore>4.2.1</version.org.apache.httpcomponents.httpcore>
     <version.org.apache.httpcomponents.httpmime>4.2.1</version.org.apache.httpcomponents.httpmime>
     <version.org.modeshape>4.0.0.Final</version.org.modeshape>
-    <version.org.infinispan>6.0.2.Final</version.org.infinispan>
     <!--<version.org.jboss.resteasy>3.0.8.Final</version.org.jboss.resteasy>-->
     <version.org.codehaus.plexus>3.0.17</version.org.codehaus.plexus>
     <version.com.google.gwt>2.7.0</version.com.google.gwt>
+    <version.org.infinispan>6.0.2.Final</version.org.infinispan>
   </properties>
 
   <build>
@@ -314,6 +314,11 @@
       </dependency>
       <dependency>
         <groupId>org.artificer</groupId>
+        <artifactId>artificer-repository-hibernate</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
         <artifactId>artificer-repository-jcr</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -438,6 +443,12 @@
       <dependency>
         <groupId>org.artificer</groupId>
         <artifactId>artificer-repository-jcr</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.artificer</groupId>
+        <artifactId>artificer-repository-hibernate</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -634,6 +645,8 @@
         <artifactId>modeshape-extractor-tika</artifactId>
         <version>${version.org.modeshape}</version>
       </dependency>
+
+      <!-- Infinispan -->
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-commons</artifactId>
@@ -644,6 +657,19 @@
         <artifactId>infinispan-core</artifactId>
         <version>${version.org.infinispan}</version>
       </dependency>
+
+      <!-- Hibernate -->
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-orm</artifactId>
+        <version>${version.org.hibernate.search}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers</artifactId>
+        <version>${version.org.apache.lucene}</version>
+      </dependency>
+
 
       <dependency>
         <groupId>jstl</groupId>
@@ -997,7 +1023,9 @@
     <module>integration/teiid</module>
     <module>javadoc</module>
     <module>repository</module>
+    <module>repository/hibernate</module>
     <module>repository/jcr</module>
+    <module>repository/test</module>
     <module>server</module>
     <module>server/api</module>
     <module>server/eap6</module>

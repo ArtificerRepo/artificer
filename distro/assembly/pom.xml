@@ -120,6 +120,11 @@
     </dependency>
     <dependency>
       <groupId>org.artificer</groupId>
+      <artifactId>artificer-repository-hibernate</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
       <artifactId>artificer-server</artifactId>
       <classifier>sources</classifier>
     </dependency>

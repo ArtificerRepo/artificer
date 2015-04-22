@@ -68,6 +68,12 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -124,6 +130,11 @@
     <dependency>
       <groupId>org.artificer</groupId>
       <artifactId>artificer-repository-jcr</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-repository-hibernate</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>

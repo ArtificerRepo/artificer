@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+  <persistence-unit name="ArtificerTest">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    
+    <class>org.artificer.repository.hibernate.entity.ArtificerRelationship</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerTarget</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerComment</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerDocumentArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerStoredQuery</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerWsdlDerivedArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerWsdlDocumentArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerXsdDocumentArtifact</class>
+    <class>org.artificer.common.ontology.ArtificerOntology</class>
+    <class>org.artificer.common.ontology.ArtificerOntologyClass</class>
+    <class>org.artificer.repository.hibernate.audit.ArtificerAuditEntry</class>
+    <class>org.artificer.repository.hibernate.audit.ArtificerAuditItem</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerProperty</class>
+    
+    <exclude-unlisted-classes />
+    
+    <properties>
+      <property name="hibernate.order_updates" value="true"/>
+      <property name="hibernate.connection.autocommit" value="false"/>
+      <!--<property name="hibernate.show_sql" value="true"/>-->
+      <property name="hibernate.format_sql" value="true"/>
+
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+      <property name="hibernate.connection.url" value="jdbc:h2:mem:dbHibernateTest;DB_CLOSE_DELAY=-1;MVCC=true"/>
+      <property name="hibernate.connection.username" value="sa"/>
+      <property name="hibernate.cache.use_second_level_cache" value="false"/>
+      <property name="hibernate.cache.use_query_cache" value="false"/>
+
+      <property name="hibernate.search.default.directory_provider" value="ram"/>
+
+      <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+    </properties>
+  </persistence-unit>
+</persistence>

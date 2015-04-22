@@ -15,24 +15,26 @@
  */
 package org.artificer.common.ontology;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Models an s-ramp ontology.
  *
  * @author eric.wittmann@redhat.com
  */
+@Entity
 public class ArtificerOntology implements Serializable {
 
 	private String uuid;
@@ -48,16 +50,22 @@ public class ArtificerOntology implements Serializable {
 	private Map<URI, ArtificerOntologyClass> classIndexByUri = new HashMap<URI, ArtificerOntologyClass>();
 	private Map<String, ArtificerOntologyClass> classIndexById = new HashMap<String, ArtificerOntologyClass>();
 
+    public String getId() {
+		return id;
+	}
+
 	/**
-	 * Constructor.
+	 * @param id the id to set
 	 */
-	public ArtificerOntology() {
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	/**
 	 * @return the uuid
 	 */
-	public String getUuid() {
+    @Id
+    public String getUuid() {
 		return uuid;
 	}
 
@@ -99,7 +107,7 @@ public class ArtificerOntology implements Serializable {
 	/**
 	 * @return the base
 	 */
-	public String getBase() {
+    public String getBase() {
 		return base;
 	}
 
@@ -110,30 +118,12 @@ public class ArtificerOntology implements Serializable {
 		this.base = base;
 	}
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the rootClasses
-	 */
+	@OneToMany(mappedBy = "root", orphanRemoval = true, cascade = CascadeType.ALL)
 	public List<ArtificerOntologyClass> getRootClasses() {
 		return rootClasses;
 	}
 
-	/**
-	 * @return a list of all classes in the ontology
-	 */
+	@Transient
 	public List<ArtificerOntologyClass> getAllClasses() {
 		List<ArtificerOntologyClass> allClasses = new ArrayList<ArtificerOntologyClass>();
 		addAllClasses(allClasses, getRootClasses());
@@ -273,161 +263,5 @@ public class ArtificerOntology implements Serializable {
 	 */
 	public void setLastModifiedOn(Date lastModifiedOn) {
 		this.lastModifiedOn = lastModifiedOn;
-	}
-
-	/**
-	 * Models a single class in an s-ramp ontology.
-	 *
-	 * @author eric.wittmann@redhat.com
-	 */
-	public static class ArtificerOntologyClass implements Serializable {
-
-		private String id;
-		private String label;
-		private String comment;
-		private URI uri;
-        @JsonIgnore // MUST ignore to prevent stack overflow during marshalling
-		private ArtificerOntologyClass parent;
-		private List<ArtificerOntologyClass> children = new ArrayList<ArtificerOntologyClass>();
-
-		/**
-		 * Constructor.
-		 */
-		public ArtificerOntologyClass() {
-		}
-
-		/**
-		 * Recursively finds a class matching the given ID.
-		 * @param id
-		 */
-		public ArtificerOntologyClass findClass(String id) {
-			if (this.id.equals(id)) {
-				return this;
-			} else {
-				for (ArtificerOntologyClass c : this.children) {
-					ArtificerOntologyClass found = c.findClass(id);
-					if (found != null) {
-						return found;
-					}
-				}
-			}
-			return null;
-		}
-
-		/**
-		 * Recursively finds a class matching the given URI.
-		 * @param uri
-		 */
-		public ArtificerOntologyClass findClass(URI uri) {
-			if (this.uri.equals(uri)) {
-				return this;
-			} else {
-				for (ArtificerOntologyClass c : this.children) {
-					ArtificerOntologyClass found = c.findClass(uri);
-					if (found != null) {
-						return found;
-					}
-				}
-			}
-			return null;
-		}
-
-		/**
-		 * @return the label
-		 */
-		public String getLabel() {
-			return label;
-		}
-
-		/**
-		 * @param label the label to set
-		 */
-		public void setLabel(String label) {
-			this.label = label;
-		}
-
-		/**
-		 * @return the comment
-		 */
-		public String getComment() {
-			return comment;
-		}
-
-		/**
-		 * @param comment the comment to set
-		 */
-		public void setComment(String comment) {
-			this.comment = comment;
-		}
-
-		/**
-		 * @return the parent
-		 */
-		public ArtificerOntologyClass getParent() {
-			return parent;
-		}
-
-		/**
-		 * @param parent the parent to set
-		 */
-		public void setParent(ArtificerOntologyClass parent) {
-			this.parent = parent;
-		}
-
-		/**
-		 * @return the children
-		 */
-		public List<ArtificerOntologyClass> getChildren() {
-			return children;
-		}
-
-		/**
-		 * @param children the children to set
-		 */
-		public void setChildren(List<ArtificerOntologyClass> children) {
-			this.children = children;
-		}
-
-		/**
-		 * @return the uri
-		 */
-		public URI getUri() {
-			return uri;
-		}
-
-		/**
-		 * @param uri the uri to set
-		 */
-		public void setUri(URI uri) {
-			this.uri = uri;
-		}
-
-		/**
-		 * Normalize the hierarchy into a list of URIs.  The returned list of
-		 * URIs will contain this class and all ancestors.
-		 */
-		public Set<URI> normalize() {
-			Set<URI> uris = new HashSet<URI>();
-			ArtificerOntologyClass current = this;
-			while (current != null) {
-				uris.add(current.getUri());
-				current = current.getParent();
-			}
-			return uris;
-		}
-
-		/**
-		 * @return the id
-		 */
-		public String getId() {
-			return id;
-		}
-
-		/**
-		 * @param id the id to set
-		 */
-		public void setId(String id) {
-			this.id = id;
-		}
 	}
 }

@@ -18,7 +18,7 @@ package org.artificer.repository.jcr.mapper;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.error.ArtificerUserException;
 import org.artificer.common.ontology.ArtificerOntology;
-import org.artificer.common.ontology.ArtificerOntology.ArtificerOntologyClass;
+import org.artificer.common.ontology.ArtificerOntologyClass;
 import org.artificer.repository.jcr.JCRConstants;
 import org.artificer.repository.jcr.i18n.Messages;
 

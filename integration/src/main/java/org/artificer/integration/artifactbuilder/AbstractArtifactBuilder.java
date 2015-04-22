@@ -15,15 +15,14 @@
  */
 package org.artificer.integration.artifactbuilder;
 
+import org.artificer.common.ArtifactContent;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.artificer.common.ArtifactContent;
 
 /**
  * @author Brett Meyer
@@ -38,7 +37,7 @@ public abstract class AbstractArtifactBuilder implements ArtifactBuilder {
     
     @Override
     public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, ArtifactContent artifactContent)
-            throws IOException {
+            throws Exception {
         this.primaryArtifact = primaryArtifact;
         this.artifactContent = artifactContent;
         

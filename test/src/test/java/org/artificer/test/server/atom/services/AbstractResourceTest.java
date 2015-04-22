@@ -20,7 +20,7 @@ import org.artificer.common.ArtificerConstants;
 import org.artificer.test.AbstractIntegrationTest;
 
 /**
- * Base class for s-ramp resource tests. Handles some of the setup boilerplate.
+ * Base class for s-ramp resource tests. Handles some of the startup boilerplate.
  *
  * @author eric.wittmann@redhat.com
  */

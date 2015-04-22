@@ -20,6 +20,10 @@ import org.apache.commons.lang.StringUtils;
 import org.overlord.commons.config.ConfigurationFactory;
 import org.overlord.commons.config.JBossServer;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 
 /**
  * The core sramp configuration.
@@ -99,6 +103,20 @@ public class ArtificerConfig {
      */
     public static boolean getConfigProperty(String propertyName, boolean propertyDefault) {
         return configuration.getBoolean(propertyName, propertyDefault);
+    }
+
+    /**
+     * Returns a Map of all keys and values, where the keys begin with the given prefix.
+     * @param prefix
+     */
+    public static Map<String, Object> getConfigProperties(String prefix) {
+        Map<String, Object> properties = new HashMap<>();
+        Iterator<String> keys = configuration.getKeys(prefix);
+        while (keys.hasNext()) {
+            String key = keys.next();
+            properties.put(key, configuration.getProperty(key));
+        }
+        return properties;
     }
 
     /**

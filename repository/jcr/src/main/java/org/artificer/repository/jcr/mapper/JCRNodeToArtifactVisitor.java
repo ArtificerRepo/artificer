@@ -22,7 +22,6 @@ import org.artificer.repository.jcr.JCRConstants;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ActorTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactTarget;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
@@ -151,10 +150,6 @@ public class JCRNodeToArtifactVisitor extends HierarchicalArtifactVisitor {
     protected void visitBase(BaseArtifactType artifact) {
         super.visitBase(artifact);
         try {
-            ArtifactType artifactType = ArtifactType.valueOf(artifact);
-            BaseArtifactEnum apiType = artifactType.getArtifactType().getApiType();
-            artifact.setArtifactType(apiType);
-
             // First map in the standard s-ramp meta-data
             artifact.setCreatedBy(getProperty(jcrNode, JCRConstants.JCR_CREATED_BY));
             XMLGregorianCalendar createdTS = dtFactory.newXMLGregorianCalendar(getProperty(jcrNode, JCRConstants.JCR_CREATED));

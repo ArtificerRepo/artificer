@@ -1,0 +1,28 @@
+{
+  "name" : "Test Repository",
+  "jndiName" : "",
+  "workspaces" : {
+    "default" : "default",
+    "allowCreation" : true
+  },
+  "security" : {
+    "anonymous" : {
+      "roles" : ["readonly","readwrite","admin"],
+      "useOnFailedLogin" : false
+    },
+    "providers" : [
+      {
+        "classname": "org.artificer.repository.test.jcr.MockAuthenticationProvider",
+        "policyName": "overlord-idp"
+      }
+    ]
+  },
+  "textExtraction": {
+    "extractors" : {
+      "tikaExtractor":{
+        "name" : "Tika content-based extractor",
+        "classname" : "tika"
+      }
+    }
+  }
+}

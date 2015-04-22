@@ -9,7 +9,7 @@
       </protocol>
       <configuration>
         <property name="jbossHome">target/jboss-eap-6.2</property>
-        <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dkeycloak.import=${basedir}/../distro/assembly/src/main/resources/ROOT/artificer-realm.json</property>
+        <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dkeycloak.import=${basedir}/../distro/assembly/src/main/resources/ROOT/artificer-realm.json -Dhibernate.hbm2ddl.auto=create-drop</property>
         <property name="serverConfig">standalone-full.xml</property>
       </configuration>
    </container>
@@ -20,7 +20,7 @@
     </protocol>
     <configuration>
       <property name="jbossHome">target/jboss-eap-6.3</property>
-      <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dkeycloak.import=${basedir}/../distro/assembly/src/main/resources/ROOT/artificer-realm.json</property>
+      <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dkeycloak.import=${basedir}/../distro/assembly/src/main/resources/ROOT/artificer-realm.json -Dhibernate.hbm2ddl.auto=create-drop</property>
       <property name="serverConfig">standalone-full.xml</property>
     </configuration>
   </container>
@@ -31,7 +31,7 @@
     </protocol>
     <configuration>
       <property name="jbossHome">target/jboss-eap-6.4</property>
-      <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dkeycloak.import=${basedir}/../distro/assembly/src/main/resources/ROOT/artificer-realm.json</property>
+      <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dkeycloak.import=${basedir}/../distro/assembly/src/main/resources/ROOT/artificer-realm.json -Dhibernate.hbm2ddl.auto=create-drop</property>
       <property name="serverConfig">standalone-full.xml</property>
     </configuration>
   </container>
@@ -42,7 +42,7 @@
     </protocol>
     <configuration>
       <property name="jbossHome">target/wildfly-8.2.0.Final</property>
-      <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dkeycloak.import=${basedir}/../distro/assembly/src/main/resources/ROOT/artificer-realm.json</property>
+      <property name="javaVmArguments">-Xmx1024m -XX:MaxPermSize=512m -Dkeycloak.import=${basedir}/../distro/assembly/src/main/resources/ROOT/artificer-realm.json -Dhibernate.hbm2ddl.auto=create-drop</property>
       <property name="serverConfig">standalone-full.xml</property>
     </configuration>
   </container>

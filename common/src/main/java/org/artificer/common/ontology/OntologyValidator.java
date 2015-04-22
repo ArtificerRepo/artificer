@@ -39,8 +39,8 @@ public class OntologyValidator {
         } catch (Exception e) {
             throw new ArtificerUserException(Messages.i18n.format("INVALID_ONTOLOGY_ID", ontology.getId())); //$NON-NLS-1$
         }
-        List<ArtificerOntology.ArtificerOntologyClass> classes = ontology.getAllClasses();
-        for (ArtificerOntology.ArtificerOntologyClass oclass : classes) {
+        List<ArtificerOntologyClass> classes = ontology.getAllClasses();
+        for (ArtificerOntologyClass oclass : classes) {
             try {
                 new URI(oclass.getId());
             } catch (Exception e) {

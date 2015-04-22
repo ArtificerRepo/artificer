@@ -15,16 +15,10 @@
  */
 package org.artificer.atom;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
-
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerConstants;
 import org.artificer.common.MediaType;
+import org.artificer.common.ontology.ArtificerOntology;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 import org.jboss.resteasy.plugins.providers.atom.Category;
 import org.jboss.resteasy.plugins.providers.atom.Content;
@@ -42,13 +36,18 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQueryData;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtificerConstants;
-import org.artificer.common.ontology.ArtificerOntology;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * Some useful static utils for users of the s-ramp client.
@@ -150,6 +149,14 @@ public final class ArtificerAtomUtils {
 			entry.getAuthors().add(new Person(artifact.getCreatedBy()));
 		if (artifact.getDescription() != null)
 			entry.setSummary(artifact.getDescription());
+        if (artifact instanceof ExtendedArtifactType) {
+            entry.getExtensionAttributes().put(ArtificerConstants.SRAMP_EXTENDED_TYPE_QNAME,
+                    ((ExtendedArtifactType) artifact).getExtendedType());
+        }
+        if (artifact instanceof ExtendedDocument) {
+            entry.getExtensionAttributes().put(ArtificerConstants.SRAMP_EXTENDED_TYPE_QNAME,
+                    ((ExtendedDocument) artifact).getExtendedType());
+        }
 
 		Artifact srampArty = new Artifact();
 		Method method = Artifact.class.getMethod("set" + artifact.getClass().getSimpleName(), artifact.getClass()); //$NON-NLS-1$

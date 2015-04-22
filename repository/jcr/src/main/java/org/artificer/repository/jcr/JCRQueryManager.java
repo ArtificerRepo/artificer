@@ -36,13 +36,12 @@ import java.util.List;
  *
  * @author eric.wittmann@redhat.com
  */
-public class JCRQueryManager extends JCRAbstractManager implements QueryManager {
+public class JCRQueryManager implements QueryManager {
 
-	/**
-	 * Default constructor.
-	 */
-	public JCRQueryManager() {
-	}
+    @Override
+    public void login(String username, String password) {
+        JCRRepositoryFactory.setLoginCredentials(username, password);
+    }
 
 	@Override
 	public ArtificerQuery createQuery(String xpathTemplate, String orderByProperty, boolean orderAscending) {

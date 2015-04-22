@@ -18,12 +18,9 @@ package org.artificer.repository.jcr.query;
 import org.artificer.common.ArtifactTypeEnum;
 import org.artificer.common.ArtificerConstants;
 import org.artificer.common.ArtificerException;
-import org.artificer.common.query.xpath.ast.AbstractXPathNode;
 import org.artificer.common.query.xpath.ast.AndExpr;
 import org.artificer.common.query.xpath.ast.Argument;
-import org.artificer.common.query.xpath.ast.ArtifactSet;
 import org.artificer.common.query.xpath.ast.EqualityExpr;
-import org.artificer.common.query.xpath.ast.Expr;
 import org.artificer.common.query.xpath.ast.ForwardPropertyStep;
 import org.artificer.common.query.xpath.ast.FunctionCall;
 import org.artificer.common.query.xpath.ast.LocationPath;
@@ -33,11 +30,11 @@ import org.artificer.common.query.xpath.ast.PrimaryExpr;
 import org.artificer.common.query.xpath.ast.Query;
 import org.artificer.common.query.xpath.ast.RelationshipPath;
 import org.artificer.common.query.xpath.ast.SubartifactSet;
-import org.artificer.common.query.xpath.visitors.XPathVisitor;
+import org.artificer.repository.ClassificationHelper;
 import org.artificer.repository.error.QueryExecutionException;
-import org.artificer.repository.jcr.ClassificationHelper;
 import org.artificer.repository.jcr.JCRConstants;
 import org.artificer.repository.jcr.i18n.Messages;
+import org.artificer.repository.query.AbstractArtificerQueryVisitor;
 import org.modeshape.jcr.api.query.qom.Operator;
 import org.modeshape.jcr.query.model.Column;
 import org.modeshape.jcr.query.model.DynamicOperand;
@@ -61,39 +58,48 @@ import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Visitor used to produce a JCR SQL2 query from an S-RAMP xpath query.
  *
  * @author Brett Meyer
  */
-public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
+public class ArtificerToJcrSql2QueryVisitor extends AbstractArtificerQueryVisitor {
 
-    private static final QName CLASSIFIED_BY_ANY_OF = new QName(ArtificerConstants.SRAMP_NS, "classifiedByAnyOf");
-    private static final QName CLASSIFIED_BY_ALL_OF = new QName(ArtificerConstants.SRAMP_NS, "classifiedByAllOf");
-    private static final QName EXACTLY_CLASSIFIED_BY_ANY_OF = new QName(ArtificerConstants.SRAMP_NS, "exactlyClassifiedByAnyOf");
-    private static final QName EXACTLY_CLASSIFIED_BY_ALL_OF = new QName(ArtificerConstants.SRAMP_NS, "exactlyClassifiedByAllOf");
+    private Session session;
+    private QueryManager queryManager;
+    // Note: We're relying on a few ModeShape-specific extensions, such as "in", subselects, sets, etc.  Technically,
+    // we could use the JCR QueryObjectModelFactory for most of the visitor.  But we're using the ModeShape version
+    // for simplicity.
+    private QueryObjectModelFactory factory;
 
-    public static final QName GET_RELATIONSHIP_ATTRIBUTE = new QName(ArtificerConstants.SRAMP_NS, "getRelationshipAttribute");
-    public static final QName GET_TARGET_ATTRIBUTE = new QName(ArtificerConstants.SRAMP_NS, "getTargetAttribute");
+    private List<Constraint> rootConstraints = new ArrayList<>();
+    private List<Constraint> constraintsContext = rootConstraints;
 
-    private static final QName MATCHES = new QName("http://www.w3.org/2005/xpath-functions", "matches");
-    private static final QName NOT = new QName("http://www.w3.org/2005/xpath-functions", "not");
+    private Source sourceContext = null;
+    private String selectorContext = null;
+    private String propertyContext = null;
+    private String relationshipContext = null;
+    private String targetContext = null;
+    private Value valueContext = null;
 
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
+    private String singleUseSelectorContext = null;
 
-    private static final Map<QName, String> corePropertyMap = new HashMap<>();
-    static {
+    private boolean contentChildJoined = false;
+
+    /**
+     * Default constructor.
+     * @param session
+     * @param classificationHelper
+     */
+    public ArtificerToJcrSql2QueryVisitor(Session session, ClassificationHelper classificationHelper) throws ArtificerException {
+        super(classificationHelper);
+
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "createdBy"), JCRConstants.JCR_CREATED_BY);
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "version"), "version");
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "uuid"), JCRConstants.SRAMP_UUID);
@@ -113,44 +119,8 @@ public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "style"), JCRConstants.SRAMP_STYLE);
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "transport"), JCRConstants.SRAMP_TRANSPORT);
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "soapLocation"), JCRConstants.SRAMP_SOAP_LOCATION);
-
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "derived"), JCRConstants.SRAMP_DERIVED);
-    }
 
-    private Session session;
-    private QueryManager queryManager;
-    // Note: We're relying on a few ModeShape-specific extensions, such as "in", subselects, sets, etc.  Technically,
-    // we could use the JCR QueryObjectModelFactory for most of the visitor.  But we're using the ModeShape version
-    // for simplicity.
-    private QueryObjectModelFactory factory;
-
-    private String order;
-    private boolean orderAscending;
-
-    private List<Constraint> rootConstraints = new ArrayList<>();
-    private List<Constraint> constraintsContext = rootConstraints;
-
-    private ClassificationHelper classificationHelper;
-
-    private Source sourceContext = null;
-    private String selectorContext = null;
-    private String propertyContext = null;
-    private String relationshipContext = null;
-    private String targetContext = null;
-    private Value valueContext = null;
-
-    private String singleUseSelectorContext = null;
-
-    private boolean contentChildJoined = false;
-
-    private ArtificerException error;
-
-    /**
-     * Default constructor.
-     * @param session
-     * @param classificationHelper
-     */
-    public ArtificerToJcrSql2QueryVisitor(Session session, ClassificationHelper classificationHelper) throws ArtificerException {
         this.session = session;
         try {
             this.queryManager = session.getWorkspace().getQueryManager();
@@ -158,15 +128,6 @@ public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
         } catch (RepositoryException e) {
             throw new QueryExecutionException(e);
         }
-        this.classificationHelper = classificationHelper;
-    }
-
-    public void setOrder(String order) {
-        this.order = order;
-    }
-
-    public void setOrderAscending(boolean orderAscending) {
-        this.orderAscending = orderAscending;
     }
 
     public javax.jcr.query.Query buildQuery() throws ArtificerException {
@@ -282,25 +243,6 @@ public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
     }
 
     /**
-     * @see org.artificer.common.query.xpath.visitors.XPathVisitor#visit(org.artificer.common.query.xpath.ast.Argument)
-     */
-    @Override
-    public void visit(Argument node) {
-        if (node.getPrimaryExpr() != null)
-            node.getPrimaryExpr().accept(this);
-        else
-            throw new RuntimeException(Messages.i18n.format("XP_ONLY_PRIMARY_FUNC_ARGS"));
-    }
-
-    /**
-     * @see org.artificer.common.query.xpath.visitors.XPathVisitor#visit(org.artificer.common.query.xpath.ast.ArtifactSet)
-     */
-    @Override
-    public void visit(ArtifactSet node) {
-        node.getLocationPath().accept(this);
-    }
-
-    /**
      * @see org.artificer.common.query.xpath.visitors.XPathVisitor#visit(org.artificer.common.query.xpath.ast.EqualityExpr)
      */
     @Override
@@ -320,14 +262,6 @@ public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
             operation(getSelectorContext(), propertyContext, getJcrOperator(node.getOperator().symbol()), valueContext);
             valueContext = null;
         }
-    }
-
-    /**
-     * @see org.artificer.common.query.xpath.visitors.XPathVisitor#visit(org.artificer.common.query.xpath.ast.Expr)
-     */
-    @Override
-    public void visit(Expr node) {
-        node.getAndExpr().accept(this);
     }
 
     /**
@@ -432,7 +366,8 @@ public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
         List<Constraint> oldConstraintsContext = constraintsContext;
         constraintsContext = new ArrayList<>();
         for (URI classification : classifications) {
-            operation(getSelectorContext(), propertyName, QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO, classification.toString());
+            operation(getSelectorContext(), propertyName, QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
+                    classification.toString());
         }
         if (isOr) {
             oldConstraintsContext.add(compileOr(constraintsContext));
@@ -440,27 +375,6 @@ public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
             oldConstraintsContext.add(compileAnd(constraintsContext));
         }
         constraintsContext = oldConstraintsContext;
-    }
-
-    /**
-     * Resolves the list of arguments to a collection of classification URIs.
-     * @param arguments
-     */
-    private Collection<URI> resolveArgumentsToClassifications(List<Argument> arguments) {
-        Collection<String> classifiedBy = new HashSet<>();
-        for (int idx = 1; idx < arguments.size(); idx++) {
-            Argument arg = arguments.get(idx);
-            if (arg.getPrimaryExpr() == null || arg.getPrimaryExpr().getLiteral() == null) {
-                throw new RuntimeException(Messages.i18n.format("XP_INVALID_CLASSIFIER_FORMAT"));
-            }
-            classifiedBy.add(arg.getPrimaryExpr().getLiteral());
-        }
-        try {
-            return this.classificationHelper.resolveAll(classifiedBy);
-        } catch (ArtificerException e) {
-            this.error = e;
-            return Collections.emptySet();
-        }
     }
 
     /**
@@ -478,14 +392,6 @@ public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
             oldConstraintsContext.add(compileOr(constraintsContext));
             constraintsContext = oldConstraintsContext;
         }
-    }
-
-    /**
-     * @see org.artificer.common.query.xpath.visitors.XPathVisitor#visit(org.artificer.common.query.xpath.ast.Predicate)
-     */
-    @Override
-    public void visit(Predicate node) {
-        node.getExpr().accept(this);
     }
 
     /**
@@ -624,66 +530,6 @@ public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
         }
     }
 
-    /**
-     * Reduces an Argument subtree to the final {@link ForwardPropertyStep} that is it's (supposed)
-     * final node.  This method will throw a runtime exception if it doesn't find the expected
-     * {@link ForwardPropertyStep}.
-     *
-     * @param argument
-     */
-    private ForwardPropertyStep reducePropertyArgument(Argument argument) {
-        try {
-            ForwardPropertyStep fps = (ForwardPropertyStep) argument.getExpr().getAndExpr().getLeft().getLeft().getLeft();
-            if (fps == null) {
-                throw new NullPointerException();
-            }
-            return fps;
-        } catch (Throwable t) {
-            throw new RuntimeException(Messages.i18n.format("XP_EXPECTED_PROPERTY_ARG"));
-        }
-    }
-
-    /**
-     * Returns true if the Argument subtree's final node is the full-text seach wildcard.
-     * Example: /s-ramp[xp2:matches(., '.*foo.*')] The primary expression will be the xpath value (".") used for free-text
-     * searches.
-     *
-     * @param argument
-     */
-    private boolean isFullTextSearch(Argument argument) {
-        AbstractXPathNode node = argument.getExpr().getAndExpr().getLeft().getLeft().getLeft();
-        if (node instanceof PrimaryExpr) {
-            PrimaryExpr primaryExpr = (PrimaryExpr) node;
-            return primaryExpr.getXpathValue().equals(".");
-        }
-        return false;
-    }
-
-    /**
-     * Reduces an Argument to a string literal.  This method will throw a runtime exception if it
-     * doesn't find the expected string literal.
-     * @param argument
-     */
-    private String reduceStringLiteralArgument(Argument argument) {
-        try {
-            String l = argument.getPrimaryExpr().getLiteral();
-            if (l == null) {
-                throw new NullPointerException();
-            }
-            return l;
-        } catch (Throwable t) {
-            throw new RuntimeException(Messages.i18n.format("XP_EXPECTED_STRING_LITERAL_ARG"));
-        }
-    }
-
-    /**
-     * Escape string literals to prevent injection.
-     * @param literal
-     */
-    private String escapeStringLiteral(String literal) {
-        return literal.replace("'", "''");
-    }
-
     private void joinEq(String nodeType, String leftSelectorName, String leftPropertyName,
                         String rightSelectorName, String rightPropertyName, String joinType) {
         Selector rightSelector = factory.selector(nodeType, rightSelectorName);
@@ -810,19 +656,6 @@ public class ArtificerToJcrSql2QueryVisitor implements XPathVisitor {
         if (Operator.LIKE.symbol().equalsIgnoreCase(operator)) return QueryObjectModelConstants.JCR_OPERATOR_LIKE;
         if (Operator.NOT_EQUAL_TO.symbol().equalsIgnoreCase(operator)) return QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO;
         return null;
-    }
-
-    private int uniqueArtifactCounter = 1;
-    private int uniqueRelationshipCounter = 1;
-    private int uniqueTargetCounter = 1;
-    private String newArtifactAlias() {
-        return "artifact" + uniqueArtifactCounter++;
-    }
-    private String newRelationshipAlias() {
-        return "relationship" + uniqueRelationshipCounter++;
-    }
-    private String newTargetAlias() {
-        return "target" + uniqueTargetCounter++;
     }
 
 }
