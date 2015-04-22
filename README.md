@@ -1,8 +1,32 @@
-# The Artificer Repository Project
+# Artificer: Software Artifact, Metadata, and Information Repository
 
 ## Summary
 
-This is the official git repository for the [Artificer](http://artificer.jboss.org/) project.  Artificer is an metadata and software artifact repository comprised of a common data model, multiple interfaces, powerful tools, and exensibility. It implements the [OASIS S-RAMP specification](https://www.oasis-open.org/committees/s-ramp/) which defines the data model, query language, and an Atom REST binding.  In addition to implementing the spec, Artificer provides a suite of powerful, flexible, and extensible capabilities.  Artificer is 100% open source -- contributions are welcome!
+Artificer is a software artifact, logical metadata, and information repository, comprised of a common data model, multiple interfaces, powerful tools, and exensibility. 100% Open source. Untangle all the things!
+
+## Overview
+
+All individuals, teams, and organizations tend to have a tangled mess of "stuff". That bucket can include bits of information, logical metadata, and physical files. Those "artifacts" are almost never isolated in nature. They’re all connected and inter-dependent, but the relationships can be difficult to understand.
+
+In the software development world, this is an especially important problem to solve. The development process often spews out a huge amount of artifacts, needed for future analysis and actions. Without the ability to analyze how the information, artifacts, and content within the artifacts are connected, development processes become difficult, at best, or nearly impossible, at worst. Both the publisher and the consumer need help!
+
+In steps Artificer. Artificer is a software artifact, logical metadata, and information repository. It consists of a common data model, multiple interfaces, useful tools, and extensibility. In less words? A powerful platform that untangles everything.
+
+Artificer is 100% open source -- contributions are welcome!
+
+## Links
+
+- [Website](http://artificer.jboss.org/)
+- [Downloads](http://artificer.jboss.org/downloads.html)
+- [Docs](http://docs.jboss.org/artificer)
+- [How to Contribute](http://artificer.jboss.org/contribute.html)
+- [Feature/Bug Tracker](https://issues.jboss.org/browse/ARTIF)
+- [Roadmap](http://artificer.jboss.org/roadmap.html)
+- [Chat](http://artificer.jboss.org/chat.html)
+- [User Forum](https://developer.jboss.org/en/artificer)
+- [Developer Forum](https://developer.jboss.org/en/artificer/dev)
+- [@ArtificerRepo](https://twitter.com/ArtificerRepo)
+- [Blog](https://developer.jboss.org/en/artificer/blog)
 
 ## Get the code
 
@@ -55,5 +79,3 @@ and [generate a pull-request](http://help.github.com/pull-requests/).
 
 We prefer pull-requests over patches because we can review the proposed changes, comment on them,
 discuss them with you, and likely merge the changes right into the official repository.
-
-Please also read the guidelines for contributors: https://github.com/Governance/overlord/wiki/Contributor-Guidelines
