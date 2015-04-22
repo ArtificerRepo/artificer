@@ -156,7 +156,7 @@ public abstract class AbstractArtificerQueryImpl implements ArtificerQuery {
 	 * @param replacementParams replacements for the template's ?'s
 	 * @return final xpath used to query the s-ramp repository
 	 */
-	protected static final String formatQuery(String xpathTemplate, List<QueryReplacementParam<?>> replacementParams)
+	public static final String formatQuery(String xpathTemplate, List<QueryReplacementParam<?>> replacementParams)
 			throws ArtificerUserException {
 		StringBuilder builder = new StringBuilder();
 		String [] xpathSegments = xpathTemplate.split("\\?"); //$NON-NLS-1$

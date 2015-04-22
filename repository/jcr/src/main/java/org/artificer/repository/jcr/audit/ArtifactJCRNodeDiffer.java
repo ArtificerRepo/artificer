@@ -15,23 +15,23 @@
  */
 package org.artificer.repository.jcr.audit;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import org.artificer.repository.audit.ArtifactDiff;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A class that is able to compare an artifact JCR {@link Node} and output
  * the differences in properties, relationships, and classifiers.  This class
- * is used by the auditing code to record changes made to a node.  It is
- * not used
+ * is used by the auditing code to record changes made to a node.
  *
  * @author eric.wittmann@redhat.com
  */
@@ -88,8 +88,8 @@ public class ArtifactJCRNodeDiffer {
      *
      * @param artifactNode
      */
-    public ArtifactJCRNodeDiff diff(Node artifactNode) throws RepositoryException {
-        ArtifactJCRNodeDiff diff = new ArtifactJCRNodeDiff();
+    public ArtifactDiff diff(Node artifactNode) throws RepositoryException {
+        ArtifactDiff diff = new ArtifactDiff();
 
         // Process all properties and classifiers
         /////////////////////////////////////////

@@ -89,8 +89,11 @@ public class ArtifactContentTypeVisitor extends HierarchicalArtifactVisitor {
 	/**
 	 * @param contentType the contentType to set
 	 */
-	public void setContentType(javax.ws.rs.core.MediaType contentType) {
-		this.contentType = contentType;
+	private void setContentType(javax.ws.rs.core.MediaType contentType) {
+        // Only set it once, since HierarchicalArtifactVisitor is ordered most-specific to least-specific.
+        if (this.contentType == null) {
+            this.contentType = contentType;
+        }
 	}
 
 }

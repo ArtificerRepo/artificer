@@ -18,14 +18,14 @@ package org.artificer.repository.jcr.query;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.query.xpath.ast.Query;
 import org.artificer.common.query.xpath.visitors.XPathSerializationVisitor;
+import org.artificer.repository.RepositoryProviderFactory;
 import org.artificer.repository.error.QueryExecutionException;
-import org.artificer.repository.jcr.ClassificationHelper;
+import org.artificer.repository.ClassificationHelper;
 import org.artificer.repository.jcr.JCRConstants;
 import org.artificer.repository.jcr.JCRPersistence;
 import org.artificer.repository.jcr.i18n.Messages;
 import org.artificer.repository.query.AbstractArtificerQueryImpl;
 import org.artificer.repository.query.ArtifactSet;
-import org.artificer.repository.PersistenceFactory;
 import org.artificer.repository.jcr.JCRRepositoryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +86,8 @@ public class JCRArtificerQuery extends AbstractArtificerQueryImpl {
                     jcrOrderBy = jcrPropName;
                 }
             }
-            ArtificerToJcrSql2QueryVisitor visitor = new ArtificerToJcrSql2QueryVisitor(session, (ClassificationHelper) PersistenceFactory.newInstance());
+            ArtificerToJcrSql2QueryVisitor visitor = new ArtificerToJcrSql2QueryVisitor(session,
+                    (ClassificationHelper) RepositoryProviderFactory.persistenceManager());
             queryModel.accept(visitor);
             if (jcrOrderBy != null) {
                 visitor.setOrder(jcrOrderBy);

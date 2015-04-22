@@ -15,16 +15,16 @@
  */
 package org.artificer.repository.jcr.mapper;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Date;
+import org.artificer.common.ontology.ArtificerOntology;
+import org.artificer.common.ontology.ArtificerOntologyClass;
+import org.artificer.repository.jcr.JCRConstants;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-
-import org.artificer.common.ontology.ArtificerOntology;
-import org.artificer.repository.jcr.JCRConstants;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Date;
 
 /**
  * Reads an ontology from the given JCR node.
@@ -59,7 +59,7 @@ public class JCRNodeToOntology {
 		NodeIterator nodes = jcrNode.getNodes();
 		while (nodes.hasNext()) {
 			Node childNode = nodes.nextNode();
-			ArtificerOntology.ArtificerOntologyClass sclass = readClass(childNode);
+			ArtificerOntologyClass sclass = readClass(childNode);
 			sclass.setParent(null);
 			ontology.getRootClasses().add(sclass);
 		}
@@ -71,8 +71,8 @@ public class JCRNodeToOntology {
 	 * @param jcrNode
 	 * @throws RepositoryException
 	 */
-	private ArtificerOntology.ArtificerOntologyClass readClass(Node jcrNode) throws RepositoryException {
-		ArtificerOntology.ArtificerOntologyClass rval = new ArtificerOntology.ArtificerOntologyClass();
+	private ArtificerOntologyClass readClass(Node jcrNode) throws RepositoryException {
+		ArtificerOntologyClass rval = new ArtificerOntologyClass();
 
 		try {
 			rval.setUri(new URI(JCRMapperUtil.getPropertyString(jcrNode, JCRConstants.SRAMP_URI)));
@@ -86,7 +86,7 @@ public class JCRNodeToOntology {
 		NodeIterator nodes = jcrNode.getNodes();
 		while (nodes.hasNext()) {
 			Node childNode = nodes.nextNode();
-			ArtificerOntology.ArtificerOntologyClass sclass = readClass(childNode);
+			ArtificerOntologyClass sclass = readClass(childNode);
 			sclass.setParent(rval);
 			rval.getChildren().add(sclass);
 		}

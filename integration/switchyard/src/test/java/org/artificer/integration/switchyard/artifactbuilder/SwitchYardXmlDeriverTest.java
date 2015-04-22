@@ -43,7 +43,7 @@ public class SwitchYardXmlDeriverTest {
      * @throws IOException
      */
     @Test
-    public void testSwitchyardDeriver() throws IOException {
+    public void testSwitchyardDeriver() throws Exception {
         SwitchYardXmlArtifactBuilder builder = new SwitchYardXmlArtifactBuilder();
         ExtendedDocument artifact = new ExtendedDocument();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);

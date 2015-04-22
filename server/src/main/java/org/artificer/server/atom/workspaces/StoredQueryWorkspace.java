@@ -15,17 +15,17 @@
  */
 package org.artificer.server.atom.workspaces;
 
-import java.util.List;
-
+import org.artificer.common.ArtificerException;
+import org.artificer.common.MediaType;
 import org.artificer.repository.PersistenceManager;
+import org.artificer.repository.RepositoryProviderFactory;
 import org.artificer.server.i18n.Messages;
 import org.jboss.resteasy.plugins.providers.atom.app.AppCollection;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
-import org.artificer.common.MediaType;
-import org.artificer.common.ArtificerException;
-import org.artificer.repository.PersistenceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Models the stored query workspace.
@@ -53,7 +53,7 @@ public class StoredQueryWorkspace extends AbstractWorkspace {
         
         // The spec requires that all queries in the system be listed as a collection.
         try {
-            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+            PersistenceManager persistenceManager = RepositoryProviderFactory.persistenceManager();
             List<StoredQuery> storedQueries = persistenceManager.getStoredQueries();
             for (StoredQuery storedQuery : storedQueries) {
                 AppCollection queryCollection = addCollection("/s-ramp/query/" + storedQuery.getQueryName(), //$NON-NLS-1$

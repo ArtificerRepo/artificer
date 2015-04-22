@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+  <persistence-unit name="Artificer">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    
+    <class>org.artificer.repository.hibernate.entity.ArtificerRelationship</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerTarget</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerComment</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerDocumentArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerStoredQuery</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerWsdlDerivedArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerWsdlDocumentArtifact</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerXsdDocumentArtifact</class>
+    <class>org.artificer.common.ontology.ArtificerOntology</class>
+    <class>org.artificer.common.ontology.ArtificerOntologyClass</class>
+    <class>org.artificer.repository.hibernate.audit.ArtificerAuditEntry</class>
+    <class>org.artificer.repository.hibernate.audit.ArtificerAuditItem</class>
+    <class>org.artificer.repository.hibernate.entity.ArtificerProperty</class>
+    
+    <exclude-unlisted-classes />
+    
+    <properties>
+      <property name="hibernate.order_updates" value="true"/>
+      <property name="hibernate.connection.autocommit" value="false"/>
+      <property name="hibernate.format_sql" value="true"/>
+
+      <!-- Defaults, overridden by artificer.properties -->
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+      <property name="hibernate.connection.datasource" value="java:jboss/datasources/artificerDS"/>
+      <property name="hibernate.connection.username" value="sa"/>
+      <property name="hibernate.connection.password" value="sa"/>
+      <property name="hibernate.cache.use_second_level_cache" value="false"/>
+    </properties>
+  </persistence-unit>
+</persistence>

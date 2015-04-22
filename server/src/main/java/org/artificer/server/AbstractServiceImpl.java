@@ -17,10 +17,8 @@ package org.artificer.server;
 
 import org.apache.commons.lang.StringUtils;
 import org.artificer.repository.AuditManager;
-import org.artificer.repository.AuditManagerFactory;
-import org.artificer.repository.PersistenceFactory;
 import org.artificer.repository.PersistenceManager;
-import org.artificer.repository.QueryManagerFactory;
+import org.artificer.repository.RepositoryProviderFactory;
 import org.artificer.server.core.api.AbstractService;
 import org.artificer.repository.QueryManager;
 
@@ -39,7 +37,7 @@ public abstract class AbstractServiceImpl implements AbstractService {
     }
 
     protected PersistenceManager persistenceManager() {
-        PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+        PersistenceManager persistenceManager = RepositoryProviderFactory.persistenceManager();
         if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
             persistenceManager.login(username, password);
         }
@@ -47,7 +45,7 @@ public abstract class AbstractServiceImpl implements AbstractService {
     }
 
     protected AuditManager auditManager() {
-        AuditManager auditManager = AuditManagerFactory.newInstance();
+        AuditManager auditManager = RepositoryProviderFactory.auditManager();
         if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
             auditManager.login(username, password);
         }
@@ -55,7 +53,7 @@ public abstract class AbstractServiceImpl implements AbstractService {
     }
 
     protected QueryManager queryManager() {
-        QueryManager queryManager = QueryManagerFactory.newInstance();
+        QueryManager queryManager = RepositoryProviderFactory.queryManager();
         if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
             queryManager.login(username, password);
         }

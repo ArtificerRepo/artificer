@@ -31,7 +31,8 @@ import org.artificer.common.visitors.ArtifactVisitorHelper;
 import org.artificer.integration.ExtensionFactory;
 import org.artificer.integration.artifactbuilder.ArtifactBuilder;
 import org.artificer.integration.artifactbuilder.RelationshipContext;
-import org.artificer.repository.jcr.audit.ArtifactJCRNodeDiff;
+import org.artificer.repository.ClassificationHelper;
+import org.artificer.repository.audit.ArtifactDiff;
 import org.artificer.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.artificer.repository.jcr.i18n.Messages;
 import org.artificer.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
@@ -405,7 +406,7 @@ public final class JCRArtifactPersister {
     public static void auditUpdateArtifact(ArtifactJCRNodeDiffer differ, Node artifactNode) throws RepositoryException {
         Node auditEntryNode = createAuditEntryNode(artifactNode, AuditEntryTypes.ARTIFACT_UPDATE);
 
-        ArtifactJCRNodeDiff diff = differ.diff(artifactNode);
+        ArtifactDiff diff = differ.diff(artifactNode);
         if (!diff.getAddedProperties().isEmpty()) {
             Node propAddedNode = createAuditItemNode(auditEntryNode, AuditItemTypes.PROPERTY_ADDED);
             for (Entry<String, String> entry : diff.getAddedProperties().entrySet()) {

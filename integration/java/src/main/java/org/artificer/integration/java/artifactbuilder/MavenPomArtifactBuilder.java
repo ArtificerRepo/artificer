@@ -39,7 +39,7 @@ public class MavenPomArtifactBuilder extends AbstractArtifactBuilder {
 
     @Override
     public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, ArtifactContent artifactContent)
-            throws IOException {
+            throws Exception {
         super.buildArtifacts(primaryArtifact, artifactContent);
         
         try {

@@ -74,6 +74,7 @@ public class ArtificerConstants {
     public static final String ARTIFICER_CONFIG_EVENT_JMS_QUEUES = "artificer.config.events.jms.queues"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_EVENT_JMS_USER = "artificer.config.events.jms.user"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_EVENT_JMS_PASSWORD = "artificer.config.events.jms.password"; //$NON-NLS-1$
+    public static final String ARTIFICER_CONFIG_REPO_PROVIDER = "artificer.config.repository.provider";
 
     // Location of a directory containing JARs which provide custom ArtifactBuilderProviders
     public static final String ARTIFICER_CUSTOM_EXTENSION_DIR = "artificer.extension.customDir"; //$NON-NLS-1$

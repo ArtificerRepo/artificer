@@ -15,12 +15,13 @@
  */
 package org.artificer.atom.mappers;
 
-import javax.xml.namespace.QName;
-
 import org.artificer.common.ontology.ArtificerOntology;
+import org.artificer.common.ontology.ArtificerOntologyClass;
 import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 import org.w3._2000._01.rdf_schema_.SubClassOf;
 import org.w3._2002._07.owl_.Ontology;
+
+import javax.xml.namespace.QName;
 
 /**
  * Maps S-RAMP ontology data into an RDF model.  See the s-ramp specification for details,
@@ -49,7 +50,7 @@ public class OntologyToRdfMapper {
 		rdf.getOtherAttributes().put(new QName("http://www.w3.org/XML/1998/namespace", "base"), ontology.getBase()); //$NON-NLS-1$ //$NON-NLS-2$
 		rdf.setOntology(rdfOntology);
 
-		for (ArtificerOntology.ArtificerOntologyClass oclass : ontology.getAllClasses()) {
+		for (ArtificerOntologyClass oclass : ontology.getAllClasses()) {
 			org.w3._2002._07.owl_.Class rdfClass = new org.w3._2002._07.owl_.Class();
 			rdfClass.setID(oclass.getId());
 			rdfClass.setLabel(oclass.getLabel());

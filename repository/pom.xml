@@ -26,6 +26,10 @@
       <groupId>org.artificer</groupId>
       <artifactId>artificer-common</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.artificer</groupId>
+      <artifactId>artificer-integration</artifactId>
+    </dependency>
 
     <!-- Third Party -->
     <dependency>
@@ -35,6 +39,11 @@
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
     
     <!-- Testing (note the scope) -->

@@ -15,10 +15,18 @@
  */
 package org.artificer.integration.artifactbuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang.StringUtils;
+import org.artificer.common.ArtifactContent;
+import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.query.xpath.StaticNamespaceContext;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -27,19 +35,10 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import org.apache.commons.lang.StringUtils;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DerivedArtifactType;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactEnum;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactTarget;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Relationship;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
-import org.artificer.common.ArtifactContent;
-import org.artificer.common.ArtificerModelUtils;
-import org.artificer.common.query.xpath.StaticNamespaceContext;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides the basis for an {@link ArtifactBuilder} responsible for an XML artifact.  Sets up commonly-used namespaces,
@@ -58,7 +57,7 @@ public class XmlArtifactBuilder extends AbstractArtifactBuilder {
     protected XPath xpath;
 
     @Override
-    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, ArtifactContent artifactContent) throws IOException {
+    public ArtifactBuilder buildArtifacts(BaseArtifactType primaryArtifact, ArtifactContent artifactContent) throws Exception {
         super.buildArtifacts(primaryArtifact, artifactContent);
         
         try {
@@ -117,7 +116,7 @@ public class XmlArtifactBuilder extends AbstractArtifactBuilder {
     }
     
     @Override
-    public ArtifactBuilder buildRelationships(RelationshipContext context) throws IOException {
+    public ArtifactBuilder buildRelationships(RelationshipContext context) throws Exception {
         for (RelationshipSource relationshipSource : relationshipSources) {
             relationshipSource.build(context);
         }

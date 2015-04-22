@@ -15,17 +15,16 @@
  */
 package org.artificer.integration.java.artifactbuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-
+import org.artificer.common.ArtifactContent;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
-import org.artificer.common.ArtifactContent;
+
+import java.io.InputStream;
+import java.util.Collection;
 
 /**
  *
@@ -34,7 +33,7 @@ import org.artificer.common.ArtifactContent;
 public class MavenPomArtifactBuilderTest {
 
     @Test
-    public void testJavaDeriver() throws IOException {
+    public void testJavaDeriver() throws Exception {
         MavenPomArtifactBuilder builder = new MavenPomArtifactBuilder();
         ExtendedDocument artifact = new ExtendedDocument();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);

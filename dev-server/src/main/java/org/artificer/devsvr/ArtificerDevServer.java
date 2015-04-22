@@ -21,8 +21,7 @@ import org.artificer.client.ArtificerClientException;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.error.ArtificerServerException;
-import org.artificer.repository.jcr.JCRRepository;
-import org.artificer.repository.jcr.filter.ServletCredentialsFilter;
+import org.artificer.repository.filter.ServletCredentialsFilter;
 import org.artificer.server.ArtificerLifeCycle;
 import org.artificer.server.atom.services.ArtificerApplication;
 import org.artificer.server.filters.MavenRepositoryAuthFilter;
@@ -100,9 +99,15 @@ public class ArtificerDevServer extends ErraiDevServer {
      */
     @Override
     protected void preConfig() {
-        // Use an in-memory config for s-ramp
-        System.setProperty("artificer.modeshape.config.url", "classpath://" + JCRRepository.class.getName()
-                + "/META-INF/modeshape-configs/inmemory-artificer-config.json");
+        System.setProperty("hibernate.show_sql", "true");
+        System.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        System.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
+        System.setProperty("hibernate.connection.url", "jdbc:h2:mem:dbHibernateTest;DB_CLOSE_DELAY=-1;MVCC=true");
+        System.setProperty("hibernate.connection.username", "sa");
+        System.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        System.setProperty("hibernate.cache.use_second_level_cache", "false");
+        System.setProperty("hibernate.cache.use_query_cache", "false");
+        System.setProperty("hibernate.search.default.directory_provider", "ram");
 
         // Authentication provider
         System.setProperty("artificer-ui.atom-api.authentication.provider", KeycloakBearerTokenAuthenticationProvider.class.getName());

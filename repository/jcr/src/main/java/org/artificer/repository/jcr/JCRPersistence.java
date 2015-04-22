@@ -25,9 +25,8 @@ import org.artificer.common.error.ArtificerNotFoundException;
 import org.artificer.common.error.ArtificerServerException;
 import org.artificer.common.error.ArtificerUserException;
 import org.artificer.common.ontology.ArtificerOntology;
-import org.artificer.common.ontology.ArtificerOntology.ArtificerOntologyClass;
 import org.artificer.common.visitors.ArtifactVisitorHelper;
-import org.artificer.repository.PersistenceManager;
+import org.artificer.repository.AbstractPersistenceManager;
 import org.artificer.repository.jcr.audit.ArtifactJCRNodeDiffer;
 import org.artificer.repository.jcr.i18n.Messages;
 import org.artificer.repository.jcr.mapper.ArtifactToJCRNodeVisitor;
@@ -51,14 +50,9 @@ import javax.jcr.Session;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -69,7 +63,7 @@ import java.util.UUID;
  * creation of the S-RAMP derived artifacts.
  */
 
-public class JCRPersistence extends JCRAbstractManager implements PersistenceManager, ClassificationHelper {
+public class JCRPersistence extends AbstractPersistenceManager {
 
     private static Logger log = LoggerFactory.getLogger(JCRPersistence.class);
 
@@ -80,10 +74,9 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
 
     //  private Map<String, SrampOntology> ontologyCache = new HashMap<String, SrampOntology>();
 
-    /**
-     * Default constructor.
-     */
-    public JCRPersistence() {
+    @Override
+    public void login(String username, String password) {
+        JCRRepositoryFactory.setLoginCredentials(username, password);
     }
 
     @Override
@@ -425,7 +418,7 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
     @Override
     public ArtificerOntology persistOntology(ArtificerOntology ontology) throws ArtificerException {
         Session session = null;
-        if (ontology.getUuid() == null) {
+        if (StringUtils.isBlank(ontology.getUuid())) {
             ontology.setUuid(UUID.randomUUID().toString());
         }
         String ontologyPath = MapToJCRPath.getOntologyPath(ontology.getUuid());
@@ -691,57 +684,6 @@ public class JCRPersistence extends JCRAbstractManager implements PersistenceMan
         } finally {
             JCRRepositoryFactory.logoutQuietly(session);
         }
-    }
-
-    @Override
-    public URI resolve(String classifiedBy) throws ArtificerException {
-        URI classifiedUri = null;
-        try {
-            classifiedUri = new URI(classifiedBy);
-        } catch (URISyntaxException e) {
-            throw ArtificerUserException.invalidClassifiedBy(classifiedBy);
-        }
-        Collection<ArtificerOntology> ontologies = getOntologies();
-        for (ArtificerOntology ontology : ontologies) {
-            ArtificerOntologyClass sclass = ontology.findClass(classifiedBy);
-            if (sclass == null) {
-                sclass = ontology.findClass(classifiedUri);
-            }
-            if (sclass != null) {
-                return sclass.getUri();
-            }
-        }
-        throw ArtificerUserException.invalidClassifiedBy(classifiedBy);
-    }
-
-    @Override
-    public Collection<URI> normalize(URI classification) throws ArtificerException {
-        List<ArtificerOntology> ontologies = getOntologies();
-        for (ArtificerOntology ontology : ontologies) {
-            ArtificerOntologyClass sclass = ontology.findClass(classification);
-            if (sclass != null) {
-                return sclass.normalize();
-            }
-        }
-        throw ArtificerUserException.invalidClassifiedBy(classification.toString());
-    }
-
-    @Override
-    public Collection<URI> resolveAll(Collection<String> classifiedBy) throws ArtificerException {
-        Set<URI> resolved = new HashSet<URI>(classifiedBy.size());
-        for (String classification : classifiedBy) {
-            resolved.add(resolve(classification));
-        }
-        return resolved;
-    }
-
-    @Override
-    public Collection<URI> normalizeAll(Collection<URI> classifications) throws ArtificerException {
-        Set<URI> resolved = new HashSet<URI>(classifications.size());
-        for (URI classification : classifications) {
-            resolved.addAll(normalize(classification));
-        }
-        return resolved;
     }
 
     @Override

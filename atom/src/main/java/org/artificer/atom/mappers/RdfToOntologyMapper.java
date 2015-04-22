@@ -15,19 +15,19 @@
  */
 package org.artificer.atom.mappers;
 
+import org.artificer.atom.i18n.Messages;
+import org.artificer.common.ArtificerConstants;
+import org.artificer.common.ontology.ArtificerOntology;
+import org.artificer.common.ontology.ArtificerOntologyClass;
+import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
+import org.w3._2002._07.owl_.Ontology;
+
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import org.artificer.atom.i18n.Messages;
-import org.artificer.common.ArtificerConstants;
-import org.artificer.common.ontology.ArtificerOntology;
-import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
-import org.w3._2002._07.owl_.Ontology;
 
 /**
  * Maps RDF formatted data onto an S-RAMP ontology model.
@@ -77,10 +77,10 @@ public class RdfToOntologyMapper {
 
 		// First create all the classes included in the RDF
 		List<Object[]> classes = new ArrayList<Object[]>();
-		Map<String, ArtificerOntology.ArtificerOntologyClass> idIndex = new HashMap<String, ArtificerOntology.ArtificerOntologyClass>();
-		Map<String, ArtificerOntology.ArtificerOntologyClass> uriIndex = new HashMap<String, ArtificerOntology.ArtificerOntologyClass>();
+		Map<String, ArtificerOntologyClass> idIndex = new HashMap<String, ArtificerOntologyClass>();
+		Map<String, ArtificerOntologyClass> uriIndex = new HashMap<String, ArtificerOntologyClass>();
 		for (org.w3._2002._07.owl_.Class rdfClass : rdf.getClazz()) {
-			ArtificerOntology.ArtificerOntologyClass oclass = new ArtificerOntology.ArtificerOntologyClass();
+			ArtificerOntologyClass oclass = new ArtificerOntologyClass();
 			oclass.setId(rdfClass.getID());
 			oclass.setLabel(rdfClass.getLabel());
 			oclass.setComment(rdfClass.getComment());
@@ -96,12 +96,12 @@ public class RdfToOntologyMapper {
 
 		// And now figure out the relationships
 		for (Object [] classData : classes) {
-			ArtificerOntology.ArtificerOntologyClass oclass = (ArtificerOntology.ArtificerOntologyClass) classData[0];
+			ArtificerOntologyClass oclass = (ArtificerOntologyClass) classData[0];
 			String resourceRef = (String) classData[1];
 			if (resourceRef == null) {
 				ontology.getRootClasses().add(oclass);
 			} else {
-				ArtificerOntology.ArtificerOntologyClass parent = idIndex.get(resourceRef);
+				ArtificerOntologyClass parent = idIndex.get(resourceRef);
 				if (parent == null) {
 					parent = uriIndex.get(resourceRef);
 				}

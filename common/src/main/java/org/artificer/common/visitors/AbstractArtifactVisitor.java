@@ -15,8 +15,10 @@
  */
 package org.artificer.common.visitors;
 
+import org.artificer.common.ArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Actor;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.AttributeDeclaration;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Binding;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BindingOperation;
@@ -91,6 +93,10 @@ public abstract class AbstractArtifactVisitor implements ArtifactVisitor {
 	 * @param artifact
 	 */
 	protected void visitBase(BaseArtifactType artifact) {
+        ArtifactType artifactType = ArtifactType.valueOf(artifact);
+        BaseArtifactEnum apiType = artifactType.getArtifactType().getApiType();
+        artifact.setArtifactType(apiType);
+
 		// Subclasses can do common visit logic here
 	}
 

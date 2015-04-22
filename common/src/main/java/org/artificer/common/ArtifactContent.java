@@ -119,6 +119,10 @@ public class ArtifactContent {
         return path;
     }
 
+    public long getSize() {
+        return tempFile.length();
+    }
+
     public void cleanup() {
         if (tempFile != null) {
             tempFile.delete();

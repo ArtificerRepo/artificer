@@ -22,8 +22,8 @@ import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.error.ArtificerNotFoundException;
 import org.artificer.common.error.ArtificerUserException;
-import org.artificer.repository.PersistenceFactory;
 import org.artificer.repository.PersistenceManager;
+import org.artificer.repository.RepositoryProviderFactory;
 import org.artificer.server.core.api.BatchResult;
 import org.artificer.server.core.api.BatchService;
 import org.artificer.server.mime.MimeTypes;
@@ -136,7 +136,7 @@ public class BatchServiceImpl extends AbstractServiceImpl implements BatchServic
      */
     private boolean artifactExists(BaseArtifactType metaData) {
         try {
-            PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+            PersistenceManager persistenceManager = RepositoryProviderFactory.persistenceManager();
             ArtifactType artifactType = ArtifactType.valueOf(metaData);
             // TODO Bug: this would allow a re-used UUID as long as the artifact type was different.  Should change this to query via UUID instead.
             BaseArtifactType artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
@@ -156,7 +156,7 @@ public class BatchServiceImpl extends AbstractServiceImpl implements BatchServic
      */
     private BaseArtifactType processUpdate(ArtifactType artifactType, BaseArtifactType metaData,
             ArtifactContent content) throws Exception {
-        PersistenceManager persistenceManager = PersistenceFactory.newInstance();
+        PersistenceManager persistenceManager = RepositoryProviderFactory.persistenceManager();
         BaseArtifactType artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
         if (artifact == null)
             throw ArtificerNotFoundException.artifactNotFound(metaData.getUuid());
