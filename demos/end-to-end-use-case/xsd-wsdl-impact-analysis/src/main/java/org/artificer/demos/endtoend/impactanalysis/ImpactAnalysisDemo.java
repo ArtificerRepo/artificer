@@ -84,7 +84,7 @@ public class ImpactAnalysisDemo {
                 "http://[HOST]:[PORT]/artificer-ui/index.html");
 
         System.out.println("\nRetrieving a specific type declaration (needed later), which was derived from the XSD...");
-        String query = String.format("/s-ramp/xsd/ComplexTypeDeclaration[@name='%s']", "extOutputType");
+        String query = String.format("/s-ramp/xsd/ComplexTypeDeclaration[@name='%s']", "outputType");
         System.out.println("*** Query: " + query);
         QueryResultSet resultSet = client.query(query);
         ArtifactSummary typeSummary = resultSet.iterator().next();
@@ -173,7 +173,7 @@ public class ImpactAnalysisDemo {
         System.out.println("\nAlright, so 'Team XYZ' is responsible for 'Service Endpoint ABC'.");
         System.out.println("Better contact them and let them know why things are about to break...");
 
-        System.out.println("\nMore specifically, I only want to change one single type declaration: 'extOutputType'.");
+        System.out.println("\nMore specifically, I only want to change one single type declaration: 'outputType'.");
         System.out.println("Within *all* WSDLs in the repo, what exactly is using that type?  Again, look at the relationships targeting it.");
         nextUuid = reverseRelationship(typeSummary.getUuid(), "type", client);
         System.out.println("Ok, one Part.  Keep going.  Which Message?");
