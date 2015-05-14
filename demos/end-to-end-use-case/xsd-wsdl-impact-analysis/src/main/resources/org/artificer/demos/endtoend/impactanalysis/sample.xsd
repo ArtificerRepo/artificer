@@ -3,9 +3,9 @@
   targetNamespace="urn:s-ramp:test:sample:types" xmlns:tns="urn:s-ramp:test:sample:types"
   elementFormDefault="qualified">
 
-  <xsd:element name="extInput" type="tns:extInputType" />
+  <xsd:element name="inputElement" type="tns:inputType" />
 
-  <xsd:complexType name="extInputType">
+  <xsd:complexType name="inputType">
     <xsd:sequence>
       <xsd:element name="child1" type="xsd:string" />
       <xsd:element name="child2" type="xsd:string" />
@@ -15,7 +15,7 @@
     <xsd:attribute name="attribute2" type="xsd:string" />
   </xsd:complexType>
 
-  <xsd:complexType name="extOutputType">
+  <xsd:complexType name="outputType">
     <xsd:sequence>
       <xsd:element name="child1" type="xsd:string" />
     </xsd:sequence>
