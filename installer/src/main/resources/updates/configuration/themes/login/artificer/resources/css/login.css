@@ -3,7 +3,7 @@
 }
 
 .login-pf body {
-    background: #034672 url("../img/overlord.jpg") bottom left no-repeat;
+    background: #034672 url("../img/artificer.png") bottom center no-repeat;
     background-size: 100% auto;
 }
 
@@ -210,7 +210,7 @@ ol#kc-totp-settings li:first-of-type {
 .zocial.github:hover,
 .zocial.google:hover,
 .zocial.twitter:hover {
-    background-image:  url("../img/overlord.jpg");
+    background-image:  url("../img/artificer.png");
 }
 
 @media (max-width: 767px) {
