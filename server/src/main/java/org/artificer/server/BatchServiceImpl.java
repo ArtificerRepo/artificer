@@ -32,6 +32,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +44,8 @@ import java.util.List;
  */
 @Stateful(name = "BatchService")
 @Remote(BatchService.class)
+// Required so that artificer-repository-hibernate can control the transactions during EJB calls.
+@TransactionManagement(TransactionManagementType.BEAN)
 public class BatchServiceImpl extends AbstractServiceImpl implements BatchService {
 
     @Override
