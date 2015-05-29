@@ -40,6 +40,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.DocumentArtifactType;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -51,6 +53,8 @@ import java.util.Set;
  */
 @Stateful(name = "ArtifactService")
 @Remote(ArtifactService.class)
+// Required so that artificer-repository-hibernate can control the transactions during EJB calls.
+@TransactionManagement(TransactionManagementType.BEAN)
 public class ArtifactServiceImpl extends AbstractServiceImpl implements ArtifactService {
 
     @Override

@@ -26,6 +26,8 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import java.util.List;
 
 /**
@@ -33,6 +35,8 @@ import java.util.List;
  */
 @Stateful(name = "QueryService")
 @Remote(QueryService.class)
+// Required so that artificer-repository-hibernate can control the transactions during EJB calls.
+@TransactionManagement(TransactionManagementType.BEAN)
 public class QueryServiceImpl extends AbstractServiceImpl implements QueryService {
 
     @Override

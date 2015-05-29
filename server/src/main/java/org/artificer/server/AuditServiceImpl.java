@@ -23,6 +23,8 @@ import org.artificer.server.core.api.AuditService;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import java.util.List;
 
 /**
@@ -30,6 +32,8 @@ import java.util.List;
  */
 @Stateful(name = "AuditService")
 @Remote(AuditService.class)
+// Required so that artificer-repository-hibernate can control the transactions during EJB calls.
+@TransactionManagement(TransactionManagementType.BEAN)
 public class AuditServiceImpl extends AbstractServiceImpl implements AuditService {
 
     @Override
