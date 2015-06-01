@@ -66,8 +66,6 @@ public class ArtificerConstants {
     public static final String ARTIFICER_CONFIG_DERIVED_AUDITING = "artificer.config.auditing.enabled-derived"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_AUDIT_USER = "artificer.config.auditing.user"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_AUDIT_PASS = "artificer.config.auditing.password"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_JCR_REPO_JNDI_PATH = "artificer.config.jcr.repository.jndi-path"; //$NON-NLS-1$
-    public static final String ARTIFICER_CONFIG_JCR_REPO_NAME = "artificer.config.jcr.repository.name"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_EVENT_JMS_ENABLED = "artificer.config.events.jms.enabled"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_EVENT_JMS_CONNECTIONFACTORY = "artificer.config.events.jms.connectionfactory"; //$NON-NLS-1$
     public static final String ARTIFICER_CONFIG_EVENT_JMS_TOPICS = "artificer.config.events.jms.topics"; //$NON-NLS-1$

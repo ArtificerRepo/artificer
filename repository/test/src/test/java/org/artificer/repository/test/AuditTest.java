@@ -352,7 +352,7 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
 
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
         Assert.assertNotNull(artifact);
-        log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted s-ramp-press-release.pdf, returned artifact uuid=" + artifact.getUuid());
         return artifact;
     }
 
@@ -369,7 +369,7 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
 
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, content));
         Assert.assertNotNull(artifact);
-        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted PO.xsd, returned artifact uuid=" + artifact.getUuid());
         return artifact;
     }
 

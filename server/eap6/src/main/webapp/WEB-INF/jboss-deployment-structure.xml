@@ -13,8 +13,6 @@
       <module name="org.apache.log4j" />
       <module name="org.slf4j" />
       <module name="org.jboss.staxmapper" />
-      <module name="org.modeshape" />
-      <module name="org.jboss.as.clustering.infinispan" />
     </dependencies>
     <exclusions>
       <!-- Disable Jettison/Jackson.  Need to provide fasterxml Jackson in order to support annotations (known issue with

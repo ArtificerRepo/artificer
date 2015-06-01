@@ -62,37 +62,10 @@
 
   <!-- Configure JBoss EAP 6 -->
   <target name="config-jboss-eap-6" depends="password-prompt">
-    <echo>-----------------------------------</echo>
-    <echo>Installing Modeshape Service</echo>
-    <echo>-----------------------------------</echo>
-    <unzip src="${s-ramp.modeshape-distribution.zip.path}" dest="${s-ramp.appserver.dir}" overwrite="false" />
-    <delete>
-      <dirset dir="${s-ramp.jboss.module.path}/org/modeshape/">
-        <include name="**/META-INF"/>
-      </dirset>
-    </delete>
-    <xslt
-      style="${s-ramp.updates.dir}/xslt/modeshape-module-jboss.xslt"
-      in="${s-ramp.jboss.module.path}/org/modeshape/main/module.xml"
-      out="${s-ramp.install.dir}/_tmp_modeshape_module.xml" />
-    <copy file="${s-ramp.install.dir}/_tmp_modeshape_module.xml" tofile="${s-ramp.jboss.module.path}/org/modeshape/main/module.xml" overwrite="true" />
-    <delete file="${s-ramp.install.dir}/_tmp_modeshape_module.xml" />
-
-    <echo>-----------------------------------</echo>
-    <echo>Configuring Modeshape Service      </echo>
-    <echo>-----------------------------------</echo>
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone.xml" />
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone-full.xml" />
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone-full-ha.xml" />
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone-ha.xml" />
-
-    <!-- Patch solr if needed -->
-    <xslt
-      style="${s-ramp.updates.dir}/xslt/patchSolr-jboss-eap-6.xslt"
-      in="${s-ramp.jboss.module.path}/org/apache/solr/3.6.2/module.xml"
-      out="${s-ramp.install.dir}/_tmp_solr_module.xml" />
-    <copy file="${s-ramp.install.dir}/_tmp_solr_module.xml" tofile="${s-ramp.jboss.module.path}/org/apache/solr/3.6.2/module.xml" overwrite="true" />
-    <delete file="${s-ramp.install.dir}/_tmp_solr_module.xml" />
 
     <!-- Deploy the datasource -->
     <copy file="${s-ramp.updates.dir}/artificer-ds.xml" todir="${s-ramp.jboss.deployments.dir}" overwrite="true" />
@@ -104,7 +77,7 @@
     <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone-full.xml" overwrite="true" />
     <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
 
-    <!-- Installs the admin user (needed for JMS and external use of ModeShape) -->
+    <!-- Installs the admin user (needed for JMS and EJB) -->
     <java jar="${s-ramp.appserver.dir}/jboss-modules.jar"
           fork="true" dir="${s-ramp.appserver.dir}"
           failonerror="true" maxmemory="128m">
@@ -121,7 +94,7 @@
       <arg value="-r"/>
       <arg value="ApplicationRealm"/>
       <arg value="-ro"/>
-      <arg value="artificer,admin.artificer,dev,qa,stage,prod,ba,arch"/>
+      <arg value="artificer,dev,qa,stage,prod,ba,arch"/>
     </java>
   </target>
 
@@ -136,12 +109,6 @@
   <macrodef name="transformConfig">
     <attribute name="config"/>
     <sequential>
-      <xslt
-        style="${s-ramp.updates.dir}/xslt/configureModeshape-jboss-eap-6.xslt"
-        in="@{config}"
-        out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
-      <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="@{config}" overwrite="true" />
-      <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
       <xslt
         style="${s-ramp.updates.dir}/xslt/add-keycloak-config.xslt"
         in="@{config}"

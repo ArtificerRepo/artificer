@@ -47,24 +47,7 @@
     <!-- ***************************************** -->
     <profile>
       <id>test-install-wildfly8</id>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-distribution</artifactId>
-            <version>${version.org.modeshape}</version>
-            <type>zip</type>
-            <classifier>jboss-wf8-dist</classifier>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
       <dependencies>
-        <dependency>
-          <groupId>org.modeshape</groupId>
-          <artifactId>modeshape-distribution</artifactId>
-          <type>zip</type>
-          <classifier>jboss-wf8-dist</classifier>
-        </dependency>
         <dependency>
           <groupId>org.keycloak</groupId>
           <artifactId>keycloak-war-dist-all</artifactId>
@@ -132,9 +115,6 @@
                     <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-wildfly8.war.path}" />
                     <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.artificer.artificer-ui-wildfly8.war.path}" />
 
-                    <!-- ModeShape Distribution -->
-                    <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jboss-wf8-dist.zip.path}" />
-
                     <property file="build.properties" />
                     <property name="s-ramp.appserver.zip" value="${basedir}/wildfly-8.2.0.Final.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
@@ -169,24 +149,7 @@
     <!-- ***************************************** -->
     <profile>
       <id>test-install-eap63</id>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-distribution</artifactId>
-            <version>3.8.1.Final</version>
-            <type>zip</type>
-            <classifier>jbosseap-dist</classifier>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
       <dependencies>
-        <dependency>
-          <groupId>org.modeshape</groupId>
-          <artifactId>modeshape-distribution</artifactId>
-          <type>zip</type>
-          <classifier>jbosseap-dist</classifier>
-        </dependency>
         <dependency>
           <groupId>org.keycloak</groupId>
           <artifactId>keycloak-war-dist-all</artifactId>
@@ -254,9 +217,6 @@
                     <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
                     <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
 
-                    <!-- ModeShape Distribution -->
-                    <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
-
                     <property file="build.properties" />
                     <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.3.0.zip" />
                     <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
@@ -291,24 +251,7 @@
     <!-- ***************************************** -->
     <profile>
       <id>test-install-eap64</id>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-distribution</artifactId>
-            <version>3.8.1.Final</version>
-            <type>zip</type>
-            <classifier>jbosseap-dist</classifier>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
       <dependencies>
-        <dependency>
-          <groupId>org.modeshape</groupId>
-          <artifactId>modeshape-distribution</artifactId>
-          <type>zip</type>
-          <classifier>jbosseap-dist</classifier>
-        </dependency>
         <dependency>
           <groupId>org.keycloak</groupId>
           <artifactId>keycloak-war-dist-all</artifactId>
@@ -375,9 +318,6 @@
                     <!-- Artificer WARs -->
                     <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
                     <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
-
-                    <!-- ModeShape Distribution -->
-                    <property name="s-ramp.modeshape-distribution.zip.path" value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
 
                     <property file="build.properties" />
                     <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.4.0.zip" />

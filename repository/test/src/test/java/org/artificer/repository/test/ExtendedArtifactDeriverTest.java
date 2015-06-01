@@ -44,7 +44,7 @@ public class ExtendedArtifactDeriverTest extends AbstractNoAuditingPersistenceTe
         BaseArtifactType pa = persistenceManager.persistArtifact(artifact, new ArtifactContent(artifactFileName, pdf));
 
         Assert.assertNotNull(pa);
-        log.info("persisted gtgjrdih.xml to JCR, returned artifact uuid=" + pa.getUuid());
+        log.info("persisted gtgjrdih.xml, returned artifact uuid=" + pa.getUuid());
 
         Assert.assertEquals(ExtendedDocument.class, artifact.getClass());
 
