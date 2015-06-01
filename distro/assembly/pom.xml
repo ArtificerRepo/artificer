@@ -10,25 +10,6 @@
   <packaging>pom</packaging>
   <name>Artificer Distribution: Assembly</name>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.modeshape</groupId>
-        <artifactId>modeshape-distribution</artifactId>
-        <version>${version.org.modeshape}</version>
-        <classifier>jboss-wf8-dist</classifier>
-        <type>zip</type>
-      </dependency>
-      <dependency>
-        <groupId>org.modeshape</groupId>
-        <artifactId>modeshape-distribution</artifactId>
-        <version>3.8.1.Final</version>
-        <classifier>jbosseap-dist</classifier>
-        <type>zip</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <!-- Overlord Commons -->
     <dependency>
@@ -115,11 +96,6 @@
     </dependency>
     <dependency>
       <groupId>org.artificer</groupId>
-      <artifactId>artificer-repository-jcr</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.artificer</groupId>
       <artifactId>artificer-repository-hibernate</artifactId>
       <classifier>sources</classifier>
     </dependency>
@@ -146,20 +122,6 @@
       <type>jdocbook</type>
     </dependency>
 
-    <!-- ModeShape Distros -->
-    <dependency>
-      <groupId>org.modeshape</groupId>
-      <artifactId>modeshape-distribution</artifactId>
-      <classifier>jboss-wf8-dist</classifier>
-      <type>zip</type>
-    </dependency>
-    <dependency>
-      <groupId>org.modeshape</groupId>
-      <artifactId>modeshape-distribution</artifactId>
-      <classifier>jbosseap-dist</classifier>
-      <type>zip</type>
-    </dependency>
-    
     <dependency>
       <groupId>org.artificer</groupId>
       <artifactId>artificer-javadoc</artifactId>

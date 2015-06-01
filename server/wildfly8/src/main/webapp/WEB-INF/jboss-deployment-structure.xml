@@ -13,8 +13,6 @@
       <module name="org.apache.log4j" />
       <module name="org.slf4j" />
       <module name="org.jboss.staxmapper" />
-      <module name="org.modeshape" />
-      <module name="org.jboss.as.clustering.infinispan" />
       <module name="com.fasterxml.jackson.core.jackson-core" />
       <module name="com.fasterxml.jackson.core.jackson-annotations" />
       <module name="com.fasterxml.jackson.core.jackson-databind" />

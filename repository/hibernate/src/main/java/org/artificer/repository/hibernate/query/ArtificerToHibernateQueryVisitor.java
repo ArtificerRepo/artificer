@@ -61,7 +61,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Visitor used to produce a JCR SQL2 query from an S-RAMP xpath query.
+ * Visitor used to produce a JSQL query from an S-RAMP xpath query.
  *
  * @author Brett Meyer
  */

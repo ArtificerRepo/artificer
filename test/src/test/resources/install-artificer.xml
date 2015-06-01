@@ -14,9 +14,6 @@
     <property name="s-ramp.s-ramp-ui.war.path"
       value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
     
-    <property name="s-ramp.modeshape-distribution.zip.path"
-        value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
-
     <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
     <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
@@ -37,9 +34,6 @@
               value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
     <property name="s-ramp.s-ramp-ui.war.path"
               value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
-
-    <property name="s-ramp.modeshape-distribution.zip.path"
-              value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
 
     <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
@@ -62,9 +56,6 @@
     <property name="s-ramp.s-ramp-ui.war.path"
               value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
 
-    <property name="s-ramp.modeshape-distribution.zip.path"
-              value="${maven.dependency.org.modeshape.modeshape-distribution.jbosseap-dist.zip.path}" />
-
     <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
     <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
@@ -85,9 +76,6 @@
               value="${maven.dependency.org.artificer.artificer-server-wildfly8.war.path}" />
     <property name="s-ramp.s-ramp-ui.war.path"
               value="${maven.dependency.org.artificer.artificer-ui-wildfly8.war.path}" />
-
-    <property name="s-ramp.modeshape-distribution.zip.path"
-              value="${maven.dependency.org.modeshape.modeshape-distribution.jboss-wf8-dist.zip.path}" />
 
     <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />

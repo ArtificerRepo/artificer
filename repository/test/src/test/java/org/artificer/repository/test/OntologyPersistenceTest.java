@@ -29,7 +29,7 @@ import java.util.Set;
 
 
 /**
- * Unit test for JCR persistence of S-RAMP ontologies.
+ * Unit test for persistence of S-RAMP ontologies.
  *
  * @author eric.wittmann@redhat.com
  */

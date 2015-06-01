@@ -16,11 +16,9 @@
 
 package org.artificer.server.filters;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
-import java.util.HashSet;
-import java.util.Set;
+import org.apache.commons.codec.binary.Base64;
+import org.artificer.common.ArtificerConfig;
+import org.artificer.server.i18n.Messages;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -31,10 +29,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.codec.binary.Base64;
-import org.artificer.common.ArtificerConfig;
-import org.artificer.server.i18n.Messages;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.Principal;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A filter that supports authentication to the s-ramp maven repository facade.  This
@@ -70,7 +69,7 @@ public class MavenRepositoryAuthFilter implements Filter {
         Creds credentials = parseAuthorizationHeader(authHeader);
         if  (credentials == null) {
             SimplePrincipal principal = new SimplePrincipal(ArtificerConfig.getMavenReadOnlyUsername());
-            principal.addRole("readonly." + ArtificerConfig.getJCRRepositoryName()); //$NON-NLS-1$
+            principal.addRole("artificer");
             doFilterChain(request, response, chain, principal);
         } else {
             if (login(credentials, req, (HttpServletResponse) response)) {

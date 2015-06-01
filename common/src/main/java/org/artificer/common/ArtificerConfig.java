@@ -118,17 +118,7 @@ public class ArtificerConfig {
         }
         return properties;
     }
-
-    /**
-     * @return the name of the JCR repository being used
-     */
-    public static String getJCRRepositoryName() {
-        return getConfigProperty(ArtificerConstants.ARTIFICER_CONFIG_JCR_REPO_NAME, "artificer"); //$NON-NLS-1$
-    }
-
-    /**
-     * @return the name of the JCR repository being used
-     */
+    
     public static String getMavenReadOnlyUsername() {
         return getConfigProperty(ArtificerConstants.ARTIFICER_CONFIG_MAVEN_READONLY_USERNAME, "mavenuser"); //$NON-NLS-1$
     }

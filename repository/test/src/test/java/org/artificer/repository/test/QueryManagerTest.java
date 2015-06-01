@@ -44,7 +44,7 @@ public class QueryManagerTest extends AbstractNoAuditingPersistenceTest {
     public void testQueryManager() throws Exception {
     	// First, store an artifact.
 		BaseArtifactType artifact = createXmlDocument("PO.xml", 1);
-        log.info("persisted to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted, returned artifact uuid=" + artifact.getUuid());
 
         // Now query for it
         ArtificerQuery query = queryManager.createQuery("/s-ramp/core/XmlDocument");

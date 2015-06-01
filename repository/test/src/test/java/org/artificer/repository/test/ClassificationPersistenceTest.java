@@ -30,7 +30,7 @@ import java.io.InputStream;
 
 
 /**
- * Unit test for JCR persistence of S-RAMP classifications.
+ * Unit test for persistence of S-RAMP classifications.
  *
  * @author eric.wittmann@redhat.com
  */

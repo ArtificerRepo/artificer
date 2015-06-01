@@ -99,31 +99,6 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
-    <!-- Modeshape Modules -->
-    <dependencySet>
-      <outputDirectory>EAP</outputDirectory>
-      <includes>
-        <include>org.modeshape:modeshape-distribution:zip:jbosseap-dist</include>
-      </includes>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-    </dependencySet>
-    <dependencySet>
-      <outputDirectory>Wildfly</outputDirectory>
-      <includes>
-        <include>org.modeshape:modeshape-distribution:zip:jboss-wf8-dist</include>
-      </includes>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-    </dependencySet>
     <!-- Keycloak Modules -->
     <dependencySet>
       <outputDirectory>bin</outputDirectory>

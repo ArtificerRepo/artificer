@@ -58,7 +58,7 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
 
         Assert.assertNotNull(artifact);
-        log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted s-ramp-press-release.pdf, returned artifact uuid=" + artifact.getUuid());
 
         //print out the derived node
         if (log.isDebugEnabled()) {
@@ -121,7 +121,7 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
 
         Assert.assertNotNull(artifact);
-        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted PO.xsd, returned artifact uuid=" + artifact.getUuid());
 
         //print out the derived node
         if (log.isDebugEnabled()) {
@@ -145,7 +145,7 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXml));
 
         Assert.assertNotNull(artifact);
-        log.info("persisted PO.xml to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted PO.xml, returned artifact uuid=" + artifact.getUuid());
 
         //print out the derived node
         if (log.isDebugEnabled()) {
@@ -166,7 +166,7 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
 
         BaseArtifactType artifact = persistenceManager.persistArtifact(extendedArtifact, null);
         Assert.assertNotNull(artifact);
-        log.info("persisted extended artifact to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted extended artifact, returned artifact uuid=" + artifact.getUuid());
 
         //print out the derived node
         if (log.isDebugEnabled()) {
@@ -192,7 +192,7 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
 
         Assert.assertNotNull(artifact);
-        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted PO.xsd, returned artifact uuid=" + artifact.getUuid());
 
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         long size = ((DocumentArtifactType) artifact).getContentSize();
@@ -222,7 +222,7 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
         Assert.assertNotNull(artifact);
-        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted PO.xsd, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         long size = ((DocumentArtifactType) artifact).getContentSize();
         assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
@@ -256,7 +256,7 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
         Assert.assertNotNull(artifact);
-        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted PO.xsd, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         long size = ((DocumentArtifactType) artifact).getContentSize();
         assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
@@ -287,7 +287,7 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
         document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
         Assert.assertNotNull(artifact);
-        log.info("persisted PO.xsd to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted PO.xsd, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(XsdDocument.class, artifact.getClass());
         long size = ((DocumentArtifactType) artifact).getContentSize();
         assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
@@ -359,7 +359,7 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
 		BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, pdf));
         Assert.assertNotNull(artifact);
-        log.info("persisted PDF to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted PDF, returned artifact uuid=" + artifact.getUuid());
         Assert.assertEquals(Document.class, artifact.getClass());
         Assert.assertEquals(new Long(18873l), ((DocumentArtifactType) artifact).getContentSize());
 
@@ -538,7 +538,7 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
         Assert.assertNotNull(artifact);
         Assert.assertEquals(Document.class, artifact.getClass());
         Assert.assertEquals(new Long(18873l), ((DocumentArtifactType) artifact).getContentSize());
-        log.info("persisted s-ramp-press-release.pdf to JCR, returned artifact uuid=" + artifact.getUuid());
+        log.info("persisted s-ramp-press-release.pdf, returned artifact uuid=" + artifact.getUuid());
 
         // Now delete that artifact
         ArtifactType at = ArtifactType.valueOf(artifact);

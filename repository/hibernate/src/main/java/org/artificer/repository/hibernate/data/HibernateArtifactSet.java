@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A JCR implementation of an {@link org.artificer.repository.query.ArtifactSet}.
+ * A JPA implementation of an {@link org.artificer.repository.query.ArtifactSet}.
  *
  * @author eric.wittmann@redhat.com
  */

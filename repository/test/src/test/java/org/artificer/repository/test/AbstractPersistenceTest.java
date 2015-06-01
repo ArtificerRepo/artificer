@@ -29,13 +29,9 @@ import org.artificer.repository.hibernate.HibernateArtificerConstants;
 import org.artificer.repository.hibernate.HibernateAuditManager;
 import org.artificer.repository.hibernate.HibernatePersistenceManager;
 import org.artificer.repository.hibernate.HibernateQueryManager;
-import org.artificer.repository.jcr.JCRAuditManager;
-import org.artificer.repository.jcr.JCRPersistence;
-import org.artificer.repository.jcr.JCRQueryManager;
 import org.artificer.repository.query.ArtifactSet;
 import org.artificer.repository.query.ArtificerQuery;
 import org.artificer.repository.test.hibernate.HibernateRepositoryTestProvider;
-import org.artificer.repository.test.jcr.JCRRepositoryTestProvider;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -87,7 +83,6 @@ public abstract class AbstractPersistenceTest {
         List<Object[]> data = new ArrayList<>();
         data.add(new Object[] { TestType.HIBERNATE_BLOB });
         data.add(new Object[] { TestType.HIBERNATE_FILESYSTEM });
-        data.add(new Object[] { TestType.JCR });
         return data;
     }
 
@@ -96,12 +91,6 @@ public abstract class AbstractPersistenceTest {
         Map<String, String> extraProperties = new HashMap<>();
 
         switch (testType) {
-            case JCR:
-                persistenceManager = new JCRPersistence();
-                queryManager = new JCRQueryManager();
-                auditManager = new JCRAuditManager();
-                repositoryTestProvider = new JCRRepositoryTestProvider();
-                break;
             case HIBERNATE_BLOB:
                 persistenceManager = new HibernatePersistenceManager();
                 queryManager = new HibernateQueryManager();
@@ -249,6 +238,6 @@ public abstract class AbstractPersistenceTest {
     }
 
     public enum TestType {
-        JCR, HIBERNATE_BLOB, HIBERNATE_FILESYSTEM
+        HIBERNATE_BLOB, HIBERNATE_FILESYSTEM
     }
 }

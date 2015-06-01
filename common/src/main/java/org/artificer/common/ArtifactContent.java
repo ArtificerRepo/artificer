@@ -25,7 +25,7 @@ import java.util.UUID;
 
 /**
  * When S-RAMP is handed content's InputStream, it needs to be read multiple times (multiple times in the
- * extensions, then again in ModeShape), some of which automatically close the stream.  Further, we don't want to trust
+ * extensions, then again for persistence), some of which automatically close the stream.  Further, we don't want to trust
  * that custom extensions will always "do the right thing" and call #reset.  So, this object is passed
  * around throughout the process.  Using a temp file, it creates on-demand streams.
  * 

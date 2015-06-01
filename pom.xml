@@ -114,12 +114,9 @@
     <version.org.jboss.as>7.4.0.Final-redhat-19</version.org.jboss.as>
     <version.org.apache.httpcomponents.httpclient>4.2.1</version.org.apache.httpcomponents.httpclient>
     <version.org.apache.httpcomponents.httpcore>4.2.1</version.org.apache.httpcomponents.httpcore>
-    <version.org.apache.httpcomponents.httpmime>4.2.1</version.org.apache.httpcomponents.httpmime>
-    <version.org.modeshape>4.0.0.Final</version.org.modeshape>
     <!--<version.org.jboss.resteasy>3.0.8.Final</version.org.jboss.resteasy>-->
     <version.org.codehaus.plexus>3.0.17</version.org.codehaus.plexus>
     <version.com.google.gwt>2.7.0</version.com.google.gwt>
-    <version.org.infinispan>6.0.2.Final</version.org.infinispan>
   </properties>
 
   <build>
@@ -319,11 +316,6 @@
       </dependency>
       <dependency>
         <groupId>org.artificer</groupId>
-        <artifactId>artificer-repository-jcr</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.artificer</groupId>
         <artifactId>artificer-server</artifactId>
         <version>${project.version}</version>
         <type>war</type>
@@ -437,12 +429,6 @@
       <dependency>
         <groupId>org.artificer</groupId>
         <artifactId>artificer-repository</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.artificer</groupId>
-        <artifactId>artificer-repository-jcr</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
@@ -624,40 +610,6 @@
         <version>${version.org.jboss.as}</version>
       </dependency>
 
-      <!-- ModeShape -->
-      <dependency>
-        <groupId>org.modeshape</groupId>
-        <artifactId>modeshape-common</artifactId>
-        <version>${version.org.modeshape}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.modeshape</groupId>
-        <artifactId>modeshape-jcr</artifactId>
-        <version>${version.org.modeshape}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.modeshape</groupId>
-        <artifactId>modeshape-jcr-api</artifactId>
-        <version>${version.org.modeshape}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.modeshape</groupId>
-        <artifactId>modeshape-extractor-tika</artifactId>
-        <version>${version.org.modeshape}</version>
-      </dependency>
-
-      <!-- Infinispan -->
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-commons</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-core</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-
       <!-- Hibernate -->
       <dependency>
         <groupId>org.hibernate</groupId>
@@ -703,11 +655,6 @@
       </dependency>
 
       <!-- Third party libraries -->
-      <dependency>
-        <groupId>org.apache.tika</groupId>
-        <artifactId>tika-core</artifactId>
-        <version>${version.org.apache.tika}</version>
-      </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
@@ -1024,7 +971,6 @@
     <module>javadoc</module>
     <module>repository</module>
     <module>repository/hibernate</module>
-    <module>repository/jcr</module>
     <module>repository/test</module>
     <module>server</module>
     <module>server/api</module>
