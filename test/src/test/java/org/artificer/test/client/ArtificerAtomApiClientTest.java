@@ -62,8 +62,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 	 */
 	@Test
 	public void testUploadArtifact() throws Exception {
-		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+		String artifactFileName = "PO.xsd";
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
 			ArtificerAtomApiClient client = client();
 			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
@@ -81,14 +81,14 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
     public void testCreateArtifact() throws Exception {
         ExtendedArtifactType artifact = new ExtendedArtifactType();
         artifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-        artifact.setExtendedType("TestArtifact"); //$NON-NLS-1$
-        artifact.setName("My Test Artifact"); //$NON-NLS-1$
-        artifact.setDescription("Description of my test artifact."); //$NON-NLS-1$
+        artifact.setExtendedType("TestArtifact");
+        artifact.setName("My Test Artifact");
+        artifact.setDescription("Description of my test artifact.");
         ArtificerAtomApiClient client = client();
         BaseArtifactType createdArtifact = client.createArtifact(artifact);
         Assert.assertNotNull(artifact);
-        Assert.assertEquals("My Test Artifact", createdArtifact.getName()); //$NON-NLS-1$
-        Assert.assertEquals("Description of my test artifact.", createdArtifact.getDescription()); //$NON-NLS-1$
+        Assert.assertEquals("My Test Artifact", createdArtifact.getName());
+        Assert.assertEquals("Description of my test artifact.", createdArtifact.getDescription());
     }
 
     /**
@@ -96,11 +96,11 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
      */
     @Test
     public void testExtendedDocumentArtifact() throws Exception {
-        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
         try {
             ArtificerAtomApiClient client = client();
-            BaseArtifactType artifact = client.uploadArtifact(ArtifactType.ExtendedDocument("TestDocument"), is, artifactFileName); //$NON-NLS-1$
+            BaseArtifactType artifact = client.uploadArtifact(ArtifactType.ExtendedDocument("TestDocument"), is, artifactFileName);
             Assert.assertNotNull(artifact);
             Assert.assertEquals(artifactFileName, artifact.getName());
             Assert.assertEquals(BaseArtifactEnum.EXTENDED_DOCUMENT, artifact.getArtifactType());
@@ -116,8 +116,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
     @Test
     public void testGetArtifactMetaData() throws Exception {
         String uuid = null;
-        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
         try {
             ArtificerAtomApiClient client = client();
             BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
@@ -142,8 +142,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
     @Test
     public void testGetArtifactMetaDataNoType() throws Exception {
         String uuid = null;
-        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
         try {
             ArtificerAtomApiClient client = client();
             BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
@@ -169,8 +169,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
     @Test
     public void testUploadArtifactAndContent() throws Exception {
         String uuid = UUID.randomUUID().toString();
-        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
         try {
             ArtificerAtomApiClient client = client();
             XsdDocument xsdDocument = new XsdDocument();
@@ -194,8 +194,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 		String uuid = null;
 
 		// First, upload an artifact so we have some content to get
-		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+		String artifactFileName = "PO.xsd";
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
 			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
@@ -212,8 +212,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(content));
 			String line1 = reader.readLine();
 			String line2 = reader.readLine();
-			Assert.assertTrue("Unexpected content found.", line1.startsWith("<?xml version=\"1.0\"")); //$NON-NLS-1$ //$NON-NLS-2$
-			Assert.assertTrue("Unexpected content found.", line2.startsWith("<xsd:schema")); //$NON-NLS-1$ //$NON-NLS-2$
+			Assert.assertTrue("Unexpected content found.", line1.startsWith("<?xml version=\"1.0\""));
+			Assert.assertTrue("Unexpected content found.", line2.startsWith("<xsd:schema"));
 		} finally {
 			IOUtils.closeQuietly(is);
 		}
@@ -229,8 +229,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 		XsdDocument xsdDoc = null;
 
 		// First, upload an artifact so we have some content to update
-		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+		String artifactFileName = "PO.xsd";
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
 			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
@@ -242,12 +242,12 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 		}
 
 		// Now update the description
-		xsdDoc.setDescription("** DESCRIPTION UPDATED **"); //$NON-NLS-1$
+		xsdDoc.setDescription("** DESCRIPTION UPDATED **");
 		client.updateArtifactMetaData(xsdDoc);
 
 		// Now verify
 		BaseArtifactType artifact = client.getArtifactMetaData(ArtifactType.XsdDocument(), uuid.toString());
-		Assert.assertEquals("** DESCRIPTION UPDATED **", artifact.getDescription()); //$NON-NLS-1$
+		Assert.assertEquals("** DESCRIPTION UPDATED **", artifact.getDescription());
 	}
 
 	/**
@@ -260,8 +260,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 		XsdDocument xsdDoc = null;
 
 		// First, upload an artifact so we have some content to update
-		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+		String artifactFileName = "PO.xsd";
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
 			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
@@ -273,7 +273,7 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 		}
 
 		// Now update the artifact content
-		is = this.getClass().getResourceAsStream("/sample-files/xsd/PO-updated.xsd"); //$NON-NLS-1$
+		is = this.getClass().getResourceAsStream("/sample-files/xsd/PO-updated.xsd");
 		try {
 			client.updateArtifactContent(xsdDoc, is);
 		} finally {
@@ -295,8 +295,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 		String uuid = null;
 
 		// First add an artifact so we have something to search for
-		String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+		String artifactFileName = "PO.xsd";
+		InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 		try {
 			BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
 			Assert.assertNotNull(artifact);
@@ -307,13 +307,13 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 		}
 
 		// Now search for all XSDs
-		QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument", 0, 50, "name", false); //$NON-NLS-1$ //$NON-NLS-2$
+		QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument", 0, 50, "name", false);
 		boolean uuidFound = false;
 		for (ArtifactSummary entry : rset) {
 			if (entry.getUuid().equals(uuid))
 				uuidFound = true;
 		}
-		Assert.assertTrue("Failed to find the artifact we just added!", uuidFound); //$NON-NLS-1$
+		Assert.assertTrue("Failed to find the artifact we just added!", uuidFound);
 	}
 
     /**
@@ -325,8 +325,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
         String uuid = null;
 
         // First add an artifact so we have something to search for
-        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
         try {
             BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
             Assert.assertNotNull(artifact);
@@ -334,9 +334,9 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
             uuid = artifact.getUuid();
 
             // Set a couple of custom properties and update
-            ArtificerModelUtils.setCustomProperty(artifact, "prop1", "foo"); //$NON-NLS-1$ //$NON-NLS-2$
-            ArtificerModelUtils.setCustomProperty(artifact, "prop2", "bar"); //$NON-NLS-1$ //$NON-NLS-2$
-            ArtificerModelUtils.setCustomProperty(artifact, "prop3", "baz"); //$NON-NLS-1$ //$NON-NLS-2$
+            ArtificerModelUtils.setCustomProperty(artifact, "prop1", "foo");
+            ArtificerModelUtils.setCustomProperty(artifact, "prop2", "bar");
+            ArtificerModelUtils.setCustomProperty(artifact, "prop3", "baz");
             client.updateArtifactMetaData(artifact);
         } finally {
             IOUtils.closeQuietly(is);
@@ -345,14 +345,14 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
         // Now search for the artifact and request one of the custom
         // properties be returned in the result set.
         Set<String> propertyNames = new HashSet<String>();
-        propertyNames.add("prop1"); //$NON-NLS-1$
-        propertyNames.add("prop2"); //$NON-NLS-1$
-        QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument[@uuid='"+uuid+"']", 0, 50, "name", false, propertyNames); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        Assert.assertEquals("Expected a single artifact returned.", 1, rset.size()); //$NON-NLS-1$
+        propertyNames.add("prop1");
+        propertyNames.add("prop2");
+        QueryResultSet rset = client.query("/s-ramp/xsd/XsdDocument[@uuid='"+uuid+"']", 0, 50, "name", false, propertyNames);
+        Assert.assertEquals("Expected a single artifact returned.", 1, rset.size());
         ArtifactSummary summary = rset.get(0);
-        Assert.assertEquals("foo", summary.getCustomPropertyValue("prop1")); //$NON-NLS-1$ //$NON-NLS-2$
-        Assert.assertEquals("bar", summary.getCustomPropertyValue("prop2")); //$NON-NLS-1$ //$NON-NLS-2$
-        Assert.assertNull("I didn't ask for 'prop3' to be returned!", summary.getCustomPropertyValue("prop3")); //$NON-NLS-1$ //$NON-NLS-2$
+        Assert.assertEquals("foo", summary.getCustomPropertyValue("prop1"));
+        Assert.assertEquals("bar", summary.getCustomPropertyValue("prop2"));
+        Assert.assertNull("I didn't ask for 'prop3' to be returned!", summary.getCustomPropertyValue("prop3"));
     }
 
     /**
@@ -364,8 +364,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
         String uuid = null;
 
         // First add an artifact so we have something to search for
-        String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
         try {
             BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
             Assert.assertNotNull(artifact);
@@ -376,19 +376,19 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
         }
 
         // Now search for the XSD by its UUID
-        QueryResultSet rset = client.buildQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]").parameter(uuid) //$NON-NLS-1$
+        QueryResultSet rset = client.buildQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]").parameter(uuid)
                 .count(1).query();
-        Assert.assertTrue("Failed to find the artifact we just added!", rset.size() == 1); //$NON-NLS-1$
+        Assert.assertTrue("Failed to find the artifact we just added!", rset.size() == 1);
 
         // Do a couple of date-based queries here
-        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp < ?]") //$NON-NLS-1$
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp < ?]")
                 .parameter(new Date(System.currentTimeMillis() + 86400000L))
                 .count(1).query();
-        Assert.assertTrue("Failed to find an artifact by lastModifiedTimestamp!", rset.size() == 1); //$NON-NLS-1$
-        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp > ?]") //$NON-NLS-1$
+        Assert.assertTrue("Failed to find an artifact by lastModifiedTimestamp!", rset.size() == 1);
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp > ?]")
                 .parameter(new Date(System.currentTimeMillis() + 86400000L))
                 .count(1).query();
-        Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0); //$NON-NLS-1$
+        Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0);
 
         // Now by DateTime
         Calendar endOfToday = Calendar.getInstance();
@@ -397,14 +397,14 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
         endOfToday.set(Calendar.SECOND, 0);
         endOfToday.set(Calendar.MILLISECOND, 0);
         endOfToday.add(Calendar.DAY_OF_YEAR, 1);
-        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp < ?]") //$NON-NLS-1$
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp < ?]")
                 .parameter(endOfToday)
                 .count(1).query();
-        Assert.assertTrue("Failed to find an artifact by lastModifiedTimestamp!", rset.size() == 1); //$NON-NLS-1$
-        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp > ?]") //$NON-NLS-1$
+        Assert.assertTrue("Failed to find an artifact by lastModifiedTimestamp!", rset.size() == 1);
+        rset = client.buildQuery("/s-ramp[@lastModifiedTimestamp > ?]")
                 .parameter(endOfToday)
                 .count(1).query();
-        Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0); //$NON-NLS-1$
+        Assert.assertTrue("Found an artifact by lastModifiedTimestamp, but should *not* have!", rset.size() == 0);
     }
 
     /**
@@ -416,7 +416,7 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
         for (int i = 0; i < 20; i++) {
             addXmlDoc();
         }
-        QueryResultSet rs = client.buildQuery("/s-ramp/core").count(2).startIndex(5).query(); //$NON-NLS-1$
+        QueryResultSet rs = client.buildQuery("/s-ramp/core").count(2).startIndex(5).query();
         Assert.assertEquals(20, rs.getTotalResults());
         Assert.assertEquals(2, rs.getItemsPerPage());
         Assert.assertEquals(5, rs.getStartIndex());
@@ -429,10 +429,10 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 	public void testQueryError() throws Exception {
 		ArtificerAtomApiClient client = client();
 		try {
-			QueryResultSet rset = client.query("12345", 0, 20, "name", false); //$NON-NLS-1$ //$NON-NLS-2$
-			fail("Expected a remote exception from the s-ramp server, but got: " + rset); //$NON-NLS-1$
+			QueryResultSet rset = client.query("12345", 0, 20, "name", false);
+			fail("Expected a remote exception from the s-ramp server, but got: " + rset);
 		} catch (ArtificerServerException e) {
-			Assert.assertEquals("Invalid artifact set (step 2).", e.getMessage()); //$NON-NLS-1$
+			Assert.assertEquals("Invalid artifact set (step 2).", e.getMessage());
 		}
 	}
 
@@ -448,21 +448,21 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 		try {
 			archive = new ArtificerArchive();
 
-			String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+			String artifactFileName = "PO.xsd";
+			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 			BaseArtifactType metaData = new XsdDocument();
-			metaData.setName("PO.xsd"); //$NON-NLS-1$
-			metaData.setVersion("1.1"); //$NON-NLS-1$
-			metaData.setDescription("This is a test description (XSD)."); //$NON-NLS-1$
-			archive.addEntry("schemas/PO.xsd", metaData, is1); //$NON-NLS-1$
+			metaData.setName("PO.xsd");
+			metaData.setVersion("1.1");
+			metaData.setDescription("This is a test description (XSD).");
+			archive.addEntry("schemas/PO.xsd", metaData, is1);
 
-			artifactFileName = "PO.xml"; //$NON-NLS-1$
-			is2 = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName); //$NON-NLS-1$
+			artifactFileName = "PO.xml";
+			is2 = this.getClass().getResourceAsStream("/sample-files/core/" + artifactFileName);
 			metaData = new XsdDocument();
-			metaData.setName("PO.xml"); //$NON-NLS-1$
-			metaData.setVersion("1.2"); //$NON-NLS-1$
-			metaData.setDescription("This is a test description (XML)."); //$NON-NLS-1$
-			archive.addEntry("core/PO.xml", metaData, is2); //$NON-NLS-1$
+			metaData.setName("PO.xml");
+			metaData.setVersion("1.2");
+			metaData.setDescription("This is a test description (XML).");
+			archive.addEntry("core/PO.xml", metaData, is2);
 		} catch (Exception e) {
 			ArtificerArchive.closeQuietly(archive);
 			throw e;
@@ -476,18 +476,18 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 			ArtificerAtomApiClient client = client();
 			Map<String, ?> results = client.uploadBatch(archive);
 			Assert.assertEquals(2, results.size());
-			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd")); //$NON-NLS-1$
-			Assert.assertTrue(results.keySet().contains("core/PO.xml")); //$NON-NLS-1$
+			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd"));
+			Assert.assertTrue(results.keySet().contains("core/PO.xml"));
 
-			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd"); //$NON-NLS-1$
+			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd");
 			Assert.assertNotNull(xsdDoc);
-			Assert.assertEquals("PO.xsd", xsdDoc.getName()); //$NON-NLS-1$
-			Assert.assertEquals("1.1", xsdDoc.getVersion()); //$NON-NLS-1$
+			Assert.assertEquals("PO.xsd", xsdDoc.getName());
+			Assert.assertEquals("1.1", xsdDoc.getVersion());
 
-			XmlDocument xmlDoc = (XmlDocument) results.get("core/PO.xml"); //$NON-NLS-1$
+			XmlDocument xmlDoc = (XmlDocument) results.get("core/PO.xml");
 			Assert.assertNotNull(xmlDoc);
-			Assert.assertEquals("PO.xml", xmlDoc.getName()); //$NON-NLS-1$
-			Assert.assertEquals("1.2", xmlDoc.getVersion()); //$NON-NLS-1$
+			Assert.assertEquals("PO.xml", xmlDoc.getName());
+			Assert.assertEquals("1.2", xmlDoc.getVersion());
 		} finally {
 			ArtificerArchive.closeQuietly(archive);
 		}
@@ -529,10 +529,10 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
             archive = new ArtificerArchive();
             ExtendedArtifactType nonDocArtifact = new ExtendedArtifactType();
             nonDocArtifact.setArtifactType(BaseArtifactEnum.EXTENDED_ARTIFACT_TYPE);
-            nonDocArtifact.setExtendedType("TestArtifact"); //$NON-NLS-1$
-            nonDocArtifact.setName("My Test Artifact"); //$NON-NLS-1$
+            nonDocArtifact.setExtendedType("TestArtifact");
+            nonDocArtifact.setName("My Test Artifact");
 
-            archive.addEntry("myLogicalArtifact", nonDocArtifact, null); //$NON-NLS-1$
+            archive.addEntry("myLogicalArtifact", nonDocArtifact, null);
         } catch (Exception e) {
             ArtificerArchive.closeQuietly(archive);
             throw e;
@@ -547,15 +547,15 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
             Assert.assertFalse(results.isEmpty());
             Assert.assertEquals(1, results.size());
 
-            QueryResultSet resultSet = client.buildQuery("/s-ramp/ext").query(); //$NON-NLS-1$
+            QueryResultSet resultSet = client.buildQuery("/s-ramp/ext").query();
             Assert.assertNotNull(resultSet);
             Assert.assertEquals(1, resultSet.getTotalResults());
 
-            resultSet = client.buildQuery("/s-ramp/ext/TestArtifact").query(); //$NON-NLS-1$
+            resultSet = client.buildQuery("/s-ramp/ext/TestArtifact").query();
             Assert.assertNotNull(resultSet);
             Assert.assertEquals(1, resultSet.getTotalResults());
 
-            resultSet = client.buildQuery("/s-ramp/ext/TestArtifact[@name = 'My Test Artifact']").query(); //$NON-NLS-1$
+            resultSet = client.buildQuery("/s-ramp/ext/TestArtifact[@name = 'My Test Artifact']").query();
             Assert.assertNotNull(resultSet);
             Assert.assertEquals(1, resultSet.getTotalResults());
         } finally {
@@ -575,20 +575,20 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 		try {
 			archive = new ArtificerArchive();
 
-			String artifactFileName = "PO.xsd"; //$NON-NLS-1$
-			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
+			String artifactFileName = "PO.xsd";
+			is1 = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
 			BaseArtifactType metaData = new XsdDocument();
-			metaData.setName("PO.xsd"); //$NON-NLS-1$
-			metaData.setVersion("1.1"); //$NON-NLS-1$
-			metaData.setDescription("This is a test description (XSD)."); //$NON-NLS-1$
-			archive.addEntry("schemas/PO.xsd", metaData, is1); //$NON-NLS-1$
+			metaData.setName("PO.xsd");
+			metaData.setVersion("1.1");
+			metaData.setDescription("This is a test description (XSD).");
+			archive.addEntry("schemas/PO.xsd", metaData, is1);
 
-			artifactFileName = "PO.xml"; //$NON-NLS-1$
+			artifactFileName = "PO.xml";
 			metaData = new XsdDocument();
-			metaData.setName("PO.xml"); //$NON-NLS-1$
-			metaData.setVersion("1.2"); //$NON-NLS-1$
-			metaData.setDescription("This is a test description (XML)."); //$NON-NLS-1$
-			archive.addEntry("core/PO.xml", metaData, null); //$NON-NLS-1$
+			metaData.setName("PO.xml");
+			metaData.setVersion("1.2");
+			metaData.setDescription("This is a test description (XML).");
+			archive.addEntry("core/PO.xml", metaData, null);
 		} catch (Exception e) {
 			ArtificerArchive.closeQuietly(archive);
 			throw e;
@@ -602,15 +602,15 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 			ArtificerAtomApiClient client = client();
 			Map<String, ?> results = client.uploadBatch(archive);
 			Assert.assertEquals(2, results.size());
-			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd")); //$NON-NLS-1$
-			Assert.assertTrue(results.keySet().contains("core/PO.xml")); //$NON-NLS-1$
+			Assert.assertTrue(results.keySet().contains("schemas/PO.xsd"));
+			Assert.assertTrue(results.keySet().contains("core/PO.xml"));
 
-			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd"); //$NON-NLS-1$
+			XsdDocument xsdDoc = (XsdDocument) results.get("schemas/PO.xsd");
 			Assert.assertNotNull(xsdDoc);
-			Assert.assertEquals("PO.xsd", xsdDoc.getName()); //$NON-NLS-1$
-			Assert.assertEquals("1.1", xsdDoc.getVersion()); //$NON-NLS-1$
+			Assert.assertEquals("PO.xsd", xsdDoc.getName());
+			Assert.assertEquals("1.1", xsdDoc.getVersion());
 
-			Exception xmlError = (Exception) results.get("core/PO.xml"); //$NON-NLS-1$
+			Exception xmlError = (Exception) results.get("core/PO.xml");
 			Assert.assertNotNull(xmlError);
 		} finally {
 			ArtificerArchive.closeQuietly(archive);
@@ -629,8 +629,8 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
     }
     
     private ArtificerOntology uploadOntology() throws Exception {
-        String ontologyFileName = "colors.owl.xml"; //$NON-NLS-1$
-        InputStream is = this.getClass().getResourceAsStream("/sample-files/ontologies/" + ontologyFileName); //$NON-NLS-1$
+        String ontologyFileName = "colors.owl.xml";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/ontologies/" + ontologyFileName);
         Assert.assertNotNull(is);
         try {
             ArtificerAtomApiClient client = client();
@@ -638,7 +638,7 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
             Assert.assertNotNull(rdf);
             ArtificerOntology ontology = RdfToOntologyMapper.rdf2ontology(rdf);
             Assert.assertNotNull(ontology);
-            Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase()); //$NON-NLS-1$
+            Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase());
             Assert.assertNotNull(ontology.getUuid());
             
             return ontology;
@@ -665,10 +665,10 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
         Assert.assertFalse(ontologies.isEmpty());
         Assert.assertEquals(1, ontologies.size());
         OntologySummary ontologySummary = ontologies.get(0);
-        Assert.assertEquals("http://www.example.org/colors.owl", ontologySummary.getBase()); //$NON-NLS-1$
-        Assert.assertEquals("Colors ontology", ontologySummary.getComment()); //$NON-NLS-1$
-        Assert.assertEquals("Colors", ontologySummary.getId()); //$NON-NLS-1$
-        Assert.assertEquals("Colors", ontologySummary.getLabel()); //$NON-NLS-1$
+        Assert.assertEquals("http://www.example.org/colors.owl", ontologySummary.getBase());
+        Assert.assertEquals("Colors ontology", ontologySummary.getComment());
+        Assert.assertEquals("Colors", ontologySummary.getId());
+        Assert.assertEquals("Colors", ontologySummary.getLabel());
         Assert.assertNotNull(ontologySummary.getUuid());
         
         // delete it to prevent OntologyAlreadyExistsException
@@ -683,9 +683,9 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
         ArtificerAtomApiClient client = client();
         RDF rdf = null;
         try {
-            rdf = client.getOntology("INVALID_UUID"); //$NON-NLS-1$
+            rdf = client.getOntology("INVALID_UUID");
         } catch (Exception e) {
-            Assert.assertTrue(e.getMessage().contains("No ontology found")); //$NON-NLS-1$
+            Assert.assertTrue(e.getMessage().contains("No ontology found"));
         }
         Assert.assertNull(rdf);
 
@@ -704,7 +704,7 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
         Assert.assertNotNull(rdf);
         ArtificerOntology ontology = RdfToOntologyMapper.rdf2ontology(rdf);
         Assert.assertNotNull(ontology);
-        Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase()); //$NON-NLS-1$
+        Assert.assertEquals("http://www.example.org/colors.owl", ontology.getBase());
         Assert.assertNotNull(ontology.getUuid());
         
         // delete it to prevent OntologyAlreadyExistsException
@@ -722,17 +722,17 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 
         // First add a bunch of artifacts so we can search for them.
         for (int count = 0; count < 10; count++) {
-            String artifactFileName = "PO-" + count + ".xsd"; //$NON-NLS-1$ //$NON-NLS-2$
-            InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/PO.xsd"); //$NON-NLS-1$
+            String artifactFileName = "PO-" + count + ".xsd";
+            InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/PO.xsd");
             try {
                 BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
                 Assert.assertNotNull(artifact);
                 Assert.assertEquals(artifactFileName, artifact.getName());
 
                 // Set some custom properties and then update.
-                ArtificerModelUtils.setCustomProperty(artifact, "count", String.valueOf(count)); //$NON-NLS-1$
-                ArtificerModelUtils.setCustomProperty(artifact, "prop1", "foo"); //$NON-NLS-1$ //$NON-NLS-2$
-                ArtificerModelUtils.setCustomProperty(artifact, "test", "SRAMP-389"); //$NON-NLS-1$ //$NON-NLS-2$
+                ArtificerModelUtils.setCustomProperty(artifact, "count", String.valueOf(count));
+                ArtificerModelUtils.setCustomProperty(artifact, "prop1", "foo");
+                ArtificerModelUtils.setCustomProperty(artifact, "test", "SRAMP-389");
                 client.updateArtifactMetaData(artifact);
             } finally {
                 IOUtils.closeQuietly(is);
@@ -741,20 +741,47 @@ public class ArtificerAtomApiClientTest extends AbstractClientTest {
 
         // Now search for the artifacts and request some of the custom
         // properties be returned in the result set.
-        QueryResultSet rset = client.buildQuery("/s-ramp[@test = 'SRAMP-389']") //$NON-NLS-1$
-                .propertyName("count").propertyName("prop1") //$NON-NLS-1$ //$NON-NLS-2$
-                .orderBy("createdTimestamp").descending().query(); //$NON-NLS-1$
+        QueryResultSet rset = client.buildQuery("/s-ramp[@test = 'SRAMP-389']")
+                .propertyName("count").propertyName("prop1")
+                .orderBy("createdTimestamp").descending().query();
         StringBuilder builder = new StringBuilder();
-        System.out.println("----- Query done, iterating result set"); //$NON-NLS-1$
+        System.out.println("----- Query done, iterating result set");
         long start = System.currentTimeMillis();
         for (ArtifactSummary artifactSummary : rset) {
-            String prop = artifactSummary.getCustomPropertyValue("count"); //$NON-NLS-1$
+            String prop = artifactSummary.getCustomPropertyValue("count");
             builder.append(prop);
-            builder.append("|"); //$NON-NLS-1$
+            builder.append("|");
         }
         long end = System.currentTimeMillis();
-        System.out.println("----- Done iterating in: " + (end-start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
-        Assert.assertEquals("9|8|7|6|5|4|3|2|1|0|", builder.toString()); //$NON-NLS-1$
+        System.out.println("----- Done iterating in: " + (end-start) + "ms");
+        Assert.assertEquals("9|8|7|6|5|4|3|2|1|0|", builder.toString());
+    }
+    
+    @Test
+    public void testFullTextQuery() throws Exception {
+        ArtificerAtomApiClient client = client();
+        String uuid = null;
+
+        // First add an artifact so we have something to search for
+        String artifactFileName = "PO.xsd";
+        InputStream is = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
+        try {
+            BaseArtifactType artifact = client.uploadArtifact(ArtifactType.XsdDocument(), is, artifactFileName);
+            Assert.assertNotNull(artifact);
+            Assert.assertEquals(artifactFileName, artifact.getName());
+            uuid = artifact.getUuid();
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
+        // Now search for all XSDs
+        QueryResultSet rset = client.query("/s-ramp[xp2:matches(., 'Purchase order schema')]");
+        boolean uuidFound = false;
+        for (ArtifactSummary entry : rset) {
+            if (entry.getUuid().equals(uuid))
+                uuidFound = true;
+        }
+        Assert.assertTrue("Failed to find the artifact we just added!", uuidFound);
     }
 
 }

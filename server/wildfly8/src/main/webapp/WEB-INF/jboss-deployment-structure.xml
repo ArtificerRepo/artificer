@@ -16,6 +16,7 @@
       <module name="com.fasterxml.jackson.core.jackson-core" />
       <module name="com.fasterxml.jackson.core.jackson-annotations" />
       <module name="com.fasterxml.jackson.core.jackson-databind" />
+      <module name="org.hibernate.search.orm" services="export" />
     </dependencies>
     <exclude-subsystems>
       <subsystem name="webservices" />
