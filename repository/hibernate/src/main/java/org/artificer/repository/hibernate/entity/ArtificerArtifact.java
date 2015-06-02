@@ -18,6 +18,8 @@ package org.artificer.repository.hibernate.entity;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.artificer.repository.hibernate.audit.ArtificerAuditEntry;
 import org.artificer.repository.hibernate.query.ArtificerTikaBridge;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -54,6 +56,12 @@ import java.util.Set;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(appliesTo = "ArtificerArtifact", indexes = {
+        @Index(name = "artifact_uuid_idx", columnNames = "uuid"),
+        @Index(name = "artifact_name_idx", columnNames = "name"),
+        @Index(name = "artifact_model_idx", columnNames = "model"),
+        @Index(name = "artifact_type_idx", columnNames = "type"),
+        @Index(name = "artifact_model_type_idx", columnNames = {"model", "type"})})
 @Cacheable
 @Indexed
 @Analyzer(impl = StandardAnalyzer.class)
@@ -123,6 +131,7 @@ public class ArtificerArtifact implements Serializable {
         this.id = id;
     }
 
+    @Column(columnDefinition = "char(36)")
     public String getUuid() {
         return uuid;
     }
@@ -156,6 +165,7 @@ public class ArtificerArtifact implements Serializable {
         this.type = type;
     }
 
+    @Lob
     @Field
     public String getDescription() {
         return description;
@@ -167,7 +177,7 @@ public class ArtificerArtifact implements Serializable {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "username", column = @Column(name="createdByUsername")),
+            @AttributeOverride(name = "username", column = @Column(name="createdByUsername", length = 50)),
             @AttributeOverride(name = "lastActionTime", column = @Column(name="createdTime"))
     })
     public ArtificerUser getCreatedBy() {
@@ -180,7 +190,7 @@ public class ArtificerArtifact implements Serializable {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "username", column = @Column(name="modifiedByUsername")),
+            @AttributeOverride(name = "username", column = @Column(name="modifiedByUsername", length = 50)),
             @AttributeOverride(name = "lastActionTime", column = @Column(name="modifiedTime"))
     })
     public ArtificerUser getModifiedBy() {
@@ -315,6 +325,7 @@ public class ArtificerArtifact implements Serializable {
         this.contentPath = contentPath;
     }
 
+    @Column(length = 100)
     public String getMimeType() {
         return mimeType;
     }
@@ -331,6 +342,7 @@ public class ArtificerArtifact implements Serializable {
         this.contentSize = contentSize;
     }
 
+    @Column(columnDefinition = "char(40)")
     public String getContentHash() {
         return contentHash;
     }

@@ -23,6 +23,7 @@ import org.hibernate.annotations.Immutable;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -65,6 +66,7 @@ public class ArtificerAuditEntry implements Serializable {
         this.id = id;
     }
 
+    @Column(columnDefinition = "char(36)")
     public String getUuid() {
         return uuid;
     }
@@ -73,6 +75,7 @@ public class ArtificerAuditEntry implements Serializable {
         this.uuid = uuid;
     }
 
+    @Column(length = 20)
     public String getType() {
         return type;
     }

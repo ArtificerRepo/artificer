@@ -42,6 +42,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapAddress;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.SoapBinding;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDerivedArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XmlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 
 import java.net.URI;
@@ -108,6 +109,12 @@ public class SrampToHibernateEntityVisitor extends HierarchicalArtifactVisitor {
         } catch (Exception e) {
             error = e;
         }
+    }
+
+    @Override
+    protected void visitXmlDocument(XmlDocument artifact) {
+        super.visitXmlDocument(artifact);
+        artificerArtifact.setContentEncoding(artifact.getContentEncoding());
     }
 
     /**

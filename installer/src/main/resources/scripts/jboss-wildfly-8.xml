@@ -68,7 +68,7 @@
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone-ha.xml" />
 
     <!-- Deploy the datasource -->
-    <copy file="${s-ramp.updates.dir}/artificer-ds.xml" todir="${s-ramp.jboss.deployments.dir}" overwrite="true" />
+    <copy file="${s-ramp.updates.dir}/artificer-h2-ds.xml" todir="${s-ramp.jboss.deployments.dir}" overwrite="true" />
     
     <xslt
       style="${s-ramp.updates.dir}/xslt/configureJMS-jboss.xslt"
