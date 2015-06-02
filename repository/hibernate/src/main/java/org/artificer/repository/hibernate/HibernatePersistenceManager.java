@@ -49,6 +49,7 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -360,12 +361,7 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
         return new HibernateUtil.HibernateTask<ArtificerOntology>() {
             @Override
             protected ArtificerOntology doExecute(EntityManager entityManager) throws Exception {
-                ArtificerOntology ontology = (ArtificerOntology) entityManager.find(ArtificerOntology.class, uuid);
-                if (ontology == null) {
-                    throw ArtificerNotFoundException.ontologyNotFound(uuid);
-                }
-                Hibernate.initialize(ontology.getRootClasses());
-                return ontology;
+                return HibernateUtil.getOntology(uuid, entityManager);
             }
         }.execute();
     }
@@ -386,6 +382,10 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
         new HibernateUtil.HibernateTask<Void>() {
             @Override
             protected Void doExecute(EntityManager entityManager) throws Exception {
+                // Set the surrogate ID
+                ArtificerOntology persistedOntology = HibernateUtil.getOntology(ontology.getUuid(), entityManager);
+                ontology.setSurrogateId(persistedOntology.getSurrogateId());
+
                 // Don't trust users to properly set both sides of the association...
                 for (ArtificerOntologyClass rootClass : ontology.getRootClasses()) {
                     if (rootClass.getRoot() == null) {
@@ -403,14 +403,9 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
         new HibernateUtil.HibernateTask<Void>() {
             @Override
             protected Void doExecute(EntityManager entityManager) throws Exception {
+                ArtificerOntology ontology = HibernateUtil.getOntology(uuid, entityManager);
                 // Orphan removal is not honored by JPQL, so we need to manually delete using #remove.
-                ArtificerOntology ontology = entityManager.find(ArtificerOntology.class, uuid);
-                if (ontology == null) {
-                    throw ArtificerNotFoundException.ontologyNotFound(uuid);
-                }
-
                 entityManager.remove(ontology);
-
                 return null;
             }
         }.execute();

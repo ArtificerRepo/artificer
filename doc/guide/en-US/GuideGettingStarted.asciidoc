@@ -9,12 +9,17 @@ The Artificer application is written in Java. To get started make sure your syst
 * Java JDK 1.7 or newer
 * Maven 3.0.3 or newer to build and run the examples
 
-Download and Installation
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Download
+~~~~~~~~
 
 The `artificer-<version>.zip` (or tar.gz) archive can be downloaded from the
-http://artificer.jboss.org/downloads.html[http://artificer.jboss.org/downloads.html]
-website. Grab the latest, extract the archive, and run:
+http://artificer.jboss.org/downloads.html[website]
+website. Grab the latest and extract it.
+
+Artificer Installation
+~~~~~~~~~~~~~~~~~~~~~~
+
+From the unpacked distribution, run:
 
 ....
 ./install.sh
@@ -33,7 +38,7 @@ Simply follow the installer instructions to install onto the platform of your ch
 into a clean version of whatever platform you choose, to minimize the risk of colliding with other projects.
 Note that you must have already downloaded and installed the platform on which you wish to run
 
-Finally, please make sure the JBoss password you choose (the installer will prompt you for this) contains
+Finally, please make sure the JBoss admin password you choose (the installer will prompt you for this) contains
 letters, numbers, and punctuation (and is at least 8 characters long).
 
 TIP: Read the installer output carefully - extra instructions are given for certain platforms.
@@ -77,6 +82,29 @@ Wildfly & EAP (standalone-full is required)
 ....
 bin/standalone.sh -c standalone-full.xml
 ....
+
+DDL
+~~~
+
+Artificer uses RDBMS (through JPA) for all persistence.  The distribution ships with DDL SQL files for the "big 5"
+databases: Postgres, MySQL, Oracle, SQL Server, and DB2/IBM.  In addition, H2 is included (the default DB
+in Wildfly/EAP).
+
+By default, Artificer installs a simple, file-based H2 datasource
+(see `$JBOSS_HOME/standalone/deployments/artificer-h2-ds.xml`).  If you use something other than that datasource, be sure to update the
+relevant connection properties in `artificer.properties`.  See the "Artificer Server Configuration" section for more details.
+
+For now, you'll need to manually import the DDL, using your favorite SQL client.  We're fans of http://www.squirrelsql.org/[SQuirreL]).
+As an example, if you install SQuirreL and its H2 plugin, then start Wildfly/EAP with Artificer installed,
+you could connect to its H2 datasource with the following connection URL.  Use it to import the DDL SQL.
+
+....
+jdbc:h2:[JBOSS_HOME]/standalone/data/h2/artificer;mvcc=true
+....
+
+Yes, using Hibernate's Schema Exporter might be possible, but it's not recommended for production environments.
+Further, we maintain and *optimize* the DDL by-hand, as well as utilize an SQL update strategy (Liquibase) for migrations
+between Artificer versions.  So, reliance on the DDL SQL is vital.
 
 Check your Installation
 ~~~~~~~~~~~~~~~~~~~~~~~

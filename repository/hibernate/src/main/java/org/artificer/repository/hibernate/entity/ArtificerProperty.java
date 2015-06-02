@@ -21,6 +21,7 @@ import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -55,6 +56,7 @@ public class ArtificerProperty implements Serializable {
         this.id = id;
     }
 
+    @Column(name = "propertyKey")
     @Field
     public String getKey() {
         return key;
@@ -64,6 +66,7 @@ public class ArtificerProperty implements Serializable {
         this.key = key;
     }
 
+    @Column(name = "propertyValue")
     @Field
     public String getValue() {
         return value;

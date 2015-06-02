@@ -25,6 +25,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
@@ -55,6 +56,7 @@ public class ArtificerComment implements Serializable {
         this.id = id;
     }
 
+    @Lob
     @Field // @IndexedEmbedded by ArtificerArtifact
     public String getText() {
         return text;

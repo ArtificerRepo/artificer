@@ -19,6 +19,7 @@ import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.error.ArtificerNotFoundException;
 import org.artificer.common.error.ArtificerServerException;
+import org.artificer.common.ontology.ArtificerOntology;
 import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.entity.ArtificerStoredQuery;
 import org.hibernate.Hibernate;
@@ -110,6 +111,19 @@ public class HibernateUtil {
         }
 
         return artifact;
+    }
+
+    public static ArtificerOntology getOntology(String uuid, EntityManager entityManager) throws ArtificerException {
+        Query q = entityManager.createQuery("FROM ArtificerOntology a WHERE a.uuid = ?");
+        q.setParameter(1, uuid);
+        ArtificerOntology ontology;
+        try {
+            ontology = (ArtificerOntology) q.getSingleResult();
+        } catch (NoResultException e) {
+            throw ArtificerNotFoundException.ontologyNotFound(uuid);
+        }
+        Hibernate.initialize(ontology.getRootClasses());
+        return ontology;
     }
 
     public static ArtificerStoredQuery getStoredQuery(String queryName, EntityManager entityManager) throws ArtificerException {

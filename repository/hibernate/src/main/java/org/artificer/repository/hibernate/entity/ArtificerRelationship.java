@@ -18,6 +18,8 @@ package org.artificer.repository.hibernate.entity;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -37,6 +39,8 @@ import java.util.Map;
  * @author Brett Meyer.
  */
 @Entity
+@Table(appliesTo = "ArtificerRelationship", indexes = {
+        @Index(name = "relationship_name_idx", columnNames = "name")})
 @Immutable
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)

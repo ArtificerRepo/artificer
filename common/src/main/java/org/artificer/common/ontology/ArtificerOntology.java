@@ -16,8 +16,11 @@
 package org.artificer.common.ontology;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import java.io.Serializable;
@@ -49,8 +52,20 @@ public class ArtificerOntology implements Serializable {
 	private List<ArtificerOntologyClass> rootClasses = new ArrayList<ArtificerOntologyClass>();
 	private Map<URI, ArtificerOntologyClass> classIndexByUri = new HashMap<URI, ArtificerOntologyClass>();
 	private Map<String, ArtificerOntologyClass> classIndexById = new HashMap<String, ArtificerOntologyClass>();
+	private long surrogateId;
 
-    public String getId() {
+	@Id
+	@GeneratedValue
+	public long getSurrogateId() {
+		return surrogateId;
+	}
+
+	public void setSurrogateId(long surrogateId) {
+		this.surrogateId = surrogateId;
+	}
+
+	// Note: Cannot be @Id!  Not guaranteed to be set by clients.
+	public String getId() {
 		return id;
 	}
 
@@ -64,7 +79,7 @@ public class ArtificerOntology implements Serializable {
 	/**
 	 * @return the uuid
 	 */
-    @Id
+	@Column(columnDefinition = "char(36)")
     public String getUuid() {
 		return uuid;
 	}
@@ -93,6 +108,7 @@ public class ArtificerOntology implements Serializable {
 	/**
 	 * @return the comment
 	 */
+	@Lob
 	public String getComment() {
 		return comment;
 	}
