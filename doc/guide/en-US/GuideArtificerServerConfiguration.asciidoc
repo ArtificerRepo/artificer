@@ -13,34 +13,57 @@ standalone-full.xml:
 * In <interface name="public">, change the inet-address from "127.0.0.1" to "0.0.0.0".
 * In the Keycloak subsystem, change the "auth-server-url" from "localhost" to your IP.
 
+Hibernate
+~~~~~~~~~
+
+Out of the box, we provide a fairly standard set of Hibernate configuration defaults.  However, for power users, note
+that *any* Hibernate property may be set, either in artificer.properties, environment variables, or System properties.
+More specifically, literally *any* property prefixed by 'hibernate.' will be handed to Hibernate during Artificer
+startup.  More specifics are below:
+
 Datasource
 ~~~~~~~~~~
 
-By default, Artificer uses a simple file-based H2 datasource.  However, any existing datasource can be used.
-Swap-out the datasource's JNDI name in the following location:
+By default, Artificer uses a simple, file-based H2 datasource.  However, any existing Wildfly/EAP datasource can be used.
+Just edit the following in artificer.properties:
 
-Standalone modes: JBOSS_HOME/standalone/configuration/standalone*.xml
 ----
-      ...
-      <cache-container name="modeshape">
-        <local-cache name="artificer">
-          <locking isolation="READ_COMMITTED"/>
-          <transaction mode="NON_XA" locking="OPTIMISTIC"/>
-          <eviction strategy="LRU" max-entries="10000"/>
-          <string-keyed-jdbc-store datasource="[DATASOURCE JNDI NAME]" passivation="false" purge="false">
-            <string-keyed-table prefix="ispn_bucket">
-              <id-column name="id" type="VARCHAR(500)"/>
-              <data-column name="datum" type="BLOB"/>
-              <timestamp-column name="version" type="BIGINT"/>
-            </string-keyed-table>
-          </string-keyed-jdbc-store>
-        </local-cache>
-      </cache-container>
-      ...
+...
+hibernate.dialect = org.hibernate.dialect.H2Dialect
+hibernate.connection.driver_class = org.h2.Driver
+hibernate.connection.datasource = java:jboss/datasources/artificerDS
+hibernate.connection.username = sa
+hibernate.connection.password = sa
+...
 ----
+
+Note that a datasource is *not* required (although recommended).  Plain JDBC connections are supported (hibernate.connection.url).  However,
+we strongly recommend using an adequate connection pool (HikariCP, C3P0, Proxool, etc.).  Without this, since Artificer does not
+configure one out of the box, you'd effectively be using the Hibernate-provided connection pool (not recommended for
+production environments).
+
+File Content
+~~~~~~~~~~~~
+
+Artificer supports storing artifacts' file content on the filesystem or in JDBC Blobs.  By default, we use the Blob
+approach.  However, this is configurable at runtime.  See the 'artificer.hibernate.filesystem.storage.path' property
+in artificer.properties.  If a filesystem path is provided, all content will be stored there.  Otherwise, we assume Blobs.
+
+Advanced Hibernate Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For detailed information of what's possible, please see the Hibernate docs themselves.  However, a few things to highlight:
+
+* Second level entity caching is disabled by default.  Due to the nature of Artificer, where usage is typically focused
+on large-scale queries, this caching can actually be a bit of a hindrance.  However, if you work repeatedly with
+single artifacts, this may be beneficial in some contexts.  See the 'hibernate.cache.*' properties in artificer.properties.
+* By default, we use Lucene filesystem indexes with Hibernate Search.  This is also highly configurable and can use
+any number of backends.  See the 'hibernate.search.*' properties in artificer.properties.
+* Also with Hibernate Search, many usages could benefit from hibernate-search-infinispan, which introduces in-memory
+index caching (clusterable, etc.).  This is also disabled by default, but can be set with the correct properties
+and including the hibernate-search-infinispan JAR.
+See https://docs.jboss.org/author/display/WFLY8/JPA+Reference+Guide#JPAReferenceGuide-UsingtheInfinispansecondlevelcache
+for more info.
 
 WARNINGS
 ~~~~~~~~
-
-* Between runs, the ModeShape repository name cannot be changed.  The name is used on multiple paths used for binary storage, search indexes, etc.  Attempting to do so, without changing all necessary paths, will result in ModeShape failures during startup.
-* Similarly, between runs, the Infinispan "local-cache" name (and accompanying "cacheName" in the ModeShape config) cannot be changed.  ModeShape includes a hash of the cache name within its node IDs, so changing the name is guaranteed to break your repository.

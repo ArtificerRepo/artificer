@@ -22,6 +22,8 @@ import javax.persistence.EntityManager;
 import java.io.InputStream;
 
 /**
+ * SPI contract specifying how the repository interacts with file contents.
+ *
  * @author Brett Meyer.
  */
 public interface FileManager {

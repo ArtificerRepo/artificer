@@ -6,13 +6,13 @@ Migration Guides
 
 * Support for Jetty, Tomcat, Fuse/Fabric/OSGi, and EAP 6.1 has been dropped.  Attention is now solely on Wildfly 8
 and EAP 6.2+.  (If any of these are truly a need by community users, we'd love to https://developer.jboss.org/en/artificer[hear from you]!)
-* Several areas of our JCR node definitions (CND) have changed.  Therefore, out of the box, Artificer 1.0 will probably
+* We've switched from JCR storage to RDBMS (JPA).  Therefore, out of the box, Artificer 1.0 will
 not work with existing Overlord S-RAMP 0.x repository data.  An automated migration script is relatively easy to create.
 Please https://developer.jboss.org/en/artificer[contact us] if this would be helpful!
 * All modules renamed from s-ramp-* to artificer-*.  Any dependencies on these modules will need updated.
 * All Java packages renamed from org.overlord.sramp.* to org.artificer.*
 * URL endpoints changed: /s-ramp-server -> /artificer-server and /s-ramp-ui -> /artificer-ui
-* Names and paths have been changed in the ModeShape, Infinispan, H2, etc. configurations.  If an automated migration
+* Names and paths have been changed in many of the configuration settings.  If an automated migration
 utility is needed in this area, please https://developer.jboss.org/en/artificer[contact us].
 * sramp.properties and sramp-ui.properties have been replaced by artificer.properties and artificer-ui.properties.
 All configuration keys have been changed to reflect "artificer".
