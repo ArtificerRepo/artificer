@@ -39,6 +39,10 @@ public class HibernateUtil {
 
     private static EntityManagerFactory entityManagerFactory = null;
 
+    /**
+     * A worker pattern, used for *all* integration with the EntityManager.  This should be the only public means to use it.
+     * @param <T>
+     */
     public static abstract class HibernateTask<T> {
         public T execute() throws ArtificerException {
             EntityManager entityManager = null;
@@ -116,6 +120,10 @@ public class HibernateUtil {
         return storedQuery;
     }
 
+    /**
+     * Override the name of the persistence unit used to build the EMF.  Mainly used for testing.
+     * @param name
+     */
     public static void setPersistenceUnit(String name) {
         persistenceUnit = name;
     }

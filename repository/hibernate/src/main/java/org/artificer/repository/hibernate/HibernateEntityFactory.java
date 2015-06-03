@@ -15,6 +15,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
+ * Utility that converts S-RAMP bindings to Artificer JPA entities (and vice versa).
+ *
  * @author Brett Meyer
  */
 public class HibernateEntityFactory {

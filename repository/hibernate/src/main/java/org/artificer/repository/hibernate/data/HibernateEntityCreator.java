@@ -31,22 +31,17 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
 
 /**
+ * Visit sand creates the correct subclass of ArtificerArtifact.  Note that we pass in ArtifactType, rather than the
+ * actual BaseArtifactType.  We need to create the true, most-specific type.  Ex: Someone could pass in
+ * a Document (instead of XmlDocument) with "XmlDocument" as the artifact type.  In that instance, we should still
+ * create an actual XmlDocument!
+ *
  * @author Brett Meyer.
  */
 public class HibernateEntityCreator extends HierarchicalArtifactVisitor {
 
     private ArtificerArtifact artificerArtifact;
 
-    /**
-     * Visit and create the correct subclass of ArtificerArtifact.  Note that we pass in ArtifactType, rather than the
-     * actual BaseArtifactType.  We need to create the true, most-specific type.  Ex: Someone could pass in
-     * a Document (instead of XmlDocument) with "XmlDocument" as the artifact type.  In that instance, we should still
-     * create an actual XmlDocument!
-     *
-     * @param artifactType
-     * @return ArtificerArtifact
-     * @throws Exception
-     */
     public static ArtificerArtifact visit(ArtifactType artifactType) throws Exception {
         HibernateEntityCreator visitor = new HibernateEntityCreator();
         ArtifactVisitorHelper.visitArtifact(visitor, artifactType.newArtifactInstance());
