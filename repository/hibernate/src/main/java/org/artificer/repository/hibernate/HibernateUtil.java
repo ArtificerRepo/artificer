@@ -22,11 +22,11 @@ import org.artificer.common.error.ArtificerServerException;
 import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.entity.ArtificerStoredQuery;
 import org.hibernate.Hibernate;
+import org.hibernate.ejb.HibernatePersistence;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.util.Map;
 
@@ -87,7 +87,7 @@ public class HibernateUtil {
         if (entityManagerFactory == null) {
             // Pass in all hibernate.* settings from artificer.properties
             Map<String, Object> properties = ArtificerConfig.getConfigProperties("hibernate");
-            entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit, properties);
+            entityManagerFactory = new HibernatePersistence().createEntityManagerFactory(persistenceUnit, properties);
         }
         return entityManagerFactory.createEntityManager();
     }

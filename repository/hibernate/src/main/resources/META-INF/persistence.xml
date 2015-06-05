@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
   <persistence-unit name="Artificer">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    
     <class>org.artificer.repository.hibernate.entity.ArtificerRelationship</class>
     <class>org.artificer.repository.hibernate.entity.ArtificerTarget</class>
     <class>org.artificer.repository.hibernate.entity.ArtificerComment</class>
@@ -21,17 +19,16 @@
     <exclude-unlisted-classes />
     
     <properties>
+      <!-- A few items that should probably *not* be changed -->
       <property name="hibernate.order_updates" value="true"/>
       <property name="hibernate.connection.autocommit" value="false"/>
       <property name="hibernate.format_sql" value="true"/>
 
-      <!-- Defaults, overridden by artificer.properties -->
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-      <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
-      <property name="hibernate.connection.datasource" value="java:jboss/datasources/artificerDS"/>
-      <property name="hibernate.connection.username" value="sa"/>
-      <property name="hibernate.connection.password" value="sa"/>
-      <property name="hibernate.cache.use_second_level_cache" value="false"/>
+      <!-- Don't allow WF/EAP to manage the persistence unit - vital since we're dynamically setting most of the
+      properties *after* WF/EAP has started! -->
+      <property name="jboss.as.jpa.managed" value="false"/>
+
+      <!-- Note: *Everything* else provided by artificer.properties -->
     </properties>
   </persistence-unit>
 </persistence>
