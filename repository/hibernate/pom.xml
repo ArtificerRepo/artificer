@@ -91,6 +91,14 @@
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-analyzers</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-parsers</artifactId>
+    </dependency>
 
     <!-- Apache Commons -->
     <dependency>
