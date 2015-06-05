@@ -8,6 +8,7 @@ import org.artificer.repository.hibernate.entity.ArtificerRelationship;
 import org.artificer.repository.hibernate.entity.ArtificerRelationshipType;
 import org.artificer.repository.hibernate.query.HibernateQuery;
 import org.artificer.repository.query.ArtificerQuery;
+import org.artificer.repository.query.ArtificerQueryArgs;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 import javax.persistence.EntityManager;
@@ -27,13 +28,13 @@ public class HibernateQueryManager implements QueryManager {
     }
 
     @Override
-    public ArtificerQuery createQuery(String xpathTemplate, String orderByProperty, boolean orderAscending) {
-        return new HibernateQuery(xpathTemplate, orderByProperty, orderAscending);
+    public ArtificerQuery createQuery(String xpathTemplate, ArtificerQueryArgs args) {
+        return new HibernateQuery(xpathTemplate, args);
     }
 
     @Override
-    public ArtificerQuery createQuery(String xpathTemplate) {
-        return createQuery(xpathTemplate, null, false);
+    public ArtificerQuery createQuery(String xpathTemplate) throws ArtificerException {
+        return createQuery(xpathTemplate, new ArtificerQueryArgs());
     }
 
     @Override

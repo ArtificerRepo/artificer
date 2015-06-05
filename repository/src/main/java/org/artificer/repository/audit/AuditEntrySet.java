@@ -31,9 +31,4 @@ public interface AuditEntrySet extends Iterable<AuditEntry>, AbstractSet {
      * After the query has been executed, this is called by the REST/EJB service to return all results.
      */
     public List<AuditEntry> list() throws Exception;
-
-    /**
-     * After the query has been executed, this is called by the REST/EJB service to page the results.
-     */
-    public List<AuditEntry> pagedList(long startIndex, long endIndex) throws Exception;
 }

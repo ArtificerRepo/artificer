@@ -27,13 +27,12 @@ import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.i18n.Messages;
 import org.artificer.repository.query.AbstractArtificerQueryImpl;
 import org.artificer.repository.query.ArtifactSet;
+import org.artificer.repository.query.ArtificerQueryArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Brett Meyer
@@ -42,56 +41,37 @@ public class HibernateQuery extends AbstractArtificerQueryImpl {
 
 	private static final Logger LOG = LoggerFactory.getLogger(HibernatePersistenceManager.class);
 
-	private static Map<String, String> sOrderByMappings = new HashMap<String, String>();
-	static {
-		sOrderByMappings.put("createdBy", "createdBy.username");
-		sOrderByMappings.put("version", "version");
-		sOrderByMappings.put("uuid", "uuid");
-		sOrderByMappings.put("createdTimestamp", "createdBy.lastActionTime");
-		sOrderByMappings.put("lastModifiedTimestamp", "modifiedBy.lastActionTime");
-		sOrderByMappings.put("lastModifiedBy", "modifiedBy.username");
-		sOrderByMappings.put("name", "name");
-	}
-
 	/**
 	 * Constructor.
 	 * @param xpathTemplate
-	 * @param orderByProperty
-	 * @param orderAscending
+	 * @param args
 	 */
-	public HibernateQuery(String xpathTemplate, String orderByProperty, boolean orderAscending) {
-		super(xpathTemplate, orderByProperty, orderAscending);
+	public HibernateQuery(String xpathTemplate, ArtificerQueryArgs args) {
+		super(xpathTemplate, args);
 	}
+
+    public HibernateQuery(String xpathTemplate) {
+        super(xpathTemplate, new ArtificerQueryArgs());
+    }
 
 	@Override
 	protected ArtifactSet executeQuery(final Query queryModel) throws ArtificerException {
 		try {
-            final String orderBy;
-            if (getOrderByProperty() != null) {
-                String propName = sOrderByMappings.get(getOrderByProperty());
-                orderBy = propName != null ? propName : null;
-            } else {
-                orderBy = null;
-            }
-
             return new HibernateUtil.HibernateTask<HibernateArtifactSet>() {
                 @Override
                 protected HibernateArtifactSet doExecute(EntityManager entityManager) throws Exception {
                     ArtificerToHibernateQueryVisitor visitor = new ArtificerToHibernateQueryVisitor(entityManager,
                             (ClassificationHelper) RepositoryProviderFactory.persistenceManager());
                     queryModel.accept(visitor);
-                    if (orderBy != null) {
-                        visitor.setOrder(orderBy);
-                        visitor.setOrderAscending(isOrderAscending());
-                    }
 
                     long startTime = System.currentTimeMillis();
-                    List<ArtificerArtifact> results = visitor.query();
+                    List<ArtificerArtifact> results = visitor.query(args);
+                    long totalSize = visitor.getTotalSize();
                     long endTime = System.currentTimeMillis();
 
                     LOG.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime));
 
-                    return new HibernateArtifactSet(results);
+                    return new HibernateArtifactSet(results, totalSize);
                 }
             }.execute();
 

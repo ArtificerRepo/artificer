@@ -51,7 +51,7 @@ public class HibernateRelationshipContext implements RelationshipContext {
         }
         builder.append("]");
 
-        HibernateQuery query = new HibernateQuery(builder.toString(), null, true);
+        HibernateQuery query = new HibernateQuery(builder.toString());
         ArtifactSet results = query.executeQuery();
         return results.list();
     }

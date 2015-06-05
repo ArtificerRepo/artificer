@@ -31,9 +31,4 @@ public interface ArtifactSet extends Iterable<BaseArtifactType>, AbstractSet {
      * After the query has been executed, this is called by the REST/EJB service to return all results.
      */
     public List<BaseArtifactType> list() throws Exception;
-
-    /**
-     * After the query has been executed, this is called by the REST/EJB service to page the results.
-     */
-    public List<BaseArtifactType> pagedList(long startIndex, long endIndex) throws Exception;
 }

@@ -25,17 +25,17 @@ import java.util.List;
 
 /**
  * A JPA implementation of an {@link org.artificer.repository.query.ArtifactSet}.
- *
- * @author eric.wittmann@redhat.com
  */
 public class HibernateArtifactSet implements ArtifactSet, Iterator<BaseArtifactType> {
 
     private final Iterator<ArtificerArtifact> itr;
-    private final int totalSize;
+    private final int size;
+    private final long totalSize;
 
-    public HibernateArtifactSet(List<ArtificerArtifact> artificerArtifacts) throws Exception {
+    public HibernateArtifactSet(List<ArtificerArtifact> artificerArtifacts, long totalSize) throws Exception {
         itr = artificerArtifacts.iterator();
-        totalSize = artificerArtifacts.size();
+        size = artificerArtifacts.size();
+        this.totalSize = totalSize;
     }
 
     /**
@@ -79,25 +79,12 @@ public class HibernateArtifactSet implements ArtifactSet, Iterator<BaseArtifactT
     }
 
     @Override
-    public List<BaseArtifactType> pagedList(long startIndex, long endIndex) throws Exception {
-        // Get only the rows we're interested in.
-        List<BaseArtifactType> entries = new ArrayList<>();
-        int i = 0;
-        while (hasNext()) {
-            if (i >= startIndex && i <= endIndex) {
-                entries.add(next());
-            } else {
-                // burn it
-                itr.next();
-            }
-            i++;
-        }
-
-        return entries;
+    public int size() {
+        return size;
     }
 
     @Override
-    public int size() {
+    public long totalSize() {
         return totalSize;
     }
 

@@ -15,6 +15,8 @@
  */
 package org.artificer.server.core.api;
 
+import org.artificer.repository.query.ArtificerQueryArgs;
+
 import java.util.List;
 
 /**
@@ -26,24 +28,15 @@ public class PagedResult<T> {
 
     private final String query;
 
-    private final int totalSize;
+    private final long totalSize;
 
-    private final int startIndex;
+    private final ArtificerQueryArgs args;
 
-    private final int pageSize;
-
-    private final String orderBy;
-
-    private final boolean ascending;
-
-    public PagedResult(List<T> results, String query, int totalSize, int startIndex, int pageSize, String orderBy, boolean ascending) {
+    public PagedResult(List<T> results, String query, long totalSize, ArtificerQueryArgs args) {
         this.results = results;
         this.query = query;
         this.totalSize = totalSize;
-        this.startIndex = startIndex;
-        this.pageSize = pageSize;
-        this.orderBy = orderBy;
-        this.ascending = ascending;
+        this.args = args;
     }
 
     public List<T> getResults() {
@@ -54,23 +47,23 @@ public class PagedResult<T> {
         return query;
     }
 
-    public int getTotalSize() {
+    public long getTotalSize() {
         return totalSize;
     }
 
     public int getPageSize() {
-        return pageSize;
+        return args.getCount();
     }
 
     public int getStartIndex() {
-        return startIndex;
+        return args.getStartIndex();
     }
 
     public String getOrderBy() {
-        return orderBy;
+        return args.getOrderBy();
     }
 
     public boolean isAscending() {
-        return ascending;
+        return args.getOrderAscending();
     }
 }

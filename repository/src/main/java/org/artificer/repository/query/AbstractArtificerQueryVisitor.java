@@ -32,10 +32,8 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Brett Meyer.
@@ -55,25 +53,12 @@ public abstract class AbstractArtificerQueryVisitor implements XPathVisitor {
 
     protected static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 
-    protected final Map<QName, String> corePropertyMap = new HashMap<>();
-
-    protected String order;
-    protected boolean orderAscending;
-
     protected ClassificationHelper classificationHelper;
 
     protected ArtificerException error;
 
     protected AbstractArtificerQueryVisitor(ClassificationHelper classificationHelper) {
         this.classificationHelper = classificationHelper;
-    }
-
-    public void setOrder(String order) {
-        this.order = order;
-    }
-
-    public void setOrderAscending(boolean orderAscending) {
-        this.orderAscending = orderAscending;
     }
 
     /**

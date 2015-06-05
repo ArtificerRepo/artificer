@@ -16,9 +16,9 @@
 package org.artificer.server;
 
 import org.artificer.common.ReverseRelationship;
-import org.artificer.repository.QueryManager;
 import org.artificer.repository.query.ArtifactSet;
 import org.artificer.repository.query.ArtificerQuery;
+import org.artificer.repository.query.ArtificerQueryArgs;
 import org.artificer.server.core.api.PagedResult;
 import org.artificer.server.core.api.QueryService;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
@@ -54,12 +54,9 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
                 xpath = "/s-ramp/" + query; //$NON-NLS-1$
         }
 
-        if (orderBy == null)
-            orderBy = "name"; //$NON-NLS-1$
-        if (ascending == null)
-            ascending = true;
-
-        ArtifactSet artifactSet = executeQuery(xpath, orderBy, ascending);
+        ArtificerQueryArgs args = new ArtificerQueryArgs(orderBy, ascending);
+        ArtificerQuery artificerQuery = queryManager().createQuery(xpath, args);
+        ArtifactSet artifactSet = artificerQuery.executeQuery();
         try {
             return artifactSet.list();
         } finally {
@@ -79,32 +76,16 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
                 xpath = "/s-ramp/" + query; //$NON-NLS-1$
         }
 
-        if (orderBy == null)
-            orderBy = "name"; //$NON-NLS-1$
-        if (ascending == null)
-            ascending = true;
+        ArtificerQueryArgs args = new ArtificerQueryArgs(orderBy, ascending, startPage, startIndex, count);
+        ArtificerQuery artificerQuery = queryManager().createQuery(xpath, args);
+        ArtifactSet artifactSet = artificerQuery.executeQuery();
 
-        ArtifactSet artifactSet = executeQuery(xpath, orderBy, ascending);
-
-        startIndex = startIndex(startPage, startIndex, count);
-        if (count == null)
-            count = 100;
-
-        int startIdx = startIndex;
-        int endIdx = startIdx + count - 1;
         try {
-            List<BaseArtifactType> results = artifactSet.pagedList(startIdx, endIdx);
-            return new PagedResult<BaseArtifactType>(results, xpath, artifactSet.size(), startIndex, count,
-                    orderBy, ascending);
+            List<BaseArtifactType> results = artifactSet.list();
+            return new PagedResult<>(results, xpath, artifactSet.totalSize(), args);
         } finally {
             artifactSet.close();
         }
-    }
-
-    private ArtifactSet executeQuery(String query, String orderBy, Boolean ascending) throws Exception {
-        QueryManager queryManager = queryManager();
-        ArtificerQuery artificerQuery = queryManager.createQuery(query, orderBy, ascending);
-        return artificerQuery.executeQuery();
     }
 
     @Override
