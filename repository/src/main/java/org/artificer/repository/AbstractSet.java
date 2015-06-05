@@ -16,16 +16,19 @@
 package org.artificer.repository;
 
 /**
- * A set of audit entries returned from the audit manager.
- *
  * @author eric.wittmann@redhat.com
  */
 public interface AbstractSet {
 
     /**
-     * Returns the size of the artifact set.
+     * Returns the (paged) size of the artifact set.
      */
     public int size();
+
+    /**
+     * Returns the totalSize of the artifact set.
+     */
+    public long totalSize();
 
     /**
      * Called to close the artifact set when the caller is done with it.

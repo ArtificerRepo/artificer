@@ -59,16 +59,4 @@ public abstract class AbstractServiceImpl implements AbstractService {
         }
         return queryManager;
     }
-
-    public int startIndex(Integer startPage, Integer startIndex, Integer count) {
-        if (startIndex == null && startPage != null) {
-            int c = count != null ? count.intValue() : 100;
-            startIndex = (startPage.intValue() - 1) * c;
-        }
-
-        if (startIndex == null)
-            startIndex = 0;
-
-        return startIndex;
-    }
 }

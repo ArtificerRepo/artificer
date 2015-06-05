@@ -28,11 +28,13 @@ import java.util.List;
 public class HibernateAuditEntrySet implements AuditEntrySet, Iterator<AuditEntry> {
 
     private final Iterator<AuditEntry> itr;
-    private final int totalSize;
+    private final int size;
+    private final long totalSize;
 
-    public HibernateAuditEntrySet(List<AuditEntry> auditEntries) throws Exception {
+    public HibernateAuditEntrySet(List<AuditEntry> auditEntries, long totalSize) throws Exception {
         itr = auditEntries.iterator();
-        totalSize = auditEntries.size();
+        size = auditEntries.size();
+        this.totalSize = totalSize;
     }
 
     /**
@@ -71,25 +73,12 @@ public class HibernateAuditEntrySet implements AuditEntrySet, Iterator<AuditEntr
     }
 
     @Override
-    public List<AuditEntry> pagedList(long startIndex, long endIndex) throws Exception {
-        // Get only the rows we're interested in.
-        List<AuditEntry> entries = new ArrayList<AuditEntry>();
-        int i = 0;
-        while (hasNext()) {
-            if (i >= startIndex && i <= endIndex) {
-                entries.add(next());
-            } else {
-                // burn it
-                itr.next();
-            }
-            i++;
-        }
-
-        return entries;
+    public int size() {
+        return size;
     }
 
     @Override
-    public int size() {
+    public long totalSize() {
         return totalSize;
     }
 

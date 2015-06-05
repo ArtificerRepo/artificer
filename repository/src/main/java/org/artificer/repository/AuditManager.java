@@ -15,9 +15,10 @@
  */
 package org.artificer.repository;
 
-import org.artificer.repository.audit.AuditEntrySet;
-import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 import org.artificer.common.ArtificerException;
+import org.artificer.repository.audit.AuditEntrySet;
+import org.artificer.repository.query.ArtificerQueryArgs;
+import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 
 
 /**
@@ -49,16 +50,22 @@ public interface AuditManager extends AbstractManager {
      * the caller is done with the {@link org.artificer.repository.audit.AuditEntrySet}, it must call close to free up
      * any resources.
      *
-     * @param artifactUuid
+     * @param artifactUuid     * @param args
+
      * @throws org.artificer.common.ArtificerException
      */
+    public AuditEntrySet getArtifactAuditEntries(String artifactUuid, ArtificerQueryArgs args) throws ArtificerException;
+
     public AuditEntrySet getArtifactAuditEntries(String artifactUuid) throws ArtificerException;
 
     /**
      * Gets
      * @param username
+     * @param args
      * @return
      * @throws org.artificer.common.ArtificerException
      */
+    public AuditEntrySet getUserAuditEntries(String username, ArtificerQueryArgs args) throws ArtificerException;
+
     public AuditEntrySet getUserAuditEntries(String username) throws ArtificerException;
 }

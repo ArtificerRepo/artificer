@@ -10,6 +10,7 @@ import org.artificer.repository.hibernate.audit.ArtificerAuditEntry;
 import org.artificer.repository.hibernate.audit.HibernateAuditor;
 import org.artificer.repository.hibernate.data.HibernateAuditEntrySet;
 import org.artificer.repository.hibernate.entity.ArtificerArtifact;
+import org.artificer.repository.query.ArtificerQueryArgs;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 
 import javax.persistence.EntityManager;
@@ -65,20 +66,59 @@ public class HibernateAuditManager implements AuditManager {
     }
 
     @Override
-    public AuditEntrySet getArtifactAuditEntries(final String artifactUuid) throws ArtificerException {
+    public AuditEntrySet getArtifactAuditEntries(final String artifactUuid, final ArtificerQueryArgs args) throws ArtificerException {
         try {
-            List<AuditEntry> auditEntries = new HibernateUtil.HibernateTask<List<AuditEntry>>() {
+            return new HibernateUtil.HibernateTask<AuditEntrySet>() {
                 @Override
-                protected List<AuditEntry> doExecute(EntityManager entityManager) throws Exception {
+                protected AuditEntrySet doExecute(EntityManager entityManager) throws Exception {
                     Query q = entityManager.createQuery(
                             "SELECT au FROM ArtificerAuditEntry au INNER JOIN au.artifact a WHERE a.uuid=:uuid ORDER BY au.id DESC");
                     q.setParameter("uuid", artifactUuid);
+                    args.applyPaging(q);
                     List<ArtificerAuditEntry> auditEntries = q.getResultList();
-                    return HibernateAuditor.auditEntries(auditEntries);
+
+                    q = entityManager.createQuery(
+                            "SELECT count(au) FROM ArtificerAuditEntry au INNER JOIN au.artifact a WHERE a.uuid=:uuid");
+                    q.setParameter("uuid", artifactUuid);
+                    args.applyPaging(q);
+                    long totalsize = (Long) q.getSingleResult();
+
+                    return new HibernateAuditEntrySet(HibernateAuditor.auditEntries(auditEntries), totalsize);
                 }
             }.execute();
+        } catch (ArtificerException ae) {
+            throw ae;
+        } catch (Throwable t) {
+            throw new ArtificerServerException(t);
+        }
+    }
 
-            return new HibernateAuditEntrySet(auditEntries);
+    @Override
+    public AuditEntrySet getArtifactAuditEntries(final String artifactUuid) throws ArtificerException {
+        return getArtifactAuditEntries(artifactUuid, new ArtificerQueryArgs());
+    }
+
+    @Override
+    public AuditEntrySet getUserAuditEntries(final String username, final ArtificerQueryArgs args) throws ArtificerException {
+        try {
+            return new HibernateUtil.HibernateTask<AuditEntrySet>() {
+                @Override
+                protected AuditEntrySet doExecute(EntityManager entityManager) throws Exception {
+                    Query q = entityManager.createQuery(
+                            "SELECT au FROM ArtificerAuditEntry au WHERE au.modifiedBy.username=:username ORDER BY au.id DESC");
+                    q.setParameter("username", username);
+                    args.applyPaging(q);
+                    List<ArtificerAuditEntry> auditEntries = q.getResultList();
+
+                    q = entityManager.createQuery(
+                            "SELECT count(au) FROM ArtificerAuditEntry au WHERE au.modifiedBy.username=:username");
+                    q.setParameter("username", username);
+                    args.applyPaging(q);
+                    long totalsize = (Long) q.getSingleResult();
+
+                    return new HibernateAuditEntrySet(HibernateAuditor.auditEntries(auditEntries), totalsize);
+                }
+            }.execute();
         } catch (ArtificerException ae) {
             throw ae;
         } catch (Throwable t) {
@@ -88,23 +128,6 @@ public class HibernateAuditManager implements AuditManager {
 
     @Override
     public AuditEntrySet getUserAuditEntries(final String username) throws ArtificerException {
-        try {
-            List<AuditEntry> auditEntries = new HibernateUtil.HibernateTask<List<AuditEntry>>() {
-                @Override
-                protected List<AuditEntry> doExecute(EntityManager entityManager) throws Exception {
-                    Query q = entityManager.createQuery(
-                            "SELECT au FROM ArtificerAuditEntry au WHERE au.modifiedBy.username=:username ORDER BY au.id DESC");
-                    q.setParameter("username", username);
-                    List<ArtificerAuditEntry> auditEntries = q.getResultList();
-                    return HibernateAuditor.auditEntries(auditEntries);
-                }
-            }.execute();
-
-            return new HibernateAuditEntrySet(auditEntries);
-        } catch (ArtificerException ae) {
-            throw ae;
-        } catch (Throwable t) {
-            throw new ArtificerServerException(t);
-        }
+        return getUserAuditEntries(username, new ArtificerQueryArgs());
     }
 }

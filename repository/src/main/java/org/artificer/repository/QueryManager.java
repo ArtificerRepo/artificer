@@ -18,6 +18,7 @@ package org.artificer.repository;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.ReverseRelationship;
 import org.artificer.repository.query.ArtificerQuery;
+import org.artificer.repository.query.ArtificerQueryArgs;
 
 import java.util.List;
 
@@ -47,21 +48,13 @@ public interface QueryManager extends AbstractManager {
 	 *   ArtifactSet results = query.executeQuery();
 	 * </pre>
 	 * @param xpathTemplate the templatized xpath
-	 * @param orderByProperty property name to use when sorting
-	 * @param orderAscending whether to sort ascending
+	 * @param args
 	 * @return a new {@link org.artificer.repository.query.ArtificerQuery} object
 	 * @throws org.artificer.common.ArtificerException
 	 */
-	public ArtificerQuery createQuery(String xpathTemplate, String orderByProperty, boolean orderAscending) throws ArtificerException;
+	public ArtificerQuery createQuery(String xpathTemplate, ArtificerQueryArgs args) throws ArtificerException;
 
-	/**
-	 * Create an s-ramp query from the given xpath template.  No order-by hints are given,
-	 * so the s-ramp repository is free to return the artifacts in any arbitrary order.
-	 * @param xpathTemplate the templatized xpath
-	 * @return a new {@link org.artificer.repository.query.ArtificerQuery} object
-	 * @throws org.artificer.common.ArtificerException
-	 */
-	public ArtificerQuery createQuery(String xpathTemplate) throws ArtificerException;
+    public ArtificerQuery createQuery(String xpathTemplate) throws ArtificerException;
 
     /**
      * Return all artifacts and relationships that target the given artifact UUID.

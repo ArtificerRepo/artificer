@@ -37,11 +37,13 @@ import org.artificer.repository.hibernate.entity.ArtificerRelationship;
 import org.artificer.repository.hibernate.entity.ArtificerTarget;
 import org.artificer.repository.hibernate.i18n.Messages;
 import org.artificer.repository.query.AbstractArtificerQueryVisitor;
+import org.artificer.repository.query.ArtificerQueryArgs;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.From;
@@ -58,7 +60,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Visitor used to produce a JSQL query from an S-RAMP xpath query.
@@ -85,14 +89,12 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
 
     private List<Predicate> predicates = new ArrayList<>();
 
-    /**
-     * Default constructor.
-     * @param entityManager
-     * @param classificationHelper
-     */
-    public ArtificerToHibernateQueryVisitor(EntityManager entityManager, ClassificationHelper classificationHelper) throws ArtificerException {
-        super(classificationHelper);
+    private boolean hasullTextSearch = false;
 
+    private long totalSize;
+
+    private static final Map<QName, String> corePropertyMap = new HashMap<>();
+    static {
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "createdBy"), "createdBy.username");
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "createdTimestamp"), "createdBy.lastActionTime");
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "version"), "version");
@@ -107,33 +109,73 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "contentEncoding"), "contentEncoding");
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "extendedType"), "extendedType");
         corePropertyMap.put(new QName(ArtificerConstants.SRAMP_NS, "derived"), "derived");
+    }
+
+    private static final Map<String, String> orderByMap = new HashMap<String, String>();
+    static {
+        orderByMap.put("createdBy", "createdBy.username");
+        orderByMap.put("version", "version");
+        orderByMap.put("uuid", "uuid");
+        orderByMap.put("createdTimestamp", "createdBy.lastActionTime");
+        orderByMap.put("lastModifiedTimestamp", "modifiedBy.lastActionTime");
+        orderByMap.put("lastModifiedBy", "modifiedBy.username");
+        orderByMap.put("name", "name");
+    }
+
+    /**
+     * Default constructor.
+     * @param entityManager
+     * @param classificationHelper
+     */
+    public ArtificerToHibernateQueryVisitor(EntityManager entityManager, ClassificationHelper classificationHelper) throws ArtificerException {
+        super(classificationHelper);
 
         this.entityManager = entityManager;
         criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
-    public List<ArtificerArtifact> query() throws ArtificerException {
+    /**
+     * Execute the query and return the results.
+     * @param args
+     * @return List<ArtificerArtifact>
+     * @throws ArtificerException
+     */
+    public List<ArtificerArtifact> query(ArtificerQueryArgs args) throws ArtificerException {
         if (this.error != null) {
             throw this.error;
         }
 
-        query.select(from).distinct(true);
-
-        // filter out the trash
+        // filter out the trash (have to do this here since 'from' can be overridden at several points in the visitor)
         predicates.add(criteriaBuilder.equal(from.get("trashed"), Boolean.valueOf(false)));
-
-        // build the full set of constraints
+        // build the full set of constraints and
         query.where(compileAnd(predicates));
 
-        if (order != null) {
-            if (orderAscending) {
-                query.orderBy(criteriaBuilder.asc(path(order)));
-            } else {
-                query.orderBy(criteriaBuilder.desc(path(order)));
+        // First, select the total count, without paging
+        query.select(criteriaBuilder.count(from)).distinct(true);
+        totalSize = (Long) entityManager.createQuery(query).getSingleResult();
+
+        // Now, return the actual results
+        query.select(from).distinct(true);
+
+        if (args.getOrderBy() != null) {
+            String propName = orderByMap.get(args.getOrderBy());
+            if (propName != null) {
+                if (args.getOrderAscending()) {
+                    query.orderBy(criteriaBuilder.asc(path(propName)));
+                } else {
+                    query.orderBy(criteriaBuilder.desc(path(propName)));
+                }
             }
         }
 
-        return entityManager.createQuery(query).getResultList();
+        TypedQuery q = entityManager.createQuery(query);
+        args.applyPaging(q);
+
+        return q.getResultList();
+    }
+
+    public long getTotalSize() {
+        return totalSize;
     }
 
     /**

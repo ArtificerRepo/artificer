@@ -40,63 +40,18 @@ public abstract class AbstractArtificerQueryImpl implements ArtificerQuery {
 
 	private static final XPathParser sParser = new XPathParser();
 
-	private String xpathTemplate;
+	protected String xpathTemplate;
+	protected ArtificerQueryArgs args;
 	private List<QueryReplacementParam<?>> replacementParams = new ArrayList<QueryReplacementParam<?>>();
-	private String orderByProperty;
-	private boolean orderAscending;
 
 	/**
 	 * Constructor.
 	 * @param xpathTemplate
-	 * @param orderByProperty
-	 * @param orderAscending
+	 * @param args
 	 */
-	public AbstractArtificerQueryImpl(String xpathTemplate, String orderByProperty, boolean orderAscending) {
-		setXpathTemplate(xpathTemplate);
-		setOrderByProperty(orderByProperty);
-		setOrderAscending(orderAscending);
-	}
-
-	/**
-	 * @return the xpathTemplate
-	 */
-	protected String getXpathTemplate() {
-		return xpathTemplate;
-	}
-
-	/**
-	 * @param xpathTemplate the xpathTemplate to set
-	 */
-	protected void setXpathTemplate(String xpathTemplate) {
+	public AbstractArtificerQueryImpl(String xpathTemplate, ArtificerQueryArgs args) {
 		this.xpathTemplate = xpathTemplate;
-	}
-
-	/**
-	 * @return the orderByProperty
-	 */
-	protected String getOrderByProperty() {
-		return orderByProperty;
-	}
-
-	/**
-	 * @param orderByProperty the orderByProperty to set
-	 */
-	protected void setOrderByProperty(String orderByProperty) {
-		this.orderByProperty = orderByProperty;
-	}
-
-	/**
-	 * @return the orderAscending
-	 */
-	protected boolean isOrderAscending() {
-		return orderAscending;
-	}
-
-	/**
-	 * @param orderAscending the orderAscending to set
-	 */
-	protected void setOrderAscending(boolean orderAscending) {
-		this.orderAscending = orderAscending;
+		this.args = args;
 	}
 
 	@Override
@@ -143,7 +98,6 @@ public abstract class AbstractArtificerQueryImpl implements ArtificerQuery {
 
 	@Override
 	public final ArtifactSet executeQuery() throws ArtificerException {
-		String xpathTemplate = getXpathTemplate();
 		String xpath = formatQuery(xpathTemplate, this.replacementParams);
 		Query queryModel = parseXPath(xpath);
 		validateQuery(queryModel);
