@@ -77,17 +77,6 @@
     <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone-full.xml" overwrite="true" />
     <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
 
-    <!-- Until HSEARCH-1885, we need to deploy our own Tika module (stolen from the ModeShape distro) and force
-    the Search module to depend on it.  Once 1885 is corrected and we upgrade, remove tika-module.zip,
-    configureHibernateSearch.xslt, etc. and instead provide the Tika JARs in our WAR. -->
-    <unzip src="${s-ramp.updates.dir}/tika-module-eap64.zip" dest="${s-ramp.appserver.dir}"/>
-    <xslt
-        style="${s-ramp.updates.dir}/xslt/configureHibernateSearch-eap-64.xslt"
-        in="${s-ramp.jboss.module.path}/system/layers/base/org/hibernate/search/engine/main/module.xml"
-        out="${s-ramp.install.dir}/_tmp_search_module.xml" />
-    <copy file="${s-ramp.install.dir}/_tmp_search_module.xml" tofile="${s-ramp.jboss.module.path}/system/layers/base/org/hibernate/search/engine/main/module.xml" overwrite="true" />
-    <delete file="${s-ramp.install.dir}/_tmp_search_module.xml" />
-
     <!-- Installs the admin user (needed for JMS and EJB) -->
     <java jar="${s-ramp.appserver.dir}/jboss-modules.jar"
           fork="true" dir="${s-ramp.appserver.dir}"
