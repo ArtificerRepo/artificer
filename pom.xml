@@ -621,7 +621,11 @@
         <artifactId>lucene-analyzers</artifactId>
         <version>${version.org.apache.lucene}</version>
       </dependency>
-
+      <dependency>
+        <groupId>com.zaxxer</groupId>
+        <artifactId>HikariCP-java6</artifactId>
+        <version>2.3.8</version>
+      </dependency>
 
       <dependency>
         <groupId>jstl</groupId>
