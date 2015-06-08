@@ -34,33 +34,36 @@ public abstract class AbstractPersistenceManager implements PersistenceManager, 
 
     @Override
     public URI resolve(String classifiedBy) throws ArtificerException {
-        URI classifiedUri = null;
         try {
-            classifiedUri = new URI(classifiedBy);
+            URI classifiedUri = new URI(classifiedBy);
+            Collection<ArtificerOntology> ontologies = getOntologies();
+            for (ArtificerOntology ontology : ontologies) {
+                ArtificerOntologyClass sclass = ontology.findClass(classifiedBy);
+                if (sclass == null) {
+                    sclass = ontology.findClass(classifiedUri);
+                }
+                if (sclass != null) {
+                    return new URI(sclass.getUri());
+                }
+            }
         } catch (URISyntaxException e) {
-            throw ArtificerUserException.invalidClassifiedBy(classifiedBy);
-        }
-        Collection<ArtificerOntology> ontologies = getOntologies();
-        for (ArtificerOntology ontology : ontologies) {
-            ArtificerOntologyClass sclass = ontology.findClass(classifiedBy);
-            if (sclass == null) {
-                sclass = ontology.findClass(classifiedUri);
-            }
-            if (sclass != null) {
-                return sclass.getUri();
-            }
+            // fall through
         }
         throw ArtificerUserException.invalidClassifiedBy(classifiedBy);
     }
 
     @Override
     public Collection<URI> normalize(URI classification) throws ArtificerException {
-        List<ArtificerOntology> ontologies = getOntologies();
-        for (ArtificerOntology ontology : ontologies) {
-            ArtificerOntologyClass sclass = ontology.findClass(classification);
-            if (sclass != null) {
-                return sclass.normalize();
+        try {
+            List<ArtificerOntology> ontologies = getOntologies();
+            for (ArtificerOntology ontology : ontologies) {
+                ArtificerOntologyClass sclass = ontology.findClass(classification);
+                if (sclass != null) {
+                    return sclass.normalize();
+                }
             }
+        } catch (URISyntaxException e) {
+            // fall through
         }
         throw ArtificerUserException.invalidClassifiedBy(classification.toString());
     }

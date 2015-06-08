@@ -114,9 +114,9 @@ public class OntologyPersistenceTest extends AbstractNoAuditingPersistenceTest {
     	Assert.assertEquals(0, actualJapan.getChildren().size());
 
     	Set<URI> expectedJapanNormalized = new HashSet<>();
-    	expectedJapanNormalized.add(actualWorld.getUri());
-    	expectedJapanNormalized.add(actualAsia.getUri());
-    	expectedJapanNormalized.add(actualJapan.getUri());
+    	expectedJapanNormalized.add(new URI(actualWorld.getUri()));
+    	expectedJapanNormalized.add(new URI(actualAsia.getUri()));
+    	expectedJapanNormalized.add(new URI(actualJapan.getUri()));
     	Assert.assertEquals(expectedJapanNormalized, actualJapan.normalize());
     }
 

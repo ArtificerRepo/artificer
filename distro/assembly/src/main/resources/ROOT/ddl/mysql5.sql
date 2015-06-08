@@ -76,11 +76,11 @@
         base varchar(255),
         comment longtext,
         createdBy varchar(255),
-        createdOn datetime,
+        createdOn date,
         id varchar(255),
         label varchar(255),
         lastModifiedBy varchar(255),
-        lastModifiedOn datetime,
+        lastModifiedOn date,
         uuid char(36),
         primary key (surrogateId)
     );
@@ -90,7 +90,7 @@
         comment longtext,
         id varchar(255),
         label varchar(255),
-        uri tinyblob,
+        uri varchar(255),
         parent_surrogateId bigint,
         root_surrogateId bigint,
         primary key (surrogateId)

@@ -22,10 +22,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -139,6 +140,13 @@ public class ArtificerOntology implements Serializable {
 		return rootClasses;
 	}
 
+	/**
+	 * @param rootClasses the rootClasses to set
+	 */
+	public void setRootClasses(List<ArtificerOntologyClass> rootClasses) {
+		this.rootClasses = rootClasses;
+	}
+
 	@Transient
 	public List<ArtificerOntologyClass> getAllClasses() {
 		List<ArtificerOntologyClass> allClasses = new ArrayList<ArtificerOntologyClass>();
@@ -159,13 +167,6 @@ public class ArtificerOntology implements Serializable {
 	}
 
 	/**
-	 * @param rootClasses the rootClasses to set
-	 */
-	public void setRootClasses(List<ArtificerOntologyClass> rootClasses) {
-		this.rootClasses = rootClasses;
-	}
-
-	/**
 	 * Creates a new class within this ontology.
 	 * @param id
 	 */
@@ -173,11 +174,7 @@ public class ArtificerOntology implements Serializable {
 		ArtificerOntologyClass c = new ArtificerOntologyClass();
 		c.setId(id);
 		String uri = this.getBase() + "#" + id; //$NON-NLS-1$
-		try {
-			c.setUri(new URI(uri));
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
+		c.setUri(uri);
 		return c;
 	}
 
@@ -242,6 +239,7 @@ public class ArtificerOntology implements Serializable {
 	/**
 	 * @return the createdOn
 	 */
+	@Temporal(TemporalType.DATE)
 	public Date getCreatedOn() {
 		return createdOn;
 	}
@@ -270,6 +268,7 @@ public class ArtificerOntology implements Serializable {
 	/**
 	 * @return the lastModifiedOn
 	 */
+	@Temporal(TemporalType.DATE)
 	public Date getLastModifiedOn() {
 		return lastModifiedOn;
 	}

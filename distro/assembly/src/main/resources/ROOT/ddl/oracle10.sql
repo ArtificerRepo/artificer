@@ -76,11 +76,11 @@
         base varchar2(255 char),
         comment clob,
         createdBy varchar2(255 char),
-        createdOn timestamp,
+        createdOn date,
         id varchar2(255 char),
         label varchar2(255 char),
         lastModifiedBy varchar2(255 char),
-        lastModifiedOn timestamp,
+        lastModifiedOn date,
         uuid char(36),
         primary key (surrogateId)
     );
@@ -90,7 +90,7 @@
         comment clob,
         id varchar2(255 char),
         label varchar2(255 char),
-        uri raw(255),
+        uri varchar2(255 char),
         parent_surrogateId number(19,0),
         root_surrogateId number(19,0),
         primary key (surrogateId)
