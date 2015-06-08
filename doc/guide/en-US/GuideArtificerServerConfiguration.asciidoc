@@ -41,11 +41,10 @@ hibernate.connection.password = sa
 ...
 ----
 
-Note that a datasource is *not* required (although recommended).  Plain JDBC connections, including external instances,
-are also supported (use `hibernate.connection.url`).  However,
-we strongly recommend using an adequate connection pool (HikariCP, C3P0, Proxool, etc.).  Without this, since Artificer does not
-configure one out of the box, you'd effectively be using the Hibernate-provided connection pool (not recommended for
-production environments).
+Note that a datasource is *not* required, although we typically recommend them.  Plain JDBC connection URLs, including
+external instances, are also fully supported (use `hibernate.connection.url`, `hibernate.connection.username`,
+and `hibernate.connection.password`).  If a connection URL is used, Artificer will automatically wrap it with
+HikariCP, a lightweight and extremely performant connection pool library.
 
 Also note that Artificer ships with JDBC drivers for H2, MySQL, and Postgres.  With proper values in artificer.properties,
 these databases should simply work out-of-the-box.  However, due to licensing, we cannot include the drivers for

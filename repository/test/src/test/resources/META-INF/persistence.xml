@@ -24,9 +24,16 @@
       <!--<property name="hibernate.show_sql" value="true"/>-->
       <property name="hibernate.format_sql" value="true"/>
 
-      <!-- Don't allow WF/EAP to manage the persistence unit - vital since we're dynamically setting most of the
-      properties *after* WF/EAP has started! -->
-      <property name="jboss.as.jpa.managed" value="false"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+      <property name="hibernate.connection.url" value="jdbc:h2:mem:dbHibernateTest;DB_CLOSE_DELAY=-1;MVCC=true"/>
+      <property name="hibernate.connection.username" value="sa"/>
+      <property name="hibernate.cache.use_second_level_cache" value="false"/>
+      <property name="hibernate.cache.use_query_cache" value="false"/>
+
+      <property name="hibernate.search.default.directory_provider" value="ram"/>
+
+      <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
     </properties>
   </persistence-unit>
 </persistence>

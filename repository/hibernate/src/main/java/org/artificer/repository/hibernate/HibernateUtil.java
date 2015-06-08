@@ -15,6 +15,8 @@
  */
 package org.artificer.repository.hibernate;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.error.ArtificerNotFoundException;
@@ -29,7 +31,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import java.io.PrintWriter;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author Brett Meyer.
@@ -88,6 +92,36 @@ public class HibernateUtil {
         if (entityManagerFactory == null) {
             // Pass in all hibernate.* settings from artificer.properties
             Map<String, Object> properties = ArtificerConfig.getConfigProperties("hibernate");
+
+            // If a connection is used, we *cannot* rely on Hibernate's built-in connection pool.  Instead,
+            // automatically set up HikariCP.
+            if (properties.containsKey("hibernate.connection.url")) {
+                String connectionUrl = (String) properties.remove("hibernate.connection.url");
+                String username = (String) properties.remove("hibernate.connection.username");
+                String password = (String) properties.remove("hibernate.connection.password");
+
+                HikariConfig hikariConfig = new HikariConfig();
+                hikariConfig.setJdbcUrl(connectionUrl);
+                hikariConfig.setUsername(username);
+                hikariConfig.setPassword(password);
+
+                // In case we're using MySQL, these settings are recommended by HikariCP:
+                hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
+                hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
+                hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+                hikariConfig.addDataSourceProperty("useServerPrepStmts", "true");
+
+                String dialect = (String) properties.get("hibernate.dialect");
+                if (dialect != null && dialect.contains("PostgreSQL")) {
+                    // The JDBC jar verion in the IP BOM does not support Connection.isValid(), so need to use this:
+                    hikariConfig.setConnectionTestQuery("SELECT 1");
+                }
+
+                HikariDataSource hikariDataSource = new HikariDataSource(hikariConfig);
+
+                properties.put("hibernate.connection.datasource", hikariDataSource);
+            }
+
             entityManagerFactory = new HibernatePersistence().createEntityManagerFactory(persistenceUnit, properties);
         }
         return entityManagerFactory.createEntityManager();

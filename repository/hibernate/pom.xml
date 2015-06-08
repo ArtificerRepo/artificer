@@ -73,6 +73,10 @@
       <artifactId>javassist</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP-java6</artifactId>
+    </dependency>
 
     <!-- Hibernate Search -->
     <dependency>
