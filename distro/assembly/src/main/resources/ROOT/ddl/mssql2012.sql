@@ -76,11 +76,11 @@
         base varchar(255),
         comment varchar(MAX),
         createdBy varchar(255),
-        createdOn datetime2,
+        createdOn date,
         id varchar(255),
         label varchar(255),
         lastModifiedBy varchar(255),
-        lastModifiedOn datetime2,
+        lastModifiedOn date,
         uuid char(36),
         primary key (surrogateId)
     );
@@ -90,7 +90,7 @@
         comment varchar(MAX),
         id varchar(255),
         label varchar(255),
-        uri varbinary(255),
+        uri varchar(255),
         parent_surrogateId bigint,
         root_surrogateId bigint,
         primary key (surrogateId)

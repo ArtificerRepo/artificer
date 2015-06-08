@@ -45,7 +45,7 @@ public class ClassificationPersistenceTest extends AbstractNoAuditingPersistence
         Document document = new Document();
         document.setName(artifactFileName);
         document.setArtifactType(BaseArtifactEnum.DOCUMENT);
-        document.getClassifiedBy().add(ontology.findClass("China").getUri().toString());
+        document.getClassifiedBy().add(ontology.findClass("China").getUri());
 
         BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, contentStream));
         Assert.assertNotNull(artifact);

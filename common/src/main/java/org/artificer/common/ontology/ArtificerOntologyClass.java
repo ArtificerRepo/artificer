@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ArtificerOntologyClass implements Serializable {
     private String id;
     private String label;
     private String comment;
-    private URI uri;
+    private String uri;
     private ArtificerOntology root;
     private ArtificerOntologyClass parent;
     private List<ArtificerOntologyClass> children = new ArrayList<ArtificerOntologyClass>();
@@ -44,6 +45,7 @@ public class ArtificerOntologyClass implements Serializable {
         this.surrogateId = surrogateId;
     }
 
+    // Note: Cannot be @Id!  Not guaranteed to be set by clients.
     public String getId() {
         return id;
     }
@@ -78,7 +80,7 @@ public class ArtificerOntologyClass implements Serializable {
      * @param uri
      */
     public ArtificerOntologyClass findClass(URI uri) {
-        if (this.uri.equals(uri)) {
+        if (this.uri.equals(uri.toString())) {
             return this;
         } else {
             for (ArtificerOntologyClass c : this.children) {
@@ -158,14 +160,14 @@ public class ArtificerOntologyClass implements Serializable {
     /**
      * @return the uri
      */
-    public URI getUri() {
+    public String getUri() {
         return uri;
     }
 
     /**
      * @param uri the uri to set
      */
-    public void setUri(URI uri) {
+    public void setUri(String uri) {
         this.uri = uri;
     }
 
@@ -173,11 +175,11 @@ public class ArtificerOntologyClass implements Serializable {
      * Normalize the hierarchy into a list of ArtificerOntologyClasses.  The returned list of
      * ArtificerOntologyClasses will contain this class and all ancestors.
      */
-    public Set<URI> normalize() {
-        Set<URI> uris = new HashSet<URI>();
+    public Set<URI> normalize() throws URISyntaxException {
+        Set<URI> uris = new HashSet<>();
         ArtificerOntologyClass current = this;
         while (current != null) {
-            uris.add(current.getUri());
+            uris.add(new URI(current.getUri()));
             current = current.getParent();
         }
         return uris;

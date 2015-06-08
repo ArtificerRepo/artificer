@@ -23,7 +23,6 @@ import org.w3._1999._02._22_rdf_syntax_ns_.RDF;
 import org.w3._2002._07.owl_.Ontology;
 
 import javax.xml.namespace.QName;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +84,7 @@ public class RdfToOntologyMapper {
 			oclass.setLabel(rdfClass.getLabel());
 			oclass.setComment(rdfClass.getComment());
 			String uri = base + "#" + rdfClass.getID(); //$NON-NLS-1$
-			oclass.setUri(new URI(uri));
+			oclass.setUri(uri);
 			Object[] classData = new Object[] {
 					oclass, rdfClass.getSubClassOf() != null ? rdfClass.getSubClassOf().getResource() : null
 			};

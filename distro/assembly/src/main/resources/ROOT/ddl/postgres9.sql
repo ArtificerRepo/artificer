@@ -76,11 +76,11 @@
         base varchar(255),
         comment text,
         createdBy varchar(255),
-        createdOn timestamp,
+        createdOn date,
         id varchar(255),
         label varchar(255),
         lastModifiedBy varchar(255),
-        lastModifiedOn timestamp,
+        lastModifiedOn date,
         uuid char(36),
         primary key (surrogateId)
     );
@@ -90,7 +90,7 @@
         comment text,
         id varchar(255),
         label varchar(255),
-        uri bytea,
+        uri varchar(255),
         parent_surrogateId int8,
         root_surrogateId int8,
         primary key (surrogateId)

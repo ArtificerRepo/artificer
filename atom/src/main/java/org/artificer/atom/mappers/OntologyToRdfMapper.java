@@ -57,7 +57,7 @@ public class OntologyToRdfMapper {
 			rdfClass.setComment(oclass.getComment());
 			if (oclass.getParent() != null) {
 				SubClassOf subclass = new SubClassOf();
-				subclass.setResource(oclass.getParent().getUri().toString());
+				subclass.setResource(oclass.getParent().getUri());
 				rdfClass.setSubClassOf(subclass);
 			}
 			rdf.getClazz().add(rdfClass);
