@@ -4,11 +4,18 @@ Artificer Server Configuration
 Out-of-the-box, Artificer provides a useful, default server configuration.  However, if you'd like to mold it into an
 existing setup, here are a few areas that can be modified.
 
+Running the Server and Web UI Separately
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Artificer server and web UI are purposefully separated into two WARs, allowing you to run each on separate app
+servers.  If you do so, you'll need to update the "artificer-ui.atom-api.endpoint" property in
+`artificer-ui.properties`.  By default, it assumes co-location and "localhost".
+
 Remote Connections
 ~~~~~~~~~~~~~~~~~~
 
 If you'd like to allow remote, non-localhost connections to Artificer, you'll need to change two items in
-standalone-full.xml:
+`standalone-full.xml`:
 
 * In <interface name="public">, change the inet-address from "127.0.0.1" to "0.0.0.0".
 * In the Keycloak subsystem, change the "auth-server-url" from "localhost" to your IP.
@@ -17,7 +24,7 @@ Hibernate
 ~~~~~~~~~
 
 Out of the box, we provide a fairly standard set of Hibernate configuration defaults.  However, for power users, note
-that *any* Hibernate property may be set, either in artificer.properties, environment variables, or System properties.
+that *any* Hibernate property may be set, either in `artificer.properties`, environment variables, or System properties.
 More specifically, literally *any* property prefixed by 'hibernate.' will be handed to Hibernate during Artificer
 startup.  More specifics are below:
 
@@ -29,7 +36,7 @@ MySQL, Oracle, SQL Server, DB2/IBM, and H2.
 
 By default, Artificer installs a simple, file-based H2 datasource
 (see `$JBOSS_HOME/standalone/deployments/artificer-h2-ds.xml`).  However, any other Wildfly/EAP datasource can be used.
-Just edit the following in artificer.properties:
+Just edit the following in `artificer.properties`:
 
 ----
 ...
