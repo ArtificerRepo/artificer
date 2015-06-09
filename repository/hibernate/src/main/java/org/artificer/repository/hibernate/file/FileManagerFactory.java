@@ -16,7 +16,7 @@
 package org.artificer.repository.hibernate.file;
 
 import org.artificer.common.ArtificerConfig;
-import org.artificer.repository.hibernate.HibernateArtificerConstants;
+import org.artificer.common.ArtificerConstants;
 
 /**
  * @author Brett Meyer.
@@ -27,11 +27,14 @@ public class FileManagerFactory {
 
     public static FileManager getInstance() {
         if (instance == null) {
-            if (ArtificerConfig.containsKey(HibernateArtificerConstants.ARTIFICER_HIBERNATE_FILESYSTEM_STORAGE_PATH)) {
-                instance = new FilesystemFileManager(
-                        ArtificerConfig.getConfigProperty(HibernateArtificerConstants.ARTIFICER_HIBERNATE_FILESYSTEM_STORAGE_PATH, ""));
-            } else {
-                instance = new BlobFileManager();
+            String storage = ArtificerConfig.getConfigProperty(ArtificerConstants.ARTIFICER_FILE_STORAGE, "blob");
+            switch (storage) {
+                case "filesystem":
+                    instance = new FilesystemFileManager(
+                            ArtificerConfig.getConfigProperty(ArtificerConstants.ARTIFICER_FILE_STORAGE_FILESYSTEM_PATH, ""));
+                    break;
+                default:
+                    instance = new BlobFileManager();
             }
         }
         return instance;

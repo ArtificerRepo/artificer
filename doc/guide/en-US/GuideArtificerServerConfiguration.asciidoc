@@ -55,8 +55,13 @@ File Content
 ~~~~~~~~~~~~
 
 Artificer supports storing artifacts' file content on the filesystem or in JDBC Blobs.  By default, we use the Blob
-approach.  However, this is configurable at runtime.  See the 'artificer.hibernate.filesystem.storage.path' property
-in artificer.properties.  If a filesystem path is provided, all content will be stored there.  Otherwise, we assume Blobs.
+approach.  However, this is configurable at runtime.  See the 'artificer.file.storage' property in artificer.properties
+(values: 'blob' or 'filesystem').  If you use the filesystem, also include a path with the
+'artificer.file.storage.filesystem.path' property -- all content will be stored there.
+
+Although JDBC Blobs are the default (purely because they're convenient), most databases have fairly restrictive size
+limits.  Even more importantly, there are many vertical and horizontal performance considerations when dealing with
+larger files.  For most use cases, we'd actually recommend using the filesystem.
 
 Advanced Hibernate Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

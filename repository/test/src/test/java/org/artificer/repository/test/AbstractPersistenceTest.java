@@ -25,7 +25,6 @@ import org.artificer.repository.PersistenceManager;
 import org.artificer.repository.QueryManager;
 import org.artificer.repository.RepositoryProvider;
 import org.artificer.repository.RepositoryProviderFactory;
-import org.artificer.repository.hibernate.HibernateArtificerConstants;
 import org.artificer.repository.hibernate.HibernateAuditManager;
 import org.artificer.repository.hibernate.HibernatePersistenceManager;
 import org.artificer.repository.hibernate.HibernateQueryManager;
@@ -96,6 +95,7 @@ public abstract class AbstractPersistenceTest {
                 queryManager = new HibernateQueryManager();
                 auditManager = new HibernateAuditManager();
 
+                extraProperties.put(ArtificerConstants.ARTIFICER_FILE_STORAGE, "blob");
                 repositoryTestProvider = new HibernateRepositoryTestProvider(extraProperties);
 
                 break;
@@ -104,7 +104,8 @@ public abstract class AbstractPersistenceTest {
                 queryManager = new HibernateQueryManager();
                 auditManager = new HibernateAuditManager();
 
-                extraProperties.put(HibernateArtificerConstants.ARTIFICER_HIBERNATE_FILESYSTEM_STORAGE_PATH,
+                extraProperties.put(ArtificerConstants.ARTIFICER_FILE_STORAGE, "filesystem");
+                extraProperties.put(ArtificerConstants.ARTIFICER_FILE_STORAGE_FILESYSTEM_PATH,
                         "target/test/artificer-data");
                 repositoryTestProvider = new HibernateRepositoryTestProvider(extraProperties);
 
