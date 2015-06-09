@@ -291,32 +291,6 @@ public class ArtifactResource extends AbstractResource {
 		}
 	}
 
-	/**
-	 * S-RAMP atom PUT to upload a new version of the artifact into the repository.
-	 *
-	 * @param model
-	 * @param type
-	 * @param uuid
-	 * @param is
-	 * @throws org.artificer.atom.err.ArtificerAtomException
-	 */
-	@PUT
-	@Path("{model}/{type}/{uuid}/media")
-	public void updateContent(@HeaderParam("Slug") String fileName, @PathParam("model") String model,
-	        @PathParam("type") String type, @PathParam("uuid") String uuid, InputStream is)
-	        throws ArtificerServerException {
-		try {
-            artifactService.updateContent(model, type, uuid, fileName, is);
-		} catch (ArtificerServerException e) {
-            // Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
-            // HTTP response type.
-            throw e;
-        } catch (Exception e) {
-			logError(logger, Messages.i18n.format("ERROR_UPDATING_CONTENT", uuid), e); //$NON-NLS-1$
-			throw new ArtificerAtomException(e);
-		}
-	}
-
     @POST
     @Path("{model}/{type}/{uuid}/comment")
     @Consumes(MediaType.TEXT_PLAIN)
@@ -461,29 +435,5 @@ public class ArtifactResource extends AbstractResource {
             throw new ArtificerAtomException(e);
         }
     }
-
-	/**
-	 * S-RAMP atom DELETE to delete the artifact's content from the repository.
-	 *
-	 * @param model
-	 * @param type
-	 * @param uuid
-	 * @throws org.artificer.atom.err.ArtificerAtomException
-	 */
-	@DELETE
-	@Path("{model}/{type}/{uuid}/media")
-	public void deleteContent(@PathParam("model") String model, @PathParam("type") String type,
-			@PathParam("uuid") String uuid) throws ArtificerServerException {
-		try {
-            artifactService.deleteContent(model, type, uuid);
-		} catch (ArtificerServerException e) {
-			// Simply re-throw.  Don't allow the following catch it -- ArtificerServerException is mapped to a unique
-			// HTTP response type.
-			throw e;
-		} catch (Exception e) {
-			logError(logger, Messages.i18n.format("ERROR_DELETING_ARTY_CONTENT", uuid), e); //$NON-NLS-1$
-			throw new ArtificerAtomException(e);
-		}
-	}
 
 }

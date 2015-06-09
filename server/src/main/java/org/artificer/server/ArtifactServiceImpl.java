@@ -270,54 +270,6 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
     }
 
     @Override
-    public void updateContent(String model, String type, String uuid, String fileName, InputStream is)
-            throws Exception {
-        ArtifactType artifactType = ArtifactType.valueOf(model, type, null);
-        updateContent(artifactType, uuid, fileName, is);
-    }
-
-    @Override
-    public void updateContent(ArtifactType artifactType, String uuid,
-            String fileName, InputStream is) throws Exception {
-        if (artifactType.isDerived()) {
-            throw ArtificerUserException.derivedArtifactCreate(artifactType.getArtifactType());
-        }
-
-        ArtifactContent content = new ArtifactContent(fileName, is);
-
-        // Important to do this *after* creating ArtifactContent.  Tika does not clone the InputStream!
-        String mimeType = MimeTypes.determineMimeType(fileName, is, artifactType);
-        artifactType.setMimeType(mimeType);
-
-        // TODO we need to update the S-RAMP metadata too (new updateDate, size, etc)?
-
-        PersistenceManager persistenceManager = persistenceManager();
-        BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);
-        if (oldArtifact == null) {
-            throw ArtificerNotFoundException.artifactNotFound(uuid);
-        }
-
-        BaseArtifactType updatedArtifact = persistenceManager.updateArtifactContent(uuid, artifactType, content);
-
-        Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
-        for (EventProducer eventProducer : eventProducers) {
-            eventProducer.artifactUpdated(updatedArtifact, oldArtifact);
-        }
-    }
-
-    @Override
-    public void updateContent(String model, String type, String uuid, String fileName, byte[] contentBytes)
-            throws Exception {
-        updateContent(model, type, uuid, fileName, new ByteArrayInputStream(contentBytes));
-    }
-
-    @Override
-    public void updateContent(ArtifactType artifactType, String uuid,
-            String fileName, byte[] contentBytes) throws Exception {
-        updateContent(artifactType, uuid, fileName, new ByteArrayInputStream(contentBytes));
-    }
-
-    @Override
     public BaseArtifactType addComment(ArtifactType artifactType, String uuid, String text) throws Exception {
         return persistenceManager().addComment(uuid, artifactType, text);
     }
@@ -422,34 +374,6 @@ public class ArtifactServiceImpl extends AbstractServiceImpl implements Artifact
         Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
         for (EventProducer eventProducer : eventProducers) {
             eventProducer.artifactDeleted(artifact);
-        }
-    }
-
-    @Override
-    public void deleteContent(String model, String type, String uuid) throws Exception {
-        ArtifactType artifactType = ArtifactType.valueOf(model, type, null);
-        deleteContent(artifactType, uuid);
-    }
-
-    @Override
-    public void deleteContent(ArtifactType artifactType, String uuid) throws Exception {
-        if (artifactType.isDerived()) {
-            throw ArtificerUserException.derivedArtifactDelete(artifactType.getArtifactType());
-        }
-
-        PersistenceManager persistenceManager = persistenceManager();
-
-        BaseArtifactType oldArtifact = persistenceManager.getArtifact(uuid, artifactType);
-        if (oldArtifact == null) {
-            throw ArtificerNotFoundException.artifactNotFound(uuid);
-        }
-
-        // Delete the artifact content
-        BaseArtifactType updatedArtifact = persistenceManager.deleteArtifactContent(uuid, artifactType);
-
-        Set<EventProducer> eventProducers = EventProducerFactory.getEventProducers();
-        for (EventProducer eventProducer : eventProducers) {
-            eventProducer.artifactUpdated(updatedArtifact, oldArtifact);
         }
     }
 }

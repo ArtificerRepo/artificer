@@ -404,20 +404,18 @@ public class MavenFacadeServlet extends HttpServlet {
      */
     private void uploadArtifact(final MavenGavInfo gavInfo, HttpServletRequest req) throws Exception {
         BaseArtifactType artifact = findExistingArtifactByGAV(gavInfo);
+        ArtifactType artifactType = getArtifactType(gavInfo, req);
         // If we found an artifact, we should update its content.  If not, we should upload
         // the artifact to the repository.
         if (artifact != null) {
             if (gavInfo.isSnapshot()) {
-                artifactService.updateContent(ArtifactType.valueOf(artifact), artifact.getUuid(),
-                        gavInfo.getName(), req.getInputStream());
+                artifactService.delete(artifactType, artifact.getUuid());
+                artifact = artifactService.upload(artifactType, gavInfo.getName(), req.getInputStream());
                 updateGavProperties(gavInfo, artifact);
             } else {
                 throw new MavenRepositoryException(Messages.i18n.format("MAVEN_UPLOAD_ARTIFACT_EXISTS"));
             }
         } else {
-            ArtifactType artifactType = getArtifactType(gavInfo, req);
-            // Upload the content, then add the maven properties to the artifact
-            // as meta-data
             artifact = artifactService.upload(artifactType, gavInfo.getName(), req.getInputStream());
             updateGavProperties(gavInfo, artifact);
         }
