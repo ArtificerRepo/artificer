@@ -471,20 +471,26 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
     @Override
     public void visit(PrimaryExpr node) {
         if (node.getLiteral() != null) {
-            if (propertyContext != null && propertyContext.contains("lastActionTime")) {
-                Date date = null;
-                try {
-                    date = SDF.parse(node.getLiteral());
-                } catch (ParseException e) {
-                    error = new QueryExecutionException(e);
+            // If this is a custom property, we must assume that the value will always be a literal String.  If
+            // it's a built-in property, correctly handle booleans and timestamps.
+            if (customPropertySubquery == null) {
+                if (propertyContext != null && propertyContext.contains("lastActionTime")) {
+                    Date date = null;
+                    try {
+                        date = SDF.parse(node.getLiteral());
+                    } catch (ParseException e) {
+                        error = new QueryExecutionException(e);
+                    }
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    valueContext = calendar;
+                } else if ("true".equalsIgnoreCase(node.getLiteral())) {
+                    valueContext = true;
+                } else if ("false".equalsIgnoreCase(node.getLiteral())) {
+                    valueContext = false;
+                } else {
+                    valueContext = node.getLiteral();
                 }
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                valueContext = calendar;
-            } else if ("true".equalsIgnoreCase(node.getLiteral())) {
-                valueContext = true;
-            } else if ("false".equalsIgnoreCase(node.getLiteral())) {
-                valueContext = false;
             } else {
                 valueContext = node.getLiteral();
             }
