@@ -8,11 +8,14 @@ All individuals, teams, and organizations tend to have a tangled mess of "stuff"
 information, logical metadata, and physical files.  Those "artifacts" are almost never isolated in nature.  They're all
 connected and inter-dependent, but the relationships can be difficult to understand.
 
-In the software development world, this is an especially important problem to solve.  Dictionary.com defines "artifact"
-as "any object made by human beings, especially with a view to *subsequent use*".  That's key!  The development process
+In the software development world, this is an especially important problem to solve.  The development process
 often spews out a huge amount of artifacts, needed for future analysis and actions.  Without the ability to
 analyze how the information, artifacts, and content within the artifacts are connected, development
-processes become difficult, at best, or nearly impossible, at worst.  Both the publisher and the consumer need help!
+processes become difficult, at best, or nearly impossible, at worst.  Further, it's not enough to simply know how the
+bits are related.  How do you correlate the artifacts/metadata with, for example, service endpoints,
+the responsible teams/individuals, and change histories?
+
+Both the publisher and the consumer need help!
 
 
 Overview
@@ -55,7 +58,7 @@ provides.  The bottom line is that Artificer is *not* "just another software rep
 ** Type declarations in XSDs
 ** Messages/ports/endpoints in WSDLs
 ** Many others
-** Automatically detects content type
+* Automatically detects content type
 * Powerful query language
 * Many interfaces & integrations
 ** REST/Atom
@@ -68,6 +71,7 @@ provides.  The bottom line is that Artificer is *not* "just another software rep
 ** Others under evaluation
 * Hierarchical classifiers/ontologies
 * Powerful & rich built-in/modeled metadata and relationships
+* Logical information models (services, organizations, etc.)
 * Ad-hoc metadata and relationships
 * Model does not have to be defined at compile time -- can be completely ad-hoc
 * Full-blown auditing of historical changes
@@ -88,7 +92,9 @@ ____
 Two of the developers on the project currently participate in the Technical Committee, one of which is the co-chair.
 
 It's important to note that Artificer is not simply an S-RAMP implementation!  The capabilities extend well beyond
-what's required by the spec.
+what's required by the spec.  Further, although historically Artificer was 100% compliant with the spec, we've
+recently begun to break compliance where necessary.  In our opinion, flexibility, extension, and well-thought-out
+rules trump spec compliancy, at least in this unique case.
 
 
 Core Properties
