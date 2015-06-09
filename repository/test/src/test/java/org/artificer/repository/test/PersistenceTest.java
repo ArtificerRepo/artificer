@@ -243,37 +243,6 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
     }
 
     /**
-     * Tests that we can update the content of an s-ramp artifact.
-     * @throws Exception
-     */
-    @Test
-    public void testUpdateContent() throws Exception {
-    	// First, add an artifact to the repo
-        String artifactFileName = "PO.xsd";
-        InputStream POXsd = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName);
-        Document document = new Document();
-        document.setName(artifactFileName);
-        document.setArtifactType(BaseArtifactEnum.XSD_DOCUMENT);
-        BaseArtifactType artifact = persistenceManager.persistArtifact(document, new ArtifactContent(artifactFileName, POXsd));
-        Assert.assertNotNull(artifact);
-        log.info("persisted PO.xsd, returned artifact uuid=" + artifact.getUuid());
-        Assert.assertEquals(XsdDocument.class, artifact.getClass());
-        long size = ((DocumentArtifactType) artifact).getContentSize();
-        assertTrue(size >= 2376L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
-        Assert.assertEquals(artifactFileName, artifact.getName());
-
-        // Now update the artifact content
-        InputStream otherXsd = this.getClass().getResourceAsStream("/sample-files/xsd/XMLSchema.xsd");
-        persistenceManager.updateArtifactContent(artifact.getUuid(), ArtifactType.XsdDocument(), new ArtifactContent("XMLSchema.xsd", otherXsd));
-
-        // Now verify the content was updated
-        artifact = persistenceManager.getArtifact(artifact.getUuid(), ArtifactType.XsdDocument());
-        size = ((DocumentArtifactType) artifact).getContentSize();
-        // TODO: Fails for Hibernate, but updateContent will be removed.
-//        assertTrue(size >= 87677L); // Not doing an equals here due to the vagaries of Windows vs *nix line endings
-    }
-
-    /**
      * Tests that we can manage s-ramp properties.
      * @throws Exception
      */

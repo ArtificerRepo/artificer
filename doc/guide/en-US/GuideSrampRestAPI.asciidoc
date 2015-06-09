@@ -25,7 +25,6 @@ The following table lists the endpoints available in the Artificer implementatio
 |GET /s-ramp/servicedocument                 |xref:api-get-service-document[Get Service Document]
 |POST /s-ramp/\{model}/\{type}               |xref:api-publish-artifact[Publish Artifact]
 |PUT /s-ramp/\{model}/\{type}/\{uuid}        |xref:api-update-artifact[Update Artifact]
-|PUT /s-ramp/\{model}/\{type}/\{uuid}/media  |xref:api-update-artifact-content[Update Artifact Content]
 |GET /s-ramp/\{model}/\{type}/\{uuid}        |xref:api-get-artifact[Get Artifact]
 |GET /s-ramp/\{model}/\{type}/\{uuid}/media  |xref:api-get-artifact-content[Get Artifact Content]
 |DELETE /s-ramp/\{model}/\{type}/\{uuid}     |xref:api-delete-artifact[Delete Artifact]
@@ -406,32 +405,6 @@ PUT /s-ramp/core/Document/098da465-2eae-49b7-8857-eb447f03ac02 HTTP/1.1
     </s-ramp:Document>
   </s-ramp:artifact>
 </atom:entry>
-----
-
-
-[[api-update-artifact-content]]
-API: Update Artifact Content
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-----
-  /s-ramp/{model}/{type}/{uuid}/media
-----
-Updates an artifact's content.
-
-[width="50%",options="header"]
-|=============================
-|#HTTP Method# |#Request#      |#Response#
-|PUT           |Binary Content |N/A
-|=============================
-
-This endpoint is used to update a single artifact's content, regardless if the artifact is
-a text document or some sort of binary.  The body of the request should be the new binary
-content of the artifact.
-
-'Example Request'
-----
-PUT /s-ramp/core/Document/0f6f9b6b-9952-4059-ab70-7ee3442ddcf0/media HTTP/1.1
-
-Some file content goes here.
 ----
 
 

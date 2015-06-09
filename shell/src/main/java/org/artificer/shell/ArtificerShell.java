@@ -31,7 +31,6 @@ import org.artificer.shell.core.ClassificationCommand;
 import org.artificer.shell.core.ConnectCommand;
 import org.artificer.shell.core.CreateArtifactCommand;
 import org.artificer.shell.core.DeleteCommand;
-import org.artificer.shell.core.DeleteContentCommand;
 import org.artificer.shell.core.DisconnectCommand;
 import org.artificer.shell.core.GetContentCommand;
 import org.artificer.shell.core.GetMetaDataCommand;
@@ -40,7 +39,6 @@ import org.artificer.shell.core.QueryCommand;
 import org.artificer.shell.core.RefreshMetaDataCommand;
 import org.artificer.shell.core.ShowMetaDataCommand;
 import org.artificer.shell.core.StatusCommand;
-import org.artificer.shell.core.UpdateContentCommand;
 import org.artificer.shell.core.UpdateMetaDataCommand;
 import org.artificer.shell.core.UploadArtifactCommand;
 import org.artificer.shell.maven.DeployCommand;
@@ -141,7 +139,6 @@ public class ArtificerShell {
                 .command(ConnectCommand.class)
                 .command(CreateArtifactCommand.class)
                 .command(DeleteCommand.class)
-                .command(DeleteContentCommand.class)
                 .command(DisconnectCommand.class)
                 .command(GetContentCommand.class)
                 .command(GetMetaDataCommand.class)
@@ -150,7 +147,6 @@ public class ArtificerShell {
                 .command(RefreshMetaDataCommand.class)
                 .command(ShowMetaDataCommand.class)
                 .command(StatusCommand.class)
-                .command(UpdateContentCommand.class)
                 .command(UpdateMetaDataCommand.class)
                 .command(UploadArtifactCommand.class)
                 // artificer groups

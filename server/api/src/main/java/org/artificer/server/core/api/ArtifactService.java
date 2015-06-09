@@ -113,39 +113,6 @@ public interface ArtifactService extends AbstractService {
 
     public void updateMetaData(BaseArtifactType updatedArtifact) throws Exception;
 
-    public void updateContent(String model, String type, String uuid, String fileName, InputStream is)
-            throws Exception;
-
-    public void updateContent(ArtifactType artifactType, String uuid,
-            String fileName, InputStream is) throws Exception;
-
-    /**
-     * Update the given artifact content.  This byte[] version exists primarily for EJB clients, where the non-Serializable
-     * InputStreams/Files cannot be sent.
-     *
-     * @param model
-     * @param type
-     * @param uuid
-     * @param fileName
-     * @param contentBytes
-     * @throws Exception
-     */
-    public void updateContent(String model, String type, String uuid, String fileName, byte[] contentBytes)
-            throws Exception;
-
-    /**
-     * Update the given artifact content.  This byte[] version exists primarily for EJB clients, where the non-Serializable
-     * InputStreams/Files cannot be sent.
-     *
-     * @param artifactType
-     * @param uuid
-     * @param fileName
-     * @param contentBytes
-     * @throws Exception
-     */
-    public void updateContent(ArtifactType artifactType, String uuid,
-            String fileName, byte[] contentBytes) throws Exception;
-
     public BaseArtifactType addComment(ArtifactType artifactType, String uuid, String text) throws Exception;
 
     public BaseArtifactType getMetaData(String model, String type, String uuid) throws Exception;
@@ -171,8 +138,4 @@ public interface ArtifactService extends AbstractService {
     public void delete(ArtifactType artifactType, String uuid) throws Exception;
 
     public void delete(ArtifactType artifactType, String uuid, boolean force) throws Exception;
-
-    public void deleteContent(String model, String type, String uuid) throws Exception;
-
-    public void deleteContent(ArtifactType artifactType, String uuid) throws Exception;
 }
