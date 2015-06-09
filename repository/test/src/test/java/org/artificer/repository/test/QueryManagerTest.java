@@ -174,6 +174,37 @@ public class QueryManagerTest extends AbstractNoAuditingPersistenceTest {
 
     }
 
+
+    @Test
+    public void testCustomPropertyBooleanValue() throws Exception {
+        // Ensure that the repo can handle custom properties with boolean values.
+
+        BaseArtifactType artifact = createXmlDocument("PO.xml", 1);
+        ArtificerModelUtils.setCustomProperty(artifact, "prop1", "true");
+        persistenceManager.updateArtifact(artifact, ArtifactType.XmlDocument());
+
+        persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XmlDocument());
+        ArtificerQuery query = queryManager.createQuery("/s-ramp/core/XmlDocument[@prop1 = ?]");
+        query.setString("true");
+        ArtifactSet artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(1, artifactSet.size());
+
+        persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XmlDocument());
+        query = queryManager.createQuery("/s-ramp/core/XmlDocument[@prop1 = ?]");
+        query.setString("false");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(0, artifactSet.size());
+
+        persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.XmlDocument());
+        query = queryManager.createQuery("/s-ramp/core/XmlDocument[@prop1 = ?]");
+        query.setString("invalid");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(0, artifactSet.size());
+    }
+
     @Test
     public void testFreeTextSearch() throws Exception {
         // First, store 3 artifacts
