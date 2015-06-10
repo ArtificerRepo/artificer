@@ -65,16 +65,73 @@
   </filter-mapping>
 
   <filter>
-    <filter-name>KeycloakBearerTokenFilter</filter-name>
-    <filter-class>org.artificer.ui.server.filters.KeycloakBearerTokenFilter</filter-class>
+    <filter-name>AuthenticationFilter</filter-name>
+    <filter-class>org.overlord.commons.auth.filters.SamlSPFilter</filter-class>
+    <init-param>
+      <param-name>ROLES</param-name>
+      <param-value>overlorduser</param-value>
+    </init-param>
   </filter>
   <filter-mapping>
-    <filter-name>KeycloakBearerTokenFilter</filter-name>
-    <url-pattern>/app/services/*</url-pattern>
+    <filter-name>AuthenticationFilter</filter-name>
+    <url-pattern>*.html</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>PicketLinkAuthWrapperFilter</filter-name>
+    <filter-class>org.overlord.commons.auth.filters.PicketLinkAuthWrapperFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>PicketLinkAuthWrapperFilter</filter-name>
+    <url-pattern>*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>PostAuthenticationRedirectFilter</filter-name>
+    <filter-class>org.overlord.commons.gwt.server.filters.PostAuthenticationRedirectFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>PostAuthenticationRedirectFilter</filter-name>
+    <url-pattern>*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>HttpRequestThreadLocalFilter</filter-name>
+    <filter-class>org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HttpRequestThreadLocalFilter</filter-name>
+    <url-pattern>*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>BusAuthFilter</filter-name>
+    <filter-class>org.overlord.commons.gwt.server.filters.BusAuthenticationFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>BusAuthFilter</filter-name>
+    <url-pattern>/app/services/artifactDownload</url-pattern>
   </filter-mapping>
   <filter-mapping>
-    <filter-name>KeycloakBearerTokenFilter</filter-name>
+    <filter-name>BusAuthFilter</filter-name>
+    <url-pattern>/app/services/ontologyDownload</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>BusAuthFilter</filter-name>
     <url-pattern>/rest/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>UploadAuthFilter</filter-name>
+    <filter-class>org.overlord.commons.gwt.server.filters.UploadAuthenticationFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>UploadAuthFilter</filter-name>
+    <url-pattern>/app/services/artifactUpload</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>UploadAuthFilter</filter-name>
+    <url-pattern>/app/services/ontologyUpload</url-pattern>
   </filter-mapping>
 
   <servlet>
@@ -121,42 +178,5 @@
     <servlet-name>OntologyDownload</servlet-name>
     <url-pattern>/app/services/ontologyDownload</url-pattern>
   </servlet-mapping>
-
-  <servlet>
-    <servlet-name>KeyCloakLogout</servlet-name>
-    <servlet-class>org.artificer.ui.server.servlets.KeyCloakLogoutServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>KeyCloakLogout</servlet-name>
-    <url-pattern>/app/services/logout</url-pattern>
-  </servlet-mapping>
-
-  <!-- Security -->
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>artificer-ui</web-resource-name>
-      <url-pattern>/index.html</url-pattern>
-    </web-resource-collection>
-    <web-resource-collection>
-      <web-resource-name>artificer-rest</web-resource-name>
-      <url-pattern>/rest/*</url-pattern>
-    </web-resource-collection>
-    <web-resource-collection>
-      <web-resource-name>artificer-app</web-resource-name>
-      <url-pattern>/app/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>user</role-name>
-    </auth-constraint>
-  </security-constraint>
-
-  <login-config>
-    <auth-method>BASIC</auth-method>
-    <realm-name>artificer</realm-name>
-  </login-config>
-
-  <security-role>
-    <role-name>user</role-name>
-  </security-role>
 
 </web-app>

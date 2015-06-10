@@ -36,6 +36,13 @@ public class ArtificerUIConfig {
     public static final String ARTIFICER_API_AUTH_PROVIDER = "artificer-ui.atom-api.authentication.provider"; //$NON-NLS-1$
     public static final String ARTIFICER_API_BASIC_AUTH_USER = "artificer-ui.atom-api.authentication.basic.user"; //$NON-NLS-1$
     public static final String ARTIFICER_API_BASIC_AUTH_PASS = "artificer-ui.atom-api.authentication.basic.password"; //$NON-NLS-1$
+    public static final String ARTIFICER_API_SAML_AUTH_ISSUER = "artificer-ui.atom-api.authentication.saml.issuer"; //$NON-NLS-1$
+    public static final String ARTIFICER_API_SAML_AUTH_SERVICE = "artificer-ui.atom-api.authentication.saml.service"; //$NON-NLS-1$
+    public static final String ARTIFICER_API_SAML_AUTH_SIGN_ASSERTIONS = "artificer-ui.atom-api.authentication.saml.sign-assertions"; //$NON-NLS-1$
+    public static final String ARTIFICER_API_SAML_AUTH_KEYSTORE = "artificer-ui.atom-api.authentication.saml.keystore"; //$NON-NLS-1$
+    public static final String ARTIFICER_API_SAML_AUTH_KEYSTORE_PASSWORD = "artificer-ui.atom-api.authentication.saml.keystore-password"; //$NON-NLS-1$
+    public static final String ARTIFICER_API_SAML_AUTH_KEY_ALIAS = "artificer-ui.atom-api.authentication.saml.key-alias"; //$NON-NLS-1$
+    public static final String ARTIFICER_API_SAML_AUTH_KEY_PASSWORD = "artificer-ui.atom-api.authentication.saml.key-password"; //$NON-NLS-1$
 
     public static Configuration config;
     static {

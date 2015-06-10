@@ -14,6 +14,8 @@
   <property name="s-ramp-distro.libdir" location="${s-ramp-distro.rootdir}/lib" />
   <property name="s-ramp-distro.overlord-commons-ant.jar" location="${s-ramp-distro.bindir}/overlord-commons-ant-${version.org.overlord.overlord-commons}.jar" />
   <property name="s-ramp-distro.s-ramp-installer.jar" location="${s-ramp-distro.bindir}/artificer-installer-${project.version}.jar" />
+  <property name="s-ramp-distro.overlord-commons-installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${version.org.overlord.overlord-commons}.jar" />
+  <property name="s-ramp-distro.overlord-commons-codec.jar" location="${s-ramp-distro.bindir}/overlord-commons-codec-${version.org.overlord.overlord-commons}.jar" />
 
   <!-- Install Artificer -->
   <target name="install">
@@ -81,8 +83,6 @@
       <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
       <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/artificer-server-wildfly8-${s-ramp.version}.war" />
       <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/artificer-ui-wildfly8-${s-ramp.version}.war" />
-      <property name="s-ramp.keycloak.path" location="${s-ramp-distro.bindir}/keycloak-war-dist-all-${version.org.keycloak}" />
-      <property name="s-ramp.keycloak.adapter" location="${s-ramp-distro.bindir}/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" />
     </ant>
   </target>
 
@@ -122,8 +122,10 @@
       <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
       <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/artificer-server-eap6-${s-ramp.version}.war" />
       <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/artificer-ui-eap6-${s-ramp.version}.war" />
-      <property name="s-ramp.keycloak.path" location="${s-ramp-distro.bindir}/keycloak-war-dist-all-${version.org.keycloak}" />
-      <property name="s-ramp.keycloak.adapter" location="${s-ramp-distro.bindir}/keycloak-eap6-adapter-dist-${version.org.keycloak}.zip" />
+      <property name="s-ramp.overlord-commons.installer.jar" location="${s-ramp-distro.bindir}/overlord-commons-installer-${version.org.overlord.overlord-commons}.jar" />
+      <property name="overlord-commons.idp.file" value="${s-ramp-distro.bindir}/overlord-commons-idp-eap6-${version.org.overlord.overlord-commons}.war" />
+      <property name="overlord-commons.eap-dist.file" value="${s-ramp-distro.bindir}/overlord-commons-dist-eap6-${version.org.overlord.overlord-commons}.zip" />
+      <property name="overlord-commons.auth.jboss7.file" location="${s-ramp-distro.bindir}/overlord-commons-auth-jboss7-${version.org.overlord.overlord-commons}.jar" />
     </ant>
   </target>
   

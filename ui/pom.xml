@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.artificer</groupId>
     <artifactId>artificer</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.Beta1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>artificer-ui</artifactId>
@@ -87,8 +87,20 @@
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-gwt</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+    </dependency>
 
     <!-- Third Party Dependencies -->
+    <dependency>
+      <groupId>org.picketbox</groupId>
+      <artifactId>picketbox</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.picketlink</groupId>
+      <artifactId>picketlink-federation</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
@@ -119,11 +131,6 @@
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-core</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

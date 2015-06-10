@@ -24,12 +24,26 @@
     </moduleSet>
   </moduleSets>
   <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+      <includes>
+        <include>commons-codec:commons-codec:jar</include>
+      </includes>
+      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useTransitiveFiltering>false</useTransitiveFiltering>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </dependencySet>
   	<!-- Overlord Commons components -->
     <dependencySet>
       <outputDirectory>bin</outputDirectory>
       <includes>    
         <include>org.overlord:overlord-commons-*:war</include>
         <include>org.overlord:overlord-commons-*:jar</include>
+        <include>org.overlord:overlord-commons-dist-eap6:zip</include>
       </includes>
       <outputFileNameMapping>${artifact.artifactId}-${version.org.overlord.overlord-commons}.${artifact.extension}</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
@@ -99,40 +113,6 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </dependencySet>
-    <!-- Keycloak Modules -->
-    <dependencySet>
-      <outputDirectory>bin</outputDirectory>
-      <includes>
-        <include>org.keycloak:keycloak-war-dist-all:zip</include>
-      </includes>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-      <unpack>true</unpack>
-      <unpackOptions>
-        <includes>
-          <include>**/configuration/**</include>
-          <include>**/deployments/**</include>
-        </includes>
-      </unpackOptions>
-    </dependencySet>
-    <dependencySet>
-      <outputDirectory>bin</outputDirectory>
-      <includes>
-        <include>org.keycloak:keycloak-eap6-adapter-dist:zip</include>
-        <include>org.keycloak:keycloak-wildfly-adapter-dist:zip</include>
-      </includes>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useProjectAttachments>false</useProjectAttachments>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <useTransitiveFiltering>false</useTransitiveFiltering>
-      <directoryMode>0755</directoryMode>
-      <fileMode>0755</fileMode>
-      <unpack>false</unpack>
-    </dependencySet>
     <!-- The Artificer demos -->
     <dependencySet>
       <outputDirectory>demos</outputDirectory>
@@ -171,6 +151,8 @@
       <includes>
         <include>org.apache.ant:ant:jar</include>
         <include>org.apache.ant:ant-launcher:jar</include>
+        <include>commons-lang:commons-lang:jar</include>
+        <include>org.picketbox:picketbox:jar</include>
       </includes>
       <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>

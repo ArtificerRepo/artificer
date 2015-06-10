@@ -27,12 +27,11 @@ import org.artificer.server.atom.services.ArtificerApplication;
 import org.artificer.server.filters.MavenRepositoryAuthFilter;
 import org.artificer.server.mvn.services.MavenFacadeServlet;
 import org.artificer.ui.client.shared.beans.ArtifactSummaryBean;
-import org.artificer.ui.server.api.KeycloakBearerTokenAuthenticationProvider;
+import org.artificer.ui.server.api.SAMLBearerTokenAuthenticationProvider;
 import org.artificer.ui.server.filters.LocaleFilter;
 import org.artificer.ui.server.servlets.ArtifactCreateServlet;
 import org.artificer.ui.server.servlets.ArtifactDownloadServlet;
 import org.artificer.ui.server.servlets.ArtifactUploadServlet;
-import org.artificer.ui.server.servlets.KeyCloakLogoutServlet;
 import org.artificer.ui.server.servlets.OntologyDownloadServlet;
 import org.artificer.ui.server.servlets.OntologyUploadServlet;
 import org.eclipse.jetty.security.ConstraintMapping;
@@ -48,6 +47,8 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Credential;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
+import org.overlord.commons.auth.filters.HttpRequestThreadLocalFilter;
+import org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter;
 import org.overlord.commons.dev.server.DevServerEnvironment;
 import org.overlord.commons.dev.server.ErraiDevServer;
 import org.overlord.commons.dev.server.MultiDefaultServlet;
@@ -110,7 +111,10 @@ public class ArtificerDevServer extends ErraiDevServer {
         System.setProperty("hibernate.search.default.directory_provider", "ram");
 
         // Authentication provider
-        System.setProperty("artificer-ui.atom-api.authentication.provider", KeycloakBearerTokenAuthenticationProvider.class.getName());
+        System.setProperty("artificer-ui.atom-api.authentication.provider", SAMLBearerTokenAuthenticationProvider.class.getName());
+        System.setProperty("artificer-ui.atom-api.authentication.saml.issuer", "/artificer-ui");
+        System.setProperty("artificer-ui.atom-api.authentication.saml.service", "/artificer-server");
+        System.setProperty("artificer-ui.atom-api.authentication.saml.sign-assertions", "false");
 
         // Don't do any resource caching!
         System.setProperty("overlord.resource-caching.disabled", "true");
@@ -151,6 +155,7 @@ public class ArtificerDevServer extends ErraiDevServer {
         artificerUI.setContextPath("/artificer-ui");
         artificerUI.setWelcomeFiles(new String[]{"index.html"});
         artificerUI.setResourceBase(environment.getModuleDir("artificer-ui").getCanonicalPath());
+        artificerUI.addFilter(HttpRequestThreadLocalFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
         artificerUI.addFilter(GWTCacheControlFilter.class, "/app/*", EnumSet.of(DispatcherType.REQUEST));
         artificerUI.addFilter(GWTCacheControlFilter.class, "/rest/*", EnumSet.of(DispatcherType.REQUEST));
         artificerUI.addFilter(GWTCacheControlFilter.class, "/", EnumSet.of(DispatcherType.REQUEST));
@@ -166,7 +171,6 @@ public class ArtificerDevServer extends ErraiDevServer {
         artificerUI.addServlet(new ServletHolder(ArtifactDownloadServlet.class), "/app/services/artifactDownload");
         artificerUI.addServlet(new ServletHolder(OntologyUploadServlet.class), "/app/services/ontologyUpload");
         artificerUI.addServlet(new ServletHolder(OntologyDownloadServlet.class), "/app/services/ontologyDownload");
-        artificerUI.addServlet(new ServletHolder(KeyCloakLogoutServlet.class), "/app/services/logout");
         ServletHolder resteasyUIServlet = new ServletHolder(new HttpServletDispatcher());
         resteasyUIServlet.setInitParameter("javax.ws.rs.Application", JettyArtificerApplication.class.getName());
         resteasyUIServlet.setInitParameter("resteasy.servlet.mapping.prefix", "/rest");
@@ -199,9 +203,7 @@ public class ArtificerDevServer extends ErraiDevServer {
         artificerServer.addServlet(mvnServlet, "/maven/repository");
         // TODO enable JSP support to test the repository listing
 
-        artificerServer.addFilter(BasicAuthFilter.class, "/s-ramp/*", EnumSet.of(DispatcherType.REQUEST))
-                .setInitParameter("allowedIssuers", "/artificer-ui,/dtgov,/dtgov-ui");
-        artificerServer.addFilter(BasicAuthFilter.class, "/artificer/*", EnumSet.of(DispatcherType.REQUEST))
+        artificerServer.addFilter(SamlBearerTokenAuthFilter.class, "/artificer/*", EnumSet.of(DispatcherType.REQUEST))
                 .setInitParameter("allowedIssuers", "/artificer-ui,/dtgov,/dtgov-ui");
         artificerServer.addFilter(MavenRepositoryAuthFilter.class, "/maven/repository/*", EnumSet.of(DispatcherType.REQUEST))
                 .setInitParameter("allowedIssuers", "/artificer-ui,/dtgov,/dtgov-ui");
@@ -219,7 +221,7 @@ public class ArtificerDevServer extends ErraiDevServer {
     private SecurityHandler createSecurityHandler(boolean forUI) {
         Constraint constraint = new Constraint();
         constraint.setName(Constraint.__BASIC_AUTH);
-        constraint.setRoles(new String[]{"user"});
+        constraint.setRoles(new String[]{"overlorduser"});
         constraint.setAuthenticate(true);
 
         ConstraintMapping cm = new ConstraintMapping();
@@ -229,7 +231,7 @@ public class ArtificerDevServer extends ErraiDevServer {
         ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
         csh.setSessionRenewedOnAuthentication(false);
         csh.setAuthenticator(new BasicAuthenticator());
-        csh.setRealmName("artificer");
+        csh.setRealmName("overlord");
         if (forUI) {
             csh.addConstraintMapping(cm);
         }
@@ -242,7 +244,7 @@ public class ArtificerDevServer extends ErraiDevServer {
                 Subject subject = new Subject();
                 subject.getPrincipals().add(userPrincipal);
                 subject.getPrivateCredentials().add(credential);
-                String[] roles = new String[] { "user","readonly","readwrite","admin" };
+                String[] roles = new String[] { "overlorduser", "admin.sramp" };
                 for (String role : roles) {
                     subject.getPrincipals().add(new RolePrincipal(role));
                 }

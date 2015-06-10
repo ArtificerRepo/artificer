@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.artificer</groupId>
     <artifactId>artificer</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.Beta1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -16,6 +16,38 @@
     <dependency>
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-installer</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth-jboss7</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp-eap6</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-dist-eap6</artifactId>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-codec</artifactId>
     </dependency>
     
     <!-- Artificer -->
@@ -43,254 +75,28 @@
 
   <profiles>
     <!-- ***************************************** -->
-    <!-- Profile to *test* installing into Wildfly 8 -->
-    <!-- ***************************************** -->
-    <profile>
-      <id>test-install-wildfly8</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-war-dist-all</artifactId>
-          <type>zip</type>
-          <exclusions>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-as7-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-example-themes-dist</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-wildfly-adapter-dist</artifactId>
-          <type>zip</type>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <dependencies>
-              <dependency>
-                <groupId>ant</groupId>
-                <artifactId>ant-trax</artifactId>
-                <version>1.6.5</version>
-              </dependency>
-              <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>2.7.1</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>install-wildfly8</id>
-                <phase>install</phase>
-                <configuration>
-                  <tasks>
-                    <property name="appserver.id" value="jboss-wildfly-8" />
-                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/wildfly-8.2.0.Final" />
-
-                    <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
-
-                    <!-- Artificer WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-wildfly8.war.path}" />
-                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.artificer.artificer-ui-wildfly8.war.path}" />
-
-                    <property file="build.properties" />
-                    <property name="s-ramp.appserver.zip" value="${basedir}/wildfly-8.2.0.Final.zip" />
-                    <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
-                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
-                      <include name="*.sh" />
-                    </chmod>
-
-                    <!-- The commons ant jar location -->
-                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-
-                    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-                    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-                    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-wildfly-adapter-dist.zip.path}" />
-
-                    <!-- Call the installer -->
-                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
-                      <target name="install" />
-                    </ant>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- ***************************************** -->
-    <!-- Profile to *test* installing into EAP 6.3 -->
-    <!-- ***************************************** -->
-    <profile>
-      <id>test-install-eap63</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-war-dist-all</artifactId>
-          <type>zip</type>
-          <exclusions>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-as7-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-example-themes-dist</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-eap6-adapter-dist</artifactId>
-          <type>zip</type>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <dependencies>
-              <dependency>
-                <groupId>ant</groupId>
-                <artifactId>ant-trax</artifactId>
-                <version>1.6.5</version>
-              </dependency>
-              <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>2.7.1</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <id>install-eap63</id>
-                <phase>install</phase>
-                <configuration>
-                  <tasks>
-                    <property name="appserver.id" value="jboss-eap-6" />
-                    <property name="s-ramp.install.dir" value="${project.build.directory}" />
-                    <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.3" />
-
-                    <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
-
-                    <!-- Artificer WARs -->
-                    <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
-                    <property name="s-ramp.s-ramp-ui.war.path" value="${maven.dependency.org.artificer.artificer-ui-eap6.war.path}" />
-
-                    <property file="build.properties" />
-                    <property name="s-ramp.appserver.zip" value="${basedir}/jboss-eap-6.3.0.zip" />
-                    <unzip src="${s-ramp.appserver.zip}" dest="${s-ramp.install.dir}" overwrite="false" />
-                    <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
-                      <include name="*.sh" />
-                    </chmod>
-
-                    <!-- The commons ant jar location -->
-                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-
-                    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-                    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-                    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
-
-                    <!-- Call the installer -->
-                    <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
-                      <target name="install" />
-                    </ant>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- ***************************************** -->
     <!-- Profile to *test* installing into EAP 6.4 -->
     <!-- ***************************************** -->
     <profile>
       <id>test-install-eap64</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-war-dist-all</artifactId>
-          <type>zip</type>
-          <exclusions>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-as7-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.keycloak</groupId>
-              <artifactId>keycloak-example-themes-dist</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-eap6-adapter-dist</artifactId>
-          <type>zip</type>
-        </dependency>
-      </dependencies>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
             <dependencies>
+              <!-- Needed by CreateKeystore in overlord-commons-ant -->
+              <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${version.commons-lang}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.picketbox</groupId>
+                <artifactId>picketbox</artifactId>
+                <version>${version.org.picketbox}</version>
+              </dependency>
+
               <dependency>
                 <groupId>ant</groupId>
                 <artifactId>ant-trax</artifactId>
@@ -314,6 +120,10 @@
 
                     <!-- Overlord Commons Installer and Dependencies -->
                     <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
+                    <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
+                    <property name="overlord-commons.eap-dist.file" value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
+                    <property name="overlord-commons.auth.jboss7.file" value="${maven.dependency.org.overlord.overlord-commons-auth-jboss7.jar.path}" />
 
                     <!-- Artificer WARs -->
                     <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
@@ -328,10 +138,6 @@
 
                     <!-- The commons ant jar location -->
                     <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
-
-                    <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
-                    <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
-                    <property name="s-ramp.keycloak.adapter" location="${maven.dependency.org.keycloak.keycloak-eap6-adapter-dist.zip.path}" />
 
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">

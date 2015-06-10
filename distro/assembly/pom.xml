@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.artificer</groupId>
     <artifactId>artificer-distro</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.Beta1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>artificer-distro-assembly</artifactId>
@@ -16,6 +16,30 @@
       <groupId>org.overlord</groupId>
       <artifactId>overlord-commons-ant</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-installer</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-dist-eap6</artifactId>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-auth-jboss7</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-idp-eap6</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-codec</artifactId>
+    </dependency>
+
     <!-- Artificer Installer -->
     <dependency>
       <groupId>org.artificer</groupId>
@@ -132,43 +156,9 @@
       <classifier>javadoc</classifier>
     </dependency>
 
-    <!-- Keycloak -->
     <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-war-dist-all</artifactId>
-      <type>zip</type>
-      <exclusions>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-as7-adapter-dist</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-jetty81-adapter-dist</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-jetty91-adapter-dist</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-jetty92-adapter-dist</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.keycloak</groupId>
-          <artifactId>keycloak-example-themes-dist</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-wildfly-adapter-dist</artifactId>
-      <type>zip</type>
-    </dependency>
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-eap6-adapter-dist</artifactId>
-      <type>zip</type>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
     </dependency>
 
     <!-- ant -->
@@ -179,6 +169,15 @@
     <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant-launcher</artifactId>
+    </dependency>
+    <!-- Needed by CreateKeystore in overlord-commons-ant -->
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.picketbox</groupId>
+      <artifactId>picketbox</artifactId>
     </dependency>
   </dependencies>
 
@@ -245,6 +244,8 @@
                 <phase>install</phase>
                 <configuration>
                   <tasks>
+                    <property name="overlord-commons.idp.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
+                    <property name="overlord-commons.auth.download.url" value="file:///${maven.dependency.org.overlord.overlord-commons-auth.jar.path}" />
                     <ant dir="${basedir}/src/main/resources/ROOT" antfile="${basedir}/src/main/resources/ROOT/build.xml">
                       <target name="install" />
                     </ant>

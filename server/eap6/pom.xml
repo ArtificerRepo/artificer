@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.artificer</groupId>
     <artifactId>artificer</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.Beta1</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <artifactId>artificer-server-eap6</artifactId>
@@ -43,6 +43,7 @@
               <groupId>${project.groupId}</groupId>
               <artifactId>artificer-server</artifactId>
               <excludes>
+                <exclude>WEB-INF/lib/commons-codec-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-collections-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-configuration-*.jar</exclude>
                 <exclude>WEB-INF/lib/commons-io-*.jar</exclude>

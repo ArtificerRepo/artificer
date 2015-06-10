@@ -16,75 +16,23 @@
 
 package org.artificer.devsvr;
 
-import org.artificer.common.ArtificerConfig;
+import org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter;
+import org.overlord.commons.auth.filters.SimplePrincipal;
 
-import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
-import java.security.Principal;
-import java.util.HashSet;
-import java.util.Set;
 
-public class BasicAuthFilter implements Filter {
+public class BasicAuthFilter extends SamlBearerTokenAuthFilter {
 
     @Override
-    public void init(FilterConfig config) throws ServletException {
-    }
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
-        SimplePrincipal principal = new SimplePrincipal(ArtificerConfig.getMavenReadOnlyUsername());
-        principal.addRole("artificer");
-        chain.doFilter(wrapRequest(request, principal), response);
-    }
-
-    private HttpServletRequest wrapRequest(final ServletRequest request, final SimplePrincipal principal) {
-        HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper((HttpServletRequest) request) {
-            @Override
-            public Principal getUserPrincipal() {
-                return principal;
-            }
-            @Override
-            public String getRemoteUser() {
-                return principal.getName();
-            }
-            /**
-             * @see javax.servlet.http.HttpServletRequestWrapper#isUserInRole(java.lang.String)
-             */
-            @Override
-            public boolean isUserInRole(String role) {
-                return principal.getRoles().contains(role);
-            }
-        };
-        return wrapper;
-    }
-
-    @Override
-    public void destroy() {
-    }
-
-    // TODO: Duplicates MavenRepositoryAuthFilter
-    private static class SimplePrincipal implements Principal {
-        private String username;
-        private Set<String> roles = new HashSet();
-
-        public SimplePrincipal(String username) {
-            this.username = username;
+    protected SimplePrincipal doBasicLogin(String username, String password, HttpServletRequest request)
+    throws IOException {
+        if (!username.equals(password)) {
+            return null;
         }
-
-        public String getName() {
-            return this.username;
-        }
-
-        public void addRole(String role) {
-            this.roles.add(role);
-        }
-
-        public Set<String> getRoles() {
-            return this.roles;
-        }
+        SimplePrincipal principal = new SimplePrincipal(username);
+        principal.addRole("overlorduser");
+        principal.addRole("admin.sramp");
+        return principal;
     }
-
 }

@@ -49,6 +49,27 @@
   </filter-mapping>
 
   <filter>
+    <filter-name>AuthFilter</filter-name>
+    <filter-class>org.overlord.commons.auth.filters.SamlBearerTokenAuthFilter</filter-class>
+    <init-param>
+      <param-name>allowedIssuers</param-name>
+      <param-value>/artificer-ui,/dtgov,/dtgov-ui</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>AuthFilter</filter-name>
+    <servlet-name>Resteasy</servlet-name>
+  </filter-mapping>
+  <filter>
+    <filter-name>MavenAuthFilter</filter-name>
+    <filter-class>org.artificer.server.filters.MavenRepositoryAuthFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>MavenAuthFilter</filter-name>
+    <servlet-name>MavenRepository</servlet-name>
+  </filter-mapping>
+
+  <filter>
     <filter-name>ServletCredentials</filter-name>
     <filter-class>org.artificer.repository.filter.ServletCredentialsFilter</filter-class>
   </filter>
@@ -67,18 +88,11 @@
       <web-resource-name>artificer-server</web-resource-name>
       <url-pattern>/*</url-pattern>
     </web-resource-collection>
-    <auth-constraint>
-      <role-name>user</role-name>
-    </auth-constraint>
   </security-constraint>
 
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>artificer</realm-name>
+    <realm-name>Overlord</realm-name>
   </login-config>
-
-  <security-role>
-    <role-name>user</role-name>
-  </security-role>
   
 </web-app>

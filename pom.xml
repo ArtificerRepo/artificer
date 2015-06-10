@@ -10,7 +10,7 @@
 
   <groupId>org.artificer</groupId>
   <artifactId>artificer</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0.Beta1</version>
   <packaging>pom</packaging>
 
   <name>Artificer</name>
@@ -105,10 +105,11 @@
     <version.org.eclipse.jetty>8.1.9.v20130131</version.org.eclipse.jetty>
     <version.org.jboss.errai>3.1.2.Final</version.org.jboss.errai>
     <version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>2.1.19.Final</version.org.jboss.spec.javax.faces.jboss-jsf-api_2.1_spec>
-    <version.org.overlord.overlord-commons>3.1.0-SNAPSHOT</version.org.overlord.overlord-commons>
+    <version.org.overlord.overlord-commons>2.0.14.Final</version.org.overlord.overlord-commons>
     <version.org.switchyard>2.0.0.Alpha1</version.org.switchyard>
-    <version.org.keycloak>1.1.0.Final</version.org.keycloak>
     <version.org.jboss.aesh>0.59</version.org.jboss.aesh>
+    <version.org.picketbox>4.0.19.SP4</version.org.picketbox>
+    <version.org.picketlink>2.5.3.SP4</version.org.picketlink>
 
     <!-- BOM Overrides -->
     <version.org.jboss.as>7.4.0.Final-redhat-19</version.org.jboss.as>
@@ -528,6 +529,45 @@
         <artifactId>overlord-commons-dev</artifactId>
         <version>${version.org.overlord.overlord-commons}</version>
       </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-auth</artifactId>
+        <version>${version.org.overlord.overlord-commons}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-auth-jboss7</artifactId>
+        <version>${version.org.overlord.overlord-commons}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-dist-eap6</artifactId>
+        <version>${version.org.overlord.overlord-commons}</version>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-installer</artifactId>
+        <version>${version.org.overlord.overlord-commons}</version>
+        <type>jar</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-idp-eap6</artifactId>
+        <version>${version.org.overlord.overlord-commons}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-idp</artifactId>
+        <version>${version.org.overlord.overlord-commons}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.overlord</groupId>
+        <artifactId>overlord-commons-codec</artifactId>
+        <version>${version.org.overlord.overlord-commons}</version>
+      </dependency>
 
       <!-- Apache Commons -->
       <dependency>
@@ -633,31 +673,6 @@
         <version>1.2</version>
       </dependency>
 
-      <!-- KeyCloak -->
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-core</artifactId>
-        <version>${version.org.keycloak}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-war-dist-all</artifactId>
-        <version>${version.org.keycloak}</version>
-        <type>zip</type>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-wildfly-adapter-dist</artifactId>
-        <version>${version.org.keycloak}</version>
-        <type>zip</type>
-      </dependency>
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-eap6-adapter-dist</artifactId>
-        <version>${version.org.keycloak}</version>
-        <type>zip</type>
-      </dependency>
-
       <!-- Third party libraries -->
       <dependency>
         <groupId>com.google.guava</groupId>
@@ -738,6 +753,16 @@
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils-core</artifactId>
         <version>1.8.3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.picketbox</groupId>
+        <artifactId>picketbox</artifactId>
+        <version>${version.org.picketbox}</version>
+        </dependency>
+      <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-federation</artifactId>
+        <version>${version.org.picketlink}</version>
       </dependency>
 
       <!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss AS 7 -->
@@ -857,6 +882,13 @@
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+
+      <!-- Override transitive dependencies - a few are different in the techpreview repo. -->
+      <dependency>
+        <groupId>org.jboss.as</groupId>
+        <artifactId>jboss-as-controller</artifactId>
+        <version>7.5.0.Final-redhat-17</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

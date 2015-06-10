@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.artificer.demos</groupId>
     <artifactId>artificer-demos</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.Beta1</version>
   </parent>
   <artifactId>artificer-demos-simple-client</artifactId>
   <name>Artificer Demos: Simple Client</name>
