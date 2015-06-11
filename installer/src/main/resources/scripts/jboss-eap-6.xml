@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Install Artificer into JBoss EAP 6" default="install">
 
+  <taskdef name="inputPassword" classname="org.overlord.commons.ant.user.JbossGetPassword" classpath="${overlord-commons.ant.jar}"/>
+
   <!-- Configure properties for JBoss EAP 6 -->
   <target name="properties-jboss-eap-6">
     <property name="s-ramp.updates.dir" location="${basedir}/updates" />
@@ -97,9 +99,10 @@
 
   <!-- Unless ejb-jms.password was set externally, prompt for the password -->
   <target name="password-prompt" unless="ejb-jms.password">
-    <input
+    <inputPassword
         message="Please enter a password for the EJB/JMS 'artificer' user: "
-        addproperty="ejb-jms.password"/>
+        confirmationMessage="Please re-enter the password: "
+        addProperty="ejb-jms.password"/>
     <echo message="" />
   </target>
 

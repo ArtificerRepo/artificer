@@ -79,6 +79,12 @@
     <!-- ***************************************** -->
     <profile>
       <id>test-install-eap64</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-ant</artifactId>
+        </dependency>
+      </dependencies>
       <build>
         <plugins>
           <plugin>
@@ -119,7 +125,7 @@
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.4" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
                     <property name="s-ramp.overlord-commons.installer.jar" value="${maven.dependency.org.overlord.overlord-commons-installer.jar.path}" />
                     <property name="overlord-commons.idp.file" value="${maven.dependency.org.overlord.overlord-commons-idp-eap6.war.path}" />
                     <property name="overlord-commons.eap-dist.file" value="${maven.dependency.org.overlord.overlord-commons-dist-eap6.zip.path}" />
@@ -135,9 +141,6 @@
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
                       <include name="*.sh" />
                     </chmod>
-
-                    <!-- The commons ant jar location -->
-                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
 
                     <!-- Call the installer -->
                     <ant dir="${basedir}/src/main/resources" antfile="${basedir}/src/main/resources/build.xml">
