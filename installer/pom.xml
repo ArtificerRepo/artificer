@@ -80,6 +80,10 @@
           <artifactId>keycloak-wildfly-adapter-dist</artifactId>
           <type>zip</type>
         </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-ant</artifactId>
+        </dependency>
       </dependencies>
       <build>
         <plugins>
@@ -109,7 +113,7 @@
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/wildfly-8.2.0.Final" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
 
                     <!-- Artificer WARs -->
                     <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-wildfly8.war.path}" />
@@ -121,9 +125,6 @@
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
                       <include name="*.sh" />
                     </chmod>
-
-                    <!-- The commons ant jar location -->
-                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
 
                     <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
                     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
@@ -182,6 +183,10 @@
           <artifactId>keycloak-eap6-adapter-dist</artifactId>
           <type>zip</type>
         </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-ant</artifactId>
+        </dependency>
       </dependencies>
       <build>
         <plugins>
@@ -211,7 +216,7 @@
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.3" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
 
                     <!-- Artificer WARs -->
                     <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
@@ -223,9 +228,6 @@
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
                       <include name="*.sh" />
                     </chmod>
-
-                    <!-- The commons ant jar location -->
-                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
 
                     <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
                     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
@@ -284,6 +286,10 @@
           <artifactId>keycloak-eap6-adapter-dist</artifactId>
           <type>zip</type>
         </dependency>
+        <dependency>
+          <groupId>org.overlord</groupId>
+          <artifactId>overlord-commons-ant</artifactId>
+        </dependency>
       </dependencies>
       <build>
         <plugins>
@@ -313,7 +319,7 @@
                     <property name="s-ramp.appserver.dir" location="${s-ramp.install.dir}/jboss-eap-6.4" />
 
                     <!-- Overlord Commons Installer and Dependencies -->
-                    <property name="s-ramp-overlord-commons.ant.jar.path" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
+                    <property name="overlord-commons.ant.jar" value="${maven.dependency.org.overlord.overlord-commons-ant.jar.path}"/>
 
                     <!-- Artificer WARs -->
                     <property name="s-ramp.s-ramp-server.war.path" value="${maven.dependency.org.artificer.artificer-server-eap6.war.path}" />
@@ -325,9 +331,6 @@
                     <chmod perm="a+x" dir="${s-ramp.appserver.dir}/bin">
                       <include name="*.sh" />
                     </chmod>
-
-                    <!-- The commons ant jar location -->
-                    <property name="overlord-commons.ant.jar" location="${s-ramp-overlord-commons.ant.jar.path}" />
 
                     <unzip src="${maven.dependency.org.keycloak.keycloak-war-dist-all.zip.path}" dest="${project.build.directory}"/>
                     <property name="s-ramp.keycloak.path" location="${project.build.directory}/keycloak-war-dist-all-${version.org.keycloak}" />
