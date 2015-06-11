@@ -16,7 +16,12 @@
 package org.artificer.repository.test;
 
 import org.apache.commons.io.IOUtils;
+import org.artificer.common.ArtifactContent;
+import org.artificer.common.ArtifactType;
+import org.artificer.common.ArtificerModelUtils;
+import org.artificer.common.ReverseRelationship;
 import org.artificer.repository.query.ArtifactSet;
+import org.artificer.repository.query.ArtificerQuery;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
@@ -24,15 +29,12 @@ import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.Property;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.WsdlDocument;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.XsdDocument;
-import org.artificer.common.ArtifactContent;
-import org.artificer.common.ArtifactType;
-import org.artificer.common.ArtificerModelUtils;
-import org.artificer.repository.query.ArtificerQuery;
 
 import javax.xml.namespace.QName;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -339,6 +341,23 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
         Assert.assertEquals(0, artifactSet.size());
     }
 
+    @Test
+    public void testReverseRelationships() throws Exception {
+        WsdlDocument wsdlDoc = addWsdlDoc();
+        // Get one of the Parts
+        ArtificerQuery query = queryManager.createQuery("/s-ramp/wsdl/Part");
+        ArtifactSet artifactSet = query.executeQuery();
+        BaseArtifactType part = artifactSet.iterator().next();
+
+        // Set one generic relationship, *from* the part
+        ArtificerModelUtils.addGenericRelationship(part, "fooRel", wsdlDoc.getUuid());
+        persistenceManager.updateArtifact(part, ArtifactType.valueOf(part));
+
+        List<ReverseRelationship> reverseRelationships = queryManager.reverseRelationships(wsdlDoc.getUuid());
+        Assert.assertTrue(hasRelationship(reverseRelationships, part.getUuid(), "fooRel"));
+        Assert.assertTrue(hasRelationship(reverseRelationships, part.getUuid(), "relatedDocument"));
+    }
+
 	private WsdlDocument addWsdlDoc() throws Exception {
 		String artifactFileName = "jcr-sample.wsdl";
         InputStream contentStream = this.getClass().getResourceAsStream("/sample-files/wsdl/" + artifactFileName);
@@ -376,5 +395,15 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
         	IOUtils.closeQuietly(contentStream);
         }
 	}
+
+    private boolean hasRelationship(List<ReverseRelationship> reverseRelationships, String sourceUuid, String relType) {
+        for (ReverseRelationship reverseRelationship : reverseRelationships) {
+            if (reverseRelationship.getSourceArtifact().getUuid().equals(sourceUuid)
+                    && reverseRelationship.getRelationshipType().equals(relType)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
