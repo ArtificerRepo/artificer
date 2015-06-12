@@ -1,0 +1,4 @@
+<jboss xmlns="urn:jboss:1.0">
+  <!-- Fix for CDI 1.1 and Weld <= 2.1.  See http://weld.cdi-spec.org/documentation/#4 -->
+  <weld xmlns="urn:jboss:weld:1.0" require-bean-descriptor="true"/>
+</jboss>
