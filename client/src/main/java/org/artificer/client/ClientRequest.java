@@ -65,7 +65,7 @@ public class ClientRequest extends org.jboss.resteasy.client.ClientRequest {
     private static Method uriBuilderMethod = null;
     static {
         // Extremely hacky way of doing this.  However, for now, I want to support both EAP 6 (RESTEasy 2) and
-        // Wildfly (RESTEasy 3).  Rather than introducing a new UriBuilderProvider service, just keep it simple.
+        // WildFly (RESTEasy 3).  Rather than introducing a new UriBuilderProvider service, just keep it simple.
         // Note that I'm naively assuming it will always been one or the other...
         try {
             // RE 3

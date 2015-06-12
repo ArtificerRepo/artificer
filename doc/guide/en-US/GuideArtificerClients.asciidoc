@@ -109,10 +109,10 @@ REST API to get and set auditing information for artifacts in the repository.
 Important Notes
 ^^^^^^^^^^^^^^^
 
-Wildfly and EAP
+WildFly and EAP
 +++++++++++++++
 
-When using the Java client from within a webapp running on Wildfly or EAP, the 'artificer-client' Maven dependency
+When using the Java client from within a webapp running on WildFly or EAP, the 'artificer-client' Maven dependency
 carries transitive dependencies that conflict with modules on the app server.  At this time, the worst known offender
 is 'jaxb-impl' (causes a PropertyException related to RESTEasy's use of 'NamespacePrefixMapper').  It's vital to do the
 following in your webapp's POM.
@@ -248,7 +248,7 @@ artificer.config.events.jms.queues =
 
 Artificer supports two JMS environments:
 
-* When Artificer is installed in Wildfly/EAP by using our installation script, JMS is configured automatically.  The existing
+* When Artificer is installed in WildFly/EAP by using our installation script, JMS is configured automatically.  The existing
 HornetQ configuration is modified to add the default topic, described above, and all necessary credentials.
 Users can add additional topics/queues to their framework, then add them to 'artificer.properties' (see above).
 IMPORTANT: In order for HornetQ to work properly, the standalone-full profile must be used
@@ -260,7 +260,7 @@ Users can add additional topics/queues to their framework, then add them to 'art
 Authorization
 ^^^^^^^^^^^^^
 
-During installation, you were prompted for a password.  This set up a standard Wildfly/EAP *admin* user (including the
+During installation, you were prompted for a password.  This set up a standard WildFly/EAP *admin* user (including the
 *artificer* role used by the HornetQ configuration in standalone*.xml).  These credentials must be used when connecting
 to the JMS topics/queues as a subscriber!
 

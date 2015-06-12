@@ -8,7 +8,7 @@
   </parent>
   <artifactId>artificer-ui-wildfly8</artifactId>
   <packaging>war</packaging>
-  <name>Artificer UI: Web App (Wildfly 8)</name>
+  <name>Artificer UI: Web App (WildFly 8)</name>
   
   <dependencies>
     <!-- The base WAR being extended -->
