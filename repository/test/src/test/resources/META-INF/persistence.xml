@@ -19,21 +19,12 @@
     <exclude-unlisted-classes />
     
     <properties>
+      <!-- A few items that should probably *not* be changed -->
       <property name="hibernate.order_updates" value="true"/>
       <property name="hibernate.connection.autocommit" value="false"/>
-      <!--<property name="hibernate.show_sql" value="true"/>-->
       <property name="hibernate.format_sql" value="true"/>
 
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-      <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
-      <property name="hibernate.connection.url" value="jdbc:h2:mem:dbHibernateTest;DB_CLOSE_DELAY=-1;MVCC=true"/>
-      <property name="hibernate.connection.username" value="sa"/>
-      <property name="hibernate.cache.use_second_level_cache" value="false"/>
-      <property name="hibernate.cache.use_query_cache" value="false"/>
-
-      <property name="hibernate.search.default.directory_provider" value="ram"/>
-
-      <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+      <!-- Note: *Everything* else provided by artificer.properties -->
     </properties>
   </persistence-unit>
 </persistence>

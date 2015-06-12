@@ -39,6 +39,13 @@ public class HibernateRepositoryTestProvider implements RepositoryTestProvider {
     public void before() throws Exception {
         HibernateUtil.setPersistenceUnit("ArtificerTest");
 
+        System.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        System.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
+        System.setProperty("hibernate.connection.url", "jdbc:h2:mem:dbHibernateTest;DB_CLOSE_DELAY=-1;MVCC=true");
+        System.setProperty("hibernate.connection.username", "sa");
+        System.setProperty("hibernate.cache.use_second_level_cache", "false");
+        System.setProperty("hibernate.cache.use_query_cache", "false");
+        System.setProperty("hibernate.search.default.directory_provider", "ram");
         if (extraProperties != null) {
             for (String key : extraProperties.keySet()) {
                 String value = extraProperties.get(key);
