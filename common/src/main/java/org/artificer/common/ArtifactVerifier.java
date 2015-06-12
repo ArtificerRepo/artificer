@@ -590,11 +590,18 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitor {
             }
         }
         for (String relationshipName : relationshipNames) {
-            if (isReserved(relationshipName)) {
-                error = ArtificerConflictException.reservedName(relationshipName);
-            }
-            if (propertyNames.contains(relationshipName)) {
-                error = ArtificerConflictException.duplicateName(relationshipName);
+            // "relatedDocument" is a unique case.  Due to shortcomings in the S-RAMP spec, it's an actual field
+            // on DerivedArtifactType.  But, we also have to use it as a general relationship, since there is no
+            // DerivedExtendedArtifactType (ie, if an extended artifact type is derived, it also needs that field,
+            // but doesn't).
+            // TODO: Fix that!
+            if (!relationshipName.equals("relatedDocument")) {
+                if (isReserved(relationshipName)) {
+                    error = ArtificerConflictException.reservedName(relationshipName);
+                }
+                if (propertyNames.contains(relationshipName)) {
+                    error = ArtificerConflictException.duplicateName(relationshipName);
+                }
             }
         }
     }
