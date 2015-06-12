@@ -43,7 +43,7 @@
 
   <profiles>
     <!-- ***************************************** -->
-    <!-- Profile to *test* installing into Wildfly 8 -->
+    <!-- Profile to *test* installing into WildFly 8 -->
     <!-- ***************************************** -->
     <profile>
       <id>test-install-wildfly8</id>

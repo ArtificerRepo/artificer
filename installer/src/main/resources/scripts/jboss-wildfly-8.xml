@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Install Artificer into Wildfly 8" default="install">
+<project name="Install Artificer into WildFly 8" default="install">
 
   <taskdef name="inputPassword" classname="org.overlord.commons.ant.user.JbossGetPassword" classpath="${overlord-commons.ant.jar}"/>
 
-  <!-- Configure properties for Wildfly 8 -->
+  <!-- Configure properties for WildFly 8 -->
   <target name="properties-jboss-wildfly-8">
     <property name="s-ramp.updates.dir" location="${basedir}/updates" />
   
@@ -21,7 +21,7 @@
   <target name="install" depends="properties-jboss-wildfly-8">
     <echo message=" " />
     <echo message="#############################################" />
-    <echo message="# Installing Artificer into Wildfly 8. #" />
+    <echo message="# Installing Artificer into WildFly 8. #" />
     <echo message="#############################################" />
 
     <echo>----------------------------------</echo>
@@ -62,7 +62,7 @@
   </target>
   
 
-  <!-- Configure Wildfly 8 -->
+  <!-- Configure WildFly 8 -->
   <target name="config-jboss-wildfly-8" depends="password-prompt">
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone.xml" />
     <transformConfig config="${s-ramp.jboss.config.dir}/standalone-full.xml" />
