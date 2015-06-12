@@ -17,21 +17,21 @@ This distribution comes with the following:
     5) src - all of the Artificer source code, in a number of "-sources" JARs.
     6) build.xml - an Ant script that will install and configure Artificer into
        one of:
-       B) JBoss Wildfly 8
+       B) WildFly 8
        B) JBoss EAP 6
 
 == What do I do next? ==
 When installing into JBoss EAP you must first download the appropriate ZIP 
 distribution and unpack to your preferred location.
 
-    Download Wildfly or JBoss EAP:  http://www.jboss.org/jbossas/downloads
+    Download WildFly (http://www.wildfly.org/downloads) or JBoss EAP (http://www.jboss.org/jbossas/downloads)
 
 The installer will ask you a couple of questions and then do everything else 
 for you! From the root of the distribution, simply run:
 
     ant
 
-Once the installation completes, you can start Wildfly/EAP using the standard startup scripts, but make sure to
+Once the installation completes, you can start WildFly/EAP using the standard startup scripts, but make sure to
 use the standalone-full profile.
 
     [JBOSS_HOME]/bin/standalone.sh -c standalone-full.xml
