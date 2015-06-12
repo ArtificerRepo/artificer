@@ -73,6 +73,12 @@
       <artifactId>artificer-integration-switchyard</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.overlord</groupId>
+      <artifactId>overlord-commons-ant</artifactId>
+      <scope>test</scope>
+    </dependency>
     
     <dependency>
       <groupId>javax.jms</groupId>

@@ -101,7 +101,6 @@ public class ArtificerDevServer extends ErraiDevServer {
     @Override
     protected void preConfig() {
         System.setProperty("hibernate.show_sql", "true");
-        System.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         System.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
         System.setProperty("hibernate.connection.url", "jdbc:h2:mem:dbHibernateTest;DB_CLOSE_DELAY=-1;MVCC=true");
         System.setProperty("hibernate.connection.username", "sa");
