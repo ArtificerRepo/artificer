@@ -35,7 +35,7 @@ See the "Getting Started" section for information on Artificer's provided DDL.  
 MySQL, Oracle, SQL Server, DB2/IBM, and H2.
 
 By default, Artificer installs a simple, file-based H2 datasource
-(see `$JBOSS_HOME/standalone/deployments/artificer-h2-ds.xml`).  However, any other Wildfly/EAP datasource can be used.
+(see `$JBOSS_HOME/standalone/deployments/artificer-h2-ds.xml`).  However, any other WildFly/EAP datasource can be used.
 Just edit the following in `artificer.properties`:
 
 ----
@@ -55,7 +55,7 @@ HikariCP, a lightweight and extremely performant connection pool library.
 
 Also note that, due to licensing, we only include the JDBC driver for H2.  For all other supported databases,
 you'll need to ensure that their JDBC driver JAR(s) are available on the classpath,
-typically through a Wildfly/EAP module.
+typically through a WildFly/EAP module.
 
 File Content
 ~~~~~~~~~~~~

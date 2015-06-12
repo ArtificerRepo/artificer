@@ -43,7 +43,7 @@
   </target>
 
   <target name="install-wildfly8">
-    <property name="name" value="Wildfly 8.2" />
+    <property name="name" value="WildFly 8.2" />
     <property name="filename" value="${filename.wildfly8}" />
     <property name="dir" value="${project.build.directory}/${dir.wildfly8}" />
     <property name="download.url" value="${download.url.wildfly8}" />

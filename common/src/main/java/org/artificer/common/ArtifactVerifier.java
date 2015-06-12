@@ -193,7 +193,7 @@ public class ArtifactVerifier extends HierarchicalArtifactVisitor {
     private BaseArtifactType oldArtifact = null;
 
     static {
-        // TODO: This is not working reliably -- works well in EAP, but fails in Wildfly (different module system,
+        // TODO: This is not working reliably -- works well in EAP, but fails in WildFly (different module system,
         // etc.).  For now, just hard-code the classes.
 //        Reflections reflections = new Reflections(new ConfigurationBuilder()
 //                .setScanners(new SubTypesScanner(false))

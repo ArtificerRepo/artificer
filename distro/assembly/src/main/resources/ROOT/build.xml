@@ -25,7 +25,7 @@
     <echo message="#######################################################" />
     <echo message=" " />
     <echo message=" Choose from one of the following options." />
-    <echo message="    1. Install into JBoss Wildfly 8" />
+    <echo message="    1. Install into WildFly 8" />
     <echo message="    2. Install into JBoss EAP 6" />
     <echo message=" " />
     <input message="Choice: " addproperty="s-ramp-distro.choices.platform" />
@@ -48,16 +48,16 @@
     <unzip src="${s-ramp-distro.s-ramp-installer.jar}" dest="${s-ramp-distro.s-ramp-installer.dir}" overwrite="false" />
   </target>
 
-  <!-- Install into Wildfly 8 -->
+  <!-- Install into WildFly 8 -->
   <target name="install-jboss-wildfly-8-wrapper" if="s-ramp-distro.choices.platform.jboss-wildfly-8">
     <echo message=" " />
     <echo message="#######################################################" />
-    <echo message="# Installing Artificer into Wildfly 8 (great choice!).     #" />
+    <echo message="# Installing Artificer into WildFly 8 (great choice!).     #" />
     <echo message="#######################################################" />
     <echo message=" " />
-    <echo message=" Please tell us where Wildfly 8 is located (full path)." />
+    <echo message=" Please tell us where WildFly 8 is located (full path)." />
     <echo message=" " />
-    <input message="Path to Wildfly 8: " addproperty="s-ramp-distro.choices.platform.jboss-wildfly-8.path" />
+    <input message="Path to WildFly 8: " addproperty="s-ramp-distro.choices.platform.jboss-wildfly-8.path" />
 
     <antcall target="install-jboss-wildfly-8" />
   </target>
@@ -66,7 +66,7 @@
     <condition property="s-ramp-distro.choices.platform.jboss-wildfly-8.path.valid">
       <available file="jboss-modules.jar" filepath="${s-ramp-distro.choices.platform.jboss-wildfly-8.path}" />
     </condition>
-    <fail message="Failed to find Wildfly 8 at: ${s-ramp-distro.choices.platform.jboss-wildfly-8.path}"
+    <fail message="Failed to find WildFly 8 at: ${s-ramp-distro.choices.platform.jboss-wildfly-8.path}"
           unless="s-ramp-distro.choices.platform.jboss-wildfly-8.path.valid" />
     <echo message="Installing into: ${s-ramp-distro.choices.platform.jboss-wildfly-8.path} " />
 
