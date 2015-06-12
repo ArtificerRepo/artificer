@@ -70,8 +70,17 @@
       <artifactId>artificer-repository-hibernate</artifactId>
       <exclusions>
         <exclusion>
-          <artifactId>slf4j-api</artifactId>
           <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <!-- Conflicts with version in resteasy-multipart-provider -->
+        <exclusion>
+          <groupId>org.apache.james</groupId>
+          <artifactId>apache-mime4j-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.james</groupId>
+          <artifactId>apache-mime4j-dom</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
