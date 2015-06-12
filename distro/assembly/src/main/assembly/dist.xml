@@ -208,5 +208,16 @@
       <directoryMode>0755</directoryMode>
       <fileMode>0755</fileMode>
     </fileSet>
+    <!-- DDL -->
+    <fileSet>
+      <directory>${basedir}/../../repository/hibernate/src/main/resources/ddl</directory>
+      <outputDirectory>ddl</outputDirectory>
+      <filtered>true</filtered>
+      <includes>
+        <include>*.sql</include>
+      </includes>
+      <directoryMode>0755</directoryMode>
+      <fileMode>0755</fileMode>
+    </fileSet>
   </fileSets>
 </assembly>
