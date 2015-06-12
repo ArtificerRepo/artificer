@@ -4,22 +4,6 @@ Artificer Server Configuration
 Out-of-the-box, Artificer provides a useful, default server configuration.  However, if you'd like to mold it into an
 existing setup, here are a few areas that can be modified.
 
-Running the Server and Web UI Separately
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The Artificer server and web UI are purposefully separated into two WARs, allowing you to run each on separate app
-servers.  If you do so, you'll need to update the "artificer-ui.atom-api.endpoint" property in
-`artificer-ui.properties`.  By default, it assumes co-location and "localhost".
-
-Remote Connections
-~~~~~~~~~~~~~~~~~~
-
-If you'd like to allow remote, non-localhost connections to Artificer, you'll need to change two items in
-`standalone-full.xml`:
-
-* In <interface name="public">, change the inet-address from "127.0.0.1" to "0.0.0.0".
-* In the Keycloak subsystem, change the "auth-server-url" from "localhost" to your IP.
-
 Hibernate
 ~~~~~~~~~
 
@@ -84,6 +68,22 @@ index caching (clusterable, etc.).  This is also disabled by default, but can be
 and including the hibernate-search-infinispan JAR.
 See https://docs.jboss.org/author/display/WFLY8/JPA+Reference+Guide#JPAReferenceGuide-UsingtheInfinispansecondlevelcache
 for more info.
+
+Running the Server and Web UI Separately
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Artificer server and web UI are purposefully separated into two WARs, allowing you to run each on separate app
+servers.  If you do so, you'll need to update the "artificer-ui.atom-api.endpoint" property in
+`artificer-ui.properties`.  By default, it assumes co-location and "localhost".
+
+Remote Connections
+~~~~~~~~~~~~~~~~~~
+
+If you'd like to allow remote, non-localhost connections to Artificer, you'll need to change two items in
+`standalone-full.xml`:
+
+* In <interface name="public">, change the inet-address from "127.0.0.1" to "0.0.0.0".
+* In the Keycloak subsystem, change the "auth-server-url" from "localhost" to your IP.
 
 WARNINGS
 ~~~~~~~~
