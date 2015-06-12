@@ -8,6 +8,7 @@ The Artificer application is written in Java. To get started make sure your syst
 
 * Java JDK 1.7 or newer
 * Maven 3.0.3 or newer to build and run the examples
+* EE application sever: WildFly (http://www.wildfly.org/downloads) or JBoss EAP (http://www.jboss.org/jbossas/downloads)
 
 Download
 ~~~~~~~~
@@ -27,7 +28,7 @@ or
 install.bat
 ....
 
-Alternatively, if you have Apache Ant 1.7 (or later) installed, simply run 'ant install'.
+Alternatively, if you have Apache Ant 1.7 (or later) installed, simply run 'ant'.
 
 The installer will ask you to choose a runtime platform.  Currently the following platforms are supported:
 
