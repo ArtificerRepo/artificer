@@ -55,6 +55,7 @@
                 <packages>org.artificer.shell.api*</packages>
               </group>
             </groups>
+            <additionalparam>-Xdoclint:none</additionalparam>
           </configuration>
         </plugin>
       </plugins>
