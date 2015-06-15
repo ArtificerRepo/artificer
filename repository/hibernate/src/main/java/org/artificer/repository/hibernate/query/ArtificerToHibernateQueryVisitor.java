@@ -485,9 +485,9 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
                     calendar.setTime(date);
                     valueContext = calendar;
                 } else if ("true".equalsIgnoreCase(node.getLiteral())) {
-                    valueContext = true;
+                    valueContext = Boolean.valueOf(true);
                 } else if ("false".equalsIgnoreCase(node.getLiteral())) {
-                    valueContext = false;
+                    valueContext = Boolean.valueOf(false);
                 } else {
                     valueContext = node.getLiteral();
                 }
@@ -574,9 +574,9 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
     }
 
     private void eq(String propertyName, Object value) {
-        if (value == true) {
+        if (Boolean.TRUE.equals(value)) {
             predicates.add(criteriaBuilder.isTrue(path(propertyName)));
-        } else if (value == false) {
+        } else if (Boolean.FALSE.equals(value)) {
             predicates.add(criteriaBuilder.isFalse(path(propertyName)));
         } else {
             predicates.add(criteriaBuilder.equal(path(propertyName), value));
