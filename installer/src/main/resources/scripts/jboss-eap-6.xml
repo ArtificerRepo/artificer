@@ -6,7 +6,7 @@
   <!-- Configure properties for JBoss EAP 6 -->
   <target name="properties-jboss-eap-6">
     <property name="s-ramp.updates.dir" location="${basedir}/updates" />
-  
+
     <property name="s-ramp.jboss.bin.dir" location="${s-ramp.appserver.dir}/bin" />
     <property name="s-ramp.jboss.config.dir" location="${s-ramp.appserver.dir}/standalone/configuration/" />
 
@@ -31,10 +31,10 @@
     <echo>Installing Overlord Commons</echo>
     <echo>----------------------------------</echo>
     <unzip src="${s-ramp.overlord-commons.installer.jar}"
-        dest="${s-ramp.overlord-commons.installer.dir}" overwrite="false" />
-      <ant antfile="${s-ramp.overlord-commons.installer.dir}/build.xml" target="install"
-        dir="${s-ramp.overlord-commons.installer.dir}"
-        inheritall="true" inheritrefs="false">
+           dest="${s-ramp.overlord-commons.installer.dir}" overwrite="false" />
+    <ant antfile="${s-ramp.overlord-commons.installer.dir}/build.xml" target="install"
+         dir="${s-ramp.overlord-commons.installer.dir}"
+         inheritall="true" inheritrefs="false">
       <property name="appserver.id" value="jboss-eap-64" />
       <property name="overlord-commons.install.dir" location="${s-ramp.install.dir}" />
       <property name="overlord-commons.appserver.dir" location="${s-ramp.appserver.dir}" />
@@ -61,18 +61,18 @@
     <echo message="########" />
     <echo message=" " />
   </target>
-  
+
 
   <!-- Configure JBoss EAP 6 -->
   <target name="config-jboss-eap-6" depends="password-prompt">
 
     <!-- Deploy the datasource -->
     <copy file="${s-ramp.updates.dir}/artificer-h2-ds.xml" todir="${s-ramp.jboss.deployments.dir}" overwrite="true" />
-    
+
     <xslt
-      style="${s-ramp.updates.dir}/xslt/configureJMS-jboss.xslt"
-      in="${s-ramp.jboss.config.dir}/standalone-full.xml"
-      out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
+        style="${s-ramp.updates.dir}/xslt/configureJMS-jboss.xslt"
+        in="${s-ramp.jboss.config.dir}/standalone-full.xml"
+        out="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
     <copy file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" tofile="${s-ramp.jboss.config.dir}/standalone-full.xml" overwrite="true" />
     <delete file="${s-ramp.install.dir}/_tmp_standalone-ms.xml" />
 
