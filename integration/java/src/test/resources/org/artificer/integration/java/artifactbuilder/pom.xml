@@ -176,6 +176,7 @@
       <dependency>
         <groupId>org.jboss.spec.javax.servlet</groupId>
         <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+        <scope>provided</scope>
       </dependency>
       <!-- Logging (require SLF4J API for compiling, but use Log4J and its SLF4J 
         binding for testing) -->
