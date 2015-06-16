@@ -610,12 +610,6 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		entry = doGetXsdEntry(entryId);
 		verifyEntryUpdated(entry);
 
-		// Update content
-        // TODO: ARTIF-657
-//		doUpdateXsdContent(entry);
-//		content = doGetXsdContent(entryId);
-//		verifyContentUpdated(content);
-
 		deleteXsdEntry(entryId);
 		verifyEntryDeleted(entryId);
 	}
@@ -734,28 +728,6 @@ public class ArtifactResourceTest extends AbstractResourceTest {
 		Assert.assertEquals("Hello World", ArtificerModelUtils.getCustomProperty(xsdDocument, "my.property")); //$NON-NLS-1$ //$NON-NLS-2$
 		Assert.assertNull(ArtificerModelUtils.getCustomProperty(xsdDocument, "my.missing.property")); //$NON-NLS-1$
 		Assert.assertNull(ArtificerModelUtils.getGenericRelationship(xsdDocument, "MissingRel")); //$NON-NLS-1$
-	}
-
-	/**
-	 * Updates the content of the artifact.
-	 * @param entry
-	 * @throws Exception
-	 */
-	private void doUpdateXsdContent(Entry entry) throws Exception {
-		XsdDocument xsdDocument = (XsdDocument) ArtificerAtomUtils.unwrapSrampArtifact(entry);
-		String uuid = xsdDocument.getUuid();
-		ClientRequest request = clientRequest("/s-ramp/xsd/XsdDocument/" + uuid + "/media"); //$NON-NLS-1$ //$NON-NLS-2$
-
-		// read the XsdDocument from file
-		String artifactFileName = "PO-updated.xsd"; //$NON-NLS-1$
-		InputStream xsdStream = null;
-		try {
-			xsdStream = this.getClass().getResourceAsStream("/sample-files/xsd/" + artifactFileName); //$NON-NLS-1$
-			request.body(MediaType.APPLICATION_XML, xsdStream);
-			request.put(Void.class);
-		} finally {
-			IOUtils.closeQuietly(xsdStream);
-		}
 	}
 
 	/**

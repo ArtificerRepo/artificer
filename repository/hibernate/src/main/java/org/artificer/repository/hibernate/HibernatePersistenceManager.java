@@ -249,13 +249,6 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
     }
 
     @Override
-    public BaseArtifactType updateArtifactContent(final String uuid, final ArtifactType artifactType,
-            final ArtifactContent content) throws ArtificerException {
-        // This method will be removed!
-        return null;
-    }
-
-    @Override
     public BaseArtifactType addComment(final String uuid, final ArtifactType artifactType, final String text)
             throws ArtificerException {
         return new HibernateUtil.HibernateTask<BaseArtifactType>() {
@@ -323,13 +316,6 @@ public class HibernatePersistenceManager extends AbstractPersistenceManager {
                 return HibernateEntityToSrampVisitor.visit(artifact, artifactType, true);
             }
         }.execute();
-    }
-
-    @Override
-    public BaseArtifactType deleteArtifactContent(final String uuid, final ArtifactType artifactType)
-            throws ArtificerException {
-        // This method will be removed!
-        return null;
     }
 
     @Override

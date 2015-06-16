@@ -106,15 +106,10 @@ public class BatchServiceImpl extends AbstractServiceImpl implements BatchServic
         // Finally, process all the updates.
         for (ArtificerArchiveEntry updateEntry : updates) {
             String path = updateEntry.getPath();
-            InputStream updateIs = archive.getInputStream(updateEntry);
-            ArtifactContent entryContent = null;
-            if (updateIs != null) {
-                entryContent = new ArtifactContent(path, updateIs);
-            }
             String contentId = String.format("<%1$s@package>", path); //$NON-NLS-1$
             BaseArtifactType metaData = updateEntry.getMetaData();
             ArtifactType artifactType = ArtifactType.valueOf(metaData);
-            metaData = processUpdate(artifactType, metaData, entryContent);
+            metaData = processUpdate(artifactType, metaData);
             batchResult.getUpdates().put(contentId, metaData);
         }
 
@@ -158,8 +153,7 @@ public class BatchServiceImpl extends AbstractServiceImpl implements BatchServic
      * @return BaseArtifactType
      * @throws Exception
      */
-    private BaseArtifactType processUpdate(ArtifactType artifactType, BaseArtifactType metaData,
-            ArtifactContent content) throws Exception {
+    private BaseArtifactType processUpdate(ArtifactType artifactType, BaseArtifactType metaData) throws Exception {
         PersistenceManager persistenceManager = RepositoryProviderFactory.persistenceManager();
         BaseArtifactType artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
         if (artifact == null)
@@ -167,10 +161,6 @@ public class BatchServiceImpl extends AbstractServiceImpl implements BatchServic
 
         // update the meta data
         persistenceManager.updateArtifact(metaData, artifactType);
-
-        if (content != null) {
-            persistenceManager.updateArtifactContent(metaData.getUuid(), artifactType, content);
-        }
 
         // Refetch the data to make sure what we return is up-to-date
         artifact = persistenceManager.getArtifact(metaData.getUuid(), artifactType);
