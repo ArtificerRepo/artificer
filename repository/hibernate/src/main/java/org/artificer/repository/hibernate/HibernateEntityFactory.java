@@ -21,6 +21,15 @@ import java.util.List;
  */
 public class HibernateEntityFactory {
 
+    private static final DatatypeFactory DATATYPE_FACTORY;
+    static {
+        try {
+            DATATYPE_FACTORY = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static List<StoredQuery> storedQueries(List<ArtificerStoredQuery> artificerStoredQueries) {
         List<StoredQuery> srampStoredQueries = new ArrayList<>();
         for (ArtificerStoredQuery artificerStoredQuery : artificerStoredQueries) {
@@ -88,12 +97,8 @@ public class HibernateEntityFactory {
     }
 
     public static XMLGregorianCalendar calendar(long time) {
-        try {
-            GregorianCalendar gc = new GregorianCalendar();
-            gc.setTimeInMillis(time);
-            return DatatypeFactory.newInstance().newXMLGregorianCalendar(gc);
-        } catch (DatatypeConfigurationException e) {
-            return null;
-        }
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTimeInMillis(time);
+        return DATATYPE_FACTORY.newXMLGregorianCalendar(gc);
     }
 }
