@@ -597,38 +597,6 @@ public class ArtificerAtomApiClient {
 		}
 	}
 
-	/**
-	 * Updates the content of the artifact.
-	 * @param artifact
-	 * @param content
-	 * @throws ArtificerClientException
-	 * @throws ArtificerServerException
-	 */
-	public void updateArtifactContent(BaseArtifactType artifact, InputStream content)
-			throws ArtificerClientException, ArtificerServerException {
-		ArtifactType type = ArtifactType.valueOf(artifact);
-		assertFeatureEnabled(type);
-        ClientResponse<?> response = null;
-		try {
-			String artifactModel = type.getArtifactType().getModel();
-			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
-				artifactType = type.getExtendedType();
-			}
-			String artifactUuid = artifact.getUuid();
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", srampEndpoint, artifactModel, artifactType, artifactUuid);
-			ClientRequest request = createClientRequest(atomUrl);
-			request.body(type.getMimeType(), content);
-			response = request.put();
-		} catch (ArtificerServerException e) {
-			throw e;
-		} catch (Throwable e) {
-			throw new ArtificerClientException(e);
-        } finally {
-            closeQuietly(response);
-		}
-	}
-
 	public BaseArtifactType addComment(String uuid, ArtifactType type, String text) throws ArtificerClientException, ArtificerServerException {
 		assertFeatureEnabled(type);
 		ClientResponse<Entry> response = null;
@@ -699,35 +667,6 @@ public class ArtificerAtomApiClient {
             closeQuietly(response);
         }
     }
-
-	/**
-	 * Deletes an artifact's content from the s-ramp repository.
-	 * @param uuid
-	 * @param type
-	 * @throws ArtificerClientException
-	 * @throws ArtificerServerException
-	 */
-	public void deleteArtifactContent(String uuid, ArtifactType type) throws ArtificerClientException, ArtificerServerException {
-		assertFeatureEnabled(type);
-		ClientResponse<?> response = null;
-		try {
-			String artifactModel = type.getArtifactType().getModel();
-			String artifactType = type.getArtifactType().getType();
-			if ("ext".equals(type.getArtifactType().getModel()) && type.getExtendedType()!=null) {
-				artifactType = type.getExtendedType();
-			}
-			String artifactUuid = uuid;
-			String atomUrl = String.format("%1$s/%2$s/%3$s/%4$s/media", srampEndpoint, artifactModel, artifactType, artifactUuid);
-			ClientRequest request = createClientRequest(atomUrl);
-			response = request.delete();
-		} catch (ArtificerServerException e) {
-			throw e;
-		} catch (Throwable e) {
-			throw new ArtificerClientException(e);
-		} finally {
-			closeQuietly(response);
-		}
-	}
 
 	/**
 	 * Provides a very simple mechanism for querying.  Defaults many of the parameters.
