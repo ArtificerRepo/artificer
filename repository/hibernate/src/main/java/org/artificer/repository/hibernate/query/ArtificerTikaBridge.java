@@ -54,6 +54,9 @@ public class ArtificerTikaBridge implements FieldBridge {
 
     private static final Log log = LoggerFactory.make();
 
+    // Expensive, so only do it once...
+    private static final Parser PARSER = new AutoDetectParser();
+
     private TikaMetadataProcessor metadataProcessor;
     private TikaParseContextProvider parseContextProvider;
 
@@ -102,8 +105,7 @@ public class ArtificerTikaBridge implements FieldBridge {
             StringWriter writer = new StringWriter();
             WriteOutContentHandler contentHandler = new WriteOutContentHandler( writer );
 
-            Parser parser = new AutoDetectParser();
-            parser.parse( in, contentHandler, metadata, parseContext );
+            PARSER.parse( in, contentHandler, metadata, parseContext );
             luceneOptions.addFieldToDocument( name, writer.toString(), document );
 
             // allow for optional indexing of metadata by the user

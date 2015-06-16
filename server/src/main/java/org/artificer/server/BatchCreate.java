@@ -15,9 +15,9 @@
  */
 package org.artificer.server;
 
+import org.artificer.common.ArtifactContent;
 import org.artificer.repository.PersistenceManager;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
-import org.artificer.common.ArtifactContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,5 +44,11 @@ public class BatchCreate {
 
     public List<PersistenceManager.BatchItem> getBatchItems() {
         return batchItems;
+    }
+
+    public void cleanup() {
+        for (PersistenceManager.BatchItem batchItem : batchItems) {
+            batchItem.content.cleanup();
+        }
     }
 }
