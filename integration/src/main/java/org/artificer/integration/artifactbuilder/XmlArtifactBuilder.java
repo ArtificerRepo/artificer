@@ -31,6 +31,7 @@ import org.w3c.dom.Element;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -47,6 +48,22 @@ import java.util.List;
  * @author Brett Meyer
  */
 public class XmlArtifactBuilder extends AbstractArtifactBuilder {
+
+    private static final XPathFactory XPATH_FACTORY = XPathFactory.newInstance();
+
+    private static final DocumentBuilder DOCUMENT_BUILDER;
+    static {
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        documentBuilderFactory.setValidating(false);
+        try {
+            documentBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+            documentBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            DOCUMENT_BUILDER = documentBuilderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+    }
     
     protected final List<RelationshipSource> relationshipSources = new ArrayList<RelationshipSource>();
     
@@ -61,14 +78,7 @@ public class XmlArtifactBuilder extends AbstractArtifactBuilder {
         super.buildArtifacts(primaryArtifact, artifactContent);
         
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            factory.setValidating(false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false); //$NON-NLS-1$
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false); //$NON-NLS-1$
-
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(getContentStream());
+            Document document = DOCUMENT_BUILDER.parse(getContentStream());
             // This *must* be setup prior to calling #configureNamespaceMappings.  Most subclasses will need it.
             rootElement = document.getDocumentElement();
             
@@ -80,8 +90,7 @@ public class XmlArtifactBuilder extends AbstractArtifactBuilder {
                 ((XmlDocument) primaryArtifact).setContentEncoding(encoding);
             }
             
-            XPathFactory xPathfactory = XPathFactory.newInstance();
-            xpath = xPathfactory.newXPath();
+            xpath = XPATH_FACTORY.newXPath();
             StaticNamespaceContext nsCtx = new StaticNamespaceContext();
             configureNamespaceMappings(nsCtx);
             xpath.setNamespaceContext(nsCtx);

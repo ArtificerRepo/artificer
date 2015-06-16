@@ -102,6 +102,7 @@ public class BatchServiceImpl extends AbstractServiceImpl implements BatchServic
                 batchResult.getErrors().put(bi.batchItemId, (Exception) response);
             }
         }
+        batchCreates.cleanup();
 
         // Finally, process all the updates.
         for (ArtificerArchiveEntry updateEntry : updates) {
