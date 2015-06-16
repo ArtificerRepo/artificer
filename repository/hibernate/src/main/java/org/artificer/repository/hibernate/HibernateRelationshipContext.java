@@ -17,7 +17,6 @@ package org.artificer.repository.hibernate;
 
 import org.artificer.integration.artifactbuilder.RelationshipContext;
 import org.artificer.repository.hibernate.query.HibernateQuery;
-import org.artificer.repository.query.ArtifactSet;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 
 import java.util.Collection;
@@ -52,8 +51,7 @@ public class HibernateRelationshipContext implements RelationshipContext {
         builder.append("]");
 
         HibernateQuery query = new HibernateQuery(builder.toString());
-        ArtifactSet results = query.executeQuery();
-        return results.list();
+        return query.executeQuery().getResults();
     }
 
 }

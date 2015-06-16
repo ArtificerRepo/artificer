@@ -15,14 +15,14 @@
  */
 package org.artificer.repository.test;
 
-import org.artificer.repository.query.ArtifactSet;
+import org.artificer.common.ArtifactContent;
+import org.artificer.repository.query.ArtificerQuery;
+import org.artificer.repository.query.PagedResult;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.ExtendedDocument;
-import org.artificer.common.ArtifactContent;
-import org.artificer.repository.query.ArtificerQuery;
 
 import java.io.InputStream;
 
@@ -50,32 +50,32 @@ public class ExtendedArtifactDeriverTest extends AbstractNoAuditingPersistenceTe
 
         // Four derived ActingCredit artifacts should have been created.
         ArtificerQuery query = queryManager.createQuery("/s-ramp/ext/ActingCredit");
-        ArtifactSet artifactSet = query.executeQuery();
-        Assert.assertEquals(4, artifactSet.size());
+        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        Assert.assertEquals(4, artifactSet.getTotalSize());
 
         // Four total derived artifacts should have been created.
         query = queryManager.createQuery("/s-ramp[@derived='true']");
         artifactSet = query.executeQuery();
-        Assert.assertEquals(4, artifactSet.size());
+        Assert.assertEquals(4, artifactSet.getTotalSize());
 
         // Also there are four derived arifacts that are related to the original
         query = queryManager.createQuery("/s-ramp/ext[relatedDocument[@name='jrd']]");
         artifactSet = query.executeQuery();
-        Assert.assertEquals(4, artifactSet.size());
+        Assert.assertEquals(4, artifactSet.getTotalSize());
 
         // But only one named 'Rising Storm'
         query = queryManager.createQuery("/s-ramp/ext[relatedDocument[@name='jrd'] and @name='Rising Storm']");
         artifactSet = query.executeQuery();
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         // Find the original artifact by one of the credits inside it
         query = queryManager.createQuery("/s-ramp/ext[hasCredit[@name='Rising Storm']]");
         artifactSet = query.executeQuery();
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         // But don't find it when looking for a credit that's not there
         query = queryManager.createQuery("/s-ramp/ext[hasCredit[@name='Army of Darkness']]");
         artifactSet = query.executeQuery();
-        Assert.assertEquals(0, artifactSet.size());
+        Assert.assertEquals(0, artifactSet.getTotalSize());
     }
 }

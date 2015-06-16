@@ -22,16 +22,18 @@ import org.artificer.repository.RepositoryProviderFactory;
 import org.artificer.repository.error.QueryExecutionException;
 import org.artificer.repository.hibernate.HibernatePersistenceManager;
 import org.artificer.repository.hibernate.HibernateUtil;
-import org.artificer.repository.hibernate.data.HibernateArtifactSet;
+import org.artificer.repository.hibernate.data.HibernateEntityToSrampVisitor;
 import org.artificer.repository.hibernate.entity.ArtificerArtifact;
 import org.artificer.repository.hibernate.i18n.Messages;
 import org.artificer.repository.query.AbstractArtificerQueryImpl;
-import org.artificer.repository.query.ArtifactSet;
 import org.artificer.repository.query.ArtificerQueryArgs;
+import org.artificer.repository.query.PagedResult;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,11 +57,11 @@ public class HibernateQuery extends AbstractArtificerQueryImpl {
     }
 
 	@Override
-	protected ArtifactSet executeQuery(final Query queryModel) throws ArtificerException {
+	protected PagedResult<BaseArtifactType> executeQuery(final Query queryModel) throws ArtificerException {
 		try {
-            return new HibernateUtil.HibernateTask<HibernateArtifactSet>() {
+            return new HibernateUtil.HibernateTask<PagedResult<BaseArtifactType>>() {
                 @Override
-                protected HibernateArtifactSet doExecute(EntityManager entityManager) throws Exception {
+                protected PagedResult<BaseArtifactType> doExecute(EntityManager entityManager) throws Exception {
                     ArtificerToHibernateQueryVisitor visitor = new ArtificerToHibernateQueryVisitor(entityManager,
                             (ClassificationHelper) RepositoryProviderFactory.persistenceManager());
                     queryModel.accept(visitor);
@@ -71,7 +73,12 @@ public class HibernateQuery extends AbstractArtificerQueryImpl {
 
                     LOG.debug(Messages.i18n.format("QUERY_EXECUTED_IN", endTime - startTime));
 
-                    return new HibernateArtifactSet(results, totalSize);
+                    List<BaseArtifactType> artifacts = new ArrayList<>();
+                    for (ArtificerArtifact result : results) {
+                        artifacts.add(HibernateEntityToSrampVisitor.visit(result, false));
+                    }
+
+                    return new PagedResult<>(artifacts, xpathTemplate, totalSize, args);
                 }
             }.execute();
 

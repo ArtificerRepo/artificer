@@ -20,8 +20,8 @@ import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtificerException;
 import org.artificer.common.ontology.ArtificerOntology;
 import org.artificer.common.ontology.ArtificerOntologyClass;
-import org.artificer.repository.query.ArtifactSet;
 import org.artificer.repository.query.ArtificerQuery;
+import org.artificer.repository.query.PagedResult;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
@@ -50,9 +50,9 @@ public class ClassificationQueryTest extends AbstractNoAuditingPersistenceTest {
 
 		// Verify that the docs are available
 		ArtificerQuery query = queryManager.createQuery("/s-ramp/core/Document");
-		ArtifactSet artifactSet = query.executeQuery();
+        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
-		Assert.assertEquals(4, artifactSet.size());
+		Assert.assertEquals(4, artifactSet.getTotalSize());
 
 		// Make sure there's only one with the given name
 		query = queryManager.createQuery("/s-ramp/core/Document[@name = ?]");
@@ -69,7 +69,7 @@ public class ClassificationQueryTest extends AbstractNoAuditingPersistenceTest {
         query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'Asia')]");
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
-		Assert.assertEquals(0, artifactSet.size());
+		Assert.assertEquals(0, artifactSet.getTotalSize());
 
 		// Should get just the one classified by Germany
 		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'Germany')]");
@@ -80,7 +80,7 @@ public class ClassificationQueryTest extends AbstractNoAuditingPersistenceTest {
         query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:exactlyClassifiedByAllOf(., 'China', 'Germany')]");
 		artifactSet = query.executeQuery();
 		Assert.assertNotNull(artifactSet);
-		Assert.assertEquals(0, artifactSet.size());
+		Assert.assertEquals(0, artifactSet.getTotalSize());
 
 		// Should get all classified artifacts
 		query = queryManager.createQuery("/s-ramp/core/Document[s-ramp:classifiedByAllOf(., 'World')]");
@@ -103,10 +103,10 @@ public class ClassificationQueryTest extends AbstractNoAuditingPersistenceTest {
         assertResults(artifactSet, doc, docGermany);
 	}
 
-    private void assertResults(ArtifactSet artifactSet, Document... docs) throws Exception {
+    private void assertResults(PagedResult<BaseArtifactType> artifactSet, Document... docs) throws Exception {
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(docs.length, artifactSet.size());
-        List<BaseArtifactType> artifacts = artifactSet.list();
+        Assert.assertEquals(docs.length, artifactSet.getTotalSize());
+        List<BaseArtifactType> artifacts = artifactSet.getResults();
         for (BaseArtifactType artifact : artifacts) {
             boolean found = false;
             for (Document doc : docs) {
