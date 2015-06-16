@@ -171,6 +171,16 @@ public abstract class AbstractPersistenceTest {
         return artifact;
     }
 
+    protected BaseArtifactType addExtendedArtifact(String type, String name) throws Exception {
+        BaseArtifactType artifact = ArtifactType.ExtendedArtifactType(type).newArtifactInstance();
+        artifact.setName(name);
+        // Persist the artifact
+        artifact = persistenceManager.persistArtifact(artifact, null);
+        Assert.assertNotNull(artifact);
+
+        return artifact;
+    }
+
     /**
      * Ensures that a single artifact exists of the given type and name.
      * @param type

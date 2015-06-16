@@ -207,36 +207,40 @@ public class QueryManagerTest extends AbstractNoAuditingPersistenceTest {
 
     @Test
     public void testFreeTextSearch() throws Exception {
-        // First, store 3 artifacts
+        // First, store 3 XML artifacts
         BaseArtifactType artifact1 = createXmlDocument("PO.xml", 1); // content contains "Lawn Mower" and "Baby Monitor"
         BaseArtifactType artifact2 = createXmlDocument("PO.xml", 2); // content contains "Lawn Mower" and "Baby Monitor"
         BaseArtifactType artifact3 = createXmlDocument("PO2.xml", 3); // content contains "Leaf Blower" and "Baby Monitor"
+        // In addition to 1 extended artifact
+        BaseArtifactType artifact4 = addExtendedArtifact("FooType", "FooArtifact");
 
         // Now update some properties on them
         ArtificerModelUtils.setCustomProperty(artifact1, "prop1", "fizz test");
         ArtificerModelUtils.setCustomProperty(artifact2, "prop1", "buzz test");
         ArtificerModelUtils.setCustomProperty(artifact3, "prop1", "fizz buzz test");
+        ArtificerModelUtils.setCustomProperty(artifact4, "prop1", "fizz buzz test");
 
         persistenceManager.updateArtifact(artifact1, ArtifactType.XmlDocument());
         persistenceManager.updateArtifact(artifact2, ArtifactType.XmlDocument());
         persistenceManager.updateArtifact(artifact3, ArtifactType.XmlDocument());
+        persistenceManager.updateArtifact(artifact4, ArtifactType.valueOf(artifact4));
 
         // full-text, using metadata
         ArtificerQuery query = queryManager.createQuery("/s-ramp[xp2:matches(., ?)]");
         query.setString("fizz");
         ArtifactSet artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(3, artifactSet.size());
         query = queryManager.createQuery("/s-ramp[xp2:matches(., ?)]");
         query.setString("buzz");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(3, artifactSet.size());
         query = queryManager.createQuery("/s-ramp[xp2:matches(., ?)]");
         query.setString("test");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(3, artifactSet.size());
+        Assert.assertEquals(4, artifactSet.size());
 
         // full-text, using content
         query = queryManager.createQuery("/s-ramp[xp2:matches(., ?)]");
@@ -259,6 +263,18 @@ public class QueryManagerTest extends AbstractNoAuditingPersistenceTest {
         query = queryManager.createQuery("/s-ramp[xp2:matches(., ?) and @name = ?]");
         query.setString("fizz");
         query.setString(artifact1.getName());
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(1, artifactSet.size());
+
+        // full-text, combined with model/type (both are indexed and help further narrow-down the query)
+        query = queryManager.createQuery("/s-ramp/core/XmlDocument[xp2:matches(., ?)]");
+        query.setString("fizz");
+        artifactSet = query.executeQuery();
+        Assert.assertNotNull(artifactSet);
+        Assert.assertEquals(2, artifactSet.size());
+        query = queryManager.createQuery("/s-ramp/ext/FooType[xp2:matches(., ?)]");
+        query.setString("fizz");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
         Assert.assertEquals(1, artifactSet.size());

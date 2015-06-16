@@ -149,6 +149,7 @@ public class ArtificerArtifact implements Serializable {
         this.name = name;
     }
 
+    @Field
     public String getModel() {
         return model;
     }
@@ -157,6 +158,7 @@ public class ArtificerArtifact implements Serializable {
         this.model = model;
     }
 
+    @Field
     public String getType() {
         return type;
     }
