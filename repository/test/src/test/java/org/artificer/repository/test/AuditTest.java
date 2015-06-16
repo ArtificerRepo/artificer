@@ -25,7 +25,7 @@ import org.artificer.common.audit.AuditItemTypes;
 import org.artificer.common.audit.AuditUtils;
 import org.artificer.common.ontology.ArtificerOntology;
 import org.artificer.common.ontology.ArtificerOntologyClass;
-import org.artificer.repository.audit.AuditEntrySet;
+import org.artificer.repository.query.PagedResult;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 import org.jboss.downloads.artificer._2013.auditing.AuditItemType;
 import org.jboss.downloads.artificer._2013.auditing.AuditItemType.Property;
@@ -91,10 +91,10 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
     public void testCreateAuditEntry() throws Exception {
         BaseArtifactType artifact = createArtifact(null);
 
-        AuditEntrySet auditEntries = auditManager.getArtifactAuditEntries(artifact.getUuid());
+        PagedResult<AuditEntry> auditEntries = auditManager.getArtifactAuditEntries(artifact.getUuid());
         Assert.assertNotNull(auditEntries);
-        Assert.assertEquals(1, auditEntries.size());
-        AuditEntry entry = auditEntries.iterator().next();
+        Assert.assertEquals(1, auditEntries.getTotalSize());
+        AuditEntry entry = auditEntries.getResults().get(0);
         Assert.assertNotNull(entry);
         Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD.toString(), entry.getType());
         Assert.assertEquals("junituser", entry.getWho());
@@ -115,10 +115,10 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
     public void testCreateAuditEntryWithCustomProperties() throws Exception {
         BaseArtifactType artifact = createArtifact(null, "hello", "world", "foo", "bar");
 
-        AuditEntrySet auditEntries = auditManager.getArtifactAuditEntries(artifact.getUuid());
+        PagedResult<AuditEntry> auditEntries = auditManager.getArtifactAuditEntries(artifact.getUuid());
         Assert.assertNotNull(auditEntries);
-        Assert.assertEquals(1, auditEntries.size());
-        AuditEntry entry = auditEntries.iterator().next();
+        Assert.assertEquals(1, auditEntries.getTotalSize());
+        AuditEntry entry = auditEntries.getResults().get(0);
         Assert.assertNotNull(entry);
         Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD.toString(), entry.getType());
         Assert.assertEquals("junituser", entry.getWho());
@@ -140,10 +140,10 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
         createOntology();
         BaseArtifactType artifact = createArtifact(Collections.singleton("urn:example.org/world#China"));
 
-        AuditEntrySet auditEntries = auditManager.getArtifactAuditEntries(artifact.getUuid());
+        PagedResult<AuditEntry> auditEntries = auditManager.getArtifactAuditEntries(artifact.getUuid());
         Assert.assertNotNull(auditEntries);
-        Assert.assertEquals(1, auditEntries.size());
-        AuditEntry entry = auditEntries.iterator().next();
+        Assert.assertEquals(1, auditEntries.getTotalSize());
+        AuditEntry entry = auditEntries.getResults().get(0);
         Assert.assertNotNull(entry);
         Assert.assertEquals(AuditEntryTypes.ARTIFACT_ADD.toString(), entry.getType());
         Assert.assertEquals("junituser", entry.getWho());
@@ -177,16 +177,16 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
         int expectedEntries = 2;
 
         // Now do some assertions.
-        AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
+        PagedResult<AuditEntry> entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
         Assert.assertNotNull(entries);
-        Assert.assertEquals(expectedEntries, entries.size());
-        AuditEntry entry = entries.iterator().next();
+        Assert.assertEquals(expectedEntries, entries.getTotalSize());
+        AuditEntry entry = entries.getResults().get(0);
         Assert.assertNotNull(entry.getUuid());
         Assert.assertEquals("artifact:update", entry.getType());
         Assert.assertNotNull(entry.getWhen());
         Assert.assertEquals("junituser", entry.getWho());
         String updateEntryUuid = entry.getUuid();
-        entry = entries.iterator().next();
+        entry = entries.getResults().get(1);
         Assert.assertNotNull(entry.getUuid());
         Assert.assertEquals("artifact:add", entry.getType());
         Assert.assertNotNull(entry.getWhen());
@@ -277,7 +277,7 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
         // Get all audit entries for the user.
         entries = auditManager.getUserAuditEntries("junituser");
         Assert.assertNotNull(entries);
-        Assert.assertEquals(3, entries.size());
+        Assert.assertEquals(3, entries.getTotalSize());
 
         persistenceManager.printArtifactGraph(artifact.getUuid(), ArtifactType.Document());
     }
@@ -286,15 +286,15 @@ public class AuditTest extends AbstractAuditingPersistenceTest {
     public void testWithDerivedArtifacts() throws Exception {
         BaseArtifactType artifact = createXsdArtifact();
 
-        AuditEntrySet entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
+        PagedResult<AuditEntry> entries = auditManager.getArtifactAuditEntries(artifact.getUuid());
         Assert.assertNotNull(entries);
-        Assert.assertEquals(1, entries.size());
+        Assert.assertEquals(1, entries.getTotalSize());
 
         // Get all audit entries for the user.  There should only be 7 because the
         // source document has 6 derived artifacts.
         entries = auditManager.getUserAuditEntries("junituser");
         Assert.assertNotNull(entries);
-        Assert.assertEquals(7, entries.size());
+        Assert.assertEquals(7, entries.getTotalSize());
     }
 
     @Test

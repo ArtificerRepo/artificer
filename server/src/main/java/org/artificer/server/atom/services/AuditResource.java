@@ -19,7 +19,7 @@ import org.artificer.atom.err.ArtificerAtomException;
 import org.artificer.common.ArtificerConstants;
 import org.artificer.common.MediaType;
 import org.artificer.server.AuditServiceImpl;
-import org.artificer.server.core.api.PagedResult;
+import org.artificer.repository.query.PagedResult;
 import org.artificer.server.i18n.Messages;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 import org.jboss.resteasy.plugins.providers.atom.Entry;

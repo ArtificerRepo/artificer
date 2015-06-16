@@ -16,7 +16,7 @@
 package org.artificer.server.atom.services;
 
 import org.artificer.server.QueryServiceImpl;
-import org.artificer.server.core.api.PagedResult;
+import org.artificer.repository.query.PagedResult;
 import org.artificer.server.i18n.Messages;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
@@ -127,7 +127,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 	 */
 	private void addPaginationLinks(Feed feed, PagedResult<BaseArtifactType> pagedResult, String baseUrl)
             throws UnsupportedEncodingException {
-        int pageSize = pagedResult.getPageSize();
+        long pageSize = pagedResult.getPageSize();
         int startIndex = pagedResult.getStartIndex();
         String orderBy = pagedResult.getOrderBy();
         boolean ascending = pagedResult.isAscending();
@@ -135,7 +135,7 @@ public abstract class AbstractFeedResource extends AbstractResource {
 		String encodedQuery = URLEncoder.encode(pagedResult.getQuery(), "UTF-8"); //$NON-NLS-1$
 		String firstHref = String.format(hrefPattern, baseUrl, encodedQuery, 0, String.valueOf(pageSize),
 				String.valueOf(orderBy), String.valueOf(ascending));
-		int prevIndex = Math.max(0,  startIndex - pageSize);
+		long prevIndex = Math.max(0,  startIndex - pageSize);
 		String prevHref = String.format(hrefPattern, baseUrl, encodedQuery, prevIndex, String.valueOf(pageSize),
 				String.valueOf(orderBy), String.valueOf(ascending));
 		String nextHref = String.format(hrefPattern, baseUrl, encodedQuery, startIndex + pageSize, String.valueOf(pageSize),

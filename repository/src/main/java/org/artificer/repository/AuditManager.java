@@ -16,8 +16,8 @@
 package org.artificer.repository;
 
 import org.artificer.common.ArtificerException;
-import org.artificer.repository.audit.AuditEntrySet;
 import org.artificer.repository.query.ArtificerQueryArgs;
+import org.artificer.repository.query.PagedResult;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 
 
@@ -46,17 +46,15 @@ public interface AuditManager extends AbstractManager {
 
     /**
      * Gets all of the audit entries for a particular artifact.  This is mostly what
-     * consumers will be interested in - the audit history for a given artifact.  When
-     * the caller is done with the {@link org.artificer.repository.audit.AuditEntrySet}, it must call close to free up
-     * any resources.
+     * consumers will be interested in - the audit history for a given artifact.
      *
      * @param artifactUuid     * @param args
 
      * @throws org.artificer.common.ArtificerException
      */
-    public AuditEntrySet getArtifactAuditEntries(String artifactUuid, ArtificerQueryArgs args) throws ArtificerException;
+    public PagedResult<AuditEntry> getArtifactAuditEntries(String artifactUuid, ArtificerQueryArgs args) throws ArtificerException;
 
-    public AuditEntrySet getArtifactAuditEntries(String artifactUuid) throws ArtificerException;
+    public PagedResult<AuditEntry> getArtifactAuditEntries(String artifactUuid) throws ArtificerException;
 
     /**
      * Gets
@@ -65,7 +63,7 @@ public interface AuditManager extends AbstractManager {
      * @return
      * @throws org.artificer.common.ArtificerException
      */
-    public AuditEntrySet getUserAuditEntries(String username, ArtificerQueryArgs args) throws ArtificerException;
+    public PagedResult<AuditEntry> getUserAuditEntries(String username, ArtificerQueryArgs args) throws ArtificerException;
 
-    public AuditEntrySet getUserAuditEntries(String username) throws ArtificerException;
+    public PagedResult<AuditEntry> getUserAuditEntries(String username) throws ArtificerException;
 }

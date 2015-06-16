@@ -28,8 +28,8 @@ import org.artificer.repository.RepositoryProviderFactory;
 import org.artificer.repository.hibernate.HibernateAuditManager;
 import org.artificer.repository.hibernate.HibernatePersistenceManager;
 import org.artificer.repository.hibernate.HibernateQueryManager;
-import org.artificer.repository.query.ArtifactSet;
 import org.artificer.repository.query.ArtificerQuery;
+import org.artificer.repository.query.PagedResult;
 import org.artificer.repository.test.hibernate.HibernateRepositoryTestProvider;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -191,18 +191,12 @@ public abstract class AbstractPersistenceTest {
         String q = String.format("/s-ramp/%1$s/%2$s[@name = ?]", type.getModel(), type.getType()); //$NON-NLS-1$
         ArtificerQuery query = queryManager.createQuery(q);
         query.setString(name);
-        ArtifactSet artifactSet = null;
-        try {
-            artifactSet = query.executeQuery();
-            Assert.assertEquals(1, artifactSet.size());
-            BaseArtifactType arty = artifactSet.iterator().next();
-            Assert.assertEquals(name, arty.getName());
+        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        Assert.assertEquals(1, artifactSet.getTotalSize());
+        BaseArtifactType arty = artifactSet.getResults().get(0);
+        Assert.assertEquals(name, arty.getName());
 
-            return initArtifactAssociations(arty);
-        } finally {
-            if (artifactSet != null)
-                artifactSet.close();
-        }
+        return initArtifactAssociations(arty);
     }
 
     protected void assertBasic(BaseArtifactType artifact, BaseArtifactType expected) {
@@ -220,16 +214,10 @@ public abstract class AbstractPersistenceTest {
     protected BaseArtifactType getArtifactByUUID(String uuid) throws Exception {
         ArtificerQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]"); //$NON-NLS-1$
         query.setString(uuid);
-        ArtifactSet artifactSet = null;
-        try {
-            artifactSet = query.executeQuery();
-            Assert.assertEquals(1, artifactSet.size());
+        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
-            return initArtifactAssociations(artifactSet.iterator().next());
-        } finally {
-            if (artifactSet != null)
-                artifactSet.close();
-        }
+        return initArtifactAssociations(artifactSet.getResults().get(0));
     }
 
     /**

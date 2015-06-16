@@ -16,15 +16,16 @@
 package org.artificer.server.mvn.services;
 
 import org.apache.commons.io.IOUtils;
-import org.artificer.server.i18n.Messages;
-import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConfig;
 import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.maven.MavenGavInfo;
 import org.artificer.common.maven.MavenUtil;
+import org.artificer.repository.query.PagedResult;
 import org.artificer.server.ArtifactServiceImpl;
 import org.artificer.server.QueryServiceImpl;
+import org.artificer.server.i18n.Messages;
+import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -138,10 +138,10 @@ public class MavenFacadeServlet extends HttpServlet {
      * @param gavInfo
      */
     private String doGenerateArtifactDirMavenMetaData(MavenGavInfo gavInfo) throws Exception {
-        List<BaseArtifactType> artifacts = queryService.query(
+        PagedResult<BaseArtifactType> artifacts = queryService.query(
                 "/s-ramp[@maven.groupId = '" + gavInfo.getGroupId() + "' and @maven.artifactId = '" + gavInfo.getArtifactId() + "']",
                 "createdTimestamp", true);
-        if (artifacts.size() == 0) {
+        if (artifacts.getTotalSize() == 0) {
             return null;
         }
 
@@ -153,7 +153,7 @@ public class MavenFacadeServlet extends HttpServlet {
 
         LinkedHashSet<String> versions = new LinkedHashSet<String>();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-        for (BaseArtifactType artifact : artifacts) {
+        for (BaseArtifactType artifact : artifacts.getResults()) {
             String version = ArtificerModelUtils.getCustomProperty(artifact, "maven.version");
             if (versions.add(version)) {
                 latest = version;
@@ -195,12 +195,12 @@ public class MavenFacadeServlet extends HttpServlet {
      * @throws Exception
      */
     private String doGenerateSnapshotMavenMetaData(MavenGavInfo gavInfo) throws Exception {
-        List<BaseArtifactType> artifacts = queryService.query(
+        PagedResult<BaseArtifactType> artifacts = queryService.query(
                 "/s-ramp[@maven.groupId = '" + gavInfo.getGroupId() + "'" +
                         " and @maven.artifactId = '" + gavInfo.getArtifactId() + "'" +
                         " and @maven.version = '" + gavInfo.getVersion() + "']",
                 "createdTimestamp", true);
-        if (artifacts.size() == 0) {
+        if (artifacts.getTotalSize() == 0) {
             return null;
         }
 
@@ -211,7 +211,7 @@ public class MavenFacadeServlet extends HttpServlet {
         snapshotVersions.append("    <snapshotVersions>\n");
         Set<String> processed = new HashSet<String>();
         Calendar latestDate = null;
-        for (BaseArtifactType artifact : artifacts) {
+        for (BaseArtifactType artifact : artifacts.getResults()) {
             String extension = ArtificerModelUtils.getCustomProperty(artifact, "maven.type");
             String classifier = ArtificerModelUtils.getCustomProperty(artifact, "maven.classifier");
             String value = gavInfo.getVersion();
@@ -309,9 +309,9 @@ public class MavenFacadeServlet extends HttpServlet {
     private BaseArtifactType findExistingArtifactByGAV(MavenGavInfo gavInfo) throws Exception {
         String query = MavenUtil.gavQuery(gavInfo);
 
-        List<BaseArtifactType> artifacts = queryService.query(query, "createdTimestamp", false);
-        if (artifacts.size() > 0) {
-            for (BaseArtifactType artifact : artifacts) {
+        PagedResult<BaseArtifactType> artifacts = queryService.query(query, "createdTimestamp", false);
+        if (artifacts.getTotalSize() > 0) {
+            for (BaseArtifactType artifact : artifacts.getResults()) {
                 // If no classifier in the GAV info, only return the artifact that also has no classifier
                 // TODO replace this with "not(@maven.classifer)" in the query, then force the result set to return 2 items (expecting only 1)
                 if (gavInfo.getClassifier() == null) {

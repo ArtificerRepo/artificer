@@ -15,9 +15,8 @@
  */
 package org.artificer.server.core.api;
 
+import org.artificer.repository.query.PagedResult;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
-
-import java.util.List;
 
 /**
  * @author Brett Meyer.
@@ -28,12 +27,12 @@ public interface AuditService extends AbstractService {
 
     public AuditEntry get(String artifactUuid, String auditEntryUuid) throws Exception;
 
-    public List<AuditEntry> queryByArtifact(String artifactUuid) throws Exception;
+    public PagedResult<AuditEntry> queryByArtifact(String artifactUuid) throws Exception;
 
     public PagedResult<AuditEntry> queryByArtifact(String artifactUuid, Integer startPage, Integer startIndex, Integer count)
             throws Exception;
 
-    public List<AuditEntry> queryByUser(String username) throws Exception;
+    public PagedResult<AuditEntry> queryByUser(String username) throws Exception;
 
     public PagedResult<AuditEntry> queryByUser(String username, Integer startPage, Integer startIndex, Integer count)
             throws Exception;

@@ -16,10 +16,9 @@
 package org.artificer.server;
 
 import org.artificer.common.ReverseRelationship;
-import org.artificer.repository.query.ArtifactSet;
 import org.artificer.repository.query.ArtificerQuery;
 import org.artificer.repository.query.ArtificerQueryArgs;
-import org.artificer.server.core.api.PagedResult;
+import org.artificer.repository.query.PagedResult;
 import org.artificer.server.core.api.QueryService;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactType;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.StoredQuery;
@@ -40,12 +39,12 @@ import java.util.List;
 public class QueryServiceImpl extends AbstractServiceImpl implements QueryService {
 
     @Override
-    public List<BaseArtifactType> query(String query) throws Exception {
+    public PagedResult<BaseArtifactType> query(String query) throws Exception {
         return query(query, "name", true);
     }
 
     @Override
-    public List<BaseArtifactType> query(String query, String orderBy, Boolean ascending) throws Exception { // Add on the "/s-ramp/" if it's missing
+    public PagedResult<BaseArtifactType> query(String query, String orderBy, Boolean ascending) throws Exception { // Add on the "/s-ramp/" if it's missing
         String xpath = query;
         if (!xpath.startsWith("/s-ramp")) { //$NON-NLS-1$
             if (query.startsWith("/")) //$NON-NLS-1$
@@ -56,12 +55,7 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
 
         ArtificerQueryArgs args = new ArtificerQueryArgs(orderBy, ascending);
         ArtificerQuery artificerQuery = queryManager().createQuery(xpath, args);
-        ArtifactSet artifactSet = artificerQuery.executeQuery();
-        try {
-            return artifactSet.list();
-        } finally {
-            artifactSet.close();
-        }
+        return artificerQuery.executeQuery();
     }
 
     @Override
@@ -78,14 +72,7 @@ public class QueryServiceImpl extends AbstractServiceImpl implements QueryServic
 
         ArtificerQueryArgs args = new ArtificerQueryArgs(orderBy, ascending, startPage, startIndex, count);
         ArtificerQuery artificerQuery = queryManager().createQuery(xpath, args);
-        ArtifactSet artifactSet = artificerQuery.executeQuery();
-
-        try {
-            List<BaseArtifactType> results = artifactSet.list();
-            return new PagedResult<>(results, xpath, artifactSet.totalSize(), args);
-        } finally {
-            artifactSet.close();
-        }
+        return artificerQuery.executeQuery();
     }
 
     @Override

@@ -48,7 +48,9 @@ public class BatchCreate {
 
     public void cleanup() {
         for (PersistenceManager.BatchItem batchItem : batchItems) {
-            batchItem.content.cleanup();
+            if (batchItem.content != null) {
+                batchItem.content.cleanup();
+            }
         }
     }
 }
