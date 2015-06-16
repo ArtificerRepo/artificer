@@ -16,17 +16,15 @@
 package org.artificer.server;
 
 import org.artificer.repository.AuditManager;
-import org.artificer.repository.audit.AuditEntrySet;
 import org.artificer.repository.query.ArtificerQueryArgs;
+import org.artificer.repository.query.PagedResult;
 import org.artificer.server.core.api.AuditService;
-import org.artificer.server.core.api.PagedResult;
 import org.jboss.downloads.artificer._2013.auditing.AuditEntry;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
-import java.util.List;
 
 /**
  * @author Brett Meyer.
@@ -50,10 +48,9 @@ public class AuditServiceImpl extends AbstractServiceImpl implements AuditServic
     }
 
     @Override
-    public List<AuditEntry> queryByArtifact(String artifactUuid) throws Exception {
+    public PagedResult<AuditEntry> queryByArtifact(String artifactUuid) throws Exception {
         AuditManager auditManager = auditManager();
-        AuditEntrySet results = auditManager.getArtifactAuditEntries(artifactUuid, new ArtificerQueryArgs());
-        return results.list();
+        return auditManager.getArtifactAuditEntries(artifactUuid, new ArtificerQueryArgs());
     }
 
     @Override
@@ -61,15 +58,13 @@ public class AuditServiceImpl extends AbstractServiceImpl implements AuditServic
             throws Exception {
         AuditManager auditManager = auditManager();
         ArtificerQueryArgs args = new ArtificerQueryArgs(startPage, startIndex, count);
-        AuditEntrySet results = auditManager.getArtifactAuditEntries(artifactUuid, args);
-        return new PagedResult<>(results.list(), "", results.totalSize(), args);
+        return auditManager.getArtifactAuditEntries(artifactUuid, args);
     }
 
     @Override
-    public List<AuditEntry> queryByUser(String username) throws Exception {
+    public PagedResult<AuditEntry> queryByUser(String username) throws Exception {
         AuditManager auditManager = auditManager();
-        AuditEntrySet results = auditManager.getUserAuditEntries(username, new ArtificerQueryArgs());
-        return results.list();
+        return auditManager.getUserAuditEntries(username, new ArtificerQueryArgs());
     }
 
     @Override
@@ -77,7 +72,6 @@ public class AuditServiceImpl extends AbstractServiceImpl implements AuditServic
             throws Exception {
         AuditManager auditManager = auditManager();
         ArtificerQueryArgs args = new ArtificerQueryArgs(startPage, startIndex, count);
-        AuditEntrySet results = auditManager.getUserAuditEntries(username, args);
-        return new PagedResult<>(results.list(), "", results.totalSize(), args);
+        return auditManager.getUserAuditEntries(username, args);
     }
 }

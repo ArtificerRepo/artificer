@@ -20,8 +20,8 @@ import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.error.ArtificerConflictException;
 import org.artificer.common.error.ArtificerNotFoundException;
-import org.artificer.repository.query.ArtifactSet;
 import org.artificer.repository.query.ArtificerQuery;
+import org.artificer.repository.query.PagedResult;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
@@ -519,8 +519,8 @@ public class PersistenceTest extends AbstractNoAuditingPersistenceTest {
 
         ArtificerQuery query = queryManager.createQuery("/s-ramp[@uuid = ?]");
         query.setString(document.getUuid());
-        ArtifactSet artifactSet = query.executeQuery();
-        Assert.assertEquals(0, artifactSet.size());
+        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        Assert.assertEquals(0, artifactSet.getTotalSize());
 
         // Ensure we can re-create an artifact w/ the same UUID, then delete it again without same-name collisions
         // in the trash folder.

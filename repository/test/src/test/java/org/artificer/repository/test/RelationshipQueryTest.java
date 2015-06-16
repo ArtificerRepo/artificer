@@ -20,8 +20,8 @@ import org.artificer.common.ArtifactContent;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerModelUtils;
 import org.artificer.common.ReverseRelationship;
-import org.artificer.repository.query.ArtifactSet;
 import org.artificer.repository.query.ArtificerQuery;
+import org.artificer.repository.query.PagedResult;
 import org.junit.Assert;
 import org.junit.Test;
 import org.oasis_open.docs.s_ramp.ns.s_ramp_v1.BaseArtifactEnum;
@@ -54,69 +54,69 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
 
         // Get all the element style WSDL message parts
         ArtificerQuery query = queryManager.createQuery("/s-ramp/wsdl/Part[element]");
-        ArtifactSet artifactSet = query.executeQuery();
+        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(3, artifactSet.size());
+        Assert.assertEquals(3, artifactSet.getTotalSize());
 
         // Get all the element style WSDL message parts that refer to the element with name 'findRequest'
         query = queryManager.createQuery("/s-ramp/wsdl/Part[element[@name = 'find']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         // Get all the messages that have at least one part
         query = queryManager.createQuery("/s-ramp/wsdl/Message[part]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(5, artifactSet.size());
+        Assert.assertEquals(5, artifactSet.getTotalSize());
 
         // Get all operations that have faults
         query = queryManager.createQuery("/s-ramp/wsdl/Operation[fault]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         // Get all operations that have faults named 'foo' (hint - there aren't any)
         query = queryManager.createQuery("/s-ramp/wsdl/Operation[fault[@name = 'foo']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(0, artifactSet.size());
+        Assert.assertEquals(0, artifactSet.getTotalSize());
 
         // Get all faults
         query = queryManager.createQuery("/s-ramp/wsdl/Fault");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(2, artifactSet.getTotalSize());
 
         // Get all operations for the port type (sub-artifact-set query)
         query = queryManager.createQuery("/s-ramp/wsdl/PortType[@name = 'SamplePortType']/operation");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(2, artifactSet.getTotalSize());
 
         // Get just one operation for the port type (sub-artifact-set query with predicate)
         query = queryManager.createQuery("/s-ramp/wsdl/PortType[@name = 'SamplePortType']/operation[@name = 'findSimple']");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         // Negation test
         query = queryManager.createQuery("/s-ramp/wsdl/Part[xp2:not(element)]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(2, artifactSet.size());
+        Assert.assertEquals(2, artifactSet.getTotalSize());
 
         // Test multiple levels of relationships
 //        query = queryManager.createQuery("/s-ramp/wsdl/Message/part/element");
 //        artifactSet = query.executeQuery();
 //        Assert.assertNotNull(artifactSet);
-//        Assert.assertEquals(1, artifactSet.size());
+//        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         // Ensure predicate conjunctions work w/ relationships
         query = queryManager.createQuery(String.format("/s-ramp/wsdl/Part[relatedDocument[@uuid = '%1$s'] and element]", wsdlDoc.getUuid()));
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(3, artifactSet.size());
+        Assert.assertEquals(3, artifactSet.getTotalSize());
     }
 
     /**
@@ -135,25 +135,25 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
         persistenceManager.updateArtifact(xsdDoc, ArtifactType.XsdDocument());
 
         ArtificerQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[importedBy]");
-        ArtifactSet artifactSet = query.executeQuery();
+        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[importedBy[@uuid = ?]]");
         query.setString(wsdlDoc1.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[noSuchRel]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(0, artifactSet.size());
+        Assert.assertEquals(0, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/wsdl/WsdlDocument[importedBy]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(0, artifactSet.size());
+        Assert.assertEquals(0, artifactSet.getTotalSize());
     }
 
     @Test
@@ -182,71 +182,71 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
         wsdlDoc1 = (WsdlDocument) persistenceManager.updateArtifact(wsdlDoc1, ArtifactType.WsdlDocument());
 
         ArtificerQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey')]]");
-        ArtifactSet artifactSet = query.executeQuery();
+        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'InvalidKey')]]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(0, artifactSet.size());
+        Assert.assertEquals(0, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' and @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' and @InvalidProperty]]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(0, artifactSet.size());
+        Assert.assertEquals(0, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'FooValue' or @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'InvalidValue' or @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getRelationshipAttribute(., 'FooKey') = 'InvalidValue' or @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]/relWithAttr2");
         query.setString(xsdDoc.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
-        Assert.assertEquals(wsdlDoc3.getUuid(), artifactSet.iterator().next().getUuid());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
+        Assert.assertEquals(wsdlDoc3.getUuid(), artifactSet.getResults().get(0).getUuid());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]/relWithAttr2[s-ramp:getRelationshipAttribute(., 'FooKey2')]");
         query.setString(xsdDoc.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
-        Assert.assertEquals(wsdlDoc3.getUuid(), artifactSet.iterator().next().getUuid());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
+        Assert.assertEquals(wsdlDoc3.getUuid(), artifactSet.getResults().get(0).getUuid());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]/relWithAttr2[s-ramp:getRelationshipAttribute(., 'FooKey2') = 'FooValue2']");
         query.setString(xsdDoc.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
-        Assert.assertEquals(wsdlDoc3.getUuid(), artifactSet.iterator().next().getUuid());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
+        Assert.assertEquals(wsdlDoc3.getUuid(), artifactSet.getResults().get(0).getUuid());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]/relWithAttr2[s-ramp:getRelationshipAttribute(., 'InvalidKey')]");
         query.setString(xsdDoc.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(0, artifactSet.size());
+        Assert.assertEquals(0, artifactSet.getTotalSize());
     }
 
     @Test
@@ -275,70 +275,70 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
         wsdlDoc1 = (WsdlDocument) persistenceManager.updateArtifact(wsdlDoc1, ArtifactType.WsdlDocument());
 
         ArtificerQuery query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey')]]");
-        ArtifactSet artifactSet = query.executeQuery();
+        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey') = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'InvalidKey')]]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(0, artifactSet.size());
+        Assert.assertEquals(0, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey') = 'FooValue' and @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey') = 'FooValue' and @InvalidProperty]]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(0, artifactSet.size());
+        Assert.assertEquals(0, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey') = 'FooValue' or @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey') = 'InvalidValue' or @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[relWithAttr[s-ramp:getTargetAttribute(., 'FooKey') = 'InvalidValue' or @FooProperty = 'FooValue']]");
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]/relWithAttr2");
         query.setString(xsdDoc.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]/relWithAttr2[s-ramp:getTargetAttribute(., 'FooKey2')]");
         query.setString(xsdDoc.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
-        Assert.assertEquals(wsdlDoc3.getUuid(), artifactSet.iterator().next().getUuid());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
+        Assert.assertEquals(wsdlDoc3.getUuid(), artifactSet.getResults().get(0).getUuid());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]/relWithAttr2[s-ramp:getTargetAttribute(., 'FooKey2') = 'FooValue2']");
         query.setString(xsdDoc.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(1, artifactSet.size());
-        Assert.assertEquals(wsdlDoc3.getUuid(), artifactSet.iterator().next().getUuid());
+        Assert.assertEquals(1, artifactSet.getTotalSize());
+        Assert.assertEquals(wsdlDoc3.getUuid(), artifactSet.getResults().get(0).getUuid());
 
         query = queryManager.createQuery("/s-ramp/xsd/XsdDocument[@uuid = ?]/relWithAttr2[s-ramp:getTargetAttribute(., 'InvalidKey')]");
         query.setString(xsdDoc.getUuid());
         artifactSet = query.executeQuery();
         Assert.assertNotNull(artifactSet);
-        Assert.assertEquals(0, artifactSet.size());
+        Assert.assertEquals(0, artifactSet.getTotalSize());
     }
 
     @Test
@@ -346,8 +346,8 @@ public class RelationshipQueryTest extends AbstractNoAuditingPersistenceTest {
         WsdlDocument wsdlDoc = addWsdlDoc();
         // Get one of the Parts
         ArtificerQuery query = queryManager.createQuery("/s-ramp/wsdl/Part");
-        ArtifactSet artifactSet = query.executeQuery();
-        BaseArtifactType part = artifactSet.iterator().next();
+        PagedResult<BaseArtifactType> artifactSet = query.executeQuery();
+        BaseArtifactType part = artifactSet.getResults().get(0);
 
         // Set one generic relationship, *from* the part
         ArtificerModelUtils.addGenericRelationship(part, "fooRel", wsdlDoc.getUuid());

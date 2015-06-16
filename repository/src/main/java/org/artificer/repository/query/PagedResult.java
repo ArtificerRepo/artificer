@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.artificer.server.core.api;
+package org.artificer.repository.query;
 
-import org.artificer.repository.query.ArtificerQueryArgs;
-
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Brett Meyer.
  */
-public class PagedResult<T> {
+public class PagedResult<T> implements Serializable {
 
     private final List<T> results;
 
@@ -51,19 +50,19 @@ public class PagedResult<T> {
         return totalSize;
     }
 
-    public int getPageSize() {
-        return args.getCount();
+    public long getPageSize() {
+        return args.getCount() == null ? totalSize : args.getCount();
     }
 
     public int getStartIndex() {
-        return args.getStartIndex();
+        return args.getStartIndex() == null ? 0 : args.getStartIndex();
     }
 
     public String getOrderBy() {
         return args.getOrderBy();
     }
 
-    public boolean isAscending() {
+    public Boolean isAscending() {
         return args.getOrderAscending();
     }
 }

@@ -1,6 +1,7 @@
 package org.artificer.repository.query;
 
 import javax.persistence.Query;
+import java.io.Serializable;
 
 /**
  * Represents ordering and paging arguments, given to an Artificer query.  Note that the fields should *not* be given
@@ -8,15 +9,14 @@ import javax.persistence.Query;
  *
  * @author Brett Meyer
  */
-public class ArtificerQueryArgs {
+public class ArtificerQueryArgs implements Serializable {
 
     private String orderBy;
     private Boolean orderAscending;
     private Integer startIndex;
     private Integer count;
 
-    public ArtificerQueryArgs() {
-    }
+    public ArtificerQueryArgs() {}
 
     public ArtificerQueryArgs(String orderBy, Boolean orderAscending) {
         initOrdering(orderBy, orderAscending);
@@ -57,32 +57,16 @@ public class ArtificerQueryArgs {
         return orderBy;
     }
 
-    public void setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
-    }
-
     public Boolean getOrderAscending() {
         return orderAscending;
-    }
-
-    public void setOrderAscending(Boolean orderAscending) {
-        this.orderAscending = orderAscending;
     }
 
     public Integer getStartIndex() {
         return startIndex;
     }
 
-    public void setStartIndex(Integer startIndex) {
-        this.startIndex = startIndex;
-    }
-
     public Integer getCount() {
         return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
     }
 
     public void applyPaging(Query query) {
