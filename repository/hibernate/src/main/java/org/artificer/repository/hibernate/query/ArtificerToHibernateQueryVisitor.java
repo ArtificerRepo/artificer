@@ -15,6 +15,7 @@
  */
 package org.artificer.repository.hibernate.query;
 
+import org.apache.commons.lang.StringUtils;
 import org.artificer.common.ArtifactType;
 import org.artificer.common.ArtificerConstants;
 import org.artificer.common.ArtificerException;
@@ -40,6 +41,7 @@ import org.artificer.repository.query.AbstractArtificerQueryVisitor;
 import org.artificer.repository.query.ArtificerQueryArgs;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
+import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
 import javax.persistence.EntityManager;
@@ -77,6 +79,9 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
     private CriteriaQuery query = null;
     private From from = null;
 
+    private String artifactModel = null;
+    private String artifactType = null;
+
     private From relationshipFrom = null;
     private From targetFrom = null;
 
@@ -88,8 +93,6 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
     private Object valueContext = null;
 
     private List<Predicate> predicates = new ArrayList<>();
-
-    private boolean hasullTextSearch = false;
 
     private long totalSize;
 
@@ -213,8 +216,13 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
                     // process constraints on the relationship itself
                     subartifactSet.getRelationshipPath().accept(this);
 
-                    // context now needs to be the relationship targets (permanently)
+                    // root context now needs to be the relationship targets (permanently)
                     from = targetFrom.join("target");
+
+                    // since the root context is now based on a target, we can no longer make assumptions about
+                    // the model or type
+                    artifactModel = null;
+                    artifactType = null;
 
                     // Now add any additional predicates included.
                     if (subartifactSet.getPredicate() != null) {
@@ -250,8 +258,12 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
             from = query.from(artifact.getClass());
 
             eq("type", node.getArtifactType());
-        } else if (node.getArtifactModel() != null) {
+
+            artifactType = node.getArtifactType();
+        }
+        if (node.getArtifactModel() != null) {
             eq("model", node.getArtifactModel());
+            artifactModel = node.getArtifactModel();
         }
     }
 
@@ -642,24 +654,32 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
     }
 
     private void fullTextSearch(String query) {
-        // TODO: It would be more performant to delay this until execution.  Add additional fields to the index and
-        // attempt to limit the full-text search's results.  For instance, if the query starts with
-        // /s-ramp/xsd/XsdDocument, we could index 'model' and 'type'.  Then, match those indexes using the model/type,
-        // helping to reduce the size of the eventual list of IDs.  The same is probably true for other types of predicates.
-
         FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search.getFullTextEntityManager(
                 entityManager);
         QueryBuilder qb = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
                 .forEntity(ArtificerArtifact.class).get();
-        org.apache.lucene.search.Query luceneQuery = qb
-                .keyword()
+        BooleanJunction<BooleanJunction> junction = qb.bool();
+
+        // the main full-text query
+        junction.must(qb.keyword()
                 .onFields("description", "name", "comments.text", "properties.key", "properties.value")
                 .andField("content").ignoreFieldBridge()
                 .andField("contentPath").ignoreFieldBridge()
                 .matching(query)
-                .createQuery();
+                .createQuery());
+
+        // if we have the current model and/or type, further restrict the results
+        if (StringUtils.isNotBlank(artifactModel)) {
+            junction.must(
+                    qb.keyword().onField("model").matching(artifactModel).createQuery());
+        }
+        if (StringUtils.isNotBlank(artifactType)) {
+            junction.must(
+                    qb.keyword().onField("type").matching(artifactType).createQuery());
+        }
+
         FullTextQuery fullTextQuery = fullTextEntityManager.createFullTextQuery(
-                luceneQuery, ArtificerArtifact.class);
+                junction.createQuery(), ArtificerArtifact.class);
         fullTextQuery.setProjection("id");
         List<Object[]> results = fullTextQuery.getResultList();
 
@@ -670,6 +690,7 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
         // it's restricted, they typically allow for at least 1000 elements.  Just to be safe (and maintain
         // portability), break the expressions up into 1000-element chunks.
 
+        List<Predicate> searchResults = new ArrayList<>();
         for (int i = 0; i < results.size(); i += 1000) {
             List<Object[]> subResults;
             if (results.size() > i + 1000) {
@@ -682,7 +703,10 @@ public class ArtificerToHibernateQueryVisitor extends AbstractArtificerQueryVisi
                 Object[] result = subResults.get(j);
                 ids[j] = (Long) result[0];
             }
-            predicates.add(from.get("id").in(ids));
+            searchResults.add(from.get("id").in(ids));
+        }
+        if (searchResults.size() > 0) {
+            predicates.add(compileOr(searchResults));
         }
     }
 
