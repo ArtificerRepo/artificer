@@ -79,15 +79,6 @@ public interface PersistenceManager extends AbstractManager {
 	 */
 	public BaseArtifactType updateArtifact(BaseArtifactType artifact, ArtifactType type) throws ArtificerException;
 
-	/**
-	 * Called to update the content for an existing artifact.
-	 * @param uuid a UUID of an existing artifact
-	 * @param artifactType the artifact's type
-	 * @param content the new artifact content
-	 * @throws org.artificer.common.ArtificerException
-	 */
-	public BaseArtifactType updateArtifactContent(String uuid, ArtifactType artifactType, ArtifactContent content) throws ArtificerException;
-
     /**
      * Adds a comment to an artifact.
      * @param uuid
@@ -106,14 +97,6 @@ public interface PersistenceManager extends AbstractManager {
 	 * @throws org.artificer.common.ArtificerException
 	 */
 	public BaseArtifactType deleteArtifact(String uuid, ArtifactType artifactType, boolean force) throws ArtificerException;
-
-    /**
-     * Deletes a previously persisted artifact's content from the S-RAMP repository.
-     * @param uuid
-     * @param artifactType
-     * @throws org.artificer.common.ArtificerException
-     */
-    public BaseArtifactType deleteArtifactContent(String uuid, ArtifactType artifactType) throws ArtificerException;
 
     /**
      * Persists a single ontology.
