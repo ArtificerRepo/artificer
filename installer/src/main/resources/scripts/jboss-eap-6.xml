@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Install Artificer into JBoss EAP 6" default="install">
+<project name="Install Artificer into JBoss EAP 6.4" default="install">
 
   <taskdef name="inputPassword" classname="org.overlord.commons.ant.user.JbossGetPassword" classpath="${overlord-commons.ant.jar}"/>
 
@@ -21,7 +21,7 @@
   <target name="install" depends="properties-jboss-eap-6">
     <echo message=" " />
     <echo message="#############################################" />
-    <echo message="# Installing Artificer into JBoss EAP 6. #" />
+    <echo message="# Installing Artificer into JBoss EAP 6.4   #" />
     <echo message="#############################################" />
 
     <echo>----------------------------------</echo>

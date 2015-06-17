@@ -20,13 +20,13 @@
      
     <echo message=" " />
     <echo message="#######################################################" />
-    <echo message="# Installing Artificer.  Please tell us how you would    #" />
+    <echo message="# Installing Artificer.  Please tell us how you would #" />
     <echo message="# like to proceed!                                    #" />
     <echo message="#######################################################" />
     <echo message=" " />
     <echo message=" Choose from one of the following options." />
     <echo message="    1. Install into WildFly 8" />
-    <echo message="    2. Install into JBoss EAP 6" />
+    <echo message="    2. Install into JBoss EAP 6.4" />
     <echo message=" " />
     <input message="Choice: " addproperty="s-ramp-distro.choices.platform" />
 
@@ -89,12 +89,12 @@
   <target name="install-jboss-eap-6-wrapper" if="s-ramp-distro.choices.platform.jboss-eap-6">
     <echo message=" " />
     <echo message="#######################################################" />
-    <echo message="# Installing Artificer into EAP 6 (great choice!).     #" />
+    <echo message="# Installing Artificer into EAP 6.4 (great choice!).     #" />
     <echo message="#######################################################" />
     <echo message=" " />
-    <echo message=" Please tell us where JBoss EAP 6 is located (full path)." />
+    <echo message=" Please tell us where JBoss EAP 6.4 is located (full path)." />
     <echo message=" " />
-    <input message="Path to EAP 6: " addproperty="s-ramp-distro.choices.platform.jboss-eap-6.path" />
+    <input message="Path to EAP 6.4: " addproperty="s-ramp-distro.choices.platform.jboss-eap-6.path" />
 
     <antcall target="install-jboss-eap-6" />
   </target>
@@ -103,7 +103,7 @@
     <condition property="s-ramp-distro.choices.platform.jboss-eap-6.path.valid">
       <available file="jboss-modules.jar" filepath="${s-ramp-distro.choices.platform.jboss-eap-6.path}" />
     </condition>
-    <fail message="Failed to find JBoss EAP 6 at: ${s-ramp-distro.choices.platform.jboss-eap-6.path}" 
+    <fail message="Failed to find JBoss EAP 6.4 at: ${s-ramp-distro.choices.platform.jboss-eap-6.path}"
               unless="s-ramp-distro.choices.platform.jboss-eap-6.path.valid" />
     <echo message="Installing into: ${s-ramp-distro.choices.platform.jboss-eap-6.path} " />
     
