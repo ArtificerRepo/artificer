@@ -36,7 +36,7 @@ Run './install.sh' or 'install.bat'.  Alternatively, if you have Apache Ant 1.7 
 The installer will ask you to choose a runtime platform.  Currently the following platforms are supported:
 
 * WildFly 8
-* JBoss EAP 6.2+
+* JBoss EAP 6.4
 
 Simply follow the installer instructions to install onto the platform of your choice.  We recommend installing
 into a clean version of whatever platform you choose, to minimize the risk of colliding with other projects.
