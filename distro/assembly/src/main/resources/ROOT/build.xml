@@ -81,8 +81,7 @@
       <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
       <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/artificer-server-wildfly8-${s-ramp.version}.war" />
       <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/artificer-ui-wildfly8-${s-ramp.version}.war" />
-      <property name="s-ramp.keycloak.path" location="${s-ramp-distro.bindir}/keycloak-war-dist-all-${version.org.keycloak}" />
-      <property name="s-ramp.keycloak.adapter" location="${s-ramp-distro.bindir}/keycloak-wildfly-adapter-dist-${version.org.keycloak}.zip" />
+      <property name="keycloak.overlay.zip" location="${s-ramp-distro.bindir}/keycloak-server-overlay-${version.org.keycloak}.zip" />
     </ant>
   </target>
 
@@ -122,8 +121,7 @@
       <property name="overlord-commons.ant.jar" location="${s-ramp-distro.overlord-commons-ant.jar}" />
       <property name="s-ramp.s-ramp-server.war.path" location="${s-ramp-distro.bindir}/artificer-server-eap6-${s-ramp.version}.war" />
       <property name="s-ramp.s-ramp-ui.war.path" location="${s-ramp-distro.bindir}/artificer-ui-eap6-${s-ramp.version}.war" />
-      <property name="s-ramp.keycloak.path" location="${s-ramp-distro.bindir}/keycloak-war-dist-all-${version.org.keycloak}" />
-      <property name="s-ramp.keycloak.adapter" location="${s-ramp-distro.bindir}/keycloak-eap6-adapter-dist-${version.org.keycloak}.zip" />
+      <property name="keycloak.overlay.zip" location="${s-ramp-distro.bindir}/keycloak-server-overlay-${version.org.keycloak}.zip" />
     </ant>
   </target>
   
